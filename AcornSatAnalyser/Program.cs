@@ -2,10 +2,13 @@
 using System.Text.RegularExpressions;
 
 var locations = new Dictionary<string, string>();
-locations.Add("Adelaide", "023090");
-locations.Add("Launceston Airport", "091311");
-locations.Add("Kerang", "080023");
-locations.Add("Hobart", "094029");
+
+var locationRowData = File.ReadAllLines(@$"Locations.csv");
+foreach (var row in locationRowData)
+{
+    var splitRow = row.Split(',');
+    locations.Add(splitRow[0], splitRow[1]);
+}
 
 var primarySites = File.ReadAllLines(@$"primarysites.txt");
 
