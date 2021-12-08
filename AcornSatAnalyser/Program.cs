@@ -49,9 +49,23 @@ foreach (var location in locations)
     var earliestYearInSiteSet = 3000;
     var latestYearInSiteSet = 0;
 
+    var allSiteFilesExist = siteSet.All(x =>
+    {
+        var siteFilePath = @$"raw-data\hqnew{x}.txt";
+        return File.Exists(siteFilePath);
+    });
+
+    if (!allSiteFilesExist)
+    {
+        Console.WriteLine($"Not all site files exist for {location.Key}. This location will be skipped. The required files are: {string.Join(", ", siteSet.Select(x => @$"raw-data\hqnew{x}.txt"))} ");
+        continue;
+    }
+
     foreach (var site in siteSet)
     {
-        var rawData = File.ReadAllLines(@$"raw-data\hqnew{site}.txt");
+        var siteFilePath = @$"raw-data\hqnew{site}.txt";
+
+        var rawData = File.ReadAllLines(siteFilePath);
 
         Directory.CreateDirectory(folderName);
         using StreamWriter siteFile = new(@$"{folderName}\{site} {averageTempsFileNameSuffix}.csv");
@@ -89,6 +103,10 @@ foreach (var location in locations)
             var day = int.Parse(record.Substring(12, 2));
             var temps = record.Substring(13);
             var tempGroups = tempsRegEx.Match(temps).Groups;
+
+            // Some recordings don't have a value for min or max. In that case the entry will be -999. Will make those values null
+            // Temp values are recorded tenths of degrees C in ACORN-SAT. So divide by 10 to get them into degrees C.
+            // E.g., 222 = 22.2 degrees C
             float? maxTemp = tempGroups[1].Value == "-999" ? null : float.Parse(tempGroups[1].Value) / 10;
             float? minTemp = tempGroups[2].Value == "-999" ? null : float.Parse(tempGroups[2].Value) / 10;
 
