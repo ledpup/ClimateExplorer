@@ -2,8 +2,10 @@
 using System.Text.RegularExpressions;
 
 var locations = new Dictionary<string, string>();
+locations.Add("Adelaide", "023090");
 locations.Add("Launceston Airport", "091311");
 locations.Add("Kerang", "080023");
+locations.Add("Hobart", "094029");
 
 var primarySites = File.ReadAllLines(@$"primarysites.txt");
 
