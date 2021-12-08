@@ -24,14 +24,14 @@ foreach (var primarySiteRow in primarySites)
     if (secondSite != "999999")
     {
         siteSets[primarySite].Add(secondSite);
-    }
-    if (thirdSite != "999999")
-    {
-        siteSets[primarySite].Add(thirdSite);
+        if (thirdSite != "999999")
+        {
+            siteSets[primarySite].Add(thirdSite);
+        }
     }
 }
 
-var minNumberOfRecordsForTheYear = 360;
+var minNumberOfRecordsForTheYear = 355;
 var averageTempsFileNameSuffix = "yearly average temps";
 var tempsRegEx = new Regex(@"\s+(-*\d+)\s+(-*\d+)");
 
@@ -73,13 +73,7 @@ foreach (var location in locations)
             }
             if (year != currentYear)
             {
-                if (currentYear != 0 && dailyMinData.Count > 0 && dailyMaxData.Count > 0)
-                {
-                    yearMinData.Add(currentYear, dailyMinData.Average());
-                    yearMaxData.Add(currentYear, dailyMaxData.Average());
-
-                    siteFile.WriteLine($"{currentYear},{yearMinData[currentYear]},{dailyMinData.Count},{yearMaxData[currentYear]},{dailyMaxData.Count}");
-                }
+                WriteYearData(currentYear, dailyMinData, dailyMaxData, yearMinData, yearMaxData, siteFile);
 
                 currentYear = year;
                 dailyMinData = new List<float>();
@@ -102,6 +96,8 @@ foreach (var location in locations)
                 dailyMaxData.Add((float)maxTemp.Value);
             }
         }
+
+        WriteYearData(currentYear, dailyMinData, dailyMaxData, yearMinData, yearMaxData, siteFile);
     }
 
     var siteSetYear = new Dictionary<int, List<SiteTemps>>();
@@ -146,5 +142,16 @@ foreach (var location in locations)
             var max = siteSetYear[year].Average(x => x.Max);
             siteSetFile.WriteLine($"{year},{min},{max},{siteSetYear[year].Count},\"=\"\"{string.Join(';', siteSetYear[year].Select(x => x.Name))}\"\"\"");
         }
+    }
+}
+
+void WriteYearData(int year, List<float> dailyMinData, List<float> dailyMaxData, Dictionary<int, double> yearMinData, Dictionary<int, double> yearMaxData, StreamWriter siteFile)
+{
+    if (year != 0 && dailyMinData.Count > 0 && dailyMaxData.Count > 0)
+    {
+        yearMinData.Add(year, dailyMinData.Average());
+        yearMaxData.Add(year, dailyMaxData.Average());
+
+        siteFile.WriteLine($"{year},{yearMinData[year]},{dailyMinData.Count},{yearMaxData[year]},{dailyMaxData.Count}");
     }
 }
