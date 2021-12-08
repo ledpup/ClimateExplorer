@@ -105,7 +105,7 @@ foreach (var location in locations)
             var tempGroups = tempsRegEx.Match(temps).Groups;
 
             // Some recordings don't have a value for min or max. In that case the entry will be -999. Will make those values null
-            // Temp values are recorded tenths of degrees C in ACORN-SAT. So divide by 10 to get them into degrees C.
+            // Temp values are recorded as tenths of degrees C in ACORN-SAT. Divide by 10 to get them into degrees C.
             // E.g., 222 = 22.2 degrees C
             float? maxTemp = tempGroups[1].Value == "-999" ? null : float.Parse(tempGroups[1].Value) / 10;
             float? minTemp = tempGroups[2].Value == "-999" ? null : float.Parse(tempGroups[2].Value) / 10;
