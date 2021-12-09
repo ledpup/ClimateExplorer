@@ -1,0 +1,135 @@
+﻿@page "/"
+@using Blazorise
+@using Blazorise.Components
+@using Blazorise.Charts
+@using System.IO;
+
+
+<PageTitle>Index</PageTitle>
+
+<h1>ACORD-SAT</h1>
+
+<SelectList TItem="Location"
+            TValue="string"
+            Data="@Locations"
+            TextField="@((item)=>item.Name)"
+            ValueField="@((item)=>item.PrimarySite)"
+            SelectedValueChanged="@SelectedLocationChanged"
+            DefaultItemText="Select ACORN-SAT Location"
+            Style="width: 300px"
+            />
+
+@*<DropdownList TItem="Location" TValue="string"
+              Data="@Locations"
+              MaxMenuHeight="400"
+              TextField="@((item)=>item.Name)"
+              ValueField="@((item)=>item.PrimarySite)"
+              SelectedValueChanged="@SelectedLocationChanged"
+              Color="Color.Primary"
+              >
+    Select ACORN-SAT Location
+</DropdownList>*@
+
+<Field Horizontal="true">
+    <FieldBody ColumnSize="ColumnSize.Is12">
+        Selected location: @Locations?.SingleOrDefault(x=> x.PrimarySite == @SelectedLocation)?.Name
+    </FieldBody>
+</Field>
+
+@*<Button Clicked="@(async () => await HandleRedraw())">Redraw</Button>*@
+<div style="width: 95%; border: 1px dashed; padding: 50px;">
+    <LineChart @ref="lineChart" TItem="double?" />
+</div>
+
+@code{
+
+    string SelectedLocation { get; set; } = "094029";
+
+    [Inject]
+    public ITemperatureDataService TemperatureDataService { get; set; }
+
+    public IEnumerable<YearlyAverageTemps> YearlyAverageTemps { get; set; }
+    public IEnumerable<Location> Locations;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Locations =  (await TemperatureDataService.GetLocations()).ToList();
+        await RenderLocation();
+
+    }
+
+    protected async Task RenderLocation()
+    {
+        YearlyAverageTemps = (await TemperatureDataService.GetTemperatureData(SelectedLocation)).ToList();
+        Labels = YearlyAverageTemps.Select(x => x.Year.ToString()).ToArray();
+        Temperatures = YearlyAverageTemps.Select(x => x.Max).ToList();
+        await HandleRedraw();
+    }
+
+    LineChart<double?> lineChart;
+
+    protected override async Task OnAfterRenderAsync( bool firstRender )
+    {
+        if ( firstRender )
+        {
+            await HandleRedraw();
+        }
+    }
+
+    async Task HandleRedraw()
+    {
+        await lineChart.Clear();
+
+        var title = "Dsadasdasda";
+
+        var options = new LineChartOptions { SpanGaps = false };
+        options.Scales = new Scales
+        {
+            YAxes = new List<Axis> 
+            { 
+                new Axis 
+                { 
+                    ScaleLabel = new AxisScaleLabel { LabelString = "Degrees Celcius", Display = true } 
+                } 
+            },
+            XAxes = new List<Axis> 
+            { 
+                new Axis 
+                { 
+                    ScaleLabel = new AxisScaleLabel { LabelString = "Year", Display = true } 
+                } 
+            },
+        };
+        await lineChart.SetOptions(options);
+
+        //lineChart.OptionsJsonString = "{ \"spangaps\": true, \"title\": { \"text\": \"" + title + "\", \"display\": true }, \"scales\": { \"yAxes\": [{ \"scalelabel\": { \"labelstring\": \"Degrees Celcius\", \"display\": true } } ] } }";
+        await lineChart.AddLabelsDatasetsAndUpdate( Labels, GetLineChartDataset() );
+    }
+
+    LineChartDataset<double?> GetLineChartDataset()
+    {
+        return new LineChartDataset<double?>
+        {
+            Label = "Maximum Temperature °C",
+            Data = Temperatures,
+            BackgroundColor = backgroundColors,
+            BorderColor = borderColors,
+            Fill = false,
+            PointRadius = 2,
+            BorderDash = new List<int> { },
+            LineTension = 0.1f,
+        };
+    }
+
+    async Task SelectedLocationChanged( string newValue )
+    {
+        SelectedLocation = newValue;
+        await RenderLocation();
+    }
+
+    string[] Labels = new string[1];
+    List<string> backgroundColors = new List<string> { ChartColor.FromRgba( 54, 162, 235, 1f ), };
+    List<string> borderColors = new List<string> { ChartColor.FromRgba( 54, 162, 235, 1f ), };
+
+    List<double?> Temperatures = null;
+}
