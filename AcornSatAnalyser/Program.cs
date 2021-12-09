@@ -1,5 +1,8 @@
-﻿using System.Linq;
+﻿using AcornSatAnalyser;
+using System.Linq;
 using System.Text.RegularExpressions;
+
+Regex _tempsRegEx = new Regex(@"\s+(-*\d+)\s+(-*\d+)");
 
 var locations = new Dictionary<string, string>();
 
@@ -38,7 +41,7 @@ foreach (var primarySiteRow in primarySites)
 
 var minNumberOfRecordsForTheYear = 355;
 var averageTempsFileNameSuffix = "yearly average temps";
-var tempsRegEx = new Regex(@"\s+(-*\d+)\s+(-*\d+)");
+
 
 foreach (var location in locations)
 {
@@ -63,72 +66,37 @@ foreach (var location in locations)
 
     foreach (var site in siteSet)
     {
-        var siteFilePath = @$"raw-data\hqnew{site}.txt";
-
-        var rawData = File.ReadAllLines(siteFilePath);
-
         Directory.CreateDirectory(folderName);
-        using StreamWriter siteFile = new(@$"{folderName}\{site} {averageTempsFileNameSuffix}.csv");
-        siteFile.WriteLine($"Year,YearAverageMin,DaysOfDataMin,YearAverageMax,DaysOfDataMax");
-        var currentYear = 0;
+        using StreamWriter siteOutputFile = new(@$"{folderName}\{site} {averageTempsFileNameSuffix}.csv");
+        siteOutputFile.WriteLine($"Year,YearAverageMin,DaysOfDataMin,YearAverageMax,DaysOfDataMax");
 
-        var dailyMinData = new List<float>();
-        var dailyMaxData = new List<float>();
+        var rawDataRecords = ReadRawDataFile(site);
 
-        var yearMinData = new Dictionary<int, double>();
-        var yearMaxData = new Dictionary<int, double>();
+        var minYear = rawDataRecords.Min(x => x.Year);
+        var maxYear = rawDataRecords.Max(x => x.Year);
 
-        foreach (var record in rawData)
+        if (minYear < earliestYearInSiteSet)
         {
-            var year = int.Parse(record.Substring(6, 4));
-
-            if (year < earliestYearInSiteSet)
-            {
-                earliestYearInSiteSet = year;
-            }
-            if (year > latestYearInSiteSet)
-            {
-                latestYearInSiteSet = year;
-            }
-            if (year != currentYear)
-            {
-                WriteYearData(currentYear, dailyMinData, dailyMaxData, yearMinData, yearMaxData, siteFile);
-
-                currentYear = year;
-                dailyMinData = new List<float>();
-                dailyMaxData = new List<float>();
-            }
-
-            var month = int.Parse(record.Substring(10, 2));
-            var day = int.Parse(record.Substring(12, 2));
-            var temps = record.Substring(13);
-            var tempGroups = tempsRegEx.Match(temps).Groups;
-
-            // Some recordings don't have a value for min or max. In that case the entry will be -999. Will make those values null
-            // Temp values are recorded as tenths of degrees C in ACORN-SAT. Divide by 10 to get them into degrees C.
-            // E.g., 222 = 22.2 degrees C
-            float? maxTemp = tempGroups[1].Value == "-999" ? null : float.Parse(tempGroups[1].Value) / 10;
-            float? minTemp = tempGroups[2].Value == "-999" ? null : float.Parse(tempGroups[2].Value) / 10;
-
-            if (minTemp != null)
-            {
-                dailyMinData.Add((float)minTemp.Value);
-            }
-            if (maxTemp != null)
-            {
-                dailyMaxData.Add((float)maxTemp.Value);
-            }
+            earliestYearInSiteSet = minYear;
+        }
+        if (maxYear > latestYearInSiteSet)
+        {
+            latestYearInSiteSet = maxYear;
         }
 
-        WriteYearData(currentYear, dailyMinData, dailyMaxData, yearMinData, yearMaxData, siteFile);
+        rawDataRecords.GroupBy(x => x.Year)
+                        .Select(x => x.ToList())
+                        .ToList()
+                        .ForEach(x => WriteYearData(x.First().Year, x, siteOutputFile));
+        
     }
 
-    var siteSetYear = new Dictionary<int, List<SiteTemps>>();
+    var siteSetYear = new Dictionary<int, List<YearlyAverageSiteTemps>>();
     {
         var year = earliestYearInSiteSet;
         while (year <= latestYearInSiteSet)
         {
-            siteSetYear.Add(year, new List<SiteTemps>());
+            siteSetYear.Add(year, new List<YearlyAverageSiteTemps>());
             year++;
         }
     }
@@ -141,15 +109,15 @@ foreach (var location in locations)
         {
             var data = record.Split(',');
             var year = int.Parse(data[0]);
-            var min = float.Parse(data[1]);
+            double? min = string.IsNullOrWhiteSpace(data[1]) ? null : double.Parse(data[1]);
             var numberOfRecordsMin = int.Parse(data[2]);
 
-            var max = float.Parse(data[3]);
+            double? max = string.IsNullOrWhiteSpace(data[3]) ? null : double.Parse(data[3]);
             var numberOfRecordsMax = int.Parse(data[4]);
 
             if (numberOfRecordsMin > minNumberOfRecordsForTheYear && numberOfRecordsMax > minNumberOfRecordsForTheYear)
             {
-                siteSetYear[year].Add(new SiteTemps { Min = min, Max = max, Name = site });
+                siteSetYear[year].Add(new YearlyAverageSiteTemps { Year = year, Min = min, Max = max, SiteName = site });
             }
         }
     }
@@ -161,20 +129,55 @@ foreach (var location in locations)
     {
         if (siteSetYear[year].Any())
         {
-            var min = siteSetYear[year].Average(x => x.Min);
-            var max = siteSetYear[year].Average(x => x.Max);
-            siteSetFile.WriteLine($"{year},{min},{max},{siteSetYear[year].Count},\"=\"\"{string.Join(';', siteSetYear[year].Select(x => x.Name))}\"\"\"");
+            var min = siteSetYear[year].Where(x => x.Min != null).Average(x => x.Min);
+            var max = siteSetYear[year].Where(x => x.Max != null).Average(x => x.Max);
+            siteSetFile.WriteLine($"{year},{min},{max},{siteSetYear[year].Count},\"=\"\"{string.Join(';', siteSetYear[year].Select(x => x.SiteName))}\"\"\"");
         }
     }
 }
 
-void WriteYearData(int year, List<float> dailyMinData, List<float> dailyMaxData, Dictionary<int, double> yearMinData, Dictionary<int, double> yearMaxData, StreamWriter siteFile)
+void WriteYearData(int year, List<RawDataRecord> rawDataRecord, StreamWriter siteFile)
 {
-    if (year != 0 && dailyMinData.Count > 0 && dailyMaxData.Count > 0)
-    {
-        yearMinData.Add(year, dailyMinData.Average());
-        yearMaxData.Add(year, dailyMaxData.Average());
+    // Temp values are recorded as tenths of degrees C in ACORN-SAT. Divide by 10 to get them into degrees C.
+    // E.g., 222 = 22.2 degrees C
+    var dailyMin = rawDataRecord
+        .Where(x => x.Min != null)
+        .Select(x => x.Min / 10.0)
+        .ToList();
 
-        siteFile.WriteLine($"{year},{yearMinData[year]},{dailyMinData.Count},{yearMaxData[year]},{dailyMaxData.Count}");
+    var dailyMax = rawDataRecord
+        .Where(x => x.Max != null)
+        .Select(x => x.Max / 10.0)
+        .ToList();
+
+    siteFile.WriteLine($"{year},{dailyMin.Average()},{dailyMin.Count},{dailyMax.Average()},{dailyMax.Count}");
+}
+
+List<RawDataRecord> ReadRawDataFile(string site)
+{
+    var siteFilePath = @$"raw-data\hqnew{site}.txt";
+    var rawData = File.ReadAllLines(siteFilePath);
+    var rawDataRecords = new List<RawDataRecord>();
+    foreach (var record in rawData)
+    {
+        var year = int.Parse(record.Substring(6, 4));
+        var month = int.Parse(record.Substring(10, 2));
+        var day = int.Parse(record.Substring(12, 2));
+        var temps = record.Substring(13);
+        var tempGroups = _tempsRegEx.Match(temps).Groups;
+
+        // Some recordings don't have a value for min or max. In that case the entry will be -999. Will make those values null
+        int? maxTemp = tempGroups[1].Value == "-999" ? null : int.Parse(tempGroups[1].Value);
+        int? minTemp = tempGroups[2].Value == "-999" ? null : int.Parse(tempGroups[2].Value);
+
+        rawDataRecords.Add(new RawDataRecord
+        {
+            Day = day,
+            Month = month,
+            Year = year,
+            Min = minTemp,
+            Max = maxTemp,
+        });
     }
+    return rawDataRecords;
 }
