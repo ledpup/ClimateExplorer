@@ -7,7 +7,7 @@
 
 <PageTitle>Index</PageTitle>
 
-<h1>ACORD-SAT</h1>
+<h1>ACORN-SAT</h1>
 
 <SelectList TItem="Location"
             TValue="string"
@@ -62,7 +62,7 @@
 
 
 @*<Button Clicked="@(async () => await HandleRedraw())">Redraw</Button>*@
-<div style="width: 95%; border: 1px dashed; padding: 50px;">
+<div style="width: 95%; border: 1px dashed; padding: 10px;">
     <LineChart @ref="lineChart" TItem="double?" />
 </div>
 
@@ -101,8 +101,8 @@
     [Inject]
     public ITemperatureDataService TemperatureDataService { get; set; }
 
-    public IEnumerable<YearlyAverageTemps> AdjustedYearlyAverageTemps { get; set; }
-    public IEnumerable<YearlyAverageTemps> UnadjustedYearlyAverageTemps { get; set; }
+    public List<YearlyAverageTemps> AdjustedYearlyAverageTemps { get; set; }
+    public List<YearlyAverageTemps> UnadjustedYearlyAverageTemps { get; set; }
     public IEnumerable<Location> Locations;
 
     protected override async Task OnInitializedAsync()
@@ -115,7 +115,9 @@
     {
         AdjustedYearlyAverageTemps = (await TemperatureDataService.GetTemperatureData("adjusted", SelectedLocation)).ToList();
         UnadjustedYearlyAverageTemps = (await TemperatureDataService.GetTemperatureData("unadjusted", SelectedLocation)).ToList();
-        Labels = AdjustedYearlyAverageTemps.Select(x => x.Year.ToString()).ToArray();
+
+        BufferStartYear(new List<List<YearlyAverageTemps>> { AdjustedYearlyAverageTemps, UnadjustedYearlyAverageTemps });
+
         AdjustedMaxTemperatures = AdjustedYearlyAverageTemps.Select(x => x.Max).ToList();
         AdjustedMinTemperatures = AdjustedYearlyAverageTemps.Select(x => x.Min).ToList();
         UnadjustedMaxTemperatures = UnadjustedYearlyAverageTemps.Select(x => x.Max).ToList();
@@ -124,6 +126,19 @@
     }
 
     LineChart<double?> lineChart;
+
+    void BufferStartYear(List<List<YearlyAverageTemps>> dataSets)
+    {
+        var startYear = dataSets.Min(x => x.Min(y => y.Year));
+        foreach(var dataSet in dataSets)
+        {
+            var year = dataSet.Min(x => x.Year);
+            for (var i = year; i >= startYear; i--)
+            {
+                dataSet.Insert(0, new YearlyAverageTemps { Year = i });
+            }
+        }
+    }
 
     protected override async Task OnAfterRenderAsync( bool firstRender )
     {
@@ -162,23 +177,21 @@
         //lineChart.OptionsJsonString = "{ \"spangaps\": true, \"title\": { \"text\": \"" + title + "\", \"display\": true }, \"scales\": { \"yAxes\": [{ \"scalelabel\": { \"labelstring\": \"Degrees Celcius\", \"display\": true } } ] } }";
         //await lineChart.AddLabelsDatasetsAndUpdate( Labels, GetLineChartDataset() );
 
-        if (Unadjusted)
+        if (AdjustedYearlyAverageTemps == null)
         {
-            Labels = UnadjustedYearlyAverageTemps.Select(x => x.Year.ToString()).ToArray();
+            return;
         }
-        if (Adjusted && AdjustedYearlyAverageTemps != null)
-        {
-            Labels = AdjustedYearlyAverageTemps.Select(x => x.Year.ToString()).ToArray();
-        }
+
+        Labels = AdjustedYearlyAverageTemps.Select(x => x.Year.ToString()).ToArray();
 
         await lineChart.AddLabels(Labels);
         if (Unadjusted && Maximums)
         {
-            await lineChart.AddDataSet(GetLineChartDataset("Maximum", "Unadjusted", UnadjustedMaxTemperatures, ChartColor.FromRgba( 255, 127, 63, 1f )));
+            await lineChart.AddDataSet(GetLineChartDataset("Maximum", "Unadjusted", UnadjustedMaxTemperatures, ChartColor.FromRgba( 63, 255, 63, 1f )));
         }
         if (Unadjusted && Minimums)
         {
-            await lineChart.AddDataSet(GetLineChartDataset("Minimum", "Unadjusted", UnadjustedMinTemperatures, ChartColor.FromRgba( 63, 255, 63, 1f )));
+            await lineChart.AddDataSet(GetLineChartDataset("Minimum", "Unadjusted", UnadjustedMinTemperatures, ChartColor.FromRgba( 255, 127, 63, 1f )));
         }
         if (Adjusted && Maximums)
         {
