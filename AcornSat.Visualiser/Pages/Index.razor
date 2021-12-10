@@ -174,32 +174,32 @@
         await lineChart.AddLabels(Labels);
         if (Unadjusted && Maximums)
         {
-            await lineChart.AddDataSet(GetLineChartDataset("Maximum", "Unadjusted", UnadjustedMaxTemperatures));
+            await lineChart.AddDataSet(GetLineChartDataset("Maximum", "Unadjusted", UnadjustedMaxTemperatures, ChartColor.FromRgba( 255, 127, 63, 1f )));
         }
         if (Unadjusted && Minimums)
         {
-            await lineChart.AddDataSet(GetLineChartDataset("Minimum", "Unadjusted", UnadjustedMinTemperatures));
+            await lineChart.AddDataSet(GetLineChartDataset("Minimum", "Unadjusted", UnadjustedMinTemperatures, ChartColor.FromRgba( 63, 255, 63, 1f )));
         }
         if (Adjusted && Maximums)
         {
-            await lineChart.AddDataSet(GetLineChartDataset("Maximum", "Adjusted", AdjustedMaxTemperatures));
+            await lineChart.AddDataSet(GetLineChartDataset("Maximum", "Adjusted", AdjustedMaxTemperatures, ChartColor.FromRgba( 255, 63, 63, 1f )));
         }
         if (Adjusted && Minimums)
         {
-            await lineChart.AddDataSet(GetLineChartDataset("Minimum", "Adjusted", AdjustedMinTemperatures));
+            await lineChart.AddDataSet(GetLineChartDataset("Minimum", "Adjusted", AdjustedMinTemperatures, ChartColor.FromRgba( 63, 63, 255, 1f )));
         }
         await lineChart.Update();
 
     }
 
-    LineChartDataset<double?> GetLineChartDataset(string temperatureType, string maxOrMin, List<double?> values)
+    LineChartDataset<double?> GetLineChartDataset(string temperatureType, string maxOrMin, List<double?> values, ChartColor chartColor)
     {
         return new LineChartDataset<double?>
                 {
                     Label = $"{temperatureType} {maxOrMin} Temperature °C",
                     Data = values,
-                    BackgroundColor = backgroundColors,
-                    BorderColor = borderColors,
+                    BackgroundColor = new List<string> { chartColor },
+                    BorderColor = new List<string> { chartColor },
                     Fill = false,
                     PointRadius = 3,
                     BorderDash = new List<int> { },
@@ -214,8 +214,6 @@
     }
 
     string[] Labels = new string[1];
-    List<string> backgroundColors = new List<string> { ChartColor.FromRgba( 220, 162, 235, 1f ), };
-    List<string> borderColors = new List<string> { ChartColor.FromRgba( 54, 162, 235, 1f ), };
 
     List<double?> AdjustedMaxTemperatures = new List<double?>();
     List<double?> AdjustedMinTemperatures = new List<double?>();
