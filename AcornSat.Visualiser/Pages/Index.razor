@@ -13,7 +13,7 @@
             TValue="string"
             Data="@Locations"
             TextField="@((item)=>item.Name)"
-            ValueField="@((item)=>item.PrimarySite)"
+            ValueField="@((item)=>item.PrimarySiteId)"
             SelectedValueChanged="@SelectedLocationChanged"
             DefaultItemText="Select ACORN-SAT Location"
             Style="width: 300px"
@@ -30,11 +30,36 @@
     Select ACORN-SAT Location
 </DropdownList>*@
 
-<Field Horizontal="true">
-    <FieldBody ColumnSize="ColumnSize.Is12">
-        Selected location: @Locations?.SingleOrDefault(x=> x.PrimarySite == @SelectedLocation)?.Name
-    </FieldBody>
-</Field>
+<Row>
+    <Column ColumnSize="ColumnSize.Is2">
+        <Alert Color="Color.Primary" Visible="true">
+            <FieldBody>
+                Location: @Locations?.SingleOrDefault(x=> x.PrimarySiteId == @SelectedLocation)?.Name
+            </FieldBody>
+        </Alert>
+    </Column>
+    <Column ColumnSize="ColumnSize.Is2">
+        <Alert Color="Color.Secondary" Visible="true">
+            <Check TValue="bool" Checked="@Unadjusted" CheckedChanged="@OnUnadjustedChanged">Unadjusted</Check>
+        </Alert>
+    </Column>
+    <Column ColumnSize="ColumnSize.Is2">
+        <Alert Color="Color.Secondary" Visible="true">
+            <Check TValue="bool" Checked="@Adjusted" CheckedChanged="@OnAdjustedChanged">Adjusted</Check>
+        </Alert>
+    </Column>
+        <Column ColumnSize="ColumnSize.Is2">
+        <Alert Color="Color.Info" Visible="true">
+            <Check TValue="bool" Checked="@Maximums" CheckedChanged="@OnMaximumsChanged">Maximums</Check>
+        </Alert>
+    </Column>
+        <Column ColumnSize="ColumnSize.Is2">
+        <Alert Color="Color.Info" Visible="true">
+            <Check TValue="bool" Checked="@Minimums" CheckedChanged="@OnMinimumsChanged">Minimums</Check>
+        </Alert>
+    </Column>
+</Row>
+
 
 @*<Button Clicked="@(async () => await HandleRedraw())">Redraw</Button>*@
 <div style="width: 95%; border: 1px dashed; padding: 50px;">
@@ -43,26 +68,58 @@
 
 @code{
 
+    bool Adjusted = true;
+    async Task  OnAdjustedChanged(bool value)
+    {
+        Adjusted = value;
+        await HandleRedraw();
+    }
+
+    bool Unadjusted;
+    async Task  OnUnadjustedChanged(bool value)
+    {
+        Unadjusted = value;
+        await HandleRedraw();
+    }
+
+    bool Maximums = true;
+    async Task  OnMaximumsChanged(bool value)
+    {
+        Maximums = value;
+        await HandleRedraw();
+    }
+
+    bool Minimums;
+    async Task  OnMinimumsChanged(bool value)
+    {
+        Minimums = value;
+        await HandleRedraw();
+    }
+
     string SelectedLocation { get; set; } = "094029";
 
     [Inject]
     public ITemperatureDataService TemperatureDataService { get; set; }
 
-    public IEnumerable<YearlyAverageTemps> YearlyAverageTemps { get; set; }
+    public IEnumerable<YearlyAverageTemps> AdjustedYearlyAverageTemps { get; set; }
+    public IEnumerable<YearlyAverageTemps> UnadjustedYearlyAverageTemps { get; set; }
     public IEnumerable<Location> Locations;
 
     protected override async Task OnInitializedAsync()
     {
         Locations =  (await TemperatureDataService.GetLocations()).ToList();
         await RenderLocation();
-
     }
 
     protected async Task RenderLocation()
     {
-        YearlyAverageTemps = (await TemperatureDataService.GetTemperatureData(SelectedLocation)).ToList();
-        Labels = YearlyAverageTemps.Select(x => x.Year.ToString()).ToArray();
-        Temperatures = YearlyAverageTemps.Select(x => x.Max).ToList();
+        AdjustedYearlyAverageTemps = (await TemperatureDataService.GetTemperatureData("adjusted", SelectedLocation)).ToList();
+        UnadjustedYearlyAverageTemps = (await TemperatureDataService.GetTemperatureData("unadjusted", SelectedLocation)).ToList();
+        Labels = AdjustedYearlyAverageTemps.Select(x => x.Year.ToString()).ToArray();
+        AdjustedMaxTemperatures = AdjustedYearlyAverageTemps.Select(x => x.Max).ToList();
+        AdjustedMinTemperatures = AdjustedYearlyAverageTemps.Select(x => x.Min).ToList();
+        UnadjustedMaxTemperatures = UnadjustedYearlyAverageTemps.Select(x => x.Max).ToList();
+        UnadjustedMinTemperatures = UnadjustedYearlyAverageTemps.Select(x => x.Min).ToList();
         await HandleRedraw();
     }
 
@@ -103,22 +160,51 @@
         await lineChart.SetOptions(options);
 
         //lineChart.OptionsJsonString = "{ \"spangaps\": true, \"title\": { \"text\": \"" + title + "\", \"display\": true }, \"scales\": { \"yAxes\": [{ \"scalelabel\": { \"labelstring\": \"Degrees Celcius\", \"display\": true } } ] } }";
-        await lineChart.AddLabelsDatasetsAndUpdate( Labels, GetLineChartDataset() );
+        //await lineChart.AddLabelsDatasetsAndUpdate( Labels, GetLineChartDataset() );
+
+        if (Unadjusted)
+        {
+            Labels = UnadjustedYearlyAverageTemps.Select(x => x.Year.ToString()).ToArray();
+        }
+        if (Adjusted && AdjustedYearlyAverageTemps != null)
+        {
+            Labels = AdjustedYearlyAverageTemps.Select(x => x.Year.ToString()).ToArray();
+        }
+
+        await lineChart.AddLabels(Labels);
+        if (Unadjusted && Maximums)
+        {
+            await lineChart.AddDataSet(GetLineChartDataset("Maximum", "Unadjusted", UnadjustedMaxTemperatures));
+        }
+        if (Unadjusted && Minimums)
+        {
+            await lineChart.AddDataSet(GetLineChartDataset("Minimum", "Unadjusted", UnadjustedMinTemperatures));
+        }
+        if (Adjusted && Maximums)
+        {
+            await lineChart.AddDataSet(GetLineChartDataset("Maximum", "Adjusted", AdjustedMaxTemperatures));
+        }
+        if (Adjusted && Minimums)
+        {
+            await lineChart.AddDataSet(GetLineChartDataset("Minimum", "Adjusted", AdjustedMinTemperatures));
+        }
+        await lineChart.Update();
+
     }
 
-    LineChartDataset<double?> GetLineChartDataset()
+    LineChartDataset<double?> GetLineChartDataset(string temperatureType, string maxOrMin, List<double?> values)
     {
         return new LineChartDataset<double?>
-        {
-            Label = "Maximum Temperature °C",
-            Data = Temperatures,
-            BackgroundColor = backgroundColors,
-            BorderColor = borderColors,
-            Fill = false,
-            PointRadius = 2,
-            BorderDash = new List<int> { },
-            LineTension = 0.1f,
-        };
+                {
+                    Label = $"{temperatureType} {maxOrMin} Temperature °C",
+                    Data = values,
+                    BackgroundColor = backgroundColors,
+                    BorderColor = borderColors,
+                    Fill = false,
+                    PointRadius = 3,
+                    BorderDash = new List<int> { },
+                    LineTension = 0.1f,
+                };
     }
 
     async Task SelectedLocationChanged( string newValue )
@@ -128,8 +214,11 @@
     }
 
     string[] Labels = new string[1];
-    List<string> backgroundColors = new List<string> { ChartColor.FromRgba( 54, 162, 235, 1f ), };
+    List<string> backgroundColors = new List<string> { ChartColor.FromRgba( 220, 162, 235, 1f ), };
     List<string> borderColors = new List<string> { ChartColor.FromRgba( 54, 162, 235, 1f ), };
 
-    List<double?> Temperatures = null;
+    List<double?> AdjustedMaxTemperatures = new List<double?>();
+    List<double?> AdjustedMinTemperatures = new List<double?>();
+    List<double?> UnadjustedMaxTemperatures = new List<double?>();
+    List<double?> UnadjustedMinTemperatures = new List<double?>();
 }

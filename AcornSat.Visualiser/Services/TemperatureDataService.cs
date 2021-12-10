@@ -9,9 +9,9 @@ public class TemperatureDataService : ITemperatureDataService
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<YearlyAverageTemps>> GetTemperatureData(string locationId)
+    public async Task<IEnumerable<YearlyAverageTemps>> GetTemperatureData(string temperatureType, string locationId)
     {
-        return await _httpClient.GetFromJsonAsync<YearlyAverageTemps[]>($"temperature/{locationId}");
+        return await _httpClient.GetFromJsonAsync<YearlyAverageTemps[]>($"temperature/{temperatureType}/{locationId}");
     }
 
     public async Task<IEnumerable<Location>> GetLocations()

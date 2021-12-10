@@ -1,4 +1,4 @@
-﻿Adelaide,023090,SA
+﻿Adelaide,023090,,SA
 Albany,009999
 Alice Springs,015590
 Amberley,040004
@@ -44,16 +44,16 @@ Giles,013017
 Grove,094220
 Gunnedah,055024
 Halls Creek,002079
-Hobart,094029,TAS
+Hobart,094029,,TAS
 Horn Island,027058
 Inverell,056242
 Kalgoorlie-Boulder,012038
 Kalumburu,001019
 Katanning,010916
-Kerang,080023,VIC
+Kerang,080023,,VIC
 Kyancutta,018044
 Larapuna (Eddystone Point),092045
-Launceston Airport,091311,TAS
+Launceston Airport,091311,,TAS
 Laverton RAAF,087031
 Learmonth,005007
 Longreach,036031
@@ -92,7 +92,7 @@ Sale,085072
 Scone,061363
 Snowtown,021133
 St George,043109
-Sydney,066062
+Sydney,066062,066214
 Tarcoola,016098
 Tennant Creek,015135
 Thargomindah,045025

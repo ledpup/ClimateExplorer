@@ -1,5 +1,5 @@
 ﻿public interface ITemperatureDataService
 {
-    Task<IEnumerable<YearlyAverageTemps>> GetTemperatureData(string locationId);
+    Task<IEnumerable<YearlyAverageTemps>> GetTemperatureData(string temperatureType, string locationId);
     Task<IEnumerable<Location>> GetLocations();
 }

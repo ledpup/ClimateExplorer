@@ -20,14 +20,14 @@ app.UseCors();
 
 app.MapGet("/", () => "Hello, from minimal ACORN-SAT Web API!\r\nCall /location for list of locations.\r\nCall /temperature/{locationId} for temperature records at locationId.");
 app.MapGet("/location", () => Location.GetLocations(@"Locations.csv"));
-app.MapGet("/temperature/{locationId}", (string locationId) => GetTemperatureData(locationId));
+app.MapGet("/temperature/{temperatureType}/{locationId}", (string temperatureType, string locationId) => GetTemperatureData(temperatureType, locationId));
 
 app.Run();
 
 
-List<YearlyAverageTemps> GetTemperatureData(string locationId)
+List<YearlyAverageTemps> GetTemperatureData(string temperatureType, string locationId)
 {
-    var records = File.ReadAllLines($@"Data\{locationId}.csv")
+    var records = File.ReadAllLines($@"{temperatureType}\{locationId}.csv")
         .ToList();
 
     records = records.Take(new Range(1, records.Count)).ToList();
