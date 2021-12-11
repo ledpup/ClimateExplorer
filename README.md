@@ -9,8 +9,11 @@ TODO:
 - ENSO overlay to show its effect on temperature. https://bmcnoldy.rsmas.miami.edu/tropics/oni/
 - Alternate average (use median?)
 - Show graphs from two or more locations at once? (not sure how useful that is)
+- Allow user to alter thresold for what is a sufficient set of data for the year
+- Averages of averages; average by month or 5-season groupings
 - Averages of averages; latitude bands
 - Averages of averages; Australia
+- Different units of measure (Fahrenheit + Kelvin)
 
 Done:
 - Add start and end year fields for the graph (so the user can constrain the series to the years they are interested in)
