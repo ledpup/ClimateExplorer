@@ -38,26 +38,38 @@
             </FieldBody>
         </Alert>
     </Column>
-    <Column ColumnSize="ColumnSize.Is2">
+    <Column ColumnSize="ColumnSize.Is1">
         <Alert Color="Color.Secondary" Visible="true">
             <Check TValue="bool" Checked="@Unadjusted" CheckedChanged="@OnUnadjustedChanged">Unadjusted</Check>
         </Alert>
     </Column>
-    <Column ColumnSize="ColumnSize.Is2">
+    <Column ColumnSize="ColumnSize.Is1">
         <Alert Color="Color.Secondary" Visible="true">
             <Check TValue="bool" Checked="@Adjusted" CheckedChanged="@OnAdjustedChanged">Adjusted</Check>
         </Alert>
     </Column>
-        <Column ColumnSize="ColumnSize.Is2">
+    <Column ColumnSize="ColumnSize.Is1">
         <Alert Color="Color.Info" Visible="true">
             <Check TValue="bool" Checked="@Maximums" CheckedChanged="@OnMaximumsChanged">Maximums</Check>
         </Alert>
     </Column>
-        <Column ColumnSize="ColumnSize.Is2">
+    <Column ColumnSize="ColumnSize.Is1">
         <Alert Color="Color.Info" Visible="true">
             <Check TValue="bool" Checked="@Minimums" CheckedChanged="@OnMinimumsChanged">Minimums</Check>
         </Alert>
     </Column>
+    <Column ColumnSize="ColumnSize.Is1">
+        <Alert Color="Color.Light" Visible="true">
+            Start Year <TextEdit @bind-Text="@StartYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" />
+        </Alert>
+    </Column>
+    <Column ColumnSize="ColumnSize.Is1">
+        <Alert Color="Color.Light" Visible="true">
+            End Year <TextEdit @bind-Text="@EndYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" />
+        </Alert>
+    </Column>
+    
+    
 </Row>
 
 
@@ -69,40 +81,42 @@
 @code{
 
     bool Adjusted = true;
-    async Task  OnAdjustedChanged(bool value)
+    async Task OnAdjustedChanged(bool value)
     {
         Adjusted = value;
         await HandleRedraw();
     }
 
     bool Unadjusted;
-    async Task  OnUnadjustedChanged(bool value)
+    async Task OnUnadjustedChanged(bool value)
     {
         Unadjusted = value;
         await HandleRedraw();
     }
 
     bool Maximums = true;
-    async Task  OnMaximumsChanged(bool value)
+    async Task OnMaximumsChanged(bool value)
     {
         Maximums = value;
         await HandleRedraw();
     }
 
     bool Minimums;
-    async Task  OnMinimumsChanged(bool value)
+    async Task OnMinimumsChanged(bool value)
     {
         Minimums = value;
         await HandleRedraw();
     }
+
+    string StartYear { get; set; } = "1910";
+    string EndYear { get; set; } = "2020";
 
     string SelectedLocation { get; set; } = "094029";
 
     [Inject]
     public ITemperatureDataService TemperatureDataService { get; set; }
 
-    public List<YearlyAverageTemps> AdjustedYearlyAverageTemps { get; set; }
-    public List<YearlyAverageTemps> UnadjustedYearlyAverageTemps { get; set; }
+    public List<DataSet> Datasets { get; set; }
     public IEnumerable<Location> Locations;
 
     protected override async Task OnInitializedAsync()
@@ -113,32 +127,19 @@
 
     protected async Task RenderLocation()
     {
-        AdjustedYearlyAverageTemps = (await TemperatureDataService.GetTemperatureData("adjusted", SelectedLocation)).ToList();
-        UnadjustedYearlyAverageTemps = (await TemperatureDataService.GetTemperatureData("unadjusted", SelectedLocation)).ToList();
+        Datasets = new List<DataSet>();
+        var adjustedYearlyAverageTemps = (await TemperatureDataService.GetTemperatureData("adjusted", SelectedLocation)).ToList();
+        Datasets.Add(new DataSet { Location = Locations.Single(x=> x.PrimarySiteId == SelectedLocation), Temperatures = adjustedYearlyAverageTemps, Type = DataSetType.Adjusted });
 
-        BufferStartYear(new List<List<YearlyAverageTemps>> { AdjustedYearlyAverageTemps, UnadjustedYearlyAverageTemps });
+        var unadjustedYearlyAverageTemps = (await TemperatureDataService.GetTemperatureData("unadjusted", SelectedLocation)).ToList();
+        Datasets.Add(new DataSet { Location = Locations.Single(x=> x.PrimarySiteId == SelectedLocation), Temperatures = unadjustedYearlyAverageTemps, Type = DataSetType.Unadjusted });
 
-        AdjustedMaxTemperatures = AdjustedYearlyAverageTemps.Select(x => x.Max).ToList();
-        AdjustedMinTemperatures = AdjustedYearlyAverageTemps.Select(x => x.Min).ToList();
-        UnadjustedMaxTemperatures = UnadjustedYearlyAverageTemps.Select(x => x.Max).ToList();
-        UnadjustedMinTemperatures = UnadjustedYearlyAverageTemps.Select(x => x.Min).ToList();
         await HandleRedraw();
     }
 
     LineChart<double?> lineChart;
 
-    void BufferStartYear(List<List<YearlyAverageTemps>> dataSets)
-    {
-        var startYear = dataSets.Min(x => x.Min(y => y.Year));
-        foreach(var dataSet in dataSets)
-        {
-            var year = dataSet.Min(x => x.Year);
-            for (var i = year; i >= startYear; i--)
-            {
-                dataSet.Insert(0, new YearlyAverageTemps { Year = i });
-            }
-        }
-    }
+
 
     protected override async Task OnAfterRenderAsync( bool firstRender )
     {
@@ -177,32 +178,97 @@
         //lineChart.OptionsJsonString = "{ \"spangaps\": true, \"title\": { \"text\": \"" + title + "\", \"display\": true }, \"scales\": { \"yAxes\": [{ \"scalelabel\": { \"labelstring\": \"Degrees Celcius\", \"display\": true } } ] } }";
         //await lineChart.AddLabelsDatasetsAndUpdate( Labels, GetLineChartDataset() );
 
-        if (AdjustedYearlyAverageTemps == null)
+        if (Datasets == null)
         {
             return;
         }
 
-        Labels = AdjustedYearlyAverageTemps.Select(x => x.Year.ToString()).ToArray();
 
+        var selectedDataSets = new List<DataSet>();
+
+        if (Unadjusted)
+        {
+            selectedDataSets.AddRange(Datasets.Where(x => x.Type == DataSetType.Unadjusted));
+        }
+        if (Adjusted)
+        {
+            selectedDataSets.AddRange(Datasets.Where(x => x.Type == DataSetType.Adjusted));
+        }
+
+
+
+        var bufferedSelectedDataSet = BufferedDataSet(selectedDataSets);
+
+        var dataSetStartYear = bufferedSelectedDataSet.First().Temperatures.Min(y => y.Year);
+        var dataSetEndYear = bufferedSelectedDataSet.First().Temperatures.Max(y => y.Year);
+
+        var userStartYear = int.Parse(StartYear);
+        var userEndYear = int.Parse(EndYear);
+
+        var startYear = dataSetStartYear;
+        var endYear = dataSetEndYear;
+        if (userStartYear >= dataSetStartYear && userStartYear <= dataSetEndYear && userStartYear < userEndYear)
+        {
+            startYear = userStartYear;
+        }
+
+        if (userEndYear >= dataSetStartYear && userEndYear <= dataSetEndYear && userEndYear > userStartYear)
+        {
+            endYear = userEndYear;
+        }
+
+        Func<YearlyAverageTemps, bool> timeConstraint = x => x.Year >= startYear && x.Year <= endYear;
+
+        Labels = bufferedSelectedDataSet.First().Temperatures.Where(timeConstraint).Select(x => x.Year.ToString()).ToArray();
         await lineChart.AddLabels(Labels);
+
         if (Unadjusted && Maximums)
         {
-            await lineChart.AddDataSet(GetLineChartDataset("Maximum", "Unadjusted", UnadjustedMaxTemperatures, ChartColor.FromRgba( 63, 255, 63, 1f )));
+            await lineChart.AddDataSet(GetLineChartDataset("Maximum", "Unadjusted", SelectTemperatureValues(bufferedSelectedDataSet, DataSetType.Unadjusted, y => y.Max, timeConstraint), ChartColor.FromRgba( 127, 255, 63, 1f )));
         }
         if (Unadjusted && Minimums)
         {
-            await lineChart.AddDataSet(GetLineChartDataset("Minimum", "Unadjusted", UnadjustedMinTemperatures, ChartColor.FromRgba( 255, 127, 63, 1f )));
+            await lineChart.AddDataSet(GetLineChartDataset("Minimum", "Unadjusted", SelectTemperatureValues(bufferedSelectedDataSet, DataSetType.Unadjusted, y => y.Min, timeConstraint), ChartColor.FromRgba( 255, 127, 63, 1f )));
         }
         if (Adjusted && Maximums)
         {
-            await lineChart.AddDataSet(GetLineChartDataset("Maximum", "Adjusted", AdjustedMaxTemperatures, ChartColor.FromRgba( 255, 63, 63, 1f )));
+            await lineChart.AddDataSet(GetLineChartDataset("Maximum", "Adjusted", SelectTemperatureValues(bufferedSelectedDataSet, DataSetType.Adjusted, y => y.Max, timeConstraint), ChartColor.FromRgba( 255, 63, 63, 1f )));
         }
         if (Adjusted && Minimums)
         {
-            await lineChart.AddDataSet(GetLineChartDataset("Minimum", "Adjusted", AdjustedMinTemperatures, ChartColor.FromRgba( 63, 63, 255, 1f )));
+            await lineChart.AddDataSet(GetLineChartDataset("Minimum", "Adjusted", SelectTemperatureValues(bufferedSelectedDataSet, DataSetType.Adjusted, y => y.Min, timeConstraint), ChartColor.FromRgba( 63, 63, 255, 1f )));
         }
+
         await lineChart.Update();
 
+    }
+
+    List<double?> SelectTemperatureValues(List<DataSet> dataSet, DataSetType dataSetType, Func<YearlyAverageTemps, double?> selector, Func<YearlyAverageTemps, bool> timeConstraint)
+    {
+        return dataSet.Single(x => x.Type == dataSetType).Temperatures.Where(timeConstraint).Select(selector).ToList();
+    }
+
+    List<DataSet> BufferedDataSet(List<DataSet> dataSets)
+    {
+        var bufferedDataSets = new List<DataSet>();
+
+        var superSetStartYear = dataSets.Min(x => x.Temperatures.Min(y => y.Year));
+        foreach(var dataSet in dataSets)
+        {
+            var bufferedDataSet = new DataSet { Location = dataSet.Location, Type = dataSet.Type };
+            bufferedDataSets.Add(bufferedDataSet);
+
+            var startYear = dataSet.Temperatures.Min(x => x.Year);
+            var temperatures = new List<YearlyAverageTemps>();
+            for (var i = superSetStartYear; i < startYear; i++)
+            {
+                temperatures.Add(new YearlyAverageTemps { Year = i });
+            }
+            temperatures.AddRange(dataSet.Temperatures);
+            bufferedDataSet.Temperatures = temperatures;
+        }
+
+        return bufferedDataSets;
     }
 
     LineChartDataset<double?> GetLineChartDataset(string temperatureType, string maxOrMin, List<double?> values, ChartColor chartColor)
@@ -227,9 +293,4 @@
     }
 
     string[] Labels = new string[1];
-
-    List<double?> AdjustedMaxTemperatures = new List<double?>();
-    List<double?> AdjustedMinTemperatures = new List<double?>();
-    List<double?> UnadjustedMaxTemperatures = new List<double?>();
-    List<double?> UnadjustedMinTemperatures = new List<double?>();
 }

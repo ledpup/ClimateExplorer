@@ -12,7 +12,6 @@ Files sourced from:
 - ftp://ftp.bom.gov.au/anon/home/ncc/www/change/ACORN_SAT_daily/
 - Accessed 09/12/2021
 
-
 Adjustments:
 The tmax and tmin file lengths aren't all the same. Some start on different dates to others, when there are missing records at the start or the end. It's usually just a few days. I adjuested the files so they all start and end on the same day to the files below. Explained in detailed for Esperance. All the others are similar, trivial adjustments.
 
@@ -24,3 +23,17 @@ The tmax and tmin file lengths aren't all the same. Some start on different date
 - Oodnadatta,017043
 - Orbost,084145
 - Rockhampton,039083
+
+
+
+
+TODO:
+- Integrate map component to show posting from location's lat/long
+- Trendline
+- Alternate average (use median?)
+- Averages of averages; latitude bands
+- Averages of averages; Australia
+
+Done:
+- Add start and end year fields for the graph (so the user can constrain the series to the years they are interested in)
+- Ensure the temperature data is sent to the chart component on the correct starting year (n.b., datasets have different starting years)

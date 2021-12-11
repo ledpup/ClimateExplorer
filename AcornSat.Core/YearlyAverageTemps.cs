@@ -1,4 +1,4 @@
-﻿public class YearlyAverageTemps
+﻿public struct YearlyAverageTemps
 {
     public int Year { get; set; }
     public double? Min { get; set; }
