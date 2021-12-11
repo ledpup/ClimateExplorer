@@ -7,7 +7,7 @@
 
 <PageTitle>Index</PageTitle>
 
-<h1>ACORN-SAT</h1>
+<h1><a href="http://www.bom.gov.au/climate/data/acorn-sat/" target="_blank">ACORN-SAT</a></h1>
 
 <SelectList TItem="Location"
             TValue="string"
@@ -60,18 +60,17 @@
     </Column>
     <Column ColumnSize="ColumnSize.Is1">
         <Alert Color="Color.Light" Visible="true">
-            Start Year <TextEdit @bind-Text="@StartYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" />
+            Start Year <TextEdit Text="@StartYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnStartYearTextChanged" />
         </Alert>
     </Column>
     <Column ColumnSize="ColumnSize.Is1">
         <Alert Color="Color.Light" Visible="true">
-            End Year <TextEdit @bind-Text="@EndYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" />
+            End Year <TextEdit Text="@EndYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChanged" />
         </Alert>
     </Column>
     
     
 </Row>
-
 
 @*<Button Clicked="@(async () => await HandleRedraw())">Redraw</Button>*@
 <div style="width: 95%; border: 1px dashed; padding: 10px;">
@@ -108,8 +107,8 @@
         await HandleRedraw();
     }
 
-    string StartYear { get; set; } = "1910";
-    string EndYear { get; set; } = "2020";
+    string StartYear { get; set; }
+    string EndYear { get; set; }
 
     string SelectedLocation { get; set; } = "094029";
 
@@ -139,7 +138,23 @@
 
     LineChart<double?> lineChart;
 
+    async Task OnStartYearTextChanged(string text)
+    {
+        StartYear = text;
+        if (text.Length == 4)
+        {
+            await HandleRedraw();
+        }
+    }
 
+    async Task OnEndYearTextChanged(string text)
+    {
+        EndYear = text;
+        if (text.Length == 4)
+        {
+            await HandleRedraw();
+        }
+    }
 
     protected override async Task OnAfterRenderAsync( bool firstRender )
     {
@@ -153,36 +168,35 @@
     {
         await lineChart.Clear();
 
-        var title = "Dsadasdasda";
+        var title = "Average Temperature in °C";
 
-        var options = new LineChartOptions { SpanGaps = false };
-        options.Scales = new Scales
-        {
-            YAxes = new List<Axis> 
-            { 
-                new Axis 
-                { 
-                    ScaleLabel = new AxisScaleLabel { LabelString = "Degrees Celcius", Display = true } 
-                } 
-            },
-            XAxes = new List<Axis> 
-            { 
-                new Axis 
-                { 
-                    ScaleLabel = new AxisScaleLabel { LabelString = "Year", Display = true } 
-                } 
-            },
-        };
-        await lineChart.SetOptions(options);
-
-        //lineChart.OptionsJsonString = "{ \"spangaps\": true, \"title\": { \"text\": \"" + title + "\", \"display\": true }, \"scales\": { \"yAxes\": [{ \"scalelabel\": { \"labelstring\": \"Degrees Celcius\", \"display\": true } } ] } }";
+        lineChart.OptionsJsonString = @"{ 
+                  ""spangaps"": true,
+                  ""title"": { 
+                        ""text"": """ + title + @""", 
+                        ""display"": true 
+                  }, 
+                  ""scales"": { 
+                        ""yAxes"": [ { 
+                                ""scaleLabel"": { 
+                                        ""labelString"": ""Degrees Celcius"",
+                                        ""display"": true 
+                                } 
+                        } ],
+                        ""xAxes"": [ { 
+                                ""scaleLabel"": { 
+                                        ""labelString"": ""Year"",
+                                        ""display"": true 
+                                } 
+                        } ]
+                  }
+                }";
         //await lineChart.AddLabelsDatasetsAndUpdate( Labels, GetLineChartDataset() );
 
         if (Datasets == null)
         {
             return;
         }
-
 
         var selectedDataSets = new List<DataSet>();
 
@@ -195,31 +209,41 @@
             selectedDataSets.AddRange(Datasets.Where(x => x.Type == DataSetType.Adjusted));
         }
 
-
-
         var bufferedSelectedDataSet = BufferedDataSet(selectedDataSets);
 
-        var dataSetStartYear = bufferedSelectedDataSet.First().Temperatures.Min(y => y.Year);
-        var dataSetEndYear = bufferedSelectedDataSet.First().Temperatures.Max(y => y.Year);
+        var superSetStartYear = bufferedSelectedDataSet.Min(x => x.Temperatures.Min(y => y.Year));
+        var superSetEndYear = bufferedSelectedDataSet.Max(x => x.Temperatures.Max(y => y.Year));
 
-        var userStartYear = int.Parse(StartYear);
-        var userEndYear = int.Parse(EndYear);
+        var userStartYear = string.IsNullOrEmpty(StartYear) ? null : (int?)int.Parse(StartYear);
+        var userEndYear = string.IsNullOrEmpty(EndYear) ? null : (int?)int.Parse(EndYear);
 
-        var startYear = dataSetStartYear;
-        var endYear = dataSetEndYear;
-        if (userStartYear >= dataSetStartYear && userStartYear <= dataSetEndYear && userStartYear < userEndYear)
+        var startYear = superSetStartYear;
+        var endYear = superSetEndYear;
+        if (userStartYear != null)
         {
-            startYear = userStartYear;
+            if (userStartYear >= superSetStartYear && userStartYear <= superSetEndYear)
+            {
+                startYear = userStartYear.Value;
+            }
         }
 
-        if (userEndYear >= dataSetStartYear && userEndYear <= dataSetEndYear && userEndYear > userStartYear)
+        if (userEndYear != null)
         {
-            endYear = userEndYear;
+            if (userEndYear > superSetStartYear && userEndYear <= superSetEndYear)
+            {
+                endYear = userEndYear.Value;
+            }
         }
 
         Func<YearlyAverageTemps, bool> timeConstraint = x => x.Year >= startYear && x.Year <= endYear;
 
-        Labels = bufferedSelectedDataSet.First().Temperatures.Where(timeConstraint).Select(x => x.Year.ToString()).ToArray();
+        var numberOfYears = endYear - startYear;
+        var labels = new string[numberOfYears + 1];
+        for (var i = 0; i <= numberOfYears; i++)
+        {
+            labels[i] = (startYear + i).ToString();
+        }
+        Labels = labels;
         await lineChart.AddLabels(Labels);
 
         if (Unadjusted && Maximums)
@@ -275,7 +299,7 @@
     {
         return new LineChartDataset<double?>
                 {
-                    Label = $"{temperatureType} {maxOrMin} Temperature °C",
+                    Label = $"{temperatureType} {maxOrMin}",
                     Data = values,
                     BackgroundColor = new List<string> { chartColor },
                     BorderColor = new List<string> { chartColor },

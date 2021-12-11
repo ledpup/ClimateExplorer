@@ -2,8 +2,11 @@
 Tool to calculate average temperatures from BOM ACORN-SAT data
 
 TODO:
+- Create a location JSON file, with unique ID for each location and a site list of BOM sites. (BOM change their site IDs between versions of ACORN-SAT! Need an independant, unique ID.) Include geo-spatial data.
 - Integrate map component to show location (from site lat/long)
 - Trendline
+- Calculate averages on demand rather then precalculating
+- ENSO overlay to show its effect on temperature. https://bmcnoldy.rsmas.miami.edu/tropics/oni/
 - Alternate average (use median?)
 - Show graphs from two or more locations at once? (not sure how useful that is)
 - Averages of averages; latitude bands
