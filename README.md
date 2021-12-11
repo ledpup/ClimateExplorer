@@ -30,11 +30,11 @@ Adjustments:
 
 The tmax and tmin file lengths aren't all the same. Some start on different dates to others, when there are missing records at the start or the end. It's usually just a few days. For the locations below, I adjusted the files so they all start and end on the same day, by adding blank rows. I explain in detailed for Esperance. All the other changes are similar adjustments. No other changes have been made to the v2.2.0 homogenised data from the BOM.
 
-- Esperance,009789; tmax daily file starts on 1910-01-03. tmin starts on 1910-01-02. Added a null 1910-01-02 row for tmax
-- Forrest,011052
-- Gabo Island,084016
-- Low Head,091293
-- Normanton,029063
-- Oodnadatta,017043
-- Orbost,084145
-- Rockhampton,
+- Esperance, 009789; tmax daily file starts on 1910-01-03. tmin starts on 1910-01-02. Added a null 1910-01-02 row for tmax
+- Forrest, 011052
+- Gabo Island, 084016
+- Low Head, 091293
+- Normanton, 029063
+- Oodnadatta, 017043
+- Orbost, 084145
+- Rockhampton, 039083
