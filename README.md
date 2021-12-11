@@ -2,9 +2,10 @@
 Tool to calculate average temperatures from BOM ACORN-SAT data
 
 TODO:
-- Integrate map component to show posting from location's lat/long
+- Integrate map component to show location (from site lat/long)
 - Trendline
 - Alternate average (use median?)
+- Show graphs from two or more locations at once? (not sure how useful that is)
 - Averages of averages; latitude bands
 - Averages of averages; Australia
 
