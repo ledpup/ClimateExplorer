@@ -74,37 +74,12 @@
 
 @*<Button Clicked="@(async () => await HandleRedraw())">Redraw</Button>*@
 <div style="width: 95%; border: 1px dashed; padding: 10px;">
-    <LineChart @ref="lineChart" TItem="double?" OptionsObject="@chartOptions" />
+    <LineChart @ref="lineChart" TItem="double?" />
 </div>
 
 @code{
 
-    object chartOptions = new
-    {
-        SpanGaps = true,
-        Title = new 
-        { 
-            Text = "Average Temperature in °C",
-            Display = true
-        },
-        Scales = new
-        {
-            YAxes = new []
-            { 
-                new  
-                { 
-                    ScaleLabel = new { LabelString = "Degrees Celcius", Display = true } 
-                } 
-            },
-            XAxes = new []
-            { 
-                new 
-                { 
-                    ScaleLabel = new { LabelString = "Year", Display = true } 
-                } 
-            }       
-        }
-    };
+
 
     bool Adjusted = true;
     async Task OnAdjustedChanged(bool value)
@@ -193,7 +168,7 @@
 
     async Task HandleRedraw()
     {
-        await lineChart.Clear();
+
 
         if (Datasets == null)
         {
@@ -236,6 +211,39 @@
                 endYear = userEndYear.Value;
             }
         }
+
+        var location = Locations.Single(x => x.PrimarySiteId == SelectedLocation);
+        var title = $"Average Temperature (in °C) for {location.Name} ({startYear}-{endYear})";
+
+        await lineChart.Clear();
+        object chartOptions = new
+        {
+            SpanGaps = true,
+            Title = new 
+            { 
+                Text = title,
+                Display = true
+            },
+            Scales = new
+            {
+                YAxes = new []
+            { 
+                new  
+                { 
+                    ScaleLabel = new { LabelString = "Degrees Celcius", Display = true } 
+                } 
+            },
+                XAxes = new []
+            { 
+                new 
+                { 
+                    ScaleLabel = new { LabelString = "Year", Display = true } 
+                } 
+            }       
+            }
+        };
+        lineChart.SetOptionsObject(null);
+        lineChart.SetOptionsObject(chartOptions);
 
         Func<YearlyAverageTemps, bool> timeConstraint = x => x.Year >= startYear && x.Year <= endYear;
 
