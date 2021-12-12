@@ -31,18 +31,18 @@ Tool to calculate average temperatures from BOM ACORN-SAT data.
 
 ## BOM ACORN-SAT data sources
 
-Original file names are:
+Files sourced from:
+- ftp://ftp.bom.gov.au/anon/home/ncc/www/change/ACORN_SAT_daily/
+- Accessed 09/12/2021
+
+Original adjusted file names are:
 - acorn_sat_v2.2.0_daily_tmax.tar.gz
 - acorn_sat_v2.2.0_daily_tmin.tar.gz
 
 Raw data file is:
 - raw-data-and-supporting-information.zip
 
-Files sourced from:
-- ftp://ftp.bom.gov.au/anon/home/ncc/www/change/ACORN_SAT_daily/
-- Accessed 09/12/2021
-
-Adjustments:
+### Adjustments
 
 The tmax and tmin file lengths aren't all the same. Some start on different dates to others, when there are missing records at the start or the end. It's usually just a few days. For the locations below, I adjusted the files so they all start and end on the same day, by adding blank rows. I explain in detailed for Esperance. All the other changes are similar adjustments. No other changes have been made to the v2.2.0 homogenised data from the BOM.
 
