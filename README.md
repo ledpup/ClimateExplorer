@@ -1,6 +1,16 @@
 # AcornSatAnalyser
 Tool to calculate average temperatures from BOM ACORN-SAT data.
 
+## Technical
+- Built in Visual Studio 2022 Community Edition
+- C#, .NET  6
+- Blazor (using Blazorise components)
+- There are 4 projects:
+  - Analyser: take daily data (raw and adjusted) and average it into
+  - WebApi: gets the data for the website to use
+  - Visualiser: displays the data to the user. Primarily it's a line graph
+  - Core: some shared files, between Analyser and WebApi
+
 ## TODO
 - Integrate map component to show location (from site lat/long)
 - Trendline
@@ -14,7 +24,7 @@ Tool to calculate average temperatures from BOM ACORN-SAT data.
 - Averages of averages; Australia
 - Different units of measure (Fahrenheit + Kelvin)
 
-Done:
+### Done
 - 2021-12-12: Create a location JSON file, with unique ID for each location and a site list of BOM sites. (BOM change their site IDs between versions of ACORN-SAT! Need an independant, unique ID.) Include geo-spatial data.
 - 2021-12-11: Add start and end year fields for the graph (so the user can constrain the series to the years they are interested in)
 - 2021-12-11: Ensure the temperature data is sent to the chart component on the correct starting year (n.b., datasets have different starting years)
