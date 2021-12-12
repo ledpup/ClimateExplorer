@@ -18,7 +18,9 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 app.UseCors();
 
-app.MapGet("/", () => "Hello, from minimal ACORN-SAT Web API!\r\nCall /location for list of locations.\r\nCall /temperature/{locationId} for temperature records at locationId.");
+app.MapGet("/", () => @"Hello, from minimal ACORN-SAT Web API!
+                        Call /location for list of locations.
+                        Call /temperature/{temperatureType}/{locationId} for temperature records at locationId.");
 app.MapGet("/location", () => Location.GetLocations(@"Locations.json"));
 app.MapGet("/temperature/{temperatureType}/{locationId}", (string temperatureType, string locationId) => GetTemperatureData(temperatureType, locationId));
 
