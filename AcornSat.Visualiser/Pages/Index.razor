@@ -4,20 +4,7 @@
 @using Blazorise.Charts
 @using System.IO;
 
-
 <PageTitle>Index</PageTitle>
-
-<h1><a href="http://www.bom.gov.au/climate/data/acorn-sat/" target="_blank">ACORN-SAT</a></h1>
-
-<SelectList TItem="Location"
-            TValue="Guid"
-            Data="@Locations"
-            TextField="@((item)=>item.Name)"
-            ValueField="@((item)=>item.Id)"
-            SelectedValueChanged="@SelectedLocationChanged"
-            DefaultItemText="Select ACORN-SAT Location"
-            Style="width: 300px"
-            />
 
 @*<DropdownList TItem="Location" TValue="string"
               Data="@Locations"
@@ -32,9 +19,23 @@
 
 <Row>
     <Column ColumnSize="ColumnSize.Is2">
+        <h1><a href="http://www.bom.gov.au/climate/data/acorn-sat/" target="_blank">ACORN-SAT</a></h1>
+        <SelectList TItem="Location"
+            TValue="Guid"
+            Data="@Locations"
+            TextField="@((item)=>item.Name)"
+            ValueField="@((item)=>item.Id)"
+            SelectedValueChanged="@SelectedLocationChanged"
+            DefaultItemText="Select ACORN-SAT Location"
+            Style="width: 300px"
+            />
+    </Column>
+</Row>
+<Row>
+    <Column ColumnSize="ColumnSize.Is2">
         <Alert Color="Color.Primary" Visible="true">
             <FieldBody>
-                Location: @Locations?.SingleOrDefault(x=> x.Id == @SelectedLocation)?.Name
+                @Locations?.SingleOrDefault(x=> x.Id == @SelectedLocation)?.Name
             </FieldBody>
         </Alert>
     </Column>
@@ -68,18 +69,26 @@
             End Year <TextEdit Text="@EndYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChanged" />
         </Alert>
     </Column>
-    
-    
 </Row>
 
-@*<Button Clicked="@(async () => await HandleRedraw())">Redraw</Button>*@
-<div style="width: 95%; border: 1px dashed; padding: 10px;">
+<Map @ref="map" MapOptions="mapOptions"></Map>
+
+<style>
+    #mapId {
+        height: 25%;
+        width: 27%;
+        position: absolute;
+        top: 10px;
+        right: 90px;
+    }
+</style>
+
+@*<Button Clicked="@(async () => await ButtonClicked())">Redraw</Button>*@
+<div style="width: 93%; border: 1px dashed; padding: 10px;">
     <LineChart @ref="lineChart" TItem="double?" />
 </div>
 
 @code{
-
-
 
     bool Adjusted = true;
     async Task OnAdjustedChanged(bool value)
@@ -119,11 +128,58 @@
 
     public List<DataSet> Datasets { get; set; }
     public IEnumerable<Location> Locations;
+    List<Marker> MapMarkers;
+
+    async Task CreateMapMarkers()
+    {
+        //IconOptions iconOptions = new IconOptions()
+        //{
+        //    IconUrl = "http://localhost:5298/map-marker.png",
+        //    IconSize = new Point(38, 95),
+        //    IconAnchor = new Point(22, 94),
+        //    //ShadowUrl = "http://leafletjs.com/examples/custom-icons/leaf-shadow.png",
+        //    //ShadowSize = new Point(50, 64),
+        //    //ShadowAnchor = new Point(4, 61),
+        //    //PopupAnchor = new Point(-3, -76),
+        //};
+
+        //var markerOptions = new MarkerOptions()
+        //{
+        //    Opacity = 0.8,
+        //    Draggable = false,
+        //    IconRef = await this.IconFactory.Create(iconOptions),
+        //};
+
+        MapMarkers = new List<Marker>();
+        foreach (var location in Locations)
+        {
+            var marker = await MarkerFactory.Create(new LatLng(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation));
+            await marker.BindTooltip(location.Name);
+            await marker.OnClick(async (MouseEvent mouseEvent) => await HandleMapMouseEvent(mouseEvent));
+            await marker.AddTo(map);
+            MapMarkers.Add(marker);
+        }
+    }
+
+    private async Task HandleMapMouseEvent(MouseEvent mouseEvent)
+    {
+        var lat = Math.Round(mouseEvent.LatLng.Lat, 1);
+        var lng = Math.Round(mouseEvent.LatLng.Lng, 1);
+        var newLocation = Locations.Single(x => Math.Round(x.Coordinates.Latitude, 1) == lat && Math.Round(x.Coordinates.Longitude, 1) == lng);
+        await SelectedLocationChanged(newLocation.Id);
+    }
+
 
     protected override async Task OnInitializedAsync()
     {
-        Locations =  (await TemperatureDataService.GetLocations()).ToList();
+        Locations = (await TemperatureDataService.GetLocations()).ToList();
+
         await RenderLocation();
+
+        if (MapMarkers == null)
+        {
+            await CreateMapMarkers();
+        }
     }
 
     protected async Task RenderLocation()
@@ -135,6 +191,9 @@
 
         var unadjustedYearlyAverageTemps = (await TemperatureDataService.GetTemperatureData("unadjusted", SelectedLocation)).ToList();
         Datasets.Add(new DataSet { Location = location, Temperatures = unadjustedYearlyAverageTemps, Type = DataSetType.Unadjusted });
+
+        map.SetView(null);
+        map.SetView(new LatLng(location.Coordinates.Latitude, location.Coordinates.Longitude));
 
         await HandleRedraw();
     }
@@ -159,9 +218,9 @@
         }
     }
 
-    protected override async Task OnAfterRenderAsync( bool firstRender )
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if ( firstRender )
+        if (firstRender)
         {
             await HandleRedraw();
         }
@@ -185,7 +244,7 @@
             selectedDataSets.AddRange(Datasets.Where(x => x.Type == DataSetType.Adjusted));
         }
 
-        var bufferedSelectedDataSet = BufferedDataSet(selectedDataSets);
+        var bufferedSelectedDataSet = CreateBufferedDataSet(selectedDataSets);
 
         var superSetStartYear = bufferedSelectedDataSet.Min(x => x.Temperatures.Min(y => y.Year));
         var superSetEndYear = bufferedSelectedDataSet.Max(x => x.Temperatures.Max(y => y.Year));
@@ -226,19 +285,19 @@
             Scales = new
             {
                 YAxes = new []
-            { 
-                new  
                 { 
-                    ScaleLabel = new { LabelString = "Degrees Celcius", Display = true } 
-                } 
-            },
+                    new  
+                    { 
+                        ScaleLabel = new { LabelString = "Degrees Celcius", Display = true } 
+                    } 
+                },
                 XAxes = new []
-            { 
-                new 
                 { 
-                    ScaleLabel = new { LabelString = "Year", Display = true } 
-                } 
-            }       
+                    new 
+                    { 
+                        ScaleLabel = new { LabelString = "Year", Display = true } 
+                    } 
+                }       
             }
         };
         lineChart.SetOptionsObject(null);
@@ -281,7 +340,7 @@
         return dataSet.Single(x => x.Type == dataSetType).Temperatures.Where(timeConstraint).Select(selector).ToList();
     }
 
-    List<DataSet> BufferedDataSet(List<DataSet> dataSets)
+    List<DataSet> CreateBufferedDataSet(List<DataSet> dataSets)
     {
         var bufferedDataSets = new List<DataSet>();
 
@@ -307,16 +366,16 @@
     LineChartDataset<double?> GetLineChartDataset(string temperatureType, string maxOrMin, List<double?> values, ChartColor chartColor)
     {
         return new LineChartDataset<double?>
-                {
-                    Label = $"{temperatureType} {maxOrMin}",
-                    Data = values,
-                    BackgroundColor = new List<string> { chartColor },
-                    BorderColor = new List<string> { chartColor },
-                    Fill = false,
-                    PointRadius = 3,
-                    BorderDash = new List<int> { },
-                    LineTension = 0.1f,
-                };
+                    {
+                        Label = $"{temperatureType} {maxOrMin}",
+                        Data = values,
+                        BackgroundColor = new List<string> { chartColor },
+                        BorderColor = new List<string> { chartColor },
+                        Fill = false,
+                        PointRadius = 3,
+                        BorderDash = new List<int> { },
+                        LineTension = 0.1f,
+                    };
     }
 
     async Task SelectedLocationChanged(Guid newValue)
@@ -326,4 +385,26 @@
     }
 
     string[] Labels = new string[1];
+
+    private Map map;
+
+    private MapOptions mapOptions = new MapOptions()
+    {
+        DivId = "mapId",
+        Center = new LatLng(-25.6, 134.3),
+        Zoom = 5,
+        UrlTileLayer = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+	    SubOptions = new MapSubOptions()
+        {
+            Attribution = "&copy; <a lhref='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>",
+            TileSize = 512,
+            ZoomOffset = -1,
+            MaxZoom = 19,
+        }
+    };
+
+    [Inject]
+    private IMarkerFactory MarkerFactory { get; init; }
+    [Inject]
+    private IIconFactory IconFactory { get; init; }
 }

@@ -2,6 +2,7 @@ using AcornSat.Visualiser;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using FisSst.BlazorMaps.DependencyInjection;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -16,6 +17,7 @@ builder.Services
     })
     .AddBootstrapProviders()
     .AddFontAwesomeIcons()
+    .AddBlazorLeafletMaps()
     .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
     .AddHttpClient<ITemperatureDataService, TemperatureDataService>(client =>
     {
