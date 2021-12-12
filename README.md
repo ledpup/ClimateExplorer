@@ -4,7 +4,7 @@ Tool to calculate average temperatures from BOM ACORN-SAT data.
 ## TODO
 - Integrate map component to show location (from site lat/long)
 - Trendline
-- Calculate averages on demand rather then precalculating
+- Calculate averages on demand rather than precalculating
 - ENSO overlay to show its effect on temperature. https://bmcnoldy.rsmas.miami.edu/tropics/oni/
 - Alternate average (use median?)
 - Show graphs from two or more locations at once? (not sure how useful that is)
