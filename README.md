@@ -1,7 +1,7 @@
 # AcornSatAnalyser
-Tool to calculate average temperatures from BOM ACORN-SAT data
+Tool to calculate average temperatures from BOM ACORN-SAT data.
 
-TODO:
+## TODO
 - Integrate map component to show location (from site lat/long)
 - Trendline
 - Calculate averages on demand rather then precalculating
@@ -19,7 +19,7 @@ Done:
 - 2021-12-11: Add start and end year fields for the graph (so the user can constrain the series to the years they are interested in)
 - 2021-12-11: Ensure the temperature data is sent to the chart component on the correct starting year (n.b., datasets have different starting years)
 
-BOM ACORN-SAT data sources
+## BOM ACORN-SAT data sources
 
 Original file names are:
 - acorn_sat_v2.2.0_daily_tmax.tar.gz
