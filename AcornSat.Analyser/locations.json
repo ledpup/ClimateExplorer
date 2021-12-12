@@ -1,0 +1,1438 @@
+[
+  {
+    "Id": "796a757e-d5ef-4480-b5ab-0b13e237bf41",
+    "Name": "Adelaide",
+    "Sites": [
+      "023090",
+      "023000"
+    ],
+    "Coordinates": {
+      "Latitude": -34.92,
+      "Longitude": 138.62,
+      "Elevation": 48
+    }
+  },
+  {
+    "Id": "b1663de1-f49f-453d-b840-82d79e646154",
+    "Name": "Albany",
+    "Sites": [
+      "009999",
+      "009500",
+      "009741"
+    ],
+    "Coordinates": {
+      "Latitude": -34.94,
+      "Longitude": 117.82,
+      "Elevation": 68
+    }
+  },
+  {
+    "Id": "de9f783f-1f7d-49f7-ba33-43f808d8ac9c",
+    "Name": "Alice Springs",
+    "Sites": [
+      "015590",
+      "015540"
+    ],
+    "Coordinates": {
+      "Latitude": -23.8,
+      "Longitude": 133.89,
+      "Elevation": 546
+    }
+  },
+  {
+    "Id": "400a24a8-5974-4615-8dab-89a925a3ecb1",
+    "Name": "Amberley",
+    "Sites": [
+      "040004"
+    ],
+    "Coordinates": {
+      "Latitude": -27.63,
+      "Longitude": 152.71,
+      "Elevation": 24
+    }
+  },
+  {
+    "Id": "064b88e4-7d4a-4117-bf4d-19da457a514a",
+    "Name": "Barcaldine",
+    "Sites": [
+      "036007"
+    ],
+    "Coordinates": {
+      "Latitude": -23.55,
+      "Longitude": 145.29,
+      "Elevation": 266
+    }
+  },
+  {
+    "Id": "1547896c-fe28-4eae-978e-e135ce9c4004",
+    "Name": "Bathurst",
+    "Sites": [
+      "063005"
+    ],
+    "Coordinates": {
+      "Latitude": -33.43,
+      "Longitude": 149.56,
+      "Elevation": 713
+    }
+  },
+  {
+    "Id": "c6459962-06ac-4725-902f-54526eeecfad",
+    "Name": "Birdsville",
+    "Sites": [
+      "038026",
+      "038002"
+    ],
+    "Coordinates": {
+      "Latitude": -25.9,
+      "Longitude": 139.35,
+      "Elevation": 46
+    }
+  },
+  {
+    "Id": "9f07bfa8-6327-4eaa-95b2-6fdd82789a17",
+    "Name": "Boulia",
+    "Sites": [
+      "038003"
+    ],
+    "Coordinates": {
+      "Latitude": -22.91,
+      "Longitude": 139.9,
+      "Elevation": 161
+    }
+  },
+  {
+    "Id": "b7f08dcf-56b7-41f2-87f1-8b4b1d19e7d6",
+    "Name": "Bourke",
+    "Sites": [
+      "048245",
+      "048013",
+      "048239"
+    ],
+    "Coordinates": {
+      "Latitude": -30.04,
+      "Longitude": 145.95,
+      "Elevation": 107
+    }
+  },
+  {
+    "Id": "1529d6b3-3891-4eda-af7f-0eb60d2bb2b0",
+    "Name": "Bridgetown",
+    "Sites": [
+      "009617",
+      "009510"
+    ],
+    "Coordinates": {
+      "Latitude": -33.95,
+      "Longitude": 116.13,
+      "Elevation": 178
+    }
+  },
+  {
+    "Id": "ad9ebca8-a9ff-4bd8-aa28-b50044cc4688",
+    "Name": "Brisbane Airport",
+    "Sites": [
+      "040842",
+      "040223"
+    ],
+    "Coordinates": {
+      "Latitude": -27.39,
+      "Longitude": 153.13,
+      "Elevation": 4
+    }
+  },
+  {
+    "Id": "007774be-e84e-4e6e-aa42-711f1cd32107",
+    "Name": "Broome Airport",
+    "Sites": [
+      "003003",
+      "003002"
+    ],
+    "Coordinates": {
+      "Latitude": -17.95,
+      "Longitude": 122.24,
+      "Elevation": 7
+    }
+  },
+  {
+    "Id": "e44383a4-25a8-4328-9993-7afd5f100245",
+    "Name": "Bundaberg",
+    "Sites": [
+      "039128",
+      "039015"
+    ],
+    "Coordinates": {
+      "Latitude": -24.91,
+      "Longitude": 152.32,
+      "Elevation": 30
+    }
+  },
+  {
+    "Id": "c735e556-a0fc-4dc4-9d31-212a2317289c",
+    "Name": "Burketown",
+    "Sites": [
+      "029077",
+      "029004"
+    ],
+    "Coordinates": {
+      "Latitude": -17.75,
+      "Longitude": 139.54,
+      "Elevation": 5
+    }
+  },
+  {
+    "Id": "f9425c78-9b83-4e5d-9b07-749befae012e",
+    "Name": "Butlers Gorge",
+    "Sites": [
+      "096003",
+      "096071"
+    ],
+    "Coordinates": {
+      "Latitude": -42.28,
+      "Longitude": 146.28,
+      "Elevation": 667
+    }
+  },
+  {
+    "Id": "e3b24302-5106-4e87-9b17-e7faa9b8af6a",
+    "Name": "Cabramurra",
+    "Sites": [
+      "072161",
+      "072091"
+    ],
+    "Coordinates": {
+      "Latitude": -35.94,
+      "Longitude": 148.38,
+      "Elevation": 1482
+    }
+  },
+  {
+    "Id": "6fc9710b-6a02-41a5-b1ef-6ced93fc4fe8",
+    "Name": "Cairns",
+    "Sites": [
+      "031011",
+      "031010"
+    ],
+    "Coordinates": {
+      "Latitude": -16.87,
+      "Longitude": 145.75,
+      "Elevation": 2
+    }
+  },
+  {
+    "Id": "ee87801b-0b9d-40e2-bbb4-78af64475eed",
+    "Name": "Camooweal",
+    "Sites": [
+      "037010"
+    ],
+    "Coordinates": {
+      "Latitude": -19.92,
+      "Longitude": 138.12,
+      "Elevation": 231
+    }
+  },
+  {
+    "Id": "6399c6ae-037d-45b1-90ae-02f148f00128",
+    "Name": "Canberra",
+    "Sites": [
+      "070351",
+      "070099",
+      "070014"
+    ],
+    "Coordinates": {
+      "Latitude": -35.31,
+      "Longitude": 149.2,
+      "Elevation": 577
+    }
+  },
+  {
+    "Id": "e669b5c4-73df-4a89-ba31-9bc4d3384259",
+    "Name": "Cape Borda",
+    "Sites": [
+      "022823",
+      "022801"
+    ],
+    "Coordinates": {
+      "Latitude": -35.75,
+      "Longitude": 136.6,
+      "Elevation": 158
+    }
+  },
+  {
+    "Id": "78549963-6012-4587-9e54-a2a9c8869f6d",
+    "Name": "Cape Bruny Lighthouse",
+    "Sites": [
+      "094198",
+      "094010"
+    ],
+    "Coordinates": {
+      "Latitude": -43.49,
+      "Longitude": 147.14,
+      "Elevation": 60
+    }
+  },
+  {
+    "Id": "ec3cf557-ce24-45eb-b2b4-21dbf3e70b08",
+    "Name": "Cape Leeuwin",
+    "Sites": [
+      "009518"
+    ],
+    "Coordinates": {
+      "Latitude": -34.37,
+      "Longitude": 115.14,
+      "Elevation": 13
+    }
+  },
+  {
+    "Id": "0c26cb0b-fb17-4fc4-ad9f-33c3377808fc",
+    "Name": "Cape Moreton",
+    "Sites": [
+      "040043"
+    ],
+    "Coordinates": {
+      "Latitude": -27.03,
+      "Longitude": 153.47,
+      "Elevation": 99
+    }
+  },
+  {
+    "Id": "fe1c72f3-c637-45c6-8526-4ff3fb3aae56",
+    "Name": "Cape Otway Lighthouse",
+    "Sites": [
+      "090015"
+    ],
+    "Coordinates": {
+      "Latitude": -38.86,
+      "Longitude": 143.51,
+      "Elevation": 82
+    }
+  },
+  {
+    "Id": "ffebd72b-0f21-4a55-a08b-fe224f0d7d6e",
+    "Name": "Carnarvon",
+    "Sites": [
+      "006011",
+      "006062"
+    ],
+    "Coordinates": {
+      "Latitude": -24.89,
+      "Longitude": 113.67,
+      "Elevation": 4
+    }
+  },
+  {
+    "Id": "37cbc5d7-7f74-4cab-9ac7-26297059d09e",
+    "Name": "Ceduna",
+    "Sites": [
+      "018012"
+    ],
+    "Coordinates": {
+      "Latitude": -32.13,
+      "Longitude": 133.7,
+      "Elevation": 15
+    }
+  },
+  {
+    "Id": "f76d8a8d-808d-4a5f-98d2-ccd628bccb8d",
+    "Name": "Charleville",
+    "Sites": [
+      "044021",
+      "044022"
+    ],
+    "Coordinates": {
+      "Latitude": -26.41,
+      "Longitude": 146.26,
+      "Elevation": 301
+    }
+  },
+  {
+    "Id": "8d2d3606-154a-4296-8e9e-72a7caadd775",
+    "Name": "Charters Towers",
+    "Sites": [
+      "034084",
+      "034002"
+    ],
+    "Coordinates": {
+      "Latitude": -20.05,
+      "Longitude": 146.27,
+      "Elevation": 289
+    }
+  },
+  {
+    "Id": "27aad159-7b4c-4458-a922-f42da90cb947",
+    "Name": "Cobar",
+    "Sites": [
+      "048027",
+      "048030"
+    ],
+    "Coordinates": {
+      "Latitude": -31.48,
+      "Longitude": 145.83,
+      "Elevation": 260
+    }
+  },
+  {
+    "Id": "8e11f81c-ecef-4d02-b2e2-a0a24ac8367b",
+    "Name": "Coffs Harbour",
+    "Sites": [
+      "059151",
+      "059040"
+    ],
+    "Coordinates": {
+      "Latitude": -30.32,
+      "Longitude": 153.12,
+      "Elevation": 3
+    }
+  },
+  {
+    "Id": "13dbb455-ef47-4191-83b8-70e07fb1c77c",
+    "Name": "Cunderdin",
+    "Sites": [
+      "010286",
+      "010035"
+    ],
+    "Coordinates": {
+      "Latitude": -31.62,
+      "Longitude": 117.22,
+      "Elevation": 216
+    }
+  },
+  {
+    "Id": "69f43561-bb72-4498-8d22-3c0596f1a89b",
+    "Name": "Dalwallinu",
+    "Sites": [
+      "008297",
+      "008039"
+    ],
+    "Coordinates": {
+      "Latitude": -30.28,
+      "Longitude": 116.67,
+      "Elevation": 324
+    }
+  },
+  {
+    "Id": "ea07cb4c-9b2a-4e9f-bf58-20ad67f38dd0",
+    "Name": "Darwin",
+    "Sites": [
+      "014015",
+      "014016"
+    ],
+    "Coordinates": {
+      "Latitude": -12.42,
+      "Longitude": 130.89,
+      "Elevation": 30
+    }
+  },
+  {
+    "Id": "c38c62a1-8e70-4046-bc8e-a7dee889d738",
+    "Name": "Deniliquin",
+    "Sites": [
+      "074258",
+      "074128"
+    ],
+    "Coordinates": {
+      "Latitude": -35.56,
+      "Longitude": 144.95,
+      "Elevation": 94
+    }
+  },
+  {
+    "Id": "35efb40c-de04-453e-8aee-1f5131ac0550",
+    "Name": "Dubbo",
+    "Sites": [
+      "065070",
+      "065012"
+    ],
+    "Coordinates": {
+      "Latitude": -32.22,
+      "Longitude": 148.58,
+      "Elevation": 284
+    }
+  },
+  {
+    "Id": "3c2fd6c7-ff63-4b01-9e47-d418fa068735",
+    "Name": "Esperance",
+    "Sites": [
+      "009789",
+      "009541"
+    ],
+    "Coordinates": {
+      "Latitude": -33.83,
+      "Longitude": 121.89,
+      "Elevation": 25
+    }
+  },
+  {
+    "Id": "e313699a-cd50-412b-b6a5-56c93da9c87e",
+    "Name": "Eucla",
+    "Sites": [
+      "011003"
+    ],
+    "Coordinates": {
+      "Latitude": -31.68,
+      "Longitude": 128.9,
+      "Elevation": 93
+    }
+  },
+  {
+    "Id": "de97c9b3-c1cc-43d2-8003-5c74bcbb4bde",
+    "Name": "Forrest",
+    "Sites": [
+      "011052",
+      "011004"
+    ],
+    "Coordinates": {
+      "Latitude": -30.85,
+      "Longitude": 128.11,
+      "Elevation": 159
+    }
+  },
+  {
+    "Id": "cbadda4d-8714-4b7c-9cda-bf4f91b04de2",
+    "Name": "Gabo Island",
+    "Sites": [
+      "084016"
+    ],
+    "Coordinates": {
+      "Latitude": -37.57,
+      "Longitude": 149.92,
+      "Elevation": 15
+    }
+  },
+  {
+    "Id": "1e4ac07c-abcf-409e-9d1a-8dfacd30259d",
+    "Name": "Gayndah",
+    "Sites": [
+      "039066",
+      "039039"
+    ],
+    "Coordinates": {
+      "Latitude": -25.62,
+      "Longitude": 151.62,
+      "Elevation": 110
+    }
+  },
+  {
+    "Id": "8abe1dd4-b232-4da4-9cb1-0861df90a162",
+    "Name": "Georgetown",
+    "Sites": [
+      "030124",
+      "030018"
+    ],
+    "Coordinates": {
+      "Latitude": -18.3,
+      "Longitude": 143.53,
+      "Elevation": 301
+    }
+  },
+  {
+    "Id": "0b66ebe6-c73a-4ea3-92e8-cd8c4ae39ca1",
+    "Name": "Geraldton",
+    "Sites": [
+      "008315",
+      "008050",
+      "008051"
+    ],
+    "Coordinates": {
+      "Latitude": -28.8,
+      "Longitude": 114.7,
+      "Elevation": 29
+    }
+  },
+  {
+    "Id": "eb9a4d79-30b0-4f31-93a0-b7e83859cb15",
+    "Name": "Giles",
+    "Sites": [
+      "013017"
+    ],
+    "Coordinates": {
+      "Latitude": -25.03,
+      "Longitude": 128.3,
+      "Elevation": 598
+    }
+  },
+  {
+    "Id": "61ec61bc-ba6e-43c4-a2dc-dc639cb672d6",
+    "Name": "Grove",
+    "Sites": [
+      "094220",
+      "094069"
+    ],
+    "Coordinates": {
+      "Latitude": -42.99,
+      "Longitude": 147.07,
+      "Elevation": 65
+    }
+  },
+  {
+    "Id": "b769709e-227b-4af7-adb1-ea80ed32ce7c",
+    "Name": "Gunnedah",
+    "Sites": [
+      "055024"
+    ],
+    "Coordinates": {
+      "Latitude": -31.03,
+      "Longitude": 150.27,
+      "Elevation": 307
+    }
+  },
+  {
+    "Id": "98443ac3-495e-400a-ab77-204cab90b296",
+    "Name": "Halls Creek",
+    "Sites": [
+      "002079",
+      "002011",
+      "002012"
+    ],
+    "Coordinates": {
+      "Latitude": -18.23,
+      "Longitude": 127.67,
+      "Elevation": 409
+    }
+  },
+  {
+    "Id": "e069a5df-8f9e-47d6-a53b-dba5dd4e618c",
+    "Name": "Hobart",
+    "Sites": [
+      "094029"
+    ],
+    "Coordinates": {
+      "Latitude": -42.89,
+      "Longitude": 147.33,
+      "Elevation": 50
+    }
+  },
+  {
+    "Id": "597fec6c-458e-4b44-bead-a3bc383d0a18",
+    "Name": "Horn Island",
+    "Sites": [
+      "027058",
+      "027022",
+      "027021"
+    ],
+    "Coordinates": {
+      "Latitude": -10.58,
+      "Longitude": 142.29,
+      "Elevation": 4
+    }
+  },
+  {
+    "Id": "ce478efc-d8cb-4df4-88de-04f56d031bc6",
+    "Name": "Inverell",
+    "Sites": [
+      "056242",
+      "056017"
+    ],
+    "Coordinates": {
+      "Latitude": -29.78,
+      "Longitude": 151.11,
+      "Elevation": 582
+    }
+  },
+  {
+    "Id": "b088907b-d126-42f6-827d-6b72ca5cc75c",
+    "Name": "Kalgoorlie-Boulder",
+    "Sites": [
+      "012038",
+      "012039"
+    ],
+    "Coordinates": {
+      "Latitude": -30.78,
+      "Longitude": 121.45,
+      "Elevation": 365
+    }
+  },
+  {
+    "Id": "630d58a3-7bce-46c1-8613-eea75bb2613b",
+    "Name": "Kalumburu",
+    "Sites": [
+      "001019",
+      "001021"
+    ],
+    "Coordinates": {
+      "Latitude": -14.3,
+      "Longitude": 126.65,
+      "Elevation": 23
+    }
+  },
+  {
+    "Id": "1dda0365-bf66-457a-a662-4e75985814fa",
+    "Name": "Katanning",
+    "Sites": [
+      "010916",
+      "010579"
+    ],
+    "Coordinates": {
+      "Latitude": -33.69,
+      "Longitude": 117.61,
+      "Elevation": 320
+    }
+  },
+  {
+    "Id": "7dd5ab36-bb92-4682-a5d6-a36bf8c665ca",
+    "Name": "Kerang",
+    "Sites": [
+      "080023"
+    ],
+    "Coordinates": {
+      "Latitude": -35.72,
+      "Longitude": 143.92,
+      "Elevation": 77
+    }
+  },
+  {
+    "Id": "0989abf5-beba-490e-b650-eaefd27960c8",
+    "Name": "Kyancutta",
+    "Sites": [
+      "018044"
+    ],
+    "Coordinates": {
+      "Latitude": -33.13,
+      "Longitude": 135.55,
+      "Elevation": 59
+    }
+  },
+  {
+    "Id": "7c7f5816-a16e-4c16-be15-83744ce744f3",
+    "Name": "Larapuna (Eddystone Point)",
+    "Sites": [
+      "092045"
+    ],
+    "Coordinates": {
+      "Latitude": -40.99,
+      "Longitude": 148.35,
+      "Elevation": 19
+    }
+  },
+  {
+    "Id": "2c42110c-2a1e-4400-9807-c2c455cd559b",
+    "Name": "Launceston Airport",
+    "Sites": [
+      "091311",
+      "091049",
+      "091104"
+    ],
+    "Coordinates": {
+      "Latitude": -41.55,
+      "Longitude": 147.22,
+      "Elevation": 166
+    }
+  },
+  {
+    "Id": "f930aecf-7b39-498e-8877-38aa45af1f51",
+    "Name": "Laverton RAAF",
+    "Sites": [
+      "087031"
+    ],
+    "Coordinates": {
+      "Latitude": -37.86,
+      "Longitude": 144.76,
+      "Elevation": 20
+    }
+  },
+  {
+    "Id": "3399e988-7912-4b97-b6e5-81be54379f56",
+    "Name": "Learmonth",
+    "Sites": [
+      "005007"
+    ],
+    "Coordinates": {
+      "Latitude": -22.24,
+      "Longitude": 114.1,
+      "Elevation": 5
+    }
+  },
+  {
+    "Id": "351d699e-0262-4e16-9d10-13725443952d",
+    "Name": "Longreach",
+    "Sites": [
+      "036031",
+      "036030"
+    ],
+    "Coordinates": {
+      "Latitude": -23.44,
+      "Longitude": 144.28,
+      "Elevation": 192
+    }
+  },
+  {
+    "Id": "93266e21-2596-4f13-a7b1-ad5570476555",
+    "Name": "Low Head",
+    "Sites": [
+      "091293",
+      "091057"
+    ],
+    "Coordinates": {
+      "Latitude": -41.05,
+      "Longitude": 146.79,
+      "Elevation": 3
+    }
+  },
+  {
+    "Id": "b2346b65-151d-4e74-a61a-d2dafd27e278",
+    "Name": "Mackay",
+    "Sites": [
+      "033119",
+      "033046",
+      "033047"
+    ],
+    "Coordinates": {
+      "Latitude": -21.12,
+      "Longitude": 149.22,
+      "Elevation": 30
+    }
+  },
+  {
+    "Id": "dd6c9927-479b-41f2-a556-e4627130edf0",
+    "Name": "Marble Bar",
+    "Sites": [
+      "004106",
+      "004020"
+    ],
+    "Coordinates": {
+      "Latitude": -21.18,
+      "Longitude": 119.75,
+      "Elevation": 182
+    }
+  },
+  {
+    "Id": "94e72df5-3de3-42fa-b918-4bfbe0029b4f",
+    "Name": "Marree",
+    "Sites": [
+      "017126",
+      "017024",
+      "017031"
+    ],
+    "Coordinates": {
+      "Latitude": -29.66,
+      "Longitude": 138.07,
+      "Elevation": 50
+    }
+  },
+  {
+    "Id": "8fb89b8d-cfe8-4238-8a92-d920bcd24b70",
+    "Name": "Meekatharra",
+    "Sites": [
+      "007045",
+      "007046"
+    ],
+    "Coordinates": {
+      "Latitude": -26.61,
+      "Longitude": 118.54,
+      "Elevation": 517
+    }
+  },
+  {
+    "Id": "d8f551bc-88b9-455f-8a6d-1be983b410f0",
+    "Name": "Melbourne",
+    "Sites": [
+      "086338",
+      "086071"
+    ],
+    "Coordinates": {
+      "Latitude": -37.83,
+      "Longitude": 144.98,
+      "Elevation": 7
+    }
+  },
+  {
+    "Id": "69917d9e-3b13-4f84-bc35-651c11bb8f4b",
+    "Name": "Merredin",
+    "Sites": [
+      "010092",
+      "010093"
+    ],
+    "Coordinates": {
+      "Latitude": -31.48,
+      "Longitude": 118.28,
+      "Elevation": 315
+    }
+  },
+  {
+    "Id": "037d438a-0baf-4e5b-a4f5-f0d9d476a4f1",
+    "Name": "Mildura",
+    "Sites": [
+      "076031",
+      "076077"
+    ],
+    "Coordinates": {
+      "Latitude": -34.24,
+      "Longitude": 142.09,
+      "Elevation": 50
+    }
+  },
+  {
+    "Id": "3b65e449-64fd-4b76-b91c-14fc44fa1b0c",
+    "Name": "Miles",
+    "Sites": [
+      "042112",
+      "042023"
+    ],
+    "Coordinates": {
+      "Latitude": -26.66,
+      "Longitude": 150.18,
+      "Elevation": 304
+    }
+  },
+  {
+    "Id": "4675661e-ec68-437f-9e43-a2fe4bf55c2c",
+    "Name": "Morawa",
+    "Sites": [
+      "008296",
+      "008093"
+    ],
+    "Coordinates": {
+      "Latitude": -29.2,
+      "Longitude": 116.02,
+      "Elevation": 271
+    }
+  },
+  {
+    "Id": "13e1a71d-d3fc-4d71-9f3c-83e4524d4036",
+    "Name": "Moree",
+    "Sites": [
+      "053115",
+      "053027",
+      "053048"
+    ],
+    "Coordinates": {
+      "Latitude": -29.49,
+      "Longitude": 149.85,
+      "Elevation": 213
+    }
+  },
+  {
+    "Id": "1c21249b-58be-4dd7-a134-1d01d49e6d2f",
+    "Name": "Moruya Heads",
+    "Sites": [
+      "069018"
+    ],
+    "Coordinates": {
+      "Latitude": -35.91,
+      "Longitude": 150.15,
+      "Elevation": 17
+    }
+  },
+  {
+    "Id": "f7d4e547-df6f-47d4-9243-491b577ac9d9",
+    "Name": "Mount Gambier",
+    "Sites": [
+      "026021",
+      "026020"
+    ],
+    "Coordinates": {
+      "Latitude": -37.75,
+      "Longitude": 140.77,
+      "Elevation": 63
+    }
+  },
+  {
+    "Id": "932efbc6-68e5-421f-a3bf-e784d6324eb6",
+    "Name": "Nhill",
+    "Sites": [
+      "078015",
+      "078031"
+    ],
+    "Coordinates": {
+      "Latitude": -36.31,
+      "Longitude": 141.65,
+      "Elevation": 138
+    }
+  },
+  {
+    "Id": "04161d0d-e3d1-499e-81fd-81b9d2574e37",
+    "Name": "Normanton",
+    "Sites": [
+      "029063",
+      "029041"
+    ],
+    "Coordinates": {
+      "Latitude": -17.69,
+      "Longitude": 141.07,
+      "Elevation": 18
+    }
+  },
+  {
+    "Id": "3e9f0557-06c2-48f3-a5d8-ed3c973970bb",
+    "Name": "Nowra",
+    "Sites": [
+      "068072",
+      "068076"
+    ],
+    "Coordinates": {
+      "Latitude": -34.95,
+      "Longitude": 150.54,
+      "Elevation": 109
+    }
+  },
+  {
+    "Id": "1311f36e-78be-4f62-b7d9-b735ad9f3d4f",
+    "Name": "Nuriootpa",
+    "Sites": [
+      "023373",
+      "023321"
+    ],
+    "Coordinates": {
+      "Latitude": -34.48,
+      "Longitude": 139.01,
+      "Elevation": 275
+    }
+  },
+  {
+    "Id": "2415436e-1d84-4c07-ab78-0fce43b6ac42",
+    "Name": "Oodnadatta",
+    "Sites": [
+      "017043",
+      "017114"
+    ],
+    "Coordinates": {
+      "Latitude": -27.56,
+      "Longitude": 135.45,
+      "Elevation": 116
+    }
+  },
+  {
+    "Id": "d3e5496d-f19f-4b70-8b6f-b5ab302b6d05",
+    "Name": "Orbost",
+    "Sites": [
+      "084145",
+      "084030"
+    ],
+    "Coordinates": {
+      "Latitude": -37.69,
+      "Longitude": 148.47,
+      "Elevation": 62
+    }
+  },
+  {
+    "Id": "47da7f5c-1bdc-49a0-8f6f-06601cbe671d",
+    "Name": "Palmerville",
+    "Sites": [
+      "028004"
+    ],
+    "Coordinates": {
+      "Latitude": -16,
+      "Longitude": 144.08,
+      "Elevation": 203
+    }
+  },
+  {
+    "Id": "e7a2f177-1cc6-490e-a191-01fc514b5c77",
+    "Name": "Perth",
+    "Sites": [
+      "009021",
+      "009034"
+    ],
+    "Coordinates": {
+      "Latitude": -31.93,
+      "Longitude": 115.98,
+      "Elevation": 15
+    }
+  },
+  {
+    "Id": "3e9ea94c-ac3d-4181-ade4-d08fc2677e57",
+    "Name": "Point Perpendicular",
+    "Sites": [
+      "068151",
+      "068034"
+    ],
+    "Coordinates": {
+      "Latitude": -35.09,
+      "Longitude": 150.8,
+      "Elevation": 85
+    }
+  },
+  {
+    "Id": "284cf7b2-2a59-4539-8359-5d8e2c39eff4",
+    "Name": "Port Hedland",
+    "Sites": [
+      "004032",
+      "004002"
+    ],
+    "Coordinates": {
+      "Latitude": -20.37,
+      "Longitude": 118.63,
+      "Elevation": 6
+    }
+  },
+  {
+    "Id": "fd3e638f-b92a-4691-92b7-64e3b01c7c19",
+    "Name": "Port Lincoln",
+    "Sites": [
+      "018192",
+      "018070"
+    ],
+    "Coordinates": {
+      "Latitude": -34.6,
+      "Longitude": 135.88,
+      "Elevation": 8
+    }
+  },
+  {
+    "Id": "0eff81b4-a0c0-4cf3-83f7-28e022e69f3e",
+    "Name": "Port Macquarie",
+    "Sites": [
+      "060139",
+      "060026"
+    ],
+    "Coordinates": {
+      "Latitude": -31.43,
+      "Longitude": 152.87,
+      "Elevation": 4
+    }
+  },
+  {
+    "Id": "0c62f5db-bb55-4a76-97a9-c7fd72735100",
+    "Name": "Rabbit Flat",
+    "Sites": [
+      "015666",
+      "015548"
+    ],
+    "Coordinates": {
+      "Latitude": -20.18,
+      "Longitude": 130.01,
+      "Elevation": 340
+    }
+  },
+  {
+    "Id": "7fc8a855-bcb8-4efc-9a8e-beb8e62be047",
+    "Name": "Richmond (NSW)",
+    "Sites": [
+      "067105",
+      "067033"
+    ],
+    "Coordinates": {
+      "Latitude": -33.6,
+      "Longitude": 150.78,
+      "Elevation": 19
+    }
+  },
+  {
+    "Id": "a34d342d-792c-4a86-b214-668020be0c0a",
+    "Name": "Richmond (Qld)",
+    "Sites": [
+      "030161",
+      "030045"
+    ],
+    "Coordinates": {
+      "Latitude": -20.7,
+      "Longitude": 143.12,
+      "Elevation": 206
+    }
+  },
+  {
+    "Id": "3ba90730-0158-4bc9-a356-45eed2b040d2",
+    "Name": "Robe",
+    "Sites": [
+      "026026"
+    ],
+    "Coordinates": {
+      "Latitude": -37.16,
+      "Longitude": 139.76,
+      "Elevation": 3
+    }
+  },
+  {
+    "Id": "64743257-54c6-4ebe-ba24-0f0557417644",
+    "Name": "Rockhampton",
+    "Sites": [
+      "039083"
+    ],
+    "Coordinates": {
+      "Latitude": -23.38,
+      "Longitude": 150.48,
+      "Elevation": 10
+    }
+  },
+  {
+    "Id": "4e116444-b6fd-4273-b3a3-ecda490c6c71",
+    "Name": "Rutherglen",
+    "Sites": [
+      "082039"
+    ],
+    "Coordinates": {
+      "Latitude": -36.1,
+      "Longitude": 146.51,
+      "Elevation": 175
+    }
+  },
+  {
+    "Id": "42711b8f-3568-462a-a542-861bb23fca7b",
+    "Name": "Sale",
+    "Sites": [
+      "085072",
+      "085133"
+    ],
+    "Coordinates": {
+      "Latitude": -38.12,
+      "Longitude": 147.13,
+      "Elevation": 4
+    }
+  },
+  {
+    "Id": "1b9f5b24-83d8-4aba-bb65-c0cc6244d2ab",
+    "Name": "Scone",
+    "Sites": [
+      "061363",
+      "061089"
+    ],
+    "Coordinates": {
+      "Latitude": -32.03,
+      "Longitude": 150.83,
+      "Elevation": 221
+    }
+  },
+  {
+    "Id": "73590db5-1eae-4e76-b2f1-a779b4792a74",
+    "Name": "Snowtown",
+    "Sites": [
+      "021133",
+      "021046"
+    ],
+    "Coordinates": {
+      "Latitude": -33.77,
+      "Longitude": 138.22,
+      "Elevation": 109
+    }
+  },
+  {
+    "Id": "1e571d07-3809-4e33-affc-491bd3505cac",
+    "Name": "St George",
+    "Sites": [
+      "043109",
+      "043034"
+    ],
+    "Coordinates": {
+      "Latitude": -28.05,
+      "Longitude": 148.59,
+      "Elevation": 198
+    }
+  },
+  {
+    "Id": "46845ee3-d9ab-4b2e-9c72-e489f483b8b9",
+    "Name": "Sydney",
+    "Sites": [
+      "066062",
+      "066214"
+    ],
+    "Coordinates": {
+      "Latitude": -33.86,
+      "Longitude": 151.21,
+      "Elevation": 39
+    }
+  },
+  {
+    "Id": "4139d157-d054-4417-bab3-f848c73b4157",
+    "Name": "Tarcoola",
+    "Sites": [
+      "016098",
+      "016044"
+    ],
+    "Coordinates": {
+      "Latitude": -30.71,
+      "Longitude": 134.58,
+      "Elevation": 123
+    }
+  },
+  {
+    "Id": "04caaf24-4221-4fac-8ec6-f80cbcd67dd6",
+    "Name": "Tennant Creek",
+    "Sites": [
+      "015135",
+      "015087"
+    ],
+    "Coordinates": {
+      "Latitude": -19.64,
+      "Longitude": 134.18,
+      "Elevation": 375
+    }
+  },
+  {
+    "Id": "28a0c010-ac40-4faa-93eb-dc1d3ae6f5e2",
+    "Name": "Thargomindah",
+    "Sites": [
+      "045025",
+      "045017"
+    ],
+    "Coordinates": {
+      "Latitude": -27.99,
+      "Longitude": 143.82,
+      "Elevation": 130
+    }
+  },
+  {
+    "Id": "6e0c94d6-942e-4df9-95d7-49bea88d7f6c",
+    "Name": "Tibooburra",
+    "Sites": [
+      "046126",
+      "046037"
+    ],
+    "Coordinates": {
+      "Latitude": -29.44,
+      "Longitude": 142.06,
+      "Elevation": 176
+    }
+  },
+  {
+    "Id": "8926de95-c849-405c-86c1-979f872bdd52",
+    "Name": "Townsville",
+    "Sites": [
+      "032040"
+    ],
+    "Coordinates": {
+      "Latitude": -19.25,
+      "Longitude": 146.77,
+      "Elevation": 4
+    }
+  },
+  {
+    "Id": "425e09da-c96f-481f-8c51-550d9662d417",
+    "Name": "Victoria River Downs",
+    "Sites": [
+      "014825"
+    ],
+    "Coordinates": {
+      "Latitude": -16.4,
+      "Longitude": 131.01,
+      "Elevation": 88
+    }
+  },
+  {
+    "Id": "13b68c32-fb18-4112-97a7-6dfe454165d8",
+    "Name": "Wagga Wagga",
+    "Sites": [
+      "072150",
+      "072151"
+    ],
+    "Coordinates": {
+      "Latitude": -35.16,
+      "Longitude": 147.46,
+      "Elevation": 212
+    }
+  },
+  {
+    "Id": "60cd911f-2cc3-4184-a524-1f7a252fdde1",
+    "Name": "Walgett",
+    "Sites": [
+      "052088",
+      "052026"
+    ],
+    "Coordinates": {
+      "Latitude": -30.04,
+      "Longitude": 148.12,
+      "Elevation": 133
+    }
+  },
+  {
+    "Id": "297ada5a-de95-4ee8-8353-4052f3d4f9d4",
+    "Name": "Wandering",
+    "Sites": [
+      "010917",
+      "010648"
+    ],
+    "Coordinates": {
+      "Latitude": -32.67,
+      "Longitude": 116.67,
+      "Elevation": 275
+    }
+  },
+  {
+    "Id": "9dce4c80-1359-4110-9f33-830aff2f260e",
+    "Name": "Weipa",
+    "Sites": [
+      "027045",
+      "027042"
+    ],
+    "Coordinates": {
+      "Latitude": -12.68,
+      "Longitude": 141.92,
+      "Elevation": 18
+    }
+  },
+  {
+    "Id": "e1d8bd2d-279c-48a2-8396-42cd7cd97e7d",
+    "Name": "Wilcannia",
+    "Sites": [
+      "046012",
+      "046043"
+    ],
+    "Coordinates": {
+      "Latitude": -31.52,
+      "Longitude": 143.39,
+      "Elevation": 94
+    }
+  },
+  {
+    "Id": "f4c83ee9-96f7-4be3-9bec-3e9b967ad40a",
+    "Name": "Williamtown",
+    "Sites": [
+      "061078"
+    ],
+    "Coordinates": {
+      "Latitude": -32.79,
+      "Longitude": 151.84,
+      "Elevation": 7
+    }
+  },
+  {
+    "Id": "d4df1b0e-59a8-4d93-aad4-78e6bc229e55",
+    "Name": "Wilsons Promontory",
+    "Sites": [
+      "085096"
+    ],
+    "Coordinates": {
+      "Latitude": -39.13,
+      "Longitude": 146.42,
+      "Elevation": 95
+    }
+  },
+  {
+    "Id": "5ecfae15-7449-4a74-8209-0ba28d808fad",
+    "Name": "Wittenoom",
+    "Sites": [
+      "005098",
+      "005026"
+    ],
+    "Coordinates": {
+      "Latitude": -22.3,
+      "Longitude": 118.45,
+      "Elevation": 474
+    }
+  },
+  {
+    "Id": "5c68782b-99eb-458c-9b99-5de165aefde8",
+    "Name": "Woomera",
+    "Sites": [
+      "016001"
+    ],
+    "Coordinates": {
+      "Latitude": -31.16,
+      "Longitude": 136.81,
+      "Elevation": 166
+    }
+  },
+  {
+    "Id": "ab56b214-a9e5-4797-9b83-80de8716a53c",
+    "Name": "Wyalong",
+    "Sites": [
+      "050017",
+      "073054"
+    ],
+    "Coordinates": {
+      "Latitude": -33.94,
+      "Longitude": 147.2,
+      "Elevation": 257
+    }
+  },
+  {
+    "Id": "a190dc2d-013f-45e7-8716-52cf24b5443d",
+    "Name": "Yamba",
+    "Sites": [
+      "058012"
+    ],
+    "Coordinates": {
+      "Latitude": -29.43,
+      "Longitude": 153.36,
+      "Elevation": 27
+    }
+  }
+]

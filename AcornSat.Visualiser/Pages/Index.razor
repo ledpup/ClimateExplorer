@@ -10,10 +10,10 @@
 <h1><a href="http://www.bom.gov.au/climate/data/acorn-sat/" target="_blank">ACORN-SAT</a></h1>
 
 <SelectList TItem="Location"
-            TValue="string"
+            TValue="Guid"
             Data="@Locations"
             TextField="@((item)=>item.Name)"
-            ValueField="@((item)=>item.PrimarySiteId)"
+            ValueField="@((item)=>item.Id)"
             SelectedValueChanged="@SelectedLocationChanged"
             DefaultItemText="Select ACORN-SAT Location"
             Style="width: 300px"
@@ -34,7 +34,7 @@
     <Column ColumnSize="ColumnSize.Is2">
         <Alert Color="Color.Primary" Visible="true">
             <FieldBody>
-                Location: @Locations?.SingleOrDefault(x=> x.PrimarySiteId == @SelectedLocation)?.Name
+                Location: @Locations?.SingleOrDefault(x=> x.Id == @SelectedLocation)?.Name
             </FieldBody>
         </Alert>
     </Column>
@@ -112,7 +112,7 @@
     string StartYear { get; set; }
     string EndYear { get; set; }
 
-    string SelectedLocation { get; set; } = "094029";
+    Guid SelectedLocation { get; set; } = Guid.Parse("e069a5df-8f9e-47d6-a53b-dba5dd4e618c");
 
     [Inject]
     public ITemperatureDataService TemperatureDataService { get; set; }
@@ -128,12 +128,13 @@
 
     protected async Task RenderLocation()
     {
+        var location = Locations.Single(x => x.Id == SelectedLocation);
         Datasets = new List<DataSet>();
         var adjustedYearlyAverageTemps = (await TemperatureDataService.GetTemperatureData("adjusted", SelectedLocation)).ToList();
-        Datasets.Add(new DataSet { Location = Locations.Single(x=> x.PrimarySiteId == SelectedLocation), Temperatures = adjustedYearlyAverageTemps, Type = DataSetType.Adjusted });
+        Datasets.Add(new DataSet { Location = location, Temperatures = adjustedYearlyAverageTemps, Type = DataSetType.Adjusted });
 
         var unadjustedYearlyAverageTemps = (await TemperatureDataService.GetTemperatureData("unadjusted", SelectedLocation)).ToList();
-        Datasets.Add(new DataSet { Location = Locations.Single(x=> x.PrimarySiteId == SelectedLocation), Temperatures = unadjustedYearlyAverageTemps, Type = DataSetType.Unadjusted });
+        Datasets.Add(new DataSet { Location = location, Temperatures = unadjustedYearlyAverageTemps, Type = DataSetType.Unadjusted });
 
         await HandleRedraw();
     }
@@ -168,8 +169,6 @@
 
     async Task HandleRedraw()
     {
-
-
         if (Datasets == null)
         {
             return;
@@ -212,7 +211,7 @@
             }
         }
 
-        var location = Locations.Single(x => x.PrimarySiteId == SelectedLocation);
+        var location = Locations.Single(x => x.Id == SelectedLocation);
         var title = $"Average Temperature (in °C) for {location.Name} ({startYear}-{endYear})";
 
         await lineChart.Clear();
@@ -258,7 +257,7 @@
 
         if (Unadjusted && Maximums)
         {
-            await lineChart.AddDataSet(GetLineChartDataset("Maximum", "Unadjusted", SelectTemperatureValues(bufferedSelectedDataSet, DataSetType.Unadjusted, y => y.Max, timeConstraint), ChartColor.FromRgba( 127, 255, 63, 1f )));
+            await lineChart.AddDataSet(GetLineChartDataset("Maximum", "Unadjusted", SelectTemperatureValues(bufferedSelectedDataSet, DataSetType.Unadjusted, y => y.Max, timeConstraint), ChartColor.FromRgba( 127, 191, 63, 1f )));
         }
         if (Unadjusted && Minimums)
         {
@@ -320,7 +319,7 @@
                 };
     }
 
-    async Task SelectedLocationChanged( string newValue )
+    async Task SelectedLocationChanged(Guid newValue)
     {
         SelectedLocation = newValue;
         await RenderLocation();
