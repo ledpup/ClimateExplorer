@@ -20,7 +20,8 @@
 <Row>
     <Column ColumnSize="ColumnSize.Is2">
         <h1><a href="http://www.bom.gov.au/climate/data/acorn-sat/" target="_blank">ACORN-SAT</a></h1>
-        <SelectList TItem="Location"
+        <SelectList 
+            TItem="Location"
             TValue="Guid"
             Data="@Locations"
             TextField="@((item)=>item.Name)"
@@ -53,12 +54,12 @@
     </Column>
     <Column ColumnSize="ColumnSize.Is1">
         <Alert Color="Color.Light" Visible="true">
-            Start Year <TextEdit Text="@StartYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnStartYearTextChanged" />
+            Start Year <Validation Validator="ValidateYear"><TextEdit Text="@StartYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnStartYearTextChanged" /></Validation>
         </Alert>
     </Column>
     <Column ColumnSize="ColumnSize.Is1">
         <Alert Color="Color.Light" Visible="true">
-            End Year <TextEdit Text="@EndYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChanged" />
+            End Year <Validation Validator="ValidateYear"><TextEdit Text="@EndYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChanged" /></Validation>
         </Alert>
     </Column>
 </Row>
@@ -153,6 +154,14 @@
         }
     }
 
+    void ValidateYear(ValidatorEventArgs e)
+    {
+        var year = Convert.ToString(e.Value);
+
+        e.Status = string.IsNullOrEmpty(year) ? ValidationStatus.None :
+            year.Length == 4 ? ValidationStatus.Success : ValidationStatus.Error;
+    }
+
     private async Task HandleMapMouseEvent(MouseEvent mouseEvent)
     {
         var lat = Math.Round(mouseEvent.LatLng.Lat, 1);
@@ -160,7 +169,6 @@
         var newLocation = Locations.Single(x => Math.Round(x.Coordinates.Latitude, 1) == lat && Math.Round(x.Coordinates.Longitude, 1) == lng);
         await SelectedLocationChanged(newLocation.Id);
     }
-
 
     protected override async Task OnInitializedAsync()
     {
