@@ -184,8 +184,7 @@
         var unadjustedYearlyAverageTemps = (await TemperatureDataService.GetTemperatureData("unadjusted", SelectedLocation)).ToList();
         Datasets.Add(new DataSet { Location = location, Temperatures = unadjustedYearlyAverageTemps, Type = DataSetType.Unadjusted });
 
-        map.SetView(null);
-        map.SetView(new LatLng(location.Coordinates.Latitude, location.Coordinates.Longitude));
+        await map.SetView(new LatLng(location.Coordinates.Latitude, location.Coordinates.Longitude));
 
         await HandleRedraw();
     }
