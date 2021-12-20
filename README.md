@@ -12,7 +12,6 @@ Tool to calculate average temperatures from BOM ACORN-SAT data.
   - Core: some shared files, between Analyser and WebApi
 
 ## TODO
-- Moving Average, 3/5 year
 - Trendline
 - Calculate averages on demand rather than precalculating
 - ENSO overlay to show its effect on temperature. https://bmcnoldy.rsmas.miami.edu/tropics/oni/
@@ -25,6 +24,7 @@ Tool to calculate average temperatures from BOM ACORN-SAT data.
 - Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
+- 2021-12-21: Simple Moving Average
 - 2021-12-12: Integrate map component to show location (from site lat/long)
 - 2021-12-12: Create a location JSON file, with unique ID for each location and a site list of BOM sites. (BOM change their site IDs between versions of ACORN-SAT! Need an independant, unique ID.) Include geo-spatial data.
 - 2021-12-11: Add start and end year fields for the graph (so the user can constrain the series to the years they are interested in)

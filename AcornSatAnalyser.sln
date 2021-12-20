@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AcornSat.Core", "AcornSat.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AcornSat.Visualiser", "AcornSat.Visualiser\AcornSat.Visualiser.csproj", "{C7817987-8CB5-48E7-8914-AEEDB97F7A34}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcornSat.UnitTests", "AcornSat.UnitTests\AcornSat.UnitTests.csproj", "{2BC0FB94-966B-436B-A656-4D76FDD5BA47}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{C7817987-8CB5-48E7-8914-AEEDB97F7A34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7817987-8CB5-48E7-8914-AEEDB97F7A34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7817987-8CB5-48E7-8914-AEEDB97F7A34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BC0FB94-966B-436B-A656-4D76FDD5BA47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BC0FB94-966B-436B-A656-4D76FDD5BA47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BC0FB94-966B-436B-A656-4D76FDD5BA47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BC0FB94-966B-436B-A656-4D76FDD5BA47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
