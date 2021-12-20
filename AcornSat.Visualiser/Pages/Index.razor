@@ -42,20 +42,12 @@
     <Column ColumnSize="ColumnSize.Is1">
         <Alert Color="Color.Secondary" Visible="true">
             <Check TValue="bool" Checked="@Unadjusted" CheckedChanged="@OnUnadjustedChanged">Unadjusted</Check>
-        </Alert>
-    </Column>
-    <Column ColumnSize="ColumnSize.Is1">
-        <Alert Color="Color.Secondary" Visible="true">
             <Check TValue="bool" Checked="@Adjusted" CheckedChanged="@OnAdjustedChanged">Adjusted</Check>
         </Alert>
     </Column>
     <Column ColumnSize="ColumnSize.Is1">
         <Alert Color="Color.Info" Visible="true">
             <Check TValue="bool" Checked="@Maximums" CheckedChanged="@OnMaximumsChanged">Maximums</Check>
-        </Alert>
-    </Column>
-    <Column ColumnSize="ColumnSize.Is1">
-        <Alert Color="Color.Info" Visible="true">
             <Check TValue="bool" Checked="@Minimums" CheckedChanged="@OnMinimumsChanged">Minimums</Check>
         </Alert>
     </Column>
@@ -79,12 +71,12 @@
         width: 27%;
         position: absolute;
         top: 10px;
-        right: 90px;
+        right: 10px;
     }
 </style>
 
 @*<Button Clicked="@(async () => await ButtonClicked())">Redraw</Button>*@
-<div style="width: 93%; border: 1px dashed; padding: 10px;">
+<div style="width: 82%; border: 0.5px dotted; padding: 10px; position: absolute; bottom: 5px;">
     <LineChart @ref="lineChart" TItem="double?" />
 </div>
 
@@ -365,14 +357,18 @@
 
     LineChartDataset<double?> GetLineChartDataset(string temperatureType, string maxOrMin, List<double?> values, ChartColor chartColor)
     {
+        var count = values.Count;
+        var colour = new List<string>();
+        for (var i = 0; i < count; i++)
+            colour.Add(chartColor);
+
         return new LineChartDataset<double?>
                     {
                         Label = $"{temperatureType} {maxOrMin}",
                         Data = values,
-                        BackgroundColor = new List<string> { chartColor },
-                        BorderColor = new List<string> { chartColor },
+                        BorderColor = colour,
                         Fill = false,
-                        PointRadius = 3,
+                        PointRadius = 5,
                         BorderDash = new List<int> { },
                         LineTension = 0.1f,
                     };
