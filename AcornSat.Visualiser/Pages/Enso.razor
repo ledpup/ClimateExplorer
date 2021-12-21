@@ -1,0 +1,127 @@
+﻿@page "/enso"
+@using AcornSat.Core
+@using Blazorise
+@using Blazorise.Components
+@using Blazorise.Charts
+
+<PageTitle>ENSO</PageTitle>
+
+<h1>ENSO</h1>
+
+Measure
+<Select TValue="string" SelectedValue="@SelectedMeasure" SelectedValueChanged="@OnSelectedMeasureChanged">
+    <SelectItem Value="@("mean")">Mean</SelectItem>
+    <SelectItem Value="@("median")">Median</SelectItem>
+    <SelectItem Value="@("mode")">Mode</SelectItem>
+</Select>
+
+<div style="width: 85%; border: 0.5px dotted; padding: 10px; position: absolute; bottom: 5px;">
+    <BarChart @ref="barChart" TItem="float" />
+</div>
+
+@code {
+    string SelectedMeasure;
+    async Task OnSelectedMeasureChanged(string value)
+    {
+        SelectedMeasure = value;
+        Mei = (await DataService.GetMeiV2(SelectedMeasure)).ToList();
+        await HandleRedraw();
+    }
+
+    BarChart<float> barChart;
+
+    [Inject]
+    public IDataService DataService { get; set; }
+
+    List<ReferenceData> Mei { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {       
+        if (firstRender)
+        {
+            OnSelectedMeasureChanged("mean");
+        }
+    }
+
+    async Task HandleRedraw()
+    {
+        if (Mei == null)
+        {
+            return;
+        }
+
+        await barChart.Clear();
+        object chartOptions = new
+        {
+            SpanGaps = true,
+            Title = new 
+            { 
+                Text = "ENSO MEI.v2",
+                Display = true
+            },
+            Scales = new
+            {
+                YAxes = new []
+                { 
+                    new  
+                    { 
+                        ScaleLabel = new { LabelString = "MEI.v2 index values", Display = true } 
+                    } 
+                },
+                XAxes = new []
+                { 
+                    new 
+                    { 
+                        ScaleLabel = new { LabelString = "Year", Display = true } 
+                    } 
+                }       
+            }
+        };
+        await barChart.SetOptionsObject(chartOptions);
+
+        var labels = Mei.Select(x => x.Year.ToString()).ToArray();
+        await barChart.AddLabels(labels);
+
+        var values = Mei.Select(x => x.Value).ToList();
+        var dataSet = GetBarChartDataset($"MEI V2 {SelectedMeasure} values", values);
+        await barChart.AddDataSet(dataSet);
+
+        await barChart.Update();
+    }
+
+    BarChartDataset<float> GetBarChartDataset(string label, List<float> values)
+    {
+        var count = values.Count;
+
+        var min = values.Min();
+        var max = values.Max();
+
+        var colour = new List<string>();
+        for (var i = 0; i < count; i++)
+        {
+            ChartColor chartColor;
+            if (values[i] > 0)
+            {
+                chartColor = ChartColor.FromRgba((byte)((values[i] / max) * 255), 63, 63, 1f);
+            }
+            else
+            {
+                chartColor = ChartColor.FromRgba(63, 63, (byte)((values[i] / min) * 255), 1f);
+            }
+            colour.Add(chartColor);
+        }
+
+        return new BarChartDataset<float>
+                    {
+                        Label = label,
+                        Data = values,
+                        BorderColor = colour,
+                        BackgroundColor = colour,
+                    };
+    }
+}

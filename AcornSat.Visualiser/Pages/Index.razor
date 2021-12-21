@@ -22,7 +22,11 @@
             />
         <Alert Color="Color.Primary" Visible="true">
             <FieldBody>
-                @Locations?.SingleOrDefault(x=> x.Id == @SelectedLocation)?.Name
+                @SelectedLocation?.Name
+            </FieldBody>
+            <br />
+            <FieldBody>
+                @SelectedLocation?.Coordinates.Latitude°, @SelectedLocation?.Coordinates.Longitude°, @SelectedLocation?.Coordinates.Elevation m
             </FieldBody>
         </Alert>
     </Column>
@@ -48,16 +52,18 @@
             End Year <Validation Validator="ValidateYear"><TextEdit Text="@EndYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChanged" /></Validation>
         </Alert>
     </Column>
-    <Column ColumnSize="ColumnSize.Is1">
+    <Column ColumnSize="ColumnSize.Is2">
         <Alert Color="Color.Light" Visible="true">
-            Simple Moving Average Period
+            Simple Moving Average<br/>
+            Interval
             <Select TValue="int" SelectedValue="@SelectedPeriod" SelectedValueChanged="@OnSelectedPeriodChanged">
                 <SelectItem Value="0">None</SelectItem>
-                <SelectItem Value="3">Three</SelectItem>
-                <SelectItem Value="5">Five</SelectItem>
-                <SelectItem Value="7">Seven</SelectItem>
-                <SelectItem Value="10">Ten</SelectItem>
+                <SelectItem Value="3">3 years</SelectItem>
+                <SelectItem Value="5">5 years</SelectItem>
+                <SelectItem Value="7">7 years</SelectItem>
+                <SelectItem Value="10">10 years</SelectItem>
             </Select>
+            <Check TValue="bool" Checked="@SoloSma" CheckedChanged="@OnSoloSmaChanged">Solo</Check>
         </Alert>
     </Column>
 </Row>
@@ -82,10 +88,16 @@
 @code{
 
     int SelectedPeriod;
-
     async Task OnSelectedPeriodChanged(int value)
     {
         SelectedPeriod = value;
+        await HandleRedraw();
+    }
+
+    bool SoloSma;
+    async Task OnSoloSmaChanged(bool value)
+    {
+        SoloSma = value;
         await HandleRedraw();
     }
 
@@ -120,10 +132,11 @@
     string StartYear { get; set; }
     string EndYear { get; set; }
 
-    Guid SelectedLocation { get; set; } = Guid.Parse("e069a5df-8f9e-47d6-a53b-dba5dd4e618c");
+    Guid SelectedLocationId { get; set; }
+    Location SelectedLocation { get; set; }
 
     [Inject]
-    public ITemperatureDataService TemperatureDataService { get; set; }
+    public IDataService DataService { get; set; }
 
     public List<DataSet> Datasets { get; set; }
     public IEnumerable<Location> Locations;
@@ -131,24 +144,6 @@
 
     async Task CreateMapMarkers()
     {
-        //IconOptions iconOptions = new IconOptions()
-        //{
-        //    IconUrl = "http://localhost:5298/map-marker.png",
-        //    IconSize = new Point(38, 95),
-        //    IconAnchor = new Point(22, 94),
-        //    //ShadowUrl = "http://leafletjs.com/examples/custom-icons/leaf-shadow.png",
-        //    //ShadowSize = new Point(50, 64),
-        //    //ShadowAnchor = new Point(4, 61),
-        //    //PopupAnchor = new Point(-3, -76),
-        //};
-
-        //var markerOptions = new MarkerOptions()
-        //{
-        //    Opacity = 0.8,
-        //    Draggable = false,
-        //    IconRef = await this.IconFactory.Create(iconOptions),
-        //};
-
         MapMarkers = new List<Marker>();
         foreach (var location in Locations)
         {
@@ -178,9 +173,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Locations = (await TemperatureDataService.GetLocations()).ToList();
+        Locations = (await DataService.GetLocations()).ToList();
 
-        await RenderLocation();
+        await SelectedLocationChanged(Guid.Parse("e069a5df-8f9e-47d6-a53b-dba5dd4e618c"));
 
         if (MapMarkers == null)
         {
@@ -190,12 +185,12 @@
 
     protected async Task RenderLocation()
     {
-        var location = Locations.Single(x => x.Id == SelectedLocation);
+        var location = Locations.Single(x => x.Id == SelectedLocationId);
         Datasets = new List<DataSet>();
-        var adjustedYearlyAverageTemps = (await TemperatureDataService.GetTemperatureData("adjusted", SelectedLocation)).ToList();
+        var adjustedYearlyAverageTemps = (await DataService.GetTemperatures("adjusted", SelectedLocationId)).ToList();
         Datasets.Add(new DataSet { Location = location, Temperatures = adjustedYearlyAverageTemps, Type = DataSetType.Adjusted });
 
-        var unadjustedYearlyAverageTemps = (await TemperatureDataService.GetTemperatureData("unadjusted", SelectedLocation)).ToList();
+        var unadjustedYearlyAverageTemps = (await DataService.GetTemperatures("unadjusted", SelectedLocationId)).ToList();
         Datasets.Add(new DataSet { Location = location, Temperatures = unadjustedYearlyAverageTemps, Type = DataSetType.Unadjusted });
 
         await map.SetView(new LatLng(location.Coordinates.Latitude, location.Coordinates.Longitude));
@@ -275,8 +270,7 @@
             }
         }
 
-        var location = Locations.Single(x => x.Id == SelectedLocation);
-        var title = $"Average Temperature (in °C) for {location.Name} ({startYear}-{endYear})";
+        var title = $"Average Temperature (in °C) for {SelectedLocation.Name} ({startYear}-{endYear})";
 
         await lineChart.Clear();
         object chartOptions = new
@@ -324,7 +318,10 @@
             var values = SelectTemperatureValues(bufferedSelectedDataSet, DataSetType.Unadjusted, y => y.Max, timeConstraint);
             var label = "Maximum Unadjusted";
             var colour = ChartColor.FromRgba(127, 191, 95, 1f);
-            await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
+            if (SelectedPeriod == 0 || !SoloSma)
+            {
+                await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
+            }
             await AddMovingAverage(label, values, colour);
         }
         if (Unadjusted && Minimums)
@@ -332,7 +329,10 @@
             var values = SelectTemperatureValues(bufferedSelectedDataSet, DataSetType.Unadjusted, y => y.Min, timeConstraint);
             var label = "Minimum Unadjusted";
             var colour = ChartColor.FromRgba(255, 127, 63, 1f);
-            await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
+            if (SelectedPeriod == 0 || !SoloSma)
+            {
+                await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
+            }
             await AddMovingAverage(label, values, colour);
         }
         if (Adjusted && Maximums)
@@ -340,7 +340,10 @@
             var values = SelectTemperatureValues(bufferedSelectedDataSet, DataSetType.Adjusted, y => y.Max, timeConstraint);
             var label = "Maximum Adjusted";
             var colour = ChartColor.FromRgba(255, 63, 63, 1f);
-            await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
+            if (SelectedPeriod == 0 || !SoloSma)
+            {
+                await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
+            }
             await AddMovingAverage(label, values, colour);
         }
         if (Adjusted && Minimums)
@@ -348,7 +351,10 @@
             var values = SelectTemperatureValues(bufferedSelectedDataSet, DataSetType.Adjusted, y => y.Min, timeConstraint);
             var label = "Minimum Adjusted";
             var colour = ChartColor.FromRgba(63, 63, 255, 1f);
-            await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
+            if (SelectedPeriod == 0 || !SoloSma)
+            {
+                await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
+            }
             await AddMovingAverage(label, values, colour);
         }
         await lineChart.Update();
@@ -359,7 +365,7 @@
         if (SelectedPeriod != 0)
         {
             var simpleMovingAverages = SimpleMovingAverage.Calculate(SelectedPeriod, values);
-            label = $"{label} Moving Average @ {SelectedPeriod}";
+            label = $"{label} Moving Average @ {SelectedPeriod} year interval";
             colour.R = (byte)(colour.R - 64);
             colour.G = (byte)(colour.G + 64);
             colour.B = (byte)(colour.B - 64);
@@ -416,7 +422,8 @@
 
     async Task SelectedLocationChanged(Guid newValue)
     {
-        SelectedLocation = newValue;
+        SelectedLocationId = newValue;
+        SelectedLocation = Locations.Single(x => x.Id == SelectedLocationId);
         base.StateHasChanged();
         await RenderLocation();
     }

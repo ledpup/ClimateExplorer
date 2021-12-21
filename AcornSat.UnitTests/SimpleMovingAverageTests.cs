@@ -11,7 +11,7 @@ namespace AcornSat.UnitTests
         public void ThreeValuesTest()
         {
             var ma = new SimpleMovingAverage(3);
-            Assert.AreEqual(3, ma.AddSample(3));
+            Assert.IsNull(ma.AddSample(3));
             Assert.AreEqual(2, ma.AddSample(1));
             Assert.AreEqual(2.667D, Math.Round(ma.AddSample(4).Value, 3));
         }
@@ -20,7 +20,7 @@ namespace AcornSat.UnitTests
         public void ValuesWithNullTest()
         {
             var ma = new SimpleMovingAverage(3);
-            Assert.AreEqual(3, ma.AddSample(3));
+            Assert.IsNull(ma.AddSample(3));
             Assert.AreEqual(2, ma.AddSample(1));
             Assert.IsNull(ma.AddSample(null));
         }
@@ -29,10 +29,10 @@ namespace AcornSat.UnitTests
         public void ValuesWithNullThenValuesTest()
         {
             var ma = new SimpleMovingAverage(3);
-            Assert.AreEqual(3, ma.AddSample(3));
+            Assert.IsNull(ma.AddSample(3));
             Assert.AreEqual(2, ma.AddSample(1));
             Assert.IsNull(ma.AddSample(null));
-            Assert.AreEqual(3, ma.AddSample(3));
+            Assert.IsNull(ma.AddSample(3));
             Assert.AreEqual(2.5, ma.AddSample(2));
             Assert.AreEqual(3, ma.AddSample(4));
         }

@@ -30,7 +30,12 @@ namespace AcornSat.Core
                 samples.Dequeue();
             }
 
-            return samples.Average();
+            if (samples.Count > _windowSize / 3f)
+            {
+                return samples.Average();
+            }
+
+            return null;
         }
 
         public static List<double?> Calculate(int windowSize, List<double?> values)

@@ -19,7 +19,7 @@ builder.Services
     .AddFontAwesomeIcons()
     .AddBlazorLeafletMaps()
     .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
-    .AddHttpClient<ITemperatureDataService, TemperatureDataService>(client =>
+    .AddHttpClient<IDataService, DataService>(client =>
     {
         client.BaseAddress = new Uri("http://localhost:54836/");
     });

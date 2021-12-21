@@ -3,18 +3,20 @@ Tool to calculate average temperatures from BOM ACORN-SAT data.
 
 ## Technical
 - Built in Visual Studio 2022 Community Edition
-- C#, .NET  6
+- C#, .NET 6
 - Blazor (using Blazorise components)
 - There are 4 projects:
   - Analyser: take daily data (raw and adjusted) and average it into
   - WebApi: gets the data for the website to use
   - Visualiser: displays the data to the user. Primarily it's a line graph
   - Core: some shared files, between Analyser and WebApi
+  - UnitTests: tests for various sub-systems
 
 ## TODO
-- Trendline
+- Climate stripes. https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
+- Linear trendline
 - Calculate averages on demand rather than precalculating
-- ENSO overlay to show its effect on temperature. https://bmcnoldy.rsmas.miami.edu/tropics/oni/
+- ENSO overlay to show its effect on temperature. https://psl.noaa.gov/enso/dashboard.html
 - Alternate average (use median?)
 - Show graphs from two or more locations at once? (not sure how useful that is)
 - Allow user to alter thresold for what is a sufficient set of data for the year
@@ -30,11 +32,13 @@ Tool to calculate average temperatures from BOM ACORN-SAT data.
 - 2021-12-11: Add start and end year fields for the graph (so the user can constrain the series to the years they are interested in)
 - 2021-12-11: Ensure the temperature data is sent to the chart component on the correct starting year (n.b., datasets have different starting years)
 
-## BOM ACORN-SAT data sources
+## Data sources
+
+### BOM ACORN-SAT temperature
 
 Files sourced from:
 - ftp://ftp.bom.gov.au/anon/home/ncc/www/change/ACORN_SAT_daily/
-- Accessed 09/12/2021
+- Accessed 2021-12-09
 
 Original adjusted file names are:
 - acorn_sat_v2.2.0_daily_tmax.tar.gz
@@ -43,7 +47,7 @@ Original adjusted file names are:
 Raw data file is:
 - raw-data-and-supporting-information.zip
 
-### Adjustments
+#### Adjustments
 
 The tmax and tmin file lengths aren't all the same. Some start on different dates to others, when there are missing records at the start or the end. It's usually just a few days. For the locations below, I adjusted the files so they all start and end on the same day, by adding blank rows. I explain in detailed for Esperance. All the other changes are similar adjustments. No other changes have been made to the v2.2.0 homogenised data from the BOM.
 
@@ -55,3 +59,19 @@ The tmax and tmin file lengths aren't all the same. Some start on different date
 - Oodnadatta, 017043
 - Orbost, 084145
 - Rockhampton, 039083
+
+### CO2
+
+NOAA
+- ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_annmean_mlo.txt
+- Accessed 2021-12-21
+
+### ENSO MEI v2
+
+The MEI combines both oceanic and atmospheric variables to form a single index an assessment of ENSO. It is an Empirical Orthogonal Function (EOF) of five different variables (sea level pressure (SLP), sea surface temperature (SST), zonal and meridional components of the surface wind, and outgoing longwave radiation (OLR)) over the tropical Pacific basin (30°S-30°N and 100°E-70°W).
+
+https://psl.noaa.gov/enso/mei/
+
+NOAA
+- https://psl.noaa.gov/enso/mei/data/meiv2.data
+- Accessed 2021-12-21
