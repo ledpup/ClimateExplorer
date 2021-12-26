@@ -13,10 +13,11 @@ Tool to calculate average temperatures from BOM ACORN-SAT data.
   - UnitTests: tests for various sub-systems
 
 ## TODO
+- CO2 data and graphs
+- Click point on yearly chart to render daily chart for the year
 - Climate stripes. https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
 - Linear trendline
 - Calculate averages on demand rather than precalculating
-- ENSO overlay to show its effect on temperature. https://psl.noaa.gov/enso/dashboard.html
 - Alternate average (use median?)
 - Show graphs from two or more locations at once? (not sure how useful that is)
 - Allow user to alter thresold for what is a sufficient set of data for the year
@@ -26,6 +27,7 @@ Tool to calculate average temperatures from BOM ACORN-SAT data.
 - Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
+- 2021-12-26: Retrieve ENSO data to show its effect on temperature in Australia. https://psl.noaa.gov/enso/dashboard.html, https://psl.noaa.gov/enso/data.html
 - 2021-12-21: Simple Moving Average
 - 2021-12-12: Integrate map component to show location (from site lat/long)
 - 2021-12-12: Create a location JSON file, with unique ID for each location and a site list of BOM sites. (BOM change their site IDs between versions of ACORN-SAT! Need an independant, unique ID.) Include geo-spatial data.
@@ -66,12 +68,25 @@ NOAA
 - ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_annmean_mlo.txt
 - Accessed 2021-12-21
 
-### ENSO MEI v2
+### ENSO 
+
+#### MEI v2
 
 The MEI combines both oceanic and atmospheric variables to form a single index an assessment of ENSO. It is an Empirical Orthogonal Function (EOF) of five different variables (sea level pressure (SLP), sea surface temperature (SST), zonal and meridional components of the surface wind, and outgoing longwave radiation (OLR)) over the tropical Pacific basin (30°S-30°N and 100°E-70°W).
 
 https://psl.noaa.gov/enso/mei/
 
-NOAA
+Data
+- meiv2.data 
 - https://psl.noaa.gov/enso/mei/data/meiv2.data
 - Accessed 2021-12-21
+
+#### Other ENSO indexes
+
+- ONI oni.data.txt
+- https://psl.noaa.gov/data/correlation/oni.data
+- Accessed 2021-12-25
+
+- OSI soi.long.data.txt
+- https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/soi.long.data
+- Accessed 2021-12-25

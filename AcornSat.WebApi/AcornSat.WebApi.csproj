@@ -11,685 +11,2012 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AcornSat.Analyser\AcornSat.Analyser.csproj" />
     <ProjectReference Include="..\AcornSat.Core\AcornSat.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Reference\meiv2.data">
+    <None Update="Reference\ENSO\meiv2.data">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\007774be-e84e-4e6e-aa42-711f1cd32107.csv">
+    <None Update="Reference\ENSO\oni.data.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\037d438a-0baf-4e5b-a4f5-f0d9d476a4f1.csv">
+    <None Update="Reference\ENSO\soi.long.data.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\04161d0d-e3d1-499e-81fd-81b9d2574e37.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.001019.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\04caaf24-4221-4fac-8ec6-f80cbcd67dd6.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.002079.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\064b88e4-7d4a-4117-bf4d-19da457a514a.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.003003.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\0989abf5-beba-490e-b650-eaefd27960c8.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.004032.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\0b66ebe6-c73a-4ea3-92e8-cd8c4ae39ca1.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.004106.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\0c26cb0b-fb17-4fc4-ad9f-33c3377808fc.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.005007.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\0c62f5db-bb55-4a76-97a9-c7fd72735100.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.005098.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\0eff81b4-a0c0-4cf3-83f7-28e022e69f3e.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.006011.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\1311f36e-78be-4f62-b7d9-b735ad9f3d4f.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.007045.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\13b68c32-fb18-4112-97a7-6dfe454165d8.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.008296.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\13dbb455-ef47-4191-83b8-70e07fb1c77c.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.008297.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\13e1a71d-d3fc-4d71-9f3c-83e4524d4036.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.008315.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\1529d6b3-3891-4eda-af7f-0eb60d2bb2b0.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.009021.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\1547896c-fe28-4eae-978e-e135ce9c4004.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.009518.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\1b9f5b24-83d8-4aba-bb65-c0cc6244d2ab.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.009617.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\1c21249b-58be-4dd7-a134-1d01d49e6d2f.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.009789.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\1dda0365-bf66-457a-a662-4e75985814fa.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.009999.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\1e4ac07c-abcf-409e-9d1a-8dfacd30259d.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.010092.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\1e571d07-3809-4e33-affc-491bd3505cac.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.010286.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\2415436e-1d84-4c07-ab78-0fce43b6ac42.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.010916.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\27aad159-7b4c-4458-a922-f42da90cb947.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.010917.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\284cf7b2-2a59-4539-8359-5d8e2c39eff4.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.011003.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\28a0c010-ac40-4faa-93eb-dc1d3ae6f5e2.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.011052.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\297ada5a-de95-4ee8-8353-4052f3d4f9d4.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.012038.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\2c42110c-2a1e-4400-9807-c2c455cd559b.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.013017.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\3399e988-7912-4b97-b6e5-81be54379f56.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.014015.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\351d699e-0262-4e16-9d10-13725443952d.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.014825.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\35efb40c-de04-453e-8aee-1f5131ac0550.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.015135.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\37cbc5d7-7f74-4cab-9ac7-26297059d09e.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.015590.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\3b65e449-64fd-4b76-b91c-14fc44fa1b0c.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.015666.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\3ba90730-0158-4bc9-a356-45eed2b040d2.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.016001.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\3c2fd6c7-ff63-4b01-9e47-d418fa068735.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.016098.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\3e9ea94c-ac3d-4181-ade4-d08fc2677e57.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.017043.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\3e9f0557-06c2-48f3-a5d8-ed3c973970bb.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.017126.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\400a24a8-5974-4615-8dab-89a925a3ecb1.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.018012.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\4139d157-d054-4417-bab3-f848c73b4157.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.018044.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\425e09da-c96f-481f-8c51-550d9662d417.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.018192.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\42711b8f-3568-462a-a542-861bb23fca7b.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.021133.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\4675661e-ec68-437f-9e43-a2fe4bf55c2c.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.022823.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\46845ee3-d9ab-4b2e-9c72-e489f483b8b9.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.023000.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\47da7f5c-1bdc-49a0-8f6f-06601cbe671d.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.023373.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\4e116444-b6fd-4273-b3a3-ecda490c6c71.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.026021.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\597fec6c-458e-4b44-bead-a3bc383d0a18.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.026026.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\5c68782b-99eb-458c-9b99-5de165aefde8.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.027045.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\5ecfae15-7449-4a74-8209-0ba28d808fad.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.027058.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\60cd911f-2cc3-4184-a524-1f7a252fdde1.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.028004.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\61ec61bc-ba6e-43c4-a2dc-dc639cb672d6.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.029063.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\630d58a3-7bce-46c1-8613-eea75bb2613b.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.029077.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\6399c6ae-037d-45b1-90ae-02f148f00128.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.030124.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\64743257-54c6-4ebe-ba24-0f0557417644.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.030161.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\69917d9e-3b13-4f84-bc35-651c11bb8f4b.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.031011.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\69f43561-bb72-4498-8d22-3c0596f1a89b.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.032040.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\6e0c94d6-942e-4df9-95d7-49bea88d7f6c.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.033119.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\6fc9710b-6a02-41a5-b1ef-6ced93fc4fe8.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.034084.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\73590db5-1eae-4e76-b2f1-a779b4792a74.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.036007.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\78549963-6012-4587-9e54-a2a9c8869f6d.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.036031.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\796a757e-d5ef-4480-b5ab-0b13e237bf41.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.037010.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\7c7f5816-a16e-4c16-be15-83744ce744f3.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.038003.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\7dd5ab36-bb92-4682-a5d6-a36bf8c665ca.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.038026.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\7fc8a855-bcb8-4efc-9a8e-beb8e62be047.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.039066.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\8926de95-c849-405c-86c1-979f872bdd52.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.039083.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\8abe1dd4-b232-4da4-9cb1-0861df90a162.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.039128.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\8d2d3606-154a-4296-8e9e-72a7caadd775.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.040004.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\8e11f81c-ecef-4d02-b2e2-a0a24ac8367b.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.040043.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\8fb89b8d-cfe8-4238-8a92-d920bcd24b70.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.040842.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\93266e21-2596-4f13-a7b1-ad5570476555.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.042112.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\932efbc6-68e5-421f-a3bf-e784d6324eb6.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.043109.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\94e72df5-3de3-42fa-b918-4bfbe0029b4f.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.044021.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\98443ac3-495e-400a-ab77-204cab90b296.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.045025.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\9dce4c80-1359-4110-9f33-830aff2f260e.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.046012.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\9f07bfa8-6327-4eaa-95b2-6fdd82789a17.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.046126.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\a190dc2d-013f-45e7-8716-52cf24b5443d.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.048027.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\a34d342d-792c-4a86-b214-668020be0c0a.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.048245.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\ab56b214-a9e5-4797-9b83-80de8716a53c.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.050017.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\ad9ebca8-a9ff-4bd8-aa28-b50044cc4688.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.052088.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\b088907b-d126-42f6-827d-6b72ca5cc75c.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.053115.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\b1663de1-f49f-453d-b840-82d79e646154.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.055024.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\b2346b65-151d-4e74-a61a-d2dafd27e278.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.056242.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\b769709e-227b-4af7-adb1-ea80ed32ce7c.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.058012.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\b7f08dcf-56b7-41f2-87f1-8b4b1d19e7d6.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.059151.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\c38c62a1-8e70-4046-bc8e-a7dee889d738.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.060139.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\c6459962-06ac-4725-902f-54526eeecfad.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.061078.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\c735e556-a0fc-4dc4-9d31-212a2317289c.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.061363.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\cbadda4d-8714-4b7c-9cda-bf4f91b04de2.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.063005.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\ce478efc-d8cb-4df4-88de-04f56d031bc6.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.065070.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\d3e5496d-f19f-4b70-8b6f-b5ab302b6d05.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.066214.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\d4df1b0e-59a8-4d93-aad4-78e6bc229e55.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.067105.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\d8f551bc-88b9-455f-8a6d-1be983b410f0.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.068072.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\dd6c9927-479b-41f2-a556-e4627130edf0.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.068151.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\de97c9b3-c1cc-43d2-8003-5c74bcbb4bde.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.069018.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\de9f783f-1f7d-49f7-ba33-43f808d8ac9c.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.070351.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\e069a5df-8f9e-47d6-a53b-dba5dd4e618c.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.072150.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\e1d8bd2d-279c-48a2-8396-42cd7cd97e7d.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.072161.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\e313699a-cd50-412b-b6a5-56c93da9c87e.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.074258.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\e3b24302-5106-4e87-9b17-e7faa9b8af6a.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.076031.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\e44383a4-25a8-4328-9993-7afd5f100245.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.078015.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\e669b5c4-73df-4a89-ba31-9bc4d3384259.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.080023.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\e7a2f177-1cc6-490e-a191-01fc514b5c77.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.082039.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\ea07cb4c-9b2a-4e9f-bf58-20ad67f38dd0.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.084016.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\eb9a4d79-30b0-4f31-93a0-b7e83859cb15.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.084145.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\ec3cf557-ce24-45eb-b2b4-21dbf3e70b08.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.085072.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\ee87801b-0b9d-40e2-bbb4-78af64475eed.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.085096.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\f4c83ee9-96f7-4be3-9bec-3e9b967ad40a.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.086338.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\f76d8a8d-808d-4a5f-98d2-ccd628bccb8d.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.087031.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\f7d4e547-df6f-47d4-9243-491b577ac9d9.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.090015.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\f930aecf-7b39-498e-8877-38aa45af1f51.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.091293.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\f9425c78-9b83-4e5d-9b07-749befae012e.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.091311.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\fd3e638f-b92a-4691-92b7-64e3b01c7c19.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.092045.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\fe1c72f3-c637-45c6-8526-4ff3fb3aae56.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.094029.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Adjusted\ffebd72b-0f21-4a55-a08b-fe224f0d7d6e.csv">
+    <None Update="Temperature\Daily\daily_tmax\tmax.094198.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmax\tmax.094220.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmax\tmax.096003.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.001019.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.002079.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.003003.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.004032.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.004106.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.005007.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.005098.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.006011.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.007045.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.008296.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.008297.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.008315.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.009021.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.009518.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.009617.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.009789.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.009999.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.010092.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.010286.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.010916.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.010917.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.011003.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.011052.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.012038.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.013017.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.014015.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.014825.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.015135.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.015590.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.015666.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.016001.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.016098.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.017043.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.017126.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.018012.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.018044.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.018192.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.021133.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.022823.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.023000.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.023373.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.026021.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.026026.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.027045.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.027058.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.028004.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.029063.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.029077.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.030124.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.030161.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.031011.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.032040.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.033119.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.034084.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.036007.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.036031.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.037010.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.038003.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.038026.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.039066.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.039083.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.039128.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.040004.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.040043.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.040842.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.042112.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.043109.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.044021.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.045025.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.046012.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.046126.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.048027.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.048245.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.050017.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.052088.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.053115.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.055024.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.056242.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.058012.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.059151.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.060139.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.061078.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.061363.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.063005.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.065070.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.066214.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.067105.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.068072.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.068151.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.069018.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.070351.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.072150.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.072161.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.074258.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.076031.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.078015.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.080023.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.082039.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.084016.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.084145.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.085072.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.085096.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.086338.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.087031.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.090015.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.091293.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.091311.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.092045.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.094029.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.094198.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.094220.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\daily_tmin\tmin.096003.daily.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew001019.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew001021.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew002011.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew002012.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew002071.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew003002.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew003003.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew003089.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew004002.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew004020.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew004032.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew004104.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew004106.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew005007.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew005026.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew005092.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew006011.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew006062.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew007045.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew007046.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew007204.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew008039.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew008050.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew008051.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew008093.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew008296.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew008297.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew008315.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew009021.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew009034.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew009250.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew009500.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew009510.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew009518.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew009541.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew009617.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew009741.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew009789.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew009999.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew010035.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew010092.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew010093.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew010286.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew010579.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew010648.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew010916.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew010917.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew011003.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew011004.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew011052.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew012038.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew012039.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew013017.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew014015.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew014016.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew014040.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew014825.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew015087.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew015135.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew015540.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew015548.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew015590.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew015666.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew016001.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew016044.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew016098.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew017024.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew017031.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew017043.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew017114.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew017126.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew018012.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew018044.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew018070.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew018192.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew021046.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew021133.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew022801.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew022823.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew023000.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew023090.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew023321.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew023373.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew026020.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew026021.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew026026.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew027021.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew027022.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew027042.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew027045.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew027058.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew028004.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew029004.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew029041.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew029063.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew029077.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew030018.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew030045.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew030124.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew031010.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew031011.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew032040.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew032178.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew033046.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew033047.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew033119.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew033297.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew034002.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew034084.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew036007.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew036030.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew036031.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew036167.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew037010.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew038002.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew038003.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew038026.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew039015.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew039039.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew039066.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew039083.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew039128.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew040004.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew040043.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew040223.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew040842.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew040910.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew042023.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew042112.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew043034.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew043109.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew044021.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew044022.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew044221.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew045017.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew045025.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew046012.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew046037.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew046043.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew046126.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew048013.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew048027.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew048030.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew048239.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew048244.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew048245.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew050017.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew052026.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew052088.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew053027.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew053048.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew053115.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew055024.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew056017.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew056242.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew058012.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew059040.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew059151.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew060026.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew060139.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew061078.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew061089.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew061363.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew061407.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew063005.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew063305.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew065012.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew065070.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew066062.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew067033.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew067105.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew068034.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew068072.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew068076.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew068151.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew069018.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew070014.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew070099.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew070338.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew070351.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew072091.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew072150.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew072151.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew072161.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew073054.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew074128.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew074258.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew076031.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew076077.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew078015.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew078031.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew080023.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew082039.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew084016.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew084030.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew084145.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew085072.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew085096.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew085133.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew085298.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew086071.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew086338.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew087031.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew090015.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew091049.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew091057.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew091104.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew091293.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew091311.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew092045.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew094010.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew094029.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew094069.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew094220.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew096003.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Daily\raw-data\hqnew096071.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\007774be-e84e-4e6e-aa42-711f1cd32107.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\037d438a-0baf-4e5b-a4f5-f0d9d476a4f1.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\04161d0d-e3d1-499e-81fd-81b9d2574e37.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\04caaf24-4221-4fac-8ec6-f80cbcd67dd6.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\064b88e4-7d4a-4117-bf4d-19da457a514a.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\0989abf5-beba-490e-b650-eaefd27960c8.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\0b66ebe6-c73a-4ea3-92e8-cd8c4ae39ca1.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\0c26cb0b-fb17-4fc4-ad9f-33c3377808fc.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\0c62f5db-bb55-4a76-97a9-c7fd72735100.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\0eff81b4-a0c0-4cf3-83f7-28e022e69f3e.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\1311f36e-78be-4f62-b7d9-b735ad9f3d4f.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\13b68c32-fb18-4112-97a7-6dfe454165d8.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\13dbb455-ef47-4191-83b8-70e07fb1c77c.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\13e1a71d-d3fc-4d71-9f3c-83e4524d4036.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\1529d6b3-3891-4eda-af7f-0eb60d2bb2b0.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\1547896c-fe28-4eae-978e-e135ce9c4004.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\1b9f5b24-83d8-4aba-bb65-c0cc6244d2ab.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\1c21249b-58be-4dd7-a134-1d01d49e6d2f.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\1dda0365-bf66-457a-a662-4e75985814fa.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\1e4ac07c-abcf-409e-9d1a-8dfacd30259d.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\1e571d07-3809-4e33-affc-491bd3505cac.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\2415436e-1d84-4c07-ab78-0fce43b6ac42.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\27aad159-7b4c-4458-a922-f42da90cb947.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\284cf7b2-2a59-4539-8359-5d8e2c39eff4.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\28a0c010-ac40-4faa-93eb-dc1d3ae6f5e2.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\297ada5a-de95-4ee8-8353-4052f3d4f9d4.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\2c42110c-2a1e-4400-9807-c2c455cd559b.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\3399e988-7912-4b97-b6e5-81be54379f56.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\351d699e-0262-4e16-9d10-13725443952d.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\35efb40c-de04-453e-8aee-1f5131ac0550.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\37cbc5d7-7f74-4cab-9ac7-26297059d09e.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\3b65e449-64fd-4b76-b91c-14fc44fa1b0c.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\3ba90730-0158-4bc9-a356-45eed2b040d2.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\3c2fd6c7-ff63-4b01-9e47-d418fa068735.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\3e9ea94c-ac3d-4181-ade4-d08fc2677e57.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\3e9f0557-06c2-48f3-a5d8-ed3c973970bb.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\400a24a8-5974-4615-8dab-89a925a3ecb1.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\4139d157-d054-4417-bab3-f848c73b4157.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\425e09da-c96f-481f-8c51-550d9662d417.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\42711b8f-3568-462a-a542-861bb23fca7b.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\4675661e-ec68-437f-9e43-a2fe4bf55c2c.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\46845ee3-d9ab-4b2e-9c72-e489f483b8b9.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\47da7f5c-1bdc-49a0-8f6f-06601cbe671d.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\4e116444-b6fd-4273-b3a3-ecda490c6c71.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\597fec6c-458e-4b44-bead-a3bc383d0a18.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\5c68782b-99eb-458c-9b99-5de165aefde8.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\5ecfae15-7449-4a74-8209-0ba28d808fad.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\60cd911f-2cc3-4184-a524-1f7a252fdde1.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\61ec61bc-ba6e-43c4-a2dc-dc639cb672d6.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\630d58a3-7bce-46c1-8613-eea75bb2613b.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\6399c6ae-037d-45b1-90ae-02f148f00128.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\64743257-54c6-4ebe-ba24-0f0557417644.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\69917d9e-3b13-4f84-bc35-651c11bb8f4b.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\69f43561-bb72-4498-8d22-3c0596f1a89b.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\6e0c94d6-942e-4df9-95d7-49bea88d7f6c.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\6fc9710b-6a02-41a5-b1ef-6ced93fc4fe8.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\73590db5-1eae-4e76-b2f1-a779b4792a74.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\78549963-6012-4587-9e54-a2a9c8869f6d.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\796a757e-d5ef-4480-b5ab-0b13e237bf41.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\7c7f5816-a16e-4c16-be15-83744ce744f3.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\7dd5ab36-bb92-4682-a5d6-a36bf8c665ca.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\7fc8a855-bcb8-4efc-9a8e-beb8e62be047.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\8926de95-c849-405c-86c1-979f872bdd52.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\8abe1dd4-b232-4da4-9cb1-0861df90a162.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\8d2d3606-154a-4296-8e9e-72a7caadd775.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\8e11f81c-ecef-4d02-b2e2-a0a24ac8367b.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\8fb89b8d-cfe8-4238-8a92-d920bcd24b70.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\93266e21-2596-4f13-a7b1-ad5570476555.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\932efbc6-68e5-421f-a3bf-e784d6324eb6.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\94e72df5-3de3-42fa-b918-4bfbe0029b4f.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\98443ac3-495e-400a-ab77-204cab90b296.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\9dce4c80-1359-4110-9f33-830aff2f260e.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\9f07bfa8-6327-4eaa-95b2-6fdd82789a17.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\a190dc2d-013f-45e7-8716-52cf24b5443d.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\a34d342d-792c-4a86-b214-668020be0c0a.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\ab56b214-a9e5-4797-9b83-80de8716a53c.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\ad9ebca8-a9ff-4bd8-aa28-b50044cc4688.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\b088907b-d126-42f6-827d-6b72ca5cc75c.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\b1663de1-f49f-453d-b840-82d79e646154.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\b2346b65-151d-4e74-a61a-d2dafd27e278.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\b769709e-227b-4af7-adb1-ea80ed32ce7c.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\b7f08dcf-56b7-41f2-87f1-8b4b1d19e7d6.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\c38c62a1-8e70-4046-bc8e-a7dee889d738.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\c6459962-06ac-4725-902f-54526eeecfad.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\c735e556-a0fc-4dc4-9d31-212a2317289c.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\cbadda4d-8714-4b7c-9cda-bf4f91b04de2.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\ce478efc-d8cb-4df4-88de-04f56d031bc6.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\d3e5496d-f19f-4b70-8b6f-b5ab302b6d05.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\d4df1b0e-59a8-4d93-aad4-78e6bc229e55.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\d8f551bc-88b9-455f-8a6d-1be983b410f0.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\dd6c9927-479b-41f2-a556-e4627130edf0.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\de97c9b3-c1cc-43d2-8003-5c74bcbb4bde.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\de9f783f-1f7d-49f7-ba33-43f808d8ac9c.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\e069a5df-8f9e-47d6-a53b-dba5dd4e618c.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\e1d8bd2d-279c-48a2-8396-42cd7cd97e7d.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\e313699a-cd50-412b-b6a5-56c93da9c87e.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\e3b24302-5106-4e87-9b17-e7faa9b8af6a.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\e44383a4-25a8-4328-9993-7afd5f100245.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\e669b5c4-73df-4a89-ba31-9bc4d3384259.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\e7a2f177-1cc6-490e-a191-01fc514b5c77.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\ea07cb4c-9b2a-4e9f-bf58-20ad67f38dd0.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\eb9a4d79-30b0-4f31-93a0-b7e83859cb15.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\ec3cf557-ce24-45eb-b2b4-21dbf3e70b08.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\ee87801b-0b9d-40e2-bbb4-78af64475eed.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\f4c83ee9-96f7-4be3-9bec-3e9b967ad40a.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\f76d8a8d-808d-4a5f-98d2-ccd628bccb8d.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\f7d4e547-df6f-47d4-9243-491b577ac9d9.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\f930aecf-7b39-498e-8877-38aa45af1f51.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\f9425c78-9b83-4e5d-9b07-749befae012e.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\fd3e638f-b92a-4691-92b7-64e3b01c7c19.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\fe1c72f3-c637-45c6-8526-4ff3fb3aae56.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\Yearly\Adjusted\ffebd72b-0f21-4a55-a08b-fe224f0d7d6e.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Reference\co2_annmean_mlo.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\007774be-e84e-4e6e-aa42-711f1cd32107.csv">
+    <None Update="Temperature\Yearly\Unadjusted\007774be-e84e-4e6e-aa42-711f1cd32107.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\037d438a-0baf-4e5b-a4f5-f0d9d476a4f1.csv">
+    <None Update="Temperature\Yearly\Unadjusted\037d438a-0baf-4e5b-a4f5-f0d9d476a4f1.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\04161d0d-e3d1-499e-81fd-81b9d2574e37.csv">
+    <None Update="Temperature\Yearly\Unadjusted\04161d0d-e3d1-499e-81fd-81b9d2574e37.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\04caaf24-4221-4fac-8ec6-f80cbcd67dd6.csv">
+    <None Update="Temperature\Yearly\Unadjusted\04caaf24-4221-4fac-8ec6-f80cbcd67dd6.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\064b88e4-7d4a-4117-bf4d-19da457a514a.csv">
+    <None Update="Temperature\Yearly\Unadjusted\064b88e4-7d4a-4117-bf4d-19da457a514a.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\0989abf5-beba-490e-b650-eaefd27960c8.csv">
+    <None Update="Temperature\Yearly\Unadjusted\0989abf5-beba-490e-b650-eaefd27960c8.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\0b66ebe6-c73a-4ea3-92e8-cd8c4ae39ca1.csv">
+    <None Update="Temperature\Yearly\Unadjusted\0b66ebe6-c73a-4ea3-92e8-cd8c4ae39ca1.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\0c26cb0b-fb17-4fc4-ad9f-33c3377808fc.csv">
+    <None Update="Temperature\Yearly\Unadjusted\0c26cb0b-fb17-4fc4-ad9f-33c3377808fc.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\0c62f5db-bb55-4a76-97a9-c7fd72735100.csv">
+    <None Update="Temperature\Yearly\Unadjusted\0c62f5db-bb55-4a76-97a9-c7fd72735100.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\0eff81b4-a0c0-4cf3-83f7-28e022e69f3e.csv">
+    <None Update="Temperature\Yearly\Unadjusted\0eff81b4-a0c0-4cf3-83f7-28e022e69f3e.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\1311f36e-78be-4f62-b7d9-b735ad9f3d4f.csv">
+    <None Update="Temperature\Yearly\Unadjusted\1311f36e-78be-4f62-b7d9-b735ad9f3d4f.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\13b68c32-fb18-4112-97a7-6dfe454165d8.csv">
+    <None Update="Temperature\Yearly\Unadjusted\13b68c32-fb18-4112-97a7-6dfe454165d8.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\13dbb455-ef47-4191-83b8-70e07fb1c77c.csv">
+    <None Update="Temperature\Yearly\Unadjusted\13dbb455-ef47-4191-83b8-70e07fb1c77c.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\13e1a71d-d3fc-4d71-9f3c-83e4524d4036.csv">
+    <None Update="Temperature\Yearly\Unadjusted\13e1a71d-d3fc-4d71-9f3c-83e4524d4036.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\1529d6b3-3891-4eda-af7f-0eb60d2bb2b0.csv">
+    <None Update="Temperature\Yearly\Unadjusted\1529d6b3-3891-4eda-af7f-0eb60d2bb2b0.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\1547896c-fe28-4eae-978e-e135ce9c4004.csv">
+    <None Update="Temperature\Yearly\Unadjusted\1547896c-fe28-4eae-978e-e135ce9c4004.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\1b9f5b24-83d8-4aba-bb65-c0cc6244d2ab.csv">
+    <None Update="Temperature\Yearly\Unadjusted\1b9f5b24-83d8-4aba-bb65-c0cc6244d2ab.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\1c21249b-58be-4dd7-a134-1d01d49e6d2f.csv">
+    <None Update="Temperature\Yearly\Unadjusted\1c21249b-58be-4dd7-a134-1d01d49e6d2f.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\1dda0365-bf66-457a-a662-4e75985814fa.csv">
+    <None Update="Temperature\Yearly\Unadjusted\1dda0365-bf66-457a-a662-4e75985814fa.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\1e4ac07c-abcf-409e-9d1a-8dfacd30259d.csv">
+    <None Update="Temperature\Yearly\Unadjusted\1e4ac07c-abcf-409e-9d1a-8dfacd30259d.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\1e571d07-3809-4e33-affc-491bd3505cac.csv">
+    <None Update="Temperature\Yearly\Unadjusted\1e571d07-3809-4e33-affc-491bd3505cac.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\2415436e-1d84-4c07-ab78-0fce43b6ac42.csv">
+    <None Update="Temperature\Yearly\Unadjusted\2415436e-1d84-4c07-ab78-0fce43b6ac42.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\27aad159-7b4c-4458-a922-f42da90cb947.csv">
+    <None Update="Temperature\Yearly\Unadjusted\27aad159-7b4c-4458-a922-f42da90cb947.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\284cf7b2-2a59-4539-8359-5d8e2c39eff4.csv">
+    <None Update="Temperature\Yearly\Unadjusted\284cf7b2-2a59-4539-8359-5d8e2c39eff4.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\28a0c010-ac40-4faa-93eb-dc1d3ae6f5e2.csv">
+    <None Update="Temperature\Yearly\Unadjusted\28a0c010-ac40-4faa-93eb-dc1d3ae6f5e2.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\297ada5a-de95-4ee8-8353-4052f3d4f9d4.csv">
+    <None Update="Temperature\Yearly\Unadjusted\297ada5a-de95-4ee8-8353-4052f3d4f9d4.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\2c42110c-2a1e-4400-9807-c2c455cd559b.csv">
+    <None Update="Temperature\Yearly\Unadjusted\2c42110c-2a1e-4400-9807-c2c455cd559b.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\3399e988-7912-4b97-b6e5-81be54379f56.csv">
+    <None Update="Temperature\Yearly\Unadjusted\3399e988-7912-4b97-b6e5-81be54379f56.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\351d699e-0262-4e16-9d10-13725443952d.csv">
+    <None Update="Temperature\Yearly\Unadjusted\351d699e-0262-4e16-9d10-13725443952d.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\35efb40c-de04-453e-8aee-1f5131ac0550.csv">
+    <None Update="Temperature\Yearly\Unadjusted\35efb40c-de04-453e-8aee-1f5131ac0550.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\37cbc5d7-7f74-4cab-9ac7-26297059d09e.csv">
+    <None Update="Temperature\Yearly\Unadjusted\37cbc5d7-7f74-4cab-9ac7-26297059d09e.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\3b65e449-64fd-4b76-b91c-14fc44fa1b0c.csv">
+    <None Update="Temperature\Yearly\Unadjusted\3b65e449-64fd-4b76-b91c-14fc44fa1b0c.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\3ba90730-0158-4bc9-a356-45eed2b040d2.csv">
+    <None Update="Temperature\Yearly\Unadjusted\3ba90730-0158-4bc9-a356-45eed2b040d2.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\3c2fd6c7-ff63-4b01-9e47-d418fa068735.csv">
+    <None Update="Temperature\Yearly\Unadjusted\3c2fd6c7-ff63-4b01-9e47-d418fa068735.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\3e9ea94c-ac3d-4181-ade4-d08fc2677e57.csv">
+    <None Update="Temperature\Yearly\Unadjusted\3e9ea94c-ac3d-4181-ade4-d08fc2677e57.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\3e9f0557-06c2-48f3-a5d8-ed3c973970bb.csv">
+    <None Update="Temperature\Yearly\Unadjusted\3e9f0557-06c2-48f3-a5d8-ed3c973970bb.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\400a24a8-5974-4615-8dab-89a925a3ecb1.csv">
+    <None Update="Temperature\Yearly\Unadjusted\400a24a8-5974-4615-8dab-89a925a3ecb1.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\4139d157-d054-4417-bab3-f848c73b4157.csv">
+    <None Update="Temperature\Yearly\Unadjusted\4139d157-d054-4417-bab3-f848c73b4157.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\425e09da-c96f-481f-8c51-550d9662d417.csv">
+    <None Update="Temperature\Yearly\Unadjusted\425e09da-c96f-481f-8c51-550d9662d417.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\42711b8f-3568-462a-a542-861bb23fca7b.csv">
+    <None Update="Temperature\Yearly\Unadjusted\42711b8f-3568-462a-a542-861bb23fca7b.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\4675661e-ec68-437f-9e43-a2fe4bf55c2c.csv">
+    <None Update="Temperature\Yearly\Unadjusted\4675661e-ec68-437f-9e43-a2fe4bf55c2c.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\46845ee3-d9ab-4b2e-9c72-e489f483b8b9.csv">
+    <None Update="Temperature\Yearly\Unadjusted\46845ee3-d9ab-4b2e-9c72-e489f483b8b9.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\47da7f5c-1bdc-49a0-8f6f-06601cbe671d.csv">
+    <None Update="Temperature\Yearly\Unadjusted\47da7f5c-1bdc-49a0-8f6f-06601cbe671d.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\4e116444-b6fd-4273-b3a3-ecda490c6c71.csv">
+    <None Update="Temperature\Yearly\Unadjusted\4e116444-b6fd-4273-b3a3-ecda490c6c71.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\597fec6c-458e-4b44-bead-a3bc383d0a18.csv">
+    <None Update="Temperature\Yearly\Unadjusted\597fec6c-458e-4b44-bead-a3bc383d0a18.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\5c68782b-99eb-458c-9b99-5de165aefde8.csv">
+    <None Update="Temperature\Yearly\Unadjusted\5c68782b-99eb-458c-9b99-5de165aefde8.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\5ecfae15-7449-4a74-8209-0ba28d808fad.csv">
+    <None Update="Temperature\Yearly\Unadjusted\5ecfae15-7449-4a74-8209-0ba28d808fad.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\60cd911f-2cc3-4184-a524-1f7a252fdde1.csv">
+    <None Update="Temperature\Yearly\Unadjusted\60cd911f-2cc3-4184-a524-1f7a252fdde1.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\61ec61bc-ba6e-43c4-a2dc-dc639cb672d6.csv">
+    <None Update="Temperature\Yearly\Unadjusted\61ec61bc-ba6e-43c4-a2dc-dc639cb672d6.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\630d58a3-7bce-46c1-8613-eea75bb2613b.csv">
+    <None Update="Temperature\Yearly\Unadjusted\630d58a3-7bce-46c1-8613-eea75bb2613b.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\6399c6ae-037d-45b1-90ae-02f148f00128.csv">
+    <None Update="Temperature\Yearly\Unadjusted\6399c6ae-037d-45b1-90ae-02f148f00128.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\64743257-54c6-4ebe-ba24-0f0557417644.csv">
+    <None Update="Temperature\Yearly\Unadjusted\64743257-54c6-4ebe-ba24-0f0557417644.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\69917d9e-3b13-4f84-bc35-651c11bb8f4b.csv">
+    <None Update="Temperature\Yearly\Unadjusted\69917d9e-3b13-4f84-bc35-651c11bb8f4b.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\69f43561-bb72-4498-8d22-3c0596f1a89b.csv">
+    <None Update="Temperature\Yearly\Unadjusted\69f43561-bb72-4498-8d22-3c0596f1a89b.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\6e0c94d6-942e-4df9-95d7-49bea88d7f6c.csv">
+    <None Update="Temperature\Yearly\Unadjusted\6e0c94d6-942e-4df9-95d7-49bea88d7f6c.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\6fc9710b-6a02-41a5-b1ef-6ced93fc4fe8.csv">
+    <None Update="Temperature\Yearly\Unadjusted\6fc9710b-6a02-41a5-b1ef-6ced93fc4fe8.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\73590db5-1eae-4e76-b2f1-a779b4792a74.csv">
+    <None Update="Temperature\Yearly\Unadjusted\73590db5-1eae-4e76-b2f1-a779b4792a74.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\78549963-6012-4587-9e54-a2a9c8869f6d.csv">
+    <None Update="Temperature\Yearly\Unadjusted\78549963-6012-4587-9e54-a2a9c8869f6d.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\796a757e-d5ef-4480-b5ab-0b13e237bf41.csv">
+    <None Update="Temperature\Yearly\Unadjusted\796a757e-d5ef-4480-b5ab-0b13e237bf41.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\7c7f5816-a16e-4c16-be15-83744ce744f3.csv">
+    <None Update="Temperature\Yearly\Unadjusted\7c7f5816-a16e-4c16-be15-83744ce744f3.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\7dd5ab36-bb92-4682-a5d6-a36bf8c665ca.csv">
+    <None Update="Temperature\Yearly\Unadjusted\7dd5ab36-bb92-4682-a5d6-a36bf8c665ca.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\7fc8a855-bcb8-4efc-9a8e-beb8e62be047.csv">
+    <None Update="Temperature\Yearly\Unadjusted\7fc8a855-bcb8-4efc-9a8e-beb8e62be047.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\8926de95-c849-405c-86c1-979f872bdd52.csv">
+    <None Update="Temperature\Yearly\Unadjusted\8926de95-c849-405c-86c1-979f872bdd52.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\8abe1dd4-b232-4da4-9cb1-0861df90a162.csv">
+    <None Update="Temperature\Yearly\Unadjusted\8abe1dd4-b232-4da4-9cb1-0861df90a162.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\8d2d3606-154a-4296-8e9e-72a7caadd775.csv">
+    <None Update="Temperature\Yearly\Unadjusted\8d2d3606-154a-4296-8e9e-72a7caadd775.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\8e11f81c-ecef-4d02-b2e2-a0a24ac8367b.csv">
+    <None Update="Temperature\Yearly\Unadjusted\8e11f81c-ecef-4d02-b2e2-a0a24ac8367b.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\8fb89b8d-cfe8-4238-8a92-d920bcd24b70.csv">
+    <None Update="Temperature\Yearly\Unadjusted\8fb89b8d-cfe8-4238-8a92-d920bcd24b70.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\93266e21-2596-4f13-a7b1-ad5570476555.csv">
+    <None Update="Temperature\Yearly\Unadjusted\93266e21-2596-4f13-a7b1-ad5570476555.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\932efbc6-68e5-421f-a3bf-e784d6324eb6.csv">
+    <None Update="Temperature\Yearly\Unadjusted\932efbc6-68e5-421f-a3bf-e784d6324eb6.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\94e72df5-3de3-42fa-b918-4bfbe0029b4f.csv">
+    <None Update="Temperature\Yearly\Unadjusted\94e72df5-3de3-42fa-b918-4bfbe0029b4f.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\98443ac3-495e-400a-ab77-204cab90b296.csv">
+    <None Update="Temperature\Yearly\Unadjusted\98443ac3-495e-400a-ab77-204cab90b296.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\9dce4c80-1359-4110-9f33-830aff2f260e.csv">
+    <None Update="Temperature\Yearly\Unadjusted\9dce4c80-1359-4110-9f33-830aff2f260e.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\9f07bfa8-6327-4eaa-95b2-6fdd82789a17.csv">
+    <None Update="Temperature\Yearly\Unadjusted\9f07bfa8-6327-4eaa-95b2-6fdd82789a17.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\a190dc2d-013f-45e7-8716-52cf24b5443d.csv">
+    <None Update="Temperature\Yearly\Unadjusted\a190dc2d-013f-45e7-8716-52cf24b5443d.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\a34d342d-792c-4a86-b214-668020be0c0a.csv">
+    <None Update="Temperature\Yearly\Unadjusted\a34d342d-792c-4a86-b214-668020be0c0a.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\ab56b214-a9e5-4797-9b83-80de8716a53c.csv">
+    <None Update="Temperature\Yearly\Unadjusted\ab56b214-a9e5-4797-9b83-80de8716a53c.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\ad9ebca8-a9ff-4bd8-aa28-b50044cc4688.csv">
+    <None Update="Temperature\Yearly\Unadjusted\ad9ebca8-a9ff-4bd8-aa28-b50044cc4688.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\b088907b-d126-42f6-827d-6b72ca5cc75c.csv">
+    <None Update="Temperature\Yearly\Unadjusted\b088907b-d126-42f6-827d-6b72ca5cc75c.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\b1663de1-f49f-453d-b840-82d79e646154.csv">
+    <None Update="Temperature\Yearly\Unadjusted\b1663de1-f49f-453d-b840-82d79e646154.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\b2346b65-151d-4e74-a61a-d2dafd27e278.csv">
+    <None Update="Temperature\Yearly\Unadjusted\b2346b65-151d-4e74-a61a-d2dafd27e278.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\b769709e-227b-4af7-adb1-ea80ed32ce7c.csv">
+    <None Update="Temperature\Yearly\Unadjusted\b769709e-227b-4af7-adb1-ea80ed32ce7c.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\b7f08dcf-56b7-41f2-87f1-8b4b1d19e7d6.csv">
+    <None Update="Temperature\Yearly\Unadjusted\b7f08dcf-56b7-41f2-87f1-8b4b1d19e7d6.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\c38c62a1-8e70-4046-bc8e-a7dee889d738.csv">
+    <None Update="Temperature\Yearly\Unadjusted\c38c62a1-8e70-4046-bc8e-a7dee889d738.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\c6459962-06ac-4725-902f-54526eeecfad.csv">
+    <None Update="Temperature\Yearly\Unadjusted\c6459962-06ac-4725-902f-54526eeecfad.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\c735e556-a0fc-4dc4-9d31-212a2317289c.csv">
+    <None Update="Temperature\Yearly\Unadjusted\c735e556-a0fc-4dc4-9d31-212a2317289c.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\cbadda4d-8714-4b7c-9cda-bf4f91b04de2.csv">
+    <None Update="Temperature\Yearly\Unadjusted\cbadda4d-8714-4b7c-9cda-bf4f91b04de2.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\ce478efc-d8cb-4df4-88de-04f56d031bc6.csv">
+    <None Update="Temperature\Yearly\Unadjusted\ce478efc-d8cb-4df4-88de-04f56d031bc6.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\d3e5496d-f19f-4b70-8b6f-b5ab302b6d05.csv">
+    <None Update="Temperature\Yearly\Unadjusted\d3e5496d-f19f-4b70-8b6f-b5ab302b6d05.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\d4df1b0e-59a8-4d93-aad4-78e6bc229e55.csv">
+    <None Update="Temperature\Yearly\Unadjusted\d4df1b0e-59a8-4d93-aad4-78e6bc229e55.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\d8f551bc-88b9-455f-8a6d-1be983b410f0.csv">
+    <None Update="Temperature\Yearly\Unadjusted\d8f551bc-88b9-455f-8a6d-1be983b410f0.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\dd6c9927-479b-41f2-a556-e4627130edf0.csv">
+    <None Update="Temperature\Yearly\Unadjusted\dd6c9927-479b-41f2-a556-e4627130edf0.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\de97c9b3-c1cc-43d2-8003-5c74bcbb4bde.csv">
+    <None Update="Temperature\Yearly\Unadjusted\de97c9b3-c1cc-43d2-8003-5c74bcbb4bde.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\de9f783f-1f7d-49f7-ba33-43f808d8ac9c.csv">
+    <None Update="Temperature\Yearly\Unadjusted\de9f783f-1f7d-49f7-ba33-43f808d8ac9c.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\e069a5df-8f9e-47d6-a53b-dba5dd4e618c.csv">
+    <None Update="Temperature\Yearly\Unadjusted\e069a5df-8f9e-47d6-a53b-dba5dd4e618c.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\e1d8bd2d-279c-48a2-8396-42cd7cd97e7d.csv">
+    <None Update="Temperature\Yearly\Unadjusted\e1d8bd2d-279c-48a2-8396-42cd7cd97e7d.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\e313699a-cd50-412b-b6a5-56c93da9c87e.csv">
+    <None Update="Temperature\Yearly\Unadjusted\e313699a-cd50-412b-b6a5-56c93da9c87e.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\e3b24302-5106-4e87-9b17-e7faa9b8af6a.csv">
+    <None Update="Temperature\Yearly\Unadjusted\e3b24302-5106-4e87-9b17-e7faa9b8af6a.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\e44383a4-25a8-4328-9993-7afd5f100245.csv">
+    <None Update="Temperature\Yearly\Unadjusted\e44383a4-25a8-4328-9993-7afd5f100245.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\e669b5c4-73df-4a89-ba31-9bc4d3384259.csv">
+    <None Update="Temperature\Yearly\Unadjusted\e669b5c4-73df-4a89-ba31-9bc4d3384259.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\e7a2f177-1cc6-490e-a191-01fc514b5c77.csv">
+    <None Update="Temperature\Yearly\Unadjusted\e7a2f177-1cc6-490e-a191-01fc514b5c77.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\ea07cb4c-9b2a-4e9f-bf58-20ad67f38dd0.csv">
+    <None Update="Temperature\Yearly\Unadjusted\ea07cb4c-9b2a-4e9f-bf58-20ad67f38dd0.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\eb9a4d79-30b0-4f31-93a0-b7e83859cb15.csv">
+    <None Update="Temperature\Yearly\Unadjusted\eb9a4d79-30b0-4f31-93a0-b7e83859cb15.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\ec3cf557-ce24-45eb-b2b4-21dbf3e70b08.csv">
+    <None Update="Temperature\Yearly\Unadjusted\ec3cf557-ce24-45eb-b2b4-21dbf3e70b08.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\ee87801b-0b9d-40e2-bbb4-78af64475eed.csv">
+    <None Update="Temperature\Yearly\Unadjusted\ee87801b-0b9d-40e2-bbb4-78af64475eed.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\f4c83ee9-96f7-4be3-9bec-3e9b967ad40a.csv">
+    <None Update="Temperature\Yearly\Unadjusted\f4c83ee9-96f7-4be3-9bec-3e9b967ad40a.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\f76d8a8d-808d-4a5f-98d2-ccd628bccb8d.csv">
+    <None Update="Temperature\Yearly\Unadjusted\f76d8a8d-808d-4a5f-98d2-ccd628bccb8d.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\f7d4e547-df6f-47d4-9243-491b577ac9d9.csv">
+    <None Update="Temperature\Yearly\Unadjusted\f7d4e547-df6f-47d4-9243-491b577ac9d9.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\f930aecf-7b39-498e-8877-38aa45af1f51.csv">
+    <None Update="Temperature\Yearly\Unadjusted\f930aecf-7b39-498e-8877-38aa45af1f51.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\f9425c78-9b83-4e5d-9b07-749befae012e.csv">
+    <None Update="Temperature\Yearly\Unadjusted\f9425c78-9b83-4e5d-9b07-749befae012e.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\fd3e638f-b92a-4691-92b7-64e3b01c7c19.csv">
+    <None Update="Temperature\Yearly\Unadjusted\fd3e638f-b92a-4691-92b7-64e3b01c7c19.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\fe1c72f3-c637-45c6-8526-4ff3fb3aae56.csv">
+    <None Update="Temperature\Yearly\Unadjusted\fe1c72f3-c637-45c6-8526-4ff3fb3aae56.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\Unadjusted\ffebd72b-0f21-4a55-a08b-fe224f0d7d6e.csv">
+    <None Update="Temperature\Yearly\Unadjusted\ffebd72b-0f21-4a55-a08b-fe224f0d7d6e.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

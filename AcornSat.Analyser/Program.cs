@@ -1,8 +1,7 @@
-﻿using System.Linq;
+﻿using AcornSat.Analyser.Io;
+using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-
-Regex _tempsRegEx = new Regex(@"\s+(-*\d+)\s+(-*\d+)");
 
 //BuildLocationsFromReferenceData();
 var locations = Location.GetLocations("locations.json");
@@ -36,7 +35,7 @@ foreach (var location in locations)
 
     foreach (var site in siteSet)
     {
-        var rawDataRecords = ReadRawDataFile(site);
+        var rawDataRecords = AcornSatIo.ReadRawDataFile(site);
 
         var minYear = rawDataRecords.Min(x => x.Year);
         var maxYear = rawDataRecords.Max(x => x.Year);
@@ -70,7 +69,7 @@ foreach (var location in locations)
     CreateLocationYearlyAverage(earliestYearInSiteSet, latestYearInSiteSet, "unadjusted", folderName, location.Name, location.Id, siteSet);
     
     {
-        var adjustDailyTemp = CreatedAdjustedAverages(location, folderName, averageDailyFileNameSuffix);
+        var adjustDailyTemp = AcornSatIo.ReadAdjustedTemperatures(location);
 
         using StreamWriter siteDailyOutputFile = new(@$"{folderName}\{location.Id} adjusted {averageDailyFileNameSuffix}.csv");
         siteDailyOutputFile.WriteLine($"Year,YearAverageMin,DaysOfDataMin,YearAverageMax,DaysOfDataMax");
@@ -133,56 +132,7 @@ void CreateLocationYearlyAverage(int earliestYear, int latestYear, string dataTy
     WriteLocationYearAverage(siteSetYear, fileName);
 }
 
-List<TemperatureRecord> CreatedAdjustedAverages(Location location, string folderName, string averageDailyFileNameSuffix)
-{
-    var maximumsFilePath = string.Empty;
-    var minimumsFilePath = string.Empty;
-    foreach (var site in location.Sites)
-    {
-        maximumsFilePath = @$"daily_tmax\tmax.{site}.daily.csv";
-        minimumsFilePath = @$"daily_tmin\tmin.{site}.daily.csv";
 
-        if (File.Exists(maximumsFilePath) && File.Exists(minimumsFilePath))
-        {
-            break;
-        }
-    }
-
-    var maximums = File.ReadAllLines(maximumsFilePath);
-    var minimums = File.ReadAllLines(minimumsFilePath);
-
-    if (maximums.Length != minimums.Length)
-    {
-        throw new Exception("Max and min files are not the same length");
-    }
-
-    var adjustedTemperatureRecord = new List<TemperatureRecord>();
-    for (var i = 2; i < maximums.Length; i++)
-    {
-        var splitMax = maximums[i].Split(',');
-        var splitMin = minimums[i].Split(',');
-
-        var date = DateTime.Parse(splitMax[0]);
-        var minDate = DateTime.Parse(splitMin[0]);
-
-        if (date != minDate)
-        {
-            throw new Exception("Max and min dates do not match");
-        }
-
-        adjustedTemperatureRecord.Add(
-            new TemperatureRecord
-            {
-                Year = (short)date.Year,
-                Month = (short)date.Month,
-                Day = (short)date.Day,
-                Max = string.IsNullOrWhiteSpace(splitMax[1]) ? null : float.Parse(splitMax[1]),
-                Min = string.IsNullOrWhiteSpace(splitMin[1]) ? null : float.Parse(splitMin[1]),
-            });
-    }
-
-    return adjustedTemperatureRecord;
-}
 
 void WriteLocationYearAverage(Dictionary<int, List<YearlyAverageSiteTemps>> siteSetYear, string fileName)
 {
@@ -204,7 +154,7 @@ void WriteLocationYearAverage(Dictionary<int, List<YearlyAverageSiteTemps>> site
     }
 }
 
-void WriteYearData(int year, List<TemperatureRecord> rawDataRecord, StreamWriter siteFile)
+void WriteYearData(int year, List<DailyTemperatureRecord> rawDataRecord, StreamWriter siteFile)
 {
 
     var dailyMin = rawDataRecord
@@ -220,7 +170,7 @@ void WriteYearData(int year, List<TemperatureRecord> rawDataRecord, StreamWriter
     siteFile.WriteLine($"{year},{dailyMin.Average()},{dailyMin.Count},{dailyMax.Average()},{dailyMax.Count}");
 }
 
-void WriteMonthData(int year, List<TemperatureRecord> rawDataRecord, StreamWriter siteFile)
+void WriteMonthData(int year, List<DailyTemperatureRecord> rawDataRecord, StreamWriter siteFile)
 {
     for (int month = 1; month <= 12; month++)
     {
@@ -240,36 +190,7 @@ void WriteMonthData(int year, List<TemperatureRecord> rawDataRecord, StreamWrite
     }
 }
 
-List<TemperatureRecord> ReadRawDataFile(string site)
-{
-    var siteFilePath = @$"raw-data\hqnew{site}.txt";
-    var rawData = File.ReadAllLines(siteFilePath);
-    var rawDataRecords = new List<TemperatureRecord>();
-    foreach (var record in rawData)
-    {
-        var year = short.Parse(record.Substring(6, 4));
-        var month = short.Parse(record.Substring(10, 2));
-        var day = short.Parse(record.Substring(12, 2));
-        var temps = record.Substring(13);
-        var tempGroups = _tempsRegEx.Match(temps).Groups;
 
-        // Some recordings don't have a value for min or max. In that case the entry will be -999. Will make those values null
-        // Temp values are recorded as tenths of degrees C in ACORN-SAT raw data. Divide by 10 to get them into degrees C.
-        // E.g., 222 = 22.2 degrees C
-        float? max = tempGroups[1].Value == "-999" ? null : float.Parse(tempGroups[1].Value) / 10;
-        float? min = tempGroups[2].Value == "-999" ? null : float.Parse(tempGroups[2].Value) / 10;
-
-        rawDataRecords.Add(new TemperatureRecord
-        {
-            Day = day,
-            Month = month,
-            Year = year,
-            Min = min,
-            Max = max,
-        });
-    }
-    return rawDataRecords;
-}
 
 
 void BuildLocationsFromReferenceData()

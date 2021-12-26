@@ -8,7 +8,8 @@ namespace AcornSat.Core
 {
     public class ReferenceData
     {
-        public int Year { get; set; }
+        public short? Month { get; set; }
+        public short Year { get; set; }
         public float Value { get; set; }
     }
 }

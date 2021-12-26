@@ -1,6 +1,6 @@
-﻿public struct YearlyAverageTemps
+﻿public struct YearlyAverageTemps : ITemperatureRecord
 {
-    public int Year { get; set; }
+    public short Year { get; set; }
     public double? Min { get; set; }
     public double? Max { get; set; }
 }

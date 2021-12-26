@@ -3,28 +3,67 @@
 @using Blazorise
 @using Blazorise.Components
 @using Blazorise.Charts
+@using static AcornSat.Core.Enums
 
 <PageTitle>ENSO</PageTitle>
 
 <h1>ENSO</h1>
 
-Measure
-<Select TValue="string" SelectedValue="@SelectedMeasure" SelectedValueChanged="@OnSelectedMeasureChanged">
-    <SelectItem Value="@("mean")">Mean</SelectItem>
-    <SelectItem Value="@("median")">Median</SelectItem>
-    <SelectItem Value="@("mode")">Mode</SelectItem>
-</Select>
+<Row>
+    <Column ColumnSize="ColumnSize.Is2">
+        Index
+        <Select TValue="EnsoIndex" SelectedValue="@SelectedIndex" SelectedValueChanged="@OnSelectedIndexChanged">
+            <SelectItem Value="@EnsoIndex.Mei">MEI.v2</SelectItem>
+            <SelectItem Value="@EnsoIndex.Oni">ONI</SelectItem>
+            <SelectItem Value="@EnsoIndex.Soi">SOI</SelectItem>
+        </Select>
+   </Column>
+   <Column ColumnSize="ColumnSize.Is2">
+        Resolution
+        <Select TValue="DataResolution" SelectedValue="@SelectedResolution" SelectedValueChanged="@OnSelectedResolutionChanged">
+            <SelectItem Value="@DataResolution.Yearly">Yearly</SelectItem>
+            <SelectItem Value="@DataResolution.Monthly">Monthly</SelectItem>
+        </Select>
+   </Column>
+   @if (SelectedResolution == DataResolution.Yearly)
+    {
+       <Column ColumnSize="ColumnSize.Is2">
+        Measure
+        <Select TValue = "string" SelectedValue = "@SelectedMeasure" SelectedValueChanged = "@OnSelectedMeasureChanged">
+                 <SelectItem Value = "@("mean")">Mean</SelectItem>
+                 <SelectItem Value = "@("median")">Median</SelectItem>
+                 <SelectItem Value = "@("mode")" >Mode</SelectItem>
+        </Select>
+        </Column>
+    }
+</Row>
 
 <div style="width: 85%; border: 0.5px dotted; padding: 10px; position: absolute; bottom: 5px;">
     <BarChart @ref="barChart" TItem="float" />
 </div>
 
 @code {
+    DataResolution SelectedResolution;
+    async Task OnSelectedResolutionChanged(DataResolution value)
+    {
+        SelectedResolution = value;
+        EnsoData = (await DataService.GetEnso(SelectedIndex, SelectedResolution, SelectedMeasure)).ToList();
+        await HandleRedraw();
+    }
+
+    EnsoIndex SelectedIndex;
+    async Task OnSelectedIndexChanged(EnsoIndex value)
+    {
+        SelectedIndex = value;
+        EnsoData = (await DataService.GetEnso(SelectedIndex, SelectedResolution, SelectedMeasure)).ToList();
+        await HandleRedraw();
+    }
+
     string SelectedMeasure;
     async Task OnSelectedMeasureChanged(string value)
     {
         SelectedMeasure = value;
-        Mei = (await DataService.GetMeiV2(SelectedMeasure)).ToList();
+        EnsoData = (await DataService.GetEnso(SelectedIndex, SelectedResolution, SelectedMeasure)).ToList();
         await HandleRedraw();
     }
 
@@ -33,11 +72,13 @@ Measure
     [Inject]
     public IDataService DataService { get; set; }
 
-    List<ReferenceData> Mei { get; set; }
+    List<ReferenceData> EnsoData { get; set; }
+
+    List<EnsoMetaData> EnsoMetaData { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        
+        EnsoMetaData = (await DataService.GetEnsoMetaData()).ToList();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -50,10 +91,12 @@ Measure
 
     async Task HandleRedraw()
     {
-        if (Mei == null)
+        if (EnsoData == null)
         {
             return;
         }
+
+        var enso = EnsoMetaData.Single(x => x.Index == SelectedIndex);
 
         await barChart.Clear();
         object chartOptions = new
@@ -61,7 +104,7 @@ Measure
             SpanGaps = true,
             Title = new 
             { 
-                Text = "ENSO MEI.v2",
+                Text = $"ENSO {enso.Name} {(SelectedResolution == DataResolution.Yearly ? "yearly average" : "Monthly")}",
                 Display = true
             },
             Scales = new
@@ -70,25 +113,33 @@ Measure
                 { 
                     new  
                     { 
-                        ScaleLabel = new { LabelString = "MEI.v2 index values", Display = true } 
+                        ScaleLabel = new { LabelString = "Index values", Display = true } 
                     } 
                 },
                 XAxes = new []
                 { 
                     new 
                     { 
-                        ScaleLabel = new { LabelString = "Year", Display = true } 
+                        ScaleLabel = new { LabelString = (SelectedResolution == DataResolution.Yearly ? "Year" : "Month/Year"), Display = true } 
                     } 
                 }       
             }
         };
         await barChart.SetOptionsObject(chartOptions);
 
-        var labels = Mei.Select(x => x.Year.ToString()).ToArray();
+        string[] labels = null;
+        if (SelectedResolution == DataResolution.Yearly)
+        {
+            labels = EnsoData.Select(x => x.Year.ToString()).ToArray();
+        }
+        else
+        {
+            labels = EnsoData.Select(x => $"{x.Month}/{x.Year}").ToArray();
+        }
         await barChart.AddLabels(labels);
 
-        var values = Mei.Select(x => x.Value).ToList();
-        var dataSet = GetBarChartDataset($"MEI V2 {SelectedMeasure} values", values);
+        var values = EnsoData.Select(x => x.Value).ToList();
+        var dataSet = GetBarChartDataset($"{enso.Name} {SelectedMeasure} values", values);
         await barChart.AddDataSet(dataSet);
 
         await barChart.Update();
@@ -98,20 +149,24 @@ Measure
     {
         var count = values.Count;
 
-        var min = values.Min();
-        var max = values.Max();
+        var enso = EnsoMetaData.Single(x => x.Index == SelectedIndex);
+
+        var min = enso.ElNinoOrientation > 0 ? values.Min() : values.Max();
+        var max = enso.ElNinoOrientation > 0 ? values.Max() : values.Min();
 
         var colour = new List<string>();
+
         for (var i = 0; i < count; i++)
         {
             ChartColor chartColor;
-            if (values[i] > 0)
+            var adjustedValueForElNinoOrientation = values[i] * enso.ElNinoOrientation;
+            if (adjustedValueForElNinoOrientation > 0)
             {
-                chartColor = ChartColor.FromRgba((byte)((values[i] / max) * 255), 63, 63, 1f);
+                chartColor = ChartColor.FromRgba((byte)((Math.Abs(adjustedValueForElNinoOrientation / max)) * 255), 31, 31, 1f);
             }
             else
             {
-                chartColor = ChartColor.FromRgba(63, 63, (byte)((values[i] / min) * 255), 1f);
+                chartColor = ChartColor.FromRgba(31, 31, (byte)((Math.Abs(adjustedValueForElNinoOrientation / min)) * 255), 1f);
             }
             colour.Add(chartColor);
         }

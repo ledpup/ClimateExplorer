@@ -1,13 +1,9 @@
-﻿
-public enum DataSetType
-{
-    Unadjusted,
-    Adjusted
-}
-public class DataSet
+﻿using static AcornSat.Core.Enums;
+
+public class DataSet<T> where T : ITemperatureRecord
 {
     public Location Location { get;  set; }
-    public DataSetType Type { get; set; }
-    public List<YearlyAverageTemps> Temperatures { get; set; }
+    public MeasurementType Type { get; set; }
+    public List<T> Temperatures { get; set; }
 }
 
