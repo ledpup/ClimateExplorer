@@ -22,15 +22,22 @@
             DefaultItemText="Select ACORN-SAT Location"
             Style="width: 100%"
             />
-        <Alert Color="Color.Primary" Visible="true">
-            <FieldBody>
-                @SelectedLocation?.Name
-            </FieldBody>
-            <br />
-            <FieldBody>
-                @SelectedLocation?.Coordinates.Latitude°, @SelectedLocation?.Coordinates.Longitude°, @SelectedLocation?.Coordinates.Elevation m
-            </FieldBody>
-        </Alert>
+        @if (SelectedLocation != null)
+        {
+            <Alert Color="Color.Primary" Visible="true">
+                <FieldBody>
+                    @SelectedLocation.Name
+                </FieldBody>
+                <br />
+                <FieldBody>
+                    @SelectedLocation.Coordinates.Latitude°, @SelectedLocation.Coordinates.Longitude°, @SelectedLocation.Coordinates.Elevation m
+                </FieldBody>
+                <br />
+                <FieldBody>
+                    Stations: @string.Join(", ", SelectedLocation.Sites)
+                </FieldBody>
+            </Alert>
+        }
     </Column>
     <Column ColumnSize="ColumnSize.Is1">
         <Alert Color="Color.Secondary" Visible="true">
@@ -44,30 +51,58 @@
             <Check TValue="bool" Checked="@Minimums" CheckedChanged="@OnMinimumsChanged">Minimums</Check>
         </Alert>
     </Column>
-    <Column ColumnSize="ColumnSize.Is1">
-        <Alert Color="Color.Light" Visible="true">
-            Start Year <Validation Validator="ValidateYear"><TextEdit Text="@StartYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnStartYearTextChanged" /></Validation>
-        </Alert>
-    </Column>
-    <Column ColumnSize="ColumnSize.Is1">
-        <Alert Color="Color.Light" Visible="true">
-            End Year <Validation Validator="ValidateYear"><TextEdit Text="@EndYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChanged" /></Validation>
-        </Alert>
-    </Column>
-    <Column ColumnSize="ColumnSize.Is2">
-        <Alert Color="Color.Light" Visible="true">
-            Simple Moving Average<br/>
-            Interval
-            <Select TValue="int" SelectedValue="@SelectedPeriod" SelectedValueChanged="@OnSelectedPeriodChanged">
-                <SelectItem Value="0">None</SelectItem>
-                <SelectItem Value="3">3 years</SelectItem>
-                <SelectItem Value="5">5 years</SelectItem>
-                <SelectItem Value="7">7 years</SelectItem>
-                <SelectItem Value="10">10 years</SelectItem>
-            </Select>
-            <Check TValue="bool" Checked="@SoloSma" CheckedChanged="@OnSoloSmaChanged">Solo</Check>
-        </Alert>
-    </Column>
+    @if (SelectedResolution == DataResolution.Yearly)
+    {
+        <Column ColumnSize="ColumnSize.Is1">
+            <Alert Color="Color.Light" Visible="true">
+                Start Year <Validation Validator="ValidateYear"><TextEdit Text="@StartYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnStartYearTextChanged" /></Validation>
+            </Alert>
+        </Column>
+        <Column ColumnSize="ColumnSize.Is1">
+            <Alert Color="Color.Light" Visible="true">
+                End Year <Validation Validator="ValidateYear"><TextEdit Text="@EndYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChanged" /></Validation>
+            </Alert>
+        </Column>
+        <Column ColumnSize="ColumnSize.Is2">
+            <Alert Color="Color.Light" Visible="true">
+                Simple Moving Average<br/>
+                Interval
+                <Select TValue="int" SelectedValue="@SelectedPeriod" SelectedValueChanged="@OnSelectedPeriodChanged">
+                    <SelectItem Value="0">None</SelectItem>
+                    <SelectItem Value="3">3 years</SelectItem>
+                    <SelectItem Value="5">5 years</SelectItem>
+                    <SelectItem Value="7">7 years</SelectItem>
+                    <SelectItem Value="10">10 years</SelectItem>
+                </Select>
+                <Check TValue="bool" Checked="@SoloSma" CheckedChanged="@OnSoloSmaChanged">Solo</Check>
+            </Alert>
+        </Column>
+    }
+    @if (SelectedResolution != DataResolution.Yearly)
+    {
+        <Column ColumnSize="ColumnSize.Is1">
+            <Alert Color="Color.Light" Visible="true">
+                Resolution
+                <Select TValue="DataResolution" SelectedValue="@SelectedResolution" SelectedValueChanged="@OnSelectedResolutionChanged">
+                    <SelectItem Value="@(DataResolution.Yearly)">Yearly</SelectItem>
+                    <SelectItem Value="@(DataResolution.Monthly)">Monthly</SelectItem>
+                    <SelectItem Value="@(DataResolution.Daily)">Daily</SelectItem>
+                </Select>
+            </Alert>
+        </Column>
+        <Column ColumnSize="ColumnSize.Is2">
+            Selected Station
+            <SelectList
+                TItem="string"
+                TValue="string"
+                Data="@StationsWithData"
+                TextField="@((item)=>item)"
+                ValueField="@((item)=>item)"
+                SelectedValueChanged="@SelectedStationChanged"
+                Style="width: 100%"
+                />
+        </Column>
+    }
 </Row>
 
 <Map @ref="map" MapOptions="mapOptions"></Map>
@@ -88,6 +123,22 @@
 </div>
 
 @code{
+
+    List<string> StationsWithData { get; set; }
+
+    string SelectedStation { get; set; }
+    async Task SelectedStationChanged(string value)
+    {
+        SelectedStation = value;
+        await RenderLocation();
+    }
+
+    DataResolution SelectedResolution { get; set; }
+    async Task OnSelectedResolutionChanged(DataResolution value)
+    {
+        SelectedResolution = value;
+        await RenderLocation();
+    }
 
     int SelectedPeriod;
     async Task OnSelectedPeriodChanged(int value)
@@ -177,7 +228,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        DataResolution = DataResolution.Yearly;
+        SelectedResolution = DataResolution.Yearly;
         Locations = (await DataService.GetLocations()).ToList();
 
         await SelectedLocationChanged(Guid.Parse("e069a5df-8f9e-47d6-a53b-dba5dd4e618c"));
@@ -188,18 +239,18 @@
         }
     }
 
-    protected async Task RenderLocation(DataResolution dataResolution, short? year = null)
+    protected async Task RenderLocation()
     {
         var dataExists = false;
         if (Datasets != null)
         {
-            var existingDatasets = Datasets.Where(x => x.Resolution == dataResolution && x.Location.Id == SelectedLocationId);
+            var existingDatasets = Datasets.Where(x => x.Resolution == SelectedResolution && x.Location.Id == SelectedLocationId);
             dataExists = existingDatasets.Any();
             if (dataExists)
             {
-                if (year != null)
+                if (SelectedYear != null)
                 {
-                    dataExists = existingDatasets.Any(x => x.Temperatures.All(y => y.Year == year));
+                    dataExists = existingDatasets.Any(x => x.Temperatures.All(y => y.Year == SelectedYear));
                 }
             }
         }
@@ -207,11 +258,19 @@
         if (!dataExists)
         {
             Datasets = new List<DataSet>();
-            var adjustedTemps = (await DataService.GetTemperatures(dataResolution, MeasurementType.Adjusted, SelectedLocationId, year)).ToList();
-            Datasets.Add(new DataSet { Resolution = dataResolution, Location = SelectedLocation, Temperatures = adjustedTemps, Type = MeasurementType.Adjusted });
+            var adjustedTemps = (await DataService.GetTemperatures(SelectedResolution, MeasurementType.Adjusted, SelectedLocationId, SelectedYear)).ToList();
+            Datasets.Add(new DataSet { Resolution = SelectedResolution, Location = SelectedLocation, Temperatures = adjustedTemps, Type = MeasurementType.Adjusted });
 
-            var unadjustedTemps = (await DataService.GetTemperatures(dataResolution, MeasurementType.Unadjusted, SelectedLocationId, year)).ToList();
-            Datasets.Add(new DataSet { Resolution = dataResolution, Location = SelectedLocation, Temperatures = unadjustedTemps, Type = MeasurementType.Unadjusted });
+            var unadjustedTemps = (await DataService.GetTemperatures(SelectedResolution, MeasurementType.Unadjusted, SelectedLocationId, SelectedYear)).ToList();
+            Datasets.Add(new DataSet { Resolution = SelectedResolution, Location = SelectedLocation, Temperatures = unadjustedTemps, Type = MeasurementType.Unadjusted });
+
+            StationsWithData = unadjustedTemps
+                                    .Where(x => !string.IsNullOrWhiteSpace(x.Station))
+                                    .GroupBy(y => y.Station).Distinct()
+                                    .Select(x => x.Key)
+                                    .ToList();
+
+            SelectedStation = StationsWithData.FirstOrDefault();
         }
 
         await map.SetView(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
@@ -266,10 +325,10 @@
 
         await lineChart.Clear();
 
-        List<DataSet> bufferedSelectedDataSet = null;
+        List<DataSet> bufferedSelectedDataSet = new List<DataSet>();
         Func<TemperatureRecord, bool> timeConstraint = null;
 
-        if (DataResolution == DataResolution.Yearly)
+        if (SelectedResolution == DataResolution.Yearly)
         {
             var selectedDataSets = Datasets.Where(x => x.Resolution == DataResolution.Yearly && ((Adjusted && x.Type == MeasurementType.Adjusted) || (Unadjusted && x.Type == MeasurementType.Unadjusted)))
                                            .ToList();
@@ -313,11 +372,23 @@
                 labels[i] = (startYear + i).ToString();
             }
         }
-        else if (DataResolution == DataResolution.Daily)
+        else if (SelectedResolution == DataResolution.Daily)
         {
             var selectedDataSets = Datasets.Where(x => x.Resolution == DataResolution.Daily && x.Temperatures.All(y => y.Year == SelectedYear)).ToList();
 
-            bufferedSelectedDataSet = selectedDataSets;
+            foreach (var dataSet in selectedDataSets)
+            {
+                if (dataSet.Type == MeasurementType.Adjusted)
+                {
+                    bufferedSelectedDataSet.Add(dataSet);
+                }
+                else
+                {
+                    var stationDataSet = new DataSet { Location = dataSet.Location, Type = dataSet.Type };
+                    stationDataSet.Temperatures = dataSet.Temperatures.Where(x => x.Station == SelectedStation).ToList();
+                    bufferedSelectedDataSet.Add(stationDataSet);
+                }
+            }
 
             title = $"{SelectedYear} Daily Temperature (in °C) for {SelectedLocation.Name}";
             xLabel = "Date";           
@@ -325,9 +396,9 @@
             timeConstraint = x => x.Year == SelectedYear;
 
             var calendar = new GregorianCalendar();
-            var numberOfDays = calendar.GetDaysInYear(SelectedYear);
+            var numberOfDays = calendar.GetDaysInYear(SelectedYear.Value);
             labels = new string[numberOfDays];
-            var date = new DateOnly(SelectedYear, 1, 1);
+            var date = new DateOnly(SelectedYear.Value, 1, 1);
             for (var i = 0; i < numberOfDays; i++)
             {
                 labels[i] = date.ToString();
@@ -530,7 +601,7 @@
         SelectedLocationId = newValue;
         SelectedLocation = Locations.Single(x => x.Id == SelectedLocationId);
         base.StateHasChanged();
-        await RenderLocation(DataResolution.Yearly);
+        await RenderLocation();
     }
 
     string[] Labels = new string[1];
@@ -557,16 +628,14 @@
     [Inject]
     private IIconFactory IconFactory { get; init; }
 
-    DataResolution DataResolution { get; set; }
-
     async Task OnLineChartClicked(ChartMouseEventArgs e)
     {
         var model = e.Model as LineChartModel;
 
         SelectedYear = (short)(StartYearOfChart + e.Index);
-        DataResolution = DataResolution.Daily;
-        await RenderLocation(DataResolution.Daily, SelectedYear);
+        SelectedResolution = DataResolution.Daily;
+        await RenderLocation();
     }
 
-    short SelectedYear { get; set; }
+    short? SelectedYear { get; set; }
 }

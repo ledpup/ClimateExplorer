@@ -55,7 +55,7 @@ List<TemperatureRecord> GetDailyTemperatures(MeasurementType measurementType, Gu
     }
     else if (measurementType == MeasurementType.Unadjusted)
     {
-        return AcornSatIo.ReadAdjustedTemperatures(location, year);
+        return AcornSatIo.ReadRawDataFile(location, year);
     }
 
     throw new ArgumentException(nameof(measurementType));

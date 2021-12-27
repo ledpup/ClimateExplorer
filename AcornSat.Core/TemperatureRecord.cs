@@ -8,6 +8,7 @@ public struct TemperatureRecord
     public short Year { get; set; }
     public float? Min { get; set; }
     public float? Max { get; set; }
+    public string Station { get; set; }
 
     [JsonIgnore]
     public DateOnly Date { get { return new DateOnly(Year, Month.Value, Day.Value); } }

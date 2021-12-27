@@ -78,17 +78,18 @@ The MEI combines both oceanic and atmospheric variables to form a single index a
 
 https://psl.noaa.gov/enso/mei/
 
-Data
-- meiv2.data 
+- File name: meiv2.data 
 - https://psl.noaa.gov/enso/mei/data/meiv2.data
 - Accessed 2021-12-21
 
 #### Other ENSO indexes
 
-- ONI oni.data.txt
+ONI
+- File name: oni.data.txt
 - https://psl.noaa.gov/data/correlation/oni.data
 - Accessed 2021-12-25
 
-- OSI soi.long.data.txt
+OSI 
+- File name: soi.long.data.txt
 - https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/soi.long.data
 - Accessed 2021-12-25

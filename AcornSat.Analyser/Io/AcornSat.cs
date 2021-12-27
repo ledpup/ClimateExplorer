@@ -9,10 +9,26 @@ namespace AcornSat.Analyser.Io
 {
     public static class AcornSatIo
     {
-        public static List<TemperatureRecord> ReadRawDataFile(string site)
+        public static List<TemperatureRecord> ReadRawDataFile(Location location, int? yearFilter = null)
+        {
+            var siteSet = location.Sites.Where(x => File.Exists(@$"Temperature\Daily\raw-data\hqnew{x}.txt")).ToList();
+
+            List<TemperatureRecord> temperatures = new List<TemperatureRecord>();
+            foreach (var site in siteSet)
+            {
+                var siteTemperatures = ReadRawDataFile(site, yearFilter);
+                if (siteTemperatures.Any())
+                {
+                    temperatures.AddRange(siteTemperatures);
+                }
+            }
+            return temperatures;
+        }
+
+        public static List<TemperatureRecord> ReadRawDataFile(string station, int? yearFilter = null)
         {
             var rawTempsRegEx = new Regex(@"\s+(-*\d+)\s+(-*\d+)");
-            var siteFilePath = @$"Temperature\Daily\raw-data\hqnew{site}.txt";
+            var siteFilePath = @$"Temperature\Daily\raw-data\hqnew{station}.txt";
             var rawData = File.ReadAllLines(siteFilePath);
             var rawDataRecords = new List<TemperatureRecord>();
             foreach (var record in rawData)
@@ -23,6 +39,18 @@ namespace AcornSat.Analyser.Io
                 var temps = record.Substring(13);
                 var tempGroups = rawTempsRegEx.Match(temps).Groups;
 
+                if (yearFilter != null)
+                {
+                    if (year < yearFilter)
+                    {
+                        continue;
+                    }
+                    else if (year > yearFilter)
+                    {
+                        break;
+                    }
+                }
+
                 // Some recordings don't have a value for min or max. In that case the entry will be -999. Will make those values null
                 // Temp values are recorded as tenths of degrees C in ACORN-SAT raw data. Divide by 10 to get them into degrees C.
                 // E.g., 222 = 22.2 degrees C
@@ -31,6 +59,7 @@ namespace AcornSat.Analyser.Io
 
                 rawDataRecords.Add(new TemperatureRecord
                 {
+                    Station = station,
                     Day = day,
                     Month = month,
                     Year = year,
