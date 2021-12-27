@@ -25,6 +25,13 @@
             <SelectItem Value="@DataResolution.Monthly">Monthly</SelectItem>
         </Select>
    </Column>
+   <Column ColumnSize="ColumnSize.Is2">
+        Chart Type
+        <Select TValue="ChartType" SelectedValue="@SelectedChartType" SelectedValueChanged="@OnSelectedChartTypeChanged">
+            <SelectItem Value="@ChartType.Bar">Bar</SelectItem>
+            <SelectItem Value="@ChartType.Line">Line</SelectItem>
+        </Select>
+   </Column>
    @if (SelectedResolution == DataResolution.Yearly)
     {
        <Column ColumnSize="ColumnSize.Is2">
@@ -39,10 +46,18 @@
 </Row>
 
 <div style="width: 85%; border: 0.5px dotted; padding: 10px; position: absolute; bottom: 5px;">
-    <BarChart @ref="barChart" TItem="float" />
+    <Chart @ref="chart" TItem="float" Type="@SelectedChartType" />
 </div>
 
 @code {
+    
+    ChartType SelectedChartType = ChartType.Bar;
+    async Task OnSelectedChartTypeChanged(ChartType value)
+    {
+        SelectedChartType = value;
+        await HandleRedraw();
+    }
+
     DataResolution SelectedResolution;
     async Task OnSelectedResolutionChanged(DataResolution value)
     {
@@ -67,7 +82,7 @@
         await HandleRedraw();
     }
 
-    BarChart<float> barChart;
+    Chart<float> chart;
 
     [Inject]
     public IDataService DataService { get; set; }
@@ -98,13 +113,12 @@
 
         var enso = EnsoMetaData.Single(x => x.Index == SelectedIndex);
 
-        await barChart.Clear();
         object chartOptions = new
         {
             SpanGaps = true,
             Title = new 
             { 
-                Text = $"ENSO {enso.Name} {(SelectedResolution == DataResolution.Yearly ? "yearly average" : "Monthly")}",
+                Text = $"ENSO {enso.Name} {(SelectedResolution == DataResolution.Yearly ? "Yearly Average" : "Monthly")}",
                 Display = true
             },
             Scales = new
@@ -125,7 +139,6 @@
                 }       
             }
         };
-        await barChart.SetOptionsObject(chartOptions);
 
         string[] labels = null;
         if (SelectedResolution == DataResolution.Yearly)
@@ -136,16 +149,27 @@
         {
             labels = EnsoData.Select(x => $"{x.Month}/{x.Year}").ToArray();
         }
-        await barChart.AddLabels(labels);
 
         var values = EnsoData.Select(x => x.Value).ToList();
-        var dataSet = GetBarChartDataset($"{enso.Name} {SelectedMeasure} values", values);
-        await barChart.AddDataSet(dataSet);
 
-        await barChart.Update();
+        await chart.Clear();
+        await chart.SetOptionsObject(chartOptions);
+        await chart.AddLabels(labels);
+        if (SelectedChartType == ChartType.Bar)
+        {
+
+            var dataSet = GetBarChartDataset($"{enso.Name} {SelectedMeasure} values", values);
+            await chart.AddDataSet(dataSet);
+        }
+        else
+        {
+            var dataSet = GetLineChartDataset($"{enso.Name} {SelectedMeasure} values", values);
+            await chart.AddDataSet(dataSet);
+        }
+        await chart.Update();
     }
 
-    BarChartDataset<float> GetBarChartDataset(string label, List<float> values)
+    List<string> GetColourSet(List<float> values)
     {
         var count = values.Count;
 
@@ -155,7 +179,6 @@
         var max = enso.ElNinoOrientation > 0 ? values.Max() : values.Min();
 
         var colour = new List<string>();
-
         for (var i = 0; i < count; i++)
         {
             ChartColor chartColor;
@@ -171,12 +194,37 @@
             colour.Add(chartColor);
         }
 
+        return colour;
+    }
+
+    BarChartDataset<float> GetBarChartDataset(string label, List<float> values)
+    {
+        var colour = GetColourSet(values);
+
         return new BarChartDataset<float>
                     {
                         Label = label,
                         Data = values,
                         BorderColor = colour,
                         BackgroundColor = colour,
+                    };
+    }
+
+    LineChartDataset<float> GetLineChartDataset(string label, List<float> values)
+    {
+        var colour = GetColourSet(values);
+
+        return new LineChartDataset<float>
+                    {
+                        Label = label,
+                        Data = values,
+                        //BorderColor = colour,
+                        BackgroundColor = colour,
+                        //PointBackgroundColor = colour,
+                        Fill = true,
+                        PointRadius = 2,
+                        BorderDash = new List<int> { },
+                        LineTension = 0.1f,
                     };
     }
 }

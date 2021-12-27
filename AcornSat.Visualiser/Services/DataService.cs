@@ -11,14 +11,14 @@ public class DataService : IDataService
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<YearlyAverageTemps>> GetYearlyTemperatures(MeasurementType measurementType, Guid locationId)
+    public async Task<IEnumerable<TemperatureRecord>> GetTemperatures(DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year)
     {
-        return await _httpClient.GetFromJsonAsync<YearlyAverageTemps[]>($"temperature/yearly/{measurementType}/{locationId}");
-    }
-
-    public async Task<IEnumerable<DailyTemperatureRecord>> GetDailyTemperatures(MeasurementType measurementType, Guid locationId, int year)
-    {
-        return await _httpClient.GetFromJsonAsync<DailyTemperatureRecord[]>($"temperature/daily/{measurementType}/{locationId}/{year}");
+        var url = $"temperature/{resolution}/{measurementType}/{locationId}";
+        if (year != null)
+        {
+            url += $"?year={year}";
+        }
+        return await _httpClient.GetFromJsonAsync<TemperatureRecord[]>(url);
     }
 
     public async Task<IEnumerable<Location>> GetLocations()

@@ -12,14 +12,14 @@ namespace AcornSat.Core
         {
             _windowSize = windowSize;
         }
-        private Queue<double?> samples = new Queue<double?>();
+        private Queue<float?> samples = new Queue<float?>();
         private int _windowSize = 5;
 
-        public double? AddSample(double? value)
+        public float? AddSample(float? value)
         {
             if (value == null)
             {
-                samples = new Queue<double?>();
+                samples = new Queue<float?>();
                 return null;
             }
 
@@ -38,10 +38,10 @@ namespace AcornSat.Core
             return null;
         }
 
-        public static List<double?> Calculate(int windowSize, List<double?> values)
+        public static List<float?> Calculate(int windowSize, List<float?> values)
         {
             var ma = new SimpleMovingAverage(windowSize);
-            var movingAverageValues = new List<double?>();
+            var movingAverageValues = new List<float?>();
             values.ForEach(x => movingAverageValues.Add(ma.AddSample(x)));
             return movingAverageValues;
         }

@@ -27,15 +27,26 @@ app.MapGet("/", () => @"Hello, from minimal ACORN-SAT Web API!
                         Call /location for list of locations.
                         Call /temperature/yearly/{temperatureType}/{locationId} for yearly temperature records at locationId.");
 app.MapGet("/location", () => Location.GetLocations(@"Locations.json"));
-app.MapGet("/temperature/yearly/{measurementType}/{locationId}/", (MeasurementType measurementType, Guid locationId) => GetYearlyTemperatures(measurementType, locationId));
-app.MapGet("/temperature/daily/{measurementType}/{locationId}/{year}", (MeasurementType measurementType, Guid locationId, int year) => GetDailyTemperatures(measurementType, locationId, year));
+app.MapGet("/temperature/{resolution}/{measurementType}/{locationId}", (DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year) => GetTemperatures(resolution, measurementType, locationId, year));
 app.MapGet("/reference/co2/", () => GetCarbonDioxide());
 app.MapGet("/reference/enso/{index}/{resolution}", (EnsoIndex index, DataResolution resolution, string measure) => GetEnso(index, resolution, measure));
 app.MapGet("/reference/enso-metadata", () => GetEnsoMetaData());
 
 app.Run();
 
-List<DailyTemperatureRecord> GetDailyTemperatures(MeasurementType measurementType, Guid locationId, int year)
+List<TemperatureRecord> GetTemperatures(DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year)
+{
+    if (resolution == DataResolution.Daily)
+    {
+        return GetDailyTemperatures(measurementType, locationId, year.Value);
+    }
+    else
+    {
+        return GetYearlyTemperatures(measurementType, locationId);
+    }
+}
+
+List<TemperatureRecord> GetDailyTemperatures(MeasurementType measurementType, Guid locationId, short year)
 {
     var location = Location.GetLocations(@"Locations.json").Single(x => x.Id == locationId);
     if (measurementType == MeasurementType.Adjusted)
@@ -50,25 +61,25 @@ List<DailyTemperatureRecord> GetDailyTemperatures(MeasurementType measurementTyp
     throw new ArgumentException(nameof(measurementType));
 }
 
-List<YearlyAverageTemps> GetYearlyTemperatures(MeasurementType measurementType, Guid locationId)
+List<TemperatureRecord> GetYearlyTemperatures(MeasurementType measurementType, Guid locationId)
 {
     var records = File.ReadAllLines($@"Temperature\Yearly\{measurementType}\{locationId}.csv")
         .ToList();
 
     records = records.Take(new Range(1, records.Count)).ToList();
 
-    var list = new List<YearlyAverageTemps>();
+    var list = new List<TemperatureRecord>();
 
     foreach (var record in records)
     {
         var splitRow = record.Split(',');
 
         list.Add(
-            new YearlyAverageTemps
+            new TemperatureRecord
             {
                 Year = short.Parse(splitRow[0]),
-                Min = string.IsNullOrWhiteSpace(splitRow[1]) ? null : double.Parse(splitRow[1]),
-                Max = string.IsNullOrWhiteSpace(splitRow[2]) ? null : double.Parse(splitRow[2]),
+                Min = string.IsNullOrWhiteSpace(splitRow[1]) ? null : float.Parse(splitRow[1]),
+                Max = string.IsNullOrWhiteSpace(splitRow[2]) ? null : float.Parse(splitRow[2]),
             }
         );
     }
@@ -78,7 +89,7 @@ List<YearlyAverageTemps> GetYearlyTemperatures(MeasurementType measurementType, 
 
 List<ReferenceData> GetCarbonDioxide()
 {
-    var records = File.ReadAllLines($@"Reference\co2_annmean_mlo.csv").ToList();
+    var records = File.ReadAllLines($@"Reference\CO2\co2_annmean_mlo.csv").ToList();
     records = records.Take(new Range(56, records.Count)).ToList();
 
     var list = new List<ReferenceData>();

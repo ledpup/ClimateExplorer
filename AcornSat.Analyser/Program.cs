@@ -154,7 +154,7 @@ void WriteLocationYearAverage(Dictionary<int, List<YearlyAverageSiteTemps>> site
     }
 }
 
-void WriteYearData(int year, List<DailyTemperatureRecord> rawDataRecord, StreamWriter siteFile)
+void WriteYearData(int year, List<TemperatureRecord> rawDataRecord, StreamWriter siteFile)
 {
 
     var dailyMin = rawDataRecord
@@ -170,7 +170,7 @@ void WriteYearData(int year, List<DailyTemperatureRecord> rawDataRecord, StreamW
     siteFile.WriteLine($"{year},{dailyMin.Average()},{dailyMin.Count},{dailyMax.Average()},{dailyMax.Count}");
 }
 
-void WriteMonthData(int year, List<DailyTemperatureRecord> rawDataRecord, StreamWriter siteFile)
+void WriteMonthData(int year, List<TemperatureRecord> rawDataRecord, StreamWriter siteFile)
 {
     for (int month = 1; month <= 12; month++)
     {

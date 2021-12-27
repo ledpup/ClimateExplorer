@@ -15,6 +15,9 @@
     <ProjectReference Include="..\AcornSat.Core\AcornSat.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="Reference\CO2\co2_mm_mlo.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Reference\ENSO\meiv2.data">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -1680,7 +1683,7 @@
     <None Update="Temperature\Yearly\Adjusted\ffebd72b-0f21-4a55-a08b-fe224f0d7d6e.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Reference\co2_annmean_mlo.csv">
+    <None Update="Reference\CO2\co2_annmean_mlo.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Temperature\Yearly\Unadjusted\007774be-e84e-4e6e-aa42-711f1cd32107.csv">

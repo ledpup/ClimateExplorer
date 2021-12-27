@@ -9,12 +9,12 @@ namespace AcornSat.Analyser.Io
 {
     public static class AcornSatIo
     {
-        public static List<DailyTemperatureRecord> ReadRawDataFile(string site)
+        public static List<TemperatureRecord> ReadRawDataFile(string site)
         {
             var rawTempsRegEx = new Regex(@"\s+(-*\d+)\s+(-*\d+)");
             var siteFilePath = @$"Temperature\Daily\raw-data\hqnew{site}.txt";
             var rawData = File.ReadAllLines(siteFilePath);
-            var rawDataRecords = new List<DailyTemperatureRecord>();
+            var rawDataRecords = new List<TemperatureRecord>();
             foreach (var record in rawData)
             {
                 var year = short.Parse(record.Substring(6, 4));
@@ -29,7 +29,7 @@ namespace AcornSat.Analyser.Io
                 float? max = tempGroups[1].Value == "-999" ? null : float.Parse(tempGroups[1].Value) / 10;
                 float? min = tempGroups[2].Value == "-999" ? null : float.Parse(tempGroups[2].Value) / 10;
 
-                rawDataRecords.Add(new DailyTemperatureRecord
+                rawDataRecords.Add(new TemperatureRecord
                 {
                     Day = day,
                     Month = month,
@@ -41,7 +41,7 @@ namespace AcornSat.Analyser.Io
             return rawDataRecords;
         }
 
-        public static List<DailyTemperatureRecord> ReadAdjustedTemperatures(Location location, int? year = null)
+        public static List<TemperatureRecord> ReadAdjustedTemperatures(Location location, int? year = null)
         {
             var maximumsFilePath = string.Empty;
             var minimumsFilePath = string.Empty;
@@ -64,7 +64,7 @@ namespace AcornSat.Analyser.Io
                 throw new Exception("Max and min files are not the same length");
             }
 
-            var adjustedTemperatureRecords = new List<DailyTemperatureRecord>();
+            var adjustedTemperatureRecords = new List<TemperatureRecord>();
             for (var i = 2; i < maximums.Length; i++)
             {
                 var splitMax = maximums[i].Split(',');
@@ -91,7 +91,7 @@ namespace AcornSat.Analyser.Io
                 }
 
                 adjustedTemperatureRecords.Add(
-                    new DailyTemperatureRecord
+                    new TemperatureRecord
                     {
                         Year = (short)date.Year,
                         Month = (short)date.Month,
