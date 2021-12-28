@@ -111,9 +111,10 @@ List<EnsoMetaData> GetEnsoMetaData()
 {
     var ensos = new List<EnsoMetaData>()
     {
-        new EnsoMetaData { Index = EnsoIndex.Mei, ElNinoOrientation = 1, Name = "MEI.v2", Url = "https://psl.noaa.gov/enso/mei/data/meiv2.data" },
-        new EnsoMetaData { Index = EnsoIndex.Oni, ElNinoOrientation = 1, Name = "ONI", Url ="https://psl.noaa.gov/data/correlation/oni.data" },
-        new EnsoMetaData { Index = EnsoIndex.Soi, ElNinoOrientation = -1, Name = "OSI", Url = "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/soi.long.data" },
+        new EnsoMetaData { Index = EnsoIndex.Mei, ElNinoOrientation = 1, Name = "Multivariate ENSO index (MEI)", ShortName = "MEI.v2", FileName = "meiv2.data", Url = "https://psl.noaa.gov/enso/mei/data/meiv2.data" },
+        new EnsoMetaData { Index = EnsoIndex.Nino34, ElNinoOrientation = 1, Name = "Niño 3.4", ShortName = "Niño 3.4", FileName = "nino34.long.anom.data.txt", Url ="https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/nino34.long.anom.data" },
+        new EnsoMetaData { Index = EnsoIndex.Oni, ElNinoOrientation = 1, Name = "Oceanic Niño Index (ONI)", ShortName = "ONI", FileName = "oni.data.txt", Url ="https://psl.noaa.gov/data/correlation/oni.data" },
+        new EnsoMetaData { Index = EnsoIndex.Soi, ElNinoOrientation = -1, Name = "Southern Oscillation Index (SOI)", ShortName = "SOI", FileName = "soi.long.data.txt", Url = "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/soi.long.data" },
     };
 
     return ensos;
@@ -122,19 +123,11 @@ List<EnsoMetaData> GetEnsoMetaData()
 List<ReferenceData> GetEnso(EnsoIndex index, DataResolution resolution, string measure)
 {
     List<string> records = null;
-    switch (index)
-    {
-        case EnsoIndex.Mei:
-            records = File.ReadAllLines($@"Reference\ENSO\meiv2.data").ToList();
-            break;
-        case EnsoIndex.Oni:
-            records = File.ReadAllLines($@"Reference\ENSO\oni.data.txt").ToList();
-            break;
-        case EnsoIndex.Soi:
-            records = File.ReadAllLines($@"Reference\ENSO\soi.long.data.txt").ToList();
-            break;
-    }
-    records = records.ToList();
+
+    var ensoMetaData = GetEnsoMetaData().Single(x => x.Index == index);
+
+    records = File.ReadAllLines($@"Reference\ENSO\{ensoMetaData.FileName}").ToList();
+
 
     var regEx = new Regex(@"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)");
 

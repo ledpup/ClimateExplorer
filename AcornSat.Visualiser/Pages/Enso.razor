@@ -10,12 +10,13 @@
 <h1>ENSO</h1>
 
 <Row>
-    <Column ColumnSize="ColumnSize.Is2">
+    <Column ColumnSize="ColumnSize.Is3">
         Index
         <Select TValue="EnsoIndex" SelectedValue="@SelectedIndex" SelectedValueChanged="@OnSelectedIndexChanged">
-            <SelectItem Value="@EnsoIndex.Mei">MEI.v2</SelectItem>
-            <SelectItem Value="@EnsoIndex.Oni">ONI</SelectItem>
-            <SelectItem Value="@EnsoIndex.Soi">SOI</SelectItem>
+            <SelectItem Value="@EnsoIndex.Mei">Multivariate ENSO index (MEI.v2)</SelectItem>
+            <SelectItem Value="@EnsoIndex.Nino34">Niño 3.4</SelectItem>
+            <SelectItem Value="@EnsoIndex.Oni">Oceanic Niño Index (ONI)</SelectItem>
+            <SelectItem Value="@EnsoIndex.Soi">Southern Oscillation Index (SOI)</SelectItem>
         </Select>
    </Column>
    <Column ColumnSize="ColumnSize.Is2">
@@ -25,13 +26,13 @@
             <SelectItem Value="@DataResolution.Monthly">Monthly</SelectItem>
         </Select>
    </Column>
-   <Column ColumnSize="ColumnSize.Is2">
+@*   <Column ColumnSize="ColumnSize.Is2">
         Chart Type
         <Select TValue="ChartType" SelectedValue="@SelectedChartType" SelectedValueChanged="@OnSelectedChartTypeChanged">
             <SelectItem Value="@ChartType.Bar">Bar</SelectItem>
             <SelectItem Value="@ChartType.Line">Line</SelectItem>
         </Select>
-   </Column>
+   </Column>*@
    @if (SelectedResolution == DataResolution.Yearly)
     {
        <Column ColumnSize="ColumnSize.Is2">
@@ -158,12 +159,12 @@
         if (SelectedChartType == ChartType.Bar)
         {
 
-            var dataSet = GetBarChartDataset($"{enso.Name} {SelectedMeasure} values", values);
+            var dataSet = GetBarChartDataset($"{enso.ShortName} {SelectedMeasure} values", values);
             await chart.AddDataSet(dataSet);
         }
         else
         {
-            var dataSet = GetLineChartDataset($"{enso.Name} {SelectedMeasure} values", values);
+            var dataSet = GetLineChartDataset($"{enso.ShortName} {SelectedMeasure} values", values);
             await chart.AddDataSet(dataSet);
         }
         await chart.Update();

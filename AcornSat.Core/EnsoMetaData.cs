@@ -11,7 +11,9 @@ namespace AcornSat.Core
     {
         public EnsoIndex Index { get; set; }
         public string Name { get; set; }
+        public string ShortName { get; set; }
         public short ElNinoOrientation { get; set; }
+        public string FileName { get; set; }
         public string Url { get; set; }
     }
 }

@@ -24,6 +24,7 @@ namespace AcornSat.Core
         public enum EnsoIndex
         {
             Mei,
+            Nino34,
             Oni,
             Soi,
         }
