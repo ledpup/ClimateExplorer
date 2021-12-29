@@ -1,6 +1,6 @@
 using AcornSat.Visualiser;
 using Blazorise;
-using Blazorise.Bootstrap;
+using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
 using FisSst.BlazorMaps.DependencyInjection;
 using Microsoft.AspNetCore.Components.Web;
@@ -15,7 +15,7 @@ builder.Services
     {
         options.ChangeTextOnKeyPress = true;
     })
-    .AddBootstrapProviders()
+    .AddBootstrap5Providers()
     .AddFontAwesomeIcons()
     .AddBlazorLeafletMaps()
     .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })

@@ -1,57 +1,59 @@
 ﻿@page "/fetchdata"
-@inject HttpClient Http
+@using Blazorise
+@using Blazorise.Components
 
 <PageTitle>Weather forecast</PageTitle>
 
 <h1>Weather forecast</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
 
-@if (forecasts == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+<Column ColumnSize="ColumnSize.Is3">
+    <Autocomplete TItem="Year"
+            TValue="short"
+            Data="@DataYears"
+            TextField="@((item) => item.Text)"
+            ValueField="@((item) => item.Value)"
+            Placeholder="Search..."
+            Multiple
+            FreeTyping
+            SelectedValuesChanged="@OnSelectedValuesChanged"
+            SelectedValues="@multipleSelectionData"
+            SelectedTexts="@multipleSelectionTexts"
+    >
+        <NotFoundContent>@context was not found</NotFoundContent>
+    </Autocomplete>
+</Column>
+
+<Field Horizontal="true">
+    <FieldBody ColumnSize="ColumnSize.Is12">
+        Selected Values: @string.Join(',', multipleSelectionData)
+    </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is12">
+        Selected Texts: @string.Join(',', multipleSelectionTexts)
+    </FieldBody>
+</Field>
 
 @code {
-    private WeatherForecast[]? forecasts;
+    public class Year
+    {
+        public string Text { get; set; }
+        public short Value { get; set; }
+    }
+
+    List<Year> DataYears { get; set; }
+    List<short> multipleSelectionData;
+    List<string> multipleSelectionTexts = new();
+
+    async Task OnSelectedValuesChanged(List<short> values)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
-    }
-
-    public class WeatherForecast
-    {
-        public DateTime Date { get; set; }
-
-        public int TemperatureC { get; set; }
-
-        public string? Summary { get; set; }
-
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        //DataYears = new List<short> { 1930, 1931 };
+        DataYears = new List<Year> { new Year { Text = "1930", Value = 1930 }, new Year { Text = "1931", Value = 1931 } };
+        multipleSelectionData = new List<short> { 1930 };
+        multipleSelectionTexts = multipleSelectionData.Select(x => x.ToString()).ToList();
     }
 }
