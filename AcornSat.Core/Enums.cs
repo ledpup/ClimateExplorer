@@ -12,6 +12,7 @@ namespace AcornSat.Core
         {
             Yearly,
             Monthly,
+            Weekly,
             Daily,
         }
 

@@ -2,58 +2,56 @@
 @using Blazorise
 @using Blazorise.Components
 
-<PageTitle>Weather forecast</PageTitle>
+<PageTitle>Autocomplete test</PageTitle>
 
-<h1>Weather forecast</h1>
+<h1>Autocomplete test</h1>
 
 
 <Column ColumnSize="ColumnSize.Is3">
-    <Autocomplete TItem="Year"
+    <Autocomplete TItem="short"
             TValue="short"
             Data="@DataYears"
-            TextField="@((item) => item.Text)"
-            ValueField="@((item) => item.Value)"
+            TextField="@((item) => item.ToString())"
+            ValueField="@((item) => item)"
             Placeholder="Search..."
             Multiple
-            FreeTyping
             SelectedValuesChanged="@OnSelectedValuesChanged"
-            SelectedValues="@multipleSelectionData"
+            SelectedValues="@SelectedYears"
             SelectedTexts="@multipleSelectionTexts"
-    >
+            Filter="AutocompleteFilter.StartsWith">
         <NotFoundContent>@context was not found</NotFoundContent>
     </Autocomplete>
 </Column>
 
 <Field Horizontal="true">
     <FieldBody ColumnSize="ColumnSize.Is12">
-        Selected Values: @string.Join(',', multipleSelectionData)
-    </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is12">
-        Selected Texts: @string.Join(',', multipleSelectionTexts)
+        Selected Values: @string.Join(',', SelectedYears)
     </FieldBody>
 </Field>
 
 @code {
-    public class Year
-    {
-        public string Text { get; set; }
-        public short Value { get; set; }
-    }
-
-    List<Year> DataYears { get; set; }
-    List<short> multipleSelectionData;
+    List<short> DataYears { get; set; }
+    List<short> SelectedYears;
     List<string> multipleSelectionTexts = new();
 
     async Task OnSelectedValuesChanged(List<short> values)
     {
+        var validValues = new List<short>();
+        foreach (var value in values)
+        {
+            if (DataYears.Any(x => x == value))
+            {
+                validValues.Add(value);
+            }
+        }
+        SelectedYears = validValues;
         await InvokeAsync(StateHasChanged);
     }
 
     protected override async Task OnInitializedAsync()
     {
-        //DataYears = new List<short> { 1930, 1931 };
-        DataYears = new List<Year> { new Year { Text = "1930", Value = 1930 }, new Year { Text = "1931", Value = 1931 } };
-        multipleSelectionData = new List<short> { 1930 };
-        multipleSelectionTexts = multipleSelectionData.Select(x => x.ToString()).ToList();
+        DataYears = new List<short> { 1930, 1931 };
+        
+        SelectedYears = new List<short> { 1930 };
     }
 }

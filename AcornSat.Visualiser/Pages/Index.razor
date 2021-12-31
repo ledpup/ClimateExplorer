@@ -78,6 +78,21 @@
             </Alert>
         </Column>
     }
+    <Column ColumnSize="ColumnSize.Is2">
+        Selected year(s)
+        <Autocomplete TItem="short"
+                TValue="short"
+                Data="@DatasetYears"
+                TextField="@((item) => item.ToString())"
+                ValueField="@((item) => item)"
+                Placeholder="Search..."
+                Multiple
+                SelectedValuesChanged="@OnSelectedYearsChanged"
+                SelectedValues="@SelectedYears"
+                SelectedTexts="@SelectedYearsText">
+            <NotFoundContent>@context was not found</NotFoundContent>
+        </Autocomplete>
+    </Column>
     @if (SelectedResolution != DataResolution.Yearly)
     {
         <Column ColumnSize="ColumnSize.Is1">
@@ -90,7 +105,8 @@
                 </Select>
             </Alert>
         </Column>
-        <Column ColumnSize="ColumnSize.Is2">
+
+        <Column ColumnSize="ColumnSize.Is1">
             Selected Station
             <SelectList
                 TItem="string"
@@ -124,20 +140,52 @@
 
 @code{
 
+    List<string> SelectedYearsText = new();
+    List<short> DatasetYears { get; set; }
+    List<short> SelectedYears;
+
+    async Task OnSelectedYearsChanged(List<short> values)
+    {
+        if (values.Count == 0 || values[0] == 0)
+        {
+            return;
+        }
+
+        var validValues = new List<short>();
+        foreach (var value in values)
+        {
+            if (DatasetYears.Any(x => x == value))
+            {
+                validValues.Add(value);
+            }
+        }
+        SelectedYears = validValues;
+
+        SelectedResolution = DataResolution.Daily; // this will have to be changed
+
+        await InvokeAsync(StateHasChanged);
+        await BuildLocationDataSets();
+    }
+
     List<string> StationsWithData { get; set; }
 
     string SelectedStation { get; set; }
     async Task SelectedStationChanged(string value)
     {
         SelectedStation = value;
-        await RenderLocation();
+        await BuildLocationDataSets();
     }
 
     DataResolution SelectedResolution { get; set; }
     async Task OnSelectedResolutionChanged(DataResolution value)
     {
         SelectedResolution = value;
-        await RenderLocation();
+        if (SelectedResolution == DataResolution.Yearly)
+        {
+            SelectedYearsText = new();
+            SelectedYears = new List<short>();
+        }
+        await BuildLocationDataSets();
     }
 
     int SelectedPeriod;
@@ -193,9 +241,10 @@
     [Inject]
     public IDataService DataService { get; set; }
 
-    public List<DataSet> Datasets { get; set; }
-    public IEnumerable<Location> Locations;
+    List<DataSet> Datasets { get; set; }
+    IEnumerable<Location> Locations;
     List<Marker> MapMarkers;
+    ColourServer colours = new ColourServer();
 
     async Task CreateMapMarkers()
     {
@@ -228,50 +277,65 @@
 
     protected override async Task OnInitializedAsync()
     {
+
         SelectedResolution = DataResolution.Yearly;
         Locations = (await DataService.GetLocations()).ToList();
-
-        await SelectedLocationChanged(Guid.Parse("e069a5df-8f9e-47d6-a53b-dba5dd4e618c"));
 
         if (MapMarkers == null)
         {
             await CreateMapMarkers();
         }
+        Datasets = new List<DataSet>();
+        SelectedYears = new List<short>();
+
+        await SelectedLocationChanged(Guid.Parse("e069a5df-8f9e-47d6-a53b-dba5dd4e618c"));
+
+        await base.OnInitializedAsync();
     }
 
-    protected async Task RenderLocation()
+    protected async Task BuildLocationDataSets()
     {
         var dataExists = false;
-        if (Datasets != null)
+        Datasets = new List<DataSet>();
+        if (Datasets == null)
         {
-            var existingDatasets = Datasets.Where(x => x.Resolution == SelectedResolution && x.Location.Id == SelectedLocationId);
-            dataExists = existingDatasets.Any();
-            if (dataExists)
+            throw new NullReferenceException(nameof(Datasets));
+        }
+
+        var existingDatasets = Datasets.Where(x => x.Resolution == DataResolution.Yearly && x.Location.Id == SelectedLocationId);
+        dataExists = existingDatasets.Any();
+        if (!dataExists)
+        {
+            var adjusted = (await DataService.GetTemperatures(DataResolution.Yearly, MeasurementType.Adjusted, SelectedLocationId)).ToList();
+            Datasets.AddRange(adjusted);
+
+            var unadjusted = (await DataService.GetTemperatures(DataResolution.Yearly, MeasurementType.Unadjusted, SelectedLocationId)).ToList();
+            Datasets.AddRange(unadjusted);
+
+            var adjustedYears = adjusted.Single().Years;
+            var unadjustedYears = unadjusted.Single().Years;
+            DatasetYears = adjustedYears.Concat(unadjustedYears).Distinct().OrderBy(x => x).ToList();
+        }
+
+        foreach (var selectedYear in SelectedYears)
+        {
+            var yearsExists = existingDatasets.Any(x => x.Year.HasValue && x.Year.Value == selectedYear);
+            if (!yearsExists)
             {
-                if (SelectedYear != null)
-                {
-                    dataExists = existingDatasets.Any(x => x.Temperatures.All(y => y.Year == SelectedYear));
-                }
+                var adjustedTemps = (await DataService.GetTemperatures(DataResolution.Daily, MeasurementType.Adjusted, SelectedLocationId, selectedYear)).ToList();
+                Datasets.AddRange(adjustedTemps);
+
+                var unadjustedTemps = (await DataService.GetTemperatures(DataResolution.Daily, MeasurementType.Unadjusted, SelectedLocationId, selectedYear)).ToList();
+                Datasets.AddRange(unadjustedTemps);
             }
         }
 
-        if (!dataExists)
-        {
-            Datasets = new List<DataSet>();
-            var adjustedTemps = (await DataService.GetTemperatures(SelectedResolution, MeasurementType.Adjusted, SelectedLocationId, SelectedYear)).ToList();
-            Datasets.Add(new DataSet { Resolution = SelectedResolution, Location = SelectedLocation, Temperatures = adjustedTemps, Type = MeasurementType.Adjusted });
 
-            var unadjustedTemps = (await DataService.GetTemperatures(SelectedResolution, MeasurementType.Unadjusted, SelectedLocationId, SelectedYear)).ToList();
-            Datasets.Add(new DataSet { Resolution = SelectedResolution, Location = SelectedLocation, Temperatures = unadjustedTemps, Type = MeasurementType.Unadjusted });
+        StationsWithData = Datasets.Where(x => x.Type == MeasurementType.Unadjusted && !string.IsNullOrWhiteSpace(x.Station))
+                    .Select(x => x.Station)
+                    .ToList();
 
-            StationsWithData = unadjustedTemps
-                                    .Where(x => !string.IsNullOrWhiteSpace(x.Station))
-                                    .GroupBy(y => y.Station).Distinct()
-                                    .Select(x => x.Key)
-                                    .ToList();
-
-            SelectedStation = StationsWithData.FirstOrDefault();
-        }
+        SelectedStation = StationsWithData.FirstOrDefault();
 
         await map.SetView(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
 
@@ -312,6 +376,8 @@
         {
             return;
         }
+
+        colours = new ColourServer();
 
         var labels = new string[0];
         var unadjustedMaximums = new List<float?>();
@@ -371,10 +437,17 @@
             {
                 labels[i] = (startYear + i).ToString();
             }
+
+            Labels = labels;
+            await lineChart.AddLabels(Labels);
+
+            await AddDataSetsToGraph(bufferedSelectedDataSet, timeConstraint);
         }
         else if (SelectedResolution == DataResolution.Daily)
         {
-            var selectedDataSets = Datasets.Where(x => x.Resolution == DataResolution.Daily && x.Temperatures.All(y => y.Year == SelectedYear)).ToList();
+            var selectedDataSets = Datasets.Where(x => x.Resolution == DataResolution.Daily 
+                && ((Adjusted && x.Type == MeasurementType.Adjusted) || (Unadjusted && x.Type == MeasurementType.Unadjusted))
+                && x.Temperatures.All(y => SelectedYears.Contains(y.Year))).ToList();
 
             foreach (var dataSet in selectedDataSets)
             {
@@ -384,25 +457,51 @@
                 }
                 else
                 {
-                    var stationDataSet = new DataSet { Location = dataSet.Location, Type = dataSet.Type };
-                    stationDataSet.Temperatures = dataSet.Temperatures.Where(x => x.Station == SelectedStation).ToList();
-                    bufferedSelectedDataSet.Add(stationDataSet);
+                    if (dataSet.Station == SelectedStation)
+                    {
+                        var stationDataSet = new DataSet { Location = dataSet.Location, Type = dataSet.Type, Temperatures = dataSet.Temperatures };
+                        bufferedSelectedDataSet.Add(stationDataSet);
+                    }
                 }
             }
 
-            title = $"{SelectedYear} Daily Temperature (in °C) for {SelectedLocation.Name}";
+            title = $"{string.Join(", ", SelectedYears)} Daily Temperature (in °C) for {SelectedLocation.Name}";
             xLabel = "Date";           
 
-            timeConstraint = x => x.Year == SelectedYear;
-
             var calendar = new GregorianCalendar();
-            var numberOfDays = calendar.GetDaysInYear(SelectedYear.Value);
-            labels = new string[numberOfDays];
-            var date = new DateOnly(SelectedYear.Value, 1, 1);
-            for (var i = 0; i < numberOfDays; i++)
+
+            if (SelectedYears.Any())
             {
-                labels[i] = date.ToString();
-                date = date.AddDays(1);
+                var selectedYear = SelectedYears.FirstOrDefault(x => calendar.IsLeapYear(x));
+
+                if (selectedYear == 0)
+                {
+                    selectedYear = SelectedYears.First();
+                }
+
+                var numberOfDays = calendar.GetDaysInYear(selectedYear);
+                labels = new string[numberOfDays];
+                var date = new DateOnly(selectedYear, 1, 1);
+                for (var i = 0; i < numberOfDays; i++)
+                {
+                    labels[i] = date.ToString("dd/MM");
+                    date = date.AddDays(1);
+                }
+            }
+
+            Labels = labels;
+            await lineChart.AddLabels(Labels);
+
+            for (var i = 0; i < SelectedYears.Count; i++)
+            {
+
+                var year = SelectedYears[i];
+                if (!bufferedSelectedDataSet.Any(x => x.Year == year))
+                {
+                    continue;
+                }
+                timeConstraint = x => x.Year == year;
+                await AddDataSetsToGraph(bufferedSelectedDataSet, timeConstraint, year.ToString(), year, (short)(96 * (i + 1)));
             }
         }
 
@@ -435,96 +534,79 @@
 
         await lineChart.SetOptionsObject(chartOptions);
 
-        Labels = labels;
-        await lineChart.AddLabels(Labels);
-
-        if (Unadjusted)
-        {
-            unadjustedMaximums = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Unadjusted, y => y.Max, timeConstraint);
-            unadjustedMinimums = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Unadjusted, y => y.Min, timeConstraint);
-        }
-        if (Adjusted)
-        {
-            adjustedMaximums = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Adjusted, y => y.Max, timeConstraint);
-            adjustedMinimums = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Adjusted, y => y.Min, timeConstraint);
-        }
-
-        if (Adjusted && Maximums)
-        {
-            var values = adjustedMaximums;
-            var label = "Maximum Adjusted";
-            var colour = ChartColor.FromRgba(255, 63, 63, 1f);
-            if (SelectedPeriod == 0 || !SoloSma)
-            {
-                await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
-            }
-            await AddMovingAverage(label, values, colour);
-        }
-        if (Adjusted && Minimums)
-        {
-            var values = adjustedMinimums;
-            var label = "Minimum Adjusted";
-            var colour = ChartColor.FromRgba(63, 63, 255, 1f);
-            if (SelectedPeriod == 0 || !SoloSma)
-            {
-                await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
-            }
-            await AddMovingAverage(label, values, colour);
-        }
-        if (Unadjusted && Maximums)
-        {
-            var values = unadjustedMaximums;
-            var label = "Maximum Unadjusted";
-            var colour = ChartColor.FromRgba(127, 191, 95, 1f);
-            if (SelectedPeriod == 0 || !SoloSma)
-            {
-                await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
-            }
-            await AddMovingAverage(label, values, colour);
-        }
-        if (Unadjusted && Minimums)
-        {
-            var values = unadjustedMinimums;
-            var label = "Minimum Unadjusted";
-            var colour = ChartColor.FromRgba(255, 127, 63, 1f);
-            if (SelectedPeriod == 0 || !SoloSma)
-            {
-                await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
-            }
-            await AddMovingAverage(label, values, colour);
-        }
-
         await lineChart.Update();
     }
 
-    async Task AddMovingAverage(string label, List<float?> values, ChartColor colour)
+    async Task AddDataSetsToGraph(List<DataSet> bufferedSelectedDataSet, Func<TemperatureRecord, bool> timeConstraint, string? labelPrefix = null, short? year = null, short colourAdjust = 0)
+    {
+        var label = labelPrefix;
+        if (!string.IsNullOrWhiteSpace(label))
+        {
+            label += " ";
+        }
+        if (Adjusted && Maximums)
+        {
+            var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Adjusted, y => y.Max, timeConstraint, year);
+            label += "Maximum Adjusted";
+            var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour());
+            if (SelectedPeriod == 0 || !SoloSma)
+            {
+                await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
+            }
+            await AddMovingAverage(label, values);
+        }
+        if (Adjusted && Minimums)
+        {
+            var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Adjusted, y => y.Min, timeConstraint, year);
+            label += "Minimum Adjusted";
+            var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour());
+            if (SelectedPeriod == 0 || !SoloSma)
+            {
+                await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
+            }
+            await AddMovingAverage(label, values);
+        }
+        if (Unadjusted && Maximums)
+        {
+            var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Unadjusted, y => y.Max, timeConstraint, year);
+            label += "Maximum Unadjusted";
+            var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour());
+            if (SelectedPeriod == 0 || !SoloSma)
+            {
+                await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
+            }
+            await AddMovingAverage(label, values);
+        }
+        if (Unadjusted && Minimums)
+        {
+            var values =  SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Unadjusted, y => y.Min, timeConstraint, year);
+            label += "Minimum Unadjusted";
+            var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour());
+            if (SelectedPeriod == 0 || !SoloSma)
+            {
+                await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
+            }
+            await AddMovingAverage(label, values);
+        }
+    }
+
+    async Task AddMovingAverage(string label, List<float?> values)
     {
         if (SelectedPeriod != 0)
         {
             var simpleMovingAverages = SimpleMovingAverage.Calculate(SelectedPeriod, values);
             label = $"{label} Moving Average @ {SelectedPeriod} year interval";
-            colour.R = (byte)(colour.R - 64);
-            colour.G = (byte)(colour.G + 64);
-            colour.B = (byte)(colour.B - 64);
-            await lineChart.AddDataSet(GetLineChartDataset(label, simpleMovingAverages, colour));
+            await lineChart.AddDataSet(GetLineChartDataset(label, simpleMovingAverages, ChartColor.FromHtmlColorCode(colours.GetNextColour())));
         }
     }
 
-    List<float?> SelectTemperatureValues(List<DataSet> dataSet, MeasurementType dataSetType, Func<TemperatureRecord, float?> selector, Func<TemperatureRecord, bool> timeConstraint)
+    List<float?> SelectTemperatureValues(List<DataSet> dataSet, MeasurementType measurementType, Func<TemperatureRecord, float?> selector, Func<TemperatureRecord, bool> timeConstraint, short? year = null)
     {
-        var selectedValues = dataSet.Single(x => x.Type == dataSetType)
+        var dataset = dataSet.SingleOrDefault(x => x.Type == measurementType && (year == null || x.Year == year.Value));
+
+        var selectedValues = dataset
                             .Temperatures
                             .Where(timeConstraint)
-                            .Select(selector)
-                            .ToList();
-
-        return selectedValues;
-    }
-
-    List<float?> SelectDailyTemperatureValues(List<DataSet> dataSet, MeasurementType dataSetType, Func<TemperatureRecord, float?> selector)
-    {
-        var selectedValues = dataSet.Single(x => x.Type == dataSetType)
-                            .Temperatures
                             .Select(selector)
                             .ToList();
 
@@ -601,7 +683,7 @@
         SelectedLocationId = newValue;
         SelectedLocation = Locations.Single(x => x.Id == SelectedLocationId);
         base.StateHasChanged();
-        await RenderLocation();
+        await BuildLocationDataSets();
     }
 
     string[] Labels = new string[1];
@@ -613,10 +695,10 @@
         DivId = "mapId",
         Center = new LatLng(-25.6, 134.3),
         Zoom = 5,
-        UrlTileLayer = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        UrlTileLayer = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
 	    SubOptions = new MapSubOptions()
         {
-            Attribution = "&copy; <a lhref='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>",
+            Attribution = "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
             TileSize = 512,
             ZoomOffset = -1,
             MaxZoom = 19,
@@ -630,12 +712,19 @@
 
     async Task OnLineChartClicked(ChartMouseEventArgs e)
     {
+        if (SelectedResolution != DataResolution.Yearly)
+        {
+            return;
+        }
+
         var model = e.Model as LineChartModel;
 
-        SelectedYear = (short)(StartYearOfChart + e.Index);
-        SelectedResolution = DataResolution.Daily;
-        await RenderLocation();
-    }
+        var year = (short)(StartYearOfChart + e.Index);
 
-    short? SelectedYear { get; set; }
+        SelectedYears = new List<short> { year };
+
+        SelectedResolution = DataResolution.Daily;
+
+        await BuildLocationDataSets();
+    }
 }

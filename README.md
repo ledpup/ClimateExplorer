@@ -13,6 +13,8 @@ Tool to calculate average temperatures from BOM ACORN-SAT data.
   - UnitTests: tests for various sub-systems
 
 ## TODO
+- Weekly data resolution when looking at charts for a year (instead of daily)
+- Better moving average
 - CO2 data and graphs
 - Click point on yearly chart to render daily chart for the year
 - Climate stripes. https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
@@ -27,6 +29,7 @@ Tool to calculate average temperatures from BOM ACORN-SAT data.
 - Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
+- 2021-12-31: Better chart colours (from https://observablehq.com/@d3/color-schemes)
 - 2021-12-26: Retrieve ENSO data to show its effect on temperature in Australia. https://psl.noaa.gov/enso/dashboard.html, https://psl.noaa.gov/enso/data.html
 - 2021-12-21: Simple Moving Average
 - 2021-12-12: Integrate map component to show location (from site lat/long)

@@ -27,31 +27,115 @@ app.MapGet("/", () => @"Hello, from minimal ACORN-SAT Web API!
                         Call /location for list of locations.
                         Call /temperature/yearly/{temperatureType}/{locationId} for yearly temperature records at locationId.");
 app.MapGet("/location", () => Location.GetLocations(@"Locations.json"));
-app.MapGet("/temperature/{resolution}/{measurementType}/{locationId}", (DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year) => GetTemperatures(resolution, measurementType, locationId, year));
+app.MapGet("/temperature/{resolution}/{measurementType}/{locationId}", (DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? threshold) => GetTemperatures(resolution, measurementType, locationId, year, threshold));
 app.MapGet("/reference/co2/", () => GetCarbonDioxide());
 app.MapGet("/reference/enso/{index}/{resolution}", (EnsoIndex index, DataResolution resolution, string measure) => GetEnso(index, resolution, measure));
 app.MapGet("/reference/enso-metadata", () => GetEnsoMetaData());
 
 app.Run();
 
-List<TemperatureRecord> GetTemperatures(DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year)
+List<DataSet> GetTemperatures(DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? threshold)
 {
-    if (resolution == DataResolution.Daily)
+    switch (resolution)
     {
-        return GetDailyTemperatures(measurementType, locationId, year.Value);
+        case DataResolution.Daily:
+            return GetDailyTemperatures(measurementType, locationId, year);
+        case DataResolution.Yearly:
+            return GetYearlyTemperatures(measurementType, locationId);
+        case DataResolution.Weekly:
+            return GetAverageTemperatures(DataResolution.Weekly, measurementType, locationId, year.Value, threshold);
+        case DataResolution.Monthly:
+            return GetAverageTemperatures(DataResolution.Monthly, measurementType, locationId, year.Value, threshold);
     }
-    else
-    {
-        return GetYearlyTemperatures(measurementType, locationId);
-    }
+
+
+    throw new NotImplementedException();
 }
 
-List<TemperatureRecord> GetDailyTemperatures(MeasurementType measurementType, Guid locationId, short year)
+List<DataSet> GetAverageTemperatures(DataResolution dataResolution, MeasurementType measurementType, Guid locationId, short? year, short? threshold = 10)
+{
+    switch (dataResolution)
+    {
+        case DataResolution.Weekly:
+            if (threshold < 1 || threshold > 7)
+            {
+                throw new ArgumentOutOfRangeException("threshold", "Threshold needs to be between 1 and 7.");
+            }
+            break;
+        case DataResolution.Monthly:
+            if (threshold < 1 || threshold > 31)
+            {
+                throw new ArgumentOutOfRangeException("threshold", "Threshold needs to be between 1 and 31.");
+            }
+            break;
+        default:
+            throw new ArgumentOutOfRangeException(nameof(dataResolution));
+    }
+
+    var datasets = GetDailyTemperatures(measurementType, locationId, year.Value);
+    var returnDataSets = new List<DataSet>();
+    foreach (var dataset in datasets)
+    {
+
+        List<IGrouping<short?, TemperatureRecord>> grouping = null;
+        if (dataResolution == DataResolution.Weekly)
+        {
+            grouping = dataset.Temperatures.GroupByWeek().ToList();
+        }
+        else
+        {
+            grouping = dataset.Temperatures.GroupByMonth().ToList();
+        }
+        var records = new List<TemperatureRecord>();
+
+        for (short i = 0; i < grouping.Count(); i++)
+        {
+            var min = grouping[i].Count(x => x.Min != null) < threshold ? null : grouping[i].Average(x => x.Min);
+            var max = grouping[i].Count(x => x.Max != null) < threshold ? null : grouping[i].Average(x => x.Max);
+            var record = new TemperatureRecord()
+            {
+                Year = year.Value,
+                Min = min,
+                Max = max,
+            };
+            if (dataResolution == DataResolution.Weekly)
+            {
+                record.Week = i;
+            }
+            else
+            {
+                record.Month = i;
+            }
+
+            records.Add(record);
+        }
+
+        dataset.Resolution = dataResolution;
+        dataset.Temperatures = records;
+
+        returnDataSets.Add(dataset);
+    }
+
+    return returnDataSets;
+}
+
+List<DataSet> GetDailyTemperatures(MeasurementType measurementType, Guid locationId, short? year)
 {
     var location = Location.GetLocations(@"Locations.json").Single(x => x.Id == locationId);
     if (measurementType == MeasurementType.Adjusted)
     {
-        return AcornSatIo.ReadAdjustedTemperatures(location, year);
+        var temperatures = AcornSatIo.ReadAdjustedTemperatures(location, year);
+
+        var dataSet = new DataSet
+        {
+            Location = location,
+            Resolution = DataResolution.Daily,
+            Type = MeasurementType.Adjusted,
+            Year = year,
+            Temperatures = temperatures
+        };
+
+        return new List<DataSet> { dataSet };
     }
     else if (measurementType == MeasurementType.Unadjusted)
     {
@@ -61,20 +145,22 @@ List<TemperatureRecord> GetDailyTemperatures(MeasurementType measurementType, Gu
     throw new ArgumentException(nameof(measurementType));
 }
 
-List<TemperatureRecord> GetYearlyTemperatures(MeasurementType measurementType, Guid locationId)
+List<DataSet> GetYearlyTemperatures(MeasurementType measurementType, Guid locationId)
 {
+    var location = Location.GetLocations(@"Locations.json").Single(x => x.Id == locationId);
+
     var records = File.ReadAllLines($@"Temperature\Yearly\{measurementType}\{locationId}.csv")
         .ToList();
 
     records = records.Take(new Range(1, records.Count)).ToList();
 
-    var list = new List<TemperatureRecord>();
+    var temperatures = new List<TemperatureRecord>();
 
     foreach (var record in records)
     {
         var splitRow = record.Split(',');
 
-        list.Add(
+        temperatures.Add(
             new TemperatureRecord
             {
                 Year = short.Parse(splitRow[0]),
@@ -84,7 +170,15 @@ List<TemperatureRecord> GetYearlyTemperatures(MeasurementType measurementType, G
         );
     }
 
-    return list;
+    var dataSet = new DataSet
+    {
+        Location = location,
+        Resolution = DataResolution.Yearly,
+        Type = measurementType,
+        Temperatures = temperatures
+    };
+
+    return new List<DataSet> { dataSet };
 }
 
 List<ReferenceData> GetCarbonDioxide()
