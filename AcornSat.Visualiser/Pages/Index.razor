@@ -51,41 +51,13 @@
             <Check TValue="bool" Checked="@Minimums" CheckedChanged="@OnMinimumsChanged">Minimums</Check>
         </Alert>
     </Column>
-    @if (SelectedResolution == DataResolution.Yearly)
-    {
-        <Column ColumnSize="ColumnSize.Is1">
-            <Alert Color="Color.Light" Visible="true">
-                Start Year <Validation Validator="ValidateYear"><TextEdit Text="@StartYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnStartYearTextChanged" /></Validation>
-            </Alert>
-        </Column>
-        <Column ColumnSize="ColumnSize.Is1">
-            <Alert Color="Color.Light" Visible="true">
-                End Year <Validation Validator="ValidateYear"><TextEdit Text="@EndYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChanged" /></Validation>
-            </Alert>
-        </Column>
-        <Column ColumnSize="ColumnSize.Is2">
-            <Alert Color="Color.Light" Visible="true">
-                Simple Moving Average<br/>
-                Interval
-                <Select TValue="int" SelectedValue="@SelectedPeriod" SelectedValueChanged="@OnSelectedPeriodChanged">
-                    <SelectItem Value="0">None</SelectItem>
-                    <SelectItem Value="3">3 years</SelectItem>
-                    <SelectItem Value="5">5 years</SelectItem>
-                    <SelectItem Value="7">7 years</SelectItem>
-                    <SelectItem Value="10">10 years</SelectItem>
-                </Select>
-                <Check TValue="bool" Checked="@SoloSma" CheckedChanged="@OnSoloSmaChanged">Solo</Check>
-            </Alert>
-        </Column>
-    }
-    <Column ColumnSize="ColumnSize.Is2">
+    <Column ColumnSize="ColumnSize.Is1">
         Selected year(s)
         <Autocomplete TItem="short"
                 TValue="short"
                 Data="@DatasetYears"
                 TextField="@((item) => item.ToString())"
                 ValueField="@((item) => item)"
-                Placeholder="Search..."
                 Multiple
                 SelectedValuesChanged="@OnSelectedYearsChanged"
                 SelectedValues="@SelectedYears"
@@ -93,17 +65,36 @@
             <NotFoundContent>@context was not found</NotFoundContent>
         </Autocomplete>
     </Column>
+    @if (SelectedResolution == DataResolution.Yearly)
+    {
+        <Column ColumnSize="ColumnSize.Is1">            
+            Start Year <Validation Validator="ValidateYear"><TextEdit Text="@StartYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnStartYearTextChanged" /></Validation>
+        </Column>
+        <Column ColumnSize="ColumnSize.Is1">
+            End Year <Validation Validator="ValidateYear"><TextEdit Text="@EndYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChanged" /></Validation>
+        </Column>
+        <Column ColumnSize="ColumnSize.Is1">
+            Simple Moving Average<br/>
+            Interval
+            <Select TValue="int" SelectedValue="@SelectedPeriod" SelectedValueChanged="@OnSelectedPeriodChanged">
+                <SelectItem Value="0">None</SelectItem>
+                <SelectItem Value="3">3 years</SelectItem>
+                <SelectItem Value="5">5 years</SelectItem>
+                <SelectItem Value="7">7 years</SelectItem>
+                <SelectItem Value="10">10 years</SelectItem>
+            </Select>
+            <Check TValue="bool" Checked="@SoloSma" CheckedChanged="@OnSoloSmaChanged">Solo</Check>
+        </Column>
+    }
     @if (SelectedResolution != DataResolution.Yearly)
     {
         <Column ColumnSize="ColumnSize.Is1">
-            <Alert Color="Color.Light" Visible="true">
-                Resolution
-                <Select TValue="DataResolution" SelectedValue="@SelectedResolution" SelectedValueChanged="@OnSelectedResolutionChanged">
-                    <SelectItem Value="@(DataResolution.Yearly)">Yearly</SelectItem>
-                    <SelectItem Value="@(DataResolution.Monthly)">Monthly</SelectItem>
-                    <SelectItem Value="@(DataResolution.Daily)">Daily</SelectItem>
-                </Select>
-            </Alert>
+            Resolution
+            <Select TValue="DataResolution" SelectedValue="@SelectedResolution" SelectedValueChanged="@OnSelectedResolutionChanged">
+                <SelectItem Value="@(DataResolution.Yearly)">Yearly</SelectItem>
+                <SelectItem Value="@(DataResolution.Monthly)">Monthly</SelectItem>
+                <SelectItem Value="@(DataResolution.Daily)">Daily</SelectItem>
+            </Select>
         </Column>
 
         <Column ColumnSize="ColumnSize.Is1">
