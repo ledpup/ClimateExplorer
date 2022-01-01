@@ -13,15 +13,23 @@ Tool to calculate average temperatures from BOM ACORN-SAT data.
   - UnitTests: tests for various sub-systems
 
 ## TODO
+In rough order of priority
+
+- Aggregates; latitude bands (-10 to -20, -20 to -30, -30 to -40, -40 to -50)
+- Aggregates; Australia
+- Linear trendline
 - Better moving average
+- Allow user to alter the parameters that calculate the set of data for the year (dayGrouping and threshold)
+- Display info on missing data (number of records missing per week/month/etc for min and max, number of missing consecutive days, etc.)
+- Analyse missing data to find an optimal grouping method
+- Alter web API to look for precalculated data from storage before calculating from daily. Then precalculate and store the year averages based on the default method.
 - CO2 data and graphs
 - Climate stripes. https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
-- Linear trendline
+- Include New Zealand's NIWA 'seven-station' temperature series https://niwa.co.nz/climate/information-and-resources/nz-temperature-record
+- Get temperature data from BOM via a web service
+- Get ENSO data from URLs for indexes (still supporting offline mode)
 - Alternate averages (use median/mode - not sure how useful that is)
 - Show graphs from two or more locations at once? (not sure how useful that is)
-- Allow user to alter thresold for what is a sufficient set of data for the year
-- Aggregates; latitude bands (-10 to -20, -20 to -30, -30 to -40, -40 to -50)
-- Aggregates; Australia (just use the latitude query but broader)
 - Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
@@ -77,7 +85,7 @@ NOAA
 
 #### MEI v2
 
-The MEI combines both oceanic and atmospheric variables to form a single index an assessment of ENSO. It is an Empirical Orthogonal Function (EOF) of five different variables (sea level pressure (SLP), sea surface temperature (SST), zonal and meridional components of the surface wind, and outgoing longwave radiation (OLR)) over the tropical Pacific basin (30°S-30°N and 100°E-70°W).
+The MEI combines both oceanic and atmospheric variables to form a single index assessment of ENSO. It is an Empirical Orthogonal Function (EOF) of five different variables (sea level pressure (SLP), sea surface temperature (SST), zonal and meridional components of the surface wind, and outgoing longwave radiation (OLR)) over the tropical Pacific basin (30°S-30°N and 100°E-70°W).
 
 https://psl.noaa.gov/enso/mei/
 

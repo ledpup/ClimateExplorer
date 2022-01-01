@@ -25,27 +25,69 @@ app.UseCors();
 
 app.MapGet("/", () => @"Hello, from minimal ACORN-SAT Web API!
                         Call /location for list of locations.
-                        Call /temperature/Yearly/{temperatureType}/{locationId}?dayGrouping=14&threshold=.8 for yearly average temperature records at locationId. Records are grouped by dayGrouping. If the number of records in the group does not meet the threshold, the data is considered invalid.");
+                        Call /temperature/Yearly/{temperatureType}/{locationId}?dayGrouping=14&dayGroupingThreshold=.8 for yearly average temperature records at locationId. Records are grouped by dayGrouping. If the number of records in the group does not meet the threshold, the data is considered invalid.");
 app.MapGet("/location", () => Location.GetLocations(@"Locations.json"));
-app.MapGet("/temperature/{resolution}/{measurementType}/{locationId}", (DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, float? threshold, short? dayGrouping) => GetTemperatures(resolution, measurementType, locationId, year, threshold, dayGrouping));
+app.MapGet("/temperature/{resolution}/{measurementType}/{locationId}", (DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping, float? dayGroupingThreshold) => GetTemperatures(resolution, measurementType, locationId, year, dayGrouping, dayGroupingThreshold));
+app.MapGet("/temperature/{resolution}/{measurementType}", (DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping, float dayGroupingThreshold, float locationGroupingThreshold) => GetTemperaturesByLatitudeGroups(resolution, measurementType, minLatitude, maxLatitude, dayGrouping, dayGroupingThreshold, locationGroupingThreshold));
 app.MapGet("/reference/co2/", () => GetCarbonDioxide());
 app.MapGet("/reference/enso/{index}/{resolution}", (EnsoIndex index, DataResolution resolution, string measure) => GetEnso(index, resolution, measure));
 app.MapGet("/reference/enso-metadata", () => GetEnsoMetaData());
 
 app.Run();
 
-List<DataSet> GetTemperatures(DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, float? threshold, short? dayGrouping)
+List<DataSet> GetTemperaturesByLatitudeGroups(DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping, float dayGroupingThreshold, float locationGroupingThreshold)
+{
+    switch (resolution)
+    {
+        case DataResolution.Yearly:
+            {
+                var locations = Location.GetLocations();
+
+                var min = minLatitude;
+                var max = maxLatitude;
+                Func<Location, bool> filter = x => x.Coordinates.Latitude >= min && x.Coordinates.Latitude < max;
+                if (min != null && max != null)
+                {
+                    // Turn the world upside-down?
+                    if (minLatitude < 0 && maxLatitude < 0)
+                    {
+                        min = maxLatitude;
+                        max = minLatitude;
+                    }
+                }
+                else
+                {
+                    filter = x => true;
+                }
+
+                var locationsInLatitudeBand = locations.Where(filter).ToList();
+                var dataSet = new List<DataSet>();
+                foreach (var location in locationsInLatitudeBand)
+                {
+                    var locationDataSet = GetYearlyTemperatures(measurementType, location.Id, dayGrouping, dayGroupingThreshold);
+                    dataSet.AddRange(locationDataSet);
+                }
+
+                var startYear = dataSet.Min(x => x.Years.Min());
+
+                return dataSet;
+            }
+    }
+    throw new InvalidOperationException("Only yearly aggregates are supported");
+}
+
+List<DataSet> GetTemperatures(DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping, float? dayGroupingThreshold)
 {
     switch (resolution)
     {
         case DataResolution.Daily:
             return GetDailyTemperatures(measurementType, locationId, year);
         case DataResolution.Yearly:
-            return GetYearlyTemperatures(measurementType, locationId, dayGrouping, threshold);
+            return GetYearlyTemperatures(measurementType, locationId, dayGrouping, dayGroupingThreshold);
         case DataResolution.Weekly:
-            return GetAverageTemperatures(DataResolution.Weekly, measurementType, locationId, year.Value, threshold);
+            return GetAverageTemperatures(DataResolution.Weekly, measurementType, locationId, year.Value, dayGroupingThreshold);
         case DataResolution.Monthly:
-            return GetAverageTemperatures(DataResolution.Monthly, measurementType, locationId, year.Value, threshold);
+            return GetAverageTemperatures(DataResolution.Monthly, measurementType, locationId, year.Value, dayGroupingThreshold);
     }
 
 
@@ -110,7 +152,7 @@ List<DataSet> GetAverageTemperatures(DataResolution dataResolution, MeasurementT
 
 List<DataSet> GetDailyTemperatures(MeasurementType measurementType, Guid locationId, short? year = null)
 {
-    var location = Location.GetLocations(@"Locations.json").Single(x => x.Id == locationId);
+    var location = Location.GetLocations().Single(x => x.Id == locationId);
 
     List<DataSet> returnDataSets;
     if (measurementType == MeasurementType.Adjusted)

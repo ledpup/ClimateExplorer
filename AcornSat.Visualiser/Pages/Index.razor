@@ -378,8 +378,6 @@
         var adjustedMinimums = new List<float?>();
 
         string title = string.Empty;
-        var yLabel = "Degrees Celcius";
-        var xLabel = "Year";
 
         await lineChart.Clear();
 
@@ -457,8 +455,7 @@
                 }
             }
 
-            title = $"{string.Join(", ", SelectedYears)} {SelectedResolution} Temperature (in °C) for {SelectedLocation.Name}";
-            xLabel = "Date";           
+            title = $"{string.Join(", ", SelectedYears)} {SelectedResolution} Temperature (in °C) for {SelectedLocation.Name}";        
 
             var calendar = new GregorianCalendar();
 
@@ -522,6 +519,9 @@
             }
         }
 
+        var yLabel = "Degrees Celcius";
+        var xLabel = GetXAxisLabel();
+
         object chartOptions = new
         {
             SpanGaps = true,
@@ -552,6 +552,22 @@
         await lineChart.SetOptionsObject(chartOptions);
 
         await lineChart.Update();
+    }
+
+    string GetXAxisLabel()
+    {
+        switch (SelectedResolution)
+        {
+            case DataResolution.Yearly:
+                return "Year";
+            case DataResolution.Monthly:
+                return "Month";
+            case DataResolution.Weekly:
+                return "Week";
+            case DataResolution.Daily:
+                return "Date (dd/mm)";
+        }
+        throw new Exception();
     }
 
     async Task AddDataSetsToGraph(List<DataSet> bufferedSelectedDataSet, Func<TemperatureRecord, bool> timeConstraint, string? labelPrefix = null, short? year = null, short colourAdjust = 0)

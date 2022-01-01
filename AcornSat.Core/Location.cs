@@ -16,7 +16,7 @@ public class Location
     {
         Sites = new List<string>();
     }
-    public static List<Location> GetLocations(string locationFilePath)
+    public static List<Location> GetLocations(string locationFilePath = "Locations.json")
     {
         var locationText = File.ReadAllText(locationFilePath);
         var locations = JsonSerializer.Deserialize<List<Location>>(locationText);
