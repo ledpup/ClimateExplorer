@@ -93,6 +93,7 @@
             <Select TValue="DataResolution" SelectedValue="@SelectedResolution" SelectedValueChanged="@OnSelectedResolutionChanged">
                 <SelectItem Value="@(DataResolution.Yearly)">Yearly</SelectItem>
                 <SelectItem Value="@(DataResolution.Monthly)">Monthly</SelectItem>
+                <SelectItem Value="@(DataResolution.Weekly)">Weekly</SelectItem>
                 <SelectItem Value="@(DataResolution.Daily)">Daily</SelectItem>
             </Select>
         </Column>
@@ -152,7 +153,7 @@
         }
         SelectedYears = validValues;
 
-        SelectedResolution = DataResolution.Daily; // this will have to be changed
+        SelectedResolution = DataResolution.Weekly;
 
         await InvokeAsync(StateHasChanged);
         await BuildLocationDataSets();
@@ -313,10 +314,10 @@
             var yearsExists = existingDatasets.Any(x => x.Year.HasValue && x.Year.Value == selectedYear);
             if (!yearsExists)
             {
-                var adjustedTemps = (await DataService.GetTemperatures(DataResolution.Daily, MeasurementType.Adjusted, SelectedLocationId, selectedYear)).ToList();
+                var adjustedTemps = (await DataService.GetTemperatures(SelectedResolution, MeasurementType.Adjusted, SelectedLocationId, selectedYear)).ToList();
                 Datasets.AddRange(adjustedTemps);
 
-                var unadjustedTemps = (await DataService.GetTemperatures(DataResolution.Daily, MeasurementType.Unadjusted, SelectedLocationId, selectedYear)).ToList();
+                var unadjustedTemps = (await DataService.GetTemperatures(SelectedResolution, MeasurementType.Unadjusted, SelectedLocationId, selectedYear)).ToList();
                 Datasets.AddRange(unadjustedTemps);
             }
         }
@@ -434,9 +435,9 @@
 
             await AddDataSetsToGraph(bufferedSelectedDataSet, timeConstraint);
         }
-        else if (SelectedResolution == DataResolution.Daily)
+        else
         {
-            var selectedDataSets = Datasets.Where(x => x.Resolution == DataResolution.Daily 
+            var selectedDataSets = Datasets.Where(x => x.Resolution == SelectedResolution
                 && ((Adjusted && x.Type == MeasurementType.Adjusted) || (Unadjusted && x.Type == MeasurementType.Unadjusted))
                 && x.Temperatures.All(y => SelectedYears.Contains(y.Year))).ToList();
 
@@ -456,7 +457,7 @@
                 }
             }
 
-            title = $"{string.Join(", ", SelectedYears)} Daily Temperature (in °C) for {SelectedLocation.Name}";
+            title = $"{string.Join(", ", SelectedYears)} {SelectedResolution} Temperature (in °C) for {SelectedLocation.Name}";
             xLabel = "Date";           
 
             var calendar = new GregorianCalendar();
@@ -470,13 +471,38 @@
                     selectedYear = SelectedYears.First();
                 }
 
-                var numberOfDays = calendar.GetDaysInYear(selectedYear);
-                labels = new string[numberOfDays];
-                var date = new DateOnly(selectedYear, 1, 1);
-                for (var i = 0; i < numberOfDays; i++)
+                switch (SelectedResolution)
                 {
-                    labels[i] = date.ToString("dd/MM");
-                    date = date.AddDays(1);
+                    case DataResolution.Daily:
+                        {
+                            var numberOfDays = calendar.GetDaysInYear(selectedYear);
+                            labels = new string[numberOfDays];
+                            var date = new DateOnly(selectedYear, 1, 1);
+                            for (var i = 0; i < numberOfDays; i++)
+                            {
+                                labels[i] = date.ToString("dd/MM");
+                                date = date.AddDays(1);
+                            }
+                            break;
+                        }
+                    case DataResolution.Weekly:
+                        {
+                            labels = new string[52];
+                            for (var i = 0; i < 52; i++)
+                            {
+                                labels[i] = $"Week {i + 1}";
+                            }
+                            break;
+                        }
+                    case DataResolution.Monthly:
+                        {
+                            labels = new string[12];
+                            for (var i = 0; i < 12; i++)
+                            {
+                                labels[i] = new DateTime(2010, i + 1, 1).ToString("MMMM", CultureInfo.InvariantCulture);
+                            }
+                            break;
+                        }
                 }
             }
 
@@ -530,15 +556,14 @@
 
     async Task AddDataSetsToGraph(List<DataSet> bufferedSelectedDataSet, Func<TemperatureRecord, bool> timeConstraint, string? labelPrefix = null, short? year = null, short colourAdjust = 0)
     {
-        var label = labelPrefix;
-        if (!string.IsNullOrWhiteSpace(label))
+        if (!string.IsNullOrWhiteSpace(labelPrefix))
         {
-            label += " ";
+            labelPrefix += " ";
         }
         if (Adjusted && Maximums)
         {
             var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Adjusted, y => y.Max, timeConstraint, year);
-            label += "Maximum Adjusted";
+            var label = labelPrefix + "Maximum Adjusted";
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour());
             if (SelectedPeriod == 0 || !SoloSma)
             {
@@ -549,7 +574,7 @@
         if (Adjusted && Minimums)
         {
             var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Adjusted, y => y.Min, timeConstraint, year);
-            label += "Minimum Adjusted";
+            var label = labelPrefix + "Minimum Adjusted";
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour());
             if (SelectedPeriod == 0 || !SoloSma)
             {
@@ -560,7 +585,7 @@
         if (Unadjusted && Maximums)
         {
             var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Unadjusted, y => y.Max, timeConstraint, year);
-            label += "Maximum Unadjusted";
+            var label = labelPrefix + "Maximum Unadjusted";
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour());
             if (SelectedPeriod == 0 || !SoloSma)
             {
@@ -571,7 +596,7 @@
         if (Unadjusted && Minimums)
         {
             var values =  SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Unadjusted, y => y.Min, timeConstraint, year);
-            label += "Minimum Unadjusted";
+            var label = labelPrefix + "Minimum Unadjusted";
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour());
             if (SelectedPeriod == 0 || !SoloSma)
             {
@@ -714,7 +739,7 @@
 
         SelectedYears = new List<short> { year };
 
-        SelectedResolution = DataResolution.Daily;
+        SelectedResolution = DataResolution.Weekly;
 
         await BuildLocationDataSets();
     }

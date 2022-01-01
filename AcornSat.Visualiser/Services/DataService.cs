@@ -11,12 +11,22 @@ public class DataService : IDataService
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<DataSet>> GetTemperatures(DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year)
+    public async Task<IEnumerable<DataSet>> GetTemperatures(DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, float? threshold = .7f, short? dayGrouping = 14)
     {
         var url = $"temperature/{resolution}/{measurementType}/{locationId}";
         if (year != null)
         {
             url += $"?year={year}";
+        }
+        if (threshold != null)
+        {
+            url += url.Contains("?") ? "&" : "?";
+            url += $"threshold={threshold}";
+        }
+        if (dayGrouping != null)
+        {
+            url += url.Contains("?") ? "&" : "?";
+            url += $"dayGrouping={dayGrouping}";
         }
         return await _httpClient.GetFromJsonAsync<DataSet[]>(url);
     }

@@ -26,5 +26,20 @@ public class DataSet
             return years;
         }
     }
+
+    public int NumberOfRecords
+    {
+        get { return Temperatures.Count; }
+    }
+
+    public int NumberOfMissingMins
+    {
+        get { return Temperatures.Count(x => x.Min == null); }
+    }
+
+    public int NumberOfMissingMaxs
+    {
+        get { return Temperatures.Count(x => x.Max == null); }
+    }
 }
 
