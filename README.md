@@ -20,14 +20,14 @@ Tool to calculate average temperatures from BOM ACORN-SAT data.
 - Alternate averages (use median/mode - not sure how useful that is)
 - Show graphs from two or more locations at once? (not sure how useful that is)
 - Allow user to alter thresold for what is a sufficient set of data for the year
-- Averages of averages; average by month or 5-season groupings
-- Averages of averages; latitude bands
-- Averages of averages; Australia
+- Aggregates; latitude bands (-10 to -20, -20 to -30, -30 to -40, -40 to -50)
+- Aggregates; Australia (just use the latitude query but broader)
 - Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
 - 2022-01-01: Weekly data resolution when looking at charts for a year (instead of daily)
 - 2022-01-01: Calculate averages on demand rather than precalculating
+- 2021-12-31: Averages of averages; average by month or any arbitrary grouping of days
 - 2021-12-31: Better chart colours (from https://observablehq.com/@d3/color-schemes)
 - 2021-12-26: Click point on yearly chart to render daily chart for the year
 - 2021-12-26: Retrieve ENSO data to show its effect on temperature in Australia. https://psl.noaa.gov/enso/dashboard.html, https://psl.noaa.gov/enso/data.html

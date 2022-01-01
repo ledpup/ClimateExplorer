@@ -1,4 +1,4 @@
-﻿using AcornSat.Analyser.Io;
+﻿using AcornSat.Core.InputOutput;
 using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -35,7 +35,7 @@ foreach (var location in locations)
 
     foreach (var site in siteSet)
     {
-        var rawDataRecords = AcornSatIo.ReadRawDataFile(site);
+        var rawDataRecords = AcornSat.Core.InputOutput.AcornSat.ReadRawDataFile(site);
 
         var minYear = rawDataRecords.Min(x => x.Year);
         var maxYear = rawDataRecords.Max(x => x.Year);
@@ -69,7 +69,7 @@ foreach (var location in locations)
     CreateLocationYearlyAverage(earliestYearInSiteSet, latestYearInSiteSet, "unadjusted", folderName, location.Name, location.Id, siteSet);
     
     {
-        var adjustDailyTemp = AcornSatIo.ReadAdjustedTemperatures(location);
+        var adjustDailyTemp = AcornSat.Core.InputOutput.AcornSat.ReadAdjustedTemperatures(location);
 
         using StreamWriter siteDailyOutputFile = new(@$"{folderName}\{location.Id} adjusted {averageDailyFileNameSuffix}.csv");
         siteDailyOutputFile.WriteLine($"Year,YearAverageMin,DaysOfDataMin,YearAverageMax,DaysOfDataMax");

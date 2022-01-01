@@ -305,7 +305,7 @@
             Datasets.AddRange(unadjusted);
 
             var adjustedYears = adjusted.Single().Years;
-            var unadjustedYears = unadjusted.Single().Years;
+            var unadjustedYears = unadjusted.SelectMany(x => x.Years).Distinct();
             DatasetYears = adjustedYears.Concat(unadjustedYears).Distinct().OrderBy(x => x).ToList();
         }
 

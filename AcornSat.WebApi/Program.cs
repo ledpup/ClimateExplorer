@@ -1,4 +1,4 @@
-﻿using AcornSat.Analyser.Io;
+﻿using AcornSat.Core.InputOutput;
 using AcornSat.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -115,7 +115,7 @@ List<DataSet> GetDailyTemperatures(MeasurementType measurementType, Guid locatio
     List<DataSet> returnDataSets;
     if (measurementType == MeasurementType.Adjusted)
     {
-        var temperatures = AcornSatIo.ReadAdjustedTemperatures(location, year);
+        var temperatures = AcornSat.Core.InputOutput.AcornSat.ReadAdjustedTemperatures(location, year);
 
         var dataSet = new DataSet
         {
@@ -130,37 +130,13 @@ List<DataSet> GetDailyTemperatures(MeasurementType measurementType, Guid locatio
     }
     else if (measurementType == MeasurementType.Unadjusted)
     {
-        returnDataSets = AcornSatIo.ReadRawDataFile(location, year);
+        returnDataSets = AcornSat.Core.InputOutput.AcornSat.ReadRawDataFile(location, year);
     }
     else
     {
         throw new ArgumentException(nameof(measurementType));
     }
     
-    foreach(var dataSet in returnDataSets)
-    {
-        var firstDate = dataSet.Temperatures.First().Date;
-        if (firstDate.DayOfYear != 1)
-        {
-            var date = new DateTime(firstDate.Year, 1, 1);
-            while (date != firstDate)
-            {
-                var record = new TemperatureRecord { Year = (short)date.Year, Month = (short)date.Month, Day = (short)date.Day };
-                dataSet.Temperatures.Insert(0, record);
-                date = date.AddDays(1);
-            }
-        }
-        {
-            var date = dataSet.Temperatures.Last().Date;
-            while (!(date.Month == 12 && date.Day == 31))
-            {
-                date = date.AddDays(1);
-                var record = new TemperatureRecord { Year = (short)date.Year, Month = (short)date.Month, Day = (short)date.Day };
-                dataSet.Temperatures.Add(record);
-            }
-        }
-    }
-
     return returnDataSets;
 }
 
