@@ -3,6 +3,7 @@
 @using Blazorise
 @using Blazorise.Components
 @using Blazorise.Charts
+@using Blazorise.Charts.Trendline
 @using System.IO;
 @using System.Globalization
 @using static AcornSat.Core.Enums
@@ -10,6 +11,8 @@
 <PageTitle>Index</PageTitle>
 
  @*<h1><a href="http://www.bom.gov.au/climate/data/acorn-sat/" target="_blank">ACORN-SAT</a></h1>*@
+ <Button Color="Color.Primary" Clicked="@OnButtonClicked">Toggle trendline</Button>
+
 <Row>
     <Column ColumnSize="ColumnSize.Is2">
         <SelectList
@@ -127,10 +130,20 @@
 
 @*<Button Clicked="@(async () => await ButtonClicked())">Redraw</Button>*@
 <div style="width: 85%; border: 0.5px dotted; padding: 10px; position: absolute; bottom: 5px;">
-    <LineChart @ref="lineChart" TItem="float?" Clicked="@OnLineChartClicked" />
+    <LineChart @ref="lineChart" TItem="float?" Clicked="@OnLineChartClicked">
+        <ChartTrendline @ref="chartTrendline" TItem="double?" />
+    </LineChart>
 </div>
 
 @code{
+
+    bool trendlinesOn = true;
+    async Task OnButtonClicked()
+    {
+        trendlinesOn = !trendlinesOn;
+
+        await HandleRedraw();
+    }
 
     List<string> SelectedYearsText = new();
     List<short> DatasetYears { get; set; }
@@ -335,6 +348,7 @@
     }
 
     LineChart<float?> lineChart;
+    ChartTrendline<double?> chartTrendline;
 
     async Task OnStartYearTextChanged(string text)
     {
@@ -552,6 +566,21 @@
         await lineChart.SetOptionsObject(chartOptions);
 
         await lineChart.Update();
+
+
+        if (trendlinesOn)
+        {
+            var trendlines = new List<ChartTrendline> 
+            {
+                new ChartTrendline 
+                { 
+                    DatasetIndex = 1,
+                    Width = 2, 
+                    Color = ChartColor.FromRgba( 0, 0, 0, .6f ) 
+                }
+            };
+            await chartTrendline.AddTrendLines(trendlines);
+        }
     }
 
     string GetXAxisLabel()
