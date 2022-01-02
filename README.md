@@ -23,6 +23,7 @@ In rough order of priority
 - Display info on missing data (number of records missing per week/month/etc for min and max, number of missing consecutive days, etc.)
 - Analyse missing data to find an optimal grouping method
 - Alter web API to look for precalculated data from storage before calculating from daily. Then precalculate and store the year averages based on the default method.
+- Show as a bar chart, the difference between adjusted and unadjusted
 - CO2 data and graphs
 - Climate stripes. https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
 - Include New Zealand's NIWA 'seven-station' temperature series https://niwa.co.nz/climate/information-and-resources/nz-temperature-record
