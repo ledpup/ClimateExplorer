@@ -418,7 +418,7 @@
                 }
             }
 
-            title = $"Average Yearly Temperature (in °C) for {SelectedLocation.Name} ({startYear}-{endYear})";
+            title = $"Average Yearly Temperature for {SelectedLocation.Name} ({startYear}-{endYear})";
 
             StartYearOfChart = startYear;
 
@@ -452,13 +452,12 @@
                 {
                     if (dataSet.Station == SelectedStation)
                     {
-                        var stationDataSet = new DataSet { Location = dataSet.Location, Type = dataSet.Type, Temperatures = dataSet.Temperatures };
-                        bufferedSelectedDataSet.Add(stationDataSet);
+                        bufferedSelectedDataSet.Add(dataSet);
                     }
                 }
             }
 
-            title = $"{string.Join(", ", SelectedYears)} {SelectedResolution} Temperature (in °C) for {SelectedLocation.Name}";        
+            title = $"{string.Join(", ", SelectedYears)} {SelectedResolution} Temperature for {SelectedLocation.Name}";        
 
             var calendar = new GregorianCalendar();
 

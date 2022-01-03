@@ -134,7 +134,6 @@ List<DataSet> GetTemperatures(DataResolution resolution, MeasurementType measure
             return GetAverageTemperatures(DataResolution.Monthly, measurementType, locationId, year.Value, dayGroupingThreshold);
     }
 
-
     throw new NotImplementedException();
 }
 
