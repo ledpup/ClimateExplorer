@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using static AcornSat.Core.Enums;
+using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
@@ -37,43 +38,86 @@ app.Run();
 
 List<DataSet> GetTemperaturesByLatitudeGroups(DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping, float dayGroupingThreshold, float locationGroupingThreshold)
 {
+    var locations = GetLocationsInLatitudeBand(minLatitude, maxLatitude);
+    var numberOfLocations = locations.Count;
+
+    if (numberOfLocations == 0)
+    {
+        return new List<DataSet>();
+    }
+
     switch (resolution)
     {
         case DataResolution.Yearly:
             {
-                var locations = Location.GetLocations();
+                var dataSets = YearlyTemperaturesAcrossLocations(locations, measurementType, dayGrouping, dayGroupingThreshold);
 
-                var min = minLatitude;
-                var max = maxLatitude;
-                Func<Location, bool> filter = x => x.Coordinates.Latitude >= min && x.Coordinates.Latitude < max;
-                if (min != null && max != null)
+                var startYear = dataSets.Min(x => x.Years.Min());
+                var endYear = dataSets.Max(x => x.Years.Max());
+
+                var returnDataSet = new DataSet();
+
+                Parallel.For(0, endYear - startYear, x =>
                 {
-                    // Turn the world upside-down?
-                    if (minLatitude < 0 && maxLatitude < 0)
-                    {
-                        min = maxLatitude;
-                        max = minLatitude;
-                    }
-                }
-                else
-                {
-                    filter = x => true;
-                }
+                    var year = (short)(x + startYear);
+                    var temperatureRecords = dataSets.Where(y => y.Years.Contains(year))
+                                                     .SelectMany(y => y.Temperatures.Where(z => z.Year == year))
+                                                     .ToList();
 
-                var locationsInLatitudeBand = locations.Where(filter).ToList();
-                var dataSet = new List<DataSet>();
-                foreach (var location in locationsInLatitudeBand)
-                {
-                    var locationDataSet = GetYearlyTemperatures(measurementType, location.Id, dayGrouping, dayGroupingThreshold);
-                    dataSet.AddRange(locationDataSet);
-                }
+                    var temperatureRecord = new TemperatureRecord() { Year = year };
 
-                var startYear = dataSet.Min(x => x.Years.Min());
+                    temperatureRecord.Min = ((float)temperatureRecords.Count(y => y.Min != null) / (float)numberOfLocations) > locationGroupingThreshold ? temperatureRecords.Average(y => y.Min) : null;
+                    temperatureRecord.Max = ((float)temperatureRecords.Count(y => y.Max != null) / (float)numberOfLocations) > locationGroupingThreshold ? temperatureRecords.Average(y => y.Max) : null;
 
-                return dataSet;
+                    returnDataSet.Temperatures.Add(temperatureRecord);
+                });
+
+                returnDataSet.Temperatures = returnDataSet.Temperatures.OrderBy(y => y.Year).ToList();
+
+                returnDataSet.Locations = locations;
+
+                return new List<DataSet> { returnDataSet };
             }
     }
     throw new InvalidOperationException("Only yearly aggregates are supported");
+}
+
+List<DataSet> YearlyTemperaturesAcrossLocations(List<Location> locations, MeasurementType measurementType, short dayGrouping, float dayGroupingThreshold)
+{
+
+    var dataSet = new List<DataSet>();
+    Parallel.ForEach(locations, location => {
+        var locationDataSet = GetYearlyTemperatures(measurementType, location.Id, dayGrouping, dayGroupingThreshold);
+        dataSet.AddRange(locationDataSet);
+    });
+
+    return dataSet;
+}
+
+List<Location> GetLocationsInLatitudeBand(float? minLatitude, float? maxLatitude)
+{
+    var locations = Location.GetLocations();
+
+    var min = minLatitude;
+    var max = maxLatitude;
+    Func<Location, bool> filter = x => x.Coordinates.Latitude >= min && x.Coordinates.Latitude < max;
+    if (min != null && max != null)
+    {
+        // Turn the world upside-down?
+        if (minLatitude < 0 && maxLatitude < 0)
+        {
+            min = maxLatitude;
+            max = minLatitude;
+        }
+    }
+    else
+    {
+        filter = x => true;
+    }
+
+    var locationsInLatitudeBand = locations.Where(filter).ToList();
+
+    return locationsInLatitudeBand;
 }
 
 List<DataSet> GetTemperatures(DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping, float? dayGroupingThreshold)

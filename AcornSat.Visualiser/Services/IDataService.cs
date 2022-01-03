@@ -7,6 +7,8 @@ public interface IDataService
 
     Task<IEnumerable<DataSet>> GetTemperatures(DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year = null, float? threshold = .7f, short? dayGrouping = 14);
 
+    Task<IEnumerable<DataSet>> GetAggregateTemperatures(DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .7f, float locationGroupingThreshold = .7f);
+
     Task<IEnumerable<EnsoMetaData>> GetEnsoMetaData();
     Task<IEnumerable<ReferenceData>> GetEnso(EnsoIndex index, DataResolution resolution, string measure);
 }

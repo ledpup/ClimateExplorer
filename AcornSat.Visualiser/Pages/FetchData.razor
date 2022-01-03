@@ -1,57 +1,110 @@
 ﻿@page "/fetchdata"
 @using Blazorise
-@using Blazorise.Components
+@using Blazorise.Charts
 
-<PageTitle>Autocomplete test</PageTitle>
+<PageTitle>Aggregates</PageTitle>
 
-<h1>Autocomplete test</h1>
+<h1>Aggregates</h1>
 
 
-<Column ColumnSize="ColumnSize.Is3">
-    <Autocomplete TItem="short"
-            TValue="short"
-            Data="@DataYears"
-            TextField="@((item) => item.ToString())"
-            ValueField="@((item) => item)"
-            Placeholder="Search..."
-            Multiple
-            SelectedValuesChanged="@OnSelectedValuesChanged"
-            SelectedValues="@SelectedYears"
-            SelectedTexts="@multipleSelectionTexts"
-            Filter="AutocompleteFilter.StartsWith">
-        <NotFoundContent>@context was not found</NotFoundContent>
-    </Autocomplete>
-</Column>
-
-<Field Horizontal="true">
-    <FieldBody ColumnSize="ColumnSize.Is12">
-        Selected Values: @string.Join(',', SelectedYears)
-    </FieldBody>
-</Field>
+<div style="width: 85%; border: 0.5px dotted; padding: 10px; position: absolute; bottom: 5px;">
+    <Chart @ref="chart" TItem="float?" Type="ChartType.Line" />
+</div>
 
 @code {
-    List<short> DataYears { get; set; }
-    List<short> SelectedYears;
-    List<string> multipleSelectionTexts = new();
+    Chart<float?> chart;
 
-    async Task OnSelectedValuesChanged(List<short> values)
-    {
-        var validValues = new List<short>();
-        foreach (var value in values)
-        {
-            if (DataYears.Any(x => x == value))
-            {
-                validValues.Add(value);
-            }
-        }
-        SelectedYears = validValues;
-        await InvokeAsync(StateHasChanged);
-    }
+    List<DataSet> AggreagteData { get; set; }
+
+    [Inject]
+    public IDataService DataService { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        DataYears = new List<short> { 1930, 1931 };
-        
-        SelectedYears = new List<short> { 1930 };
+        AggreagteData = (await DataService.GetAggregateTemperatures(Core.Enums.DataResolution.Yearly, Core.Enums.MeasurementType.Adjusted, -5, -50, dayGroupingThreshold: .6f, locationGroupingThreshold: .5f)).ToList();
+        await HandleRedraw();
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {       
+        if (firstRender)
+        {
+            await HandleRedraw();
+        }
+    }
+
+    async Task HandleRedraw()
+    {
+        if (AggreagteData == null)
+        {
+            return;
+        }
+
+        var dataSet = AggreagteData.Single();
+
+        object chartOptions = new
+        {
+            SpanGaps = true,
+            Title = new 
+            { 
+                Text = $"Yearly Average",// for {string.Join(", ", dataSet.Locations.Select(x => x.Name))}",
+                Display = true
+            },
+            Scales = new
+            {
+                YAxes = new []
+                { 
+                    new  
+                    { 
+                        ScaleLabel = new { LabelString = "Degrees Celsius (°C)", Display = true } 
+                    } 
+                },
+                XAxes = new []
+                { 
+                    new 
+                    { 
+                        ScaleLabel = new { LabelString = "Year", Display = true } 
+                    } 
+                }       
+            }
+        };
+
+        
+        var labels = dataSet.Years.Select(x => x.ToString()).ToArray();
+        
+
+        var values = dataSet.Temperatures.Select(x => x.Max).ToList();
+
+        await chart.Clear();
+        await chart.SetOptionsObject(chartOptions);
+        await chart.AddLabels(labels);
+        
+
+        var lineChartDataSet = GetLineChartDataset($"Adjusted values", values, ChartColor.FromHtmlColorCode(colours.GetNextColour()));
+        await chart.AddDataSet(lineChartDataSet);
+
+        await chart.Update();
+    }
+    
+    ColourServer colours = new ColourServer();
+
+    LineChartDataset<float?> GetLineChartDataset(string label, List<float?> values, ChartColor chartColor)
+    {
+        var count = values.Count;
+        var colour = new List<string>();
+        for (var i = 0; i < count; i++)
+            colour.Add(chartColor);
+
+        return new LineChartDataset<float?>
+                    {
+                        Label = label,
+                        Data = values,
+                        BorderColor = colour,
+                        Fill = false,
+                        PointRadius = 5,
+                        BorderDash = new List<int> { },
+                        LineTension = 0.1f,
+                    };
+    }
+
 }

@@ -31,6 +31,20 @@ public class DataService : IDataService
         return await _httpClient.GetFromJsonAsync<DataSet[]>(url);
     }
 
+    public async Task<IEnumerable<DataSet>> GetAggregateTemperatures(DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .5f, float locationGroupingThreshold = .5f)
+    {
+        var url = $"temperature/{resolution}/{measurementType}?dayGrouping={dayGrouping}&dayGroupingThreshold={dayGroupingThreshold}&locationGroupingThreshold={locationGroupingThreshold}";
+        if (minLatitude != null)
+        {
+            url += $"&minLatitude={minLatitude}";
+        }
+        if (maxLatitude != null)
+        {
+            url += $"&maxLatitude={maxLatitude}";
+        }
+        return await _httpClient.GetFromJsonAsync<DataSet[]>(url);
+    }
+
     public async Task<IEnumerable<Location>> GetLocations()
     {
         return await _httpClient.GetFromJsonAsync<Location[]>("location");

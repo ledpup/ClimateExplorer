@@ -15,14 +15,12 @@ Tool to calculate average temperatures from BOM ACORN-SAT data.
 ## TODO
 In rough order of priority
 
-- Aggregates; latitude bands (-10 to -20, -20 to -30, -30 to -40, -40 to -50)
-- Aggregates; Australia
 - Linear trendline
 - Better moving average
 - Allow user to alter the parameters that calculate the set of data for the year (dayGrouping and threshold)
 - Display info on missing data (number of records missing per week/month/etc for min and max, number of missing consecutive days, etc.)
 - Analyse missing data to find an optimal grouping method
-- Alter web API to look for precalculated data from storage before calculating from daily. Then precalculate and store the year averages based on the default method.
+- Alter web API to look for precalculated data in a cache before calculating from daily
 - Show as a bar chart, the difference between adjusted and unadjusted
 - CO2 data and graphs
 - Climate stripes. https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
@@ -34,6 +32,8 @@ In rough order of priority
 - Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
+- 2022-01-03: Aggregates; latitude bands (-10 to -20, -20 to -30, -30 to -40, -40 to -50)
+- 2022-01-03: Aggregates; Australia
 - 2022-01-01: Weekly data resolution when looking at charts for a year (instead of daily)
 - 2022-01-01: Calculate averages on demand rather than precalculating
 - 2021-12-31: Averages of averages; average by month or any arbitrary grouping of days
