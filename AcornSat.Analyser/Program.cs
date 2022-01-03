@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 
 //BuildLocationsFromReferenceData();
-var locations = Location.GetLocations("locations.json");
+var locations = Location.GetLocations();
 
 var minNumberOfDailyRecordsForTheYear = args.Length > 0 ? string.IsNullOrWhiteSpace(args[0]) ? 355 : int.Parse(args[0]) : 355;
 var averageDailyFileNameSuffix = $"yearly average from daily records";

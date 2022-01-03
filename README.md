@@ -1,6 +1,11 @@
 # AcornSatAnalyser
 Tool to calculate average temperatures from BOM ACORN-SAT data.
 
+
+## Glossary
+- ACORN-SAT: Australian Climate Observations Reference Network – Surface Air Temperature
+- RAIA: Remote Australian Islands and Antarctica
+
 ## Technical
 - Built in Visual Studio 2022 Community Edition
 - C#, .NET 6
@@ -15,6 +20,8 @@ Tool to calculate average temperatures from BOM ACORN-SAT data.
 ## TODO
 In rough order of priority
 
+- Geographic sustitution: option to substitute (or at least not penalise) temperature from one location for another that has missing data.
+- Add graphs for Remote Australian Islands and Antarctica (RAIA)
 - Linear trendline
 - Better moving average
 - Allow user to alter the parameters that calculate the set of data for the year (dayGrouping and threshold)
@@ -22,9 +29,10 @@ In rough order of priority
 - Analyse missing data to find an optimal grouping method
 - Alter web API to look for precalculated data in a cache before calculating from daily
 - Show as a bar chart, the difference between adjusted and unadjusted
-- CO2 data and graphs
+- GHGs (CO2, CH4, etc) data and graphs
 - Climate stripes. https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
 - Include New Zealand's NIWA 'seven-station' temperature series https://niwa.co.nz/climate/information-and-resources/nz-temperature-record
+- Precipitation
 - Get temperature data from BOM via a web service
 - Get ENSO data from URLs for indexes (still supporting offline mode)
 - Alternate averages (use median/mode - not sure how useful that is)

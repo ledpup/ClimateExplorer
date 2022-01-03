@@ -12,7 +12,7 @@ namespace AcornSat.Core.InputOutput
     {
         public static List<DataSet> ReadRawDataFile(Location location, short? yearFilter = null)
         {
-            var siteSet = location.Sites.Where(x => File.Exists(@$"Temperature\Daily\raw-data\hqnew{x}.txt")).ToList();
+            var siteSet = location.Sites.Where(x => File.Exists(@$"Temperature\ACORN-SAT\Daily\raw-data\hqnew{x}.txt")).ToList();
 
             var dataSets = new List<DataSet>();
             foreach (var site in siteSet)
@@ -38,7 +38,7 @@ namespace AcornSat.Core.InputOutput
         public static List<TemperatureRecord> ReadRawDataFile(string station, short? yearFilter = null)
         {
             var rawTempsRegEx = new Regex(@"\s+(-*\d+)\s+(-*\d+)");
-            var siteFilePath = @$"Temperature\Daily\raw-data\hqnew{station}.txt";
+            var siteFilePath = @$"Temperature\ACORN-SAT\Daily\raw-data\hqnew{station}.txt";
             var rawData = File.ReadAllLines(siteFilePath);
             var temperatureRecords = new List<TemperatureRecord>();
 
@@ -118,8 +118,8 @@ namespace AcornSat.Core.InputOutput
             var siteWithData = string.Empty;
             foreach (var site in location.Sites)
             {
-                maximumsFilePath = @$"Temperature\Daily\daily_tmax\tmax.{site}.daily.csv";
-                minimumsFilePath = @$"Temperature\Daily\daily_tmin\tmin.{site}.daily.csv";
+                maximumsFilePath = @$"Temperature\ACORN-SAT\Daily\daily_tmax\tmax.{site}.daily.csv";
+                minimumsFilePath = @$"Temperature\ACORN-SAT\Daily\daily_tmin\tmin.{site}.daily.csv";
 
                 if (File.Exists(maximumsFilePath) && File.Exists(minimumsFilePath))
                 {

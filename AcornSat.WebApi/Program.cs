@@ -27,7 +27,7 @@ app.UseCors();
 app.MapGet("/", () => @"Hello, from minimal ACORN-SAT Web API!
                         Call /location for list of locations.
                         Call /temperature/Yearly/{temperatureType}/{locationId}?dayGrouping=14&dayGroupingThreshold=.8 for yearly average temperature records at locationId. Records are grouped by dayGrouping. If the number of records in the group does not meet the threshold, the data is considered invalid.");
-app.MapGet("/location", () => Location.GetLocations(@"Locations.json"));
+app.MapGet("/location", () => Location.GetLocations());
 app.MapGet("/temperature/{resolution}/{measurementType}/{locationId}", (DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping, float? dayGroupingThreshold) => GetTemperatures(resolution, measurementType, locationId, year, dayGrouping, dayGroupingThreshold));
 app.MapGet("/temperature/{resolution}/{measurementType}", (DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping, float dayGroupingThreshold, float locationGroupingThreshold) => GetTemperaturesByLatitudeGroups(resolution, measurementType, minLatitude, maxLatitude, dayGrouping, dayGroupingThreshold, locationGroupingThreshold));
 app.MapGet("/reference/co2/", () => GetCarbonDioxide());
@@ -228,7 +228,7 @@ List<DataSet> GetDailyTemperatures(MeasurementType measurementType, Guid locatio
 
 List<DataSet> GetYearlyTemperatures(MeasurementType measurementType, Guid locationId, short? dayGrouping = 14, float? threshold = .8f)
 {
-    var location = Location.GetLocations(@"Locations.json").Single(x => x.Id == locationId);
+    var location = Location.GetLocations().Single(x => x.Id == locationId);
 
     var dailyDataSets = GetDailyTemperatures(measurementType, locationId);
 
