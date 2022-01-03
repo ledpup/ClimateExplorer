@@ -153,7 +153,10 @@
         }
         SelectedYears = validValues;
 
-        SelectedResolution = DataResolution.Weekly;
+        if (SelectedResolution == DataResolution.Yearly)
+        {
+            SelectedResolution = DataResolution.Monthly;
+        }
 
         await InvokeAsync(StateHasChanged);
         await BuildLocationDataSets();
@@ -755,7 +758,7 @@
 
         SelectedYears = new List<short> { year };
 
-        SelectedResolution = DataResolution.Weekly;
+        SelectedResolution = DataResolution.Monthly;
 
         await BuildLocationDataSets();
     }

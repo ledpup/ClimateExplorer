@@ -43,8 +43,7 @@ namespace AcornSat.Core.InputOutput
             var temperatureRecords = new List<TemperatureRecord>();
 
             var startYearRecord = short.Parse(rawData[0].Substring(6, 4));
-            var startYear = yearFilter == null ? startYearRecord : yearFilter.Value;
-            var date = new DateTime(startYear, 1, 1);
+            var date = new DateTime(startYearRecord, 1, 1);
 
             foreach (var record in rawData)
             {
@@ -56,6 +55,7 @@ namespace AcornSat.Core.InputOutput
                 {
                     if (year < yearFilter)
                     {
+                        date = date.AddDays(1);
                         continue;
                     }
                     else if (year > yearFilter)
@@ -146,8 +146,7 @@ namespace AcornSat.Core.InputOutput
                 throw new Exception($"The min and max files for {siteWithData} do not start on the same year ({startYearMax} vs {startYearMin})");
             }
 
-            var startYear = yearFilter == null ? startYearMin : yearFilter.Value;
-            var date = new DateTime(startYear, 1, 1);
+            var date = new DateTime(startYearMin, 1, 1);
 
             for (var i = 2; i < maximums.Length; i++)
             {
@@ -165,6 +164,7 @@ namespace AcornSat.Core.InputOutput
                 {
                     if (date.Year < yearFilter)
                     {
+                        date = date.AddDays(1);
                         continue;
                     }
                     else if (date.Year > yearFilter)
