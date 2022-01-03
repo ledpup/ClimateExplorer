@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="GeoCoordinate.NetStandard1" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AcornSat.Core\AcornSat.Core.csproj" />
   </ItemGroup>
 
