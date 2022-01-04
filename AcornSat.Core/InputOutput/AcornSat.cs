@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -35,7 +36,7 @@ namespace AcornSat.Core.InputOutput
             return dataSets;
         }
 
-        public static List<TemperatureRecord> ReadRawDataFile(string station, short? yearFilter = null)
+        static List<TemperatureRecord> ReadRawDataFile(string station, short? yearFilter = null)
         {
             var rawTempsRegEx = new Regex(@"\s+(-*\d+)\s+(-*\d+)");
             var siteFilePath = @$"Temperature\ACORN-SAT\Daily\raw-data\hqnew{station}.txt";
@@ -43,8 +44,16 @@ namespace AcornSat.Core.InputOutput
             var temperatureRecords = new List<TemperatureRecord>();
 
             var startYearRecord = short.Parse(rawData[0].Substring(6, 4));
-            var date = new DateTime(startYearRecord, 1, 1);
 
+            // Check to see if the station had started recording by the year we want
+            if (yearFilter != null && startYearRecord > yearFilter)
+            {
+                return temperatureRecords;
+            }
+
+            var startDate = yearFilter == null ? startYearRecord : yearFilter.Value;
+            var date = new DateTime(startDate, 1, 1);
+            var previousDate = date;
             foreach (var record in rawData)
             {
                 var year = short.Parse(record.Substring(6, 4));
@@ -55,7 +64,6 @@ namespace AcornSat.Core.InputOutput
                 {
                     if (year < yearFilter)
                     {
-                        date = date.AddDays(1);
                         continue;
                     }
                     else if (year > yearFilter)
@@ -65,6 +73,11 @@ namespace AcornSat.Core.InputOutput
                 }
 
                 var recordDate = new DateTime(year, month, day);
+                if (recordDate <= previousDate)
+                {
+                    Console.Error.WriteLine($"Date of current record ({recordDate}) is earlier than or equal to the previous date ({previousDate}). The file is not ordered by date properly and/or there are duplicate records. Will skip this record.");
+                    continue;
+                }
                 while (recordDate > date)
                 {
                     temperatureRecords.Add(new TemperatureRecord(date, null, null));
@@ -88,15 +101,33 @@ namespace AcornSat.Core.InputOutput
                     Min = min,
                     Max = max,
                 });
+                previousDate = recordDate;
                 date = date.AddDays(1);
             }
 
-            return CompleteLastYearOfData(temperatureRecords, ref date);
+            var completeDataSet = CompleteLastYearOfData(temperatureRecords, ref date);
+            
+            var calendar = new GregorianCalendar();
+            var invalidData = completeDataSet.GroupBy(x => x.Year).Where(x => x.Count() > calendar.GetDaysInYear(x.Key));
+            if (invalidData.Any())
+            {
+                throw new Exception($"Data is invalid. More than a year worht of records for the years { string.Join(", ", invalidData.Select(x => x.Key)) }");
+            }
+            var duplicateDates = completeDataSet.GroupBy(x => x.Date)
+                                              .Where(x => x.Count() > 1)
+                                              .Select(x => x.Key)
+                                              .ToList();
+            if (duplicateDates.Any())
+            {
+                throw new Exception($"There are duplicate dates ({string.Join(", ", duplicateDates.Select(x => x.ToShortDateString()))}. The file is corrupt.");
+            }
+
+            return completeDataSet;
         }
 
         private static List<TemperatureRecord> CompleteLastYearOfData(List<TemperatureRecord> temperatureRecords, ref DateTime date)
         {
-            if (date.DayOfYear == 1)
+            if (!temperatureRecords.Any() || date.DayOfYear == 1)
             {
                 return temperatureRecords;
             }
@@ -146,7 +177,14 @@ namespace AcornSat.Core.InputOutput
                 throw new Exception($"The min and max files for {siteWithData} do not start on the same year ({startYearMax} vs {startYearMin})");
             }
 
-            var date = new DateTime(startYearMin, 1, 1);
+            // If we know we can't have data for the year requested, exit early
+            if (yearFilter != null && startYearMax > yearFilter)
+            {
+                return temperatureRecords;
+            }
+
+            var startDate = yearFilter == null ? startYearMax : yearFilter.Value;
+            var date = new DateTime(startDate, 1, 1);
 
             for (var i = 2; i < maximums.Length; i++)
             {
@@ -162,12 +200,11 @@ namespace AcornSat.Core.InputOutput
 
                 if (yearFilter != null)
                 {
-                    if (date.Year < yearFilter)
+                    if (maxDate.Year < yearFilter)
                     {
-                        date = date.AddDays(1);
                         continue;
                     }
-                    else if (date.Year > yearFilter)
+                    else if (maxDate.Year > yearFilter)
                     {
                         break;
                     }
@@ -186,7 +223,24 @@ namespace AcornSat.Core.InputOutput
                 date = date.AddDays(1);
             }
 
-            return CompleteLastYearOfData(temperatureRecords, ref date);
+            var completeDataSet = CompleteLastYearOfData(temperatureRecords, ref date);
+
+            var calendar = new GregorianCalendar();
+            var invalidData = completeDataSet.GroupBy(x => x.Year).Where(x => x.Count() > calendar.GetDaysInYear(x.Key));
+            if (invalidData.Any())
+            {
+                throw new Exception($"Data is invalid. More than a year worht of records for the years { string.Join(", ", invalidData.Select(x => x.Key)) }");
+            }
+            var duplicateDates = completeDataSet.GroupBy(x => x.Date)
+                                  .Where(x => x.Count() > 1)
+                                  .Select(x => x.Key)
+                                  .ToList();
+            if (duplicateDates.Any())
+            {
+                throw new Exception($"There are duplicate dates ({string.Join(", ", duplicateDates.Select(x => x.ToShortDateString()))}. The file is corrupt.");
+            }
+
+            return completeDataSet;
         }
     }
 }

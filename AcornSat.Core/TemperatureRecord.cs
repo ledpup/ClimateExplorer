@@ -1,8 +1,12 @@
 ﻿using System.Text.Json.Serialization;
 using static AcornSat.Core.Enums;
 
-public struct TemperatureRecord
+public class TemperatureRecord
 {
+    public TemperatureRecord()
+    {
+
+    }
     public TemperatureRecord(DateTime date, float? min, float? max)
     {
         Year = (short)date.Year;

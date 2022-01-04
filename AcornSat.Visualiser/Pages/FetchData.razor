@@ -21,7 +21,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        AggreagteData = (await DataService.GetAggregateTemperatures(Core.Enums.DataResolution.Yearly, Core.Enums.MeasurementType.Adjusted, -5, -50, dayGroupingThreshold: .6f, locationGroupingThreshold: .5f)).ToList();
+        AggreagteData = (await DataService.GetAggregateTemperatures(Core.Enums.DataResolution.Yearly, Core.Enums.MeasurementType.Adjusted, -5, -50, dayGroupingThreshold: .5f, locationGroupingThreshold: .5f)).ToList();
         await HandleRedraw();
     }
 

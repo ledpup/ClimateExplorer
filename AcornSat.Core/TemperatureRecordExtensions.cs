@@ -67,7 +67,7 @@ namespace AcornSat.Core
             var numberOfDaysInYear = calendar.GetDaysInYear(year);
             if (values.Count() != numberOfDaysInYear)
             {
-                throw new Exception($"Year {year} needs {numberOfDaysInYear} temperature records for the year to be complete. You've only supplied {values.Count()} records");
+                throw new Exception($"Year {year} needs {numberOfDaysInYear} temperature records for the year to be complete. You've supplied {values.Count()} records");
             }
 
             if (!values.GroupBy(x => x.Date.DayOfYear).All(x => x.Count() == 1))

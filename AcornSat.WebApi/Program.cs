@@ -197,31 +197,36 @@ List<DataSet> GetDailyTemperatures(MeasurementType measurementType, Guid locatio
 {
     var location = Location.GetLocations().Single(x => x.Id == locationId);
 
-    List<DataSet> returnDataSets;
+    var returnDataSets = new List<DataSet>();
     if (measurementType == MeasurementType.Adjusted)
     {
         var temperatures = AcornSat.Core.InputOutput.AcornSat.ReadAdjustedTemperatures(location, year);
 
-        var dataSet = new DataSet
-        {
-            Location = location,
-            Resolution = DataResolution.Daily,
-            Type = MeasurementType.Adjusted,
-            Year = year,
-            Temperatures = temperatures
-        };
+        if (temperatures != null)
+        { 
+            var dataSet = new DataSet
+            {
+                Location = location,
+                Resolution = DataResolution.Daily,
+                Type = MeasurementType.Adjusted,
+                Year = year,
+                Temperatures = temperatures
+            };
 
-        returnDataSets = new List<DataSet> { dataSet };
+            returnDataSets.Add(dataSet);
+        }
     }
     else if (measurementType == MeasurementType.Unadjusted)
     {
-        returnDataSets = AcornSat.Core.InputOutput.AcornSat.ReadRawDataFile(location, year);
+        var dataSets = AcornSat.Core.InputOutput.AcornSat.ReadRawDataFile(location, year);
+        dataSets = dataSets.Where(x => x.Temperatures != null).ToList();
+        returnDataSets.AddRange(dataSets);
     }
     else
     {
         throw new ArgumentException(nameof(measurementType));
     }
-    
+
     return returnDataSets;
 }
 
@@ -231,7 +236,7 @@ List<DataSet> GetYearlyTemperatures(MeasurementType measurementType, Guid locati
 
     var dailyDataSets = GetDailyTemperatures(measurementType, locationId);
 
-    var returnDataSets = new List<DataSet>();
+    var averagedDataSets = new List<DataSet>();
 
     foreach (var dailyDataSet in dailyDataSets)
     {
@@ -278,10 +283,42 @@ List<DataSet> GetYearlyTemperatures(MeasurementType measurementType, Guid locati
             Type = measurementType,
             Temperatures = yearlyAverageRecords
         };
-        returnDataSets.Add(dataSet);
+        averagedDataSets.Add(dataSet);
     }
 
-    return returnDataSets;
+    if (averagedDataSets.Count <= 1)
+    {
+        return averagedDataSets;
+    }
+
+    // If the location has multiple datasets we need to average the year between the datasets
+    // e.g., unadjusted data in ACORN-SAT sometimes has multiple stations operating at the same time for the same location
+    {
+        var temperatures = averagedDataSets.SelectMany(x => x.Temperatures).ToList();
+        var yearGrouping = temperatures.GroupBy(x => x.Year).Select(x => x.ToList()).ToList();
+
+        var aggregatedAveragedTemperatures = new List<TemperatureRecord>();
+        yearGrouping.ForEach(x =>
+        {
+            aggregatedAveragedTemperatures.Add(new TemperatureRecord
+            {
+                Year = x.First().Year,
+                Min = x.Where(x => x.Min != null).Average(y => y.Min),
+                Max = x.Where(x => x.Max != null).Average(y => y.Max),
+            });
+        });
+
+        var aggregatedAveragedDataSets = new List<DataSet>();
+        var dataSet = new DataSet
+        {
+            Location = location,
+            Resolution = DataResolution.Yearly,
+            Type = measurementType,
+            Temperatures = aggregatedAveragedTemperatures
+        };
+        aggregatedAveragedDataSets.Add(dataSet);
+        return aggregatedAveragedDataSets;
+    }
 }
 
 List<ReferenceData> GetCarbonDioxide()
