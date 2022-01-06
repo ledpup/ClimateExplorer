@@ -3,10 +3,51 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using GeoCoordinatePortable;
+using AcornSat.Core;
+using static AcornSat.Core.Enums;
 
 //BuildLocationsFromReferenceData();
 var locations = Location.GetLocations(@"..\..\..\..\AcornSat.WebApi\MetaData\ACORN-SAT\Locations.json");
 
+BuildDataSetDefinition();
+
+void BuildDataSetDefinition()
+{
+    var ddd = new List<DataSetDefinition>
+    {
+        new DataSetDefinition
+        {
+            Id = Guid.NewGuid(),
+            Name = "ACORN-SAT",
+            Description = "The Australian Climate Observations Reference Network - Surface Air Temperature data set, is a homogenized daily maximum and minimum temperature data set containing data from 112 locations across Australia extending from 1910 to the present.",
+            FolderName = "ACORN-SAT",
+            DataType = DataType.Temperature,
+            DataResolution = DataResolution.Daily,
+            DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<temperature>\d+\.\d+).*$",
+            MaxTempFolderName = "daily_tmax",
+            MinTempFolderName = "daily_tmin",
+            MaxTempFileName = "tmax.[station].daily.csv",
+            MinTempFileName = "tmin.[station].daily.csv",
+        },
+        new DataSetDefinition
+        {
+            Id = Guid.NewGuid(),
+            Name = "RAIA",
+            Description = "This ACORN-SAT dataset includes homogenised monthly data from the Remote Australian Islands and Antarctica network of 8 locations, which provide ground-based temperature records.",
+            FolderName = "RAIA",
+            DataType = DataType.Temperature,
+            DataResolution = DataResolution.Monthly,
+            DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<temperature>\d+\.\d+)$",
+            MaxTempFolderName = "maxT",
+            MinTempFolderName = "minT",
+            MaxTempFileName = "acorn.ria.maxT.[station].monthly.txt",
+            MinTempFileName = "acorn.ria.minT.[station].monthly.txt",
+        }
+    };
+
+    var options = new JsonSerializerOptions { WriteIndented = true };
+    File.WriteAllText("DataSetDefinitions.json", JsonSerializer.Serialize(ddd, options));
+}
 
 
 

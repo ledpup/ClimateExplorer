@@ -13,7 +13,7 @@ public class DataService : IDataService
 
     public async Task<IEnumerable<DataSet>> GetTemperatures(DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, float? threshold = .7f, short? dayGrouping = 14)
     {
-        var url = $"temperature/{resolution}/{measurementType}/{locationId}";
+        var url = $"ACORN-SAT/{resolution}/{measurementType}/{locationId}";
         if (year != null)
         {
             url += $"?year={year}";
@@ -33,7 +33,7 @@ public class DataService : IDataService
 
     public async Task<IEnumerable<DataSet>> GetAggregateTemperatures(DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .5f, float locationGroupingThreshold = .5f)
     {
-        var url = $"temperature/{resolution}/{measurementType}?dayGrouping={dayGrouping}&dayGroupingThreshold={dayGroupingThreshold}&locationGroupingThreshold={locationGroupingThreshold}";
+        var url = $"ACORN-SAT/{resolution}/{measurementType}?dayGrouping={dayGrouping}&dayGroupingThreshold={dayGroupingThreshold}&locationGroupingThreshold={locationGroupingThreshold}";
         if (minLatitude != null)
         {
             url += $"&minLatitude={minLatitude}";
@@ -47,7 +47,7 @@ public class DataService : IDataService
 
     public async Task<IEnumerable<Location>> GetLocations()
     {
-        return await _httpClient.GetFromJsonAsync<Location[]>("location");
+        return await _httpClient.GetFromJsonAsync<Location[]>("ACORN-SAT/location");
     }
 
     public async Task<IEnumerable<EnsoMetaData>> GetEnsoMetaData()

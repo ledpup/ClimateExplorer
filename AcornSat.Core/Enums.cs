@@ -8,6 +8,10 @@ namespace AcornSat.Core
 {
     public static class Enums
     {
+        public enum DataType
+        {
+            Temperature,
+        }
         public enum DataResolution
         {
             Yearly,

@@ -142,15 +142,16 @@ namespace AcornSat.Core.InputOutput
             return temperatureRecords;
         }
 
-        public static List<TemperatureRecord> ReadAdjustedTemperatures(Location location, int? yearFilter = null)
+        public static List<TemperatureRecord> ReadAdjustedTemperatures(DataSetDefinition dataSetDefinition, Location location, int? yearFilter = null)
         {
+            var regEx = new Regex(dataSetDefinition.DataRowRegEx);
             var maximumsFilePath = string.Empty;
             var minimumsFilePath = string.Empty;
             var siteWithData = string.Empty;
             foreach (var site in location.Sites)
             {
-                maximumsFilePath = @$"Temperature\ACORN-SAT\Daily\daily_tmax\tmax.{site}.daily.csv";
-                minimumsFilePath = @$"Temperature\ACORN-SAT\Daily\daily_tmin\tmin.{site}.daily.csv";
+                maximumsFilePath = @$"{dataSetDefinition.DataType}\{dataSetDefinition.FolderName}\{dataSetDefinition.DataResolution}\{dataSetDefinition.MaxTempFolderName}\{dataSetDefinition.MaxTempFileName}".Replace("[station]", site);
+                minimumsFilePath = @$"{dataSetDefinition.DataType}\{dataSetDefinition.FolderName}\{dataSetDefinition.DataResolution}\{dataSetDefinition.MinTempFolderName}\{dataSetDefinition.MinTempFileName}".Replace("[station]", site);
 
                 if (File.Exists(maximumsFilePath) && File.Exists(minimumsFilePath))
                 {

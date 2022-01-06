@@ -1,0 +1,30 @@
+[
+  {
+    "Id": "b13afcaf-cdbc-4267-9def-9629c8066321",
+    "Name": "ACORN-SAT",
+    "Description": "The Australian Climate Observations Reference Network - Surface Air Temperature data set, is a homogenized daily maximum and minimum temperature data set containing data from 112 locations across Australia extending from 1910 to the present.",
+    "DataType": 0,
+    "DataResolution": 3,
+    "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Ctemperature\u003E\\d\u002B\\.\\d\u002B).*$",
+    "FolderName": "ACORN-SAT",
+    "MaxTempFolderName": "daily_tmax",
+    "MinTempFolderName": "daily_tmin",
+    "MaxTempFileName": "tmax.[station].daily.csv",
+    "MinTempFileName": "tmin.[station].daily.csv",
+    "Locations": null
+  },
+  {
+    "Id": "647b6a05-43e4-48e0-a43e-04ae81a74653",
+    "Name": "RAIA",
+    "Description": "This ACORN-SAT dataset includes homogenised monthly data from the Remote Australian Islands and Antarctica network of 8 locations, which provide ground-based temperature records.",
+    "DataType": 0,
+    "DataResolution": 1,
+    "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})\\d{2}\\s\\d\u002B\\s\u002B(?\u003Ctemperature\u003E\\d\u002B\\.\\d\u002B)$",
+    "FolderName": "RAIA",
+    "MaxTempFolderName": "maxT",
+    "MinTempFolderName": "minT",
+    "MaxTempFileName": "acorn.ria.maxT.[station].monthly.txt",
+    "MinTempFileName": "acorn.ria.minT.[station].monthly.txt",
+    "Locations": null
+  }
+]
