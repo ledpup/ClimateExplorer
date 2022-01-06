@@ -17,7 +17,7 @@ namespace AcornSat.UnitTests
         {
             var dataSet = GetDataset();
 
-            var groupedData = dataSet.Temperatures.GroupByWeek();
+            var groupedData = dataSet.Temperatures.GroupYearByWeek();
 
             foreach (var group in groupedData)
             {
@@ -37,7 +37,7 @@ namespace AcornSat.UnitTests
         {
             var dataSet = GetDataset();
 
-            var groupedData = dataSet.Temperatures.GroupByMonth();
+            var groupedData = dataSet.Temperatures.GroupYearByMonth();
 
             Assert.AreEqual(12, groupedData.Count());
         }
@@ -47,7 +47,7 @@ namespace AcornSat.UnitTests
         {
             var dataSet = GetDataset();
 
-            var groupedData = dataSet.Temperatures.GroupByDays(13);
+            var groupedData = dataSet.Temperatures.GroupYearByDays(13);
 
             Assert.AreEqual(28, groupedData.Count());
             groupedData.ToList().Take(27).ToList().ForEach(x => Assert.AreEqual(13, x.ToList().Count));
@@ -61,7 +61,7 @@ namespace AcornSat.UnitTests
 
             dataSet.Temperatures[0] = new TemperatureRecord(new DateTime(2021, 1, 2), null, null);
 
-            Assert.ThrowsException<Exception>(() => dataSet.Temperatures.GroupByWeek());
+            Assert.ThrowsException<Exception>(() => dataSet.Temperatures.GroupYearByWeek());
         }
 
         [TestMethod]
@@ -71,7 +71,7 @@ namespace AcornSat.UnitTests
 
             dataSet.Temperatures.Add(new TemperatureRecord(new DateTime(2021, 1, 1), null, null));
 
-            Assert.ThrowsException<Exception>(() => dataSet.Temperatures.GroupByWeek());
+            Assert.ThrowsException<Exception>(() => dataSet.Temperatures.GroupYearByWeek());
         }
 
         [TestMethod]
@@ -81,7 +81,7 @@ namespace AcornSat.UnitTests
 
             dataSet.Temperatures.Remove(dataSet.Temperatures.Last());
 
-            Assert.ThrowsException<Exception>(() => dataSet.Temperatures.GroupByWeek());
+            Assert.ThrowsException<Exception>(() => dataSet.Temperatures.GroupYearByWeek());
         }
 
         [TestMethod]
@@ -91,7 +91,7 @@ namespace AcornSat.UnitTests
 
             dataSet.Temperatures[0] = new TemperatureRecord(new DateTime(2022, 1, 2), null, null);
 
-            Assert.ThrowsException<Exception>(() => dataSet.Temperatures.GroupByWeek());
+            Assert.ThrowsException<Exception>(() => dataSet.Temperatures.GroupYearByWeek());
         }
 
         private static DataSet GetDataset()

@@ -5,7 +5,7 @@
     "Description": "The Australian Climate Observations Reference Network - Surface Air Temperature data set, is a homogenized daily maximum and minimum temperature data set containing data from 112 locations across Australia extending from 1910 to the present.",
     "DataType": 0,
     "DataResolution": 3,
-    "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Ctemperature\u003E\\d\u002B\\.\\d\u002B).*$",
+    "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Ctemperature\u003E\\d*\\.*\\d*).*$",
     "FolderName": "ACORN-SAT",
     "MaxTempFolderName": "daily_tmax",
     "MinTempFolderName": "daily_tmin",

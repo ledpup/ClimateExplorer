@@ -23,7 +23,7 @@ void BuildDataSetDefinition()
             FolderName = "ACORN-SAT",
             DataType = DataType.Temperature,
             DataResolution = DataResolution.Daily,
-            DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<temperature>\d+\.\d+).*$",
+            DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<temperature>\d*\.*\d*).*$",
             MaxTempFolderName = "daily_tmax",
             MinTempFolderName = "daily_tmin",
             MaxTempFileName = "tmax.[station].daily.csv",

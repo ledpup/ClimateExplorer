@@ -9,7 +9,7 @@ using static AcornSat.Core.Enums;
 
 namespace AcornSat.Core.InputOutput
 {
-    public static class AcornSat
+    public static class DataReader
     {
         public static List<DataSet> ReadRawDataFile(Location location, short? yearFilter = null)
         {
@@ -105,24 +105,11 @@ namespace AcornSat.Core.InputOutput
                 date = date.AddDays(1);
             }
 
-            var completeDataSet = CompleteLastYearOfData(temperatureRecords, ref date);
-            
-            var calendar = new GregorianCalendar();
-            var invalidData = completeDataSet.GroupBy(x => x.Year).Where(x => x.Count() > calendar.GetDaysInYear(x.Key));
-            if (invalidData.Any())
-            {
-                throw new Exception($"Data is invalid. More than a year worht of records for the years { string.Join(", ", invalidData.Select(x => x.Key)) }");
-            }
-            var duplicateDates = completeDataSet.GroupBy(x => x.Date)
-                                              .Where(x => x.Count() > 1)
-                                              .Select(x => x.Key)
-                                              .ToList();
-            if (duplicateDates.Any())
-            {
-                throw new Exception($"There are duplicate dates ({string.Join(", ", duplicateDates.Select(x => x.ToShortDateString()))}. The file is corrupt.");
-            }
+            var completeRecords = CompleteLastYearOfData(temperatureRecords, ref date);
 
-            return completeDataSet;
+            completeRecords.ValidateDaily();
+
+            return completeRecords;
         }
 
         private static List<TemperatureRecord> CompleteLastYearOfData(List<TemperatureRecord> temperatureRecords, ref DateTime date)
@@ -145,14 +132,18 @@ namespace AcornSat.Core.InputOutput
         public static List<TemperatureRecord> ReadAdjustedTemperatures(DataSetDefinition dataSetDefinition, Location location, int? yearFilter = null)
         {
             var regEx = new Regex(dataSetDefinition.DataRowRegEx);
+            var maximumsFileName = string.Empty;
+            var minimumsFileName = string.Empty;
             var maximumsFilePath = string.Empty;
             var minimumsFilePath = string.Empty;
             var siteWithData = string.Empty;
             foreach (var site in location.Sites)
             {
-                maximumsFilePath = @$"{dataSetDefinition.DataType}\{dataSetDefinition.FolderName}\{dataSetDefinition.DataResolution}\{dataSetDefinition.MaxTempFolderName}\{dataSetDefinition.MaxTempFileName}".Replace("[station]", site);
-                minimumsFilePath = @$"{dataSetDefinition.DataType}\{dataSetDefinition.FolderName}\{dataSetDefinition.DataResolution}\{dataSetDefinition.MinTempFolderName}\{dataSetDefinition.MinTempFileName}".Replace("[station]", site);
-
+                maximumsFileName = @$"{dataSetDefinition.MaxTempFileName}".Replace("[station]", site);
+                maximumsFilePath = @$"{dataSetDefinition.DataType}\{dataSetDefinition.FolderName}\{dataSetDefinition.DataResolution}\{dataSetDefinition.MaxTempFolderName}\" + maximumsFileName;
+                minimumsFileName = @$"{dataSetDefinition.MinTempFileName}".Replace("[station]", site);
+                minimumsFilePath = @$"{dataSetDefinition.DataType}\{dataSetDefinition.FolderName}\{dataSetDefinition.DataResolution}\{dataSetDefinition.MinTempFolderName}\" + minimumsFileName;
+                
                 if (File.Exists(maximumsFilePath) && File.Exists(minimumsFilePath))
                 {
                     siteWithData = site;
@@ -170,8 +161,10 @@ namespace AcornSat.Core.InputOutput
 
             var temperatureRecords = new List<TemperatureRecord>();
 
-            var startYearMax = int.Parse(maximums[2].Substring(0, 4));
-            var startYearMin = int.Parse(minimums[2].Substring(0, 4));
+            var initialDataIndex = GetStartIndex(maximums, minimums, regEx);
+
+            var startYearMax = int.Parse(maximums[initialDataIndex].Substring(0, 4));
+            var startYearMin = int.Parse(minimums[initialDataIndex].Substring(0, 4));
 
             if (startYearMax != startYearMin)
             {
@@ -187,13 +180,23 @@ namespace AcornSat.Core.InputOutput
             var startDate = yearFilter == null ? startYearMax : yearFilter.Value;
             var date = new DateTime(startDate, 1, 1);
 
-            for (var i = 2; i < maximums.Length; i++)
+            for (var i = initialDataIndex; i < maximums.Length; i++)
             {
-                var splitMin = minimums[i].Split(',');
-                var splitMax = maximums[i].Split(',');
 
-                var maxDate = DateTime.Parse(splitMax[0]);
-                var minDate = DateTime.Parse(splitMin[0]);
+                var matchMax = regEx.Match(maximums[i]);
+                var matchMin = regEx.Match(minimums[i]);
+
+                if (!matchMax.Success)
+                {
+                    throw new Exception($"The data row {maximums[i]} does not match the regulator expression in the file {maximumsFileName}");
+                }
+                if (!matchMin.Success)
+                {
+                    throw new Exception($"The data row {minimums[i]} does not match the regulator expression in the file {minimumsFileName}");
+                }
+
+                var maxDate = DateTime.Parse($"{matchMax.Groups["year"].Value}-{matchMax.Groups["month"].Value}-{matchMax.Groups["day"].Value}");
+                var minDate = DateTime.Parse($"{matchMin.Groups["year"].Value}-{matchMin.Groups["month"].Value}-{matchMin.Groups["day"].Value}");
                 if (maxDate != minDate)
                 {
                     throw new Exception("Max and min dates do not match");
@@ -216,32 +219,34 @@ namespace AcornSat.Core.InputOutput
                     temperatureRecords.Add(new TemperatureRecord(date, null, null));
                     date = date.AddDays(1);
                 }
-
-                float? min = string.IsNullOrWhiteSpace(splitMin[1]) ? null : float.Parse(splitMin[1]);
-                float? max = string.IsNullOrWhiteSpace(splitMax[1]) ? null : float.Parse(splitMax[1]);
+                string maxString = matchMax.Groups["temperature"].Value;
+                string minString = matchMin.Groups["temperature"].Value;
+                float? max = string.IsNullOrWhiteSpace(maxString) ? null : float.Parse(maxString);
+                float? min = string.IsNullOrWhiteSpace(minString) ? null : float.Parse(minString);
 
                 temperatureRecords.Add(new TemperatureRecord(date, min, max));
                 date = date.AddDays(1);
             }
 
-            var completeDataSet = CompleteLastYearOfData(temperatureRecords, ref date);
+            var completeRecords = CompleteLastYearOfData(temperatureRecords, ref date);
 
-            var calendar = new GregorianCalendar();
-            var invalidData = completeDataSet.GroupBy(x => x.Year).Where(x => x.Count() > calendar.GetDaysInYear(x.Key));
-            if (invalidData.Any())
-            {
-                throw new Exception($"Data is invalid. More than a year worht of records for the years { string.Join(", ", invalidData.Select(x => x.Key)) }");
-            }
-            var duplicateDates = completeDataSet.GroupBy(x => x.Date)
-                                  .Where(x => x.Count() > 1)
-                                  .Select(x => x.Key)
-                                  .ToList();
-            if (duplicateDates.Any())
-            {
-                throw new Exception($"There are duplicate dates ({string.Join(", ", duplicateDates.Select(x => x.ToShortDateString()))}. The file is corrupt.");
-            }
+            completeRecords.ValidateDaily();
 
-            return completeDataSet;
+            return completeRecords;
+        }
+
+        private static int GetStartIndex(string[] maximums, string[] minimums, Regex regEx)
+        {
+            var index = 0;
+            while (!regEx.IsMatch(maximums[index]))
+            {
+                index++;
+                if (index > maximums.Length)
+                {
+                    throw new Exception("None of the data in the input file fits the regular expression.");
+                }
+            }
+            return index;
         }
     }
 }

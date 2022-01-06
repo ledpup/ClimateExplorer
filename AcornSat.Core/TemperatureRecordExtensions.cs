@@ -9,9 +9,9 @@ namespace AcornSat.Core
 {
     public static class TemperatureRecordExtensions
     {
-        public static IEnumerable<IGrouping<short?, TemperatureRecord>> GroupByDays(this IEnumerable<TemperatureRecord> temperatureRecords, short numberOfDaysInGroup)
+        public static IEnumerable<IGrouping<short?, TemperatureRecord>> GroupYearByDays(this IEnumerable<TemperatureRecord> temperatureRecords, short numberOfDaysInGroup)
         {
-            var numberOfDaysInYear = temperatureRecords.Validate();
+            var numberOfDaysInYear = temperatureRecords.ValidateDailySingleYear();
 
             var remainder = numberOfDaysInYear % numberOfDaysInGroup;
 
@@ -28,9 +28,9 @@ namespace AcornSat.Core
         /// </summary>
         /// <param name="values"></param>
         /// <returns></returns>
-        public static IEnumerable<IGrouping<short?, TemperatureRecord>> GroupByWeek(this IEnumerable<TemperatureRecord> temperatureRecords)
+        public static IEnumerable<IGrouping<short?, TemperatureRecord>> GroupYearByWeek(this IEnumerable<TemperatureRecord> temperatureRecords)
         {
-            var weeklyGroups = temperatureRecords.GroupByDays(7);
+            var weeklyGroups = temperatureRecords.GroupYearByDays(7);
             return weeklyGroups;
         }
 
@@ -40,22 +40,22 @@ namespace AcornSat.Core
         /// <param name="temperatureRecords"></param>
         /// <param name="validateRecords"></param>
         /// <returns></returns>
-        public static IEnumerable<IGrouping<short?, TemperatureRecord>> GroupByMonth(this IEnumerable<TemperatureRecord> temperatureRecords, bool validateRecords = true)
+        public static IEnumerable<IGrouping<short?, TemperatureRecord>> GroupYearByMonth(this IEnumerable<TemperatureRecord> temperatureRecords, bool validateRecords = true)
         {
             if (validateRecords)
             {
-                temperatureRecords.Validate();
+                temperatureRecords.ValidateDailySingleYear();
             }
 
             var monthlyGroups = temperatureRecords.GroupBy(x => x.Month);
             return monthlyGroups;
         }
 
-        public static int Validate(this IEnumerable<TemperatureRecord> values)
+        public static int ValidateDailySingleYear(this IEnumerable<TemperatureRecord> values)
         {
             if (values.Any(x => x.Day == null || x.Month == null))
             {
-                throw new NullReferenceException("Day and month values are required when grouping by week");
+                throw new NullReferenceException("All day and month values are required");
             }
 
             var year = values.First().Year;
@@ -76,6 +76,29 @@ namespace AcornSat.Core
             }
 
             return numberOfDaysInYear;
+        }
+
+        public static void ValidateDaily(this IEnumerable<TemperatureRecord> values)
+        {
+            if (values.Any(x => x.Day == null || x.Month == null))
+            {
+                throw new NullReferenceException("All day and month values are required");
+            }
+
+            var calendar = new GregorianCalendar();
+            var invalidData = values.GroupBy(x => x.Year).Where(x => x.Count() > calendar.GetDaysInYear(x.Key));
+            if (invalidData.Any())
+            {
+                throw new Exception($"Data is invalid. More than a year worth of records for the years { string.Join(", ", invalidData.Select(x => x.Key)) }");
+            }
+            var duplicateDates = values.GroupBy(x => x.Date)
+                                              .Where(x => x.Count() > 1)
+                                              .Select(x => x.Key)
+                                              .ToList();
+            if (duplicateDates.Any())
+            {
+                throw new Exception($"There are duplicate dates ({string.Join(", ", duplicateDates.Select(x => x.ToShortDateString()))}. The file is corrupt.");
+            }
         }
     }
 }

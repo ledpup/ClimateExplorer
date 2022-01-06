@@ -190,11 +190,11 @@ List<DataSet> GetAverageTemperatures(DataSetDefinition dataSetDefintion, DataRes
         List<IGrouping<short?, TemperatureRecord>> grouping = null;
         if (dataResolution == DataResolution.Weekly)
         {
-            grouping = dataset.Temperatures.GroupByWeek().ToList();
+            grouping = dataset.Temperatures.GroupYearByWeek().ToList();
         }
         else if (dataResolution == DataResolution.Monthly)
         {
-            grouping = dataset.Temperatures.GroupByMonth().ToList();
+            grouping = dataset.Temperatures.GroupYearByMonth().ToList();
         }
         var records = new List<TemperatureRecord>();
 
@@ -238,7 +238,7 @@ List<DataSet> GetDailyTemperatures(DataSetDefinition dataSetDefintion, Measureme
     var returnDataSets = new List<DataSet>();
     if (measurementType == MeasurementType.Adjusted)
     {
-        var temperatures = AcornSat.Core.InputOutput.AcornSat.ReadAdjustedTemperatures(dataSetDefintion, location, year);
+        var temperatures = AcornSat.Core.InputOutput.DataReader.ReadAdjustedTemperatures(dataSetDefintion, location, year);
 
         if (temperatures != null)
         { 
@@ -256,7 +256,7 @@ List<DataSet> GetDailyTemperatures(DataSetDefinition dataSetDefintion, Measureme
     }
     else if (measurementType == MeasurementType.Unadjusted)
     {
-        var dataSets = AcornSat.Core.InputOutput.AcornSat.ReadRawDataFile(location, year);
+        var dataSets = AcornSat.Core.InputOutput.DataReader.ReadRawDataFile(location, year);
         dataSets = dataSets.Where(x => x.Temperatures != null).ToList();
         returnDataSets.AddRange(dataSets);
     }
@@ -283,7 +283,7 @@ List<DataSet> GetYearlyTemperatures(DataSetDefinition dataSetDefintion, Measurem
         var yearlyAverageRecords = new List<TemperatureRecord>();
         foreach (var yearSet in yearSets)
         {
-            var grouping = yearSet.ToList().GroupByDays(dayGrouping.Value).ToList();
+            var grouping = yearSet.ToList().GroupYearByDays(dayGrouping.Value).ToList();
 
             var groupingAverages = new List<TemperatureRecord>();
 
