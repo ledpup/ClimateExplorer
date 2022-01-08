@@ -20,14 +20,19 @@ Tool to calculate average temperatures from BOM ACORN-SAT data.
 ## TODO
 In rough order of priority
 
-- Geographic sustitution: option to substitute (or at least not penalise) temperature from one location for another that has missing data.
 - Linear trendline
 - Better moving average
 - Allow user to alter the parameters that calculate the set of data for the year (dayGrouping and threshold)
+- Make map a thumbnail initially. Click to expand to select location. Thumbnail again after selection.
 - Display info on missing data (number of records missing per week/month/etc for min and max, number of missing consecutive days, etc.)
-- Analyse missing data to find an optimal grouping method
-- Alter web API to look for precalculated data in a cache before calculating from daily
+- Analyse missing data to find an optimal grouping method - linear regression analysis??
+- Location auto-detect
+- Put the selected year, start year, end year into a modal/filter section. Otherwise, text display of what the current state is. e.g, "1979-present", "1980, 2020", etc.
+- Naviagation back/forward. I.e., navigation history so the user can get back to where they were
+- Bookmark page
+- Alter web API to look for precalculated data in a cache instead of calculating from daily. If no cached data, calculate and cache
 - Show as a bar chart, the difference between adjusted and unadjusted
+- Display nearby locations, with km distance and hyperlink
 - GHGs (CO2, CH4, etc) data and graphs
 - Climate stripes. https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
 - Include New Zealand's NIWA 'seven-station' temperature series https://niwa.co.nz/climate/information-and-resources/nz-temperature-record

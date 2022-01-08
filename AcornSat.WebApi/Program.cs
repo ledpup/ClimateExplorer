@@ -60,7 +60,8 @@ List<Location> GetLocations(string dataSetName = null)
     if (string.IsNullOrWhiteSpace(dataSetName))
     {
         var definitions = GetDataSetDefinitions(true);
-        var locations = definitions.SelectMany(x => x.Locations).ToList();
+        var locations = definitions.SelectMany(x => x.Locations).OrderBy(x => x.Name).ToList();
+        Location.SetNearbyLocations(locations);
         return locations;
     }
     return Location.GetLocations(dataSetName);

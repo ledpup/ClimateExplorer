@@ -19,17 +19,21 @@ public class Location
     {
         Sites = new List<string>();
     }
-    public static List<Location> GetLocations(string fileName = "ACORN-SAT")
+
+    public static List<Location> GetLocations(string fileName = "ACORN-SAT", bool setNearbyLocations = false)
     {
         var locationText = File.ReadAllText(@$"MetaData\{fileName}\Locations.json");
         var locations = JsonSerializer.Deserialize<List<Location>>(locationText);
 
-        SetNearbyLocations(locations);
+        if (setNearbyLocations)
+        {
+            SetNearbyLocations(locations);
+        }
 
         return locations;
     }
 
-    private static void SetNearbyLocations(List<Location>? locations)
+    public static void SetNearbyLocations(List<Location>? locations)
     {
         Parallel.ForEach(locations, location =>
         {
