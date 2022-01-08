@@ -37,19 +37,29 @@ public class Location
     {
         Parallel.ForEach(locations, location =>
         {
-            var originCoord = new GeoCoordinate(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation);
-
-            var distances = new List<LocationDistance>();
-
-            locations.Where(x => x != location).ToList().ForEach(x =>
-            {
-                var destCoord = new GeoCoordinate(x.Coordinates.Latitude, x.Coordinates.Longitude, x.Coordinates.Elevation);
-                var distance = Math.Round(originCoord.GetDistanceTo(destCoord) / 1000, 1); // GetDistanceTo is in metres. Convert to km
-                distances.Add(new LocationDistance { LocationId = x.Id, LocationName = x.Name, Distance = distance });
-            });
+            var distances = GetDistances(location, locations);
 
             location.NearbyLocations = distances.OrderBy(x => x.Distance).Take(5).ToList();
         });
+    }
+
+    public static List<LocationDistance> GetDistances(Location location, List<Location> locations)
+    {
+        var originCoord = new GeoCoordinate(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation);
+        return GetDistances(originCoord, locations.Where(x => x != location));
+    }
+
+    public static List<LocationDistance> GetDistances(GeoCoordinate geoCoordinate, IEnumerable<Location> locations)
+    {
+        var distances = new List<LocationDistance>();
+
+        locations.ToList().ForEach(x =>
+        {
+            var destCoord = new GeoCoordinate(x.Coordinates.Latitude, x.Coordinates.Longitude, x.Coordinates.Elevation);
+            var distance = Math.Round(geoCoordinate.GetDistanceTo(destCoord) / 1000, 1); // GetDistanceTo is in metres. Convert to km
+            distances.Add(new LocationDistance { LocationId = x.Id, LocationName = x.Name, Distance = distance });
+        });
+        return distances;
     }
 }
 

@@ -5,13 +5,16 @@
 @using Blazorise.Charts
 @using System.IO;
 @using System.Globalization
+@using Darnton.Blazor.DeviceInterop.Geolocation
 @using static AcornSat.Core.Enums
+@using GeoCoordinatePortable;
 
 <PageTitle>Index</PageTitle>
 
  @*<h1><a href="http://www.bom.gov.au/climate/data/acorn-sat/" target="_blank">ACORN-SAT</a></h1>*@
 <Row>
     <Column ColumnSize="ColumnSize.Is2">
+        <Button Clicked="@OnUseCurrentLocation" Color="Color.Primary">Use Current Location</Button>
         <SelectList
             TItem="Location"
             TValue="Guid"
@@ -131,6 +134,23 @@
 </div>
 
 @code{
+    [Inject] 
+    public IGeolocationService GeolocationService { get; set; }
+
+    async Task OnUseCurrentLocation()
+    {
+        var currentPositionResult = await GeolocationService.GetCurrentPosition();
+        var lat = currentPositionResult.Position.Coords.Latitude;
+        var lng = currentPositionResult.Position.Coords.Longitude;
+        var alt = currentPositionResult.Position.Coords.Altitude;
+        var geoCoord = alt == null ? new GeoCoordinate(lat, lng) :
+                                     new GeoCoordinate(lat, lng, alt.Value);
+
+        var distances = Location.GetDistances(geoCoord, Locations);
+        var closestLocation = distances.OrderBy(x => x.Distance).First();
+
+        await SelectedLocationChanged(closestLocation.LocationId);
+    }
 
     List<string> SelectedYearsText = new();
     List<short> DatasetYears { get; set; }

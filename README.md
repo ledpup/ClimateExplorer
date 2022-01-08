@@ -21,12 +21,10 @@ Tool to calculate average temperatures from BOM ACORN-SAT data.
 In rough order of priority
 
 - Linear trendline
-- Better moving average
 - Allow user to alter the parameters that calculate the set of data for the year (dayGrouping and threshold)
 - Make map a thumbnail initially. Click to expand to select location. Thumbnail again after selection.
 - Display info on missing data (number of records missing per week/month/etc for min and max, number of missing consecutive days, etc.)
 - Analyse missing data to find an optimal grouping method - linear regression analysis??
-- Location auto-detect
 - Put the selected year, start year, end year into a modal/filter section. Otherwise, text display of what the current state is. e.g, "1979-present", "1980, 2020", etc.
 - Naviagation back/forward. I.e., navigation history so the user can get back to where they were
 - Bookmark page
@@ -44,6 +42,7 @@ In rough order of priority
 - Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
+- 2022-01-08: Use current location at set to selected location
 - 2022-01-07: Add graphs for Remote Australian Islands and Antarctica (RAIA)
 - 2022-01-03: Aggregates; latitude bands (-10 to -20, -20 to -30, -30 to -40, -40 to -50)
 - 2022-01-03: Aggregates; Australia
