@@ -7,6 +7,18 @@ public class TemperatureRecord
     {
 
     }
+
+    public TemperatureRecord(short year, short month, short? day, float? min, float? max)
+    {
+        Year = year;
+        Month = month;
+        Day = day;
+
+        Min = min;
+        Max = max;
+
+        Week = null;
+    }
     public TemperatureRecord(DateTime date, float? min, float? max)
     {
         Year = (short)date.Year;

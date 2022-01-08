@@ -100,5 +100,31 @@ namespace AcornSat.Core
                 throw new Exception($"There are duplicate dates ({string.Join(", ", duplicateDates.Select(x => x.ToShortDateString()))}. The file is corrupt.");
             }
         }
+
+        public static void ValidateMonthly(this IEnumerable<TemperatureRecord> values)
+        {
+            if (values.Any(x => x.Day != null))
+            {
+                throw new Exception("No day values are permitted for monthly data");
+            }
+            if (values.Any(x => x.Month == null))
+            {
+                throw new NullReferenceException("All month values are required");
+            }
+
+            var invalidData = values.GroupBy(x => x.Year).Where(x => x.Count() > 12);
+            if (invalidData.Any())
+            {
+                throw new Exception($"No more than 12 records per year is permitted.");
+            }
+            var duplicateMonths = values.GroupBy(x => new { x.Year, x.Month })
+                                              .Where(x => x.Count() > 1)
+                                              .Select(x => x.Key)
+                                              .ToList();
+            if (duplicateMonths.Any())
+            {
+                throw new Exception($"There are duplicate dates ({string.Join(", ", duplicateMonths)}. The file is corrupt.");
+            }
+        }
     }
 }

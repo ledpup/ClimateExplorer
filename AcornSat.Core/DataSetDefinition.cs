@@ -24,6 +24,8 @@ namespace AcornSat.Core
         public string MaxTempFileName { get; set; }
         public string MinTempFileName { get; set; }
 
+        public string NullValue { get; set; }
+
         public List<Location> Locations { get; set;}
 
         public static List<DataSetDefinition> GetDataSetDefinitions(string filePath = @"MetaData\DataSetDefinitions.json")

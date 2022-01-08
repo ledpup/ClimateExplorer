@@ -29,9 +29,9 @@ app.MapGet("/", () => @"Hello, from minimal ACORN-SAT Web API!
                         Call /ACORN-SAT/location for list of locations.
                         Call /ACORN-SAT/Yearly/{temperatureType}/{locationId}?dayGrouping=14&dayGroupingThreshold=.8 for yearly average temperature records at locationId. Records are grouped by dayGrouping. If the number of records in the group does not meet the threshold, the data is considered invalid.");
 app.MapGet("/dataSet", (bool? includeLocations) => GetDataSetDefinitions(includeLocations));
-app.MapGet("/{dataSetName}/location", (string dataSetName) => GetLocations(dataSetName));
-app.MapGet("/{dataSetName}/{resolution}/{measurementType}/{locationId}", (string dataSetName, DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping, float? dayGroupingThreshold) => GetTemperatures(dataSetName, resolution, measurementType, locationId, year, dayGrouping, dayGroupingThreshold));
-app.MapGet("/{dataSetName}/{resolution}/{measurementType}", (string dataSetName, DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping, float dayGroupingThreshold, float locationGroupingThreshold) => GetTemperaturesByLatitudeGroups(dataSetName, resolution, measurementType, minLatitude, maxLatitude, dayGrouping, dayGroupingThreshold, locationGroupingThreshold));
+app.MapGet("/location", (string dataSetName) => GetLocations(dataSetName));
+app.MapGet("/dataSet/{resolution}/{measurementType}/{locationId}", (DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping, float? dayGroupingThreshold) => GetDataSets(resolution, measurementType, locationId, year, dayGrouping, dayGroupingThreshold));
+app.MapGet("/dataSet/{resolution}/{measurementType}", (DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping, float dayGroupingThreshold, float locationGroupingThreshold) => GetTemperaturesByLatitudeGroups(resolution, measurementType, minLatitude, maxLatitude, dayGrouping, dayGroupingThreshold, locationGroupingThreshold));
 app.MapGet("/reference/co2/", () => GetCarbonDioxide());
 app.MapGet("/reference/enso/{index}/{resolution}", (EnsoIndex index, DataResolution resolution, string measure) => GetEnso(index, resolution, measure));
 app.MapGet("/reference/enso-metadata", () => GetEnsoMetaData());
@@ -55,20 +55,20 @@ List<AcornSat.WebApi.Model.DataSetDefinition> GetDataSetDefinitions(bool? includ
     return dtos;
 }
 
-List<Location> GetLocations(string dataSetName)
+List<Location> GetLocations(string dataSetName = null)
 {
-    return Location.GetLocations();
+    if (string.IsNullOrWhiteSpace(dataSetName))
+    {
+        var definitions = GetDataSetDefinitions(true);
+        var locations = definitions.SelectMany(x => x.Locations).ToList();
+        return locations;
+    }
+    return Location.GetLocations(dataSetName);
 }
 
-List<DataSet> GetTemperaturesByLatitudeGroups(string dataSetName, DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping, float dayGroupingThreshold, float locationGroupingThreshold)
+List<DataSet> GetTemperaturesByLatitudeGroups(DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping, float dayGroupingThreshold, float locationGroupingThreshold)
 {
     var definitions = DataSetDefinition.GetDataSetDefinitions();
-    var dataSetDefinition = definitions.SingleOrDefault(x => x.Name == dataSetName);
-    if (dataSetDefinition == null)
-    {
-        throw new ArgumentException(nameof(dataSetName));
-    }
-
     var locations = GetLocationsInLatitudeBand(minLatitude, maxLatitude);
     var numberOfLocations = locations.Count;
 
@@ -81,7 +81,7 @@ List<DataSet> GetTemperaturesByLatitudeGroups(string dataSetName, DataResolution
     {
         case DataResolution.Yearly:
             {
-                var dataSets = YearlyTemperaturesAcrossLocations(dataSetDefinition, locations, measurementType, dayGrouping, dayGroupingThreshold);
+                var dataSets = YearlyTemperaturesAcrossLocations(definitions, locations, measurementType, dayGrouping, dayGroupingThreshold);
 
                 var startYear = dataSets.Min(x => x.Years.Min());
                 var endYear = dataSets.Max(x => x.Years.Max());
@@ -113,12 +113,12 @@ List<DataSet> GetTemperaturesByLatitudeGroups(string dataSetName, DataResolution
     throw new InvalidOperationException("Only yearly aggregates are supported");
 }
 
-List<DataSet> YearlyTemperaturesAcrossLocations(DataSetDefinition dataSetDefinition, List<Location> locations, MeasurementType measurementType, short dayGrouping, float dayGroupingThreshold)
+List<DataSet> YearlyTemperaturesAcrossLocations(List<DataSetDefinition> definitions, List<Location> locations, MeasurementType measurementType, short dayGrouping, float dayGroupingThreshold)
 {
-
     var dataSet = new List<DataSet>();
     Parallel.ForEach(locations, location => {
-        var locationDataSet = GetYearlyTemperatures(dataSetDefinition, measurementType, location.Id, dayGrouping, dayGroupingThreshold);
+        var definition = definitions.Single(x => x.Id == location.DataSetId);
+        var locationDataSet = GetYearlyTemperaturesFromDaily(definition, measurementType, location.Id, dayGrouping, dayGroupingThreshold);
         dataSet.AddRange(locationDataSet);
     });
 
@@ -127,7 +127,7 @@ List<DataSet> YearlyTemperaturesAcrossLocations(DataSetDefinition dataSetDefinit
 
 List<Location> GetLocationsInLatitudeBand(float? minLatitude, float? maxLatitude)
 {
-    var locations = Location.GetLocations();
+    var locations = GetLocations();
 
     var min = minLatitude;
     var max = maxLatitude;
@@ -151,42 +151,92 @@ List<Location> GetLocationsInLatitudeBand(float? minLatitude, float? maxLatitude
     return locationsInLatitudeBand;
 }
 
-List<DataSet> GetTemperatures(string dataSetName, DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping, float? dayGroupingThreshold)
+List<DataSet> GetDataSets(DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping, float? dayGroupingThreshold)
 {
-    var ddds = DataSetDefinition.GetDataSetDefinitions();
-    var dataSetDefinition = ddds.SingleOrDefault(x => x.Name == dataSetName);
-    if (dataSetDefinition == null)
+    var definitions = DataSetDefinition.GetDataSetDefinitions();
+    var locations = GetLocations();
+    var location = locations.Single(x => x.Id == locationId);
+    var definition = definitions.SingleOrDefault(x => x.Id == location.DataSetId);
+    if (definition == null)
     {
-        throw new ArgumentException(nameof(dataSetName));
+        throw new ArgumentException(nameof(definition));
     }
 
     switch (resolution)
     {
         case DataResolution.Daily:
-            return GetDailyTemperatures(dataSetDefinition, measurementType, locationId, year);
+            return GetTemperaturesFromFile(definition, measurementType, locationId, year);
         case DataResolution.Yearly:
-            return GetYearlyTemperatures(dataSetDefinition, measurementType, locationId, dayGrouping, dayGroupingThreshold);
+            if (definition.DataResolution == DataResolution.Daily)
+            {
+                return GetYearlyTemperaturesFromDaily(definition, measurementType, locationId, dayGrouping, dayGroupingThreshold);
+            }
+            else if (definition.DataResolution == DataResolution.Monthly)
+            {
+                return GetYearlyTemperaturesFromMonthly(definition, measurementType, locationId, year);
+            }
+            break;
         case DataResolution.Weekly:
-            return GetAverageTemperatures(dataSetDefinition, DataResolution.Weekly, measurementType, locationId, year.Value, dayGroupingThreshold);
+            return GetAverageFromDailyTemperatures(definition, DataResolution.Weekly, measurementType, locationId, year.Value, dayGroupingThreshold);
         case DataResolution.Monthly:
-            return GetAverageTemperatures(dataSetDefinition, DataResolution.Monthly, measurementType, locationId, year.Value, dayGroupingThreshold);
+            if (definition.DataResolution == DataResolution.Daily)
+            {
+                return GetAverageFromDailyTemperatures(definition, DataResolution.Monthly, measurementType, locationId, year.Value, dayGroupingThreshold);
+            }
+            else if (definition.DataResolution == DataResolution.Monthly)
+            {
+                return GetTemperaturesFromFile(definition, measurementType, locationId, year);
+            }
+            break;
     }
 
     throw new NotImplementedException();
 }
 
-List<DataSet> GetAverageTemperatures(DataSetDefinition dataSetDefintion, DataResolution dataResolution, MeasurementType measurementType, Guid locationId, short? year, float? threshold = .8f)
+List<DataSet> GetYearlyTemperaturesFromMonthly(DataSetDefinition dataSetDefinition, MeasurementType measurementType, Guid locationId, short? year)
+{
+    var location = Location.GetLocations(dataSetDefinition.FolderName).Single(x => x.Id == locationId);
+
+    var dataSets = GetTemperaturesFromFile(dataSetDefinition, measurementType, locationId);
+
+    var returnDataSets = new List<DataSet>();
+    foreach (var dataset in dataSets)
+    {
+        var grouping = dataset.Temperatures.GroupBy(x => x.Year).ToList();
+        var records = new List<TemperatureRecord>();
+        for (short i = 0; i < grouping.Count(); i++)
+        {
+            var min = (float)grouping[i].Count(x => x.Min != null) < 12 ? null : grouping[i].Average(x => x.Min);
+            var max = (float)grouping[i].Count(x => x.Max != null) < 12 ? null : grouping[i].Average(x => x.Max);
+            var record = new TemperatureRecord()
+            {
+                Year = grouping[i].Key,
+                Min = min,
+                Max = max,
+            };
+
+            records.Add(record);
+        }
+
+        dataset.Resolution = DataResolution.Yearly;
+        dataset.Temperatures = records;
+
+        returnDataSets.Add(dataset);
+    }
+    return returnDataSets;
+}
+
+List<DataSet> GetAverageFromDailyTemperatures(DataSetDefinition dataSetDefinition, DataResolution dataResolution, MeasurementType measurementType, Guid locationId, short? year, float? threshold = .8f)
 {
     if (threshold < 0 || threshold > 1)
     {
         throw new ArgumentOutOfRangeException("threshold", "Threshold needs to be between 0 and 1.");
     }
 
-    var datasets = GetDailyTemperatures(dataSetDefintion, measurementType, locationId, year.Value);
+    var dataSets = GetTemperaturesFromFile(dataSetDefinition, measurementType, locationId, year.Value);
     var returnDataSets = new List<DataSet>();
-    foreach (var dataset in datasets)
+    foreach (var dataset in dataSets)
     {
-
         List<IGrouping<short?, TemperatureRecord>> grouping = null;
         if (dataResolution == DataResolution.Weekly)
         {
@@ -231,22 +281,22 @@ List<DataSet> GetAverageTemperatures(DataSetDefinition dataSetDefintion, DataRes
     return returnDataSets;
 }
 
-List<DataSet> GetDailyTemperatures(DataSetDefinition dataSetDefintion, MeasurementType measurementType, Guid locationId, short? year = null)
+List<DataSet> GetTemperaturesFromFile(DataSetDefinition dataSetDefintion, MeasurementType measurementType, Guid locationId, short? year = null)
 {
-    var location = Location.GetLocations().Single(x => x.Id == locationId);
+    var location = Location.GetLocations(dataSetDefintion.FolderName).Single(x => x.Id == locationId);
 
     var returnDataSets = new List<DataSet>();
     if (measurementType == MeasurementType.Adjusted)
     {
-        var temperatures = AcornSat.Core.InputOutput.DataReader.ReadAdjustedTemperatures(dataSetDefintion, location, year);
+        var temperatures = DataReader.ReadAdjustedTemperatures(dataSetDefintion, location, year);
 
         if (temperatures != null)
         { 
             var dataSet = new DataSet
             {
                 Location = location,
-                Resolution = DataResolution.Daily,
-                Type = MeasurementType.Adjusted,
+                Resolution = dataSetDefintion.DataResolution,
+                Type = measurementType,
                 Year = year,
                 Temperatures = temperatures
             };
@@ -256,7 +306,7 @@ List<DataSet> GetDailyTemperatures(DataSetDefinition dataSetDefintion, Measureme
     }
     else if (measurementType == MeasurementType.Unadjusted)
     {
-        var dataSets = AcornSat.Core.InputOutput.DataReader.ReadRawDataFile(location, year);
+        var dataSets = DataReader.ReadRawDataFile(location, year);
         dataSets = dataSets.Where(x => x.Temperatures != null).ToList();
         returnDataSets.AddRange(dataSets);
     }
@@ -268,11 +318,11 @@ List<DataSet> GetDailyTemperatures(DataSetDefinition dataSetDefintion, Measureme
     return returnDataSets;
 }
 
-List<DataSet> GetYearlyTemperatures(DataSetDefinition dataSetDefintion, MeasurementType measurementType, Guid locationId, short? dayGrouping = 14, float? threshold = .8f)
+List<DataSet> GetYearlyTemperaturesFromDaily(DataSetDefinition dataSetDefintion, MeasurementType measurementType, Guid locationId, short? dayGrouping = 14, float? threshold = .8f)
 {
-    var location = Location.GetLocations().Single(x => x.Id == locationId);
+    var location = Location.GetLocations(dataSetDefintion.FolderName).Single(x => x.Id == locationId);
 
-    var dailyDataSets = GetDailyTemperatures(dataSetDefintion, measurementType, locationId);
+    var dailyDataSets = GetTemperaturesFromFile(dataSetDefintion, measurementType, locationId);
 
     var averagedDataSets = new List<DataSet>();
 
@@ -314,14 +364,14 @@ List<DataSet> GetYearlyTemperatures(DataSetDefinition dataSetDefintion, Measurem
             yearlyAverageRecords.Add(yearlyAverageRecord);
         }
 
-        var dataSet = new DataSet
+        var returnDataSet = new DataSet
         {
             Location = location,
             Resolution = DataResolution.Yearly,
             Type = measurementType,
             Temperatures = yearlyAverageRecords
         };
-        averagedDataSets.Add(dataSet);
+        averagedDataSets.Add(returnDataSet);
     }
 
     if (averagedDataSets.Count <= 1)

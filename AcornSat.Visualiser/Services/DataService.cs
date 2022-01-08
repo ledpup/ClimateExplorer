@@ -11,9 +11,9 @@ public class DataService : IDataService
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<DataSet>> GetTemperatures(DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, float? threshold = .7f, short? dayGrouping = 14)
+    public async Task<IEnumerable<DataSet>> GetDataSet(DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, float? threshold = .7f, short? dayGrouping = 14)
     {
-        var url = $"ACORN-SAT/{resolution}/{measurementType}/{locationId}";
+        var url = $"dataSet/{resolution}/{measurementType}/{locationId}";
         if (year != null)
         {
             url += $"?year={year}";
@@ -31,9 +31,9 @@ public class DataService : IDataService
         return await _httpClient.GetFromJsonAsync<DataSet[]>(url);
     }
 
-    public async Task<IEnumerable<DataSet>> GetAggregateTemperatures(DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .5f, float locationGroupingThreshold = .5f)
+    public async Task<IEnumerable<DataSet>> GetAggregateDataSet(DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .5f, float locationGroupingThreshold = .5f)
     {
-        var url = $"ACORN-SAT/{resolution}/{measurementType}?dayGrouping={dayGrouping}&dayGroupingThreshold={dayGroupingThreshold}&locationGroupingThreshold={locationGroupingThreshold}";
+        var url = $"dataSet/{resolution}/{measurementType}?dayGrouping={dayGrouping}&dayGroupingThreshold={dayGroupingThreshold}&locationGroupingThreshold={locationGroupingThreshold}";
         if (minLatitude != null)
         {
             url += $"&minLatitude={minLatitude}";
@@ -45,9 +45,14 @@ public class DataService : IDataService
         return await _httpClient.GetFromJsonAsync<DataSet[]>(url);
     }
 
-    public async Task<IEnumerable<Location>> GetLocations()
+    public async Task<IEnumerable<Location>> GetLocations(string dataSetName)
     {
-        return await _httpClient.GetFromJsonAsync<Location[]>("ACORN-SAT/location");
+        var url = $"/location";
+        if (dataSetName != null)
+        {
+            url += $"?dataSetName={dataSetName}";
+        }
+        return await _httpClient.GetFromJsonAsync<Location[]>(url);
     }
 
     public async Task<IEnumerable<EnsoMetaData>> GetEnsoMetaData()

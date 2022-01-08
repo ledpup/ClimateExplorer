@@ -21,7 +21,6 @@ Tool to calculate average temperatures from BOM ACORN-SAT data.
 In rough order of priority
 
 - Geographic sustitution: option to substitute (or at least not penalise) temperature from one location for another that has missing data.
-- Add graphs for Remote Australian Islands and Antarctica (RAIA)
 - Linear trendline
 - Better moving average
 - Allow user to alter the parameters that calculate the set of data for the year (dayGrouping and threshold)
@@ -40,6 +39,7 @@ In rough order of priority
 - Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
+- 2022-01-07: Add graphs for Remote Australian Islands and Antarctica (RAIA)
 - 2022-01-03: Aggregates; latitude bands (-10 to -20, -20 to -30, -30 to -40, -40 to -50)
 - 2022-01-03: Aggregates; Australia
 - 2022-01-01: Weekly data resolution when looking at charts for a year (instead of daily)

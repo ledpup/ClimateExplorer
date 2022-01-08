@@ -6,10 +6,20 @@ using GeoCoordinatePortable;
 using AcornSat.Core;
 using static AcornSat.Core.Enums;
 
-//BuildLocationsFromReferenceData();
-var locations = Location.GetLocations(@"..\..\..\..\AcornSat.WebApi\MetaData\ACORN-SAT\Locations.json");
-
+BuildLocationsFromReferenceData();
 BuildDataSetDefinition();
+
+var date = new DateTime(1980, 1, 1);
+
+for (var i = 0; i < 50; i++)
+{
+    date = date.AddMonths(1);
+
+    Console.WriteLine(date);
+}
+
+Console.WriteLine();
+
 
 void BuildDataSetDefinition()
 {
@@ -23,7 +33,7 @@ void BuildDataSetDefinition()
             FolderName = "ACORN-SAT",
             DataType = DataType.Temperature,
             DataResolution = DataResolution.Daily,
-            DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<temperature>\d*\.*\d*).*$",
+            DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<temperature>-?\d*\.*\d*).*$",
             MaxTempFolderName = "daily_tmax",
             MinTempFolderName = "daily_tmin",
             MaxTempFileName = "tmax.[station].daily.csv",
@@ -37,11 +47,12 @@ void BuildDataSetDefinition()
             FolderName = "RAIA",
             DataType = DataType.Temperature,
             DataResolution = DataResolution.Monthly,
-            DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<temperature>\d+\.\d+)$",
+            DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<temperature>-?\d+\.\d+)$",
             MaxTempFolderName = "maxT",
             MinTempFolderName = "minT",
             MaxTempFileName = "acorn.ria.maxT.[station].monthly.txt",
             MinTempFileName = "acorn.ria.minT.[station].monthly.txt",
+            NullValue = "99999.9",
         }
     };
 

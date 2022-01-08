@@ -301,10 +301,10 @@
         dataExists = existingDatasets.Any();
         if (!dataExists)
         {
-            var adjusted = (await DataService.GetTemperatures(DataResolution.Yearly, MeasurementType.Adjusted, SelectedLocationId)).ToList();
+            var adjusted = (await DataService.GetDataSet(DataResolution.Yearly, MeasurementType.Adjusted, SelectedLocationId)).ToList();
             Datasets.AddRange(adjusted);
 
-            var unadjusted = (await DataService.GetTemperatures(DataResolution.Yearly, MeasurementType.Unadjusted, SelectedLocationId)).ToList();
+            var unadjusted = (await DataService.GetDataSet(DataResolution.Yearly, MeasurementType.Unadjusted, SelectedLocationId)).ToList();
             Datasets.AddRange(unadjusted);
 
             var adjustedYears = adjusted.Single().Years;
@@ -317,10 +317,10 @@
             var yearsExists = existingDatasets.Any(x => x.Year.HasValue && x.Year.Value == selectedYear);
             if (!yearsExists)
             {
-                var adjustedTemps = (await DataService.GetTemperatures(SelectedResolution, MeasurementType.Adjusted, SelectedLocationId, selectedYear)).ToList();
+                var adjustedTemps = (await DataService.GetDataSet(SelectedResolution, MeasurementType.Adjusted, SelectedLocationId, selectedYear)).ToList();
                 Datasets.AddRange(adjustedTemps);
 
-                var unadjustedTemps = (await DataService.GetTemperatures(SelectedResolution, MeasurementType.Unadjusted, SelectedLocationId, selectedYear)).ToList();
+                var unadjustedTemps = (await DataService.GetDataSet(SelectedResolution, MeasurementType.Unadjusted, SelectedLocationId, selectedYear)).ToList();
                 Datasets.AddRange(unadjustedTemps);
             }
         }

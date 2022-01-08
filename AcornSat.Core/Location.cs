@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 public class Location
 {
     public Guid Id { get; set; }
+    public Guid DataSetId { get; set; }
     public string Name { get; set; }
     public List<string> Sites { get; set; }
     public Coordinates Coordinates { get; set;}
@@ -18,9 +19,9 @@ public class Location
     {
         Sites = new List<string>();
     }
-    public static List<Location> GetLocations(string locationFilePath = @"MetaData\ACORN-SAT\Locations.json")
+    public static List<Location> GetLocations(string fileName = "ACORN-SAT")
     {
-        var locationText = File.ReadAllText(locationFilePath);
+        var locationText = File.ReadAllText(@$"MetaData\{fileName}\Locations.json");
         var locations = JsonSerializer.Deserialize<List<Location>>(locationText);
 
         SetNearbyLocations(locations);
