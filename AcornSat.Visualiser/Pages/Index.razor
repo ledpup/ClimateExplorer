@@ -67,8 +67,7 @@
         <ModalBody>
             <Alert Color="Color.Success" Visible="true">
                 Chart Type
-                <RadioGroup TValue="ChartType" CheckedValue="@SelectedChartType"
-                CheckedValueChanged="@OnSelectedChartTypeValueChanged">
+                <RadioGroup TValue="ChartType" CheckedValue="@SelectedChartType" CheckedValueChanged="@OnSelectedChartTypeValueChanged" Orientation="Orientation.Vertical">
                     <Radio TValue="ChartType" Value="ChartType.Line">Line chart</Radio>
                     <Radio TValue="ChartType" Value="ChartType.Bar">Bar chart - relative to average</Radio>
                 </RadioGroup>
