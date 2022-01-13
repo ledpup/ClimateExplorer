@@ -44,5 +44,15 @@ public class DataSet
     {
         get { return Temperatures.Count(x => x.Max == null); }
     }
+
+    public float? MaxMean
+    {
+        get { return Temperatures.Average(x => x.Max); }
+    }
+
+    public float? MinMean
+    {
+        get { return Temperatures.Average(x => x.Min); }
+    }
 }
 

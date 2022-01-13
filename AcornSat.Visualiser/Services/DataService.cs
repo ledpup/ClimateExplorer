@@ -11,7 +11,7 @@ public class DataService : IDataService
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<DataSet>> GetDataSet(DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, float? threshold = .7f, short? dayGrouping = 14)
+    public async Task<IEnumerable<DataSet>> GetDataSet(DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, float? threshold = .7f, short? dayGrouping = 14, bool? relativeAverage = true)
     {
         var url = $"dataSet/{resolution}/{measurementType}/{locationId}";
         if (year != null)
@@ -27,6 +27,11 @@ public class DataService : IDataService
         {
             url += url.Contains("?") ? "&" : "?";
             url += $"dayGrouping={dayGrouping}";
+        }
+        if (relativeAverage != null)
+        {
+            url += url.Contains("?") ? "&" : "?";
+            url += $"relativeAverage={relativeAverage}";
         }
         return await _httpClient.GetFromJsonAsync<DataSet[]>(url);
     }

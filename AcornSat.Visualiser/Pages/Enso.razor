@@ -47,11 +47,11 @@
 </Row>
 
 <div style="width: 85%; border: 0.5px dotted; padding: 10px; position: absolute; bottom: 5px;">
-    <Chart @ref="chart" TItem="float" Type="@SelectedChartType" />
+    <Chart @ref="chart" TItem="float?" Type="@SelectedChartType" />
 </div>
 
 @code {
-    
+
     ChartType SelectedChartType = ChartType.Bar;
     async Task OnSelectedChartTypeChanged(ChartType value)
     {
@@ -83,7 +83,7 @@
         await HandleRedraw();
     }
 
-    Chart<float> chart;
+    Chart<float?> chart;
 
     [Inject]
     public IDataService DataService { get; set; }
@@ -170,39 +170,46 @@
         await chart.Update();
     }
 
-    List<string> GetColourSet(List<float> values)
+    public static List<string> GetBarChartColourSet(List<float?> values, bool redPositive = true)
     {
         var count = values.Count;
 
-        var enso = EnsoMetaData.Single(x => x.Index == SelectedIndex);
-
-        var min = enso.ElNinoOrientation > 0 ? values.Min() : values.Max();
-        var max = enso.ElNinoOrientation > 0 ? values.Max() : values.Min();
+        var min = (redPositive ? values.Min() : values.Max()).Value;
+        var max = (redPositive ? values.Max() : values.Min()).Value;
 
         var colour = new List<string>();
         for (var i = 0; i < count; i++)
         {
             ChartColor chartColor;
-            var adjustedValueForElNinoOrientation = values[i] * enso.ElNinoOrientation;
-            if (adjustedValueForElNinoOrientation > 0)
+            if (values[i].HasValue)
             {
-                chartColor = ChartColor.FromRgba((byte)((Math.Abs(adjustedValueForElNinoOrientation / max)) * 255), 31, 31, 1f);
+                var adjustedValue = values[i].Value * (redPositive ? 1f : -1f);
+                if (adjustedValue > 0)
+                {
+                    chartColor = ChartColor.FromRgba((byte)((Math.Abs(adjustedValue / max)) * 255), 31, 31, 1f);
+                }
+                else
+                {
+                    chartColor = ChartColor.FromRgba(31, 31, (byte)((Math.Abs(adjustedValue / min)) * 255), 1f);
+                }
+                colour.Add(chartColor);
             }
             else
             {
-                chartColor = ChartColor.FromRgba(31, 31, (byte)((Math.Abs(adjustedValueForElNinoOrientation / min)) * 255), 1f);
+                colour.Add(null);
             }
-            colour.Add(chartColor);
         }
 
         return colour;
     }
 
-    BarChartDataset<float> GetBarChartDataset(string label, List<float> values)
+    BarChartDataset<float?> GetBarChartDataset(string label, List<float?> values)
     {
-        var colour = GetColourSet(values);
+        var enso = EnsoMetaData.Single(x => x.Index == SelectedIndex);
 
-        return new BarChartDataset<float>
+        var colour = GetBarChartColourSet(values, enso.ElNinoOrientation > 0);
+
+        return new BarChartDataset<float?>
                     {
                         Label = label,
                         Data = values,
@@ -211,11 +218,11 @@
                     };
     }
 
-    LineChartDataset<float> GetLineChartDataset(string label, List<float> values)
+    LineChartDataset<float?> GetLineChartDataset(string label, List<float?> values)
     {
-        var colour = GetColourSet(values);
+        var colour = GetBarChartColourSet(values);
 
-        return new LineChartDataset<float>
+        return new LineChartDataset<float?>
                     {
                         Label = label,
                         Data = values,

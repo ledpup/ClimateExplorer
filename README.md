@@ -25,7 +25,7 @@ In rough order of priority
 - Make map a thumbnail initially. Click to expand to select location. Thumbnail again after selection.
 - Display info on missing data (number of records missing per week/month/etc for min and max, number of missing consecutive days, etc.)
 - Analyse missing data to find an optimal grouping method - linear regression analysis??
-- Put the selected year, start year, end year into a modal/filter section. Otherwise, text display of what the current state is. e.g, "1979-present", "1980, 2020", etc.
+- Text display of the current filter is. e.g, "1979-present", "1980, 2020", etc.
 - Naviagation back/forward. I.e., navigation history so the user can get back to where they were
 - Bookmark page
 - Alter web API to look for precalculated data in a cache instead of calculating from daily. If no cached data, calculate and cache
@@ -42,6 +42,8 @@ In rough order of priority
 - Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
+- 2022-01-13: Put the selected year, start year, end year into a modal filter section.
+- 2022-01-13: Bar chart of temperatures relative to average - https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
 - 2022-01-08: Use current location at set to selected location
 - 2022-01-07: Add graphs for Remote Australian Islands and Antarctica (RAIA)
 - 2022-01-03: Aggregates; latitude bands (-10 to -20, -20 to -30, -30 to -40, -40 to -50)

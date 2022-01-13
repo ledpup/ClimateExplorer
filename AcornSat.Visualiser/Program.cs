@@ -19,8 +19,8 @@ builder.Services
     .AddBootstrap5Providers()
     .AddFontAwesomeIcons()
     .AddBlazorLeafletMaps()
-    .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
     .AddScoped<IGeolocationService, GeolocationService>()
+    .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
     .AddHttpClient<IDataService, DataService>(client =>
     {
         client.BaseAddress = new Uri("http://localhost:54836/");

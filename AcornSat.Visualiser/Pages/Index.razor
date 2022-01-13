@@ -25,8 +25,11 @@
             DefaultItemText="Select ACORN-SAT Location"
             Style="width: 100%"
             />
-        @if (SelectedLocation != null)
-        {
+
+    </Column>
+    @if (SelectedLocation != null)
+    {
+        <Column ColumnSize="ColumnSize.Is2">
             <Alert Color="Color.Primary" Visible="true">
                 <FieldBody>
                     @SelectedLocation.Name
@@ -40,58 +43,96 @@
                     Stations: @string.Join(", ", SelectedLocation.Sites)
                 </FieldBody>
             </Alert>
-        }
-    </Column>
-    <Column ColumnSize="ColumnSize.Is1">
-        <Alert Color="Color.Secondary" Visible="true">
-            <Check TValue="bool" Checked="@Unadjusted" CheckedChanged="@OnUnadjustedChanged">Unadjusted</Check>
-            <Check TValue="bool" Checked="@Adjusted" CheckedChanged="@OnAdjustedChanged">Adjusted</Check>
-        </Alert>
-    </Column>
-    <Column ColumnSize="ColumnSize.Is1">
-        <Alert Color="Color.Info" Visible="true">
-            <Check TValue="bool" Checked="@Maximums" CheckedChanged="@OnMaximumsChanged">Maximums</Check>
-            <Check TValue="bool" Checked="@Minimums" CheckedChanged="@OnMinimumsChanged">Minimums</Check>
-        </Alert>
-    </Column>
-    <Column ColumnSize="ColumnSize.Is1">
-        Selected year(s)
-        <Autocomplete TItem="short"
-                TValue="short"
-                Data="@DatasetYears"
-                TextField="@((item) => item.ToString())"
-                ValueField="@((item) => item)"
-                Multiple
-                SelectedValuesChanged="@OnSelectedYearsChanged"
-                SelectedValues="@SelectedYears"
-                SelectedTexts="@SelectedYearsText">
-            <NotFoundContent>@context was not found</NotFoundContent>
-        </Autocomplete>
-    </Column>
-    @if (SelectedResolution == DataResolution.Yearly)
-    {
-        <Column ColumnSize="ColumnSize.Is1">            
-            Start Year <Validation Validator="ValidateYear"><TextEdit Text="@StartYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnStartYearTextChanged" /></Validation>
         </Column>
-        <Column ColumnSize="ColumnSize.Is1">
-            End Year <Validation Validator="ValidateYear"><TextEdit Text="@EndYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChanged" /></Validation>
-        </Column>
-        <Column ColumnSize="ColumnSize.Is1">
-            Simple Moving Average<br/>
-            Interval
-            <Select TValue="int" SelectedValue="@SelectedPeriod" SelectedValueChanged="@OnSelectedPeriodChanged">
-                <SelectItem Value="0">None</SelectItem>
-                <SelectItem Value="3">3 years</SelectItem>
-                <SelectItem Value="5">5 years</SelectItem>
-                <SelectItem Value="7">7 years</SelectItem>
-                <SelectItem Value="10">10 years</SelectItem>
-            </Select>
-            <Check TValue="bool" Checked="@SoloSma" CheckedChanged="@OnSoloSmaChanged">Solo</Check>
+        <Column ColumnSize="ColumnSize.Is2">
+            <Alert Color="Color.Primary" Visible="true">
+                <FieldBody>
+                    Nearby: @string.Join(", ", SelectedLocation.NearbyLocations.Select(x => x.LocationName))
+                </FieldBody>
+            </Alert>
         </Column>
     }
-    @if (SelectedResolution != DataResolution.Yearly)
-    {
-        <Column ColumnSize="ColumnSize.Is1">
+    <Column ColumnSize="ColumnSize.Is1">
+    <Button Color="Color.Primary" Clicked="@ShowOptionsModal">Options</Button>
+    <Button Color="Color.Primary" Clicked="@ShowFilterModal">Filter</Button>
+   </Column>
+</Row>
+
+ <Modal @ref="optionsModal">
+    <ModalContent>
+        <ModalHeader Background="Background.Light">
+            <ModalTitle>Options</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <Alert Color="Color.Success" Visible="true">
+                Chart Type
+                <RadioGroup TValue="ChartType" CheckedValue="@SelectedChartType"
+                CheckedValueChanged="@OnSelectedChartTypeValueChanged">
+                    <Radio TValue="ChartType" Value="ChartType.Line">Line chart</Radio>
+                    <Radio TValue="ChartType" Value="ChartType.Bar">Bar chart - relative to average</Radio>
+                </RadioGroup>
+            </Alert>
+           <Alert Color="Color.Secondary" Visible="true">
+                Data Set
+                <Check TValue="bool" Checked="@Unadjusted" CheckedChanged="@OnUnadjustedChanged">Unadjusted</Check>
+                <Check TValue="bool" Checked="@Adjusted" CheckedChanged="@OnAdjustedChanged">Adjusted</Check>
+            </Alert>
+            <Alert Color="Color.Primary" Visible="true">
+                Temperatures
+                <Check TValue="bool" Checked="@Maximums" CheckedChanged="@OnMaximumsChanged">Maximums</Check>
+                <Check TValue="bool" Checked="@Minimums" CheckedChanged="@OnMinimumsChanged">Minimums</Check>
+            </Alert>
+            <Alert Color="Color.Info" Visible="true">
+                Simple Moving Average<br/>
+                <Select TValue="int" SelectedValue="@SelectedPeriod" SelectedValueChanged="@OnSelectedPeriodChanged">
+                    <SelectItem Value="0">None</SelectItem>
+                    <SelectItem Value="3">3 years</SelectItem>
+                    <SelectItem Value="5">5 years</SelectItem>
+                    <SelectItem Value="7">7 years</SelectItem>
+                    <SelectItem Value="10">10 years</SelectItem>
+                </Select>
+                <Check TValue="bool" Checked="@SoloSma" CheckedChanged="@OnSoloSmaChanged">Solo</Check>
+            </Alert>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+ <Modal @ref="filterModal">
+    <ModalContent>
+        <ModalHeader Background="Background.Light">
+            <ModalTitle>Filter</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+            Selected year(s)
+            <Autocomplete TItem="short"
+                    TValue="short"
+                    Data="@DatasetYears"
+                    TextField="@((item) => item.ToString())"
+                    ValueField="@((item) => item)"
+                    Multiple
+                    SelectedValuesChanged="@OnSelectedYearsChanged"
+                    SelectedValues="@SelectedYears"
+                    SelectedTexts="@SelectedYearsText">
+                <NotFoundContent>@context was not found</NotFoundContent>
+            </Autocomplete>
+            </Field>
+    
+        @if (SelectedResolution == DataResolution.Yearly)
+        {
+            <Field>        
+                Start Year <Validation Validator="ValidateYear"><TextEdit Text="@StartYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnStartYearTextChanged" /></Validation>
+            </Field>
+            <Field>
+                End Year <Validation Validator="ValidateYear"><TextEdit Text="@EndYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChanged" /></Validation>
+            </Field>
+
+        }
+        @if (SelectedResolution != DataResolution.Yearly)
+        {
+            <Field>
             Resolution
             <Select TValue="DataResolution" SelectedValue="@SelectedResolution" SelectedValueChanged="@OnSelectedResolutionChanged">
                 <SelectItem Value="@(DataResolution.Yearly)">Yearly</SelectItem>
@@ -99,9 +140,8 @@
                 <SelectItem Value="@(DataResolution.Weekly)">Weekly</SelectItem>
                 <SelectItem Value="@(DataResolution.Daily)">Daily</SelectItem>
             </Select>
-        </Column>
-
-        <Column ColumnSize="ColumnSize.Is1">
+            </Field>
+                <Field>
             Selected Station
             <SelectList
                 TItem="string"
@@ -112,16 +152,18 @@
                 SelectedValueChanged="@SelectedStationChanged"
                 Style="width: 100%"
                 />
-        </Column>
-    }
-</Row>
+                </Field>
+        }
+        </ModalBody>
+    </ModalContent>
+</Modal>
 
 <Map @ref="map" MapOptions="mapOptions"></Map>
 
 <style>
     #mapId {
-        height: 25%;
-        width: 27%;
+        height: 15%;
+        width: 20%;
         position: absolute;
         top: 10px;
         right: 10px;
@@ -130,10 +172,38 @@
 
 @*<Button Clicked="@(async () => await ButtonClicked())">Redraw</Button>*@
 <div style="width: 85%; border: 0.5px dotted; padding: 10px; position: absolute; bottom: 5px;">
-    <LineChart @ref="lineChart" TItem="float?" Clicked="@OnLineChartClicked" />
+    <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Bar" />
 </div>
 
 @code{
+    private Modal optionsModal;
+    private Task ShowOptionsModal()
+    {
+        return optionsModal.Show();
+    }
+    private Task HideOptionsModal()
+    {
+        return optionsModal.Hide();
+    }
+
+    private Modal filterModal;
+    private Task ShowFilterModal()
+    {
+        return filterModal.Show();
+    }
+    private Task HideFilterModal()
+    {
+        return filterModal.Hide();
+    }
+
+
+    ChartType SelectedChartType { get; set; }
+    async Task OnSelectedChartTypeValueChanged(ChartType value)
+    {
+        SelectedChartType = value;
+        await HandleRedraw();
+    }
+
     [Inject] 
     public IGeolocationService GeolocationService { get; set; }
 
@@ -158,8 +228,11 @@
 
     async Task OnSelectedYearsChanged(List<short> values)
     {
-        if (values.Count == 0 || values[0] == 0)
+        if (!SelectedYears.Any() && values.Count == 0)
         {
+            SelectedResolution = DataResolution.Yearly;
+            await InvokeAsync(StateHasChanged);
+            await BuildLocationDataSets();
             return;
         }
 
@@ -348,6 +421,7 @@
 
         StationsWithData = Datasets.Where(x => x.Type == MeasurementType.Unadjusted && !string.IsNullOrWhiteSpace(x.Station))
                     .Select(x => x.Station)
+                    .Distinct()
                     .ToList();
 
         SelectedStation = StationsWithData.FirstOrDefault();
@@ -357,12 +431,12 @@
         await HandleRedraw();
     }
 
-    LineChart<float?> lineChart;
+    Chart<float?> chart;
 
     async Task OnStartYearTextChanged(string text)
     {
         StartYear = text;
-        if (text.Length == 4)
+        if (text.Length == 0 || text.Length == 4)
         {
             await HandleRedraw();
         }
@@ -371,7 +445,7 @@
     async Task OnEndYearTextChanged(string text)
     {
         EndYear = text;
-        if (text.Length == 4)
+        if (text.Length == 0 || text.Length == 4)
         {
             await HandleRedraw();
         }
@@ -402,7 +476,7 @@
 
         string title = string.Empty;
 
-        await lineChart.Clear();
+        await chart.Clear();
 
         List<DataSet> bufferedSelectedDataSet = new List<DataSet>();
         Func<TemperatureRecord, bool> timeConstraint = null;
@@ -438,7 +512,8 @@
                 }
             }
 
-            title = $"Average Yearly Temperature for {SelectedLocation.Name} ({startYear}-{endYear})";
+            title = SelectedChartType == ChartType.Line ? $"Average Yearly Temperature for {SelectedLocation.Name} ({startYear}-{endYear})"
+                                                        : $"Temperature Relative to Average for {SelectedLocation.Name} ({startYear}-{endYear})";
 
             StartYearOfChart = startYear;
 
@@ -452,7 +527,7 @@
             }
 
             Labels = labels;
-            await lineChart.AddLabels(Labels);
+            await chart.AddLabels(Labels);
 
             await AddDataSetsToGraph(bufferedSelectedDataSet, timeConstraint);
         }
@@ -526,7 +601,7 @@
             }
 
             Labels = labels;
-            await lineChart.AddLabels(Labels);
+            await chart.AddLabels(Labels);
 
             for (var i = 0; i < SelectedYears.Count; i++)
             {
@@ -541,7 +616,7 @@
             }
         }
 
-        var yLabel = "Degrees Celsius (°C)";
+        var yLabel = SelectedChartType == ChartType.Line ? "Degrees Celsius (°C)" : "Degrees Celsius (°C) Relative to Average Temperature";
         var xLabel = GetXAxisLabel();
 
         object chartOptions = new
@@ -571,9 +646,9 @@
             }
         };
 
-        await lineChart.SetOptionsObject(chartOptions);
+        await chart.SetOptionsObject(chartOptions);
 
-        await lineChart.Update();
+        await chart.Update();
     }
 
     string GetXAxisLabel()
@@ -605,7 +680,7 @@
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(0));
             if (SelectedPeriod == 0 || !SoloSma)
             {
-                await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
+                await chart.AddDataSet(GetChartDataset(label, values, colour));
             }
             await AddMovingAverage(label, values);
         }
@@ -616,7 +691,7 @@
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(1));
             if (SelectedPeriod == 0 || !SoloSma)
             {
-                await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
+                await chart.AddDataSet(GetChartDataset(label, values, colour));
             }
             await AddMovingAverage(label, values);
         }
@@ -627,7 +702,7 @@
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(2));
             if (SelectedPeriod == 0 || !SoloSma)
             {
-                await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
+                await chart.AddDataSet(GetChartDataset(label, values, colour));
             }
             await AddMovingAverage(label, values);
         }
@@ -638,7 +713,7 @@
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(3));
             if (SelectedPeriod == 0 || !SoloSma)
             {
-                await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
+                await chart.AddDataSet(GetChartDataset(label, values, colour));
             }
             await AddMovingAverage(label, values);
         }
@@ -646,11 +721,11 @@
 
     async Task AddMovingAverage(string label, List<float?> values)
     {
-        if (SelectedPeriod != 0)
+        if (SelectedChartType == ChartType.Line && SelectedPeriod != 0)
         {
             var simpleMovingAverages = SimpleMovingAverage.Calculate(SelectedPeriod, values);
             label = $"{label} Moving Average @ {SelectedPeriod} year interval";
-            await lineChart.AddDataSet(GetLineChartDataset(label, simpleMovingAverages, ChartColor.FromHtmlColorCode(colours.GetNextColour())));
+            await chart.AddDataSet(GetLineChartDataset(label, simpleMovingAverages, ChartColor.FromHtmlColorCode(colours.GetNextColour())));
         }
     }
 
@@ -719,6 +794,35 @@
         }
 
         return bufferedDataSets;
+    }
+
+    ChartDataset<float?> GetChartDataset(string label, List<float?> values, ChartColor? chartColour = null)
+    {
+        switch (SelectedChartType)
+        {
+            case ChartType.Line:
+                {
+                    return GetLineChartDataset(label, values, chartColour.Value);
+                }
+            case ChartType.Bar:
+                {
+                    return GetBarChartDataset(label, values);
+                }
+        }
+        throw new NotImplementedException();
+    }
+
+    BarChartDataset<float?> GetBarChartDataset(string label, List<float?> values)
+    {
+        var colour = Enso.GetBarChartColourSet(values);
+
+        return new BarChartDataset<float?>
+                    {
+                        Label = label,
+                        Data = values,
+                        BorderColor = colour,
+                        BackgroundColor = colour,
+                    };
     }
 
     LineChartDataset<float?> GetLineChartDataset(string label, List<float?> values, ChartColor chartColor)

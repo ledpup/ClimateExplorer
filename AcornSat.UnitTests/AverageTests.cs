@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace AcornSat.UnitTests
 {
     [TestClass]
-    public class MedianTests
+    public class AverageTests
     {
         [TestMethod]
         public void SimpleMedianTest()
@@ -23,8 +23,17 @@ namespace AcornSat.UnitTests
         [DataRow(new float[] { 1, 1, 2, 6, 6, 9 }, 4)]
         public void ComplexMedianTest(float[] values, float expected)
         {
-            
+
             Assert.AreEqual(expected, values.Median());
+        }
+
+        [TestMethod]
+        public void AverageWithNullTest()
+        {
+            var values = new float?[] { 9, 10, null, 13, 4 };
+            var mean = values.Average();
+            Assert.AreEqual(5, values.Length);
+            Assert.AreEqual(9, mean); // This means that nulls are ignored when calculating mean
         }
     }
 }
