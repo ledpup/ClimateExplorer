@@ -21,7 +21,6 @@ Tool to calculate average temperatures from BOM ACORN-SAT data.
 In rough order of priority
 
 - Linear trendline
-- Allow user to alter the parameters that calculate the set of data for the year (dayGrouping and threshold)
 - Make map a thumbnail initially. Click to expand to select location. Thumbnail again after selection.
 - Display info on missing data (number of records missing per week/month/etc for min and max, number of missing consecutive days, etc.)
 - Analyse missing data to find an optimal grouping method - linear regression analysis??
@@ -42,6 +41,7 @@ In rough order of priority
 - Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
+- 2022-01-14: Allow user to alter the parameters that calculate the set of data for the year (dayGrouping and threshold)
 - 2022-01-13: Put the selected year, start year, end year into a modal filter section.
 - 2022-01-13: Bar chart of temperatures relative to average - https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
 - 2022-01-08: Use current location at set to selected location

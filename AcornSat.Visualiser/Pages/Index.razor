@@ -93,6 +93,23 @@
                 </Select>
                 <Check TValue="bool" Checked="@SoloSma" CheckedChanged="@OnSoloSmaChanged">Solo</Check>
             </Alert>
+            <Alert Color="Color.Danger" Visible="true">
+                Day grouping<br/>
+                <Select TValue="short" SelectedValue="@SelectedDayGrouping" SelectedValueChanged="@OnSelectingDayGroupingChanged">
+                    <SelectItem Value="5">Groups of 5 days (73 groups)</SelectItem>
+                    <SelectItem Value="7">Groups of 7 days (52 groups)</SelectItem>
+                    <SelectItem Value="13">Groups of 13 days (28 groups)</SelectItem>
+                    <SelectItem Value="14">Groups of 14 days (26 groups)</SelectItem>
+                    <SelectItem Value="26">Groups of 26 days (14 groups)</SelectItem>
+                    <SelectItem Value="28">Groups of 28 days (13 groups)</SelectItem>
+                    <SelectItem Value="73">Groups of 73 days (5 groups)</SelectItem>
+                    <SelectItem Value="91">Groups of 91 days (4 groups)</SelectItem>
+                    <SelectItem Value="182">Groups of 182 days (2 groups)</SelectItem>
+                </Select>
+                Threshold required to form a valid group (% percentage)<br/>
+                <TextEdit Text="@DayGroupThresholdText" TextChanged="@OnDayGroupThresholdTextChanged" MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
+                <Button Color="Color.Primary" Clicked="@ApplyYearlyAverageParameters">Apply</Button>
+            </Alert>
         </ModalBody>
     </ModalContent>
 </Modal>
@@ -175,10 +192,34 @@
 </div>
 
 @code{
+    float SelectedDayGroupThreshold { get; set; } = .7f;
+    string DayGroupThresholdText { get; set; }
+    short SelectedDayGrouping { get; set; } = 14;
+    short SelectingDayGrouping { get; set; }
+
+    async Task OnSelectingDayGroupingChanged(short value)
+    {
+        SelectingDayGrouping = value;
+    }
+
+    async Task OnDayGroupThresholdTextChanged(string value)
+    {
+        DayGroupThresholdText = value;
+    }
+
+    async Task ApplyYearlyAverageParameters()
+    {
+        SelectedDayGroupThreshold = float.Parse(DayGroupThresholdText) / 100;
+        SelectedDayGrouping = SelectingDayGrouping == 0 ? SelectedDayGrouping : SelectingDayGrouping;
+        await BuildLocationDataSets();
+    }
+
     private Modal optionsModal;
     private Task ShowOptionsModal()
     {
+        DayGroupThresholdText = (SelectedDayGroupThreshold * 100).ToString();
         return optionsModal.Show();
+
     }
     private Task HideOptionsModal()
     {
@@ -393,10 +434,10 @@
         dataExists = existingDatasets.Any();
         if (!dataExists)
         {
-            var adjusted = (await DataService.GetDataSet(DataResolution.Yearly, MeasurementType.Adjusted, SelectedLocationId)).ToList();
+            var adjusted = (await DataService.GetDataSet(DataResolution.Yearly, MeasurementType.Adjusted, SelectedLocationId, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold)).ToList();
             Datasets.AddRange(adjusted);
 
-            var unadjusted = (await DataService.GetDataSet(DataResolution.Yearly, MeasurementType.Unadjusted, SelectedLocationId)).ToList();
+            var unadjusted = (await DataService.GetDataSet(DataResolution.Yearly, MeasurementType.Unadjusted, SelectedLocationId, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold)).ToList();
             Datasets.AddRange(unadjusted);
 
             var adjustedYears = adjusted.Single().Years;
@@ -409,10 +450,10 @@
             var yearsExists = existingDatasets.Any(x => x.Year.HasValue && x.Year.Value == selectedYear);
             if (!yearsExists)
             {
-                var adjustedTemps = (await DataService.GetDataSet(SelectedResolution, MeasurementType.Adjusted, SelectedLocationId, selectedYear)).ToList();
+                var adjustedTemps = (await DataService.GetDataSet(SelectedResolution, MeasurementType.Adjusted, SelectedLocationId, selectedYear, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold)).ToList();
                 Datasets.AddRange(adjustedTemps);
 
-                var unadjustedTemps = (await DataService.GetDataSet(SelectedResolution, MeasurementType.Unadjusted, SelectedLocationId, selectedYear)).ToList();
+                var unadjustedTemps = (await DataService.GetDataSet(SelectedResolution, MeasurementType.Unadjusted, SelectedLocationId, selectedYear, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold)).ToList();
                 Datasets.AddRange(unadjustedTemps);
             }
         }
