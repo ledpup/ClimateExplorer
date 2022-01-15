@@ -69,12 +69,4 @@ public class LocationDistance
     public Guid LocationId { get; set; }
     public string LocationName { get; set; }
     public double Distance { get; set; }
-
-    public string LocationUrl 
-    { 
-        get
-        {
-            return $"?locationId={LocationId}";
-        }
-    }
 }

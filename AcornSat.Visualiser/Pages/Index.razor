@@ -85,8 +85,8 @@
                     <FieldLabel>Select a nearby location</FieldLabel>
                     <Alert Color="Color.Secondary" Visible="true">
                         <Repeater Items="@SelectedLocation.NearbyLocations" >
-                            <Blazorise.Link To="@context.LocationUrl" Title="@context.LocationName" Target="Target.Top">@context.LocationName</Blazorise.Link> (@context.Distance km)<br/>
-                        </Repeater>               
+                            <Blazorise.Link Title="@context.LocationName" To="#" Clicked="@(()=>OnNearbyLocationClicked(context.LocationId))">@context.LocationName</Blazorise.Link> (@context.Distance km)<br/>
+                        </Repeater>
                     </Alert>
                 </Field>
             }
@@ -228,8 +228,9 @@
 </div>
 
 @code{
-    async Task OnNearbyLocationClicked(object arg)
+    async Task  OnNearbyLocationClicked(Guid guid)
     {
+        await SelectedLocationChanged(guid);
     }
 
     float SelectedDayGroupThreshold { get; set; } = .7f;
