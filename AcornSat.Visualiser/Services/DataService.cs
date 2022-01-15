@@ -1,4 +1,5 @@
 ﻿using AcornSat.Core;
+using Microsoft.AspNetCore.WebUtilities;
 using System.Net.Http.Json;
 using static AcornSat.Core.Enums;
 
@@ -14,24 +15,22 @@ public class DataService : IDataService
     public async Task<IEnumerable<DataSet>> GetDataSet(DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, float? threshold = .7f, short? dayGrouping = 14, bool? relativeAverage = true)
     {
         var url = $"dataSet/{resolution}/{measurementType}/{locationId}";
+        
         if (year != null)
         {
-            url += $"?year={year}";
+            url = QueryHelpers.AddQueryString(url, "year", year.Value.ToString());
         }
         if (threshold != null)
         {
-            url += url.Contains("?") ? "&" : "?";
-            url += $"threshold={threshold}";
+            url = QueryHelpers.AddQueryString(url, "threshold", threshold.Value.ToString());
         }
         if (dayGrouping != null)
         {
-            url += url.Contains("?") ? "&" : "?";
-            url += $"dayGrouping={dayGrouping}";
+            url = QueryHelpers.AddQueryString(url, "dayGrouping", dayGrouping.Value.ToString());
         }
         if (relativeAverage != null)
         {
-            url += url.Contains("?") ? "&" : "?";
-            url += $"relativeAverage={relativeAverage}";
+            url = QueryHelpers.AddQueryString(url, "relativeAverage", relativeAverage.Value.ToString());
         }
         return await _httpClient.GetFromJsonAsync<DataSet[]>(url);
     }

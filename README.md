@@ -29,7 +29,6 @@ In rough order of priority
 - Bookmark page
 - Alter web API to look for precalculated data in a cache instead of calculating from daily. If no cached data, calculate and cache
 - Show as a bar chart, the difference between adjusted and unadjusted
-- Display nearby locations, with km distance and hyperlink
 - GHGs (CO2, CH4, etc) data and graphs
 - Climate stripes. https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
 - Include New Zealand's NIWA 'seven-station' temperature series https://niwa.co.nz/climate/information-and-resources/nz-temperature-record
@@ -41,6 +40,7 @@ In rough order of priority
 - Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
+- 2022-01-15: Display nearby locations, with km distance and hyperlink. Note: still needs some improvement
 - 2022-01-14: Allow user to alter the parameters that calculate the set of data for the year (dayGrouping and threshold)
 - 2022-01-13: Put the selected year, start year, end year into a modal filter section.
 - 2022-01-13: Bar chart of temperatures relative to average - https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes

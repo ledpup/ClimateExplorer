@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject NavigationManager NavManager
 @using AcornSat.Core
 @using Blazorise
 @using Blazorise.Components
@@ -8,25 +9,12 @@
 @using Darnton.Blazor.DeviceInterop.Geolocation
 @using static AcornSat.Core.Enums
 @using GeoCoordinatePortable;
+@using Microsoft.AspNetCore.WebUtilities
 
 <PageTitle>Index</PageTitle>
 
  @*<h1><a href="http://www.bom.gov.au/climate/data/acorn-sat/" target="_blank">ACORN-SAT</a></h1>*@
 <Row>
-    <Column ColumnSize="ColumnSize.Is2">
-        <Button Clicked="@OnUseCurrentLocation" Color="Color.Primary">Use Current Location</Button>
-        <SelectList
-            TItem="Location"
-            TValue="Guid"
-            Data="@Locations"
-            TextField="@((item)=>item.Name)"
-            ValueField="@((item)=>item.Id)"
-            SelectedValueChanged="@SelectedLocationChanged"
-            DefaultItemText="Select ACORN-SAT Location"
-            Style="width: 100%"
-            />
-
-    </Column>
     @if (SelectedLocation != null)
     {
         <Column ColumnSize="ColumnSize.Is2">
@@ -44,19 +32,67 @@
                 </FieldBody>
             </Alert>
         </Column>
-        <Column ColumnSize="ColumnSize.Is2">
-            <Alert Color="Color.Primary" Visible="true">
-                <FieldBody>
-                    Nearby: @string.Join(", ", SelectedLocation.NearbyLocations.Select(x => x.LocationName))
-                </FieldBody>
-            </Alert>
-        </Column>
     }
     <Column ColumnSize="ColumnSize.Is1">
-    <Button Color="Color.Primary" Clicked="@ShowOptionsModal">Options</Button>
-    <Button Color="Color.Primary" Clicked="@ShowFilterModal">Filter</Button>
+        <Field>
+            <Button Color="Color.Primary" Clicked="@ShowSelectLocationModal">Change Location</Button>
+        </Field>
+    </Column>
+    <Column ColumnSize="ColumnSize.Is1">
+        <Field>
+            <Button Color="Color.Primary" Clicked="@ShowOptionsModal">Options</Button>
+        </Field>
+        <Field>
+            <Button Color="Color.Primary" Clicked="@ShowFilterModal">Filter</Button>
+        </Field>
    </Column>
 </Row>
+
+<Modal @ref="selectLocationModal">
+    <ModalContent>
+        <ModalHeader Background="Background.Light">
+            <ModalTitle>Select Location</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            @if (SelectedLocation != null)
+            {
+                <Field>
+                    Current Location: @SelectedLocation.Name
+                </Field>
+            }
+            <Field>
+                <Button Clicked="@OnUseCurrentLocation" Color="Color.Primary">Use Your Location</Button>
+            </Field>
+            <Field> 
+            </Field>
+            <Field>
+                <FieldLabel>Select a location from the list</FieldLabel>
+                <SelectList
+                    TItem="Location"
+                    TValue="Guid"
+                    Data="@Locations"
+                    TextField="@((item)=>item.Name)"
+                    ValueField="@((item)=>item.Id)"
+                    SelectedValueChanged="@SelectedLocationChanged"
+                    DefaultItemText="Select Location"
+                    Style="width: 100%"
+                    />
+           </Field>
+            @if (SelectedLocation != null)
+            {
+                <Field>
+                    <FieldLabel>Select a nearby location</FieldLabel>
+                    <Alert Color="Color.Secondary" Visible="true">
+                        <Repeater Items="@SelectedLocation.NearbyLocations" >
+                            <Blazorise.Link To="@context.LocationUrl" Title="@context.LocationName" Target="Target.Top">@context.LocationName</Blazorise.Link> (@context.Distance km)<br/>
+                        </Repeater>               
+                    </Alert>
+                </Field>
+            }
+        </ModalBody>
+    </ModalContent>
+</Modal>
 
  <Modal @ref="optionsModal">
     <ModalContent>
@@ -192,6 +228,10 @@
 </div>
 
 @code{
+    async Task OnNearbyLocationClicked(object arg)
+    {
+    }
+
     float SelectedDayGroupThreshold { get; set; } = .7f;
     string DayGroupThresholdText { get; set; }
     short SelectedDayGrouping { get; set; } = 14;
@@ -212,6 +252,18 @@
         SelectedDayGroupThreshold = float.Parse(DayGroupThresholdText) / 100;
         SelectedDayGrouping = SelectingDayGrouping == 0 ? SelectedDayGrouping : SelectingDayGrouping;
         await BuildLocationDataSets();
+    }
+
+    private Modal selectLocationModal;
+    private Task ShowSelectLocationModal()
+    {
+        //DayGroupThresholdText = (SelectedDayGroupThreshold * 100).ToString();
+        return selectLocationModal.Show();
+
+    }
+    private Task HideSelectLocationModal()
+    {
+        return selectLocationModal.Hide();
     }
 
     private Modal optionsModal;
@@ -405,8 +457,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-
         SelectedResolution = DataResolution.Yearly;
+        if (DataService == null)
+        {
+            throw new NullReferenceException(nameof(DataService));
+        }
         Locations = (await DataService.GetLocations()).ToList();
 
         if (MapMarkers == null)
@@ -416,7 +471,15 @@
         Datasets = new List<DataSet>();
         SelectedYears = new List<short>();
 
-        await SelectedLocationChanged(Guid.Parse("e069a5df-8f9e-47d6-a53b-dba5dd4e618c"));
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("locationId", out var locationIdStringValues))
+        {
+            await SelectedLocationChanged(Guid.Parse(locationIdStringValues.ToString()));
+        }
+        else
+        {
+            await SelectedLocationChanged(Guid.Parse("e069a5df-8f9e-47d6-a53b-dba5dd4e618c"));
+        }
 
         await base.OnInitializedAsync();
     }
@@ -457,7 +520,6 @@
                 Datasets.AddRange(unadjustedTemps);
             }
         }
-
 
         StationsWithData = Datasets.Where(x => x.Type == MeasurementType.Unadjusted && !string.IsNullOrWhiteSpace(x.Station))
                     .Select(x => x.Station)

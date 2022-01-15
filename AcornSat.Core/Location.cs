@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 
@@ -68,4 +69,12 @@ public class LocationDistance
     public Guid LocationId { get; set; }
     public string LocationName { get; set; }
     public double Distance { get; set; }
+
+    public string LocationUrl 
+    { 
+        get
+        {
+            return $"?locationId={LocationId}";
+        }
+    }
 }
