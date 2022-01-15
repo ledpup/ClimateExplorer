@@ -28,10 +28,10 @@ app.MapGet("/", () => @"Hello, from minimal ACORN-SAT Web API!
                         Call /dataSet for a list of the dataset definitions. (E.g., ACORN-SAT)
                         Call /ACORN-SAT/location for list of locations.
                         Call /ACORN-SAT/Yearly/{temperatureType}/{locationId}?dayGrouping=14&dayGroupingThreshold=.8 for yearly average temperature records at locationId. Records are grouped by dayGrouping. If the number of records in the group does not meet the threshold, the data is considered invalid.");
-app.MapGet("/dataSet", (bool? includeLocations) => GetDataSetDefinitions(includeLocations));
+app.MapGet("/datasetdefinition", (bool? includeLocations) => GetDataSetDefinitions(includeLocations));
 app.MapGet("/location", (string dataSetName) => GetLocations(dataSetName));
-app.MapGet("/dataSet/{resolution}/{measurementType}/{locationId}", (DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping, float? dayGroupingThreshold, bool? relativeAverage) => GetDataSets(resolution, measurementType, locationId, year, dayGrouping, dayGroupingThreshold, relativeAverage));
-app.MapGet("/dataSet/{resolution}/{measurementType}", (DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping, float dayGroupingThreshold, float locationGroupingThreshold) => GetTemperaturesByLatitudeGroups(resolution, measurementType, minLatitude, maxLatitude, dayGrouping, dayGroupingThreshold, locationGroupingThreshold));
+app.MapGet("/dataset/{resolution}/{measurementType}/{locationId}", (DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping, float? dayGroupingThreshold, bool? relativeAverage) => GetDataSets(resolution, measurementType, locationId, year, dayGrouping, dayGroupingThreshold, relativeAverage));
+app.MapGet("/dataset/{resolution}/{measurementType}", (DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping, float dayGroupingThreshold, float locationGroupingThreshold) => GetTemperaturesByLatitudeGroups(resolution, measurementType, minLatitude, maxLatitude, dayGrouping, dayGroupingThreshold, locationGroupingThreshold));
 app.MapGet("/reference/co2/", () => GetCarbonDioxide());
 app.MapGet("/reference/enso/{index}/{resolution}", (EnsoIndex index, DataResolution resolution, string measure) => GetEnso(index, resolution, measure));
 app.MapGet("/reference/enso-metadata", () => GetEnsoMetaData());

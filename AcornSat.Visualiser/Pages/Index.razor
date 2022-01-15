@@ -24,11 +24,15 @@
                 </FieldBody>
                 <br />
                 <FieldBody>
-                    @SelectedLocation.Coordinates.Latitude°, @SelectedLocation.Coordinates.Longitude°, @SelectedLocation.Coordinates.Elevation m
+                    @Math.Round(SelectedLocation.Coordinates.Latitude, 1)°, @Math.Round(SelectedLocation.Coordinates.Longitude, 1)°, @Math.Round(SelectedLocation.Coordinates.Elevation, 1) m
                 </FieldBody>
                 <br />
                 <FieldBody>
                     Station(s): @string.Join(", ", SelectedLocation.Sites)
+                </FieldBody>
+                <br />
+                <FieldBody>
+                    Dataset: @SelectedDataSetDefinition.Name
                 </FieldBody>
             </Alert>
         </Column>
@@ -418,11 +422,13 @@
 
     Guid SelectedLocationId { get; set; }
     Location SelectedLocation { get; set; }
+    DataSetDefinition SelectedDataSetDefinition { get; set; }
 
     [Inject]
     public IDataService DataService { get; set; }
 
     List<DataSet> Datasets { get; set; }
+    IEnumerable<DataSetDefinition> DataSetDefinitions;
     IEnumerable<Location> Locations;
     List<Marker> MapMarkers;
     ColourServer colours = new ColourServer();
@@ -463,6 +469,7 @@
         {
             throw new NullReferenceException(nameof(DataService));
         }
+        DataSetDefinitions = (await DataService.GetDataSetDefinitions()).ToList();
         Locations = (await DataService.GetLocations()).ToList();
 
         if (MapMarkers == null)
@@ -952,6 +959,7 @@
     {
         SelectedLocationId = newValue;
         SelectedLocation = Locations.Single(x => x.Id == SelectedLocationId);
+        SelectedDataSetDefinition = DataSetDefinitions.Single(x => x.Id == SelectedLocation.DataSetId);
         base.StateHasChanged();
         await BuildLocationDataSets();
     }

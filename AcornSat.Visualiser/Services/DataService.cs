@@ -49,6 +49,12 @@ public class DataService : IDataService
         return await _httpClient.GetFromJsonAsync<DataSet[]>(url);
     }
 
+    public async Task<IEnumerable<DataSetDefinition>> GetDataSetDefinitions()
+    {
+        var url = "/datasetdefinition";
+        return await _httpClient.GetFromJsonAsync<DataSetDefinition[]>(url);
+    }
+
     public async Task<IEnumerable<Location>> GetLocations(string dataSetName)
     {
         var url = $"/location";
