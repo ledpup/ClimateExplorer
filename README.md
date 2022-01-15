@@ -31,7 +31,7 @@ In rough order of priority
 - Show as a bar chart, the difference between adjusted and unadjusted
 - GHGs (CO2, CH4, etc) data and graphs
 - Climate stripes. https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
-- Include New Zealand's NIWA 'seven-station' temperature series https://niwa.co.nz/climate/information-and-resources/nz-temperature-record
+- Write an adaptor to query NIWA CliFlo website to pull in the 11-station series data automatically
 - Precipitation
 - Get temperature data from BOM via a web service
 - Get ENSO data from URLs for indexes (still supporting offline mode)
@@ -40,6 +40,7 @@ In rough order of priority
 - Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
+- 2022-01-16: Include New Zealand's NIWA 'seven-station' temperature series https://niwa.co.nz/climate/information-and-resources/nz-temperature-record
 - 2022-01-15: Display nearby locations, with km distance and hyperlink. Note: still needs some improvement
 - 2022-01-14: Allow user to alter the parameters that calculate the set of data for the year (dayGrouping and threshold)
 - 2022-01-13: Put the selected year, start year, end year into a modal filter section.

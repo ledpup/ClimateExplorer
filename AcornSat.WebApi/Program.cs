@@ -49,7 +49,7 @@ List<AcornSat.WebApi.Model.DataSetDefinition> GetDataSetDefinitions(bool? includ
         DataResolution = x.DataResolution,
         DataType = x.DataType,
         Description = x.Description,
-        Locations = includeLocations.GetValueOrDefault() ? GetLocations(x.Name) : null,
+        Locations = includeLocations.GetValueOrDefault() ? GetLocations(x.FolderName) : null,
     }).ToList();
 
     return dtos;
@@ -161,6 +161,11 @@ List<DataSet> GetDataSets(DataResolution resolution, MeasurementType measurement
     if (definition == null)
     {
         throw new ArgumentException(nameof(definition));
+    }
+
+    if (!definition.MeasurementTypes.Contains(measurementType))
+    {
+        return new List<DataSet>();
     }
 
     switch (resolution)
@@ -322,7 +327,7 @@ List<DataSet> GetTemperaturesFromFile(DataSetDefinition dataSetDefintion, Measur
     }
     else if (measurementType == MeasurementType.Unadjusted)
     {
-        var dataSets = DataReader.ReadRawDataFile(location, year);
+        var dataSets = DataReader.ReadRawDataFile(dataSetDefintion, location, year);
         dataSets = dataSets.Where(x => x.Temperatures != null).ToList();
         returnDataSets.AddRange(dataSets);
     }

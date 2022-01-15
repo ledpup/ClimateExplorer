@@ -11,14 +11,18 @@ namespace AcornSat.Core.InputOutput
 {
     public static class DataReader
     {
-        public static List<DataSet> ReadRawDataFile(Location location, short? yearFilter = null)
+        public static List<DataSet> ReadRawDataFile(DataSetDefinition dataSetDefinition, Location location, short? yearFilter = null)
         {
-            var siteSet = location.Sites.Where(x => File.Exists(@$"Temperature\ACORN-SAT\Daily\raw-data\hqnew{x}.txt")).ToList();
+            var filePath = @$"{dataSetDefinition.DataType}\{dataSetDefinition.FolderName}\{dataSetDefinition.DataResolution}\{dataSetDefinition.RawFolderName}\";
+
+            var siteSet = location.Sites.Where(x => File.Exists(@$"{filePath}{dataSetDefinition.RawFileName}".Replace("[station]", x))).ToList();
+
+            var regEx = new Regex(dataSetDefinition.RawDataRowRegEx);
 
             var dataSets = new List<DataSet>();
             foreach (var site in siteSet)
             {
-                var siteTemperatures = ReadRawDataFile(site, yearFilter);
+                var siteTemperatures = ReadRawDataFile(site, regEx, filePath, dataSetDefinition.RawFileName, dataSetDefinition.RawNullValue, dataSetDefinition.RawTemperatureConversion, yearFilter);
                 if (siteTemperatures.Any())
                 {
                     var dataSet = new DataSet
@@ -36,14 +40,15 @@ namespace AcornSat.Core.InputOutput
             return dataSets;
         }
 
-        static List<TemperatureRecord> ReadRawDataFile(string station, short? yearFilter = null)
+        static List<TemperatureRecord> ReadRawDataFile(string station, Regex regEx, string filePath, string fileName, string nullValue, ConversionMethod conversionMethod, short? yearFilter = null)
         {
-            var rawTempsRegEx = new Regex(@"\s+(-?\d+)\s+(-?\d+)");
-            var siteFilePath = @$"Temperature\ACORN-SAT\Daily\raw-data\hqnew{station}.txt";
+            var siteFilePath = filePath + fileName.Replace("[station]", station);
             var rawData = File.ReadAllLines(siteFilePath);
             var temperatureRecords = new List<TemperatureRecord>();
 
-            var startYearRecord = short.Parse(rawData[0].Substring(6, 4));
+            var initialDataIndex = GetStartIndex(regEx, rawData);
+
+            var startYearRecord = short.Parse(regEx.Match(rawData[initialDataIndex]).Groups["year"].Value);
 
             // Check to see if the station had started recording by the year we want
             if (yearFilter != null && startYearRecord > yearFilter)
@@ -53,12 +58,18 @@ namespace AcornSat.Core.InputOutput
 
             var startDate = yearFilter == null ? startYearRecord : yearFilter.Value;
             var date = new DateTime(startDate, 1, 1);
-            var previousDate = date;
+            var previousDate = date.AddDays(-1);
             foreach (var record in rawData)
             {
-                var year = short.Parse(record.Substring(6, 4));
-                var month = short.Parse(record.Substring(10, 2));
-                var day = short.Parse(record.Substring(12, 2));
+                var match = regEx.Match(record);
+
+                if (!match.Success)
+                {
+                    continue;
+                }
+                var year = short.Parse(match.Groups["year"].Value);
+                var month = short.Parse(match.Groups["month"].Value);
+                var day = short.Parse(match.Groups["day"].Value);
 
                 if (yearFilter != null)
                 {
@@ -84,14 +95,16 @@ namespace AcornSat.Core.InputOutput
                     date = date.AddDays(1);
                 }
 
-                var temps = record.Substring(13);
-                var tempGroups = rawTempsRegEx.Match(temps).Groups;
+                var tmax = match.Groups["tmax"].Value;
+                var tmin = match.Groups["tmin"].Value;
 
-                // Some recordings don't have a value for min or max. In that case the entry will be -999. Will make those values null
+                // Some recordings don't have a value for min or max. In that case the entry will be the nullValue; record a null.
                 // Temp values are recorded as tenths of degrees C in ACORN-SAT raw data. Divide by 10 to get them into degrees C.
                 // E.g., 222 = 22.2 degrees C
-                float? max = tempGroups[1].Value == "-999" ? null : float.Parse(tempGroups[1].Value) / 10;
-                float? min = tempGroups[2].Value == "-999" ? null : float.Parse(tempGroups[2].Value) / 10;
+                float? max = tmax == nullValue ? null : 
+                    conversionMethod == ConversionMethod.DivideBy10 ? float.Parse(tmax) / 10f : float.Parse(tmax);
+                float? min = tmin == nullValue ? null : 
+                    conversionMethod == ConversionMethod.DivideBy10 ? float.Parse(tmin) / 10f : float.Parse(tmin);
 
                 temperatureRecords.Add(new TemperatureRecord
                 {
@@ -169,7 +182,7 @@ namespace AcornSat.Core.InputOutput
             var regEx = new Regex(dataSetDefinition.DataRowRegEx);
             var temperatureRecords = new List<TemperatureRecord>();
 
-            var initialDataIndex = GetStartIndex(maxMinRecords.MaxRows, maxMinRecords.MinRows, regEx);
+            var initialDataIndex = GetStartIndex(regEx, maxMinRecords.MaxRows, maxMinRecords.MinRows);
 
             var matchMax = regEx.Match(maxMinRecords.MaxRows[initialDataIndex]);
             var matchMin = regEx.Match(maxMinRecords.MinRows[initialDataIndex]);
@@ -313,16 +326,20 @@ namespace AcornSat.Core.InputOutput
             return maxMinRecords;
         }
 
-        private static int GetStartIndex(string[] maximums, string[] minimums, Regex regEx)
+        private static int GetStartIndex(Regex regEx, string[] dataRows, string[]? correspondingDataRows = null)
         {
             var index = 0;
-            while (!regEx.IsMatch(maximums[index]))
+            while (!regEx.IsMatch(dataRows[index]))
             {
                 index++;
-                if (index > maximums.Length)
+                if (index > dataRows.Length)
                 {
                     throw new Exception("None of the data in the input file fits the regular expression.");
                 }
+            }
+            if (correspondingDataRows != null && !regEx.IsMatch(correspondingDataRows[index]))
+            {
+                throw new Exception($"The two sets of data do not start to match at the same index ({index}).");
             }
             return index;
         }

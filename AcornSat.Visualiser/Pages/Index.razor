@@ -28,7 +28,7 @@
                 </FieldBody>
                 <br />
                 <FieldBody>
-                    Stations: @string.Join(", ", SelectedLocation.Sites)
+                    Station(s): @string.Join(", ", SelectedLocation.Sites)
                 </FieldBody>
             </Alert>
         </Column>
@@ -504,9 +504,10 @@
             var unadjusted = (await DataService.GetDataSet(DataResolution.Yearly, MeasurementType.Unadjusted, SelectedLocationId, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold)).ToList();
             Datasets.AddRange(unadjusted);
 
-            var adjustedYears = adjusted.Single().Years;
+            var adjustedYears = adjusted.SingleOrDefault()?.Years;
             var unadjustedYears = unadjusted.SelectMany(x => x.Years).Distinct();
-            DatasetYears = adjustedYears.Concat(unadjustedYears).Distinct().OrderBy(x => x).ToList();
+            DatasetYears = adjustedYears == null ? unadjustedYears.ToList()
+                                                 : adjustedYears.Concat(unadjustedYears).Distinct().OrderBy(x => x).ToList();
         }
 
         foreach (var selectedYear in SelectedYears)

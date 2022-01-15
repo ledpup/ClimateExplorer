@@ -33,5 +33,11 @@ namespace AcornSat.Core
             Oni,
             Soi,
         }
+
+        public enum ConversionMethod
+        {
+            Unchanged,
+            DivideBy10
+        }
     }
 }
