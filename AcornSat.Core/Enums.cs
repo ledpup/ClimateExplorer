@@ -23,7 +23,8 @@ namespace AcornSat.Core
         public enum MeasurementType
         {
             Unadjusted,
-            Adjusted
+            Adjusted,
+            Difference
         }
 
         public enum EnsoIndex

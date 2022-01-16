@@ -318,7 +318,7 @@ List<DataSet> GetTemperaturesFromFile(DataSetDefinition dataSetDefintion, Measur
             {
                 Location = location,
                 Resolution = dataSetDefintion.DataResolution,
-                Type = measurementType,
+                MeasurementType = measurementType,
                 Year = year,
                 Temperatures = temperatures
             };
@@ -390,7 +390,7 @@ List<DataSet> GetYearlyTemperaturesFromDaily(DataSetDefinition dataSetDefintion,
         {
             Location = location,
             Resolution = DataResolution.Yearly,
-            Type = measurementType,
+            MeasurementType = measurementType,
             Temperatures = yearlyAverageRecords
         };
         averagedDataSets.Add(returnDataSet);
@@ -423,7 +423,7 @@ List<DataSet> GetYearlyTemperaturesFromDaily(DataSetDefinition dataSetDefintion,
         {
             Location = location,
             Resolution = DataResolution.Yearly,
-            Type = measurementType,
+            MeasurementType = measurementType,
             Temperatures = aggregatedAveragedTemperatures
         };
         aggregatedAveragedDataSets.Add(dataSet);

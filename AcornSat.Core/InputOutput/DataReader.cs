@@ -30,7 +30,7 @@ namespace AcornSat.Core.InputOutput
                         Location = location,
                         Resolution = DataResolution.Daily,
                         Station = site,
-                        Type = MeasurementType.Unadjusted,
+                        MeasurementType = MeasurementType.Unadjusted,
                         Year = yearFilter,
                         Temperatures = siteTemperatures
                     };

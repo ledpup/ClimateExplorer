@@ -123,6 +123,7 @@
                 Data Set
                 <Check TValue="bool" Checked="@Unadjusted" CheckedChanged="@OnUnadjustedChanged" Disabled="@UnadjustedDisabled">Unadjusted</Check>
                 <Check TValue="bool" Checked="@Adjusted" CheckedChanged="@OnAdjustedChanged"  Disabled="@AdjustedDisabled">Adjusted</Check>
+                <Check TValue="bool" Checked="@Difference" CheckedChanged="@OnDifferenceChanged"  Disabled="@DifferenceDisabled">Difference</Check>
             </Alert>
             <Alert Color="Color.Primary" Visible="true">
                 Temperatures
@@ -408,7 +409,14 @@
         await HandleRedraw();
     }
 
-    bool UnadjustedDisabled, AdjustedDisabled;
+    bool Difference = false;
+    async Task OnDifferenceChanged(bool value)
+    {
+        Difference = value;
+        await HandleRedraw();
+    }
+
+    bool UnadjustedDisabled, AdjustedDisabled, DifferenceDisabled;
 
     bool Maximums = true;
     async Task OnMaximumsChanged(bool value)
@@ -522,6 +530,31 @@
             var unadjusted = (await DataService.GetDataSet(DataResolution.Yearly, MeasurementType.Unadjusted, SelectedLocationId, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
             Datasets.AddRange(unadjusted);
 
+            if (Difference)
+            {
+                var difference = new DataSet
+                    {
+                        Resolution = DataResolution.Yearly,
+                        MeasurementType = MeasurementType.Difference,
+                    };
+                unadjusted.ForEach(x =>
+                    {
+                        x.Temperatures.ForEach(y =>
+                        {
+                            var adjustedTemp = adjusted.Single().Temperatures.SingleOrDefault(z => z.Year == y.Year);
+                            difference.Temperatures.Add(new TemperatureRecord
+                            {
+                                Year = y.Year,
+                                Max = adjustedTemp == null ? null : adjustedTemp.Max - y.Max,
+                                Min = adjustedTemp == null ? null : adjustedTemp.Min - y.Min,
+                            });
+                        });
+                    }
+                );
+
+                Datasets.Add(difference);
+            }
+
             var adjustedYears = adjusted.SingleOrDefault()?.Years;
             var unadjustedYears = unadjusted.SelectMany(x => x.Years).Distinct();
             DatasetYears = adjustedYears == null ? unadjustedYears.ToList()
@@ -541,7 +574,7 @@
             }
         }
 
-        StationsWithData = Datasets.Where(x => x.Type == MeasurementType.Unadjusted && !string.IsNullOrWhiteSpace(x.Station))
+        StationsWithData = Datasets.Where(x => x.MeasurementType == MeasurementType.Unadjusted && !string.IsNullOrWhiteSpace(x.Station))
                     .Select(x => x.Station)
                     .Distinct()
                     .ToList();
@@ -605,7 +638,7 @@
 
         if (SelectedResolution == DataResolution.Yearly)
         {
-            var selectedDataSets = Datasets.Where(x => x.Resolution == DataResolution.Yearly && ((Adjusted && x.Type == MeasurementType.Adjusted) || (Unadjusted && x.Type == MeasurementType.Unadjusted)))
+            var selectedDataSets = Datasets.Where(x => x.Resolution == DataResolution.Yearly && ((Adjusted && x.MeasurementType == MeasurementType.Adjusted) || (Unadjusted && x.MeasurementType == MeasurementType.Unadjusted) || (Difference && x.MeasurementType == MeasurementType.Difference)))
                                            .ToList();
 
             bufferedSelectedDataSet = CreateStandardisedDataSet(selectedDataSets);
@@ -656,12 +689,12 @@
         else
         {
             var selectedDataSets = Datasets.Where(x => x.Resolution == SelectedResolution
-                && ((Adjusted && x.Type == MeasurementType.Adjusted) || (Unadjusted && x.Type == MeasurementType.Unadjusted))
+                && ((Adjusted && x.MeasurementType == MeasurementType.Adjusted) || (Unadjusted && x.MeasurementType == MeasurementType.Unadjusted))
                 && x.Temperatures.All(y => SelectedYears.Contains(y.Year))).ToList();
 
             foreach (var dataSet in selectedDataSets)
             {
-                if (dataSet.Type == MeasurementType.Adjusted)
+                if (dataSet.MeasurementType == MeasurementType.Adjusted)
                 {
                     bufferedSelectedDataSet.Add(dataSet);
                 }
@@ -817,6 +850,15 @@
             }
             await AddMovingAverage(label, values);
         }
+        if (Difference && Maximums)
+        {
+            var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Difference, y => y.Max, timeConstraint, year);
+            var label = labelPrefix + "Maximum Difference";
+            if (SelectedPeriod == 0 || !SoloSma)
+            {
+                await chart.AddDataSet(GetChartDataset(label, values, chartType: ChartType.Bar));
+            }
+        }
         if (Adjusted && Minimums)
         {
             var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Adjusted, y => y.Min, timeConstraint, year);
@@ -853,7 +895,7 @@
 
     List<float?> SelectTemperatureValues(List<DataSet> dataSet, MeasurementType measurementType, Func<TemperatureRecord, float?> selector, Func<TemperatureRecord, bool> timeConstraint, short? year = null)
     {
-        var dataset = dataSet.SingleOrDefault(x => x.Type == measurementType && (year == null || x.Year == year.Value));
+        var dataset = dataSet.SingleOrDefault(x => x.MeasurementType == measurementType && (year == null || x.Year == year.Value));
 
         var selectedValues = dataset
                             .Temperatures
@@ -888,7 +930,7 @@
                 }
                 temperatures.Add(record);
             }
-            var bufferedDataSet = new DataSet { Location = dataSet.Location, Type = dataSet.Type };
+            var bufferedDataSet = new DataSet { Location = dataSet.Location, MeasurementType = dataSet.MeasurementType };
             bufferedDataSet.Temperatures = temperatures;
             bufferedDataSets.Add(bufferedDataSet);
         }
@@ -902,7 +944,7 @@
         var startDate = new DateOnly(dataSets.Min(x => x.Temperatures.Min(y => y.Year)), 1, 1);
         foreach(var dataSet in dataSets)
         {
-            var bufferedDataSet = new DataSet { Location = dataSet.Location, Type = dataSet.Type };
+            var bufferedDataSet = new DataSet { Location = dataSet.Location, MeasurementType = dataSet.MeasurementType };
             bufferedDataSets.Add(bufferedDataSet);
 
             var startYear = dataSet.Temperatures.Min(x => x.Date);
@@ -918,9 +960,10 @@
         return bufferedDataSets;
     }
 
-    ChartDataset<float?> GetChartDataset(string label, List<float?> values, ChartColor? chartColour = null)
+    ChartDataset<float?> GetChartDataset(string label, List<float?> values, ChartColor? chartColour = null, ChartType? chartType = null, bool? absoluteValues = false)
     {
-        switch (SelectedChartType)
+        chartType = chartType == null ? SelectedChartType : chartType;
+        switch (chartType)
         {
             case ChartType.Line:
                 {
@@ -928,20 +971,20 @@
                 }
             case ChartType.Bar:
                 {
-                    return GetBarChartDataset(label, values);
+                    return GetBarChartDataset(label, values, absoluteValues);
                 }
         }
         throw new NotImplementedException();
     }
 
-    BarChartDataset<float?> GetBarChartDataset(string label, List<float?> values)
+    BarChartDataset<float?> GetBarChartDataset(string label, List<float?> values, bool? absoluteValues)
     {
         var colour = Enso.GetBarChartColourSet(values);
 
         return new BarChartDataset<float?>
                     {
                         Label = label,
-                        Data = values,
+                        Data = values.Select(x => absoluteValues.GetValueOrDefault() && x.HasValue ? MathF.Abs(x.Value) : x).ToList(),
                         BorderColor = colour,
                         BackgroundColor = colour,
                     };
@@ -976,6 +1019,7 @@
         {
             UnadjustedDisabled = false;
             AdjustedDisabled = false;
+            DifferenceDisabled = false;
         }
         else
         {
@@ -983,6 +1027,7 @@
             Adjusted = SelectedDataSetDefinition.MeasurementTypes.Contains(MeasurementType.Adjusted);
             UnadjustedDisabled = true;
             AdjustedDisabled = true;
+            DifferenceDisabled = true;
         }
 
         base.StateHasChanged();

@@ -13,7 +13,7 @@ public class DataSet
     public List<Location> Locations { get; set; }
 
     public string Station { get; set; }
-    public MeasurementType Type { get; set; }
+    public MeasurementType MeasurementType { get; set; }
     public List<TemperatureRecord> Temperatures { get; set; }
     public short? Year { get; set; }
 
