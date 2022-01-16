@@ -298,7 +298,7 @@
     async Task OnSelectedChartTypeValueChanged(ChartType value)
     {
         SelectedChartType = value;
-        await HandleRedraw();
+        await BuildLocationDataSets();
     }
 
     [Inject] 
@@ -503,14 +503,16 @@
             throw new NullReferenceException(nameof(Datasets));
         }
 
+        var relativeToAverage = SelectedChartType == ChartType.Bar;
+
         var existingDatasets = Datasets.Where(x => x.Resolution == DataResolution.Yearly && x.Location.Id == SelectedLocationId);
         dataExists = existingDatasets.Any();
         if (!dataExists)
         {
-            var adjusted = (await DataService.GetDataSet(DataResolution.Yearly, MeasurementType.Adjusted, SelectedLocationId, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold)).ToList();
+            var adjusted = (await DataService.GetDataSet(DataResolution.Yearly, MeasurementType.Adjusted, SelectedLocationId, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
             Datasets.AddRange(adjusted);
 
-            var unadjusted = (await DataService.GetDataSet(DataResolution.Yearly, MeasurementType.Unadjusted, SelectedLocationId, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold)).ToList();
+            var unadjusted = (await DataService.GetDataSet(DataResolution.Yearly, MeasurementType.Unadjusted, SelectedLocationId, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
             Datasets.AddRange(unadjusted);
 
             var adjustedYears = adjusted.SingleOrDefault()?.Years;
@@ -524,10 +526,10 @@
             var yearsExists = existingDatasets.Any(x => x.Year.HasValue && x.Year.Value == selectedYear);
             if (!yearsExists)
             {
-                var adjustedTemps = (await DataService.GetDataSet(SelectedResolution, MeasurementType.Adjusted, SelectedLocationId, selectedYear, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold)).ToList();
+                var adjustedTemps = (await DataService.GetDataSet(SelectedResolution, MeasurementType.Adjusted, SelectedLocationId, selectedYear, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
                 Datasets.AddRange(adjustedTemps);
 
-                var unadjustedTemps = (await DataService.GetDataSet(SelectedResolution, MeasurementType.Unadjusted, SelectedLocationId, selectedYear, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold)).ToList();
+                var unadjustedTemps = (await DataService.GetDataSet(SelectedResolution, MeasurementType.Unadjusted, SelectedLocationId, selectedYear, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
                 Datasets.AddRange(unadjustedTemps);
             }
         }

@@ -30,7 +30,7 @@ app.MapGet("/", () => @"Hello, from minimal ACORN-SAT Web API!
                         Call /ACORN-SAT/Yearly/{temperatureType}/{locationId}?dayGrouping=14&dayGroupingThreshold=.8 for yearly average temperature records at locationId. Records are grouped by dayGrouping. If the number of records in the group does not meet the threshold, the data is considered invalid.");
 app.MapGet("/datasetdefinition", (bool? includeLocations) => GetDataSetDefinitions(includeLocations));
 app.MapGet("/location", (string dataSetName) => GetLocations(dataSetName));
-app.MapGet("/dataset/{resolution}/{measurementType}/{locationId}", (DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping, float? dayGroupingThreshold, bool? relativeAverage) => GetDataSets(resolution, measurementType, locationId, year, dayGrouping, dayGroupingThreshold, relativeAverage));
+app.MapGet("/dataset/{resolution}/{measurementType}/{locationId}", (DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping, float? dayGroupingThreshold, bool? relativeToAverage) => GetDataSets(resolution, measurementType, locationId, year, dayGrouping, dayGroupingThreshold, relativeToAverage));
 app.MapGet("/dataset/{resolution}/{measurementType}", (DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping, float dayGroupingThreshold, float locationGroupingThreshold) => GetTemperaturesByLatitudeGroups(resolution, measurementType, minLatitude, maxLatitude, dayGrouping, dayGroupingThreshold, locationGroupingThreshold));
 app.MapGet("/reference/co2/", () => GetCarbonDioxide());
 app.MapGet("/reference/enso/{index}/{resolution}", (EnsoIndex index, DataResolution resolution, string measure) => GetEnso(index, resolution, measure));
@@ -153,7 +153,7 @@ List<Location> GetLocationsInLatitudeBand(float? minLatitude, float? maxLatitude
     return locationsInLatitudeBand;
 }
 
-List<DataSet> GetDataSets(DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping, float? dayGroupingThreshold, bool? relativeAverage = false)
+List<DataSet> GetDataSets(DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping, float? dayGroupingThreshold, bool? relativeToAverage = false)
 {
     var definitions = DataSetDefinition.GetDataSetDefinitions();
     var locations = GetLocations();
@@ -184,7 +184,7 @@ List<DataSet> GetDataSets(DataResolution resolution, MeasurementType measurement
             {
                 yearlyAverages = GetYearlyTemperaturesFromMonthly(definition, measurementType, locationId, year);
             }
-            if (relativeAverage.HasValue && relativeAverage.Value)
+            if (relativeToAverage.HasValue && relativeToAverage.Value)
             {
                 foreach (var dataSet in yearlyAverages)
                 {
