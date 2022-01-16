@@ -16,6 +16,7 @@ namespace AcornSat.WebApi.Model
         public string Description { get; set; }
         public DataType DataType { get; set; }
         public DataResolution DataResolution { get; set; }
+        public List<MeasurementType> MeasurementTypes { get; set; }
         public List<Location> Locations { get; set;}
     }
 }
