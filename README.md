@@ -46,7 +46,7 @@ In rough order of priority
 - 2022-01-14: Allow user to alter the parameters that calculate the set of data for the year (dayGrouping and threshold)
 - 2022-01-13: Put the selected year, start year, end year into a modal filter section.
 - 2022-01-13: Bar chart of temperatures relative to average - https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
-- 2022-01-08: Use current location at set to selected location
+- 2022-01-08: Use current location to selected location
 - 2022-01-07: Add graphs for Remote Australian Islands and Antarctica (RAIA)
 - 2022-01-03: Aggregates; latitude bands (-10 to -20, -20 to -30, -30 to -40, -40 to -50)
 - 2022-01-03: Aggregates; Australia
