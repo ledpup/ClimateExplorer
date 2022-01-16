@@ -11,7 +11,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AcornSat.Core", "AcornSat.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AcornSat.Visualiser", "AcornSat.Visualiser\AcornSat.Visualiser.csproj", "{C7817987-8CB5-48E7-8914-AEEDB97F7A34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcornSat.UnitTests", "AcornSat.UnitTests\AcornSat.UnitTests.csproj", "{2BC0FB94-966B-436B-A656-4D76FDD5BA47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AcornSat.UnitTests", "AcornSat.UnitTests\AcornSat.UnitTests.csproj", "{2BC0FB94-966B-436B-A656-4D76FDD5BA47}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{06FA87FF-8DA0-495C-920B-595F8A2F43FB}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

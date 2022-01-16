@@ -89,7 +89,14 @@
                     <FieldLabel>Select a nearby location</FieldLabel>
                     <Alert Color="Color.Secondary" Visible="true">
                         <Repeater Items="@SelectedLocation.NearbyLocations" >
-                            <Blazorise.Link Title="@context.LocationName" To="#" Clicked="@(()=>OnNearbyLocationClicked(context.LocationId))">@context.LocationName</Blazorise.Link> (@context.Distance km)<br/>
+                            <div>
+                                <Blazorise.Link Title="@context.LocationName" To="#" Clicked="@(()=>OnNearbyLocationClicked(context.LocationId))">@context.LocationName</Blazorise.Link>
+                                <span style="color: #888">
+                                    @context.Distance km
+                                    @context.CompassRoseDirection 
+                                    <span style="display: inline-block; transform: rotate(@($"{context.BearingDegrees}deg"))">⭡</span>
+                                </span>
+                            </div>
                         </Repeater>
                     </Alert>
                 </Field>

@@ -1,16 +1,16 @@
 # AcornSatAnalyser
 Tool to calculate average temperatures from BOM ACORN-SAT data.
 
-
 ## Glossary
 - ACORN-SAT: Australian Climate Observations Reference Network – Surface Air Temperature
 - RAIA: Remote Australian Islands and Antarctica
+- NIWA: New Zealand's National Institute of Water and Atmospheric Research
 
 ## Technical
 - Built in Visual Studio 2022 Community Edition
 - C#, .NET 6
 - Blazor (using Blazorise components)
-- There are 4 projects:
+- There are five projects:
   - Analyser: take daily data (raw and adjusted) and average it into
   - WebApi: gets the data for the website to use
   - Visualiser: displays the data to the user. Primarily it's a line graph
@@ -40,6 +40,7 @@ In rough order of priority
 - Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
+- 2022-01-16: Show bearing to each suggested nearby station
 - 2022-01-16: Include New Zealand's NIWA 'seven-station' temperature series https://niwa.co.nz/climate/information-and-resources/nz-temperature-record
 - 2022-01-15: Display nearby locations, with km distance and hyperlink. Note: still needs some improvement
 - 2022-01-14: Allow user to alter the parameters that calculate the set of data for the year (dayGrouping and threshold)
