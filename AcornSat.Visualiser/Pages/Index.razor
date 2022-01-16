@@ -28,11 +28,50 @@
                 </FieldBody>
                 <br />
                 <FieldBody>
-                    Station(s): @string.Join(", ", SelectedLocation.Sites)
+                    @if (SelectedLocation.Sites.Count() == 1)
+                    {
+                        <span>Station: </span>
+                    }
+                    else
+                    {
+                        <span>Stations: </span>
+                    }
+                    
+                    @{
+                        bool firstSite = true;
+                        foreach (var site in SelectedLocation.Sites)
+                        {
+                            if (!firstSite)
+                            {
+                                <span>, </span>
+                            }
+                            else
+                            {
+                                firstSite = false;
+                            }
+
+                            if (SelectedDataSetDefinition.StationInfoUrl != null)
+                            {
+                                <span><a href="@SelectedDataSetDefinition.StationInfoUrl.Replace("[station]", site)" target="_blank">@site</a></span>
+                            }
+                            else
+                            {
+                                <span>@(site)</span>
+                            }
+                        }
+                    }
                 </FieldBody>
                 <br />
                 <FieldBody>
-                    Dataset: @SelectedDataSetDefinition.Name
+                    Dataset:
+                    @if (SelectedDataSetDefinition.MoreInformationUrl != null)
+                    {
+                        <a href="@SelectedDataSetDefinition.MoreInformationUrl" target="_blank">@SelectedDataSetDefinition.Name</a>
+                    }
+                    else
+                    {
+                        <span>@(SelectedDataSetDefinition.Name) !!! @SelectedDataSetDefinition.MoreInformationUrl</span>
+                    }
                 </FieldBody>
             </Alert>
         </Column>

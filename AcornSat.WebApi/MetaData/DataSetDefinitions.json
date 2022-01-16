@@ -3,6 +3,7 @@
     "Id": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "ACORN-SAT",
     "Description": "The Australian Climate Observations Reference Network - Surface Air Temperature data set, is a homogenized daily maximum and minimum temperature data set containing data from 112 locations across Australia extending from 1910 to the present.",
+    "MoreInformationUrl": "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
     "MeasurementTypes": [
       1,
       0
@@ -15,16 +16,20 @@
     "MinTempFolderName": "daily_tmin",
     "MaxTempFileName": "tmax.[station].daily.csv",
     "MinTempFileName": "tmin.[station].daily.csv",
+    "NullValue": null,
     "RawDataRowRegEx": "^\\s*(?\u003Cstation\u003E\\d{6})(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2})\\s\u002B(?\u003Ctmax\u003E-?\\d\u002B)\\s\u002B(?\u003Ctmin\u003E-?\\d\u002B)$",
     "RawFolderName": "raw-data",
     "RawFileName": "hqnew[station].txt",
     "RawNullValue": "-999",
-    "RawTemperatureConversion": 1
+    "StationInfoUrl": "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
+    "RawTemperatureConversion": 1,
+    "Locations": null
   },
   {
     "Id": "647b6a05-43e4-48e0-a43e-04ae81a74653",
     "Name": "RAIA",
     "Description": "This ACORN-SAT dataset includes homogenised monthly data from the Remote Australian Islands and Antarctica network of 8 locations, which provide ground-based temperature records.",
+    "MoreInformationUrl": "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
     "MeasurementTypes": [
       1
     ],
@@ -36,12 +41,20 @@
     "MinTempFolderName": "minT",
     "MaxTempFileName": "acorn.ria.maxT.[station].monthly.txt",
     "MinTempFileName": "acorn.ria.minT.[station].monthly.txt",
-    "NullValue": "99999.9"
+    "NullValue": "99999.9",
+    "RawDataRowRegEx": null,
+    "RawFolderName": null,
+    "RawFileName": null,
+    "RawNullValue": null,
+    "StationInfoUrl": "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
+    "RawTemperatureConversion": 0,
+    "Locations": null
   },
   {
     "Id": "88e52edd-3c67-484a-b614-91070037d47a",
     "Name": "NIWA 11-stations series",
     "Description": "The National Institute of Water and Atmospheric Research (NIWA) eleven-station series are New Zealand temperature trends from a set of eleven climate stations with no significant site changes since the 1930s.",
+    "MoreInformationUrl": "https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data",
     "MeasurementTypes": [
       0
     ],
@@ -53,10 +66,13 @@
     "MinTempFolderName": null,
     "MaxTempFileName": null,
     "MinTempFileName": null,
+    "NullValue": null,
     "RawDataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Ctmax\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Ctmin\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
     "RawFolderName": "raw-data",
     "RawFileName": "[station].csv",
     "RawNullValue": "-",
-    "RawTemperatureConversion": 0
+    "StationInfoUrl": null,
+    "RawTemperatureConversion": 0,
+    "Locations": null
   }
 ]
