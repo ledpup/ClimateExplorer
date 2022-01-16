@@ -121,8 +121,8 @@
             </Alert>
            <Alert Color="Color.Secondary" Visible="true">
                 Data Set
-                <Check TValue="bool" Checked="@Unadjusted" CheckedChanged="@OnUnadjustedChanged">Unadjusted</Check>
-                <Check TValue="bool" Checked="@Adjusted" CheckedChanged="@OnAdjustedChanged">Adjusted</Check>
+                <Check TValue="bool" Checked="@Unadjusted" CheckedChanged="@OnUnadjustedChanged" Disabled="@UnadjustedDisabled">Unadjusted</Check>
+                <Check TValue="bool" Checked="@Adjusted" CheckedChanged="@OnAdjustedChanged"  Disabled="@AdjustedDisabled">Adjusted</Check>
             </Alert>
             <Alert Color="Color.Primary" Visible="true">
                 Temperatures
@@ -407,6 +407,8 @@
         Unadjusted = value;
         await HandleRedraw();
     }
+
+    bool UnadjustedDisabled, AdjustedDisabled;
 
     bool Maximums = true;
     async Task OnMaximumsChanged(bool value)
@@ -967,6 +969,20 @@
         SelectedLocationId = newValue;
         SelectedLocation = Locations.Single(x => x.Id == SelectedLocationId);
         SelectedDataSetDefinition = DataSetDefinitions.Single(x => x.Id == SelectedLocation.DataSetId);
+
+        if (SelectedDataSetDefinition.MeasurementTypes.Count == 2)
+        {
+            UnadjustedDisabled = false;
+            AdjustedDisabled = false;
+        }
+        else
+        {
+            Unadjusted = SelectedDataSetDefinition.MeasurementTypes.Contains(MeasurementType.Unadjusted);
+            Adjusted = SelectedDataSetDefinition.MeasurementTypes.Contains(MeasurementType.Adjusted);
+            UnadjustedDisabled = true;
+            AdjustedDisabled = true;
+        }
+
         base.StateHasChanged();
         await BuildLocationDataSets();
     }

@@ -49,6 +49,7 @@ List<AcornSat.WebApi.Model.DataSetDefinition> GetDataSetDefinitions(bool? includ
         DataResolution = x.DataResolution,
         DataType = x.DataType,
         Description = x.Description,
+        MeasurementTypes = x.MeasurementTypes,
         Locations = includeLocations.GetValueOrDefault() ? GetLocations(x.FolderName) : null,
     }).ToList();
 
