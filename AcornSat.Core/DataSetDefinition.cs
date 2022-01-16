@@ -14,6 +14,7 @@ namespace AcornSat.Core
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string MoreInformationUrl { get; set; }
         public List<MeasurementType> MeasurementTypes { get; set; }
         public DataType DataType { get; set; }
         public DataResolution DataResolution { get; set; }
@@ -30,6 +31,7 @@ namespace AcornSat.Core
         public string RawFolderName { get; set; }
         public string RawFileName { get; set; }
         public string RawNullValue { get; set; }
+        public string StationInfoUrl { get; set; }
         public ConversionMethod RawTemperatureConversion { get; set; }
         
         public List<Location> Locations { get; set;}
