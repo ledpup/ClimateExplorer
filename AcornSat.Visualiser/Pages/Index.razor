@@ -559,7 +559,7 @@
 
         var relativeToAverage = SelectedChartType == ChartType.Bar;
 
-        var existingDatasets = Datasets.Where(x => x.Resolution == DataResolution.Yearly && x.Location.Id == SelectedLocationId);
+        var existingDatasets = Datasets.Where(x => x.Resolution == DataResolution.Yearly && x.Location.Id == SelectedLocationId).ToList();
         dataExists = existingDatasets.Any();
         if (!dataExists)
         {
@@ -569,28 +569,9 @@
             var unadjusted = (await DataService.GetDataSet(DataResolution.Yearly, MeasurementType.Unadjusted, SelectedLocationId, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
             Datasets.AddRange(unadjusted);
 
-            if (Difference)
+            if (!DifferenceDisabled)
             {
-                var difference = new DataSet
-                    {
-                        Resolution = DataResolution.Yearly,
-                        MeasurementType = MeasurementType.Difference,
-                    };
-                unadjusted.ForEach(x =>
-                    {
-                        x.Temperatures.ForEach(y =>
-                        {
-                            var adjustedTemp = adjusted.Single().Temperatures.SingleOrDefault(z => z.Year == y.Year);
-                            difference.Temperatures.Add(new TemperatureRecord
-                            {
-                                Year = y.Year,
-                                Max = adjustedTemp == null ? null : adjustedTemp.Max - y.Max,
-                                Min = adjustedTemp == null ? null : adjustedTemp.Min - y.Min,
-                            });
-                        });
-                    }
-                );
-
+                var difference = GenerateDifferenceDataSet(unadjusted, adjusted);
                 Datasets.Add(difference);
             }
 
@@ -605,11 +586,11 @@
             var yearsExists = existingDatasets.Any(x => x.Year.HasValue && x.Year.Value == selectedYear);
             if (!yearsExists)
             {
-                var adjustedTemps = (await DataService.GetDataSet(SelectedResolution, MeasurementType.Adjusted, SelectedLocationId, selectedYear, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
-                Datasets.AddRange(adjustedTemps);
+                var adjusted = (await DataService.GetDataSet(SelectedResolution, MeasurementType.Adjusted, SelectedLocationId, selectedYear, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
+                Datasets.AddRange(adjusted);
 
-                var unadjustedTemps = (await DataService.GetDataSet(SelectedResolution, MeasurementType.Unadjusted, SelectedLocationId, selectedYear, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
-                Datasets.AddRange(unadjustedTemps);
+                var unadjusted = (await DataService.GetDataSet(SelectedResolution, MeasurementType.Unadjusted, SelectedLocationId, selectedYear, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
+                Datasets.AddRange(unadjusted);
             }
         }
 
@@ -623,6 +604,30 @@
         await map.SetView(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
 
         await HandleRedraw();
+    }
+
+    DataSet GenerateDifferenceDataSet(List<DataSet> unadjusted, List<DataSet> adjusted)
+    {
+        var difference = new DataSet
+        {
+            Resolution = DataResolution.Yearly,
+            MeasurementType = MeasurementType.Difference,
+        };
+        unadjusted.ForEach(x =>
+            {
+                x.Temperatures.ForEach(y =>
+                {
+                    var adjustedTemp = adjusted.Single().Temperatures.SingleOrDefault(z => z.Year == y.Year);
+                    difference.Temperatures.Add(new TemperatureRecord
+                    {
+                        Year = y.Year,
+                        Max = adjustedTemp == null ? null : adjustedTemp.Max - y.Max,
+                        Min = adjustedTemp == null ? null : adjustedTemp.Min - y.Min,
+                    });
+                });
+            }
+        );
+        return difference;
     }
 
     Chart<float?> chart;
@@ -1104,12 +1109,9 @@
             return;
         }
 
-        var model = e.Model as LineChartModel;
-
         var year = (short)(StartYearOfChart + e.Index);
 
         SelectedYears = new List<short> { year };
-
         SelectedResolution = DataResolution.Monthly;
 
         await BuildLocationDataSets();
