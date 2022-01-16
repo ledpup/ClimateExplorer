@@ -1,21 +1,31 @@
 # AcornSatAnalyser
-Tool to calculate average temperatures from BOM ACORN-SAT data.
+Tool to calculate average temperatures from BOM ACORN-SAT and NIWA 11-stations data.
 
 ## Glossary
 - ACORN-SAT: Australian Climate Observations Reference Network – Surface Air Temperature
-- RAIA: Remote Australian Islands and Antarctica
+- RAIA: Remote Australian Islands and Antarctica (a monthly dataset that is a smaller part of ACORN-SAT)
 - NIWA: New Zealand's National Institute of Water and Atmospheric Research
 
 ## Technical
 - Built in Visual Studio 2022 Community Edition
 - C#, .NET 6
-- Blazor (using Blazorise components)
+- Blazor, using
+  - https://github.com/Megabit/Blazorise
+  - https://github.com/fis-sst/BlazorMaps
+  - https://github.com/darnton/BlazorDeviceInterop
+  - https://github.com/AeonLucid/GeoCoordinate.NetStandard1
 - There are five projects:
-  - Analyser: take daily data (raw and adjusted) and average it into
-  - WebApi: gets the data for the website to use
-  - Visualiser: displays the data to the user. Primarily it's a line graph
-  - Core: some shared files, between Analyser and WebApi
+  - Visualiser: Blazor website that displays the data to the user
+  - WebApi: Web API that gets and processes the data that Visualiser uses
+  - Core: shared files between Visualiser, Analyser and WebApi
   - UnitTests: tests for various sub-systems
+  - Analyser: console app for manipulating datasets... not used much
+
+## How to use
+
+- Download the github repo. 
+- Open in Visual Studio 2022. 
+- Set your start-up projects to be Visualiser and WebApi and run. Two websites should start-up; the user interface and the web API.
 
 ## TODO
 In rough order of priority
