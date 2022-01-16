@@ -29,9 +29,10 @@ void BuildDataSetDefinitions()
     {
         new DataSetDefinition
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"),
             Name = "ACORN-SAT",
             Description = "The Australian Climate Observations Reference Network - Surface Air Temperature data set, is a homogenized daily maximum and minimum temperature data set containing data from 112 locations across Australia extending from 1910 to the present.",
+            MoreInformationUrl = "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
             FolderName = "ACORN-SAT",
             MeasurementTypes = new List<MeasurementType> { MeasurementType.Adjusted, MeasurementType.Unadjusted },
             DataType = DataType.Temperature,
@@ -46,12 +47,14 @@ void BuildDataSetDefinitions()
             RawFileName = "hqnew[station].txt",
             RawNullValue = "-999",
             RawTemperatureConversion = ConversionMethod.DivideBy10,
+            StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml"
         },
         new DataSetDefinition
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.Parse("647b6a05-43e4-48e0-a43e-04ae81a74653"),
             Name = "RAIA",
             Description = "This ACORN-SAT dataset includes homogenised monthly data from the Remote Australian Islands and Antarctica network of 8 locations, which provide ground-based temperature records.",
+            MoreInformationUrl = "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
             FolderName = "RAIA",
             MeasurementTypes = new List<MeasurementType> { MeasurementType.Adjusted },
             DataType = DataType.Temperature,
@@ -62,12 +65,14 @@ void BuildDataSetDefinitions()
             MaxTempFileName = "acorn.ria.maxT.[station].monthly.txt",
             MinTempFileName = "acorn.ria.minT.[station].monthly.txt",
             NullValue = "99999.9",
+            StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml"
         },
         new DataSetDefinition
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"),
             Name = "NIWA 11-stations series",
             Description = "The National Institute of Water and Atmospheric Research (NIWA) eleven-station series are New Zealand temperature trends from a set of eleven climate stations with no significant site changes since the 1930s.",
+            MoreInformationUrl = "https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data",
             FolderName = "NIWA",
             MeasurementTypes = new List<MeasurementType> { MeasurementType.Unadjusted },
             DataType = DataType.Temperature,

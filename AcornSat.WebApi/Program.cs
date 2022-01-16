@@ -46,6 +46,8 @@ List<AcornSat.WebApi.Model.DataSetDefinition> GetDataSetDefinitions(bool? includ
     {
         Id = x.Id,
         Name = x.Name,
+        MoreInformationUrl = x.MoreInformationUrl,
+        StationInfoUrl = x.StationInfoUrl,
         DataResolution = x.DataResolution,
         DataType = x.DataType,
         Description = x.Description,
