@@ -1,4 +1,5 @@
-﻿using GeoCoordinatePortable;
+﻿using AcornSat.Core;
+using GeoCoordinatePortable;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,8 +59,19 @@ public class Location
         {
             var destCoord = new GeoCoordinate(x.Coordinates.Latitude, x.Coordinates.Longitude, x.Coordinates.Elevation);
             var distance = Math.Round(geoCoordinate.GetDistanceTo(destCoord) / 1000, 1); // GetDistanceTo is in metres. Convert to km
-            distances.Add(new LocationDistance { LocationId = x.Id, LocationName = x.Name, Distance = distance });
+            var bearing = GeometryHelpers.GetRhumbBearingFromPointToPoint(geoCoordinate, destCoord);
+
+            distances.Add(
+                new LocationDistance
+                {
+                    LocationId = x.Id,
+                    LocationName = x.Name,
+                    Distance = distance,
+                    BearingDegrees = bearing,
+                    CompassRoseDirection = GeometryHelpers.GetCompassRoseDirectionName(bearing)
+                });
         });
+
         return distances;
     }
 }
@@ -69,4 +81,6 @@ public class LocationDistance
     public Guid LocationId { get; set; }
     public string LocationName { get; set; }
     public double Distance { get; set; }
+    public double BearingDegrees { get; set; }
+    public string CompassRoseDirection { get; set; }
 }
