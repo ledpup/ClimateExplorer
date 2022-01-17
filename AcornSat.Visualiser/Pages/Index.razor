@@ -274,12 +274,30 @@
 </style>
 
 @*<Button Clicked="@(async () => await ButtonClicked())">Redraw</Button>*@
+
 <div style="width: 85%; border: 0.5px dotted; padding: 10px; position: absolute; bottom: 5px;">
-    <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Bar" />
+    @* We change the chart's type dynamically depending on selected options.
+       We found that changing an existing Chart instance's Type did not always
+       cause it to refresh properly.
+       So we effectively create a new instance of the chart each time InternalChartType
+       changes.
+    *@
+    @switch (InternalChartType)
+    {
+        case ChartType.Line:
+            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line" />
+            break;
+
+        case ChartType.Bar:
+            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Bar" />
+            break;
+    }
+    
 </div>
 
+
 @code{
-    async Task  OnNearbyLocationClicked(Guid guid)
+    async Task OnNearbyLocationClicked(Guid guid)
     {
         await SelectedLocationChanged(guid);
     }
@@ -340,11 +358,36 @@
         return filterModal.Hide();
     }
 
+    /// <summary>
+    /// The chart type applied to the chart control. This depends both on which chart
+    /// type the user has selected and whether or not the "Difference" channel has been
+    /// enabled (if the "Difference" channel is enabled, then the chart has to be placed
+    /// in "Bar" mode, or else the Difference bars don't render).
+    ///
+    /// You might wonder why we don't just always leave the chart in "Bar" mode. We did,
+    /// actually, but then we noticed that in "Bar" mode, there's a small misalignment
+    /// between grid lines and the datapoints.
+    /// </summary>
+    ChartType InternalChartType { get; set; }
 
+    /// <summary>
+    /// The chart type selected by the user on the options page
+    /// </summary>
     ChartType SelectedChartType { get; set; }
     async Task OnSelectedChartTypeValueChanged(ChartType value)
     {
         SelectedChartType = value;
+
+        await UpdateInternalChartType();
+    }
+
+    async Task UpdateInternalChartType()
+    {
+        InternalChartType =
+            SelectedChartType == ChartType.Bar || Difference
+            ? ChartType.Bar
+            : ChartType.Line;
+
         await BuildLocationDataSets();
     }
 
@@ -452,7 +495,7 @@
     async Task OnDifferenceChanged(bool value)
     {
         Difference = value;
-        await HandleRedraw();
+        UpdateInternalChartType();
     }
 
     bool UnadjustedDisabled, AdjustedDisabled, DifferenceDisabled;
@@ -682,11 +725,21 @@
 
         if (SelectedResolution == DataResolution.Yearly)
         {
-            var selectedDataSets = Datasets.Where(x => x.Resolution == DataResolution.Yearly && ((Adjusted && x.MeasurementType == MeasurementType.Adjusted) || (Unadjusted && x.MeasurementType == MeasurementType.Unadjusted) || (Difference && x.MeasurementType == MeasurementType.Difference)))
-                                           .ToList();
+            var selectedDataSets =
+                Datasets.Where(
+                    x => 
+                        x.Resolution == DataResolution.Yearly && 
+                        (
+                            (Adjusted && x.MeasurementType == MeasurementType.Adjusted) || 
+                            (Unadjusted && x.MeasurementType == MeasurementType.Unadjusted) || 
+                            (Difference && x.MeasurementType == MeasurementType.Difference)
+                        )
+                )
+                .ToList();
 
             bufferedSelectedDataSet = CreateStandardisedDataSet(selectedDataSets);
 
+            // Find the earliest and latest year across all datasets being plotted
             var superSetStartYear = bufferedSelectedDataSet.Min(x => x.Temperatures.Min(y => y.Year));
             var superSetEndYear = bufferedSelectedDataSet.Max(x => x.Temperatures.Max(y => y.Year));
 
@@ -711,8 +764,10 @@
                 }
             }
 
-            title = SelectedChartType == ChartType.Line ? $"Average Yearly Temperature for {SelectedLocation.Name} ({startYear}-{endYear})"
-                                                        : $"Temperature Relative to Average for {SelectedLocation.Name} ({startYear}-{endYear})";
+            title = 
+                SelectedChartType == ChartType.Line
+                ? $"Average Yearly Temperature for {SelectedLocation.Name} ({startYear}-{endYear})"
+                : $"Temperature Relative to Average for {SelectedLocation.Name} ({startYear}-{endYear})";
 
             StartYearOfChart = startYear;
 
@@ -839,7 +894,7 @@
                 { 
                     new 
                     { 
-                        ScaleLabel = new { LabelString = xLabel, Display = true } 
+                        ScaleLabel = new { LabelString = xLabel, Display = true }
                     } 
                 }       
             }
@@ -898,10 +953,14 @@
         {
             var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Difference, y => y.Max, timeConstraint, year);
             var label = labelPrefix + "Maximum Difference";
-            if (SelectedPeriod == 0 || !SoloSma)
-            {
-                await chart.AddDataSet(GetChartDataset(label, values, chartType: ChartType.Bar));
-            }
+
+            await chart.AddDataSet(GetChartDataset(label, values, chartType: ChartType.Bar));
+        }
+        if (Difference && Minimums)
+        {
+            var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Difference, y => y.Min, timeConstraint, year);
+            var label = labelPrefix + "Minimum Difference";
+            await chart.AddDataSet(GetChartDataset(label, values, chartType: ChartType.Bar));
         }
         if (Adjusted && Minimums)
         {
@@ -1006,18 +1065,16 @@
 
     ChartDataset<float?> GetChartDataset(string label, List<float?> values, ChartColor? chartColour = null, ChartType? chartType = null, bool? absoluteValues = false)
     {
-        chartType = chartType == null ? SelectedChartType : chartType;
+        chartType = chartType ?? SelectedChartType;
+
         switch (chartType)
         {
             case ChartType.Line:
-                {
-                    return GetLineChartDataset(label, values, chartColour.Value);
-                }
+                return GetLineChartDataset(label, values, chartColour.Value);
             case ChartType.Bar:
-                {
-                    return GetBarChartDataset(label, values, absoluteValues);
-                }
+                return GetBarChartDataset(label, values, absoluteValues);
         }
+
         throw new NotImplementedException();
     }
 
