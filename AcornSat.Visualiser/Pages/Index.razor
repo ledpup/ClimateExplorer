@@ -20,7 +20,14 @@
         <Column ColumnSize="ColumnSize.Is2">
             <Alert Color="Color.Primary" Visible="true">
                 <FieldBody>
-                    @SelectedLocation.Name
+                    @if (SelectedDataSetDefinition.LocationInfoUrl != null)
+                    {
+                        <span><a href="@SelectedDataSetDefinition.LocationInfoUrl.Replace("[primaryStation]", @SelectedLocation.PrimaryStation.TrimStart('0'))" target="_blank">@SelectedLocation.Name</a></span>
+                    }
+                    else
+                    {
+                        <span>@(SelectedLocation.Name)</span>
+                    }
                 </FieldBody>
                 <br />
                 <FieldBody>
@@ -79,6 +86,9 @@
     <Column ColumnSize="ColumnSize.Is1">
         <Field>
             <Button Color="Color.Primary" Clicked="@ShowSelectLocationModal">Change Location</Button>
+        </Field>
+        <Field>
+            <Button Color="Color.Primary" Clicked="@ShowMapModal">Map</Button>
         </Field>
     </Column>
     <Column ColumnSize="ColumnSize.Is1">
@@ -162,7 +172,7 @@
                 Data Set
                 <Check TValue="bool" Checked="@Unadjusted" CheckedChanged="@OnUnadjustedChanged" Disabled="@UnadjustedDisabled">Unadjusted</Check>
                 <Check TValue="bool" Checked="@Adjusted" CheckedChanged="@OnAdjustedChanged"  Disabled="@AdjustedDisabled">Adjusted</Check>
-                <Check TValue="bool" Checked="@Difference" CheckedChanged="@OnDifferenceChanged"  Disabled="@DifferenceDisabled">Difference</Check>
+                <Check TValue="bool" Checked="@Difference" CheckedChanged="@OnDifferenceChanged"  Disabled="@DifferenceDisabled">Difference - adjusted vs unadjusted</Check>
             </Alert>
             <Alert Color="Color.Primary" Visible="true">
                 Temperatures
@@ -226,7 +236,13 @@
         @if (SelectedResolution == DataResolution.Yearly)
         {
             <Field>        
-                Start Year <Validation Validator="ValidateYear"><TextEdit Text="@StartYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnStartYearTextChanged" /></Validation>
+                Start Year <Validation Validator="ValidateYear">
+                                <TextEdit Text="@StartYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnStartYearTextChanged">
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </TextEdit>
+                            </Validation>
             </Field>
             <Field>
                 End Year <Validation Validator="ValidateYear"><TextEdit Text="@EndYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChanged" /></Validation>
@@ -261,15 +277,44 @@
     </ModalContent>
 </Modal>
 
-<Map @ref="map" MapOptions="mapOptions"></Map>
+@* <Modal @ref="mapModal">
+    <ModalHeader Background="Background.Light">
+        <ModalTitle>Map</ModalTitle>
+        <CloseButton />
+    </ModalHeader>
+    <ModalContent Fullscreen>
+        <Map @ref="map2" MapOptions="@GetMapOptions("mapId2")"></Map>        
+    </ModalContent>
+</Modal>*@
+
+@*@switch(bigMap)
+{
+    case false:
+        <Map @ref="map" MapOptions="@GetMapOptions("mapId")"></Map>
+        break;
+    case true:
+        <Map @ref="map" MapOptions="@GetMapOptions("mapId2")"></Map>
+        break;
+}*@
+
+<Map @ref="map" MapOptions="@GetMapOptions()"></Map>
 
 <style>
     #mapId {
-        height: 15%;
+        height: 20%;
         width: 20%;
         position: absolute;
         top: 10px;
         right: 10px;
+        z-index: 1;
+    }
+    #mapId2 {
+        height: 80%;
+        width: 80%;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 1;
     }
 </style>
 
@@ -304,6 +349,27 @@
         SelectedDayGroupThreshold = float.Parse(DayGroupThresholdText) / 100;
         SelectedDayGrouping = SelectingDayGrouping == 0 ? SelectedDayGrouping : SelectingDayGrouping;
         await BuildLocationDataSets();
+    }
+
+    bool bigMap = false;
+    private Modal mapModal;
+    async Task ShowMapModal()
+    {
+        divId = "mapId2";
+        //await HandleRedraw();
+
+        //await map.SetView(new LatLng(-25.6, 134.3));
+        //await BuildLocationDataSets();
+        await map.SetView(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
+        //await HandleRedraw();
+
+        //divId = "mapId2";
+        //map.MapOptions = GetMapOptions();
+        //return mapModal.Show();
+    }
+    private Task HideMapModal()
+    {
+        return mapModal.Hide();
     }
 
     private Modal selectLocationModal;
@@ -542,8 +608,10 @@
         }
         else
         {
-            await SelectedLocationChanged(Guid.Parse("e069a5df-8f9e-47d6-a53b-dba5dd4e618c"));
+            await SelectedLocationChanged(Guid.Parse("aed87aa0-1d0c-44aa-8561-cde0fc936395"));
         }
+
+
 
         await base.OnInitializedAsync();
     }
@@ -1081,21 +1149,25 @@
     string[] Labels = new string[1];
 
     private Map map;
-
-    private MapOptions mapOptions = new MapOptions()
+    string divId = "mapId";
+    MapOptions GetMapOptions()
     {
-        DivId = "mapId",
-        Center = new LatLng(-25.6, 134.3),
-        Zoom = 6,
-        UrlTileLayer = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-	    SubOptions = new MapSubOptions()
+        var mapOptions = new MapOptions()
         {
-            Attribution = "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
-            TileSize = 512,
-            ZoomOffset = -1,
-            MaxZoom = 19,
-        }
-    };
+            DivId = divId,
+            Center = new LatLng(-25.6, 134.3),
+            Zoom = 6,
+            UrlTileLayer = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+	        SubOptions = new MapSubOptions()
+            {
+                Attribution = "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
+                TileSize = 512,
+                ZoomOffset = -1,
+                MaxZoom = 19,
+            }
+        };
+        return mapOptions;
+    }
 
     [Inject]
     private IMarkerFactory MarkerFactory { get; init; }
