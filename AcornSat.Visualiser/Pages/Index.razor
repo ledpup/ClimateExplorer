@@ -87,9 +87,6 @@
         <Field>
             <Button Color="Color.Primary" Clicked="@ShowSelectLocationModal">Change Location</Button>
         </Field>
-        <Field>
-            <Button Color="Color.Primary" Clicked="@ShowMapModal">Map</Button>
-        </Field>
     </Column>
     <Column ColumnSize="ColumnSize.Is1">
         <Field>
@@ -277,40 +274,12 @@
     </ModalContent>
 </Modal>
 
-@* <Modal @ref="mapModal">
-    <ModalHeader Background="Background.Light">
-        <ModalTitle>Map</ModalTitle>
-        <CloseButton />
-    </ModalHeader>
-    <ModalContent Fullscreen>
-        <Map @ref="map2" MapOptions="@GetMapOptions("mapId2")"></Map>        
-    </ModalContent>
-</Modal>*@
-
-@*@switch(bigMap)
-{
-    case false:
-        <Map @ref="map" MapOptions="@GetMapOptions("mapId")"></Map>
-        break;
-    case true:
-        <Map @ref="map" MapOptions="@GetMapOptions("mapId2")"></Map>
-        break;
-}*@
-
 <Map @ref="map" MapOptions="@GetMapOptions()"></Map>
 
 <style>
     #mapId {
-        height: 20%;
+        height: 15%;
         width: 20%;
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        z-index: 1;
-    }
-    #mapId2 {
-        height: 80%;
-        width: 80%;
         position: absolute;
         top: 10px;
         right: 10px;
@@ -349,27 +318,6 @@
         SelectedDayGroupThreshold = float.Parse(DayGroupThresholdText) / 100;
         SelectedDayGrouping = SelectingDayGrouping == 0 ? SelectedDayGrouping : SelectingDayGrouping;
         await BuildLocationDataSets();
-    }
-
-    bool bigMap = false;
-    private Modal mapModal;
-    async Task ShowMapModal()
-    {
-        divId = "mapId2";
-        //await HandleRedraw();
-
-        //await map.SetView(new LatLng(-25.6, 134.3));
-        //await BuildLocationDataSets();
-        await map.SetView(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
-        //await HandleRedraw();
-
-        //divId = "mapId2";
-        //map.MapOptions = GetMapOptions();
-        //return mapModal.Show();
-    }
-    private Task HideMapModal()
-    {
-        return mapModal.Hide();
     }
 
     private Modal selectLocationModal;
