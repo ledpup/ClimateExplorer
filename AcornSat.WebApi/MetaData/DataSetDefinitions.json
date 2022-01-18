@@ -22,6 +22,7 @@
     "RawFileName": "hqnew[station].txt",
     "RawNullValue": "-999",
     "StationInfoUrl": "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
+    "LocationInfoUrl": "http://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
     "RawTemperatureConversion": 1,
     "Locations": null
   },

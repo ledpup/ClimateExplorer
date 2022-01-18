@@ -7,8 +7,8 @@ using AcornSat.Core;
 using static AcornSat.Core.Enums;
 
 BuildDataSetDefinitions();
-BuildNiwaLocations(Guid.NewGuid());
-BuildAcornSatLocationsFromReferenceData();
+BuildNiwaLocations(Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"));
+BuildAcornSatLocationsFromReferenceData(Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"));
 
 
 var date = new DateTime(1980, 1, 1);
@@ -47,7 +47,8 @@ void BuildDataSetDefinitions()
             RawFileName = "hqnew[station].txt",
             RawNullValue = "-999",
             RawTemperatureConversion = ConversionMethod.DivideBy10,
-            StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml"
+            StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
+            LocationInfoUrl = "http://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]"
         },
         new DataSetDefinition
         {
@@ -136,7 +137,7 @@ void BuildNiwaLocations(Guid dataSetId)
     File.WriteAllText("niwa-locations.json", JsonSerializer.Serialize(locations, options));
 }
 
-void BuildAcornSatLocationsFromReferenceData()
+void BuildAcornSatLocationsFromReferenceData(Guid dataSetId)
 {
     var locations = new List<Location>();
 
@@ -144,7 +145,12 @@ void BuildAcornSatLocationsFromReferenceData()
     foreach (var row in locationRowData)
     {
         var splitRow = row.Split(',');
-        var location = new Location { Id = Guid.NewGuid(), Name = splitRow[0] };
+        var location = new Location 
+        { 
+            Id = Guid.NewGuid(), 
+            DataSetId = dataSetId,
+            Name = splitRow[0] 
+        };
         location.Sites.Add(splitRow[1]);
         if (splitRow.Length > 2 && !string.IsNullOrWhiteSpace(splitRow[2]))
         {
@@ -179,6 +185,7 @@ void BuildAcornSatLocationsFromReferenceData()
         }
 
         var location = locations.Single(x => x.Sites.Contains(primarySite));
+        location.PrimaryStation = primarySite;
         siteSets[primarySite].ForEach(x =>
         {
             if (!location.Sites.Contains(x))

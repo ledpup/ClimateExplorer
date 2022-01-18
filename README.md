@@ -41,8 +41,9 @@ In rough order of priority
 - GHGs (CO2, CH4, etc) data and graphs
 - Climate stripes. https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
 - Write an adaptor to query NIWA CliFlo website to pull in the 11-station series data automatically
+- Download link to download dataset as CSV
 - Precipitation
-- Get temperature data from BOM via a web service
+- Get temperature data from BOM via a web service (http://www.bom.gov.au/climate/data/index.shtml?bookmark=122&view=map)
 - Get ENSO data from URLs for indexes (still supporting offline mode)
 - Alternate averages (use median/mode - not sure how useful that is)
 - Show graphs from two or more locations at once? (not sure how useful that is)

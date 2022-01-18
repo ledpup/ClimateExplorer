@@ -32,6 +32,7 @@ namespace AcornSat.Core
         public string RawFileName { get; set; }
         public string RawNullValue { get; set; }
         public string StationInfoUrl { get; set; }
+        public string LocationInfoUrl { get; set; }
         public ConversionMethod RawTemperatureConversion { get; set; }
         
         public List<Location> Locations { get; set;}
