@@ -25,8 +25,13 @@ public class DataSet
             {
                 return new List<short> { Year.Value };
             }
-            var years = Temperatures.Where(x => x.Min != null && x.Max != null).Select(x => x.Year).Distinct().ToList();
-            return years;
+
+            return 
+                Temperatures
+                .Where(x => x.Min != null && x.Max != null)
+                .Select(x => x.Year)
+                .Distinct()
+                .ToList();
         }
     }
 
