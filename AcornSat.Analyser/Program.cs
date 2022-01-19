@@ -5,23 +5,43 @@ using System.Text.RegularExpressions;
 using GeoCoordinatePortable;
 using AcornSat.Core;
 using static AcornSat.Core.Enums;
+using System.Net;
 
-BuildDataSetDefinitions();
-BuildNiwaLocations(Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"));
-BuildAcornSatLocationsFromReferenceData(Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"));
+//BuildDataSetDefinitions();
+//BuildNiwaLocations(Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"));
+//BuildAcornSatLocationsFromReferenceData(Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"));
 
+var station = "094220";
 
-var date = new DateTime(1980, 1, 1);
+await DownloadBomTemperatureData(station, ObsCode.Min);
 
-for (var i = 0; i < 50; i++)
+async Task DownloadBomTemperatureData(string station, ObsCode obsCode)
 {
-    date = date.AddMonths(1);
+    var regEx = new Regex(@"\d{6}\|\|,(?<startYear>\d{4}):(?<p_c>-?\d+),");
+    var userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
+    var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
+    using (var httpClient = new HttpClient())
+    {
+        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
+        httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
 
-    Console.WriteLine(date);
+        var availableYearsUrl = $"http://www.bom.gov.au/jsp/ncc/cdio/wData/wdata?p_stn_num={station}&p_display_type=availableYears&p_nccObsCode={(int)obsCode}";
+        var response = await httpClient.GetAsync(availableYearsUrl);
+
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var match = regEx.Match(responseContent);
+        var p_c = match.Groups["p_c"].Value;
+        var startYear = match.Groups["startYear"].Value;
+
+        var zipFileUrl = $"http://www.bom.gov.au/jsp/ncc/cdio/weatherData/av?p_display_type=dailyZippedDataFile&p_stn_num={station}&p_nccObsCode={(int)obsCode}&p_c={p_c}&p_startYear={startYear}";
+
+        var zipFileResponse = await httpClient.GetAsync(zipFileUrl);
+        using (var fs = new FileStream($"{(obsCode == ObsCode.Max ? "tmax" : "tmin")}_{station}_daily.zip", FileMode.OpenOrCreate))
+        {
+            await zipFileResponse.Content.CopyToAsync(fs);
+        }
+    }
 }
-
-Console.WriteLine();
-
 
 void BuildDataSetDefinitions()
 {
@@ -222,3 +242,8 @@ void BuildAcornSatLocationsFromReferenceData(Guid dataSetId)
     File.WriteAllText("locations.json", JsonSerializer.Serialize(locations, options));
 }
 
+public enum ObsCode
+{
+    Max = 122,
+    Min = 123,
+}

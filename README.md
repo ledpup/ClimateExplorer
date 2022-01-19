@@ -43,13 +43,13 @@ In rough order of priority
 - Write an adaptor to query NIWA CliFlo website to pull in the 11-station series data automatically
 - Download link to download dataset as CSV
 - Precipitation
-- Get temperature data from BOM via a web service (http://www.bom.gov.au/climate/data/index.shtml?bookmark=122&view=map)
 - Get ENSO data from URLs for indexes (still supporting offline mode)
 - Alternate averages (use median/mode - not sure how useful that is)
 - Show graphs from two or more locations at once? (not sure how useful that is)
 - Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
+- 2022-01-19: Get temperature data from BOM via website (http://www.bom.gov.au/climate/data/index.shtml?bookmark=122&view=map)
 - 2022-01-16: Show as a bar chart, the difference between adjusted and unadjusted
 - 2022-01-16: Show bearing to each suggested nearby station
 - 2022-01-16: Include New Zealand's NIWA 'seven-station' temperature series https://niwa.co.nz/climate/information-and-resources/nz-temperature-record
