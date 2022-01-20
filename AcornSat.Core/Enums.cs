@@ -10,7 +10,10 @@ namespace AcornSat.Core
     {
         public enum DataType
         {
-            Temperature,
+            TempMax,
+            TempMin,
+            TempMaxMin,
+            Rainfall
         }
         public enum DataResolution
         {
@@ -33,12 +36,6 @@ namespace AcornSat.Core
             Nino34,
             Oni,
             Soi,
-        }
-
-        public enum ConversionMethod
-        {
-            Unchanged,
-            DivideBy10
         }
     }
 }

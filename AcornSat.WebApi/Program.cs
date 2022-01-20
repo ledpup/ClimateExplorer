@@ -50,7 +50,6 @@ List<AcornSat.WebApi.Model.DataSetDefinition> GetDataSetDefinitions(bool? includ
         StationInfoUrl = x.StationInfoUrl,
         LocationInfoUrl = x.LocationInfoUrl,
         DataResolution = x.DataResolution,
-        DataType = x.DataType,
         Description = x.Description,
         MeasurementTypes = x.MeasurementTypes,
         Locations = includeLocations.GetValueOrDefault() ? GetLocations(x.FolderName) : null,
@@ -311,33 +310,31 @@ List<DataSet> GetTemperaturesFromFile(DataSetDefinition dataSetDefintion, Measur
     var location = Location.GetLocations(dataSetDefintion.FolderName).Single(x => x.Id == locationId);
 
     var returnDataSets = new List<DataSet>();
-    if (measurementType == MeasurementType.Adjusted)
+
+    var measurementDefinitions = dataSetDefintion.MeasurementDefinitions.Where(x => x.MeasurementType == measurementType && x.DataType != DataType.Rainfall);
+
+    if (!measurementDefinitions.Any(x => x.DataType == DataType.TempMax || x.DataType == DataType.TempMin || x.DataType == DataType.TempMaxMin))
     {
-        var temperatures = DataReader.ReadAdjustedTemperatures(dataSetDefintion, location, year);
-
-        if (temperatures != null)
-        { 
-            var dataSet = new DataSet
-            {
-                Location = location,
-                Resolution = dataSetDefintion.DataResolution,
-                MeasurementType = measurementType,
-                Year = year,
-                Temperatures = temperatures
-            };
-
-            returnDataSets.Add(dataSet);
-        }
+        throw new Exception("No temperature measurement defintions. We're expecting dataset definition to contain temperature data.");
     }
-    else if (measurementType == MeasurementType.Unadjusted)
+
+    if (measurementDefinitions.Count() == 2)
     {
-        var dataSets = DataReader.ReadRawDataFile(dataSetDefintion, location, year);
+        var maxDef = measurementDefinitions.Single(x => x.DataType == DataType.TempMax);
+        var minDef = measurementDefinitions.Single(x => x.DataType == DataType.TempMin);
+        var dataSets = DataReader.ReadPairedTemperatureFiles(dataSetDefintion, measurementType, maxDef, minDef, location, year);
+        dataSets = dataSets.Where(x => x.Temperatures != null).ToList();
+        returnDataSets.AddRange(dataSets);
+    }
+    else if (measurementDefinitions.Count() == 1)
+    {
+        var dataSets = DataReader.ReadMinMaxTemperatureDataFile("Temperature", dataSetDefintion.FolderName, measurementDefinitions.Single(), dataSetDefintion.DataResolution, measurementType, location, year);
         dataSets = dataSets.Where(x => x.Temperatures != null).ToList();
         returnDataSets.AddRange(dataSets);
     }
     else
     {
-        throw new ArgumentException(nameof(measurementType));
+        throw new Exception($"Only support datatypes of TempMax and TempMin, or TempMaxMin for the current measurement type {measurementType}.");
     }
 
     return returnDataSets;

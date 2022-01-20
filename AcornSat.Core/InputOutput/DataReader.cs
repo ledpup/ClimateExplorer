@@ -11,26 +11,26 @@ namespace AcornSat.Core.InputOutput
 {
     public static class DataReader
     {
-        public static List<DataSet> ReadRawDataFile(DataSetDefinition dataSetDefinition, Location location, short? yearFilter = null)
+        public static List<DataSet> ReadMinMaxTemperatureDataFile(string dataType, string dataSetFolderName, MeasurementDefinition measurementDefinition, DataResolution dataResolution, MeasurementType measurementType, Location location, short? yearFilter = null)
         {
-            var filePath = @$"{dataSetDefinition.DataType}\{dataSetDefinition.FolderName}\{dataSetDefinition.DataResolution}\{dataSetDefinition.RawFolderName}\";
+            var filePath = @$"{dataType}\{dataSetFolderName}\{dataResolution}\{measurementDefinition.FolderName}\{ (string.IsNullOrWhiteSpace(measurementDefinition.SubFolderName) ? null : measurementDefinition.SubFolderName + @"\") }";
 
-            var siteSet = location.Sites.Where(x => File.Exists(@$"{filePath}{dataSetDefinition.RawFileName}".Replace("[station]", x))).ToList();
+            var siteSet = location.Sites.Where(x => File.Exists(@$"{filePath}{measurementDefinition.FileNameFormat}".Replace("[station]", x))).ToList();
 
-            var regEx = new Regex(dataSetDefinition.RawDataRowRegEx);
+            var regEx = new Regex(measurementDefinition.DataRowRegEx);
 
             var dataSets = new List<DataSet>();
             foreach (var site in siteSet)
             {
-                var siteTemperatures = ReadRawDataFile(site, regEx, filePath, dataSetDefinition.RawFileName, dataSetDefinition.RawNullValue, dataSetDefinition.RawTemperatureConversion, yearFilter);
+                var siteTemperatures = ReadMinMaxTemperatureDataFile(site, regEx, filePath, measurementDefinition.FileNameFormat, measurementDefinition.NullValue, yearFilter);
                 if (siteTemperatures.Any())
                 {
                     var dataSet = new DataSet
                     {
                         Location = location,
-                        Resolution = DataResolution.Daily,
+                        Resolution = dataResolution,
                         Station = site,
-                        MeasurementType = MeasurementType.Unadjusted,
+                        MeasurementType = measurementType,
                         Year = yearFilter,
                         Temperatures = siteTemperatures
                     };
@@ -40,7 +40,7 @@ namespace AcornSat.Core.InputOutput
             return dataSets;
         }
 
-        static List<TemperatureRecord> ReadRawDataFile(string station, Regex regEx, string filePath, string fileName, string nullValue, ConversionMethod conversionMethod, short? yearFilter = null)
+        static List<TemperatureRecord> ReadMinMaxTemperatureDataFile(string station, Regex regEx, string filePath, string fileName, string nullValue, short? yearFilter = null)
         {
             var siteFilePath = filePath + fileName.Replace("[station]", station);
             var rawData = File.ReadAllLines(siteFilePath);
@@ -98,13 +98,8 @@ namespace AcornSat.Core.InputOutput
                 var tmax = match.Groups["tmax"].Value;
                 var tmin = match.Groups["tmin"].Value;
 
-                // Some recordings don't have a value for min or max. In that case the entry will be the nullValue; record a null.
-                // Temp values are recorded as tenths of degrees C in ACORN-SAT raw data. Divide by 10 to get them into degrees C.
-                // E.g., 222 = 22.2 degrees C
-                float? max = tmax == nullValue ? null : 
-                    conversionMethod == ConversionMethod.DivideBy10 ? float.Parse(tmax) / 10f : float.Parse(tmax);
-                float? min = tmin == nullValue ? null : 
-                    conversionMethod == ConversionMethod.DivideBy10 ? float.Parse(tmin) / 10f : float.Parse(tmin);
+                float? max = tmax == nullValue ? null : float.Parse(tmax);
+                float? min = tmin == nullValue ? null : float.Parse(tmin);
 
                 temperatureRecords.Add(new TemperatureRecord
                 {
@@ -165,27 +160,51 @@ namespace AcornSat.Core.InputOutput
             public string[] MinRows { get; set; }
         }
 
-        public static List<TemperatureRecord> ReadAdjustedTemperatures(DataSetDefinition dataSetDefinition, Location location, int? yearFilter = null)
+        public static List<DataSet> ReadPairedTemperatureFiles(DataSetDefinition dataSetDefinition, MeasurementType measurementType, MeasurementDefinition maxTempDefinition, MeasurementDefinition minTempDefinition, Location location, short? yearFilter = null)
         {
-            var maxMinRecords = ReadMaxMinFiles(dataSetDefinition, location);
+            var dataSets = new List<DataSet>();
+            foreach (var site in location.Sites)
+            {
+                var maxMinRecords = ReadMaxMinFiles("Temperature", dataSetDefinition.FolderName, dataSetDefinition.DataResolution, maxTempDefinition, minTempDefinition, site);
+                var temperatures = ProcessMaxMinRecords(maxMinRecords, dataSetDefinition, maxTempDefinition, minTempDefinition, yearFilter);
 
-            return ProcessMaxMinRecords(maxMinRecords, dataSetDefinition, yearFilter);
+                if (temperatures.Any())
+                {
+                    var dataSet = new DataSet
+                    {
+                        Location = location,
+                        Resolution = dataSetDefinition.DataResolution,
+                        Station = site,
+                        MeasurementType = measurementType,
+                        Year = yearFilter,
+                        Temperatures = temperatures
+                    };
+                    dataSets.Add(dataSet);
+                }
+            }
+            return dataSets;
         }
 
-        public static List<TemperatureRecord> ProcessMaxMinRecords(MaxMinRecords maxMinRecords, DataSetDefinition dataSetDefinition, int? yearFilter = null)
+        public static List<TemperatureRecord> ProcessMaxMinRecords(MaxMinRecords maxMinRecords, DataSetDefinition dataSetDefinition, MeasurementDefinition maxTempDefinition, MeasurementDefinition minTempDefinition, int? yearFilter = null)
         {
+            var temperatureRecords = new List<TemperatureRecord>();
+            if (maxMinRecords == null)
+            {
+                return temperatureRecords;
+            }
             if (maxMinRecords.MaxRows.Length != maxMinRecords.MinRows.Length)
             {
-                throw new Exception("Max and min files are not the same length");
+                Console.WriteLine("Max and min files are not the same length");
             }
 
-            var regEx = new Regex(dataSetDefinition.DataRowRegEx);
-            var temperatureRecords = new List<TemperatureRecord>();
+            var maxRegEx = new Regex(maxTempDefinition.DataRowRegEx);
+            var minRegEx = new Regex(minTempDefinition.DataRowRegEx);
+            
 
-            var initialDataIndex = GetStartIndex(regEx, maxMinRecords.MaxRows, maxMinRecords.MinRows);
+            var initialDataIndex = GetStartIndex(maxRegEx, minRegEx, maxMinRecords.MaxRows, maxMinRecords.MinRows);
 
-            var matchMax = regEx.Match(maxMinRecords.MaxRows[initialDataIndex]);
-            var matchMin = regEx.Match(maxMinRecords.MinRows[initialDataIndex]);
+            var matchMax = maxRegEx.Match(maxMinRecords.MaxRows[initialDataIndex]);
+            var matchMin = minRegEx.Match(maxMinRecords.MinRows[initialDataIndex]);
 
             var startYearMax = int.Parse(matchMax.Groups["year"].Value);
             var startYearMin = int.Parse(matchMin.Groups["year"].Value);
@@ -206,8 +225,8 @@ namespace AcornSat.Core.InputOutput
 
             for (var i = initialDataIndex; i < maxMinRecords.MaxRows.Length; i++)
             {
-                matchMax = regEx.Match(maxMinRecords.MaxRows[i]);
-                matchMin = regEx.Match(maxMinRecords.MinRows[i]);
+                matchMax = maxRegEx.Match(maxMinRecords.MaxRows[i]);
+                matchMin = minRegEx.Match(maxMinRecords.MinRows[i]);
 
                 if (!matchMax.Success)
                 {
@@ -264,10 +283,10 @@ namespace AcornSat.Core.InputOutput
                         date = date.AddMonths(1);
                     }
                 }
-                string maxString = matchMax.Groups["temperature"].Value;
-                string minString = matchMin.Groups["temperature"].Value;
-                float? max = string.IsNullOrWhiteSpace(maxString) || maxString == dataSetDefinition.NullValue ? null : float.Parse(maxString);
-                float? min = string.IsNullOrWhiteSpace(minString) || minString == dataSetDefinition.NullValue ? null : float.Parse(minString);
+                string maxString = matchMax.Groups["value"].Value;
+                string minString = matchMin.Groups["value"].Value;
+                float? max = string.IsNullOrWhiteSpace(maxString) || maxString == maxTempDefinition.NullValue ? null : float.Parse(maxString);
+                float? min = string.IsNullOrWhiteSpace(minString) || minString == minTempDefinition.NullValue ? null : float.Parse(minString);
 
                 if (dataSetDefinition.DataResolution == DataResolution.Daily)
                 {
@@ -297,36 +316,33 @@ namespace AcornSat.Core.InputOutput
             throw new NotImplementedException();
         }
 
-        private static MaxMinRecords ReadMaxMinFiles(DataSetDefinition dataSetDefinition, Location location)
-        {
-            var maximumsFilePath = string.Empty;
-            var minimumsFilePath = string.Empty;
-            foreach (var site in location.Sites)
-            {
-                var maximumsFileName = @$"{dataSetDefinition.MaxTempFileName}".Replace("[station]", site);
-                maximumsFilePath = @$"{dataSetDefinition.DataType}\{dataSetDefinition.FolderName}\{dataSetDefinition.DataResolution}\{dataSetDefinition.MaxTempFolderName}\" + maximumsFileName;
-                var minimumsFileName = @$"{dataSetDefinition.MinTempFileName}".Replace("[station]", site);
-                minimumsFilePath = @$"{dataSetDefinition.DataType}\{dataSetDefinition.FolderName}\{dataSetDefinition.DataResolution}\{dataSetDefinition.MinTempFolderName}\" + minimumsFileName;
+        private static MaxMinRecords ReadMaxMinFiles(string dataType, string datasetFolderName, DataResolution dataResolution, MeasurementDefinition maxTempDefintion, MeasurementDefinition minTempDefintion, string station)
+        {           
+            var maximumsFileName = @$"{maxTempDefintion.FileNameFormat}".Replace("[station]", station);
+            var maximumsFilePath = @$"{dataType}\{datasetFolderName}\{dataResolution}\{maxTempDefintion.FolderName}\{ ( string.IsNullOrWhiteSpace(maxTempDefintion.SubFolderName) ? null : maxTempDefintion.SubFolderName + @"\") }" + maximumsFileName;
 
-                if (File.Exists(maximumsFilePath) && File.Exists(minimumsFilePath))
+            var minimumsFileName = @$"{minTempDefintion.FileNameFormat}".Replace("[station]", station);
+            var minimumsFilePath = @$"{dataType}\{datasetFolderName}\{dataResolution}\{maxTempDefintion.FolderName}\{ (string.IsNullOrWhiteSpace(minTempDefintion.SubFolderName) ? null : minTempDefintion.SubFolderName + @"\") }" + minimumsFileName;
+
+            if (File.Exists(maximumsFilePath) && File.Exists(minimumsFilePath))
+            {
+                var maximums = File.ReadAllLines(maximumsFilePath);
+                var minimums = File.ReadAllLines(minimumsFilePath);
+
+                var maxMinRecords = new MaxMinRecords
                 {
-                    break;
-                }
+                    MaxRows = maximums,
+                    MinRows = minimums,
+                };
+
+                return maxMinRecords;
             }
-
-            var maximums = File.ReadAllLines(maximumsFilePath);
-            var minimums = File.ReadAllLines(minimumsFilePath);
-
-            var maxMinRecords = new MaxMinRecords
-            {
-                MaxRows = maximums,
-                MinRows = minimums,
-            };
-
-            return maxMinRecords;
+            
+            Console.WriteLine($"Cannot find data files for station {station}.");
+            return null;
         }
 
-        private static int GetStartIndex(Regex regEx, string[] dataRows, string[]? correspondingDataRows = null)
+        private static int GetStartIndex(Regex regEx, string[] dataRows)
         {
             var index = 0;
             while (!regEx.IsMatch(dataRows[index]))
@@ -337,7 +353,21 @@ namespace AcornSat.Core.InputOutput
                     throw new Exception("None of the data in the input file fits the regular expression.");
                 }
             }
-            if (correspondingDataRows != null && !regEx.IsMatch(correspondingDataRows[index]))
+            return index;
+        }
+
+        private static int GetStartIndex(Regex maxRegEx, Regex minRegEx, string[] dataRows, string[] correspondingDataRows)
+        {
+            var index = 0;
+            while (!maxRegEx.IsMatch(dataRows[index]))
+            {
+                index++;
+                if (index > dataRows.Length)
+                {
+                    throw new Exception("None of the data in the input file fits the regular expression.");
+                }
+            }
+            if (correspondingDataRows != null && !minRegEx.IsMatch(correspondingDataRows[index]))
             {
                 throw new Exception($"The two sets of data do not start to match at the same index ({index}).");
             }

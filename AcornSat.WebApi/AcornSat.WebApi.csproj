@@ -25,1324 +25,2503 @@
     <None Update="Reference\ENSO\soi.long.data.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.001019.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.001019.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.002079.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.002079.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.003003.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.003003.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.004032.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.004032.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.004106.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.004106.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.005007.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.005007.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.005098.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.005098.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.006011.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.006011.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.007045.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.007045.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.008296.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.008296.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.008297.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.008297.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.008315.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.008315.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.009021.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.009021.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.009518.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.009518.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.009617.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.009617.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.009789.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.009789.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.009999.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.009999.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.010092.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.010092.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.010286.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.010286.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.010916.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.010916.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.010917.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.010917.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.011003.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.011003.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.011052.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.011052.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.012038.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.012038.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.013017.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.013017.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.014015.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.014015.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.014825.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.014825.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.015135.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.015135.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.015590.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.015590.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.015666.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.015666.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.016001.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.016001.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.016098.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.016098.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.017043.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.017043.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.017126.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.017126.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.018012.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.018012.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.018044.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.018044.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.018192.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.018192.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.021133.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.021133.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.022823.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.022823.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.023000.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.023000.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.023373.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.023373.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.026021.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.026021.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.026026.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.026026.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.027045.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.027045.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.027058.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.027058.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.028004.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.028004.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.029063.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.029063.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.029077.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.029077.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.030124.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.030124.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.030161.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.030161.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.031011.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.031011.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.032040.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.032040.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.033119.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.033119.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.034084.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.034084.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.036007.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.036007.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.036031.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.036031.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.037010.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.037010.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.038003.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.038003.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.038026.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.038026.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.039066.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.039066.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.039083.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.039083.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.039128.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.039128.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.040004.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.040004.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.040043.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.040043.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.040842.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.040842.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.042112.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.042112.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.043109.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.043109.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.044021.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.044021.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.045025.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.045025.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.046012.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.046012.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.046126.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.046126.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.048027.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.048027.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.048245.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.048245.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.050017.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.050017.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.052088.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.052088.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.053115.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.053115.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.055024.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.055024.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.056242.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.056242.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.058012.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.058012.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.059151.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.059151.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.060139.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.060139.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.061078.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.061078.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.061363.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.061363.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.063005.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.063005.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.065070.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.065070.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.066214.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.066214.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.067105.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.067105.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.068072.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.068072.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.068151.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.068151.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.069018.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.069018.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.070351.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.070351.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.072150.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.072150.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.072161.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.072161.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.074258.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.074258.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.076031.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.076031.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.078015.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.078015.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.080023.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.080023.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.082039.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.082039.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.084016.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.084016.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.084145.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.084145.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.085072.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.085072.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.085096.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.085096.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.086338.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.086338.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.087031.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.087031.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.090015.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.090015.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.091293.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.091293.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.091311.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.091311.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.092045.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.092045.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.094029.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.094029.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.094198.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.094198.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.094220.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.094220.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmax\tmax.096003.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmax\tmax.096003.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.001019.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.001019.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.002079.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.002079.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.003003.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.003003.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.004032.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.004032.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.004106.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.004106.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.005007.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.005007.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.005098.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.005098.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.006011.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.006011.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.007045.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.007045.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.008296.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.008296.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.008297.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.008297.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.008315.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.008315.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.009021.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.009021.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.009518.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.009518.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.009617.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.009617.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.009789.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.009789.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.009999.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.009999.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.010092.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.010092.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.010286.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.010286.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.010916.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.010916.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.010917.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.010917.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.011003.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.011003.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.011052.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.011052.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.012038.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.012038.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.013017.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.013017.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.014015.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.014015.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.014825.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.014825.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.015135.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.015135.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.015590.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.015590.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.015666.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.015666.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.016001.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.016001.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.016098.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.016098.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.017043.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.017043.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.017126.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.017126.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.018012.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.018012.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.018044.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.018044.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.018192.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.018192.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.021133.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.021133.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.022823.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.022823.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.023000.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.023000.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.023373.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.023373.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.026021.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.026021.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.026026.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.026026.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.027045.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.027045.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.027058.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.027058.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.028004.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.028004.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.029063.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.029063.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.029077.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.029077.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.030124.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.030124.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.030161.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.030161.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.031011.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.031011.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.032040.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.032040.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.033119.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.033119.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.034084.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.034084.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.036007.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.036007.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.036031.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.036031.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.037010.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.037010.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.038003.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.038003.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.038026.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.038026.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.039066.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.039066.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.039083.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.039083.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.039128.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.039128.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.040004.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.040004.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.040043.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.040043.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.040842.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.040842.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.042112.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.042112.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.043109.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.043109.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.044021.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.044021.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.045025.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.045025.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.046012.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.046012.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.046126.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.046126.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.048027.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.048027.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.048245.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.048245.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.050017.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.050017.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.052088.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.052088.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.053115.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.053115.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.055024.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.055024.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.056242.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.056242.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.058012.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.058012.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.059151.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.059151.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.060139.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.060139.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.061078.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.061078.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.061363.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.061363.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.063005.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.063005.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.065070.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.065070.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.066214.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.066214.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.067105.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.067105.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.068072.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.068072.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.068151.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.068151.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.069018.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.069018.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.070351.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.070351.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.072150.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.072150.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.072161.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.072161.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.074258.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.074258.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.076031.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.076031.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.078015.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.078015.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.080023.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.080023.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.082039.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.082039.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.084016.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.084016.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.084145.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.084145.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.085072.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.085072.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.085096.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.085096.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.086338.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.086338.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.087031.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.087031.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.090015.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.090015.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.091293.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.091293.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.091311.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.091311.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.092045.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.092045.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.094029.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.094029.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.094198.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.094198.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.094220.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.094220.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\daily_tmin\tmin.096003.daily.csv">
+    <None Update="Temperature\ACORN-SAT\Daily\adjusted\daily_tmin\tmin.096003.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew001019.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\001019_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew001021.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\001021_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew002011.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\002011_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew002012.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\002012_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew002071.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\003002_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew003002.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\003003_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew003003.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\004002_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew003089.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\004020_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew004002.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\004032_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew004020.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\004106_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew004032.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\005007_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew004104.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\005026_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew004106.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\005098_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew005007.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\006011_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew005026.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\006062_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew005092.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\007045_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew006011.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\007046_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew006062.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\008039_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew007045.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\008050_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew007046.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\008051_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew007204.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\008093_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew008039.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\008296_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew008050.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\008297_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew008051.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\008315_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew008093.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\009021_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew008296.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\009034_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew008297.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\009500_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew008315.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\009510_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew009021.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\009518_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew009034.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\009541_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew009250.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\009617_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew009500.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\009741_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew009510.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\009789_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew009518.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\009999_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew009541.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\010035_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew009617.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\010092_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew009741.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\010093_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew009789.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\010286_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew009999.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\010579_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew010035.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\010648_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew010092.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\010916_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew010093.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\010917_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew010286.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\011003_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew010579.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\011004_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew010648.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\011052_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew010916.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\012038_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew010917.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\012039_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew011003.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\013017_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew011004.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\014015_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew011052.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\014016_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew012038.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\014825_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew012039.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\015087_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew013017.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\015135_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew014015.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\015540_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew014016.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\015548_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew014040.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\015590_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew014825.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\015666_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew015087.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\016001_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew015135.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\016044_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew015540.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\016098_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew015548.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\017024_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew015590.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\017031_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew015666.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\017043_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew016001.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\017114_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew016044.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\017126_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew016098.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\018012_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew017024.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\018044_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew017031.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\018070_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew017043.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\018192_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew017114.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\021046_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew017126.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\021133_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew018012.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\022801_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew018044.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\022823_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew018070.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\023000_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew018192.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\023090_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew021046.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\023321_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew021133.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\023373_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew022801.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\026020_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew022823.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\026021_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew023000.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\026026_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew023090.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\027021_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew023321.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\027022_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew023373.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\027042_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew026020.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\027045_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew026021.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\027058_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew026026.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\028004_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew027021.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\029004_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew027022.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\029041_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew027042.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\029063_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew027045.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\029077_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew027058.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\030018_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew028004.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\030045_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew029004.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\030124_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew029041.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\030161_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew029063.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\031010_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew029077.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\031011_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew030018.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\032040_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew030045.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\033046_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew030124.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\033047_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew031010.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\033119_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew031011.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\034002_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew032040.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\034084_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew032178.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\036007_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew033046.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\036030_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew033047.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\036031_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew033119.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\037010_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew033297.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\038002_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew034002.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\038003_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew034084.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\038026_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew036007.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\039015_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew036030.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\039039_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew036031.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\039066_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew036167.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\039083_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew037010.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\039128_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew038002.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\040004_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew038003.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\040043_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew038026.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\040223_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew039015.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\040842_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew039039.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\042023_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew039066.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\042112_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew039083.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\043034_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew039128.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\043109_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew040004.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\044021_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew040043.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\044022_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew040223.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\045017_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew040842.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\045025_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew040910.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\046012_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew042023.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\046037_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew042112.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\046043_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew043034.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\046126_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew043109.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\048013_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew044021.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\048027_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew044022.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\048030_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew044221.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\048239_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew045017.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\048245_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew045025.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\050017_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew046012.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\052026_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew046037.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\052088_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew046043.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\053027_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew046126.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\053048_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew048013.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\053115_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew048027.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\055024_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew048030.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\056017_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew048239.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\056242_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew048244.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\058012_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew048245.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\059040_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew050017.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\059151_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew052026.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\060026_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew052088.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\060139_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew053027.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\061078_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew053048.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\061089_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew053115.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\061363_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew055024.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\063005_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew056017.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\065012_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew056242.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\065070_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew058012.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\066062_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew059040.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\066214_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew059151.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\067033_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew060026.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\067105_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew060139.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\068034_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew061078.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\068072_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew061089.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\068076_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew061363.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\068151_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew061407.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\069018_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew063005.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\070014_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew063305.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\070099_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew065012.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\070351_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew065070.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\072091_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew066062.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\072150_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew067033.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\072151_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew067105.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\072161_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew068034.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\073054_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew068072.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\074128_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew068076.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\074258_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew068151.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\076031_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew069018.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\076077_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew070014.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\078015_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew070099.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\078031_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew070338.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\080023_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew070351.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\082039_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew072091.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\084016_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew072150.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\084030_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew072151.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\084145_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew072161.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\085072_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew073054.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\085096_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew074128.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\085133_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew074258.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\086071_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew076031.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\086338_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew076077.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\087031_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew078015.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\090015_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew078031.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\091049_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew080023.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\091057_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew082039.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\091104_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew084016.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\091293_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew084030.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\091311_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew084145.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\092045_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew085072.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\094010_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew085096.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\094029_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew085133.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\094069_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew085298.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\094198_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew086071.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\094220_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew086338.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\096003_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew087031.txt">
+    <None Update="Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall\096071_daily_rainfall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew090015.txt">
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\001019_daily_tempmax.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew091049.txt">
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\001021_daily_tempmax.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew091057.txt">
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\002011_daily_tempmax.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew091104.txt">
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\002012_daily_tempmax.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew091293.txt">
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\003002_daily_tempmax.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew091311.txt">
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\003003_daily_tempmax.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew092045.txt">
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\004002_daily_tempmax.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew094010.txt">
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\004020_daily_tempmax.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew094029.txt">
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\004032_daily_tempmax.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew094069.txt">
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\004106_daily_tempmax.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew094220.txt">
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\005007_daily_tempmax.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew096003.txt">
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\005026_daily_tempmax.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\ACORN-SAT\Daily\raw-data\hqnew096071.txt">
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\005098_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\006011_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\006062_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\007045_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\007046_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\008039_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\008050_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\008051_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\008093_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\008296_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\008297_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\008315_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\009021_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\009034_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\009500_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\009510_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\009518_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\009541_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\009617_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\009741_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\009789_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\009999_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\010035_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\010092_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\010093_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\010286_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\010579_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\010648_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\010916_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\010917_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\011003_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\011004_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\011052_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\012038_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\012039_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\013017_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\014015_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\014016_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\014825_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\015087_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\015135_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\015540_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\015548_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\015590_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\015666_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\016001_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\016044_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\016098_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\017024_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\017031_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\017043_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\017114_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\017126_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\018012_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\018044_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\018070_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\018192_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\021046_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\021133_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\022801_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\022823_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\023000_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\023090_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\023321_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\023373_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\026020_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\026021_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\026026_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\027021_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\027022_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\027042_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\027045_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\027058_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\028004_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\029004_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\029041_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\029063_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\029077_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\030018_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\030045_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\030124_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\030161_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\031010_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\031011_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\032040_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\033046_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\033047_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\033119_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\034002_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\034084_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\036007_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\036030_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\036031_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\037010_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\038002_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\038003_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\038026_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\039015_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\039039_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\039066_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\039083_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\039128_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\040004_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\040043_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\040223_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\040842_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\042023_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\042112_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\043034_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\043109_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\044021_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\044022_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\045017_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\045025_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\046012_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\046037_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\046043_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\046126_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\048013_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\048027_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\048030_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\048239_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\048245_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\050017_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\052026_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\052088_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\053027_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\053048_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\053115_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\055024_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\056017_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\056242_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\058012_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\059040_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\059151_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\060026_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\060139_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\061078_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\061089_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\061363_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\063005_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\065012_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\065070_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\066062_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\066214_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\067033_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\067105_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\068034_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\068072_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\068076_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\068151_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\069018_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\070014_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\070099_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\070351_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\072091_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\072150_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\072151_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\072161_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\073054_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\074128_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\074258_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\076031_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\076077_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\078015_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\078031_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\080023_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\082039_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\084016_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\084030_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\084145_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\085072_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\085096_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\085133_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\086071_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\086338_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\087031_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\090015_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\091049_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\091057_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\091104_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\091293_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\091311_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\092045_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\094010_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\094029_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\094069_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\094198_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\094220_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\096003_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax\096071_daily_tempmax.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\001019_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\001021_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\002011_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\002012_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\003002_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\003003_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\004002_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\004020_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\004032_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\004106_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\005007_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\005026_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\005098_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\006011_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\006062_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\007045_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\007046_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\008039_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\008050_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\008051_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\008093_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\008296_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\008297_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\008315_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\009021_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\009034_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\009500_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\009510_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\009518_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\009541_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\009617_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\009741_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\009789_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\009999_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\010035_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\010092_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\010093_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\010286_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\010579_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\010648_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\010916_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\010917_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\011003_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\011004_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\011052_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\012038_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\012039_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\013017_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\014015_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\014016_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\014825_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\015087_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\015135_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\015540_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\015548_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\015590_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\015666_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\016001_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\016044_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\016098_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\017024_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\017031_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\017043_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\017114_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\017126_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\018012_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\018044_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\018070_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\018192_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\021046_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\021133_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\022801_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\022823_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\023000_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\023090_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\023321_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\023373_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\026020_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\026021_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\026026_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\027021_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\027022_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\027042_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\027045_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\027058_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\028004_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\029004_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\029041_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\029063_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\029077_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\030018_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\030045_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\030124_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\030161_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\031010_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\031011_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\032040_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\033046_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\033047_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\033119_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\034002_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\034084_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\036007_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\036030_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\036031_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\037010_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\038002_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\038003_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\038026_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\039015_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\039039_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\039066_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\039083_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\039128_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\040004_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\040043_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\040223_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\040842_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\042023_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\042112_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\043034_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\043109_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\044021_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\044022_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\045017_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\045025_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\046012_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\046037_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\046043_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\046126_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\048013_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\048027_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\048030_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\048239_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\048245_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\050017_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\052026_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\052088_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\053027_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\053048_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\053115_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\055024_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\056017_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\056242_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\058012_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\059040_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\059151_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\060026_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\060139_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\061078_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\061089_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\061363_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\063005_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\065012_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\065070_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\066062_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\066214_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\067033_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\067105_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\068034_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\068072_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\068076_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\068151_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\069018_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\070014_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\070099_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\070351_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\072091_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\072150_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\072151_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\072161_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\073054_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\074128_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\074258_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\076031_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\076077_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\078015_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\078031_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\080023_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\082039_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\084016_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\084030_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\084145_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\085072_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\085096_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\085133_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\086071_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\086338_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\087031_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\090015_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\091049_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\091057_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\091104_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\091293_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\091311_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\092045_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\094010_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\094029_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\094069_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\094198_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\094220_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\096003_daily_tempmin.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin\096071_daily_tempmin.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Temperature\Daily\daily_tmax\tmax.001019.daily.csv">
@@ -2731,52 +3910,100 @@
     <None Update="Temperature\NIWA\Daily\raw-data\7427.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\RAIA\Monthly\maxT\acorn.ria.maxT.200283.monthly.txt">
+    <None Update="Temperature\RAIA\adjusted\Monthly\maxT\acorn.ria.maxT.200283.monthly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\RAIA\Monthly\maxT\acorn.ria.maxT.200284.monthly.txt">
+    <None Update="Temperature\RAIA\adjusted\Monthly\maxT\acorn.ria.maxT.200284.monthly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\RAIA\Monthly\maxT\acorn.ria.maxT.200288.monthly.txt">
+    <None Update="Temperature\RAIA\adjusted\Monthly\maxT\acorn.ria.maxT.200288.monthly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\RAIA\Monthly\maxT\acorn.ria.maxT.200839.monthly.txt">
+    <None Update="Temperature\RAIA\adjusted\Monthly\maxT\acorn.ria.maxT.200839.monthly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\RAIA\Monthly\maxT\acorn.ria.maxT.300000.monthly.txt">
+    <None Update="Temperature\RAIA\adjusted\Monthly\maxT\acorn.ria.maxT.300000.monthly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\RAIA\Monthly\maxT\acorn.ria.maxT.300001.monthly.txt">
+    <None Update="Temperature\RAIA\adjusted\Monthly\maxT\acorn.ria.maxT.300001.monthly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\RAIA\Monthly\maxT\acorn.ria.maxT.300004.monthly.txt">
+    <None Update="Temperature\RAIA\adjusted\Monthly\maxT\acorn.ria.maxT.300004.monthly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\RAIA\Monthly\maxT\acorn.ria.maxT.300017.monthly.txt">
+    <None Update="Temperature\RAIA\adjusted\Monthly\maxT\acorn.ria.maxT.300017.monthly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\RAIA\Monthly\minT\acorn.ria.minT.200283.monthly.txt">
+    <None Update="Temperature\RAIA\adjusted\Monthly\minT\acorn.ria.minT.200283.monthly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\RAIA\Monthly\minT\acorn.ria.minT.200284.monthly.txt">
+    <None Update="Temperature\RAIA\adjusted\Monthly\minT\acorn.ria.minT.200284.monthly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\RAIA\Monthly\minT\acorn.ria.minT.200288.monthly.txt">
+    <None Update="Temperature\RAIA\adjusted\Monthly\minT\acorn.ria.minT.200288.monthly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\RAIA\Monthly\minT\acorn.ria.minT.200839.monthly.txt">
+    <None Update="Temperature\RAIA\adjusted\Monthly\minT\acorn.ria.minT.200839.monthly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\RAIA\Monthly\minT\acorn.ria.minT.300000.monthly.txt">
+    <None Update="Temperature\RAIA\adjusted\Monthly\minT\acorn.ria.minT.300000.monthly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\RAIA\Monthly\minT\acorn.ria.minT.300001.monthly.txt">
+    <None Update="Temperature\RAIA\adjusted\Monthly\minT\acorn.ria.minT.300001.monthly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\RAIA\Monthly\minT\acorn.ria.minT.300004.monthly.txt">
+    <None Update="Temperature\RAIA\adjusted\Monthly\minT\acorn.ria.minT.300004.monthly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Temperature\RAIA\Monthly\minT\acorn.ria.minT.300017.monthly.txt">
+    <None Update="Temperature\RAIA\adjusted\Monthly\minT\acorn.ria.minT.300017.monthly.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\RAIA\Monthly\adjusted\maxT\acorn.ria.maxT.200283.monthly.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\RAIA\Monthly\adjusted\maxT\acorn.ria.maxT.200284.monthly.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\RAIA\Monthly\adjusted\maxT\acorn.ria.maxT.200288.monthly.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\RAIA\Monthly\adjusted\maxT\acorn.ria.maxT.200839.monthly.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\RAIA\Monthly\adjusted\maxT\acorn.ria.maxT.300000.monthly.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\RAIA\Monthly\adjusted\maxT\acorn.ria.maxT.300001.monthly.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\RAIA\Monthly\adjusted\maxT\acorn.ria.maxT.300004.monthly.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\RAIA\Monthly\adjusted\maxT\acorn.ria.maxT.300017.monthly.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\RAIA\Monthly\adjusted\minT\acorn.ria.minT.200283.monthly.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\RAIA\Monthly\adjusted\minT\acorn.ria.minT.200284.monthly.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\RAIA\Monthly\adjusted\minT\acorn.ria.minT.200288.monthly.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\RAIA\Monthly\adjusted\minT\acorn.ria.minT.200839.monthly.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\RAIA\Monthly\adjusted\minT\acorn.ria.minT.300000.monthly.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\RAIA\Monthly\adjusted\minT\acorn.ria.minT.300001.monthly.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\RAIA\Monthly\adjusted\minT\acorn.ria.minT.300004.monthly.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Temperature\RAIA\Monthly\adjusted\minT\acorn.ria.minT.300017.monthly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Temperature\Yearly\Adjusted\007774be-e84e-4e6e-aa42-711f1cd32107.csv">

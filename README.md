@@ -7,7 +7,7 @@ Tool to calculate average temperatures from BOM ACORN-SAT and NIWA 11-stations d
 - NIWA: New Zealand's National Institute of Water and Atmospheric Research
 
 ## Technical
-- Built in Visual Studio 2022 Community Edition
+- Built in [Visual Studio 2022 Community Edition](https://visualstudio.microsoft.com/vs/community/)
 - C#, .NET 6
 - Blazor, using
   - https://github.com/Megabit/Blazorise

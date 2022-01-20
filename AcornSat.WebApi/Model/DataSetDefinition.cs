@@ -17,9 +17,15 @@ namespace AcornSat.WebApi.Model
         public string MoreInformationUrl { get; set; }
         public string StationInfoUrl { get; set; }
         public string LocationInfoUrl { get; set; }
-        public DataType DataType { get; set; }
+        public List<DataType> DataTypes { get; set; }
         public DataResolution DataResolution { get; set; }
         public List<MeasurementType> MeasurementTypes { get; set; }
         public List<Location> Locations { get; set;}
+    }
+
+    public enum DataType
+    {
+        Temperature,
+        Rainfall
     }
 }

@@ -6,17 +6,36 @@ using GeoCoordinatePortable;
 using AcornSat.Core;
 using static AcornSat.Core.Enums;
 using System.Net;
+using System.IO.Compression;
 
-//BuildDataSetDefinitions();
+BuildDataSetDefinitions();
 //BuildNiwaLocations(Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"));
-//BuildAcornSatLocationsFromReferenceData(Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"));
+var locations = BuildAcornSatLocationsFromReferenceData(Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"));
 
-var station = "094220";
-
-await DownloadBomTemperatureData(station, ObsCode.Min);
-
-async Task DownloadBomTemperatureData(string station, ObsCode obsCode)
+foreach (var location in locations.ToList())
 {
+    foreach (var site in location.Sites)
+    {
+        await DownloadAndExtractDailyBomData(site, ObsCode.Daily_TempMax);
+        await DownloadAndExtractDailyBomData(site, ObsCode.Daily_TempMin);
+        await DownloadAndExtractDailyBomData(site, ObsCode.Daily_Rainfall);
+    }
+}
+
+
+async Task DownloadAndExtractDailyBomData(string station, ObsCode obsCode)
+{
+    var dataFile = $"{station}_{obsCode.ToString().ToLower()}";
+    var zipfileName = dataFile + ".zip";
+    var csvFilePathAndName = @$"{obsCode.ToString().ToLower()}\{dataFile}.csv";
+
+    // If we've already downloaded and extracted the csv, let's not do it again.
+    // Prevents hammering the BOM when we already have the data.
+    if (File.Exists(csvFilePathAndName))
+    {
+        return;
+    }
+
     var regEx = new Regex(@"\d{6}\|\|,(?<startYear>\d{4}):(?<p_c>-?\d+),");
     var userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
     var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
@@ -25,6 +44,7 @@ async Task DownloadBomTemperatureData(string station, ObsCode obsCode)
         httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
         httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
 
+        // This section is required to find the arcane p_c value, needed for the querystring of the dailyZippedDataFile request, that returns the daily data as a zip file
         var availableYearsUrl = $"http://www.bom.gov.au/jsp/ncc/cdio/wData/wdata?p_stn_num={station}&p_display_type=availableYears&p_nccObsCode={(int)obsCode}";
         var response = await httpClient.GetAsync(availableYearsUrl);
 
@@ -33,13 +53,46 @@ async Task DownloadBomTemperatureData(string station, ObsCode obsCode)
         var p_c = match.Groups["p_c"].Value;
         var startYear = match.Groups["startYear"].Value;
 
+        // The response of this request is a zip file that needs to be downloaded, extracted and named in a form that we'll be able to find it again by station number
         var zipFileUrl = $"http://www.bom.gov.au/jsp/ncc/cdio/weatherData/av?p_display_type=dailyZippedDataFile&p_stn_num={station}&p_nccObsCode={(int)obsCode}&p_c={p_c}&p_startYear={startYear}";
-
         var zipFileResponse = await httpClient.GetAsync(zipFileUrl);
-        using (var fs = new FileStream($"{(obsCode == ObsCode.Max ? "tmax" : "tmin")}_{station}_daily.zip", FileMode.OpenOrCreate))
+        using (var fs = new FileStream(zipfileName, FileMode.OpenOrCreate))
         {
             await zipFileResponse.Content.CopyToAsync(fs);
         }
+
+        var tempDirectory = new DirectoryInfo("temp");
+        DeleteDirectory(tempDirectory);
+        try
+        {
+            // Extract the zip file with the daily data to a folder called temp
+            ZipFile.ExtractToDirectory(zipfileName, "temp");
+
+            // Find the csv file with the data and move and rename it, putting it in the output folder (named based on the observation code)
+            var csv = tempDirectory.GetFiles("*.csv").Single();
+            var destinationDirectory = new DirectoryInfo(obsCode.ToString().ToLower());
+            if (!destinationDirectory.Exists)
+            {
+                destinationDirectory.Create();
+            }
+            csv.MoveTo(csvFilePathAndName, true);
+
+            // Remove the temp directory
+            DeleteDirectory(tempDirectory);
+        }
+        catch (InvalidDataException ex)
+        {
+            Console.WriteLine($"Unable to extract zip file {zipfileName}. File may be corrupt. Message: {ex.Message}");
+        }
+    }
+}
+
+void DeleteDirectory(DirectoryInfo directoryInfo)
+{
+    if (directoryInfo.Exists)
+    {
+        directoryInfo.GetFiles().ToList().ForEach(file => file.Delete());
+        directoryInfo.Delete();
     }
 }
 
@@ -55,18 +108,55 @@ void BuildDataSetDefinitions()
             MoreInformationUrl = "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
             FolderName = "ACORN-SAT",
             MeasurementTypes = new List<MeasurementType> { MeasurementType.Adjusted, MeasurementType.Unadjusted },
-            DataType = DataType.Temperature,
             DataResolution = DataResolution.Daily,
-            DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<temperature>-?\d*\.*\d*).*$",
-            MaxTempFolderName = "daily_tmax",
-            MinTempFolderName = "daily_tmin",
-            MaxTempFileName = "tmax.[station].daily.csv",
-            MinTempFileName = "tmin.[station].daily.csv",
-            RawDataRowRegEx = @"^\s*(?<station>\d{6})(?<year>\d{4})(?<month>\d{2})(?<day>\d{2})\s+(?<tmax>-?\d+)\s+(?<tmin>-?\d+)$",
-            RawFolderName = "raw-data",
-            RawFileName = "hqnew[station].txt",
-            RawNullValue = "-999",
-            RawTemperatureConversion = ConversionMethod.DivideBy10,
+            MeasurementDefinitions = new List<MeasurementDefinition>
+            {
+                new MeasurementDefinition
+                {
+                    MeasurementType = MeasurementType.Adjusted,
+                    DataType = DataType.TempMax,
+                    DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d*\.?\d*),*$",
+                    FolderName = "adjusted",
+                    SubFolderName = "daily_tmax",
+                    FileNameFormat = "tmax.[station].daily.csv",
+                },
+                new MeasurementDefinition
+                {
+                    MeasurementType = MeasurementType.Adjusted,
+                    DataType = DataType.TempMin,
+                    DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d*\.?\d*),*$",
+                    FolderName = "adjusted",
+                    SubFolderName = "daily_tmin",
+                    FileNameFormat = "tmin.[station].daily.csv",
+                },
+                new MeasurementDefinition
+                {
+                    MeasurementType = MeasurementType.Unadjusted,
+                    DataType = DataType.TempMax,
+                    DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
+                    FolderName = "raw-data",
+                    SubFolderName = "daily_tempmax",
+                    FileNameFormat = "[station]_daily_tempmax.csv",
+                },
+                new MeasurementDefinition
+                {
+                    MeasurementType = MeasurementType.Unadjusted,
+                    DataType = DataType.TempMin,
+                    DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
+                    FolderName = "raw-data",
+                    SubFolderName = "daily_tempmin",
+                    FileNameFormat = "[station]_daily_tempmin.csv",
+                },
+                new MeasurementDefinition
+                {
+                    MeasurementType = MeasurementType.Unadjusted,
+                    DataType = DataType.Rainfall,
+                    DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
+                    FolderName = "raw-data",
+                    SubFolderName = "daily_rainfall",
+                    FileNameFormat = "[station]_daily_rainfall.csv",
+                }
+            },
             StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
             LocationInfoUrl = "http://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]"
         },
@@ -78,14 +168,30 @@ void BuildDataSetDefinitions()
             MoreInformationUrl = "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
             FolderName = "RAIA",
             MeasurementTypes = new List<MeasurementType> { MeasurementType.Adjusted },
-            DataType = DataType.Temperature,
             DataResolution = DataResolution.Monthly,
-            DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<temperature>-?\d+\.\d+)$",
-            MaxTempFolderName = "maxT",
-            MinTempFolderName = "minT",
-            MaxTempFileName = "acorn.ria.maxT.[station].monthly.txt",
-            MinTempFileName = "acorn.ria.minT.[station].monthly.txt",
-            NullValue = "99999.9",
+            MeasurementDefinitions = new List<MeasurementDefinition>
+            {
+                new MeasurementDefinition
+                {
+                    MeasurementType = MeasurementType.Adjusted,
+                    DataType = DataType.TempMax,
+                    DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$",
+                    FolderName = "adjusted",
+                    SubFolderName = "maxT",
+                    FileNameFormat = "acorn.ria.maxT.[station].monthly.txt",
+                    NullValue = "99999.9",
+                },
+                new MeasurementDefinition
+                {
+                    MeasurementType = MeasurementType.Adjusted,
+                    DataType = DataType.TempMin,
+                    DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$",
+                    FolderName = "adjusted",
+                    SubFolderName = "minT",
+                    FileNameFormat = "acorn.ria.minT.[station].monthly.txt",
+                    NullValue = "99999.9",
+                },
+            },
             StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml"
         },
         new DataSetDefinition
@@ -96,13 +202,19 @@ void BuildDataSetDefinitions()
             MoreInformationUrl = "https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data",
             FolderName = "NIWA",
             MeasurementTypes = new List<MeasurementType> { MeasurementType.Unadjusted },
-            DataType = DataType.Temperature,
             DataResolution = DataResolution.Daily,
-            RawDataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<tmax>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$",
-            RawFolderName = "raw-data",
-            RawFileName = "[station].csv",
-            RawNullValue = "-",
-            RawTemperatureConversion = ConversionMethod.Unchanged,
+            MeasurementDefinitions = new List<MeasurementDefinition>
+            {
+                new MeasurementDefinition
+                {
+                    MeasurementType = MeasurementType.Unadjusted,
+                    DataType = DataType.TempMaxMin,
+                    DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<tmax>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$",
+                    FolderName = "raw-data",
+                    FileNameFormat = "[station].csv",
+                    NullValue = "-",
+                },
+            },
         }
     };
 
@@ -157,7 +269,7 @@ void BuildNiwaLocations(Guid dataSetId)
     File.WriteAllText("niwa-locations.json", JsonSerializer.Serialize(locations, options));
 }
 
-void BuildAcornSatLocationsFromReferenceData(Guid dataSetId)
+List<Location> BuildAcornSatLocationsFromReferenceData(Guid dataSetId)
 {
     var locations = new List<Location>();
 
@@ -240,10 +352,13 @@ void BuildAcornSatLocationsFromReferenceData(Guid dataSetId)
 
     var options = new JsonSerializerOptions { WriteIndented = true };
     File.WriteAllText("locations.json", JsonSerializer.Serialize(locations, options));
+
+    return locations;
 }
 
 public enum ObsCode
 {
-    Max = 122,
-    Min = 123,
+    Daily_TempMax = 122,
+    Daily_TempMin = 123,
+    Daily_Rainfall = 136,
 }

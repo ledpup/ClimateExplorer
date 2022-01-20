@@ -8,22 +8,57 @@
       1,
       0
     ],
-    "DataType": 0,
     "DataResolution": 3,
-    "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Ctemperature\u003E-?\\d*\\.*\\d*).*$",
     "FolderName": "ACORN-SAT",
-    "MaxTempFolderName": "daily_tmax",
-    "MinTempFolderName": "daily_tmin",
-    "MaxTempFileName": "tmax.[station].daily.csv",
-    "MinTempFileName": "tmin.[station].daily.csv",
-    "NullValue": null,
-    "RawDataRowRegEx": "^\\s*(?\u003Cstation\u003E\\d{6})(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2})\\s\u002B(?\u003Ctmax\u003E-?\\d\u002B)\\s\u002B(?\u003Ctmin\u003E-?\\d\u002B)$",
-    "RawFolderName": "raw-data",
-    "RawFileName": "hqnew[station].txt",
-    "RawNullValue": "-999",
     "StationInfoUrl": "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
     "LocationInfoUrl": "http://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
-    "RawTemperatureConversion": 1,
+    "MeasurementDefinitions": [
+      {
+        "DataType": 0,
+        "MeasurementType": 1,
+        "FolderName": "adjusted",
+        "SubFolderName": "daily_tmax",
+        "FileNameFormat": "tmax.[station].daily.csv",
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E-?\\d*\\.?\\d*),*$",
+        "NullValue": null
+      },
+      {
+        "DataType": 1,
+        "MeasurementType": 1,
+        "FolderName": "adjusted",
+        "SubFolderName": "daily_tmin",
+        "FileNameFormat": "tmin.[station].daily.csv",
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E-?\\d*\\.?\\d*),*$",
+        "NullValue": null
+      },
+      {
+        "DataType": 0,
+        "MeasurementType": 0,
+        "FolderName": "raw-data",
+        "SubFolderName": "daily_tempmax",
+        "FileNameFormat": "[station]_daily_tempmax.csv",
+        "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
+        "NullValue": null
+      },
+      {
+        "DataType": 1,
+        "MeasurementType": 0,
+        "FolderName": "raw-data",
+        "SubFolderName": "daily_tempmin",
+        "FileNameFormat": "[station]_daily_tempmin.csv",
+        "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
+        "NullValue": null
+      },
+      {
+        "DataType": 3,
+        "MeasurementType": 0,
+        "FolderName": "raw-data",
+        "SubFolderName": "daily_rainfall",
+        "FileNameFormat": "[station]_daily_rainfall.csv",
+        "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
+        "NullValue": null
+      }
+    ],
     "Locations": null
   },
   {
@@ -34,21 +69,30 @@
     "MeasurementTypes": [
       1
     ],
-    "DataType": 0,
     "DataResolution": 1,
-    "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})\\d{2}\\s\\d\u002B\\s\u002B(?\u003Ctemperature\u003E-?\\d\u002B\\.\\d\u002B)$",
     "FolderName": "RAIA",
-    "MaxTempFolderName": "maxT",
-    "MinTempFolderName": "minT",
-    "MaxTempFileName": "acorn.ria.maxT.[station].monthly.txt",
-    "MinTempFileName": "acorn.ria.minT.[station].monthly.txt",
-    "NullValue": "99999.9",
-    "RawDataRowRegEx": null,
-    "RawFolderName": null,
-    "RawFileName": null,
-    "RawNullValue": null,
     "StationInfoUrl": "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
-    "RawTemperatureConversion": 0,
+    "LocationInfoUrl": null,
+    "MeasurementDefinitions": [
+      {
+        "DataType": 0,
+        "MeasurementType": 1,
+        "FolderName": "adjusted",
+        "SubFolderName": "maxT",
+        "FileNameFormat": "acorn.ria.maxT.[station].monthly.txt",
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})\\d{2}\\s\\d\u002B\\s\u002B(?\u003Cvalue\u003E-?\\d\u002B\\.\\d\u002B)$",
+        "NullValue": "99999.9"
+      },
+      {
+        "DataType": 1,
+        "MeasurementType": 1,
+        "FolderName": "adjusted",
+        "SubFolderName": "minT",
+        "FileNameFormat": "acorn.ria.minT.[station].monthly.txt",
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})\\d{2}\\s\\d\u002B\\s\u002B(?\u003Cvalue\u003E-?\\d\u002B\\.\\d\u002B)$",
+        "NullValue": "99999.9"
+      }
+    ],
     "Locations": null
   },
   {
@@ -59,21 +103,21 @@
     "MeasurementTypes": [
       0
     ],
-    "DataType": 0,
     "DataResolution": 3,
-    "DataRowRegEx": null,
     "FolderName": "NIWA",
-    "MaxTempFolderName": null,
-    "MinTempFolderName": null,
-    "MaxTempFileName": null,
-    "MinTempFileName": null,
-    "NullValue": null,
-    "RawDataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Ctmax\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Ctmin\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-    "RawFolderName": "raw-data",
-    "RawFileName": "[station].csv",
-    "RawNullValue": "-",
     "StationInfoUrl": null,
-    "RawTemperatureConversion": 0,
+    "LocationInfoUrl": null,
+    "MeasurementDefinitions": [
+      {
+        "DataType": 2,
+        "MeasurementType": 0,
+        "FolderName": "raw-data",
+        "SubFolderName": null,
+        "FileNameFormat": "[station].csv",
+        "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Ctmax\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Ctmin\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
+        "NullValue": "-"
+      }
+    ],
     "Locations": null
   }
 ]
