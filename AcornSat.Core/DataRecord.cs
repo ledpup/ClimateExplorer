@@ -1,32 +1,30 @@
 ﻿using System.Text.Json.Serialization;
-using static AcornSat.Core.Enums;
 
-public class TemperatureRecord
+public class DataRecord
 {
-    public TemperatureRecord()
+    public DataRecord()
     {
 
     }
 
-    public TemperatureRecord(short year, short month, short? day, float? min, float? max)
+    public DataRecord(short year, short month, short? day, float? value)
     {
         Year = year;
         Month = month;
         Day = day;
 
-        Min = min;
-        Max = max;
+        Value = value;
 
         Week = null;
     }
-    public TemperatureRecord(DateTime date, float? min, float? max)
+
+    public DataRecord(DateTime date, float? value)
     {
         Year = (short)date.Year;
         Month = (short)date.Month;
         Day = (short)date.Day;
 
-        Min = min;
-        Max = max;
+        Value = value;
 
         Week = null;
     }
@@ -34,8 +32,7 @@ public class TemperatureRecord
     public short? Month { get; set; }
     public short Year { get; set; }
     public short? Week { get; set; }
-    public float? Min { get; set; }
-    public float? Max { get; set; }
+    public float? Value { get; set; }
 
     [JsonIgnore]
     public DateTime Date { get { return new DateTime(Year, Month.Value, Day.Value); } }

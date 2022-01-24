@@ -1,6 +1,7 @@
 ﻿@page "/fetchdata"
 @using Blazorise
 @using Blazorise.Charts
+@using static AcornSat.Core.Enums
 
 <PageTitle>Aggregates</PageTitle>
 
@@ -21,7 +22,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        AggreagteData = (await DataService.GetAggregateDataSet(Core.Enums.DataResolution.Yearly, Core.Enums.MeasurementType.Adjusted, -5, -50, dayGroupingThreshold: .5f, locationGroupingThreshold: .5f)).ToList();
+        AggreagteData = (await DataService.GetAggregateDataSet(DataType.TempMax, DataResolution.Yearly, Core.Enums.MeasurementType.Adjusted, -5, -50, dayGroupingThreshold: .5f, locationGroupingThreshold: .5f)).ToList();
         await HandleRedraw();
     }
 
@@ -73,7 +74,7 @@
         var labels = dataSet.Years.Select(x => x.ToString()).ToArray();
         
 
-        var values = dataSet.Temperatures.Select(x => x.Max).ToList();
+        var values = dataSet.Temperatures.Select(x => x.Value).ToList();
 
         await chart.Clear();
         await chart.SetOptionsObject(chartOptions);

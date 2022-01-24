@@ -109,12 +109,21 @@
     "LocationInfoUrl": null,
     "MeasurementDefinitions": [
       {
-        "DataType": 2,
+        "DataType": 0,
         "MeasurementType": 0,
         "FolderName": "raw-data",
         "SubFolderName": null,
         "FileNameFormat": "[station].csv",
-        "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Ctmax\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Ctmin\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
+        "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Ctmin\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
+        "NullValue": "-"
+      },
+      {
+        "DataType": 1,
+        "MeasurementType": 0,
+        "FolderName": "raw-data",
+        "SubFolderName": null,
+        "FileNameFormat": "[station].csv",
+        "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Ctmax\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
         "NullValue": "-"
       }
     ],

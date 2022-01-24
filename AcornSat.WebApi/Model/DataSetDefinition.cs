@@ -22,10 +22,4 @@ namespace AcornSat.WebApi.Model
         public List<MeasurementType> MeasurementTypes { get; set; }
         public List<Location> Locations { get; set;}
     }
-
-    public enum DataType
-    {
-        Temperature,
-        Rainfall
-    }
 }

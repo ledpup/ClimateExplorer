@@ -9,7 +9,7 @@ using System.Net;
 using System.IO.Compression;
 
 BuildDataSetDefinitions();
-//BuildNiwaLocations(Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"));
+BuildNiwaLocations(Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"));
 var locations = BuildAcornSatLocationsFromReferenceData(Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"));
 
 foreach (var location in locations.ToList())
@@ -208,8 +208,17 @@ void BuildDataSetDefinitions()
                 new MeasurementDefinition
                 {
                     MeasurementType = MeasurementType.Unadjusted,
-                    DataType = DataType.TempMaxMin,
-                    DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<tmax>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$",
+                    DataType = DataType.TempMax,
+                    DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$",
+                    FolderName = "raw-data",
+                    FileNameFormat = "[station].csv",
+                    NullValue = "-",
+                },
+                new MeasurementDefinition
+                {
+                    MeasurementType = MeasurementType.Unadjusted,
+                    DataType = DataType.TempMin,
+                    DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<tmax>-?[\d+\.\d+]*),-?\d*,(?<value>-?[\d+\.\d+]*),-?\d*,.*,D$",
                     FolderName = "raw-data",
                     FileNameFormat = "[station].csv",
                     NullValue = "-",

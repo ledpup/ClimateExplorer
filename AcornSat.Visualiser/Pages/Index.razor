@@ -335,7 +335,7 @@
     {
         SelectedDayGroupThreshold = float.Parse(DayGroupThresholdText) / 100;
         SelectedDayGrouping = SelectingDayGrouping == 0 ? SelectedDayGrouping : SelectingDayGrouping;
-        await BuildLocationDataSets();
+        await BuildDataSets();
     }
 
     private Modal selectLocationModal;
@@ -402,7 +402,7 @@
             ? ChartType.Bar
             : ChartType.Line;
 
-        await BuildLocationDataSets();
+        await BuildDataSets();
     }
 
     [Inject] 
@@ -433,7 +433,7 @@
         {
             SelectedResolution = DataResolution.Yearly;
             await InvokeAsync(StateHasChanged);
-            await BuildLocationDataSets();
+            await BuildDataSets();
             return;
         }
 
@@ -453,7 +453,7 @@
         }
 
         await InvokeAsync(StateHasChanged);
-        await BuildLocationDataSets();
+        await BuildDataSets();
     }
 
     List<string> StationsWithData { get; set; }
@@ -462,7 +462,7 @@
     async Task SelectedStationChanged(string value)
     {
         SelectedStation = value;
-        await BuildLocationDataSets();
+        await BuildDataSets();
     }
 
     DataResolution SelectedResolution { get; set; }
@@ -474,7 +474,7 @@
             SelectedYearsText = new();
             SelectedYears = new List<short>();
         }
-        await BuildLocationDataSets();
+        await BuildDataSets();
     }
 
     int SelectedPeriod;
@@ -514,18 +514,21 @@
 
     bool UnadjustedDisabled, AdjustedDisabled, DifferenceDisabled;
 
+    List<DataType> SelectedDataTypes = new List<DataType>();
+    List<MeasurementType> SelectedMeasurementTypes = new List<MeasurementType>();
+
     bool Maximums = true;
     async Task OnMaximumsChanged(bool value)
     {
         Maximums = value;
-        await HandleRedraw();
+        await BuildDataSets();
     }
 
     bool Minimums;
     async Task OnMinimumsChanged(bool value)
     {
         Minimums = value;
-        await HandleRedraw();
+        await BuildDataSets();
     }
 
     string StartYear { get; set; }
@@ -607,7 +610,7 @@
         await base.OnInitializedAsync();
     }
 
-    protected async Task BuildLocationDataSets()
+    protected async Task BuildDataSets()
     {
         var dataExists = false;
         Datasets = new List<DataSet>();
@@ -618,14 +621,21 @@
 
         var relativeToAverage = SelectedChartType == ChartType.Bar;
 
-        var existingDatasets = Datasets.Where(x => x.Resolution == DataResolution.Yearly && x.Location.Id == SelectedLocationId).ToList();
-        dataExists = existingDatasets.Any();
-        if (!dataExists)
+        SelectedDataTypes = new List<DataType>();
+        if (Maximums)
         {
-            var adjusted = (await DataService.GetDataSet(DataResolution.Yearly, MeasurementType.Adjusted, SelectedLocationId, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
+            SelectedDataTypes.Add(DataType.TempMax);
+        }
+        if (Minimums)
+        {
+            SelectedDataTypes.Add(DataType.TempMin);
+        }
+        foreach (var dataType in SelectedDataTypes)
+        {
+            var adjusted = (await DataService.GetDataSet(dataType, DataResolution.Yearly, MeasurementType.Adjusted, SelectedLocationId, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
             Datasets.AddRange(adjusted);
 
-            var unadjusted = (await DataService.GetDataSet(DataResolution.Yearly, MeasurementType.Unadjusted, SelectedLocationId, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
+            var unadjusted = (await DataService.GetDataSet(dataType, DataResolution.Yearly, MeasurementType.Unadjusted, SelectedLocationId, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
             Datasets.AddRange(unadjusted);
 
             if (!DifferenceDisabled)
@@ -642,13 +652,12 @@
 
         foreach (var selectedYear in SelectedYears)
         {
-            var yearsExists = existingDatasets.Any(x => x.Year.HasValue && x.Year.Value == selectedYear);
-            if (!yearsExists)
+            foreach (var dataType in SelectedDataTypes)
             {
-                var adjusted = (await DataService.GetDataSet(SelectedResolution, MeasurementType.Adjusted, SelectedLocationId, selectedYear, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
+                var adjusted = (await DataService.GetDataSet(dataType, SelectedResolution, MeasurementType.Adjusted, SelectedLocationId, selectedYear, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
                 Datasets.AddRange(adjusted);
 
-                var unadjusted = (await DataService.GetDataSet(SelectedResolution, MeasurementType.Unadjusted, SelectedLocationId, selectedYear, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
+                var unadjusted = (await DataService.GetDataSet(dataType, SelectedResolution, MeasurementType.Unadjusted, SelectedLocationId, selectedYear, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
                 Datasets.AddRange(unadjusted);
             }
         }
@@ -670,6 +679,7 @@
         var difference = new DataSet
         {
             Resolution = DataResolution.Yearly,
+            DataType = unadjusted.First().DataType,
             MeasurementType = MeasurementType.Difference,
         };
         unadjusted.ForEach(x =>
@@ -677,11 +687,10 @@
                 x.Temperatures.ForEach(y =>
                 {
                     var adjustedTemp = adjusted.Single().Temperatures.SingleOrDefault(z => z.Year == y.Year);
-                    difference.Temperatures.Add(new TemperatureRecord
+                    difference.Temperatures.Add(new DataRecord
                     {
                         Year = y.Year,
-                        Max = adjustedTemp == null ? null : adjustedTemp.Max - y.Max,
-                        Min = adjustedTemp == null ? null : adjustedTemp.Min - y.Min,
+                        Value = adjustedTemp == null ? null : adjustedTemp.Value - y.Value,
                     });
                 });
             }
@@ -737,7 +746,7 @@
         await chart.Clear();
 
         List<DataSet> bufferedSelectedDataSet = new List<DataSet>();
-        Func<TemperatureRecord, bool> timeConstraint = null;
+        Func<DataRecord, bool> timeConstraint = null;
 
         if (SelectedResolution == DataResolution.Yearly)
         {
@@ -937,7 +946,7 @@
         throw new Exception();
     }
 
-    async Task AddDataSetsToGraph(List<DataSet> bufferedSelectedDataSet, Func<TemperatureRecord, bool> timeConstraint, string? labelPrefix = null, short? year = null, short colourAdjust = 0)
+    async Task AddDataSetsToGraph(List<DataSet> bufferedSelectedDataSet, Func<DataRecord, bool> timeConstraint, string? labelPrefix = null, short? year = null, short colourAdjust = 0)
     {
         if (!string.IsNullOrWhiteSpace(labelPrefix))
         {
@@ -945,7 +954,7 @@
         }
         if (Adjusted && Maximums)
         {
-            var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Adjusted, y => y.Max, timeConstraint, year);
+            var values = SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMax, MeasurementType.Adjusted, timeConstraint, year);
             var label = labelPrefix + "Maximum Adjusted";
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(0));
             if (SelectedPeriod == 0 || !SoloSma)
@@ -956,7 +965,7 @@
         }
         if (Unadjusted && Maximums)
         {
-            var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Unadjusted, y => y.Max, timeConstraint, year);
+            var values = SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMax, MeasurementType.Unadjusted, timeConstraint, year);
             var label = labelPrefix + "Maximum Unadjusted";
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(1));
             if (SelectedPeriod == 0 || !SoloSma)
@@ -967,20 +976,20 @@
         }
         if (Difference && Maximums)
         {
-            var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Difference, y => y.Max, timeConstraint, year);
+            var values = SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMax, MeasurementType.Difference, timeConstraint, year);
             var label = labelPrefix + "Maximum Difference";
 
             await chart.AddDataSet(GetChartDataset(label, values, chartType: ChartType.Bar));
         }
         if (Difference && Minimums)
         {
-            var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Difference, y => y.Min, timeConstraint, year);
+            var values = SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMin, MeasurementType.Difference, timeConstraint, year);
             var label = labelPrefix + "Minimum Difference";
             await chart.AddDataSet(GetChartDataset(label, values, chartType: ChartType.Bar));
         }
         if (Adjusted && Minimums)
         {
-            var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Adjusted, y => y.Min, timeConstraint, year);
+            var values = SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMin, MeasurementType.Adjusted, timeConstraint, year);
             var label = labelPrefix + "Minimum Adjusted";
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(2));
             if (SelectedPeriod == 0 || !SoloSma)
@@ -991,7 +1000,7 @@
         }
         if (Unadjusted && Minimums)
         {
-            var values =  SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Unadjusted, y => y.Min, timeConstraint, year);
+            var values =  SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMin, MeasurementType.Unadjusted, timeConstraint, year);
             var label = labelPrefix + "Minimum Unadjusted";
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(3));
             if (SelectedPeriod == 0 || !SoloSma)
@@ -1012,14 +1021,14 @@
         }
     }
 
-    List<float?> SelectTemperatureValues(List<DataSet> dataSet, MeasurementType measurementType, Func<TemperatureRecord, float?> selector, Func<TemperatureRecord, bool> timeConstraint, short? year = null)
+    List<float?> SelectTemperatureValues(List<DataSet> dataSet, DataType dataType, MeasurementType measurementType, Func<DataRecord, bool> timeConstraint, short? year = null)
     {
-        var dataset = dataSet.SingleOrDefault(x => x.MeasurementType == measurementType && (year == null || x.Year == year.Value));
+        var dataset = dataSet.SingleOrDefault(x => x.DataType == dataType && x.MeasurementType == measurementType && (year == null || x.Year == year.Value));
 
         var selectedValues = dataset
                             .Temperatures
                             .Where(timeConstraint)
-                            .Select(selector)
+                            .Select(x => x.Value)
                             .ToList();
 
         return selectedValues;
@@ -1034,22 +1043,21 @@
 
         foreach (var dataSet in dataSets)
         {
-            var temperatures = new List<TemperatureRecord>();
+            var temperatures = new List<DataRecord>();
             for (var year = superSetStartYear; year < superSetEndYear; year++)
             {
                 var record = dataSet.Temperatures.FirstOrDefault(x => x.Year == year);
                 if (record == null)
                 {
-                    record = new TemperatureRecord
+                    record = new DataRecord
                     {
                         Year = year,
-                        Min = null,
-                        Max = null,
+                        Value = null,
                     };
                 }
                 temperatures.Add(record);
             }
-            var bufferedDataSet = new DataSet { Location = dataSet.Location, MeasurementType = dataSet.MeasurementType };
+            var bufferedDataSet = new DataSet { Location = dataSet.Location, DataType = dataSet.DataType, MeasurementType = dataSet.MeasurementType };
             bufferedDataSet.Temperatures = temperatures;
             bufferedDataSets.Add(bufferedDataSet);
         }
@@ -1063,11 +1071,11 @@
         var startDate = new DateOnly(dataSets.Min(x => x.Temperatures.Min(y => y.Year)), 1, 1);
         foreach(var dataSet in dataSets)
         {
-            var bufferedDataSet = new DataSet { Location = dataSet.Location, MeasurementType = dataSet.MeasurementType };
+            var bufferedDataSet = new DataSet { Location = dataSet.Location, DataType = dataSet.DataType, MeasurementType = dataSet.MeasurementType };
             bufferedDataSets.Add(bufferedDataSet);
 
             var startYear = dataSet.Temperatures.Min(x => x.Date);
-            var temperatures = new List<TemperatureRecord>();
+            var temperatures = new List<DataRecord>();
             //for (var i = superSetStartYear; i < startYear; i++)
             //{
             //    temperatures.Add(new DailyTemperatureRecord { Date = i });
@@ -1148,7 +1156,7 @@
         }
 
         base.StateHasChanged();
-        await BuildLocationDataSets();
+        await BuildDataSets();
     }
 
     string[] Labels = new string[1];
@@ -1191,6 +1199,6 @@
         SelectedYears = new List<short> { year };
         SelectedResolution = DataResolution.Monthly;
 
-        await BuildLocationDataSets();
+        await BuildDataSets();
     }
 }

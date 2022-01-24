@@ -23,9 +23,9 @@ public class Location
         Sites = new List<string>();
     }
 
-    public static List<Location> GetLocations(string fileName = "ACORN-SAT", bool setNearbyLocations = false)
+    public static List<Location> GetLocations(string folderName = "ACORN-SAT", bool setNearbyLocations = false)
     {
-        var locationText = File.ReadAllText(@$"MetaData\{fileName}\Locations.json");
+        var locationText = File.ReadAllText(@$"MetaData\{folderName}\Locations.json");
         var locations = JsonSerializer.Deserialize<List<Location>>(locationText);
 
         if (setNearbyLocations)

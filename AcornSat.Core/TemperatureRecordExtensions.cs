@@ -9,7 +9,7 @@ namespace AcornSat.Core
 {
     public static class TemperatureRecordExtensions
     {
-        public static IEnumerable<IGrouping<short?, TemperatureRecord>> GroupYearByDays(this IEnumerable<TemperatureRecord> temperatureRecords, short numberOfDaysInGroup)
+        public static IEnumerable<IGrouping<short?, DataRecord>> GroupYearByDays(this IEnumerable<DataRecord> temperatureRecords, short numberOfDaysInGroup)
         {
             var numberOfDaysInYear = temperatureRecords.ValidateDailySingleYear();
 
@@ -28,7 +28,7 @@ namespace AcornSat.Core
         /// </summary>
         /// <param name="values"></param>
         /// <returns></returns>
-        public static IEnumerable<IGrouping<short?, TemperatureRecord>> GroupYearByWeek(this IEnumerable<TemperatureRecord> temperatureRecords)
+        public static IEnumerable<IGrouping<short?, DataRecord>> GroupYearByWeek(this IEnumerable<DataRecord> temperatureRecords)
         {
             var weeklyGroups = temperatureRecords.GroupYearByDays(7);
             return weeklyGroups;
@@ -40,7 +40,7 @@ namespace AcornSat.Core
         /// <param name="temperatureRecords"></param>
         /// <param name="validateRecords"></param>
         /// <returns></returns>
-        public static IEnumerable<IGrouping<short?, TemperatureRecord>> GroupYearByMonth(this IEnumerable<TemperatureRecord> temperatureRecords, bool validateRecords = true)
+        public static IEnumerable<IGrouping<short?, DataRecord>> GroupYearByMonth(this IEnumerable<DataRecord> temperatureRecords, bool validateRecords = true)
         {
             if (validateRecords)
             {
@@ -51,7 +51,7 @@ namespace AcornSat.Core
             return monthlyGroups;
         }
 
-        public static int ValidateDailySingleYear(this IEnumerable<TemperatureRecord> values)
+        public static int ValidateDailySingleYear(this IEnumerable<DataRecord> values)
         {
             if (values.Any(x => x.Day == null || x.Month == null))
             {
@@ -78,7 +78,7 @@ namespace AcornSat.Core
             return numberOfDaysInYear;
         }
 
-        public static void ValidateDaily(this IEnumerable<TemperatureRecord> values)
+        public static void ValidateDaily(this IEnumerable<DataRecord> values)
         {
             if (values.Any(x => x.Day == null || x.Month == null))
             {
@@ -101,7 +101,7 @@ namespace AcornSat.Core
             }
         }
 
-        public static void ValidateMonthly(this IEnumerable<TemperatureRecord> values)
+        public static void ValidateMonthly(this IEnumerable<DataRecord> values)
         {
             if (values.Any(x => x.Day != null))
             {

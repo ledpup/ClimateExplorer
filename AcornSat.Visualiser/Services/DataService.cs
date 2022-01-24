@@ -12,9 +12,9 @@ public class DataService : IDataService
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<DataSet>> GetDataSet(DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, float? threshold = .7f, short? dayGrouping = 14, bool? relativeToAverage = false)
+    public async Task<IEnumerable<DataSet>> GetDataSet(DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, float? threshold = .7f, short? dayGrouping = 14, bool? relativeToAverage = false)
     {
-        var url = $"dataSet/{resolution}/{measurementType}/{locationId}";
+        var url = $"dataSet/{dataType}/{resolution}/{measurementType}/{locationId}";
         
         if (year != null)
         {
@@ -35,9 +35,9 @@ public class DataService : IDataService
         return await _httpClient.GetFromJsonAsync<DataSet[]>(url);
     }
 
-    public async Task<IEnumerable<DataSet>> GetAggregateDataSet(DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .5f, float locationGroupingThreshold = .5f)
+    public async Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .5f, float locationGroupingThreshold = .5f)
     {
-        var url = $"dataSet/{resolution}/{measurementType}?dayGrouping={dayGrouping}&dayGroupingThreshold={dayGroupingThreshold}&locationGroupingThreshold={locationGroupingThreshold}";
+        var url = $"dataSet/{dataType}/{resolution}/{measurementType}?dayGrouping={dayGrouping}&dayGroupingThreshold={dayGroupingThreshold}&locationGroupingThreshold={locationGroupingThreshold}";
         if (minLatitude != null)
         {
             url += $"&minLatitude={minLatitude}";
