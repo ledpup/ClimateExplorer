@@ -283,8 +283,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
     return dataSetDefinitions;
 }
 
-
-
 void BuildNiwaLocations(Guid dataSetId)
 {
     var locations = new List<Location>();
