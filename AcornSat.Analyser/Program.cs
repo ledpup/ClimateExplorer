@@ -110,8 +110,6 @@ void BuildDataSetDefinitions()
     File.WriteAllText("DataSetDefinitions.json", JsonSerializer.Serialize(dataSetDefinitions, options));
 }
 
-
-
 void BuildNiwaLocations(Guid dataSetId)
 {
     var locations = new List<Location>();
