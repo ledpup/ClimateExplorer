@@ -402,17 +402,17 @@ List<DataSet> GetYearlyTemperaturesFromDaily(DataSetDefinition dataSetDefintion,
     }
 }
 
-List<ReferenceData> GetCarbonDioxide()
+List<DataRecord> GetCarbonDioxide()
 {
     var records = File.ReadAllLines($@"Reference\CO2\co2_annmean_mlo.csv").ToList();
     records = records.Take(new Range(56, records.Count)).ToList();
 
-    var list = new List<ReferenceData>();
+    var list = new List<DataRecord>();
     foreach (var record in records)
     {
         var splitRow = record.Split(',');
         list.Add(
-            new ReferenceData
+            new DataRecord
             {
                 Year = short.Parse(splitRow[0]),
                 Value = float.Parse(splitRow[1]),
@@ -435,7 +435,7 @@ List<EnsoMetaData> GetEnsoMetaData()
     return ensos;
 }
 
-List<ReferenceData> GetEnso(EnsoIndex index, DataResolution resolution, string measure)
+List<DataRecord> GetEnso(EnsoIndex index, DataResolution resolution, string measure)
 {
     List<string> records = null;
 
@@ -446,7 +446,7 @@ List<ReferenceData> GetEnso(EnsoIndex index, DataResolution resolution, string m
 
     var regEx = new Regex(@"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)");
 
-    var list = new List<ReferenceData>();
+    var list = new List<DataRecord>();
     var dataRowFound = false;
     foreach (var record in records)
     {
@@ -475,7 +475,7 @@ List<ReferenceData> GetEnso(EnsoIndex index, DataResolution resolution, string m
                 if (resolution == DataResolution.Monthly)
                 {
                     list.Add(
-                    new ReferenceData
+                    new DataRecord
                     {
                         Month = (short)(i - 1),
                         Year = short.Parse(groups[1].Value),
@@ -492,7 +492,7 @@ List<ReferenceData> GetEnso(EnsoIndex index, DataResolution resolution, string m
         if (resolution == DataResolution.Yearly)
         {
             list.Add(
-            new ReferenceData
+            new DataRecord
             {
                 Year = short.Parse(groups[1].Value),
                 Value = measure == "median"
