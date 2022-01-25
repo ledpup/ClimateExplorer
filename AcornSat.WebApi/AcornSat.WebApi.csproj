@@ -13,7 +13,7 @@
     <None Update="Reference\CO2\co2_mm_mlo.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Reference\ENSO\meiv2.data">
+    <None Update="Reference\ENSO\meiv2.data.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Reference\ENSO\nino34.long.anom.data.txt">

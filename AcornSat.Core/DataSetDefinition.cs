@@ -13,6 +13,7 @@ namespace AcornSat.Core
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string ShortName { get; set; }
         public string Description { get; set; }
         public string MoreInformationUrl { get; set; }
         public List<MeasurementType> MeasurementTypes { get; set; }
@@ -20,13 +21,16 @@ namespace AcornSat.Core
         public string FolderName { get; set; }
         public string StationInfoUrl { get; set; }
         public string LocationInfoUrl { get; set; }
+        public string DataDownloadUrl { get; set; }
 
         public List<MeasurementDefinition> MeasurementDefinitions { get; set; }
+
+        public bool HasLocations { get; set; }
         public List<Location> Locations { get; set;}
 
-        public static List<DataSetDefinition> GetDataSetDefinitions(string filePath = @"MetaData\DataSetDefinitions.json")
+        public static async Task<List<DataSetDefinition>> GetDataSetDefinitions(string filePath = @"MetaData\DataSetDefinitions.json")
         {
-            var text = File.ReadAllText(filePath);
+            var text = await File.ReadAllTextAsync(filePath);
             var ddd = JsonSerializer.Deserialize<List<DataSetDefinition>>(text);
 
             return ddd;

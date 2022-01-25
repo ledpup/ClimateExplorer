@@ -12,7 +12,8 @@ namespace AcornSat.Core
         {
             TempMax,
             TempMin,
-            Rainfall
+            Rainfall,
+            Enso
         }
         public enum DataResolution
         {

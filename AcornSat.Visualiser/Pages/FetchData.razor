@@ -74,7 +74,7 @@
         var labels = dataSet.Years.Select(x => x.ToString()).ToArray();
         
 
-        var values = dataSet.Temperatures.Select(x => x.Value).ToList();
+        var values = dataSet.DataRecords.Select(x => x.Value).ToList();
 
         await chart.Clear();
         await chart.SetOptionsObject(chartOptions);

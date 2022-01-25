@@ -11,47 +11,83 @@ namespace AcornSat.Core.InputOutput
 {
     public static class DataReader
     {
-        public static List<DataSet> ReadDataFile(string dataSetFolderName, MeasurementDefinition measurementDefinition, DataResolution dataResolution, MeasurementType measurementType, Location location, short? yearFilter = null)
+        public static async Task<List<DataSet>> ReadDataFile(string dataSetFolderName, MeasurementDefinition measurementDefinition, DataResolution dataResolution, MeasurementType measurementType, Location? location, short? yearFilter = null)
         {
-            var dataTypeFolder = measurementDefinition.DataType == DataType.Rainfall ? "Rainfall" : "Temperature";
+            var dataTypeFolder = GetDataTypeFolder(measurementDefinition.DataType);
 
             var filePath = @$"{dataTypeFolder}\{dataSetFolderName}\{dataResolution}\{measurementDefinition.FolderName}\{ (string.IsNullOrWhiteSpace(measurementDefinition.SubFolderName) ? null : measurementDefinition.SubFolderName + @"\") }";
 
             var regEx = new Regex(measurementDefinition.DataRowRegEx);
 
             var dataSets = new List<DataSet>();
-            foreach (var site in location.Sites)
+            if (location != null)
             {
-                var siteTemperatures = ReadDataFile(site, regEx, filePath, measurementDefinition.FileNameFormat, measurementDefinition.NullValue, dataResolution, yearFilter);
-                
-                if (siteTemperatures.Any())
+                foreach (var site in location.Sites)
                 {
-                    short? startYear = null;
-                    if (dataResolution == DataResolution.Daily)
+                    var dataSet = await GetDataSet(measurementDefinition, dataResolution, measurementType, yearFilter, filePath, regEx, dataSets, site);
+                    if (dataSet != null)
                     {
-                        startYear = siteTemperatures.OrderBy(x => x.Date).First(x => x.Month == 1 && x.Day == 1).Year;
+                        dataSet.Location = location;
+                        dataSets.Add(dataSet);
                     }
-                    else if (dataResolution == DataResolution.Monthly)
-                    {
-                        startYear = siteTemperatures.OrderBy(x => x.Year).First(x => x.Month == 1).Year;
-                    }
-                    var dataSet = new DataSet
-                    {
-                        Location = location,
-                        Resolution = dataResolution,
-                        Station = site,
-                        MeasurementType = measurementType,
-                        StartYear = startYear,
-                        Year = yearFilter,
-                        Temperatures = siteTemperatures
-                    };
+
+                }
+            }
+            else
+            {
+                var dataSet = await GetDataSet(measurementDefinition, dataResolution, measurementType, yearFilter, filePath, regEx, dataSets);
+                if (dataSet != null)
+                {
                     dataSets.Add(dataSet);
                 }
             }
             return dataSets;
         }
 
-        static List<DataRecord> ReadDataFile(string station, Regex regEx, string filePath, string fileName, string nullValue, DataResolution dataResolution, short? yearFilter = null)
+        private static async Task<DataSet> GetDataSet(MeasurementDefinition measurementDefinition, DataResolution dataResolution, MeasurementType measurementType, short? yearFilter, string filePath, Regex regEx, List<DataSet> dataSets, string site = null)
+        {
+            var records = await ReadDataFile(site, regEx, filePath, measurementDefinition.FileNameFormat, measurementDefinition.NullValue, dataResolution, yearFilter);
+
+            if (records.Any())
+            {
+                short? startYear = null;
+                if (dataResolution == DataResolution.Daily)
+                {
+                    startYear = records.OrderBy(x => x.Date).First(x => x.Month == 1 && x.Day == 1).Year;
+                }
+                else if (dataResolution == DataResolution.Monthly)
+                {
+                    startYear = records.OrderBy(x => x.Year).First(x => x.Month == 1).Year;
+                }
+                var dataSet = new DataSet
+                {
+                    Resolution = dataResolution,
+                    DataType = measurementDefinition.DataType,
+                    Station = site,
+                    MeasurementType = measurementType,
+                    StartYear = startYear,
+                    Year = yearFilter,
+                    DataRecords = records
+                };
+                return dataSet;
+            }
+            return null;
+        }
+
+        private static object GetDataTypeFolder(DataType dataType)
+        {
+            switch (dataType)
+            {
+                case DataType.Enso:
+                    return "Reference";
+                case DataType.Rainfall:
+                    return "Rainfall";
+                default:
+                    return "Temperature";
+            }
+        }
+
+        static async Task<List<DataRecord>> ReadDataFile(string station, Regex regEx, string filePath, string fileName, string nullValue, DataResolution dataResolution, short? yearFilter = null)
         {
             var siteFilePath = filePath + fileName.Replace("[station]", station);
 
@@ -60,7 +96,7 @@ namespace AcornSat.Core.InputOutput
                 return new List<DataRecord>();
             }
 
-            var rawData = File.ReadAllLines(siteFilePath);
+            var rawData = await File.ReadAllLinesAsync(siteFilePath);
             var temperatureRecords = new List<DataRecord>();
 
             var initialDataIndex = GetStartIndex(regEx, rawData);

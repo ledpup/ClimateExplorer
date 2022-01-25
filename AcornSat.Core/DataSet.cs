@@ -4,7 +4,7 @@ public class DataSet
 {
     public DataSet()
     {
-        Temperatures = new List<DataRecord>();
+        DataRecords = new List<DataRecord>();
     }
 
     public DataResolution Resolution { get; set; }
@@ -14,7 +14,7 @@ public class DataSet
 
     public string Station { get; set; }
     public MeasurementType MeasurementType { get; set; }
-    public List<DataRecord> Temperatures { get; set; }
+    public List<DataRecord> DataRecords { get; set; }
 
     public short? StartYear { get; set; }
     public short? Year { get; set; }
@@ -29,7 +29,7 @@ public class DataSet
             }
 
             return 
-                Temperatures
+                DataRecords
                 .Where(x => x.Value != null)
                 .Select(x => x.Year)
                 .Distinct()
@@ -39,17 +39,17 @@ public class DataSet
 
     public int NumberOfRecords
     {
-        get { return Temperatures.Count; }
+        get { return DataRecords.Count; }
     }
 
     public int NumberOfMissingValues
     {
-        get { return Temperatures.Count(x => x.Value == null); }
+        get { return DataRecords.Count(x => x.Value == null); }
     }
 
     public float? Mean
     {
-        get { return Temperatures.Average(x => x.Value); }
+        get { return DataRecords.Average(x => x.Value); }
     }
 }
 

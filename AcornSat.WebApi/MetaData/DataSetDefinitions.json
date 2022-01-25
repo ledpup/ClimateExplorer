@@ -59,7 +59,7 @@
         "NullValue": null
       }
     ],
-    "Locations": null
+    "HasLocations": true
   },
   {
     "Id": "647b6a05-43e4-48e0-a43e-04ae81a74653",
@@ -93,7 +93,7 @@
         "NullValue": "99999.9"
       }
     ],
-    "Locations": null
+    "HasLocations": true
   },
   {
     "Id": "88e52edd-3c67-484a-b614-91070037d47a",
@@ -127,6 +127,31 @@
         "NullValue": "-"
       }
     ],
-    "Locations": null
+    "HasLocations": true
+  },
+  {
+    "Id": "ffd5f5e2-d8df-4779-a7f4-f5d148505033",
+    "Name": "Multivariate ENSO index (MEI)",
+    "ShortName": "MEI.v2",
+    "Description": "The MEI combines both oceanic and atmospheric variables to form a single index assessment of ENSO. It is an Empirical Orthogonal Function (EOF) of five different variables (sea level pressure (SLP), sea surface temperature (SST), zonal and meridional components of the surface wind, and outgoing longwave radiation (OLR)) over the tropical Pacific basin (30\u00B0S-30\u00B0N and 100\u00B0E-70\u00B0W).",
+    "MoreInformationUrl": "https://psl.noaa.gov/enso/mei/",
+    "MeasurementTypes": null,
+    "DataResolution": 1,
+    "FolderName": "ENSO",
+    "StationInfoUrl": null,
+    "LocationInfoUrl": null,
+    "DataDownloadUrl": "https://psl.noaa.gov/enso/mei/data/meiv2.data",
+    "MeasurementDefinitions": [
+      {
+        "DataType": 3,
+        "MeasurementType": 0,
+        "FolderName": "MEI",
+        "SubFolderName": null,
+        "FileNameFormat": "meiv2.data.txt",
+        "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
+        "NullValue": "-999.00"
+      }
+    ],
+    "HasLocations": false
   }
 ]

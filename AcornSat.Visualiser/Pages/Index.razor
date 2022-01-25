@@ -257,18 +257,6 @@
                 <SelectItem Value="@(DataResolution.Daily)">Daily</SelectItem>
             </Select>
             </Field>
-                <Field>
-            Selected Station
-            <SelectList
-                TItem="string"
-                TValue="string"
-                Data="@StationsWithData"
-                TextField="@((item)=>item)"
-                ValueField="@((item)=>item)"
-                SelectedValueChanged="@SelectedStationChanged"
-                Style="width: 100%"
-                />
-                </Field>
         }
         </ModalBody>
     </ModalContent>
@@ -457,13 +445,6 @@
     }
 
     List<string> StationsWithData { get; set; }
-
-    string SelectedStation { get; set; }
-    async Task SelectedStationChanged(string value)
-    {
-        SelectedStation = value;
-        await BuildDataSets();
-    }
 
     DataResolution SelectedResolution { get; set; }
     async Task OnSelectedResolutionChanged(DataResolution value)
@@ -662,13 +643,6 @@
             }
         }
 
-        StationsWithData = Datasets.Where(x => x.MeasurementType == MeasurementType.Unadjusted && !string.IsNullOrWhiteSpace(x.Station))
-                    .Select(x => x.Station)
-                    .Distinct()
-                    .ToList();
-
-        SelectedStation = StationsWithData.FirstOrDefault();
-
         await map.SetView(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
 
         await HandleRedraw();
@@ -684,10 +658,10 @@
         };
         unadjusted.ForEach(x =>
             {
-                x.Temperatures.ForEach(y =>
+                x.DataRecords.ForEach(y =>
                 {
-                    var adjustedTemp = adjusted.Single().Temperatures.SingleOrDefault(z => z.Year == y.Year);
-                    difference.Temperatures.Add(new DataRecord
+                    var adjustedTemp = adjusted.Single().DataRecords.SingleOrDefault(z => z.Year == y.Year);
+                    difference.DataRecords.Add(new DataRecord
                     {
                         Year = y.Year,
                         Value = adjustedTemp == null ? null : adjustedTemp.Value - y.Value,
@@ -765,8 +739,8 @@
             bufferedSelectedDataSet = CreateStandardisedDataSet(selectedDataSets);
 
             // Find the earliest and latest year across all datasets being plotted
-            var superSetStartYear = bufferedSelectedDataSet.Min(x => x.Temperatures.Min(y => y.Year));
-            var superSetEndYear = bufferedSelectedDataSet.Max(x => x.Temperatures.Max(y => y.Year));
+            var superSetStartYear = bufferedSelectedDataSet.Min(x => x.DataRecords.Min(y => y.Year));
+            var superSetEndYear = bufferedSelectedDataSet.Max(x => x.DataRecords.Max(y => y.Year));
 
             var userStartYear = string.IsNullOrEmpty(StartYear) ? null : (short?)short.Parse(StartYear);
             var userEndYear = string.IsNullOrEmpty(EndYear) ? null : (short?)short.Parse(EndYear);
@@ -814,21 +788,11 @@
         {
             var selectedDataSets = Datasets.Where(x => x.Resolution == SelectedResolution
                 && ((Adjusted && x.MeasurementType == MeasurementType.Adjusted) || (Unadjusted && x.MeasurementType == MeasurementType.Unadjusted))
-                && x.Temperatures.All(y => SelectedYears.Contains(y.Year))).ToList();
+                && SelectedYears.Contains(x.Year.Value)).ToList();
 
             foreach (var dataSet in selectedDataSets)
             {
-                if (dataSet.MeasurementType == MeasurementType.Adjusted)
-                {
-                    bufferedSelectedDataSet.Add(dataSet);
-                }
-                else
-                {
-                    if (dataSet.Station == SelectedStation)
-                    {
-                        bufferedSelectedDataSet.Add(dataSet);
-                    }
-                }
+                bufferedSelectedDataSet.Add(dataSet);
             }
 
             title = $"{string.Join(", ", SelectedYears)} {SelectedResolution} Temperature for {SelectedLocation.Name}";        
@@ -1030,7 +994,7 @@
         var dataset = dataSet.SingleOrDefault(x => x.DataType == dataType && x.MeasurementType == measurementType && (year == null || x.Year == year.Value));
 
         var selectedValues = dataset
-                            .Temperatures
+                            .DataRecords
                             .Where(timeConstraint)
                             .Select(x => x.Value)
                             .ToList();
@@ -1042,15 +1006,15 @@
     {
         var bufferedDataSets = new List<DataSet>();
 
-        var superSetStartYear = dataSets.Min(x => x.Temperatures.Min(y => y.Year));
-        var superSetEndYear = dataSets.Max(x => x.Temperatures.Max(y => y.Year));
+        var superSetStartYear = dataSets.Min(x => x.DataRecords.Min(y => y.Year));
+        var superSetEndYear = dataSets.Max(x => x.DataRecords.Max(y => y.Year));
 
         foreach (var dataSet in dataSets)
         {
             var temperatures = new List<DataRecord>();
             for (var year = superSetStartYear; year < superSetEndYear; year++)
             {
-                var record = dataSet.Temperatures.FirstOrDefault(x => x.Year == year);
+                var record = dataSet.DataRecords.FirstOrDefault(x => x.Year == year);
                 if (record == null)
                 {
                     record = new DataRecord
@@ -1062,7 +1026,7 @@
                 temperatures.Add(record);
             }
             var bufferedDataSet = new DataSet { Location = dataSet.Location, DataType = dataSet.DataType, MeasurementType = dataSet.MeasurementType };
-            bufferedDataSet.Temperatures = temperatures;
+            bufferedDataSet.DataRecords = temperatures;
             bufferedDataSets.Add(bufferedDataSet);
         }
         return bufferedDataSets;
@@ -1072,20 +1036,20 @@
     {
         var bufferedDataSets = new List<DataSet>();
 
-        var startDate = new DateOnly(dataSets.Min(x => x.Temperatures.Min(y => y.Year)), 1, 1);
+        var startDate = new DateOnly(dataSets.Min(x => x.DataRecords.Min(y => y.Year)), 1, 1);
         foreach(var dataSet in dataSets)
         {
             var bufferedDataSet = new DataSet { Location = dataSet.Location, DataType = dataSet.DataType, MeasurementType = dataSet.MeasurementType };
             bufferedDataSets.Add(bufferedDataSet);
 
-            var startYear = dataSet.Temperatures.Min(x => x.Date);
+            var startYear = dataSet.DataRecords.Min(x => x.Date);
             var temperatures = new List<DataRecord>();
             //for (var i = superSetStartYear; i < startYear; i++)
             //{
             //    temperatures.Add(new DailyTemperatureRecord { Date = i });
             //}
-            temperatures.AddRange(dataSet.Temperatures);
-            bufferedDataSet.Temperatures = temperatures;
+            temperatures.AddRange(dataSet.DataRecords);
+            bufferedDataSet.DataRecords = temperatures;
         }
 
         return bufferedDataSets;

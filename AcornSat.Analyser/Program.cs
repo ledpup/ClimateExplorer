@@ -8,9 +8,32 @@ using static AcornSat.Core.Enums;
 using System.Net;
 using System.IO.Compression;
 
-BuildDataSetDefinitions();
+var dataSetDefinitions = BuildDataSetDefinitions();
 BuildNiwaLocations(Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"));
 var locations = BuildAcornSatLocationsFromReferenceData(Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"));
+
+foreach (var dataSetDefinition in dataSetDefinitions)
+{
+    if (dataSetDefinition.Id == Guid.Parse("ffd5f5e2-d8df-4779-a7f4-f5d148505033"))
+    {
+        await DownloadDataSetData(dataSetDefinition);
+    }
+}
+
+async Task DownloadDataSetData(DataSetDefinition dataSetDefinition)
+{
+    var userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
+    var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
+    using (var httpClient = new HttpClient())
+    {
+        var fileUrl = dataSetDefinition.DataDownloadUrl;
+        var response = await httpClient.GetAsync(fileUrl);
+        using (var fs = new FileStream(dataSetDefinition.MeasurementDefinitions.First().FileNameFormat, FileMode.OpenOrCreate))
+        {
+            await response.Content.CopyToAsync(fs);
+        }
+    }
+}
 
 foreach (var location in locations.ToList())
 {
@@ -96,7 +119,7 @@ void DeleteDirectory(DirectoryInfo directoryInfo)
     }
 }
 
-void BuildDataSetDefinitions()
+List<DataSetDefinition> BuildDataSetDefinitions()
 {
     var dataSetDefinitions = new List<DataSetDefinition>
     {
@@ -158,7 +181,8 @@ void BuildDataSetDefinitions()
                 }
             },
             StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
-            LocationInfoUrl = "http://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]"
+            LocationInfoUrl = "http://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
+            HasLocations = true,
         },
         new DataSetDefinition
         {
@@ -192,7 +216,8 @@ void BuildDataSetDefinitions()
                     NullValue = "99999.9",
                 },
             },
-            StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml"
+            StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
+            HasLocations = true,
         },
         new DataSetDefinition
         {
@@ -224,11 +249,38 @@ void BuildDataSetDefinitions()
                     NullValue = "-",
                 },
             },
+            HasLocations = true,
+        },
+        new DataSetDefinition
+        {
+            Id = Guid.Parse("ffd5f5e2-d8df-4779-a7f4-f5d148505033"),
+            Name = "Multivariate ENSO index (MEI)",
+            ShortName = "MEI.v2",
+            Description = "The MEI combines both oceanic and atmospheric variables to form a single index assessment of ENSO. It is an Empirical Orthogonal Function (EOF) of five different variables (sea level pressure (SLP), sea surface temperature (SST), zonal and meridional components of the surface wind, and outgoing longwave radiation (OLR)) over the tropical Pacific basin (30°S-30°N and 100°E-70°W).",
+            MoreInformationUrl = "https://psl.noaa.gov/enso/mei/",
+            FolderName = "ENSO",
+            DataResolution = DataResolution.Monthly,
+            MeasurementDefinitions = new List<MeasurementDefinition>
+            {
+                new MeasurementDefinition
+                {
+                    MeasurementType = MeasurementType.Unadjusted,
+                    DataType = DataType.Enso,
+                    DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
+                    FolderName = "MEI",
+                    FileNameFormat = "meiv2.data.txt",
+                    NullValue = "-999.00",
+                },
+            },
+            DataDownloadUrl = "https://psl.noaa.gov/enso/mei/data/meiv2.data",
+            HasLocations = false,
         }
     };
 
     var options = new JsonSerializerOptions { WriteIndented = true };
     File.WriteAllText("DataSetDefinitions.json", JsonSerializer.Serialize(dataSetDefinitions, options));
+
+    return dataSetDefinitions;
 }
 
 
