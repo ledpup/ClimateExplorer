@@ -6,7 +6,7 @@ namespace AcornSat.WebApi.Model
 {
     public class QueryParameters
     {
-        public QueryParameters(DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping, float? dayGroupingThreshold, bool? relativeToAverage)
+        public QueryParameters(DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping = 14, float? dayGroupingThreshold = .7f, bool? relativeToAverage = false)
         {
             DataType = dataType;
             Resolution = resolution;

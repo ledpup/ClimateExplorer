@@ -12,7 +12,7 @@ public class DataService : IDataService
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<DataSet>> GetDataSet(DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, float? threshold = .7f, short? dayGrouping = 14, bool? relativeToAverage = false)
+    public async Task<IEnumerable<DataSet>> GetDataSet(DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping = 14, float? dayGroupingThreshold = .7f, bool? relativeToAverage = false)
     {
         var url = $"dataSet/{dataType}/{resolution}/{measurementType}/{locationId}";
         
@@ -20,13 +20,13 @@ public class DataService : IDataService
         {
             url = QueryHelpers.AddQueryString(url, "year", year.Value.ToString());
         }
-        if (threshold != null)
-        {
-            url = QueryHelpers.AddQueryString(url, "threshold", threshold.Value.ToString());
-        }
         if (dayGrouping != null)
         {
             url = QueryHelpers.AddQueryString(url, "dayGrouping", dayGrouping.Value.ToString());
+        }
+        if (dayGroupingThreshold != null)
+        {
+            url = QueryHelpers.AddQueryString(url, "dayGroupingThreshold", dayGroupingThreshold.Value.ToString());
         }
         if (relativeToAverage != null)
         {

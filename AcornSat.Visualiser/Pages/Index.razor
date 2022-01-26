@@ -613,10 +613,10 @@
         }
         foreach (var dataType in SelectedDataTypes)
         {
-            var adjusted = (await DataService.GetDataSet(dataType, DataResolution.Yearly, MeasurementType.Adjusted, SelectedLocationId, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
+            var adjusted = (await DataService.GetDataSet(dataType, DataResolution.Yearly, MeasurementType.Adjusted, SelectedLocationId, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
             Datasets.AddRange(adjusted);
 
-            var unadjusted = (await DataService.GetDataSet(dataType, DataResolution.Yearly, MeasurementType.Unadjusted, SelectedLocationId, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
+            var unadjusted = (await DataService.GetDataSet(dataType, DataResolution.Yearly, MeasurementType.Unadjusted, SelectedLocationId, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
             Datasets.AddRange(unadjusted);
 
             if (!DifferenceDisabled)
@@ -635,10 +635,10 @@
         {
             foreach (var dataType in SelectedDataTypes)
             {
-                var adjusted = (await DataService.GetDataSet(dataType, SelectedResolution, MeasurementType.Adjusted, SelectedLocationId, selectedYear, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
+                var adjusted = (await DataService.GetDataSet(dataType, SelectedResolution, MeasurementType.Adjusted, SelectedLocationId, selectedYear, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
                 Datasets.AddRange(adjusted);
 
-                var unadjusted = (await DataService.GetDataSet(dataType, SelectedResolution, MeasurementType.Unadjusted, SelectedLocationId, selectedYear, dayGrouping: SelectedDayGrouping, threshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
+                var unadjusted = (await DataService.GetDataSet(dataType, SelectedResolution, MeasurementType.Unadjusted, SelectedLocationId, selectedYear, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold, relativeToAverage: relativeToAverage)).ToList();
                 Datasets.AddRange(unadjusted);
             }
         }
