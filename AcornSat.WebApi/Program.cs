@@ -10,6 +10,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using static AcornSat.Core.Enums;
 using System.Threading.Tasks;
+using AcornSat.WebApi.Model;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
@@ -30,7 +32,7 @@ app.MapGet("/", () => @"Hello, from minimal ACORN-SAT Web API!
                         Call /ACORN-SAT/Yearly/{temperatureType}/{locationId}?dayGrouping=14&dayGroupingThreshold=.8 for yearly average temperature records at locationId. Records are grouped by dayGrouping. If the number of records in the group does not meet the threshold, the data is considered invalid.");
 app.MapGet("/datasetdefinition", async (bool? includeLocations) => await GetDataSetDefinitions(includeLocations));
 app.MapGet("/location", async (string dataSetName) => await GetLocations(dataSetName));
-app.MapGet("/dataset/{dataType}/{resolution}/{measurementType}/{locationId}", async (DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping, float? dayGroupingThreshold, bool? relativeToAverage) => await GetDataSets(dataType, resolution, measurementType, locationId, year, dayGrouping, dayGroupingThreshold, relativeToAverage));
+app.MapGet("/dataset/{dataType}/{resolution}/{measurementType}/{locationId}", async (DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping, float? dayGroupingThreshold, bool? relativeToAverage) => await GetDataSets(new QueryParameters(dataType, resolution, measurementType, locationId, year, dayGrouping, dayGroupingThreshold, relativeToAverage)));
 app.MapGet("/dataset/{dataType}/{resolution}/{measurementType}", async (DataType dataType, DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping, float dayGroupingThreshold, float locationGroupingThreshold) => await GetTemperaturesByLatitudeGroups(dataType, resolution, measurementType, minLatitude, maxLatitude, dayGrouping, dayGroupingThreshold, locationGroupingThreshold));
 app.MapGet("/reference/co2/", () => GetCarbonDioxide());
 app.MapGet("/reference/enso/{index}/{resolution}", async (EnsoIndex index, DataResolution resolution, string measure) => await GetEnso(index, resolution, measure));
@@ -38,12 +40,12 @@ app.MapGet("/reference/enso-metadata", () => GetEnsoMetaData());
 
 app.Run();
 
-async Task<List<AcornSat.WebApi.Model.DataSetDefinition>> GetDataSetDefinitions(bool? includeLocations = false)
+async Task<List<DataSetDefinitionModel>> GetDataSetDefinitions(bool? includeLocations = false)
 {
     var definitions = await DataSetDefinition.GetDataSetDefinitions();
 
     var dtos = definitions.Select(async x => 
-                            new AcornSat.WebApi.Model.DataSetDefinition
+                            new AcornSat.WebApi.Model.DataSetDefinitionModel
                             {
                                 Id = x.Id,
                                 Name = x.Name,
@@ -157,40 +159,76 @@ async Task<List<Location>> GetLocationsInLatitudeBand(string dataSetName, float?
     return locationsInLatitudeBand;
 }
 
-async Task<List<DataSet>> GetDataSets(DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping, float? dayGroupingThreshold, bool? relativeToAverage = false)
+async Task<List<DataSet>> LoadCachedDataSets(QueryParameters queryParameters)
 {
+    var fileName = queryParameters.ToBase64String() + ".json";
+
+    var cache = new DirectoryInfo("cache");
+    if (!cache.Exists)
+    {
+        cache.Create();
+    }
+
+    var filePath = @"cache\" + fileName;
+    if (File.Exists(filePath))
+    {
+        var file = await File.ReadAllTextAsync(filePath);
+        var dataSets = JsonSerializer.Deserialize<List<DataSet>>(file);
+        return dataSets;
+    }
+    return null;
+}
+
+async Task SaveDataSets(QueryParameters queryParameters, List<DataSet> dataSets)
+{
+    var fileName = queryParameters.ToBase64String() + ".json";
+    var filePath = @"cache\" + fileName;
+    var json = JsonSerializer.Serialize(dataSets);
+    await File.WriteAllTextAsync(filePath, json);
+}
+
+async Task<List<DataSet>> GetDataSets(QueryParameters queryParameters)
+{
+    var dataSets = await LoadCachedDataSets(queryParameters);
+    if (dataSets != null)
+    {
+        return dataSets;
+    }
+
     var definitions = await DataSetDefinition.GetDataSetDefinitions();
     var locations = await GetLocations();
-    var location = locations.Single(x => x.Id == locationId);
+    var location = locations.Single(x => x.Id == queryParameters.LocationId);
     var definition = definitions.SingleOrDefault(x => x.Id == location.DataSetId);
     if (definition == null)
     {
         throw new ArgumentException(nameof(definition));
     }
 
-    if (!definition.MeasurementTypes.Contains(measurementType))
+    if (!definition.MeasurementTypes.Contains(queryParameters.MeasurementType))
     {
         return new List<DataSet>();
     }
 
-    switch (resolution)
+    
+
+    switch (queryParameters.Resolution)
     {
         case DataResolution.Daily:
-            return await GetDataFromFile(definition, dataType, measurementType, locationId, year);
+            dataSets = await GetDataFromFile(definition, queryParameters.DataType, queryParameters.MeasurementType, queryParameters.LocationId, queryParameters.Year);
+            break;
         case DataResolution.Yearly:
-            List<DataSet> yearlyAverages = null;
             if (definition.DataResolution == DataResolution.Daily)
             {
-                yearlyAverages = await GetYearlyTemperaturesFromDaily(definition, dataType, measurementType, locationId, dayGrouping, dayGroupingThreshold);
+                dataSets = await GetYearlyTemperaturesFromDaily(definition, queryParameters.DataType, queryParameters.MeasurementType, queryParameters.LocationId, queryParameters.DayGrouping, queryParameters.DayGroupingThreshold);
 
             }
             else if (definition.DataResolution == DataResolution.Monthly)
             {
-                yearlyAverages = await GetYearlyTemperaturesFromMonthly(definition, dataType, measurementType, locationId, year);
+                dataSets = await GetYearlyTemperaturesFromMonthly(definition, queryParameters.DataType, queryParameters.MeasurementType, queryParameters.LocationId, queryParameters.Year);
             }
-            if (relativeToAverage.HasValue && relativeToAverage.Value)
+            if (queryParameters.RelativeToAverage.HasValue && queryParameters.RelativeToAverage.Value)
             {
-                foreach (var dataSet in yearlyAverages)
+                foreach (var dataSet in dataSets)
                 {
                     var mean = dataSet.Mean;
                     dataSet.DataRecords.ForEach(x =>
@@ -199,22 +237,25 @@ async Task<List<DataSet>> GetDataSets(DataType dataType, DataResolution resoluti
                     });
                 }
             }
-            return yearlyAverages;
+            break;
         case DataResolution.Weekly:
-            return await GetAverageFromDailyTemperatures(definition, dataType, DataResolution.Weekly, measurementType, locationId, year.Value, dayGroupingThreshold);
+            dataSets = await GetAverageFromDailyTemperatures(definition, queryParameters.DataType, DataResolution.Weekly, queryParameters.MeasurementType, queryParameters.LocationId, queryParameters.Year.Value, queryParameters.DayGroupingThreshold);
+            break;
         case DataResolution.Monthly:
             if (definition.DataResolution == DataResolution.Daily)
             {
-                return await GetAverageFromDailyTemperatures(definition, dataType, DataResolution.Monthly, measurementType, locationId, year.Value, dayGroupingThreshold);
+                dataSets = await GetAverageFromDailyTemperatures(definition, queryParameters.DataType, DataResolution.Monthly, queryParameters.MeasurementType, queryParameters.LocationId, queryParameters.Year.Value, queryParameters.DayGroupingThreshold);
             }
             else if (definition.DataResolution == DataResolution.Monthly)
             {
-                return await GetDataFromFile(definition, dataType, measurementType, locationId, year);
+                dataSets = await GetDataFromFile(definition, queryParameters.DataType, queryParameters.MeasurementType, queryParameters.LocationId, queryParameters.Year);
             }
             break;
     }
 
-    throw new NotImplementedException();
+    await SaveDataSets(queryParameters, dataSets);
+
+    return dataSets;
 }
 
 async Task<List<DataSet>> GetYearlyTemperaturesFromMonthly(DataSetDefinition dataSetDefinition, DataType dataType, MeasurementType measurementType, Guid locationId, short? year)

@@ -37,7 +37,6 @@ In rough order of priority
 - Text display of the current filter is. e.g, "1979-present", "1980, 2020", etc.
 - Naviagation back/forward. I.e., navigation history so the user can get back to where they were
 - Bookmark page
-- Alter web API to look for precalculated data in a cache instead of calculating from daily. If no cached data, calculate and cache
 - GHGs (CO2, CH4, etc) data and graphs
 - Climate stripes. https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
 - Write an adaptor to query NIWA CliFlo website to pull in the 11-station series data automatically
@@ -49,6 +48,7 @@ In rough order of priority
 - Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
+- 2022-01-26: Alter web API to look for precalculated data in a cache instead of calculating from daily. If no cached data, calculate and save to cache
 - 2022-01-19: Get temperature data from BOM via website (http://www.bom.gov.au/climate/data/index.shtml?bookmark=122&view=map)
 - 2022-01-16: Show as a bar chart, the difference between adjusted and unadjusted
 - 2022-01-16: Show bearing to each suggested nearby station

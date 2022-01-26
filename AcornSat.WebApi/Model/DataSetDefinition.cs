@@ -9,7 +9,7 @@ using static AcornSat.Core.Enums;
 
 namespace AcornSat.WebApi.Model
 {
-    public class DataSetDefinition
+    public class DataSetDefinitionModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
