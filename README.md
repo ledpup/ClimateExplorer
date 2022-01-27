@@ -33,6 +33,7 @@ In rough order of priority
 - Linear trendline
 - Make map a thumbnail initially. Click to expand to select location. Thumbnail again after selection.
 - Display info on missing data (number of records missing per week/month/etc for min and max, number of missing consecutive days, etc.)
+- Switch to Blazorise nav menu
 - Analyse missing data to find an optimal grouping method - linear regression analysis??
 - Text display of the current filter is. e.g, "1979-present", "1980, 2020", etc.
 - Naviagation back/forward. I.e., navigation history so the user can get back to where they were
@@ -40,7 +41,6 @@ In rough order of priority
 - GHGs (CO2, CH4, etc) data and graphs
 - Climate stripes. https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
 - Write an adaptor to query NIWA CliFlo website to pull in the 11-station series data automatically
-- Download datasets as CSV
 - Support graphs for rainfall
 - Get ENSO data from URLs for indexes (still supporting offline mode)
 - Alternate averages (use median/mode - not sure how useful that is)
@@ -48,6 +48,7 @@ In rough order of priority
 - Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
+- 2022-01-27: Download datasets as CSV - yearly data only, for now
 - 2022-01-26: Alter web API to look for precalculated data in a cache instead of calculating from daily. If no cached data, calculate and save to cache
 - 2022-01-19: Get temperature data from BOM via website (http://www.bom.gov.au/climate/data/index.shtml?bookmark=122&view=map)
 - 2022-01-16: Show as a bar chart, the difference between adjusted and unadjusted
