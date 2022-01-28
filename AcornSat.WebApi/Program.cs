@@ -32,7 +32,7 @@ app.MapGet("/", () => @"Hello, from minimal ACORN-SAT Web API!
                         Call /ACORN-SAT/Yearly/{temperatureType}/{locationId}?dayGrouping=14&dayGroupingThreshold=.8 for yearly average temperature records at locationId. Records are grouped by dayGrouping. If the number of records in the group does not meet the threshold, the data is considered invalid.");
 app.MapGet("/datasetdefinition", async (bool? includeLocations) => await GetDataSetDefinitions(includeLocations));
 app.MapGet("/location", async (string dataSetName) => await GetLocations(dataSetName));
-app.MapGet("/dataset/{dataType}/{resolution}/{measurementType}/{locationId}", async (DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, short? dayGrouping, float? dayGroupingThreshold, bool? relativeToAverage) => await GetDataSets(new QueryParameters(dataType, resolution, measurementType, locationId, year, dayGrouping, dayGroupingThreshold, relativeToAverage)));
+app.MapGet("/dataset/{dataType}/{resolution}/{measurementType}/{locationId}", async (DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, StatisticalMethod? statisticalMethod, short? dayGrouping, float? dayGroupingThreshold, short? numberOfBins) => await GetDataSets(new QueryParameters(dataType, resolution, measurementType, locationId, statisticalMethod, year, dayGrouping, dayGroupingThreshold, numberOfBins)));
 app.MapGet("/dataset/{dataType}/{resolution}/{measurementType}", async (DataType dataType, DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping, float dayGroupingThreshold, float locationGroupingThreshold) => await GetTemperaturesByLatitudeGroups(dataType, resolution, measurementType, minLatitude, maxLatitude, dayGrouping, dayGroupingThreshold, locationGroupingThreshold));
 app.MapGet("/reference/co2/", () => GetCarbonDioxide());
 app.MapGet("/reference/enso/{index}/{resolution}", async (EnsoIndex index, DataResolution resolution, string measure) => await GetEnso(index, resolution, measure));
@@ -123,10 +123,11 @@ async Task<List<DataSet>> GetTemperaturesByLatitudeGroups(DataType dataType, Dat
 
 async Task<List<DataSet>> YearlyTemperaturesAcrossLocations(List<DataSetDefinition> definitions, List<Location> locations, DataType dataType, MeasurementType measurementType, short dayGrouping, float dayGroupingThreshold)
 {
+    var queryParamters = new QueryParameters(dataType, DataResolution.Yearly, measurementType, Guid.Empty, StatisticalMethod.GroupThenAverage, null, dayGrouping: dayGrouping, dayGroupingThreshold: dayGroupingThreshold);
     var dataSet = new List<DataSet>();
     await Parallel.ForEachAsync(locations, async (location, cancellationToken) => {
         var definition = definitions.Single(x => x.Id == location.DataSetId);
-        var locationDataSet = await GetYearlyTemperaturesFromDaily(definition, dataType, measurementType, location.Id, dayGrouping, dayGroupingThreshold);
+        var locationDataSet = await GetYearlyTemperaturesFromDaily(definition, queryParamters);
         dataSet.AddRange(locationDataSet);
     });
 
@@ -209,8 +210,6 @@ async Task<List<DataSet>> GetDataSets(QueryParameters queryParameters)
         return new List<DataSet>();
     }
 
-    
-
     switch (queryParameters.Resolution)
     {
         case DataResolution.Daily:
@@ -219,14 +218,14 @@ async Task<List<DataSet>> GetDataSets(QueryParameters queryParameters)
         case DataResolution.Yearly:
             if (definition.DataResolution == DataResolution.Daily)
             {
-                dataSets = await GetYearlyTemperaturesFromDaily(definition, queryParameters.DataType, queryParameters.MeasurementType, queryParameters.LocationId, queryParameters.DayGrouping, queryParameters.DayGroupingThreshold);
+                dataSets = await GetYearlyTemperaturesFromDaily(definition, queryParameters);
 
             }
             else if (definition.DataResolution == DataResolution.Monthly)
             {
                 dataSets = await GetYearlyTemperaturesFromMonthly(definition, queryParameters.DataType, queryParameters.MeasurementType, queryParameters.LocationId, queryParameters.Year);
             }
-            if (queryParameters.RelativeToAverage.HasValue && queryParameters.RelativeToAverage.Value)
+            if (queryParameters.StatisticalMethod.HasValue && queryParameters.StatisticalMethod == StatisticalMethod.GroupThenAverage_Relative)
             {
                 foreach (var dataSet in dataSets)
                 {
@@ -239,12 +238,12 @@ async Task<List<DataSet>> GetDataSets(QueryParameters queryParameters)
             }
             break;
         case DataResolution.Weekly:
-            dataSets = await GetAverageFromDailyTemperatures(definition, queryParameters.DataType, DataResolution.Weekly, queryParameters.MeasurementType, queryParameters.LocationId, queryParameters.Year.Value, queryParameters.DayGroupingThreshold);
+            dataSets = await GetAverageFromDailyTemperatures(definition, queryParameters.DataType, DataResolution.Weekly, queryParameters.MeasurementType, queryParameters.LocationId, queryParameters.Year.Value, ((GroupThenAverage)queryParameters.StatsParameters).DayGroupingThreshold);
             break;
         case DataResolution.Monthly:
             if (definition.DataResolution == DataResolution.Daily)
             {
-                dataSets = await GetAverageFromDailyTemperatures(definition, queryParameters.DataType, DataResolution.Monthly, queryParameters.MeasurementType, queryParameters.LocationId, queryParameters.Year.Value, queryParameters.DayGroupingThreshold);
+                dataSets = await GetAverageFromDailyTemperatures(definition, queryParameters.DataType, DataResolution.Monthly, queryParameters.MeasurementType, queryParameters.LocationId, queryParameters.Year.Value, ((GroupThenAverage)queryParameters.StatsParameters).DayGroupingThreshold);
             }
             else if (definition.DataResolution == DataResolution.Monthly)
             {
@@ -357,11 +356,11 @@ async Task<List<DataSet>> GetDataFromFile(DataSetDefinition dataSetDefintion, Da
     return returnDataSets;
 }
 
-async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataSetDefintion, DataType dataType, MeasurementType measurementType, Guid locationId, short? dayGrouping = 14, float? threshold = .8f)
+async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataSetDefintion, QueryParameters queryParameters)
 {
-    var location = (await Location.GetLocations(dataSetDefintion.FolderName)).Single(x => x.Id == locationId);
+    var location = (await Location.GetLocations(dataSetDefintion.FolderName)).Single(x => x.Id == queryParameters.LocationId);
 
-    var dailyDataSets = await GetDataFromFile(dataSetDefintion, dataType, measurementType, locationId);
+    var dailyDataSets = await GetDataFromFile(dataSetDefintion, queryParameters.DataType, queryParameters.MeasurementType, queryParameters.LocationId);
 
     var averagedDataSets = new List<DataSet>();
 
@@ -369,42 +368,28 @@ async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataS
     {
         var yearSets = dailyDataSet.DataRecords.GroupBy(x => x.Year);
 
-        var yearlyAverageRecords = new List<DataRecord>();
-        foreach (var yearSet in yearSets)
+        List<DataRecord> returnDataRecords = null;
+        switch (queryParameters.StatisticalMethod)
         {
-            var grouping = yearSet.ToList().GroupYearByDays(dayGrouping.Value).ToList();
-
-            var groupingAverages = new List<DataRecord>();
-
-            for (short i = 0; i < grouping.Count(); i++)
-            {
-                var numberOfDaysInGroup = grouping[i].Count();
-
-                var value = (float)grouping[i].Count(x => x.Value != null) / numberOfDaysInGroup < threshold ? null : grouping[i].Average(x => x.Value);
-                var record = new DataRecord()
-                {
-                    Value = value,
-                };
-
-                groupingAverages.Add(record);
-            }
-
-            var yearMean = groupingAverages.Any(x => x.Value == null) ? null : groupingAverages.Average(x => x.Value);
-            var yearlyAverageRecord = new DataRecord
-            {
-                Year = yearSet.Key,
-                Value = yearMean,
-            };
-            yearlyAverageRecords.Add(yearlyAverageRecord);
+            case StatisticalMethod.GroupThenAverage:
+            case StatisticalMethod.GroupThenAverage_Relative:
+                returnDataRecords = GroupThenAverage(yearSets, (GroupThenAverage)queryParameters.StatsParameters);
+                break;
+            case StatisticalMethod.BinThenCount:
+                var min = dailyDataSet.DataRecords.Min(x => x.Value).Value;
+                var max = dailyDataSet.DataRecords.Max(x => x.Value).Value;
+                returnDataRecords = BinThenCount(yearSets, min, max, (BinThenCount)queryParameters.StatsParameters);
+                break;
         }
+        
 
         var returnDataSet = new DataSet
         {
             Location = location,
             Resolution = DataResolution.Yearly,
-            DataType = dataType,
-            MeasurementType = measurementType,
-            DataRecords = yearlyAverageRecords,
+            DataType = queryParameters.DataType,
+            MeasurementType = queryParameters.MeasurementType,
+            DataRecords = returnDataRecords,
             StartYear = dailyDataSet.StartYear,
         };
         averagedDataSets.Add(returnDataSet);
@@ -436,13 +421,70 @@ async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataS
         {
             Location = location,
             Resolution = DataResolution.Yearly,
-            DataType = dataType,
-            MeasurementType = measurementType,
+            DataType = queryParameters.DataType,
+            MeasurementType = queryParameters.MeasurementType,
             DataRecords = aggregatedAveragedTemperatures
         };
         aggregatedAveragedDataSets.Add(dataSet);
         return aggregatedAveragedDataSets;
     }
+}
+
+List<DataRecord> BinThenCount(IEnumerable<IGrouping<short, DataRecord>> yearSets, float min, float max, BinThenCount statsParameters)
+{
+    var range = max - min;
+    var binSize = range / statsParameters.NumberOfBins.Value;
+    var bins = new List<DataRecord>();
+    foreach (var yearSet in yearSets)
+    {
+        var orderedValues = yearSet.ToList().Where(x => x.Value.HasValue).OrderBy(x => x.Value);
+        
+        for (var i = 0; i < statsParameters.NumberOfBins; i++)
+        {
+            var start = min + (i * binSize);
+            var end = min + ((i + 1) * binSize);
+            var count = orderedValues.Count(x => x.Value >= start && x.Value < end);
+            bins.Add(new DataRecord() 
+            { 
+                Year = yearSet.Key,
+                Label = $"{MathF.Round(start, 1)}-{MathF.Round(end, 1)}",
+                Value = count, 
+            });
+        }
+    }
+    return bins;
+}
+
+List<DataRecord> GroupThenAverage(IEnumerable<IGrouping<short, DataRecord>> yearSets, GroupThenAverage groupThenAverage)
+{
+    var yearlyAverageRecords = new List<DataRecord>();
+    foreach (var yearSet in yearSets)
+    {
+        var grouping = yearSet.ToList().GroupYearByDays(groupThenAverage.DayGrouping).ToList();
+        var groupingAverages = new List<DataRecord>();
+
+        for (short i = 0; i < grouping.Count(); i++)
+        {
+            var numberOfDaysInGroup = grouping[i].Count();
+
+            var value = (float)grouping[i].Count(x => x.Value != null) / numberOfDaysInGroup < groupThenAverage.DayGroupingThreshold ? null : grouping[i].Average(x => x.Value);
+            var record = new DataRecord()
+            {
+                Value = value,
+            };
+
+            groupingAverages.Add(record);
+        }
+
+        var yearMean = groupingAverages.Any(x => x.Value == null) ? null : groupingAverages.Average(x => x.Value);
+        var yearlyAverageRecord = new DataRecord
+        {
+            Year = yearSet.Key,
+            Value = yearMean,
+        };
+        yearlyAverageRecords.Add(yearlyAverageRecord);
+    }
+    return yearlyAverageRecords;
 }
 
 List<DataRecord> GetCarbonDioxide()

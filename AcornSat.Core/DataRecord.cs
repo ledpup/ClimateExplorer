@@ -34,6 +34,8 @@ public class DataRecord
     public short? Week { get; set; }
     public float? Value { get; set; }
 
+    public string Label { get; set; }
+
     [JsonIgnore]
     public DateTime Date { get { return new DateTime(Year, Month.Value, Day.Value); } }
 }

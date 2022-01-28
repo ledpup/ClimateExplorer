@@ -37,5 +37,12 @@ namespace AcornSat.Core
             Oni,
             Soi,
         }
+
+        public enum StatisticalMethod
+        {
+            GroupThenAverage,
+            GroupThenAverage_Relative,
+            BinThenCount
+        }
     }
 }
