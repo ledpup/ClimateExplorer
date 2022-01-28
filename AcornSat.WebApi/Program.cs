@@ -26,10 +26,29 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 app.UseCors();
 
-app.MapGet("/", () => @"Hello, from minimal ACORN-SAT Web API!
-                        Call /dataSet for a list of the dataset definitions. (E.g., ACORN-SAT)
-                        Call /ACORN-SAT/location for list of locations.
-                        Call /ACORN-SAT/Yearly/{temperatureType}/{locationId}?dayGrouping=14&dayGroupingThreshold=.8 for yearly average temperature records at locationId. Records are grouped by dayGrouping. If the number of records in the group does not meet the threshold, the data is considered invalid.");
+app.MapGet(
+    "/", () =>
+        "Hello, from minimal ACORN-SAT Web API!\n" +
+        "\n" +
+        "Operations:\n" +
+        "   Call /datasetdefinition for a list of the dataset definitions. (E.g., ACORN-SAT)\n" +
+        "   Call /location for list of locations.\n" +
+        "      Parameters:\n" +
+        "          dataSetName (querystring parameter): filters to a particular dataset\n" +
+        "      Examples:\n" +
+        "          /location?dataSetName=ACORN-SET.\n" +
+        "   Call /dataSet/{DataType}/{DataResolution}/{MeasurementType}/{LocationId}?statisticalMethod=GroupThenAverage&dayGrouping=14&dayGroupingThreshold=0.7 for yearly average temperature records at locationId. Records are grouped by dayGrouping. If the number of records in the group does not meet the threshold, the data is considered invalid.\n" +
+        "      Parameters:\n" +
+        "          DataType: { TempMax | TempMin | Rainfall | Enso }\n" +
+        "          DataResolution: { Yearly | Monthly | Weekly | Daily }\n" +
+        "          MeasurementType: { Unadjusted | Adjusted | Difference }\n" +
+        "          LocationId: Guid for the target location. Refer to /location endpoint for a list.\n" +
+        "          statisticalMethod (querystring parameter): { GroupThenAverage | GroupThenAverage_Relative | BinThenCount }\n" +
+        "          dayGrouping (querystring parameter): int, x >= 1. Specifies how many days of data should be included in each group.\n" +
+        "          dayGroupingThreshold (querystring parameter): float, 0 <= x <= 1. When grouping records in order to calculate averages, data must be available for at least this proportion of days in a group for the group to be included in the result.\n" +
+        "      Examples:\n" +
+        "          /dataSet/TempMax/Yearly/Adjusted/eb75b5eb-8feb-4118-b6ab-bbe9b4fbc334?statisticalMethod=GroupThenAverage&dayGrouping=14&dayGroupingThreshold=0.7\n");
+
 app.MapGet("/datasetdefinition", async (bool? includeLocations) => await GetDataSetDefinitions(includeLocations));
 app.MapGet("/location", async (string dataSetName) => await GetLocations(dataSetName));
 app.MapGet("/dataset/{dataType}/{resolution}/{measurementType}/{locationId}", async (DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, StatisticalMethod? statisticalMethod, short? dayGrouping, float? dayGroupingThreshold, short? numberOfBins) => await GetDataSets(new QueryParameters(dataType, resolution, measurementType, locationId, statisticalMethod, year, dayGrouping, dayGroupingThreshold, numberOfBins)));
@@ -121,15 +140,38 @@ async Task<List<DataSet>> GetTemperaturesByLatitudeGroups(DataType dataType, Dat
     throw new InvalidOperationException("Only yearly aggregates are supported");
 }
 
-async Task<List<DataSet>> YearlyTemperaturesAcrossLocations(List<DataSetDefinition> definitions, List<Location> locations, DataType dataType, MeasurementType measurementType, short dayGrouping, float dayGroupingThreshold)
+async Task<List<DataSet>> YearlyTemperaturesAcrossLocations(
+    List<DataSetDefinition> definitions, 
+    List<Location> locations, 
+    DataType dataType, 
+    MeasurementType measurementType, 
+    short dayGrouping, 
+    float dayGroupingThreshold)
 {
-    var queryParamters = new QueryParameters(dataType, DataResolution.Yearly, measurementType, Guid.Empty, StatisticalMethod.GroupThenAverage, null, dayGrouping: dayGrouping, dayGroupingThreshold: dayGroupingThreshold);
     var dataSet = new List<DataSet>();
-    await Parallel.ForEachAsync(locations, async (location, cancellationToken) => {
-        var definition = definitions.Single(x => x.Id == location.DataSetId);
-        var locationDataSet = await GetYearlyTemperaturesFromDaily(definition, queryParamters);
-        dataSet.AddRange(locationDataSet);
-    });
+
+    await Parallel.ForEachAsync(
+        locations, 
+        async (location, cancellationToken) =>
+        {
+            var queryParameters = 
+                new QueryParameters(
+                    dataType,
+                    DataResolution.Yearly,
+                    measurementType,
+                    location.Id,
+                    StatisticalMethod.GroupThenAverage,
+                    null,
+                    dayGrouping: dayGrouping,
+                    dayGroupingThreshold: dayGroupingThreshold
+                );
+
+            var definition = definitions.Single(x => x.Id == location.DataSetId);
+
+            var locationDataSet = await GetYearlyTemperaturesFromDaily(definition, queryParameters);
+
+            dataSet.AddRange(locationDataSet);
+        });
 
     return dataSet;
 }
