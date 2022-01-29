@@ -273,9 +273,9 @@
 
 <div class="mapContainer" id="mapContainer">
     <Map @ref="map" MapOptions="@GetMapOptions()"></Map>
-    <div class="mapToggle">
+    <div class="@(IsMapExpanded ? "mapToggleExpanded" : "mapToggleCollapsed")">
         <Button Color="Color.Primary" Clicked="@ToggleMapExpansion">
-            @(IsMapExpanded ? "Collapse map" : "Expand map")
+            @(IsMapExpanded ? "Collapse map" : "Expand")
         </Button>
     </div>
 </div>
@@ -293,8 +293,8 @@
         position: absolute;
         top: 10px;
         right: 10px;
-        width: 350px;
-        height: 220px;
+        width: 550px;
+        height: 250px;
         z-index: 1;
     }
 
@@ -306,7 +306,7 @@
         background: #aaa;
     }
 
-    .mapToggle {
+    .mapToggleExpanded {
         position: absolute;
         bottom: 0px;
         height: 50px;
@@ -314,6 +314,16 @@
         right: 0px;
         padding: 6px;
         text-align: center;
+    }
+
+    .mapToggleCollapsed {
+        position: absolute;
+        bottom: 0px;
+        height: 50px;
+        left: 0px;
+        right: 0px;
+        padding-top: 4px;
+        text-align: right;
     }
 </style>
 
@@ -1270,14 +1280,14 @@
         {
             DivId = divId,
             Center = new LatLng(-25.6, 134.3),
-            Zoom = 6,
-            UrlTileLayer = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+            Zoom = 8,
+            UrlTileLayer = "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png",
 	        SubOptions = new MapSubOptions()
             {
-                Attribution = "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
+                Attribution = "&copy; <a href=\"https://stadiamaps.com/\">Stadia Maps</a>, &copy; <a href=\"https://openmaptiles.org/\">OpenMapTiles</a> &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors",
                 TileSize = 512,
                 ZoomOffset = -1,
-                MaxZoom = 19,
+                MaxZoom = 20,
             }
         };
         return mapOptions;

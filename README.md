@@ -31,7 +31,6 @@ Tool to calculate average temperatures from BOM ACORN-SAT and NIWA 11-stations d
 In rough order of priority
 
 - Linear trendline
-- Make map a thumbnail initially. Click to expand to select location. Thumbnail again after selection.
 - Display info on missing data (number of records missing per week/month/etc for min and max, number of missing consecutive days, etc.)
 - Switch to Blazorise nav menu
 - Analyse missing data to find an optimal grouping method - linear regression analysis??
@@ -48,6 +47,7 @@ In rough order of priority
 - Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
+- 2022-01-29: Small map initially. Click to expand to select location. Collapse map after selection.
 - 2022-01-27: Download datasets as CSV - yearly data only, for now
 - 2022-01-26: Alter web API to look for precalculated data in a cache instead of calculating from daily. If no cached data, calculate and save to cache
 - 2022-01-19: Get temperature data from BOM via website (http://www.bom.gov.au/climate/data/index.shtml?bookmark=122&view=map)
