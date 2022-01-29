@@ -271,20 +271,51 @@
     </ModalContent>
 </Modal>
 
-<Map @ref="map" MapOptions="@GetMapOptions()"></Map>
+<div class="mapContainer" id="mapContainer">
+    <Map @ref="map" MapOptions="@GetMapOptions()"></Map>
+    <div class="mapToggle">
+        <Button Color="Color.Primary" Clicked="@ToggleMapExpansion">
+            @(IsMapExpanded ? "Collapse map" : "Expand map")
+        </Button>
+    </div>
+</div>
 
 <style>
     #mapId {
-        height: 15%;
-        width: 20%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 50px;
+    }
+
+    .mapContainer {
         position: absolute;
         top: 10px;
         right: 10px;
+        width: 350px;
+        height: 220px;
         z-index: 1;
     }
-</style>
 
-@*<Button Clicked="@(async () => await ButtonClicked())">Redraw</Button>*@
+    .mapContainer.expanded {
+        top: 0px;
+        right: 0px;
+        width: 100%;
+        height: 100%;
+        background: #aaa;
+    }
+
+    .mapToggle {
+        position: absolute;
+        bottom: 0px;
+        height: 50px;
+        left: 0px;
+        right: 0px;
+        padding: 6px;
+        text-align: center;
+    }
+</style>
 
 <div style="width: 85%; border: 0.5px dotted; padding: 10px; position: absolute; bottom: 5px;">
     @* We change the chart's type dynamically depending on selected options.
@@ -364,6 +395,21 @@
         return fileStream;
     }
 
+    async Task CollapseMapIfExpanded()
+    {
+        if (IsMapExpanded)
+        {
+            await ToggleMapExpansion();
+        }
+    }
+
+    async Task ToggleMapExpansion()
+    {
+        await JS.InvokeVoidAsync("toggleMapExpansion", null);
+
+        IsMapExpanded = !IsMapExpanded;
+    }
+
     @inject IJSRuntime JS
     private async Task OnDownloadDataClicked()
     {
@@ -379,6 +425,8 @@
     {
         await SelectedLocationChanged(guid);
     }
+
+    bool IsMapExpanded { get; set; } = false;
 
     float SelectedDayGroupThreshold { get; set; } = .7f;
     string DayGroupThresholdText { get; set; }
@@ -405,7 +453,6 @@
     private Modal selectLocationModal;
     private Task ShowSelectLocationModal()
     {
-        //DayGroupThresholdText = (SelectedDayGroupThreshold * 100).ToString();
         return selectLocationModal.Show();
 
     }
@@ -621,8 +668,13 @@
     {
         var year = Convert.ToString(e.Value);
 
-        e.Status = string.IsNullOrEmpty(year) ? ValidationStatus.None :
-            year.Length == 4 ? ValidationStatus.Success : ValidationStatus.Error;
+        e.Status = 
+            string.IsNullOrEmpty(year) 
+            ? ValidationStatus.None
+            : 
+                year.Length == 4
+                ? ValidationStatus.Success
+                : ValidationStatus.Error;
     }
 
     private async Task HandleMapMouseEvent(MouseEvent mouseEvent)
@@ -630,6 +682,7 @@
         var lat = Math.Round(mouseEvent.LatLng.Lat, 1);
         var lng = Math.Round(mouseEvent.LatLng.Lng, 1);
         var newLocation = Locations.Single(x => Math.Round(x.Coordinates.Latitude, 1) == lat && Math.Round(x.Coordinates.Longitude, 1) == lng);
+        await CollapseMapIfExpanded();
         await SelectedLocationChanged(newLocation.Id);
     }
 
