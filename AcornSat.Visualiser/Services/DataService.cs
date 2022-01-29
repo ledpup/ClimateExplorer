@@ -12,13 +12,13 @@ public class DataService : IDataService
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<DataSet>> GetDataSet(DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, StatisticalMethod? statisticalMethod, short? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f)
+    public async Task<IEnumerable<DataSet>> GetDataSet(DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, Aggregation? aggregation, short? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f)
     {
         var url = $"dataSet/{dataType}/{resolution}/{measurementType}/{locationId}";
 
-        if (statisticalMethod != null)
+        if (aggregation != null)
         {
-            url = QueryHelpers.AddQueryString(url, "statisticalMethod", statisticalMethod.Value.ToString());
+            url = QueryHelpers.AddQueryString(url, "aggregation", aggregation.Value.ToString());
         }
         if (year != null)
         {

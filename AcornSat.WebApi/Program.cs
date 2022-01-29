@@ -32,7 +32,7 @@ app.MapGet("/", () => @"Hello, from minimal ACORN-SAT Web API!
                         Call /ACORN-SAT/Yearly/{temperatureType}/{locationId}?dayGrouping=14&dayGroupingThreshold=.8 for yearly average temperature records at locationId. Records are grouped by dayGrouping. If the number of records in the group does not meet the threshold, the data is considered invalid.");
 app.MapGet("/datasetdefinition", async (bool? includeLocations) => await GetDataSetDefinitions(includeLocations));
 app.MapGet("/location", async (string dataSetName) => await GetLocations(dataSetName));
-app.MapGet("/dataset/{dataType}/{resolution}/{measurementType}/{locationId}", async (DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, StatisticalMethod? statisticalMethod, short? dayGrouping, float? dayGroupingThreshold, short? numberOfBins) => await GetDataSets(new QueryParameters(dataType, resolution, measurementType, locationId, statisticalMethod, year, dayGrouping, dayGroupingThreshold, numberOfBins)));
+app.MapGet("/dataset/{dataType}/{resolution}/{measurementType}/{locationId}", async (DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, Aggregation? aggregation, short? dayGrouping, float? dayGroupingThreshold, short? numberOfBins) => await GetDataSets(new QueryParameters(dataType, resolution, measurementType, locationId, aggregation, year, dayGrouping, dayGroupingThreshold, numberOfBins)));
 app.MapGet("/dataset/{dataType}/{resolution}/{measurementType}", async (DataType dataType, DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping, float dayGroupingThreshold, float locationGroupingThreshold) => await GetTemperaturesByLatitudeGroups(dataType, resolution, measurementType, minLatitude, maxLatitude, dayGrouping, dayGroupingThreshold, locationGroupingThreshold));
 app.MapGet("/reference/co2/", () => GetCarbonDioxide());
 app.MapGet("/reference/enso/{index}/{resolution}", async (EnsoIndex index, DataResolution resolution, string measure) => await GetEnso(index, resolution, measure));
@@ -123,7 +123,7 @@ async Task<List<DataSet>> GetTemperaturesByLatitudeGroups(DataType dataType, Dat
 
 async Task<List<DataSet>> YearlyTemperaturesAcrossLocations(List<DataSetDefinition> definitions, List<Location> locations, DataType dataType, MeasurementType measurementType, short dayGrouping, float dayGroupingThreshold)
 {
-    var queryParamters = new QueryParameters(dataType, DataResolution.Yearly, measurementType, Guid.Empty, StatisticalMethod.GroupThenAverage, null, dayGrouping: dayGrouping, dayGroupingThreshold: dayGroupingThreshold);
+    var queryParamters = new QueryParameters(dataType, DataResolution.Yearly, measurementType, Guid.Empty, Aggregation.GroupThenAverage, null, dayGrouping: dayGrouping, dayGroupingThreshold: dayGroupingThreshold);
     var dataSet = new List<DataSet>();
     await Parallel.ForEachAsync(locations, async (location, cancellationToken) => {
         var definition = definitions.Single(x => x.Id == location.DataSetId);
@@ -225,7 +225,7 @@ async Task<List<DataSet>> GetDataSets(QueryParameters queryParameters)
             {
                 dataSets = await GetYearlyTemperaturesFromMonthly(definition, queryParameters.DataType, queryParameters.MeasurementType, queryParameters.LocationId, queryParameters.Year);
             }
-            if (queryParameters.StatisticalMethod.HasValue && queryParameters.StatisticalMethod == StatisticalMethod.GroupThenAverage_Relative)
+            if (queryParameters.Aggregation.HasValue && queryParameters.Aggregation == Aggregation.GroupThenAverage_Relative)
             {
                 foreach (var dataSet in dataSets)
                 {
@@ -369,13 +369,13 @@ async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataS
         var yearSets = dailyDataSet.DataRecords.GroupBy(x => x.Year);
 
         List<DataRecord> returnDataRecords = null;
-        switch (queryParameters.StatisticalMethod)
+        switch (queryParameters.Aggregation)
         {
-            case StatisticalMethod.GroupThenAverage:
-            case StatisticalMethod.GroupThenAverage_Relative:
+            case Aggregation.GroupThenAverage:
+            case Aggregation.GroupThenAverage_Relative:
                 returnDataRecords = GroupThenAverage(yearSets, (GroupThenAverage)queryParameters.StatsParameters);
                 break;
-            case StatisticalMethod.BinThenCount:
+            case Aggregation.BinThenCount:
                 var min = dailyDataSet.DataRecords.Min(x => x.Value).Value;
                 var max = dailyDataSet.DataRecords.Max(x => x.Value).Value;
                 returnDataRecords = BinThenCount(yearSets, min, max, (BinThenCount)queryParameters.StatsParameters);

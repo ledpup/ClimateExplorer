@@ -10,10 +10,11 @@ Tool to calculate average temperatures from BOM ACORN-SAT and NIWA 11-stations d
 - Built in [Visual Studio 2022 Community Edition](https://visualstudio.microsoft.com/vs/community/)
 - C#, .NET 6
 - Blazor, using
-  - https://github.com/Megabit/Blazorise
-  - https://github.com/fis-sst/BlazorMaps
-  - https://github.com/darnton/BlazorDeviceInterop
-  - https://github.com/AeonLucid/GeoCoordinate.NetStandard1
+  - https://github.com/Megabit/Blazorise (UI components, charts)
+  - https://github.com/fis-sst/BlazorMaps (Maps)
+  - https://github.com/darnton/BlazorDeviceInterop (Location services)
+  - https://github.com/AeonLucid/GeoCoordinate.NetStandard1 (Geocoordinates)
+  - https://github.com/LayTec-AG/Plotly.Blazor (Heatmap charts)
 - There are five projects:
   - Visualiser: Blazor website that displays the data to the user
   - WebApi: Web API that gets and processes the data that Visualiser uses
