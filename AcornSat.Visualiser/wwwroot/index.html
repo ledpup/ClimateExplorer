@@ -58,6 +58,17 @@
             anchorElement.click();
             anchorElement.remove();
         }
+
+        function toggleMapExpansion() {
+            var mapElement = document.getElementById("mapContainer");
+
+            var isMapCurrentlyExpanded = mapElement.className == "mapContainer expanded";
+
+            mapElement.className = isMapCurrentlyExpanded ? "mapContainer" : "mapContainer expanded";
+
+            // Fake a window resize so that the leaflet map control realises it has resized.
+            window.dispatchEvent(new Event('resize'));
+        }
     </script>
 </body>
 

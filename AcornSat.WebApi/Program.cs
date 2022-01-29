@@ -14,14 +14,18 @@ using AcornSat.WebApi.Model;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(
-                      builder =>
-                      {
-                          builder.WithOrigins("http://localhost:5298");
-                      });
-});
+
+builder.Services.AddCors(
+    options =>
+    {
+        options.AddDefaultPolicy(
+            builder =>
+            {
+                builder.WithOrigins("http://localhost:5298");
+            }
+        );
+    }
+);
 
 var app = builder.Build();
 app.UseCors();
@@ -49,35 +53,40 @@ app.MapGet(
         "      Examples:\n" +
         "          /dataSet/TempMax/Yearly/Adjusted/eb75b5eb-8feb-4118-b6ab-bbe9b4fbc334?statisticalMethod=GroupThenAverage&dayGrouping=14&dayGroupingThreshold=0.7\n");
 
-app.MapGet("/datasetdefinition", async (bool? includeLocations) => await GetDataSetDefinitions(includeLocations));
-app.MapGet("/location", async (string dataSetName) => await GetLocations(dataSetName));
-app.MapGet("/dataset/{dataType}/{resolution}/{measurementType}/{locationId}", async (DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, StatisticalMethod? statisticalMethod, short? dayGrouping, float? dayGroupingThreshold, short? numberOfBins) => await GetDataSets(new QueryParameters(dataType, resolution, measurementType, locationId, statisticalMethod, year, dayGrouping, dayGroupingThreshold, numberOfBins)));
-app.MapGet("/dataset/{dataType}/{resolution}/{measurementType}", async (DataType dataType, DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping, float dayGroupingThreshold, float locationGroupingThreshold) => await GetTemperaturesByLatitudeGroups(dataType, resolution, measurementType, minLatitude, maxLatitude, dayGrouping, dayGroupingThreshold, locationGroupingThreshold));
-app.MapGet("/reference/co2/", () => GetCarbonDioxide());
-app.MapGet("/reference/enso/{index}/{resolution}", async (EnsoIndex index, DataResolution resolution, string measure) => await GetEnso(index, resolution, measure));
-app.MapGet("/reference/enso-metadata", () => GetEnsoMetaData());
+app.MapGet("/datasetdefinition",                                              GetDataSetDefinitions);
+app.MapGet("/location",                                                       GetLocations);
+app.MapGet("/dataset/{dataType}/{resolution}/{measurementType}/{locationId}", GetDataSetsForLocation);
+app.MapGet("/dataset/{dataType}/{resolution}/{measurementType}",              GetTemperaturesByLatitudeGroups);
+app.MapGet("/reference/co2/",                                                 GetCarbonDioxide);
+app.MapGet("/reference/enso/{index}/{resolution}",                            GetEnso);
+app.MapGet("/reference/enso-metadata",                                        GetEnsoMetaData);
 
 app.Run();
 
-async Task<List<DataSetDefinitionModel>> GetDataSetDefinitions(bool? includeLocations = false)
+
+
+async Task<List<DataSetDefinitionModel>> GetDataSetDefinitions(bool includeLocations = false)
 {
     var definitions = await DataSetDefinition.GetDataSetDefinitions();
 
-    var dtos = definitions.Select(async x => 
-                            new AcornSat.WebApi.Model.DataSetDefinitionModel
-                            {
-                                Id = x.Id,
-                                Name = x.Name,
-                                MoreInformationUrl = x.MoreInformationUrl,
-                                StationInfoUrl = x.StationInfoUrl,
-                                LocationInfoUrl = x.LocationInfoUrl,
-                                DataResolution = x.DataResolution,
-                                Description = x.Description,
-                                MeasurementTypes = x.MeasurementTypes,
-                                Locations = x.HasLocations && includeLocations.GetValueOrDefault() ? await GetLocations(x.FolderName) : new List<Location>(),
-                            })
-                            .Select(x => x.Result)
-                            .ToList();
+    var dtos =
+        definitions
+        .Select(
+            async x =>
+            new AcornSat.WebApi.Model.DataSetDefinitionModel
+            {
+                Id = x.Id,
+                Name = x.Name,
+                MoreInformationUrl = x.MoreInformationUrl,
+                StationInfoUrl = x.StationInfoUrl,
+                LocationInfoUrl = x.LocationInfoUrl,
+                DataResolution = x.DataResolution,
+                Description = x.Description,
+                MeasurementTypes = x.MeasurementTypes,
+                Locations = x.HasLocations && includeLocations ? await GetLocations(x.FolderName) : new List<Location>(),
+            })
+        .Select(x => x.Result)
+        .ToList();
 
     return dtos;
 }
@@ -230,9 +239,25 @@ async Task SaveDataSets(QueryParameters queryParameters, List<DataSet> dataSets)
     await File.WriteAllTextAsync(filePath, json);
 }
 
-async Task<List<DataSet>> GetDataSets(QueryParameters queryParameters)
+async Task<List<DataSet>> GetDataSetsForLocation(DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, StatisticalMethod? statisticalMethod, short? dayGrouping, float? dayGroupingThreshold, short? numberOfBins)
+{
+    return await GetDataSetsForLocationInternal(
+        new QueryParameters(
+            dataType, 
+            resolution, 
+            measurementType, 
+            locationId, 
+            statisticalMethod, 
+            year, 
+            dayGrouping, 
+            dayGroupingThreshold, 
+            numberOfBins));
+}
+
+async Task<List<DataSet>> GetDataSetsForLocationInternal(QueryParameters queryParameters)
 {
     var dataSets = await LoadCachedDataSets(queryParameters);
+
     if (dataSets != null)
     {
         return dataSets;
