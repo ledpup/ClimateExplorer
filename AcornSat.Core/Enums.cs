@@ -40,9 +40,10 @@ namespace AcornSat.Core
 
         public enum StatisticalMethod
         {
-            GroupThenAverage,
-            GroupThenAverage_Relative,
-            BinThenCount
+            GroupByDayThenAverage,
+            GroupByDayThenAverage_Relative,
+            BinThenCount,
+            Sum,
         }
     }
 }

@@ -169,7 +169,7 @@ async Task<List<DataSet>> YearlyTemperaturesAcrossLocations(
                     DataResolution.Yearly,
                     measurementType,
                     location.Id,
-                    StatisticalMethod.GroupThenAverage,
+                    StatisticalMethod.GroupByDayThenAverage,
                     null,
                     dayGrouping: dayGrouping,
                     dayGroupingThreshold: dayGroupingThreshold
@@ -292,7 +292,7 @@ async Task<List<DataSet>> GetDataSetsForLocationInternal(QueryParameters queryPa
             {
                 dataSets = await GetYearlyTemperaturesFromMonthly(definition, queryParameters.DataType, queryParameters.MeasurementType, queryParameters.LocationId, queryParameters.Year);
             }
-            if (queryParameters.StatisticalMethod.HasValue && queryParameters.StatisticalMethod == StatisticalMethod.GroupThenAverage_Relative)
+            if (queryParameters.StatisticalMethod.HasValue && queryParameters.StatisticalMethod == StatisticalMethod.GroupByDayThenAverage_Relative)
             {
                 foreach (var dataSet in dataSets)
                 {
@@ -438,14 +438,17 @@ async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataS
         List<DataRecord> returnDataRecords = null;
         switch (queryParameters.StatisticalMethod)
         {
-            case StatisticalMethod.GroupThenAverage:
-            case StatisticalMethod.GroupThenAverage_Relative:
+            case StatisticalMethod.GroupByDayThenAverage:
+            case StatisticalMethod.GroupByDayThenAverage_Relative:
                 returnDataRecords = GroupThenAverage(yearSets, (GroupThenAverage)queryParameters.StatsParameters);
                 break;
             case StatisticalMethod.BinThenCount:
                 var min = dailyDataSet.DataRecords.Min(x => x.Value).Value;
                 var max = dailyDataSet.DataRecords.Max(x => x.Value).Value;
                 returnDataRecords = BinThenCount(yearSets, min, max, (BinThenCount)queryParameters.StatsParameters);
+                break;
+            case StatisticalMethod.Sum:
+                returnDataRecords = Sum(yearSets);
                 break;
         }
         
@@ -495,6 +498,20 @@ async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataS
         aggregatedAveragedDataSets.Add(dataSet);
         return aggregatedAveragedDataSets;
     }
+}
+
+List<DataRecord> Sum(IEnumerable<IGrouping<short, DataRecord>> yearRecords)
+{
+    var dataRecords = new List<DataRecord>();
+    foreach (var yearRecord in yearRecords)
+    {
+        dataRecords.Add(new DataRecord()
+        {
+            Year = yearRecord.Key,
+            Value = yearRecord.Sum(x => x.Value),
+        });
+    }
+    return dataRecords;
 }
 
 List<DataRecord> BinThenCount(IEnumerable<IGrouping<short, DataRecord>> yearSets, float min, float max, BinThenCount statsParameters)

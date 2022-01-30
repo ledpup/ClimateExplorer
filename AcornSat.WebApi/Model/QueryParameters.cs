@@ -16,8 +16,8 @@ namespace AcornSat.WebApi.Model
             Year = year;
             switch (StatisticalMethod)
             {
-                case Core.Enums.StatisticalMethod.GroupThenAverage:
-                case Core.Enums.StatisticalMethod.GroupThenAverage_Relative:
+                case Core.Enums.StatisticalMethod.GroupByDayThenAverage:
+                case Core.Enums.StatisticalMethod.GroupByDayThenAverage_Relative:
                     StatsParameters = new GroupThenAverage(dayGrouping.Value, dayGroupingThreshold.Value);
                     break;
                 case Core.Enums.StatisticalMethod.BinThenCount:
@@ -44,8 +44,8 @@ namespace AcornSat.WebApi.Model
                 stringBuilder.Append($"_{StatisticalMethod}");
                 switch (StatisticalMethod)
                 {
-                    case Core.Enums.StatisticalMethod.GroupThenAverage:
-                    case Core.Enums.StatisticalMethod.GroupThenAverage_Relative:
+                    case Core.Enums.StatisticalMethod.GroupByDayThenAverage:
+                    case Core.Enums.StatisticalMethod.GroupByDayThenAverage_Relative:
                         stringBuilder.Append($"_{((GroupThenAverage)StatsParameters).DayGrouping}");
                         stringBuilder.Append($"_{((GroupThenAverage)StatsParameters).DayGroupingThreshold}");
                         break;

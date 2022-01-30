@@ -174,16 +174,17 @@
                     <Radio TValue="ChartType" Value="ChartType.Bar">Bar chart - relative to average</Radio>
                 </RadioGroup>
             </Alert>
+           <Alert Color="Color.Primary" Visible="true">
+                Data Types
+                <Check TValue="bool" Checked="@Maximums" CheckedChanged="@OnMaximumsChanged">Maximum Temperatures</Check>
+                <Check TValue="bool" Checked="@Minimums" CheckedChanged="@OnMinimumsChanged">Minimum Temperatures</Check>
+                <Check TValue="bool" Checked="@Rainfall" CheckedChanged="@OnRainfallChanged">Rainfall</Check>
+           </Alert>
            <Alert Color="Color.Secondary" Visible="true">
-                Data Set
+                Temperature Types
                 <Check TValue="bool" Checked="@Unadjusted" CheckedChanged="@OnUnadjustedChanged" Disabled="@UnadjustedDisabled">Unadjusted</Check>
                 <Check TValue="bool" Checked="@Adjusted" CheckedChanged="@OnAdjustedChanged"  Disabled="@AdjustedDisabled">Adjusted</Check>
                 <Check TValue="bool" Checked="@Difference" CheckedChanged="@OnDifferenceChanged"  Disabled="@DifferenceDisabled">Difference - adjusted vs unadjusted</Check>
-            </Alert>
-            <Alert Color="Color.Primary" Visible="true">
-                Temperatures
-                <Check TValue="bool" Checked="@Maximums" CheckedChanged="@OnMaximumsChanged">Maximums</Check>
-                <Check TValue="bool" Checked="@Minimums" CheckedChanged="@OnMinimumsChanged">Minimums</Check>
             </Alert>
             <Alert Color="Color.Info" Visible="true">
                 Simple Moving Average<br/>
@@ -519,7 +520,7 @@
     async Task UpdateInternalChartType()
     {
         InternalChartType =
-            SelectedChartType == ChartType.Bar || Difference
+            SelectedChartType == ChartType.Bar || Difference || Rainfall
             ? ChartType.Bar
             : ChartType.Line;
 
@@ -645,6 +646,13 @@
         await BuildDataSets();
     }
 
+    bool Rainfall = true;
+    async Task OnRainfallChanged(bool value)
+    {
+        Rainfall = value;
+        await BuildDataSets();
+    }
+
     string SelectedStartYear { get; set; }
     string SelectedEndYear { get; set; }
 
@@ -738,7 +746,7 @@
         }
 
         var relativeToAverage = SelectedChartType == ChartType.Bar;
-        var statisticalMethod = relativeToAverage ? StatisticalMethod.GroupThenAverage_Relative : StatisticalMethod.GroupThenAverage;
+        var statisticalMethod = relativeToAverage ? StatisticalMethod.GroupByDayThenAverage_Relative : StatisticalMethod.GroupByDayThenAverage;
 
         SelectedDataTypes = new List<DataType>();
         if (Maximums)
@@ -749,24 +757,36 @@
         {
             SelectedDataTypes.Add(DataType.TempMin);
         }
+        if (Rainfall)
+        {
+            SelectedDataTypes.Add(DataType.Rainfall);
+        }
         foreach (var dataType in SelectedDataTypes)
         {
-            var adjusted = (await DataService.GetDataSet(dataType, DataResolution.Yearly, MeasurementType.Adjusted, SelectedLocationId, statisticalMethod: statisticalMethod, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold)).ToList();
-            Datasets.AddRange(adjusted);
-
-            var unadjusted = (await DataService.GetDataSet(dataType, DataResolution.Yearly, MeasurementType.Unadjusted, SelectedLocationId, statisticalMethod: statisticalMethod, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold)).ToList();
-            Datasets.AddRange(unadjusted);
-
-            if (!DifferenceDisabled)
+            if (dataType == DataType.Rainfall)
             {
-                var difference = GenerateDifferenceDataSet(unadjusted, adjusted);
-                Datasets.Add(difference);
+                var rainfall = (await DataService.GetDataSet(dataType, DataResolution.Yearly, MeasurementType.Unadjusted, SelectedLocationId, statisticalMethod: StatisticalMethod.Sum)).ToList();
+                Datasets.AddRange(rainfall);
             }
+            else
+            {
+                var adjusted = (await DataService.GetDataSet(dataType, DataResolution.Yearly, MeasurementType.Adjusted, SelectedLocationId, statisticalMethod: statisticalMethod, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold)).ToList();
+                Datasets.AddRange(adjusted);
 
-            var adjustedYears = adjusted.SingleOrDefault()?.Years;
-            var unadjustedYears = unadjusted.SelectMany(x => x.Years).Distinct();
-            DatasetYears = adjustedYears == null ? unadjustedYears.ToList()
-                                                 : adjustedYears.Concat(unadjustedYears).Distinct().OrderBy(x => x).ToList();
+                var unadjusted = (await DataService.GetDataSet(dataType, DataResolution.Yearly, MeasurementType.Unadjusted, SelectedLocationId, statisticalMethod: statisticalMethod, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold)).ToList();
+                Datasets.AddRange(unadjusted);
+
+                if (!DifferenceDisabled)
+                {
+                    var difference = GenerateDifferenceDataSet(unadjusted, adjusted);
+                    Datasets.Add(difference);
+                }
+
+                var adjustedYears = adjusted.SingleOrDefault()?.Years;
+                var unadjustedYears = unadjusted.SelectMany(x => x.Years).Distinct();
+                DatasetYears = adjustedYears == null ? unadjustedYears.ToList()
+                                                     : adjustedYears.Concat(unadjustedYears).Distinct().OrderBy(x => x).ToList();
+            }
         }
 
         foreach (var selectedYear in SelectedYears)
@@ -872,7 +892,8 @@
                         (
                             (Adjusted && x.MeasurementType == MeasurementType.Adjusted) || 
                             (Unadjusted && x.MeasurementType == MeasurementType.Unadjusted) || 
-                            (Difference && x.MeasurementType == MeasurementType.Difference)
+                            (Difference && x.MeasurementType == MeasurementType.Difference) ||
+                            (Rainfall && x.DataType == DataType.Rainfall)
                         )
                 )
                 .ToList();
@@ -1120,6 +1141,17 @@
             }
             await AddMovingAverage(label, values);
         }
+        if (Rainfall)
+        {
+            var values =  SelectTemperatureValues(bufferedSelectedDataSet, DataType.Rainfall, MeasurementType.Unadjusted, timeConstraint, year);
+            var label = labelPrefix + "Rainfall";
+            var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(3));
+            if (SelectedPeriod == 0 || !SoloSma)
+            {
+                await chart.AddDataSet(GetChartDataset(label, values, colour));
+            }
+            //await AddMovingAverage(label, values);
+        }
     }
 
     async Task AddMovingAverage(string label, List<float?> values)
@@ -1134,7 +1166,7 @@
 
     List<float?> SelectTemperatureValues(List<DataSet> dataSet, DataType dataType, MeasurementType measurementType, Func<DataRecord, bool> timeConstraint, short? year = null)
     {
-        var dataset = dataSet.SingleOrDefault(x => x.DataType == dataType && x.MeasurementType == measurementType && (year == null || x.Year == year.Value));
+        var dataset = dataSet.Single(x => x.DataType == dataType && x.MeasurementType == measurementType && (year == null || x.Year == year.Value));
 
         var selectedValues = dataset
                             .DataRecords

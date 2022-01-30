@@ -50,7 +50,7 @@
         "NullValue": null
       },
       {
-        "DataType": 3,
+        "DataType": 2,
         "MeasurementType": 0,
         "FolderName": "raw-data",
         "SubFolderName": "daily_rainfall",
