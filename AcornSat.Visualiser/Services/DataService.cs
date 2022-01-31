@@ -12,9 +12,9 @@ public class DataService : IDataService
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<DataSet>> GetDataSet(DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, StatisticalMethod? statisticalMethod, short? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f)
+    public async Task<IEnumerable<DataSet>> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, Guid locationId, StatisticalMethod? statisticalMethod, short? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f)
     {
-        var url = $"dataSet/{dataType}/{resolution}/{measurementType}/{locationId}";
+        var url = $"dataSet/{dataType}/{resolution}/{dataAdjustment}/{locationId}";
 
         if (statisticalMethod != null)
         {
@@ -36,9 +36,9 @@ public class DataService : IDataService
         return await _httpClient.GetFromJsonAsync<DataSet[]>(url);
     }
 
-    public async Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .5f, float locationGroupingThreshold = .5f)
+    public async Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .5f, float locationGroupingThreshold = .5f)
     {
-        var url = $"dataSet/{dataType}/{resolution}/{measurementType}?dayGrouping={dayGrouping}&dayGroupingThreshold={dayGroupingThreshold}&locationGroupingThreshold={locationGroupingThreshold}";
+        var url = $"dataSet/{dataType}/{resolution}/{dataAdjustment}?dayGrouping={dayGrouping}&dayGroupingThreshold={dayGroupingThreshold}&locationGroupingThreshold={locationGroupingThreshold}";
         if (minLatitude != null)
         {
             url += $"&minLatitude={minLatitude}";

@@ -6,11 +6,11 @@ namespace AcornSat.WebApi.Model
 {
     public class QueryParameters
     {
-        public QueryParameters(DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, StatisticalMethod? statisticalMethod, short? year, short? dayGrouping = 14, float? dayGroupingThreshold = .7f, short? numberOfBins = null, short? binSize = null)
+        public QueryParameters(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, Guid locationId, StatisticalMethod? statisticalMethod, short? year, short? dayGrouping = 14, float? dayGroupingThreshold = .7f, short? numberOfBins = null, short? binSize = null)
         {
             DataType = dataType;
             Resolution = resolution;
-            MeasurementType = measurementType;
+            DataAdjustment = dataAdjustment;
             LocationId = locationId;
             StatisticalMethod = statisticalMethod;
             Year = year;
@@ -27,7 +27,7 @@ namespace AcornSat.WebApi.Model
         }
         public DataType DataType { get; set; }
         public DataResolution Resolution { get; set; }
-        public MeasurementType MeasurementType { get; set; }
+        public DataAdjustment DataAdjustment { get; set; }
         public Guid LocationId { get; set; }
         public StatisticalMethod? StatisticalMethod { get; set; }
         public short? Year { get; set; }
@@ -38,7 +38,7 @@ namespace AcornSat.WebApi.Model
         {
             var stringBuilder = new StringBuilder();
 
-            stringBuilder.Append($"{DataType}_{Resolution}_{MeasurementType}_{LocationId}");
+            stringBuilder.Append($"{DataType}_{Resolution}_{DataAdjustment}_{LocationId}");
             if (StatisticalMethod.HasValue)
             {
                 stringBuilder.Append($"_{StatisticalMethod}");

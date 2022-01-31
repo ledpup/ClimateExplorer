@@ -22,7 +22,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        AggreagteData = (await DataService.GetAggregateDataSet(DataType.TempMax, DataResolution.Yearly, Core.Enums.MeasurementType.Adjusted, -5, -50, dayGroupingThreshold: .5f, locationGroupingThreshold: .5f)).ToList();
+        AggreagteData = (await DataService.GetAggregateDataSet(DataType.TempMax, DataResolution.Yearly, Core.Enums.DataAdjustment.Adjusted, -5, -50, dayGroupingThreshold: .5f, locationGroupingThreshold: .5f)).ToList();
         await HandleRedraw();
     }
 

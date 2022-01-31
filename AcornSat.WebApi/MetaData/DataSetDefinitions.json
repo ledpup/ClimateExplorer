@@ -4,7 +4,7 @@
     "Name": "ACORN-SAT",
     "Description": "The Australian Climate Observations Reference Network - Surface Air Temperature data set, is a homogenized daily maximum and minimum temperature data set containing data from 112 locations across Australia extending from 1910 to the present.",
     "MoreInformationUrl": "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
-    "MeasurementTypes": [
+    "DataAdjustments": [
       1,
       0
     ],
@@ -15,7 +15,7 @@
     "MeasurementDefinitions": [
       {
         "DataType": 0,
-        "MeasurementType": 1,
+        "DataAdjustment": 1,
         "FolderName": "adjusted",
         "SubFolderName": "daily_tmax",
         "FileNameFormat": "tmax.[station].daily.csv",
@@ -24,7 +24,7 @@
       },
       {
         "DataType": 1,
-        "MeasurementType": 1,
+        "DataAdjustment": 1,
         "FolderName": "adjusted",
         "SubFolderName": "daily_tmin",
         "FileNameFormat": "tmin.[station].daily.csv",
@@ -33,7 +33,7 @@
       },
       {
         "DataType": 0,
-        "MeasurementType": 0,
+        "DataAdjustment": 0,
         "FolderName": "raw-data",
         "SubFolderName": "daily_tempmax",
         "FileNameFormat": "[station]_daily_tempmax.csv",
@@ -42,7 +42,7 @@
       },
       {
         "DataType": 1,
-        "MeasurementType": 0,
+        "DataAdjustment": 0,
         "FolderName": "raw-data",
         "SubFolderName": "daily_tempmin",
         "FileNameFormat": "[station]_daily_tempmin.csv",
@@ -51,7 +51,7 @@
       },
       {
         "DataType": 2,
-        "MeasurementType": 0,
+        "DataAdjustment": 0,
         "FolderName": "raw-data",
         "SubFolderName": "daily_rainfall",
         "FileNameFormat": "[station]_daily_rainfall.csv",
@@ -66,7 +66,7 @@
     "Name": "RAIA",
     "Description": "This ACORN-SAT dataset includes homogenised monthly data from the Remote Australian Islands and Antarctica network of 8 locations, which provide ground-based temperature records.",
     "MoreInformationUrl": "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
-    "MeasurementTypes": [
+    "DataAdjustments": [
       1
     ],
     "DataResolution": 1,
@@ -76,7 +76,7 @@
     "MeasurementDefinitions": [
       {
         "DataType": 0,
-        "MeasurementType": 1,
+        "DataAdjustment": 1,
         "FolderName": "adjusted",
         "SubFolderName": "maxT",
         "FileNameFormat": "acorn.ria.maxT.[station].monthly.txt",
@@ -85,7 +85,7 @@
       },
       {
         "DataType": 1,
-        "MeasurementType": 1,
+        "DataAdjustment": 1,
         "FolderName": "adjusted",
         "SubFolderName": "minT",
         "FileNameFormat": "acorn.ria.minT.[station].monthly.txt",
@@ -100,7 +100,7 @@
     "Name": "NIWA 11-stations series",
     "Description": "The National Institute of Water and Atmospheric Research (NIWA) eleven-station series are New Zealand temperature trends from a set of eleven climate stations with no significant site changes since the 1930s.",
     "MoreInformationUrl": "https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data",
-    "MeasurementTypes": [
+    "DataAdjustments": [
       0
     ],
     "DataResolution": 3,
@@ -110,7 +110,7 @@
     "MeasurementDefinitions": [
       {
         "DataType": 0,
-        "MeasurementType": 0,
+        "DataAdjustment": 0,
         "FolderName": "raw-data",
         "SubFolderName": null,
         "FileNameFormat": "[station].csv",
@@ -119,7 +119,7 @@
       },
       {
         "DataType": 1,
-        "MeasurementType": 0,
+        "DataAdjustment": 0,
         "FolderName": "raw-data",
         "SubFolderName": null,
         "FileNameFormat": "[station].csv",
@@ -135,7 +135,7 @@
     "ShortName": "MEI.v2",
     "Description": "The MEI combines both oceanic and atmospheric variables to form a single index assessment of ENSO. It is an Empirical Orthogonal Function (EOF) of five different variables (sea level pressure (SLP), sea surface temperature (SST), zonal and meridional components of the surface wind, and outgoing longwave radiation (OLR)) over the tropical Pacific basin (30\u00B0S-30\u00B0N and 100\u00B0E-70\u00B0W).",
     "MoreInformationUrl": "https://psl.noaa.gov/enso/mei/",
-    "MeasurementTypes": null,
+    "DataAdjustments": null,
     "DataResolution": 1,
     "FolderName": "ENSO",
     "StationInfoUrl": null,
@@ -144,7 +144,7 @@
     "MeasurementDefinitions": [
       {
         "DataType": 3,
-        "MeasurementType": 0,
+        "DataAdjustment": 0,
         "FolderName": "MEI",
         "SubFolderName": null,
         "FileNameFormat": "meiv2.data.txt",

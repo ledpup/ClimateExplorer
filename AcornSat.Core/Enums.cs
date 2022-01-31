@@ -23,7 +23,7 @@ namespace AcornSat.Core
             Daily,
         }
 
-        public enum MeasurementType
+        public enum DataAdjustment
         {
             Unadjusted,
             Adjusted,
