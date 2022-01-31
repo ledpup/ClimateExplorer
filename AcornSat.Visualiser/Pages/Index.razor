@@ -624,7 +624,7 @@
     async Task OnDifferenceChanged(bool value)
     {
         Difference = value;
-        UpdateInternalChartType();
+        await UpdateInternalChartType();
     }
 
     bool UnadjustedDisabled, AdjustedDisabled, DifferenceDisabled;
@@ -646,11 +646,11 @@
         await BuildDataSets();
     }
 
-    bool Rainfall = true;
+    bool Rainfall;
     async Task OnRainfallChanged(bool value)
     {
         Rainfall = value;
-        await BuildDataSets();
+        await UpdateInternalChartType();
     }
 
     string SelectedStartYear { get; set; }
@@ -1015,6 +1015,32 @@
         var yLabel = SelectedChartType == ChartType.Line ? "Degrees Celsius (°C)" : "Degrees Celsius (°C) Relative to Average Temperature";
         var xLabel = GetXAxisLabel();
 
+        object[] yAxes;
+        if (Rainfall)
+        {
+            yAxes = new []
+            { 
+                new  
+                { 
+                    ScaleLabel = new { LabelString = yLabel, Display = true } 
+                },
+                new
+                {
+                    ScaleLabel = new { LabelString = "Rainfall (mm)", Display = true }
+                }
+            };
+        }
+        else
+        {
+            yAxes = new []
+            { 
+                new  
+                { 
+                    ScaleLabel = new { LabelString = yLabel, Display = true } 
+                }
+            };
+        }
+
         object chartOptions = new
         {
             SpanGaps = true,
@@ -1025,13 +1051,7 @@
             },
             Scales = new
             {
-                YAxes = new []
-                { 
-                    new  
-                    { 
-                        ScaleLabel = new { LabelString = yLabel, Display = true } 
-                    } 
-                },
+                YAxes = yAxes,
                 XAxes = new []
                 { 
                     new 
@@ -1046,6 +1066,7 @@
             }
         };
 
+        
         await chart.SetOptionsObject(chartOptions);
 
         await chart.Update();
@@ -1145,10 +1166,10 @@
         {
             var values =  SelectTemperatureValues(bufferedSelectedDataSet, DataType.Rainfall, MeasurementType.Unadjusted, timeConstraint, year);
             var label = labelPrefix + "Rainfall";
-            var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(3));
+            var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(4));
             if (SelectedPeriod == 0 || !SoloSma)
             {
-                await chart.AddDataSet(GetChartDataset(label, values, colour));
+                await chart.AddDataSet(GetChartDataset(label, values, chartType: ChartType.Bar, redPositive: false));
             }
             //await AddMovingAverage(label, values);
         }
@@ -1230,7 +1251,7 @@
         return bufferedDataSets;
     }
 
-    ChartDataset<float?> GetChartDataset(string label, List<float?> values, ChartColor? chartColour = null, ChartType? chartType = null, bool? absoluteValues = false)
+    ChartDataset<float?> GetChartDataset(string label, List<float?> values, ChartColor? chartColour = null, ChartType? chartType = null, bool? absoluteValues = false, bool redPositive = true)
     {
         chartType = chartType ?? SelectedChartType;
 
@@ -1239,15 +1260,15 @@
             case ChartType.Line:
                 return GetLineChartDataset(label, values, chartColour.Value);
             case ChartType.Bar:
-                return GetBarChartDataset(label, values, absoluteValues);
+                return GetBarChartDataset(label, values, absoluteValues, redPositive);
         }
 
         throw new NotImplementedException();
     }
 
-    BarChartDataset<float?> GetBarChartDataset(string label, List<float?> values, bool? absoluteValues)
+    BarChartDataset<float?> GetBarChartDataset(string label, List<float?> values, bool? absoluteValues, bool redPositive = true)
     {
-        var colour = Enso.GetBarChartColourSet(values);
+        var colour = Enso.GetBarChartColourSet(values, redPositive);
 
         return new BarChartDataset<float?>
                     {
