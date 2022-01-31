@@ -19,7 +19,7 @@ namespace AcornSat.WebApi.Model
         public string LocationInfoUrl { get; set; }
         public List<DataType> DataTypes { get; set; }
         public DataResolution DataResolution { get; set; }
-        public List<MeasurementType> MeasurementTypes { get; set; }
+        public List<DataAdjustment> DataAdjustments { get; set; }
         public List<Location> Locations { get; set;}
     }
 }

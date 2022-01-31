@@ -23,7 +23,7 @@ namespace AcornSat.Core
             Daily,
         }
 
-        public enum MeasurementType
+        public enum DataAdjustment
         {
             Unadjusted,
             Adjusted,
@@ -40,9 +40,10 @@ namespace AcornSat.Core
 
         public enum StatisticalMethod
         {
-            GroupThenAverage,
-            GroupThenAverage_Relative,
-            BinThenCount
+            GroupByDayThenAverage,
+            GroupByDayThenAverage_Relative,
+            BinThenCount,
+            Sum,
         }
     }
 }

@@ -130,13 +130,13 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             Description = "The Australian Climate Observations Reference Network - Surface Air Temperature data set, is a homogenized daily maximum and minimum temperature data set containing data from 112 locations across Australia extending from 1910 to the present.",
             MoreInformationUrl = "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
             FolderName = "ACORN-SAT",
-            MeasurementTypes = new List<MeasurementType> { MeasurementType.Adjusted, MeasurementType.Unadjusted },
+            DataAdjustments = new List<DataAdjustment> { DataAdjustment.Adjusted, DataAdjustment.Unadjusted },
             DataResolution = DataResolution.Daily,
             MeasurementDefinitions = new List<MeasurementDefinition>
             {
                 new MeasurementDefinition
                 {
-                    MeasurementType = MeasurementType.Adjusted,
+                    DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.TempMax,
                     DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d*\.?\d*),*$",
                     FolderName = "adjusted",
@@ -145,7 +145,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
                 new MeasurementDefinition
                 {
-                    MeasurementType = MeasurementType.Adjusted,
+                    DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.TempMin,
                     DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d*\.?\d*),*$",
                     FolderName = "adjusted",
@@ -154,7 +154,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
                 new MeasurementDefinition
                 {
-                    MeasurementType = MeasurementType.Unadjusted,
+                    DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.TempMax,
                     DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
                     FolderName = "raw-data",
@@ -163,7 +163,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
                 new MeasurementDefinition
                 {
-                    MeasurementType = MeasurementType.Unadjusted,
+                    DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.TempMin,
                     DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
                     FolderName = "raw-data",
@@ -172,7 +172,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
                 new MeasurementDefinition
                 {
-                    MeasurementType = MeasurementType.Unadjusted,
+                    DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.Rainfall,
                     DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
                     FolderName = "raw-data",
@@ -191,13 +191,13 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             Description = "This ACORN-SAT dataset includes homogenised monthly data from the Remote Australian Islands and Antarctica network of 8 locations, which provide ground-based temperature records.",
             MoreInformationUrl = "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
             FolderName = "RAIA",
-            MeasurementTypes = new List<MeasurementType> { MeasurementType.Adjusted },
+            DataAdjustments = new List<DataAdjustment> { DataAdjustment.Adjusted },
             DataResolution = DataResolution.Monthly,
             MeasurementDefinitions = new List<MeasurementDefinition>
             {
                 new MeasurementDefinition
                 {
-                    MeasurementType = MeasurementType.Adjusted,
+                    DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.TempMax,
                     DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$",
                     FolderName = "adjusted",
@@ -207,7 +207,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
                 new MeasurementDefinition
                 {
-                    MeasurementType = MeasurementType.Adjusted,
+                    DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.TempMin,
                     DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$",
                     FolderName = "adjusted",
@@ -226,13 +226,13 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             Description = "The National Institute of Water and Atmospheric Research (NIWA) eleven-station series are New Zealand temperature trends from a set of eleven climate stations with no significant site changes since the 1930s.",
             MoreInformationUrl = "https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data",
             FolderName = "NIWA",
-            MeasurementTypes = new List<MeasurementType> { MeasurementType.Unadjusted },
+            DataAdjustments = new List<DataAdjustment> { DataAdjustment.Unadjusted },
             DataResolution = DataResolution.Daily,
             MeasurementDefinitions = new List<MeasurementDefinition>
             {
                 new MeasurementDefinition
                 {
-                    MeasurementType = MeasurementType.Unadjusted,
+                    DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.TempMax,
                     DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$",
                     FolderName = "raw-data",
@@ -241,7 +241,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
                 new MeasurementDefinition
                 {
-                    MeasurementType = MeasurementType.Unadjusted,
+                    DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.TempMin,
                     DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<tmax>-?[\d+\.\d+]*),-?\d*,(?<value>-?[\d+\.\d+]*),-?\d*,.*,D$",
                     FolderName = "raw-data",
@@ -264,7 +264,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             {
                 new MeasurementDefinition
                 {
-                    MeasurementType = MeasurementType.Unadjusted,
+                    DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.Enso,
                     DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                     FolderName = "MEI",

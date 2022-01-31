@@ -11,7 +11,7 @@ namespace AcornSat.Core.InputOutput
 {
     public static class DataReader
     {
-        public static async Task<List<DataSet>> ReadDataFile(string dataSetFolderName, MeasurementDefinition measurementDefinition, DataResolution dataResolution, MeasurementType measurementType, Location? location, short? yearFilter = null)
+        public static async Task<List<DataSet>> ReadDataFile(string dataSetFolderName, MeasurementDefinition measurementDefinition, DataResolution dataResolution, DataAdjustment measurementType, Location? location, short? yearFilter = null)
         {
             var dataTypeFolder = GetDataTypeFolder(measurementDefinition.DataType);
 
@@ -44,7 +44,7 @@ namespace AcornSat.Core.InputOutput
             return dataSets;
         }
 
-        private static async Task<DataSet> GetDataSet(MeasurementDefinition measurementDefinition, DataResolution dataResolution, MeasurementType measurementType, short? yearFilter, string filePath, Regex regEx, List<DataSet> dataSets, string site = null)
+        private static async Task<DataSet> GetDataSet(MeasurementDefinition measurementDefinition, DataResolution dataResolution, DataAdjustment measurementType, short? yearFilter, string filePath, Regex regEx, List<DataSet> dataSets, string site = null)
         {
             var records = await ReadDataFile(site, regEx, filePath, measurementDefinition.FileNameFormat, measurementDefinition.NullValue, dataResolution, yearFilter);
 
@@ -64,7 +64,7 @@ namespace AcornSat.Core.InputOutput
                     Resolution = dataResolution,
                     DataType = measurementDefinition.DataType,
                     Station = site,
-                    MeasurementType = measurementType,
+                    DataAdjustment = measurementType,
                     StartYear = startYear,
                     Year = yearFilter,
                     DataRecords = records
