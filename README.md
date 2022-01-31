@@ -40,13 +40,13 @@ In rough order of priority
 - GHGs (CO2, CH4, etc) data and graphs
 - Climate stripes. https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
 - Write an adaptor to query NIWA CliFlo website to pull in the 11-station series data automatically
-- Support graphs for rainfall
 - Get ENSO data from URLs for indexes (still supporting offline mode)
 - Alternate averages (use median/mode - not sure how useful that is)
 - Show graphs from two or more locations at once? (not sure how useful that is)
 - Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
+- 2022-01-31: Support graphs for rainfall
 - 2022-01-29: Small map initially. Click to expand to select location. Collapse map after selection.
 - 2022-01-27: Download datasets as CSV - yearly data only, for now
 - 2022-01-26: Alter web API to look for precalculated data in a cache instead of calculating from daily. If no cached data, calculate and save to cache
