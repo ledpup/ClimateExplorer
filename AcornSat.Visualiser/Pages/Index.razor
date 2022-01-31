@@ -1019,24 +1019,34 @@
         if ((Maximums || Minimums) && Rainfall)
         {
             yAxes = new []
-            { 
-                new  
-                { 
-                    ScaleLabel = new { Id = "Temperature", LabelString = yLabel, Display = true } 
-                },
+            {
+                // We have to add the Rainfall axis first because we're using BarCharts for rainfail and BarChartDataset does not yet have
+                // a YAxisID. If a YAxisID is not set, the fisrt y-axis is chosen by chartjs
                 new
                 {
-                    ScaleLabel = new { Id = "Rainfall", LabelString = "Rainfall (mm)", Display = true }
+                    Id = "rainfall",
+                    Position = "right",
+                    GridLines = new { Display = false },
+                    ScaleLabel = new { LabelString = "Rainfall (mm)", Display = true }
+                },
+                new  
+                { 
+                    Id = "temperature",
+                    Position = "left",
+                    GridLines = new { Display = true },
+                    ScaleLabel = new { LabelString = yLabel, Display = true } 
                 }
             };
         }
         else if (Maximums || Minimums)
         {
             yAxes = new[]
-    {
+            {
                 new
                 {
-                    ScaleLabel = new {  Id = "Temperature", LabelString = yLabel, Display = true }
+                    Id = "temperature",
+                    Position = "left",
+                    ScaleLabel = new { LabelString = yLabel, Display = true }
                 },
             };
         }
@@ -1046,7 +1056,9 @@
             { 
                 new  
                 { 
-                    ScaleLabel = new { Id = "Rainfall", LabelString = "Rainfall (mm)", Display = true } 
+                    Id = "rainfall",
+                    Position = "left",
+                    ScaleLabel = new { LabelString = "Rainfall (mm)", Display = true } 
                 }
             };
         }
@@ -1303,7 +1315,7 @@
                         PointRadius = 5,
                         BorderDash = new List<int> { },
                         LineTension = 0.1f,
-                        //YAxisID = "Temperature"
+                        YAxisID = "temperature"
                     };
     }
 
