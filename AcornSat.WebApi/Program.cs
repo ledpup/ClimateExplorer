@@ -369,6 +369,7 @@ async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataS
         var yearSets = dailyDataSet.DataRecords.GroupBy(x => x.Year);
 
         List<DataRecord> returnDataRecords = null;
+        List<BinDefinition> binDefinitions = null;
         switch (queryParameters.Aggregation)
         {
             case Aggregation.GroupThenAverage:
@@ -378,7 +379,8 @@ async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataS
             case Aggregation.BinThenCount:
                 var min = dailyDataSet.DataRecords.Min(x => x.Value).Value;
                 var max = dailyDataSet.DataRecords.Max(x => x.Value).Value;
-                returnDataRecords = BinThenCount(yearSets, min, max, (BinThenCount)queryParameters.StatsParameters);
+                binDefinitions = CreateBins(min, max, (BinThenCount)queryParameters.StatsParameters);
+                returnDataRecords = BinThenCount(yearSets, binDefinitions, (BinThenCount)queryParameters.StatsParameters);
                 break;
         }
         
@@ -391,6 +393,7 @@ async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataS
             MeasurementType = queryParameters.MeasurementType,
             DataRecords = returnDataRecords,
             StartYear = dailyDataSet.StartYear,
+            BinDefinitions = binDefinitions,
         };
         averagedDataSets.Add(returnDataSet);
     }
@@ -430,29 +433,43 @@ async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataS
     }
 }
 
-List<DataRecord> BinThenCount(IEnumerable<IGrouping<short, DataRecord>> yearSets, float min, float max, BinThenCount statsParameters)
+List<BinDefinition> CreateBins(float min, float max, BinThenCount statsParameters)
 {
     var range = max - min;
     var binSize = range / statsParameters.NumberOfBins.Value;
-    var bins = new List<DataRecord>();
+    var bins = new List<BinDefinition>();
+    for (var i = 0; i < statsParameters.NumberOfBins; i++)
+    {
+        var start = min + (i * binSize);
+        var end = min + ((i + 1) * binSize);
+        if (end > max)
+        {
+            throw new Exception("This bin is outside of the range.");
+        }
+        bins.Add(new BinDefinition { Name = $"{MathF.Round(start, 1)}-{MathF.Round(end, 1)}", Min = start, Max = end });
+    }
+    return bins;
+}
+
+List<DataRecord> BinThenCount(IEnumerable<IGrouping<short, DataRecord>> yearSets, List<BinDefinition> bins, BinThenCount statsParameters)
+{
+    var records = new List<DataRecord>();
     foreach (var yearSet in yearSets)
     {
         var orderedValues = yearSet.ToList().Where(x => x.Value.HasValue).OrderBy(x => x.Value);
         
-        for (var i = 0; i < statsParameters.NumberOfBins; i++)
+        foreach (var bin in bins)
         {
-            var start = min + (i * binSize);
-            var end = min + ((i + 1) * binSize);
-            var count = orderedValues.Count(x => x.Value >= start && x.Value < end);
-            bins.Add(new DataRecord() 
+            var count = orderedValues.Count(x => x.Value >= bin.Min && x.Value < bin.Max);
+            records.Add(new DataRecord() 
             { 
                 Year = yearSet.Key,
-                Label = $"{MathF.Round(start, 1)}-{MathF.Round(end, 1)}",
+                Label = bin.Name,
                 Value = count, 
             });
         }
     }
-    return bins;
+    return records;
 }
 
 List<DataRecord> GroupThenAverage(IEnumerable<IGrouping<short, DataRecord>> yearSets, GroupThenAverage groupThenAverage)

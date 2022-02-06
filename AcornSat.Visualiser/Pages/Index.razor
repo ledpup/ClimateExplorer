@@ -300,7 +300,7 @@
     *@
     @switch (InternalChartType)
     {
-  @*      case ChartType.Line:
+        @*case ChartType.Line:
             <Chart @ref="chart" TItem="float?" Clicked="@OnBlazoriseChartClicked" Type="Blazorise.Charts.ChartType.Line" />
             break;
 
@@ -308,9 +308,9 @@
             <Chart @ref="chart" TItem="float?" Clicked="@OnBlazoriseChartClicked" Type="Blazorise.Charts.ChartType.Bar" />
             break;*@
 
-        case ChartType.Heatmap:
+        @*case ChartType.Heatmap:
             <PlotlyChart @ref="plotlyChart" Layout="layout" Config="config" Data="data" Id="HeatMapChart" />
-            break;
+            break;*@
     }
     
     <PlotlyChart @ref="plotlyChart" Layout="layout" Config="config" Data="data" Id="HeatMapChart" />

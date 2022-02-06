@@ -1,0 +1,10 @@
+﻿@page "/plotly-test"
+@using Plotly.Blazor
+@using Plotly.Blazor.LayoutLib
+@using Plotly.Blazor.LayoutLib.XAxisLib
+@using Font = Plotly.Blazor.LayoutLib.AnnotationLib.Font
+
+
+<PageTitle>Plotly</PageTitle>
+
+<PlotlyChart @ref="plotlyChart" Layout="layout" Config="config" Data="data" Id="HeatMapChart" />

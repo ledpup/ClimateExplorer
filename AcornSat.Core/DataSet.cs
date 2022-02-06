@@ -14,6 +14,7 @@ public class DataSet
 
     public string Station { get; set; }
     public MeasurementType MeasurementType { get; set; }
+    public List<BinDefinition> BinDefinitions { get; set; }
     public List<DataRecord> DataRecords { get; set; }
 
     public short? StartYear { get; set; }
