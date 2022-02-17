@@ -84,10 +84,16 @@
             </Alert>
         </Column>
     }
-    <Column ColumnSize="ColumnSize.Is1">
+    <Column ColumnSize="ColumnSize.Is2">
         <Field>
             <Button Color="Color.Primary" Clicked="@ShowSelectLocationModal">Change Location</Button>
         </Field>
+        @if (SelectedResolution == DataResolution.Yearly)
+        {
+            <Field>
+                <Button Color="Color.Primary" Clicked="@OnDownloadDataClicked">Download Data</Button>
+            </Field>
+        }
     </Column>
     <Column ColumnSize="ColumnSize.Is1">
         <Field>
@@ -97,14 +103,6 @@
             <Button Color="Color.Primary" Clicked="@ShowFilterModal">Filter</Button>
         </Field>
     </Column>
-    @if (SelectedResolution == DataResolution.Yearly)
-    {
-        <Column ColumnSize="ColumnSize.Is1">
-            <Field>
-                <Button Color="Color.Primary" Clicked="@OnDownloadDataClicked">Download Data</Button>
-            </Field>
-       </Column>
-    }
 </Row>
 
 <Modal @ref="selectLocationModal">
@@ -328,7 +326,7 @@
     }
 </style>
 
-<div style="width: 85%; border: 0.5px dotted; padding: 10px; position: absolute; bottom: 5px;">
+<div style="border: 0.5px dotted; padding: 10px;">
     @* We change the chart's type dynamically depending on selected options.
        We found that changing an existing Chart instance's Type did not always
        cause it to refresh properly.
@@ -1065,6 +1063,8 @@
 
         object chartOptions = new
         {
+            Responsive = true,
+            MaintainAspectRatio = false,
             SpanGaps = true,
             Title = new 
             { 
