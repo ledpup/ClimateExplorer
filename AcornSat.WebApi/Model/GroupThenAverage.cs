@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AcornSat.WebApi.Model
 {
-    public class GroupThenAverage : StatsParameters
+    public class GroupThenAverage : AggregationParameters
     {
         public GroupThenAverage(short dayGrouping = 14, float dayGroupingThreshold = .7f)
         {

@@ -32,7 +32,7 @@ app.MapGet("/", () => @"Hello, from minimal ACORN-SAT Web API!
                         Call /ACORN-SAT/Yearly/{temperatureType}/{locationId}?dayGrouping=14&dayGroupingThreshold=.8 for yearly average temperature records at locationId. Records are grouped by dayGrouping. If the number of records in the group does not meet the threshold, the data is considered invalid.");
 app.MapGet("/datasetdefinition", async (bool? includeLocations) => await GetDataSetDefinitions(includeLocations));
 app.MapGet("/location", async (string dataSetName) => await GetLocations(dataSetName));
-app.MapGet("/dataset/{dataType}/{resolution}/{measurementType}/{locationId}", async (DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, Aggregation? aggregation, short? dayGrouping, float? dayGroupingThreshold, short? numberOfBins) => await GetDataSets(new QueryParameters(dataType, resolution, measurementType, locationId, aggregation, year, dayGrouping, dayGroupingThreshold, numberOfBins)));
+app.MapGet("/dataset/{dataType}/{resolution}/{measurementType}/{locationId}", async (DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, short? year, Aggregation? aggregation, short? dayGrouping, float? dayGroupingThreshold, short? numberOfBins, float? binSize, short? sufficientNumberOfDaysInYearThreshold) => await GetDataSets(new QueryParameters(dataType, resolution, measurementType, locationId, aggregation, year, dayGrouping, dayGroupingThreshold, numberOfBins, binSize, sufficientNumberOfDaysInYearThreshold)));
 app.MapGet("/dataset/{dataType}/{resolution}/{measurementType}", async (DataType dataType, DataResolution resolution, MeasurementType measurementType, float? minLatitude, float? maxLatitude, short dayGrouping, float dayGroupingThreshold, float locationGroupingThreshold) => await GetTemperaturesByLatitudeGroups(dataType, resolution, measurementType, minLatitude, maxLatitude, dayGrouping, dayGroupingThreshold, locationGroupingThreshold));
 app.MapGet("/reference/co2/", () => GetCarbonDioxide());
 app.MapGet("/reference/enso/{index}/{resolution}", async (EnsoIndex index, DataResolution resolution, string measure) => await GetEnso(index, resolution, measure));
@@ -238,12 +238,12 @@ async Task<List<DataSet>> GetDataSets(QueryParameters queryParameters)
             }
             break;
         case DataResolution.Weekly:
-            dataSets = await GetAverageFromDailyTemperatures(definition, queryParameters.DataType, DataResolution.Weekly, queryParameters.MeasurementType, queryParameters.LocationId, queryParameters.Year.Value, ((GroupThenAverage)queryParameters.StatsParameters).DayGroupingThreshold);
+            dataSets = await GetAverageFromDailyTemperatures(definition, queryParameters.DataType, DataResolution.Weekly, queryParameters.MeasurementType, queryParameters.LocationId, queryParameters.Year.Value, ((GroupThenAverage)queryParameters.AggregationParameters).DayGroupingThreshold);
             break;
         case DataResolution.Monthly:
             if (definition.DataResolution == DataResolution.Daily)
             {
-                dataSets = await GetAverageFromDailyTemperatures(definition, queryParameters.DataType, DataResolution.Monthly, queryParameters.MeasurementType, queryParameters.LocationId, queryParameters.Year.Value, ((GroupThenAverage)queryParameters.StatsParameters).DayGroupingThreshold);
+                dataSets = await GetAverageFromDailyTemperatures(definition, queryParameters.DataType, DataResolution.Monthly, queryParameters.MeasurementType, queryParameters.LocationId, queryParameters.Year.Value, ((GroupThenAverage)queryParameters.AggregationParameters).DayGroupingThreshold);
             }
             else if (definition.DataResolution == DataResolution.Monthly)
             {
@@ -374,13 +374,13 @@ async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataS
         {
             case Aggregation.GroupThenAverage:
             case Aggregation.GroupThenAverage_Relative:
-                returnDataRecords = GroupThenAverage(yearSets, (GroupThenAverage)queryParameters.StatsParameters);
+                returnDataRecords = GroupThenAverage(yearSets, (GroupThenAverage)queryParameters.AggregationParameters);
                 break;
             case Aggregation.BinThenCount:
                 var min = dailyDataSet.DataRecords.Min(x => x.Value).Value;
                 var max = dailyDataSet.DataRecords.Max(x => x.Value).Value;
-                binDefinitions = CreateBins(min, max, (BinThenCount)queryParameters.StatsParameters);
-                returnDataRecords = BinThenCount(yearSets, binDefinitions, (BinThenCount)queryParameters.StatsParameters);
+                binDefinitions = CreateBins(min, max, (BinThenCount)queryParameters.AggregationParameters);
+                returnDataRecords = BinThenCount(yearSets, binDefinitions, (BinThenCount)queryParameters.AggregationParameters);
                 break;
         }
         
@@ -433,39 +433,44 @@ async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataS
     }
 }
 
-List<BinDefinition> CreateBins(float min, float max, BinThenCount statsParameters)
+List<BinDefinition> CreateBins(float min, float max, BinThenCount parameters)
 {
     var range = max - min;
-    var binSize = range / statsParameters.NumberOfBins.Value;
+    var binSize = parameters.BinSize ?? range / parameters.NumberOfBins.Value;
+    var numberOfBins = (short)Math.Ceiling(range / binSize);
     var bins = new List<BinDefinition>();
-    for (var i = 0; i < statsParameters.NumberOfBins; i++)
+    for (var i = 0; i < numberOfBins; i++)
     {
         var start = min + (i * binSize);
         var end = min + ((i + 1) * binSize);
-        if (end > max)
-        {
-            throw new Exception("This bin is outside of the range.");
-        }
-        bins.Add(new BinDefinition { Name = $"{MathF.Round(start, 1)}-{MathF.Round(end, 1)}", Min = start, Max = end });
+        bins.Add(new BinDefinition 
+        { 
+            Name = $"{string.Format("{0:00.0#}", Math.Round(start, 1))}°C - {string.Format("{0:00.0#}", Math.Round(end, 1))}°C",
+            Min = start,
+            Max = end 
+        });
     }
     return bins;
 }
 
-List<DataRecord> BinThenCount(IEnumerable<IGrouping<short, DataRecord>> yearSets, List<BinDefinition> bins, BinThenCount statsParameters)
+List<DataRecord> BinThenCount(IEnumerable<IGrouping<short, DataRecord>> yearSets, List<BinDefinition> bins, BinThenCount parameters)
 {
     var records = new List<DataRecord>();
     foreach (var yearSet in yearSets)
     {
         var orderedValues = yearSet.ToList().Where(x => x.Value.HasValue).OrderBy(x => x.Value);
-        
+        var completeYear = orderedValues.Count() >= parameters.SufficientNumberOfDaysInYearThreshold;
+
         foreach (var bin in bins)
         {
-            var count = orderedValues.Count(x => x.Value >= bin.Min && x.Value < bin.Max);
+            var value = completeYear ?
+                (int?)orderedValues.Count(x => x.Value >= bin.Min && x.Value < bin.Max) :
+                null;
             records.Add(new DataRecord() 
             { 
                 Year = yearSet.Key,
                 Label = bin.Name,
-                Value = count, 
+                Value = value, 
             });
         }
     }

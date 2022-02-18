@@ -6,7 +6,7 @@ namespace AcornSat.WebApi.Model
 {
     public class QueryParameters
     {
-        public QueryParameters(DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, Aggregation? aggregation, short? year, short? dayGrouping = 14, float? dayGroupingThreshold = .7f, short? numberOfBins = null, short? binSize = null)
+        public QueryParameters(DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, Aggregation? aggregation, short? year, short? dayGrouping = 14, float? dayGroupingThreshold = .7f, short? numberOfBins = null, float? binSize = null, short? completeYearThreshold = 350)
         {
             DataType = dataType;
             Resolution = resolution;
@@ -18,10 +18,10 @@ namespace AcornSat.WebApi.Model
             {
                 case Core.Enums.Aggregation.GroupThenAverage:
                 case Core.Enums.Aggregation.GroupThenAverage_Relative:
-                    StatsParameters = new GroupThenAverage(dayGrouping.Value, dayGroupingThreshold.Value);
+                    AggregationParameters = new GroupThenAverage(dayGrouping.Value, dayGroupingThreshold.Value);
                     break;
                 case Core.Enums.Aggregation.BinThenCount:
-                    StatsParameters = new BinThenCount(numberOfBins, binSize);
+                    AggregationParameters = new BinThenCount(completeYearThreshold.Value, numberOfBins, binSize);
                     break;
             }
         }
@@ -32,7 +32,7 @@ namespace AcornSat.WebApi.Model
         public Aggregation? Aggregation { get; set; }
         public short? Year { get; set; }
 
-        public StatsParameters StatsParameters { get; set; }
+        public AggregationParameters AggregationParameters { get; set; }
 
         public string ToBase64String()
         {
@@ -46,17 +46,18 @@ namespace AcornSat.WebApi.Model
                 {
                     case Core.Enums.Aggregation.GroupThenAverage:
                     case Core.Enums.Aggregation.GroupThenAverage_Relative:
-                        stringBuilder.Append($"_{((GroupThenAverage)StatsParameters).DayGrouping}");
-                        stringBuilder.Append($"_{((GroupThenAverage)StatsParameters).DayGroupingThreshold}");
+                        stringBuilder.Append($"_{((GroupThenAverage)AggregationParameters).DayGrouping}");
+                        stringBuilder.Append($"_{((GroupThenAverage)AggregationParameters).DayGroupingThreshold}");
                         break;
                     case Core.Enums.Aggregation.BinThenCount:
-                        if (((BinThenCount)StatsParameters).NumberOfBins.HasValue)
+                        stringBuilder.Append($"_{((BinThenCount)AggregationParameters).SufficientNumberOfDaysInYearThreshold}");
+                        if (((BinThenCount)AggregationParameters).NumberOfBins.HasValue)
                         {
-                            stringBuilder.Append($"_{((BinThenCount)StatsParameters).NumberOfBins}");
+                            stringBuilder.Append($"_{((BinThenCount)AggregationParameters).NumberOfBins}");
                         }
-                        if (((BinThenCount)StatsParameters).BinSize.HasValue)
+                        if (((BinThenCount)AggregationParameters).BinSize.HasValue)
                         {
-                            stringBuilder.Append($"_{((BinThenCount)StatsParameters).BinSize}");
+                            stringBuilder.Append($"_{((BinThenCount)AggregationParameters).BinSize}");
                         }
                         break;
                 }

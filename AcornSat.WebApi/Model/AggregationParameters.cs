@@ -1,6 +1,6 @@
 ﻿namespace AcornSat.WebApi.Model
 {
-    public abstract class StatsParameters
+    public abstract class AggregationParameters
     {
     }
 }

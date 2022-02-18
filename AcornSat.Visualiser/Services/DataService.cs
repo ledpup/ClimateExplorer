@@ -12,7 +12,7 @@ public class DataService : IDataService
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<DataSet>> GetDataSet(DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, Aggregation? aggregation, short? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f, short? numberOfBins = 10)
+    public async Task<IEnumerable<DataSet>> GetDataSet(DataType dataType, DataResolution resolution, MeasurementType measurementType, Guid locationId, Aggregation? aggregation, short? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f, short? numberOfBins = 10, float? binSize = 1, short? sufficientNumberOfDaysInYearThreshold = 350)
     {
         var url = $"dataSet/{dataType}/{resolution}/{measurementType}/{locationId}";
 
@@ -32,10 +32,18 @@ public class DataService : IDataService
         {
             url = QueryHelpers.AddQueryString(url, "dayGroupingThreshold", dayGroupingThreshold.Value.ToString());
         }
+        if (sufficientNumberOfDaysInYearThreshold != null)
+        {
+            url = QueryHelpers.AddQueryString(url, "sufficientNumberOfDaysInYearThreshold", sufficientNumberOfDaysInYearThreshold.Value.ToString());
+        }
+        if (binSize != null)
+        {
+            url = QueryHelpers.AddQueryString(url, "binSize", binSize.Value.ToString());
+        }
         if (numberOfBins != null)
         {
             url = QueryHelpers.AddQueryString(url, "numberOfBins", numberOfBins.Value.ToString());
-        }
+        }               
 
         return await _httpClient.GetFromJsonAsync<DataSet[]>(url);
     }

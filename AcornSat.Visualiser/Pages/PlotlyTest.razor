@@ -1,10 +1,49 @@
 ﻿@page "/plotly-test"
-@using Plotly.Blazor
-@using Plotly.Blazor.LayoutLib
-@using Plotly.Blazor.LayoutLib.XAxisLib
-@using Font = Plotly.Blazor.LayoutLib.AnnotationLib.Font
 
 
-<PageTitle>Plotly</PageTitle>
 
-<PlotlyChart @ref="plotlyChart" Layout="layout" Config="config" Data="data" Id="HeatMapChart" />
+<PageTitle>Heatmap</PageTitle>
+
+@if (dataSet != null)
+{
+    <table style="text-align: center;">
+        <colgroup>
+            <col span="1" style="background-color: #D6EEEE; width: 15px;" />
+        </colgroup>
+        <tbody>
+        @foreach(var bin in dataSet.BinDefinitions.OrderByDescending(x => x.Max))
+        {
+            <tr>
+                <td class="bin">
+                    @bin.Name
+                </td>
+                @foreach(var binGroup in binGroups.Where(x => x.Key == bin.Name))
+                {
+                    @foreach(var dataRecord in binGroup)
+                    {
+                        <td>
+                        @dataRecord.Value
+                        </td>
+                    }
+                }
+            </tr>
+        }
+        <tr style="background-color: #D6EEEE">
+            <td></td>
+            @foreach(var year in dataSet.DataRecords.GroupBy(x => x.Year))
+            {
+                    
+                <td>
+                    @*@if (year % 2 == 0)
+                    {*@
+                        @year.Key
+                    @*}*@
+                </td>
+            }
+            </tr>
+        </tbody>
+    </table>
+    <style>
+    td.bin { min-width: 150px; text-align: left;}
+    </style>
+}
