@@ -131,7 +131,7 @@
 @*<Button Clicked="@(async () => await ButtonClicked())">Redraw</Button>*@
 <div style="width: 85%; border: 0.5px dotted; padding: 10px; position: absolute; bottom: 5px;">
     <LineChart @ref="lineChart" TItem="float?" Clicked="@OnLineChartClicked">
-        <ChartTrendline @ref="chartTrendline" TItem="double?" />
+        <ChartTrendline @ref="chartTrendline" TItem="float?" />
     </LineChart>
 </div>
 
@@ -348,7 +348,7 @@
     }
 
     LineChart<float?> lineChart;
-    ChartTrendline<double?> chartTrendline;
+    ChartTrendline<float?> chartTrendline;
 
     async Task OnStartYearTextChanged(string text)
     {
@@ -544,23 +544,23 @@
                 Text = title,
                 Display = true
             },
-            Scales = new
-            {
-                YAxes = new []
-                { 
-                    new  
-                    { 
-                        ScaleLabel = new { LabelString = yLabel, Display = true } 
-                    } 
-                },
-                XAxes = new []
-                { 
-                    new 
-                    { 
-                        ScaleLabel = new { LabelString = xLabel, Display = true } 
-                    } 
-                }       
-            }
+            //Scales = new
+            //{
+            //    YAxes = new []
+            //    { 
+            //        new  
+            //        { 
+            //            ScaleLabel = new { LabelString = yLabel, Display = true } 
+            //        } 
+            //    },
+            //    XAxes = new []
+            //    { 
+            //        new 
+            //        { 
+            //            ScaleLabel = new { LabelString = xLabel, Display = true } 
+            //        } 
+            //    }       
+            //}
         };
 
         await lineChart.SetOptionsObject(chartOptions);
@@ -570,16 +570,16 @@
 
         if (trendlinesOn)
         {
-            var trendlines = new List<ChartTrendline> 
+            var trendlines = new List<ChartTrendlineData>
             {
-                new ChartTrendline 
-                { 
-                    DatasetIndex = 1,
-                    Width = 2, 
+                new ChartTrendlineData
+                {
+                    DatasetIndex = 0,
+                    Width = 2,
                     Color = ChartColor.FromRgba( 0, 0, 0, .6f ) 
                 }
             };
-            await chartTrendline.AddTrendLines(trendlines);
+            await chartTrendline.AddTrendLineOptions(trendlines);
         }
     }
 
@@ -735,7 +735,7 @@
                         Fill = false,
                         PointRadius = 5,
                         BorderDash = new List<int> { },
-                        LineTension = 0.1f,
+                        Tension = 0.1f,
                     };
     }
 
