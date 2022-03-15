@@ -544,23 +544,27 @@
                 Text = title,
                 Display = true
             },
-            //Scales = new
-            //{
-            //    YAxes = new []
-            //    { 
-            //        new  
-            //        { 
-            //            ScaleLabel = new { LabelString = yLabel, Display = true } 
-            //        } 
-            //    },
-            //    XAxes = new []
-            //    { 
-            //        new 
-            //        { 
-            //            ScaleLabel = new { LabelString = xLabel, Display = true } 
-            //        } 
-            //    }       
-            //}
+            Scales = new
+            {
+                X = new
+                {
+                    Title = new
+                    {
+                        Text = xLabel,
+                        Display = true,
+                        Color = "blue",
+                    },
+                },
+                Y = new
+                {
+                    Title = new
+                    {
+                        Text = yLabel,
+                        Display = true,
+                        Color = "blue",
+                    },
+                }
+            }
         };
 
         await lineChart.SetOptionsObject(chartOptions);
