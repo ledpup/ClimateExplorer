@@ -11,8 +11,7 @@
 <PageTitle>Index</PageTitle>
 
  @*<h1><a href="http://www.bom.gov.au/climate/data/acorn-sat/" target="_blank">ACORN-SAT</a></h1>*@
- <Button Color="Color.Primary" Clicked="@OnButtonClicked">Toggle trendline</Button>
-
+ 
 <Row>
     <Column ColumnSize="ColumnSize.Is2">
         <SelectList
@@ -55,6 +54,7 @@
         </Alert>
     </Column>
     <Column ColumnSize="ColumnSize.Is1">
+        <Check TValue="bool" Checked="@trendlinesOn" CheckedChanged="@OnButtonClicked">Trendline</Check>
         Selected year(s)
         <Autocomplete TItem="short"
                 TValue="short"
@@ -79,7 +79,7 @@
         <Column ColumnSize="ColumnSize.Is1">
             Simple Moving Average<br/>
             Interval
-            <Select TValue="int" SelectedValue="@SelectedPeriod" SelectedValueChanged="@OnSelectedPeriodChanged">
+            <Select TValue="int" SelectedValue="@SelectedMovingAverageInterval" SelectedValueChanged="@OnSelectedPeriodChanged">
                 <SelectItem Value="0">None</SelectItem>
                 <SelectItem Value="3">3 years</SelectItem>
                 <SelectItem Value="5">5 years</SelectItem>
@@ -193,10 +193,10 @@
         await BuildLocationDataSets();
     }
 
-    int SelectedPeriod;
+    int SelectedMovingAverageInterval;
     async Task OnSelectedPeriodChanged(int value)
     {
-        SelectedPeriod = value;
+        SelectedMovingAverageInterval = value;
         await HandleRedraw();
     }
 
@@ -397,7 +397,7 @@
 
         List<DataSet> bufferedSelectedDataSet = new List<DataSet>();
         Func<TemperatureRecord, bool> timeConstraint = null;
-
+        List<ChartTrendlineData> trendlines = null;
         if (SelectedResolution == DataResolution.Yearly)
         {
             var selectedDataSets = Datasets.Where(x => x.Resolution == DataResolution.Yearly && ((Adjusted && x.Type == MeasurementType.Adjusted) || (Unadjusted && x.Type == MeasurementType.Unadjusted)))
@@ -445,7 +445,7 @@
             Labels = labels;
             await lineChart.AddLabels(Labels);
 
-            await AddDataSetsToGraph(bufferedSelectedDataSet, timeConstraint);
+            trendlines = await AddDataSetsToGraph(bufferedSelectedDataSet, timeConstraint);
         }
         else
         {
@@ -538,7 +538,7 @@
 
         object chartOptions = new
         {
-            SpanGaps = true,
+            SpanGaps = false,
             Title = new 
             { 
                 Text = title,
@@ -569,22 +569,13 @@
 
         await lineChart.SetOptionsObject(chartOptions);
 
+         
+
+        //((Chart<float?)lineChart).Datasets
+
+        await chartTrendline.AddTrendLineOptions(trendlines);
+
         await lineChart.Update();
-
-
-        if (trendlinesOn)
-        {
-            var trendlines = new List<ChartTrendlineData>
-            {
-                new ChartTrendlineData
-                {
-                    DatasetIndex = 0,
-                    Width = 2,
-                    Color = ChartColor.FromRgba( 0, 0, 0, .6f ) 
-                }
-            };
-            await chartTrendline.AddTrendLineOptions(trendlines);
-        }
     }
 
     string GetXAxisLabel()
@@ -603,64 +594,111 @@
         throw new Exception();
     }
 
-    async Task AddDataSetsToGraph(List<DataSet> bufferedSelectedDataSet, Func<TemperatureRecord, bool> timeConstraint, string? labelPrefix = null, short? year = null, short colourAdjust = 0)
+    async Task<List<ChartTrendlineData>> AddDataSetsToGraph(List<DataSet> bufferedSelectedDataSet, Func<TemperatureRecord, bool> timeConstraint, string? labelPrefix = null, short? year = null, short colourAdjust = 0)
     {
+        var dataSetIndex = 0;
         if (!string.IsNullOrWhiteSpace(labelPrefix))
         {
             labelPrefix += " ";
         }
+        var trendlines = new List<ChartTrendlineData>();
         if (Adjusted && Maximums)
         {
             var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Adjusted, y => y.Max, timeConstraint, year);
             var label = labelPrefix + "Maximum Adjusted";
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour());
-            if (SelectedPeriod == 0 || !SoloSma)
+            if (SelectedMovingAverageInterval == 0 || !SoloSma)
             {
                 await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
+                if (trendlinesOn)
+                    trendlines.Add(AddTrendline(dataSetIndex, colour));
+                dataSetIndex++;
             }
-            await AddMovingAverage(label, values);
+            else if (SelectedMovingAverageInterval != 0)
+            {
+                await AddMovingAverage(label, values);
+                dataSetIndex++;
+            }
         }
         if (Adjusted && Minimums)
         {
             var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Adjusted, y => y.Min, timeConstraint, year);
             var label = labelPrefix + "Minimum Adjusted";
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour());
-            if (SelectedPeriod == 0 || !SoloSma)
+            if (SelectedMovingAverageInterval == 0 || !SoloSma)
             {
                 await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
+                if (trendlinesOn)
+                    trendlines.Add(AddTrendline(dataSetIndex, colour));
+                dataSetIndex++;
             }
-            await AddMovingAverage(label, values);
+            else if (SelectedMovingAverageInterval != 0)
+            {
+                await AddMovingAverage(label, values);
+                dataSetIndex++;
+            }
         }
         if (Unadjusted && Maximums)
         {
             var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Unadjusted, y => y.Max, timeConstraint, year);
             var label = labelPrefix + "Maximum Unadjusted";
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour());
-            if (SelectedPeriod == 0 || !SoloSma)
+            if (SelectedMovingAverageInterval == 0 || !SoloSma)
             {
                 await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
+                if (trendlinesOn)
+                    trendlines.Add(AddTrendline(dataSetIndex, colour));
+                dataSetIndex++;
             }
-            await AddMovingAverage(label, values);
+            else if (SelectedMovingAverageInterval != 0)
+            {
+                await AddMovingAverage(label, values);
+                dataSetIndex++;
+            }
         }
         if (Unadjusted && Minimums)
         {
             var values =  SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Unadjusted, y => y.Min, timeConstraint, year);
             var label = labelPrefix + "Minimum Unadjusted";
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour());
-            if (SelectedPeriod == 0 || !SoloSma)
+            if (SelectedMovingAverageInterval == 0 || !SoloSma)
             {
                 await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
+                if (trendlinesOn)
+                    trendlines.Add(AddTrendline(dataSetIndex, colour));
+                dataSetIndex++;
             }
-            await AddMovingAverage(label, values);
+            else if (SelectedMovingAverageInterval != 0)
+            {
+                await AddMovingAverage(label, values);
+                dataSetIndex++;
+            }
         }
+        if (trendlines.Count == 1)
+        {
+            trendlines[0].Color = ChartColor.FromRgba(0, 0, 0, 1f);
+        }
+        return trendlines;
+    }
+
+    ChartTrendlineData AddTrendline(int datasetIndex, ChartColor colour)
+    {
+        
+        return
+            new ChartTrendlineData
+                {
+                    DatasetIndex = datasetIndex,
+                    Width = 3,
+                    Color = colour
+                };
     }
 
     async Task AddMovingAverage(string label, List<float?> values)
     {
-        if (SelectedPeriod != 0)
+        if (SelectedMovingAverageInterval != 0)
         {
-            var simpleMovingAverages = SimpleMovingAverage.Calculate(SelectedPeriod, values);
-            label = $"{label} Moving Average @ {SelectedPeriod} year interval";
+            var simpleMovingAverages = SimpleMovingAverage.Calculate(SelectedMovingAverageInterval, values);
+            label = $"{label} Moving Average @ {SelectedMovingAverageInterval} year interval";
             await lineChart.AddDataSet(GetLineChartDataset(label, simpleMovingAverages, ChartColor.FromHtmlColorCode(colours.GetNextColour())));
         }
     }
