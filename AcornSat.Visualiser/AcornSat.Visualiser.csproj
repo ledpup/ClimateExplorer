@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blazorise" Version="1.0.1" />
-    <PackageReference Include="Blazorise.Bootstrap5" Version="1.0.1" />
-    <PackageReference Include="Blazorise.Charts" Version="1.0.1" />
-    <PackageReference Include="Blazorise.Components" Version="1.0.1" />
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.0.1" />
+    <PackageReference Include="Blazorise" Version="1.0.2" />
+    <PackageReference Include="Blazorise.Bootstrap5" Version="1.0.2" />
+    <PackageReference Include="Blazorise.Charts" Version="1.0.2" />
+    <PackageReference Include="Blazorise.Components" Version="1.0.2" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.0.2" />
     <PackageReference Include="FisSst.BlazorMaps" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.3" />
