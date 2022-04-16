@@ -173,6 +173,7 @@
                     <Radio TValue="ChartType" Value="ChartType.Line">Line chart</Radio>
                     <Radio TValue="ChartType" Value="ChartType.Bar">Bar chart - relative to average</Radio>
                 </RadioGroup>
+                <Check TValue="bool" Checked="@trendlinesOn" CheckedChanged="@OnButtonClicked">Trendline</Check>
             </Alert>
            <Alert Color="Color.Primary" Visible="true">
                 Data Types
@@ -338,11 +339,15 @@
     @switch (InternalChartType)
     {
         case ChartType.Line:
-            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line" />
+            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
+                <ChartTrendline @ref="chartTrendline" TItem="float?" />
+            </Chart>
             break;
 
         case ChartType.Bar:
-            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Bar" />
+            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Bar">
+                <ChartTrendline @ref="chartTrendline" TItem="float?" />
+            </Chart>
             break;
     }
     
@@ -350,6 +355,15 @@
 
 
 @code{
+
+    bool trendlinesOn = true;
+    async Task OnButtonClicked()
+    {
+        trendlinesOn = !trendlinesOn;
+
+        await HandleRedraw();
+    }
+
     string DayGroupingText(int dayGrouping)
     {
         switch (dayGrouping)
@@ -831,6 +845,7 @@
     }
 
     Chart<float?> chart;
+    ChartTrendline<float?> chartTrendline;
 
     async Task OnStartYearTextChanged(string text)
     {
@@ -882,6 +897,7 @@
 
         CorrelatedDataSets = new List<DataSet>();
         Func<DataRecord, bool> timeConstraint = null;
+        List<ChartTrendlineData> trendlines = null;
 
         if (SelectedResolution == DataResolution.Yearly)
         {
@@ -934,6 +950,8 @@
 
             Labels = GetLabels();
             await chart.AddLabels(Labels);
+
+            trendlines = await AddDataSetsToGraph(CorrelatedDataSets, timeConstraint);
 
             await AddDataSetsToGraph(CorrelatedDataSets, timeConstraint);
         }
@@ -1092,6 +1110,8 @@
         
         await chart.SetOptionsObject(chartOptions);
 
+        await chartTrendline.AddTrendLineOptions(trendlines);
+
         await chart.Update();
     }
 
@@ -1122,7 +1142,7 @@
         throw new Exception();
     }
 
-    async Task AddDataSetsToGraph(List<DataSet> bufferedSelectedDataSet, Func<DataRecord, bool> timeConstraint, string? labelPrefix = null, short? year = null, short colourAdjust = 0)
+    async Task<List<ChartTrendlineData>> AddDataSetsToGraph(List<DataSet> bufferedSelectedDataSet, Func<DataRecord, bool> timeConstraint, string? labelPrefix = null, short? year = null, short colourAdjust = 0)
     {
         var dataSetIndex = 0;
         if (!string.IsNullOrWhiteSpace(labelPrefix))
@@ -1138,6 +1158,11 @@
             if (SelectedMovingAverageInterval == 0 || !SoloSma)
             {
                 await chart.AddDataSet(GetChartDataset(label, values, colour));
+                if (trendlinesOn)
+                {
+                    trendlines.Add(AddTrendline(dataSetIndex, colour));
+                }
+                dataSetIndex++;
             }
             else if (SelectedMovingAverageInterval != 0)
             {
@@ -1153,6 +1178,11 @@
             if (SelectedMovingAverageInterval == 0 || !SoloSma)
             {
                 await chart.AddDataSet(GetChartDataset(label, values, colour));
+                if (trendlinesOn)
+                {
+                    trendlines.Add(AddTrendline(dataSetIndex, colour));
+                }
+                dataSetIndex++;
             }
             else if (SelectedMovingAverageInterval != 0)
             {
@@ -1181,6 +1211,11 @@
             if (SelectedMovingAverageInterval == 0 || !SoloSma)
             {
                 await chart.AddDataSet(GetChartDataset(label, values, colour));
+                if (trendlinesOn)
+                {
+                    trendlines.Add(AddTrendline(dataSetIndex, colour));
+                }
+                dataSetIndex++;
             }
             else if (SelectedMovingAverageInterval != 0)
             {
@@ -1196,6 +1231,11 @@
             if (SelectedMovingAverageInterval == 0 || !SoloSma)
             {
                 await chart.AddDataSet(GetChartDataset(label, values, colour));
+                if (trendlinesOn)
+                {
+                    trendlines.Add(AddTrendline(dataSetIndex, colour));
+                }
+                dataSetIndex++;
             }
             await AddMovingAverage(label, values);
         }
@@ -1209,6 +1249,23 @@
             }
             //await AddMovingAverage(label, values);
         }
+        if (trendlines.Count == 1)
+        {
+            trendlines[0].Color = ChartColor.FromRgba(0, 0, 0, 1f);
+        }
+        return trendlines;
+    }
+
+    ChartTrendlineData AddTrendline(int datasetIndex, ChartColor colour)
+    {
+        
+        return
+            new ChartTrendlineData
+                {
+                    DatasetIndex = datasetIndex,
+                    Width = 3,
+                    Color = colour
+                };
     }
 
     async Task AddMovingAverage(string label, List<float?> values)
