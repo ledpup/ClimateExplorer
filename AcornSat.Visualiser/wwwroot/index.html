@@ -39,6 +39,38 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
             integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
             crossorigin=""></script>
+
+
+    <script>
+        async function downloadFileFromStream(fileName, contentStreamReference) {
+            const arrayBuffer = await contentStreamReference.arrayBuffer();
+            const blob = new Blob([arrayBuffer]);
+            const url = URL.createObjectURL(blob);
+
+            triggerFileDownload(fileName, url);
+
+            URL.revokeObjectURL(url);
+        }
+
+        function triggerFileDownload(fileName, url) {
+            const anchorElement = document.createElement('a');
+            anchorElement.href = url;
+            anchorElement.download = fileName ?? '';
+            anchorElement.click();
+            anchorElement.remove();
+        }
+
+        function toggleMapExpansion() {
+            var mapElement = document.getElementById("mapContainer");
+
+            var isMapCurrentlyExpanded = mapElement.className == "mapContainer expanded";
+
+            mapElement.className = isMapCurrentlyExpanded ? "mapContainer" : "mapContainer expanded";
+
+            // Fake a window resize so that the leaflet map control realises it has resized.
+            window.dispatchEvent(new Event('resize'));
+        }
+    </script>
 </body>
 
 </html>

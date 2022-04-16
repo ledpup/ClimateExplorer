@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="GeoCoordinate.NetStandard1" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AcornSat.Core\AcornSat.Core.csproj" />
   </ItemGroup>
 
@@ -15,7 +19,7 @@
     <None Update="locations.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="ReferenceData\acorn_sat_v2.1.0_stations.csv">
+    <None Update="ReferenceData\ACORN-SAT\acorn_sat_v2.1.0_stations.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="daily_tmax\tmax.001019.daily.csv">
@@ -690,10 +694,10 @@
     <None Update="daily_tmin\tmin.096003.daily.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="ReferenceData\Locations.csv">
+    <None Update="ReferenceData\ACORN-SAT\Locations.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="ReferenceData\primarysites.txt">
+    <None Update="ReferenceData\ACORN-SAT\primarysites.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="raw-data\hqnew001019.txt">
@@ -1342,6 +1346,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="raw-data\hqnew096071.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="ReferenceData\NIWA\Locations.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

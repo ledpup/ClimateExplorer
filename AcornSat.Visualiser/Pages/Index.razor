@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject NavigationManager NavManager
 @using AcornSat.Core
 @using Blazorise
 @using Blazorise.Components
@@ -6,92 +7,258 @@
 @using Blazorise.Charts.Trendline
 @using System.IO;
 @using System.Globalization
+@using Darnton.Blazor.DeviceInterop.Geolocation
 @using static AcornSat.Core.Enums
+@using GeoCoordinatePortable;
+@using Microsoft.AspNetCore.WebUtilities
+@using System.Text
 
 <PageTitle>Index</PageTitle>
 
  @*<h1><a href="http://www.bom.gov.au/climate/data/acorn-sat/" target="_blank">ACORN-SAT</a></h1>*@
  
 <Row>
-    <Column ColumnSize="ColumnSize.Is2">
-        <SelectList
-            TItem="Location"
-            TValue="Guid"
-            Data="@Locations"
-            TextField="@((item)=>item.Name)"
-            ValueField="@((item)=>item.Id)"
-            SelectedValueChanged="@SelectedLocationChanged"
-            DefaultItemText="Select ACORN-SAT Location"
-            Style="width: 100%"
-            />
-        @if (SelectedLocation != null)
-        {
+    @if (SelectedLocation != null)
+    {
+        <Column ColumnSize="ColumnSize.Is3">
             <Alert Color="Color.Primary" Visible="true">
                 <FieldBody>
-                    @SelectedLocation.Name
+                    @if (SelectedDataSetDefinition.LocationInfoUrl != null)
+                    {
+                        <span><a href="@SelectedDataSetDefinition.LocationInfoUrl.Replace("[primaryStation]", @SelectedLocation.PrimaryStation.TrimStart('0'))" target="_blank">@SelectedLocation.Name</a></span>
+                    }
+                    else
+                    {
+                        <span>@(SelectedLocation.Name)</span>
+                    }
                 </FieldBody>
                 <br />
                 <FieldBody>
-                    @SelectedLocation.Coordinates.Latitude°, @SelectedLocation.Coordinates.Longitude°, @SelectedLocation.Coordinates.Elevation m
+                    @SelectedLocation.Coordinates
                 </FieldBody>
                 <br />
                 <FieldBody>
-                    Stations: @string.Join(", ", SelectedLocation.Sites)
+                    @if (SelectedLocation.Sites.Count() == 1)
+                    {
+                        <span>Station: </span>
+                    }
+                    else
+                    {
+                        <span>Stations: </span>
+                    }
+                    
+                    @{
+                        bool firstSite = true;
+                        foreach (var site in SelectedLocation.Sites)
+                        {
+                            if (!firstSite)
+                            {
+                                <span>, </span>
+                            }
+                            else
+                            {
+                                firstSite = false;
+                            }
+
+                            if (SelectedDataSetDefinition.StationInfoUrl != null)
+                            {
+                                <span><a href="@SelectedDataSetDefinition.StationInfoUrl.Replace("[station]", site)" target="_blank">@site</a></span>
+                            }
+                            else
+                            {
+                                <span>@(site)</span>
+                            }
+                        }
+                    }
+                </FieldBody>
+                <br />
+                <FieldBody>
+                    Dataset:
+                    @if (SelectedDataSetDefinition.MoreInformationUrl != null)
+                    {
+                        <a href="@SelectedDataSetDefinition.MoreInformationUrl" target="_blank">@SelectedDataSetDefinition.Name</a>
+                    }
+                    else
+                    {
+                        <span>@(SelectedDataSetDefinition.Name) !!! @SelectedDataSetDefinition.MoreInformationUrl</span>
+                    }
                 </FieldBody>
             </Alert>
+        </Column>
+    }
+    <Column ColumnSize="ColumnSize.Is2">
+        <Field>
+            <Button Color="Color.Primary" Clicked="@ShowSelectLocationModal">Change Location</Button>
+        </Field>
+        @if (SelectedResolution == DataResolution.Yearly)
+        {
+            <Field>
+                <Button Color="Color.Primary" Clicked="@OnDownloadDataClicked">Download Data</Button>
+            </Field>
         }
     </Column>
     <Column ColumnSize="ColumnSize.Is1">
-        <Alert Color="Color.Secondary" Visible="true">
-            <Check TValue="bool" Checked="@Unadjusted" CheckedChanged="@OnUnadjustedChanged">Unadjusted</Check>
-            <Check TValue="bool" Checked="@Adjusted" CheckedChanged="@OnAdjustedChanged">Adjusted</Check>
-        </Alert>
+        <Field>
+            <Button Color="Color.Primary" Clicked="@ShowOptionsModal">Options</Button>
+        </Field>
+        <Field>
+            <Button Color="Color.Primary" Clicked="@ShowFilterModal">Filter</Button>
+        </Field>
     </Column>
-    <Column ColumnSize="ColumnSize.Is1">
-        <Alert Color="Color.Info" Visible="true">
-            <Check TValue="bool" Checked="@Maximums" CheckedChanged="@OnMaximumsChanged">Maximums</Check>
-            <Check TValue="bool" Checked="@Minimums" CheckedChanged="@OnMinimumsChanged">Minimums</Check>
-        </Alert>
-    </Column>
-    <Column ColumnSize="ColumnSize.Is1">
-        <Check TValue="bool" Checked="@trendlinesOn" CheckedChanged="@OnButtonClicked">Trendline</Check>
-        Selected year(s)
-        <Autocomplete TItem="short"
-                TValue="short"
-                Data="@DatasetYears"
-                TextField="@((item) => item.ToString())"
-                ValueField="@((item) => item)"
-                Multiple
-                SelectedValuesChanged="@OnSelectedYearsChanged"
-                SelectedValues="@SelectedYears"
-                SelectedTexts="@SelectedYearsText">
-            <NotFoundContent>@context was not found</NotFoundContent>
-        </Autocomplete>
-    </Column>
-    @if (SelectedResolution == DataResolution.Yearly)
-    {
-        <Column ColumnSize="ColumnSize.Is1">            
-            Start Year <Validation Validator="ValidateYear"><TextEdit Text="@StartYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnStartYearTextChanged" /></Validation>
-        </Column>
-        <Column ColumnSize="ColumnSize.Is1">
-            End Year <Validation Validator="ValidateYear"><TextEdit Text="@EndYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChanged" /></Validation>
-        </Column>
-        <Column ColumnSize="ColumnSize.Is1">
-            Simple Moving Average<br/>
-            Interval
-            <Select TValue="int" SelectedValue="@SelectedMovingAverageInterval" SelectedValueChanged="@OnSelectedPeriodChanged">
-                <SelectItem Value="0">None</SelectItem>
-                <SelectItem Value="3">3 years</SelectItem>
-                <SelectItem Value="5">5 years</SelectItem>
-                <SelectItem Value="7">7 years</SelectItem>
-                <SelectItem Value="10">10 years</SelectItem>
-            </Select>
-            <Check TValue="bool" Checked="@SoloSma" CheckedChanged="@OnSoloSmaChanged">Solo</Check>
-        </Column>
-    }
-    @if (SelectedResolution != DataResolution.Yearly)
-    {
-        <Column ColumnSize="ColumnSize.Is1">
+</Row>
+
+<Modal @ref="selectLocationModal">
+    <ModalContent>
+        <ModalHeader Background="Background.Light">
+            <ModalTitle>Select Location</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            @if (SelectedLocation != null)
+            {
+                <Field>
+                    Current Location: @SelectedLocation.Name
+                </Field>
+            }
+            <Field>
+                <Button Clicked="@OnUseCurrentLocation" Color="Color.Primary">Use Your Location</Button>
+            </Field>
+            <Field> 
+            </Field>
+            <Field>
+                <FieldLabel>Select a location from the list</FieldLabel>
+                <SelectList
+                    TItem="Location"
+                    TValue="Guid"
+                    Data="@Locations"
+                    TextField="@((item)=>item.Name)"
+                    ValueField="@((item)=>item.Id)"
+                    SelectedValueChanged="@SelectedLocationChanged"
+                    DefaultItemText="Select Location"
+                    Style="width: 100%"
+                    />
+           </Field>
+            @if (SelectedLocation != null)
+            {
+                <Field>
+                    <FieldLabel>Select a nearby location</FieldLabel>
+                    <Alert Color="Color.Secondary" Visible="true">
+                        <Repeater Items="@SelectedLocation.NearbyLocations" >
+                            <div>
+                                <Blazorise.Link Title="@context.LocationName" To="#" Clicked="@(()=>OnNearbyLocationClicked(context.LocationId))">@context.LocationName</Blazorise.Link>
+                                <span style="color: #888">
+                                    @context.Distance km
+                                    @context.CompassRoseDirection 
+                                    <span style="display: inline-block; transform: rotate(@($"{context.BearingDegrees}deg"))">⭡</span>
+                                </span>
+                            </div>
+                        </Repeater>
+                    </Alert>
+                </Field>
+            }
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+ <Modal @ref="optionsModal">
+    <ModalContent>
+        <ModalHeader Background="Background.Light">
+            <ModalTitle>Options</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <Alert Color="Color.Success" Visible="true">
+                Chart Type
+                <RadioGroup TValue="ChartType" CheckedValue="@SelectedChartType" CheckedValueChanged="@OnSelectedChartTypeValueChanged" Orientation="Orientation.Vertical">
+                    <Radio TValue="ChartType" Value="ChartType.Line">Line chart</Radio>
+                    <Radio TValue="ChartType" Value="ChartType.Bar">Bar chart - relative to average</Radio>
+                </RadioGroup>
+            </Alert>
+           <Alert Color="Color.Primary" Visible="true">
+                Data Types
+                <Check TValue="bool" Checked="@Maximums" CheckedChanged="@OnMaximumsChanged">Maximum Temperatures</Check>
+                <Check TValue="bool" Checked="@Minimums" CheckedChanged="@OnMinimumsChanged">Minimum Temperatures</Check>
+                <Check TValue="bool" Checked="@Rainfall" CheckedChanged="@OnRainfallChanged">Rainfall</Check>
+           </Alert>
+           <Alert Color="Color.Secondary" Visible="true">
+                Data Adjustment
+                <Check TValue="bool" Checked="@Unadjusted" CheckedChanged="@OnUnadjustedChanged" Disabled="@UnadjustedDisabled">Unadjusted</Check>
+                <Check TValue="bool" Checked="@Adjusted" CheckedChanged="@OnAdjustedChanged"  Disabled="@AdjustedDisabled">Adjusted</Check>
+                <Check TValue="bool" Checked="@Difference" CheckedChanged="@OnDifferenceChanged"  Disabled="@DifferenceDisabled">Difference - adjusted vs unadjusted</Check>
+            </Alert>
+            <Alert Color="Color.Info" Visible="true">
+                Simple Moving Average<br/>
+                <Select TValue="int" SelectedValue="@SelectedPeriod" SelectedValueChanged="@OnSelectedPeriodChanged">
+                    <SelectItem Value="0">None</SelectItem>
+                    <SelectItem Value="3">3 years</SelectItem>
+                    <SelectItem Value="5">5 years</SelectItem>
+                    <SelectItem Value="7">7 years</SelectItem>
+                    <SelectItem Value="10">10 years</SelectItem>
+                </Select>
+                <Check TValue="bool" Checked="@SoloSma" CheckedChanged="@OnSoloSmaChanged">Solo</Check>
+            </Alert>
+            <Alert Color="Color.Danger" Visible="true">
+                Day grouping<br/>
+                <Select TValue="short" SelectedValue="@SelectedDayGrouping" SelectedValueChanged="@OnSelectingDayGroupingChanged">
+                    <SelectItem Value="5">@DayGroupingText(5)</SelectItem>
+                    <SelectItem Value="7">@DayGroupingText(7)</SelectItem>
+                    <SelectItem Value="13">@DayGroupingText(13)</SelectItem>
+                    <SelectItem Value="14">@DayGroupingText(14)</SelectItem>
+                    <SelectItem Value="26">@DayGroupingText(26)</SelectItem>
+                    <SelectItem Value="28">@DayGroupingText(28)</SelectItem>
+                    <SelectItem Value="73">@DayGroupingText(73)</SelectItem>
+                    <SelectItem Value="91">@DayGroupingText(91)</SelectItem>
+                    <SelectItem Value="182">@DayGroupingText(182)</SelectItem>
+                </Select>
+                Threshold required to form a valid group (% percentage)<br/>
+                <TextEdit Text="@DayGroupThresholdText" TextChanged="@OnDayGroupThresholdTextChanged" MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
+                <Button Color="Color.Primary" Clicked="@ApplyYearlyAverageParameters">Apply</Button>
+            </Alert>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+ <Modal @ref="filterModal">
+    <ModalContent>
+        <ModalHeader Background="Background.Light">
+            <ModalTitle>Filter</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+            Selected year(s)
+            <Autocomplete TItem="short"
+                    TValue="short"
+                    Data="@DatasetYears"
+                    TextField="@((item) => item.ToString())"
+                    ValueField="@((item) => item)"
+                    Multiple
+                    SelectedValuesChanged="@OnSelectedYearsChanged"
+                    SelectedValues="@SelectedYears"
+                    SelectedTexts="@SelectedYearsText">
+                <NotFoundContent>@context was not found</NotFoundContent>
+            </Autocomplete>
+            </Field>
+    
+        @if (SelectedResolution == DataResolution.Yearly)
+        {
+            <Field>        
+                Start Year <Validation Validator="ValidateYear">
+                                <TextEdit Text="@SelectedStartYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnStartYearTextChanged">
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </TextEdit>
+                            </Validation>
+            </Field>
+            <Field>
+                End Year <Validation Validator="ValidateYear"><TextEdit Text="@SelectedEndYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChanged" /></Validation>
+            </Field>
+
+        }
+        @if (SelectedResolution != DataResolution.Yearly)
+        {
+            <Field>
             Resolution
             <Select TValue="DataResolution" SelectedValue="@SelectedResolution" SelectedValueChanged="@OnSelectedResolutionChanged">
                 <SelectItem Value="@(DataResolution.Yearly)">Yearly</SelectItem>
@@ -99,50 +266,283 @@
                 <SelectItem Value="@(DataResolution.Weekly)">Weekly</SelectItem>
                 <SelectItem Value="@(DataResolution.Daily)">Daily</SelectItem>
             </Select>
-        </Column>
+            </Field>
+        }
+        </ModalBody>
+    </ModalContent>
+</Modal>
 
-        <Column ColumnSize="ColumnSize.Is1">
-            Selected Station
-            <SelectList
-                TItem="string"
-                TValue="string"
-                Data="@StationsWithData"
-                TextField="@((item)=>item)"
-                ValueField="@((item)=>item)"
-                SelectedValueChanged="@SelectedStationChanged"
-                Style="width: 100%"
-                />
-        </Column>
-    }
-</Row>
-
-<Map @ref="map" MapOptions="mapOptions"></Map>
+<div class="mapContainer" id="mapContainer">
+    <Map @ref="map" MapOptions="@GetMapOptions()"></Map>
+    <div class="@(IsMapExpanded ? "mapToggleExpanded" : "mapToggleCollapsed")">
+        <Button Color="Color.Primary" Clicked="@ToggleMapExpansion">
+            @(IsMapExpanded ? "Collapse map" : "Expand")
+        </Button>
+    </div>
+</div>
 
 <style>
     #mapId {
-        height: 25%;
-        width: 27%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 50px;
+    }
+
+    .mapContainer {
         position: absolute;
         top: 10px;
         right: 10px;
+        width: 550px;
+        height: 250px;
+        z-index: 1;
+    }
+
+    .mapContainer.expanded {
+        top: 0px;
+        right: 0px;
+        width: 100%;
+        height: 100%;
+        background: #aaa;
+    }
+
+    .mapToggleExpanded {
+        position: absolute;
+        bottom: 0px;
+        height: 50px;
+        left: 0px;
+        right: 0px;
+        padding: 6px;
+        text-align: center;
+    }
+
+    .mapToggleCollapsed {
+        position: absolute;
+        bottom: 0px;
+        height: 50px;
+        left: 0px;
+        right: 0px;
+        padding-top: 4px;
+        text-align: right;
     }
 </style>
 
-@*<Button Clicked="@(async () => await ButtonClicked())">Redraw</Button>*@
-<div style="width: 85%; border: 0.5px dotted; padding: 10px; position: absolute; bottom: 5px;">
-    <LineChart @ref="lineChart" TItem="float?" Clicked="@OnLineChartClicked">
-        <ChartTrendline @ref="chartTrendline" TItem="float?" />
-    </LineChart>
+<div style="border: 0.5px dotted; padding: 10px; position: relative;">
+    @* We change the chart's type dynamically depending on selected options.
+       We found that changing an existing Chart instance's Type did not always
+       cause it to refresh properly.
+       So we effectively create a new instance of the chart each time InternalChartType
+       changes.
+    *@
+    @switch (InternalChartType)
+    {
+        case ChartType.Line:
+            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line" />
+            break;
+
+        case ChartType.Bar:
+            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Bar" />
+            break;
+    }
+    
 </div>
 
+
 @code{
-
-    bool trendlinesOn = true;
-    async Task OnButtonClicked()
+    string DayGroupingText(int dayGrouping)
     {
-        trendlinesOn = !trendlinesOn;
+        switch (dayGrouping)
+        {
+            case 5:
+                return "Groups of 5 days (73 groups)";
+            case 7:
+                return "Groups of 7 days (52 groups)";
+            case 13: 
+                return "Groups of 13 days (28 groups)";
+            case 14:
+                return "Groups of 14 days (26 groups)";
+            case 26:
+                return "Groups of 26 days (14 groups)";
+            case 28:
+                return "Groups of 28 days (13 groups)";
+            case 73:
+                return "Groups of 73 days (5 groups)";
+            case 91:
+                return "Groups of 91 days (4 groups)";
+            case 182:
+                return "Groups of 182 days (2 groups)";
+        }
+        throw new NotImplementedException(dayGrouping.ToString());
+    }
 
-        await HandleRedraw();
+    Stream GetFileStream()
+    {
+        var resolution = SelectedChartType == ChartType.Line ? "Yearly average" : "Yearly values relative to average";
+
+        var data = new List<string> { $"{SelectedLocation.Name},{SelectedLocation.Coordinates.ToString(true)}" };
+
+        data.Add($"{resolution},{ChartStartYear}-{ChartEndYear},Averaging method: {DayGroupingText(SelectedDayGrouping).ToLower()} with a threshold of {SelectedDayGroupThreshold},average requiring all groupings for a full data set - otherwise record null");
+        data.Add(string.Empty);
+
+        var header = "Year," + string.Join(",", CorrelatedDataSets.Select(x => $"{x.DataType} {x.DataAdjustment}"));
+        data.Add(header);
+
+        foreach (var label in GetLabels())
+        {
+            var dataRow = label + ",";
+            foreach (var dataSet in CorrelatedDataSets)
+            {
+                var dataRecord = dataSet.DataRecords.Single(x => x.Year == short.Parse(label));
+                dataRow += (dataRecord.Value == null ? string.Empty : MathF.Round((float)dataRecord.Value, 2).ToString("0.00")) + ",";
+            }
+            dataRow = dataRow.TrimEnd(',');
+            data.Add(dataRow);
+        }
+
+        var bytes = data.SelectMany(s => System.Text.Encoding.UTF8.GetBytes(s + Environment.NewLine)).ToArray();
+        var fileStream = new MemoryStream(bytes);
+
+        return fileStream;
+    }
+
+    async Task CollapseMapIfExpanded()
+    {
+        if (IsMapExpanded)
+        {
+            await ToggleMapExpansion();
+        }
+    }
+
+    async Task ToggleMapExpansion()
+    {
+        await JS.InvokeVoidAsync("toggleMapExpansion", null);
+
+        IsMapExpanded = !IsMapExpanded;
+    }
+
+    @inject IJSRuntime JS
+    private async Task OnDownloadDataClicked()
+    {
+        var fileStream = GetFileStream();
+        var fileName = $"{SelectedLocation.Name} {ChartStartYear}-{ChartEndYear}.csv";
+
+        using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+    }
+
+    async Task OnNearbyLocationClicked(Guid guid)
+    {
+        await SelectedLocationChanged(guid);
+    }
+
+    bool IsMapExpanded { get; set; } = false;
+
+    float SelectedDayGroupThreshold { get; set; } = .7f;
+    string DayGroupThresholdText { get; set; }
+    short SelectedDayGrouping { get; set; } = 14;
+    short SelectingDayGrouping { get; set; }
+
+    async Task OnSelectingDayGroupingChanged(short value)
+    {
+        SelectingDayGrouping = value;
+    }
+
+    async Task OnDayGroupThresholdTextChanged(string value)
+    {
+        DayGroupThresholdText = value;
+    }
+
+    async Task ApplyYearlyAverageParameters()
+    {
+        SelectedDayGroupThreshold = float.Parse(DayGroupThresholdText) / 100;
+        SelectedDayGrouping = SelectingDayGrouping == 0 ? SelectedDayGrouping : SelectingDayGrouping;
+        await BuildDataSets();
+    }
+
+    private Modal selectLocationModal;
+    private Task ShowSelectLocationModal()
+    {
+        return selectLocationModal.Show();
+
+    }
+    private Task HideSelectLocationModal()
+    {
+        return selectLocationModal.Hide();
+    }
+
+    private Modal optionsModal;
+    private Task ShowOptionsModal()
+    {
+        DayGroupThresholdText = (SelectedDayGroupThreshold * 100).ToString();
+        return optionsModal.Show();
+
+    }
+    private Task HideOptionsModal()
+    {
+        return optionsModal.Hide();
+    }
+
+    private Modal filterModal;
+    private Task ShowFilterModal()
+    {
+        return filterModal.Show();
+    }
+    private Task HideFilterModal()
+    {
+        return filterModal.Hide();
+    }
+
+    /// <summary>
+    /// The chart type applied to the chart control. This depends both on which chart
+    /// type the user has selected and whether or not the "Difference" channel has been
+    /// enabled (if the "Difference" channel is enabled, then the chart has to be placed
+    /// in "Bar" mode, or else the Difference bars don't render).
+    ///
+    /// You might wonder why we don't just always leave the chart in "Bar" mode. We did,
+    /// actually, but then we noticed that in "Bar" mode, there's a small misalignment
+    /// between grid lines and the datapoints.
+    /// </summary>
+    ChartType InternalChartType { get; set; }
+
+    /// <summary>
+    /// The chart type selected by the user on the options page
+    /// </summary>
+    ChartType SelectedChartType { get; set; }
+    async Task OnSelectedChartTypeValueChanged(ChartType value)
+    {
+        SelectedChartType = value;
+
+        await UpdateInternalChartType();
+    }
+
+    async Task UpdateInternalChartType()
+    {
+        InternalChartType =
+            SelectedChartType == ChartType.Bar || Difference || Rainfall
+            ? ChartType.Bar
+            : ChartType.Line;
+
+        await BuildDataSets();
+    }
+
+    [Inject] 
+    public IGeolocationService GeolocationService { get; set; }
+
+    async Task OnUseCurrentLocation()
+    {
+        var currentPositionResult = await GeolocationService.GetCurrentPosition();
+        var lat = currentPositionResult.Position.Coords.Latitude;
+        var lng = currentPositionResult.Position.Coords.Longitude;
+        var alt = currentPositionResult.Position.Coords.Altitude;
+        var geoCoord = alt == null ? new GeoCoordinate(lat, lng) :
+                                     new GeoCoordinate(lat, lng, alt.Value);
+
+        var distances = Location.GetDistances(geoCoord, Locations);
+        var closestLocation = distances.OrderBy(x => x.Distance).First();
+
+        await SelectedLocationChanged(closestLocation.LocationId);
     }
 
     List<string> SelectedYearsText = new();
@@ -151,8 +551,11 @@
 
     async Task OnSelectedYearsChanged(List<short> values)
     {
-        if (values.Count == 0 || values[0] == 0)
+        if (!SelectedYears.Any() && values.Count == 0)
         {
+            SelectedResolution = DataResolution.Yearly;
+            await InvokeAsync(StateHasChanged);
+            await BuildDataSets();
             return;
         }
 
@@ -166,20 +569,16 @@
         }
         SelectedYears = validValues;
 
-        SelectedResolution = DataResolution.Weekly;
+        if (SelectedResolution == DataResolution.Yearly)
+        {
+            SelectedResolution = DataResolution.Monthly;
+        }
 
         await InvokeAsync(StateHasChanged);
-        await BuildLocationDataSets();
+        await BuildDataSets();
     }
 
     List<string> StationsWithData { get; set; }
-
-    string SelectedStation { get; set; }
-    async Task SelectedStationChanged(string value)
-    {
-        SelectedStation = value;
-        await BuildLocationDataSets();
-    }
 
     DataResolution SelectedResolution { get; set; }
     async Task OnSelectedResolutionChanged(DataResolution value)
@@ -190,7 +589,7 @@
             SelectedYearsText = new();
             SelectedYears = new List<short>();
         }
-        await BuildLocationDataSets();
+        await BuildDataSets();
     }
 
     int SelectedMovingAverageInterval;
@@ -221,32 +620,51 @@
         await HandleRedraw();
     }
 
+    bool Difference = false;
+    async Task OnDifferenceChanged(bool value)
+    {
+        Difference = value;
+        await UpdateInternalChartType();
+    }
+
+    bool UnadjustedDisabled, AdjustedDisabled, DifferenceDisabled;
+
+    List<DataType> SelectedDataTypes = new List<DataType>();
+    List<DataAdjustment> SelectedDataAdjustments = new List<DataAdjustment>();
+
     bool Maximums = true;
     async Task OnMaximumsChanged(bool value)
     {
         Maximums = value;
-        await HandleRedraw();
+        await BuildDataSets();
     }
 
     bool Minimums;
     async Task OnMinimumsChanged(bool value)
     {
         Minimums = value;
-        await HandleRedraw();
+        await BuildDataSets();
     }
 
-    string StartYear { get; set; }
-    string EndYear { get; set; }
+    bool Rainfall;
+    async Task OnRainfallChanged(bool value)
+    {
+        Rainfall = value;
+        await UpdateInternalChartType();
+    }
 
-    short StartYearOfChart { get; set; }
+    string SelectedStartYear { get; set; }
+    string SelectedEndYear { get; set; }
 
     Guid SelectedLocationId { get; set; }
     Location SelectedLocation { get; set; }
+    DataSetDefinition SelectedDataSetDefinition { get; set; }
 
     [Inject]
     public IDataService DataService { get; set; }
 
     List<DataSet> Datasets { get; set; }
+    IEnumerable<DataSetDefinition> DataSetDefinitions;
     IEnumerable<Location> Locations;
     List<Marker> MapMarkers;
     ColourServer colours = new ColourServer();
@@ -268,8 +686,13 @@
     {
         var year = Convert.ToString(e.Value);
 
-        e.Status = string.IsNullOrEmpty(year) ? ValidationStatus.None :
-            year.Length == 4 ? ValidationStatus.Success : ValidationStatus.Error;
+        e.Status = 
+            string.IsNullOrEmpty(year) 
+            ? ValidationStatus.None
+            : 
+                year.Length == 4
+                ? ValidationStatus.Success
+                : ValidationStatus.Error;
     }
 
     private async Task HandleMapMouseEvent(MouseEvent mouseEvent)
@@ -277,13 +700,18 @@
         var lat = Math.Round(mouseEvent.LatLng.Lat, 1);
         var lng = Math.Round(mouseEvent.LatLng.Lng, 1);
         var newLocation = Locations.Single(x => Math.Round(x.Coordinates.Latitude, 1) == lat && Math.Round(x.Coordinates.Longitude, 1) == lng);
+        await CollapseMapIfExpanded();
         await SelectedLocationChanged(newLocation.Id);
     }
 
     protected override async Task OnInitializedAsync()
     {
-
         SelectedResolution = DataResolution.Yearly;
+        if (DataService == null)
+        {
+            throw new NullReferenceException(nameof(DataService));
+        }
+        DataSetDefinitions = (await DataService.GetDataSetDefinitions()).ToList();
         Locations = (await DataService.GetLocations()).ToList();
 
         if (MapMarkers == null)
@@ -293,12 +721,22 @@
         Datasets = new List<DataSet>();
         SelectedYears = new List<short>();
 
-        await SelectedLocationChanged(Guid.Parse("e069a5df-8f9e-47d6-a53b-dba5dd4e618c"));
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("locationId", out var locationIdStringValues))
+        {
+            await SelectedLocationChanged(Guid.Parse(locationIdStringValues.ToString()));
+        }
+        else
+        {
+            await SelectedLocationChanged(Guid.Parse("aed87aa0-1d0c-44aa-8561-cde0fc936395"));
+        }
+
+
 
         await base.OnInitializedAsync();
     }
 
-    protected async Task BuildLocationDataSets()
+    protected async Task BuildDataSets()
     {
         var dataExists = false;
         Datasets = new List<DataSet>();
@@ -307,53 +745,97 @@
             throw new NullReferenceException(nameof(Datasets));
         }
 
-        var existingDatasets = Datasets.Where(x => x.Resolution == DataResolution.Yearly && x.Location.Id == SelectedLocationId);
-        dataExists = existingDatasets.Any();
-        if (!dataExists)
+        var relativeToAverage = SelectedChartType == ChartType.Bar;
+        var statisticalMethod = relativeToAverage ? StatisticalMethod.GroupByDayThenAverage_Relative : StatisticalMethod.GroupByDayThenAverage;
+
+        SelectedDataTypes = new List<DataType>();
+        if (Maximums)
         {
-            var adjusted = (await DataService.GetTemperatures(DataResolution.Yearly, MeasurementType.Adjusted, SelectedLocationId)).ToList();
-            Datasets.AddRange(adjusted);
+            SelectedDataTypes.Add(DataType.TempMax);
+        }
+        if (Minimums)
+        {
+            SelectedDataTypes.Add(DataType.TempMin);
+        }
+        if (Rainfall)
+        {
+            SelectedDataTypes.Add(DataType.Rainfall);
+        }
+        foreach (var dataType in SelectedDataTypes)
+        {
+            if (dataType == DataType.Rainfall)
+            {
+                var rainfall = (await DataService.GetDataSet(dataType, DataResolution.Yearly, DataAdjustment.Unadjusted, SelectedLocationId, statisticalMethod: StatisticalMethod.Sum)).ToList();
+                Datasets.AddRange(rainfall);
+            }
+            else
+            {
+                var adjusted = (await DataService.GetDataSet(dataType, DataResolution.Yearly, DataAdjustment.Adjusted, SelectedLocationId, statisticalMethod: statisticalMethod, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold)).ToList();
+                Datasets.AddRange(adjusted);
 
-            var unadjusted = (await DataService.GetTemperatures(DataResolution.Yearly, MeasurementType.Unadjusted, SelectedLocationId)).ToList();
-            Datasets.AddRange(unadjusted);
+                var unadjusted = (await DataService.GetDataSet(dataType, DataResolution.Yearly, DataAdjustment.Unadjusted, SelectedLocationId, statisticalMethod: statisticalMethod, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold)).ToList();
+                Datasets.AddRange(unadjusted);
 
-            var adjustedYears = adjusted.Single().Years;
-            var unadjustedYears = unadjusted.SelectMany(x => x.Years).Distinct();
-            DatasetYears = adjustedYears.Concat(unadjustedYears).Distinct().OrderBy(x => x).ToList();
+                if (!DifferenceDisabled)
+                {
+                    var difference = GenerateDifferenceDataSet(unadjusted, adjusted);
+                    Datasets.Add(difference);
+                }
+
+                var adjustedYears = adjusted.SingleOrDefault()?.Years;
+                var unadjustedYears = unadjusted.SelectMany(x => x.Years).Distinct();
+                DatasetYears = adjustedYears == null ? unadjustedYears.ToList()
+                                                     : adjustedYears.Concat(unadjustedYears).Distinct().OrderBy(x => x).ToList();
+            }
         }
 
         foreach (var selectedYear in SelectedYears)
         {
-            var yearsExists = existingDatasets.Any(x => x.Year.HasValue && x.Year.Value == selectedYear);
-            if (!yearsExists)
+            foreach (var dataType in SelectedDataTypes)
             {
-                var adjustedTemps = (await DataService.GetTemperatures(SelectedResolution, MeasurementType.Adjusted, SelectedLocationId, selectedYear)).ToList();
-                Datasets.AddRange(adjustedTemps);
+                var adjusted = (await DataService.GetDataSet(dataType, SelectedResolution, DataAdjustment.Adjusted, SelectedLocationId, statisticalMethod, selectedYear, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold)).ToList();
+                Datasets.AddRange(adjusted);
 
-                var unadjustedTemps = (await DataService.GetTemperatures(SelectedResolution, MeasurementType.Unadjusted, SelectedLocationId, selectedYear)).ToList();
-                Datasets.AddRange(unadjustedTemps);
+                var unadjusted = (await DataService.GetDataSet(dataType, SelectedResolution, DataAdjustment.Unadjusted, SelectedLocationId, statisticalMethod, selectedYear, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold)).ToList();
+                Datasets.AddRange(unadjusted);
             }
         }
-
-
-        StationsWithData = Datasets.Where(x => x.Type == MeasurementType.Unadjusted && !string.IsNullOrWhiteSpace(x.Station))
-                    .Select(x => x.Station)
-                    .ToList();
-
-        SelectedStation = StationsWithData.FirstOrDefault();
 
         await map.SetView(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
 
         await HandleRedraw();
     }
 
-    LineChart<float?> lineChart;
-    ChartTrendline<float?> chartTrendline;
+    DataSet GenerateDifferenceDataSet(List<DataSet> unadjusted, List<DataSet> adjusted)
+    {
+        var difference = new DataSet
+        {
+            Resolution = DataResolution.Yearly,
+            DataType = unadjusted.First().DataType,
+            DataAdjustment = DataAdjustment.Difference,
+        };
+        unadjusted.ForEach(x =>
+            {
+                x.DataRecords.ForEach(y =>
+                {
+                    var adjustedTemp = adjusted.Single().DataRecords.SingleOrDefault(z => z.Year == y.Year);
+                    difference.DataRecords.Add(new DataRecord
+                    {
+                        Year = y.Year,
+                        Value = adjustedTemp == null ? null : adjustedTemp.Value - y.Value,
+                    });
+                });
+            }
+        );
+        return difference;
+    }
+
+    Chart<float?> chart;
 
     async Task OnStartYearTextChanged(string text)
     {
-        StartYear = text;
-        if (text.Length == 4)
+        SelectedStartYear = text;
+        if (text.Length == 0 || text.Length == 4)
         {
             await HandleRedraw();
         }
@@ -361,8 +843,8 @@
 
     async Task OnEndYearTextChanged(string text)
     {
-        EndYear = text;
-        if (text.Length == 4)
+        SelectedEndYear = text;
+        if (text.Length == 0 || text.Length == 4)
         {
             await HandleRedraw();
         }
@@ -375,6 +857,9 @@
             await HandleRedraw();
         }
     }
+
+    List<DataSet> CorrelatedDataSets = new List<DataSet>();
+    short ChartStartYear, ChartEndYear;
 
     async Task HandleRedraw()
     {
@@ -393,31 +878,42 @@
 
         string title = string.Empty;
 
-        await lineChart.Clear();
+        await chart.Clear();
 
-        List<DataSet> bufferedSelectedDataSet = new List<DataSet>();
-        Func<TemperatureRecord, bool> timeConstraint = null;
-        List<ChartTrendlineData> trendlines = null;
+        CorrelatedDataSets = new List<DataSet>();
+        Func<DataRecord, bool> timeConstraint = null;
+
         if (SelectedResolution == DataResolution.Yearly)
         {
-            var selectedDataSets = Datasets.Where(x => x.Resolution == DataResolution.Yearly && ((Adjusted && x.Type == MeasurementType.Adjusted) || (Unadjusted && x.Type == MeasurementType.Unadjusted)))
-                                           .ToList();
+            var selectedDataSets =
+                Datasets.Where(
+                    x => 
+                        x.Resolution == DataResolution.Yearly && 
+                        (
+                            (Adjusted && x.DataAdjustment == DataAdjustment.Adjusted) || 
+                            (Unadjusted && x.DataAdjustment == DataAdjustment.Unadjusted) || 
+                            (Difference && x.DataAdjustment == DataAdjustment.Difference) ||
+                            (Rainfall && x.DataType == DataType.Rainfall)
+                        )
+                )
+                .ToList();
 
-            bufferedSelectedDataSet = CreateYearlyBufferedDataSet(selectedDataSets);
+            CorrelatedDataSets = CreateStandardisedDataSet(selectedDataSets);
 
-            var superSetStartYear = bufferedSelectedDataSet.Min(x => x.Temperatures.Min(y => y.Year));
-            var superSetEndYear = bufferedSelectedDataSet.Max(x => x.Temperatures.Max(y => y.Year));
+            // Find the earliest and latest year across all datasets being plotted
+            var superSetStartYear = CorrelatedDataSets.Min(x => x.DataRecords.Min(y => y.Year));
+            var superSetEndYear = CorrelatedDataSets.Max(x => x.DataRecords.Max(y => y.Year));
 
-            var userStartYear = string.IsNullOrEmpty(StartYear) ? null : (short?)short.Parse(StartYear);
-            var userEndYear = string.IsNullOrEmpty(EndYear) ? null : (short?)short.Parse(EndYear);
+            var userStartYear = string.IsNullOrEmpty(SelectedStartYear) ? null : (short?)short.Parse(SelectedStartYear);
+            var userEndYear = string.IsNullOrEmpty(SelectedEndYear) ? null : (short?)short.Parse(SelectedEndYear);
 
-            var startYear = superSetStartYear;
-            var endYear = superSetEndYear;
+            ChartStartYear = superSetStartYear;
+            ChartEndYear = superSetEndYear;
             if (userStartYear != null)
             {
                 if (userStartYear >= superSetStartYear && userStartYear <= superSetEndYear)
                 {
-                    startYear = userStartYear.Value;
+                    ChartStartYear = userStartYear.Value;
                 }
             }
 
@@ -425,51 +921,34 @@
             {
                 if (userEndYear > superSetStartYear && userEndYear <= superSetEndYear)
                 {
-                    endYear = userEndYear.Value;
+                    ChartEndYear = userEndYear.Value;
                 }
             }
 
-            title = $"Average Yearly Temperature (in °C) for {SelectedLocation.Name} ({startYear}-{endYear})";
+            title = 
+                SelectedChartType == ChartType.Line
+                ? $"Average Yearly Temperature for {SelectedLocation.Name} ({ChartStartYear}-{ChartEndYear})"
+                : $"Temperature Relative to Average for {SelectedLocation.Name} ({ChartStartYear}-{ChartEndYear})";
 
-            StartYearOfChart = startYear;
+            timeConstraint = x => x.Year >= ChartStartYear && x.Year <= ChartEndYear;
 
-            timeConstraint = x => x.Year >= startYear && x.Year <= endYear;
+            Labels = GetLabels();
+            await chart.AddLabels(Labels);
 
-            var numberOfYears = endYear - startYear;
-            labels = new string[numberOfYears + 1];
-            for (var i = 0; i <= numberOfYears; i++)
-            {
-                labels[i] = (startYear + i).ToString();
-            }
-
-            Labels = labels;
-            await lineChart.AddLabels(Labels);
-
-            trendlines = await AddDataSetsToGraph(bufferedSelectedDataSet, timeConstraint);
+            await AddDataSetsToGraph(CorrelatedDataSets, timeConstraint);
         }
         else
         {
             var selectedDataSets = Datasets.Where(x => x.Resolution == SelectedResolution
-                && ((Adjusted && x.Type == MeasurementType.Adjusted) || (Unadjusted && x.Type == MeasurementType.Unadjusted))
-                && x.Temperatures.All(y => SelectedYears.Contains(y.Year))).ToList();
+                && ((Adjusted && x.DataAdjustment == DataAdjustment.Adjusted) || (Unadjusted && x.DataAdjustment == DataAdjustment.Unadjusted))
+                && SelectedYears.Contains(x.Year.Value)).ToList();
 
             foreach (var dataSet in selectedDataSets)
             {
-                if (dataSet.Type == MeasurementType.Adjusted)
-                {
-                    bufferedSelectedDataSet.Add(dataSet);
-                }
-                else
-                {
-                    if (dataSet.Station == SelectedStation)
-                    {
-                        var stationDataSet = new DataSet { Location = dataSet.Location, Type = dataSet.Type, Temperatures = dataSet.Temperatures };
-                        bufferedSelectedDataSet.Add(stationDataSet);
-                    }
-                }
+                CorrelatedDataSets.Add(dataSet);
             }
 
-            title = $"{string.Join(", ", SelectedYears)} {SelectedResolution} Temperature (in °C) for {SelectedLocation.Name}";        
+            title = $"{string.Join(", ", SelectedYears)} {SelectedResolution} Temperature for {SelectedLocation.Name}";        
 
             var calendar = new GregorianCalendar();
 
@@ -518,27 +997,77 @@
             }
 
             Labels = labels;
-            await lineChart.AddLabels(Labels);
+            await chart.AddLabels(Labels);
 
             for (var i = 0; i < SelectedYears.Count; i++)
             {
 
                 var year = SelectedYears[i];
-                if (!bufferedSelectedDataSet.Any(x => x.Year == year))
+                if (!CorrelatedDataSets.Any(x => x.Year == year))
                 {
                     continue;
                 }
                 timeConstraint = x => x.Year == year;
-                await AddDataSetsToGraph(bufferedSelectedDataSet, timeConstraint, year.ToString(), year, (short)(96 * (i + 1)));
+                await AddDataSetsToGraph(CorrelatedDataSets, timeConstraint, year.ToString(), year, (short)(96 * (i + 1)));
             }
         }
 
-        var yLabel = "Degrees Celcius";
+        var yLabel = SelectedChartType == ChartType.Line ? "Degrees Celsius (°C)" : "Degrees Celsius (°C) Relative to Average Temperature";
         var xLabel = GetXAxisLabel();
+
+        object[] yAxes;
+        if ((Maximums || Minimums) && Rainfall)
+        {
+            yAxes = new []
+            {
+                // We have to add the Rainfall axis first because we're using BarCharts for rainfail and BarChartDataset does not yet have
+                // a YAxisID. If a YAxisID is not set, the fisrt y-axis is chosen by chartjs
+                new
+                {
+                    Id = "rainfall",
+                    Position = "right",
+                    GridLines = new { Display = false },
+                    ScaleLabel = new { LabelString = "Rainfall (mm)", Display = true }
+                },
+                new  
+                { 
+                    Id = "temperature",
+                    Position = "left",
+                    GridLines = new { Display = true },
+                    ScaleLabel = new { LabelString = yLabel, Display = true } 
+                }
+            };
+        }
+        else if (Maximums || Minimums)
+        {
+            yAxes = new[]
+            {
+                new
+                {
+                    Id = "temperature",
+                    Position = "left",
+                    ScaleLabel = new { LabelString = yLabel, Display = true }
+                },
+            };
+        }
+        else
+        {
+            yAxes = new []
+            { 
+                new  
+                { 
+                    Id = "rainfall",
+                    Position = "left",
+                    ScaleLabel = new { LabelString = "Rainfall (mm)", Display = true } 
+                }
+            };
+        }
 
         object chartOptions = new
         {
-            SpanGaps = false,
+            Responsive = true,
+            MaintainAspectRatio = false,
+            SpanGaps = true,
             Title = new 
             { 
                 Text = title,
@@ -546,36 +1075,35 @@
             },
             Scales = new
             {
-                X = new
-                {
-                    Title = new
-                    {
-                        Text = xLabel,
-                        Display = true,
-                        Color = "blue",
-                    },
-                },
-                Y = new
-                {
-                    Title = new
-                    {
-                        Text = yLabel,
-                        Display = true,
-                        Color = "blue",
-                    },
-                }
+                YAxes = yAxes,
+                XAxes = new []
+                { 
+                    new 
+                    { 
+                        ScaleLabel = new { LabelString = xLabel, Display = true },
+                        //Type = "time",
+                        //Time = new {
+                        //    Unit = "year"
+                        //}
+                    } 
+                }       
             }
         };
+        
+        await chart.SetOptionsObject(chartOptions);
 
-        await lineChart.SetOptionsObject(chartOptions);
+        await chart.Update();
+    }
 
-         
-
-        //((Chart<float?)lineChart).Datasets
-
-        await chartTrendline.AddTrendLineOptions(trendlines);
-
-        await lineChart.Update();
+    string[] GetLabels()
+    {
+        var numberOfYears = ChartEndYear - ChartStartYear;
+        var labels = new string[numberOfYears + 1];
+        for (var i = 0; i <= numberOfYears; i++)
+        {
+            labels[i] = (ChartStartYear + i).ToString();
+        }
+        return labels;
     }
 
     string GetXAxisLabel()
@@ -594,7 +1122,7 @@
         throw new Exception();
     }
 
-    async Task<List<ChartTrendlineData>> AddDataSetsToGraph(List<DataSet> bufferedSelectedDataSet, Func<TemperatureRecord, bool> timeConstraint, string? labelPrefix = null, short? year = null, short colourAdjust = 0)
+    async Task AddDataSetsToGraph(List<DataSet> bufferedSelectedDataSet, Func<DataRecord, bool> timeConstraint, string? labelPrefix = null, short? year = null, short colourAdjust = 0)
     {
         var dataSetIndex = 0;
         if (!string.IsNullOrWhiteSpace(labelPrefix))
@@ -604,33 +1132,12 @@
         var trendlines = new List<ChartTrendlineData>();
         if (Adjusted && Maximums)
         {
-            var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Adjusted, y => y.Max, timeConstraint, year);
+            var values = SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMax, DataAdjustment.Adjusted, timeConstraint, year);
             var label = labelPrefix + "Maximum Adjusted";
-            var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour());
-            if (SelectedMovingAverageInterval == 0 || !SoloSma)
+            var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(0));
+            if (SelectedPeriod == 0 || !SoloSma)
             {
-                await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
-                if (trendlinesOn)
-                    trendlines.Add(AddTrendline(dataSetIndex, colour));
-                dataSetIndex++;
-            }
-            else if (SelectedMovingAverageInterval != 0)
-            {
-                await AddMovingAverage(label, values);
-                dataSetIndex++;
-            }
-        }
-        if (Adjusted && Minimums)
-        {
-            var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Adjusted, y => y.Min, timeConstraint, year);
-            var label = labelPrefix + "Minimum Adjusted";
-            var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour());
-            if (SelectedMovingAverageInterval == 0 || !SoloSma)
-            {
-                await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
-                if (trendlinesOn)
-                    trendlines.Add(AddTrendline(dataSetIndex, colour));
-                dataSetIndex++;
+                await chart.AddDataSet(GetChartDataset(label, values, colour));
             }
             else if (SelectedMovingAverageInterval != 0)
             {
@@ -640,15 +1147,40 @@
         }
         if (Unadjusted && Maximums)
         {
-            var values = SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Unadjusted, y => y.Max, timeConstraint, year);
+            var values = SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMax, DataAdjustment.Unadjusted, timeConstraint, year);
             var label = labelPrefix + "Maximum Unadjusted";
-            var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour());
-            if (SelectedMovingAverageInterval == 0 || !SoloSma)
+            var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(1));
+            if (SelectedPeriod == 0 || !SoloSma)
             {
-                await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
-                if (trendlinesOn)
-                    trendlines.Add(AddTrendline(dataSetIndex, colour));
+                await chart.AddDataSet(GetChartDataset(label, values, colour));
+            }
+            else if (SelectedMovingAverageInterval != 0)
+            {
+                await AddMovingAverage(label, values);
                 dataSetIndex++;
+            }
+        }
+        if (Difference && Maximums)
+        {
+            var values = SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMax, DataAdjustment.Difference, timeConstraint, year);
+            var label = labelPrefix + "Maximum Difference";
+
+            await chart.AddDataSet(GetChartDataset(label, values, chartType: ChartType.Bar));
+        }
+        if (Difference && Minimums)
+        {
+            var values = SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMin, DataAdjustment.Difference, timeConstraint, year);
+            var label = labelPrefix + "Minimum Difference";
+            await chart.AddDataSet(GetChartDataset(label, values, chartType: ChartType.Bar));
+        }
+        if (Adjusted && Minimums)
+        {
+            var values = SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMin, DataAdjustment.Adjusted, timeConstraint, year);
+            var label = labelPrefix + "Minimum Adjusted";
+            var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(2));
+            if (SelectedPeriod == 0 || !SoloSma)
+            {
+                await chart.AddDataSet(GetChartDataset(label, values, colour));
             }
             else if (SelectedMovingAverageInterval != 0)
             {
@@ -658,84 +1190,77 @@
         }
         if (Unadjusted && Minimums)
         {
-            var values =  SelectTemperatureValues(bufferedSelectedDataSet, MeasurementType.Unadjusted, y => y.Min, timeConstraint, year);
+            var values =  SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMin, DataAdjustment.Unadjusted, timeConstraint, year);
             var label = labelPrefix + "Minimum Unadjusted";
-            var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour());
-            if (SelectedMovingAverageInterval == 0 || !SoloSma)
+            var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(3));
+            if (SelectedPeriod == 0 || !SoloSma)
             {
-                await lineChart.AddDataSet(GetLineChartDataset(label, values, colour));
-                if (trendlinesOn)
-                    trendlines.Add(AddTrendline(dataSetIndex, colour));
-                dataSetIndex++;
+                await chart.AddDataSet(GetChartDataset(label, values, colour));
             }
-            else if (SelectedMovingAverageInterval != 0)
-            {
-                await AddMovingAverage(label, values);
-                dataSetIndex++;
-            }
+            await AddMovingAverage(label, values);
         }
-        if (trendlines.Count == 1)
+        if (Rainfall)
         {
-            trendlines[0].Color = ChartColor.FromRgba(0, 0, 0, 1f);
+            var values =  SelectTemperatureValues(bufferedSelectedDataSet, DataType.Rainfall, DataAdjustment.Unadjusted, timeConstraint, year);
+            var label = labelPrefix + "Rainfall";
+            if (SelectedPeriod == 0 || !SoloSma)
+            {
+                await chart.AddDataSet(GetChartDataset(label, values, chartType: ChartType.Bar, redPositive: false));
+            }
+            //await AddMovingAverage(label, values);
         }
-        return trendlines;
-    }
-
-    ChartTrendlineData AddTrendline(int datasetIndex, ChartColor colour)
-    {
-        
-        return
-            new ChartTrendlineData
-                {
-                    DatasetIndex = datasetIndex,
-                    Width = 3,
-                    Color = colour
-                };
     }
 
     async Task AddMovingAverage(string label, List<float?> values)
     {
-        if (SelectedMovingAverageInterval != 0)
+        if (SelectedChartType == ChartType.Line && SelectedPeriod != 0)
         {
-            var simpleMovingAverages = SimpleMovingAverage.Calculate(SelectedMovingAverageInterval, values);
-            label = $"{label} Moving Average @ {SelectedMovingAverageInterval} year interval";
-            await lineChart.AddDataSet(GetLineChartDataset(label, simpleMovingAverages, ChartColor.FromHtmlColorCode(colours.GetNextColour())));
+            var simpleMovingAverages = SimpleMovingAverage.Calculate(SelectedPeriod, values);
+            label = $"{label} Moving Average @ {SelectedPeriod} year interval";
+            await chart.AddDataSet(GetLineChartDataset(label, simpleMovingAverages, ChartColor.FromHtmlColorCode(colours.GetNextColour())));
         }
     }
 
-    List<float?> SelectTemperatureValues(List<DataSet> dataSet, MeasurementType measurementType, Func<TemperatureRecord, float?> selector, Func<TemperatureRecord, bool> timeConstraint, short? year = null)
+    List<float?> SelectTemperatureValues(List<DataSet> dataSet, DataType dataType, DataAdjustment dataAdjustment, Func<DataRecord, bool> timeConstraint, short? year = null)
     {
-        var dataset = dataSet.SingleOrDefault(x => x.Type == measurementType && (year == null || x.Year == year.Value));
+        var dataset = dataSet.Single(x => x.DataType == dataType && x.DataAdjustment == dataAdjustment && (year == null || x.Year == year.Value));
 
         var selectedValues = dataset
-                            .Temperatures
+                            .DataRecords
                             .Where(timeConstraint)
-                            .Select(selector)
+                            .Select(x => x.Value)
                             .ToList();
 
         return selectedValues;
     }
 
-    List<DataSet> CreateYearlyBufferedDataSet(List<DataSet> dataSets)
+    List<DataSet> CreateStandardisedDataSet(List<DataSet> dataSets)
     {
         var bufferedDataSets = new List<DataSet>();
 
-        var superSetStartYear = dataSets.Min(x => x.Temperatures.Min(y => y.Year));
-        foreach(var dataSet in dataSets)
+        var superSetStartYear = dataSets.Min(x => x.DataRecords.Min(y => y.Year));
+        var superSetEndYear = dataSets.Max(x => x.DataRecords.Max(y => y.Year));
+
+        foreach (var dataSet in dataSets)
         {
-            var bufferedDataSet = new DataSet { Location = dataSet.Location, Type = dataSet.Type };
-            bufferedDataSets.Add(bufferedDataSet);
-
-            var startYear = dataSet.Temperatures.Min(x => x.Year);
-            var temperatures = new List<TemperatureRecord>();
-            for (var i = superSetStartYear; i < startYear; i++)
+            var temperatures = new List<DataRecord>();
+            for (var year = superSetStartYear; year < superSetEndYear; year++)
             {
-                temperatures.Add(new TemperatureRecord { Year = i });
+                var record = dataSet.DataRecords.FirstOrDefault(x => x.Year == year);
+                if (record == null)
+                {
+                    record = new DataRecord
+                    {
+                        Year = year,
+                        Value = null,
+                    };
+                }
+                temperatures.Add(record);
             }
-            temperatures.AddRange(dataSet.Temperatures);
-            bufferedDataSet.Temperatures = temperatures;
+            var bufferedDataSet = new DataSet { Location = dataSet.Location, DataType = dataSet.DataType, DataAdjustment = dataSet.DataAdjustment };
+            bufferedDataSet.DataRecords = temperatures;
+            bufferedDataSets.Add(bufferedDataSet);
         }
-
         return bufferedDataSets;
     }
 
@@ -743,23 +1268,51 @@
     {
         var bufferedDataSets = new List<DataSet>();
 
-        var startDate = new DateOnly(dataSets.Min(x => x.Temperatures.Min(y => y.Year)), 1, 1);
+        var startDate = new DateOnly(dataSets.Min(x => x.DataRecords.Min(y => y.Year)), 1, 1);
         foreach(var dataSet in dataSets)
         {
-            var bufferedDataSet = new DataSet { Location = dataSet.Location, Type = dataSet.Type };
+            var bufferedDataSet = new DataSet { Location = dataSet.Location, DataType = dataSet.DataType, DataAdjustment = dataSet.DataAdjustment };
             bufferedDataSets.Add(bufferedDataSet);
 
-            var startYear = dataSet.Temperatures.Min(x => x.Date);
-            var temperatures = new List<TemperatureRecord>();
+            var startYear = dataSet.DataRecords.Min(x => x.Date);
+            var temperatures = new List<DataRecord>();
             //for (var i = superSetStartYear; i < startYear; i++)
             //{
             //    temperatures.Add(new DailyTemperatureRecord { Date = i });
             //}
-            temperatures.AddRange(dataSet.Temperatures);
-            bufferedDataSet.Temperatures = temperatures;
+            temperatures.AddRange(dataSet.DataRecords);
+            bufferedDataSet.DataRecords = temperatures;
         }
 
         return bufferedDataSets;
+    }
+
+    ChartDataset<float?> GetChartDataset(string label, List<float?> values, ChartColor? chartColour = null, ChartType? chartType = null, bool? absoluteValues = false, bool redPositive = true)
+    {
+        chartType = chartType ?? SelectedChartType;
+
+        switch (chartType)
+        {
+            case ChartType.Line:
+                return GetLineChartDataset(label, values, chartColour.Value);
+            case ChartType.Bar:
+                return GetBarChartDataset(label, values, absoluteValues, redPositive);
+        }
+
+        throw new NotImplementedException();
+    }
+
+    BarChartDataset<float?> GetBarChartDataset(string label, List<float?> values, bool? absoluteValues, bool redPositive = true)
+    {
+        var colour = Enso.GetBarChartColourSet(values, redPositive);
+
+        return new BarChartDataset<float?>
+                    {
+                        Label = label,
+                        Data = values.Select(x => absoluteValues.GetValueOrDefault() && x.HasValue ? MathF.Abs(x.Value) : x).ToList(),
+                        BorderColor = colour,
+                        BackgroundColor = colour,
+                    };
     }
 
     LineChartDataset<float?> GetLineChartDataset(string label, List<float?> values, ChartColor chartColor)
@@ -777,7 +1330,8 @@
                         Fill = false,
                         PointRadius = 5,
                         BorderDash = new List<int> { },
-                        Tension = 0.1f,
+                        LineTension = 0.1f,
+                        YAxisID = "temperature"
                     };
     }
 
@@ -785,28 +1339,49 @@
     {
         SelectedLocationId = newValue;
         SelectedLocation = Locations.Single(x => x.Id == SelectedLocationId);
+        SelectedDataSetDefinition = DataSetDefinitions.Single(x => x.Id == SelectedLocation.DataSetId);
+
+        if (SelectedDataSetDefinition.DataAdjustments.Count == 2)
+        {
+            UnadjustedDisabled = false;
+            AdjustedDisabled = false;
+            DifferenceDisabled = false;
+        }
+        else
+        {
+            Unadjusted = SelectedDataSetDefinition.DataAdjustments.Contains(DataAdjustment.Unadjusted);
+            Adjusted = SelectedDataSetDefinition.DataAdjustments.Contains(DataAdjustment.Adjusted);
+            UnadjustedDisabled = true;
+            AdjustedDisabled = true;
+            DifferenceDisabled = true;
+        }
+
         base.StateHasChanged();
-        await BuildLocationDataSets();
+        await BuildDataSets();
     }
 
     string[] Labels = new string[1];
 
     private Map map;
-
-    private MapOptions mapOptions = new MapOptions()
+    string divId = "mapId";
+    MapOptions GetMapOptions()
     {
-        DivId = "mapId",
-        Center = new LatLng(-25.6, 134.3),
-        Zoom = 5,
-        UrlTileLayer = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-	    SubOptions = new MapSubOptions()
+        var mapOptions = new MapOptions()
         {
-            Attribution = "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
-            TileSize = 512,
-            ZoomOffset = -1,
-            MaxZoom = 19,
-        }
-    };
+            DivId = divId,
+            Center = new LatLng(-25.6, 134.3),
+            Zoom = 8,
+            UrlTileLayer = "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png",
+	        SubOptions = new MapSubOptions()
+            {
+                Attribution = "&copy; <a href=\"https://stadiamaps.com/\">Stadia Maps</a>, &copy; <a href=\"https://openmaptiles.org/\">OpenMapTiles</a> &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors",
+                TileSize = 512,
+                ZoomOffset = -1,
+                MaxZoom = 20,
+            }
+        };
+        return mapOptions;
+    }
 
     [Inject]
     private IMarkerFactory MarkerFactory { get; init; }
@@ -820,14 +1395,11 @@
             return;
         }
 
-        var model = e.Model as LineChartModel;
-
-        var year = (short)(StartYearOfChart + e.Index);
+        var year = (short)(ChartStartYear + e.Index);
 
         SelectedYears = new List<short> { year };
+        SelectedResolution = DataResolution.Monthly;
 
-        SelectedResolution = DataResolution.Weekly;
-
-        await BuildLocationDataSets();
+        await BuildDataSets();
     }
 }

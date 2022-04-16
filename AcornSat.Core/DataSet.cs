@@ -4,14 +4,19 @@ public class DataSet
 {
     public DataSet()
     {
-        Temperatures = new List<TemperatureRecord>();
+        DataRecords = new List<DataRecord>();
     }
 
     public DataResolution Resolution { get; set; }
     public Location Location { get;  set; }
+    public DataType DataType { get; set; }
+    public List<Location> Locations { get; set; }
+
     public string Station { get; set; }
-    public MeasurementType Type { get; set; }
-    public List<TemperatureRecord> Temperatures { get; set; }
+    public DataAdjustment DataAdjustment { get; set; }
+    public List<DataRecord> DataRecords { get; set; }
+
+    public short? StartYear { get; set; }
     public short? Year { get; set; }
 
     public List<short> Years
@@ -22,24 +27,29 @@ public class DataSet
             {
                 return new List<short> { Year.Value };
             }
-            var years = Temperatures.Where(x => x.Min != null && x.Max != null).Select(x => x.Year).Distinct().ToList();
-            return years;
+
+            return 
+                DataRecords
+                .Where(x => x.Value != null)
+                .Select(x => x.Year)
+                .Distinct()
+                .ToList();
         }
     }
 
     public int NumberOfRecords
     {
-        get { return Temperatures.Count; }
+        get { return DataRecords.Count; }
     }
 
-    public int NumberOfMissingMins
+    public int NumberOfMissingValues
     {
-        get { return Temperatures.Count(x => x.Min == null); }
+        get { return DataRecords.Count(x => x.Value == null); }
     }
 
-    public int NumberOfMissingMaxs
+    public float? Mean
     {
-        get { return Temperatures.Count(x => x.Max == null); }
+        get { return DataRecords.Average(x => x.Value); }
     }
 }
 

@@ -9,9 +9,9 @@ namespace AcornSat.Core
 {
     public static class TemperatureRecordExtensions
     {
-        public static IEnumerable<IGrouping<short?, TemperatureRecord>> GroupByDays(this IEnumerable<TemperatureRecord> temperatureRecords, short numberOfDaysInGroup)
+        public static IEnumerable<IGrouping<short?, DataRecord>> GroupYearByDays(this IEnumerable<DataRecord> temperatureRecords, short numberOfDaysInGroup)
         {
-            var numberOfDaysInYear = temperatureRecords.Validate();
+            var numberOfDaysInYear = temperatureRecords.ValidateDailySingleYear();
 
             var remainder = numberOfDaysInYear % numberOfDaysInGroup;
 
@@ -28,9 +28,9 @@ namespace AcornSat.Core
         /// </summary>
         /// <param name="values"></param>
         /// <returns></returns>
-        public static IEnumerable<IGrouping<short?, TemperatureRecord>> GroupByWeek(this IEnumerable<TemperatureRecord> temperatureRecords)
+        public static IEnumerable<IGrouping<short?, DataRecord>> GroupYearByWeek(this IEnumerable<DataRecord> temperatureRecords)
         {
-            var weeklyGroups = temperatureRecords.GroupByDays(7);
+            var weeklyGroups = temperatureRecords.GroupYearByDays(7);
             return weeklyGroups;
         }
 
@@ -40,22 +40,22 @@ namespace AcornSat.Core
         /// <param name="temperatureRecords"></param>
         /// <param name="validateRecords"></param>
         /// <returns></returns>
-        public static IEnumerable<IGrouping<short?, TemperatureRecord>> GroupByMonth(this IEnumerable<TemperatureRecord> temperatureRecords, bool validateRecords = true)
+        public static IEnumerable<IGrouping<short?, DataRecord>> GroupYearByMonth(this IEnumerable<DataRecord> temperatureRecords, bool validateRecords = true)
         {
             if (validateRecords)
             {
-                temperatureRecords.Validate();
+                temperatureRecords.ValidateDailySingleYear();
             }
 
             var monthlyGroups = temperatureRecords.GroupBy(x => x.Month);
             return monthlyGroups;
         }
 
-        public static int Validate(this IEnumerable<TemperatureRecord> values)
+        public static int ValidateDailySingleYear(this IEnumerable<DataRecord> values)
         {
             if (values.Any(x => x.Day == null || x.Month == null))
             {
-                throw new NullReferenceException("Day and month values are required when grouping by week");
+                throw new NullReferenceException("All day and month values are required");
             }
 
             var year = values.First().Year;
@@ -67,7 +67,7 @@ namespace AcornSat.Core
             var numberOfDaysInYear = calendar.GetDaysInYear(year);
             if (values.Count() != numberOfDaysInYear)
             {
-                throw new Exception($"Year {year} needs {numberOfDaysInYear} temperature records for the year to be complete. You've only supplied {values.Count()} records");
+                throw new Exception($"Year {year} needs {numberOfDaysInYear} temperature records for the year to be complete. You've supplied {values.Count()} records");
             }
 
             if (!values.GroupBy(x => x.Date.DayOfYear).All(x => x.Count() == 1))
@@ -76,6 +76,55 @@ namespace AcornSat.Core
             }
 
             return numberOfDaysInYear;
+        }
+
+        public static void ValidateDaily(this IEnumerable<DataRecord> values)
+        {
+            if (values.Any(x => x.Day == null || x.Month == null))
+            {
+                throw new NullReferenceException("All day and month values are required");
+            }
+
+            var calendar = new GregorianCalendar();
+            var invalidData = values.GroupBy(x => x.Year).Where(x => x.Count() > calendar.GetDaysInYear(x.Key));
+            if (invalidData.Any())
+            {
+                throw new Exception($"Data is invalid. More than a year worth of records for the years { string.Join(", ", invalidData.Select(x => x.Key)) }");
+            }
+            var duplicateDates = values.GroupBy(x => x.Date)
+                                              .Where(x => x.Count() > 1)
+                                              .Select(x => x.Key)
+                                              .ToList();
+            if (duplicateDates.Any())
+            {
+                throw new Exception($"There are duplicate dates ({string.Join(", ", duplicateDates.Select(x => x.ToShortDateString()))}. The file is corrupt.");
+            }
+        }
+
+        public static void ValidateMonthly(this IEnumerable<DataRecord> values)
+        {
+            if (values.Any(x => x.Day != null))
+            {
+                throw new Exception("No day values are permitted for monthly data");
+            }
+            if (values.Any(x => x.Month == null))
+            {
+                throw new NullReferenceException("All month values are required");
+            }
+
+            var invalidData = values.GroupBy(x => x.Year).Where(x => x.Count() > 12);
+            if (invalidData.Any())
+            {
+                throw new Exception($"No more than 12 records per year is permitted.");
+            }
+            var duplicateMonths = values.GroupBy(x => new { x.Year, x.Month })
+                                              .Where(x => x.Count() > 1)
+                                              .Select(x => x.Key)
+                                              .ToList();
+            if (duplicateMonths.Any())
+            {
+                throw new Exception($"There are duplicate dates ({string.Join(", ", duplicateMonths)}. The file is corrupt.");
+            }
         }
     }
 }

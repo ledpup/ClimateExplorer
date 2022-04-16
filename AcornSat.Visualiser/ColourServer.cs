@@ -3,8 +3,12 @@
     public class ColourServer
     {
         int colourIndex;
-        public string GetNextColour()
+        public string GetNextColour(int preferredColour = 0)
         {
+            if (colourIndex < preferredColour)
+            {
+                colourIndex = preferredColour;
+            }
             if (colourIndex > set10.Length)
             {
                 throw new Exception("We're all out of colours.");

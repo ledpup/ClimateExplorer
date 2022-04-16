@@ -8,6 +8,13 @@ namespace AcornSat.Core
 {
     public static class Enums
     {
+        public enum DataType
+        {
+            TempMax,
+            TempMin,
+            Rainfall,
+            Enso
+        }
         public enum DataResolution
         {
             Yearly,
@@ -16,10 +23,11 @@ namespace AcornSat.Core
             Daily,
         }
 
-        public enum MeasurementType
+        public enum DataAdjustment
         {
             Unadjusted,
-            Adjusted
+            Adjusted,
+            Difference
         }
 
         public enum EnsoIndex
@@ -28,6 +36,14 @@ namespace AcornSat.Core
             Nino34,
             Oni,
             Soi,
+        }
+
+        public enum StatisticalMethod
+        {
+            GroupByDayThenAverage,
+            GroupByDayThenAverage_Relative,
+            BinThenCount,
+            Sum,
         }
     }
 }

@@ -1,39 +1,67 @@
 # AcornSatAnalyser
-Tool to calculate average temperatures from BOM ACORN-SAT data.
+Tool to calculate average temperatures from BOM ACORN-SAT and NIWA 11-stations data.
+
+## Glossary
+- ACORN-SAT: Australian Climate Observations Reference Network – Surface Air Temperature
+- RAIA: Remote Australian Islands and Antarctica (a monthly dataset that is a smaller part of ACORN-SAT)
+- NIWA: New Zealand's National Institute of Water and Atmospheric Research
 
 ## Technical
-- Built in Visual Studio 2022 Community Edition
+- Built in [Visual Studio 2022 Community Edition](https://visualstudio.microsoft.com/vs/community/)
 - C#, .NET 6
-- Blazor (using Blazorise components)
-- There are 4 projects:
-  - Analyser: take daily data (raw and adjusted) and average it into
-  - WebApi: gets the data for the website to use
-  - Visualiser: displays the data to the user. Primarily it's a line graph
-  - Core: some shared files, between Analyser and WebApi
+- Blazor, using
+  - https://github.com/Megabit/Blazorise
+  - https://github.com/fis-sst/BlazorMaps
+  - https://github.com/darnton/BlazorDeviceInterop
+  - https://github.com/AeonLucid/GeoCoordinate.NetStandard1
+- There are five projects:
+  - Visualiser: Blazor website that displays the data to the user
+  - WebApi: Web API that gets and processes the data that Visualiser uses
+  - Core: shared files between Visualiser, Analyser and WebApi
   - UnitTests: tests for various sub-systems
+  - Analyser: console app for manipulating datasets... not used much
+
+## How to use
+
+- Download the github repo. 
+- Open in Visual Studio 2022. 
+- Set your start-up projects to be Visualiser and WebApi and run. Two websites should start-up; the user interface and the web API.
 
 ## TODO
 In rough order of priority
 
-- Aggregates; latitude bands (-10 to -20, -20 to -30, -30 to -40, -40 to -50)
-- Aggregates; Australia
 - Linear trendline
-- Better moving average
-- Allow user to alter the parameters that calculate the set of data for the year (dayGrouping and threshold)
 - Display info on missing data (number of records missing per week/month/etc for min and max, number of missing consecutive days, etc.)
-- Analyse missing data to find an optimal grouping method
-- Alter web API to look for precalculated data from storage before calculating from daily. Then precalculate and store the year averages based on the default method.
-- Show as a bar chart, the difference between adjusted and unadjusted
-- CO2 data and graphs
+- Switch to Blazorise nav menu
+- Analyse missing data to find an optimal grouping method - linear regression analysis??
+- Text display of the current filter is. e.g, "1979-present", "1980, 2020", etc.
+- Naviagation back/forward. I.e., navigation history so the user can get back to where they were
+- Bookmark page
+- GHGs (CO2, CH4, etc) data and graphs
 - Climate stripes. https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
-- Include New Zealand's NIWA 'seven-station' temperature series https://niwa.co.nz/climate/information-and-resources/nz-temperature-record
-- Get temperature data from BOM via a web service
+- Write an adaptor to query NIWA CliFlo website to pull in the 11-station series data automatically
 - Get ENSO data from URLs for indexes (still supporting offline mode)
 - Alternate averages (use median/mode - not sure how useful that is)
 - Show graphs from two or more locations at once? (not sure how useful that is)
 - Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
+- 2022-01-31: Support graphs for rainfall
+- 2022-01-29: Small map initially. Click to expand to select location. Collapse map after selection.
+- 2022-01-27: Download datasets as CSV - yearly data only, for now
+- 2022-01-26: Alter web API to look for precalculated data in a cache instead of calculating from daily. If no cached data, calculate and save to cache
+- 2022-01-19: Get temperature data from BOM via website (http://www.bom.gov.au/climate/data/index.shtml?bookmark=122&view=map)
+- 2022-01-16: Show as a bar chart, the difference between adjusted and unadjusted
+- 2022-01-16: Show bearing to each suggested nearby station
+- 2022-01-16: Include New Zealand's NIWA 'seven-station' temperature series https://niwa.co.nz/climate/information-and-resources/nz-temperature-record
+- 2022-01-15: Display nearby locations, with km distance and hyperlink. Note: still needs some improvement
+- 2022-01-14: Allow user to alter the parameters that calculate the set of data for the year (dayGrouping and threshold)
+- 2022-01-13: Put the selected year, start year, end year into a modal filter section.
+- 2022-01-13: Bar chart of temperatures relative to average - https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
+- 2022-01-08: Use current location to selected location
+- 2022-01-07: Add graphs for Remote Australian Islands and Antarctica (RAIA)
+- 2022-01-03: Aggregates; latitude bands (-10 to -20, -20 to -30, -30 to -40, -40 to -50)
+- 2022-01-03: Aggregates; Australia
 - 2022-01-01: Weekly data resolution when looking at charts for a year (instead of daily)
 - 2022-01-01: Calculate averages on demand rather than precalculating
 - 2021-12-31: Averages of averages; average by month or any arbitrary grouping of days
