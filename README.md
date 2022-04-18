@@ -1,5 +1,5 @@
 # AcornSatAnalyser
-Tool to calculate average temperatures from [BOM]((http://www.bom.gov.au/) [ACORN-SAT](http://www.bom.gov.au/climate/data/acorn-sat/) and [NIWA](https://niwa.co.nz/) [11-station series](https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data).
+Tool to calculate average temperatures from [BOM](http://www.bom.gov.au/) [ACORN-SAT](http://www.bom.gov.au/climate/data/acorn-sat/) and [NIWA](https://niwa.co.nz/) [11-station series](https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data).
 
 ## Glossary
 - ACORN-SAT: Australian Climate Observations Reference Network – Surface Air Temperature
