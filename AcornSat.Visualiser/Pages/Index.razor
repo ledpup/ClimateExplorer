@@ -171,59 +171,18 @@
     </ModalContent>
 </Modal>
 
- <Modal @ref="filterModal">
-    <ModalContent>
-        <ModalHeader Background="Background.Light">
-            <ModalTitle>Filter</ModalTitle>
-            <CloseButton />
-        </ModalHeader>
-        <ModalBody>
-            <Field>
-            Selected year(s)
-            <Autocomplete TItem="short"
-                    TValue="short"
-                    Data="@DatasetYears"
-                    TextField="@((item) => item.ToString())"
-                    ValueField="@((item) => item)"
-                    Multiple
-                    SelectedValuesChanged="@OnSelectedYearsChanged"
-                    SelectedValues="@SelectedYears"
-                    SelectedTexts="@SelectedYearsText">
-                <NotFoundContent>@context was not found</NotFoundContent>
-            </Autocomplete>
-            </Field>
-    
-        @if (SelectedResolution == DataResolution.Yearly)
-        {
-            <Field>        
-                Start Year <Validation Validator="ValidateYear">
-                                <TextEdit Text="@SelectedStartYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnStartYearTextChanged">
-                                    <Feedback>
-                                        <ValidationError />
-                                    </Feedback>
-                                </TextEdit>
-                            </Validation>
-            </Field>
-            <Field>
-                End Year <Validation Validator="ValidateYear"><TextEdit Text="@SelectedEndYear" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChanged" /></Validation>
-            </Field>
-
-        }
-        @if (SelectedResolution != DataResolution.Yearly)
-        {
-            <Field>
-            Resolution
-            <Select TValue="DataResolution" SelectedValue="@SelectedResolution" SelectedValueChanged="@OnSelectedResolutionChanged">
-                <SelectItem Value="@(DataResolution.Yearly)">Yearly</SelectItem>
-                <SelectItem Value="@(DataResolution.Monthly)">Monthly</SelectItem>
-                <SelectItem Value="@(DataResolution.Weekly)">Weekly</SelectItem>
-                <SelectItem Value="@(DataResolution.Daily)">Daily</SelectItem>
-            </Select>
-            </Field>
-        }
-        </ModalBody>
-    </ModalContent>
-</Modal>
+<Filter
+    @ref="filter"
+    DatasetYears="@DatasetYears"
+    SelectedYears="@SelectedYears"
+    SelectedStartYear="@SelectedStartYear"
+    SelectedEndYear="@SelectedEndYear"
+    SelectedResolution="@SelectedResolution"
+    OnSelectedYearsChanged="@OnSelectedYearsChanged"
+    OnSelectedResolutionChanged="@OnSelectedResolutionChanged"
+    OnStartYearTextChanged="@OnStartYearTextChanged"
+    OnEndYearTextChanged="@OnEndYearTextChanged"
+    ></Filter>
 
 <MapContainer
     @ref="mapContainer"
@@ -385,14 +344,16 @@
         return optionsModal.Hide();
     }
 
-    private Modal filterModal;
-    private Task ShowFilterModal()
+    Filter filter;
+
+    async Task ShowFilterModal()
     {
-        return filterModal.Show();
+        await filter.Show();
     }
-    private Task HideFilterModal()
+
+    async Task HideFilterModal()
     {
-        return filterModal.Hide();
+        await filter.Hide();
     }
 
     /// <summary>
@@ -428,7 +389,6 @@
         await BuildDataSets();
     }
 
-    List<string> SelectedYearsText = new();
     List<short> DatasetYears { get; set; }
     List<short> SelectedYears;
 
@@ -469,7 +429,6 @@
         SelectedResolution = value;
         if (SelectedResolution == DataResolution.Yearly)
         {
-            SelectedYearsText = new();
             SelectedYears = new List<short>();
         }
         await BuildDataSets();
@@ -551,19 +510,6 @@
     IEnumerable<Location> Locations;
     ColourServer colours = new ColourServer();
 
-    void ValidateYear(ValidatorEventArgs e)
-    {
-        var year = Convert.ToString(e.Value);
-
-        e.Status = 
-            string.IsNullOrEmpty(year) 
-            ? ValidationStatus.None
-            : 
-                year.Length == 4
-                ? ValidationStatus.Success
-                : ValidationStatus.Error;
-    }
-
     protected override async Task OnInitializedAsync()
     {
         SelectedResolution = DataResolution.Yearly;
@@ -586,8 +532,6 @@
         {
             await SelectedLocationChanged(Guid.Parse("aed87aa0-1d0c-44aa-8561-cde0fc936395"));
         }
-
-
 
         await base.OnInitializedAsync();
     }
@@ -692,19 +636,14 @@
     async Task OnStartYearTextChanged(string text)
     {
         SelectedStartYear = text;
-        if (text.Length == 0 || text.Length == 4)
-        {
-            await HandleRedraw();
-        }
+        await HandleRedraw();
     }
 
     async Task OnEndYearTextChanged(string text)
     {
         SelectedEndYear = text;
-        if (text.Length == 0 || text.Length == 4)
-        {
-            await HandleRedraw();
-        }
+        
+        await HandleRedraw();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
