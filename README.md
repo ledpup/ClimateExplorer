@@ -2,9 +2,9 @@
 Tool to calculate average temperatures from [BOM](http://www.bom.gov.au/) [ACORN-SAT](http://www.bom.gov.au/climate/data/acorn-sat/) and [NIWA](https://niwa.co.nz/) [11-station series](https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data).
 
 ## Glossary
-- ACORN-SAT: Australian Climate Observations Reference Network – Surface Air Temperature
-- RAIA: Remote Australian Islands and Antarctica (a monthly dataset that is a smaller part of ACORN-SAT)
-- NIWA: New Zealand's National Institute of Water and Atmospheric Research
+- [ACORN-SAT](http://www.bom.gov.au/climate/data/acorn-sat/): Australian Climate Observations Reference Network – Surface Air Temperature
+- [RAIA](http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks): Remote Australian Islands and Antarctica (a monthly dataset that is a smaller part of ACORN-SAT)
+- [NIWA](https://niwa.co.nz/): New Zealand's National Institute of Water and Atmospheric Research
 
 ## Technical
 - Built in [Visual Studio 2022 Community Edition](https://visualstudio.microsoft.com/vs/community/)
