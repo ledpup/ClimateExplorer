@@ -30,7 +30,6 @@ Tool to calculate average temperatures from BOM ACORN-SAT and NIWA 11-stations d
 ## TODO
 In rough order of priority
 
-- Linear trendline
 - Display info on missing data (number of records missing per week/month/etc for min and max, number of missing consecutive days, etc.)
 - Switch to Blazorise nav menu
 - Analyse missing data to find an optimal grouping method - linear regression analysis??
@@ -46,6 +45,7 @@ In rough order of priority
 - Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
+- 2022-04-18: Linear trendline
 - 2022-01-31: Support graphs for rainfall
 - 2022-01-29: Small map initially. Click to expand to select location. Collapse map after selection.
 - 2022-01-27: Download datasets as CSV - yearly data only, for now

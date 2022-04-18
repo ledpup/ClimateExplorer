@@ -4,6 +4,7 @@
 @using Blazorise
 @using Blazorise.Components
 @using Blazorise.Charts
+@using Blazorise.Charts.Trendline
 @using System.IO;
 @using System.Globalization
 @using Darnton.Blazor.DeviceInterop.Geolocation
@@ -15,6 +16,7 @@
 <PageTitle>Index</PageTitle>
 
  @*<h1><a href="http://www.bom.gov.au/climate/data/acorn-sat/" target="_blank">ACORN-SAT</a></h1>*@
+ 
 <Row>
     @if (SelectedLocation != null)
     {
@@ -105,58 +107,12 @@
     </Column>
 </Row>
 
-<Modal @ref="selectLocationModal">
-    <ModalContent>
-        <ModalHeader Background="Background.Light">
-            <ModalTitle>Select Location</ModalTitle>
-            <CloseButton />
-        </ModalHeader>
-        <ModalBody>
-            @if (SelectedLocation != null)
-            {
-                <Field>
-                    Current Location: @SelectedLocation.Name
-                </Field>
-            }
-            <Field>
-                <Button Clicked="@OnUseCurrentLocation" Color="Color.Primary">Use Your Location</Button>
-            </Field>
-            <Field> 
-            </Field>
-            <Field>
-                <FieldLabel>Select a location from the list</FieldLabel>
-                <SelectList
-                    TItem="Location"
-                    TValue="Guid"
-                    Data="@Locations"
-                    TextField="@((item)=>item.Name)"
-                    ValueField="@((item)=>item.Id)"
-                    SelectedValueChanged="@SelectedLocationChanged"
-                    DefaultItemText="Select Location"
-                    Style="width: 100%"
-                    />
-           </Field>
-            @if (SelectedLocation != null)
-            {
-                <Field>
-                    <FieldLabel>Select a nearby location</FieldLabel>
-                    <Alert Color="Color.Secondary" Visible="true">
-                        <Repeater Items="@SelectedLocation.NearbyLocations" >
-                            <div>
-                                <Blazorise.Link Title="@context.LocationName" To="#" Clicked="@(()=>OnNearbyLocationClicked(context.LocationId))">@context.LocationName</Blazorise.Link>
-                                <span style="color: #888">
-                                    @context.Distance km
-                                    @context.CompassRoseDirection 
-                                    <span style="display: inline-block; transform: rotate(@($"{context.BearingDegrees}deg"))">⭡</span>
-                                </span>
-                            </div>
-                        </Repeater>
-                    </Alert>
-                </Field>
-            }
-        </ModalBody>
-    </ModalContent>
-</Modal>
+ <SelectLocation
+    @ref="selectLocationModal"
+    Locations="@Locations"
+    SelectedLocation="@SelectedLocation"
+    OnLocationChange="@SelectedLocationChanged"
+    />
 
  <Modal @ref="optionsModal">
     <ModalContent>
@@ -171,6 +127,7 @@
                     <Radio TValue="ChartType" Value="ChartType.Line">Line chart</Radio>
                     <Radio TValue="ChartType" Value="ChartType.Bar">Bar chart - relative to average</Radio>
                 </RadioGroup>
+                <Check TValue="bool" Checked="@trendlinesOn" CheckedChanged="@OnButtonClicked">Trendline</Check>
             </Alert>
            <Alert Color="Color.Primary" Visible="true">
                 Data Types
@@ -186,7 +143,7 @@
             </Alert>
             <Alert Color="Color.Info" Visible="true">
                 Simple Moving Average<br/>
-                <Select TValue="int" SelectedValue="@SelectedPeriod" SelectedValueChanged="@OnSelectedPeriodChanged">
+                <Select TValue="int" SelectedValue="@SelectedMovingAverageInterval" SelectedValueChanged="@OnSelectedPeriodChanged">
                     <SelectItem Value="0">None</SelectItem>
                     <SelectItem Value="3">3 years</SelectItem>
                     <SelectItem Value="5">5 years</SelectItem>
@@ -336,11 +293,15 @@
     @switch (InternalChartType)
     {
         case ChartType.Line:
-            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line" />
+            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
+                <ChartTrendline @ref="chartTrendline" TItem="float?" />
+            </Chart>
             break;
 
         case ChartType.Bar:
-            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Bar" />
+            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Bar">
+                <ChartTrendline @ref="chartTrendline" TItem="float?" />
+            </Chart>
             break;
     }
     
@@ -348,6 +309,15 @@
 
 
 @code{
+
+    bool trendlinesOn = true;
+    async Task OnButtonClicked()
+    {
+        trendlinesOn = !trendlinesOn;
+
+        await HandleRedraw();
+    }
+
     string DayGroupingText(int dayGrouping)
     {
         switch (dayGrouping)
@@ -459,7 +429,7 @@
         await BuildDataSets();
     }
 
-    private Modal selectLocationModal;
+    private SelectLocation selectLocationModal;
     private Task ShowSelectLocationModal()
     {
         return selectLocationModal.Show();
@@ -525,24 +495,6 @@
         await BuildDataSets();
     }
 
-    [Inject] 
-    public IGeolocationService GeolocationService { get; set; }
-
-    async Task OnUseCurrentLocation()
-    {
-        var currentPositionResult = await GeolocationService.GetCurrentPosition();
-        var lat = currentPositionResult.Position.Coords.Latitude;
-        var lng = currentPositionResult.Position.Coords.Longitude;
-        var alt = currentPositionResult.Position.Coords.Altitude;
-        var geoCoord = alt == null ? new GeoCoordinate(lat, lng) :
-                                     new GeoCoordinate(lat, lng, alt.Value);
-
-        var distances = Location.GetDistances(geoCoord, Locations);
-        var closestLocation = distances.OrderBy(x => x.Distance).First();
-
-        await SelectedLocationChanged(closestLocation.LocationId);
-    }
-
     List<string> SelectedYearsText = new();
     List<short> DatasetYears { get; set; }
     List<short> SelectedYears;
@@ -590,10 +542,10 @@
         await BuildDataSets();
     }
 
-    int SelectedPeriod;
+    int SelectedMovingAverageInterval;
     async Task OnSelectedPeriodChanged(int value)
     {
-        SelectedPeriod = value;
+        SelectedMovingAverageInterval = value;
         await HandleRedraw();
     }
 
@@ -829,6 +781,7 @@
     }
 
     Chart<float?> chart;
+    ChartTrendline<float?> chartTrendline;
 
     async Task OnStartYearTextChanged(string text)
     {
@@ -874,12 +827,14 @@
         var adjustedMaximums = new List<float?>();
         var adjustedMinimums = new List<float?>();
 
-        string title = string.Empty;
+        var title = string.Empty;
+        var subtitle = string.Empty;
 
         await chart.Clear();
 
         CorrelatedDataSets = new List<DataSet>();
         Func<DataRecord, bool> timeConstraint = null;
+        List<ChartTrendlineData> trendlines = null;
 
         if (SelectedResolution == DataResolution.Yearly)
         {
@@ -923,17 +878,18 @@
                 }
             }
 
-            title = 
+            title = SelectedLocation.Name;
+            subtitle = 
                 SelectedChartType == ChartType.Line
-                ? $"Average Yearly Temperature for {SelectedLocation.Name} ({ChartStartYear}-{ChartEndYear})"
-                : $"Temperature Relative to Average for {SelectedLocation.Name} ({ChartStartYear}-{ChartEndYear})";
+                ? $"Average Yearly Temperature ({ChartStartYear}-{ChartEndYear})"
+                : $"Temperature Relative to Average ({ChartStartYear}-{ChartEndYear})";
 
             timeConstraint = x => x.Year >= ChartStartYear && x.Year <= ChartEndYear;
 
             Labels = GetLabels();
             await chart.AddLabels(Labels);
 
-            await AddDataSetsToGraph(CorrelatedDataSets, timeConstraint);
+            trendlines = await AddDataSetsToGraph(CorrelatedDataSets, timeConstraint);
         }
         else
         {
@@ -946,7 +902,8 @@
                 CorrelatedDataSets.Add(dataSet);
             }
 
-            title = $"{string.Join(", ", SelectedYears)} {SelectedResolution} Temperature for {SelectedLocation.Name}";        
+            title = $"{SelectedLocation.Name}";
+            subtitle = $"{string.Join(", ", SelectedYears)} {SelectedResolution} Chart";        
 
             var calendar = new GregorianCalendar();
 
@@ -1013,51 +970,59 @@
         var yLabel = SelectedChartType == ChartType.Line ? "Degrees Celsius (°C)" : "Degrees Celsius (°C) Relative to Average Temperature";
         var xLabel = GetXAxisLabel();
 
-        object[] yAxes;
+        object yAxes;
         if ((Maximums || Minimums) && Rainfall)
         {
-            yAxes = new []
+            yAxes = new
             {
                 // We have to add the Rainfall axis first because we're using BarCharts for rainfail and BarChartDataset does not yet have
                 // a YAxisID. If a YAxisID is not set, the fisrt y-axis is chosen by chartjs
-                new
+                Y1 = new
                 {
-                    Id = "rainfall",
                     Position = "right",
-                    GridLines = new { Display = false },
-                    ScaleLabel = new { LabelString = "Rainfall (mm)", Display = true }
+                    Grid = new { DrawOnChartArea = false },
+                    Title = new
+                    {
+                        Text = yLabel,
+                        Display = true,
+                        Color = "blue",
+                    },
                 },
-                new  
+                Y2 = new  
                 { 
-                    Id = "temperature",
                     Position = "left",
-                    GridLines = new { Display = true },
-                    ScaleLabel = new { LabelString = yLabel, Display = true } 
+                    Grid = new { DrawOnChartArea = false },
+                    Title = new
+                    {
+                        Text = yLabel,
+                        Display = true,
+                        Color = "blue",
+                    },
                 }
             };
         }
         else if (Maximums || Minimums)
         {
-            yAxes = new[]
+            yAxes = new
             {
-                new
+                Title = new
                 {
-                    Id = "temperature",
-                    Position = "left",
-                    ScaleLabel = new { LabelString = yLabel, Display = true }
+                    Text = yLabel,
+                    Display = true,
+                    Color = "blue",
                 },
             };
         }
         else
         {
-            yAxes = new []
+            yAxes = new
             { 
-                new  
-                { 
-                    Id = "rainfall",
-                    Position = "left",
-                    ScaleLabel = new { LabelString = "Rainfall (mm)", Display = true } 
-                }
+                Title = new
+                {
+                    Text = yLabel,
+                    Display = true,
+                    Color = "blue",
+                },
             };
         }
 
@@ -1065,32 +1030,40 @@
         {
             Responsive = true,
             MaintainAspectRatio = false,
-            SpanGaps = false,
-            Title = new 
-            { 
-                Text = title,
-                Display = true
+            SpanGaps = true,
+            Plugins = new
+            {
+                Title = new 
+                { 
+                    Text = title,
+                    Display = true
+                },
+                Subtitle = new 
+                { 
+                    Text = subtitle,
+                    Display = true
+                },
             },
             Scales = new
             {
-                YAxes = yAxes,
-                XAxes = new []
-                { 
-                    new 
-                    { 
-                        ScaleLabel = new { LabelString = xLabel, Display = true },
-                        //Type = "time",
-                        //Time = new {
-                        //    Unit = "year"
-                        //}
-                    } 
-                }       
+                X = new
+                {
+                    Title = new
+                    {
+                        Text = xLabel,
+                        Display = true,
+                        Color = "blue",
+                    },
+                },
+                //Y = yAxes TODO: fix the y-axis
             }
         };
         
         await chart.SetOptionsObject(chartOptions);
 
         await chart.Update();
+
+        await chartTrendline.AddTrendLineOptions(trendlines);
     }
 
     string[] GetLabels()
@@ -1120,33 +1093,53 @@
         throw new Exception();
     }
 
-    async Task AddDataSetsToGraph(List<DataSet> bufferedSelectedDataSet, Func<DataRecord, bool> timeConstraint, string? labelPrefix = null, short? year = null, short colourAdjust = 0)
+    async Task<List<ChartTrendlineData>> AddDataSetsToGraph(List<DataSet> bufferedSelectedDataSet, Func<DataRecord, bool> timeConstraint, string? labelPrefix = null, short? year = null, short colourAdjust = 0)
     {
+        var dataSetIndex = 0;
         if (!string.IsNullOrWhiteSpace(labelPrefix))
         {
             labelPrefix += " ";
         }
+        var trendlines = new List<ChartTrendlineData>();
         if (Adjusted && Maximums)
         {
             var values = SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMax, DataAdjustment.Adjusted, timeConstraint, year);
             var label = labelPrefix + "Maximum Adjusted";
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(0));
-            if (SelectedPeriod == 0 || !SoloSma)
+            if (SelectedMovingAverageInterval == 0 || !SoloSma)
             {
                 await chart.AddDataSet(GetChartDataset(label, values, colour));
+                if (trendlinesOn)
+                {
+                    trendlines.Add(AddTrendline(dataSetIndex, colour));
+                }
+                dataSetIndex++;
             }
-            await AddMovingAverage(label, values);
+            else if (SelectedMovingAverageInterval != 0)
+            {
+                await AddMovingAverage(label, values);
+                dataSetIndex++;
+            }
         }
         if (Unadjusted && Maximums)
         {
             var values = SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMax, DataAdjustment.Unadjusted, timeConstraint, year);
             var label = labelPrefix + "Maximum Unadjusted";
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(1));
-            if (SelectedPeriod == 0 || !SoloSma)
+            if (SelectedMovingAverageInterval == 0 || !SoloSma)
             {
                 await chart.AddDataSet(GetChartDataset(label, values, colour));
+                if (trendlinesOn)
+                {
+                    trendlines.Add(AddTrendline(dataSetIndex, colour));
+                }
+                dataSetIndex++;
             }
-            await AddMovingAverage(label, values);
+            else if (SelectedMovingAverageInterval != 0)
+            {
+                await AddMovingAverage(label, values);
+                dataSetIndex++;
+            }
         }
         if (Difference && Maximums)
         {
@@ -1166,41 +1159,76 @@
             var values = SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMin, DataAdjustment.Adjusted, timeConstraint, year);
             var label = labelPrefix + "Minimum Adjusted";
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(2));
-            if (SelectedPeriod == 0 || !SoloSma)
+            if (SelectedMovingAverageInterval == 0 || !SoloSma)
             {
                 await chart.AddDataSet(GetChartDataset(label, values, colour));
+                if (trendlinesOn)
+                {
+                    trendlines.Add(AddTrendline(dataSetIndex, colour));
+                }
+                dataSetIndex++;
             }
-            await AddMovingAverage(label, values);
+            else if (SelectedMovingAverageInterval != 0)
+            {
+                await AddMovingAverage(label, values);
+                dataSetIndex++;
+            }
         }
         if (Unadjusted && Minimums)
         {
             var values =  SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMin, DataAdjustment.Unadjusted, timeConstraint, year);
             var label = labelPrefix + "Minimum Unadjusted";
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(3));
-            if (SelectedPeriod == 0 || !SoloSma)
+            if (SelectedMovingAverageInterval == 0 || !SoloSma)
             {
                 await chart.AddDataSet(GetChartDataset(label, values, colour));
+                if (trendlinesOn)
+                {
+                    trendlines.Add(AddTrendline(dataSetIndex, colour));
+                }
+                dataSetIndex++;
             }
-            await AddMovingAverage(label, values);
+            else if (SelectedMovingAverageInterval != 0)
+            {
+                await AddMovingAverage(label, values);
+                dataSetIndex++;
+            }
         }
         if (Rainfall)
         {
             var values =  SelectTemperatureValues(bufferedSelectedDataSet, DataType.Rainfall, DataAdjustment.Unadjusted, timeConstraint, year);
             var label = labelPrefix + "Rainfall";
-            if (SelectedPeriod == 0 || !SoloSma)
+            if (SelectedMovingAverageInterval == 0 || !SoloSma)
             {
                 await chart.AddDataSet(GetChartDataset(label, values, chartType: ChartType.Bar, redPositive: false));
             }
             //await AddMovingAverage(label, values);
         }
+        if (trendlines.Count == 1)
+        {
+            trendlines[0].Color = ChartColor.FromRgba(0, 0, 0, 1f);
+        }
+        return trendlines;
+    }
+
+    ChartTrendlineData AddTrendline(int datasetIndex, ChartColor colour)
+    {
+        
+        return
+            new ChartTrendlineData
+                {
+                    DatasetIndex = datasetIndex,
+                    Width = 3,
+                    Color = colour
+                };
     }
 
     async Task AddMovingAverage(string label, List<float?> values)
     {
-        if (SelectedChartType == ChartType.Line && SelectedPeriod != 0)
+        if (SelectedChartType == ChartType.Line && SelectedMovingAverageInterval != 0)
         {
-            var simpleMovingAverages = SimpleMovingAverage.Calculate(SelectedPeriod, values);
-            label = $"{label} Moving Average @ {SelectedPeriod} year interval";
+            var simpleMovingAverages = SimpleMovingAverage.Calculate(SelectedMovingAverageInterval, values);
+            label = $"{label} Moving Average @ {SelectedMovingAverageInterval} year interval";
             await chart.AddDataSet(GetLineChartDataset(label, simpleMovingAverages, ChartColor.FromHtmlColorCode(colours.GetNextColour())));
         }
     }
@@ -1314,7 +1342,7 @@
                         Fill = false,
                         PointRadius = 5,
                         BorderDash = new List<int> { },
-                        LineTension = 0.1f,
+                        Tension = 0.1f,
                         YAxisID = "temperature"
                     };
     }
