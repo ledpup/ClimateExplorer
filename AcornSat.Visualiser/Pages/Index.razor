@@ -107,58 +107,12 @@
     </Column>
 </Row>
 
-<Modal @ref="selectLocationModal">
-    <ModalContent>
-        <ModalHeader Background="Background.Light">
-            <ModalTitle>Select Location</ModalTitle>
-            <CloseButton />
-        </ModalHeader>
-        <ModalBody>
-            @if (SelectedLocation != null)
-            {
-                <Field>
-                    Current Location: @SelectedLocation.Name
-                </Field>
-            }
-            <Field>
-                <Button Clicked="@OnUseCurrentLocation" Color="Color.Primary">Use Your Location</Button>
-            </Field>
-            <Field> 
-            </Field>
-            <Field>
-                <FieldLabel>Select a location from the list</FieldLabel>
-                <SelectList
-                    TItem="Location"
-                    TValue="Guid"
-                    Data="@Locations"
-                    TextField="@((item)=>item.Name)"
-                    ValueField="@((item)=>item.Id)"
-                    SelectedValueChanged="@SelectedLocationChanged"
-                    DefaultItemText="Select Location"
-                    Style="width: 100%"
-                    />
-           </Field>
-            @if (SelectedLocation != null)
-            {
-                <Field>
-                    <FieldLabel>Select a nearby location</FieldLabel>
-                    <Alert Color="Color.Secondary" Visible="true">
-                        <Repeater Items="@SelectedLocation.NearbyLocations" >
-                            <div>
-                                <Blazorise.Link Title="@context.LocationName" To="#" Clicked="@(()=>OnNearbyLocationClicked(context.LocationId))">@context.LocationName</Blazorise.Link>
-                                <span style="color: #888">
-                                    @context.Distance km
-                                    @context.CompassRoseDirection 
-                                    <span style="display: inline-block; transform: rotate(@($"{context.BearingDegrees}deg"))">⭡</span>
-                                </span>
-                            </div>
-                        </Repeater>
-                    </Alert>
-                </Field>
-            }
-        </ModalBody>
-    </ModalContent>
-</Modal>
+ <SelectLocation
+    @ref="selectLocationModal"
+    Locations="@Locations"
+    SelectedLocation="@SelectedLocation"
+    OnLocationChange="@SelectedLocationChanged"
+    />
 
  <Modal @ref="optionsModal">
     <ModalContent>
@@ -475,7 +429,7 @@
         await BuildDataSets();
     }
 
-    private Modal selectLocationModal;
+    private SelectLocation selectLocationModal;
     private Task ShowSelectLocationModal()
     {
         return selectLocationModal.Show();
@@ -539,24 +493,6 @@
             : ChartType.Line;
 
         await BuildDataSets();
-    }
-
-    [Inject] 
-    public IGeolocationService GeolocationService { get; set; }
-
-    async Task OnUseCurrentLocation()
-    {
-        var currentPositionResult = await GeolocationService.GetCurrentPosition();
-        var lat = currentPositionResult.Position.Coords.Latitude;
-        var lng = currentPositionResult.Position.Coords.Longitude;
-        var alt = currentPositionResult.Position.Coords.Altitude;
-        var geoCoord = alt == null ? new GeoCoordinate(lat, lng) :
-                                     new GeoCoordinate(lat, lng, alt.Value);
-
-        var distances = Location.GetDistances(geoCoord, Locations);
-        var closestLocation = distances.OrderBy(x => x.Distance).First();
-
-        await SelectedLocationChanged(closestLocation.LocationId);
     }
 
     List<string> SelectedYearsText = new();
