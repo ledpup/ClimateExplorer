@@ -7,9 +7,7 @@
 @using Blazorise.Charts.Trendline
 @using System.IO;
 @using System.Globalization
-@using Darnton.Blazor.DeviceInterop.Geolocation
 @using static AcornSat.Core.Enums
-@using GeoCoordinatePortable;
 @using Microsoft.AspNetCore.WebUtilities
 @using System.Text
 
@@ -227,61 +225,10 @@
     </ModalContent>
 </Modal>
 
-<div class="mapContainer" id="mapContainer">
-    <Map @ref="map" MapOptions="@GetMapOptions()"></Map>
-    <div class="@(IsMapExpanded ? "mapToggleExpanded" : "mapToggleCollapsed")">
-        <Button Color="Color.Primary" Clicked="@ToggleMapExpansion">
-            @(IsMapExpanded ? "Collapse map" : "Expand")
-        </Button>
-    </div>
-</div>
-
-<style>
-    #mapId {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 50px;
-    }
-
-    .mapContainer {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        width: 550px;
-        height: 250px;
-        z-index: 1;
-    }
-
-    .mapContainer.expanded {
-        top: 0px;
-        right: 0px;
-        width: 100%;
-        height: 100%;
-        background: #aaa;
-    }
-
-    .mapToggleExpanded {
-        position: absolute;
-        bottom: 0px;
-        height: 50px;
-        left: 0px;
-        right: 0px;
-        padding: 6px;
-        text-align: center;
-    }
-
-    .mapToggleCollapsed {
-        position: absolute;
-        bottom: 0px;
-        height: 50px;
-        left: 0px;
-        right: 0px;
-        padding-top: 4px;
-        text-align: right;
-    }
-</style>
+<MapContainer
+    @ref="mapContainer"
+    Locations="@Locations"
+    OnLocationChange="@SelectedLocationChanged"></MapContainer>
 
 <div style="border: 0.5px dotted; padding: 10px; position: relative;">
     @* We change the chart's type dynamically depending on selected options.
@@ -374,21 +321,6 @@
         return fileStream;
     }
 
-    async Task CollapseMapIfExpanded()
-    {
-        if (IsMapExpanded)
-        {
-            await ToggleMapExpansion();
-        }
-    }
-
-    async Task ToggleMapExpansion()
-    {
-        await JS.InvokeVoidAsync("toggleMapExpansion", null);
-
-        IsMapExpanded = !IsMapExpanded;
-    }
-
     @inject IJSRuntime JS
     private async Task OnDownloadDataClicked()
     {
@@ -405,7 +337,6 @@
         await SelectedLocationChanged(guid);
     }
 
-    bool IsMapExpanded { get; set; } = false;
 
     float SelectedDayGroupThreshold { get; set; } = .7f;
     string DayGroupThresholdText { get; set; }
@@ -428,6 +359,8 @@
         SelectedDayGrouping = SelectingDayGrouping == 0 ? SelectedDayGrouping : SelectingDayGrouping;
         await BuildDataSets();
     }
+
+    private MapContainer mapContainer;
 
     private SelectLocation selectLocationModal;
     private Task ShowSelectLocationModal()
@@ -616,21 +549,7 @@
     List<DataSet> Datasets { get; set; }
     IEnumerable<DataSetDefinition> DataSetDefinitions;
     IEnumerable<Location> Locations;
-    List<Marker> MapMarkers;
     ColourServer colours = new ColourServer();
-
-    async Task CreateMapMarkers()
-    {
-        MapMarkers = new List<Marker>();
-        foreach (var location in Locations)
-        {
-            var marker = await MarkerFactory.Create(new LatLng(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation));
-            await marker.BindTooltip(location.Name);
-            await marker.OnClick(async (MouseEvent mouseEvent) => await HandleMapMouseEvent(mouseEvent));
-            await marker.AddTo(map);
-            MapMarkers.Add(marker);
-        }
-    }
 
     void ValidateYear(ValidatorEventArgs e)
     {
@@ -645,15 +564,6 @@
                 : ValidationStatus.Error;
     }
 
-    private async Task HandleMapMouseEvent(MouseEvent mouseEvent)
-    {
-        var lat = Math.Round(mouseEvent.LatLng.Lat, 1);
-        var lng = Math.Round(mouseEvent.LatLng.Lng, 1);
-        var newLocation = Locations.Single(x => Math.Round(x.Coordinates.Latitude, 1) == lat && Math.Round(x.Coordinates.Longitude, 1) == lng);
-        await CollapseMapIfExpanded();
-        await SelectedLocationChanged(newLocation.Id);
-    }
-
     protected override async Task OnInitializedAsync()
     {
         SelectedResolution = DataResolution.Yearly;
@@ -664,10 +574,6 @@
         DataSetDefinitions = (await DataService.GetDataSetDefinitions()).ToList();
         Locations = (await DataService.GetLocations()).ToList();
 
-        if (MapMarkers == null)
-        {
-            await CreateMapMarkers();
-        }
         Datasets = new List<DataSet>();
         SelectedYears = new List<short>();
 
@@ -751,7 +657,7 @@
             }
         }
 
-        await map.SetView(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
+        await mapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
 
         await HandleRedraw();
     }
@@ -1373,32 +1279,6 @@
     }
 
     string[] Labels = new string[1];
-
-    private Map map;
-    string divId = "mapId";
-    MapOptions GetMapOptions()
-    {
-        var mapOptions = new MapOptions()
-        {
-            DivId = divId,
-            Center = new LatLng(-25.6, 134.3),
-            Zoom = 8,
-            UrlTileLayer = "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png",
-	        SubOptions = new MapSubOptions()
-            {
-                Attribution = "&copy; <a href=\"https://stadiamaps.com/\">Stadia Maps</a>, &copy; <a href=\"https://openmaptiles.org/\">OpenMapTiles</a> &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors",
-                TileSize = 512,
-                ZoomOffset = -1,
-                MaxZoom = 20,
-            }
-        };
-        return mapOptions;
-    }
-
-    [Inject]
-    private IMarkerFactory MarkerFactory { get; init; }
-    [Inject]
-    private IIconFactory IconFactory { get; init; }
 
     async Task OnLineChartClicked(ChartMouseEventArgs e)
     {

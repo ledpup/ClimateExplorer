@@ -1,0 +1,105 @@
+﻿@using Blazorise
+
+<div class="mapContainer" id="mapContainer">
+    <Map @ref="map" MapOptions="@GetMapOptions()"></Map>
+
+    <div class="@(IsMapExpanded ? "mapToggleExpanded" : "mapToggleCollapsed")">
+        <Button Color="Color.Primary" Clicked="@ToggleMapExpansion">
+            @(IsMapExpanded ? "Collapse map" : "Expand")
+        </Button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public IEnumerable<Location> Locations { get; set; }
+    [Parameter]
+    public EventCallback<Guid> OnLocationChange { get; set; }
+
+    [Inject]
+    IMarkerFactory MarkerFactory { get; init; }
+    [Inject]
+    IIconFactory IconFactory { get; init; }
+    [Inject]
+    IJSRuntime JS { get; init; }
+
+    Map map;
+    List<Marker> mapMarkers;
+    bool IsMapExpanded { get; set; } = false;
+    const string divId = "mapId";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Locations != null && mapMarkers == null)
+        {
+            await CreateMapMarkers();
+        }
+
+        await base.OnParametersSetAsync();
+    }
+
+    MapOptions GetMapOptions()
+    {
+        var mapOptions =
+            new MapOptions()
+            {
+                DivId = divId,
+                Center = new LatLng(-25.6, 134.3),
+                Zoom = 8,
+                UrlTileLayer = "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png",
+                SubOptions = 
+                    new MapSubOptions()
+                    {
+                        Attribution = "&copy; <a href=\"https://stadiamaps.com/\">Stadia Maps</a>, &copy; <a href=\"https://openmaptiles.org/\">OpenMapTiles</a> &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors",
+                        TileSize = 512,
+                        ZoomOffset = -1,
+                        MaxZoom = 20,
+                    }
+            };
+
+        return mapOptions;
+    }
+
+    public async Task ScrollToPoint(LatLng point)
+    {
+        await map.SetView(point);
+    }
+
+    public async Task CreateMapMarkers()
+    {
+        mapMarkers = new List<Marker>();
+
+        foreach (var location in Locations)
+        {
+            var marker = await MarkerFactory.Create(new LatLng(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation));
+            await marker.BindTooltip(location.Name);
+            await marker.OnClick(async (MouseEvent mouseEvent) => await HandleMapMouseEvent(mouseEvent));
+            await marker.AddTo(map);
+            mapMarkers.Add(marker);
+        }
+    }
+
+    async Task HandleMapMouseEvent(MouseEvent mouseEvent)
+    {
+        var lat = Math.Round(mouseEvent.LatLng.Lat, 1);
+        var lng = Math.Round(mouseEvent.LatLng.Lng, 1);
+        var newLocation = Locations.Single(x => Math.Round(x.Coordinates.Latitude, 1) == lat && Math.Round(x.Coordinates.Longitude, 1) == lng);
+        await CollapseMapIfExpanded();
+        await OnLocationChange.InvokeAsync(newLocation.Id);
+    }
+
+    async Task CollapseMapIfExpanded()
+    {
+        if (IsMapExpanded)
+        {
+            await ToggleMapExpansion();
+        }
+    }
+
+    async Task ToggleMapExpansion()
+    {
+        await JS.InvokeVoidAsync("toggleMapExpansion", null);
+
+        IsMapExpanded = !IsMapExpanded;
+    }
+}
