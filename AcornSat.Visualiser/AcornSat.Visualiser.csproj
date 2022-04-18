@@ -28,10 +28,4 @@
     <ProjectReference Include="..\AcornSat.Core\AcornSat.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Blazorise.Charts.Trendline">
-      <HintPath>..\..\Blazorise\Source\Extensions\Blazorise.Charts.Trendline\bin\Debug\net6.0\Blazorise.Charts.Trendline.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
