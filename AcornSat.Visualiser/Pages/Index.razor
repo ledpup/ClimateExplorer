@@ -1045,7 +1045,6 @@
                 {
                     Position = "right",
                     Grid = new { DrawOnChartArea = false },
-                    //Display = true,
                     Title = new
                     {
                         Text = yLabel,
@@ -1057,7 +1056,6 @@
                 { 
                     Position = "left",
                     Grid = new { DrawOnChartArea = false },
-                    //Display = true,
                     Title = new
                     {
                         Text = yLabel,
@@ -1071,33 +1069,24 @@
         {
             yAxes = new
             {
-                //Id = "first-y-axis",
-                //Type = "linear",
-
-                    //Position = "left",
-                    //Display = true,
-                    Title = new
-                    {
-                        Text = yLabel,
-                        Display = true,
-                        Color = "blue",
-                    },
+                Title = new
+                {
+                    Text = yLabel,
+                    Display = true,
+                    Color = "blue",
+                },
             };
         }
         else
         {
             yAxes = new
             { 
-                 
-                    Position = "left",
-                    //Display = true,
-                    Title = new
-                    {
-                        Text = yLabel,
-                        Display = true,
-                        Color = "blue",
-                    },
-               
+                Title = new
+                {
+                    Text = yLabel,
+                    Display = true,
+                    Color = "blue",
+                },
             };
         }
 
@@ -1130,28 +1119,15 @@
                         Color = "blue",
                     },
                 },
-                Y = new
-                {
-                    //Id = "first-y-axis",
-                    //Type = "linear",
-
-                        //Position = "left",
-                        //Display = true,
-                        Title = new
-                        {
-                            Text = yLabel,
-                            Display = true,
-                            Color = "blue",
-                        },
-                }
+                //Y = yAxes TODO: fix the y-axis
             }
         };
         
         await chart.SetOptionsObject(chartOptions);
 
-        await chartTrendline.AddTrendLineOptions(trendlines);
-
         await chart.Update();
+
+        await chartTrendline.AddTrendLineOptions(trendlines);
     }
 
     string[] GetLabels()
