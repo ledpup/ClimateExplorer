@@ -891,7 +891,8 @@
         var adjustedMaximums = new List<float?>();
         var adjustedMinimums = new List<float?>();
 
-        string title = string.Empty;
+        var title = string.Empty;
+        var subtitle = string.Empty;
 
         await chart.Clear();
 
@@ -941,10 +942,11 @@
                 }
             }
 
-            title = 
+            title = SelectedLocation.Name;
+            subtitle = 
                 SelectedChartType == ChartType.Line
-                ? $"Average Yearly Temperature for {SelectedLocation.Name} ({ChartStartYear}-{ChartEndYear})"
-                : $"Temperature Relative to Average for {SelectedLocation.Name} ({ChartStartYear}-{ChartEndYear})";
+                ? $"Average Yearly Temperature ({ChartStartYear}-{ChartEndYear})"
+                : $"Temperature Relative to Average ({ChartStartYear}-{ChartEndYear})";
 
             timeConstraint = x => x.Year >= ChartStartYear && x.Year <= ChartEndYear;
 
@@ -952,8 +954,6 @@
             await chart.AddLabels(Labels);
 
             trendlines = await AddDataSetsToGraph(CorrelatedDataSets, timeConstraint);
-
-            await AddDataSetsToGraph(CorrelatedDataSets, timeConstraint);
         }
         else
         {
@@ -966,7 +966,8 @@
                 CorrelatedDataSets.Add(dataSet);
             }
 
-            title = $"{string.Join(", ", SelectedYears)} {SelectedResolution} Temperature for {SelectedLocation.Name}";        
+            title = $"{SelectedLocation.Name}";
+            subtitle = $"{string.Join(", ", SelectedYears)} {SelectedResolution} Chart";        
 
             var calendar = new GregorianCalendar();
 
@@ -1033,51 +1034,70 @@
         var yLabel = SelectedChartType == ChartType.Line ? "Degrees Celsius (°C)" : "Degrees Celsius (°C) Relative to Average Temperature";
         var xLabel = GetXAxisLabel();
 
-        object[] yAxes;
+        object yAxes;
         if ((Maximums || Minimums) && Rainfall)
         {
-            yAxes = new []
+            yAxes = new
             {
                 // We have to add the Rainfall axis first because we're using BarCharts for rainfail and BarChartDataset does not yet have
                 // a YAxisID. If a YAxisID is not set, the fisrt y-axis is chosen by chartjs
-                new
+                Y1 = new
                 {
-                    Id = "rainfall",
                     Position = "right",
-                    GridLines = new { Display = false },
-                    ScaleLabel = new { LabelString = "Rainfall (mm)", Display = true }
+                    Grid = new { DrawOnChartArea = false },
+                    //Display = true,
+                    Title = new
+                    {
+                        Text = yLabel,
+                        Display = true,
+                        Color = "blue",
+                    },
                 },
-                new  
+                Y2 = new  
                 { 
-                    Id = "temperature",
                     Position = "left",
-                    GridLines = new { Display = true },
-                    ScaleLabel = new { LabelString = yLabel, Display = true } 
+                    Grid = new { DrawOnChartArea = false },
+                    //Display = true,
+                    Title = new
+                    {
+                        Text = yLabel,
+                        Display = true,
+                        Color = "blue",
+                    },
                 }
             };
         }
         else if (Maximums || Minimums)
         {
-            yAxes = new[]
+            yAxes = new
             {
-                new
-                {
-                    Id = "temperature",
-                    Position = "left",
-                    ScaleLabel = new { LabelString = yLabel, Display = true }
-                },
+                //Id = "first-y-axis",
+                //Type = "linear",
+
+                    //Position = "left",
+                    //Display = true,
+                    Title = new
+                    {
+                        Text = yLabel,
+                        Display = true,
+                        Color = "blue",
+                    },
             };
         }
         else
         {
-            yAxes = new []
+            yAxes = new
             { 
-                new  
-                { 
-                    Id = "rainfall",
+                 
                     Position = "left",
-                    ScaleLabel = new { LabelString = "Rainfall (mm)", Display = true } 
-                }
+                    //Display = true,
+                    Title = new
+                    {
+                        Text = yLabel,
+                        Display = true,
+                        Color = "blue",
+                    },
+               
             };
         }
 
@@ -1086,25 +1106,44 @@
             Responsive = true,
             MaintainAspectRatio = false,
             SpanGaps = true,
-            Title = new 
-            { 
-                Text = title,
-                Display = true
+            Plugins = new
+            {
+                Title = new 
+                { 
+                    Text = title,
+                    Display = true
+                },
+                Subtitle = new 
+                { 
+                    Text = subtitle,
+                    Display = true
+                },
             },
             Scales = new
             {
-                YAxes = yAxes,
-                XAxes = new []
-                { 
-                    new 
-                    { 
-                        ScaleLabel = new { LabelString = xLabel, Display = true },
-                        //Type = "time",
-                        //Time = new {
-                        //    Unit = "year"
-                        //}
-                    } 
-                }       
+                X = new
+                {
+                    Title = new
+                    {
+                        Text = xLabel,
+                        Display = true,
+                        Color = "blue",
+                    },
+                },
+                Y = new
+                {
+                    //Id = "first-y-axis",
+                    //Type = "linear",
+
+                        //Position = "left",
+                        //Display = true,
+                        Title = new
+                        {
+                            Text = yLabel,
+                            Display = true,
+                            Color = "blue",
+                        },
+                }
             }
         };
         
@@ -1237,7 +1276,11 @@
                 }
                 dataSetIndex++;
             }
-            await AddMovingAverage(label, values);
+            else if (SelectedMovingAverageInterval != 0)
+            {
+                await AddMovingAverage(label, values);
+                dataSetIndex++;
+            }
         }
         if (Rainfall)
         {
