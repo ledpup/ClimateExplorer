@@ -11,17 +11,12 @@
 </div>
 
 @code {
-    [Parameter]
-    public IEnumerable<Location> Locations { get; set; }
-    [Parameter]
-    public EventCallback<Guid> OnLocationChange { get; set; }
+    [Parameter] public IEnumerable<Location> Locations { get; set; }
+    [Parameter] public EventCallback<Guid> OnLocationChange { get; set; }
 
-    [Inject]
-    IMarkerFactory MarkerFactory { get; init; }
-    [Inject]
-    IIconFactory IconFactory { get; init; }
-    [Inject]
-    IJSRuntime JS { get; init; }
+    [Inject] IMarkerFactory MarkerFactory { get; init; }
+    [Inject] IIconFactory IconFactory { get; init; }
+    [Inject] IJSRuntime JS { get; init; }
 
     Map map;
     List<Marker> mapMarkers;
@@ -29,13 +24,12 @@
     const string divId = "mapId";
 
     protected override async Task OnParametersSetAsync()
-    {
+    {
         if (Locations != null && mapMarkers == null)
         {
             await CreateMapMarkers();
         }
-
-        await base.OnParametersSetAsync();
+        await base.OnParametersSetAsync();
     }
 
     MapOptions GetMapOptions()
