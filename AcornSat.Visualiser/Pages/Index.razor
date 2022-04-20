@@ -815,26 +815,33 @@
         var yLabel = SelectedChartType == ChartType.Line ? "Degrees Celsius (°C)" : "Degrees Celsius (°C) Relative to Average Temperature";
         var xLabel = GetXAxisLabel();
 
-        object yAxes;
-        if ((Maximums || Minimums) && Rainfall)
-        {
-            yAxes = new
+        object scales = new
             {
-                // We have to add the Rainfall axis first because we're using BarCharts for rainfail and BarChartDataset does not yet have
-                // a YAxisID. If a YAxisID is not set, the fisrt y-axis is chosen by chartjs
-                Y1 = new
+                X = new
                 {
-                    Position = "right",
-                    Grid = new { DrawOnChartArea = false },
                     Title = new
                     {
-                        Text = yLabel,
+                        Text = xLabel,
                         Display = true,
                         Color = "blue",
                     },
                 },
-                Y2 = new  
+                Rainfall = new
+                {
+                    Display = Rainfall,
+                    Axis = "y",
+                    Position = "right",
+                    Grid = new { DrawOnChartArea = false },
+                    Title = new
+                    {
+                        Text = "Rainfall (mm)",
+                        Display = true,
+                        Color = "blue",
+                    },
+                },
+                Temperature = new  
                 { 
+                    Axis = "y",
                     Position = "left",
                     Grid = new { DrawOnChartArea = false },
                     Title = new
@@ -845,31 +852,7 @@
                     },
                 }
             };
-        }
-        else if (Maximums || Minimums)
-        {
-            yAxes = new
-            {
-                Title = new
-                {
-                    Text = yLabel,
-                    Display = true,
-                    Color = "blue",
-                },
-            };
-        }
-        else
-        {
-            yAxes = new
-            { 
-                Title = new
-                {
-                    Text = yLabel,
-                    Display = true,
-                    Color = "blue",
-                },
-            };
-        }
+       
 
         object chartOptions = new
         {
@@ -889,19 +872,7 @@
                     Display = true
                 },
             },
-            Scales = new
-            {
-                X = new
-                {
-                    Title = new
-                    {
-                        Text = xLabel,
-                        Display = true,
-                        Color = "blue",
-                    },
-                },
-                //Y = yAxes TODO: fix the y-axis
-            }
+            Scales = scales
         };
         
         await chart.SetOptionsObject(chartOptions);
@@ -953,7 +924,7 @@
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(0));
             if (SelectedMovingAverageInterval == 0 || !SoloSma)
             {
-                await chart.AddDataSet(GetChartDataset(label, values, colour));
+                await chart.AddDataSet(GetChartDataset(label, values, DataType.TempMax, colour));
                 if (trendlinesOn)
                 {
                     trendlines.Add(AddTrendline(dataSetIndex, colour));
@@ -962,7 +933,7 @@
             }
             else if (SelectedMovingAverageInterval != 0)
             {
-                await AddMovingAverage(label, values);
+                await AddMovingAverage(label, values, DataType.TempMax);
                 dataSetIndex++;
             }
         }
@@ -973,7 +944,7 @@
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(1));
             if (SelectedMovingAverageInterval == 0 || !SoloSma)
             {
-                await chart.AddDataSet(GetChartDataset(label, values, colour));
+                await chart.AddDataSet(GetChartDataset(label, values, DataType.TempMax, colour));
                 if (trendlinesOn)
                 {
                     trendlines.Add(AddTrendline(dataSetIndex, colour));
@@ -982,7 +953,7 @@
             }
             else if (SelectedMovingAverageInterval != 0)
             {
-                await AddMovingAverage(label, values);
+                await AddMovingAverage(label, values, DataType.TempMax);
                 dataSetIndex++;
             }
         }
@@ -991,13 +962,13 @@
             var values = SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMax, DataAdjustment.Difference, timeConstraint, year);
             var label = labelPrefix + "Maximum Difference";
 
-            await chart.AddDataSet(GetChartDataset(label, values, chartType: ChartType.Bar));
+            await chart.AddDataSet(GetChartDataset(label, values, DataType.TempMax, chartType: ChartType.Bar));
         }
         if (Difference && Minimums)
         {
             var values = SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMin, DataAdjustment.Difference, timeConstraint, year);
             var label = labelPrefix + "Minimum Difference";
-            await chart.AddDataSet(GetChartDataset(label, values, chartType: ChartType.Bar));
+            await chart.AddDataSet(GetChartDataset(label, values, DataType.TempMin, chartType: ChartType.Bar));
         }
         if (Adjusted && Minimums)
         {
@@ -1006,7 +977,7 @@
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(2));
             if (SelectedMovingAverageInterval == 0 || !SoloSma)
             {
-                await chart.AddDataSet(GetChartDataset(label, values, colour));
+                await chart.AddDataSet(GetChartDataset(label, values, DataType.TempMin, colour));
                 if (trendlinesOn)
                 {
                     trendlines.Add(AddTrendline(dataSetIndex, colour));
@@ -1015,7 +986,7 @@
             }
             else if (SelectedMovingAverageInterval != 0)
             {
-                await AddMovingAverage(label, values);
+                await AddMovingAverage(label, values, DataType.TempMin);
                 dataSetIndex++;
             }
         }
@@ -1026,7 +997,7 @@
             var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(3));
             if (SelectedMovingAverageInterval == 0 || !SoloSma)
             {
-                await chart.AddDataSet(GetChartDataset(label, values, colour));
+                await chart.AddDataSet(GetChartDataset(label, values, DataType.TempMin, colour));
                 if (trendlinesOn)
                 {
                     trendlines.Add(AddTrendline(dataSetIndex, colour));
@@ -1035,7 +1006,7 @@
             }
             else if (SelectedMovingAverageInterval != 0)
             {
-                await AddMovingAverage(label, values);
+                await AddMovingAverage(label, values, DataType.TempMin);
                 dataSetIndex++;
             }
         }
@@ -1045,7 +1016,7 @@
             var label = labelPrefix + "Rainfall";
             if (SelectedMovingAverageInterval == 0 || !SoloSma)
             {
-                await chart.AddDataSet(GetChartDataset(label, values, chartType: ChartType.Bar, redPositive: false));
+                await chart.AddDataSet(GetChartDataset(label, values, DataType.Rainfall, chartType: ChartType.Bar, redPositive: false));
             }
             //await AddMovingAverage(label, values);
         }
@@ -1068,13 +1039,13 @@
                 };
     }
 
-    async Task AddMovingAverage(string label, List<float?> values)
+    async Task AddMovingAverage(string label, List<float?> values, DataType dataType)
     {
         if (SelectedChartType == ChartType.Line && SelectedMovingAverageInterval != 0)
         {
             var simpleMovingAverages = SimpleMovingAverage.Calculate(SelectedMovingAverageInterval, values);
             label = $"{label} Moving Average @ {SelectedMovingAverageInterval} year interval";
-            await chart.AddDataSet(GetLineChartDataset(label, simpleMovingAverages, ChartColor.FromHtmlColorCode(colours.GetNextColour())));
+            await chart.AddDataSet(GetLineChartDataset(label, simpleMovingAverages, ChartColor.FromHtmlColorCode(colours.GetNextColour()), dataType));
         }
     }
 
@@ -1144,14 +1115,14 @@
         return bufferedDataSets;
     }
 
-    ChartDataset<float?> GetChartDataset(string label, List<float?> values, ChartColor? chartColour = null, ChartType? chartType = null, bool? absoluteValues = false, bool redPositive = true)
+    ChartDataset<float?> GetChartDataset(string label, List<float?> values, DataType dataType, ChartColor? chartColour = null, ChartType? chartType = null, bool? absoluteValues = false, bool redPositive = true)
     {
         chartType = chartType ?? SelectedChartType;
 
         switch (chartType)
         {
             case ChartType.Line:
-                return GetLineChartDataset(label, values, chartColour.Value);
+                return GetLineChartDataset(label, values, chartColour.Value, dataType);
             case ChartType.Bar:
                 return GetBarChartDataset(label, values, absoluteValues, redPositive);
         }
@@ -1172,7 +1143,7 @@
                     };
     }
 
-    LineChartDataset<float?> GetLineChartDataset(string label, List<float?> values, ChartColor chartColor)
+    LineChartDataset<float?> GetLineChartDataset(string label, List<float?> values, ChartColor chartColor, DataType dataType)
     {
         var count = values.Count;
         var colour = new List<string>();
@@ -1188,7 +1159,7 @@
                         PointRadius = 5,
                         BorderDash = new List<int> { },
                         Tension = 0.1f,
-                        YAxisID = "temperature"
+                        YAxisID = dataType == DataType.Rainfall ? "rainfall" : "temperature"
                     };
     }
 
