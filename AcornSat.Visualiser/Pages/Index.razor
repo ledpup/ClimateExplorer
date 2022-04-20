@@ -830,7 +830,7 @@
                 {
                     Display = Rainfall,
                     Axis = "y",
-                    Position = "right",
+                    Position = Maximums || Minimums ? "right" : "left",
                     Grid = new { DrawOnChartArea = false },
                     Title = new
                     {
@@ -841,6 +841,7 @@
                 },
                 Temperature = new  
                 { 
+                    Display = Maximums || Minimums,
                     Axis = "y",
                     Position = "left",
                     Grid = new { DrawOnChartArea = false },
