@@ -932,7 +932,7 @@
                 }
                 dataSetIndex++;
             }
-            else if (SelectedMovingAverageInterval != 0)
+            if (SelectedMovingAverageInterval != 0)
             {
                 await AddMovingAverage(label, values, DataType.TempMax);
                 dataSetIndex++;
@@ -952,7 +952,7 @@
                 }
                 dataSetIndex++;
             }
-            else if (SelectedMovingAverageInterval != 0)
+            if (SelectedMovingAverageInterval != 0)
             {
                 await AddMovingAverage(label, values, DataType.TempMax);
                 dataSetIndex++;
@@ -985,7 +985,7 @@
                 }
                 dataSetIndex++;
             }
-            else if (SelectedMovingAverageInterval != 0)
+            if (SelectedMovingAverageInterval != 0)
             {
                 await AddMovingAverage(label, values, DataType.TempMin);
                 dataSetIndex++;
@@ -1005,7 +1005,7 @@
                 }
                 dataSetIndex++;
             }
-            else if (SelectedMovingAverageInterval != 0)
+            if (SelectedMovingAverageInterval != 0)
             {
                 await AddMovingAverage(label, values, DataType.TempMin);
                 dataSetIndex++;
@@ -1073,7 +1073,7 @@
         foreach (var dataSet in dataSets)
         {
             var temperatures = new List<DataRecord>();
-            for (var year = superSetStartYear; year < superSetEndYear; year++)
+            for (var year = superSetStartYear; year <= superSetEndYear; year++)
             {
                 var record = dataSet.DataRecords.FirstOrDefault(x => x.Year == year);
                 if (record == null)

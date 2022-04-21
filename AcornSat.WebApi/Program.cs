@@ -303,6 +303,9 @@ async Task<List<DataSet>> GetDataSetsForLocationInternal(QueryParameters queryPa
                     });
                 }
             }
+
+            dataSets = TrimNulls(dataSets);
+
             break;
         case DataResolution.Weekly:
             dataSets = await GetAverageFromDailyTemperatures(definition, queryParameters.DataType, DataResolution.Weekly, queryParameters.DataAdjustment, queryParameters.LocationId, queryParameters.Year.Value, ((GroupThenAverage)queryParameters.StatsParameters).DayGroupingThreshold);
@@ -320,6 +323,18 @@ async Task<List<DataSet>> GetDataSetsForLocationInternal(QueryParameters queryPa
     }
 
     await SaveDataSets(queryParameters, dataSets);
+
+    return dataSets;
+}
+
+List<DataSet> TrimNulls(List<DataSet> dataSets)
+{
+    dataSets.ForEach(x =>
+    {
+        var trimmedNullsFromEndOfList = x.DataRecords.OrderByDescending(x => x.Year).SkipWhile(x => x.Value == null);
+        var trimmedNullsFromStartOfList = trimmedNullsFromEndOfList.OrderBy(x => x.Year).SkipWhile(x => x.Value == null);
+        x.DataRecords = trimmedNullsFromStartOfList.ToList();
+    });
 
     return dataSets;
 }
