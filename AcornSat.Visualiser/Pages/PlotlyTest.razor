@@ -28,12 +28,12 @@
                 }
             </tr>
         }
-        <tr style="background-color: #D6EEEE">
+        <tr>
             <td></td>
             @foreach(var year in dataSet.DataRecords.GroupBy(x => x.Year))
             {
                     
-                <td>
+                <td style="transform: translate(0, 5px) rotate(-45deg);">
                     @*@if (year % 2 == 0)
                     {*@
                         @year.Key
