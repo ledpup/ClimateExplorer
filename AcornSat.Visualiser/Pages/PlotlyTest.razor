@@ -21,7 +21,7 @@
                 {
                     @foreach(var dataRecord in binGroup)
                     {
-                        <td title="@dataRecord.Value" style="background-color: rgba(255, 0, 0, @GenerateColour(dataRecord.Value) );" />
+                        <td title="@dataRecord.Value" style="background-color: @GenerateColour(bin.Index, dataRecord.Value);" />
                     }
                 }
             </tr>

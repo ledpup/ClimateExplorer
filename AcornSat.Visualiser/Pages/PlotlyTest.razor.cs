@@ -15,26 +15,19 @@ namespace AcornSat.Visualiser.Pages
         //IEnumerable<Location> Locations;
         DataSet dataSet { get; set; }
         List<IGrouping<string, DataRecord>> binGroups { get; set; }
-        float? max;
+        float? maxValue;
+        int numberOfBins;
         protected override async Task OnInitializedAsync()
         {
-            Datasets = (await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, MeasurementType.Unadjusted, Guid.Parse("aed87aa0-1d0c-44aa-8561-cde0fc936395"), Aggregation.BinThenCount, numberOfBins: null, binSize: 1.25f, sufficientNumberOfDaysInYearThreshold: 350)).ToList();
-            //data = GetMapData(Datasets.First());
-            //data = GetMapData(null);
+            Datasets = (await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, MeasurementType.Unadjusted, Guid.Parse("aed87aa0-1d0c-44aa-8561-cde0fc936395"), Aggregation.BinThenCount, numberOfBins: null, binSize: 3f, sufficientNumberOfDaysInYearThreshold: 350)).ToList();
             dataSet = Datasets.First();
-            max = dataSet.DataRecords.Max(x => x.Value);
-            // dataset = Datasets.First();
-
-            //var xValues = dataset.BinDefinitions.Select(x => x.Name).ToArray();
-
-            //var yValues = dataset.Years.Select(x => x.ToString()).Take(4).ToArray();
+            maxValue = dataSet.DataRecords.Max(x => x.Value);
 
             binGroups = dataSet.DataRecords
                 .GroupBy(x => x.Label)
                 .ToList();
-            //    .Select(x => x.Select(y => y.Value).ToArray())
-            //    .ToArray();
 
+            numberOfBins = dataSet.BinDefinitions.Count;
 
             await base.OnInitializedAsync();
         }
@@ -47,14 +40,25 @@ namespace AcornSat.Visualiser.Pages
             }
         }
 
-        protected string GenerateColour(float? value)
+        protected string GenerateColour(int binIndex, float? value)
         {
-            if (!value.HasValue)
+            var hue = (((float)binIndex / numberOfBins * 200) + 200) % 360;
+            hue = MathF.Round(hue, 0);
+
+            float luminosity = 100;
+            if (value.HasValue)
             {
-                return "0";
+                luminosity = value.Value != 0 
+                    ? MathF.Round((float)(value.Value / maxValue * 60) + 20, 0)
+                    : 20;
             }
-            var alpha = value / max;
-            return alpha.ToString();
+
+            var saturation = (value.HasValue && value.Value != 0) ? 50 : 0;
+
+            var colour = $"hsl({hue}, {saturation}%, {luminosity}%)";
+
+            return colour;
+
         }
     }
 }

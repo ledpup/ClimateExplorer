@@ -444,7 +444,8 @@ List<BinDefinition> CreateBins(float min, float max, BinThenCount parameters)
         var start = min + (i * binSize);
         var end = min + ((i + 1) * binSize);
         bins.Add(new BinDefinition 
-        { 
+        {
+            Index = i,
             Name = $"{string.Format("{0:00.0#}", Math.Round(start, 1))}°C - {string.Format("{0:00.0#}", Math.Round(end, 1))}°C",
             Min = start,
             Max = end 
@@ -467,7 +468,7 @@ List<DataRecord> BinThenCount(IEnumerable<IGrouping<short, DataRecord>> yearSets
                 (int?)orderedValues.Count(x => x.Value >= bin.Min && x.Value < bin.Max) :
                 null;
             records.Add(new DataRecord() 
-            { 
+            {
                 Year = yearSet.Key,
                 Label = bin.Name,
                 Value = value, 
