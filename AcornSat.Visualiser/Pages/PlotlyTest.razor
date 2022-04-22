@@ -1,4 +1,4 @@
-﻿@page "/plotly-test"
+﻿@page "/heatmap"
 
 
 
@@ -21,9 +21,7 @@
                 {
                     @foreach(var dataRecord in binGroup)
                     {
-                        <td>
-                        @dataRecord.Value
-                        </td>
+                        <td title="@dataRecord.Value" style="background-color: rgba(255, 0, 0, @GenerateColour(dataRecord.Value) );" />
                     }
                 }
             </tr>

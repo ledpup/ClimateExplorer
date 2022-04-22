@@ -15,12 +15,14 @@ namespace AcornSat.Visualiser.Pages
         //IEnumerable<Location> Locations;
         DataSet dataSet { get; set; }
         List<IGrouping<string, DataRecord>> binGroups { get; set; }
+        float? max;
         protected override async Task OnInitializedAsync()
         {
             Datasets = (await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, MeasurementType.Unadjusted, Guid.Parse("aed87aa0-1d0c-44aa-8561-cde0fc936395"), Aggregation.BinThenCount, numberOfBins: null, binSize: 1.25f, sufficientNumberOfDaysInYearThreshold: 350)).ToList();
             //data = GetMapData(Datasets.First());
             //data = GetMapData(null);
             dataSet = Datasets.First();
+            max = dataSet.DataRecords.Max(x => x.Value);
             // dataset = Datasets.First();
 
             //var xValues = dataset.BinDefinitions.Select(x => x.Name).ToArray();
@@ -44,6 +46,15 @@ namespace AcornSat.Visualiser.Pages
                 //await ExtendData();
             }
         }
-          
+
+        protected string GenerateColour(float? value)
+        {
+            if (!value.HasValue)
+            {
+                return "0";
+            }
+            var alpha = value / max;
+            return alpha.ToString();
+        }
     }
 }
