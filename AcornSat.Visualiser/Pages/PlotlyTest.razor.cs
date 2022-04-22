@@ -19,7 +19,7 @@ namespace AcornSat.Visualiser.Pages
         int numberOfBins;
         protected override async Task OnInitializedAsync()
         {
-            Datasets = (await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, MeasurementType.Unadjusted, Guid.Parse("aed87aa0-1d0c-44aa-8561-cde0fc936395"), Aggregation.BinThenCount, numberOfBins: null, binSize: 3f, sufficientNumberOfDaysInYearThreshold: 350)).ToList();
+            Datasets = (await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, MeasurementType.Adjusted, Guid.Parse("1e743b5c-f9bf-477c-8b16-7d45c67909a7"), Aggregation.BinThenCount, numberOfBins: 40, binSize: null, sufficientNumberOfDaysInYearThreshold: 350)).ToList();
             dataSet = Datasets.First();
             maxValue = dataSet.DataRecords.Max(x => x.Value);
 
@@ -42,18 +42,16 @@ namespace AcornSat.Visualiser.Pages
 
         protected string GenerateColour(int binIndex, float? value)
         {
-            var hue = (((float)binIndex / numberOfBins * 200) + 200) % 360;
+            var hue = (MathF.Pow((float)binIndex / numberOfBins * 20, 1.75F) + 200) % 360;
             hue = MathF.Round(hue, 0);
 
             float luminosity = 100;
             if (value.HasValue)
             {
-                luminosity = value.Value != 0 
-                    ? MathF.Round((float)(value.Value / maxValue * 60) + 20, 0)
-                    : 20;
+                luminosity = MathF.Round(100 - ((float)(value.Value / maxValue) * 95), 0);
             }
 
-            var saturation = (value.HasValue && value.Value != 0) ? 50 : 0;
+            var saturation = (value.HasValue && value.Value != 0) ? 50 : 30;
 
             var colour = $"hsl({hue}, {saturation}%, {luminosity}%)";
 

@@ -8,7 +8,7 @@
 {
     <table style="text-align: center;">
         <colgroup>
-            <col span="1" style="background-color: #D6EEEE; width: 15px;" />
+            <col span="1" style="background-color: #D6EEEE; margin-right: 5px" />
         </colgroup>
         <tbody>
         @foreach(var bin in dataSet.BinDefinitions.OrderByDescending(x => x.Max))
@@ -21,7 +21,7 @@
                 {
                     @foreach(var dataRecord in binGroup)
                     {
-                        <td title="@dataRecord.Value" style="background-color: @GenerateColour(bin.Index, dataRecord.Value);" />
+                        <td title="@dataRecord.Value, @bin.Name" style="background-color: @GenerateColour(bin.Index, dataRecord.Value);" />
                     }
                 }
             </tr>
@@ -31,17 +31,17 @@
             @foreach(var year in dataSet.DataRecords.GroupBy(x => x.Year))
             {
                     
-                <td style="transform: translate(0, 5px) rotate(-45deg);">
-                    @*@if (year % 2 == 0)
-                    {*@
+                <td style="transform: translate(0, 5px) rotate(-45deg); font-size: x-small;">
+                    @*@if ((float)year.Key % 5 == 0)*@
+                    
                         @year.Key
-                    @*}*@
+                    
                 </td>
             }
             </tr>
         </tbody>
     </table>
     <style>
-    td.bin { min-width: 150px; text-align: left;}
+    td.bin { text-align: left; min-width: 130px;}
     </style>
 }
