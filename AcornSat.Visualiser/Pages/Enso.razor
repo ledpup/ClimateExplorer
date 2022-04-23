@@ -18,35 +18,35 @@
             <SelectItem Value="@EnsoIndex.Oni">Oceanic Niño Index (ONI)</SelectItem>
             <SelectItem Value="@EnsoIndex.Soi">Southern Oscillation Index (SOI)</SelectItem>
         </Select>
-   </Column>
-   <Column ColumnSize="ColumnSize.Is2">
+    </Column>
+    <Column ColumnSize="ColumnSize.Is2">
         Resolution
         <Select TValue="DataResolution" SelectedValue="@SelectedResolution" SelectedValueChanged="@OnSelectedResolutionChanged">
             <SelectItem Value="@DataResolution.Yearly">Yearly</SelectItem>
             <SelectItem Value="@DataResolution.Monthly">Monthly</SelectItem>
         </Select>
-   </Column>
-@*   <Column ColumnSize="ColumnSize.Is2">
+    </Column>
+    @*   <Column ColumnSize="ColumnSize.Is2">
         Chart Type
         <Select TValue="ChartType" SelectedValue="@SelectedChartType" SelectedValueChanged="@OnSelectedChartTypeChanged">
-            <SelectItem Value="@ChartType.Bar">Bar</SelectItem>
-            <SelectItem Value="@ChartType.Line">Line</SelectItem>
+        <SelectItem Value="@ChartType.Bar">Bar</SelectItem>
+        <SelectItem Value="@ChartType.Line">Line</SelectItem>
         </Select>
-   </Column>*@
-   @if (SelectedResolution == DataResolution.Yearly)
+        </Column>*@
+    @if (SelectedResolution == DataResolution.Yearly)
     {
-       <Column ColumnSize="ColumnSize.Is2">
-        Measure
-        <Select TValue = "string" SelectedValue = "@SelectedMeasure" SelectedValueChanged = "@OnSelectedMeasureChanged">
-                 <SelectItem Value = "@("mean")">Mean</SelectItem>
-                 <SelectItem Value = "@("median")">Median</SelectItem>
-                 <SelectItem Value = "@("mode")" >Mode</SelectItem>
-        </Select>
+        <Column ColumnSize="ColumnSize.Is2">
+            Measure
+            <Select TValue="string" SelectedValue="@SelectedMeasure" SelectedValueChanged="@OnSelectedMeasureChanged">
+                <SelectItem Value="@("mean")">Mean</SelectItem>
+                <SelectItem Value="@("median")">Median</SelectItem>
+                <SelectItem Value="@("mode")">Mode</SelectItem>
+            </Select>
         </Column>
     }
 </Row>
 
-<div style="width: 85%; border: 0.5px dotted; padding: 10px; position: absolute; bottom: 5px;">
+<div style="border: 0.5px dotted; position: relative; height:70vh; width:95vw; margin: auto;">
     <Chart @ref="chart" TItem="float?" Type="@SelectedChartType" />
 </div>
 
@@ -98,7 +98,7 @@
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
-    {       
+    {
         if (firstRender)
         {
             OnSelectedMeasureChanged("mean");
@@ -117,27 +117,27 @@
         object chartOptions = new
         {
             SpanGaps = true,
-            Title = new 
-            { 
+            Title = new
+            {
                 Text = $"ENSO {enso.Name} {(SelectedResolution == DataResolution.Yearly ? "Yearly Average" : "Monthly")}",
                 Display = true
             },
             Scales = new
             {
-                YAxes = new []
-                { 
-                    new  
-                    { 
-                        ScaleLabel = new { LabelString = "Index values", Display = true } 
-                    } 
+                YAxes = new[]
+                        {
+                    new
+                    {
+                        ScaleLabel = new { LabelString = "Index values", Display = true }
+                    }
                 },
-                XAxes = new []
-                { 
-                    new 
-                    { 
-                        ScaleLabel = new { LabelString = (SelectedResolution == DataResolution.Yearly ? "Year" : "Month/Year"), Display = true } 
-                    } 
-                }       
+                XAxes = new[]
+                        {
+                    new
+                    {
+                        ScaleLabel = new { LabelString = (SelectedResolution == DataResolution.Yearly ? "Year" : "Month/Year"), Display = true }
+                    }
+                }
             }
         };
 
@@ -210,12 +210,12 @@
         var colour = GetBarChartColourSet(values, enso.ElNinoOrientation > 0);
 
         return new BarChartDataset<float?>
-                    {
-                        Label = label,
-                        Data = values,
-                        BorderColor = colour,
-                        BackgroundColor = colour,
-                    };
+            {
+                Label = label,
+                Data = values,
+                BorderColor = colour,
+                BackgroundColor = colour,
+            };
     }
 
     LineChartDataset<float?> GetLineChartDataset(string label, List<float?> values)
@@ -223,16 +223,16 @@
         var colour = GetBarChartColourSet(values);
 
         return new LineChartDataset<float?>
-                    {
-                        Label = label,
-                        Data = values,
-                        //BorderColor = colour,
-                        BackgroundColor = colour,
-                        //PointBackgroundColor = colour,
-                        Fill = true,
-                        PointRadius = 2,
-                        BorderDash = new List<int> { },
-                        Tension = 0.1f,
-                    };
+            {
+                Label = label,
+                Data = values,
+                //BorderColor = colour,
+                BackgroundColor = colour,
+                //PointBackgroundColor = colour,
+                Fill = true,
+                PointRadius = 2,
+                BorderDash = new List<int> { },
+                Tension = 0.1f,
+            };
     }
 }
