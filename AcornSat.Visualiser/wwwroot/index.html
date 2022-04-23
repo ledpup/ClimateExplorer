@@ -70,6 +70,17 @@
             // Fake a window resize so that the leaflet map control realises it has resized.
             window.dispatchEvent(new Event('resize'));
         }
+
+        function showOrHideMap(show) {
+            var mapElement = document.getElementById("mapContainer");
+
+            mapElement.style.display = show ? "block" : "none";
+
+            // Fake a window resize so that the leaflet map control realises it has resized.
+            if (show) {
+                window.dispatchEvent(new Event('resize'));
+            }
+        }
     </script>
 </body>
 

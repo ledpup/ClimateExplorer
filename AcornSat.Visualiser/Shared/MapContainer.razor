@@ -4,7 +4,7 @@
     <Map @ref="map" MapOptions="@GetMapOptions()"></Map>
 
     <div class="@(IsMapExpanded ? "mapToggleExpanded" : "mapToggleCollapsed")">
-        <Button Color="Color.Primary" Clicked="@ToggleMapExpansion">
+        <Button Color="Color.Primary" Clicked="@ToggleMapExpansion" Class="mapToggleButton">
             @(IsMapExpanded ? "Collapse map" : "Expand")
         </Button>
     </div>

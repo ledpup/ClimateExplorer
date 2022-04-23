@@ -1,14 +1,16 @@
-﻿<div class="collapser" @onclick="CollapserOnClick">
-    @if (ShowContent)
-    {
-        <span class="oi oi-chevron-top" aria-hidden="true"></span>
-    }
-    else
-    {
-        <span class="oi oi-chevron-bottom" aria-hidden="true"></span>    
-    }
+﻿<div>
+    <span @onclick="CollapserOnClick" class="collapser">
+        @if (ShowContent)
+        {
+            <span class="oi oi-chevron-top" aria-hidden="true"></span>
+        }
+        else
+        {
+            <span class="oi oi-chevron-bottom" aria-hidden="true"></span>    
+        }
 
-    @Title
+        @Title
+    </span>
 </div>
 
 <div>
@@ -25,10 +27,15 @@
     [Parameter]
     public RenderFragment Content { get; set; }
 
+    [Parameter]
+    public EventCallback<bool> OnShowOrHide { get; set; }
+
     bool ShowContent = true;
 
     void CollapserOnClick(EventArgs args)
     {
         ShowContent = !ShowContent;
+
+        OnShowOrHide.InvokeAsync(ShowContent);
     }
 }
