@@ -377,9 +377,13 @@ async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataS
                 returnDataRecords = GroupThenAverage(yearSets, (GroupThenAverage)queryParameters.AggregationParameters);
                 break;
             case Aggregation.BinThenCount:
-                var hottestDays = dailyDataSet.DataRecords.OrderByDescending(x => x.Value).Take(1000);
-                var min = hottestDays.Min(x => x.Value).Value;
-                var max = hottestDays.Max(x => x.Value).Value;
+
+                //var hottestDays = dailyDataSet.DataRecords.OrderByDescending(x => x.Value).Take(1000);
+                //var min = hottestDays.Min(x => x.Value).Value;
+                //var max = hottestDays.Max(x => x.Value).Value;
+
+                var min = dailyDataSet.DataRecords.Min(x => x.Value).Value;
+                var max = dailyDataSet.DataRecords.Max(x => x.Value).Value;
                 binDefinitions = CreateBins(min, max, (BinThenCount)queryParameters.AggregationParameters);
                 returnDataRecords = BinThenCount(yearSets, binDefinitions, (BinThenCount)queryParameters.AggregationParameters);
                 break;
@@ -460,8 +464,14 @@ List<DataRecord> BinThenCount(IEnumerable<IGrouping<short, DataRecord>> yearSets
     var records = new List<DataRecord>();
     foreach (var yearSet in yearSets)
     {
-        var orderedValues = yearSet.ToList().Where(x => x.Value.HasValue).OrderBy(x => x.Value);
-        var completeYear = orderedValues.Count() >= parameters.SufficientNumberOfDaysInYearThreshold;
+        var values = yearSet.Where(x => x.Value.HasValue);
+        var completeYear = values.Count() >= parameters.SufficientNumberOfDaysInYearThreshold;
+
+        var orderedValues = values
+                                .OrderByDescending(x => x.Value)
+                                .Take(60)
+                                .OrderBy(x => x.Value);
+        
 
         foreach (var bin in bins)
         {
