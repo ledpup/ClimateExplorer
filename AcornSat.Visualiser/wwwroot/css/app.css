@@ -20,6 +20,8 @@ a, .btn-link {
 
 .content {
     padding-top: 1.1rem;
+    /* This is so that the map (which wants to use absolute positioning) is positioned relative to the top of the page content (which begins after the top navbar if any) */
+    position: relative;
 }
 
 .valid.modified:not([type=checkbox]) {
@@ -61,4 +63,15 @@ a, .btn-link {
 
     .blazor-error-boundary::after {
         content: "An error has occurred."
+    }
+
+.large-link {
+    color: #7DB0DF;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+    .large-link.right-margin {
+        margin-right: 3em;
     }

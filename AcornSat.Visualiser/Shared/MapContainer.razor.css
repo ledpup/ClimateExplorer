@@ -37,10 +37,22 @@
 
 .mapToggleCollapsed {
     position: absolute;
-    bottom: 0px;
     height: 50px;
     left: 0px;
-    right: 0px;
-    padding-top: 4px;
+    right: 12px;
+    top: 12px;
     text-align: right;
+    z-index: 1000;
+}
+
+::deep .mapToggleButton {
+    background-color: #eee;
+    color: #222;
+    border: solid 2px #bbb;
+    border-radius: 8px;
+}
+
+::deep .mapToggleButton:hover {
+    background-color: #ccc;
+    color: #222;
 }

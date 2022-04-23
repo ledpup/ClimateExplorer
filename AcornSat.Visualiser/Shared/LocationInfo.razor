@@ -7,7 +7,7 @@
     <a class="location-header-link" @onclick="ChangeLocationClicked">Change Location</a>
 </div>
 
-<Collapsible Title="Overview">
+<Collapsible Title="Overview" OnShowOrHide="OverviewShowOrHideHandler">
     <Content>
         <div>
             <OverviewField Label="Location"><Value>@LocationAsString</Value></OverviewField>
@@ -74,6 +74,10 @@
     [Parameter]
     public EventCallback RequestLocationChange { get; set; }
 
+    [Parameter]
+    public EventCallback<bool> OnOverviewShowOrHide { get; set; }
+
+
     string LocationAsString => $"{Math.Round(Location.Coordinates.Latitude, 1)}°, {Math.Round(Location.Coordinates.Longitude, 1)}°";
     string ElevationAsString => $"{Math.Round(Location.Coordinates.Elevation, 1)}m";
 
@@ -81,4 +85,10 @@
     {
         RequestLocationChange.InvokeAsync();
     }
+
+    void OverviewShowOrHideHandler(bool showOrHide)
+    {
+        OnOverviewShowOrHide.InvokeAsync(showOrHide);
+    }
+
 }

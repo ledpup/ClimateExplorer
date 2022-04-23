@@ -18,18 +18,44 @@
     <LocationInfo
         Location="@SelectedLocation"
         DataSet="@SelectedDataSetDefinition"
-        RequestLocationChange="@ShowSelectLocationModal"></LocationInfo>
+        RequestLocationChange="@ShowSelectLocationModal"
+        OnOverviewShowOrHide="@OnOverviewShowHide"></LocationInfo>
 }
+
+<div style="min-height: 40px"></div>
 
 @if (SelectedResolution == DataResolution.Yearly)
 {
-    <Button Color="Color.Primary" Clicked="@OnDownloadDataClicked">Download Data</Button>
+    <a class="large-link right-margin" @onclick="OnDownloadDataClicked">Download data</a>
 }
 
-<Button Color="Color.Primary" Clicked="@ShowOptionsModal">Options</Button>
-<Button Color="Color.Primary" Clicked="@ShowFilterModal">Filter</Button>
+<a class="large-link right-margin" @onclick="ShowOptionsModal">Chart options</a>
+<a class="large-link right-margin" @onclick="ShowFilterModal">Year filtering</a>
 
- <SelectLocation
+<div style="position: relative;">
+    @* We change the chart's type dynamically depending on selected options.
+        We found that changing an existing Chart instance's Type did not always
+        cause it to refresh properly.
+        So we effectively create a new instance of the chart each time InternalChartType
+        changes.
+    *@
+    @switch (InternalChartType)
+    {
+        case ChartType.Line:
+            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
+                <ChartTrendline @ref="chartTrendline" TItem="float?" />
+            </Chart>
+            break;
+
+        case ChartType.Bar:
+            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Bar">
+                <ChartTrendline @ref="chartTrendline" TItem="float?" />
+            </Chart>
+            break;
+    }
+</div>
+    
+<SelectLocation
     @ref="selectLocationModal"
     Locations="@Locations"
     SelectedLocation="@SelectedLocation"
@@ -112,31 +138,6 @@
     @ref="mapContainer"
     Locations="@Locations"
     OnLocationChange="@SelectedLocationChanged"></MapContainer>
-
-<div style="border: 0.5px dotted; position: relative; height:70vh; width:95vw; margin: auto;">
-    @* We change the chart's type dynamically depending on selected options.
-       We found that changing an existing Chart instance's Type did not always
-       cause it to refresh properly.
-       So we effectively create a new instance of the chart each time InternalChartType
-       changes.
-    *@
-    @switch (InternalChartType)
-    {
-        case ChartType.Line:
-            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
-                <ChartTrendline @ref="chartTrendline" TItem="float?" />
-            </Chart>
-            break;
-
-        case ChartType.Bar:
-            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Bar">
-                <ChartTrendline @ref="chartTrendline" TItem="float?" />
-            </Chart>
-            break;
-    }
-    
-</div>
-
 
 @code{
 
@@ -245,7 +246,14 @@
 
     private MapContainer mapContainer;
 
+    private async Task OnOverviewShowHide(bool isOverviewVisible)
+    {
+        await JS.InvokeVoidAsync("showOrHideMap", isOverviewVisible);
+    }
+
+
     private SelectLocation selectLocationModal;
+
     private Task ShowSelectLocationModal()
     {
         return selectLocationModal.Show();
@@ -1130,3 +1138,4 @@
         await BuildDataSets();
     }
 }
+
