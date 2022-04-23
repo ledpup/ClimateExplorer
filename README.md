@@ -31,7 +31,6 @@ Tool to calculate average temperatures from [BOM](http://www.bom.gov.au/) [ACORN
 In rough order of priority
 
 - Display info on missing data (number of records missing per week/month/etc for min and max, number of missing consecutive days, etc.)
-- Switch to Blazorise nav menu
 - Analyse missing data to find an optimal grouping method - linear regression analysis??
 - Text display of the current filter is. e.g, "1979-present", "1980, 2020", etc.
 - Naviagation back/forward. I.e., navigation history so the user can get back to where they were
@@ -42,9 +41,9 @@ In rough order of priority
 - Get ENSO data from URLs for indexes (still supporting offline mode)
 - Alternate averages (use median/mode - not sure how useful that is)
 - Show graphs from two or more locations at once? (not sure how useful that is)
-- Different units of measure (Fahrenheit + Kelvin)
 
 ### Done
+- 2022-04-23: Switch to Blazorise layout elements and NavMenu
 - 2022-04-18: Linear trendline
 - 2022-01-31: Support graphs for rainfall
 - 2022-01-29: Small map initially. Click to expand to select location. Collapse map after selection.
