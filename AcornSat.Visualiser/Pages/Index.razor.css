@@ -1,0 +1,18 @@
+﻿.map-space-reserver {
+    position: relative;
+    height: 250px;
+    width: 100%;
+}
+
+@media only screen and (min-width: 1000px) {
+
+    .location-info-container {
+        /* On larger screens, make room for the map to appear to the right of the location info section */
+        margin-top: 0px;
+    }
+
+    .map-space-reserver {
+        float: right;
+        width: 50%;
+    }
+}

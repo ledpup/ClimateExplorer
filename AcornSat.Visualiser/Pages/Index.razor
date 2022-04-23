@@ -13,14 +13,26 @@
 
 <PageTitle>Index</PageTitle>
 
-@if (SelectedLocation != null)
-{
-    <LocationInfo
-        Location="@SelectedLocation"
-        DataSet="@SelectedDataSetDefinition"
-        RequestLocationChange="@ShowSelectLocationModal"
-        OnOverviewShowOrHide="@OnOverviewShowHide"></LocationInfo>
-}
+<div>
+    <div class="map-space-reserver">
+        <MapContainer
+            @ref="mapContainer"
+            Locations="@Locations"
+            OnLocationChange="@SelectedLocationChanged"></MapContainer>
+
+    </div>
+    <div class="location-info-container">
+        @if (SelectedLocation != null)
+        {
+            <LocationInfo
+                Location="@SelectedLocation"
+                DataSet="@SelectedDataSetDefinition"
+                RequestLocationChange="@ShowSelectLocationModal"
+                OnOverviewShowOrHide="@OnOverviewShowHide"></LocationInfo>
+        }
+    </div>
+    <div style="clear: both;"></div>
+</div>
 
 <div style="min-height: 40px"></div>
 
@@ -133,11 +145,6 @@
     OnStartYearTextChanged="@OnStartYearTextChanged"
     OnEndYearTextChanged="@OnEndYearTextChanged"
     ></Filter>
-
-<MapContainer
-    @ref="mapContainer"
-    Locations="@Locations"
-    OnLocationChange="@SelectedLocationChanged"></MapContainer>
 
 @code{
 

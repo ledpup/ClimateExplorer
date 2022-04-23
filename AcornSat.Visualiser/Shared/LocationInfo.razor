@@ -9,54 +9,48 @@
 
 <Collapsible Title="Overview" OnShowOrHide="OverviewShowOrHideHandler">
     <Content>
-        <div>
-            <OverviewField Label="Location"><Value>@LocationAsString</Value></OverviewField>
-            <OverviewField Label="Elevation"><Value>@ElevationAsString</Value></OverviewField>
-        </div>
-
-        <div>
-            <OverviewField Label="Climate stats">
-                <Value>
-                    @{
-                        bool firstSite = true;
-                        foreach (var site in Location.Sites)
+        <OverviewField Label="Location"><Value>@LocationAsString</Value></OverviewField>
+        <OverviewField Label="Elevation"><Value>@ElevationAsString</Value></OverviewField>
+        <OverviewField Label="Climate stats">
+            <Value>
+                @{
+                    bool firstSite = true;
+                    foreach (var site in Location.Sites)
+                    {
+                        if (!firstSite)
                         {
-                            if (!firstSite)
-                            {
-                                <span>, </span>
-                            }
-                            else
-                            {
-                                firstSite = false;
-                            }
+                            <span>, </span>
+                        }
+                        else
+                        {
+                            firstSite = false;
+                        }
 
-                            if (DataSet.StationInfoUrl != null)
-                            {
-                                <span><a href="@DataSet.StationInfoUrl.Replace("[station]", site)" target="_blank">@site</a></span>
-                            }
-                            else
-                            {
-                                <span>@(site)</span>
-                            }
+                        if (DataSet.StationInfoUrl != null)
+                        {
+                            <span><a href="@DataSet.StationInfoUrl.Replace("[station]", site)" target="_blank">@site</a></span>
+                        }
+                        else
+                        {
+                            <span>@(site)</span>
                         }
                     }
-                </Value>
-            </OverviewField>
+                }
+            </Value>
+        </OverviewField>
 
-            <OverviewField Label="Dataset">
-                <Value>
-                    @if (!String.IsNullOrWhiteSpace(DataSet.MoreInformationUrl))
-                    {
-                        <a href="@DataSet.MoreInformationUrl" target="_blank">@DataSet.Name</a>
-                    }
-                    else
-                    {
-                        @DataSet.Name
-                    }
-                </Value>
-            </OverviewField>
-        </div>
-
+        <OverviewField Label="Dataset">
+            <Value>
+                @if (!String.IsNullOrWhiteSpace(DataSet.MoreInformationUrl))
+                {
+                    <a href="@DataSet.MoreInformationUrl" target="_blank">@DataSet.Name</a>
+                }
+                else
+                {
+                    @DataSet.Name
+                }
+            </Value>
+        </OverviewField>
     </Content>
 
 </Collapsible>
