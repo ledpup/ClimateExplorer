@@ -19,7 +19,7 @@ namespace AcornSat.Visualiser.Pages
         int numberOfBins;
         protected override async Task OnInitializedAsync()
         {
-            Datasets = (await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, MeasurementType.Adjusted, Guid.Parse("1e743b5c-f9bf-477c-8b16-7d45c67909a7"), Aggregation.BinThenCount, numberOfBins: 40, binSize: null, sufficientNumberOfDaysInYearThreshold: 350)).ToList();
+            Datasets = (await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, MeasurementType.Adjusted, Guid.Parse("1e743b5c-f9bf-477c-8b16-7d45c67909a7"), Aggregation.BinThenCount, numberOfBins: 20, binSize: null, sufficientNumberOfDaysInYearThreshold: 350)).ToList();
             dataSet = Datasets.First();
             maxValue = dataSet.DataRecords.Max(x => x.Value);
 
