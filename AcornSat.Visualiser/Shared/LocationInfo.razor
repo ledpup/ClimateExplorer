@@ -1,0 +1,84 @@
+﻿@using AcornSat.Core
+@using Blazorise
+
+<div class="location-header">
+    @Location.Name
+            
+    <a class="location-header-link" @onclick="ChangeLocationClicked">Change Location</a>
+</div>
+
+<Collapsible Title="Overview">
+    <Content>
+        <div>
+            <OverviewField Label="Location"><Value>@LocationAsString</Value></OverviewField>
+            <OverviewField Label="Elevation"><Value>@ElevationAsString</Value></OverviewField>
+        </div>
+
+        <div>
+            <OverviewField Label="Climate stats">
+                <Value>
+                    @{
+                        bool firstSite = true;
+                        foreach (var site in Location.Sites)
+                        {
+                            if (!firstSite)
+                            {
+                                <span>, </span>
+                            }
+                            else
+                            {
+                                firstSite = false;
+                            }
+
+                            if (DataSet.StationInfoUrl != null)
+                            {
+                                <span><a href="@DataSet.StationInfoUrl.Replace("[station]", site)" target="_blank">@site</a></span>
+                            }
+                            else
+                            {
+                                <span>@(site)</span>
+                            }
+                        }
+                    }
+                </Value>
+            </OverviewField>
+
+            <OverviewField Label="Dataset">
+                <Value>
+                    @if (!String.IsNullOrWhiteSpace(DataSet.MoreInformationUrl))
+                    {
+                        <a href="@DataSet.MoreInformationUrl" target="_blank">@DataSet.Name</a>
+                    }
+                    else
+                    {
+                        @DataSet.Name
+                    }
+                </Value>
+            </OverviewField>
+        </div>
+
+    </Content>
+
+</Collapsible>
+
+
+
+@code {
+
+    [Parameter]
+    public Location Location { get; set; }
+
+    [Parameter]
+    public DataSetDefinition DataSet { get; set; }
+
+    [Parameter]
+    public EventCallback RequestLocationChange { get; set; }
+
+    string LocationAsString => $"{Math.Round(Location.Coordinates.Latitude, 1)}°, {Math.Round(Location.Coordinates.Longitude, 1)}°";
+    string ElevationAsString => $"{Math.Round(Location.Coordinates.Elevation, 1)}m";
+
+    void ChangeLocationClicked(EventArgs args)
+    {
+        RequestLocationChange.InvokeAsync();
+    }
+}

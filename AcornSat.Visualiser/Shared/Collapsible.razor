@@ -1,0 +1,34 @@
+﻿<div class="collapser" @onclick="CollapserOnClick">
+    @if (ShowContent)
+    {
+        <span class="oi oi-chevron-top" aria-hidden="true"></span>
+    }
+    else
+    {
+        <span class="oi oi-chevron-bottom" aria-hidden="true"></span>    
+    }
+
+    @Title
+</div>
+
+<div>
+    @if (ShowContent)
+    {
+        @Content
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public RenderFragment Content { get; set; }
+
+    bool ShowContent = true;
+
+    void CollapserOnClick(EventArgs args)
+    {
+        ShowContent = !ShowContent;
+    }
+}
