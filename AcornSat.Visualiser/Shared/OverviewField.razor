@@ -1,0 +1,19 @@
+﻿<div class="overview-field">
+    <div class="label">@Label</div>
+    <div class="value">
+        @Value
+    </div>
+    <div class="additional-info">@AdditionalInfo</div>
+</div>
+
+@code {
+    
+    [Parameter]
+    public string Label { get; set; }
+    
+    [Parameter]
+    public string AdditionalInfo { get; set; }
+
+    [Parameter]
+    public RenderFragment Value { get; set; }
+}

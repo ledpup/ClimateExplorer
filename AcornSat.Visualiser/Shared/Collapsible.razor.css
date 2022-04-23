@@ -1,0 +1,15 @@
+﻿.collapser {
+    color: #888888;
+    margin-bottom: 0.2rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+    .collapser:hover {
+        color: #0071c1;
+        text-decoration: underline;
+    }
+
+.collapser .oi {
+    margin-right: 0.6em;
+}

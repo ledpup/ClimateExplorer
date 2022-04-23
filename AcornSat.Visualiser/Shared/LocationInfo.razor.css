@@ -1,0 +1,14 @@
+﻿.location-header {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #666666;
+    margin-bottom: 0.5rem;
+}
+
+.location-header-link {
+    color: #0071c1;
+    font-size: 1rem;
+    font-weight: normal;
+    margin-left: 1em;
+    cursor: pointer;
+}
