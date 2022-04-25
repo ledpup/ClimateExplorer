@@ -11,4 +11,32 @@
     display: inline-block;
     flex-grow: 1;
     flex-basis: 0;
+    transition: min-width 0.5s ease-in-out;
 }
+
+    .single-stripe .label {
+        display: none;
+        text-align: center;
+        margin-top: 10px;
+        color: #333;
+    }
+
+        .single-stripe .label .year {
+            font-size: 0.7rem;
+        }
+
+        .single-stripe .label .amt {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+    .single-stripe:hover {
+        position: relative;
+        top: -10px;
+        height: 70px;
+        min-width: 60px;
+    }
+
+    .single-stripe:hover .label {
+        display: block;
+    }

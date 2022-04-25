@@ -6,7 +6,12 @@
         {
             foreach (var record in dataRecords)
             {
-                <span title="@GetTitle(record)" class="single-stripe" style="background-color: @GetColour(record.Value.Value);"/>
+                <div title="@GetTitle(record)" class="single-stripe" style="background-color: @GetColour(record.Value.Value);">
+                    <div class="label">
+                        <div class="year">@record.Year</div>
+                        <div class="amt">@GetRelativeTemp(record)</div>
+                    </div>
+                </div>
             }
         }
     }
@@ -54,6 +59,8 @@
             return $"rgba({255 - ((Math.Abs(value / max)) * 255)}, {255 - ((Math.Abs(value / max)) * 255)}, 255, 75%)";
         }
     }
+
+    string GetRelativeTemp(DataRecord r) => $"{(r.Value.Value >= 0 ? "+" : "")}{MathF.Round(r.Value.Value, 1)}°C";
 
     string GetTitle(DataRecord dataRecord)
     {
