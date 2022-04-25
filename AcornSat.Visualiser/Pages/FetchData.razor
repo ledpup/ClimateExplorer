@@ -20,6 +20,8 @@
     [Inject]
     public IDataService DataService { get; set; }
 
+    @inject IJSRuntime JSRuntime
+
     protected override async Task OnInitializedAsync()
     {
         AggreagteData = (await DataService.GetAggregateDataSet(DataType.TempMax, DataResolution.Yearly, Core.Enums.DataAdjustment.Adjusted, -5, -50, dayGroupingThreshold: .5f, locationGroupingThreshold: .5f)).ToList();
@@ -31,6 +33,8 @@
         if (firstRender)
         {
             await HandleRedraw();
+
+            await JSRuntime.InvokeVoidAsync("setTitle", $"Climate Analyser - Regional Aggregation");
         }
     }
 

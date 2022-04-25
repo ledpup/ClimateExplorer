@@ -154,6 +154,9 @@
     public string LocationId { get; set; }
 
     bool trendlinesOn = true;
+
+    @inject IJSRuntime JSRuntime
+
     async Task OnButtonClicked()
     {
         trendlinesOn = !trendlinesOn;
@@ -217,7 +220,6 @@
         return fileStream;
     }
 
-    @inject IJSRuntime JS
     private async Task OnDownloadDataClicked()
     {
         var fileStream = GetFileStream();
@@ -225,7 +227,7 @@
 
         using var streamRef = new DotNetStreamReference(stream: fileStream);
 
-        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+        await JSRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 
     float SelectedDayGroupThreshold { get; set; } = .7f;
@@ -254,7 +256,7 @@
 
     private async Task OnOverviewShowHide(bool isOverviewVisible)
     {
-        await JS.InvokeVoidAsync("showOrHideMap", isOverviewVisible);
+        await JSRuntime.InvokeVoidAsync("showOrHideMap", isOverviewVisible);
     }
 
 
@@ -1130,7 +1132,7 @@
             DifferenceDisabled = true;
         }
 
-        await JS.InvokeVoidAsync("setTitle", $"Climate Analyser - {SelectedLocation.Name}"); ;
+        await JSRuntime.InvokeVoidAsync("setTitle", $"Climate Analyser - {SelectedLocation.Name}");
 
         base.StateHasChanged();
         await BuildDataSets();

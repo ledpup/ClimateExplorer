@@ -92,6 +92,8 @@
 
     List<EnsoMetaData> EnsoMetaData { get; set; }
 
+    @inject IJSRuntime JSRuntime
+
     protected override async Task OnInitializedAsync()
     {
         EnsoMetaData = (await DataService.GetEnsoMetaData()).ToList();
@@ -102,6 +104,8 @@
         if (firstRender)
         {
             OnSelectedMeasureChanged("mean");
+
+            await JSRuntime.InvokeVoidAsync("setTitle", $"Climate Analyser - ENSO");
         }
     }
 
