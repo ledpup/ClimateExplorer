@@ -169,7 +169,7 @@ async Task<List<DataSet>> YearlyTemperaturesAcrossLocations(
                     DataResolution.Yearly,
                     dataAdjustment,
                     location.Id,
-                    StatisticalMethod.GroupByDayThenAverage,
+                    AggregationMethod.GroupByDayThenAverage,
                     null,
                     dayGrouping: dayGrouping,
                     dayGroupingThreshold: dayGroupingThreshold
@@ -239,7 +239,7 @@ async Task SaveDataSets(QueryParameters queryParameters, List<DataSet> dataSets)
     await File.WriteAllTextAsync(filePath, json);
 }
 
-async Task<List<DataSet>> GetDataSetsForLocation(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, Guid locationId, short? year, StatisticalMethod? statisticalMethod, short? dayGrouping, float? dayGroupingThreshold, short? numberOfBins)
+async Task<List<DataSet>> GetDataSetsForLocation(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, Guid locationId, short? year, AggregationMethod? statisticalMethod, short? dayGrouping, float? dayGroupingThreshold, short? numberOfBins)
 {
     return await GetDataSetsForLocationInternal(
         new QueryParameters(
@@ -292,7 +292,7 @@ async Task<List<DataSet>> GetDataSetsForLocationInternal(QueryParameters queryPa
             {
                 dataSets = await GetYearlyTemperaturesFromMonthly(definition, queryParameters.DataType, queryParameters.DataAdjustment, queryParameters.LocationId, queryParameters.Year);
             }
-            if (queryParameters.StatisticalMethod.HasValue && queryParameters.StatisticalMethod == StatisticalMethod.GroupByDayThenAverage_Relative)
+            if (queryParameters.StatisticalMethod.HasValue && queryParameters.StatisticalMethod == AggregationMethod.GroupByDayThenAverage_Relative)
             {
                 foreach (var dataSet in dataSets)
                 {
@@ -453,16 +453,16 @@ async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataS
         List<DataRecord> returnDataRecords = null;
         switch (queryParameters.StatisticalMethod)
         {
-            case StatisticalMethod.GroupByDayThenAverage:
-            case StatisticalMethod.GroupByDayThenAverage_Relative:
+            case AggregationMethod.GroupByDayThenAverage:
+            case AggregationMethod.GroupByDayThenAverage_Relative:
                 returnDataRecords = GroupThenAverage(yearSets, (GroupThenAverage)queryParameters.StatsParameters);
                 break;
-            case StatisticalMethod.BinThenCount:
+            case AggregationMethod.BinThenCount:
                 var min = dailyDataSet.DataRecords.Min(x => x.Value).Value;
                 var max = dailyDataSet.DataRecords.Max(x => x.Value).Value;
                 returnDataRecords = BinThenCount(yearSets, min, max, (BinThenCount)queryParameters.StatsParameters);
                 break;
-            case StatisticalMethod.Sum:
+            case AggregationMethod.Sum:
                 returnDataRecords = Sum(yearSets);
                 break;
         }
