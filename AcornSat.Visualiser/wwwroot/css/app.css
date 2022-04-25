@@ -75,3 +75,7 @@ a, .btn-link {
     .large-link.right-margin {
         margin-right: 3em;
     }
+
+.navbar {
+    padding-left: 24px;
+}

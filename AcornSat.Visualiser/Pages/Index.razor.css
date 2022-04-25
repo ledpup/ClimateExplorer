@@ -4,6 +4,12 @@
     width: 100%;
 }
 
+@media only screen and (max-width: 1000px) {
+    .map-space-reserver {
+        margin-bottom: 10px;
+    }
+}
+
 @media only screen and (min-width: 1000px) {
 
     .location-info-container {
