@@ -1,0 +1,71 @@
+﻿@using static AcornSat.Core.Enums
+
+<div class="warming-stripe">
+    @{
+        if (dataRecords != null)
+        {
+            foreach (var record in dataRecords)
+            {
+                <div title="@GetTitle(record)" class="single-stripe" style="background-color: @GetColour(record.Value.Value);">
+                    <div class="label">
+                        <div class="year">@record.Year</div>
+                        <div class="amt">@GetRelativeTemp(record)</div>
+                    </div>
+                </div>
+            }
+        }
+    }
+</div>
+
+@code {
+
+    [Inject]
+    public IDataService DataService { get; set; }
+
+    [Parameter]
+    public Location Location { get; set; }
+
+    [Parameter]
+    public DataAdjustment DataAdjustment { get; set; }
+
+    List<DataRecord> dataRecords { get; set; }
+    float min;
+    float max;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Location != null && DataAdjustment != null)
+        {
+            var dataset = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, DataAdjustment, Location.Id, AggregationMethod.GroupByDayThenAverage_Relative);
+
+            dataRecords = dataset.First().DataRecords.Where(x => x.Value != null).ToList();
+
+            min = dataRecords.Min(x => x.Value.Value);
+            max = dataRecords.Max(x => x.Value.Value);
+        }
+
+        await base.OnParametersSetAsync();
+    }
+
+
+    string GetColour(float value)
+    {
+        if (value > 0)
+        {
+            return $"rgba(255, {255 - ((Math.Abs(value / max)) * 255)}, {255 - ((Math.Abs(value / max)) * 255)}, 75%)";
+        }
+        else
+        {
+            return $"rgba({255 - ((Math.Abs(value / max)) * 255)}, {255 - ((Math.Abs(value / max)) * 255)}, 255, 75%)";
+        }
+    }
+
+    string GetRelativeTemp(DataRecord r) => $"{(r.Value.Value >= 0 ? "+" : "")}{MathF.Round(r.Value.Value, 1)}°C";
+
+    string GetTitle(DataRecord dataRecord)
+    {
+        var value = dataRecord.Value.Value;
+        var aboveOrBelow = value > 0 ? "above" : "below";
+        return $"{dataRecord.Year}, {MathF.Round(value, 1)}°C {aboveOrBelow} average";
+    }
+}

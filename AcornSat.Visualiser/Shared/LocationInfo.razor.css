@@ -12,3 +12,7 @@
     margin-left: 1em;
     cursor: pointer;
 }
+
+    .location-header-link:hover {
+        color: #0a58ca;
+    }

@@ -27,22 +27,21 @@
         z-index: 1;
     }
         .mapContainer.expanded {
+            position: fixed;
             top: 0px;
             right: 0px;
-            width: 100%;
-            /* Would be nice to use 100%, but the navbar at the top consumes some height. We don't want the "Collapse" button to disappear off the bottom of the screen. */
-            width: 80%;
-            background: #aaa;
+            bottom: 0px;
+            left: 0px;
         }
 
     .mapToggleExpanded {
-        position: absolute;
-        bottom: 0px;
-        height: 50px;
-        left: 0px;
+        position: fixed;
+        top: 0px;
         right: 0px;
-        padding: 6px;
-        text-align: center;
+        left: 0px;
+        padding: 12px;
+        text-align: right;
+        z-index: 1000;
     }
 
     .mapToggleCollapsed {
@@ -63,27 +62,25 @@
         right: 0px;
         left: 0px;
         bottom: 0px;
-        height: 250px;
         z-index: 1;
     }
 
         .mapContainer.expanded {
+            position: fixed;
             top: 0px;
             right: 0px;
-            /* Would be nice to use 100%, but the navbar at the top consumes some height. We don't want the "Collapse" button to disappear off the bottom of the screen. */
-            width: 80%;
-            height: 100%;
-            background: #aaa;
+            bottom: 0px;
+            left: 0px;
         }
 
     .mapToggleExpanded {
-        position: absolute;
-        bottom: 0px;
-        height: 50px;
-        left: 0px;
+        position: fixed;
+        top: 0px;
         right: 0px;
-        padding: 6px;
-        text-align: center;
+        left: 0px;
+        padding: 12px;
+        text-align: right;
+        z-index: 1000;
     }
 
     .mapToggleCollapsed {

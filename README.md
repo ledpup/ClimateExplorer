@@ -36,13 +36,14 @@ In rough order of priority
 - Naviagation back/forward. I.e., navigation history so the user can get back to where they were
 - Bookmark page
 - GHGs (CO2, CH4, etc) data and graphs
-- Climate stripes. https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
 - Write an adaptor to query NIWA CliFlo website to pull in the 11-station series data automatically
 - Get ENSO data from URLs for indexes (still supporting offline mode)
 - Alternate averages (use median/mode - not sure how useful that is)
 - Show graphs from two or more locations at once? (not sure how useful that is)
 
 ### Done
+
+- 2022-04-25: Climate stripes. https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
 - 2022-04-23: Switch to Blazorise layout elements and NavMenu
 - 2022-04-18: Linear trendline
 - 2022-01-31: Support graphs for rainfall

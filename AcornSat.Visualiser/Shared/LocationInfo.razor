@@ -9,9 +9,9 @@
 
 <Collapsible Title="Overview" OnShowOrHide="OverviewShowOrHideHandler">
     <Content>
-        <OverviewField Label="Location"><Value>@LocationAsString</Value></OverviewField>
+        <OverviewField Label="Location"><Value> <span><a href="@LocationMapUrl" target="_blank">@LocationAsString</a></span></Value></OverviewField>
         <OverviewField Label="Elevation"><Value>@ElevationAsString</Value></OverviewField>
-        <OverviewField Label="Climate stats">
+        <OverviewField Label="Station id">
             <Value>
                 @{
                     bool firstSite = true;
@@ -51,8 +51,8 @@
                 }
             </Value>
         </OverviewField>
+        <WarmingStripe Location="@Location" DataAdjustment="@dataAdjustment" />
     </Content>
-
 </Collapsible>
 
 
@@ -71,9 +71,11 @@
     [Parameter]
     public EventCallback<bool> OnOverviewShowOrHide { get; set; }
 
-
+    string LocationMapUrl => $"https://maps.google.com/?q={Location.Coordinates.Latitude},{Location.Coordinates.Longitude}";
     string LocationAsString => $"{Math.Round(Location.Coordinates.Latitude, 1)}°, {Math.Round(Location.Coordinates.Longitude, 1)}°";
     string ElevationAsString => $"{Math.Round(Location.Coordinates.Elevation, 1)}m";
+
+    Enums.DataAdjustment dataAdjustment { get; set; }
 
     void ChangeLocationClicked(EventArgs args)
     {
@@ -85,4 +87,17 @@
         OnOverviewShowOrHide.InvokeAsync(showOrHide);
     }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        if (DataSet.DataAdjustments.Any(x => x == Enums.DataAdjustment.Adjusted))
+        {
+            dataAdjustment = Enums.DataAdjustment.Adjusted;
+        }
+        else
+        {
+            dataAdjustment = Enums.DataAdjustment.Unadjusted;
+        }
+
+        await base.OnParametersSetAsync();
+    }
 }

@@ -25,6 +25,10 @@
         color: #7DB0DF;
     }
 
+        ::deep .value a:hover {
+            color: #0a58ca;
+        }
+
 .additional-info {
     font-size: 0.7rem;
     color: #50c880;
