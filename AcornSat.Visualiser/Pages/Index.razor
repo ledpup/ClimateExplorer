@@ -393,7 +393,7 @@
         await HandleRedraw();
     }
 
-    bool Unadjusted;
+    bool Unadjusted = false;
     async Task OnUnadjustedChanged(bool value)
     {
         Unadjusted = value;
@@ -466,6 +466,9 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        Adjusted = true;
+        Unadjusted = false;
+
         Guid locationId = Guid.Parse(LocationId ?? "aed87aa0-1d0c-44aa-8561-cde0fc936395");
 
         await SelectedLocationChangedInternal(locationId);
