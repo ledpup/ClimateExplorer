@@ -33,8 +33,6 @@ In rough order of priority
 - Display info on missing data (number of records missing per week/month/etc for min and max, number of missing consecutive days, etc.)
 - Analyse missing data to find an optimal grouping method - linear regression analysis??
 - Text display of the current filter is. e.g, "1979-present", "1980, 2020", etc.
-- Naviagation back/forward. I.e., navigation history so the user can get back to where they were
-- Bookmark page
 - GHGs (CO2, CH4, etc) data and graphs
 - Write an adaptor to query NIWA CliFlo website to pull in the 11-station series data automatically
 - Get ENSO data from URLs for indexes (still supporting offline mode)
@@ -43,6 +41,7 @@ In rough order of priority
 
 ### Done
 
+- 2022-04-25: Naviagation history in the browser (can go backward/forward) + supports bookmarking
 - 2022-04-25: Climate stripes. https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
 - 2022-04-23: Switch to Blazorise layout elements and NavMenu
 - 2022-04-18: Linear trendline
