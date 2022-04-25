@@ -1,0 +1,64 @@
+﻿@using static AcornSat.Core.Enums
+
+<div class="warming-stripe">
+    @{
+        if (dataRecords != null)
+        {
+            foreach (var record in dataRecords)
+            {
+                <span title="@GetTitle(record)" class="single-stripe" style="background-color: @GetColour(record.Value.Value);"/>
+            }
+        }
+    }
+</div>
+
+@code {
+
+    [Inject]
+    public IDataService DataService { get; set; }
+
+    [Parameter]
+    public Location Location { get; set; }
+
+    [Parameter]
+    public DataAdjustment DataAdjustment { get; set; }
+
+    List<DataRecord> dataRecords { get; set; }
+    float min;
+    float max;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Location != null && DataAdjustment != null)
+        {
+            var dataset = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, DataAdjustment, Location.Id, AggregationMethod.GroupByDayThenAverage_Relative);
+
+            dataRecords = dataset.First().DataRecords.Where(x => x.Value != null).ToList();
+
+            min = dataRecords.Min(x => x.Value.Value);
+            max = dataRecords.Max(x => x.Value.Value);
+        }
+
+        await base.OnParametersSetAsync();
+    }
+
+
+    string GetColour(float value)
+    {
+        if (value > 0)
+        {
+            return $"rgba({((Math.Abs(value / max)) * 192 + 63)}, 0, 0, 50%)";
+        }
+        else
+        {
+            return $"rgba(0, 0, {((Math.Abs(value / max)) * 192 + 63)}, 50%)";
+        }
+    }
+
+    string GetTitle(DataRecord dataRecord)
+    {
+        var value = dataRecord.Value.Value;
+        var aboveOrBelow = value > 0 ? "above" : "below";
+        return $"{dataRecord.Year}, {MathF.Round(value, 1)}°C {aboveOrBelow} average";
+    }
+}
