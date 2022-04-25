@@ -14,7 +14,7 @@
 @using Microsoft.AspNetCore.WebUtilities
 @using System.Text
 
-<PageTitle>Index</PageTitle>
+<PageTitle>@GetPageTitle()</PageTitle>
 
 <div>
     <div class="map-space-reserver" id="mapContainerContainer">
@@ -156,6 +156,12 @@
     bool trendlinesOn = true;
 
     @inject IJSRuntime JSRuntime
+
+    string GetPageTitle()
+    {
+        var locationText = SelectedLocation == null ? "" : " - " + SelectedLocation.Name;
+        return $"Climate Analyser{ locationText }";
+    }
 
     async Task OnButtonClicked()
     {
@@ -1131,8 +1137,6 @@
             AdjustedDisabled = true;
             DifferenceDisabled = true;
         }
-
-        await JSRuntime.InvokeVoidAsync("setTitle", $"Climate Analyser - {SelectedLocation.Name}");
 
         base.StateHasChanged();
         await BuildDataSets();
