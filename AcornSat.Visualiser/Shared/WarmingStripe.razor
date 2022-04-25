@@ -47,11 +47,11 @@
     {
         if (value > 0)
         {
-            return $"rgba({((Math.Abs(value / max)) * 192 + 63)}, 0, 0, 50%)";
+            return $"rgba(255, {255 - ((Math.Abs(value / max)) * 255)}, {255 - ((Math.Abs(value / max)) * 255)}, 75%)";
         }
         else
         {
-            return $"rgba(0, 0, {((Math.Abs(value / max)) * 192 + 63)}, 50%)";
+            return $"rgba({255 - ((Math.Abs(value / max)) * 255)}, {255 - ((Math.Abs(value / max)) * 255)}, 255, 75%)";
         }
     }
 
