@@ -43,6 +43,7 @@ In rough order of priority
 
 - 2022-04-25: Naviagation history in the browser (can go backward/forward) + supports bookmarking
 - 2022-04-25: Climate stripes. https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes
+- 2022-04-23: Major re-work the on the styling/layout
 - 2022-04-23: Switch to Blazorise layout elements and NavMenu
 - 2022-04-18: Linear trendline
 - 2022-01-31: Support graphs for rainfall
