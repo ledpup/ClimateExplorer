@@ -1,5 +1,8 @@
 ﻿@page "/"
+@page "/location/{locationId}"
+
 @inject NavigationManager NavManager
+
 @using AcornSat.Core
 @using Blazorise
 @using Blazorise.Components
@@ -147,6 +150,8 @@
     ></Filter>
 
 @code{
+    [Parameter]
+    public string LocationId { get; set; }
 
     bool trendlinesOn = true;
     async Task OnButtonClicked()
@@ -223,12 +228,6 @@
         await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 
-    async Task OnNearbyLocationClicked(Guid guid)
-    {
-        await SelectedLocationChanged(guid);
-    }
-
-
     float SelectedDayGroupThreshold { get; set; } = .7f;
     string DayGroupThresholdText { get; set; }
     short SelectedDayGrouping { get; set; } = 14;
@@ -264,8 +263,8 @@
     private Task ShowSelectLocationModal()
     {
         return selectLocationModal.Show();
-
     }
+
     private Task HideSelectLocationModal()
     {
         return selectLocationModal.Hide();
@@ -462,17 +461,16 @@
         Datasets = new List<DataSet>();
         SelectedYears = new List<short>();
 
-        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("locationId", out var locationIdStringValues))
-        {
-            await SelectedLocationChanged(Guid.Parse(locationIdStringValues.ToString()));
-        }
-        else
-        {
-            await SelectedLocationChanged(Guid.Parse("aed87aa0-1d0c-44aa-8561-cde0fc936395"));
-        }
-
         await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Guid locationId = Guid.Parse(LocationId ?? "aed87aa0-1d0c-44aa-8561-cde0fc936395");
+
+        await SelectedLocationChangedInternal(locationId);
+
+        base.OnParametersSetAsync();
     }
 
     protected async Task BuildDataSets()
@@ -1103,7 +1101,12 @@
                     };
     }
 
-    async Task SelectedLocationChanged(Guid newValue)
+    async Task SelectedLocationChanged(Guid locationId)
+    {
+        NavManager.NavigateTo("/location/" + locationId.ToString());
+    }
+
+    async Task SelectedLocationChangedInternal(Guid newValue)
     {
         SelectedLocationId = newValue;
         SelectedLocation = Locations.Single(x => x.Id == SelectedLocationId);
