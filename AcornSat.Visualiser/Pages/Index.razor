@@ -1130,6 +1130,8 @@
             DifferenceDisabled = true;
         }
 
+        await JS.InvokeVoidAsync("setTitle", $"Climate Analyser - {SelectedLocation.Name}"); ;
+
         base.StateHasChanged();
         await BuildDataSets();
     }
