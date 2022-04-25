@@ -1,0 +1,14 @@
+.warming-stripe {
+    height: 50px;
+    margin-top: 16px;
+    padding-right: 16px;
+    display: flex;
+    max-width: 600px;
+}
+
+.single-stripe {
+    height: inherit;
+    display: inline-block;
+    flex-grow: 1;
+    flex-basis: 0;
+}

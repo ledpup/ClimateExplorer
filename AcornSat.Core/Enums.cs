@@ -38,7 +38,7 @@ namespace AcornSat.Core
             Soi,
         }
 
-        public enum StatisticalMethod
+        public enum AggregationMethod
         {
             GroupByDayThenAverage,
             GroupByDayThenAverage_Relative,

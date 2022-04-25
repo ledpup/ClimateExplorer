@@ -12,7 +12,7 @@ public class DataService : IDataService
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<DataSet>> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, Guid locationId, StatisticalMethod? statisticalMethod, short? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f)
+    public async Task<IEnumerable<DataSet>> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, Guid locationId, AggregationMethod? statisticalMethod, short? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f)
     {
         var url = $"dataSet/{dataType}/{resolution}/{dataAdjustment}/{locationId}";
 

@@ -6,7 +6,7 @@ namespace AcornSat.WebApi.Model
 {
     public class QueryParameters
     {
-        public QueryParameters(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, Guid locationId, StatisticalMethod? statisticalMethod, short? year, short? dayGrouping = 14, float? dayGroupingThreshold = .7f, short? numberOfBins = null, short? binSize = null)
+        public QueryParameters(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, Guid locationId, AggregationMethod? statisticalMethod, short? year, short? dayGrouping = 14, float? dayGroupingThreshold = .7f, short? numberOfBins = null, short? binSize = null)
         {
             DataType = dataType;
             Resolution = resolution;
@@ -16,11 +16,11 @@ namespace AcornSat.WebApi.Model
             Year = year;
             switch (StatisticalMethod)
             {
-                case Core.Enums.StatisticalMethod.GroupByDayThenAverage:
-                case Core.Enums.StatisticalMethod.GroupByDayThenAverage_Relative:
+                case Core.Enums.AggregationMethod.GroupByDayThenAverage:
+                case Core.Enums.AggregationMethod.GroupByDayThenAverage_Relative:
                     StatsParameters = new GroupThenAverage(dayGrouping.Value, dayGroupingThreshold.Value);
                     break;
-                case Core.Enums.StatisticalMethod.BinThenCount:
+                case Core.Enums.AggregationMethod.BinThenCount:
                     StatsParameters = new BinThenCount(numberOfBins, binSize);
                     break;
             }
@@ -29,7 +29,7 @@ namespace AcornSat.WebApi.Model
         public DataResolution Resolution { get; set; }
         public DataAdjustment DataAdjustment { get; set; }
         public Guid LocationId { get; set; }
-        public StatisticalMethod? StatisticalMethod { get; set; }
+        public AggregationMethod? StatisticalMethod { get; set; }
         public short? Year { get; set; }
 
         public StatsParameters StatsParameters { get; set; }
@@ -44,12 +44,12 @@ namespace AcornSat.WebApi.Model
                 stringBuilder.Append($"_{StatisticalMethod}");
                 switch (StatisticalMethod)
                 {
-                    case Core.Enums.StatisticalMethod.GroupByDayThenAverage:
-                    case Core.Enums.StatisticalMethod.GroupByDayThenAverage_Relative:
+                    case Core.Enums.AggregationMethod.GroupByDayThenAverage:
+                    case Core.Enums.AggregationMethod.GroupByDayThenAverage_Relative:
                         stringBuilder.Append($"_{((GroupThenAverage)StatsParameters).DayGrouping}");
                         stringBuilder.Append($"_{((GroupThenAverage)StatsParameters).DayGroupingThreshold}");
                         break;
-                    case Core.Enums.StatisticalMethod.BinThenCount:
+                    case Core.Enums.AggregationMethod.BinThenCount:
                         if (((BinThenCount)StatsParameters).NumberOfBins.HasValue)
                         {
                             stringBuilder.Append($"_{((BinThenCount)StatsParameters).NumberOfBins}");
