@@ -6,7 +6,7 @@
         {
             foreach (var record in dataRecords)
             {
-                <div title="@GetTitle(record)" class="single-stripe" style="background-color: @GetColour(record.Value.Value);">
+                <div title="@GetTitle(record.Value.Value)" class="single-stripe" style="background-color: @GetColour(record.Value.Value);">
                     <div class="label">
                         <div class="year" style="color: @GetTextColour(record.Value.Value, "#ccc", "#333")">@record.Year</div>
                         <div class="amt" style="color: @GetTextColour(record.Value.Value, "#eee", "#555")">@GetRelativeTemp(record)</div>
@@ -68,11 +68,10 @@
 
     string GetRelativeTemp(DataRecord r) => $"{(r.Value.Value >= 0 ? "+" : "")}{MathF.Round(r.Value.Value, 1)}°C";
 
-    string GetTitle(DataRecord dataRecord)
+    string GetTitle(float value)
     {
-        var value = dataRecord.Value.Value;
         var aboveOrBelow = value > 0 ? "above" : "below";
-        return $"{dataRecord.Year}, {MathF.Round(value, 1)}°C {aboveOrBelow} average";
+        return $"{MathF.Round(value, 1)}°C {aboveOrBelow} average";
     }
 
     string GetTextColour(float value, string lightTextColour, string darkTextColour)
