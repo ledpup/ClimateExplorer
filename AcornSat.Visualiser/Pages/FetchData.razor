@@ -7,22 +7,33 @@
 
 <h1>Aggregates</h1>
 
-
-<div style="width: 85%; border: 0.5px dotted; padding: 10px; position: absolute; bottom: 5px;">
+<div style="padding: 10px; position: relative;">
     <Chart @ref="chart" TItem="float?" Type="ChartType.Line" />
 </div>
 
 @code {
     Chart<float?> chart;
 
-    List<DataSet> AggreagteData { get; set; }
+    List<DataSet> AggregateData { get; set; }
 
     [Inject]
     public IDataService DataService { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        AggreagteData = (await DataService.GetAggregateDataSet(DataType.TempMax, DataResolution.Yearly, Core.Enums.DataAdjustment.Adjusted, -5, -50, dayGroupingThreshold: .5f, locationGroupingThreshold: .5f)).ToList();
+        AggregateData = 
+            (
+                await DataService.GetAggregateDataSet(
+                    DataType.TempMax, 
+                    DataResolution.Yearly, 
+                    Core.Enums.DataAdjustment.Adjusted, 
+                    -5, 
+                    -50, 
+                    dayGroupingThreshold: .5f, 
+                    locationGroupingThreshold: .5f)
+            )
+            .ToList();
+
         await HandleRedraw();
     }
 
@@ -36,19 +47,19 @@
 
     async Task HandleRedraw()
     {
-        if (AggreagteData == null)
+        if (AggregateData == null)
         {
             return;
         }
 
-        var dataSet = AggreagteData.Single();
+        var dataSet = AggregateData.Single();
 
         object chartOptions = new
         {
             SpanGaps = true,
             Title = new 
             { 
-                Text = $"Yearly Average for {dataSet.Locations.Count} locations.",// {string.Join(", ", dataSet.Locations.Select(x => x.Name))}",
+                Text = $"Yearly Average for {dataSet.Locations.Count} locations.",
                 Display = true
             },
             Scales = new
@@ -69,10 +80,8 @@
                 }       
             }
         };
-
-        
-        var labels = dataSet.Years.Select(x => x.ToString()).ToArray();
-        
+                
+        var labels = dataSet.Years.Select(x => x.ToString()).ToArray();        
 
         var values = dataSet.DataRecords.Select(x => x.Value).ToList();
 
@@ -80,7 +89,6 @@
         await chart.SetOptionsObject(chartOptions);
         await chart.AddLabels(labels);
         
-
         var lineChartDataSet = GetLineChartDataset($"Adjusted values", values, ChartColor.FromHtmlColorCode(colours.GetNextColour()));
         await chart.AddDataSet(lineChartDataSet);
 
@@ -96,16 +104,17 @@
         for (var i = 0; i < count; i++)
             colour.Add(chartColor);
 
-        return new LineChartDataset<float?>
-                    {
-                        Label = label,
-                        Data = values,
-                        BorderColor = colour,
-                        Fill = false,
-                        PointRadius = 5,
-                        BorderDash = new List<int> { },
-                        Tension = 0.1f,
-                    };
+        return 
+            new LineChartDataset<float?>
+            {
+                Label = label,
+                Data = values,
+                BorderColor = colour,
+                Fill = false,
+                PointRadius = 5,
+                BorderDash = new List<int> { },
+                Tension = 0.1f,
+            };
     }
 
 }
