@@ -8,8 +8,8 @@
             {
                 <div title="@GetTitle(record)" class="single-stripe" style="background-color: @GetColour(record.Value.Value);">
                     <div class="label">
-                        <div class="year" style="@GetTextColourOverride(record.Value.Value, "#ccc")">@record.Year</div>
-                        <div class="amt" style="@GetTextColourOverride(record.Value.Value, "#eee")">@GetRelativeTemp(record)</div>
+                        <div class="year" style="color: @GetTextColour(record.Value.Value, "#ccc", "#333")">@record.Year</div>
+                        <div class="amt" style="color: @GetTextColour(record.Value.Value, "#eee", "#555")">@GetRelativeTemp(record)</div>
                     </div>
                 </div>
             }
@@ -69,8 +69,8 @@
         return $"{dataRecord.Year}, {MathF.Round(value, 1)}°C {aboveOrBelow} average";
     }
 
-    string GetTextColourOverride(float value, string whiteColour)
+    string GetTextColour(float value, string lightTextColour, string darkTextColour)
     {
-        return value <= -0.9 ? "color: " + whiteColour : "";
+        return value <= -0.9 ? lightTextColour : darkTextColour;
     }
 }
