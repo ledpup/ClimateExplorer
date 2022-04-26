@@ -42,6 +42,12 @@
 
             min = dataRecords.Min(x => x.Value.Value);
             max = dataRecords.Max(x => x.Value.Value);
+
+            // If the max and min are not above or below 1, set them to 1
+            // This will wash out the colours on a stripe where the values don't deviate much from the average
+            // This is okay because we don't want it to look like extreme heating/cooling unless there are larger variations
+            min = min < -1 ? min : -1;
+            max = max > 1 ? max : 1;
         }
 
         await base.OnParametersSetAsync();
@@ -71,6 +77,6 @@
 
     string GetTextColour(float value, string lightTextColour, string darkTextColour)
     {
-        return value <= -0.9 ? lightTextColour : darkTextColour;
+        return MathF.Round(value, 1) <= min / 2 ? lightTextColour : darkTextColour;
     }
 }
