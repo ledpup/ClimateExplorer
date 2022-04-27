@@ -27,9 +27,9 @@
                             firstSite = false;
                         }
 
-                        if (DataSet.StationInfoUrl != null)
+                        if (DataSetDefinition.StationInfoUrl != null)
                         {
-                            <span><a href="@DataSet.StationInfoUrl.Replace("[station]", site)" target="_blank">@site</a></span>
+                            <span><a href="@DataSetDefinition.StationInfoUrl.Replace("[station]", site)" target="_blank">@site</a></span>
                         }
                         else
                         {
@@ -42,17 +42,17 @@
 
         <OverviewField Label="Dataset">
             <Value>
-                @if (!String.IsNullOrWhiteSpace(DataSet.MoreInformationUrl))
+                @if (!String.IsNullOrWhiteSpace(DataSetDefinition.MoreInformationUrl))
                 {
-                    <a href="@DataSet.MoreInformationUrl" target="_blank">@DataSet.Name</a>
+                    <a href="@DataSetDefinition.MoreInformationUrl" target="_blank">@DataSetDefinition.Name</a>
                 }
                 else
                 {
-                    @DataSet.Name
+                    @DataSetDefinition.Name
                 }
             </Value>
         </OverviewField>
-        <OverviewField Label="Warming index" Title="Warming index: the temperature difference between the average of the last 20 years of temperatures compared and the average of the first half of the dataset."><Value>@WarmingIndexAsString</Value></OverviewField>
+        <OverviewField Label="Warming index" Title="Warming index: the temperature difference between the average of the last 20 years of temperatures compared and the average of the first half of the dataset."><Value>@dataSet.WarmingIndexAsString</Value></OverviewField>
         <WarmingStripe DataRecords="@dataRecords" />
         <WarmestYears DataRecords="@dataRecords" />
     </Content>
@@ -69,7 +69,7 @@
     public Location Location { get; set; }
 
     [Parameter]
-    public DataSetDefinition DataSet { get; set; }
+    public DataSetDefinition DataSetDefinition { get; set; }
 
     [Parameter]
     public EventCallback RequestLocationChange { get; set; }
@@ -80,8 +80,8 @@
     string LocationMapUrl => $"https://maps.google.com/?q={Location.Coordinates.Latitude},{Location.Coordinates.Longitude}";
     string LocationAsString => $"{Math.Round(Location.Coordinates.Latitude, 1)}°, {Math.Round(Location.Coordinates.Longitude, 1)}°";
     string ElevationAsString => $"{Math.Round(Location.Coordinates.Elevation, 1)}m";
-    string WarmingIndexAsString;
 
+    DataSet dataSet { get; set; }
     List<DataRecord> dataRecords { get; set; }
 
     void ChangeLocationClicked(EventArgs args)
@@ -97,22 +97,14 @@
     protected override async Task OnParametersSetAsync()
     {
         var dataAdjustment = Enums.DataAdjustment.Unadjusted;
-        if (DataSet.DataAdjustments.Any(x => x == Enums.DataAdjustment.Adjusted))
+        if (DataSetDefinition.DataAdjustments.Any(x => x == Enums.DataAdjustment.Adjusted))
         {
             dataAdjustment = Enums.DataAdjustment.Adjusted;
         }
 
-        var dataset = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, Location.Id, AggregationMethod.GroupByDayThenAverage_Relative);
-        dataRecords = dataset.Single().DataRecords.Where(x => x.Value != null).ToList();
-
-        WarmingIndexAsString = "NA";
-        if (dataRecords.Count > 40)
-        {
-            var averageOfEarliestTemperatures = dataRecords.OrderBy(x => x.Year).Take(dataRecords.Count / 2).Average(x => x.Value).Value;
-            var averageOfLastTwentyYearsTemperatures = dataRecords.OrderByDescending(x => x.Year).Take(20).Average(x => x.Value).Value;
-            var warmingIndex = MathF.Round(averageOfLastTwentyYearsTemperatures - averageOfEarliestTemperatures, 1);
-            WarmingIndexAsString = $"{ (warmingIndex >= 0 ? "+" : "") }{warmingIndex}";
-        }
+        var datasets = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, Location.Id, AggregationMethod.GroupByDayThenAverage_Relative);
+        dataSet = datasets.Single();
+        dataRecords = dataSet.DataRecords.Where(x => x.Value != null).ToList();
 
         await base.OnParametersSetAsync();
     }
