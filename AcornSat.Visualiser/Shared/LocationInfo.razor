@@ -52,6 +52,7 @@
                 }
             </Value>
         </OverviewField>
+        <OverviewField Label="Warming Index" Title="Warming index: the temperature difference between the average of the last 20 years of temperatures compared and the average of the first half of the dataset."><Value>@WarmingIndexAsString</Value></OverviewField>
         <WarmingStripe DataRecords="@dataRecords" />
         <WarmestYears DataRecords="@dataRecords" />
     </Content>
@@ -79,6 +80,7 @@
     string LocationMapUrl => $"https://maps.google.com/?q={Location.Coordinates.Latitude},{Location.Coordinates.Longitude}";
     string LocationAsString => $"{Math.Round(Location.Coordinates.Latitude, 1)}°, {Math.Round(Location.Coordinates.Longitude, 1)}°";
     string ElevationAsString => $"{Math.Round(Location.Coordinates.Elevation, 1)}m";
+    string WarmingIndexAsString;
 
     List<DataRecord> dataRecords { get; set; }
 
@@ -99,9 +101,18 @@
         {
             dataAdjustment = Enums.DataAdjustment.Adjusted;
         }
-        
+
         var dataset = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, Location.Id, AggregationMethod.GroupByDayThenAverage_Relative);
         dataRecords = dataset.Single().DataRecords.Where(x => x.Value != null).ToList();
+
+        WarmingIndexAsString = "NA";
+        if (dataRecords.Count > 40)
+        {
+            var averageOfEarliestTemperatures = dataRecords.OrderBy(x => x.Year).Take(dataRecords.Count / 2).Average(x => x.Value).Value;
+            var averageOfLastTwentyYearsTemperatures = dataRecords.OrderByDescending(x => x.Year).Take(20).Average(x => x.Value).Value;
+            var warmingIndex = MathF.Round(averageOfLastTwentyYearsTemperatures - averageOfEarliestTemperatures, 1);
+            WarmingIndexAsString = $"{ (warmingIndex >= 0 ? "+" : "") }{warmingIndex}";
+        }
 
         await base.OnParametersSetAsync();
     }
