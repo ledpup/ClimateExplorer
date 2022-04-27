@@ -54,10 +54,10 @@
         </OverviewField>
         @if (dataSet != null)
         {
-            <OverviewField Label="Warming index" Title="Warming index: the temperature difference between the average of the last 20 years of temperatures compared and the average of the first half of the dataset."><Value>@dataSet.WarmingIndexAsString</Value></OverviewField>
+            <OverviewField Label="Warming index" Title="@dataSet.WarmingIndexDescription"><Value>@dataSet.WarmingIndexAsString</Value></OverviewField>
         }
-        <WarmingStripe DataRecords="@dataRecords" />
-        <WarmestYears DataRecords="@dataRecords" />
+        <WarmingStripe DataRecords="@dataRecordsRelative" />
+        <WarmestYears DataRecords="@dataRecordsRelative" />
     </Content>
 </Collapsible>
 
@@ -85,7 +85,8 @@
     string ElevationAsString => $"{Math.Round(Location.Coordinates.Elevation, 1)}m";
 
     DataSet dataSet { get; set; }
-    List<DataRecord> dataRecords { get; set; }
+    List<DataRecord> dataRecordsRelative { get; set; }
+
 
     void ChangeLocationClicked(EventArgs args)
     {
@@ -105,9 +106,13 @@
             dataAdjustment = Enums.DataAdjustment.Adjusted;
         }
 
-        var datasets = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, Location.Id, AggregationMethod.GroupByDayThenAverage_Relative);
-        dataSet = datasets.Single();
-        dataRecords = dataSet.DataRecords.Where(x => x.Value != null).ToList();
+        {
+            var datasets = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, Location.Id, AggregationMethod.GroupByDayThenAverage_Relative);
+            var dataset = datasets.Single();
+            dataRecordsRelative = dataset.DataRecords.Where(x => x.Value != null).ToList();
+        }
+
+        dataSet = (await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, Location.Id, AggregationMethod.GroupByDayThenAverage)).SingleOrDefault();
 
         await base.OnParametersSetAsync();
     }

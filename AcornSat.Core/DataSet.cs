@@ -52,6 +52,9 @@ public class DataSet
         get { return DataRecords.Average(x => x.Value); }
     }
 
+    float? averageOfEarliestTemperatures;
+    float? averageOfLastTwentyYearsTemperatures;
+
     public float? WarmingIndex
     {
         get
@@ -59,9 +62,9 @@ public class DataSet
             float? warmingIndex = null;
             if (DataRecords.Count > 40)
             {
-                var averageOfEarliestTemperatures = DataRecords.OrderBy(x => x.Year).Take(DataRecords.Count / 2).Average(x => x.Value).Value;
-                var averageOfLastTwentyYearsTemperatures = DataRecords.OrderByDescending(x => x.Year).Take(20).Average(x => x.Value).Value;
-                warmingIndex = MathF.Round(averageOfLastTwentyYearsTemperatures - averageOfEarliestTemperatures, 1);
+                averageOfEarliestTemperatures = DataRecords.OrderBy(x => x.Year).Take(DataRecords.Count / 2).Average(x => x.Value).Value;
+                averageOfLastTwentyYearsTemperatures = DataRecords.OrderByDescending(x => x.Year).Take(20).Average(x => x.Value).Value;
+                warmingIndex = MathF.Round(averageOfLastTwentyYearsTemperatures.Value - averageOfEarliestTemperatures.Value, 1);
             }
             return warmingIndex;
         }
@@ -78,6 +81,22 @@ public class DataSet
                 warmingIndexAsString = $"{ (warmingIndex >= 0 ? "+" : "") }{warmingIndex}°C";
             }
             return warmingIndexAsString;
+        }
+    }
+
+    public string WarmingIndexDescription
+    {
+        get
+        {
+            if (WarmingIndex == null)
+            {
+                return $"Warming index: the temperature difference between the average of the last 20 years of maximum temperatures compared and the average of the first half of the dataset.";
+            }
+
+            var twentyYears = DataRecords.OrderByDescending(x => x.Year).Take(20);
+            var firstHalf = DataRecords.OrderBy(x => x.Year).Take(DataRecords.Count / 2);
+
+            return $"Warming index: the temperature difference between the average of the last 20 years of maximum temperatures (years {twentyYears.Last().Year}-{twentyYears.First().Year}, with an average of {MathF.Round(averageOfLastTwentyYearsTemperatures.Value, 1)}°C) compared and the average of the first half of the dataset (years {firstHalf.First().Year}-{firstHalf.Last().Year} with an average of {MathF.Round(averageOfEarliestTemperatures.Value, 1)}°C).";
         }
     }
 }
