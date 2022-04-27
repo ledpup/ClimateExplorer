@@ -1,47 +1,42 @@
 ﻿@using static AcornSat.Core.Enums
 
 <div class="warming-stripe">
-    @{
-        if (dataRecords != null)
+    @if (DataRecords != null)
+    {
+        foreach (var record in DataRecords)
         {
-            foreach (var record in dataRecords)
-            {
-                <div title="@GetTitle(record)" class="single-stripe" style="background-color: @GetColour(record.Value.Value);">
-                    <div class="label">
-                        <div class="year" style="color: @GetTextColour(record.Value.Value, "#ccc", "#333")">@record.Year</div>
-                        <div class="amt" style="color: @GetTextColour(record.Value.Value, "#eee", "#555")">@GetRelativeTemp(record)</div>
-                    </div>
+            <div title="@GetTitle(record.Value.Value)" class="single-stripe" style="background-color: @GetColour(record.Value.Value);">
+                <div class="label">
+                    <div class="year" style="color: @GetTextColour(record.Value.Value, "#ccc", "#333")">@record.Year</div>
+                    <div class="amt" style="color: @GetTextColour(record.Value.Value, "#eee", "#555")">@GetRelativeTemp(record)</div>
                 </div>
-            }
+            </div>
         }
     }
 </div>
 
 @code {
 
-    [Inject]
-    public IDataService DataService { get; set; }
-
     [Parameter]
-    public Location Location { get; set; }
+    public List<DataRecord> DataRecords { get; set; }
 
-    [Parameter]
-    public DataAdjustment DataAdjustment { get; set; }
-
-    List<DataRecord> dataRecords { get; set; }
     float min;
     float max;
 
     protected override async Task OnParametersSetAsync()
     {
-        if (Location != null && DataAdjustment != null)
+        if (DataRecords != null)
         {
-            var dataset = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, DataAdjustment, Location.Id, AggregationMethod.GroupByDayThenAverage_Relative);
+            DataRecords = DataRecords.Where(x => x.Value.HasValue).ToList();
 
-            dataRecords = dataset.First().DataRecords.Where(x => x.Value != null).ToList();
+            min = DataRecords.Min(x => x.Value.Value);
+            max = DataRecords.Max(x => x.Value.Value);
 
-            min = dataRecords.Min(x => x.Value.Value);
-            max = dataRecords.Max(x => x.Value.Value);
+            // If the max and min are not above or below 1, set them to 1
+            // This will wash out the colours on a stripe where the values don't deviate much from the average
+            // This is okay because we don't want it to look like extreme heating/cooling unless there are larger variations
+            min = min < -1 ? min : -1;
+            max = max > 1 ? max : 1;
         }
 
         await base.OnParametersSetAsync();
@@ -62,15 +57,14 @@
 
     string GetRelativeTemp(DataRecord r) => $"{(r.Value.Value >= 0 ? "+" : "")}{MathF.Round(r.Value.Value, 1)}°C";
 
-    string GetTitle(DataRecord dataRecord)
+    string GetTitle(float value)
     {
-        var value = dataRecord.Value.Value;
         var aboveOrBelow = value > 0 ? "above" : "below";
-        return $"{dataRecord.Year}, {MathF.Round(value, 1)}°C {aboveOrBelow} average";
+        return $"{MathF.Round(value, 1)}°C {aboveOrBelow} average";
     }
 
     string GetTextColour(float value, string lightTextColour, string darkTextColour)
     {
-        return value <= -0.9 ? lightTextColour : darkTextColour;
+        return MathF.Round(value, 1) <= min / 2 ? lightTextColour : darkTextColour;
     }
 }

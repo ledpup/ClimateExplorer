@@ -1,4 +1,4 @@
-﻿<div class="overview-field">
+﻿<div class="overview-field" title="@Title">
     <div class="label">@Label</div>
     <div class="value">
         @Value
@@ -16,4 +16,7 @@
 
     [Parameter]
     public RenderFragment Value { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
 }

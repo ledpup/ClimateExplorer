@@ -51,5 +51,34 @@ public class DataSet
     {
         get { return DataRecords.Average(x => x.Value); }
     }
+
+    public float? WarmingIndex
+    {
+        get
+        {
+            float? warmingIndex = null;
+            if (DataRecords.Count > 40)
+            {
+                var averageOfEarliestTemperatures = DataRecords.OrderBy(x => x.Year).Take(DataRecords.Count / 2).Average(x => x.Value).Value;
+                var averageOfLastTwentyYearsTemperatures = DataRecords.OrderByDescending(x => x.Year).Take(20).Average(x => x.Value).Value;
+                warmingIndex = MathF.Round(averageOfLastTwentyYearsTemperatures - averageOfEarliestTemperatures, 1);
+            }
+            return warmingIndex;
+        }
+    }
+
+    public string WarmingIndexAsString
+    {
+        get
+        {
+            var warmingIndex = WarmingIndex;
+            var warmingIndexAsString = "NA";
+            if (warmingIndex != null)
+            {
+                warmingIndexAsString = $"{ (warmingIndex >= 0 ? "+" : "") }{warmingIndex}°C";
+            }
+            return warmingIndexAsString;
+        }
+    }
 }
 

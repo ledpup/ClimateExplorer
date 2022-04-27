@@ -1,5 +1,6 @@
 ﻿@using AcornSat.Core
 @using Blazorise
+@using static AcornSat.Core.Enums
 
 <div class="location-header">
     @Location.Name
@@ -26,9 +27,9 @@
                             firstSite = false;
                         }
 
-                        if (DataSet.StationInfoUrl != null)
+                        if (DataSetDefinition.StationInfoUrl != null)
                         {
-                            <span><a href="@DataSet.StationInfoUrl.Replace("[station]", site)" target="_blank">@site</a></span>
+                            <span><a href="@DataSetDefinition.StationInfoUrl.Replace("[station]", site)" target="_blank">@site</a></span>
                         }
                         else
                         {
@@ -41,17 +42,22 @@
 
         <OverviewField Label="Dataset">
             <Value>
-                @if (!String.IsNullOrWhiteSpace(DataSet.MoreInformationUrl))
+                @if (!String.IsNullOrWhiteSpace(DataSetDefinition.MoreInformationUrl))
                 {
-                    <a href="@DataSet.MoreInformationUrl" target="_blank">@DataSet.Name</a>
+                    <a href="@DataSetDefinition.MoreInformationUrl" target="_blank">@DataSetDefinition.Name</a>
                 }
                 else
                 {
-                    @DataSet.Name
+                    @DataSetDefinition.Name
                 }
             </Value>
         </OverviewField>
-        <WarmingStripe Location="@Location" DataAdjustment="@dataAdjustment" />
+        @if (dataSet != null)
+        {
+            <OverviewField Label="Warming index" Title="Warming index: the temperature difference between the average of the last 20 years of temperatures compared and the average of the first half of the dataset."><Value>@dataSet.WarmingIndexAsString</Value></OverviewField>
+        }
+        <WarmingStripe DataRecords="@dataRecords" />
+        <WarmestYears DataRecords="@dataRecords" />
     </Content>
 </Collapsible>
 
@@ -59,11 +65,14 @@
 
 @code {
 
+    [Inject]
+    public IDataService DataService { get; set; }
+
     [Parameter]
     public Location Location { get; set; }
 
     [Parameter]
-    public DataSetDefinition DataSet { get; set; }
+    public DataSetDefinition DataSetDefinition { get; set; }
 
     [Parameter]
     public EventCallback RequestLocationChange { get; set; }
@@ -75,7 +84,8 @@
     string LocationAsString => $"{Math.Round(Location.Coordinates.Latitude, 1)}°, {Math.Round(Location.Coordinates.Longitude, 1)}°";
     string ElevationAsString => $"{Math.Round(Location.Coordinates.Elevation, 1)}m";
 
-    Enums.DataAdjustment dataAdjustment { get; set; }
+    DataSet dataSet { get; set; }
+    List<DataRecord> dataRecords { get; set; }
 
     void ChangeLocationClicked(EventArgs args)
     {
@@ -89,14 +99,15 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        if (DataSet.DataAdjustments.Any(x => x == Enums.DataAdjustment.Adjusted))
+        var dataAdjustment = Enums.DataAdjustment.Unadjusted;
+        if (DataSetDefinition.DataAdjustments.Any(x => x == Enums.DataAdjustment.Adjusted))
         {
             dataAdjustment = Enums.DataAdjustment.Adjusted;
         }
-        else
-        {
-            dataAdjustment = Enums.DataAdjustment.Unadjusted;
-        }
+
+        var datasets = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, Location.Id, AggregationMethod.GroupByDayThenAverage_Relative);
+        dataSet = datasets.Single();
+        dataRecords = dataSet.DataRecords.Where(x => x.Value != null).ToList();
 
         await base.OnParametersSetAsync();
     }

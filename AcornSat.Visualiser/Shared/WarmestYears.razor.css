@@ -1,0 +1,41 @@
+.warming-stripe {
+    height: 50px;
+    margin-top: 16px;
+    padding-right: 16px;
+    display: flex;
+    max-width: 600px;
+}
+
+.single-stripe {
+    height: inherit;
+    display: inline-block;
+    flex-grow: 1;
+    flex-basis: 0;
+    transition: min-width 0.5s ease-in-out;
+}
+
+    .single-stripe .label {
+        display: none;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+        .single-stripe .label .year {
+            font-size: 0.7rem;
+        }
+
+        .single-stripe .label .amt {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+    .single-stripe:hover {
+        position: relative;
+        top: -10px;
+        height: 70px;
+        min-width: 60px;
+    }
+
+    .single-stripe:hover .label {
+        display: block;
+    }
