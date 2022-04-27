@@ -1,18 +1,16 @@
 ﻿@using static AcornSat.Core.Enums
 
 <div class="warming-stripe">
-    @{
-        if (dataRecords != null)
+    @if (dataRecords != null)
+    {
+        foreach (var record in dataRecords)
         {
-            foreach (var record in dataRecords)
-            {
-                <div title="@GetTitle(record.Value.Value)" class="single-stripe" style="background-color: @GetColour(record.Value.Value);">
-                    <div class="label">
-                        <div class="year" style="color: @GetTextColour(record.Value.Value, "#ccc", "#333")">@record.Year</div>
-                        <div class="amt" style="color: @GetTextColour(record.Value.Value, "#eee", "#555")">@GetRelativeTemp(record)</div>
-                    </div>
+            <div title="@GetTitle(record.Value.Value)" class="single-stripe" style="background-color: @GetColour(record.Value.Value);">
+                <div class="label">
+                    <div class="year" style="color: @GetTextColour(record.Value.Value, "#ccc", "#333")">@record.Year</div>
+                    <div class="amt" style="color: @GetTextColour(record.Value.Value, "#eee", "#555")">@GetRelativeTemp(record)</div>
                 </div>
-            }
+            </div>
         }
     }
 </div>
