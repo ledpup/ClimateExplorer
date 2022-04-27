@@ -1,5 +1,6 @@
 ﻿@using AcornSat.Core
 @using Blazorise
+@using static AcornSat.Core.Enums
 
 <div class="location-header">
     @Location.Name
@@ -51,14 +52,17 @@
                 }
             </Value>
         </OverviewField>
-        <WarmingStripe Location="@Location" DataAdjustment="@dataAdjustment" />
-        <WarmestYears Location="@Location" DataAdjustment="@dataAdjustment" />
+        <WarmingStripe DataRecords="@dataRecords" />
+        <WarmestYears DataRecords="@dataRecords" />
     </Content>
 </Collapsible>
 
 
 
 @code {
+
+    [Inject]
+    public IDataService DataService { get; set; }
 
     [Parameter]
     public Location Location { get; set; }
@@ -76,7 +80,7 @@
     string LocationAsString => $"{Math.Round(Location.Coordinates.Latitude, 1)}°, {Math.Round(Location.Coordinates.Longitude, 1)}°";
     string ElevationAsString => $"{Math.Round(Location.Coordinates.Elevation, 1)}m";
 
-    Enums.DataAdjustment dataAdjustment { get; set; }
+    List<DataRecord> dataRecords { get; set; }
 
     void ChangeLocationClicked(EventArgs args)
     {
@@ -90,14 +94,14 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        var dataAdjustment = Enums.DataAdjustment.Unadjusted;
         if (DataSet.DataAdjustments.Any(x => x == Enums.DataAdjustment.Adjusted))
         {
             dataAdjustment = Enums.DataAdjustment.Adjusted;
         }
-        else
-        {
-            dataAdjustment = Enums.DataAdjustment.Unadjusted;
-        }
+        
+        var dataset = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, Location.Id, AggregationMethod.GroupByDayThenAverage_Relative);
+        dataRecords = dataset.Single().DataRecords.Where(x => x.Value != null).ToList();
 
         await base.OnParametersSetAsync();
     }

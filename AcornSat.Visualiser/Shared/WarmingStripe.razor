@@ -1,9 +1,9 @@
 ﻿@using static AcornSat.Core.Enums
 
 <div class="warming-stripe">
-    @if (dataRecords != null)
+    @if (DataRecords != null)
     {
-        foreach (var record in dataRecords)
+        foreach (var record in DataRecords)
         {
             <div title="@GetTitle(record.Value.Value)" class="single-stripe" style="background-color: @GetColour(record.Value.Value);">
                 <div class="label">
@@ -17,29 +17,20 @@
 
 @code {
 
-    [Inject]
-    public IDataService DataService { get; set; }
-
     [Parameter]
-    public Location Location { get; set; }
+    public List<DataRecord> DataRecords { get; set; }
 
-    [Parameter]
-    public DataAdjustment DataAdjustment { get; set; }
-
-    List<DataRecord> dataRecords { get; set; }
     float min;
     float max;
 
     protected override async Task OnParametersSetAsync()
     {
-        if (Location != null && DataAdjustment != null)
+        if (DataRecords != null)
         {
-            var dataset = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, DataAdjustment, Location.Id, AggregationMethod.GroupByDayThenAverage_Relative);
+            DataRecords = DataRecords.Where(x => x.Value.HasValue).ToList();
 
-            dataRecords = dataset.First().DataRecords.Where(x => x.Value != null).ToList();
-
-            min = dataRecords.Min(x => x.Value.Value);
-            max = dataRecords.Max(x => x.Value.Value);
+            min = DataRecords.Min(x => x.Value.Value);
+            max = DataRecords.Max(x => x.Value.Value);
 
             // If the max and min are not above or below 1, set them to 1
             // This will wash out the colours on a stripe where the values don't deviate much from the average

@@ -1,34 +1,16 @@
 ﻿@using static AcornSat.Core.Enums
 
-@if (dataRecords != null)
+@if (DataRecords != null)
 {
     <OverviewField Label="Warmest years"><Value>@WarmestYearsAsString</Value></OverviewField>
+    <OverviewField Label="Coolest years"><Value>@CoolestYearsAsString</Value></OverviewField>
 }
 
 @code {
 
-    [Inject]
-    public IDataService DataService { get; set; }
-
     [Parameter]
-    public Location Location { get; set; }
+    public List<DataRecord> DataRecords { get; set; }
 
-    [Parameter]
-    public DataAdjustment DataAdjustment { get; set; }
-
-    List<DataRecord> dataRecords { get; set; }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        if (Location != null && DataAdjustment != null)
-        {
-            var dataset = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, DataAdjustment, Location.Id, AggregationMethod.GroupByDayThenAverage_Relative);
-
-            dataRecords = dataset.Single().DataRecords.Where(x => x.Value != null).ToList();
-        }
-
-        await base.OnParametersSetAsync();
-    }
-
-    string WarmestYearsAsString => string.Join(", ", dataRecords.OrderByDescending(x => x.Value).Take(10).Select(x => x.Year));
+    string WarmestYearsAsString => string.Join(", ", DataRecords.OrderByDescending(x => x.Value).Take(10).Select(x => x.Year));
+    string CoolestYearsAsString => string.Join(", ", DataRecords.OrderBy(x => x.Value).Take(10).Select(x => x.Year));
 }
