@@ -75,7 +75,7 @@ public class DataSet
             var warmingIndexAsString = "NA";
             if (warmingIndex != null)
             {
-                warmingIndexAsString = $"{ (warmingIndex >= 0 ? "+" : "") }{warmingIndex}";
+                warmingIndexAsString = $"{ (warmingIndex >= 0 ? "+" : "") }{warmingIndex}°C";
             }
             return warmingIndexAsString;
         }
