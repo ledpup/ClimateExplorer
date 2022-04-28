@@ -474,19 +474,15 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        Adjusted = true;
-        Unadjusted = false;
-
         Guid locationId = Guid.Parse(LocationId ?? "aed87aa0-1d0c-44aa-8561-cde0fc936395");
 
         await SelectedLocationChangedInternal(locationId);
 
-        base.OnParametersSetAsync();
+        await base.OnParametersSetAsync();
     }
 
     protected async Task BuildDataSets()
     {
-        var dataExists = false;
         Datasets = new List<DataSet>();
         if (Datasets == null)
         {
@@ -865,125 +861,101 @@
 
     async Task<List<ChartTrendlineData>> AddDataSetsToGraph(List<DataSet> bufferedSelectedDataSet, Func<DataRecord, bool> timeConstraint, string? labelPrefix = null, short? year = null, short colourAdjust = 0)
     {
-        var dataSetIndex = 0;
+        
         if (!string.IsNullOrWhiteSpace(labelPrefix))
         {
             labelPrefix += " ";
         }
-        var trendlines = new List<ChartTrendlineData>();
-        if (Adjusted && Maximums)
+        var dataSetIndex = 0;
+        if (SelectedDataSetDefinition.DataAdjustments.Contains(DataAdjustment.Adjusted))
         {
-            var values = SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMax, DataAdjustment.Adjusted, timeConstraint, year);
-            var label = labelPrefix + "Maximum Adjusted";
-            var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(0));
-            if (SelectedMovingAverageInterval == 0 || !SoloSma)
+            if (Adjusted && Maximums)
             {
-                await chart.AddDataSet(GetChartDataset(label, values, DataType.TempMax, colour));
-                if (trendlinesOn)
-                {
-                    trendlines.Add(AddTrendline(dataSetIndex, colour));
-                }
+                await AddDataSetToChart(bufferedSelectedDataSet, DataType.TempMax, DataAdjustment.Adjusted, timeConstraint, year, $"{labelPrefix} Maximum Adjusted", 0);
                 dataSetIndex++;
             }
-            if (SelectedMovingAverageInterval != 0)
+            if (Adjusted && Minimums)
             {
-                await AddMovingAverage(label, values, DataType.TempMax);
+                await AddDataSetToChart(bufferedSelectedDataSet, DataType.TempMin, DataAdjustment.Adjusted, timeConstraint, year, $"{labelPrefix} Minimum Adjusted", 1);
                 dataSetIndex++;
             }
         }
-        if (Unadjusted && Maximums)
+        if (SelectedDataSetDefinition.DataAdjustments.Contains(DataAdjustment.Unadjusted))
         {
-            var values = SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMax, DataAdjustment.Unadjusted, timeConstraint, year);
-            var label = labelPrefix + "Maximum Unadjusted";
-            var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(1));
-            if (SelectedMovingAverageInterval == 0 || !SoloSma)
+            if (Unadjusted && Maximums)
             {
-                await chart.AddDataSet(GetChartDataset(label, values, DataType.TempMax, colour));
-                if (trendlinesOn)
-                {
-                    trendlines.Add(AddTrendline(dataSetIndex, colour));
-                }
+                await AddDataSetToChart(bufferedSelectedDataSet, DataType.TempMax, DataAdjustment.Unadjusted, timeConstraint, year, $"{labelPrefix} Maximum Unadjusted", 1);
                 dataSetIndex++;
             }
-            if (SelectedMovingAverageInterval != 0)
+            if (Unadjusted && Minimums)
             {
-                await AddMovingAverage(label, values, DataType.TempMax);
+                await AddDataSetToChart(bufferedSelectedDataSet, DataType.TempMin, DataAdjustment.Unadjusted, timeConstraint, year, $"{labelPrefix} Minimum Adjusted", 1);
                 dataSetIndex++;
             }
         }
-        if (Difference && Maximums)
+        if (SelectedDataSetDefinition.DataAdjustments.Count == 2)
         {
-            var values = SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMax, DataAdjustment.Difference, timeConstraint, year);
-            var label = labelPrefix + "Maximum Difference";
+            if (Difference && Maximums)
+            {
+                await AddDataSetToChart(bufferedSelectedDataSet, DataType.TempMax, DataAdjustment.Difference, timeConstraint, year, $"{labelPrefix} Maximum Difference", 0, true);
+            }
+            if (Difference && Minimums)
+            {
+                await AddDataSetToChart(bufferedSelectedDataSet, DataType.TempMin, DataAdjustment.Difference, timeConstraint, year, $"{labelPrefix} Minimum Difference", 0, true);
+            }
+        }
 
-            await chart.AddDataSet(GetChartDataset(label, values, DataType.TempMax, chartType: ChartType.Bar));
-        }
-        if (Difference && Minimums)
-        {
-            var values = SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMin, DataAdjustment.Difference, timeConstraint, year);
-            var label = labelPrefix + "Minimum Difference";
-            await chart.AddDataSet(GetChartDataset(label, values, DataType.TempMin, chartType: ChartType.Bar));
-        }
-        if (Adjusted && Minimums)
-        {
-            var values = SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMin, DataAdjustment.Adjusted, timeConstraint, year);
-            var label = labelPrefix + "Minimum Adjusted";
-            var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(2));
-            if (SelectedMovingAverageInterval == 0 || !SoloSma)
-            {
-                await chart.AddDataSet(GetChartDataset(label, values, DataType.TempMin, colour));
-                if (trendlinesOn)
-                {
-                    trendlines.Add(AddTrendline(dataSetIndex, colour));
-                }
-                dataSetIndex++;
-            }
-            if (SelectedMovingAverageInterval != 0)
-            {
-                await AddMovingAverage(label, values, DataType.TempMin);
-                dataSetIndex++;
-            }
-        }
-        if (Unadjusted && Minimums)
-        {
-            var values =  SelectTemperatureValues(bufferedSelectedDataSet, DataType.TempMin, DataAdjustment.Unadjusted, timeConstraint, year);
-            var label = labelPrefix + "Minimum Unadjusted";
-            var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(3));
-            if (SelectedMovingAverageInterval == 0 || !SoloSma)
-            {
-                await chart.AddDataSet(GetChartDataset(label, values, DataType.TempMin, colour));
-                if (trendlinesOn)
-                {
-                    trendlines.Add(AddTrendline(dataSetIndex, colour));
-                }
-                dataSetIndex++;
-            }
-            if (SelectedMovingAverageInterval != 0)
-            {
-                await AddMovingAverage(label, values, DataType.TempMin);
-                dataSetIndex++;
-            }
-        }
         if (Rainfall)
         {
-            var values =  SelectTemperatureValues(bufferedSelectedDataSet, DataType.Rainfall, DataAdjustment.Unadjusted, timeConstraint, year);
-            var label = labelPrefix + "Rainfall";
-            if (SelectedMovingAverageInterval == 0 || !SoloSma)
-            {
-                await chart.AddDataSet(GetChartDataset(label, values, DataType.Rainfall, chartType: ChartType.Bar, redPositive: false));
-            }
-            //await AddMovingAverage(label, values);
+            await AddDataSetToChart(bufferedSelectedDataSet, DataType.Rainfall, DataAdjustment.Unadjusted, timeConstraint, year, $"{labelPrefix} Rainfall", 0, redPositive: false);
         }
-        if (trendlines.Count == 1)
+
+        var trendlines = new List<ChartTrendlineData>();
+        if (trendlinesOn)
         {
-            trendlines[0].Color = ChartColor.FromRgba(0, 0, 0, 1f);
+            var step = SelectedChartType != ChartType.Line ? 1 :
+                            SelectedMovingAverageInterval != 0 && !SoloSma ? 2 : 1;
+
+            colours = new ColourServer();
+            for (var i = 0; i < dataSetIndex * step; i += step)
+            {
+                trendlines.Add(CreateTrendline(i, ChartColor.FromHtmlColorCode(colours.GetNextColour(i / step))));
+            }
+            if (trendlines.Count == 1)
+            {
+                trendlines[0].Color = ChartColor.FromRgba(0, 0, 0, 1f);
+            }
         }
         return trendlines;
     }
 
-    ChartTrendlineData AddTrendline(int datasetIndex, ChartColor colour)
+    async Task AddDataSetToChart(List<DataSet> bufferedSelectedDataSet, DataType dataType, DataAdjustment dataAdjustment, Func<DataRecord, bool> timeConstraint, short? year, string label, int preferredColour, bool absoluteValues = false, bool redPositive = true)
     {
-        
+        var dataset = bufferedSelectedDataSet.Single(x => x.DataType == dataType && x.DataAdjustment == dataAdjustment && (year == null || x.Year == year.Value));
+
+        var values = dataset.DataRecords
+                            .Where(timeConstraint)
+                            .Select(x => x.Value)
+                            .ToList();
+
+        var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(preferredColour));
+
+        var chartType = (dataAdjustment == DataAdjustment.Difference || dataType == DataType.Rainfall) 
+                                ? ChartType.Bar 
+                                : SelectedChartType;
+
+        if (SelectedMovingAverageInterval == 0 || !SoloSma)
+        {
+            await chart.AddDataSet(GetChartDataset(label, values, dataType, chartType, colour, absoluteValues, redPositive));
+        }
+        if (SelectedMovingAverageInterval != 0 && chartType == ChartType.Line)
+        {
+            await AddMovingAverage(label, values, dataType);
+        }
+    }
+
+    ChartTrendlineData CreateTrendline(int datasetIndex, ChartColor colour)
+    {
         return
             new ChartTrendlineData
                 {
@@ -1001,19 +973,6 @@
             label = $"{label} Moving Average @ {SelectedMovingAverageInterval} year interval";
             await chart.AddDataSet(GetLineChartDataset(label, simpleMovingAverages, ChartColor.FromHtmlColorCode(colours.GetNextColour()), dataType));
         }
-    }
-
-    List<float?> SelectTemperatureValues(List<DataSet> dataSet, DataType dataType, DataAdjustment dataAdjustment, Func<DataRecord, bool> timeConstraint, short? year = null)
-    {
-        var dataset = dataSet.Single(x => x.DataType == dataType && x.DataAdjustment == dataAdjustment && (year == null || x.Year == year.Value));
-
-        var selectedValues = dataset
-                            .DataRecords
-                            .Where(timeConstraint)
-                            .Select(x => x.Value)
-                            .ToList();
-
-        return selectedValues;
     }
 
     List<DataSet> CreateStandardisedDataSet(List<DataSet> dataSets)
@@ -1069,13 +1028,15 @@
         return bufferedDataSets;
     }
 
-    ChartDataset<float?> GetChartDataset(string label, List<float?> values, DataType dataType, ChartColor? chartColour = null, ChartType? chartType = null, bool? absoluteValues = false, bool redPositive = true)
+    ChartDataset<float?> GetChartDataset(string label, List<float?> values, DataType dataType, ChartType chartType, ChartColor? chartColour = null, bool? absoluteValues = false, bool redPositive = true)
     {
-        chartType = chartType ?? SelectedChartType;
-
         switch (chartType)
         {
             case ChartType.Line:
+                if (!chartColour.HasValue)
+                {
+                    throw new NullReferenceException(nameof(chartColour));
+                }
                 return GetLineChartDataset(label, values, chartColour.Value, dataType);
             case ChartType.Bar:
                 return GetBarChartDataset(label, values, absoluteValues, redPositive);
@@ -1128,6 +1089,7 @@
         SelectedLocation = Locations.Single(x => x.Id == SelectedLocationId);
         SelectedDataSetDefinition = DataSetDefinitions.Single(x => x.Id == SelectedLocation.DataSetId);
 
+        var updateChartType = false;
         if (SelectedDataSetDefinition.DataAdjustments.Count == 2)
         {
             UnadjustedDisabled = false;
@@ -1138,13 +1100,25 @@
         {
             Unadjusted = SelectedDataSetDefinition.DataAdjustments.Contains(DataAdjustment.Unadjusted);
             Adjusted = SelectedDataSetDefinition.DataAdjustments.Contains(DataAdjustment.Adjusted);
+            if (Difference)
+            {
+                Difference = false;
+                updateChartType = true;
+            }
             UnadjustedDisabled = true;
             AdjustedDisabled = true;
             DifferenceDisabled = true;
         }
 
         base.StateHasChanged();
-        await BuildDataSets();
+        if (updateChartType)
+        {
+            await UpdateInternalChartType();
+        }
+        else
+        {
+            await BuildDataSets();    
+        }
     }
 
     string[] Labels = new string[1];
