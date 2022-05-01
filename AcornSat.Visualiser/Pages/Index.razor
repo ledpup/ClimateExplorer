@@ -208,7 +208,7 @@
         var header = "Year," + string.Join(",", CorrelatedDataSets.Select(x => $"{x.DataType} {x.DataAdjustment}"));
         data.Add(header);
 
-        foreach (var label in GetLabels())
+        foreach (var label in GetLabels(DataResolution.Yearly, ChartStartYear, ChartEndYear))
         {
             var dataRow = label + ",";
             foreach (var dataSet in CorrelatedDataSets)
@@ -680,7 +680,7 @@
 
             timeConstraint = x => x.Year >= ChartStartYear && x.Year <= ChartEndYear;
 
-            Labels = GetLabels();
+            Labels = GetLabels(SelectedResolution, ChartStartYear, ChartEndYear);
             await chart.AddLabels(Labels);
 
             trendlines = await AddDataSetsToGraph(CorrelatedDataSets, timeConstraint);
@@ -710,39 +710,7 @@
                     selectedYear = SelectedYears.First();
                 }
 
-                switch (SelectedResolution)
-                {
-                    case DataResolution.Daily:
-                        {
-                            var numberOfDays = calendar.GetDaysInYear(selectedYear);
-                            labels = new string[numberOfDays];
-                            var date = new DateOnly(selectedYear, 1, 1);
-                            for (var i = 0; i < numberOfDays; i++)
-                            {
-                                labels[i] = date.ToString("dd/MM");
-                                date = date.AddDays(1);
-                            }
-                            break;
-                        }
-                    case DataResolution.Weekly:
-                        {
-                            labels = new string[52];
-                            for (var i = 0; i < 52; i++)
-                            {
-                                labels[i] = $"Week {i + 1}";
-                            }
-                            break;
-                        }
-                    case DataResolution.Monthly:
-                        {
-                            labels = new string[12];
-                            for (var i = 0; i < 12; i++)
-                            {
-                                labels[i] = new DateTime(2010, i + 1, 1).ToString("MMMM", CultureInfo.InvariantCulture);
-                            }
-                            break;
-                        }
-                }
+                labels = GetLabels(SelectedResolution, selectedYear: selectedYear);
             }
 
             Labels = labels;
@@ -832,15 +800,53 @@
         await chartTrendline.AddTrendLineOptions(trendlines);
     }
 
-    string[] GetLabels()
+    string[] GetLabels(DataResolution dataResolution, short? chartStartYear = null, short? chartEndYear = null, short? selectedYear = null)
     {
-        var numberOfYears = ChartEndYear - ChartStartYear;
-        var labels = new string[numberOfYears + 1];
-        for (var i = 0; i <= numberOfYears; i++)
+        switch (dataResolution)
         {
-            labels[i] = (ChartStartYear + i).ToString();
+            case DataResolution.Yearly:
+                {
+                    var numberOfYears = chartEndYear.Value - chartStartYear.Value;
+                    var labels = new string[numberOfYears + 1];
+                    for (var i = 0; i <= numberOfYears; i++)
+                    {
+                        labels[i] = (chartStartYear.Value + i).ToString();
+                    }
+                    return labels;
+                }
+            case DataResolution.Daily:
+                {
+                    var calendar = new GregorianCalendar();
+                    var numberOfDays = calendar.GetDaysInYear(selectedYear.Value);
+                    var labels = new string[numberOfDays];
+                    var date = new DateOnly(selectedYear.Value, 1, 1);
+                    for (var i = 0; i < numberOfDays; i++)
+                    {
+                        labels[i] = date.ToString("dd/MM");
+                        date = date.AddDays(1);
+                    }
+                    return labels;
+                }
+            case DataResolution.Weekly:
+                {
+                    var labels = new string[52];
+                    for (var i = 0; i < 52; i++)
+                    {
+                        labels[i] = $"Week {i + 1}";
+                    }
+                    return labels;
+                }
+            case DataResolution.Monthly:
+                {
+                    var labels = new string[12];
+                    for (var i = 0; i < 12; i++)
+                    {
+                        labels[i] = new DateTime(2010, i + 1, 1).ToString("MMMM", CultureInfo.InvariantCulture);
+                    }
+                    return labels;
+                }
         }
-        return labels;
+        throw new NotImplementedException();
     }
 
     string GetXAxisLabel()
