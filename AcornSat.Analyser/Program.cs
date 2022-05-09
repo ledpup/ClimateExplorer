@@ -130,7 +130,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             Description = "The Australian Climate Observations Reference Network - Surface Air Temperature data set, is a homogenized daily maximum and minimum temperature data set containing data from 112 locations across Australia extending from 1910 to the present.",
             MoreInformationUrl = "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
             FolderName = "ACORN-SAT",
-            DataAdjustments = new List<DataAdjustment> { DataAdjustment.Adjusted, DataAdjustment.Unadjusted },
             DataResolution = DataResolution.Daily,
             MeasurementDefinitions = new List<MeasurementDefinition>
             {
@@ -191,7 +190,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             Description = "This ACORN-SAT dataset includes homogenised monthly data from the Remote Australian Islands and Antarctica network of 8 locations, which provide ground-based temperature records.",
             MoreInformationUrl = "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
             FolderName = "RAIA",
-            DataAdjustments = new List<DataAdjustment> { DataAdjustment.Adjusted },
             DataResolution = DataResolution.Monthly,
             MeasurementDefinitions = new List<MeasurementDefinition>
             {
@@ -226,7 +224,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             Description = "The National Institute of Water and Atmospheric Research (NIWA) eleven-station series are New Zealand temperature trends from a set of eleven climate stations with no significant site changes since the 1930s.",
             MoreInformationUrl = "https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data",
             FolderName = "NIWA",
-            DataAdjustments = new List<DataAdjustment> { DataAdjustment.Unadjusted },
             DataResolution = DataResolution.Daily,
             MeasurementDefinitions = new List<MeasurementDefinition>
             {

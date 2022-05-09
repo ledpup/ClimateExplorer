@@ -12,6 +12,7 @@ using static AcornSat.Core.Enums;
 using System.Threading.Tasks;
 using AcornSat.WebApi.Model;
 using System.Text.Json;
+using AcornSat.Core.ViewModel;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,7 +66,7 @@ app.Run();
 
 
 
-async Task<List<DataSetDefinitionModel>> GetDataSetDefinitions(bool includeLocations = false)
+async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions(bool includeLocations = false)
 {
     var definitions = await DataSetDefinition.GetDataSetDefinitions();
 
@@ -73,7 +74,7 @@ async Task<List<DataSetDefinitionModel>> GetDataSetDefinitions(bool includeLocat
         definitions
         .Select(
             async x =>
-            new AcornSat.WebApi.Model.DataSetDefinitionModel
+            new DataSetDefinitionViewModel
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -82,7 +83,7 @@ async Task<List<DataSetDefinitionModel>> GetDataSetDefinitions(bool includeLocat
                 LocationInfoUrl = x.LocationInfoUrl,
                 DataResolution = x.DataResolution,
                 Description = x.Description,
-                DataAdjustments = x.DataAdjustments,
+                MeasurementDefinitions = x.MeasurementDefinitions.Select(x => new MeasurementDefinitionViewModel { DataAdjustment = x.DataAdjustment, DataType = x.DataType }).ToList(),
                 Locations = x.HasLocations && includeLocations ? await GetLocations(x.FolderName) : new List<Location>(),
             })
         .Select(x => x.Result)
@@ -272,9 +273,14 @@ async Task<List<DataSet>> GetDataSetsForLocationInternal(QueryParameters queryPa
         throw new ArgumentException(nameof(definition));
     }
 
-    if (!definition.DataAdjustments.Contains(queryParameters.DataAdjustment))
+    if (!definition.MeasurementDefinitions.Any(x => x.DataType == queryParameters.DataType && x.DataAdjustment == queryParameters.DataAdjustment))
     {
         return new List<DataSet>();
+    }
+
+    if (queryParameters.DataAdjustment == DataAdjustment.Difference)
+    {
+       
     }
 
     switch (queryParameters.Resolution)
@@ -325,6 +331,30 @@ async Task<List<DataSet>> GetDataSetsForLocationInternal(QueryParameters queryPa
     await SaveDataSets(queryParameters, dataSets);
 
     return dataSets;
+}
+
+DataSet GenerateDifferenceDataSet(List<DataSet> unadjusted, List<DataSet> adjusted)
+{
+    var difference = new DataSet
+    {
+        Resolution = DataResolution.Yearly,
+        DataType = unadjusted.First().DataType,
+        DataAdjustment = DataAdjustment.Difference,
+    };
+    unadjusted.ForEach(x =>
+    {
+        x.DataRecords.ForEach(y =>
+        {
+            var adjustedTemp = adjusted.Single().DataRecords.SingleOrDefault(z => z.Year == y.Year);
+            difference.DataRecords.Add(new DataRecord
+            {
+                Year = y.Year,
+                Value = adjustedTemp == null ? null : adjustedTemp.Value - y.Value,
+            });
+        });
+    }
+    );
+    return difference;
 }
 
 List<DataSet> TrimNulls(List<DataSet> dataSets)

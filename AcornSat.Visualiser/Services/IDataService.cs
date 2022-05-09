@@ -1,8 +1,9 @@
 ﻿using AcornSat.Core;
+using AcornSat.Core.ViewModel;
 using static AcornSat.Core.Enums;
 public interface IDataService
 {
-    Task<IEnumerable<DataSetDefinition>> GetDataSetDefinitions();
+    Task<IEnumerable<DataSetDefinitionViewModel>> GetDataSetDefinitions();
     Task<IEnumerable<Location>> GetLocations(string dataSetName = null);
 
     Task<IEnumerable<DataSet>> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, Guid locationId, AggregationMethod? aggregationMethod, short? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f);

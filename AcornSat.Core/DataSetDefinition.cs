@@ -16,7 +16,6 @@ namespace AcornSat.Core
         public string ShortName { get; set; }
         public string Description { get; set; }
         public string MoreInformationUrl { get; set; }
-        public List<DataAdjustment> DataAdjustments { get; set; }
         public DataResolution DataResolution { get; set; }
         public string FolderName { get; set; }
         public string StationInfoUrl { get; set; }

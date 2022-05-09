@@ -4,6 +4,7 @@
 @inject NavigationManager NavManager
 
 @using AcornSat.Core
+@using AcornSat.Core.ViewModel
 @using Blazorise
 @using Blazorise.Components
 @using Blazorise.Charts
@@ -398,27 +399,24 @@
     async Task OnAdjustedChanged(bool value)
     {
         Adjusted = value;
-        await HandleRedraw();
+        await BuildDataSets();
     }
 
     bool Unadjusted = false;
     async Task OnUnadjustedChanged(bool value)
     {
         Unadjusted = value;
-        await HandleRedraw();
+        await BuildDataSets();
     }
 
     bool Difference = false;
     async Task OnDifferenceChanged(bool value)
     {
         Difference = value;
-        await UpdateInternalChartType();
+        await BuildDataSets();
     }
 
     bool UnadjustedDisabled, AdjustedDisabled, DifferenceDisabled;
-
-    List<DataType> SelectedDataTypes = new List<DataType>();
-    List<DataAdjustment> SelectedDataAdjustments = new List<DataAdjustment>();
 
     bool Maximums = true;
     async Task OnMaximumsChanged(bool value)
@@ -446,13 +444,13 @@
 
     Guid SelectedLocationId { get; set; }
     Location SelectedLocation { get; set; }
-    DataSetDefinition SelectedDataSetDefinition { get; set; }
+    DataSetDefinitionViewModel SelectedDataSetDefinition { get; set; }
 
     [Inject]
     public IDataService DataService { get; set; }
 
     List<DataSet> Datasets { get; set; }
-    IEnumerable<DataSetDefinition> DataSetDefinitions;
+    IEnumerable<DataSetDefinitionViewModel> DataSetDefinitions;
     IEnumerable<Location> Locations;
     ColourServer colours = new ColourServer();
 
@@ -490,58 +488,31 @@
         }
 
         var relativeToAverage = SelectedChartType == ChartType.Bar;
-        var aggregationMethod = relativeToAverage ? AggregationMethod.GroupByDayThenAverage_Relative : AggregationMethod.GroupByDayThenAverage;
+        var generalAggregationMethod = relativeToAverage ? AggregationMethod.GroupByDayThenAverage_Relative : AggregationMethod.GroupByDayThenAverage;
 
-        SelectedDataTypes = new List<DataType>();
-        if (Maximums)
+        var selectedDataTypes = CreateSelectedDataTypesList();
+        var selectedDataAdjustments = CreateSelectedDataAdjustmentsList();
+       
+        foreach (var dataType in selectedDataTypes)
         {
-            SelectedDataTypes.Add(DataType.TempMax);
-        }
-        if (Minimums)
-        {
-            SelectedDataTypes.Add(DataType.TempMin);
-        }
-        if (Rainfall)
-        {
-            SelectedDataTypes.Add(DataType.Rainfall);
-        }
-        foreach (var dataType in SelectedDataTypes)
-        {
-            if (dataType == DataType.Rainfall)
+            foreach (var dataAdjustment in selectedDataAdjustments)
             {
-                var rainfall = (await DataService.GetDataSet(dataType, DataResolution.Yearly, DataAdjustment.Unadjusted, SelectedLocationId, aggregationMethod: AggregationMethod.Sum)).ToList();
-                Datasets.AddRange(rainfall);
-            }
-            else
-            {
-                var adjusted = (await DataService.GetDataSet(dataType, DataResolution.Yearly, DataAdjustment.Adjusted, SelectedLocationId, aggregationMethod: aggregationMethod, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold)).ToList();
-                Datasets.AddRange(adjusted);
-
-                var unadjusted = (await DataService.GetDataSet(dataType, DataResolution.Yearly, DataAdjustment.Unadjusted, SelectedLocationId, aggregationMethod: aggregationMethod, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold)).ToList();
-                Datasets.AddRange(unadjusted);
-
-                if (!DifferenceDisabled)
+                if (!SelectedDataSetDefinition.MeasurementDefinitions.Any(x => x.DataType == dataType))
                 {
-                    var difference = GenerateDifferenceDataSet(unadjusted, adjusted);
-                    Datasets.Add(difference);
+                    continue;
+                }
+                var requestDataAdjustment = dataAdjustment;
+                if (SelectedDataSetDefinition.MeasurementDefinitions.Count(x => x.DataType == dataType) == 1)
+                {
+                    if (!SelectedDataSetDefinition.MeasurementDefinitions.Any(x => x.DataType == dataType && x.DataAdjustment == dataAdjustment))
+                    {
+                        requestDataAdjustment = SelectedDataSetDefinition.MeasurementDefinitions.Single(x => x.DataType == dataType).DataAdjustment;
+                    }
                 }
 
-                var adjustedYears = adjusted.SingleOrDefault()?.Years;
-                var unadjustedYears = unadjusted.SelectMany(x => x.Years).Distinct();
-                DatasetYears = adjustedYears == null ? unadjustedYears.ToList()
-                                                     : adjustedYears.Concat(unadjustedYears).Distinct().OrderBy(x => x).ToList();
-            }
-        }
-
-        foreach (var selectedYear in SelectedYears)
-        {
-            foreach (var dataType in SelectedDataTypes)
-            {
-                var adjusted = (await DataService.GetDataSet(dataType, SelectedResolution, DataAdjustment.Adjusted, SelectedLocationId, aggregationMethod, selectedYear, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold)).ToList();
-                Datasets.AddRange(adjusted);
-
-                var unadjusted = (await DataService.GetDataSet(dataType, SelectedResolution, DataAdjustment.Unadjusted, SelectedLocationId, aggregationMethod, selectedYear, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold)).ToList();
-                Datasets.AddRange(unadjusted);
+                var aggregationMethod = dataType == DataType.Rainfall ? AggregationMethod.Sum : generalAggregationMethod;
+                var dataset = (await DataService.GetDataSet(dataType, SelectedResolution, requestDataAdjustment, SelectedLocationId, aggregationMethod: aggregationMethod, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold)).ToList();
+                Datasets.AddRange(dataset);
             }
         }
 
@@ -550,28 +521,40 @@
         await HandleRedraw();       
     }
 
-    DataSet GenerateDifferenceDataSet(List<DataSet> unadjusted, List<DataSet> adjusted)
+    List<DataType> CreateSelectedDataTypesList()
     {
-        var difference = new DataSet
+        var selectedDataTypes = new List<DataType>();
+        if (Maximums)
         {
-            Resolution = DataResolution.Yearly,
-            DataType = unadjusted.First().DataType,
-            DataAdjustment = DataAdjustment.Difference,
-        };
-        unadjusted.ForEach(x =>
-            {
-                x.DataRecords.ForEach(y =>
-                {
-                    var adjustedTemp = adjusted.Single().DataRecords.SingleOrDefault(z => z.Year == y.Year);
-                    difference.DataRecords.Add(new DataRecord
-                    {
-                        Year = y.Year,
-                        Value = adjustedTemp == null ? null : adjustedTemp.Value - y.Value,
-                    });
-                });
-            }
-        );
-        return difference;
+            selectedDataTypes.Add(DataType.TempMax);
+        }
+        if (Minimums)
+        {
+            selectedDataTypes.Add(DataType.TempMin);
+        }
+        if (Rainfall)
+        {
+            selectedDataTypes.Add(DataType.Rainfall);
+        }
+        return selectedDataTypes;
+    }
+
+    List<DataAdjustment> CreateSelectedDataAdjustmentsList()
+    {
+        var selectedDataAdjustments = new List<DataAdjustment>();
+        if (Adjusted)
+        {
+            selectedDataAdjustments.Add(DataAdjustment.Adjusted);
+        }
+        if (Unadjusted)
+        {
+            selectedDataAdjustments.Add(DataAdjustment.Unadjusted);
+        }
+        if (Difference)
+        {
+            selectedDataAdjustments.Add(DataAdjustment.Difference);
+        }
+        return selectedDataAdjustments;
     }
 
     Chart<float?> chart;
@@ -630,21 +613,16 @@
         Func<DataRecord, bool> timeConstraint = null;
         List<ChartTrendlineData> trendlines = null;
 
-        if (SelectedResolution == DataResolution.Yearly)
-        {
-            var selectedDataSets =
+        var selectedDataSets =
                 Datasets.Where(
-                    x => 
-                        x.Resolution == DataResolution.Yearly && 
-                        (
-                            (Adjusted && x.DataAdjustment == DataAdjustment.Adjusted) || 
-                            (Unadjusted && x.DataAdjustment == DataAdjustment.Unadjusted) || 
-                            (Difference && x.DataAdjustment == DataAdjustment.Difference) ||
-                            (Rainfall && x.DataType == DataType.Rainfall)
-                        )
+                    x => !SelectedYears.Any() || SelectedYears.Contains(x.Year.Value)
                 )
                 .ToList();
 
+        title = SelectedLocation.Name;
+
+        if (SelectedResolution == DataResolution.Yearly)
+        {
             CorrelatedDataSets = CreateStandardisedDataSet(selectedDataSets);
 
             // Find the earliest and latest year across all datasets being plotted
@@ -672,7 +650,6 @@
                 }
             }
 
-            title = SelectedLocation.Name;
             subtitle = 
                 SelectedChartType == ChartType.Line
                 ? $"Average Yearly Temperature ({ChartStartYear}-{ChartEndYear})"
@@ -681,22 +658,16 @@
             timeConstraint = x => x.Year >= ChartStartYear && x.Year <= ChartEndYear;
 
             Labels = GetLabels(SelectedResolution, ChartStartYear, ChartEndYear);
-            await chart.AddLabels(Labels);
 
             trendlines = await AddDataSetsToGraph(CorrelatedDataSets, timeConstraint);
         }
         else
         {
-            var selectedDataSets = Datasets.Where(x => x.Resolution == SelectedResolution
-                && ((Adjusted && x.DataAdjustment == DataAdjustment.Adjusted) || (Unadjusted && x.DataAdjustment == DataAdjustment.Unadjusted))
-                && SelectedYears.Contains(x.Year.Value)).ToList();
-
             foreach (var dataSet in selectedDataSets)
             {
                 CorrelatedDataSets.Add(dataSet);
             }
 
-            title = $"{SelectedLocation.Name}";
             subtitle = $"{string.Join(", ", SelectedYears)} {SelectedResolution} Chart";        
 
             var calendar = new GregorianCalendar();
@@ -714,7 +685,6 @@
             }
 
             Labels = labels;
-            await chart.AddLabels(Labels);
 
             for (var i = 0; i < SelectedYears.Count; i++)
             {
@@ -728,6 +698,8 @@
                 await AddDataSetsToGraph(CorrelatedDataSets, timeConstraint, year.ToString(), year, (short)(96 * (i + 1)));
             }
         }
+
+        await chart.AddLabels(Labels);
 
         var yLabel = SelectedChartType == ChartType.Line ? "Degrees Celsius (°C)" : "Degrees Celsius (°C) Relative to Average Temperature";
         var xLabel = GetXAxisLabel();
@@ -873,47 +845,23 @@
             labelPrefix += " ";
         }
         var dataSetIndex = 0;
-        if (SelectedDataSetDefinition.DataAdjustments.Contains(DataAdjustment.Adjusted))
-        {
-            if (Adjusted && Maximums)
-            {
-                await AddDataSetToChart(bufferedSelectedDataSet, DataType.TempMax, DataAdjustment.Adjusted, timeConstraint, year, $"{labelPrefix} Maximum Adjusted", 0);
-                dataSetIndex++;
-            }
-            if (Adjusted && Minimums)
-            {
-                await AddDataSetToChart(bufferedSelectedDataSet, DataType.TempMin, DataAdjustment.Adjusted, timeConstraint, year, $"{labelPrefix} Minimum Adjusted", 1);
-                dataSetIndex++;
-            }
-        }
-        if (SelectedDataSetDefinition.DataAdjustments.Contains(DataAdjustment.Unadjusted))
-        {
-            if (Unadjusted && Maximums)
-            {
-                await AddDataSetToChart(bufferedSelectedDataSet, DataType.TempMax, DataAdjustment.Unadjusted, timeConstraint, year, $"{labelPrefix} Maximum Unadjusted", 1);
-                dataSetIndex++;
-            }
-            if (Unadjusted && Minimums)
-            {
-                await AddDataSetToChart(bufferedSelectedDataSet, DataType.TempMin, DataAdjustment.Unadjusted, timeConstraint, year, $"{labelPrefix} Minimum Adjusted", 1);
-                dataSetIndex++;
-            }
-        }
-        if (SelectedDataSetDefinition.DataAdjustments.Count == 2)
-        {
-            if (Difference && Maximums)
-            {
-                await AddDataSetToChart(bufferedSelectedDataSet, DataType.TempMax, DataAdjustment.Difference, timeConstraint, year, $"{labelPrefix} Maximum Difference", 0, true);
-            }
-            if (Difference && Minimums)
-            {
-                await AddDataSetToChart(bufferedSelectedDataSet, DataType.TempMin, DataAdjustment.Difference, timeConstraint, year, $"{labelPrefix} Minimum Difference", 0, true);
-            }
-        }
 
-        if (Rainfall)
+
+        foreach (var dataSet in bufferedSelectedDataSet)
         {
-            await AddDataSetToChart(bufferedSelectedDataSet, DataType.Rainfall, DataAdjustment.Unadjusted, timeConstraint, year, $"{labelPrefix} Rainfall", 0, redPositive: false);
+            if (dataSet.DataType == DataType.Rainfall)
+            {
+                await AddDataSetToChart(bufferedSelectedDataSet, dataSet.DataType, dataSet.DataAdjustment, timeConstraint, year, $"{labelPrefix} Rainfall", 0, redPositive: false);
+            }
+            else if (dataSet.DataAdjustment == DataAdjustment.Difference)
+            {
+                await AddDataSetToChart(bufferedSelectedDataSet, dataSet.DataType, DataAdjustment.Difference, timeConstraint, year, $"{labelPrefix} {dataSet.DataType} Difference", 0, absoluteValues: true);
+            }
+            else
+            {
+                await AddDataSetToChart(bufferedSelectedDataSet, dataSet.DataType, dataSet.DataAdjustment, timeConstraint, year, $"{labelPrefix} {dataSet.DataType} {dataSet.DataAdjustment}", 0);
+                dataSetIndex++;
+            }
         }
 
         var trendlines = new List<ChartTrendlineData>();
@@ -1095,36 +1043,39 @@
         SelectedLocation = Locations.Single(x => x.Id == SelectedLocationId);
         SelectedDataSetDefinition = DataSetDefinitions.Single(x => x.Id == SelectedLocation.DataSetId);
 
-        var updateChartType = false;
-        if (SelectedDataSetDefinition.DataAdjustments.Count == 2)
-        {
-            UnadjustedDisabled = false;
-            AdjustedDisabled = false;
-            DifferenceDisabled = false;
-        }
-        else
-        {
-            Unadjusted = SelectedDataSetDefinition.DataAdjustments.Contains(DataAdjustment.Unadjusted);
-            Adjusted = SelectedDataSetDefinition.DataAdjustments.Contains(DataAdjustment.Adjusted);
-            if (Difference)
-            {
-                Difference = false;
-                updateChartType = true;
-            }
-            UnadjustedDisabled = true;
-            AdjustedDisabled = true;
-            DifferenceDisabled = true;
-        }
+        //var dataAdjustments = SelectedDataSetDefinition.DataAdjustments;
+
+        //var updateChartType = false;
+        //if (dataAdjustments.Count == 2)
+        //{
+        //    UnadjustedDisabled = false;
+        //    AdjustedDisabled = false;
+        //    DifferenceDisabled = false;
+        //}
+        //else
+        //{
+        //    Unadjusted = dataAdjustments.Contains(DataAdjustment.Unadjusted);
+        //    Adjusted = dataAdjustments.Contains(DataAdjustment.Adjusted);
+        //    if (Difference)
+        //    {
+        //        Difference = false;
+        //        updateChartType = true;
+        //    }
+        //    UnadjustedDisabled = true;
+        //    AdjustedDisabled = true;
+        //    DifferenceDisabled = true;
+        //}
 
         base.StateHasChanged();
-        if (updateChartType)
-        {
-            await UpdateInternalChartType();
-        }
-        else
-        {
-            await BuildDataSets();    
-        }
+        await BuildDataSets();
+        //if (updateChartType)
+        //{
+        //    await UpdateInternalChartType();
+        //}
+        //else
+        //{
+        //    await BuildDataSets();    
+        //}
     }
 
     string[] Labels = new string[1];
