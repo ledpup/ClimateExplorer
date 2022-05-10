@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AcornSat.Core.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -62,9 +63,8 @@ namespace AcornSat.Core.InputOutput
                 var dataSet = new DataSet
                 {
                     Resolution = dataResolution,
-                    DataType = measurementDefinition.DataType,
+                    MeasurementDefinition = measurementDefinition.ToViewModel(),
                     Station = site,
-                    DataAdjustment = measurementType,
                     StartYear = startYear,
                     Year = yearFilter,
                     DataRecords = records

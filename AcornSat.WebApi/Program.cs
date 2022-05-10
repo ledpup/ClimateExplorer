@@ -83,7 +83,7 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions(bool includeL
                 LocationInfoUrl = x.LocationInfoUrl,
                 DataResolution = x.DataResolution,
                 Description = x.Description,
-                MeasurementDefinitions = x.MeasurementDefinitions.Select(x => new MeasurementDefinitionViewModel { DataAdjustment = x.DataAdjustment, DataType = x.DataType }).ToList(),
+                MeasurementDefinitions = x.MeasurementDefinitions.Select(x => x.ToViewModel()).ToList(),
                 Locations = x.HasLocations && includeLocations ? await GetLocations(x.FolderName) : new List<Location>(),
             })
         .Select(x => x.Result)
@@ -338,8 +338,7 @@ DataSet GenerateDifferenceDataSet(List<DataSet> unadjusted, List<DataSet> adjust
     var difference = new DataSet
     {
         Resolution = DataResolution.Yearly,
-        DataType = unadjusted.First().DataType,
-        DataAdjustment = DataAdjustment.Difference,
+        MeasurementDefinition = unadjusted.FirstOrDefault().MeasurementDefinition,
     };
     unadjusted.ForEach(x =>
     {
@@ -502,8 +501,7 @@ async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataS
         {
             Location = location,
             Resolution = DataResolution.Yearly,
-            DataType = queryParameters.DataType,
-            DataAdjustment = queryParameters.DataAdjustment,
+            MeasurementDefinition = dailyDataSet.MeasurementDefinition,
             DataRecords = returnDataRecords,
             StartYear = dailyDataSet.StartYear,
         };
@@ -536,8 +534,7 @@ async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataS
         {
             Location = location,
             Resolution = DataResolution.Yearly,
-            DataType = queryParameters.DataType,
-            DataAdjustment = queryParameters.DataAdjustment,
+            MeasurementDefinition = averagedDataSets.First().MeasurementDefinition,
             DataRecords = aggregatedAveragedTemperatures
         };
         aggregatedAveragedDataSets.Add(dataSet);

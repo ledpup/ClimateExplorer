@@ -6,4 +6,5 @@ public class MeasurementDefinitionViewModel
 {
     public DataType DataType { get; set; }
     public DataAdjustment DataAdjustment { get; set; }
+    public int PreferredColour { get; set; }
 }

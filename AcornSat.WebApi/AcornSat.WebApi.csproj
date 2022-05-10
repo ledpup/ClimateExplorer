@@ -27,7 +27,4 @@
     </None>
     
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="cache\" />
-  </ItemGroup>
 </Project>

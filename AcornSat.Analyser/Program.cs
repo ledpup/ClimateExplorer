@@ -141,6 +141,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     FolderName = "adjusted",
                     SubFolderName = "daily_tmax",
                     FileNameFormat = "tmax.[station].daily.csv",
+                    PreferredColour = 0,
                 },
                 new MeasurementDefinition
                 {
@@ -150,6 +151,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     FolderName = "adjusted",
                     SubFolderName = "daily_tmin",
                     FileNameFormat = "tmin.[station].daily.csv",
+                    PreferredColour = 1,
                 },
                 new MeasurementDefinition
                 {
@@ -159,6 +161,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     FolderName = "raw-data",
                     SubFolderName = "daily_tempmax",
                     FileNameFormat = "[station]_daily_tempmax.csv",
+                    PreferredColour = 2,
                 },
                 new MeasurementDefinition
                 {
@@ -168,6 +171,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     FolderName = "raw-data",
                     SubFolderName = "daily_tempmin",
                     FileNameFormat = "[station]_daily_tempmin.csv",
+                    PreferredColour = 3,
                 },
                 new MeasurementDefinition
                 {
@@ -177,6 +181,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     FolderName = "raw-data",
                     SubFolderName = "daily_rainfall",
                     FileNameFormat = "[station]_daily_rainfall.csv",
+                    PreferredColour = 1,
                 }
             },
             StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
@@ -202,6 +207,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     SubFolderName = "maxT",
                     FileNameFormat = "acorn.ria.maxT.[station].monthly.txt",
                     NullValue = "99999.9",
+                    PreferredColour = 0,
                 },
                 new MeasurementDefinition
                 {
@@ -212,6 +218,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     SubFolderName = "minT",
                     FileNameFormat = "acorn.ria.minT.[station].monthly.txt",
                     NullValue = "99999.9",
+                    PreferredColour = 1,
                 },
             },
             StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
@@ -235,6 +242,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     FolderName = "raw-data",
                     FileNameFormat = "[station].csv",
                     NullValue = "-",
+                    PreferredColour = 2,
                 },
                 new MeasurementDefinition
                 {
@@ -244,6 +252,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     FolderName = "raw-data",
                     FileNameFormat = "[station].csv",
                     NullValue = "-",
+                    PreferredColour = 3,
                 },
             },
             HasLocations = true,

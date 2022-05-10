@@ -1,4 +1,5 @@
-﻿using static AcornSat.Core.Enums;
+﻿using AcornSat.Core.ViewModel;
+using static AcornSat.Core.Enums;
 
 public class DataSet
 {
@@ -9,11 +10,12 @@ public class DataSet
 
     public DataResolution Resolution { get; set; }
     public Location Location { get;  set; }
-    public DataType DataType { get; set; }
+    public MeasurementDefinitionViewModel MeasurementDefinition { get; set; }
+    public DataType DataType { get { return MeasurementDefinition.DataType; } }
+    public DataAdjustment DataAdjustment { get { return MeasurementDefinition.DataAdjustment; } }
     public List<Location> Locations { get; set; }
 
     public string Station { get; set; }
-    public DataAdjustment DataAdjustment { get; set; }
     public List<DataRecord> DataRecords { get; set; }
 
     public short? StartYear { get; set; }
