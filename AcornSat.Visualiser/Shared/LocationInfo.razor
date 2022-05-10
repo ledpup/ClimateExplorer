@@ -101,6 +101,11 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        if (dataSet != null && dataSet.Location.Id == Location.Id)
+        {
+            return;
+        }
+
         var dataAdjustment = Enums.DataAdjustment.Unadjusted;
         if (DataSetDefinition.MeasurementDefinitions.Any(x => x.DataType == DataType.TempMax && x.DataAdjustment == Enums.DataAdjustment.Adjusted))
         {
