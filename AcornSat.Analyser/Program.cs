@@ -130,7 +130,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             Description = "The Australian Climate Observations Reference Network - Surface Air Temperature data set, is a homogenized daily maximum and minimum temperature data set containing data from 112 locations across Australia extending from 1910 to the present.",
             MoreInformationUrl = "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
             FolderName = "ACORN-SAT",
-            DataAdjustments = new List<DataAdjustment> { DataAdjustment.Adjusted, DataAdjustment.Unadjusted },
             DataResolution = DataResolution.Daily,
             MeasurementDefinitions = new List<MeasurementDefinition>
             {
@@ -142,6 +141,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     FolderName = "adjusted",
                     SubFolderName = "daily_tmax",
                     FileNameFormat = "tmax.[station].daily.csv",
+                    PreferredColour = 0,
                 },
                 new MeasurementDefinition
                 {
@@ -151,6 +151,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     FolderName = "adjusted",
                     SubFolderName = "daily_tmin",
                     FileNameFormat = "tmin.[station].daily.csv",
+                    PreferredColour = 1,
                 },
                 new MeasurementDefinition
                 {
@@ -160,6 +161,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     FolderName = "raw-data",
                     SubFolderName = "daily_tempmax",
                     FileNameFormat = "[station]_daily_tempmax.csv",
+                    PreferredColour = 2,
                 },
                 new MeasurementDefinition
                 {
@@ -169,6 +171,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     FolderName = "raw-data",
                     SubFolderName = "daily_tempmin",
                     FileNameFormat = "[station]_daily_tempmin.csv",
+                    PreferredColour = 3,
                 },
                 new MeasurementDefinition
                 {
@@ -178,6 +181,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     FolderName = "raw-data",
                     SubFolderName = "daily_rainfall",
                     FileNameFormat = "[station]_daily_rainfall.csv",
+                    PreferredColour = 1,
                 }
             },
             StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
@@ -191,7 +195,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             Description = "This ACORN-SAT dataset includes homogenised monthly data from the Remote Australian Islands and Antarctica network of 8 locations, which provide ground-based temperature records.",
             MoreInformationUrl = "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
             FolderName = "RAIA",
-            DataAdjustments = new List<DataAdjustment> { DataAdjustment.Adjusted },
             DataResolution = DataResolution.Monthly,
             MeasurementDefinitions = new List<MeasurementDefinition>
             {
@@ -204,6 +207,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     SubFolderName = "maxT",
                     FileNameFormat = "acorn.ria.maxT.[station].monthly.txt",
                     NullValue = "99999.9",
+                    PreferredColour = 0,
                 },
                 new MeasurementDefinition
                 {
@@ -214,6 +218,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     SubFolderName = "minT",
                     FileNameFormat = "acorn.ria.minT.[station].monthly.txt",
                     NullValue = "99999.9",
+                    PreferredColour = 1,
                 },
             },
             StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
@@ -226,7 +231,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             Description = "The National Institute of Water and Atmospheric Research (NIWA) eleven-station series are New Zealand temperature trends from a set of eleven climate stations with no significant site changes since the 1930s.",
             MoreInformationUrl = "https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data",
             FolderName = "NIWA",
-            DataAdjustments = new List<DataAdjustment> { DataAdjustment.Unadjusted },
             DataResolution = DataResolution.Daily,
             MeasurementDefinitions = new List<MeasurementDefinition>
             {
@@ -238,6 +242,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     FolderName = "raw-data",
                     FileNameFormat = "[station].csv",
                     NullValue = "-",
+                    PreferredColour = 2,
                 },
                 new MeasurementDefinition
                 {
@@ -247,6 +252,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     FolderName = "raw-data",
                     FileNameFormat = "[station].csv",
                     NullValue = "-",
+                    PreferredColour = 3,
                 },
             },
             HasLocations = true,

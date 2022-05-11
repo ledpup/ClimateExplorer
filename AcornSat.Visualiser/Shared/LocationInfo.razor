@@ -1,4 +1,5 @@
 ﻿@using AcornSat.Core
+@using AcornSat.Core.ViewModel
 @using Blazorise
 @using static AcornSat.Core.Enums
 
@@ -72,7 +73,7 @@
     public Location Location { get; set; }
 
     [Parameter]
-    public DataSetDefinition DataSetDefinition { get; set; }
+    public DataSetDefinitionViewModel DataSetDefinition { get; set; }
 
     [Parameter]
     public EventCallback RequestLocationChange { get; set; }
@@ -100,8 +101,13 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        if (dataSet != null && dataSet.Location.Id == Location.Id)
+        {
+            return;
+        }
+
         var dataAdjustment = Enums.DataAdjustment.Unadjusted;
-        if (DataSetDefinition.DataAdjustments.Any(x => x == Enums.DataAdjustment.Adjusted))
+        if (DataSetDefinition.MeasurementDefinitions.Any(x => x.DataType == DataType.TempMax && x.DataAdjustment == Enums.DataAdjustment.Adjusted))
         {
             dataAdjustment = Enums.DataAdjustment.Adjusted;
         }

@@ -9,53 +9,57 @@
             <CloseButton />
         </ModalHeader>
         <ModalBody>
-            <Field>
-            Selected year(s)
-            <Autocomplete TItem="short"
-                    TValue="short"
-                    Data="@DatasetYears"
-                    TextField="@((item) => item.ToString())"
-                    ValueField="@((item) => item)"
-                    Multiple
-                    SelectedValuesChanged="@OnSelectedYearsChangedInternal"
-                    SelectedValues="@SelectedYears"
-                    SelectedTexts="@SelectedYearsText">
-                <NotFoundContent>@context was not found</NotFoundContent>
-            </Autocomplete>
-            </Field>
+        
+            @if (DatasetYears != null)
+            {
+                <Field>
+                    Selected year(s)
+                <Autocomplete TItem="short"
+                        TValue="short"
+                        Data="@DatasetYears"
+                        TextField="@((item) => item.ToString())"
+                        ValueField="@((item) => item)"
+                        Multiple
+                        SelectedValuesChanged="@OnSelectedYearsChangedInternal"
+                        SelectedValues="@SelectedYears"
+                        SelectedTexts="@SelectedYearsText">
+                    <NotFoundContent>@context was not found</NotFoundContent>
+                </Autocomplete>
+                </Field>
+            }
     
-        @if (SelectedResolution == DataResolution.Yearly)
-        {
-            <Field>        
-                Start Year
-                <Validation Validator="ValidateYear">
-                    <TextEdit Text="@SelectedStartYearInternal" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnStartYearTextChangedInternal">
-                        <Feedback>
-                            <ValidationError />
-                        </Feedback>
-                    </TextEdit>
-                </Validation>
-            </Field>
-            <Field>
-                End Year
-                <Validation Validator="ValidateYear">
-                    <TextEdit Text="@SelectedEndYearInternal" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChangedInternal" />
-                </Validation>
-            </Field>
+            @if (SelectedResolution == DataResolution.Yearly)
+            {
+                <Field>        
+                    Start Year
+                    <Validation Validator="ValidateYear">
+                        <TextEdit Text="@SelectedStartYearInternal" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnStartYearTextChangedInternal">
+                            <Feedback>
+                                <ValidationError />
+                            </Feedback>
+                        </TextEdit>
+                    </Validation>
+                </Field>
+                <Field>
+                    End Year
+                    <Validation Validator="ValidateYear">
+                        <TextEdit Text="@SelectedEndYearInternal" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChangedInternal" />
+                    </Validation>
+                </Field>
+            }
 
-        }
-        @if (SelectedResolution != DataResolution.Yearly)
-        {
-            <Field>
-            Resolution
-            <Select TValue="DataResolution" SelectedValue="@SelectedResolution" SelectedValueChanged="@OnSelectedResolutionChangedInternal">
-                <SelectItem Value="@(DataResolution.Yearly)">Yearly</SelectItem>
-                <SelectItem Value="@(DataResolution.Monthly)">Monthly</SelectItem>
-                <SelectItem Value="@(DataResolution.Weekly)">Weekly</SelectItem>
-                <SelectItem Value="@(DataResolution.Daily)">Daily</SelectItem>
-            </Select>
-            </Field>
-        }
+            @if (SelectedResolution != DataResolution.Yearly)
+            {
+                <Field>
+                Resolution
+                <Select TValue="DataResolution" SelectedValue="@SelectedResolution" SelectedValueChanged="@OnSelectedResolutionChangedInternal">
+                    <SelectItem Value="@(DataResolution.Yearly)">Yearly</SelectItem>
+                    <SelectItem Value="@(DataResolution.Monthly)">Monthly</SelectItem>
+                    <SelectItem Value="@(DataResolution.Weekly)">Weekly</SelectItem>
+                    <SelectItem Value="@(DataResolution.Daily)">Daily</SelectItem>
+                </Select>
+                </Field>
+            }
         </ModalBody>
     </ModalContent>
 </Modal>

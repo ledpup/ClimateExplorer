@@ -4,16 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AcornSat.WebApi.Model
+namespace AcornSat.WebApi.Model;
+
+public class BinThenCount : StatsParameters
 {
-    public class BinThenCount : StatsParameters
+    public BinThenCount(short? numberOfBins, short? binSize)
     {
-        public BinThenCount(short? numberOfBins, short? binSize)
-        {
-            NumberOfBins = numberOfBins;
-            BinSize = binSize;
-        }
-        public short? NumberOfBins { get; set; }
-        public short? BinSize { get; set; }
+        NumberOfBins = numberOfBins;
+        BinSize = binSize;
     }
+    public short? NumberOfBins { get; set; }
+    public short? BinSize { get; set; }
 }

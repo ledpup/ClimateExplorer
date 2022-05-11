@@ -1,4 +1,5 @@
 ﻿using AcornSat.Core;
+using AcornSat.Core.ViewModel;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Net.Http.Json;
 using static AcornSat.Core.Enums;
@@ -50,10 +51,10 @@ public class DataService : IDataService
         return await _httpClient.GetFromJsonAsync<DataSet[]>(url);
     }
 
-    public async Task<IEnumerable<DataSetDefinition>> GetDataSetDefinitions()
+    public async Task<IEnumerable<DataSetDefinitionViewModel>> GetDataSetDefinitions()
     {
         var url = "/datasetdefinition";
-        return await _httpClient.GetFromJsonAsync<DataSetDefinition[]>(url);
+        return await _httpClient.GetFromJsonAsync<DataSetDefinitionViewModel[]>(url);
     }
 
     public async Task<IEnumerable<Location>> GetLocations(string dataSetName)

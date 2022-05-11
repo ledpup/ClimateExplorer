@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AcornSat.Core.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -50,22 +51,12 @@ namespace AcornSat.Core.InputOutput
 
             if (records.Any())
             {
-                short? startYear = null;
-                if (dataResolution == DataResolution.Daily)
-                {
-                    startYear = records.OrderBy(x => x.Date).First(x => x.Month == 1 && x.Day == 1).Year;
-                }
-                else if (dataResolution == DataResolution.Monthly)
-                {
-                    startYear = records.OrderBy(x => x.Year).First(x => x.Month == 1).Year;
-                }
+
                 var dataSet = new DataSet
                 {
                     Resolution = dataResolution,
-                    DataType = measurementDefinition.DataType,
+                    MeasurementDefinition = measurementDefinition.ToViewModel(),
                     Station = site,
-                    DataAdjustment = measurementType,
-                    StartYear = startYear,
                     Year = yearFilter,
                     DataRecords = records
                 };

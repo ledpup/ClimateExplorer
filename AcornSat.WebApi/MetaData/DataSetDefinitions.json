@@ -2,16 +2,14 @@
   {
     "Id": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "ACORN-SAT",
+    "ShortName": null,
     "Description": "The Australian Climate Observations Reference Network - Surface Air Temperature data set, is a homogenized daily maximum and minimum temperature data set containing data from 112 locations across Australia extending from 1910 to the present.",
     "MoreInformationUrl": "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
-    "DataAdjustments": [
-      1,
-      0
-    ],
     "DataResolution": 3,
     "FolderName": "ACORN-SAT",
     "StationInfoUrl": "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
     "LocationInfoUrl": "http://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
+    "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
         "DataType": 0,
@@ -20,7 +18,8 @@
         "SubFolderName": "daily_tmax",
         "FileNameFormat": "tmax.[station].daily.csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E-?\\d*\\.?\\d*),*$",
-        "NullValue": null
+        "NullValue": null,
+        "PreferredColour": 0
       },
       {
         "DataType": 1,
@@ -29,7 +28,8 @@
         "SubFolderName": "daily_tmin",
         "FileNameFormat": "tmin.[station].daily.csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E-?\\d*\\.?\\d*),*$",
-        "NullValue": null
+        "NullValue": null,
+        "PreferredColour": 1
       },
       {
         "DataType": 0,
@@ -38,7 +38,8 @@
         "SubFolderName": "daily_tempmax",
         "FileNameFormat": "[station]_daily_tempmax.csv",
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
-        "NullValue": null
+        "NullValue": null,
+        "PreferredColour": 2
       },
       {
         "DataType": 1,
@@ -47,7 +48,8 @@
         "SubFolderName": "daily_tempmin",
         "FileNameFormat": "[station]_daily_tempmin.csv",
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
-        "NullValue": null
+        "NullValue": null,
+        "PreferredColour": 3
       },
       {
         "DataType": 2,
@@ -56,23 +58,24 @@
         "SubFolderName": "daily_rainfall",
         "FileNameFormat": "[station]_daily_rainfall.csv",
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
-        "NullValue": null
+        "NullValue": null,
+        "PreferredColour": 1
       }
     ],
-    "HasLocations": true
+    "HasLocations": true,
+    "Locations": null
   },
   {
     "Id": "647b6a05-43e4-48e0-a43e-04ae81a74653",
     "Name": "RAIA",
+    "ShortName": null,
     "Description": "This ACORN-SAT dataset includes homogenised monthly data from the Remote Australian Islands and Antarctica network of 8 locations, which provide ground-based temperature records.",
     "MoreInformationUrl": "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
-    "DataAdjustments": [
-      1
-    ],
     "DataResolution": 1,
     "FolderName": "RAIA",
     "StationInfoUrl": "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
     "LocationInfoUrl": null,
+    "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
         "DataType": 0,
@@ -81,7 +84,8 @@
         "SubFolderName": "maxT",
         "FileNameFormat": "acorn.ria.maxT.[station].monthly.txt",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})\\d{2}\\s\\d\u002B\\s\u002B(?\u003Cvalue\u003E-?\\d\u002B\\.\\d\u002B)$",
-        "NullValue": "99999.9"
+        "NullValue": "99999.9",
+        "PreferredColour": 0
       },
       {
         "DataType": 1,
@@ -90,23 +94,24 @@
         "SubFolderName": "minT",
         "FileNameFormat": "acorn.ria.minT.[station].monthly.txt",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})\\d{2}\\s\\d\u002B\\s\u002B(?\u003Cvalue\u003E-?\\d\u002B\\.\\d\u002B)$",
-        "NullValue": "99999.9"
+        "NullValue": "99999.9",
+        "PreferredColour": 1
       }
     ],
-    "HasLocations": true
+    "HasLocations": true,
+    "Locations": null
   },
   {
     "Id": "88e52edd-3c67-484a-b614-91070037d47a",
     "Name": "NIWA 11-stations series",
+    "ShortName": null,
     "Description": "The National Institute of Water and Atmospheric Research (NIWA) eleven-station series are New Zealand temperature trends from a set of eleven climate stations with no significant site changes since the 1930s.",
     "MoreInformationUrl": "https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data",
-    "DataAdjustments": [
-      0
-    ],
     "DataResolution": 3,
     "FolderName": "NIWA",
     "StationInfoUrl": null,
     "LocationInfoUrl": null,
+    "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
         "DataType": 0,
@@ -115,7 +120,8 @@
         "SubFolderName": null,
         "FileNameFormat": "[station].csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Ctmin\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-        "NullValue": "-"
+        "NullValue": "-",
+        "PreferredColour": 2
       },
       {
         "DataType": 1,
@@ -124,10 +130,12 @@
         "SubFolderName": null,
         "FileNameFormat": "[station].csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Ctmax\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-        "NullValue": "-"
+        "NullValue": "-",
+        "PreferredColour": 3
       }
     ],
-    "HasLocations": true
+    "HasLocations": true,
+    "Locations": null
   },
   {
     "Id": "ffd5f5e2-d8df-4779-a7f4-f5d148505033",
@@ -135,7 +143,6 @@
     "ShortName": "MEI.v2",
     "Description": "The MEI combines both oceanic and atmospheric variables to form a single index assessment of ENSO. It is an Empirical Orthogonal Function (EOF) of five different variables (sea level pressure (SLP), sea surface temperature (SST), zonal and meridional components of the surface wind, and outgoing longwave radiation (OLR)) over the tropical Pacific basin (30\u00B0S-30\u00B0N and 100\u00B0E-70\u00B0W).",
     "MoreInformationUrl": "https://psl.noaa.gov/enso/mei/",
-    "DataAdjustments": null,
     "DataResolution": 1,
     "FolderName": "ENSO",
     "StationInfoUrl": null,
@@ -149,9 +156,11 @@
         "SubFolderName": null,
         "FileNameFormat": "meiv2.data.txt",
         "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
-        "NullValue": "-999.00"
+        "NullValue": "-999.00",
+        "PreferredColour": 0
       }
     ],
-    "HasLocations": false
+    "HasLocations": false,
+    "Locations": null
   }
 ]
