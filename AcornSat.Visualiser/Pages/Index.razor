@@ -399,7 +399,6 @@
     async Task OnAdjustedChanged(bool value)
     {
         Adjusted = value;
-        DatasetYears = null; // The change in DataAdjustment may alter the available years in dataset
         await BuildDataSets();
     }
 
@@ -407,7 +406,6 @@
     async Task OnUnadjustedChanged(bool value)
     {
         Unadjusted = value;
-        DatasetYears = null; // The change in DataAdjustment may alter the available years in dataset
         await BuildDataSets();
     }
 
@@ -415,7 +413,6 @@
     async Task OnDifferenceChanged(bool value)
     {
         Difference = value;
-        DatasetYears = null; // The change in DataAdjustment may alter the available years in dataset
         await BuildDataSets();
     }
 
@@ -425,7 +422,6 @@
     async Task OnMaximumsChanged(bool value)
     {
         Maximums = value;
-        DatasetYears = null; // The change in DataType may alter the available years in dataset
         await BuildDataSets();
     }
 
@@ -433,7 +429,6 @@
     async Task OnMinimumsChanged(bool value)
     {
         Minimums = value;
-        DatasetYears = null; // The change in DataType may alter the available years in dataset
         await BuildDataSets();
     }
 
@@ -441,7 +436,6 @@
     async Task OnRainfallChanged(bool value)
     {
         Rainfall = value;
-        DatasetYears = null; // The change in DataType may alter the available years in dataset
         await UpdateInternalChartType();
     }
 
@@ -472,6 +466,13 @@
 
         Datasets = new List<DataSet>();
         SelectedYears = new List<short>();
+
+        var datasetYears = new List<short>();
+        for (short i = 1800; i <= (short)DateTime.Now.Year; i++)
+        {
+            datasetYears.Add(i);
+        }
+        DatasetYears = datasetYears;
 
         await base.OnInitializedAsync();
     }
@@ -527,14 +528,6 @@
                     Datasets.AddRange(dataset);   
                 }
             }
-        }
-
-        // We don't always reload the list of DatasetYears.
-        // We reload DatasetYears when changing location or datatypes.
-        // Don't reload when changing the data resolution.
-        if (DatasetYears == null)
-        {
-            DatasetYears = Datasets.SelectMany(x => x.Years).Distinct().OrderBy(x => x).ToList();
         }
 
         await mapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
@@ -1056,7 +1049,6 @@
         SelectedLocationId = newValue;
         SelectedLocation = Locations.Single(x => x.Id == SelectedLocationId);
         SelectedDataSetDefinition = DataSetDefinitions.Single(x => x.Id == SelectedLocation.DataSetId);
-        DatasetYears = null; // The change in Location may alter the available years in dataset
         await BuildDataSets();
     }
 
