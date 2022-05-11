@@ -51,21 +51,12 @@ namespace AcornSat.Core.InputOutput
 
             if (records.Any())
             {
-                short? startYear = null;
-                if (dataResolution == DataResolution.Daily)
-                {
-                    startYear = records.OrderBy(x => x.Date).First(x => x.Month == 1 && x.Day == 1).Year;
-                }
-                else if (dataResolution == DataResolution.Monthly)
-                {
-                    startYear = records.OrderBy(x => x.Year).First(x => x.Month == 1).Year;
-                }
+
                 var dataSet = new DataSet
                 {
                     Resolution = dataResolution,
                     MeasurementDefinition = measurementDefinition.ToViewModel(),
                     Station = site,
-                    StartYear = startYear,
                     Year = yearFilter,
                     DataRecords = records
                 };

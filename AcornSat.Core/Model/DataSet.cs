@@ -18,7 +18,32 @@ public class DataSet
     public string Station { get; set; }
     public List<DataRecord> DataRecords { get; set; }
 
-    public short? StartYear { get; set; }
+    public short? StartYear 
+    {
+        get 
+        {
+            short? startYear = null;
+            if (DataRecords.Any())
+            {
+                switch (Resolution)
+                {
+                    case DataResolution.Daily:
+                        startYear = DataRecords.OrderBy(x => x.Date).First(x => x.Month == 1 && x.Day == 1).Year;
+                        break;
+                     case DataResolution.Monthly:
+                        startYear = DataRecords.OrderBy(x => x.Year).First(x => x.Month == 1).Year;
+                        break;
+                    case DataResolution.Yearly:
+                        startYear = DataRecords.OrderBy(x => x.Year).SkipWhile(x => !x.Value.HasValue).First().Year;
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
+
+            return startYear;
+        }
+    }
     public short? Year { get; set; }
 
     public List<short> Years
