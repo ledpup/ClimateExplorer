@@ -9,22 +9,4 @@
     <ProjectReference Include="..\AcornSat.Analyser\AcornSat.Analyser.csproj" />
     <ProjectReference Include="..\AcornSat.Core\AcornSat.Core.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Update="Reference\CO2\co2_mm_mlo.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Reference\ENSO\meiv2.data.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Reference\ENSO\nino34.long.anom.data.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Reference\ENSO\oni.data.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Reference\ENSO\soi.long.data.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    
-  </ItemGroup>
 </Project>

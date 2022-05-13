@@ -57,8 +57,8 @@ app.MapGet(
 app.MapGet("/datasetdefinition",                                              GetDataSetDefinitions);
 app.MapGet("/location",                                                       GetLocations);
 app.MapGet("/dataset/{dataType}/{resolution}/{dataAdjustment}/{locationId}",  GetDataSetsForLocation);
-app.MapGet("/dataset/{dataType}/{resolution}/{dataAdjustment}",               GetTemperaturesByLatitudeGroups);
-app.MapGet("/reference/co2/",                                                 GetCarbonDioxide);
+app.MapGet("/dataset/{dataType}/{resolution}/{dataAdjustment}",               GetTemperaturesByLatitude);
+app.MapGet("/dataset/{dataType}/{resolution}",                                GetReferenceData);
 app.MapGet("/reference/enso/{index}/{resolution}",                            GetEnso);
 app.MapGet("/reference/enso-metadata",                                        GetEnsoMetaData);
 
@@ -104,7 +104,7 @@ async Task<List<Location>> GetLocations(string dataSetFolder = null)
     return await Location.GetLocations(dataSetFolder);
 }
 
-async Task<List<DataSet>> GetTemperaturesByLatitudeGroups(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short dayGrouping, float dayGroupingThreshold, float locationGroupingThreshold)
+async Task<List<DataSet>> GetTemperaturesByLatitude(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float minLatitude, float maxLatitude, short dayGrouping, float dayGroupingThreshold, float locationGroupingThreshold)
 {
     var definitions = (await DataSetDefinition.GetDataSetDefinitions()).Where(x => x.Id == Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321")).ToList();
     var locations = await GetLocationsInLatitudeBand(definitions.First().FolderName, minLatitude, maxLatitude);
@@ -265,9 +265,20 @@ async Task<List<DataSet>> GetDataSetsForLocationInternal(QueryParameters queryPa
     }
 
     var definitions = await DataSetDefinition.GetDataSetDefinitions();
-    var locations = await GetLocations();
-    var location = locations.Single(x => x.Id == queryParameters.LocationId);
-    var definition = definitions.SingleOrDefault(x => x.Id == location.DataSetId);
+
+    DataSetDefinition definition = null;
+    Location location = null;
+    if (queryParameters.LocationId != null)
+    {
+        var locations = await GetLocations();
+        location = locations.Single(x => x.Id == queryParameters.LocationId);
+        definition = definitions.SingleOrDefault(x => x.Id == location.DataSetId);
+    }
+    else
+    {
+        definition = definitions.Single(x => x.MeasurementDefinitions.Any(y => y.DataType == queryParameters.DataType));
+    }
+
     if (definition == null)
     {
         throw new ArgumentException(nameof(definition));
@@ -334,12 +345,12 @@ async Task<List<DataSet>> BuildDataSet(QueryParameters queryParameters, List<Dat
 
             break;
         case DataResolution.Weekly:
-            dataSets = await GetAverageFromDailyTemperatures(definition, queryParameters.DataType, DataResolution.Weekly, queryParameters.DataAdjustment, queryParameters.LocationId, queryParameters.Year.Value, ((GroupThenAverage)queryParameters.StatsParameters).DayGroupingThreshold);
+            dataSets = await GetAverageFromDailyTemperatures(definition, queryParameters.DataType, DataResolution.Weekly, queryParameters.DataAdjustment, queryParameters.LocationId.Value, queryParameters.Year.Value, ((GroupThenAverage)queryParameters.StatsParameters).DayGroupingThreshold);
             break;
         case DataResolution.Monthly:
             if (definition.DataResolution == DataResolution.Daily)
             {
-                dataSets = await GetAverageFromDailyTemperatures(definition, queryParameters.DataType, DataResolution.Monthly, queryParameters.DataAdjustment, queryParameters.LocationId, queryParameters.Year.Value, ((GroupThenAverage)queryParameters.StatsParameters).DayGroupingThreshold);
+                dataSets = await GetAverageFromDailyTemperatures(definition, queryParameters.DataType, DataResolution.Monthly, queryParameters.DataAdjustment, queryParameters.LocationId.Value, queryParameters.Year.Value, ((GroupThenAverage)queryParameters.StatsParameters).DayGroupingThreshold);
             }
             else if (definition.DataResolution == DataResolution.Monthly)
             {
@@ -395,10 +406,8 @@ List<DataSet> TrimNulls(List<DataSet> dataSets)
     return dataSets;
 }
 
-async Task<List<DataSet>> GetYearlyTemperaturesFromMonthly(DataSetDefinition dataSetDefinition, DataType dataType, DataAdjustment dataAdjustment, Guid locationId, short? year)
+async Task<List<DataSet>> GetYearlyTemperaturesFromMonthly(DataSetDefinition dataSetDefinition, DataType dataType, DataAdjustment dataAdjustment, Guid? locationId, short? year)
 {
-    var location = (await Location.GetLocations(dataSetDefinition.FolderName)).Single(x => x.Id == locationId);
-
     var dataSets = await GetDataFromFile(dataSetDefinition, dataType, dataAdjustment, locationId);
 
     var returnDataSets = new List<DataSet>();
@@ -639,24 +648,14 @@ List<DataRecord> GroupThenAverage(IEnumerable<IGrouping<short, DataRecord>> year
     return yearlyAverageRecords;
 }
 
-List<DataRecord> GetCarbonDioxide()
+async Task<DataSet> GetReferenceData(DataType dataType, DataResolution resolution)
 {
-    var records = File.ReadAllLines($@"Reference\CO2\co2_annmean_mlo.csv").ToList();
-    records = records.Take(new Range(56, records.Count)).ToList();
+    var defintions = await DataSetDefinition.GetDataSetDefinitions();
+    var definition = defintions.Single(x => x.MeasurementDefinitions.Any(y => y.DataType == dataType));
 
-    var list = new List<DataRecord>();
-    foreach (var record in records)
-    {
-        var splitRow = record.Split(',');
-        list.Add(
-            new DataRecord
-            {
-                Year = short.Parse(splitRow[0]),
-                Value = float.Parse(splitRow[1]),
-            }
-        );
-    }
-    return list;
+    var dataSet = await GetDataSetsForLocationInternal(new QueryParameters(dataType, resolution, definition.MeasurementDefinitions.Single().DataAdjustment, null, null, null));
+
+    return dataSet.Single();
 }
 
 List<EnsoMetaData> GetEnsoMetaData()

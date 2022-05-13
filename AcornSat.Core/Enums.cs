@@ -13,7 +13,10 @@ namespace AcornSat.Core
             TempMax,
             TempMin,
             Rainfall,
-            Enso
+            ENSO,
+            CO2,
+            CH4,
+            N2O
         }
         public enum DataResolution
         {

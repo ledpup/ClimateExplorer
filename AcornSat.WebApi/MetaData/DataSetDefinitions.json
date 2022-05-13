@@ -162,5 +162,31 @@
     ],
     "HasLocations": false,
     "Locations": null
+  },
+  {
+    "Id": "42c9195e-edc0-4894-97dc-923f9d5e72f0",
+    "Name": "CO2 from Mauna Loa Observatory",
+    "ShortName": "CO2 MLO",
+    "Description": "The carbon dioxide data on Mauna Loa constitute the longest record of direct measurements of CO2 in the atmosphere. They were started by C. David Keeling of the Scripps Institution of Oceanography in March of 1958 at a facility of the National Oceanic and Atmospheric Administration [Keeling, 1976]. NOAA started its own CO2 measurements in May of 1974, and they have run in parallel with those made by Scripps since then [Thoning, 1989].",
+    "MoreInformationUrl": "https://gml.noaa.gov/ccgg/trends/mlo.html",
+    "DataResolution": 1,
+    "FolderName": "CO2",
+    "StationInfoUrl": null,
+    "LocationInfoUrl": null,
+    "DataDownloadUrl": "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt",
+    "MeasurementDefinitions": [
+      {
+        "DataType": 4,
+        "DataAdjustment": 1,
+        "FolderName": null,
+        "SubFolderName": null,
+        "FileNameFormat": "co2_mm_mlo.txt",
+        "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
+        "NullValue": null,
+        "PreferredColour": 0
+      }
+    ],
+    "HasLocations": false,
+    "Locations": null
   }
 ]

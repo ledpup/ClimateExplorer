@@ -16,9 +16,9 @@ namespace AcornSat.Core
             var remainder = numberOfDaysInYear % numberOfDaysInGroup;
 
             var grouping = temperatureRecords.GroupBy(x => 
-                    x.Date.DayOfYear > numberOfDaysInYear - remainder
+                    x.Date.Value.DayOfYear > numberOfDaysInYear - remainder
                                 ? (short?)(numberOfDaysInYear / numberOfDaysInGroup - 1)
-                                : (short)((x.Date.DayOfYear - 1) / numberOfDaysInGroup)
+                                : (short)((x.Date.Value.DayOfYear - 1) / numberOfDaysInGroup)
                                 );
             return grouping;
         }
@@ -70,7 +70,7 @@ namespace AcornSat.Core
                 throw new Exception($"Year {year} needs {numberOfDaysInYear} temperature records for the year to be complete. You've supplied {values.Count()} records");
             }
 
-            if (!values.GroupBy(x => x.Date.DayOfYear).All(x => x.Count() == 1))
+            if (!values.GroupBy(x => x.Date.Value.DayOfYear).All(x => x.Count() == 1))
             {
                 throw new Exception("All data must be for distinct dates");
             }
@@ -97,7 +97,7 @@ namespace AcornSat.Core
                                               .ToList();
             if (duplicateDates.Any())
             {
-                throw new Exception($"There are duplicate dates ({string.Join(", ", duplicateDates.Select(x => x.ToShortDateString()))}. The file is corrupt.");
+                throw new Exception($"There are duplicate dates ({string.Join(", ", duplicateDates.Select(x => x.Value.ToShortDateString()))}. The file is corrupt.");
             }
         }
 

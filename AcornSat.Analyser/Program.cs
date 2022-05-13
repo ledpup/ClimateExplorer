@@ -271,14 +271,35 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 new MeasurementDefinition
                 {
                     DataAdjustment = DataAdjustment.Unadjusted,
-                    DataType = DataType.Enso,
+                    DataType = DataType.ENSO,
                     DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
-                    FolderName = "MEI",
                     FileNameFormat = "meiv2.data.txt",
                     NullValue = "-999.00",
                 },
             },
             DataDownloadUrl = "https://psl.noaa.gov/enso/mei/data/meiv2.data",
+            HasLocations = false,
+        },
+        new DataSetDefinition
+        {
+            Id = Guid.Parse("42c9195e-edc0-4894-97dc-923f9d5e72f0"),
+            Name = "CO2 from Mauna Loa Observatory",
+            ShortName = "CO2 MLO",
+            Description = "The carbon dioxide data on Mauna Loa constitute the longest record of direct measurements of CO2 in the atmosphere. They were started by C. David Keeling of the Scripps Institution of Oceanography in March of 1958 at a facility of the National Oceanic and Atmospheric Administration [Keeling, 1976]. NOAA started its own CO2 measurements in May of 1974, and they have run in parallel with those made by Scripps since then [Thoning, 1989].",
+            MoreInformationUrl = "https://gml.noaa.gov/ccgg/trends/mlo.html",
+            FolderName = "CO2",
+            DataResolution = DataResolution.Monthly,
+            MeasurementDefinitions = new List<MeasurementDefinition>
+            {
+                new MeasurementDefinition
+                {
+                    DataAdjustment = DataAdjustment.Adjusted,
+                    DataType = DataType.CO2,
+                    DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
+                    FileNameFormat = "co2_mm_mlo.txt",
+                },
+            },
+            DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt",
             HasLocations = false,
         }
     };

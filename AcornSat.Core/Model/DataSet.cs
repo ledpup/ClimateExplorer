@@ -87,11 +87,14 @@ public class DataSet
         get
         {
             float? warmingIndex = null;
-            if (DataRecords.Count > 40)
+            if (DataType == DataType.TempMax || DataType == DataType.TempMin)
             {
-                averageOfEarliestTemperatures = DataRecords.OrderBy(x => x.Year).Take(DataRecords.Count / 2).Average(x => x.Value).Value;
-                averageOfLastTwentyYearsTemperatures = DataRecords.OrderByDescending(x => x.Year).Take(20).Average(x => x.Value).Value;
-                warmingIndex = MathF.Round(averageOfLastTwentyYearsTemperatures.Value - averageOfEarliestTemperatures.Value, 1);
+                if (DataRecords.Count > 40)
+                {
+                    averageOfEarliestTemperatures = DataRecords.OrderBy(x => x.Year).Take(DataRecords.Count / 2).Average(x => x.Value).Value;
+                    averageOfLastTwentyYearsTemperatures = DataRecords.OrderByDescending(x => x.Year).Take(20).Average(x => x.Value).Value;
+                    warmingIndex = MathF.Round(averageOfLastTwentyYearsTemperatures.Value - averageOfEarliestTemperatures.Value, 1);
+                }
             }
             return warmingIndex;
         }
@@ -115,6 +118,11 @@ public class DataSet
     {
         get
         {
+            if (DataType != DataType.TempMax && DataType != DataType.TempMin)
+            {
+                return "NA";
+            }
+
             if (WarmingIndex == null)
             {
                 return $"Warming index: the temperature difference between the average of the last 20 years of maximum temperatures compared and the average of the first half of the dataset.";

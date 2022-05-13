@@ -37,5 +37,15 @@ public class DataRecord
     public string Label { get; set; }
 
     [JsonIgnore]
-    public DateTime Date { get { return new DateTime(Year, Month.Value, Day.Value); } }
+    public DateTime? Date
+    { 
+        get 
+        {
+            if (Month.HasValue && Day.HasValue)
+            {
+                return new DateTime(Year, Month.Value, Day.Value);
+            }
+            return null;
+        } 
+    }
 }
