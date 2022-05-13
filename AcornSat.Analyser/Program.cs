@@ -297,6 +297,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     DataType = DataType.CO2,
                     DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
                     FileNameFormat = "co2_mm_mlo.txt",
+                    PreferredColour = 8
                 },
             },
             DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt",

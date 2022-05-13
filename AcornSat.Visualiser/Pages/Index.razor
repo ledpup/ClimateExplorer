@@ -98,6 +98,7 @@
                 <Check TValue="bool" Checked="@Maximums" CheckedChanged="@OnMaximumsChanged">Maximum Temperatures</Check>
                 <Check TValue="bool" Checked="@Minimums" CheckedChanged="@OnMinimumsChanged">Minimum Temperatures</Check>
                 <Check TValue="bool" Checked="@Rainfall" CheckedChanged="@OnRainfallChanged">Rainfall</Check>
+                <Check TValue="bool" Checked="@CO2" CheckedChanged="@OnCO2Changed">CO₂</Check>
            </Alert>
            <Alert Color="Color.Secondary" Visible="true">
                 Data Adjustment
@@ -439,6 +440,13 @@
         await UpdateInternalChartType();
     }
 
+    bool CO2;
+    async Task OnCO2Changed(bool value)
+    {
+        CO2 = value;
+        await BuildDataSets();
+    }
+
     string SelectedStartYear { get; set; }
     string SelectedEndYear { get; set; }
 
@@ -500,7 +508,8 @@
         {
             foreach (var dataAdjustment in selectedDataAdjustments)
             {
-                if (!SelectedDataSetDefinition.MeasurementDefinitions.Any(x => x.DataType == dataType))
+                var dataDefintion = dataType == DataType.CO2 ? DataSetDefinitions.Single(x => x.MeasurementDefinitions.Any(y => y.DataType == dataType)) : SelectedDataSetDefinition;
+                if (!dataDefintion.MeasurementDefinitions.Any(x => x.DataType == dataType))
                 {
                     continue;
                 }
@@ -513,18 +522,19 @@
                     }
                 }
                 var aggregationMethod = dataType == DataType.Rainfall ? AggregationMethod.Sum : generalAggregationMethod;
+                Guid? locationId = dataDefintion.HasLocations ? SelectedLocationId : null;
 
                 if (SelectedYears.Any())
                 {
                     foreach (var year in SelectedYears)
                     {
-                        var dataset = (await DataService.GetDataSet(dataType, SelectedResolution, requestDataAdjustment, SelectedLocationId, aggregationMethod: aggregationMethod, year, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold)).ToList();
+                        var dataset = (await DataService.GetDataSet(dataType, SelectedResolution, requestDataAdjustment, aggregationMethod, locationId, year, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold)).ToList();
                         Datasets.AddRange(dataset);
                     }
                 }
                 else
                 {
-                    var dataset = (await DataService.GetDataSet(dataType, SelectedResolution, requestDataAdjustment, SelectedLocationId, aggregationMethod: aggregationMethod, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold)).ToList();
+                    var dataset = (await DataService.GetDataSet(dataType, SelectedResolution, requestDataAdjustment, aggregationMethod, locationId, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold)).ToList();
                     Datasets.AddRange(dataset);   
                 }
             }
@@ -549,6 +559,10 @@
         if (Rainfall)
         {
             selectedDataTypes.Add(DataType.Rainfall);
+        }
+        if (CO2)
+        {
+            selectedDataTypes.Add(DataType.CO2);
         }
         return selectedDataTypes;
     }
@@ -727,6 +741,20 @@
                     Title = new
                     {
                         Text = "Rainfall (mm)",
+                        Display = true,
+                        Color = "blue",
+                    },
+                },
+                Co2 = new
+                {
+                    Display = CO2,
+                    Axis = "y",
+                    Position = Maximums || Minimums ? "right" : "left",
+                    //SuggestedMin = 200,
+                    Grid = new { DrawOnChartArea = false },
+                    Title = new
+                    {
+                        Text = "Parts per million (ppm)",
                         Display = true,
                         Color = "blue",
                     },
@@ -1035,7 +1063,7 @@
                         PointRadius = 5,
                         BorderDash = new List<int> { },
                         Tension = 0.1f,
-                        YAxisID = dataType == DataType.Rainfall ? "rainfall" : "temperature"
+                        YAxisID = dataType == DataType.Rainfall ? "rainfall" : dataType == DataType.CO2 ? "co2" : "temperature"
                     };
     }
 

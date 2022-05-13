@@ -56,9 +56,9 @@ app.MapGet(
 
 app.MapGet("/datasetdefinition",                                              GetDataSetDefinitions);
 app.MapGet("/location",                                                       GetLocations);
-app.MapGet("/dataset/{dataType}/{resolution}/{dataAdjustment}/{locationId}",  GetDataSetsForLocation);
-app.MapGet("/dataset/{dataType}/{resolution}/{dataAdjustment}",               GetTemperaturesByLatitude);
-app.MapGet("/dataset/{dataType}/{resolution}",                                GetReferenceData);
+app.MapGet("/dataset/{dataType}/{resolution}/{dataAdjustment}/{locationId}",  GetDataSets);
+//app.MapGet("/dataset/{dataType}/{resolution}/{dataAdjustment}",               GetTemperaturesByLatitude);
+app.MapGet("/dataset/{dataType}/{resolution}/{dataAdjustment}",               GetDataSets);
 app.MapGet("/reference/enso/{index}/{resolution}",                            GetEnso);
 app.MapGet("/reference/enso-metadata",                                        GetEnsoMetaData);
 
@@ -84,6 +84,7 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions(bool includeL
                 DataResolution = x.DataResolution,
                 Description = x.Description,
                 MeasurementDefinitions = x.MeasurementDefinitions.Select(x => x.ToViewModel()).ToList(),
+                HasLocations = x.HasLocations,
                 Locations = x.HasLocations && includeLocations ? await GetLocations(x.FolderName) : new List<Location>(),
             })
         .Select(x => x.Result)
@@ -240,22 +241,22 @@ async Task SaveDataSets(QueryParameters queryParameters, List<DataSet> dataSets)
     await File.WriteAllTextAsync(filePath, json);
 }
 
-async Task<List<DataSet>> GetDataSetsForLocation(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, Guid locationId, short? year, AggregationMethod? statisticalMethod, short? dayGrouping, float? dayGroupingThreshold, short? numberOfBins)
+async Task<List<DataSet>> GetDataSets(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, Guid? locationId, short? year, AggregationMethod? aggregationMethod, short? dayGrouping, float? dayGroupingThreshold, short? numberOfBins)
 {
-    return await GetDataSetsForLocationInternal(
+    return await GetDataSetsInternal(
         new QueryParameters(
             dataType, 
             resolution, 
             dataAdjustment, 
             locationId, 
-            statisticalMethod, 
+            aggregationMethod, 
             year, 
             dayGrouping, 
             dayGroupingThreshold, 
             numberOfBins));
 }
 
-async Task<List<DataSet>> GetDataSetsForLocationInternal(QueryParameters queryParameters)
+async Task<List<DataSet>> GetDataSetsInternal(QueryParameters queryParameters)
 {
     var dataSets = await LoadCachedDataSets(queryParameters);
 
@@ -329,7 +330,7 @@ async Task<List<DataSet>> BuildDataSet(QueryParameters queryParameters, List<Dat
             {
                 dataSets = await GetYearlyTemperaturesFromMonthly(definition, queryParameters.DataType, queryParameters.DataAdjustment, queryParameters.LocationId, queryParameters.Year);
             }
-            if (queryParameters.StatisticalMethod.HasValue && queryParameters.StatisticalMethod == AggregationMethod.GroupByDayThenAverage_Relative)
+            if (queryParameters.AggregationMethod.HasValue && queryParameters.AggregationMethod == AggregationMethod.GroupByDayThenAverage_Relative)
             {
                 foreach (var dataSet in dataSets)
                 {
@@ -516,7 +517,7 @@ async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataS
         var yearSets = dailyDataSet.DataRecords.GroupBy(x => x.Year);
 
         List<DataRecord> returnDataRecords = null;
-        switch (queryParameters.StatisticalMethod)
+        switch (queryParameters.AggregationMethod)
         {
             case AggregationMethod.GroupByDayThenAverage:
             case AggregationMethod.GroupByDayThenAverage_Relative:
@@ -653,7 +654,7 @@ async Task<DataSet> GetReferenceData(DataType dataType, DataResolution resolutio
     var defintions = await DataSetDefinition.GetDataSetDefinitions();
     var definition = defintions.Single(x => x.MeasurementDefinitions.Any(y => y.DataType == dataType));
 
-    var dataSet = await GetDataSetsForLocationInternal(new QueryParameters(dataType, resolution, definition.MeasurementDefinitions.Single().DataAdjustment, null, null, null));
+    var dataSet = await GetDataSetsInternal(new QueryParameters(dataType, resolution, definition.MeasurementDefinitions.Single().DataAdjustment, null, null, null));
 
     return dataSet.Single();
 }

@@ -105,10 +105,8 @@ The tmax and tmin file lengths aren't all the same. Some start on different date
 ### CO2
 
 NOAA
-- ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_annmean_mlo.txt
-- Accessed 2021-12-21
 - https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt
-- Accessed 2021-12-27
+- Accessed 2022-05-13
 
 ### ENSO 
 

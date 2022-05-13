@@ -6,15 +6,15 @@ namespace AcornSat.WebApi.Model;
 
 public class QueryParameters
 {
-    public QueryParameters(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, Guid? locationId, AggregationMethod? statisticalMethod, short? year, short? dayGrouping = 14, float? dayGroupingThreshold = .7f, short? numberOfBins = null, short? binSize = null)
+    public QueryParameters(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, Guid? locationId, AggregationMethod? aggregationMethod, short? year, short? dayGrouping = 14, float? dayGroupingThreshold = .7f, short? numberOfBins = null, short? binSize = null)
     {
         DataType = dataType;
         Resolution = resolution;
         DataAdjustment = dataAdjustment;
         LocationId = locationId;
-        StatisticalMethod = statisticalMethod;
+        AggregationMethod = aggregationMethod;
         Year = year;
-        switch (StatisticalMethod)
+        switch (AggregationMethod)
         {
             case Core.Enums.AggregationMethod.GroupByDayThenAverage:
             case Core.Enums.AggregationMethod.GroupByDayThenAverage_Relative:
@@ -29,7 +29,7 @@ public class QueryParameters
     public DataResolution Resolution { get; set; }
     public DataAdjustment DataAdjustment { get; set; }
     public Guid? LocationId { get; set; }
-    public AggregationMethod? StatisticalMethod { get; set; }
+    public AggregationMethod? AggregationMethod { get; set; }
     public short? Year { get; set; }
 
     public StatsParameters StatsParameters { get; set; }
@@ -39,10 +39,10 @@ public class QueryParameters
         var stringBuilder = new StringBuilder();
 
         stringBuilder.Append($"{DataType}_{Resolution}_{DataAdjustment}_{LocationId}");
-        if (StatisticalMethod.HasValue)
+        if (AggregationMethod.HasValue)
         {
-            stringBuilder.Append($"_{StatisticalMethod}");
-            switch (StatisticalMethod)
+            stringBuilder.Append($"_{AggregationMethod}");
+            switch (AggregationMethod)
             {
                 case Core.Enums.AggregationMethod.GroupByDayThenAverage:
                 case Core.Enums.AggregationMethod.GroupByDayThenAverage_Relative:
