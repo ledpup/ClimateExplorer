@@ -14,6 +14,7 @@
       {
         "DataType": 0,
         "DataAdjustment": 1,
+        "UnitOfMeasure": 0,
         "FolderName": "adjusted",
         "SubFolderName": "daily_tmax",
         "FileNameFormat": "tmax.[station].daily.csv",
@@ -24,6 +25,7 @@
       {
         "DataType": 1,
         "DataAdjustment": 1,
+        "UnitOfMeasure": 0,
         "FolderName": "adjusted",
         "SubFolderName": "daily_tmin",
         "FileNameFormat": "tmin.[station].daily.csv",
@@ -34,6 +36,7 @@
       {
         "DataType": 0,
         "DataAdjustment": 0,
+        "UnitOfMeasure": 0,
         "FolderName": "raw-data",
         "SubFolderName": "daily_tempmax",
         "FileNameFormat": "[station]_daily_tempmax.csv",
@@ -44,6 +47,7 @@
       {
         "DataType": 1,
         "DataAdjustment": 0,
+        "UnitOfMeasure": 0,
         "FolderName": "raw-data",
         "SubFolderName": "daily_tempmin",
         "FileNameFormat": "[station]_daily_tempmin.csv",
@@ -54,6 +58,7 @@
       {
         "DataType": 2,
         "DataAdjustment": 0,
+        "UnitOfMeasure": 2,
         "FolderName": "raw-data",
         "SubFolderName": "daily_rainfall",
         "FileNameFormat": "[station]_daily_rainfall.csv",
@@ -80,6 +85,7 @@
       {
         "DataType": 0,
         "DataAdjustment": 1,
+        "UnitOfMeasure": 0,
         "FolderName": "adjusted",
         "SubFolderName": "maxT",
         "FileNameFormat": "acorn.ria.maxT.[station].monthly.txt",
@@ -90,6 +96,7 @@
       {
         "DataType": 1,
         "DataAdjustment": 1,
+        "UnitOfMeasure": 0,
         "FolderName": "adjusted",
         "SubFolderName": "minT",
         "FileNameFormat": "acorn.ria.minT.[station].monthly.txt",
@@ -116,6 +123,7 @@
       {
         "DataType": 0,
         "DataAdjustment": 0,
+        "UnitOfMeasure": 0,
         "FolderName": "raw-data",
         "SubFolderName": null,
         "FileNameFormat": "[station].csv",
@@ -126,6 +134,7 @@
       {
         "DataType": 1,
         "DataAdjustment": 0,
+        "UnitOfMeasure": 0,
         "FolderName": "raw-data",
         "SubFolderName": null,
         "FileNameFormat": "[station].csv",
@@ -152,12 +161,94 @@
       {
         "DataType": 3,
         "DataAdjustment": 0,
-        "FolderName": "MEI",
+        "UnitOfMeasure": 0,
+        "FolderName": null,
         "SubFolderName": null,
         "FileNameFormat": "meiv2.data.txt",
         "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
         "NullValue": "-999.00",
         "PreferredColour": 0
+      }
+    ],
+    "HasLocations": false,
+    "Locations": null
+  },
+  {
+    "Id": "42c9195e-edc0-4894-97dc-923f9d5e72f0",
+    "Name": "Carbon dioxide (CO\u2082) from Mauna Loa Observatory",
+    "ShortName": "Carbon Dioxide (CO\u2082)",
+    "Description": "The carbon dioxide data on Mauna Loa constitute the longest record of direct measurements of CO2 in the atmosphere. They were started by C. David Keeling of the Scripps Institution of Oceanography in March of 1958 at a facility of the National Oceanic and Atmospheric Administration [Keeling, 1976]. NOAA started its own CO2 measurements in May of 1974, and they have run in parallel with those made by Scripps since then [Thoning, 1989].",
+    "MoreInformationUrl": "https://gml.noaa.gov/ccgg/trends/mlo.html",
+    "DataResolution": 1,
+    "FolderName": "CO2",
+    "StationInfoUrl": null,
+    "LocationInfoUrl": null,
+    "DataDownloadUrl": "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt",
+    "MeasurementDefinitions": [
+      {
+        "DataType": 4,
+        "DataAdjustment": 1,
+        "UnitOfMeasure": 3,
+        "FolderName": null,
+        "SubFolderName": null,
+        "FileNameFormat": "co2_mm_mlo.txt",
+        "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
+        "NullValue": null,
+        "PreferredColour": 4
+      }
+    ],
+    "HasLocations": false,
+    "Locations": null
+  },
+  {
+    "Id": "2debe203-cbaa-4015-977c-2f40e2782547",
+    "Name": "Methane (CH\u2084) from a globally distributed network",
+    "ShortName": "Methane (CH\u2084)",
+    "Description": "The Global Monitoring Division of NOAA's Earth System Research Laboratory has measured methane since 1983 at a globally distributed network of air sampling sites (Dlugokencky et al., 1994). A global average is constructed by first smoothing the data for each site as a function of time, and then smoothed values for each site are plotted as a function of latitude for 48 equal time steps per year. Global means are calculated from the latitude plot at each time step (Masarie and Tans, 1995).",
+    "MoreInformationUrl": "https://gml.noaa.gov/ccgg/trends_ch4/",
+    "DataResolution": 1,
+    "FolderName": "CH4",
+    "StationInfoUrl": null,
+    "LocationInfoUrl": null,
+    "DataDownloadUrl": "https://gml.noaa.gov/webdata/ccgg/trends/ch4/ch4_mm_gl.txt",
+    "MeasurementDefinitions": [
+      {
+        "DataType": 5,
+        "DataAdjustment": 1,
+        "UnitOfMeasure": 4,
+        "FolderName": null,
+        "SubFolderName": null,
+        "FileNameFormat": "ch4_mm_gl.txt",
+        "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
+        "NullValue": null,
+        "PreferredColour": 4
+      }
+    ],
+    "HasLocations": false,
+    "Locations": null
+  },
+  {
+    "Id": "6e84e743-3c77-488f-8a1c-152306c3d6f0",
+    "Name": "Nitrous oxide (N\u2082O) from a globally distributed network",
+    "ShortName": "N\u2082O",
+    "Description": "The Global Monitoring Division of NOAA's Earth System Research Laboratory has measured nitrous oxide since 1997 at a globally distributed network of air sampling sites (Dlugokencky et al., 1994). A global average is constructed by first smoothing the data for each site as a function of time, and then smoothed values for each site are fitted as a function of latitude at 48 equally-spaced time steps per year. Global means are calculated from the latitude fits at each time step (Masarie and Tans, 1995).",
+    "MoreInformationUrl": "https://gml.noaa.gov/ccgg/trends_n2o/",
+    "DataResolution": 1,
+    "FolderName": "N2O",
+    "StationInfoUrl": null,
+    "LocationInfoUrl": null,
+    "DataDownloadUrl": "https://gml.noaa.gov/webdata/ccgg/trends/n2o/n2o_mm_gl.txt",
+    "MeasurementDefinitions": [
+      {
+        "DataType": 6,
+        "DataAdjustment": 1,
+        "UnitOfMeasure": 4,
+        "FolderName": null,
+        "SubFolderName": null,
+        "FileNameFormat": "n2o_mm_gl.txt",
+        "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
+        "NullValue": null,
+        "PreferredColour": 4
       }
     ],
     "HasLocations": false,

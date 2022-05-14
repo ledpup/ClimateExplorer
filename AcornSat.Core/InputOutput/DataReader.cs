@@ -16,7 +16,15 @@ namespace AcornSat.Core.InputOutput
         {
             var dataTypeFolder = GetDataTypeFolder(measurementDefinition.DataType);
 
-            var filePath = @$"{dataTypeFolder}\{dataSetFolderName}\{dataResolution}\{measurementDefinition.FolderName}\{ (string.IsNullOrWhiteSpace(measurementDefinition.SubFolderName) ? null : measurementDefinition.SubFolderName + @"\") }";
+            var filePath = @$"{dataTypeFolder}\{dataSetFolderName}\{dataResolution}";
+
+            if (!string.IsNullOrWhiteSpace(measurementDefinition.FolderName))
+                filePath += "\\" + measurementDefinition.FolderName;
+
+            if (!string.IsNullOrWhiteSpace(measurementDefinition.SubFolderName))
+                filePath += "\\" + measurementDefinition.SubFolderName;
+
+            filePath += "\\";
 
             var regEx = new Regex(measurementDefinition.DataRowRegEx);
 
@@ -51,7 +59,6 @@ namespace AcornSat.Core.InputOutput
 
             if (records.Any())
             {
-
                 var dataSet = new DataSet
                 {
                     Resolution = dataResolution,
@@ -69,7 +76,10 @@ namespace AcornSat.Core.InputOutput
         {
             switch (dataType)
             {
-                case DataType.Enso:
+                case DataType.ENSO:
+                case DataType.CO2:
+                case DataType.CH4:
+                case DataType.N2O:
                     return "Reference";
                 case DataType.Rainfall:
                     return "Rainfall";
@@ -84,6 +94,7 @@ namespace AcornSat.Core.InputOutput
 
             if (!File.Exists(siteFilePath))
             {
+                //throw new FileNotFoundException(siteFilePath);
                 return new List<DataRecord>();
             }
 

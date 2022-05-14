@@ -137,6 +137,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 {
                     DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.TempMax,
+                    UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                     DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d*\.?\d*),*$",
                     FolderName = "adjusted",
                     SubFolderName = "daily_tmax",
@@ -147,6 +148,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 {
                     DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.TempMin,
+                    UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                     DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d*\.?\d*),*$",
                     FolderName = "adjusted",
                     SubFolderName = "daily_tmin",
@@ -157,6 +159,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 {
                     DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.TempMax,
+                    UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                     DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
                     FolderName = "raw-data",
                     SubFolderName = "daily_tempmax",
@@ -167,6 +170,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 {
                     DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.TempMin,
+                    UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                     DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
                     FolderName = "raw-data",
                     SubFolderName = "daily_tempmin",
@@ -177,6 +181,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 {
                     DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.Rainfall,
+                    UnitOfMeasure = UnitOfMeasure.Millimetres,
                     DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
                     FolderName = "raw-data",
                     SubFolderName = "daily_rainfall",
@@ -202,6 +207,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 {
                     DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.TempMax,
+                    UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                     DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$",
                     FolderName = "adjusted",
                     SubFolderName = "maxT",
@@ -213,6 +219,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 {
                     DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.TempMin,
+                    UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                     DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$",
                     FolderName = "adjusted",
                     SubFolderName = "minT",
@@ -238,6 +245,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 {
                     DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.TempMax,
+                    UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                     DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$",
                     FolderName = "raw-data",
                     FileNameFormat = "[station].csv",
@@ -248,6 +256,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 {
                     DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.TempMin,
+                    UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                     DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<tmax>-?[\d+\.\d+]*),-?\d*,(?<value>-?[\d+\.\d+]*),-?\d*,.*,D$",
                     FolderName = "raw-data",
                     FileNameFormat = "[station].csv",
@@ -271,14 +280,85 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 new MeasurementDefinition
                 {
                     DataAdjustment = DataAdjustment.Unadjusted,
-                    DataType = DataType.Enso,
+                    DataType = DataType.ENSO,
                     DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
-                    FolderName = "MEI",
                     FileNameFormat = "meiv2.data.txt",
                     NullValue = "-999.00",
                 },
             },
             DataDownloadUrl = "https://psl.noaa.gov/enso/mei/data/meiv2.data",
+            HasLocations = false,
+        },
+        new DataSetDefinition
+        {
+            Id = Guid.Parse("42c9195e-edc0-4894-97dc-923f9d5e72f0"),
+            Name = "Carbon dioxide (CO₂) from Mauna Loa Observatory",
+            ShortName = "Carbon Dioxide (CO₂)",
+            Description = "The carbon dioxide data on Mauna Loa constitute the longest record of direct measurements of CO2 in the atmosphere. They were started by C. David Keeling of the Scripps Institution of Oceanography in March of 1958 at a facility of the National Oceanic and Atmospheric Administration [Keeling, 1976]. NOAA started its own CO2 measurements in May of 1974, and they have run in parallel with those made by Scripps since then [Thoning, 1989].",
+            MoreInformationUrl = "https://gml.noaa.gov/ccgg/trends/mlo.html",
+            FolderName = "CO2",
+            DataResolution = DataResolution.Monthly,
+            MeasurementDefinitions = new List<MeasurementDefinition>
+            {
+                new MeasurementDefinition
+                {
+                    DataAdjustment = DataAdjustment.Adjusted,
+                    DataType = DataType.CO2,
+                    UnitOfMeasure = UnitOfMeasure.PartsPerMillion,
+                    DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
+                    FileNameFormat = "co2_mm_mlo.txt",
+                    PreferredColour = 4
+                },
+            },
+            DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt",
+            HasLocations = false,
+        },
+        new DataSetDefinition
+        {
+            Id = Guid.Parse("2debe203-cbaa-4015-977c-2f40e2782547"),
+            Name = "Methane (CH₄) from a globally distributed network",
+            ShortName = "Methane (CH₄)",
+            Description = "The Global Monitoring Division of NOAA's Earth System Research Laboratory has measured methane since 1983 at a globally distributed network of air sampling sites (Dlugokencky et al., 1994). A global average is constructed by first smoothing the data for each site as a function of time, and then smoothed values for each site are plotted as a function of latitude for 48 equal time steps per year. Global means are calculated from the latitude plot at each time step (Masarie and Tans, 1995).",
+            MoreInformationUrl = "https://gml.noaa.gov/ccgg/trends_ch4/",
+            FolderName = "CH4",
+            DataResolution = DataResolution.Monthly,
+            MeasurementDefinitions = new List<MeasurementDefinition>
+            {
+                new MeasurementDefinition
+                {
+                    DataAdjustment = DataAdjustment.Adjusted,
+                    DataType = DataType.CH4,
+                    UnitOfMeasure = UnitOfMeasure.PartsPerBillion,
+                    DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
+                    FileNameFormat = "ch4_mm_gl.txt",
+                    PreferredColour = 4
+                },
+            },
+            DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/ch4/ch4_mm_gl.txt",
+            HasLocations = false,
+        },
+        new DataSetDefinition
+        {
+            Id = Guid.Parse("6e84e743-3c77-488f-8a1c-152306c3d6f0"),
+            Name = "Nitrous oxide (N₂O) from a globally distributed network",
+            ShortName = "N₂O",
+            Description = "The Global Monitoring Division of NOAA's Earth System Research Laboratory has measured nitrous oxide since 1997 at a globally distributed network of air sampling sites (Dlugokencky et al., 1994). A global average is constructed by first smoothing the data for each site as a function of time, and then smoothed values for each site are fitted as a function of latitude at 48 equally-spaced time steps per year. Global means are calculated from the latitude fits at each time step (Masarie and Tans, 1995).",
+            MoreInformationUrl = "https://gml.noaa.gov/ccgg/trends_n2o/",
+            FolderName = "N2O",
+            DataResolution = DataResolution.Monthly,
+            MeasurementDefinitions = new List<MeasurementDefinition>
+            {
+                new MeasurementDefinition
+                {
+                    DataAdjustment = DataAdjustment.Adjusted,
+                    DataType = DataType.N2O,
+                    UnitOfMeasure = UnitOfMeasure.PartsPerBillion,
+                    DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
+                    FileNameFormat = "n2o_mm_gl.txt",
+                    PreferredColour = 4
+                },
+            },
+            DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/n2o/n2o_mm_gl.txt",
             HasLocations = false,
         }
     };
