@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AcornSat.Core
 {
-    public static class TemperatureRecordExtensions
+    public static class Extensions
     {
         public static IEnumerable<IGrouping<short?, DataRecord>> GroupYearByDays(this IEnumerable<DataRecord> temperatureRecords, short numberOfDaysInGroup)
         {
@@ -125,6 +125,14 @@ namespace AcornSat.Core
             {
                 throw new Exception($"There are duplicate dates ({string.Join(", ", duplicateMonths)}. The file is corrupt.");
             }
+        }
+
+        public static string ToLowerFirstChar(this string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input;
+
+            return char.ToLower(input[0]) + input.Substring(1);
         }
     }
 }

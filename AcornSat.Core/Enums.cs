@@ -33,6 +33,51 @@ namespace AcornSat.Core
             Difference
         }
 
+        public enum UnitOfMeasure
+        {
+            DegreesCelsius,
+            DegreesCelsiusAnomaly,
+            Millimetres,
+            PartsPerMillion,
+            PartsPerBillion,
+        }
+
+        public static string UnitOfMeasureLabel(UnitOfMeasure unitOfMeasure)
+        {
+            switch (unitOfMeasure)
+            {
+                case UnitOfMeasure.DegreesCelsius:
+                    return "Degrees Celsius (°C)";
+                case UnitOfMeasure.DegreesCelsiusAnomaly:
+                    return "Degrees Celsius (°C) - Anomaly";
+                case UnitOfMeasure.Millimetres:
+                    return "Millimetres (mm)";
+                case UnitOfMeasure.PartsPerMillion:
+                    return "Parts per million (ppm)";
+                case UnitOfMeasure.PartsPerBillion:
+                    return "Parts per billion (ppb)";
+            }
+            throw new NotImplementedException();
+        }
+
+        public static string UnitOfMeasureLabelShort(UnitOfMeasure unitOfMeasure)
+        {
+            switch (unitOfMeasure)
+            {
+                case UnitOfMeasure.DegreesCelsius:
+                    return "°C";
+                case UnitOfMeasure.DegreesCelsiusAnomaly:
+                    return "°C Anomaly";
+                case UnitOfMeasure.Millimetres:
+                    return "mm";
+                case UnitOfMeasure.PartsPerMillion:
+                    return "ppm";
+                case UnitOfMeasure.PartsPerBillion:
+                    return "ppb";
+            }
+            throw new NotImplementedException();
+        }
+
         public enum EnsoIndex
         {
             Mei,
@@ -44,7 +89,7 @@ namespace AcornSat.Core
         public enum AggregationMethod
         {
             GroupByDayThenAverage,
-            GroupByDayThenAverage_Relative,
+            GroupByDayThenAverage_Anomaly,
             BinThenCount,
             Sum,
         }

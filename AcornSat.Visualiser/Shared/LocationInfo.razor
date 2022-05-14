@@ -113,7 +113,7 @@
         }
 
         {
-            var datasets = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage_Relative, Location.Id);
+            var datasets = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage_Anomaly, Location.Id);
             var dataset = datasets.Single();
             dataRecordsRelative = dataset.DataRecords.Where(x => x.Value != null).ToList();
         }

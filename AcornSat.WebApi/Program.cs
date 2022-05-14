@@ -330,7 +330,7 @@ async Task<List<DataSet>> BuildDataSet(QueryParameters queryParameters, List<Dat
             {
                 dataSets = await GetYearlyTemperaturesFromMonthly(definition, queryParameters.DataType, queryParameters.DataAdjustment, queryParameters.LocationId, queryParameters.Year);
             }
-            if (queryParameters.AggregationMethod.HasValue && queryParameters.AggregationMethod == AggregationMethod.GroupByDayThenAverage_Relative)
+            if (queryParameters.AggregationMethod.HasValue && queryParameters.AggregationMethod == AggregationMethod.GroupByDayThenAverage_Anomaly)
             {
                 foreach (var dataSet in dataSets)
                 {
@@ -520,7 +520,7 @@ async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataS
         switch (queryParameters.AggregationMethod)
         {
             case AggregationMethod.GroupByDayThenAverage:
-            case AggregationMethod.GroupByDayThenAverage_Relative:
+            case AggregationMethod.GroupByDayThenAverage_Anomaly:
                 returnDataRecords = GroupThenAverage(yearSets, (GroupThenAverage)queryParameters.StatsParameters);
                 break;
             case AggregationMethod.BinThenCount:

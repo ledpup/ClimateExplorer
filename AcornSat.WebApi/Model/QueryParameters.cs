@@ -17,7 +17,7 @@ public class QueryParameters
         switch (AggregationMethod)
         {
             case Core.Enums.AggregationMethod.GroupByDayThenAverage:
-            case Core.Enums.AggregationMethod.GroupByDayThenAverage_Relative:
+            case Core.Enums.AggregationMethod.GroupByDayThenAverage_Anomaly:
                 StatsParameters = new GroupThenAverage(dayGrouping.Value, dayGroupingThreshold.Value);
                 break;
             case Core.Enums.AggregationMethod.BinThenCount:
@@ -45,7 +45,7 @@ public class QueryParameters
             switch (AggregationMethod)
             {
                 case Core.Enums.AggregationMethod.GroupByDayThenAverage:
-                case Core.Enums.AggregationMethod.GroupByDayThenAverage_Relative:
+                case Core.Enums.AggregationMethod.GroupByDayThenAverage_Anomaly:
                     stringBuilder.Append($"_{((GroupThenAverage)StatsParameters).DayGrouping}");
                     stringBuilder.Append($"_{((GroupThenAverage)StatsParameters).DayGroupingThreshold}");
                     break;

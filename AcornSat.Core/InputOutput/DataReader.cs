@@ -59,7 +59,6 @@ namespace AcornSat.Core.InputOutput
 
             if (records.Any())
             {
-
                 var dataSet = new DataSet
                 {
                     Resolution = dataResolution,
@@ -95,6 +94,7 @@ namespace AcornSat.Core.InputOutput
 
             if (!File.Exists(siteFilePath))
             {
+                //throw new FileNotFoundException(siteFilePath);
                 return new List<DataRecord>();
             }
 

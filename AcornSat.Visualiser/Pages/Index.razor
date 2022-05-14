@@ -99,6 +99,8 @@
                 <Check TValue="bool" Checked="@Minimums" CheckedChanged="@OnMinimumsChanged">Minimum Temperatures</Check>
                 <Check TValue="bool" Checked="@Rainfall" CheckedChanged="@OnRainfallChanged">Rainfall</Check>
                 <Check TValue="bool" Checked="@CO2" CheckedChanged="@OnCO2Changed">CO₂</Check>
+                <Check TValue="bool" Checked="@CH4" CheckedChanged="@OnCH4Changed">CH₄</Check>
+                <Check TValue="bool" Checked="@N2O" CheckedChanged="@OnN2OChanged">N₂O</Check>
            </Alert>
            <Alert Color="Color.Secondary" Visible="true">
                 Data Adjustment
@@ -447,6 +449,20 @@
         await BuildDataSets();
     }
 
+    bool CH4;
+    async Task OnCH4Changed(bool value)
+    {
+        CH4 = value;
+        await BuildDataSets();
+    }
+
+    bool N2O;
+    async Task OnN2OChanged(bool value)
+    {
+        N2O = value;
+        await BuildDataSets();
+    }
+
     string SelectedStartYear { get; set; }
     string SelectedEndYear { get; set; }
 
@@ -498,8 +514,8 @@
     {
         Datasets = new List<DataSet>();
 
-        var relativeToAverage = SelectedChartType == ChartType.Bar;
-        var generalAggregationMethod = relativeToAverage ? AggregationMethod.GroupByDayThenAverage_Relative : AggregationMethod.GroupByDayThenAverage;
+        var anomaly = SelectedChartType == ChartType.Bar;
+        var generalAggregationMethod = anomaly ? AggregationMethod.GroupByDayThenAverage_Anomaly : AggregationMethod.GroupByDayThenAverage;
 
         var selectedDataTypes = CreateSelectedDataTypesList();
         var selectedDataAdjustments = CreateSelectedDataAdjustmentsList();
@@ -508,7 +524,7 @@
         {
             foreach (var dataAdjustment in selectedDataAdjustments)
             {
-                var dataDefintion = dataType == DataType.CO2 ? DataSetDefinitions.Single(x => x.MeasurementDefinitions.Any(y => y.DataType == dataType)) : SelectedDataSetDefinition;
+                var dataDefintion = dataType == DataType.CO2 || dataType ==  DataType.CH4 || dataType == DataType.N2O ? DataSetDefinitions.Single(x => x.MeasurementDefinitions.Any(y => y.DataType == dataType)) : SelectedDataSetDefinition;
                 if (!dataDefintion.MeasurementDefinitions.Any(x => x.DataType == dataType))
                 {
                     continue;
@@ -563,6 +579,14 @@
         if (CO2)
         {
             selectedDataTypes.Add(DataType.CO2);
+        }
+        if (CH4)
+        {
+            selectedDataTypes.Add(DataType.CH4);
+        }
+        if (N2O)
+        {
+            selectedDataTypes.Add(DataType.N2O);
         }
         return selectedDataTypes;
     }
@@ -718,7 +742,6 @@
 
         await chart.AddLabels(Labels);
 
-        var yLabel = SelectedChartType == ChartType.Line ? "Degrees Celsius (°C)" : "Degrees Celsius (°C) Relative to Average Temperature";
         var xLabel = GetXAxisLabel();
 
         object scales = new
@@ -732,7 +755,7 @@
                         Color = "blue",
                     },
                 },
-                Rainfall = new
+                Millimetres = new
                 {
                     Display = Rainfall,
                     Axis = "y",
@@ -740,26 +763,12 @@
                     Grid = new { DrawOnChartArea = false },
                     Title = new
                     {
-                        Text = "Rainfall (mm)",
+                        Text = UnitOfMeasureLabel(UnitOfMeasure.Millimetres),
                         Display = true,
                         Color = "blue",
                     },
                 },
-                Co2 = new
-                {
-                    Display = CO2,
-                    Axis = "y",
-                    Position = Maximums || Minimums ? "right" : "left",
-                    //SuggestedMin = 200,
-                    Grid = new { DrawOnChartArea = false },
-                    Title = new
-                    {
-                        Text = "Parts per million (ppm)",
-                        Display = true,
-                        Color = "blue",
-                    },
-                },
-                Temperature = new  
+                DegreesCelsius = new  
                 { 
                     Display = Maximums || Minimums,
                     Axis = "y",
@@ -767,11 +776,37 @@
                     Grid = new { DrawOnChartArea = false },
                     Title = new
                     {
-                        Text = yLabel,
+                        Text = SelectedChartType == ChartType.Line ? UnitOfMeasureLabel(UnitOfMeasure.DegreesCelsius) : UnitOfMeasureLabel(UnitOfMeasure.DegreesCelsiusAnomaly),
                         Display = true,
                         Color = "blue",
                     },
-                }
+                },
+                PartsPerMillion = new
+                {
+                    Display = CO2,
+                    Axis = "y",
+                    Position = Maximums || Minimums ? "right" : "left",
+                    Grid = new { DrawOnChartArea = false },
+                    Title = new
+                    {
+                        Text = UnitOfMeasureLabel(UnitOfMeasure.PartsPerMillion),
+                        Display = true,
+                        Color = "blue",
+                    },
+                },
+                PartsPerBillion = new
+                {
+                    Display = CH4 || N2O,
+                    Axis = "y",
+                    Position = Maximums || Minimums ? "right" : "left",
+                    Grid = new { DrawOnChartArea = false },
+                    Title = new
+                    {
+                        Text = UnitOfMeasureLabel(UnitOfMeasure.PartsPerBillion),
+                        Display = true,
+                        Color = "blue",
+                    },
+                },
             };
        
 
@@ -881,20 +916,20 @@
             if (dataSet.Resolution != DataResolution.Yearly)
             {
                 var labelPrefix = dataSet.Year.ToString();
-                await AddDataSetToChart(dataSet, dataSet.DataAdjustment, $"{labelPrefix} {dataSet.DataType} {dataSet.DataAdjustment}", dataSet.MeasurementDefinition.PreferredColour);
+                await AddDataSetToChart(dataSet, dataSet.DataAdjustment, $"{labelPrefix} {dataSet.DataType} {dataSet.DataAdjustment} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}", dataSet.MeasurementDefinition.PreferredColour);
                 dataSetIndex++;
             }
             else if (dataSet.DataType == DataType.Rainfall)
             {
-                await AddDataSetToChart(dataSet, dataSet.DataAdjustment, $"{dataSet.DataType}", dataSet.MeasurementDefinition.PreferredColour, redPositive: false);
+                await AddDataSetToChart(dataSet, dataSet.DataAdjustment, $"{dataSet.DataType} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}", dataSet.MeasurementDefinition.PreferredColour, redPositive: false);
             }
             else if (dataSet.DataAdjustment == DataAdjustment.Difference)
             {
-                await AddDataSetToChart(dataSet, DataAdjustment.Difference, $"{dataSet.DataType} Difference", dataSet.MeasurementDefinition.PreferredColour, absoluteValues: true);
+                await AddDataSetToChart(dataSet, DataAdjustment.Difference, $"{dataSet.DataType} Difference {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}", dataSet.MeasurementDefinition.PreferredColour, absoluteValues: true);
             }
             else
             {
-                await AddDataSetToChart(dataSet, dataSet.DataAdjustment, $"{dataSet.DataType} {dataSet.DataAdjustment}", dataSet.MeasurementDefinition.PreferredColour);
+                await AddDataSetToChart(dataSet, dataSet.DataAdjustment, $"{dataSet.DataType} {dataSet.DataAdjustment} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}", dataSet.MeasurementDefinition.PreferredColour);
                 dataSetIndex++;
             }
         }
@@ -935,11 +970,11 @@
 
         if (SelectedMovingAverageInterval == 0 || !SoloSma)
         {
-            await chart.AddDataSet(GetChartDataset(label, values, dataSet.DataType, chartType, colour, absoluteValues, redPositive));
+            await chart.AddDataSet(GetChartDataset(label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour, absoluteValues, redPositive));
         }
         if (SelectedMovingAverageInterval != 0 && chartType == ChartType.Line)
         {
-            await AddMovingAverage(label, values, dataSet.DataType);
+            await AddMovingAverage(label, values, dataSet.MeasurementDefinition.UnitOfMeasure);
         }
     }
 
@@ -954,13 +989,13 @@
                 };
     }
 
-    async Task AddMovingAverage(string label, List<float?> values, DataType dataType)
+    async Task AddMovingAverage(string label, List<float?> values, UnitOfMeasure unitOfMeasure)
     {
         if (SelectedChartType == ChartType.Line && SelectedMovingAverageInterval != 0)
         {
             var simpleMovingAverages = SimpleMovingAverage.Calculate(SelectedMovingAverageInterval, values);
             label = $"{label} Moving Average @ {SelectedMovingAverageInterval} year interval";
-            await chart.AddDataSet(GetLineChartDataset(label, simpleMovingAverages, ChartColor.FromHtmlColorCode(colours.GetNextColour()), dataType));
+            await chart.AddDataSet(GetLineChartDataset(label, simpleMovingAverages, ChartColor.FromHtmlColorCode(colours.GetNextColour()), unitOfMeasure));
         }
     }
 
@@ -1017,7 +1052,7 @@
         return bufferedDataSets;
     }
 
-    ChartDataset<float?> GetChartDataset(string label, List<float?> values, DataType dataType, ChartType chartType, ChartColor? chartColour = null, bool? absoluteValues = false, bool redPositive = true)
+    ChartDataset<float?> GetChartDataset(string label, List<float?> values, UnitOfMeasure unitOfMeasure, ChartType chartType, ChartColor? chartColour = null, bool? absoluteValues = false, bool redPositive = true)
     {
         switch (chartType)
         {
@@ -1026,15 +1061,15 @@
                 {
                     throw new NullReferenceException(nameof(chartColour));
                 }
-                return GetLineChartDataset(label, values, chartColour.Value, dataType);
+                return GetLineChartDataset(label, values, chartColour.Value, unitOfMeasure);
             case ChartType.Bar:
-                return GetBarChartDataset(label, values, absoluteValues, redPositive);
+                return GetBarChartDataset(label, values, unitOfMeasure, absoluteValues, redPositive);
         }
 
         throw new NotImplementedException();
     }
 
-    BarChartDataset<float?> GetBarChartDataset(string label, List<float?> values, bool? absoluteValues, bool redPositive = true)
+    BarChartDataset<float?> GetBarChartDataset(string label, List<float?> values, UnitOfMeasure unitOfMeasure, bool? absoluteValues, bool redPositive = true)
     {
         var colour = Enso.GetBarChartColourSet(values, redPositive);
 
@@ -1044,17 +1079,18 @@
                         Data = values.Select(x => absoluteValues.GetValueOrDefault() && x.HasValue ? MathF.Abs(x.Value) : x).ToList(),
                         BorderColor = colour,
                         BackgroundColor = colour,
+                        YAxisID = unitOfMeasure.ToString().ToLowerFirstChar(),
                     };
     }
 
-    LineChartDataset<float?> GetLineChartDataset(string label, List<float?> values, ChartColor chartColor, DataType dataType)
+    LineChartDataset<float?> GetLineChartDataset(string label, List<float?> values, ChartColor chartColor, UnitOfMeasure unitOfMeasure)
     {
         var count = values.Count;
         var colour = new List<string>();
         for (var i = 0; i < count; i++)
             colour.Add(chartColor);
 
-        return new LineChartDataset<float?>
+        var lineChartDataset = new LineChartDataset<float?>
                     {
                         Label = label,
                         Data = values,
@@ -1063,8 +1099,10 @@
                         PointRadius = 5,
                         BorderDash = new List<int> { },
                         Tension = 0.1f,
-                        YAxisID = dataType == DataType.Rainfall ? "rainfall" : dataType == DataType.CO2 ? "co2" : "temperature"
+                        YAxisID = unitOfMeasure.ToString().ToLowerFirstChar(),
                     };
+
+        return lineChartDataset;
     }
 
     async Task SelectedLocationChanged(Guid locationId)
