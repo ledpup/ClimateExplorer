@@ -1,7 +1,8 @@
 ﻿@using Blazorise
+@using DPBlazorMapLibrary;
 
 <div class="mapContainer" id="mapContainer">
-    <Map @ref="map" MapOptions="@GetMapOptions()"></Map>
+    <DPBlazorMapLibrary.Map @ref="map" MapOptions="@mapOptions" AfterRender="@AfterMapRender"></DPBlazorMapLibrary.Map>
 
     <div class="@(IsMapExpanded ? "mapToggleExpanded" : "mapToggleCollapsed")">
         <Button Color="Color.Primary" Clicked="@ToggleMapExpansion" Class="mapToggleButton">
@@ -14,62 +15,114 @@
     [Parameter] public IEnumerable<Location> Locations { get; set; }
     [Parameter] public EventCallback<Guid> OnLocationChange { get; set; }
 
-    [Inject] IMarkerFactory MarkerFactory { get; init; }
+    [Inject] public LayerFactory LayerFactory { get; init; }
+    //[Inject] IMarkerFactory MarkerFactory { get; init; }
     [Inject] IIconFactory IconFactory { get; init; }
     [Inject] IJSRuntime JS { get; init; }
 
     Map map;
-    List<Marker> mapMarkers;
+    private MapOptions mapOptions;
+    //List<Marker> mapMarkers;
     bool IsMapExpanded { get; set; } = false;
-    const string divId = "mapId";
+    //const string divId = "mapId";
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        mapOptions = new MapOptions()
+            {
+                Center = new LatLng(-25.6, 134.3),
+                Zoom = 8,
+            };
+    }
+
+    private async Task AfterMapRender()
+    {
+        // Create Tile Layer
+        var tileLayerOptions = new TileLayerOptions()
+            {
+                Attribution = "&copy; <a href=\"https://stadiamaps.com/\">Stadia Maps</a>, &copy; <a href=\"https://openmaptiles.org/\">OpenMapTiles</a> &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors"
+            };
+
+        var mainTileLayer = await LayerFactory.CreateTileLayerAndAddToMap("https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png", map, tileLayerOptions);
+
+        //await map.PanTo(new LatLng(-25.6, 134.3));
+    }
 
     protected override async Task OnParametersSetAsync()
     {
-        if (Locations != null && mapMarkers == null)
+        if (Locations != null)
         {
             await CreateMapMarkers();
         }
         await base.OnParametersSetAsync();
     }
 
-    MapOptions GetMapOptions()
-    {
-        var mapOptions =
-            new MapOptions()
-            {
-                DivId = divId,
-                Center = new LatLng(-25.6, 134.3),
-                Zoom = 8,
-                UrlTileLayer = "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png",
-                SubOptions = 
-                    new MapSubOptions()
-                    {
-                        Attribution = "&copy; <a href=\"https://stadiamaps.com/\">Stadia Maps</a>, &copy; <a href=\"https://openmaptiles.org/\">OpenMapTiles</a> &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors",
-                        TileSize = 512,
-                        ZoomOffset = -1,
-                        MaxZoom = 20,
-                    }
-            };
+    //MapOptions GetMapOptions()
+    //{
+    //    var mapOptions =
+    //        new MapOptions()
+    //        {
+    //            //DivId = divId,
+    //            Center = new LatLng(-25.6, 134.3),
+    //            Zoom = 8,
+    //            UrlTileLayer = "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png",
+    //            SubOptions = 
+    //                new MapSubOptions()
+    //                {
+    //                    Attribution = "&copy; <a href=\"https://stadiamaps.com/\">Stadia Maps</a>, &copy; <a href=\"https://openmaptiles.org/\">OpenMapTiles</a> &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors",
+    //                    TileSize = 512,
+    //                    ZoomOffset = -1,
+    //                    MaxZoom = 20,
+    //                }
+    //        };
 
-        return mapOptions;
-    }
+    //    return mapOptions;
+    //}
 
     public async Task ScrollToPoint(LatLng point)
     {
-        await map.SetView(point);
+        await map.PanTo(point);
     }
 
     public async Task CreateMapMarkers()
     {
-        mapMarkers = new List<Marker>();
+        // mapMarkers = new List<Marker>();
+
+        IconOptions iconOptions = new()
+        {
+            IconUrl = "http://leafletjs.com/examples/custom-icons/leaf-green.png",
+            IconSize = new Point(38, 95),
+            IconAnchor = new Point(22, 94),
+            ShadowUrl = "http://leafletjs.com/examples/custom-icons/leaf-shadow.png",
+            ShadowSize = new Point(50, 64),
+            ShadowAnchor = new Point(4, 61),
+            PopupAnchor = new Point(-3, -76),
+        };
+
+        MarkerOptions markerOptions = new()
+        {
+            Opacity = 0.5,
+            Draggable = true,
+            IconRef = await this.IconFactory.Create(iconOptions),
+        };
+
 
         foreach (var location in Locations)
         {
-            var marker = await MarkerFactory.Create(new LatLng(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation));
+
+
+
+            var marker = await this.LayerFactory.CreateMarkerAndAddToMap(new LatLng(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation), map, markerOptions);
+
             await marker.BindTooltip(location.Name);
             await marker.OnClick(async (MouseEvent mouseEvent) => await HandleMapMouseEvent(mouseEvent));
-            await marker.AddTo(map);
-            mapMarkers.Add(marker);
+
+            //var marker = await MarkerFactory.Create(new LatLng(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation));
+            //await marker.BindTooltip(location.Name);
+            //await marker.OnClick(async (MouseEvent mouseEvent) => await HandleMapMouseEvent(mouseEvent));
+            //await marker.AddTo(map);
+            //mapMarkers.Add(marker);
         }
     }
 
