@@ -17,13 +17,13 @@ public class DataService : IDataService
     {
         var url = $"dataSet/{dataType}/{resolution}/{dataAdjustment}";
 
-        if (locationId != null)
-        {
-            url = QueryHelpers.AddQueryString(url, "locationId", locationId.Value.ToString());
-        }
         if (aggregationMethod != null)
         {
             url = QueryHelpers.AddQueryString(url, "aggregationMethod", aggregationMethod.Value.ToString());
+        }
+        if (locationId != null)
+        {
+            url = QueryHelpers.AddQueryString(url, "locationId", locationId.Value.ToString());
         }
         if (year != null)
         {
@@ -61,13 +61,16 @@ public class DataService : IDataService
         return await _httpClient.GetFromJsonAsync<DataSetDefinitionViewModel[]>(url);
     }
 
-    public async Task<IEnumerable<Location>> GetLocations(string dataSetName)
+    public async Task<IEnumerable<Location>> GetLocations(string dataSetName = null, bool includeNearbyLocations = false, bool includeWarmingMetrics = false)
     {
         var url = $"/location";
         if (dataSetName != null)
         {
-            url += $"?dataSetName={dataSetName}";
+            url = QueryHelpers.AddQueryString(url, "dataSetName", dataSetName);
         }
+        url = QueryHelpers.AddQueryString(url, "includeNearbyLocations", includeNearbyLocations.ToString());
+        url = QueryHelpers.AddQueryString(url, "includeWarmingMetrics", includeWarmingMetrics.ToString());
+        
         return await _httpClient.GetFromJsonAsync<Location[]>(url);
     }
 

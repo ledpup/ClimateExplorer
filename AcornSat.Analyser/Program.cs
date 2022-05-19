@@ -8,6 +8,8 @@ using static AcornSat.Core.Enums;
 using System.Net;
 using System.IO.Compression;
 
+GenerateMapMarkers();
+
 var dataSetDefinitions = BuildDataSetDefinitions();
 BuildNiwaLocations(Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"));
 var locations = BuildAcornSatLocationsFromReferenceData(Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"));
@@ -372,7 +374,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
 void BuildNiwaLocations(Guid dataSetId)
 {
     var locations = new List<Location>();
-    
+
     var regEx = new Regex(@"^(?<name>[\w|\s|,]*),(?<station>\d+),\w\d+\w?,(?<lat>-?\d+\.\d+),(?<lng>-?\d+\.\d+),(?<alt>-?\d+).*$");
     var locationRowData = File.ReadAllLines(@"ReferenceData\NIWA\Locations.csv");
 
@@ -422,11 +424,11 @@ List<Location> BuildAcornSatLocationsFromReferenceData(Guid dataSetId)
     foreach (var row in locationRowData)
     {
         var splitRow = row.Split(',');
-        var location = new Location 
-        { 
-            Id = Guid.NewGuid(), 
+        var location = new Location
+        {
+            Id = Guid.NewGuid(),
             DataSetId = dataSetId,
-            Name = splitRow[0] 
+            Name = splitRow[0]
         };
         location.Sites.Add(splitRow[1]);
         if (splitRow.Length > 2 && !string.IsNullOrWhiteSpace(splitRow[2]))
@@ -499,6 +501,44 @@ List<Location> BuildAcornSatLocationsFromReferenceData(Guid dataSetId)
     File.WriteAllText("locations.json", JsonSerializer.Serialize(locations, options));
 
     return locations;
+}
+
+static void GenerateMapMarkers()
+{
+    var colours = new List<string>
+    {
+        "#053061",
+        "#2166AC",
+        "#4393C3",
+        "#92C5DE",
+        "#D1E5F0",
+        "#F7F7F7",
+        "#FDDBC7",
+        "#F4A582",
+        "#D6604D",
+        "#B2182B",
+        "#67001F",
+        "#007FFF",
+    };
+
+    for (var i = -1; i < 11; i++)
+    {
+        var svg = File.ReadAllText("MapMarker.svg");
+        svg = svg.Replace("{colour}", colours[i + 1]);
+        var text = i == -1
+                        ? "-"
+                        : i == 10
+                            ? "?"
+                            : i.ToString();
+        svg = svg.Replace("{text}", text);
+        svg = svg.Replace("{text-colour}", text == "3" || text == "4" || text == "5" || text == "6" ? "#000000" : "#FFFFFF");
+        var fileName = i == -1
+                            ? "negative"
+                            : i == 10
+                                    ? "null"
+                                    : i.ToString();
+        File.WriteAllText($"{fileName}.svg", svg);
+    }
 }
 
 public enum ObsCode

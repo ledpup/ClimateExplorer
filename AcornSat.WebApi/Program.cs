@@ -93,14 +93,45 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions(bool includeL
     return dtos;
 }
 
-async Task<List<Location>> GetLocations(string dataSetFolder = null)
+async Task<List<Location>> GetLocations(string dataSetFolder = null, bool includeNearbyLocations = false, bool includeWarmingMetrics = false)
 {
     if (string.IsNullOrWhiteSpace(dataSetFolder))
     {
         var definitions = await GetDataSetDefinitions(true);
         var locations = definitions.Where(x => x.Locations.Any()).SelectMany(x => x.Locations).OrderBy(x => x.Name).ToList();
-        Location.SetNearbyLocations(locations);
-        return locations;
+        if (includeNearbyLocations)
+        {
+            Location.SetNearbyLocations(locations);
+        }
+
+        if (includeWarmingMetrics)
+        {
+            foreach (var location in locations)
+            {
+                var definition = definitions.Single(x => x.Id == location.DataSetId);
+
+                var dataAdjustment = Enums.DataAdjustment.Unadjusted;
+                if (definition.MeasurementDefinitions.Any(x => x.DataType == DataType.TempMax && x.DataAdjustment == Enums.DataAdjustment.Adjusted))
+                {
+                    dataAdjustment = Enums.DataAdjustment.Adjusted;
+                }
+
+                var datasets = await GetDataSets(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage, location.Id, null, 14, .7f, null);
+                var dataset = datasets.Single();
+                location.WarmingIndex = dataset.WarmingIndex;
+            }
+
+            var maxWarmingIndex = locations.Max(x => x.WarmingIndex).Value;
+            locations
+                .ToList()
+                .ForEach(x => x.HeatingScore = x.WarmingIndex == null 
+                                                    ? null 
+                                                    : x.WarmingIndex > 0 
+                                                            ? Convert.ToInt16(MathF.Round(x.WarmingIndex.Value / maxWarmingIndex * 9, 0))
+                                                            : Convert.ToInt16(MathF.Round(x.WarmingIndex.Value, 0)));
+        }
+
+        return locations.OrderByDescending(x => x.WarmingIndex).ToList();
     }
     return await Location.GetLocations(dataSetFolder);
 }
@@ -233,15 +264,15 @@ async Task<List<DataSet>> LoadCachedDataSets(QueryParameters queryParameters)
     return null;
 }
 
-async Task SaveDataSets(QueryParameters queryParameters, List<DataSet> dataSets)
+async Task SaveToCache<T>(QueryParameters queryParameters, T dataToSave)
 {
     var fileName = queryParameters.ToBase64String() + ".json";
     var filePath = @"cache\" + fileName;
-    var json = JsonSerializer.Serialize(dataSets);
+    var json = JsonSerializer.Serialize(dataToSave);
     await File.WriteAllTextAsync(filePath, json);
 }
 
-async Task<List<DataSet>> GetDataSets(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, Guid? locationId, short? year, AggregationMethod? aggregationMethod, short? dayGrouping, float? dayGroupingThreshold, short? numberOfBins)
+async Task<List<DataSet>> GetDataSets(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId, short? year, short? dayGrouping, float? dayGroupingThreshold, short? numberOfBins)
 {
     return await GetDataSetsInternal(
         new QueryParameters(
@@ -298,7 +329,7 @@ async Task<List<DataSet>> GetDataSetsInternal(QueryParameters queryParameters)
         dataSets = new List<DataSet> { dataSet };
 
         queryParameters.DataAdjustment = DataAdjustment.Difference;
-        await SaveDataSets(queryParameters, dataSets);
+        await SaveToCache(queryParameters, dataSets);
     }
     else
     {
@@ -362,7 +393,7 @@ async Task<List<DataSet>> BuildDataSet(QueryParameters queryParameters, List<Dat
 
     if (saveToCache)
     {
-        await SaveDataSets(queryParameters, dataSets);
+        await SaveToCache(queryParameters, dataSets);
     }
 
     return dataSets;

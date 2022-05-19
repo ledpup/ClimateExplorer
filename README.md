@@ -11,7 +11,7 @@ Tool to calculate average temperatures from [BOM](http://www.bom.gov.au/) [ACORN
 - C#, .NET 6
 - Blazor, using
   - https://github.com/Megabit/Blazorise
-  - https://github.com/fis-sst/BlazorMaps
+  - https://github.com/DP-projects/DPBlazorMap
   - https://github.com/darnton/BlazorDeviceInterop
   - https://github.com/AeonLucid/GeoCoordinate.NetStandard1
 - There are five projects:
@@ -40,6 +40,8 @@ In rough order of priority
 
 ### Done
 
+- 2022-05-19: Display the heating score as the map markers for each location on the map
+- 2022-05-19: Changed to use DPBlazorMap as the leaflet Blazor component
 - 2022-05-15: GHGs (CO2, CH4, etc) data and graphs
 - 2022-04-25: Naviagation history in the browser (can go backward/forward) + supports bookmarking
 - 2022-04-25: Climate stripes. https://www.reading.ac.uk/en/planet/climate-resources/climate-stripes

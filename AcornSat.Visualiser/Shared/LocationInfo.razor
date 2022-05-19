@@ -57,6 +57,7 @@
         {
             <OverviewField Label="Warming index" Title="@dataSet.WarmingIndexDescription"><Value>@dataSet.WarmingIndexAsString</Value></OverviewField>
         }
+        <OverviewField Label="Heating Score" ><Value>@Location.HeatingScore</Value></OverviewField>
         <WarmingStripe DataRecords="@dataRecordsRelative" />
         <WarmestYears DataRecords="@dataRecordsRelative" />
     </Content>

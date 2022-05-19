@@ -28,8 +28,4 @@
     <ProjectReference Include="..\AcornSat.Core\AcornSat.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\images\" />
-  </ItemGroup>
-
 </Project>

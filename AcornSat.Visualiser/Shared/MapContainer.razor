@@ -41,12 +41,9 @@
         // Create Tile Layer
         var tileLayerOptions = new TileLayerOptions()
             {
-                Attribution = "&copy; <a href=\"https://stadiamaps.com/\">Stadia Maps</a>, &copy; <a href=\"https://openmaptiles.org/\">OpenMapTiles</a> &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors"
+                Attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"
             };
-
-        var mainTileLayer = await LayerFactory.CreateTileLayerAndAddToMap("https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png", map, tileLayerOptions);
-
-        //await map.PanTo(new LatLng(-25.6, 134.3));
+        var mainTileLayer = await LayerFactory.CreateTileLayerAndAddToMap("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", map, tileLayerOptions);
     }
 
     protected override async Task OnParametersSetAsync()
@@ -58,27 +55,6 @@
         await base.OnParametersSetAsync();
     }
 
-    //MapOptions GetMapOptions()
-    //{
-    //    var mapOptions =
-    //        new MapOptions()
-    //        {
-    //            //DivId = divId,
-    //            Center = new LatLng(-25.6, 134.3),
-    //            Zoom = 8,
-    //            UrlTileLayer = "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png",
-    //            SubOptions = 
-    //                new MapSubOptions()
-    //                {
-    //                    Attribution = "&copy; <a href=\"https://stadiamaps.com/\">Stadia Maps</a>, &copy; <a href=\"https://openmaptiles.org/\">OpenMapTiles</a> &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors",
-    //                    TileSize = 512,
-    //                    ZoomOffset = -1,
-    //                    MaxZoom = 20,
-    //                }
-    //        };
-
-    //    return mapOptions;
-    //}
 
     public async Task ScrollToPoint(LatLng point)
     {
@@ -88,41 +64,48 @@
     public async Task CreateMapMarkers()
     {
         // mapMarkers = new List<Marker>();
-
-        IconOptions iconOptions = new()
+        var markerOptions = new List<MarkerOptions>();
+        for (var i = -1; i < 11; i++)
         {
-            IconUrl = "http://leafletjs.com/examples/custom-icons/leaf-green.png",
-            IconSize = new Point(38, 95),
-            IconAnchor = new Point(22, 94),
-            ShadowUrl = "http://leafletjs.com/examples/custom-icons/leaf-shadow.png",
-            ShadowSize = new Point(50, 64),
-            ShadowAnchor = new Point(4, 61),
-            PopupAnchor = new Point(-3, -76),
-        };
+            var label = i == -1 
+                                ? "negative"
+                                : i == 10 
+                                    ? "null" 
+                                    : i.ToString();
+            var iconOptions = new IconOptions
+                {
+                    IconUrl = $"/images/map-markers/{ label }.png",
+                    IconSize = new Point(48, 48),
+                    IconAnchor = new Point(23, 47),
+                };
 
-        MarkerOptions markerOptions = new()
-        {
-            Opacity = 0.5,
-            Draggable = true,
-            IconRef = await this.IconFactory.Create(iconOptions),
-        };
+            markerOptions.Add(
+                new MarkerOptions
+                {
+                    Alt = label,
+                    Opacity = 0.75,
+                    Draggable = false,
+                    IconRef = await this.IconFactory.Create(iconOptions),
+                });
+        }
+
+
 
 
         foreach (var location in Locations)
         {
+            var label = location.HeatingScore == null 
+                    ? "null"
+                    : location.HeatingScore.Value < 0
+                        ? "negative" 
+                        : location.HeatingScore.Value.ToString();
 
 
-
-            var marker = await this.LayerFactory.CreateMarkerAndAddToMap(new LatLng(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation), map, markerOptions);
+            var markerOption = markerOptions.Single(x => x.Alt == label);
+            var marker = await this.LayerFactory.CreateMarkerAndAddToMap(new LatLng(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation), map, markerOption);
 
             await marker.BindTooltip(location.Name);
             await marker.OnClick(async (MouseEvent mouseEvent) => await HandleMapMouseEvent(mouseEvent));
-
-            //var marker = await MarkerFactory.Create(new LatLng(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation));
-            //await marker.BindTooltip(location.Name);
-            //await marker.OnClick(async (MouseEvent mouseEvent) => await HandleMapMouseEvent(mouseEvent));
-            //await marker.AddTo(map);
-            //mapMarkers.Add(marker);
         }
     }
 
