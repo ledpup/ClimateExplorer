@@ -94,7 +94,7 @@ public class DataSet
                 {
                     averageOfEarliestTemperatures = dataRecords.OrderBy(x => x.Year).Take(dataRecords.Count / 2).Average(x => x.Value).Value;
                     averageOfLastTwentyYearsTemperatures = dataRecords.OrderByDescending(x => x.Year).Take(20).Average(x => x.Value).Value;
-                    warmingIndex = MathF.Round(averageOfLastTwentyYearsTemperatures.Value - averageOfEarliestTemperatures.Value, 1);
+                    warmingIndex = averageOfLastTwentyYearsTemperatures.Value - averageOfEarliestTemperatures.Value;
                 }
             }
             return warmingIndex;
@@ -109,7 +109,7 @@ public class DataSet
             var warmingIndexAsString = "NA";
             if (warmingIndex != null)
             {
-                warmingIndexAsString = $"{ (warmingIndex >= 0 ? "+" : "") }{warmingIndex}°C";
+                warmingIndexAsString = $"{ (warmingIndex >= 0 ? "+" : "") }{ MathF.Round(warmingIndex.Value, 1)}°C";
             }
             return warmingIndexAsString;
         }
