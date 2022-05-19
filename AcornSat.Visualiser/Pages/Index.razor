@@ -14,6 +14,7 @@
 @using static AcornSat.Core.Enums
 @using Microsoft.AspNetCore.WebUtilities
 @using System.Text
+@using DPBlazorMapLibrary
 
 <PageTitle>@GetPageTitle()</PageTitle>
 
@@ -486,7 +487,7 @@
             throw new NullReferenceException(nameof(DataService));
         }
         DataSetDefinitions = (await DataService.GetDataSetDefinitions()).ToList();
-        Locations = (await DataService.GetLocations()).ToList();
+        Locations = (await DataService.GetLocations(includeNearbyLocations: true, includeWarmingMetrics: true)).ToList();
 
         Datasets = new List<DataSet>();
         SelectedYears = new List<short>();

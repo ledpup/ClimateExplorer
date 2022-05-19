@@ -86,14 +86,15 @@ public class DataSet
     {
         get
         {
+            var dataRecords = DataRecords.Where(x => x.Value.HasValue).ToList();
             float? warmingIndex = null;
             if (DataType == DataType.TempMax || DataType == DataType.TempMin)
             {
-                if (DataRecords.Count > 40)
+                if (dataRecords.Count > 40)
                 {
-                    averageOfEarliestTemperatures = DataRecords.OrderBy(x => x.Year).Take(DataRecords.Count / 2).Average(x => x.Value).Value;
-                    averageOfLastTwentyYearsTemperatures = DataRecords.OrderByDescending(x => x.Year).Take(20).Average(x => x.Value).Value;
-                    warmingIndex = MathF.Round(averageOfLastTwentyYearsTemperatures.Value - averageOfEarliestTemperatures.Value, 1);
+                    averageOfEarliestTemperatures = dataRecords.OrderBy(x => x.Year).Take(dataRecords.Count / 2).Average(x => x.Value).Value;
+                    averageOfLastTwentyYearsTemperatures = dataRecords.OrderByDescending(x => x.Year).Take(20).Average(x => x.Value).Value;
+                    warmingIndex = averageOfLastTwentyYearsTemperatures.Value - averageOfEarliestTemperatures.Value;
                 }
             }
             return warmingIndex;
@@ -108,7 +109,7 @@ public class DataSet
             var warmingIndexAsString = "NA";
             if (warmingIndex != null)
             {
-                warmingIndexAsString = $"{ (warmingIndex >= 0 ? "+" : "") }{warmingIndex}°C";
+                warmingIndexAsString = $"{ (warmingIndex >= 0 ? "+" : "") }{ MathF.Round(warmingIndex.Value, 1)}°C";
             }
             return warmingIndexAsString;
         }
@@ -128,8 +129,9 @@ public class DataSet
                 return $"Warming index: the temperature difference between the average of the last 20 years of maximum temperatures compared and the average of the first half of the dataset.";
             }
 
-            var twentyYears = DataRecords.OrderByDescending(x => x.Year).Take(20);
-            var firstHalf = DataRecords.OrderBy(x => x.Year).Take(DataRecords.Count / 2);
+            var dataRecords = DataRecords.Where(x => x.Value.HasValue).ToList();
+            var twentyYears = dataRecords.OrderByDescending(x => x.Year).Take(20);
+            var firstHalf = dataRecords.OrderBy(x => x.Year).Take(dataRecords.Count / 2);
 
             return $@"Warming index: the temperature difference between the average of the last 20 years of maximum temperatures compared and the average of the first half ({firstHalf.Count()} years) of the dataset.
 {Location.Name}, between the years {twentyYears.Last().Year}-{twentyYears.First().Year}, had an average max temp of {MathF.Round(averageOfLastTwentyYearsTemperatures.Value, 1)}°C.

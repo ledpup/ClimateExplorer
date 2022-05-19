@@ -47,7 +47,7 @@
     .mapToggleCollapsed {
         position: absolute;
         height: 50px;
-        left: 0px;
+        left: unset;
         right: 12px;
         top: 12px;
         text-align: right;
@@ -86,7 +86,7 @@
     .mapToggleCollapsed {
         position: absolute;
         height: 50px;
-        left: 0px;
+        left: unset;
         right: 12px;
         top: 12px;
         text-align: right;

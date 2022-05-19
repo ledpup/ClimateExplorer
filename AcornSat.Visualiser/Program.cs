@@ -3,7 +3,7 @@ using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
 using Darnton.Blazor.DeviceInterop.Geolocation;
-using FisSst.BlazorMaps.DependencyInjection;
+using DPBlazorMapLibrary;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -17,7 +17,7 @@ builder.Services
     })
     .AddBootstrap5Providers()
     .AddFontAwesomeIcons()
-    .AddBlazorLeafletMaps()
+    .AddMapService()
     .AddScoped<IGeolocationService, GeolocationService>()
     .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
     .AddHttpClient<IDataService, DataService>(client =>
