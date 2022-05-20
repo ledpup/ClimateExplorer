@@ -505,33 +505,53 @@ List<Location> BuildAcornSatLocationsFromReferenceData(Guid dataSetId)
 
 static void GenerateMapMarkers()
 {
-    var colours = new List<string>
+    var fillColours = new List<string>
     {
         "#053061",
         "#2166AC",
-        "#4393C3",
-        "#92C5DE",
-        "#D1E5F0",
-        "#F7F7F7",
-        "#FDDBC7",
-        "#F4A582",
-        "#D6604D",
-        "#B2182B",
-        "#67001F",
+
+        "#ffffff",
+        "#ffffd0",
+        "#e4bd7d",
+        "#e4bd7d",
+        "#ce7642",
+        "#ce7642",
+        "#b2182b",
+        "#b2182b",
+        "#67001f",
+
         "#007FFF",
+    };
+
+    var textColours = new List<string>
+    {
+        "#ffffff",
+        "#ffffff",
+
+        "#000000",
+        "#333333",
+        "#666666",
+        "#666666",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+
+        "#ffffff",
     };
 
     for (var i = -1; i < 11; i++)
     {
         var svg = File.ReadAllText("MapMarker.svg");
-        svg = svg.Replace("{colour}", colours[i + 1]);
+        svg = svg.Replace("{colour}", fillColours[i + 1]);
         var text = i == -1
                         ? "-"
                         : i == 10
                             ? "?"
                             : i.ToString();
         svg = svg.Replace("{text}", text);
-        svg = svg.Replace("{text-colour}", text == "3" || text == "4" || text == "5" || text == "6" ? "#000000" : "#FFFFFF");
+        svg = svg.Replace("{text-colour}", textColours[i + 1]);
         var fileName = i == -1
                             ? "negative"
                             : i == 10
