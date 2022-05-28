@@ -24,7 +24,10 @@ builder.Services.AddCors(
         options.AddDefaultPolicy(
             builder =>
             {
-                builder.WithOrigins("http://localhost:5298");
+                builder.WithOrigins(
+                    "http://localhost:5298",
+                    "https://climate-explorer.azurewebsites.net"
+                );
             }
         );
     }
