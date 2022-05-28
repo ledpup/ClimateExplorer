@@ -22,7 +22,7 @@ builder.Services
     .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
     .AddHttpClient<IDataService, DataService>(client =>
     {
-        client.BaseAddress = new Uri("http://localhost:54836/");
+        client.BaseAddress = new Uri(builder.Configuration["dataServiceBaseUri"]);
     }); 
 
 await builder.Build().RunAsync();

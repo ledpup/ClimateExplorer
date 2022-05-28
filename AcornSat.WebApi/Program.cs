@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using AcornSat.WebApi.Model;
 using System.Text.Json;
 using AcornSat.Core.ViewModel;
+using Microsoft.AspNetCore.Http.Json;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +29,16 @@ builder.Services.AddCors(
         );
     }
 );
+
+builder.Services.Configure<JsonOptions>(
+    options =>
+    {
+        // This causes the JSON returned from API calls to omit properties if their value is null anyway
+        options.SerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+    }
+);
+
+builder.Logging.AddConsole();
 
 var app = builder.Build();
 app.UseCors();
@@ -251,16 +263,22 @@ async Task<List<DataSet>> LoadCachedDataSets(QueryParameters queryParameters)
     var cache = new DirectoryInfo("cache");
     if (!cache.Exists)
     {
+        app.Logger.LogInformation("Creating cache folder");
         cache.Create();
     }
 
     var filePath = @"cache\" + fileName;
     if (File.Exists(filePath))
     {
+        app.Logger.LogInformation($"Cache entry exists. File is at {filePath}");
+
         var file = await File.ReadAllTextAsync(filePath);
         var dataSets = JsonSerializer.Deserialize<List<DataSet>>(file);
         return dataSets;
     }
+
+    app.Logger.LogInformation($"Cache entry does not exist. Checked path {filePath}");
+
     return null;
 }
 
@@ -268,6 +286,9 @@ async Task SaveToCache<T>(QueryParameters queryParameters, T dataToSave)
 {
     var fileName = queryParameters.ToBase64String() + ".json";
     var filePath = @"cache\" + fileName;
+
+    app.Logger.LogInformation($"Writing to cache file at {filePath}");
+
     var json = JsonSerializer.Serialize(dataToSave);
     await File.WriteAllTextAsync(filePath, json);
 }
