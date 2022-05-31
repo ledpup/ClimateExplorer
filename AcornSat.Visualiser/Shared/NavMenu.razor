@@ -1,22 +1,27 @@
 ﻿@using Blazorise
 
-<Bar Breakpoint="Breakpoint.Desktop"
-     Background="Background.Light"
-     ThemeContrast="ThemeContrast.Light">
-    <BarMenu>
-        <BarStart>
-            <BarItem>
-                <BarLink To="">Locations</BarLink>
-            </BarItem>
-            <BarItem>
-                <BarLink To="enso">ENSO</BarLink>
-            </BarItem>
-            <BarItem>
-                <BarLink To="fetchdata">Aggregate</BarLink>
-            </BarItem>
-            <BarItem>
-                <BarLink To="about">About</BarLink>
-            </BarItem>
-        </BarStart>
-    </BarMenu>
-</Bar>
+<!-- this div is necessary to get Blazor to apply a randomly-generated attribute to a DOM element so that CSS isolation will work & we can 
+     style the navbar's inner elements https://github.com/Megabit/Blazorise/issues/1599 -->
+<div>
+    <Bar Breakpoint="Breakpoint.Desktop"
+         Background="Background.Dark"
+         ThemeContrast="ThemeContrast.Dark">
+        <BarBrand>Climate analyser</BarBrand>
+        <BarMenu>
+            <BarStart>
+                <BarItem>
+                    <BarLink To="">Locations</BarLink>
+                </BarItem>
+                <BarItem>
+                    <BarLink To="enso">ENSO</BarLink>
+                </BarItem>
+                <BarItem>
+                    <BarLink To="fetchdata">Aggregate</BarLink>
+                </BarItem>
+                <BarItem>
+                    <BarLink To="about">About</BarLink>
+                </BarItem>
+            </BarStart>
+        </BarMenu>
+    </Bar>
+</div>
