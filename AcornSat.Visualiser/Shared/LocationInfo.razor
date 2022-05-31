@@ -11,9 +11,12 @@
 
 <Collapsible Title="Overview" OnShowOrHide="OverviewShowOrHideHandler">
     <Content>
-        <OverviewField Label="Location"><Value> <span><a href="@LocationMapUrl" target="_blank">@LocationAsString</a></span></Value></OverviewField>
-        <OverviewField Label="Elevation"><Value>@ElevationAsString</Value></OverviewField>
-        <OverviewField Label="Station id">
+        <!-- The awful HTML comments between OverviewField elements below are to avoid generating whitespace between OverviewField elements, which was
+             causing them to be misaligned. Probably better to use flex layout, but this works for now.
+        -->
+        <OverviewField Label="Location"><Value> <span><a href="@LocationMapUrl" target="_blank">@LocationAsString</a></span></Value></OverviewField><!--
+     --><OverviewField Label="Elevation"><Value>@ElevationAsString</Value></OverviewField><!--
+     --><OverviewField Label="Station id">
             <Value>
                 @{
                     bool firstSite = true;
@@ -39,9 +42,8 @@
                     }
                 }
             </Value>
-        </OverviewField>
-
-        <OverviewField Label="Dataset">
+        </OverviewField><!--
+     --><OverviewField Label="Dataset">
             <Value>
                 @if (!String.IsNullOrWhiteSpace(DataSetDefinition.MoreInformationUrl))
                 {
