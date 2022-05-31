@@ -46,7 +46,9 @@
     }
 </Row>
 
-<div style="border: 0.5px dotted; position: relative; height:70vh; width:95vw; margin: auto;">
+<div style="min-height: 40px"></div>
+
+<div class="chart">
     <Chart @ref="chart" TItem="float?" Type="@SelectedChartType" />
 </div>
 
@@ -116,26 +118,35 @@
 
         object chartOptions = new
         {
-            SpanGaps = true,
-            Title = new
+            Responsive = true,
+            MaintainAspectRatio = false,
+            SpanGaps = false,
+            Plugins = new
             {
-                Text = $"ENSO {enso.Name} {(SelectedResolution == DataResolution.Yearly ? "Yearly Average" : "Monthly")}",
-                Display = true
+                Title = new 
+                { 
+                    Text = $"{enso.Name} {(SelectedResolution == DataResolution.Yearly ? "Yearly Average" : "Monthly")}",
+                    Display = true
+                },
             },
             Scales = new
             {
-                YAxes = new[]
-                        {
-                    new
+                Y = new
+                {
+                    Title = new
                     {
-                        ScaleLabel = new { LabelString = "Index values", Display = true }
+                        Text = "Index values",
+                        Display = true,
+                        Color = "blue",
                     }
                 },
-                XAxes = new[]
-                        {
-                    new
+                X = new
+                {
+                    Title = new
                     {
-                        ScaleLabel = new { LabelString = (SelectedResolution == DataResolution.Yearly ? "Year" : "Month/Year"), Display = true }
+                        Text = SelectedResolution == DataResolution.Yearly ? "Year" : "Month/Year",
+                        Display = true,
+                        Color = "blue",
                     }
                 }
             }
@@ -168,6 +179,7 @@
             await chart.AddDataSet(dataSet);
         }
         await chart.Update();
+        await chart.Resize();
     }
 
     public static List<string> GetBarChartColourSet(List<float?> values, bool redPositive = true)
