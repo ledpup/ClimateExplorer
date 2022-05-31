@@ -30,6 +30,7 @@ Tool to calculate average temperatures from [BOM](http://www.bom.gov.au/) [ACORN
 ## TODO
 In rough order of priority
 
+- Make the ENSO page generic so that it can handle GHG reference data. After, create GHG page and remove GHGs from "locations" page
 - Display info on missing data (number of records missing per week/month/etc for min and max, number of missing consecutive days, etc.)
 - Analyse missing data to find an optimal grouping method - linear regression analysis??
 - Text display of the current filter is. e.g, "1979-present", "1980, 2020", etc.

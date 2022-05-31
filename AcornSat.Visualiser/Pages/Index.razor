@@ -632,11 +632,6 @@
         {
             await HandleRedraw();
         }
-        // The below line is required to get the chart.js component to honour the styling applied on the parent div
-        // If you don't call resize, the chart will apply the styling only after you resize the window, 
-        // but it does not apply the style on the initial load of the page.
-        // See https://www.chartjs.org/docs/latest/configuration/responsive.html for more information
-        await chart.Resize();
     }
 
     List<DataSet> CorrelatedDataSets = new List<DataSet>();
@@ -840,6 +835,12 @@
         {
             await chartTrendline.AddTrendLineOptions(trendlines);
         }
+
+        // The below line is required to get the chart.js component to honour the styling applied on the parent div
+        // If you don't call resize, the chart will apply the styling only after you resize the window, 
+        // but it does not apply the style on the initial load of the page.
+        // See https://www.chartjs.org/docs/latest/configuration/responsive.html for more information
+        await chart.Resize();
     }
 
     string[] GetLabels(DataResolution dataResolution, short? chartStartYear = null, short? chartEndYear = null, short? selectedYear = null)
