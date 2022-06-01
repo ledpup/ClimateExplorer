@@ -27,7 +27,8 @@ builder.Services.AddCors(
                 builder.WithOrigins(
                     "http://localhost:5298",
                     "https://climate-explorer.azurewebsites.net",
-                    "https://lively-sky-06d813c1e.1.azurestaticapps.net"
+                    "https://lively-sky-06d813c1e.1.azurestaticapps.net",
+                    "https://www.climateexplorer.net"
                 );
             }
         );
