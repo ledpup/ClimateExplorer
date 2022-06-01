@@ -1,4 +1,5 @@
 ﻿@page "/about"
+@using AcornSat.Core.Model
 
 <PageTitle>Climate Analyser - About</PageTitle>
 
@@ -64,6 +65,33 @@
     </ul>
 </div>
 
-@code {
+<h1>Diagnostics</h1>
 
+@if (_apiMetadata != null)
+{
+    <div>
+        API Version: @_apiMetadata.Version
+    </div>
+    <div>
+        API Build Time (UTC): @_apiMetadata.BuildTimeUtc
+    </div>
+}
+
+@code {
+    [Inject]
+    public IDataService DataService { get; set; }
+
+    ApiMetadataModel _apiMetadata;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (DataService == null)
+        {
+            throw new NullReferenceException(nameof(DataService));
+        }
+
+        _apiMetadata = await DataService.GetAbout();
+
+        await base.OnInitializedAsync();
+    }
 }

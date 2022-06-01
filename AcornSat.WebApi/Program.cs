@@ -15,6 +15,7 @@ using System.Text.Json;
 using AcornSat.Core.ViewModel;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,6 +63,7 @@ app.MapGet(
         "Hello, from minimal ACORN-SAT Web API!\n" +
         "\n" +
         "Operations:\n" +
+        "   Call /about for basic API metadata\n" +
         "   Call /datasetdefinition for a list of the dataset definitions. (E.g., ACORN-SAT)\n" +
         "   Call /location for list of locations.\n" +
         "      Parameters:\n" +
@@ -80,6 +82,7 @@ app.MapGet(
         "      Examples:\n" +
         "          /dataSet/TempMax/Yearly/Adjusted/eb75b5eb-8feb-4118-b6ab-bbe9b4fbc334?statisticalMethod=GroupThenAverage&dayGrouping=14&dayGroupingThreshold=0.7\n");
 
+app.MapGet("/about",                                                          GetAbout);
 app.MapGet("/datasetdefinition",                                              GetDataSetDefinitions);
 app.MapGet("/location",                                                       GetLocations);
 app.MapGet("/dataset/{dataType}/{resolution}/{dataAdjustment}/{locationId}",  GetDataSets);
@@ -90,7 +93,17 @@ app.MapGet("/reference/enso-metadata",                                        Ge
 
 app.Run();
 
+object GetAbout()
+{
+    var asm = Assembly.GetExecutingAssembly();
 
+    return
+        new
+        {
+            Version = asm.GetName().Version.ToString(),
+            BuildTimeUtc = File.GetLastWriteTimeUtc(asm.Location)
+        };
+}
 
 async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions(bool includeLocations = false)
 {
