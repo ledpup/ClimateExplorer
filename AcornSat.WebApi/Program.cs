@@ -24,16 +24,21 @@ builder.Services.AddCors(
         options.AddDefaultPolicy(
             builder =>
             {
-                builder.WithOrigins(
-                    // Local dev
-                    "http://localhost:5298",
-                    // Staging
-                    "https://lively-sky-06d813c1e-36.westus2.1.azurestaticapps.net",
-                    // Prod
-                    "https://lively-sky-06d813c1e.1.azurestaticapps.net",
-                    // Prod with nice domain name
-                    "https://www.climateexplorer.net"
-                );
+                // Don't limit which origins browsers will allow to invoke these web services. Why?
+                //    1. the way GitHub actions deploys staging builds of Azure Static Web Apps generates
+                //       a different client site DNS name each time. While the sequence is predictable, it'd
+                //       be a pain to pre-register many names ahead of time, a pain to react to the allocated
+                //       name at deployment time, and the wildcarding functionality (ref CorsPolicyBuilder.
+                //       SetIsOriginAllowedToAllowWildcardSubdomains()) is limited to permitting all subdomains
+                //       of a nominated domain, which would be overly permissive in our case. (Because the
+                //       generated client site DNS name is of the form:
+                //           lively-sky-06d813c1e-36.westus2.1.azurestaticapps.net
+                //       It's the "36" which changes each time a deployment happens to staging.                
+                //
+                //    2. Our users aren't authenticated. External web apps can't induce our users' browsers to
+                //       do anything using their credentials against our API site because they don't have
+                //       credentials, and can't modify any data via the API. The exposure is minimal.
+                builder.AllowAnyOrigin();
             }
         );
     }
