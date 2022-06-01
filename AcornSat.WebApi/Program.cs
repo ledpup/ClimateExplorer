@@ -25,9 +25,13 @@ builder.Services.AddCors(
             builder =>
             {
                 builder.WithOrigins(
+                    // Local dev
                     "http://localhost:5298",
-                    "https://climate-explorer.azurewebsites.net",
+                    // Staging
+                    "https://lively-sky-06d813c1e-36.westus2.1.azurestaticapps.net",
+                    // Prod
                     "https://lively-sky-06d813c1e.1.azurestaticapps.net",
+                    // Prod with nice domain name
                     "https://www.climateexplorer.net"
                 );
             }
