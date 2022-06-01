@@ -1,4 +1,5 @@
 ﻿using AcornSat.Core;
+using AcornSat.Core.Model;
 using AcornSat.Core.ViewModel;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Net.Http.Json;
@@ -53,6 +54,11 @@ public class DataService : IDataService
             url += $"&maxLatitude={maxLatitude}";
         }
         return await _httpClient.GetFromJsonAsync<DataSet[]>(url);
+    }
+
+    public async Task<ApiMetadataModel> GetAbout()
+    {
+        return await _httpClient.GetFromJsonAsync<ApiMetadataModel>("/about");
     }
 
     public async Task<IEnumerable<DataSetDefinitionViewModel>> GetDataSetDefinitions()
