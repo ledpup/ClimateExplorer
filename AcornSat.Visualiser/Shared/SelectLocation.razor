@@ -1,6 +1,5 @@
 ﻿@using Blazorise
 @using Blazorise.Components
-@using Darnton.Blazor.DeviceInterop.Geolocation
 @using GeoCoordinatePortable
 
 <Modal @ref="modal">
@@ -72,8 +71,8 @@
     [Parameter]
     public EventCallback<Guid> OnLocationChange { get; set; }
 
-    [Inject] 
-    public IGeolocationService GeolocationService { get; set; }
+    [Inject]
+    public IJSRuntime JS { get; init; }
 
     public Task Show(
     )
@@ -86,15 +85,20 @@
         return modal.Hide();
     }
 
+    class GetLocationResult
+    {
+        public float Latitude { get; set; }
+        public float Longitude { get; set; }
+
+        public int ErrorCode { get; set; }
+        public string ErrorMessage { get; set; }
+    }
+
     async Task OnUseCurrentLocation()
     {
-        var currentPositionResult = await GeolocationService.GetCurrentPosition();
-        var lat = currentPositionResult.Position.Coords.Latitude;
-        var lng = currentPositionResult.Position.Coords.Longitude;
-        var alt = currentPositionResult.Position.Coords.Altitude;
+        var loc = await JS.InvokeAsync<GetLocationResult>("getLocation");
 
-        var geoCoord = alt == null ? new GeoCoordinate(lat, lng) :
-                                     new GeoCoordinate(lat, lng, alt.Value);
+        var geoCoord = new GeoCoordinate(loc.Latitude, loc.Longitude);
 
         var distances = Location.GetDistances(geoCoord, Locations);
         var closestLocation = distances.OrderBy(x => x.Distance).First();

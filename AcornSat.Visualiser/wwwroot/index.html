@@ -48,6 +48,34 @@
 
 
     <script>
+        async function getLocation() {
+            var getCurrentPositionPromise =
+                new Promise((resolve, reject) => {
+                    if (!navigator.geolocation) {
+                        reject({ errorCode: 0, message: 'This device does not support geolocation.' });
+                    } else {
+                        navigator.geolocation.getCurrentPosition(resolve, reject, null);
+                    }
+                });
+
+            var result = {};
+
+            await getCurrentPositionPromise.then(
+                (position) => {
+                    result.latitude = position.coords.latitude;
+                    result.longitude = position.coords.longitude;
+                }
+            ).catch(
+                // Ignored
+                (error) => {
+                    result.errorCode = error.errorCode;
+                    result.errorMessage = error.errorMessage;
+                }
+            );
+
+            return result;
+        }
+
         async function downloadFileFromStream(fileName, contentStreamReference) {
             const arrayBuffer = await contentStreamReference.arrayBuffer();
             const blob = new Blob([arrayBuffer]);

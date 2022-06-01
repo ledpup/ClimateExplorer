@@ -12,6 +12,16 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Rainfall\**">
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Reference\**">
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\AcornSat.Analyser\AcornSat.Analyser.csproj" />
     <ProjectReference Include="..\AcornSat.Core\AcornSat.Core.csproj" />
   </ItemGroup>
