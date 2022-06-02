@@ -1,0 +1,29 @@
+﻿.enso-about-content {
+    margin: 24px;
+}
+
+.factor-table {
+    margin-bottom: 1em;
+}
+
+    .factor-table th {
+        color: #425f59;
+    }
+
+    .factor-table td, .factor-table th {
+        padding: 10px;
+        text-align: left;
+        vertical-align: top;
+        max-width: 240px;
+    }
+
+    .factor-table tr:nth-child(odd) td, .factor-table tr:nth-child(odd) th {
+
+    }
+
+
+.selected-index-info {
+    margin-top: 24px;
+    margin-bottom: 24px;
+    color: #666;
+}

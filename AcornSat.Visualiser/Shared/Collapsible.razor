@@ -1,5 +1,6 @@
 ﻿<div>
-    <span @onclick="CollapserOnClick" class="collapser">
+    <span @onclick="CollapserOnClick"
+           class="collapser @(CollapserSize.ToString().ToLower())">
         @if (ShowContent)
         {
             <span class="oi oi-chevron-top" aria-hidden="true"></span>
@@ -21,6 +22,17 @@
 </div>
 
 @code {
+    // CollapserSize is what an unfit person does when they try to Exercise
+    public enum CollapserSizes
+    {
+        Normal,
+        Large,
+        ExtraLarge
+    }
+
+    [Parameter]
+    public CollapserSizes CollapserSize { get; set; }
+
     [Parameter]
     public string Title { get; set; }
 

@@ -7,10 +7,54 @@
 
 <PageTitle>Climate Analyser - ENSO</PageTitle>
 
-<h1>ENSO</h1>
+<Collapsible Title="About the ENSO" CollapserSize="Collapsible.CollapserSizes.Large">
+    <Content>
+        <div class="enso-about-content">
+            <p>
+                The El Niño–Southern Oscillation (ENSO) is a climate pattern of Pacific ocean temperatures and air pressures
+                that strongly influences weather around the Pacific.
+            </p>
+
+            <p>
+                The datasets on this page measure the ENSO climate pattern over time.
+            </p>
+
+            <table class="factor-table">
+                <tr>
+                    <td></td><th>Negative ENSO</th><th>Neutral ENSO</th><th>Positive ENSO</th>
+                </tr>
+                <tr>
+                    <th>East Pacific ocean temperatures</th><td>Lower (La Niña)</td><td></td><td>Higher (El Niño)</td>
+                </tr>
+                <tr>
+                    <th>SOI</th><td>Positive (!)</td><td></td><td>Negative (!)</td>
+                </tr>
+                <tr>
+                    <th>West Pacific atmospheric pressures</th><td>Lower</td><td></td><td>Higher</td>
+                </tr>
+                <tr>
+                    <th>Walker circulation (inc. trade winds)</th><td>Weak/reversed</td><td>Normal</td><td>Normal</td>
+                </tr>
+                <tr>
+                    <th>Global surface temperature</th><td>~1 year drop in global avg. surface temp</td><td></td><td>~1 year increase in global avg. surface temp</td>
+                </tr>
+                <tr>
+                    <th>South American weather pattern</th><td></td><td></td><td>Warm and very wet Apr-Oct</td>
+                </tr>
+                <tr>
+                    <th>East Australian weather pattern</th>
+                    <td>Increased rainfall, flooding. Earlier monsoon start. More snow depth. Cooler daytime temperatures in South, fewer extreme highs.</td>
+                    <td></td>
+                    <td>Reduced rainfall. Delayed monsoon start. Less snow depth. Warmer daytime temperatures in South, often cooler overnight temperatures (reduced cloud cover). Higher bushfire risk.</td>
+                </tr>
+            </table>
+        </div>
+    </Content>
+</Collapsible>
+
 
 <Row>
-    <Column ColumnSize="ColumnSize.Is3">
+    <Column ColumnSize="ColumnSize.Is5">
         Index
         <Select TValue="EnsoIndex" SelectedValue="@SelectedIndex" SelectedValueChanged="@OnSelectedIndexChanged">
             <SelectItem Value="@EnsoIndex.Mei">Multivariate ENSO index (MEI.v2)</SelectItem>
@@ -26,13 +70,7 @@
             <SelectItem Value="@DataResolution.Monthly">Monthly</SelectItem>
         </Select>
     </Column>
-    @*   <Column ColumnSize="ColumnSize.Is2">
-        Chart Type
-        <Select TValue="ChartType" SelectedValue="@SelectedChartType" SelectedValueChanged="@OnSelectedChartTypeChanged">
-        <SelectItem Value="@ChartType.Bar">Bar</SelectItem>
-        <SelectItem Value="@ChartType.Line">Line</SelectItem>
-        </Select>
-        </Column>*@
+    
     @if (SelectedResolution == DataResolution.Yearly)
     {
         <Column ColumnSize="ColumnSize.Is2">
@@ -46,7 +84,91 @@
     }
 </Row>
 
-<div style="border: 0.5px dotted; position: relative; height:70vh; width:95vw; margin: auto;">
+<Row>
+    <Column ColumnSize="ColumnSize.Is5">
+        <div class="selected-index-info">
+            @switch (SelectedIndex)
+            {
+                case EnsoIndex.Mei:
+                    <Collapsible Title="About the MEI">
+                        <Content>
+                            <p>
+                                The Multivariate ENSO index (MEI.v2) is a measure of the strength and direction of the El Niño–Southern Oscillation.
+                                It is a single figure index calculated based on sea level pressure, surface wind, sea surface temperature and outgoing
+                                longwave radiation over a large area of the tropical Pacific (30 deg S to 30 deg N and 100 deg E to 70 deg W). Because it
+                                draws on multiple relevant measurement types, MEI is less susceptible to misleading variation because of unusual conditions
+                                affecting a single measurement type. However, the process of dimensional reduction from multiple measurements down to a
+                                single index value is relatively complex, and the extensive input dataset requirement means that MEI cannot directly be
+                                extended as far back as simpler indices.
+                            </p>
+                            <p>
+                                More information:
+                                <a target="_blank" href="https://psl.noaa.gov/enso/mei/">Multivariate ENSO Index Version 2 (MEI.v2)</a>
+                            </p>
+                        </Content>
+                    </Collapsible>
+
+                    break;
+
+                case EnsoIndex.Soi:
+                    <Collapsible Title="About the SOI">
+                        <Content>
+                            <p>
+                                The Southern Oscillation Index is calculated based on atmospheric pressure difference between Tahiti and Darwin. Higher values of the SOI
+                                indicate that Tahiti has higher atmospheric pressure, relative to its typical value, than Darwin does relative to <em>its</em> typical value.
+                                High values of the SOI correlate with cold waters in the eastern tropical Pacific. Note that unlike MEI, positive values of the SOI indicate
+                                La Niña, and negative values indicate El Niño.
+                            </p>
+                            <p>
+                                More information:
+                                <a target="_blank" href="https://www.ncdc.noaa.gov/teleconnections/enso/soi">Southern Oscillation Index (SOI)</a> at the NOAA
+                            </p>
+                        </Content>
+                    </Collapsible>
+                   
+                    break;
+
+                case EnsoIndex.Nino34:
+                    <Collapsible Title="About the Niño 3.4 index">
+                        <Content>
+                            <p>
+                                The Niño 3.4 index is calculated as a 3-month running average of sea surface temperature measurements around the equator
+                                in the East Pacific (5 deg N to 5 deg C, 170 deg W to 120 deg W), and then expressed as an anomaly (i.e. difference from the average).
+                                Niño 3.4 conditions of +0.4 deg C or higher are considered El Niño, and -0.4 deg C or lower are considered La Niña.
+                            </p>
+                            <p>
+                                More information:
+                                <a target="_blank" href="https://climatedataguide.ucar.edu/climate-data/nino-sst-indices-nino-12-3-34-4-oni-and-tni">Climate Data Nino SST Indices (Nino 1+2, 3, 3.4, 4; ONI and TNI)</a>
+                            </p>
+                        </Content>
+                    </Collapsible>
+                    
+                    break;
+
+                case EnsoIndex.Oni:
+                    <Collapsible Title="About Oceanic Niño Index (ONI)">
+                        <Content>
+                            <p>
+                                The Oceanic Niño Index (ONI) is calculated from 3-month running averages of sea surface temperature measurements from the same area
+                                as Niño 3.4 (around the equator in the East Pacific, 5 deg N to 5 deg C, 170 deg W to 120 deg W), and then expressed as an anomaly
+                                (i.e. difference from a 30 year rolling average). ONI conditions of +0.5 deg C or higher are considered El Niño, and -0.5 deg C or lower
+                                are considered La Niña. El Niño or La Niña conditions must prevail for at least five consecutive months to be considered an El Niño or
+                                La Niña event.
+                            </p>
+                            <p>
+                                More information:
+                                <a target="_blank" href="https://www.climate.gov/news-features/understanding-climate/climate-variability-oceanic-ni%C3%B1o-index">Climate Variability: Oceanic Niño Index</a>
+                            </p>
+                        </Content>
+                    </Collapsible>
+
+                    break;   
+            }
+        </div>
+    </Column>
+</Row>
+
+<div style="position: relative; height:70vh; width:95vw; margin: auto;">
     <Chart @ref="chart" TItem="float?" Type="@SelectedChartType" />
 </div>
 
