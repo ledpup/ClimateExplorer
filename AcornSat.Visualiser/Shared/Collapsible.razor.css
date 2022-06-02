@@ -5,6 +5,14 @@
     cursor: pointer;
 }
 
+    .collapser.large {
+        font-size: 1.5em;
+    }
+
+    .collapser.extralarge {
+        font-size: 2em;
+    }
+
     .collapser:hover {
         color: #0071c1;
         text-decoration: underline;
