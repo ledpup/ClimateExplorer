@@ -22,9 +22,6 @@
         max-width: 240px;
     }
 
-    .factor-table tr:nth-child(odd) td, .factor-table tr:nth-child(odd) th {
-    }
-
 
 .selected-index-info {
     margin-top: 24px;
