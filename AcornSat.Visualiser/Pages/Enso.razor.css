@@ -4,11 +4,11 @@
 }
 
 .enso-about-content {
-    margin: 24px;
+    padding: 24px;
+    margin-bottom: 1em;
 }
 
 .factor-table {
-    margin-bottom: 1em;
 }
 
     .factor-table th {

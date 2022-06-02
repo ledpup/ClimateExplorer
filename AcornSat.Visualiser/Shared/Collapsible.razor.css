@@ -1,9 +1,18 @@
-﻿.collapser {
-    color: #888888;
-    margin-bottom: 0.2rem;
+﻿.collapsible-with-background {
+    background-color: #f8f8f8;
+    border-left: solid 4px #425f59;
+}
+
+.collapser {
+    color: #aaa;
+    margin-bottom: 0.4rem;
     font-weight: bold;
     cursor: pointer;
 }
+
+    .collapser.content-shown {
+        color: #425f59;
+    }
 
     .collapser.large {
         font-size: 1.5em;
@@ -20,4 +29,5 @@
 
 .collapser .oi {
     margin-right: 0.6em;
+    font-size: 1.2rem;
 }
