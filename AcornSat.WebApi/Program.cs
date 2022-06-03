@@ -753,11 +753,18 @@ List<EnsoMetaData> GetEnsoMetaData()
 
 async Task<List<DataRecord>> GetEnso(EnsoIndex index, DataResolution resolution, string measure)
 {
-    List<string> records = null;
+    string[]? records = null;
 
     var ensoMetaData = GetEnsoMetaData().Single(x => x.Index == index);
 
-    records = (await File.ReadAllLinesAsync($@"Reference\ENSO\{ensoMetaData.FileName}")).ToList();
+    string dataPath = $@"Reference\ENSO\{ensoMetaData.FileName}";
+
+    records = await DataReader.GetLinesInDataFileWithCascade(dataPath);
+
+    if (records == null)
+    {
+        throw new Exception("Unable to read ENSO data " + dataPath);
+    }
 
     var regEx = new Regex(@"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)");
 

@@ -22,6 +22,14 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Datasets\Temperature.zip" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Datasets\Temperature.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\AcornSat.Analyser\AcornSat.Analyser.csproj" />
     <ProjectReference Include="..\AcornSat.Core\AcornSat.Core.csproj" />
   </ItemGroup>
