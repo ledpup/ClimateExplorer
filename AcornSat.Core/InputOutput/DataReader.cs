@@ -101,28 +101,11 @@ namespace AcornSat.Core.InputOutput
         {
             var siteFilePath = filePath + fileName.Replace("[station]", station);
 
-            var zippedSiteFilePath = Path.ChangeExtension(siteFilePath, ".zip");
-
-            var zippedSiteFileExists = File.Exists(zippedSiteFilePath);
-            var siteFileExists = File.Exists(siteFilePath);
-
-            string[] lines = null;
-
-            if (zippedSiteFileExists)
-            {
-                Debug.WriteLine("Reading from zip " + zippedSiteFilePath);
-                lines = ReadLinesFromZipFileEntry(zippedSiteFilePath, Path.GetFileName(siteFilePath));
-            }
-
-            if (lines == null && siteFileExists)
-            {
-                Debug.WriteLine("Reading from CSV " + siteFilePath);
-
-                lines = await File.ReadAllLinesAsync(siteFilePath);
-            }
+            string[]? lines = await GetLinesInDataFileWithCascade(siteFilePath);
 
             if (lines == null)
             {
+                // We couldn't find the data in any of the expected locations
                 return new List<DataRecord>();
             }
 
@@ -230,6 +213,64 @@ namespace AcornSat.Core.InputOutput
                 return completeRecords;
             }
             throw new NotImplementedException();
+        }
+
+        public static async Task<string[]> GetLinesInDataFileWithCascade(string dataFilePath)
+        {
+            string[]? lines = TryGetDataFromDatasetZipFile(dataFilePath);
+
+            if (lines == null)
+            {
+                lines = TryGetDataFromSingleEntryZipFile(dataFilePath);
+            }
+
+            if (lines == null)
+            {
+                lines = await TryGetDataFromUncompressedSingleFile(dataFilePath);
+            }
+
+            return lines;
+        }
+
+        static async Task<string[]?> TryGetDataFromUncompressedSingleFile(string siteFilePath)
+        {
+            if (File.Exists(siteFilePath))
+            {
+                return await File.ReadAllLinesAsync(siteFilePath);
+            }
+
+            return null;
+        }
+
+        static string[]? TryGetDataFromDatasetZipFile(string filePath)
+        {
+            string[] pathComponents = 
+                filePath.Split(
+                    new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
+                    StringSplitOptions.RemoveEmptyEntries
+                );
+
+            var shallowestFolderName = pathComponents.First();
+
+            var datasetName = shallowestFolderName;
+
+            string zipPath = Path.Combine("Datasets", datasetName + ".zip");
+
+            if (!File.Exists(zipPath)) return null;
+
+            var zipEntryPath = string.Join('/', pathComponents.Skip(1));
+
+            Debug.WriteLine("Reading from zip " + zipPath);
+            return ReadLinesFromZipFileEntry(zipPath, zipEntryPath);
+        }
+
+        static string[]? TryGetDataFromSingleEntryZipFile(string filePath)
+        {
+            var zipPath = Path.ChangeExtension(filePath, ".zip");
+
+            if (!File.Exists(zipPath)) return null;
+
+            return ReadLinesFromZipFileEntry(zipPath, Path.GetFileName(filePath));
         }
 
         static string[]? ReadLinesFromZipFileEntry(string zipFilename, string zipEntryFilename)
