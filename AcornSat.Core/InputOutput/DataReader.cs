@@ -1,7 +1,9 @@
 ﻿using AcornSat.Core.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -88,22 +90,47 @@ namespace AcornSat.Core.InputOutput
             }
         }
 
-        static async Task<List<DataRecord>> ReadDataFile(string station, Regex regEx, string filePath, string fileName, string nullValue, DataResolution dataResolution, short? yearFilter = null)
+        static async Task<List<DataRecord>> ReadDataFile(
+            string station,
+            Regex regEx,
+            string filePath,
+            string fileName,
+            string nullValue,
+            DataResolution dataResolution,
+            short? yearFilter = null)
         {
             var siteFilePath = filePath + fileName.Replace("[station]", station);
 
-            if (!File.Exists(siteFilePath))
+            var zippedSiteFilePath = Path.ChangeExtension(siteFilePath, ".zip");
+
+            var zippedSiteFileExists = File.Exists(zippedSiteFilePath);
+            var siteFileExists = File.Exists(siteFilePath);
+
+            string[] lines = null;
+
+            if (zippedSiteFileExists)
             {
-                //throw new FileNotFoundException(siteFilePath);
+                Debug.WriteLine("Reading from zip " + zippedSiteFilePath);
+                lines = ReadLinesFromZipFileEntry(zippedSiteFilePath, Path.GetFileName(siteFilePath));
+            }
+
+            if (lines == null && siteFileExists)
+            {
+                Debug.WriteLine("Reading from CSV " + siteFilePath);
+
+                lines = await File.ReadAllLinesAsync(siteFilePath);
+            }
+
+            if (lines == null)
+            {
                 return new List<DataRecord>();
             }
 
-            var rawData = await File.ReadAllLinesAsync(siteFilePath);
             var temperatureRecords = new List<DataRecord>();
 
-            var initialDataIndex = GetStartIndex(regEx, rawData);
+            var initialDataIndex = GetStartIndex(regEx, lines);
 
-            var startYearRecord = short.Parse(regEx.Match(rawData[initialDataIndex]).Groups["year"].Value);
+            var startYearRecord = short.Parse(regEx.Match(lines[initialDataIndex]).Groups["year"].Value);
 
             // Check to see if the station had started recording by the year we want
             if (yearFilter != null && startYearRecord > yearFilter)
@@ -114,7 +141,7 @@ namespace AcornSat.Core.InputOutput
             var startDate = yearFilter == null ? startYearRecord : yearFilter.Value;
             var date = new DateTime(startDate, 1, 1);
             var previousDate = date.AddDays(-1);
-            foreach (var record in rawData)
+            foreach (var record in lines)
             {
                 var match = regEx.Match(record);
 
@@ -203,6 +230,44 @@ namespace AcornSat.Core.InputOutput
                 return completeRecords;
             }
             throw new NotImplementedException();
+        }
+
+        static string[]? ReadLinesFromZipFileEntry(string zipFilename, string zipEntryFilename)
+        {
+            using (FileStream zipFileStream = new FileStream(zipFilename, FileMode.Open))
+            {
+                using (ZipArchive archive = new ZipArchive(zipFileStream, ZipArchiveMode.Read))
+                {
+                    ZipArchiveEntry? siteFileEntry = archive.GetEntry(zipEntryFilename);
+
+                    if (siteFileEntry == null)
+                    {
+                        return null;
+                    }
+
+                    using (StreamReader sr = new StreamReader(siteFileEntry.Open()))
+                    {
+                        // This could probably be optimized
+                        var lineList = new List<string>();
+
+                        while (true)
+                        {
+                            var line = sr.ReadLine();
+
+                            if (line != null)
+                            {
+                                lineList.Add(line);
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+
+                        return lineList.ToArray();
+                    }
+                }
+            }
         }
 
         private static List<DataRecord> CompleteLastYearOfDailyData(List<DataRecord> temperatureRecords, ref DateTime date)
