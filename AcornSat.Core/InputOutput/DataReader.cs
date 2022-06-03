@@ -275,7 +275,7 @@ namespace AcornSat.Core.InputOutput
 
         static string[]? ReadLinesFromZipFileEntry(string zipFilename, string zipEntryFilename)
         {
-            using (FileStream zipFileStream = new FileStream(zipFilename, FileMode.Open))
+            using (FileStream zipFileStream = new FileStream(zipFilename, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (ZipArchive archive = new ZipArchive(zipFileStream, ZipArchiveMode.Read))
                 {
