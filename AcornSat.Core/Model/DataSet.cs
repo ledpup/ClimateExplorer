@@ -137,7 +137,7 @@ public class DataSet
 <p>{Location.Name}, between the years {twentyYears.Last().Year}-{twentyYears.First().Year}, had an average max temp of <strong>{string.Format("{0:0.##}", MathF.Round(averageOfLastTwentyYearsTemperatures.Value, 2))}°C</strong>.</p>
 <p>{Location.Name}, between the years {firstHalf.First().Year}-{firstHalf.Last().Year}, had an average max temp of <strong>{string.Format("{0:0.##}", MathF.Round(averageOfEarliestTemperatures.Value, 2))}°C</strong>.</p>
 <p>The difference is <strong>{WarmingIndexAsString}</strong> (after rounding to 1 decimal place).</p>
-<p>Over the long-term, with no external influences, we'd expect the warming index to trend towards zero. A positive warming index may indicate an effect of climate change.</p>";
+<p>Over the long-term, with no external influences, we'd expect the warming index to trend towards zero. A non-zero warming index may indicate an effect of climate change. A positive warming index may indicate global warming/heating.</p>";
         }
     }
 }
