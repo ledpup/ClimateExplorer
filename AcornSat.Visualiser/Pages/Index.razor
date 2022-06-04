@@ -332,6 +332,8 @@
 
     async Task UpdateInternalChartType()
     {
+        _haveCalledResizeAtLeastOnce = false;
+
         InternalChartType =
             SelectedChartType == ChartType.Bar || Difference || Rainfall
             ? ChartType.Bar
