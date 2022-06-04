@@ -1,6 +1,7 @@
 ﻿using AcornSat.Core;
 using AcornSat.Core.Model;
 using AcornSat.Core.ViewModel;
+using AcornSat.Visualiser.Services;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Net.Http.Json;
 using static AcornSat.Core.Enums;
@@ -8,23 +9,27 @@ using static AcornSat.Core.Enums;
 public class DataService : IDataService
 {   
     private readonly HttpClient _httpClient;
+    private readonly IDataServiceCache _dataServiceCache;
 
-    public DataService(HttpClient httpClient)
+    public DataService(
+        HttpClient httpClient,
+        IDataServiceCache dataServiceCache)
     {
         _httpClient = httpClient;
+        _dataServiceCache = dataServiceCache;
     }
 
     public async Task<IEnumerable<DataSet>> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short ? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f)
     {
         var url = $"dataSet/{dataType}/{resolution}/{dataAdjustment}";
 
-        if (aggregationMethod != null)
-        {
-            url = QueryHelpers.AddQueryString(url, "aggregationMethod", aggregationMethod.Value.ToString());
-        }
         if (locationId != null)
         {
             url = QueryHelpers.AddQueryString(url, "locationId", locationId.Value.ToString());
+        }
+        if (aggregationMethod != null)
+        {
+            url = QueryHelpers.AddQueryString(url, "aggregationMethod", aggregationMethod.Value.ToString());
         }
         if (year != null)
         {
@@ -39,7 +44,16 @@ public class DataService : IDataService
             url = QueryHelpers.AddQueryString(url, "dayGroupingThreshold", dayGroupingThreshold.Value.ToString());
         }
 
-        return await _httpClient.GetFromJsonAsync<DataSet[]>(url);
+        var result = _dataServiceCache.Get<DataSet[]>(url);
+
+        if (result == null)
+        {
+            result = await _httpClient.GetFromJsonAsync<DataSet[]>(url);
+
+            _dataServiceCache.Put(url, (DataSet[])result);
+        }
+
+        return result;
     }
 
     public async Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .5f, float locationGroupingThreshold = .5f)
