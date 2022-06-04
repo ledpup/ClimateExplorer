@@ -11,7 +11,7 @@
 
 @if (!string.IsNullOrWhiteSpace(PopupText))
 {
-    <Modal @ref="optionsModal">
+    <Modal @ref="popup">
         <ModalContent Size="ModalSize.Large">
             <ModalHeader>
                 <ModalTitle>@Label</ModalTitle>
@@ -51,12 +51,12 @@
     [Parameter]
     public string PopupText { get; set; }
 
-    private Modal optionsModal;
+    private Modal popup;
     private Task ShowPopup()
     {
         if (!string.IsNullOrWhiteSpace(PopupText))
         {
-            return optionsModal.Show();
+            return popup.Show();
         }
         return Task.CompletedTask;
     }
