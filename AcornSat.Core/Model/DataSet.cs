@@ -109,7 +109,7 @@ public class DataSet
             var warmingIndexAsString = "NA";
             if (warmingIndex != null)
             {
-                warmingIndexAsString = $"{ (warmingIndex >= 0 ? "+" : "") }{ MathF.Round(warmingIndex.Value, 1)}°C";
+                warmingIndexAsString = $"{ (warmingIndex >= 0 ? "+" : "") }{ string.Format("{0:0.#}", MathF.Round(warmingIndex.Value, 1))}°C";
             }
             return warmingIndexAsString;
         }
@@ -126,17 +126,18 @@ public class DataSet
 
             if (WarmingIndex == null)
             {
-                return $"Warming index: the temperature difference between the average of the last 20 years of maximum temperatures compared and the average of the first half of the dataset.";
+                return $"The warming index is the temperature difference between the average of the last 20 years of maximum temperatures compared and the average of the first half of the dataset.";
             }
 
             var dataRecords = DataRecords.Where(x => x.Value.HasValue).ToList();
             var twentyYears = dataRecords.OrderByDescending(x => x.Year).Take(20);
             var firstHalf = dataRecords.OrderBy(x => x.Year).Take(dataRecords.Count / 2);
 
-            return $@"Warming index: the temperature difference between the average of the last 20 years of maximum temperatures compared and the average of the first half ({firstHalf.Count()} years) of the dataset.
-{Location.Name}, between the years {twentyYears.Last().Year}-{twentyYears.First().Year}, had an average max temp of {MathF.Round(averageOfLastTwentyYearsTemperatures.Value, 1)}°C.
-{Location.Name}, between the years {firstHalf.First().Year}-{firstHalf.Last().Year}, had an average max temp of {MathF.Round(averageOfEarliestTemperatures.Value, 1)}°C.
-The difference is {WarmingIndexAsString} (after rounding to 1 decimal place).";
+            return $@"<p>The warming index is the temperature difference between the average of the last 20 years of maximum temperatures compared and the average of the first half ({firstHalf.Count()} years) of the dataset.</p>
+<p>{Location.Name}, between the years {twentyYears.Last().Year}-{twentyYears.First().Year}, had an average max temp of <strong>{string.Format("{0:0.##}", MathF.Round(averageOfLastTwentyYearsTemperatures.Value, 2))}°C</strong>.</p>
+<p>{Location.Name}, between the years {firstHalf.First().Year}-{firstHalf.Last().Year}, had an average max temp of <strong>{string.Format("{0:0.##}", MathF.Round(averageOfEarliestTemperatures.Value, 2))}°C</strong>.</p>
+<p>The difference is <strong>{WarmingIndexAsString}</strong> (after rounding to 1 decimal place).</p>
+<p>Over the long-term, with no external influences, we'd expect the warming index to trend towards zero. A positive warming index may indicate an effect of climate change.</p>";
         }
     }
 }

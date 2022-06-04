@@ -57,9 +57,9 @@
         </OverviewField>
         @if (dataSet != null)
         {
-            <OverviewField Label="Warming index" Title="@dataSet.WarmingIndexDescription"><Value>@dataSet.WarmingIndexAsString</Value></OverviewField>
+            <OverviewField Label="Warming index" PopupText="@dataSet.WarmingIndexDescription"><Value>@dataSet.WarmingIndexAsString</Value></OverviewField>
         }
-        <OverviewField Label="Heating Score" ><Value>@Location.HeatingScore</Value></OverviewField>
+        <OverviewField Label="Heating Score" PopupText="@HeatingScoreDescription"><Value>@Location.HeatingScore</Value></OverviewField>
         <WarmingStripe DataRecords="@dataRecordsRelative" />
         <WarmestYears DataRecords="@dataRecordsRelative" />
     </Content>
@@ -91,6 +91,10 @@
     DataSet dataSet { get; set; }
     List<DataRecord> dataRecordsRelative { get; set; }
 
+    const string HeatingScoreDescription = @"<p>The heating score is a number typically between 0 and 9. It is derived from comparing all warming indexes across the locations in the dataset. The highest warming index is found.</p>
+<p>To calculate the heating score:</p>
+<ul><li>For warming indexes that are greater than zero, divide the warming index by the maximum warming index in the set, multiple by 9 and round to zero decimal places.</li>
+<li>For warming indexes that are less than zero, the only operation done is to round the number to zero demical places.</li></ul>";
 
     void ChangeLocationClicked(EventArgs args)
     {
