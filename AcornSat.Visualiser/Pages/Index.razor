@@ -161,6 +161,7 @@
     bool trendlinesOn = true;
 
     @inject IJSRuntime JSRuntime
+    @inject ILogger<Index> Logger;
 
     string GetPageTitle()
     {
@@ -269,7 +270,6 @@
     {
         await JSRuntime.InvokeVoidAsync("showOrHideMap", isOverviewVisible);
     }
-
 
     private SelectLocation selectLocationModal;
 
@@ -504,6 +504,8 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        Logger.LogInformation("OnParametersSetAsync(): " + LocationId);
+
         Guid locationId = Guid.Parse(LocationId ?? "aed87aa0-1d0c-44aa-8561-cde0fc936395");
 
         await SelectedLocationChangedInternal(locationId);
@@ -513,7 +515,9 @@
 
     protected async Task BuildDataSets()
     {
-        Datasets = new List<DataSet>();
+        Logger.LogInformation("BuildDataSets()");
+
+        var datasetsBeingBuilt = new List<DataSet>();
 
         var anomaly = SelectedChartType == ChartType.Bar;
         var generalAggregationMethod = anomaly ? AggregationMethod.GroupByDayThenAverage_Anomaly : AggregationMethod.GroupByDayThenAverage;
@@ -546,17 +550,18 @@
                     foreach (var year in SelectedYears)
                     {
                         var dataset = (await DataService.GetDataSet(dataType, SelectedResolution, requestDataAdjustment, aggregationMethod, locationId, year, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold)).ToList();
-                        Datasets.AddRange(dataset);
+                        datasetsBeingBuilt.AddRange(dataset);
                     }
                 }
                 else
                 {
                     var dataset = (await DataService.GetDataSet(dataType, SelectedResolution, requestDataAdjustment, aggregationMethod, locationId, dayGrouping: SelectedDayGrouping, dayGroupingThreshold: SelectedDayGroupThreshold)).ToList();
-                    Datasets.AddRange(dataset);   
+                    datasetsBeingBuilt.AddRange(dataset);   
                 }
             }
         }
 
+        Datasets = datasetsBeingBuilt;
         await mapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
 
         await HandleRedraw();       
@@ -840,8 +845,14 @@
         // If you don't call resize, the chart will apply the styling only after you resize the window, 
         // but it does not apply the style on the initial load of the page.
         // See https://www.chartjs.org/docs/latest/configuration/responsive.html for more information
-        await chart.Resize();
+        if (!_haveCalledResizeAtLeastOnce)
+        {
+            await chart.Resize();
+            _haveCalledResizeAtLeastOnce = true;
+        }
     }
+
+    bool _haveCalledResizeAtLeastOnce = false;
 
     string[] GetLabels(DataResolution dataResolution, short? chartStartYear = null, short? chartEndYear = null, short? selectedYear = null)
     {
@@ -1114,9 +1125,12 @@
 
     async Task SelectedLocationChangedInternal(Guid newValue)
     {
+        Logger.LogInformation("SelectedLocationChangedInternal(): " + newValue);
+
         SelectedLocationId = newValue;
         SelectedLocation = Locations.Single(x => x.Id == SelectedLocationId);
         SelectedDataSetDefinition = DataSetDefinitions.Single(x => x.Id == SelectedLocation.DataSetId);
+
         await BuildDataSets();
     }
 

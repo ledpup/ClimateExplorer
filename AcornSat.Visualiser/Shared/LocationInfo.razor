@@ -68,6 +68,8 @@
 
 
 @code {
+    [Inject]
+    ILogger<LocationInfo> Logger { get; set; }
 
     [Inject]
     public IDataService DataService { get; set; }
@@ -84,12 +86,17 @@
     [Parameter]
     public EventCallback<bool> OnOverviewShowOrHide { get; set; }
 
+    Guid instanceId = Guid.NewGuid();
+
     string LocationMapUrl => $"https://maps.google.com/?q={Location.Coordinates.Latitude},{Location.Coordinates.Longitude}";
     string LocationAsString => $"{Math.Round(Location.Coordinates.Latitude, 1)}°, {Math.Round(Location.Coordinates.Longitude, 1)}°";
     string ElevationAsString => $"{Math.Round(Location.Coordinates.Elevation, 1)}m";
 
     DataSet dataSet { get; set; }
     List<DataRecord> dataRecordsRelative { get; set; }
+
+    Guid? locationIdLastTimeOnParametersSetAsyncWasCalled;
+    Guid? dataSetDefinitionIdLastTimeOnParametersSetAsyncWasCalled;
 
 
     void ChangeLocationClicked(EventArgs args)
@@ -104,10 +111,20 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        if (dataSet != null && dataSet.Location.Id == Location.Id)
+        // We do manual change detection here because Blazor calls OnParametersSetAsync() repeatedly with the same input values.
+        Guid callId = Guid.NewGuid();
+
+        if (locationIdLastTimeOnParametersSetAsyncWasCalled == Location?.Id &&
+            dataSetDefinitionIdLastTimeOnParametersSetAsyncWasCalled == DataSetDefinition?.Id)
         {
+            Logger.LogInformation($"OnParametersSetAsync() - {instanceId} {callId} bailing early because manual change detection shows the parameters haven't changed");
             return;
         }
+
+        Logger.LogInformation($"OnParametersSetAsync() - {instanceId} {callId} continuing because manual change detection shows the parameters have changed");
+
+        locationIdLastTimeOnParametersSetAsyncWasCalled = Location?.Id;
+        dataSetDefinitionIdLastTimeOnParametersSetAsyncWasCalled = DataSetDefinition?.Id;
 
         var dataAdjustment = Enums.DataAdjustment.Unadjusted;
         if (DataSetDefinition.MeasurementDefinitions.Any(x => x.DataType == DataType.TempMax && x.DataAdjustment == Enums.DataAdjustment.Adjusted))
@@ -115,11 +132,9 @@
             dataAdjustment = Enums.DataAdjustment.Adjusted;
         }
 
-        {
-            var datasets = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage_Anomaly, Location.Id);
-            var dataset = datasets.Single();
-            dataRecordsRelative = dataset.DataRecords.Where(x => x.Value != null).ToList();
-        }
+        var datasets = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage_Anomaly, Location.Id);
+        var dataset = datasets.Single();
+        dataRecordsRelative = dataset.DataRecords.Where(x => x.Value != null).ToList();
 
         dataSet = (await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage, Location.Id)).SingleOrDefault();
 

@@ -1,9 +1,9 @@
 ﻿@using static AcornSat.Core.Enums
 
 <div class="warming-stripe">
-    @if (DataRecords != null)
+    @if (PreparedDataRecords != null)
     {
-        foreach (var record in DataRecords)
+        foreach (var record in PreparedDataRecords)
         {
             <div title="@GetTitle(record.Value.Value)" class="single-stripe" style="background-color: @GetColour(record.Value.Value);">
                 <div class="label">
@@ -16,21 +16,33 @@
 </div>
 
 @code {
-
     [Parameter]
     public List<DataRecord> DataRecords { get; set; }
+
+    List<DataRecord> PreviouslySeenDataRecords { get; set; }
+    List<DataRecord> PreparedDataRecords { get; set; }
+
+    [Inject]
+    public ILogger<WarmingStripe> Logger { get; set; }
 
     float min;
     float max;
 
     protected override async Task OnParametersSetAsync()
     {
+        if (DataRecordListsAreEqual(PreviouslySeenDataRecords, DataRecords))
+        {
+            return;
+        }
+
+        Logger.LogInformation("OnParametersSetAsync() - actual change detected");
+
         if (DataRecords != null)
         {
-            DataRecords = DataRecords.Where(x => x.Value.HasValue).ToList();
+            PreparedDataRecords = DataRecords.Where(x => x.Value.HasValue).ToList();
 
-            min = DataRecords.Min(x => x.Value.Value);
-            max = DataRecords.Max(x => x.Value.Value);
+            min = PreparedDataRecords.Min(x => x.Value.Value);
+            max = PreparedDataRecords.Max(x => x.Value.Value);
 
             // If the max and min are not above or below 1, set them to 1
             // This will wash out the colours on a stripe where the values don't deviate much from the average
@@ -39,9 +51,33 @@
             max = max > 1 ? max : 1;
         }
 
+        PreviouslySeenDataRecords = DataRecords;
+
         await base.OnParametersSetAsync();
     }
 
+    bool DataRecordListsAreEqual(List<DataRecord> a, List<DataRecord> b)
+    {
+        // If they're both null, the lists are the same
+        if (a == null && b == null) return true;
+
+        // If one is null, the lists are different
+        if ((a == null) || (b == null)) return false;
+
+        // If length is different, the lists are different
+        if (a.Count != b.Count) return false;
+
+        for (int i = 0; i < a.Count; i++)
+        {
+            // If a date is different, the lists are different
+            if (a[i].Date != b[i].Date) return false;
+
+            // If a value is different, the lists are different
+            if (a[i].Value != b[i].Value) return false;
+        }
+
+        return true;
+    }
 
     string GetColour(float value)
     {

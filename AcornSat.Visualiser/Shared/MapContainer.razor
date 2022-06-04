@@ -16,20 +16,21 @@
     [Parameter] public EventCallback<Guid> OnLocationChange { get; set; }
 
     [Inject] public LayerFactory LayerFactory { get; init; }
-    //[Inject] IMarkerFactory MarkerFactory { get; init; }
     [Inject] IIconFactory IconFactory { get; init; }
     [Inject] IJSRuntime JS { get; init; }
+    [Inject] ILogger<MapContainer> Logger { get; init; }
 
     Map map;
     private MapOptions mapOptions;
-    //List<Marker> mapMarkers;
     bool IsMapExpanded { get; set; } = false;
-    //const string divId = "mapId";
+
+    bool _mapMarkersCreated = false;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        mapOptions = new MapOptions()
+        mapOptions =
+            new MapOptions()
             {
                 Center = new LatLng(-25.6, 134.3),
                 Zoom = 8,
@@ -39,10 +40,12 @@
     private async Task AfterMapRender()
     {
         // Create Tile Layer
-        var tileLayerOptions = new TileLayerOptions()
+        var tileLayerOptions =
+            new TileLayerOptions()
             {
                 Attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"
             };
+
         var mainTileLayer = await LayerFactory.CreateTileLayerAndAddToMap("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", map, tileLayerOptions);
     }
 
@@ -50,8 +53,9 @@
     {
         if (Locations != null)
         {
-            await CreateMapMarkers();
+            await EnsureMapMarkers();
         }
+
         await base.OnParametersSetAsync();
     }
 
@@ -61,9 +65,15 @@
         await map.PanTo(point);
     }
 
-    public async Task CreateMapMarkers()
+    public async Task EnsureMapMarkers()
     {
-        // mapMarkers = new List<Marker>();
+        if (_mapMarkersCreated)
+        {
+            return;
+        }
+
+        Logger.LogInformation("Creating map markers");
+
         var markerOptions = new List<MarkerOptions>();
         for (var i = -1; i < 11; i++)
         {
@@ -89,9 +99,6 @@
                 });
         }
 
-
-
-
         foreach (var location in Locations)
         {
             var label = location.HeatingScore == null 
@@ -107,10 +114,14 @@
             await marker.BindTooltip(location.Name);
             await marker.OnClick(async (MouseEvent mouseEvent) => await HandleMapMouseEvent(mouseEvent));
         }
+
+        _mapMarkersCreated = true;
     }
 
     async Task HandleMapMouseEvent(MouseEvent mouseEvent)
     {
+        Logger.LogInformation("HandleMapMouseEvent()");
+
         var lat = Math.Round(mouseEvent.LatLng.Lat, 1);
         var lng = Math.Round(mouseEvent.LatLng.Lng, 1);
         var newLocation = Locations.Single(x => Math.Round(x.Coordinates.Latitude, 1) == lat && Math.Round(x.Coordinates.Longitude, 1) == lng);
