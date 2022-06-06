@@ -50,26 +50,12 @@
 <a class="large-link right-margin" @onclick="ShowFilterModal">Year filtering</a>
 
 <div class="chart">
-    @* We change the chart's type dynamically depending on selected options.
-        We found that changing an existing Chart instance's Type did not always
-        cause it to refresh properly.
-        So we effectively create a new instance of the chart each time InternalChartType
-        changes.
-    *@
-    @switch (InternalChartType)
-    {
-        case ChartType.Line:
-            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
-                <ChartTrendline @ref="chartTrendline" TItem="float?" />
-            </Chart>
-            break;
-
-        case ChartType.Bar:
-            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Bar">
-                <ChartTrendline @ref="chartTrendline" TItem="float?" />
-            </Chart>
-            break;
+    @{
+        Logger.LogInformation("Index.razor is re-rendering the <Chart> tag, presumably because it has detected a change that's relevant. InternalChartType is currently " + InternalChartType);
     }
+    <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
+        <ChartTrendline @ref="chartTrendline" TItem="float?" />
+    </Chart>
 </div>
  
 <SelectLocation
@@ -334,10 +320,17 @@
     {
         _haveCalledResizeAtLeastOnce = false;
 
-        InternalChartType =
+        var newInternalChartType =
             SelectedChartType == ChartType.Bar || Difference || Rainfall
             ? ChartType.Bar
             : ChartType.Line;
+
+        if (newInternalChartType != InternalChartType)
+        {
+            InternalChartType = newInternalChartType;
+
+            await chart.ChangeType(newInternalChartType);
+        }
 
         await BuildDataSets();
     }
@@ -517,7 +510,7 @@
 
     protected async Task BuildDataSets()
     {
-        Logger.LogInformation("BuildDataSets()");
+        Logger.LogInformation("BuildDataSets() entering");
 
         var datasetsBeingBuilt = new List<DataSet>();
 
@@ -566,7 +559,10 @@
         Datasets = datasetsBeingBuilt;
         await mapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
 
-        await HandleRedraw();       
+        Logger.LogInformation("BuildDataSets() calling HandleRedraw()");
+        await HandleRedraw();
+
+        Logger.LogInformation("BuildDataSets() leaving");
     }
 
     List<DataType> CreateSelectedDataTypesList()
