@@ -92,6 +92,9 @@ namespace AcornSat.Visualiser.UiModel
         public SeriesAggregationOptions Aggregation { get; set; }
         public SeriesValueOptions Value { get; set; }
 
+        // Rendering option fields
+        public SeriesDisplayStyle DisplayStyle { get; set; }
+
         // Editing mode fields
 
         /// <summary>

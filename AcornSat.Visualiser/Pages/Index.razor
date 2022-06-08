@@ -307,14 +307,10 @@
     }
 
     /// <summary>
-    /// The chart type applied to the chart control. This depends both on which chart
-    /// type the user has selected and whether or not the "Difference" channel has been
-    /// enabled (if the "Difference" channel is enabled, then the chart has to be placed
-    /// in "Bar" mode, or else the Difference bars don't render).
-    ///
-    /// You might wonder why we don't just always leave the chart in "Bar" mode. We did,
-    /// actually, but then we noticed that in "Bar" mode, there's a small misalignment
-    /// between grid lines and the datapoints.
+    /// The chart type applied to the chart control. If any series is in "Bar" mode, we switch
+    /// the entire chart to Bar type to ensure it renders, at the cost of a small misalignment
+    /// between grid lines and datapoints for any line series that are being displayed.
+    /// Otherwise, we display in "Line" mode to avoid that cost.
     /// </summary>
     ChartType InternalChartType { get; set; }
 
@@ -332,18 +328,6 @@
     async Task UpdateInternalChartType()
     {
         _haveCalledResizeAtLeastOnce = false;
-
-        var newInternalChartType =
-            SelectedChartType == ChartType.Bar || Difference || Rainfall
-            ? ChartType.Bar
-            : ChartType.Line;
-
-        if (newInternalChartType != InternalChartType)
-        {
-            InternalChartType = newInternalChartType;
-
-            await chart.ChangeType(newInternalChartType);
-        }
 
         await BuildDataSetsInSimpleMode();
     }
@@ -585,6 +569,12 @@
         Logger.LogInformation("BuildDataSetsInSimpleMode() leaving");
     }
 
+    /// <summary>
+    /// This method rebuilds the set of chart series definitions based on the user's selections in the "simple mode"/v1 UI.
+    /// It discards any chart series definitions the user has edited manually in "advanced mode"/v2 UI (except any that the
+    /// user has "locked".
+    /// </summary>
+    /// <returns></returns>
     List<ChartSeriesDefinition> BuildChartSeriesDefinitionsFromSimpleModeUi()
     {
         var chartSeriesList = new List<ChartSeriesDefinition>();
@@ -651,6 +641,8 @@
 
                 var years = SelectedYears.Any() ? SelectedYears.Select(x => (short?)x).ToList() : new List<short?>() { null };
 
+                SeriesDisplayStyle displayStyle = ChooseSeriesDisplayStyleForChartSeries(measurementDefinition);
+
                 // If the user has not selected specific years, we just create one series to span the whole available time.
                 // If the user has selected specific years, we create a separate series for each selected year.
                 foreach (var year in years)
@@ -667,7 +659,8 @@
                             Smoothing = SeriesSmoothingOptions.None,
                             SmoothingWindow = 5,
                             Aggregation = MapAggregationMethodToSeriesAggregationOptions(aggregationMethod),
-                            Value = anomaly ? SeriesValueOptions.AnomalyRelativeToMean : SeriesValueOptions.Value
+                            Value = anomaly ? SeriesValueOptions.AnomalyRelativeToMean : SeriesValueOptions.Value,
+                            DisplayStyle = displayStyle
                         };
                         
                     chartSeriesList.Add(csd);
@@ -676,6 +669,14 @@
         }
 
         return chartSeriesList;
+    }
+
+    public SeriesDisplayStyle ChooseSeriesDisplayStyleForChartSeries(MeasurementDefinitionViewModel measurementDefinition)
+    {
+        if (measurementDefinition.DataType == DataType.Rainfall) return SeriesDisplayStyle.Bar;
+        if (measurementDefinition.DataAdjustment == DataAdjustment.Difference) return SeriesDisplayStyle.Bar;
+
+        return SeriesDisplayStyle.Line;
     }
 
     public class SeriesWithData
@@ -857,6 +858,22 @@
         if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0)
         {
             return;
+        }
+
+        // We used to choose set ChartType to Bar if the user's selected chart type was bar or difference or rainfall,
+        // and line otherwise.
+        //
+        // Since v2, we now set ChartType to Bar if any series is of type Bar, and Line otherwise.
+        var newInternalChartType =
+            ChartSeriesWithData.Any(x => x.ChartSeries.DisplayStyle == SeriesDisplayStyle.Bar)
+            ? ChartType.Bar
+            : ChartType.Line;
+
+        if (newInternalChartType != InternalChartType)
+        {
+            InternalChartType = newInternalChartType;
+
+            await chart.ChangeType(newInternalChartType);
         }
 
         colours = new ColourServer();
@@ -1186,9 +1203,9 @@
         var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(preferredColour));
 
         var chartType = 
-            (dataAdjustment == DataAdjustment.Difference || dataSet.DataType == DataType.Rainfall) 
-            ? ChartType.Bar 
-            : SelectedChartType;
+            chartSeries.ChartSeries.DisplayStyle == SeriesDisplayStyle.Line
+            ? ChartType.Line
+            : ChartType.Bar;
 
         switch (chartSeries.ChartSeries.Smoothing)
         {
