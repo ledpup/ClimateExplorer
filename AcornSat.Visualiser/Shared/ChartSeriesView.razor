@@ -1,16 +1,83 @@
 ﻿@using AcornSat.Visualiser.UiModel
+@using Blazorise
+@using Blazorise.Components
 @using Blazorise.Charts
 
-<Collapsible Title="Datasets">
-    <Content>
-        @foreach (var ds in ChartSeriesList)
-        {
-            <div>@ds.FriendlyTitle</div>
-        }
-    </Content>
-</Collapsible>
+<div class="chart-series-config">
+    <div class="title">@ChartSeries.FriendlyTitle</div>
+
+    <table>
+        <tr>
+            <td>Smoothing:</td>
+            <td>
+                <Select TValue="SeriesSmoothingOptions" 
+                        Size="Size.ExtraSmall"
+                        SelectedValue="@ChartSeries.Smoothing"
+                        SelectedValueChanged="@OnSmoothingChanged">
+                    <SelectItem Value="SeriesSmoothingOptions.None">None</SelectItem>
+                    <SelectItem Value="SeriesSmoothingOptions.MovingAverage">Moving average</SelectItem>
+                </Select>
+            </td>
+        </tr>
+        <tr>
+            <td>Smoothing window:</td>
+            <td>
+                <Select TValue="int"
+                        Size="Size.ExtraSmall"
+                        SelectedValue="@ChartSeries.SmoothingWindow"
+                        SelectedValueChanged="@OnSmoothingWindowChanged"
+                        Disabled="@ShouldDisableSmoothingWindow(ChartSeries)">
+                    <SelectItem Value="3">3</SelectItem>
+                    <SelectItem Value="5">5</SelectItem>
+                    <SelectItem Value="7">7</SelectItem>
+                    <SelectItem Value="10">10</SelectItem>
+                    <SelectItem Value="15">15</SelectItem>
+                    <SelectItem Value="20">20</SelectItem>
+                </Select>
+            </td>
+        </tr>
+    </table>
+
+    <a class="series-action" @onclick="@OnRemoveSeriesClicked">Remove series</a>
+
+    <a class="series-action" @onclick="@OnDuplicateSeriesClicked">Duplicate series</a>
+</div>
+
 
 @code {
     [Parameter]
-    public List<ChartSeriesDefinition> ChartSeriesList { get; set; }
+    public ChartSeriesDefinition ChartSeries { get; set; }
+
+    [Parameter]
+    public EventCallback OnSeriesChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<ChartSeriesDefinition> OnDuplicateSeries { get; set; }
+
+    [Parameter]
+    public EventCallback<ChartSeriesDefinition> OnRemoveSeries { get; set; }
+
+    bool ShouldDisableSmoothingWindow(ChartSeriesDefinition csd)
+    {
+        return csd.Smoothing != SeriesSmoothingOptions.MovingAverage;
+    }    async Task OnDuplicateSeriesClicked()
+    {
+        await OnDuplicateSeries.InvokeAsync(ChartSeries);
+    }        async Task OnRemoveSeriesClicked()
+    {
+        await OnRemoveSeries.InvokeAsync(ChartSeries);
+    }    async Task OnSmoothingChanged(SeriesSmoothingOptions o)
+    {
+        ChartSeries.Smoothing = o;
+
+        await OnSeriesChanged.InvokeAsync();
+    }
+
+    async Task OnSmoothingWindowChanged(int w)
+    {
+        ChartSeries.SmoothingWindow = w;
+
+        await OnSeriesChanged.InvokeAsync();
+    }
+
 }

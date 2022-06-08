@@ -50,7 +50,7 @@
 <a class="large-link right-margin" @onclick="ShowOptionsModal">Chart options</a>
 <a class="large-link right-margin" @onclick="ShowFilterModal">Year filtering</a>
 
-<ChartSeriesView ChartSeriesList="ChartSeriesList"></ChartSeriesView>
+<ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
 
 <div class="chart">
     <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
@@ -260,7 +260,7 @@
     {
         SelectedDayGroupThreshold = float.Parse(DayGroupThresholdText) / 100;
         SelectedDayGrouping = SelectingDayGrouping == 0 ? SelectedDayGrouping : SelectingDayGrouping;
-        await BuildDataSets();
+        await BuildDataSetsInSimpleMode();
     }
 
     private MapContainer mapContainer;
@@ -345,7 +345,7 @@
             await chart.ChangeType(newInternalChartType);
         }
 
-        await BuildDataSets();
+        await BuildDataSetsInSimpleMode();
     }
 
     List<short>? DatasetYears { get; set; }
@@ -357,7 +357,7 @@
         {
             SelectedResolution = DataResolution.Yearly;
             await InvokeAsync(StateHasChanged);
-            await BuildDataSets();
+            await BuildDataSetsInSimpleMode();
             return;
         }
 
@@ -377,7 +377,7 @@
         }
 
         await InvokeAsync(StateHasChanged);
-        await BuildDataSets();
+        await BuildDataSetsInSimpleMode();
     }
 
     List<string> StationsWithData { get; set; }
@@ -390,7 +390,7 @@
         {
             SelectedYears = new List<short>();
         }
-        await BuildDataSets();
+        await BuildDataSetsInSimpleMode();
     }
 
     int SelectedMovingAverageInterval;
@@ -411,21 +411,21 @@
     async Task OnAdjustedChanged(bool value)
     {
         Adjusted = value;
-        await BuildDataSets();
+        await BuildDataSetsInSimpleMode();
     }
 
     bool Unadjusted = false;
     async Task OnUnadjustedChanged(bool value)
     {
         Unadjusted = value;
-        await BuildDataSets();
+        await BuildDataSetsInSimpleMode();
     }
 
     bool Difference = false;
     async Task OnDifferenceChanged(bool value)
     {
         Difference = value;
-        await BuildDataSets();
+        await BuildDataSetsInSimpleMode();
     }
 
     bool UnadjustedDisabled, AdjustedDisabled, DifferenceDisabled;
@@ -434,14 +434,14 @@
     async Task OnMaximumsChanged(bool value)
     {
         Maximums = value;
-        await BuildDataSets();
+        await BuildDataSetsInSimpleMode();
     }
 
     bool Minimums;
     async Task OnMinimumsChanged(bool value)
     {
         Minimums = value;
-        await BuildDataSets();
+        await BuildDataSetsInSimpleMode();
     }
 
     bool Rainfall;
@@ -455,21 +455,21 @@
     async Task OnCO2Changed(bool value)
     {
         CO2 = value;
-        await BuildDataSets();
+        await BuildDataSetsInSimpleMode();
     }
 
     bool CH4;
     async Task OnCH4Changed(bool value)
     {
         CH4 = value;
-        await BuildDataSets();
+        await BuildDataSetsInSimpleMode();
     }
 
     bool N2O;
     async Task OnN2OChanged(bool value)
     {
         N2O = value;
-        await BuildDataSets();
+        await BuildDataSetsInSimpleMode();
     }
 
     string SelectedStartYear { get; set; }
@@ -550,13 +550,18 @@
     List<ChartSeriesDefinition> ChartSeriesList { get; set; } = new List<ChartSeriesDefinition>();
     List<SeriesWithData> ChartSeriesWithData { get; set; }
 
-    protected async Task BuildDataSets()
+    protected async Task BuildDataSetsInSimpleMode()
     {
-        Logger.LogInformation("BuildDataSets() entering");
+        Logger.LogInformation("BuildDataSetsInSimpleMode() entering");
 
         // Build a list of chart series based on the options the user has specified
-        ChartSeriesList = BuildChartSeriesDefinitions();
+        ChartSeriesList = BuildChartSeriesDefinitionsFromSimpleModeUi();
 
+        await BuildDataSets();
+    }
+
+    protected async Task BuildDataSets()
+    {
         // Fetch the data required to render those series
         ChartSeriesWithData = await RetrieveDataSets(ChartSeriesList);
 
@@ -565,10 +570,10 @@
 
         await mapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
 
-        Logger.LogInformation("BuildDataSets() leaving");
+        Logger.LogInformation("BuildDataSetsInSimpleMode() leaving");
     }
 
-    List<ChartSeriesDefinition> BuildChartSeriesDefinitions()
+    List<ChartSeriesDefinition> BuildChartSeriesDefinitionsFromSimpleModeUi()
     {
         var chartSeriesList = new List<ChartSeriesDefinition>();
 
@@ -1088,6 +1093,7 @@
             foreach (var dataSet in chartSeries.ProcessedDataSets)
             {
                 await AddDataSetToChart(
+                    chartSeries,
                     dataSet,
                     dataSet.DataAdjustment,
                     $"{dataSet.DataType} {dataSet.DataAdjustment} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}",
@@ -1145,6 +1151,7 @@
     }
 
     async Task AddDataSetToChart(
+        SeriesWithData chartSeries,
         DataSet dataSet,
         DataAdjustment dataAdjustment,
         string label,
@@ -1152,24 +1159,29 @@
         bool absoluteValues = false,
         bool redPositive = true)
     {
-        var values = dataSet.DataRecords
-                            .Select(x => x.Value)
-                            .ToList();
+        var values =
+            dataSet.DataRecords
+            .Select(x => x.Value)
+            .ToList();
 
         var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(preferredColour));
 
-        var chartType = (dataAdjustment == DataAdjustment.Difference || dataSet.DataType == DataType.Rainfall) 
-                                ? ChartType.Bar 
-                                : SelectedChartType;
+        var chartType = 
+            (dataAdjustment == DataAdjustment.Difference || dataSet.DataType == DataType.Rainfall) 
+            ? ChartType.Bar 
+            : SelectedChartType;
 
-        if (SelectedMovingAverageInterval == 0 || !SoloSma)
+        switch (chartSeries.ChartSeries.Smoothing)
         {
-            await chart.AddDataSet(
-                GetChartDataset(label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour, absoluteValues, redPositive));
-        }
-        if (SelectedMovingAverageInterval != 0 && chartType == ChartType.Line)
-        {
-            await AddMovingAverage(label, values, dataSet.MeasurementDefinition.UnitOfMeasure);
+            case SeriesSmoothingOptions.None:
+                await chart.AddDataSet(
+                    GetChartDataset(label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour, absoluteValues, redPositive));
+                break;
+
+            case SeriesSmoothingOptions.MovingAverage:
+                await AddMovingAverage(chartSeries.ChartSeries.SmoothingWindow, label, values, dataSet.MeasurementDefinition.UnitOfMeasure);
+
+                break;
         }
     }
 
@@ -1184,14 +1196,13 @@
                 };
     }
 
-    async Task AddMovingAverage(string label, List<float?> values, UnitOfMeasure unitOfMeasure)
+    async Task AddMovingAverage(int smoothingWindow, string label, List<float?> values, UnitOfMeasure unitOfMeasure)
     {
-        if (SelectedChartType == ChartType.Line && SelectedMovingAverageInterval != 0)
-        {
-            var simpleMovingAverages = SimpleMovingAverage.Calculate(SelectedMovingAverageInterval, values);
-            label = $"{label} Moving Average @ {SelectedMovingAverageInterval} year interval";
-            await chart.AddDataSet(GetLineChartDataset(label, simpleMovingAverages, ChartColor.FromHtmlColorCode(colours.GetNextColour()), unitOfMeasure));
-        }
+        var simpleMovingAverages = SimpleMovingAverage.Calculate(smoothingWindow, values);
+
+        label = $"{label} Moving Average @ {smoothingWindow} year interval";
+
+        await chart.AddDataSet(GetLineChartDataset(label, simpleMovingAverages, ChartColor.FromHtmlColorCode(colours.GetNextColour()), unitOfMeasure));
     }
 
     void BuildProcessedDataSetsForYearlyView(List<SeriesWithData> chartSeriesWithData)
@@ -1290,17 +1301,18 @@
         for (var i = 0; i < count; i++)
             colour.Add(chartColor);
 
-        var lineChartDataset = new LineChartDataset<float?>
-                    {
-                        Label = label,
-                        Data = values,
-                        BorderColor = colour,
-                        Fill = false,
-                        PointRadius = 5,
-                        BorderDash = new List<int> { },
-                        Tension = 0.1f,
-                        YAxisID = unitOfMeasure.ToString().ToLowerFirstChar(),
-                    };
+        var lineChartDataset = 
+            new LineChartDataset<float?>
+            {
+                Label = label,
+                Data = values,
+                BorderColor = colour,
+                Fill = false,
+                PointRadius = 5,
+                BorderDash = new List<int> { },
+                Tension = 0.1f,
+                YAxisID = unitOfMeasure.ToString().ToLowerFirstChar(),
+            };
 
         return lineChartDataset;
     }
@@ -1318,7 +1330,7 @@
         SelectedLocation = Locations.Single(x => x.Id == SelectedLocationId);
         SelectedDataSetDefinition = DataSetDefinitions.Single(x => x.Id == SelectedLocation.DataSetId);
 
-        await BuildDataSets();
+        await BuildDataSetsInSimpleMode();
     }
 
     string[] Labels = new string[1];
@@ -1335,6 +1347,6 @@
         SelectedYears = new List<short> { year };
         SelectedResolution = DataResolution.Monthly;
 
-        await BuildDataSets();
+        await BuildDataSetsInSimpleMode();
     }
 }

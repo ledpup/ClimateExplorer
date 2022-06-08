@@ -9,28 +9,47 @@ namespace AcornSat.Visualiser.UiModel
         {
             get
             {
+                List<string> segments = new List<string>();
+
                 string s = "";
 
                 if (Year != null) s += Year + " ";
 
-                s += MeasurementDefinition.DataType + " " + MeasurementDefinition.DataAdjustment + " | ";
+                s += MeasurementDefinition.DataType;
+
+                segments.Add(s);
+                
+                if (MeasurementDefinition.DataAdjustment != DataAdjustment.Adjusted ||
+                    DataSetDefinition.MeasurementDefinitions.Any(
+                        x =>
+                            x != MeasurementDefinition &&
+                            x.DataType == MeasurementDefinition.DataType &&
+                            x.DataAdjustment != MeasurementDefinition.DataAdjustment))
+                {
+                    segments.Add(MeasurementDefinition.DataAdjustment.ToString());
+                }
 
                 switch (Smoothing)
                 {
-                    case SeriesSmoothingOptions.None:
-                        s += "No smoothing";
-                        break;
                     case SeriesSmoothingOptions.MovingAverage:
-                        s += SmoothingWindow + " year moving average";
+                        segments.Add(SmoothingWindow + " year moving average");
                         break;
                     case SeriesSmoothingOptions.Trendline:
-                        s += "Trendline";
+                        segments.Add("Trendline");
                         break;
                 }
 
-                s += " | Aggregation: " + Aggregation;
-                s += " | Value: " + Value;
-                return s;
+                if (Aggregation != SeriesAggregationOptions.Mean)
+                {
+                    segments.Add("Aggregation: " + Aggregation);
+                }
+
+                if (Value != SeriesValueOptions.Value)
+                {
+                    segments.Add("Value: " + Value);
+                }
+
+                return String.Join(" | ", segments);
             }
         }
 
@@ -43,7 +62,7 @@ namespace AcornSat.Visualiser.UiModel
 
         // Data presentation fields
         public SeriesSmoothingOptions Smoothing { get; set; }
-        public int? SmoothingWindow { get; set; }
+        public int SmoothingWindow { get; set; }
         public SeriesAggregationOptions Aggregation { get; set; }
         public SeriesValueOptions Value { get; set; }
     }
