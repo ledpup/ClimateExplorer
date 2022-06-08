@@ -13,11 +13,26 @@ namespace AcornSat.Visualiser.UiModel
 
                 string s = "";
 
-                if (Year != null) s += Year + " ";
+                if (Year != null) s += Year;
 
-                s += MeasurementDefinition.DataType;
+                if (LocationName != null)
+                {
+                    if (s.Length > 0)
+                    {
+                        s += " ";
+                    }
 
-                segments.Add(s);
+                    s += LocationName;
+                }
+
+                if (s.Length > 0) segments.Add(s);
+
+                if (MeasurementDefinition.DataCategory != null)
+                {
+                    segments.Add(MeasurementDefinition.DataCategory.Value.ToString());
+                }
+
+                segments.Add(MapDataTypeToFriendlyName(MeasurementDefinition.DataType));
                 
                 if (MeasurementDefinition.DataAdjustment != DataAdjustment.Adjusted ||
                     DataSetDefinition.MeasurementDefinitions.Any(
@@ -53,12 +68,23 @@ namespace AcornSat.Visualiser.UiModel
             }
         }
 
+        private string MapDataTypeToFriendlyName(DataType dataType)
+        {
+            switch (dataType)
+            {
+                case DataType.TempMin: return "Daily minimum";
+                case DataType.TempMax: return "Daily maximum";
+                default: return dataType.ToString();    
+            }    
+        }
+
         // Source data fields
         public DataSetDefinitionViewModel DataSetDefinition { get; set; }
         public MeasurementDefinitionViewModel MeasurementDefinition { get; set; }
         public DataResolution DataResolution { get; set; }
         public short? Year { get; set; }
         public Guid? LocationId { get; set; }
+        public string? LocationName { get; set; }
 
         // Data presentation fields
         public SeriesSmoothingOptions Smoothing { get; set; }

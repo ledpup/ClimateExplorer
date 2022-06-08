@@ -521,6 +521,18 @@
                 }
             );
 
+        // Another cheat: Set MeasurementCategory for all MeasurementDefinitions whose DataType is TempMax or TempMin to 
+        // Temperature.
+        var targets =
+            DataSetDefinitions
+            .SelectMany(x => x.MeasurementDefinitions)
+            .Where(x => x.DataType == DataType.TempMax || x.DataType == DataType.TempMin);
+
+        foreach (var md in targets)
+        {
+            md.DataCategory = DataCategory.Temperature;
+        }
+
         Locations = (await DataService.GetLocations(includeNearbyLocations: true, includeWarmingMetrics: true)).ToList();
 
         Datasets = new List<DataSet>();
@@ -635,6 +647,7 @@
 
                 var aggregationMethod = dataType == DataType.Rainfall ? AggregationMethod.Sum : generalAggregationMethod;
                 Guid? locationId = dataDefinition.HasLocations ? SelectedLocationId : null;
+                string locationName = dataDefinition.HasLocations ? SelectedLocation?.Name : null;
 
                 var years = SelectedYears.Any() ? SelectedYears.Select(x => (short?)x).ToList() : new List<short?>() { null };
 
@@ -650,6 +663,7 @@
                             DataResolution = SelectedResolution,
                             Year = year,
                             LocationId = locationId,
+                            LocationName = locationName,
                             Smoothing = SeriesSmoothingOptions.None,
                             SmoothingWindow = 5,
                             Aggregation = MapAggregationMethodToSeriesAggregationOptions(aggregationMethod),
