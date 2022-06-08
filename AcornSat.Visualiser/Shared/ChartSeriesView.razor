@@ -37,12 +37,23 @@
             </td>
         </tr>
         <tr>
+            <td>Display value:</td>
+            <td>
+                <Select TValue="SeriesValueOptions" 
+                        Size="Size.ExtraSmall"
+                        SelectedValue="@ChartSeries.Value"
+                        SelectedValueChanged="@OnValueChanged">
+                    <SelectItem Value="SeriesValueOptions.Value">Value</SelectItem>
+                    <SelectItem Value="SeriesValueOptions.AnomalyRelativeToMean">Anomaly relative to mean</SelectItem>
+                </Select>
+            </td>
+        </tr>
+        <tr>
             <td>Lock?</td>
             <td>
                 <Check TValue="bool" Checked="@ChartSeries.IsLocked" CheckedChanged="@OnIsLockedChanged"></Check>
             </td>
         </tr>
-
     </table>
 
     <br>
@@ -85,6 +96,13 @@
     async Task OnSmoothingWindowChanged(int w)
     {
         ChartSeries.SmoothingWindow = w;
+
+        await OnSeriesChanged.InvokeAsync();
+    }
+
+    async Task OnValueChanged(SeriesValueOptions o)
+    {
+        ChartSeries.Value = o;
 
         await OnSeriesChanged.InvokeAsync();
     }
