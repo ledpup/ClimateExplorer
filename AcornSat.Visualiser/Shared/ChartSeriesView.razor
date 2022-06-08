@@ -36,8 +36,17 @@
                 </Select>
             </td>
         </tr>
+        <tr>
+            <td>Lock?</td>
+            <td>
+                <Check TValue="bool" Checked="@ChartSeries.IsLocked" CheckedChanged="@OnIsLockedChanged"></Check>
+            </td>
+        </tr>
+
     </table>
 
+    <br>
+    <br />
     <a class="series-action" @onclick="@OnRemoveSeriesClicked">Remove series</a>
 
     <a class="series-action" @onclick="@OnDuplicateSeriesClicked">Duplicate series</a>
@@ -63,7 +72,7 @@
     }    async Task OnDuplicateSeriesClicked()
     {
         await OnDuplicateSeries.InvokeAsync(ChartSeries);
-    }        async Task OnRemoveSeriesClicked()
+    }    async Task OnRemoveSeriesClicked()
     {
         await OnRemoveSeries.InvokeAsync(ChartSeries);
     }    async Task OnSmoothingChanged(SeriesSmoothingOptions o)
@@ -80,4 +89,8 @@
         await OnSeriesChanged.InvokeAsync();
     }
 
+    async Task OnIsLockedChanged(bool val)
+    {
+        ChartSeries.IsLocked = val;
+    }
 }

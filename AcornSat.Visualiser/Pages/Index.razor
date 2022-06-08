@@ -577,6 +577,12 @@
     {
         var chartSeriesList = new List<ChartSeriesDefinition>();
 
+        // Save any locked series
+        if (ChartSeriesList != null && ChartSeriesList.Any())
+        {
+            chartSeriesList.AddRange(ChartSeriesList.Where(x => x.IsLocked));
+        }
+
         var anomaly = SelectedChartType == ChartType.Bar;
         var generalAggregationMethod = anomaly ? AggregationMethod.GroupByDayThenAverage_Anomaly : AggregationMethod.GroupByDayThenAverage;
 

@@ -65,5 +65,12 @@ namespace AcornSat.Visualiser.UiModel
         public int SmoothingWindow { get; set; }
         public SeriesAggregationOptions Aggregation { get; set; }
         public SeriesValueOptions Value { get; set; }
+
+        // Editing mode fields
+
+        /// <summary>
+        /// If IsLocked is set, then the series will remain in place even if the user navigates to another notification
+        /// </summary>
+        public bool IsLocked { get; set; }
     }
 }
