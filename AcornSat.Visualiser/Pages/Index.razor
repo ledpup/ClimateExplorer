@@ -868,7 +868,9 @@
 
         List<ChartTrendlineData> trendlines = null;
 
-        title = SelectedLocation.Name;
+        var locationNames = ChartSeriesWithData.Select(x => x.ChartSeries.LocationName).Distinct().ToArray();
+
+        title = ChartSeriesWithData.Count > 1 ? String.Join(", ", locationNames) : ChartSeriesWithData.Single().ChartSeries.FriendlyTitle;
 
         if (SelectedResolution == DataResolution.Yearly)
         {
@@ -882,11 +884,8 @@
 
             (ChartStartYear, ChartEndYear) = CalculateChartStartAndEndYear(ChartSeriesWithData, SelectedStartYear, SelectedEndYear);
 
-            subtitle = 
-                SelectedChartType == ChartType.Line
-                ? $"Average Yearly Temperature ({ChartStartYear}-{ChartEndYear})"
-                : $"Temperature Relative to Average ({ChartStartYear}-{ChartEndYear})";
-            
+            subtitle = $"({ChartStartYear}-{ChartEndYear})";
+
             Labels = GetLabels(SelectedResolution, ChartStartYear, ChartEndYear);
 
             trendlines = await AddDataSetsToGraph();
@@ -1116,7 +1115,7 @@
                     chartSeries,
                     dataSet,
                     dataSet.DataAdjustment,
-                    $"{dataSet.DataType} {dataSet.DataAdjustment} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}",
+                    $"{chartSeries.ChartSeries.FriendlyTitle} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}",
                     dataSet.MeasurementDefinition.PreferredColour);
 
                 dataSetIndex++;
