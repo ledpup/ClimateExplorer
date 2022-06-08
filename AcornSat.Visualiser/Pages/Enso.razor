@@ -12,15 +12,15 @@
         <div class="enso-about-content">
             <p>
                 The El Niño–Southern Oscillation (ENSO) is a climate pattern of Pacific ocean temperatures and air pressures
-                that strongly influences weather around the Pacific. ENSO is split into three categories. They are:
+                that strongly influences weather around the Pacific. The oscillation has three phases. They are:
             </p>
 
             <ul>
                 <li>
-                    Index values of greater than 0.5 (or &lt; -0.5 for SOI) indicate an El Niño event ("little boy" in Spanish).
+                    Index values of <strong>greater than 0.5</strong> (or &lt; -0.5 for SOI) indicate an <strong>El Niño</strong> event ("little boy" in Spanish). <span style="color:red;">RED on charts.</span>
                 </li>
                 <li>
-                    Index values of less than -0.5 (or &gt; 0.5 for SOI) indicate a La Niña event ("little girl" in Spanish).
+                    Index values of <strong>less than -0.5</strong> (or &gt; 0.5 for SOI) indicate a <strong>La Niña</strong> event ("little girl" in Spanish). <span style="color:blue;">BLUE on charts.</span>
                 </li>
                 <li>
                     Index values between -0.5 and 0.5 indicate normal conditions.
@@ -64,7 +64,7 @@
                 </tr>
                 <tr>
                     <th>North American weather pattern</th>
-                    <td>Decreased wind shear leading to an <a href="https://www.weather.gov/jan/el_nino_and_la_nina#How_do_El_Nino_and_La_Nina_affect_the_Atlantic_hurricane_season_">increase in Atlantic hurricane frequency and intensity</a>. Increase in <a href="https://en.wikipedia.org/wiki/Southwestern_North_American_megadrought">south-western drought</a>.</td>
+                    <td>Decreased wind shear leading to an <a href="https://www.weather.gov/jan/el_nino_and_la_nina#How_do_El_Nino_and_La_Nina_affect_the_Atlantic_hurricane_season_">increase in Atlantic hurricane frequency and intensity</a>. Increase in <a href="https://en.wikipedia.org/wiki/Southwestern_North_American_megadrought">south-western drought</a>. Higher bushfire risk.</td>
                     <td></td>
                     <td>Increased vertical wind shear, reducing the Atlantic hurricane season. <a href="https://www.weather.gov/jan/el_nino_and_la_nina#How_do_El_Nino_and_La_Nina_affect">Cooler weather with increased rainfall</a>.</td>
                 </tr>
@@ -369,13 +369,17 @@
             if (values[i].HasValue)
             {
                 var adjustedValue = values[i].Value * (redPositive ? 1f : -1f);
-                if (adjustedValue > 0)
+                if (Math.Abs(adjustedValue) < .5)
                 {
-                    chartColor = ChartColor.FromRgba((byte)((Math.Abs(adjustedValue / max)) * 255), 31, 31, 1f);
+                    chartColor = ChartColor.FromHtmlColorCode("#000000");
+                }
+                else if (adjustedValue > 0)
+                {
+                    chartColor = ChartColor.FromRgba((byte)(63 + (Math.Abs(adjustedValue / max)) * 192), 0, 0, 1f);
                 }
                 else
                 {
-                    chartColor = ChartColor.FromRgba(31, 31, (byte)((Math.Abs(adjustedValue / min)) * 255), 1f);
+                    chartColor = ChartColor.FromRgba(0, 0, (byte)(63 + (Math.Abs(adjustedValue / min)) * 192), 1f);
                 }
                 colour.Add(chartColor);
             }
