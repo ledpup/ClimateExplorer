@@ -3,19 +3,15 @@
 @using Blazorise.Components
 @using Blazorise.Charts
 
-<Collapsible Title="Datasets">
-    <Content>
-        @foreach (var cs in ChartSeriesList)
-        {
-            <ChartSeriesView 
-                ChartSeries="@cs" 
-                OnSeriesChanged="@OnSeriesChangedInternal"
-                OnDuplicateSeries="@OnDuplicateSeries"
-                OnRemoveSeries="@OnRemoveSeries"
-                ></ChartSeriesView>
-        }
-    </Content>
-</Collapsible>
+@foreach (var cs in ChartSeriesList)
+{
+    <ChartSeriesView 
+        ChartSeries="@cs" 
+        OnSeriesChanged="@OnSeriesChangedInternal"
+        OnDuplicateSeries="@OnDuplicateSeries"
+        OnRemoveSeries="@OnRemoveSeries"
+        ></ChartSeriesView>
+}
 
 @code {
     [Parameter]

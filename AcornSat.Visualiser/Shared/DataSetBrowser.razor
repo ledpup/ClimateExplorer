@@ -4,22 +4,18 @@
 @using Blazorise.Charts
 @using static AcornSat.Core.Enums
 
-<Collapsible Title="Add a dataset">
-    <Content>
-        @foreach (var f in RootFolders)
+@foreach (var f in RootFolders)
+{
+    <div class="dataset-folder">
+        <div class="dataset-folder-name">@f.Name</div>
+        @foreach (var ds in f.DataSets)
         {
-            <div class="dataset-folder">
-                <div class="dataset-folder-name">@f.Name</div>
-                @foreach (var ds in f.DataSets)
-                {
-                    <div class="entry-list">
-                        <a class="add-dataset" @onclick="() => AddDataSet(ds)"><span class="oi oi-plus" aria-hidden="true"></span></a> <span class="dataset-name">@ds.Name</span>
-                    </div>
-                }
+            <div class="entry-list">
+                <a class="add-dataset" @onclick="() => AddDataSet(ds)"><span class="oi oi-plus" aria-hidden="true"></span></a> <span class="dataset-name">@ds.Name</span>
             </div>
         }
-    </Content>
-</Collapsible>
+    </div>
+}
 
 @code {
     [Parameter]
