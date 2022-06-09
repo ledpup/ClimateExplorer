@@ -14,6 +14,9 @@ namespace AcornSat.Core
             TempMin,
             Rainfall,
             MEIv2,
+            SOI,
+            Nino34,
+            ONI,
             CO2,
             CH4,
             N2O

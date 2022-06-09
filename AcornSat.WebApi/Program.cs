@@ -613,7 +613,6 @@ async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataS
                 break;
         }
         
-
         var returnDataSet = new DataSet
         {
             Location = location,

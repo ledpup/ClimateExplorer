@@ -533,28 +533,6 @@
                 }
             );
 
-        // Another cheat: Set MeasurementCategory for all MeasurementDefinitions whose DataType is TempMax or TempMin to 
-        // Temperature.
-        var targets =
-            DataSetDefinitions
-            .SelectMany(x => x.MeasurementDefinitions)
-            .Where(x => x.DataType == DataType.TempMax || x.DataType == DataType.TempMin);
-
-        foreach (var md in targets)
-        {
-            md.DataCategory = DataCategory.Temperature;
-        }
-
-        targets =
-            DataSetDefinitions
-            .SelectMany(x => x.MeasurementDefinitions)
-            .Where(x => x.DataType == DataType.MEIv2);
-
-        foreach (var md in targets)
-        {
-            md.DataCategory = DataCategory.Enso;
-        }
-
         Locations = (await DataService.GetLocations(includeNearbyLocations: true, includeWarmingMetrics: true)).ToList();
 
         Datasets = new List<DataSet>();
@@ -757,7 +735,7 @@
                 case Endpoints.Enso:
                     var records = 
                         (await DataService.GetEnso(
-                            EnsoIndex.Mei,
+                            MapDataTypeToEnsoIndex(csd.MeasurementDefinition.DataType),
                             csd.DataResolution,
                             "mean")
                         )
@@ -788,7 +766,22 @@
         return datasetsToReturn;
     }
 
-    static AggregationMethod ChooseDataSetApiAggregationMethod(SeriesAggregationOptions sao, SeriesValueOptions svo)
+    static EnsoIndex MapDataTypeToEnsoIndex(DataType dt)
+    {        
+        switch (dt)
+        {
+            case DataType.MEIv2: return EnsoIndex.Mei;
+            case DataType.SOI: return EnsoIndex.Soi;
+            case DataType.Nino34: return EnsoIndex.Nino34;
+            case DataType.ONI: return EnsoIndex.Oni;
+
+            default:
+                throw new NotImplementedException($"DataType {dt}");
+        }
+    }
+                            
+  
+    AggregationMethod ChooseDataSetApiAggregationMethod(SeriesAggregationOptions sao, SeriesValueOptions svo)
     {
         switch (sao)
         {
@@ -897,7 +890,7 @@
         string selectedEndYear
     )
     {
-        // Find the first and least year we have data for
+        // Find the first and last year we have data for
         var superSetStartYear = chartSeriesWithData.SelectMany(x => x.ProcessedDataSets).SelectMany(x => x.DataRecords).Min(y => y.Year);
         var superSetEndYear   = chartSeriesWithData.SelectMany(x => x.ProcessedDataSets).SelectMany(x => x.DataRecords).Max(y => y.Year);
 
@@ -972,6 +965,15 @@
             BuildProcessedDataSetsForYearlyView(ChartSeriesWithData);
 
             (ChartStartYear, ChartEndYear) = CalculateChartStartAndEndYear(ChartSeriesWithData, SelectedStartYear, SelectedEndYear);
+
+            // Now, we cut down the processed datasets to just the years that we intend to display on the chart.
+            foreach (var cswd in ChartSeriesWithData)
+            {
+                foreach (var psd in cswd.ProcessedDataSets)
+                {
+                    psd.DataRecords = psd.DataRecords.Where(x => x.Year >= ChartStartYear && x.Year <= ChartEndYear).ToList();
+                }
+            }
 
             subtitle = $"({ChartStartYear}-{ChartEndYear})";
 
@@ -1284,6 +1286,8 @@
             dataSet.DataRecords
             .Select(x => x.Value)
             .ToList();
+
+        Logger.LogInformation($"AddDataSetToChart: values has {values.Count} entries, of which {values.Count(x => x != null)} are not null");
 
         var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(preferredColour));
 

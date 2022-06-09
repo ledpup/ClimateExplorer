@@ -8,6 +8,7 @@ using static AcornSat.Core.Enums;
 using System.Net;
 using System.IO.Compression;
 using AcornSat.Core.Model;
+using AcornSat.Core.ViewModel;
 
 GenerateMapMarkers();
 
@@ -138,6 +139,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             {
                 new MeasurementDefinition
                 {
+                    DataCategory = DataCategory.Temperature,
                     DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.TempMax,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -149,6 +151,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
                 new MeasurementDefinition
                 {
+                    DataCategory = DataCategory.Temperature,
                     DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.TempMin,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -160,6 +163,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
                 new MeasurementDefinition
                 {
+                    DataCategory = DataCategory.Temperature,
                     DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.TempMax,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -171,6 +175,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
                 new MeasurementDefinition
                 {
+                    DataCategory = DataCategory.Temperature,
                     DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.TempMin,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -190,7 +195,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     SubFolderName = "daily_rainfall",
                     FileNameFormat = "[station]_daily_rainfall.csv",
                     PreferredColour = 1,
-                }
+                },
             },
             StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
             LocationInfoUrl = "http://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
@@ -208,6 +213,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             {
                 new MeasurementDefinition
                 {
+                    DataCategory = DataCategory.Temperature,
                     DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.TempMax,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -220,6 +226,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
                 new MeasurementDefinition
                 {
+                    DataCategory = DataCategory.Temperature,
                     DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.TempMin,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -246,6 +253,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             {
                 new MeasurementDefinition
                 {
+                    DataCategory = DataCategory.Temperature,
                     DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.TempMax,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -257,6 +265,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
                 new MeasurementDefinition
                 {
+                    DataCategory = DataCategory.Temperature,
                     DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.TempMin,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -282,6 +291,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             {
                 new MeasurementDefinition
                 {
+                    DataCategory = DataCategory.Enso,
                     DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.MEIv2,
                     UnitOfMeasure = UnitOfMeasure.EnsoIndex,
@@ -291,6 +301,69 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
             },
             DataDownloadUrl = "https://psl.noaa.gov/enso/mei/data/meiv2.data",
+            HasLocations = false,
+            PublishedAtEndpoint = Endpoints.Enso
+        },
+        new DataSetDefinition
+        {
+            Id = Guid.Parse("c31270fa-b207-4d8f-b68e-4995698f1a4d"),
+            Name = "Southern Oscillation Index (SOI)",
+            ShortName = "SOI",
+            Description = "TBC",
+            MoreInformationUrl = "https://www.ncdc.noaa.gov/teleconnections/enso/soi",
+            DataResolution = DataResolution.Monthly,
+            MeasurementDefinitions = new List<MeasurementDefinition>
+            {
+                new MeasurementDefinition
+                {
+                    DataCategory = DataCategory.Enso,
+                    DataAdjustment = DataAdjustment.Unadjusted,
+                    DataType = DataType.SOI,
+                    UnitOfMeasure = UnitOfMeasure.EnsoIndex
+                },
+            },
+            HasLocations = false,
+            PublishedAtEndpoint = Endpoints.Enso
+        },
+        new DataSetDefinition
+        {
+            Id = Guid.Parse("1042147a-8625-4ee7-bb5a-f0f17795c393"),
+            Name = "Oceanic Niño Index (ONI)",
+            ShortName = "ONI",
+            Description = "TBC",
+            MoreInformationUrl = "https://www.climate.gov/news-features/understanding-climate/climate-variability-oceanic-ni%C3%B1o-index",
+            DataResolution = DataResolution.Monthly,
+            MeasurementDefinitions = new List<MeasurementDefinition>
+            {
+                new MeasurementDefinition
+                {
+                    DataCategory = DataCategory.Enso,
+                    DataAdjustment = DataAdjustment.Unadjusted,
+                    DataType = DataType.ONI,
+                    UnitOfMeasure = UnitOfMeasure.EnsoIndex
+                },
+            },
+            HasLocations = false,
+            PublishedAtEndpoint = Endpoints.Enso
+        },
+        new DataSetDefinition
+        {
+            Id = Guid.Parse("bfbaa69b-c10d-4de3-a78c-1ed6ff307327"),
+            Name = "Niño 3.4",
+            ShortName = "Niño 3.4",
+            Description = "TBC",
+            MoreInformationUrl = "https://climatedataguide.ucar.edu/climate-data/nino-sst-indices-nino-12-3-34-4-oni-and-tni",
+            DataResolution = DataResolution.Monthly,
+            MeasurementDefinitions = new List<MeasurementDefinition>
+            {
+                new MeasurementDefinition
+                {
+                    DataCategory = DataCategory.Enso,
+                    DataAdjustment = DataAdjustment.Unadjusted,
+                    DataType = DataType.Nino34,
+                    UnitOfMeasure = UnitOfMeasure.EnsoIndex
+                },
+            },
             HasLocations = false,
             PublishedAtEndpoint = Endpoints.Enso
         },

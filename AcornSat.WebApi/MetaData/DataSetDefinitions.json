@@ -12,6 +12,7 @@
     "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
+        "DataCategory": 0,
         "DataType": 0,
         "DataAdjustment": 1,
         "UnitOfMeasure": 0,
@@ -23,6 +24,7 @@
         "PreferredColour": 0
       },
       {
+        "DataCategory": 0,
         "DataType": 1,
         "DataAdjustment": 1,
         "UnitOfMeasure": 0,
@@ -34,6 +36,7 @@
         "PreferredColour": 1
       },
       {
+        "DataCategory": 0,
         "DataType": 0,
         "DataAdjustment": 0,
         "UnitOfMeasure": 0,
@@ -45,6 +48,7 @@
         "PreferredColour": 2
       },
       {
+        "DataCategory": 0,
         "DataType": 1,
         "DataAdjustment": 0,
         "UnitOfMeasure": 0,
@@ -56,6 +60,7 @@
         "PreferredColour": 3
       },
       {
+        "DataCategory": null,
         "DataType": 2,
         "DataAdjustment": 0,
         "UnitOfMeasure": 2,
@@ -84,6 +89,7 @@
     "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
+        "DataCategory": 0,
         "DataType": 0,
         "DataAdjustment": 1,
         "UnitOfMeasure": 0,
@@ -95,6 +101,7 @@
         "PreferredColour": 0
       },
       {
+        "DataCategory": 0,
         "DataType": 1,
         "DataAdjustment": 1,
         "UnitOfMeasure": 0,
@@ -123,6 +130,7 @@
     "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
+        "DataCategory": 0,
         "DataType": 0,
         "DataAdjustment": 0,
         "UnitOfMeasure": 0,
@@ -134,6 +142,7 @@
         "PreferredColour": 2
       },
       {
+        "DataCategory": 0,
         "DataType": 1,
         "DataAdjustment": 0,
         "UnitOfMeasure": 0,
@@ -162,6 +171,7 @@
     "DataDownloadUrl": "https://psl.noaa.gov/enso/mei/data/meiv2.data",
     "MeasurementDefinitions": [
       {
+        "DataCategory": 1,
         "DataType": 3,
         "DataAdjustment": 0,
         "UnitOfMeasure": 5,
@@ -170,6 +180,93 @@
         "FileNameFormat": "meiv2.data.txt",
         "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
         "NullValue": "-999.00",
+        "PreferredColour": 0
+      }
+    ],
+    "HasLocations": false,
+    "Locations": null,
+    "PublishedAtEndpoint": 1
+  },
+  {
+    "Id": "c31270fa-b207-4d8f-b68e-4995698f1a4d",
+    "Name": "Southern Oscillation Index (SOI)",
+    "ShortName": "SOI",
+    "Description": "TBC",
+    "MoreInformationUrl": "https://www.ncdc.noaa.gov/teleconnections/enso/soi",
+    "DataResolution": 1,
+    "FolderName": null,
+    "StationInfoUrl": null,
+    "LocationInfoUrl": null,
+    "DataDownloadUrl": null,
+    "MeasurementDefinitions": [
+      {
+        "DataCategory": 1,
+        "DataType": 4,
+        "DataAdjustment": 0,
+        "UnitOfMeasure": 5,
+        "FolderName": null,
+        "SubFolderName": null,
+        "FileNameFormat": null,
+        "DataRowRegEx": null,
+        "NullValue": null,
+        "PreferredColour": 0
+      }
+    ],
+    "HasLocations": false,
+    "Locations": null,
+    "PublishedAtEndpoint": 1
+  },
+  {
+    "Id": "1042147a-8625-4ee7-bb5a-f0f17795c393",
+    "Name": "Oceanic Ni\u00F1o Index (ONI)",
+    "ShortName": "ONI",
+    "Description": "TBC",
+    "MoreInformationUrl": "https://www.climate.gov/news-features/understanding-climate/climate-variability-oceanic-ni%C3%B1o-index",
+    "DataResolution": 1,
+    "FolderName": null,
+    "StationInfoUrl": null,
+    "LocationInfoUrl": null,
+    "DataDownloadUrl": null,
+    "MeasurementDefinitions": [
+      {
+        "DataCategory": 1,
+        "DataType": 6,
+        "DataAdjustment": 0,
+        "UnitOfMeasure": 5,
+        "FolderName": null,
+        "SubFolderName": null,
+        "FileNameFormat": null,
+        "DataRowRegEx": null,
+        "NullValue": null,
+        "PreferredColour": 0
+      }
+    ],
+    "HasLocations": false,
+    "Locations": null,
+    "PublishedAtEndpoint": 1
+  },
+  {
+    "Id": "bfbaa69b-c10d-4de3-a78c-1ed6ff307327",
+    "Name": "Ni\u00F1o 3.4",
+    "ShortName": "Ni\u00F1o 3.4",
+    "Description": "TBC",
+    "MoreInformationUrl": "https://climatedataguide.ucar.edu/climate-data/nino-sst-indices-nino-12-3-34-4-oni-and-tni",
+    "DataResolution": 1,
+    "FolderName": null,
+    "StationInfoUrl": null,
+    "LocationInfoUrl": null,
+    "DataDownloadUrl": null,
+    "MeasurementDefinitions": [
+      {
+        "DataCategory": 1,
+        "DataType": 5,
+        "DataAdjustment": 0,
+        "UnitOfMeasure": 5,
+        "FolderName": null,
+        "SubFolderName": null,
+        "FileNameFormat": null,
+        "DataRowRegEx": null,
+        "NullValue": null,
         "PreferredColour": 0
       }
     ],
@@ -190,7 +287,8 @@
     "DataDownloadUrl": "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt",
     "MeasurementDefinitions": [
       {
-        "DataType": 4,
+        "DataCategory": null,
+        "DataType": 7,
         "DataAdjustment": 1,
         "UnitOfMeasure": 3,
         "FolderName": null,
@@ -218,7 +316,8 @@
     "DataDownloadUrl": "https://gml.noaa.gov/webdata/ccgg/trends/ch4/ch4_mm_gl.txt",
     "MeasurementDefinitions": [
       {
-        "DataType": 5,
+        "DataCategory": null,
+        "DataType": 8,
         "DataAdjustment": 1,
         "UnitOfMeasure": 4,
         "FolderName": null,
@@ -246,7 +345,8 @@
     "DataDownloadUrl": "https://gml.noaa.gov/webdata/ccgg/trends/n2o/n2o_mm_gl.txt",
     "MeasurementDefinitions": [
       {
-        "DataType": 6,
+        "DataCategory": null,
+        "DataType": 9,
         "DataAdjustment": 1,
         "UnitOfMeasure": 4,
         "FolderName": null,

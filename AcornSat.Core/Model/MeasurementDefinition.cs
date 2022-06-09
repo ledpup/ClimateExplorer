@@ -3,6 +3,7 @@ using static AcornSat.Core.Enums;
 
 public class MeasurementDefinition
 {
+    public DataCategory? DataCategory { get; set; }
     public DataType DataType { get; set; }
     public DataAdjustment DataAdjustment { get; set; }
     public UnitOfMeasure UnitOfMeasure { get; set; }
@@ -18,6 +19,7 @@ public class MeasurementDefinition
     {
         var viewModel = new MeasurementDefinitionViewModel
         {
+            DataCategory = DataCategory,
             DataAdjustment = DataAdjustment,
             DataType = DataType,
             UnitOfMeasure = UnitOfMeasure,
