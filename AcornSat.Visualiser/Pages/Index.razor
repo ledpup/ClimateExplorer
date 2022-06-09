@@ -51,7 +51,7 @@
 <a class="large-link right-margin" @onclick="ShowOptionsModal">Chart options</a>
 <a class="large-link right-margin" @onclick="ShowFilterModal">Year filtering</a>
 
-<DataSetBrowser OnAddDataSet="@OnAddDataSet"></DataSetBrowser>
+<DataSetBrowser OnAddDataSet="@OnAddDataSet" CurrentLocation="@SelectedLocation"></DataSetBrowser>
 
 <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
 
@@ -346,6 +346,8 @@
         ChartSeriesList.Add(
             new ChartSeriesDefinition()
             {
+                LocationId = dle.LocationId,
+                LocationName = dle.LocationName,
                 Aggregation = md.DataType == DataType.Rainfall ? SeriesAggregationOptions.Sum : SeriesAggregationOptions.Mean,
                 DataResolution = DataResolution.Yearly,
                 DataSetDefinition = dsd,

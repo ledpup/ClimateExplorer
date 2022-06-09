@@ -1,5 +1,8 @@
 ﻿.dataset-folder {
     margin-left: 28px;
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 40px;
 }
 
 .dataset-folder-name {
@@ -33,4 +36,5 @@
     left: 4px;
     position: relative;
     font-size: 0.8rem;
+    color: #888;
 }
