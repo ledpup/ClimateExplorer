@@ -144,8 +144,6 @@
     [Parameter]
     public string LocationId { get; set; }
 
-    bool trendlinesOn = true;
-
     @inject IJSRuntime JSRuntime
     @inject ILogger<Index> Logger;
 
@@ -155,6 +153,7 @@
         return $"Climate explorer{ locationText }";
     }
 
+    bool trendlinesOn = false;
     async Task OnTrendlinesButtonClicked()
     {
         trendlinesOn = !trendlinesOn;
