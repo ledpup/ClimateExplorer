@@ -404,7 +404,6 @@ async Task<List<DataSet>> BuildDataSet(QueryParameters queryParameters, List<Dat
             if (definition.DataResolution == DataResolution.Daily)
             {
                 dataSets = await GetYearlyTemperaturesFromDaily(definition, queryParameters);
-
             }
             else if (definition.DataResolution == DataResolution.Monthly)
             {
