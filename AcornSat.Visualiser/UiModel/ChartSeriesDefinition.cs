@@ -101,5 +101,10 @@ namespace AcornSat.Visualiser.UiModel
         /// If IsLocked is set, then the series will remain in place even if the user navigates to another notification
         /// </summary>
         public bool IsLocked { get; set; }
+
+        public override string ToString()
+        {
+            return $"CSD: {DataSetDefinition.Name} | {MeasurementDefinition.DataType} {MeasurementDefinition.DataAdjustment} | {DataResolution} | {LocationName} | {Smoothing} | {Aggregation} | {Value} | {DisplayStyle}";
+        }
     }
 }

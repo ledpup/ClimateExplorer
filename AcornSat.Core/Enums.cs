@@ -13,7 +13,7 @@ namespace AcornSat.Core
             TempMax,
             TempMin,
             Rainfall,
-            ENSO,
+            MEIv2,
             CO2,
             CH4,
             N2O
@@ -40,6 +40,7 @@ namespace AcornSat.Core
             Millimetres,
             PartsPerMillion,
             PartsPerBillion,
+            EnsoIndex
         }
 
         public static string UnitOfMeasureLabel(UnitOfMeasure unitOfMeasure)
@@ -56,6 +57,8 @@ namespace AcornSat.Core
                     return "Parts per million (ppm)";
                 case UnitOfMeasure.PartsPerBillion:
                     return "Parts per billion (ppb)";
+                case UnitOfMeasure.EnsoIndex:
+                    return "ENSO index";
             }
             throw new NotImplementedException();
         }
@@ -74,6 +77,8 @@ namespace AcornSat.Core
                     return "ppm";
                 case UnitOfMeasure.PartsPerBillion:
                     return "ppb";
+                case UnitOfMeasure.EnsoIndex:
+                    return "ENSO index";
             }
             throw new NotImplementedException();
         }

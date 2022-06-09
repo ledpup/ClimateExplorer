@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AcornSat.Core.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,7 @@ public class DataSetDefinition
 
     public bool HasLocations { get; set; }
     public List<Location> Locations { get; set; }
+    public Endpoints PublishedAtEndpoint { get; set; }
 
     public static async Task<List<DataSetDefinition>> GetDataSetDefinitions(string filePath = @"MetaData\DataSetDefinitions.json")
     {

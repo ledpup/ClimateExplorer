@@ -4,6 +4,7 @@
 @inject NavigationManager NavManager
 
 @using AcornSat.Core
+@using AcornSat.Core.Model
 @using AcornSat.Core.ViewModel
 @using AcornSat.Visualiser.UiModel
 @using Blazorise
@@ -544,6 +545,16 @@
             md.DataCategory = DataCategory.Temperature;
         }
 
+        targets =
+            DataSetDefinitions
+            .SelectMany(x => x.MeasurementDefinitions)
+            .Where(x => x.DataType == DataType.MEIv2);
+
+        foreach (var md in targets)
+        {
+            md.DataCategory = DataCategory.Enso;
+        }
+
         Locations = (await DataService.GetLocations(includeNearbyLocations: true, includeWarmingMetrics: true)).ToList();
 
         Datasets = new List<DataSet>();
@@ -719,20 +730,54 @@
 
         foreach (var csd in chartSeriesList)
         {
-            var datasets = 
-                (await DataService.GetDataSet(
-                    csd.MeasurementDefinition.DataType, 
-                    csd.DataResolution, 
-                    csd.MeasurementDefinition.DataAdjustment, 
-                    ChooseDataSetApiAggregationMethod(csd.Aggregation, csd.Value), 
-                    csd.LocationId, 
-                    csd.Year, 
+            Logger.LogInformation($"Getting dataset for {csd}");
 
-                    // Ideally, these would be stored at CSD level, but for now, leaving them global
-                    dayGrouping: SelectedDayGrouping, 
-                    dayGroupingThreshold: SelectedDayGroupThreshold
-                ))
-                .ToList();
+            List<DataSet> datasets;
+
+            switch (csd.DataSetDefinition.PublishedAtEndpoint)
+            {
+                case Endpoints.Main:
+                    datasets = 
+                        (await DataService.GetDataSet(
+                            csd.MeasurementDefinition.DataType, 
+                            csd.DataResolution, 
+                            csd.MeasurementDefinition.DataAdjustment, 
+                            ChooseDataSetApiAggregationMethod(csd.Aggregation, csd.Value), 
+                            csd.LocationId, 
+                            csd.Year, 
+
+                            // Ideally, these would be stored at CSD level, but for now, leaving them global
+                            dayGrouping: SelectedDayGrouping, 
+                            dayGroupingThreshold: SelectedDayGroupThreshold
+                        ))
+                        .ToList();
+
+                    break;
+
+                case Endpoints.Enso:
+                    var records = 
+                        (await DataService.GetEnso(
+                            EnsoIndex.Mei,
+                            csd.DataResolution,
+                            "mean")
+                        )
+                        .ToList();
+
+                    datasets =
+                        new List<DataSet>()
+                        {
+                            new DataSet()
+                            {
+                                DataRecords = records,
+                                MeasurementDefinition = csd.MeasurementDefinition
+                            }
+                        };
+
+                    break;
+
+                default:
+                    throw new NotImplementedException($"Endpoints {csd.DataSetDefinition.PublishedAtEndpoint}");
+            }
 
             datasetsToReturn.AddRange(
                 datasets
@@ -912,7 +957,7 @@
 
         List<ChartTrendlineData> trendlines = null;
 
-        var locationNames = ChartSeriesWithData.Select(x => x.ChartSeries.LocationName).Distinct().ToArray();
+        var locationNames = ChartSeriesWithData.Select(x => x.ChartSeries.LocationName).Where(x => x != null).Distinct().ToArray();
 
         title = ChartSeriesWithData.Count > 1 ? String.Join(", ", locationNames) : ChartSeriesWithData.Single().ChartSeries.FriendlyTitle;
 
@@ -980,6 +1025,19 @@
                     Title = new
                     {
                         Text = xLabel,
+                        Display = true,
+                        Color = "blue",
+                    },
+                },
+                EnsoIndex = new
+                {
+                    Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.EnsoIndex),
+                    Axis = "y",
+                    Position = "right",
+                    Grid = new { DrawOnChartArea = false },
+                    Title = new
+                    {
+                        Text = UnitOfMeasureLabel(UnitOfMeasure.EnsoIndex),
                         Display = true,
                         Color = "blue",
                     },

@@ -1,4 +1,5 @@
 ﻿using AcornSat.Core;
+using AcornSat.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,5 +23,6 @@ public class DataSetDefinitionViewModel
     public bool HasLocations { get; set; }
 
     public List<MeasurementDefinitionViewModel> MeasurementDefinitions { get; set; }
-    public List<Location> Locations { get; set;}
+    public List<Location> Locations { get; set; }
+    public Endpoints PublishedAtEndpoint { get; set; }
 }

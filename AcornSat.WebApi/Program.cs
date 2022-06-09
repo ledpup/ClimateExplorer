@@ -125,6 +125,7 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions(bool includeL
                 MeasurementDefinitions = x.MeasurementDefinitions.Select(x => x.ToViewModel()).ToList(),
                 HasLocations = x.HasLocations,
                 Locations = x.HasLocations && includeLocations ? await GetLocations(x.FolderName) : new List<Location>(),
+                PublishedAtEndpoint = x.PublishedAtEndpoint
             })
         .Select(x => x.Result)
         .ToList();

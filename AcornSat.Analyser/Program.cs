@@ -7,6 +7,7 @@ using AcornSat.Core;
 using static AcornSat.Core.Enums;
 using System.Net;
 using System.IO.Compression;
+using AcornSat.Core.Model;
 
 GenerateMapMarkers();
 
@@ -282,14 +283,16 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 new MeasurementDefinition
                 {
                     DataAdjustment = DataAdjustment.Unadjusted,
-                    DataType = DataType.ENSO,
+                    DataType = DataType.MEIv2,
+                    UnitOfMeasure = UnitOfMeasure.EnsoIndex,
                     DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                     FileNameFormat = "meiv2.data.txt",
-                    NullValue = "-999.00",
+                    NullValue = "-999.00"
                 },
             },
             DataDownloadUrl = "https://psl.noaa.gov/enso/mei/data/meiv2.data",
             HasLocations = false,
+            PublishedAtEndpoint = Endpoints.Enso
         },
         new DataSetDefinition
         {

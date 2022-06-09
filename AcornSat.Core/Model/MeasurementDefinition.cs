@@ -23,6 +23,7 @@ public class MeasurementDefinition
             UnitOfMeasure = UnitOfMeasure,
             PreferredColour = PreferredColour
         };
+
         return viewModel;
     }
 }

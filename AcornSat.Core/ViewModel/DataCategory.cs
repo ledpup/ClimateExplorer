@@ -8,6 +8,7 @@ namespace AcornSat.Core.ViewModel
 {
     public enum DataCategory
     {
-        Temperature
+        Temperature,
+        Enso
     }
 }

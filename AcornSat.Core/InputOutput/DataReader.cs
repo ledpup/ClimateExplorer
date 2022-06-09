@@ -78,7 +78,7 @@ namespace AcornSat.Core.InputOutput
         {
             switch (dataType)
             {
-                case DataType.ENSO:
+                case DataType.MEIv2:
                 case DataType.CO2:
                 case DataType.CH4:
                 case DataType.N2O:

@@ -56,7 +56,23 @@
                             DataType = DataType.N2O
                         }
                     }
+            },
+            new DataSetLibraryFolder
+            {
+                Name = "ENSO",
+                DataSets =
+                    new List<DataSetLibraryEntry>()
+                    {
+                        new DataSetLibraryEntry()
+                        {
+                            Name = "MEI.v2",
+                            SourceDataSetId = Guid.Parse("ffd5f5e2-d8df-4779-a7f4-f5d148505033"),
+                            DataAdjustment = DataAdjustment.Unadjusted,
+                            DataType = DataType.MEIv2
+                        }
+                    }
             }
+
         };
 
     async void AddDataSet(DataSetLibraryEntry dle)
