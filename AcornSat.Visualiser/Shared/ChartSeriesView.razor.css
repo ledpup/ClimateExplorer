@@ -21,3 +21,11 @@
 .series-action {
     cursor: pointer;
 }
+
+.remove-series {
+    float: right;
+}
+
+.duplicate-series {
+    min-height: 1px;
+}
