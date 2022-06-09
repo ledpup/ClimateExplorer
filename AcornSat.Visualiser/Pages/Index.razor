@@ -50,6 +50,8 @@
 <a class="large-link right-margin" @onclick="ShowOptionsModal">Chart options</a>
 <a class="large-link right-margin" @onclick="ShowFilterModal">Year filtering</a>
 
+<DataSetBrowser OnAddDataSet="@OnAddDataSet"></DataSetBrowser>
+
 <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
 
 <div class="chart">
@@ -330,6 +332,31 @@
         _haveCalledResizeAtLeastOnce = false;
 
         await BuildDataSetsInSimpleMode();
+    }
+
+    async Task OnAddDataSet(DataSetLibraryEntry dle)
+    {
+        Logger.LogInformation("Adding dle " + dle.SourceDataSetId);
+
+        var dsd = DataSetDefinitions.Single(x => x.Id == dle.SourceDataSetId);
+
+        var md = dsd.MeasurementDefinitions.Single(x => x.DataType == dle.DataType && x.DataAdjustment == dle.DataAdjustment);
+
+        ChartSeriesList.Add(
+            new ChartSeriesDefinition()
+            {
+                Aggregation = md.DataType == DataType.Rainfall ? SeriesAggregationOptions.Sum : SeriesAggregationOptions.Mean,
+                DataResolution = DataResolution.Yearly,
+                DataSetDefinition = dsd,
+                MeasurementDefinition = md,
+                Smoothing = SeriesSmoothingOptions.None,
+                SmoothingWindow = 5,
+                Value = SeriesValueOptions.Value,
+                Year = null
+            }
+        );
+
+        await BuildDataSets();
     }
 
     List<short>? DatasetYears { get; set; }
@@ -959,7 +986,7 @@
                 },
                 Millimetres = new
                 {
-                    Display = Rainfall,
+                    Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.Millimetres),
                     Axis = "y",
                     Position = Maximums || Minimums ? "right" : "left",
                     Grid = new { DrawOnChartArea = false },
@@ -972,7 +999,7 @@
                 },
                 DegreesCelsius = new  
                 { 
-                    Display = Maximums || Minimums,
+                    Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.DegreesCelsius || x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.DegreesCelsiusAnomaly),
                     Axis = "y",
                     Position = "left",
                     Grid = new { DrawOnChartArea = false },
@@ -985,7 +1012,7 @@
                 },
                 PartsPerMillion = new
                 {
-                    Display = CO2,
+                    Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.PartsPerMillion),
                     Axis = "y",
                     Position = Maximums || Minimums ? "right" : "left",
                     Grid = new { DrawOnChartArea = false },
@@ -998,7 +1025,7 @@
                 },
                 PartsPerBillion = new
                 {
-                    Display = CH4 || N2O,
+                    Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.PartsPerBillion),
                     Axis = "y",
                     Position = Maximums || Minimums ? "right" : "left",
                     Grid = new { DrawOnChartArea = false },

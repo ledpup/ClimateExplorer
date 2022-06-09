@@ -1,0 +1,26 @@
+﻿.dataset-folder {
+    margin-left: 28px;
+}
+
+.add-dataset {
+    cursor: pointer;
+    color: #09C2FC;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.add-dataset:hover {
+    color: #0a58ca
+}
+
+.add-dataset .add-icon {
+    padding-right: 8px;
+}
+
+.dataset-name {
+    top: -3px;
+    left: 4px;
+    position: relative;
+    font-size: 0.8rem;
+}
