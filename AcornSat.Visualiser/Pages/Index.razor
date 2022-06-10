@@ -1264,8 +1264,6 @@
     {
         var simpleMovingAverages = SimpleMovingAverage.Calculate(smoothingWindow, values);
 
-        label = $"{label} Moving Average @ {smoothingWindow} year interval";
-
         await chart.AddDataSet(GetLineChartDataset(label, simpleMovingAverages, ChartColor.FromHtmlColorCode(colours.GetNextColour()), unitOfMeasure));
     }
 
