@@ -221,17 +221,19 @@
         data.Add($"{resolution},{ChartStartYear}-{ChartEndYear},Averaging method: {DayGroupingText(SelectedDayGrouping).ToLower()} with a threshold of {SelectedDayGroupThreshold},average requiring all groupings for a full data set - otherwise record null");
         data.Add(string.Empty);
 
-        var header = "Year," + string.Join(",", CorrelatedDataSets.Select(x => $"{x.MeasurementDefinition.DataType} {x.MeasurementDefinition.DataAdjustment}"));
+        // TODO: Fix
+        var header = "Year,";// + string.Join(",", CorrelatedDataSets.Select(x => $"{x.MeasurementDefinition.DataType} {x.MeasurementDefinition.DataAdjustment}"));
         data.Add(header);
 
         foreach (var label in GetLabels(DataResolution.Yearly, ChartStartYear, ChartEndYear))
         {
             var dataRow = label + ",";
-            foreach (var dataSet in CorrelatedDataSets)
-            {
-                var dataRecord = dataSet.DataRecords.Single(x => x.Year == short.Parse(label));
-                dataRow += (dataRecord.Value == null ? string.Empty : MathF.Round((float)dataRecord.Value, 2).ToString("0.00")) + ",";
-            }
+            // TODO: Fix
+            //foreach (var dataSet in CorrelatedDataSets)
+            //{
+            //    var dataRecord = dataSet.DataRecords.Single(x => x.Year == short.Parse(label));
+            //    dataRow += (dataRecord.Value == null ? string.Empty : MathF.Round((float)dataRecord.Value, 2).ToString("0.00")) + ",";
+            //}
             dataRow = dataRow.TrimEnd(',');
             data.Add(dataRow);
         }
@@ -891,7 +893,6 @@
         }
     }
 
-    List<DataSet> CorrelatedDataSets = new List<DataSet>();
     short ChartStartYear, ChartEndYear;
 
     static Tuple<short, short> CalculateChartStartAndEndYear(
@@ -993,17 +994,10 @@
         }
         else
         {
-                    // If the chart is showing only specified years, filter the data sets down to those which are for
-        // one of those years.
-        // TODO: Review
-        var selectedDataSets =
-            Datasets.Where(x => !SelectedYears.Any() || SelectedYears.Contains(x.Year.Value))
-            .ToList();
-
-            CorrelatedDataSets = new List<DataSet>();
-            foreach (var dataSet in selectedDataSets)
+            foreach (var cswd in ChartSeriesWithData)
             {
-                CorrelatedDataSets.Add(dataSet);
+                // TODO: Is this shared reference okay? Or should we be cloning?
+                cswd.ProcessedDataSets = cswd.SourceDataSets.ToList();
             }
 
             subtitle = $"{string.Join(", ", SelectedYears)} {SelectedResolution} Chart";        
@@ -1012,6 +1006,9 @@
 
             if (SelectedYears.Any())
             {
+                // Build a list of x axis labels. Because we may have multiple years selected, and leap years
+                // have a different number of days to non-leap years, we prefer to use a leap year when preparing
+                // the list of x axis labels, if one is present in the user's list of selected years.
                 var selectedYear = SelectedYears.FirstOrDefault(x => calendar.IsLeapYear(x));
 
                 if (selectedYear == 0)

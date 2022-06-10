@@ -92,13 +92,19 @@
     bool ShouldDisableSmoothingWindow(ChartSeriesDefinition csd)
     {
         return csd.Smoothing != SeriesSmoothingOptions.MovingAverage;
-    }    async Task OnDuplicateSeriesClicked()
+    }
+
+    async Task OnDuplicateSeriesClicked()
     {
         await OnDuplicateSeries.InvokeAsync(ChartSeries);
-    }    async Task OnRemoveSeriesClicked()
+    }
+
+    async Task OnRemoveSeriesClicked()
     {
         await OnRemoveSeries.InvokeAsync(ChartSeries);
-    }    async Task OnSmoothingChanged(SeriesSmoothingOptions o)
+    }
+
+    async Task OnSmoothingChanged(SeriesSmoothingOptions o)
     {
         ChartSeries.Smoothing = o;
 
