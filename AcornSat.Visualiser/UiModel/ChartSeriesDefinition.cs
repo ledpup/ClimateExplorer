@@ -94,6 +94,7 @@ namespace AcornSat.Visualiser.UiModel
 
         // Rendering option fields
         public SeriesDisplayStyle DisplayStyle { get; set; }
+        public bool ShowTrendline { get; set; }
 
         // Editing mode fields
 

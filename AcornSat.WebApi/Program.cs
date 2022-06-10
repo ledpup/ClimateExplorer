@@ -250,7 +250,7 @@ async Task<List<DataSet>> YearlyTemperaturesAcrossLocations(
 
             var definition = definitions.Single(x => x.Id == location.DataSetId);
 
-            var locationDataSet = await GetYearlyTemperaturesFromDaily(definition, queryParameters);
+            var locationDataSet = await GetYearlyRecordsFromDaily(definition, queryParameters);
 
             dataSet.AddRange(locationDataSet);
         });
@@ -403,11 +403,11 @@ async Task<List<DataSet>> BuildDataSet(QueryParameters queryParameters, List<Dat
         case DataResolution.Yearly:
             if (definition.DataResolution == DataResolution.Daily)
             {
-                dataSets = await GetYearlyTemperaturesFromDaily(definition, queryParameters);
+                dataSets = await GetYearlyRecordsFromDaily(definition, queryParameters);
             }
             else if (definition.DataResolution == DataResolution.Monthly)
             {
-                dataSets = await GetYearlyTemperaturesFromMonthly(definition, queryParameters.DataType, queryParameters.DataAdjustment, queryParameters.LocationId, queryParameters.Year);
+                dataSets = await GetYearlyRecordsFromMonthly(definition, queryParameters.DataType, queryParameters.DataAdjustment, queryParameters.LocationId, queryParameters.Year);
             }
             if (queryParameters.AggregationMethod.HasValue && queryParameters.AggregationMethod == AggregationMethod.GroupByDayThenAverage_Anomaly)
             {
@@ -425,12 +425,12 @@ async Task<List<DataSet>> BuildDataSet(QueryParameters queryParameters, List<Dat
 
             break;
         case DataResolution.Weekly:
-            dataSets = await GetAverageFromDailyTemperatures(definition, queryParameters.DataType, DataResolution.Weekly, queryParameters.DataAdjustment, queryParameters.LocationId.Value, queryParameters.Year.Value, ((GroupThenAverage)queryParameters.StatsParameters).DayGroupingThreshold);
+            dataSets = await GetAverageFromDailyRecords(definition, queryParameters.DataType, DataResolution.Weekly, queryParameters.DataAdjustment, queryParameters.LocationId.Value, queryParameters.Year.Value, ((GroupThenAverage)queryParameters.StatsParameters).DayGroupingThreshold);
             break;
         case DataResolution.Monthly:
             if (definition.DataResolution == DataResolution.Daily)
             {
-                dataSets = await GetAverageFromDailyTemperatures(definition, queryParameters.DataType, DataResolution.Monthly, queryParameters.DataAdjustment, queryParameters.LocationId.Value, queryParameters.Year.Value, ((GroupThenAverage)queryParameters.StatsParameters).DayGroupingThreshold);
+                dataSets = await GetAverageFromDailyRecords(definition, queryParameters.DataType, DataResolution.Monthly, queryParameters.DataAdjustment, queryParameters.LocationId.Value, queryParameters.Year.Value, ((GroupThenAverage)queryParameters.StatsParameters).DayGroupingThreshold);
             }
             else if (definition.DataResolution == DataResolution.Monthly)
             {
@@ -486,7 +486,7 @@ List<DataSet> TrimNulls(List<DataSet> dataSets)
     return dataSets;
 }
 
-async Task<List<DataSet>> GetYearlyTemperaturesFromMonthly(DataSetDefinition dataSetDefinition, DataType dataType, DataAdjustment dataAdjustment, Guid? locationId, short? year)
+async Task<List<DataSet>> GetYearlyRecordsFromMonthly(DataSetDefinition dataSetDefinition, DataType dataType, DataAdjustment dataAdjustment, Guid? locationId, short? year)
 {
     var dataSets = await GetDataFromFile(dataSetDefinition, dataType, dataAdjustment, locationId);
 
@@ -515,7 +515,7 @@ async Task<List<DataSet>> GetYearlyTemperaturesFromMonthly(DataSetDefinition dat
     return returnDataSets;
 }
 
-async Task<List<DataSet>> GetAverageFromDailyTemperatures(DataSetDefinition dataSetDefinition, DataType dataType, DataResolution dataResolution, DataAdjustment dataAdjustment, Guid locationId, short? year, float? threshold = .8f)
+async Task<List<DataSet>> GetAverageFromDailyRecords(DataSetDefinition dataSetDefinition, DataType dataType, DataResolution dataResolution, DataAdjustment dataAdjustment, Guid locationId, short? year, float? threshold = .8f)
 {
     if (threshold < 0 || threshold > 1)
     {
@@ -583,7 +583,7 @@ async Task<List<DataSet>> GetDataFromFile(DataSetDefinition dataSetDefintion, Da
     return returnDataSets;
 }
 
-async Task<List<DataSet>> GetYearlyTemperaturesFromDaily(DataSetDefinition dataSetDefintion, QueryParameters queryParameters)
+async Task<List<DataSet>> GetYearlyRecordsFromDaily(DataSetDefinition dataSetDefintion, QueryParameters queryParameters)
 {
     var location = (await Location.GetLocations(dataSetDefintion.FolderName)).Single(x => x.Id == queryParameters.LocationId);
 

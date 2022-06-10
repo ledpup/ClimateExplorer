@@ -1,4 +1,5 @@
-﻿@using AcornSat.Visualiser.UiModel
+﻿@using AcornSat.Core.ViewModel
+@using AcornSat.Visualiser.UiModel
 @using Blazorise
 @using Blazorise.Components
 @using Blazorise.Charts
@@ -19,12 +20,51 @@
 
 @code {
     [Parameter]
+    public IEnumerable<DataSetDefinitionViewModel> DataSetDefinitions { get; set; }
+
+    [Parameter]
     public EventCallback<DataSetLibraryEntry> OnAddDataSet { get; set; }
 
     [Parameter]
     public Location? CurrentLocation { get; set; }
 
     List<DataSetLibraryFolder> RootFolders { get; set; }
+
+    string BuildDataSetName(MeasurementDefinitionViewModel md, DataSetDefinitionViewModel dsd)
+    {
+        List<string> segments = new List<string>();
+
+        switch (md.DataType)
+        {
+            case DataType.TempMax:
+                segments.Add("Temperature");
+                segments.Add("Daily maximum");
+
+                if (dsd.MeasurementDefinitions.Count(x => x.DataType == DataType.TempMax) > 1)
+                {
+                    segments.Add(md.DataAdjustment.ToString());
+                }
+
+                break;
+
+            case DataType.TempMin:
+                segments.Add("Temperature");
+                segments.Add("Daily minimum");
+
+                if (dsd.MeasurementDefinitions.Count(x => x.DataType == DataType.TempMax) > 1)
+                {
+                    segments.Add(md.DataAdjustment.ToString());
+                }
+
+                break;
+
+            case DataType.Rainfall:
+                segments.Add("Rainfall");
+                break;
+        }
+
+        return String.Join(" | ", segments);
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -39,82 +79,24 @@
                     DataSets = new List<DataSetLibraryEntry>()
                 };
 
-            currentLocationFolder.DataSets.Add(
-                new DataSetLibraryEntry()
-                {
-                    DataType = DataType.TempMax,
-                    DataAdjustment = DataAdjustment.Adjusted,
-                    SourceDataSetId = CurrentLocation.DataSetId,
-                    LocationId = CurrentLocation.Id,
-                    LocationName = CurrentLocation.Name,
-                    Name = "Temperature | Daily maximum | Adjusted"
-                });
+            var dsd = DataSetDefinitions.SingleOrDefault(x => x.Id == CurrentLocation.DataSetId);
 
-            currentLocationFolder.DataSets.Add(
-                new DataSetLibraryEntry()
+            if (dsd != null)
+            {
+                foreach (var md in dsd.MeasurementDefinitions.OrderBy(x => x.DataType.ToString()).ThenBy(x => x.DataAdjustment.ToString()))
                 {
-                    DataType = DataType.TempMax,
-                    DataAdjustment = DataAdjustment.Unadjusted,
-                    SourceDataSetId = CurrentLocation.DataSetId,
-                    LocationId = CurrentLocation.Id,
-                    LocationName = CurrentLocation.Name,
-                    Name = "Temperature | Daily maximum | Unadjusted"
-                });
-
-            currentLocationFolder.DataSets.Add(
-                new DataSetLibraryEntry()
-                {
-                    DataType = DataType.TempMax,
-                    DataAdjustment = DataAdjustment.Difference,
-                    SourceDataSetId = CurrentLocation.DataSetId,
-                    LocationId = CurrentLocation.Id,
-                    LocationName = CurrentLocation.Name,
-                    Name = "Temperature | Daily maximum | Adjustment"
-                });
-
-            currentLocationFolder.DataSets.Add(
-                new DataSetLibraryEntry()
-                {
-                    DataType = DataType.TempMin,
-                    DataAdjustment = DataAdjustment.Adjusted,
-                    SourceDataSetId = CurrentLocation.DataSetId,
-                    LocationId = CurrentLocation.Id,
-                    LocationName = CurrentLocation.Name,
-                    Name = "Temperature | Daily minimum | Adjusted"
-                });
-
-            currentLocationFolder.DataSets.Add(
-                new DataSetLibraryEntry()
-                {
-                    DataType = DataType.TempMin,
-                    DataAdjustment = DataAdjustment.Unadjusted,
-                    SourceDataSetId = CurrentLocation.DataSetId,
-                    LocationId = CurrentLocation.Id,
-                    LocationName = CurrentLocation.Name,
-                    Name = "Temperature | Daily minimum | Unadjusted"
-                });
-
-            currentLocationFolder.DataSets.Add(
-                new DataSetLibraryEntry()
-                {
-                    DataType = DataType.TempMin,
-                    DataAdjustment = DataAdjustment.Difference,
-                    SourceDataSetId = CurrentLocation.DataSetId,
-                    LocationId = CurrentLocation.Id,
-                    LocationName = CurrentLocation.Name,
-                    Name = "Temperature | Daily minimum | Adjustment"
-                });
-
-            currentLocationFolder.DataSets.Add(
-                new DataSetLibraryEntry()
-                {
-                    DataType = DataType.Rainfall,
-                    DataAdjustment = DataAdjustment.Unadjusted,
-                    SourceDataSetId = CurrentLocation.DataSetId,
-                    LocationId = CurrentLocation.Id,
-                    LocationName = CurrentLocation.Name,
-                    Name = "Rainfall"
-                });
+                    currentLocationFolder.DataSets.Add(
+                        new DataSetLibraryEntry()
+                        {
+                            DataType = md.DataType,
+                            DataAdjustment = md.DataAdjustment,
+                            SourceDataSetId = CurrentLocation.DataSetId,
+                            LocationId = CurrentLocation.Id,
+                            LocationName = CurrentLocation.Name,
+                            Name = BuildDataSetName(md, dsd)
+                        });
+                }
+            }
 
             RootFolders.Add(currentLocationFolder);
         }

@@ -47,7 +47,7 @@
 
 <Collapsible Title="Add a dataset" InitiallyShown="false">
     <Content>
-        <DataSetBrowser OnAddDataSet="@OnAddDataSet" CurrentLocation="@SelectedLocation"></DataSetBrowser>
+        <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@SelectedLocation"></DataSetBrowser>
     </Content>
 </Collapsible>
 
@@ -1186,6 +1186,9 @@
         var dataSetIndex = 0;
 
         colours = new ColourServer();
+
+        var trendlines = new List<ChartTrendlineData>();
+
         foreach (var chartSeries in ChartSeriesWithData)
         {
             foreach (var dataSet in chartSeries.ProcessedDataSets)
@@ -1197,53 +1200,14 @@
                     $"{chartSeries.ChartSeries.FriendlyTitle} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}",
                     dataSet.MeasurementDefinition.PreferredColour);
 
+                if (chartSeries.ChartSeries.ShowTrendline)
+                {
+                    trendlines.Add(CreateTrendline(dataSetIndex, ChartColor.FromHtmlColorCode(colours.GetNextColour(dataSet.MeasurementDefinition.PreferredColour))));
+                }
+
                 dataSetIndex++;
             }
         }
-
-        //foreach (var dataSet in bufferedSelectedDataSet)
-        //{
-        //    if (dataSet.Resolution != DataResolution.Yearly)
-        //    {
-        //        var labelPrefix = dataSet.Year.ToString();
-        //        await AddDataSetToChart(dataSet, dataSet.DataAdjustment, $"{labelPrefix} {dataSet.DataType} {dataSet.DataAdjustment} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}", dataSet.MeasurementDefinition.PreferredColour);
-        //        dataSetIndex++;
-        //    }
-        //    else if (dataSet.DataType == DataType.Rainfall)
-        //    {
-        //        await AddDataSetToChart(dataSet, dataSet.DataAdjustment, $"{dataSet.DataType} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}", dataSet.MeasurementDefinition.PreferredColour, redPositive: false);
-        //    }
-        //    else if (dataSet.DataAdjustment == DataAdjustment.Difference)
-        //    {
-        //        await AddDataSetToChart(dataSet, DataAdjustment.Difference, $"{dataSet.DataType} Difference {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}", dataSet.MeasurementDefinition.PreferredColour, absoluteValues: true);
-        //    }
-        //    else
-        //    {
-        //        await AddDataSetToChart(dataSet, dataSet.DataAdjustment, $"{dataSet.DataType} {dataSet.DataAdjustment} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}", dataSet.MeasurementDefinition.PreferredColour);
-        //        dataSetIndex++;
-        //    }
-        //}
-
-        var trendlines = new List<ChartTrendlineData>();
-
-        //if (SelectedResolution == DataResolution.Yearly && trendlinesOn)
-        //{
-        //    var step = 
-        //        SelectedChartType == ChartType.Line
-        //        ? (SelectedMovingAverageInterval != 0 && !SoloSma ? 2 : 1)
-        //        : 1;
-
-        //    colours = new ColourServer();
-        //    for (var i = 0; i < dataSetIndex * step; i += step)
-        //    {
-        //        var preferredColour = bufferedSelectedDataSet[i / step].MeasurementDefinition.PreferredColour;
-        //        trendlines.Add(CreateTrendline(i, ChartColor.FromHtmlColorCode(colours.GetNextColour(preferredColour))));
-        //    }
-        //    if (trendlines.Count == 1)
-        //    {
-        //        trendlines[0].Color = ChartColor.FromRgba(0, 0, 0, 1f);
-        //    }
-        //}
 
         return trendlines;
     }
@@ -1289,11 +1253,11 @@
     {
         return
             new ChartTrendlineData
-                {
-                    DatasetIndex = datasetIndex,
-                    Width = 3,
-                    Color = colour
-                };
+            {
+                DatasetIndex = datasetIndex,
+                Width = 3,
+                Color = colour
+            };
     }
 
     async Task AddMovingAverage(int smoothingWindow, string label, List<float?> values, UnitOfMeasure unitOfMeasure)
