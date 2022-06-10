@@ -45,7 +45,8 @@ namespace AcornSat.Visualiser.Services
                 data.Add(dataRow);
             }
 
-            var bytes = data.SelectMany(s => System.Text.Encoding.UTF8.GetBytes(s + Environment.NewLine)).ToArray();
+            // Include a UTF-8 BOM to ensure degrees symbol is handled correctly when exported CSV is opened by excel
+            var bytes = new byte[] { 0xEF, 0xBB, 0xBF }.Concat(data.SelectMany(s => System.Text.Encoding.UTF8.GetBytes(s + Environment.NewLine))).ToArray();
             var fileStream = new MemoryStream(bytes);
 
             return fileStream;
