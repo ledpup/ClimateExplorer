@@ -2,10 +2,12 @@
 @page "/location/{locationId}"
 
 @inject NavigationManager NavManager
+@inject IExporter Exporter
 
 @using AcornSat.Core
 @using AcornSat.Core.Model
 @using AcornSat.Core.ViewModel
+@using AcornSat.Visualiser.Services
 @using AcornSat.Visualiser.UiModel
 @using Blazorise
 @using Blazorise.Components
@@ -212,42 +214,15 @@
         throw new NotImplementedException(dayGrouping.ToString());
     }
 
-    Stream GetFileStream()
-    {
-        var resolution = SelectedChartType == ChartType.Line ? "Yearly average" : "Yearly values relative to average";
-
-        var data = new List<string> { $"{SelectedLocation.Name},{SelectedLocation.Coordinates.ToString(true)}" };
-
-        data.Add($"{resolution},{ChartStartYear}-{ChartEndYear},Averaging method: {DayGroupingText(SelectedDayGrouping).ToLower()} with a threshold of {SelectedDayGroupThreshold},average requiring all groupings for a full data set - otherwise record null");
-        data.Add(string.Empty);
-
-        // TODO: Fix
-        var header = "Year,";// + string.Join(",", CorrelatedDataSets.Select(x => $"{x.MeasurementDefinition.DataType} {x.MeasurementDefinition.DataAdjustment}"));
-        data.Add(header);
-
-        foreach (var label in GetLabels(DataResolution.Yearly, ChartStartYear, ChartEndYear))
-        {
-            var dataRow = label + ",";
-            // TODO: Fix
-            //foreach (var dataSet in CorrelatedDataSets)
-            //{
-            //    var dataRecord = dataSet.DataRecords.Single(x => x.Year == short.Parse(label));
-            //    dataRow += (dataRecord.Value == null ? string.Empty : MathF.Round((float)dataRecord.Value, 2).ToString("0.00")) + ",";
-            //}
-            dataRow = dataRow.TrimEnd(',');
-            data.Add(dataRow);
-        }
-
-        var bytes = data.SelectMany(s => System.Text.Encoding.UTF8.GetBytes(s + Environment.NewLine)).ToArray();
-        var fileStream = new MemoryStream(bytes);
-
-        return fileStream;
-    }
-
     private async Task OnDownloadDataClicked()
     {
-        var fileStream = GetFileStream();
-        var fileName = $"{SelectedLocation.Name} {ChartStartYear}-{ChartEndYear}.csv";
+        var fileStream = Exporter.ExportChartData(ChartSeriesWithData, Locations, GetLabels(SelectedResolution, ChartStartYear, ChartEndYear));
+
+        var locationNames = ChartSeriesWithData.Select(x => x.ChartSeries.LocationName).Where(x => x != null).Distinct().ToArray();
+
+        var fileName = locationNames.Any() ? String.Join("-", locationNames) + "-" : "";
+
+        fileName = $"Export-{fileName}{ChartStartYear}-{ChartEndYear}.csv";
 
         using var streamRef = new DotNetStreamReference(stream: fileStream);
 
@@ -705,13 +680,6 @@
         if (measurementDefinition.DataAdjustment == DataAdjustment.Difference) return SeriesDisplayStyle.Bar;
 
         return SeriesDisplayStyle.Line;
-    }
-
-    public class SeriesWithData
-    {
-        public ChartSeriesDefinition ChartSeries { get; set;  }
-        public List<DataSet> SourceDataSets { get; set; }
-        public List<DataSet> ProcessedDataSets { get; set; }
     }
 
     async Task<List<SeriesWithData>> RetrieveDataSets(List<ChartSeriesDefinition> chartSeriesList)

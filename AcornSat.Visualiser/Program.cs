@@ -20,6 +20,7 @@ builder.Services
     .AddMapService()
     .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
     .AddSingleton<IDataServiceCache, DataServiceCache>()
+    .AddTransient<IExporter, Exporter>()
     .AddHttpClient<IDataService, DataService>(client =>
     {
         client.BaseAddress = new Uri(builder.Configuration["dataServiceBaseUri"]);
