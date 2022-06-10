@@ -7,6 +7,13 @@
     <div class="title">@ChartSeries.FriendlyTitle</div>
 
     <table>
+        @if (ChartSeries.Year.HasValue)
+        {
+            <tr>
+                <td>Filter to year:</td>
+                <td>@ChartSeries.Year</td>
+            </tr>
+        }
         <tr>
             <td>Smoothing:</td>
             <td>
