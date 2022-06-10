@@ -68,6 +68,12 @@
             </td>
         </tr>
         <tr>
+            <td>Show trendline</td>
+            <td>
+                <Check TValue="bool" Checked="@ChartSeries.ShowTrendline" CheckedChanged="@OnShowTrendlineChanged"></Check>
+            </td>
+        </tr>
+        <tr>
             <td>Lock?</td>
             <td>
                 <Check TValue="bool" Checked="@ChartSeries.IsLocked" CheckedChanged="@OnIsLockedChanged"></Check>
@@ -142,5 +148,12 @@
     async Task OnIsLockedChanged(bool val)
     {
         ChartSeries.IsLocked = val;
+    }
+
+    async Task OnShowTrendlineChanged(bool val)
+    {
+        ChartSeries.ShowTrendline = val;
+
+        await OnSeriesChanged.InvokeAsync();
     }
 }
