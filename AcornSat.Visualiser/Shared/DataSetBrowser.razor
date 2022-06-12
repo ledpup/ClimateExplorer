@@ -72,12 +72,12 @@
 
         if (CurrentLocation != null)
         {
-            var currentLocationFolder = 
+            var currentLocationFolder =
                 new DataSetLibraryFolder()
-                {
-                    Name = CurrentLocation.Name + " observations",
-                    DataSets = new List<DataSetLibraryEntry>()
-                };
+                    {
+                        Name = CurrentLocation.Name + " observations",
+                        DataSets = new List<DataSetLibraryEntry>()
+                    };
 
             var dsd = DataSetDefinitions.SingleOrDefault(x => x.Id == CurrentLocation.DataSetId);
 
@@ -87,14 +87,14 @@
                 {
                     currentLocationFolder.DataSets.Add(
                         new DataSetLibraryEntry()
-                        {
-                            DataType = md.DataType,
-                            DataAdjustment = md.DataAdjustment,
-                            SourceDataSetId = CurrentLocation.DataSetId,
-                            LocationId = CurrentLocation.Id,
-                            LocationName = CurrentLocation.Name,
-                            Name = BuildDataSetName(md, dsd)
-                        });
+                            {
+                                DataType = md.DataType,
+                                DataAdjustment = md.DataAdjustment,
+                                SourceDataSetId = CurrentLocation.DataSetId,
+                                LocationId = CurrentLocation.Id,
+                                LocationName = CurrentLocation.Name,
+                                Name = BuildDataSetName(md, dsd)
+                            });
                 }
             }
 
@@ -168,8 +168,23 @@
                                 DataType = DataType.ONI
                             }
                         }
+                },
+                new DataSetLibraryFolder
+                {
+                    Name = "Indian Ocean Dipole",
+                    DataSets =
+                        new List<DataSetLibraryEntry>()
+                        {
+                            new DataSetLibraryEntry()
+                            {
+                                Name = "Indian Ocean Dipole (IOD)",
+                                SourceDataSetId = Guid.Parse("a3841b12-2dd4-424b-a96e-c35ddba66efc"),
+                                DataAdjustment = DataAdjustment.Adjusted,
+                                DataType = DataType.IOD
+                            },
+                        }
                 }
-                }
+            }
         );
     }
 

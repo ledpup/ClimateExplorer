@@ -82,6 +82,7 @@ namespace AcornSat.Core.InputOutput
                 case DataType.CO2:
                 case DataType.CH4:
                 case DataType.N2O:
+                case DataType.IOD:
                     return "Reference";
                 case DataType.Rainfall:
                     return "Rainfall";
@@ -109,7 +110,7 @@ namespace AcornSat.Core.InputOutput
                 return new List<DataRecord>();
             }
 
-            var temperatureRecords = new List<DataRecord>();
+            var dataRecords = new List<DataRecord>();
 
             var initialDataIndex = GetStartIndex(regEx, lines);
 
@@ -118,7 +119,7 @@ namespace AcornSat.Core.InputOutput
             // Check to see if the station had started recording by the year we want
             if (yearFilter != null && startYearRecord > yearFilter)
             {
-                return temperatureRecords;
+                return dataRecords;
             }
 
             var startDate = yearFilter == null ? startYearRecord : yearFilter.Value;
@@ -162,12 +163,12 @@ namespace AcornSat.Core.InputOutput
                 {
                     if (dataResolution == DataResolution.Daily)
                     {
-                        temperatureRecords.Add(new DataRecord(date, null));
+                        dataRecords.Add(new DataRecord(date, null));
                         date = date.AddDays(1);
                     }
                     else if (dataResolution == DataResolution.Monthly)
                     {
-                        temperatureRecords.Add(new DataRecord((short)date.Year, (short)date.Month, null, null));
+                        dataRecords.Add(new DataRecord((short)date.Year, (short)date.Month, null, null));
                         date = date.AddMonths(1);
                     }
                 }
@@ -179,7 +180,7 @@ namespace AcornSat.Core.InputOutput
                 previousDate = recordDate;
                 if (dataResolution == DataResolution.Daily)
                 {
-                    temperatureRecords.Add(new DataRecord
+                    dataRecords.Add(new DataRecord
                     {
                         Day = day,
                         Month = month,
@@ -190,7 +191,7 @@ namespace AcornSat.Core.InputOutput
                 }
                 else if (dataResolution == DataResolution.Monthly)
                 {
-                    temperatureRecords.Add(new DataRecord
+                    dataRecords.Add(new DataRecord
                     {
                         Month = month,
                         Year = year,
@@ -202,13 +203,13 @@ namespace AcornSat.Core.InputOutput
 
             if (dataResolution == DataResolution.Daily)
             {
-                var completeRecords = CompleteLastYearOfDailyData(temperatureRecords, ref date);
+                var completeRecords = CompleteLastYearOfDailyData(dataRecords, ref date);
                 completeRecords.ValidateDaily();
                 return completeRecords;
             }
             else if (dataResolution == DataResolution.Monthly)
             {
-                var completeRecords = CompleteLastYearOfMonthlyData(temperatureRecords, ref date);
+                var completeRecords = CompleteLastYearOfMonthlyData(dataRecords, ref date);
                 completeRecords.ValidateMonthly();
                 return completeRecords;
             }

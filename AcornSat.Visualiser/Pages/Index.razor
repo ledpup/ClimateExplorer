@@ -692,9 +692,11 @@
 
             List<DataSet> datasets;
 
-            switch (csd.DataSetDefinition.PublishedAtEndpoint)
+            switch (csd.MeasurementDefinition.DataType)
             {
-                case Endpoints.Main:
+                case DataType.TempMax:
+                case DataType.TempMin:
+                case DataType.Rainfall:
                     datasets = 
                         (await DataService.GetDataSet(
                             csd.MeasurementDefinition.DataType, 
@@ -712,29 +714,17 @@
 
                     break;
 
-                case Endpoints.Enso:
-                    var records = 
-                        (await DataService.GetEnso(
-                            MapDataTypeToEnsoIndex(csd.MeasurementDefinition.DataType),
+                default:
+                    datasets = 
+                        (await DataService.GetDataSet(
+                            csd.MeasurementDefinition.DataType,
                             csd.DataResolution,
-                            "mean")
+                            DataAdjustment.Adjusted,
+                            ChooseDataSetApiAggregationMethod(csd.Aggregation, csd.Value))
                         )
                         .ToList();
 
-                    datasets =
-                        new List<DataSet>()
-                        {
-                            new DataSet()
-                            {
-                                DataRecords = records,
-                                MeasurementDefinition = csd.MeasurementDefinition
-                            }
-                        };
-
                     break;
-
-                default:
-                    throw new NotImplementedException($"Endpoints {csd.DataSetDefinition.PublishedAtEndpoint}");
             }
 
             datasetsToReturn.AddRange(
@@ -744,22 +734,7 @@
         }
 
         return datasetsToReturn;
-    }
-
-    static EnsoIndex MapDataTypeToEnsoIndex(DataType dt)
-    {        
-        switch (dt)
-        {
-            case DataType.MEIv2: return EnsoIndex.Mei;
-            case DataType.SOI: return EnsoIndex.Soi;
-            case DataType.Nino34: return EnsoIndex.Nino34;
-            case DataType.ONI: return EnsoIndex.Oni;
-
-            default:
-                throw new NotImplementedException($"DataType {dt}");
-        }
-    }
-                            
+    }                           
   
     AggregationMethod ChooseDataSetApiAggregationMethod(SeriesAggregationOptions sao, SeriesValueOptions svo)
     {

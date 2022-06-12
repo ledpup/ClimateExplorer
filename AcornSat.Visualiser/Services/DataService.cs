@@ -93,14 +93,4 @@ public class DataService : IDataService
         
         return await _httpClient.GetFromJsonAsync<Location[]>(url);
     }
-
-    public async Task<IEnumerable<EnsoMetaData>> GetEnsoMetaData()
-    {
-        return await _httpClient.GetFromJsonAsync<EnsoMetaData[]>($"reference/enso-metadata");
-    }
-
-    public async Task<IEnumerable<DataRecord>> GetEnso(EnsoIndex index, DataResolution resolution, string measure)
-    {
-        return await _httpClient.GetFromJsonAsync<DataRecord[]>($"reference/enso/{index}/{resolution}?measure={measure}");
-    }
 }
