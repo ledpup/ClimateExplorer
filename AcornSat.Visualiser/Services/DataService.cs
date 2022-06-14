@@ -19,10 +19,14 @@ public class DataService : IDataService
         _dataServiceCache = dataServiceCache;
     }
 
-    public async Task<IEnumerable<DataSet>> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short ? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f)
+    public async Task<IEnumerable<DataSet>> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short ? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f)
     {
-        var url = $"dataSet/{dataType}/{resolution}/{dataAdjustment}";
+        var url = $"dataSet/{dataType}/{resolution}";
 
+        if (dataAdjustment != null)
+        {
+            url = QueryHelpers.AddQueryString(url, "dataAdjustment", dataAdjustment.Value.ToString());
+        }
         if (locationId != null)
         {
             url = QueryHelpers.AddQueryString(url, "locationId", locationId.Value.ToString());

@@ -617,7 +617,7 @@
                 // dataAdjustment is Adjusted, Unadjusted or Difference. If the user asked to display exactly one of the three data adjustment
                 // values, but that adjustment is not available for that data type, and there is only adjustment available for that dataType,
                 // just use it.
-                var requestDataAdjustment = dataAdjustment;
+                var requestDataAdjustment = (DataAdjustment?)dataAdjustment;
                 if (selectedDataAdjustments.Count == 1 && dataDefinition.MeasurementDefinitions.Count(x => x.DataType == dataType) == 1)
                 {
                     if (!dataDefinition.MeasurementDefinitions.Any(x => x.DataType == dataType && x.DataAdjustment == dataAdjustment))
@@ -1190,7 +1190,7 @@
     async Task AddDataSetToChart(
         SeriesWithData chartSeries,
         DataSet dataSet,
-        DataAdjustment dataAdjustment,
+        DataAdjustment? dataAdjustment,
         string label,
         int preferredColour,
         bool absoluteValues = false,

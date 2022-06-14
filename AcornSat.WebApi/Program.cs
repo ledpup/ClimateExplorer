@@ -85,9 +85,9 @@ app.MapGet(
 app.MapGet("/about",                                                          GetAbout);
 app.MapGet("/datasetdefinition",                                              GetDataSetDefinitions);
 app.MapGet("/location",                                                       GetLocations);
-app.MapGet("/dataset/{dataType}/{resolution}/{dataAdjustment}/{locationId}",  GetDataSets);
+app.MapGet("/dataset/{dataType}/{resolution}/{locationId}",  GetDataSets);
 //app.MapGet("/dataset/{dataType}/{resolution}/{dataAdjustment}",               GetTemperaturesByLatitude);
-app.MapGet("/dataset/{dataType}/{resolution}/{dataAdjustment}",               GetDataSets);
+app.MapGet("/dataset/{dataType}/{resolution}",               GetDataSets);
 
 app.Run();
 
@@ -318,7 +318,7 @@ async Task SaveToCache<T>(QueryParameters queryParameters, T dataToSave)
     await File.WriteAllTextAsync(filePath, json);
 }
 
-async Task<List<DataSet>> GetDataSets(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId, short? year, short? dayGrouping, float? dayGroupingThreshold, short? numberOfBins)
+async Task<List<DataSet>> GetDataSets(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId, short? year, short? dayGrouping, float? dayGroupingThreshold, short? numberOfBins)
 {
     return await GetDataSetsInternal(
         new QueryParameters(
@@ -483,7 +483,7 @@ List<DataSet> TrimNulls(List<DataSet> dataSets)
     return dataSets;
 }
 
-async Task<List<DataSet>> GetYearlyRecordsFromMonthly(DataSetDefinition dataSetDefinition, DataType dataType, DataAdjustment dataAdjustment, Guid? locationId, short? year)
+async Task<List<DataSet>> GetYearlyRecordsFromMonthly(DataSetDefinition dataSetDefinition, DataType dataType, DataAdjustment? dataAdjustment, Guid? locationId, short? year)
 {
     List<DataSet> dataSets = null;
 
@@ -523,7 +523,7 @@ async Task<List<DataSet>> GetYearlyRecordsFromMonthly(DataSetDefinition dataSetD
     return returnDataSets;
 }
 
-async Task<List<DataSet>> GetAverageFromDailyRecords(DataSetDefinition dataSetDefinition, DataType dataType, DataResolution dataResolution, DataAdjustment dataAdjustment, Guid locationId, short? year, float? threshold = .8f)
+async Task<List<DataSet>> GetAverageFromDailyRecords(DataSetDefinition dataSetDefinition, DataType dataType, DataResolution dataResolution, DataAdjustment? dataAdjustment, Guid locationId, short? year, float? threshold = .8f)
 {
     if (threshold < 0 || threshold > 1)
     {
@@ -576,7 +576,7 @@ async Task<List<DataSet>> GetAverageFromDailyRecords(DataSetDefinition dataSetDe
     return returnDataSets;
 }
 
-async Task<List<DataSet>> GetDataFromFile(DataSetDefinition dataSetDefintion, DataType dataType, DataAdjustment dataAdjustment, Guid? locationId = null, short? year = null)
+async Task<List<DataSet>> GetDataFromFile(DataSetDefinition dataSetDefintion, DataType dataType, DataAdjustment? dataAdjustment, Guid? locationId = null, short? year = null)
 {
     var location = locationId == null ? null : (await Location.GetLocations(dataSetDefintion.FolderName)).Single(x => x.Id == locationId);
 
@@ -584,7 +584,7 @@ async Task<List<DataSet>> GetDataFromFile(DataSetDefinition dataSetDefintion, Da
 
     var measurementDefinition = dataSetDefintion.MeasurementDefinitions.Single(x => x.DataAdjustment == dataAdjustment && x.DataType == dataType);
 
-    var dataSets = await DataReader.ReadDataFile(dataSetDefintion.FolderName, measurementDefinition, dataSetDefintion.DataResolution, dataAdjustment, location, year);
+    var dataSets = await DataReader.ReadDataFile(dataSetDefintion.FolderName, measurementDefinition, dataSetDefintion.DataResolution, location, year);
     dataSets = dataSets.Where(x => x.DataRecords != null).ToList();
     returnDataSets.AddRange(dataSets);
     

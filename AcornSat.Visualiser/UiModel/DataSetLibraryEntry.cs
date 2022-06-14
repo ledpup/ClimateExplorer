@@ -6,8 +6,8 @@ namespace AcornSat.Visualiser.UiModel
     {
         public string Name { get; set; }
         public Guid SourceDataSetId { get; set; }
-        public DataAdjustment DataAdjustment { get; set; }
         public DataType DataType { get; set; }
+        public DataAdjustment? DataAdjustment { get; set; }
         public Guid? LocationId { get; set; }
         public string? LocationName { get; set; }
     }

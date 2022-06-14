@@ -187,7 +187,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
                 new MeasurementDefinition
                 {
-                    DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.Rainfall,
                     UnitOfMeasure = UnitOfMeasure.Millimetres,
                     DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
@@ -254,7 +253,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 new MeasurementDefinition
                 {
                     DataCategory = DataCategory.Temperature,
-                    DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.TempMax,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                     DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$",
@@ -266,7 +264,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 new MeasurementDefinition
                 {
                     DataCategory = DataCategory.Temperature,
-                    DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.TempMin,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                     DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<tmax>-?[\d+\.\d+]*),-?\d*,(?<value>-?[\d+\.\d+]*),-?\d*,.*,D$",
@@ -292,7 +289,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 new MeasurementDefinition
                 {
                     DataCategory = DataCategory.Enso,
-                    DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.MEIv2,
                     UnitOfMeasure = UnitOfMeasure.EnsoIndex,
                     RowDataType = RowDataType.TwelveMonthsPerRow,
@@ -318,7 +314,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 new MeasurementDefinition
                 {
                     DataCategory = DataCategory.Enso,
-                    DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.SOI,
                     UnitOfMeasure = UnitOfMeasure.EnsoIndex,
                     RowDataType = RowDataType.TwelveMonthsPerRow,
@@ -343,7 +338,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 new MeasurementDefinition
                 {
                     DataCategory = DataCategory.Enso,
-                    DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.ONI,
                     UnitOfMeasure = UnitOfMeasure.EnsoIndex,
                     RowDataType = RowDataType.TwelveMonthsPerRow,
@@ -368,7 +362,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 new MeasurementDefinition
                 {
                     DataCategory = DataCategory.Enso,
-                    DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.Nino34,
                     UnitOfMeasure = UnitOfMeasure.EnsoIndex,
                     RowDataType = RowDataType.TwelveMonthsPerRow,
@@ -391,7 +384,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             {
                 new MeasurementDefinition
                 {
-                    DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.CO2,
                     UnitOfMeasure = UnitOfMeasure.PartsPerMillion,
                     DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
@@ -415,7 +407,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             {
                 new MeasurementDefinition
                 {
-                    DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.CH4,
                     UnitOfMeasure = UnitOfMeasure.PartsPerBillion,
                     DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
@@ -439,7 +430,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             {
                 new MeasurementDefinition
                 {
-                    DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.N2O,
                     UnitOfMeasure = UnitOfMeasure.PartsPerBillion,
                     DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
@@ -468,7 +458,6 @@ For monitoring the IOD, Australian climatologists consider sustained values abov
             {
                 new MeasurementDefinition
                 {
-                    DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.IOD,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsiusAnomaly,
                     RowDataType = RowDataType.TwelveMonthsPerRow,

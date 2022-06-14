@@ -191,7 +191,7 @@
     async Task OnSelectedResolutionChanged(DataResolution value)
     {
         SelectedResolution = value;
-        EnsoData = (await DataService.GetDataSet(SelectedDataType, SelectedResolution, DataAdjustment.Adjusted, AggregationMethod.None)).ToList();
+        EnsoData = (await DataService.GetDataSet(SelectedDataType, SelectedResolution, DataAdjustment.Adjusted, null)).ToList();
         await HandleRedraw();
     }
 
@@ -199,7 +199,7 @@
     async Task OnSelectedDataTypeChanged(DataType value)
     {
         SelectedDataType = value;
-        EnsoData = (await DataService.GetDataSet(SelectedDataType, SelectedResolution, DataAdjustment.Adjusted, AggregationMethod.None)).ToList();
+        EnsoData = (await DataService.GetDataSet(SelectedDataType, SelectedResolution, DataAdjustment.Adjusted, null)).ToList();
         await HandleRedraw();
     }
 
@@ -222,7 +222,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        
+        EnsoData = (await DataService.GetDataSet(SelectedDataType, SelectedResolution, DataAdjustment.Adjusted, null)).ToList();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

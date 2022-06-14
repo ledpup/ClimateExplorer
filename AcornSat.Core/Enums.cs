@@ -92,8 +92,7 @@ namespace AcornSat.Core
             GroupByDayThenAverage,
             GroupByDayThenAverage_Anomaly,
             BinThenCount,
-            Sum,
-            None
+            Sum
         }
 
         public enum RowDataType

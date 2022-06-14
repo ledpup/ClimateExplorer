@@ -14,7 +14,7 @@ namespace AcornSat.Core.InputOutput
 {
     public static class DataReader
     {
-        public static async Task<List<DataSet>> ReadDataFile(string dataSetFolderName, MeasurementDefinition measurementDefinition, DataResolution dataResolution, DataAdjustment measurementType, Location? location, short? yearFilter = null)
+        public static async Task<List<DataSet>> ReadDataFile(string dataSetFolderName, MeasurementDefinition measurementDefinition, DataResolution dataResolution, Location? location, short? yearFilter = null)
         {
             var dataTypeFolder = GetDataTypeFolder(measurementDefinition.DataType);
 
@@ -35,7 +35,7 @@ namespace AcornSat.Core.InputOutput
             {
                 foreach (var site in location.Sites)
                 {
-                    var dataSet = await GetDataSet(measurementDefinition, dataResolution, measurementType, yearFilter, filePath, regEx, dataSets, site);
+                    var dataSet = await GetDataSet(measurementDefinition, dataResolution, yearFilter, filePath, regEx, dataSets, site);
                     if (dataSet != null)
                     {
                         dataSet.Location = location;
@@ -46,7 +46,7 @@ namespace AcornSat.Core.InputOutput
             }
             else
             {
-                var dataSet = await GetDataSet(measurementDefinition, dataResolution, measurementType, yearFilter, filePath, regEx, dataSets);
+                var dataSet = await GetDataSet(measurementDefinition, dataResolution, yearFilter, filePath, regEx, dataSets);
                 if (dataSet != null)
                 {
                     dataSets.Add(dataSet);
@@ -55,7 +55,7 @@ namespace AcornSat.Core.InputOutput
             return dataSets;
         }
 
-        private static async Task<DataSet> GetDataSet(MeasurementDefinition measurementDefinition, DataResolution dataResolution, DataAdjustment measurementType, short? yearFilter, string filePath, Regex regEx, List<DataSet> dataSets, string site = null)
+        private static async Task<DataSet> GetDataSet(MeasurementDefinition measurementDefinition, DataResolution dataResolution, short? yearFilter, string filePath, Regex regEx, List<DataSet> dataSets, string site = null)
         {
             var records = await ReadDataFile(site, regEx, filePath, measurementDefinition.FileNameFormat, measurementDefinition.NullValue, dataResolution, yearFilter);
 

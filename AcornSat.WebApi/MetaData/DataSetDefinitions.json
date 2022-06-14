@@ -14,9 +14,9 @@
       {
         "DataCategory": 0,
         "DataType": 0,
-        "DataAdjustment": 1,
         "UnitOfMeasure": 0,
         "RowDataType": 0,
+        "DataAdjustment": 1,
         "FolderName": "adjusted",
         "SubFolderName": "daily_tmax",
         "FileNameFormat": "tmax.[station].daily.csv",
@@ -27,9 +27,9 @@
       {
         "DataCategory": 0,
         "DataType": 1,
-        "DataAdjustment": 1,
         "UnitOfMeasure": 0,
         "RowDataType": 0,
+        "DataAdjustment": 1,
         "FolderName": "adjusted",
         "SubFolderName": "daily_tmin",
         "FileNameFormat": "tmin.[station].daily.csv",
@@ -40,9 +40,9 @@
       {
         "DataCategory": 0,
         "DataType": 0,
-        "DataAdjustment": 0,
         "UnitOfMeasure": 0,
         "RowDataType": 0,
+        "DataAdjustment": 0,
         "FolderName": "raw-data",
         "SubFolderName": "daily_tempmax",
         "FileNameFormat": "[station]_daily_tempmax.csv",
@@ -53,9 +53,9 @@
       {
         "DataCategory": 0,
         "DataType": 1,
-        "DataAdjustment": 0,
         "UnitOfMeasure": 0,
         "RowDataType": 0,
+        "DataAdjustment": 0,
         "FolderName": "raw-data",
         "SubFolderName": "daily_tempmin",
         "FileNameFormat": "[station]_daily_tempmin.csv",
@@ -66,9 +66,9 @@
       {
         "DataCategory": null,
         "DataType": 2,
-        "DataAdjustment": 0,
         "UnitOfMeasure": 2,
         "RowDataType": 0,
+        "DataAdjustment": null,
         "FolderName": "raw-data",
         "SubFolderName": "daily_rainfall",
         "FileNameFormat": "[station]_daily_rainfall.csv",
@@ -78,8 +78,7 @@
       }
     ],
     "HasLocations": true,
-    "Locations": null,
-    "PublishedAtEndpoint": 0
+    "Locations": null
   },
   {
     "Id": "647b6a05-43e4-48e0-a43e-04ae81a74653",
@@ -96,9 +95,9 @@
       {
         "DataCategory": 0,
         "DataType": 0,
-        "DataAdjustment": 1,
         "UnitOfMeasure": 0,
         "RowDataType": 0,
+        "DataAdjustment": 1,
         "FolderName": "adjusted",
         "SubFolderName": "maxT",
         "FileNameFormat": "acorn.ria.maxT.[station].monthly.txt",
@@ -109,9 +108,9 @@
       {
         "DataCategory": 0,
         "DataType": 1,
-        "DataAdjustment": 1,
         "UnitOfMeasure": 0,
         "RowDataType": 0,
+        "DataAdjustment": 1,
         "FolderName": "adjusted",
         "SubFolderName": "minT",
         "FileNameFormat": "acorn.ria.minT.[station].monthly.txt",
@@ -121,8 +120,7 @@
       }
     ],
     "HasLocations": true,
-    "Locations": null,
-    "PublishedAtEndpoint": 0
+    "Locations": null
   },
   {
     "Id": "88e52edd-3c67-484a-b614-91070037d47a",
@@ -139,9 +137,9 @@
       {
         "DataCategory": 0,
         "DataType": 0,
-        "DataAdjustment": 0,
         "UnitOfMeasure": 0,
         "RowDataType": 0,
+        "DataAdjustment": null,
         "FolderName": "raw-data",
         "SubFolderName": null,
         "FileNameFormat": "[station].csv",
@@ -152,9 +150,9 @@
       {
         "DataCategory": 0,
         "DataType": 1,
-        "DataAdjustment": 0,
         "UnitOfMeasure": 0,
         "RowDataType": 0,
+        "DataAdjustment": null,
         "FolderName": "raw-data",
         "SubFolderName": null,
         "FileNameFormat": "[station].csv",
@@ -164,8 +162,7 @@
       }
     ],
     "HasLocations": true,
-    "Locations": null,
-    "PublishedAtEndpoint": 0
+    "Locations": null
   },
   {
     "Id": "ffd5f5e2-d8df-4779-a7f4-f5d148505033",
@@ -182,9 +179,9 @@
       {
         "DataCategory": 1,
         "DataType": 3,
-        "DataAdjustment": 0,
         "UnitOfMeasure": 5,
         "RowDataType": 1,
+        "DataAdjustment": null,
         "FolderName": null,
         "SubFolderName": null,
         "FileNameFormat": "meiv2.data.txt",
@@ -194,8 +191,7 @@
       }
     ],
     "HasLocations": false,
-    "Locations": null,
-    "PublishedAtEndpoint": 1
+    "Locations": null
   },
   {
     "Id": "c31270fa-b207-4d8f-b68e-4995698f1a4d",
@@ -212,9 +208,9 @@
       {
         "DataCategory": 1,
         "DataType": 4,
-        "DataAdjustment": 1,
         "UnitOfMeasure": 5,
         "RowDataType": 1,
+        "DataAdjustment": null,
         "FolderName": null,
         "SubFolderName": null,
         "FileNameFormat": "soi.long.data.txt",
@@ -224,8 +220,7 @@
       }
     ],
     "HasLocations": false,
-    "Locations": null,
-    "PublishedAtEndpoint": 1
+    "Locations": null
   },
   {
     "Id": "1042147a-8625-4ee7-bb5a-f0f17795c393",
@@ -242,9 +237,9 @@
       {
         "DataCategory": 1,
         "DataType": 6,
-        "DataAdjustment": 1,
         "UnitOfMeasure": 5,
         "RowDataType": 1,
+        "DataAdjustment": null,
         "FolderName": null,
         "SubFolderName": null,
         "FileNameFormat": "oni.data.txt",
@@ -254,8 +249,7 @@
       }
     ],
     "HasLocations": false,
-    "Locations": null,
-    "PublishedAtEndpoint": 1
+    "Locations": null
   },
   {
     "Id": "bfbaa69b-c10d-4de3-a78c-1ed6ff307327",
@@ -272,9 +266,9 @@
       {
         "DataCategory": 1,
         "DataType": 5,
-        "DataAdjustment": 1,
         "UnitOfMeasure": 5,
         "RowDataType": 1,
+        "DataAdjustment": null,
         "FolderName": null,
         "SubFolderName": null,
         "FileNameFormat": null,
@@ -284,8 +278,7 @@
       }
     ],
     "HasLocations": false,
-    "Locations": null,
-    "PublishedAtEndpoint": 1
+    "Locations": null
   },
   {
     "Id": "42c9195e-edc0-4894-97dc-923f9d5e72f0",
@@ -302,9 +295,9 @@
       {
         "DataCategory": null,
         "DataType": 7,
-        "DataAdjustment": 1,
         "UnitOfMeasure": 3,
         "RowDataType": 0,
+        "DataAdjustment": null,
         "FolderName": null,
         "SubFolderName": null,
         "FileNameFormat": "co2_mm_mlo.txt",
@@ -314,8 +307,7 @@
       }
     ],
     "HasLocations": false,
-    "Locations": null,
-    "PublishedAtEndpoint": 0
+    "Locations": null
   },
   {
     "Id": "2debe203-cbaa-4015-977c-2f40e2782547",
@@ -332,9 +324,9 @@
       {
         "DataCategory": null,
         "DataType": 8,
-        "DataAdjustment": 1,
         "UnitOfMeasure": 4,
         "RowDataType": 0,
+        "DataAdjustment": null,
         "FolderName": null,
         "SubFolderName": null,
         "FileNameFormat": "ch4_mm_gl.txt",
@@ -344,8 +336,7 @@
       }
     ],
     "HasLocations": false,
-    "Locations": null,
-    "PublishedAtEndpoint": 0
+    "Locations": null
   },
   {
     "Id": "6e84e743-3c77-488f-8a1c-152306c3d6f0",
@@ -362,9 +353,9 @@
       {
         "DataCategory": null,
         "DataType": 9,
-        "DataAdjustment": 1,
         "UnitOfMeasure": 4,
         "RowDataType": 0,
+        "DataAdjustment": null,
         "FolderName": null,
         "SubFolderName": null,
         "FileNameFormat": "n2o_mm_gl.txt",
@@ -374,8 +365,7 @@
       }
     ],
     "HasLocations": false,
-    "Locations": null,
-    "PublishedAtEndpoint": 0
+    "Locations": null
   },
   {
     "Id": "a3841b12-2dd4-424b-a96e-c35ddba66efc",
@@ -392,9 +382,9 @@
       {
         "DataCategory": null,
         "DataType": 10,
-        "DataAdjustment": 1,
         "UnitOfMeasure": 1,
         "RowDataType": 1,
+        "DataAdjustment": null,
         "FolderName": null,
         "SubFolderName": null,
         "FileNameFormat": "dmi.had.long.data.txt",
@@ -404,7 +394,6 @@
       }
     ],
     "HasLocations": false,
-    "Locations": null,
-    "PublishedAtEndpoint": 1
+    "Locations": null
   }
 ]
