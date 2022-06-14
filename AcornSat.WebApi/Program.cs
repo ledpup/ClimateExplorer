@@ -431,7 +431,16 @@ async Task<List<DataSet>> BuildDataSet(QueryParameters queryParameters, List<Dat
             }
             else if (definition.DataResolution == DataResolution.Monthly)
             {
-                dataSets = await GetDataFromFile(definition, queryParameters.DataType, queryParameters.DataAdjustment, queryParameters.LocationId, queryParameters.Year);
+                var measurementDefinition = definition.MeasurementDefinitions.Single(x => x.DataAdjustment == queryParameters.DataAdjustment && x.DataType == queryParameters.DataType);
+                switch (measurementDefinition.RowDataType)
+                {
+                    case RowDataType.OneValuePerRow:
+                        dataSets = await GetDataFromFile(definition, queryParameters.DataType, queryParameters.DataAdjustment, queryParameters.LocationId);
+                        break;
+                    case RowDataType.TwelveMonthsPerRow:
+                        dataSets = await GetTwelveMonthsPerRowData(definition, queryParameters.DataType, DataResolution.Monthly, "mean");
+                        break;
+                }
             }
             break;
     }
