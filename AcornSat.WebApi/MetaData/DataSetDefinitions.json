@@ -195,15 +195,15 @@
   },
   {
     "Id": "c31270fa-b207-4d8f-b68e-4995698f1a4d",
-    "Name": "Southern Oscillation Index (SOI)",
-    "ShortName": "SOI",
+    "Name": "Inverted Southern Oscillation Index (ISOI)",
+    "ShortName": "ISOI",
     "Description": "TBC",
     "MoreInformationUrl": "https://www.ncdc.noaa.gov/teleconnections/enso/soi",
     "DataResolution": 1,
     "FolderName": "ENSO",
     "StationInfoUrl": null,
     "LocationInfoUrl": null,
-    "DataDownloadUrl": null,
+    "DataDownloadUrl": "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/soi.long.data",
     "MeasurementDefinitions": [
       {
         "DataCategory": 1,
@@ -213,7 +213,7 @@
         "DataAdjustment": null,
         "FolderName": null,
         "SubFolderName": null,
-        "FileNameFormat": "soi.long.data.txt",
+        "FileNameFormat": "inverted.soi.long.data.txt",
         "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
         "NullValue": "-99.99",
         "PreferredColour": 0

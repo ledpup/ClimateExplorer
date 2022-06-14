@@ -21,25 +21,46 @@
 
             <table class="factor-table">
                 <tr>
-                    <td></td><th>Negative ENSO</th><th>Neutral ENSO</th><th>Positive ENSO</th>
+                    <td></td>
+                    <th>Negative ENSO</th>
+                    <th>Neutral ENSO</th>
+                    <th>Positive ENSO</th>
                 </tr>
                 <tr>
-                    <th>East Pacific ocean temperatures</th><td>Lower (La Niña)</td><td></td><td>Higher (El Niño)</td>
+                    <th>East Pacific ocean temperatures</th>
+                    <td>Lower (La Niña)</td>
+                    <td></td>
+                    <td>Higher (El Niño)</td>
                 </tr>
                 <tr>
-                    <th>SOI</th><td>Positive (!)</td><td></td><td>Negative (!)</td>
+                    <th>SOI</th>
+                    <td>Positive (!)</td>
+                    <td></td>
+                    <td>Negative (!)</td>
                 </tr>
                 <tr>
-                    <th>West Pacific atmospheric pressures</th><td>Lower</td><td></td><td>Higher</td>
+                    <th>West Pacific atmospheric pressures</th>
+                    <td>Lower</td>
+                    <td></td>
+                    <td>Higher</td>
                 </tr>
                 <tr>
-                    <th>Walker circulation (inc. trade winds)</th><td>Weak/reversed</td><td>Normal</td><td>Normal</td>
+                    <th>Walker circulation (inc. trade winds)</th>
+                    <td>Weak/reversed</td>
+                    <td>Normal</td>
+                    <td>Normal</td>
                 </tr>
                 <tr>
-                    <th>Global surface temperature</th><td>~1 year drop in global avg. surface temp</td><td></td><td>~1 year increase in global avg. surface temp</td>
+                    <th>Global surface temperature</th>
+                    <td>~1 year drop in global avg. surface temp</td>
+                    <td></td>
+                    <td>~1 year increase in global avg. surface temp</td>
                 </tr>
                 <tr>
-                    <th>South American weather pattern</th><td></td><td></td><td>Warm and very wet Apr-Oct</td>
+                    <th>South American weather pattern</th>
+                    <td></td>
+                    <td></td>
+                    <td>Warm and very wet Apr-Oct</td>
                 </tr>
                 <tr>
                     <th>East Australian weather pattern</th>
@@ -62,7 +83,7 @@
                     <SelectItem Value="@DataType.MEIv2">Multivariate ENSO index (MEI.v2)</SelectItem>
                     <SelectItem Value="@DataType.Nino34">Niño 3.4</SelectItem>
                     <SelectItem Value="@DataType.ONI">Oceanic Niño Index (ONI)</SelectItem>
-                    <SelectItem Value="@DataType.SOI">Southern Oscillation Index (SOI)</SelectItem>
+                    <SelectItem Value="@DataType.SOI">Inverted Southern Oscillation Index (SOI)</SelectItem>
                 </Select>
             </Column>
             <Column ColumnSize="ColumnSize.Is2">
@@ -72,17 +93,17 @@
                     <SelectItem Value="@DataResolution.Monthly">Monthly</SelectItem>
                 </Select>
             </Column>
-    
+
             @*@if (SelectedResolution == DataResolution.Yearly)
             {
-                <Column ColumnSize="ColumnSize.Is2">
-                    Measure
-                    <Select TValue="string" SelectedValue="@SelectedMeasure" SelectedValueChanged="@OnSelectedMeasureChanged">
-                        <SelectItem Value="@("mean")">Mean</SelectItem>
-                        <SelectItem Value="@("median")">Median</SelectItem>
-                        <SelectItem Value="@("mode")">Mode</SelectItem>
-                    </Select>
-                </Column>
+            <Column ColumnSize="ColumnSize.Is2">
+            Measure
+            <Select TValue="string" SelectedValue="@SelectedMeasure" SelectedValueChanged="@OnSelectedMeasureChanged">
+            <SelectItem Value="@("mean")">Mean</SelectItem>
+            <SelectItem Value="@("median")">Median</SelectItem>
+            <SelectItem Value="@("mode")">Mode</SelectItem>
+            </Select>
+            </Column>
             }*@
         </Row>
 
@@ -118,8 +139,10 @@
                                     <p>
                                         The Southern Oscillation Index is calculated based on atmospheric pressure difference between Tahiti and Darwin. Higher values of the SOI
                                         indicate that Tahiti has higher atmospheric pressure, relative to its typical value, than Darwin does relative to <em>its</em> typical value.
-                                        High values of the SOI correlate with cold waters in the eastern tropical Pacific. Note that unlike MEI, positive values of the SOI indicate
-                                        La Niña, and negative values indicate El Niño.
+                                        High values of the SOI correlate with cold waters in the eastern tropical Pacific.
+                                    </p>
+                                    <p>
+                                        Note that unlike other ENSO indexes, positive values of the SOI indicate La Niña and negative values indicate El Niño. Because of this we have inverted the values in the SOI dataset and created the ISOI dataset. The ISOI can be read the same way as the other ENSO indexes.
                                     </p>
                                     <p>
                                         More information:
@@ -127,7 +150,7 @@
                                     </p>
                                 </Content>
                             </Collapsible>
-                   
+
                             break;
 
                         case DataType.Nino34:
@@ -144,7 +167,7 @@
                                     </p>
                                 </Content>
                             </Collapsible>
-                    
+
                             break;
 
                         case DataType.ONI:
@@ -164,7 +187,7 @@
                                 </Content>
                             </Collapsible>
 
-                            break;   
+                            break;
                     }
                 </div>
             </Column>
@@ -249,8 +272,8 @@
             SpanGaps = false,
             Plugins = new
             {
-                Title = new 
-                { 
+                Title = new
+                {
                     Text = $"{SelectedDataType} {(SelectedResolution == DataResolution.Yearly ? "Yearly Average" : "Monthly")}",
                     Display = true
                 },

@@ -303,8 +303,8 @@ List<DataSetDefinition> BuildDataSetDefinitions()
         new DataSetDefinition
         {
             Id = Guid.Parse("c31270fa-b207-4d8f-b68e-4995698f1a4d"),
-            Name = "Southern Oscillation Index (SOI)",
-            ShortName = "SOI",
+            Name = "Inverted Southern Oscillation Index (ISOI)",
+            ShortName = "ISOI",
             Description = "TBC",
             MoreInformationUrl = "https://www.ncdc.noaa.gov/teleconnections/enso/soi",
             FolderName = "ENSO",
@@ -317,11 +317,12 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     DataType = DataType.SOI,
                     UnitOfMeasure = UnitOfMeasure.EnsoIndex,
                     RowDataType = RowDataType.TwelveMonthsPerRow,
-                    FileNameFormat = "soi.long.data.txt",
+                    FileNameFormat = "inverted.soi.long.data.txt",
                     DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                     NullValue = "-99.99"
                 },
             },
+            DataDownloadUrl = "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/soi.long.data",
             HasLocations = false
         },
         new DataSetDefinition
