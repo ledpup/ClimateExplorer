@@ -365,6 +365,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     DataType = DataType.Nino34,
                     UnitOfMeasure = UnitOfMeasure.EnsoIndex,
                     RowDataType = RowDataType.TwelveMonthsPerRow,
+                    FileNameFormat = "nino34.long.anom.data.txt",
                     DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                     NullValue = "-99.99"
                 },

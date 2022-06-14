@@ -191,7 +191,7 @@
     async Task OnSelectedResolutionChanged(DataResolution value)
     {
         SelectedResolution = value;
-        EnsoData = (await DataService.GetDataSet(SelectedDataType, SelectedResolution, DataAdjustment.Adjusted, null)).ToList();
+        EnsoData = (await DataService.GetDataSet(SelectedDataType, SelectedResolution, null, null)).ToList();
         await HandleRedraw();
     }
 
@@ -199,7 +199,7 @@
     async Task OnSelectedDataTypeChanged(DataType value)
     {
         SelectedDataType = value;
-        EnsoData = (await DataService.GetDataSet(SelectedDataType, SelectedResolution, DataAdjustment.Adjusted, null)).ToList();
+        EnsoData = (await DataService.GetDataSet(SelectedDataType, SelectedResolution, null, null)).ToList();
         await HandleRedraw();
     }
 
@@ -222,14 +222,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        EnsoData = (await DataService.GetDataSet(SelectedDataType, SelectedResolution, DataAdjustment.Adjusted, null)).ToList();
+        SelectedResolution = DataResolution.Yearly;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            //OnSelectedMeasureChanged("mean");
+            //await OnSelectedDataTypeChanged(DataType.MEIv2);
         }
     }
 
@@ -240,7 +240,7 @@
             return;
         }
 
-        //var enso = EnsoMetaData.Single(x => x.Index == SelectedIndex);
+        var enso = EnsoData.Single().DataRecords;
 
         object chartOptions = new
         {
@@ -281,14 +281,14 @@
         string[] labels = null;
         if (SelectedResolution == DataResolution.Yearly)
         {
-            labels = EnsoData.Select(x => x.Year.ToString()).ToArray();
+            labels = enso.Select(x => x.Year.ToString()).ToArray();
         }
         else
         {
-            labels = EnsoData.Single().DataRecords.Select(x => $"{x.Month}/{x.Year}").ToArray();
+            labels = enso.Select(x => $"{x.Month}/{x.Year}").ToArray();
         }
 
-        var values = EnsoData.Single().DataRecords.Select(x => x.Value).ToList();
+        var values = enso.Select(x => x.Value).ToList();
 
         await chart.Clear();
         await chart.SetOptionsObject(chartOptions);

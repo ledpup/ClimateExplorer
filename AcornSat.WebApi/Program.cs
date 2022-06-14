@@ -82,12 +82,12 @@ app.MapGet(
         "      Examples:\n" +
         "          /dataSet/TempMax/Yearly/Adjusted/eb75b5eb-8feb-4118-b6ab-bbe9b4fbc334?statisticalMethod=GroupThenAverage&dayGrouping=14&dayGroupingThreshold=0.7\n");
 
-app.MapGet("/about",                                                          GetAbout);
-app.MapGet("/datasetdefinition",                                              GetDataSetDefinitions);
-app.MapGet("/location",                                                       GetLocations);
-app.MapGet("/dataset/{dataType}/{resolution}/{locationId}",  GetDataSets);
+app.MapGet("/about",                                                GetAbout);
+app.MapGet("/datasetdefinition",                                    GetDataSetDefinitions);
+app.MapGet("/location",                                             GetLocations);
+app.MapGet("/dataset/{dataType}/{resolution}/{locationId}",         GetDataSets);
 //app.MapGet("/dataset/{dataType}/{resolution}/{dataAdjustment}",               GetTemperaturesByLatitude);
-app.MapGet("/dataset/{dataType}/{resolution}",               GetDataSets);
+app.MapGet("/dataset/{dataType}/{resolution}",                      GetDataSets);
 
 app.Run();
 

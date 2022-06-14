@@ -719,7 +719,7 @@
                         (await DataService.GetDataSet(
                             csd.MeasurementDefinition.DataType,
                             csd.DataResolution,
-                            DataAdjustment.Adjusted,
+                            csd.MeasurementDefinition.DataAdjustment,
                             ChooseDataSetApiAggregationMethod(csd.Aggregation, csd.Value))
                         )
                         .ToList();
