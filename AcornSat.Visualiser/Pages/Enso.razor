@@ -93,18 +93,6 @@
                     <SelectItem Value="@DataResolution.Monthly">Monthly</SelectItem>
                 </Select>
             </Column>
-
-            @*@if (SelectedResolution == DataResolution.Yearly)
-            {
-            <Column ColumnSize="ColumnSize.Is2">
-            Measure
-            <Select TValue="string" SelectedValue="@SelectedMeasure" SelectedValueChanged="@OnSelectedMeasureChanged">
-            <SelectItem Value="@("mean")">Mean</SelectItem>
-            <SelectItem Value="@("median")">Median</SelectItem>
-            <SelectItem Value="@("mode")">Mode</SelectItem>
-            </Select>
-            </Column>
-            }*@
         </Row>
 
         <Row>
@@ -226,22 +214,12 @@
         await HandleRedraw();
     }
 
-    //string SelectedMeasure;
-    //async Task OnSelectedMeasureChanged(string value)
-    //{
-    //    SelectedMeasure = value;
-    //    EnsoData = (await DataService.GetDataSet(SelectedDataType, SelectedResolution, SelectedMeasure)).ToList();
-    //    await HandleRedraw();
-    //}
-
     Chart<float?> chart;
 
     [Inject]
     public IDataService DataService { get; set; }
 
     List<DataSet> EnsoData { get; set; }
-
-    //List<EnsoMetaData> EnsoMetaData { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -253,7 +231,6 @@
     {
         if (firstRender)
         {
-            //await OnSelectedDataTypeChanged(DataType.MEIv2);
         }
     }
 
