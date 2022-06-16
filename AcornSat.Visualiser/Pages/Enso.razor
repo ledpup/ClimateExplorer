@@ -12,8 +12,20 @@
         <div class="enso-about-content">
             <p>
                 The El Niño–Southern Oscillation (ENSO) is a climate pattern of Pacific ocean temperatures and air pressures
-                that strongly influences weather around the Pacific.
+                that strongly influences weather around the Pacific. The oscillation has three phases. They are:
             </p>
+
+            <ul>
+                <li>
+                    Index values of <strong>greater than 0.5</strong> (or &lt; -0.5 for SOI) indicate an <strong>El Niño</strong> event ("little boy" in Spanish). <span style="color:red;">RED on charts.</span>
+                </li>
+                <li>
+                    Index values of <strong>less than -0.5</strong> (or &gt; 0.5 for SOI) indicate a <strong>La Niña</strong> event ("little girl" in Spanish). <span style="color:blue;">BLUE on charts.</span>
+                </li>
+                <li>
+                    Index values between -0.5 and 0.5 indicate normal conditions.
+                </li>
+            </ul>
 
             <p>
                 The datasets on this page measure the ENSO climate pattern over time.
@@ -21,31 +33,64 @@
 
             <table class="factor-table">
                 <tr>
-                    <td></td><th>Negative ENSO</th><th>Neutral ENSO</th><th>Positive ENSO</th>
+                    <td></td>
+                    <th>Negative ENSO</th>
+                    <th>Neutral ENSO</th>
+                    <th>Positive ENSO</th>
                 </tr>
                 <tr>
-                    <th>East Pacific ocean temperatures</th><td>Lower (La Niña)</td><td></td><td>Higher (El Niño)</td>
+                    <th>East Pacific ocean temperatures</th>
+                    <td>Lower (La Niña)</td>
+                    <td></td>
+                    <td>Higher (El Niño)</td>
                 </tr>
                 <tr>
-                    <th>SOI</th><td>Positive (!)</td><td></td><td>Negative (!)</td>
+                    <th>West Pacific atmospheric pressures</th>
+                    <td>Lower</td>
+                    <td></td>
+                    <td>Higher</td>
                 </tr>
                 <tr>
-                    <th>West Pacific atmospheric pressures</th><td>Lower</td><td></td><td>Higher</td>
+                    <th>Walker circulation (inc. trade winds)</th>
+                    <td>Weak/reversed</td>
+                    <td>Normal</td>
+                    <td>Normal</td>
                 </tr>
                 <tr>
-                    <th>Walker circulation (inc. trade winds)</th><td>Weak/reversed</td><td>Normal</td><td>Normal</td>
+                    <th>Global surface temperature</th>
+                    <td>~1 year drop in global avg. surface temp</td>
+                    <td></td>
+                    <td>~1 year increase in global avg. surface temp</td>
                 </tr>
                 <tr>
-                    <th>Global surface temperature</th><td>~1 year drop in global avg. surface temp</td><td></td><td>~1 year increase in global avg. surface temp</td>
+                    <th>North American weather pattern</th>
+                    <td>Decreased wind shear leading to an <a href="https://www.weather.gov/jan/el_nino_and_la_nina#How_do_El_Nino_and_La_Nina_affect_the_Atlantic_hurricane_season_">increase in Atlantic hurricane frequency and intensity</a>. Increase in <a href="https://en.wikipedia.org/wiki/Southwestern_North_American_megadrought">south-western drought</a>. Higher bushfire risk.</td>
+                    <td></td>
+                    <td>Increased vertical wind shear, reducing the Atlantic hurricane season. <a href="https://www.weather.gov/jan/el_nino_and_la_nina#How_do_El_Nino_and_La_Nina_affect">Cooler weather with increased rainfall</a>.</td>
                 </tr>
                 <tr>
-                    <th>South American weather pattern</th><td></td><td></td><td>Warm and very wet Apr-Oct</td>
+                    <th>South American weather pattern</th>
+                    <td></td>
+                    <td></td>
+                    <td>Warm and very wet Apr-Oct</td>
                 </tr>
                 <tr>
                     <th>East Australian weather pattern</th>
                     <td>Increased rainfall, flooding. Earlier monsoon start. More snow depth. Cooler daytime temperatures in South, fewer extreme highs.</td>
                     <td></td>
                     <td>Reduced rainfall. Delayed monsoon start. Less snow depth. Warmer daytime temperatures in South, often cooler overnight temperatures (reduced cloud cover). Higher bushfire risk.</td>
+                </tr>
+                <tr>
+                    <th>Climate models generally predict</th>
+                    <td>Decrease in frequency</td>
+                    <td></td>
+                    <td>Increase in frequency</td>
+                </tr>
+                <tr>
+                    <th>Recent observations - 21st Century</th>
+                    <td>Increase in frequency</td>
+                    <td></td>
+                    <td>Decrease in frequency</td>
                 </tr>
             </table>
         </div>
@@ -72,7 +117,7 @@
                     <SelectItem Value="@DataResolution.Monthly">Monthly</SelectItem>
                 </Select>
             </Column>
-    
+
             @if (SelectedResolution == DataResolution.Yearly)
             {
                 <Column ColumnSize="ColumnSize.Is2">
@@ -118,8 +163,10 @@
                                     <p>
                                         The Southern Oscillation Index is calculated based on atmospheric pressure difference between Tahiti and Darwin. Higher values of the SOI
                                         indicate that Tahiti has higher atmospheric pressure, relative to its typical value, than Darwin does relative to <em>its</em> typical value.
-                                        High values of the SOI correlate with cold waters in the eastern tropical Pacific. Note that unlike MEI, positive values of the SOI indicate
-                                        La Niña, and negative values indicate El Niño.
+                                        High values of the SOI correlate with cold waters in the eastern tropical Pacific.
+                                    </p>
+                                    <p>
+                                        Unlike other ENSO indexes, positive values of the SOI indicate La Niña, and negative values indicate El Niño.
                                     </p>
                                     <p>
                                         More information:
@@ -127,7 +174,7 @@
                                     </p>
                                 </Content>
                             </Collapsible>
-                   
+
                             break;
 
                         case EnsoIndex.Nino34:
@@ -144,7 +191,7 @@
                                     </p>
                                 </Content>
                             </Collapsible>
-                    
+
                             break;
 
                         case EnsoIndex.Oni:
@@ -164,7 +211,7 @@
                                 </Content>
                             </Collapsible>
 
-                            break;   
+                            break;
                     }
                 </div>
             </Column>
@@ -249,8 +296,8 @@
             SpanGaps = false,
             Plugins = new
             {
-                Title = new 
-                { 
+                Title = new
+                {
                     Text = $"{enso.Name} {(SelectedResolution == DataResolution.Yearly ? "Yearly Average" : "Monthly")}",
                     Display = true
                 },
@@ -322,13 +369,17 @@
             if (values[i].HasValue)
             {
                 var adjustedValue = values[i].Value * (redPositive ? 1f : -1f);
-                if (adjustedValue > 0)
+                if (Math.Abs(adjustedValue) < .5)
                 {
-                    chartColor = ChartColor.FromRgba((byte)((Math.Abs(adjustedValue / max)) * 255), 31, 31, 1f);
+                    chartColor = ChartColor.FromHtmlColorCode("#000000");
+                }
+                else if (adjustedValue > 0)
+                {
+                    chartColor = ChartColor.FromRgba((byte)(63 + (Math.Abs(adjustedValue / max)) * 192), 0, 0, 1f);
                 }
                 else
                 {
-                    chartColor = ChartColor.FromRgba(31, 31, (byte)((Math.Abs(adjustedValue / min)) * 255), 1f);
+                    chartColor = ChartColor.FromRgba(0, 0, (byte)(63 + (Math.Abs(adjustedValue / min)) * 192), 1f);
                 }
                 colour.Add(chartColor);
             }
