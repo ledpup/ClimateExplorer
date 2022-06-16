@@ -6,7 +6,7 @@ namespace AcornSat.WebApi.Model;
 
 public class QueryParameters
 {
-    public QueryParameters(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, Guid? locationId, AggregationMethod? aggregationMethod, short? year, short? dayGrouping = 14, float? dayGroupingThreshold = .7f, short? numberOfBins = null, short? binSize = null)
+    public QueryParameters(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, Guid? locationId, AggregationMethod? aggregationMethod, short? year, short? dayGrouping = 14, float? dayGroupingThreshold = .7f, short? numberOfBins = null, short? binSize = null)
     {
         DataType = dataType;
         Resolution = resolution;
@@ -27,7 +27,7 @@ public class QueryParameters
     }
     public DataType DataType { get; set; }
     public DataResolution Resolution { get; set; }
-    public DataAdjustment DataAdjustment { get; set; }
+    public DataAdjustment? DataAdjustment { get; set; }
     public Guid? LocationId { get; set; }
     public AggregationMethod? AggregationMethod { get; set; }
     public short? Year { get; set; }
@@ -38,7 +38,15 @@ public class QueryParameters
     {
         var stringBuilder = new StringBuilder();
 
-        stringBuilder.Append($"{DataType}_{Resolution}_{DataAdjustment}_{LocationId}");
+        stringBuilder.Append($"{DataType}_{Resolution}");
+        if (DataAdjustment.HasValue)
+        {
+            stringBuilder.Append($"_{DataAdjustment}");
+        }
+        if (LocationId.HasValue)
+        {
+            stringBuilder.Append($"_{LocationId}");
+        }
         if (AggregationMethod.HasValue)
         {
             stringBuilder.Append($"_{AggregationMethod}");

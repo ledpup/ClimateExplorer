@@ -12,7 +12,7 @@ public class DataSet
     public Location Location { get;  set; }
     public MeasurementDefinitionViewModel MeasurementDefinition { get; set; }
     public DataType DataType { get { return MeasurementDefinition.DataType; } }
-    public DataAdjustment DataAdjustment { get { return MeasurementDefinition.DataAdjustment; } }
+    public DataAdjustment? DataAdjustment { get { return MeasurementDefinition.DataAdjustment; } }
     public List<Location> Locations { get; set; }
 
     public string Station { get; set; }
