@@ -14,7 +14,7 @@ namespace AcornSat.Core.InputOutput
 {
     public static class DataReader
     {
-        public static async Task<List<DataSet>> ReadDataFile(string dataSetFolderName, MeasurementDefinition measurementDefinition, DataResolution dataResolution, DataAdjustment measurementType, Location? location, short? yearFilter = null)
+        public static async Task<List<DataSet>> ReadDataFile(string dataSetFolderName, MeasurementDefinition measurementDefinition, DataResolution dataResolution, Location? location, short? yearFilter = null)
         {
             var dataTypeFolder = GetDataTypeFolder(measurementDefinition.DataType);
 
@@ -35,7 +35,7 @@ namespace AcornSat.Core.InputOutput
             {
                 foreach (var site in location.Sites)
                 {
-                    var dataSet = await GetDataSet(measurementDefinition, dataResolution, measurementType, yearFilter, filePath, regEx, dataSets, site);
+                    var dataSet = await GetDataSet(measurementDefinition, dataResolution, yearFilter, filePath, regEx, dataSets, site);
                     if (dataSet != null)
                     {
                         dataSet.Location = location;
@@ -46,7 +46,7 @@ namespace AcornSat.Core.InputOutput
             }
             else
             {
-                var dataSet = await GetDataSet(measurementDefinition, dataResolution, measurementType, yearFilter, filePath, regEx, dataSets);
+                var dataSet = await GetDataSet(measurementDefinition, dataResolution, yearFilter, filePath, regEx, dataSets);
                 if (dataSet != null)
                 {
                     dataSets.Add(dataSet);
@@ -55,7 +55,7 @@ namespace AcornSat.Core.InputOutput
             return dataSets;
         }
 
-        private static async Task<DataSet> GetDataSet(MeasurementDefinition measurementDefinition, DataResolution dataResolution, DataAdjustment measurementType, short? yearFilter, string filePath, Regex regEx, List<DataSet> dataSets, string site = null)
+        private static async Task<DataSet> GetDataSet(MeasurementDefinition measurementDefinition, DataResolution dataResolution, short? yearFilter, string filePath, Regex regEx, List<DataSet> dataSets, string site = null)
         {
             var records = await ReadDataFile(site, regEx, filePath, measurementDefinition.FileNameFormat, measurementDefinition.NullValue, dataResolution, yearFilter);
 
@@ -82,6 +82,7 @@ namespace AcornSat.Core.InputOutput
                 case DataType.CO2:
                 case DataType.CH4:
                 case DataType.N2O:
+                case DataType.IOD:
                     return "Reference";
                 case DataType.Rainfall:
                     return "Rainfall";
@@ -109,7 +110,7 @@ namespace AcornSat.Core.InputOutput
                 return new List<DataRecord>();
             }
 
-            var temperatureRecords = new List<DataRecord>();
+            var dataRecords = new List<DataRecord>();
 
             var initialDataIndex = GetStartIndex(regEx, lines);
 
@@ -118,7 +119,7 @@ namespace AcornSat.Core.InputOutput
             // Check to see if the station had started recording by the year we want
             if (yearFilter != null && startYearRecord > yearFilter)
             {
-                return temperatureRecords;
+                return dataRecords;
             }
 
             var startDate = yearFilter == null ? startYearRecord : yearFilter.Value;
@@ -162,12 +163,12 @@ namespace AcornSat.Core.InputOutput
                 {
                     if (dataResolution == DataResolution.Daily)
                     {
-                        temperatureRecords.Add(new DataRecord(date, null));
+                        dataRecords.Add(new DataRecord(date, null));
                         date = date.AddDays(1);
                     }
                     else if (dataResolution == DataResolution.Monthly)
                     {
-                        temperatureRecords.Add(new DataRecord((short)date.Year, (short)date.Month, null, null));
+                        dataRecords.Add(new DataRecord((short)date.Year, (short)date.Month, null, null));
                         date = date.AddMonths(1);
                     }
                 }
@@ -179,7 +180,7 @@ namespace AcornSat.Core.InputOutput
                 previousDate = recordDate;
                 if (dataResolution == DataResolution.Daily)
                 {
-                    temperatureRecords.Add(new DataRecord
+                    dataRecords.Add(new DataRecord
                     {
                         Day = day,
                         Month = month,
@@ -190,7 +191,7 @@ namespace AcornSat.Core.InputOutput
                 }
                 else if (dataResolution == DataResolution.Monthly)
                 {
-                    temperatureRecords.Add(new DataRecord
+                    dataRecords.Add(new DataRecord
                     {
                         Month = month,
                         Year = year,
@@ -202,13 +203,13 @@ namespace AcornSat.Core.InputOutput
 
             if (dataResolution == DataResolution.Daily)
             {
-                var completeRecords = CompleteLastYearOfDailyData(temperatureRecords, ref date);
+                var completeRecords = CompleteLastYearOfDailyData(dataRecords, ref date);
                 completeRecords.ValidateDaily();
                 return completeRecords;
             }
             else if (dataResolution == DataResolution.Monthly)
             {
-                var completeRecords = CompleteLastYearOfMonthlyData(temperatureRecords, ref date);
+                var completeRecords = CompleteLastYearOfMonthlyData(dataRecords, ref date);
                 completeRecords.ValidateMonthly();
                 return completeRecords;
             }

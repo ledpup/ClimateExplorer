@@ -72,12 +72,12 @@
 
         if (CurrentLocation != null)
         {
-            var currentLocationFolder = 
+            var currentLocationFolder =
                 new DataSetLibraryFolder()
-                {
-                    Name = CurrentLocation.Name + " observations",
-                    DataSets = new List<DataSetLibraryEntry>()
-                };
+                    {
+                        Name = CurrentLocation.Name + " observations",
+                        DataSets = new List<DataSetLibraryEntry>()
+                    };
 
             var dsd = DataSetDefinitions.SingleOrDefault(x => x.Id == CurrentLocation.DataSetId);
 
@@ -87,14 +87,14 @@
                 {
                     currentLocationFolder.DataSets.Add(
                         new DataSetLibraryEntry()
-                        {
-                            DataType = md.DataType,
-                            DataAdjustment = md.DataAdjustment,
-                            SourceDataSetId = CurrentLocation.DataSetId,
-                            LocationId = CurrentLocation.Id,
-                            LocationName = CurrentLocation.Name,
-                            Name = BuildDataSetName(md, dsd)
-                        });
+                            {
+                                DataType = md.DataType,
+                                DataAdjustment = md.DataAdjustment,
+                                SourceDataSetId = CurrentLocation.DataSetId,
+                                LocationId = CurrentLocation.Id,
+                                LocationName = CurrentLocation.Name,
+                                Name = BuildDataSetName(md, dsd)
+                            });
                 }
             }
 
@@ -114,21 +114,18 @@
                             {
                                 Name = "CO₂ (Carbon Dioxide) adjusted parts per million",
                                 SourceDataSetId = Guid.Parse("42c9195e-edc0-4894-97dc-923f9d5e72f0"),
-                                DataAdjustment = DataAdjustment.Adjusted,
                                 DataType = DataType.CO2
                             },
                             new DataSetLibraryEntry()
                             {
                                 Name = "CH₄ (Methane) adjusted parts per billion",
                                 SourceDataSetId = Guid.Parse("2debe203-cbaa-4015-977c-2f40e2782547"),
-                                DataAdjustment = DataAdjustment.Adjusted,
                                 DataType = DataType.CH4
                             },
                             new DataSetLibraryEntry()
                             {
                                 Name = "N₂O (Nitrous Oxide) adjusted parts per billion",
                                 SourceDataSetId = Guid.Parse("6e84e743-3c77-488f-8a1c-152306c3d6f0"),
-                                DataAdjustment = DataAdjustment.Adjusted,
                                 DataType = DataType.N2O
                             }
                         }
@@ -143,33 +140,43 @@
                             {
                                 Name = "Multivariate ENSO index (MEI.v2)",
                                 SourceDataSetId = Guid.Parse("ffd5f5e2-d8df-4779-a7f4-f5d148505033"),
-                                DataAdjustment = DataAdjustment.Unadjusted,
                                 DataType = DataType.MEIv2
                             },
                             new DataSetLibraryEntry()
                             {
-                                Name = "Southern Oscillation Index (SOI)",
+                                Name = "Inverted Southern Oscillation Index (ISOI)",
                                 SourceDataSetId = Guid.Parse("c31270fa-b207-4d8f-b68e-4995698f1a4d"),
-                                DataAdjustment = DataAdjustment.Unadjusted,
                                 DataType = DataType.SOI
                             },
                             new DataSetLibraryEntry()
                             {
                                 Name = "Niño 3.4",
                                 SourceDataSetId = Guid.Parse("bfbaa69b-c10d-4de3-a78c-1ed6ff307327"),
-                                DataAdjustment = DataAdjustment.Unadjusted,
                                 DataType = DataType.Nino34
                             },
                             new DataSetLibraryEntry()
                             {
                                 Name = "Oceanic Niño Index (ONI)",
                                 SourceDataSetId = Guid.Parse("1042147a-8625-4ee7-bb5a-f0f17795c393"),
-                                DataAdjustment = DataAdjustment.Unadjusted,
                                 DataType = DataType.ONI
                             }
                         }
+                },
+                new DataSetLibraryFolder
+                {
+                    Name = "Indian Ocean Dipole",
+                    DataSets =
+                        new List<DataSetLibraryEntry>()
+                        {
+                            new DataSetLibraryEntry()
+                            {
+                                Name = "Indian Ocean Dipole (IOD)",
+                                SourceDataSetId = Guid.Parse("a3841b12-2dd4-424b-a96e-c35ddba66efc"),
+                                DataType = DataType.IOD
+                            },
+                        }
                 }
-                }
+            }
         );
     }
 

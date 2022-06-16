@@ -24,5 +24,4 @@ public class DataSetDefinitionViewModel
 
     public List<MeasurementDefinitionViewModel> MeasurementDefinitions { get; set; }
     public List<Location> Locations { get; set; }
-    public Endpoints PublishedAtEndpoint { get; set; }
 }

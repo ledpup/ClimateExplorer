@@ -19,7 +19,8 @@ namespace AcornSat.Core
             ONI,
             CO2,
             CH4,
-            N2O
+            N2O,
+            IOD
         }
         public enum DataResolution
         {
@@ -86,20 +87,18 @@ namespace AcornSat.Core
             throw new NotImplementedException();
         }
 
-        public enum EnsoIndex
-        {
-            Mei,
-            Nino34,
-            Oni,
-            Soi,
-        }
-
         public enum AggregationMethod
         {
             GroupByDayThenAverage,
             GroupByDayThenAverage_Anomaly,
             BinThenCount,
-            Sum,
+            Sum
+        }
+
+        public enum RowDataType
+        {
+            OneValuePerRow,
+            TwelveMonthsPerRow
         }
     }
 }
