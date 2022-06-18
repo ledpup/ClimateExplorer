@@ -19,8 +19,7 @@ namespace AcornSat.Core
         {
             if (value == null)
             {
-                samples = new Queue<float?>();
-                return null;
+                return samples.Average();
             }
 
             samples.Enqueue(value);
@@ -30,12 +29,7 @@ namespace AcornSat.Core
                 samples.Dequeue();
             }
 
-            if (samples.Count > _windowSize / 3f)
-            {
-                return samples.Average();
-            }
-
-            return null;
+            return samples.Average();            
         }
 
         public static List<float?> Calculate(int windowSize, List<float?> values)
