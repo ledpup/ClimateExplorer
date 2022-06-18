@@ -34,15 +34,18 @@ namespace AcornSat.Visualiser.UiModel
                 }
 
                 segments.Add(MapDataTypeToFriendlyName(MeasurementDefinition.DataType));
-                
-                if (MeasurementDefinition.DataAdjustment != DataAdjustment.Adjusted ||
-                    DataSetDefinition.MeasurementDefinitions.Any(
-                        x =>
-                            x != MeasurementDefinition &&
-                            x.DataType == MeasurementDefinition.DataType &&
-                            x.DataAdjustment != MeasurementDefinition.DataAdjustment))
+
+                if (MeasurementDefinition.DataAdjustment != null)
                 {
-                    segments.Add(MeasurementDefinition.DataAdjustment.ToString());
+                    if (MeasurementDefinition.DataAdjustment != DataAdjustment.Adjusted ||
+                        DataSetDefinition.MeasurementDefinitions.Any(
+                            x =>
+                                x != MeasurementDefinition &&
+                                x.DataType == MeasurementDefinition.DataType &&
+                                x.DataAdjustment != MeasurementDefinition.DataAdjustment))
+                    {
+                        segments.Add(MeasurementDefinition.DataAdjustment.ToString());
+                    }
                 }
 
                 switch (Smoothing)

@@ -3,6 +3,11 @@
 @using Blazorise.Components
 @using Blazorise.Charts
 
+@if (ChartSeriesList.Count == 0)
+{
+    <div class="no-datasets-active-message">No datasets active. Choose a chart preset or add a dataset.</div>
+}
+
 @foreach (var cs in ChartSeriesList)
 {
     <ChartSeriesView 
