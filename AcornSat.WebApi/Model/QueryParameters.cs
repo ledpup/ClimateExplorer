@@ -23,8 +23,6 @@ public class QueryParameters
             case Core.Enums.AggregationMethod.BinThenCount:
                 StatsParameters = new BinThenCount(numberOfBins, binSize);
                 break;
-            default:
-                throw new NotImplementedException($"AggregationMethod {AggregationMethod}");
         }
     }
     public DataType DataType { get; set; }

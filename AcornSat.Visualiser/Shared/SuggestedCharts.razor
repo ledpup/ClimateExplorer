@@ -8,14 +8,39 @@
 <div class="suggested-data-set-list">
     @foreach (var s in SuggestedPresets)
     {
-        <div class="suggested-data-set" @onclick="() => OnChartPresetSelected.InvokeAsync(s.ChartSeriesList)">
-            <div class="main">
+        @if (s.MenuExpanded)
+        {
+            <div class="modal-underlay" @onclick="() => s.MenuExpanded = false"></div>
+        }
+
+        <div class="@CalculateClassForSuggestedDataSetElement(s)">
+            <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(s.ChartSeriesList)">
                 <div class="title">@s.Title</div>
                 <div class="description">@s.Description</div>
             </div>
-            <div class="expander">
-                <span class="oi oi-chevron-bottom" aria-hidden="true"></span>
-            </div>
+
+            @if (s.Variants != null && s.Variants.Count > 0)
+            {
+                <div class="expander" @onclick="() => s.MenuExpanded = !s.MenuExpanded">
+                    <span class="oi oi-chevron-bottom" aria-hidden="true"></span>
+                </div>
+            }
+
+            @if (s.MenuExpanded)
+            {
+                <div class="menu">
+                    @if (s.Variants != null)
+                    {
+                        foreach (var v in s.Variants)
+                        {
+                            <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(v.ChartSeriesList)">
+                                <div class="title">@v.Title</div>
+                                <div class="description">@v.Description</div>
+                            </div>
+                        }
+                    }
+                </div>
+            }
         </div>
     }
 </div>
@@ -31,6 +56,13 @@
     public EventCallback<List<ChartSeriesDefinition>> OnChartPresetSelected { get; set; }
 
     List<SuggestedChartPresetModelWithVariants> SuggestedPresets { get; set; }
+
+    string CalculateClassForSuggestedDataSetElement(SuggestedChartPresetModel s)
+    {
+        if (s.MenuExpanded) return "suggested-data-set menu-expanded";
+        
+        return "suggested-data-set";
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -129,20 +161,8 @@
                                         DataResolution = DataResolution.Yearly,
                                         DataSetDefinition = dsdLocation,
                                         MeasurementDefinition = mdTempMax,
+                                        ShowTrendline = true,
                                         Smoothing = SeriesSmoothingOptions.None,
-                                        SmoothingWindow = 5,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null
-                                    },
-                                    new ChartSeriesDefinition()
-                                    {
-                                        LocationId = SelectedLocation.Id,
-                                        LocationName = SelectedLocation.Name,
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        DataResolution = DataResolution.Yearly,
-                                        DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = mdTempMax,
-                                        Smoothing = SeriesSmoothingOptions.Trendline,
                                         SmoothingWindow = 5,
                                         Value = SeriesValueOptions.Value,
                                         Year = null

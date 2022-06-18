@@ -2,6 +2,16 @@
     display: flex;
 }
 
+.suggested-data-set-list .modal-underlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0.0, 0.0, 0.0, 0.2);
+    z-index: 10001;
+}
+
 .suggested-data-set {
     display: flex;
     margin-right: 24px;
@@ -13,7 +23,16 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: stretch;
+
+    position: relative;
+
+    z-index: 10000;
 }
+
+    .suggested-data-set.menu-expanded {
+        border-radius: 12px 12px 0px 0px;
+        z-index: 10002;
+    }
 
     .suggested-data-set .main {
         padding: 12px;
@@ -43,3 +62,12 @@
             background-color: #cfc;
             color :#425f59;
         }
+
+    .suggested-data-set .menu {
+        position: absolute;
+        top: 100%;
+        border-radius: 0px 0px 12px 12px;
+        width: 100%;
+        padding: 20px;
+        background-color: #f8f8f8;
+    }
