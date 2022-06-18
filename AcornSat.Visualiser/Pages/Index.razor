@@ -91,56 +91,9 @@
             <CloseButton />
         </ModalHeader>
         <ModalBody>
-            <Alert Color="Color.Success" Visible="true">
-                Chart Type
-                <RadioGroup TValue="ChartType" CheckedValue="@SelectedChartType" CheckedValueChanged="@OnSelectedChartTypeValueChanged" Orientation="Orientation.Vertical">
-                    <Radio TValue="ChartType" Value="ChartType.Line">Line chart</Radio>
-                    <Radio TValue="ChartType" Value="ChartType.Bar">Bar chart - relative to average</Radio>
-                </RadioGroup>
-                <Check TValue="bool" Checked="@trendlinesOn" CheckedChanged="@OnTrendlinesButtonClicked">Trendline</Check>
-            </Alert>
-           <Alert Color="Color.Primary" Visible="true">
-                Data Types
-
-                <Check TValue="bool" Checked="@Maximums" CheckedChanged="@OnMaximumsChanged">Maximum Temperatures</Check>
-                <Check TValue="bool" Checked="@Minimums" CheckedChanged="@OnMinimumsChanged">Minimum Temperatures</Check>
-                <Check TValue="bool" Checked="@Rainfall" CheckedChanged="@OnRainfallChanged">Rainfall</Check>
-                <Check TValue="bool" Checked="@CO2" CheckedChanged="@OnCO2Changed">CO₂</Check>
-                <Check TValue="bool" Checked="@CH4" CheckedChanged="@OnCH4Changed">CH₄</Check>
-                <Check TValue="bool" Checked="@N2O" CheckedChanged="@OnN2OChanged">N₂O</Check>
-
-                @if(!Maximums && !Minimums && !Rainfall && !CO2 && !CH4 && !N2O)
-                {
-                    <div style="color: red">No data types selected - select a data type to display data on the chart</div>
-                }
-
-           </Alert>
-           <Alert Color="Color.Secondary" Visible="true">
-                Data Adjustment
-
-                <Check TValue="bool" Checked="@Unadjusted" CheckedChanged="@OnUnadjustedChanged" Disabled="@UnadjustedDisabled">Unadjusted</Check>
-                <Check TValue="bool" Checked="@Adjusted" CheckedChanged="@OnAdjustedChanged"  Disabled="@AdjustedDisabled">Adjusted</Check>
-                <Check TValue="bool" Checked="@Difference" CheckedChanged="@OnDifferenceChanged"  Disabled="@DifferenceDisabled">Difference (adjusted vs unadjusted)</Check>
-
-                @if(!Unadjusted && !Adjusted && !Difference)
-                {
-                    <div style="color: red">No adjustment types selected - select an adjustment to display data on the chart</div>
-                }
-            </Alert>
-            <Alert Color="Color.Info" Visible="true">
-                Simple Moving Average<br/>
-                <Select TValue="int" SelectedValue="@SelectedMovingAverageInterval" SelectedValueChanged="@OnSelectedPeriodChanged">
-                    <SelectItem Value="0">None</SelectItem>
-                    <SelectItem Value="3">3 years</SelectItem>
-                    <SelectItem Value="5">5 years</SelectItem>
-                    <SelectItem Value="7">7 years</SelectItem>
-                    <SelectItem Value="10">10 years</SelectItem>
-                </Select>
-                <Check TValue="bool" Checked="@SoloSma" CheckedChanged="@OnSoloSmaChanged">Solo</Check>
-            </Alert>
             <Alert Color="Color.Danger" Visible="true">
                 Day grouping<br/>
-                <Select TValue="short" SelectedValue="@SelectedDayGrouping" SelectedValueChanged="@OnSelectingDayGroupingChanged">
+                <Select TValue="short" SelectedValue="@SelectedDayGrouping" SelectedValueChanged="@OnSelectedDayGroupingChanged">
                     <SelectItem Value="5">@DayGroupingText(5)</SelectItem>
                     <SelectItem Value="7">@DayGroupingText(7)</SelectItem>
                     <SelectItem Value="13">@DayGroupingText(13)</SelectItem>
@@ -239,7 +192,7 @@
     short SelectedDayGrouping { get; set; } = 14;
     short SelectingDayGrouping { get; set; }
 
-    async Task OnSelectingDayGroupingChanged(short value)
+    async Task OnSelectedDayGroupingChanged(short value)
     {
         SelectingDayGrouping = value;
     }
@@ -253,7 +206,7 @@
     {
         SelectedDayGroupThreshold = float.Parse(DayGroupThresholdText) / 100;
         SelectedDayGrouping = SelectingDayGrouping == 0 ? SelectedDayGrouping : SelectingDayGrouping;
-        await BuildDataSetsInSimpleMode();
+        await BuildDataSets();
     }
 
     private MapContainer mapContainer;
@@ -322,7 +275,7 @@
     {
         _haveCalledResizeAtLeastOnce = false;
 
-        await BuildDataSetsInSimpleMode();
+        await BuildDataSets();
     }
 
     public async Task OnChartPresetSelected(List<ChartSeriesDefinition> chartSeriesDefinitions)
@@ -369,7 +322,10 @@
         {
             SelectedResolution = DataResolution.Yearly;
             await InvokeAsync(StateHasChanged);
-            await BuildDataSetsInSimpleMode();
+
+            RebuildChartSeriesListToReflectSelectedYears();
+
+            await BuildDataSets();
             return;
         }
 
@@ -389,7 +345,9 @@
         }
 
         await InvokeAsync(StateHasChanged);
-        await BuildDataSetsInSimpleMode();
+        RebuildChartSeriesListToReflectSelectedYears();
+
+        await BuildDataSets();
     }
 
     List<string> StationsWithData { get; set; }
@@ -402,86 +360,15 @@
         {
             SelectedYears = new List<short>();
         }
-        await BuildDataSetsInSimpleMode();
-    }
 
-    int SelectedMovingAverageInterval;
-    async Task OnSelectedPeriodChanged(int value)
-    {
-        SelectedMovingAverageInterval = value;
-        await HandleRedraw();
-    }
+        foreach (var csd in ChartSeriesList)
+        {
+            csd.DataResolution = value;
+        }
 
-    bool SoloSma;
-    async Task OnSoloSmaChanged(bool value)
-    {
-        SoloSma = value;
-        await HandleRedraw();
-    }
+        ChartSeriesList = EliminateDuplicatesFromChartSeriesList(ChartSeriesList);
 
-    bool Adjusted = true;
-    async Task OnAdjustedChanged(bool value)
-    {
-        Adjusted = value;
-        await BuildDataSetsInSimpleMode();
-    }
-
-    bool Unadjusted = false;
-    async Task OnUnadjustedChanged(bool value)
-    {
-        Unadjusted = value;
-        await BuildDataSetsInSimpleMode();
-    }
-
-    bool Difference = false;
-    async Task OnDifferenceChanged(bool value)
-    {
-        Difference = value;
-        await BuildDataSetsInSimpleMode();
-    }
-
-    bool UnadjustedDisabled, AdjustedDisabled, DifferenceDisabled;
-
-    bool Maximums = true;
-    async Task OnMaximumsChanged(bool value)
-    {
-        Maximums = value;
-        await BuildDataSetsInSimpleMode();
-    }
-
-    bool Minimums;
-    async Task OnMinimumsChanged(bool value)
-    {
-        Minimums = value;
-        await BuildDataSetsInSimpleMode();
-    }
-
-    bool Rainfall;
-    async Task OnRainfallChanged(bool value)
-    {
-        Rainfall = value;
-        await UpdateInternalChartType();
-    }
-
-    bool CO2;
-    async Task OnCO2Changed(bool value)
-    {
-        CO2 = value;
-        await BuildDataSetsInSimpleMode();
-    }
-
-    bool CH4;
-    async Task OnCH4Changed(bool value)
-    {
-        CH4 = value;
-        await BuildDataSetsInSimpleMode();
-    }
-
-    bool N2O;
-    async Task OnN2OChanged(bool value)
-    {
-        N2O = value;
-        await BuildDataSetsInSimpleMode();
+        await BuildDataSets();
     }
 
     string SelectedStartYear { get; set; }
@@ -562,129 +449,53 @@
     List<ChartSeriesDefinition> ChartSeriesList { get; set; } = new List<ChartSeriesDefinition>();
     List<SeriesWithData> ChartSeriesWithData { get; set; }
 
-    protected async Task BuildDataSetsInSimpleMode()
-    {
-        Logger.LogInformation("BuildDataSetsInSimpleMode() entering");
-
-        // Build a list of chart series based on the options the user has specified
-        ChartSeriesList = BuildChartSeriesDefinitionsFromSimpleModeUi();
-
-        await BuildDataSets();
-    }
-
     protected async Task BuildDataSets()
     {
-        // Fetch the data required to render those series
+        // Fetch the data required to render the selected data series
         ChartSeriesWithData = await RetrieveDataSets(ChartSeriesList);
 
-        // Render those series
+        // Render the series
         await HandleRedraw();
 
         await mapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
 
-        Logger.LogInformation("BuildDataSetsInSimpleMode() leaving");
+        Logger.LogInformation("BuildDataSets() leaving");
     }
-
-    /// <summary>
-    /// This method rebuilds the set of chart series definitions based on the user's selections in the "simple mode"/v1 UI.
-    /// It discards any chart series definitions the user has edited manually in "advanced mode"/v2 UI (except any that the
-    /// user has "locked".
-    /// </summary>
-    /// <returns></returns>
-    List<ChartSeriesDefinition> BuildChartSeriesDefinitionsFromSimpleModeUi()
+        
+    public void RebuildChartSeriesListToReflectSelectedYears()
     {
-        var chartSeriesList = new List<ChartSeriesDefinition>();
+        var years = SelectedYears.Any() ? SelectedYears.Select(x => (short?)x).ToList() : new List<short?>() { null };
 
-        // Save any locked series & any series that aren't location-specific
-        if (ChartSeriesList != null && ChartSeriesList.Any())
+        List<ChartSeriesDefinition> newCsds = new List<ChartSeriesDefinition>();
+
+        var uniqueChartSeriesList = ChartSeriesList.Distinct(new ChartSeriesDefinition.ChartSeriesDefinitionComparerWhichIgnoresYearAndIsLocked()).ToArray();
+
+        foreach (var csd in uniqueChartSeriesList)
         {
-            chartSeriesList.AddRange(ChartSeriesList.Where(x => x.IsLocked || x.LocationId == null));
-        }
-
-        var anomaly = SelectedChartType == ChartType.Bar;
-        var generalAggregationMethod = anomaly ? AggregationMethod.GroupByDayThenAverage_Anomaly : AggregationMethod.GroupByDayThenAverage;
-
-        var selectedDataTypes = CreateSelectedDataTypesList();
-        var selectedDataAdjustments = CreateSelectedDataAdjustmentsList();
-       
-        foreach (var dataType in selectedDataTypes)
-        {
-            foreach (var dataAdjustment in selectedDataAdjustments)
+            foreach (var year in years)
             {
-                var dataDefinition = 
-                    dataType == DataType.CO2 || dataType == DataType.CH4 || dataType == DataType.N2O 
-                    ? DataSetDefinitions.Single(x => x.MeasurementDefinitions.Any(y => y.DataType == dataType))
-                    : SelectedDataSetDefinition;
-
-                var measurementDefinitionsOfRequestedDataType =
-                    dataDefinition.MeasurementDefinitions
-                    .Where(x => x.DataType == dataType)
-                    .ToArray();
-
-                // If the dataset doesn't have measurements of the requested type, don't add a series to the chart
-                if (!dataDefinition.MeasurementDefinitions.Any(x => x.DataType == dataType))
-                {
-                    continue;
-                }
-
-                // dataAdjustment is Adjusted, Unadjusted or Difference. If the user asked to display exactly one of the three data adjustment
-                // values, but that adjustment is not available for that data type, and there is only adjustment available for that dataType,
-                // just use it.
-                var requestDataAdjustment = (DataAdjustment?)dataAdjustment;
-                if (selectedDataAdjustments.Count == 1 && dataDefinition.MeasurementDefinitions.Count(x => x.DataType == dataType) == 1)
-                {
-                    if (!dataDefinition.MeasurementDefinitions.Any(x => x.DataType == dataType && x.DataAdjustment == dataAdjustment))
-                    {
-                        requestDataAdjustment = dataDefinition.MeasurementDefinitions.Single(x => x.DataType == dataType).DataAdjustment;
-                    }
-                }
-
-                var measurementDefinition =
-                    dataDefinition.MeasurementDefinitions
-                    .SingleOrDefault(x => x.DataType == dataType && x.DataAdjustment == requestDataAdjustment);
-
-                if (measurementDefinition == null)
-                {
-                    string error = $"No measurement definition of data type {dataType} and adjustment {requestDataAdjustment} (was {dataAdjustment}) available for dataset definition {dataDefinition.Name}";
-                    Logger.LogWarning(error);
-
-                    continue;
-                }
-
-                var aggregationMethod = dataType == DataType.Rainfall ? AggregationMethod.Sum : generalAggregationMethod;
-                Guid? locationId = dataDefinition.HasLocations ? SelectedLocationId : null;
-                string locationName = dataDefinition.HasLocations ? SelectedLocation?.Name : null;
-
-                var years = SelectedYears.Any() ? SelectedYears.Select(x => (short?)x).ToList() : new List<short?>() { null };
-
-                SeriesDisplayStyle displayStyle = ChooseSeriesDisplayStyleForChartSeries(measurementDefinition);
-
-                // If the user has not selected specific years, we just create one series to span the whole available time.
-                // If the user has selected specific years, we create a separate series for each selected year.
-                foreach (var year in years)
-                {
-                    var csd =
-                        new ChartSeriesDefinition()
+                newCsds.Add(
+                    new ChartSeriesDefinition()
                         {
-                            DataSetDefinition = dataDefinition,
-                            MeasurementDefinition = measurementDefinition,
-                            DataResolution = SelectedResolution,
-                            Year = year,
-                            LocationId = locationId,
-                            LocationName = locationName,
-                            Smoothing = SeriesSmoothingOptions.None,
-                            SmoothingWindow = 5,
-                            Aggregation = MapAggregationMethodToSeriesAggregationOptions(aggregationMethod),
-                            Value = anomaly ? SeriesValueOptions.AnomalyRelativeToMean : SeriesValueOptions.Value,
-                            DisplayStyle = displayStyle
-                        };
-                        
-                    chartSeriesList.Add(csd);
-                }
+                            Aggregation = csd.Aggregation,
+                            DataResolution = year == null ? DataResolution.Yearly : DataResolution.Monthly,
+                            DataSetDefinition = csd.DataSetDefinition,
+                            DisplayStyle = csd.DisplayStyle,
+                            IsLocked = csd.IsLocked,
+                            LocationId = csd.LocationId,
+                            LocationName = csd.LocationName,
+                            MeasurementDefinition = csd.MeasurementDefinition,
+                            ShowTrendline = csd.ShowTrendline,
+                            Smoothing = csd.Smoothing,
+                            SmoothingWindow = csd.SmoothingWindow,
+                            Value = csd.Value,
+                            Year = year
+                        }
+                );
             }
         }
 
-        return chartSeriesList;
+        ChartSeriesList = newCsds;
     }
 
     public SeriesDisplayStyle ChooseSeriesDisplayStyleForChartSeries(MeasurementDefinitionViewModel measurementDefinition)
@@ -782,47 +593,6 @@
             default:
                 throw new NotImplementedException($"AggregationMethod {m}");
         }
-    }
-
-    List<DataType> CreateSelectedDataTypesList()
-    {
-        var selectedDataTypes = new List<DataType>();
-        if (Maximums)
-        {
-            selectedDataTypes.Add(DataType.TempMax);
-        }
-        if (Minimums)
-        {
-            selectedDataTypes.Add(DataType.TempMin);
-        }
-        if (Rainfall)
-        {
-            selectedDataTypes.Add(DataType.Rainfall);
-        }
-        if (CO2)
-        {
-            selectedDataTypes.Add(DataType.CO2);
-        }
-        if (CH4)
-        {
-            selectedDataTypes.Add(DataType.CH4);
-        }
-        if (N2O)
-        {
-            selectedDataTypes.Add(DataType.N2O);
-        }
-        return selectedDataTypes;
-    }
-
-    List<DataAdjustment> CreateSelectedDataAdjustmentsList()
-    {
-        var selectedDataAdjustments = new List<DataAdjustment>();
-
-        if (Adjusted)                       selectedDataAdjustments.Add(DataAdjustment.Adjusted);
-        if (Unadjusted)                     selectedDataAdjustments.Add(DataAdjustment.Unadjusted);
-        if (Difference)                     selectedDataAdjustments.Add(DataAdjustment.Difference);
-
-        return selectedDataAdjustments;
     }
 
     Chart<float?> chart;
@@ -1011,7 +781,7 @@
                 {
                     Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.Millimetres),
                     Axis = "y",
-                    Position = Maximums || Minimums ? "right" : "left",
+                    Position = "right",
                     Grid = new { DrawOnChartArea = false },
                     Title = new
                     {
@@ -1037,7 +807,7 @@
                 {
                     Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.PartsPerMillion),
                     Axis = "y",
-                    Position = Maximums || Minimums ? "right" : "left",
+                    Position = "right",
                     Grid = new { DrawOnChartArea = false },
                     Title = new
                     {
@@ -1050,7 +820,7 @@
                 {
                     Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.PartsPerBillion),
                     Axis = "y",
-                    Position = Maximums || Minimums ? "right" : "left",
+                    Position = "right",
                     Grid = new { DrawOnChartArea = false },
                     Title = new
                     {
@@ -1380,7 +1150,59 @@
         SelectedLocation = Locations.Single(x => x.Id == SelectedLocationId);
         SelectedDataSetDefinition = DataSetDefinitions.Single(x => x.Id == SelectedLocation.DataSetId);
 
-        await BuildDataSetsInSimpleMode();
+        List<ChartSeriesDefinition> additionalCsds = new List<ChartSeriesDefinition>();
+
+        // Update data series to reflect new location        
+        foreach (var csd in ChartSeriesList)
+        {
+            if (!csd.IsLocked)
+            {
+                if (csd.LocationId != null)
+                {
+                    csd.LocationId = newValue;
+                    csd.LocationName = SelectedLocation.Name;
+                }
+            }
+            else
+            {
+                // It's locked, so duplicate it & set the location on the duplicate to the new location
+                var newDsd = DataSetDefinitions.Single(x => x.Id == SelectedLocation.DataSetId);
+                var newMd = newDsd.MeasurementDefinitions.SingleOrDefault(x => x.DataType == csd.MeasurementDefinition.DataType && x.DataAdjustment == csd.MeasurementDefinition.DataAdjustment);
+
+                if (newMd != null)
+                {
+                    additionalCsds.Add(
+                        new ChartSeriesDefinition()
+                            {
+                                Aggregation = csd.Aggregation,
+                                DataResolution = csd.DataResolution,
+                                DataSetDefinition = DataSetDefinitions.Single(x => x.Id == SelectedLocation.DataSetId),
+                                DisplayStyle = csd.DisplayStyle,
+                                IsLocked = false,
+                                LocationId = newValue,
+                                LocationName = SelectedLocation.Name,
+                                MeasurementDefinition = newMd,
+                                ShowTrendline = csd.ShowTrendline,
+                                Smoothing = csd.Smoothing,
+                                SmoothingWindow = csd.SmoothingWindow,
+                                Value = csd.Value,
+                                Year = csd.Year
+                            }
+                    );
+                }
+            }
+        }
+
+        ChartSeriesList.AddRange(additionalCsds);
+
+        ChartSeriesList = EliminateDuplicatesFromChartSeriesList(ChartSeriesList);
+
+        await BuildDataSets();
+    }
+
+    static List<ChartSeriesDefinition> EliminateDuplicatesFromChartSeriesList(List<ChartSeriesDefinition> csds)
+    {
+        return csds.Distinct(new ChartSeriesDefinition.ChartSeriesDefinitionComparer()).ToList();
     }
 
     string[] Labels = new string[1];
@@ -1397,6 +1219,8 @@
         SelectedYears = new List<short> { year };
         SelectedResolution = DataResolution.Monthly;
 
-        await BuildDataSetsInSimpleMode();
+        RebuildChartSeriesListToReflectSelectedYears();
+
+        await BuildDataSets();
     }
 }

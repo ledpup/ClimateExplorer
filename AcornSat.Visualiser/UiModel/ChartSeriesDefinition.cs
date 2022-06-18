@@ -1,4 +1,5 @@
 ﻿using AcornSat.Core.ViewModel;
+using System.Diagnostics.CodeAnalysis;
 using static AcornSat.Core.Enums;
 
 namespace AcornSat.Visualiser.UiModel
@@ -106,6 +107,88 @@ namespace AcornSat.Visualiser.UiModel
         public override string ToString()
         {
             return $"CSD: {DataSetDefinition.Name} | {MeasurementDefinition.DataType} {MeasurementDefinition.DataAdjustment} | {DataResolution} | {LocationName} | {Smoothing} | {Aggregation} | {Value} | {DisplayStyle}";
+        }
+
+        public class ChartSeriesDefinitionComparerWhichIgnoresYearAndIsLocked : IEqualityComparer<ChartSeriesDefinition>
+        {
+            public bool Equals(ChartSeriesDefinition? x, ChartSeriesDefinition? y)
+            {
+                if (x == null && y == null) return true;
+                if (x == null || y == null) return false;
+
+                if (x.Aggregation != y.Aggregation) return false;
+                if (x.DataResolution != y.DataResolution) return false;
+                if (x.DataSetDefinition != y.DataSetDefinition) return false;
+                if (x.DisplayStyle != y.DisplayStyle) return false;
+                if (x.LocationId != y.LocationId) return false;
+                if (x.LocationName != y.LocationName) return false;
+                if (x.MeasurementDefinition != y.MeasurementDefinition) return false;
+                if (x.ShowTrendline != y.ShowTrendline) return false;
+                if (x.Smoothing != y.Smoothing) return false;
+                if (x.SmoothingWindow != y.SmoothingWindow) return false;
+                if (x.Value != y.Value) return false;
+
+                return true;
+            }
+
+            public int GetHashCode([DisallowNull] ChartSeriesDefinition obj)
+            {
+                return
+                    obj.Aggregation.GetHashCode() ^
+                    obj.DataResolution.GetHashCode() ^
+                    obj.DataSetDefinition.Id.GetHashCode() ^
+                    obj.DisplayStyle.GetHashCode() ^
+                    obj.LocationId.GetHashCode() ^
+                    obj.LocationName.GetHashCode() ^
+                    obj.MeasurementDefinition.GetHashCode() ^
+                    obj.ShowTrendline.GetHashCode() ^
+                    obj.Smoothing.GetHashCode() ^
+                    obj.SmoothingWindow.GetHashCode() ^
+                    obj.Value.GetHashCode();
+            }
+        }
+
+        public class ChartSeriesDefinitionComparer : IEqualityComparer<ChartSeriesDefinition>
+        {
+            public bool Equals(ChartSeriesDefinition? x, ChartSeriesDefinition? y)
+            {
+                if (x == null && y == null) return true;
+                if (x == null || y == null) return false;
+
+                if (x.Aggregation != y.Aggregation) return false;
+                if (x.DataResolution != y.DataResolution) return false;
+                if (x.DataSetDefinition != y.DataSetDefinition) return false;
+                if (x.DisplayStyle != y.DisplayStyle) return false;
+                if (x.IsLocked != y.IsLocked) return false;
+                if (x.LocationId != y.LocationId) return false;
+                if (x.LocationName != y.LocationName) return false;
+                if (x.MeasurementDefinition != y.MeasurementDefinition) return false;
+                if (x.ShowTrendline != y.ShowTrendline) return false;
+                if (x.Smoothing != y.Smoothing) return false;
+                if (x.SmoothingWindow != y.SmoothingWindow) return false;
+                if (x.Value != y.Value) return false;
+                if (x.Year != y.Year) return false;
+
+                return true;
+            }
+
+            public int GetHashCode([DisallowNull] ChartSeriesDefinition obj)
+            {
+                return
+                    obj.Aggregation.GetHashCode() ^
+                    obj.DataResolution.GetHashCode() ^
+                    obj.DataSetDefinition.Id.GetHashCode() ^
+                    obj.DisplayStyle.GetHashCode() ^
+                    obj.IsLocked.GetHashCode() ^
+                    obj.LocationId.GetHashCode() ^
+                    obj.LocationName.GetHashCode() ^
+                    obj.MeasurementDefinition.GetHashCode() ^
+                    obj.ShowTrendline.GetHashCode() ^
+                    obj.Smoothing.GetHashCode() ^
+                    obj.SmoothingWindow.GetHashCode() ^
+                    obj.Value.GetHashCode() ^
+                    obj.Year.GetHashCode();
+            }
         }
     }
 }
