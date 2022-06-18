@@ -1,5 +1,7 @@
 ﻿.suggested-data-set-list {
     display: flex;
+    flex-wrap: wrap;
+    user-select: none;
 }
 
 .suggested-data-set-list .modal-underlay {
@@ -17,6 +19,8 @@
     margin-right: 24px;
     background-color: #f8f8f8;
     border-radius: 12px;
+    margin-bottom: 24px;
+    min-width: 200px;
     max-width: 300px;
     vertical-align: top;
     cursor: pointer;
@@ -37,11 +41,13 @@
     .suggested-data-set .main {
         padding: 12px;
         border-radius: 12px;
+        transition: 0.25s;
     }
 
-    .suggested-data-set .main:hover {
-        background-color: #cfc;
-    }
+        .suggested-data-set .main:hover {
+            background-color: #cfc;
+            transition: 0.25s;
+        }
 
     .suggested-data-set .title {
         font-weight: bold;
@@ -53,14 +59,17 @@
         font-size: 0.85rem;
     }
 
-    .suggested-data-set .expander {    
+    .suggested-data-set .expander {
         padding: 12px;
         color: #888;
+        border-radius: 12px;
+        transition: 0.25s;
     }
 
         .suggested-data-set .expander:hover {
             background-color: #cfc;
-            color :#425f59;
+            color: #425f59;
+            transition: 0.25s;
         }
 
     .suggested-data-set .menu {
