@@ -280,6 +280,8 @@
 
     public async Task OnChartPresetSelected(List<ChartSeriesDefinition> chartSeriesDefinitions)
     {
+        SelectedResolution = DataResolution.Yearly;
+
         ChartSeriesList.Clear();
         ChartSeriesList.AddRange(chartSeriesDefinitions);
 
