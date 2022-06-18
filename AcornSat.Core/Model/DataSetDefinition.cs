@@ -34,5 +34,10 @@ public class DataSetDefinition
 
         return ddd;
     }
+
+    public override string ToString()
+    {
+        return "DSD " + Name;
+    }
 }
 

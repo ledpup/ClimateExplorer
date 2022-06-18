@@ -397,6 +397,7 @@ async Task<List<DataSet>> BuildDataSet(QueryParameters queryParameters, List<Dat
         case DataResolution.Daily:
             dataSets = await GetDataFromFile(definition, queryParameters.DataType, queryParameters.DataAdjustment, queryParameters.LocationId, queryParameters.Year);
             break;
+
         case DataResolution.Yearly:
             if (definition.DataResolution == DataResolution.Daily)
             {
@@ -421,27 +422,58 @@ async Task<List<DataSet>> BuildDataSet(QueryParameters queryParameters, List<Dat
             dataSets = TrimNulls(dataSets);
 
             break;
+
         case DataResolution.Weekly:
-            dataSets = await GetAverageFromDailyRecords(definition, queryParameters.DataType, DataResolution.Weekly, queryParameters.DataAdjustment, queryParameters.LocationId.Value, queryParameters.Year.Value, ((GroupThenAverage)queryParameters.StatsParameters).DayGroupingThreshold);
+            dataSets = 
+                await GetAverageFromDailyRecords(
+                    definition, 
+                    queryParameters.DataType, 
+                    DataResolution.Weekly, 
+                    queryParameters.DataAdjustment, 
+                    queryParameters.LocationId.Value, 
+                    queryParameters.Year.Value, 
+                    ((GroupThenAverage)queryParameters.StatsParameters).DayGroupingThreshold);
+
             break;
+
         case DataResolution.Monthly:
             if (definition.DataResolution == DataResolution.Daily)
             {
-                dataSets = await GetAverageFromDailyRecords(definition, queryParameters.DataType, DataResolution.Monthly, queryParameters.DataAdjustment, queryParameters.LocationId.Value, queryParameters.Year.Value, ((GroupThenAverage)queryParameters.StatsParameters).DayGroupingThreshold);
-            }
-            else if (definition.DataResolution == DataResolution.Monthly)
-            {
-                var measurementDefinition = definition.MeasurementDefinitions.Single(x => x.DataAdjustment == queryParameters.DataAdjustment && x.DataType == queryParameters.DataType);
-                switch (measurementDefinition.RowDataType)
+                var statsParameters = (GroupThenAverage)queryParameters.StatsParameters;
+
+                if (statsParameters == null)
                 {
-                    case RowDataType.OneValuePerRow:
-                        dataSets = await GetDataFromFile(definition, queryParameters.DataType, queryParameters.DataAdjustment, queryParameters.LocationId);
-                        break;
-                    case RowDataType.TwelveMonthsPerRow:
-                        dataSets = await GetTwelveMonthsPerRowData(definition, queryParameters.DataType, DataResolution.Monthly, "mean");
-                        break;
+                    throw new Exception("Cannot transform daily data into monthly data if StatsParameters have not been supplied to govern that transformation.");
+                }
+
+                dataSets = 
+                    await GetAverageFromDailyRecords(
+                        definition,
+                        queryParameters.DataType,
+                        DataResolution.Monthly,
+                        queryParameters.DataAdjustment,
+                        queryParameters.LocationId.Value,
+                        queryParameters.Year.Value,
+                        statsParameters.DayGroupingThreshold
+                    );
+            }
+            else
+            {
+                if (definition.DataResolution == DataResolution.Monthly)
+                {
+                    var measurementDefinition = definition.MeasurementDefinitions.Single(x => x.DataAdjustment == queryParameters.DataAdjustment && x.DataType == queryParameters.DataType);
+                    switch (measurementDefinition.RowDataType)
+                    {
+                        case RowDataType.OneValuePerRow:
+                            dataSets = await GetDataFromFile(definition, queryParameters.DataType, queryParameters.DataAdjustment, queryParameters.LocationId);
+                            break;
+                        case RowDataType.TwelveMonthsPerRow:
+                            dataSets = await GetTwelveMonthsPerRowData(definition, queryParameters.DataType, DataResolution.Monthly, "mean");
+                            break;
+                    }
                 }
             }
+
             break;
     }
 
