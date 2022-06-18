@@ -45,15 +45,21 @@
 
 <div style="min-height: 40px"></div>
 
-<Collapsible Title="Add a dataset" InitiallyShown="false">
+<Collapsible Title="Suggested charts" InitiallyShown="true">
     <Content>
-        <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@SelectedLocation"></DataSetBrowser>
+        <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@SelectedLocation" OnChartPresetSelected="@OnChartPresetSelected"></SuggestedCharts>
     </Content>
 </Collapsible>
 
-<Collapsible Title="Datasets">
+<Collapsible Title="Customise datasets">
     <Content>
         <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
+
+        <Collapsible Title="Add a dataset" InitiallyShown="false">
+            <Content>
+                <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@SelectedLocation"></DataSetBrowser>
+            </Content>
+        </Collapsible>
     </Content>
 </Collapsible>
 
@@ -319,6 +325,14 @@
         await BuildDataSetsInSimpleMode();
     }
 
+    public async Task OnChartPresetSelected(List<ChartSeriesDefinition> chartSeriesDefinitions)
+    {
+        ChartSeriesList.Clear();
+        ChartSeriesList.AddRange(chartSeriesDefinitions);
+
+        await BuildDataSets();
+    }
+
     async Task OnAddDataSet(DataSetLibraryEntry dle)
     {
         Logger.LogInformation("Adding dle " + dle.SourceDataSetId);
@@ -581,10 +595,10 @@
     {
         var chartSeriesList = new List<ChartSeriesDefinition>();
 
-        // Save any locked series
+        // Save any locked series & any series that aren't location-specific
         if (ChartSeriesList != null && ChartSeriesList.Any())
         {
-            chartSeriesList.AddRange(ChartSeriesList.Where(x => x.IsLocked));
+            chartSeriesList.AddRange(ChartSeriesList.Where(x => x.IsLocked || x.LocationId == null));
         }
 
         var anomaly = SelectedChartType == ChartType.Bar;

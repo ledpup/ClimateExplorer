@@ -134,7 +134,7 @@
         locationIdLastTimeOnParametersSetAsyncWasCalled = Location?.Id;
         dataSetDefinitionIdLastTimeOnParametersSetAsyncWasCalled = DataSetDefinition?.Id;
 
-        var dataAdjustment = Enums.DataAdjustment.Unadjusted;
+        Enums.DataAdjustment? dataAdjustment = null;
         if (DataSetDefinition.MeasurementDefinitions.Any(x => x.DataType == DataType.TempMax && x.DataAdjustment == Enums.DataAdjustment.Adjusted))
         {
             dataAdjustment = Enums.DataAdjustment.Adjusted;

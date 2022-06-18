@@ -1,0 +1,45 @@
+﻿.suggested-data-set-list {
+    display: flex;
+}
+
+.suggested-data-set {
+    display: flex;
+    margin-right: 24px;
+    background-color: #f8f8f8;
+    border-radius: 12px;
+    max-width: 300px;
+    vertical-align: top;
+    cursor: pointer;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+    .suggested-data-set .main {
+        padding: 12px;
+        border-radius: 12px;
+    }
+
+    .suggested-data-set .main:hover {
+        background-color: #cfc;
+    }
+
+    .suggested-data-set .title {
+        font-weight: bold;
+        color: #425f59
+    }
+
+    .suggested-data-set .description {
+        color: #666;
+        font-size: 0.85rem;
+    }
+
+    .suggested-data-set .expander {    
+        padding: 12px;
+        color: #888;
+    }
+
+        .suggested-data-set .expander:hover {
+            background-color: #cfc;
+            color :#425f59;
+        }
