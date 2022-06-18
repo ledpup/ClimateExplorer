@@ -36,6 +36,7 @@
     .suggested-data-set.menu-expanded {
         border-radius: 12px 12px 0px 0px;
         z-index: 10002;
+        box-shadow: rgb(0 0 0 / 30%) 4px 4px 4px;
     }
 
     .suggested-data-set .main {
@@ -79,4 +80,5 @@
         width: 100%;
         padding: 20px;
         background-color: #f8f8f8;
+        box-shadow:rgb(0 0 0 / 30%) 4px 4px 4px
     }
