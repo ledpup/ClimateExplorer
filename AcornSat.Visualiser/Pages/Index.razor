@@ -988,7 +988,11 @@
 
         Logger.LogInformation($"AddDataSetToChart: values has {values.Count} entries, of which {values.Count(x => x != null)} are not null");
 
-        var colour = ChartColor.FromHtmlColorCode(colours.GetNextColour(preferredColour));
+        string htmlColourCode = colours.GetNextColour(preferredColour);
+
+        var colour = ChartColor.FromHtmlColorCode(htmlColourCode);
+
+        chartSeries.ChartSeries.Colour = htmlColourCode;
 
         var chartType = 
             chartSeries.ChartSeries.DisplayStyle == SeriesDisplayStyle.Line
@@ -1003,7 +1007,7 @@
                 break;
 
             case SeriesSmoothingOptions.MovingAverage:
-                await AddMovingAverage(chartSeries.ChartSeries.SmoothingWindow, label, values, dataSet.MeasurementDefinition.UnitOfMeasure);
+                await AddMovingAverage(chartSeries.ChartSeries.SmoothingWindow, label, values, dataSet.MeasurementDefinition.UnitOfMeasure, colour);
 
                 break;
         }
@@ -1020,11 +1024,11 @@
             };
     }
 
-    async Task AddMovingAverage(int smoothingWindow, string label, List<float?> values, UnitOfMeasure unitOfMeasure)
+    async Task AddMovingAverage(int smoothingWindow, string label, List<float?> values, UnitOfMeasure unitOfMeasure, ChartColor colour)
     {
         var simpleMovingAverages = SimpleMovingAverage.Calculate(smoothingWindow, values);
 
-        await chart.AddDataSet(GetLineChartDataset(label, simpleMovingAverages, ChartColor.FromHtmlColorCode(colours.GetNextColour()), unitOfMeasure));
+        await chart.AddDataSet(GetLineChartDataset(label, simpleMovingAverages, colour, unitOfMeasure));
     }
 
     void BuildProcessedDataSetsForYearlyView(List<SeriesWithData> chartSeriesWithData, bool inclusiveStartYear = true)

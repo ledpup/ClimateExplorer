@@ -4,7 +4,10 @@
 @using Blazorise.Charts
 
 <div class="chart-series-config">
-    <div class="title" @onclick="() => { expanded = !expanded; }">@ChartSeries.FriendlyTitle</div>
+    <div class="title-bar" @onclick="() => { expanded = !expanded; }" style="@GenerateStyleForColourIndicator()">
+        <div class="colour-indicator" style="@GenerateStyleForColourIndicator()"></div>
+        <div class="title">@ChartSeries.FriendlyTitle</div>
+    </div>
 
     @if (expanded)
     {
@@ -107,6 +110,11 @@
 
     [Parameter]
     public EventCallback<ChartSeriesDefinition> OnRemoveSeries { get; set; }
+
+    public string GenerateStyleForColourIndicator()
+    {
+        return "background-color: " + ChartSeries.Colour;
+    }
 
     bool expanded;
 
