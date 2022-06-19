@@ -1165,6 +1165,52 @@
                 {
                     csd.LocationId = newValue;
                     csd.LocationName = SelectedLocation.Name;
+
+                    // But: the new location may not have data of the requested type. Since this series is location-specific, and we
+                    // determine the DSD for a location based just on the location, let's update the CSD accordingly
+                    csd.DataSetDefinition = SelectedDataSetDefinition;
+
+                    // Next, update the MeasurementDefinition. Look for a match on DataType and DataAdjustment
+                    var oldMd = csd.MeasurementDefinition;
+                    
+                    var candidateMds = 
+                        csd.DataSetDefinition.MeasurementDefinitions
+                        .Where(x => x.DataType == oldMd.DataType && x.DataAdjustment == oldMd.DataAdjustment)
+                        .ToArray();
+
+                    switch (candidateMds.Length)
+                    {
+                        case 0:
+                            // There was no exact match. It's possible that the new location has data of the requested type, but not the specified adjustment type.
+                            // If so, try defaulting.
+                            candidateMds = csd.DataSetDefinition.MeasurementDefinitions.Where(x => x.DataType == oldMd.DataType).ToArray();
+
+                            if (candidateMds.Length == 1)
+                            {
+                                // If only one is available, just use it
+                                csd.MeasurementDefinition = candidateMds.Single();
+                            }
+                            else
+                            {
+                                // Otherwise, use "Adjusted" if available
+                                var adjustedMd = candidateMds.SingleOrDefault(x => x.DataAdjustment == DataAdjustment.Adjusted);
+
+                                if (adjustedMd != null)
+                                {
+                                    csd.MeasurementDefinition = adjustedMd;
+                                }
+                            }
+
+                            break;
+
+                        case 1:
+                            csd.MeasurementDefinition = candidateMds.Single();
+                            break;
+
+                        default:
+                            // There were multiple matches. That's unexpected.
+                            throw new Exception("Unexpected condition: after changing location, while updating ChartSeriesDefinitions, there were multiple compatible MeasurementDefinitions for one CSD.");
+                    }
                 }
             }
             else
