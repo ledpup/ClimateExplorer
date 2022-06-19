@@ -5,17 +5,28 @@
     padding-left: 16px;
     padding-right: 16px;
     border-radius: 12px;
-    min-height: 200px;
     min-width: 350px;
     font-size: 0.75rem;
     display: inline-block;
     color: #666;
+    user-select: none;
+    vertical-align: top;
 }
 
+    .chart-series-config .title:hover {
+        background-color: #cfc;
+        transition: 0.25s;
+        cursor: pointer;
+    }
+
     .chart-series-config .title {
+        margin: -8px;
+        margin-left: -16px;
+        margin-right: -16px;
+        border-radius: 12px;
+        padding: 8px;
         font-weight: bold;
         color: #425f59;
-        margin-bottom: 12px;
     }
 
 .series-action {
