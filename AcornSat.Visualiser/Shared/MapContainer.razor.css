@@ -24,7 +24,7 @@
         left: 0px;
         right: 0px;
         bottom: 0px;
-        z-index: 1;
+        z-index: 20;
     }
         .mapContainer.expanded {
             position: fixed;
@@ -62,7 +62,7 @@
         right: 0px;
         left: 0px;
         bottom: 0px;
-        z-index: 1;
+        z-index: 20;
     }
 
         .mapContainer.expanded {
