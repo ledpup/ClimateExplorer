@@ -18,6 +18,7 @@ public class QueryParameters
         {
             case Core.Enums.AggregationMethod.GroupByDayThenAverage:
             case Core.Enums.AggregationMethod.GroupByDayThenAverage_Anomaly:
+            case Core.Enums.AggregationMethod.Sum:
                 StatsParameters = new GroupThenAverage(dayGrouping.Value, dayGroupingThreshold.Value);
                 break;
             case Core.Enums.AggregationMethod.BinThenCount:

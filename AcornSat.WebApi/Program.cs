@@ -649,15 +649,13 @@ async Task<List<DataSet>> GetYearlyRecordsFromDaily(DataSetDefinition dataSetDef
         {
             case AggregationMethod.GroupByDayThenAverage:
             case AggregationMethod.GroupByDayThenAverage_Anomaly:
-                returnDataRecords = GroupThenAverage(yearSets, (GroupThenAverage)queryParameters.StatsParameters);
+            case AggregationMethod.Sum:
+                returnDataRecords = AggregateToYearlyValues(yearSets, queryParameters);
                 break;
             case AggregationMethod.BinThenCount:
                 var min = dailyDataSet.DataRecords.Min(x => x.Value).Value;
                 var max = dailyDataSet.DataRecords.Max(x => x.Value).Value;
                 returnDataRecords = BinThenCount(yearSets, min, max, (BinThenCount)queryParameters.StatsParameters);
-                break;
-            case AggregationMethod.Sum:
-                returnDataRecords = Sum(yearSets);
                 break;
         }
         
@@ -705,20 +703,6 @@ async Task<List<DataSet>> GetYearlyRecordsFromDaily(DataSetDefinition dataSetDef
     }
 }
 
-List<DataRecord> Sum(IEnumerable<IGrouping<short, DataRecord>> yearRecords)
-{
-    var dataRecords = new List<DataRecord>();
-    foreach (var yearRecord in yearRecords)
-    {
-        dataRecords.Add(new DataRecord()
-        {
-            Year = yearRecord.Key,
-            Value = yearRecord.Sum(x => x.Value),
-        });
-    }
-    return dataRecords;
-}
-
 List<DataRecord> BinThenCount(IEnumerable<IGrouping<short, DataRecord>> yearSets, float min, float max, BinThenCount statsParameters)
 {
     var range = max - min;
@@ -744,28 +728,36 @@ List<DataRecord> BinThenCount(IEnumerable<IGrouping<short, DataRecord>> yearSets
     return bins;
 }
 
-List<DataRecord> GroupThenAverage(IEnumerable<IGrouping<short, DataRecord>> yearSets, GroupThenAverage groupThenAverage)
+List<DataRecord> AggregateToYearlyValues(IEnumerable<IGrouping<short, DataRecord>> yearSets, QueryParameters queryParameters)
 {
     var yearlyAverageRecords = new List<DataRecord>();
+    var groupThenAverage = (GroupThenAverage)queryParameters.StatsParameters;
     foreach (var yearSet in yearSets)
     {
         var grouping = yearSet.ToList().GroupYearByDays(groupThenAverage.DayGrouping).ToList();
-        var groupingAverages = new List<DataRecord>();
+        var aggregates = new List<DataRecord>();
 
         for (short i = 0; i < grouping.Count(); i++)
         {
             var numberOfDaysInGroup = grouping[i].Count();
 
-            var value = (float)grouping[i].Count(x => x.Value != null) / numberOfDaysInGroup < groupThenAverage.DayGroupingThreshold ? null : grouping[i].Average(x => x.Value);
+            float? groupValue = null;
+            if ((float)grouping[i].Count(x => x.Value != null) / numberOfDaysInGroup >= groupThenAverage.DayGroupingThreshold)
+            {
+                groupValue = queryParameters.AggregationMethod == AggregationMethod.Sum ? grouping[i].Sum(x => x.Value) : grouping[i].Average(x => x.Value);
+            }
             var record = new DataRecord()
             {
-                Value = value,
+                Value = groupValue,
             };
 
-            groupingAverages.Add(record);
+            aggregates.Add(record);
         }
 
-        var yearMean = groupingAverages.Any(x => x.Value == null) ? null : groupingAverages.Average(x => x.Value);
+        var yearMean = aggregates.Any(x => x.Value == null) ? null :
+                queryParameters.AggregationMethod == AggregationMethod.Sum ? 
+                    aggregates.Sum(x => x.Value) :
+                    aggregates.Average(x => x.Value);
         var yearlyAverageRecord = new DataRecord
         {
             Year = yearSet.Key,
