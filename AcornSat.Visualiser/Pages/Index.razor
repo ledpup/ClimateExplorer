@@ -1027,12 +1027,15 @@
         await chart.AddDataSet(GetLineChartDataset(label, simpleMovingAverages, ChartColor.FromHtmlColorCode(colours.GetNextColour()), unitOfMeasure));
     }
 
-    void BuildProcessedDataSetsForYearlyView(List<SeriesWithData> chartSeriesWithData)
+    void BuildProcessedDataSetsForYearlyView(List<SeriesWithData> chartSeriesWithData, bool inclusiveStartYear = true)
     {
         // Calculate first and last year which we have a data record for, across all data sets underpinning all chart series
-        var allDataRecords = chartSeriesWithData.SelectMany(x => x.SourceDataSets).SelectMany(x => x.DataRecords);
+        var allDataSets = chartSeriesWithData.SelectMany(x => x.SourceDataSets);
+        var allDataRecords = allDataSets.SelectMany(x => x.DataRecords);
 
-        var earliestYearAcrossAllDataSets = allDataRecords.Min(y => y.Year);
+        var startYear = inclusiveStartYear 
+                                ? allDataSets.Max(x => x.StartYear.Value)
+                                : allDataRecords.Min(y => y.Year);
         var latestYearAcrossAllDataSets   = allDataRecords.Max(y => y.Year);
 
         foreach (var cs in chartSeriesWithData)
@@ -1047,7 +1050,7 @@
                                 Location = x.Location,
                                 MeasurementDefinition = x.MeasurementDefinition,
                                 DataRecords =
-                                    Enumerable.Range(earliestYearAcrossAllDataSets, latestYearAcrossAllDataSets - earliestYearAcrossAllDataSets + 1)
+                                    Enumerable.Range(startYear, latestYearAcrossAllDataSets - startYear + 1)
                                     .Select(
                                         year =>
                                             // If there's a record in the source dataset, use it
