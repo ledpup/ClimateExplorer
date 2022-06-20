@@ -263,8 +263,8 @@ namespace AcornSat.Visualiser.UiModel
                     obj.DataSetDefinition.Id.GetHashCode() ^
                     obj.DisplayStyle.GetHashCode() ^
                     obj.IsLocked.GetHashCode() ^
-                    obj.LocationId.GetHashCode() ^
-                    obj.LocationName.GetHashCode() ^
+                    obj.LocationId?.GetHashCode() ?? 0 ^
+                    obj.LocationName?.GetHashCode() ?? 0 ^
                     obj.MeasurementDefinition.GetHashCode() ^
                     obj.ShowTrendline.GetHashCode() ^
                     obj.Smoothing.GetHashCode() ^

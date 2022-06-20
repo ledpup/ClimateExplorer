@@ -542,7 +542,10 @@
         // Render the series
         await HandleRedraw();
 
-        await mapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
+        if (SelectedLocation != null)
+        {
+            await mapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
+        }
 
         Logger.LogInformation("BuildDataSets() leaving");
     }
