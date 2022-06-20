@@ -174,7 +174,7 @@ namespace AcornSat.Visualiser.UiModel
         public int SmoothingWindow { get; set; }
         public SeriesAggregationOptions Aggregation { get; set; }
         public SeriesValueOptions Value { get; set; }
-        public string Colour { get; set; }
+        public string Colour { get; set; } = "#888";
 
         // Rendering option fields
         public SeriesDisplayStyle DisplayStyle { get; set; }
