@@ -1,4 +1,5 @@
-﻿using AcornSat.Core.ViewModel;
+﻿using AcornSat.Core;
+using AcornSat.Core.ViewModel;
 using System.Diagnostics.CodeAnalysis;
 using static AcornSat.Core.Enums;
 
@@ -67,6 +68,84 @@ namespace AcornSat.Visualiser.UiModel
                 {
                     segments.Add("Value: " + Value);
                 }
+
+                return String.Join(" | ", segments);
+            }
+        }
+
+        public string FriendlyTitleShort
+        {
+            get
+            {
+                List<string> segments = new List<string>();
+
+                string s = "";
+
+                if (Year != null) s += Year;
+
+                if (LocationName != null)
+                {
+                    if (s.Length > 0)
+                    {
+                        s += " ";
+                    }
+
+                    s += LocationName;
+                }
+
+                if (s.Length > 0) segments.Add(s);
+
+                if (MeasurementDefinition.DataCategory != null)
+                {
+                    segments.Add(MeasurementDefinition.DataCategory.Value.ToString());
+                }
+
+                segments.Add(MapDataTypeToFriendlyName(MeasurementDefinition.DataType));
+
+                return String.Join(" | ", segments);
+            }
+        }
+
+        public string FriendlyDescription
+        {
+            get
+            {
+                List<string> segments = new List<string>();
+
+                if (MeasurementDefinition.DataAdjustment != null)
+                {
+                    if (MeasurementDefinition.DataAdjustment != DataAdjustment.Adjusted ||
+                        DataSetDefinition.MeasurementDefinitions.Any(
+                            x =>
+                                x != MeasurementDefinition &&
+                                x.DataType == MeasurementDefinition.DataType &&
+                                x.DataAdjustment != MeasurementDefinition.DataAdjustment))
+                    {
+                        segments.Add(MeasurementDefinition.DataAdjustment.ToString());
+                    }
+                }
+
+                switch (Smoothing)
+                {
+                    case SeriesSmoothingOptions.MovingAverage:
+                        segments.Add(SmoothingWindow + " year moving average");
+                        break;
+                    case SeriesSmoothingOptions.Trendline:
+                        segments.Add("Trendline");
+                        break;
+                }
+
+                if (Aggregation != SeriesAggregationOptions.Mean)
+                {
+                    segments.Add("Aggregation: " + Aggregation);
+                }
+
+                if (Value != SeriesValueOptions.Value)
+                {
+                    segments.Add("Value: " + Value);
+                }
+
+                segments.Add(Enums.UnitOfMeasureLabelShort(MeasurementDefinition.UnitOfMeasure));
 
                 return String.Join(" | ", segments);
             }

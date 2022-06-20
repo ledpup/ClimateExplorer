@@ -4,9 +4,10 @@
 @using Blazorise.Charts
 
 <div class="chart-series-config">
-    <div class="title-bar" @onclick="() => { expanded = !expanded; }" style="@GenerateStyleForColourIndicator()">
+    <div class="title-bar" @onclick="() => { expanded = !expanded; }" style="@GenerateStyleForTitleBar()">
         <div class="colour-indicator" style="@GenerateStyleForColourIndicator()"></div>
-        <div class="title">@ChartSeries.FriendlyTitle</div>
+        <div class="title">@ChartSeries.FriendlyTitleShort</div>
+        <div class="description">@ChartSeries.FriendlyDescription</div>
     </div>
 
     @if (expanded)
@@ -94,7 +95,6 @@
             </div>
         </div>
     }
-
 </div>
 
 
@@ -111,9 +111,31 @@
     [Parameter]
     public EventCallback<ChartSeriesDefinition> OnRemoveSeries { get; set; }
 
+    [Parameter]
+    public ChartSeriesTitleStyle TitleStyle { get; set; }
+
+    public enum ChartSeriesTitleStyle
+    {
+        WholeTitleBarInSeriesColour,
+        OnlyIndicatorAndTextInSeriesColour
+    }
+
     public string GenerateStyleForColourIndicator()
     {
         return "background-color: " + ChartSeries.Colour;
+    }
+
+    public string GenerateStyleForTitleBar()
+    {
+        switch (TitleStyle)
+        {
+            case ChartSeriesTitleStyle.WholeTitleBarInSeriesColour:
+                return "background-color: " + ChartSeries.Colour + "; color: #eee";
+            case ChartSeriesTitleStyle.OnlyIndicatorAndTextInSeriesColour:
+                return "background-color: #eee; color: " + ChartSeries.Colour;
+            default:
+                throw new NotImplementedException($"TitleStyle {TitleStyle}");
+        }
     }
 
     bool expanded;

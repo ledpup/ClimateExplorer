@@ -51,15 +51,9 @@
     </Content>
 </Collapsible>
 
-<Collapsible Title="Customise datasets">
+<Collapsible Title="Add a dataset" InitiallyShown="false">
     <Content>
-        <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
-
-        <Collapsible Title="Add a dataset" InitiallyShown="false">
-            <Content>
-                <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@SelectedLocation"></DataSetBrowser>
-            </Content>
-        </Collapsible>
+        <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@SelectedLocation"></DataSetBrowser>
     </Content>
 </Collapsible>
 
@@ -70,6 +64,10 @@
 
 <a class="large-link right-margin" @onclick="ShowOptionsModal">Chart options</a>
 <a class="large-link right-margin" @onclick="ShowFilterModal">Year filtering</a>
+
+<div>
+    <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
+</div>
 
 <div class="chart">
     <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">

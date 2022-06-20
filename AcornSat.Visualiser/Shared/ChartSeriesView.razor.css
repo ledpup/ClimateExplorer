@@ -19,15 +19,14 @@
         margin-left: -16px;
         margin-right: -16px;
         border-radius: 12px;
-        height: 24px;
+        min-height: 44px;
         padding: 0px;
         cursor: pointer;
     }
 
 
         .chart-series-config .title-bar:hover {
-            background-color: #555 !important;
-            transition: 0.25s;
+            box-shadow: rgba(0, 0, 0, 0.6) 2px 2px 2px;
         }
 
     .chart-series-config .colour-indicator {
@@ -45,11 +44,14 @@
     .chart-series-config .title {
         display: inline-block;
         font-weight: bold;
-        color: #425f59;
-        padding: 4px 10px 8px 4px;
+        padding: 4px 10px 0px 4px;
         position: relative;
         top: -1px;
-        color: #eee;
+    }
+
+    .chart-series-config .description {
+        padding-left: 26px;
+        color: #ddd;
     }
 
 .series-action {
