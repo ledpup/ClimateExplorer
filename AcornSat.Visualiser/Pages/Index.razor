@@ -1,4 +1,5 @@
 ﻿@page "/"
+@page "/location/"
 @page "/location/{locationId}"
 
 @inject NavigationManager NavManager
@@ -386,8 +387,15 @@
     IEnumerable<Location> Locations;
     ColourServer colours = new ColourServer();
 
+    public void Dispose()
+    {
+        NavManager.LocationChanged -= HandleLocationChanged;
+    }
+
     protected override async Task OnInitializedAsync()
     {
+        NavManager.LocationChanged += HandleLocationChanged;
+
         SelectedResolution = DataResolution.Yearly;
         if (DataService == null)
         {
@@ -435,11 +443,61 @@
         await base.OnInitializedAsync();
     }
 
+    bool MostRecentLocationChangeTriggeredByInternalStateChange = false;
+
+    void HandleLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        Logger.LogInformation("HandleLocationChanged: " + NavManager.Uri);
+
+        if (MostRecentLocationChangeTriggeredByInternalStateChange)
+        {
+            // Do nothing, because the reason the URL changed was because code on this page just set it to reflect UI changes the user made
+            Logger.LogInformation("HandleLocationChanged bailing early because MostRecentLocationChangeTriggeredByInternalStateChange");
+
+            MostRecentLocationChangeTriggeredByInternalStateChange = false;
+
+            return;
+        }
+
+        Logger.LogInformation("HandleLocationChanged updating state based on query string because !MostRecentLocationChangeTriggeredByInternalStateChange");
+
+        // The URL changed because (most likely) the user clicked back or forwards in the navbar. Update UI state to reflect what's in the URL.
+        base.InvokeAsync(ReadCsdsFromQueryString);
+    }
+
+    async Task ReadCsdsFromQueryString()
+    {
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier))
+        {
+            try
+            {
+                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger, csdSpecifier, DataSetDefinitions, Locations);
+
+                Logger.LogInformation("Setting ChartSeriesList to list with " + csdList.Count + " items");
+                ChartSeriesList.Clear();
+                ChartSeriesList.AddRange(csdList);
+
+                await BuildDataSets(true);
+
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+            }
+        }
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         Logger.LogInformation("OnParametersSetAsync(): " + LocationId);
 
         Guid locationId = Guid.Parse(LocationId ?? "aed87aa0-1d0c-44aa-8561-cde0fc936395");
+
+        // Pick up parameters from querystring
+        await ReadCsdsFromQueryString();
 
         await SelectedLocationChangedInternal(locationId);
 
@@ -451,6 +509,33 @@
 
     protected async Task BuildDataSets()
     {
+        // Annoyingly, Blazor seems unable to resolve overloads
+        await BuildDataSets(false);
+    }
+
+    protected async Task BuildDataSets(bool rebuildingBecauseOfUrlChange = false)
+    {
+        // Recalculate the URL
+        string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(ChartSeriesList);
+
+        string url = "/location/" + LocationId;
+
+        if (chartSeriesUrlComponent.Length > 0) url += "?csd=" + chartSeriesUrlComponent;
+
+        MostRecentLocationChangeTriggeredByInternalStateChange = !rebuildingBecauseOfUrlChange;
+
+        string currentUri = NavManager.Uri;
+        string newUri = NavManager.ToAbsoluteUri(url).ToString();
+
+        Logger.LogInformation("Deciding whether to update uri");
+        Logger.LogInformation(currentUri);
+        Logger.LogInformation(newUri);
+
+        if (currentUri != newUri)
+        {
+            NavManager.NavigateTo(url);
+        }
+
         // Fetch the data required to render the selected data series
         ChartSeriesWithData = await RetrieveDataSets(ChartSeriesList);
 
