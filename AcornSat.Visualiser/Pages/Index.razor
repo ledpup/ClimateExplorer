@@ -281,8 +281,7 @@
     {
         SelectedResolution = DataResolution.Yearly;
 
-        ChartSeriesList.Clear();
-        ChartSeriesList.AddRange(chartSeriesDefinitions);
+        ChartSeriesList = chartSeriesDefinitions.ToList();
 
         await BuildDataSets();
     }
@@ -295,21 +294,27 @@
 
         var md = dsd.MeasurementDefinitions.Single(x => x.DataType == dle.DataType && x.DataAdjustment == dle.DataAdjustment);
 
-        ChartSeriesList.Add(
-            new ChartSeriesDefinition()
-            {
-                LocationId = dle.LocationId,
-                LocationName = dle.LocationName,
-                Aggregation = md.DataType == DataType.Rainfall ? SeriesAggregationOptions.Sum : SeriesAggregationOptions.Mean,
-                DataResolution = DataResolution.Yearly,
-                DataSetDefinition = dsd,
-                MeasurementDefinition = md,
-                Smoothing = SeriesSmoothingOptions.None,
-                SmoothingWindow = 5,
-                Value = SeriesValueOptions.Value,
-                Year = null
-            }
-        );
+        ChartSeriesList =
+            ChartSeriesList
+            .Concat(
+                new List<ChartSeriesDefinition>()
+                {
+                    new ChartSeriesDefinition()
+                    {
+                        LocationId = dle.LocationId,
+                        LocationName = dle.LocationName,
+                        Aggregation = md.DataType == DataType.Rainfall ? SeriesAggregationOptions.Sum : SeriesAggregationOptions.Mean,
+                        DataResolution = DataResolution.Yearly,
+                        DataSetDefinition = dsd,
+                        MeasurementDefinition = md,
+                        Smoothing = SeriesSmoothingOptions.None,
+                        SmoothingWindow = 5,
+                        Value = SeriesValueOptions.Value,
+                        Year = null
+                    }
+                }
+            )
+            .ToList();
 
         await BuildDataSets();
     }
@@ -476,8 +481,8 @@
                 var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger, csdSpecifier, DataSetDefinitions, Locations);
 
                 Logger.LogInformation("Setting ChartSeriesList to list with " + csdList.Count + " items");
-                ChartSeriesList.Clear();
-                ChartSeriesList.AddRange(csdList);
+
+                ChartSeriesList = csdList.ToList(); 
 
                 await BuildDataSets(true);
 
@@ -505,6 +510,7 @@
     }
 
     List<ChartSeriesDefinition> ChartSeriesList { get; set; } = new List<ChartSeriesDefinition>();
+
     List<SeriesWithData> ChartSeriesWithData { get; set; }
 
     protected async Task BuildDataSets()
@@ -538,6 +544,7 @@
 
         // Fetch the data required to render the selected data series
         ChartSeriesWithData = await RetrieveDataSets(ChartSeriesList);
+        Logger.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets()");
 
         // Render the series
         await HandleRedraw();
@@ -583,6 +590,7 @@
             }
         }
 
+        Logger.LogInformation("RebuildChartSeriesListToReflectSelectedYears() setting ChartSeriesList");
         ChartSeriesList = newCsds;
     }
 
@@ -598,10 +606,10 @@
     {
         var datasetsToReturn = new List<SeriesWithData>();
 
+        Logger.LogInformation("RetrieveDataSets: starting enumeration");
+
         foreach (var csd in chartSeriesList)
         {
-            Logger.LogInformation($"Getting dataset for {csd}");
-
             List<DataSet> datasets;
 
             switch (csd.MeasurementDefinition.DataType)
@@ -644,6 +652,8 @@
                 .Select(x => new SeriesWithData() { ChartSeries = csd, SourceDataSets = datasets })
             );
         }
+
+        Logger.LogInformation("RetrieveDataSets: completed enumeration");
 
         return datasetsToReturn;
     }                           
@@ -1336,6 +1346,7 @@
             }
         }
 
+        Logger.LogInformation("Adding items to list inside SelectedLocationChangedInternal()");
         ChartSeriesList.AddRange(additionalCsds);
 
         ChartSeriesList = EliminateDuplicatesFromChartSeriesList(ChartSeriesList);
