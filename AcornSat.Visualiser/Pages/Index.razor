@@ -448,29 +448,15 @@
         await base.OnInitializedAsync();
     }
 
-    bool MostRecentLocationChangeTriggeredByInternalStateChange = false;
-
     void HandleLocationChanged(object sender, LocationChangedEventArgs e)
     {
         Logger.LogInformation("HandleLocationChanged: " + NavManager.Uri);
 
-        if (MostRecentLocationChangeTriggeredByInternalStateChange)
-        {
-            // Do nothing, because the reason the URL changed was because code on this page just set it to reflect UI changes the user made
-            Logger.LogInformation("HandleLocationChanged bailing early because MostRecentLocationChangeTriggeredByInternalStateChange");
-
-            MostRecentLocationChangeTriggeredByInternalStateChange = false;
-
-            return;
-        }
-
-        Logger.LogInformation("HandleLocationChanged updating state based on query string because !MostRecentLocationChangeTriggeredByInternalStateChange");
-
-        // The URL changed because (most likely) the user clicked back or forwards in the navbar. Update UI state to reflect what's in the URL.
-        base.InvokeAsync(ReadCsdsFromQueryString);
+        // The URL changed. Update UI state to reflect what's in the URL.
+        base.InvokeAsync(UpdateUiStateBasedOnQueryString);
     }
 
-    async Task ReadCsdsFromQueryString()
+    async Task UpdateUiStateBasedOnQueryString()
     {
         var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
 
@@ -484,7 +470,7 @@
 
                 ChartSeriesList = csdList.ToList(); 
 
-                await BuildDataSets(true);
+                await BuildDataSets();
 
                 StateHasChanged();
             }
@@ -502,7 +488,7 @@
         Guid locationId = Guid.Parse(LocationId ?? "aed87aa0-1d0c-44aa-8561-cde0fc936395");
 
         // Pick up parameters from querystring
-        await ReadCsdsFromQueryString();
+        await UpdateUiStateBasedOnQueryString();
 
         await SelectedLocationChangedInternal(locationId);
 
@@ -515,12 +501,42 @@
 
     protected async Task BuildDataSets()
     {
-        // Annoyingly, Blazor seems unable to resolve overloads
-        await BuildDataSets(false);
-    }
+        // This method is called whenever anything has occurred that may require the chart to
+        // be re-rendered.
+        //
+        // Examples:
+        //     - User navigates to /locations/{anything}?csd={anythingelse} page for the first time
+        //     - User updates URL manually while already at /locations
+        //     - User chooses a preset or otherwise updates ChartSeriesList
+        //     - User changes another setting that influences chart rendering (e.g. year filtering)
+        //
+        // Some, but not all, of those changes/events are reflected directly in the URL (e.g. location is in the
+        // URL, and CSDs are in the URL).
+        //
+        // Others currently are not, but probably should be (e.g. year filtering).
+        //
+        // Our strategy here is:
+        // 
+        // This method has been called because something has happened that may require the chart to be
+        // re-rendered. We calculate the URI reflecting the current UI state. If we're already at that
+        // URI, then we conclude that one of the properties has changed that does NOT impact the URI,
+        // so we just immediately re-render the chart. If we are NOT already at that URI, then we just
+        // trigger navigation to that URI, and DO NOT RE-RENDER THE CHART YET. Instead, as part of that
+        // navigation process, methods will trigger that will re render the chart based on what's in the
+        // updated URI.
+        //
+        // This is all to avoid re-rendering the chart more than once (bad for performance) or, even worse,
+        // re-rendering the chart on two different async call chains at the same time (bad for correctness -
+        // this was leading to the same series being rendered more than once, and the year labels on the
+        // X axis being added more than once).
 
-    protected async Task BuildDataSets(bool rebuildingBecauseOfUrlChange = false)
-    {
+        Logger.LogInformation("BuildDataSets running with following CSDS:");
+
+        foreach (var csd in ChartSeriesList)
+        {
+            Logger.LogInformation("    " + csd.ToString());
+        }
+
         // Recalculate the URL
         string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(ChartSeriesList);
 
@@ -528,26 +544,27 @@
 
         if (chartSeriesUrlComponent.Length > 0) url += "?csd=" + chartSeriesUrlComponent;
 
-        MostRecentLocationChangeTriggeredByInternalStateChange = !rebuildingBecauseOfUrlChange;
-
         string currentUri = NavManager.Uri;
         string newUri = NavManager.ToAbsoluteUri(url).ToString();
 
-        Logger.LogInformation("Deciding whether to update uri");
-        Logger.LogInformation(currentUri);
-        Logger.LogInformation(newUri);
-
         if (currentUri != newUri)
         {
+            Logger.LogInformation("Because the URI reflecting current UI state is different to the URI we're currently at, triggering navigation. After navigation occurs, the UI state will update accordingly.");
+
+            // Just let the navigation process trigger the UI updates
             NavManager.NavigateTo(url);
         }
+        else
+        {
+            Logger.LogInformation("Not calling NavigationManager.NavigateTo().");
 
-        // Fetch the data required to render the selected data series
-        ChartSeriesWithData = await RetrieveDataSets(ChartSeriesList);
-        Logger.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets()");
+            // Fetch the data required to render the selected data series
+            ChartSeriesWithData = await RetrieveDataSets(ChartSeriesList);
+            Logger.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + ChartSeriesWithData.Count + " entries.");
 
-        // Render the series
-        await HandleRedraw();
+            // Render the series
+            await HandleRedraw();
+        }
 
         if (SelectedLocation != null)
         {
@@ -752,6 +769,10 @@
 
     async Task HandleRedraw()
     {
+        Guid g = Guid.NewGuid();
+
+        Logger.LogInformation("HandleRedraw " + g);
+
         await chart.Clear();
 
         // This can happen at startup, or if the user switches off all data series
@@ -804,8 +825,12 @@
             // Now, we cut down the processed datasets to just the years that we intend to display on the chart.
             foreach (var cswd in ChartSeriesWithData)
             {
+                Logger.LogInformation("HandleRedraw " + g + " - cswd");
+
                 foreach (var psd in cswd.ProcessedDataSets)
                 {
+                    Logger.LogInformation("HandleRedraw " + g + " -   psd");
+
                     psd.DataRecords = psd.DataRecords.Where(x => x.Year >= ChartStartYear && x.Year <= ChartEndYear).ToList();
                 }
             }
@@ -1347,9 +1372,10 @@
         }
 
         Logger.LogInformation("Adding items to list inside SelectedLocationChangedInternal()");
-        ChartSeriesList.AddRange(additionalCsds);
 
-        ChartSeriesList = EliminateDuplicatesFromChartSeriesList(ChartSeriesList);
+        var draftList = ChartSeriesList.Concat(additionalCsds).ToList();
+
+        ChartSeriesList = EliminateDuplicatesFromChartSeriesList(draftList);
 
         await BuildDataSets();
     }
