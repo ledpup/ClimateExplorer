@@ -60,6 +60,11 @@
         font-size: 0.85rem;
     }
 
+    .suggested-data-set .missing-chart-series {
+        color: orangered;
+        font-size: 0.85rem;
+    }
+
     .suggested-data-set .expander {
         padding: 12px;
         color: #888;

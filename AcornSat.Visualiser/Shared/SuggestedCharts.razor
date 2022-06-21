@@ -17,6 +17,10 @@
             <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(s.ChartSeriesList)">
                 <div class="title">@s.Title</div>
                 <div class="description">@s.Description</div>
+                @if (s.MissingChartSeries)
+                {
+                    <div class="missing-chart-series"><i class="far fa-info-circle"></i> Some data not available for this location</div>
+                }
             </div>
 
             @if (s.Variants != null && s.Variants.Count > 0)
@@ -36,6 +40,10 @@
                             <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(v.ChartSeriesList)">
                                 <div class="title">@v.Title</div>
                                 <div class="description">@v.Description</div>
+                                @if (v.MissingChartSeries)
+                                {
+                                    <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available for this location</div>
+                                }
                             </div>
                         }
                     }
@@ -60,7 +68,7 @@
     string CalculateClassForSuggestedDataSetElement(SuggestedChartPresetModel s)
     {
         if (s.MenuExpanded) return "suggested-data-set menu-expanded";
-        
+
         return "suggested-data-set";
     }
 
@@ -266,5 +274,41 @@
                     }
             }
         );
+
+        // Presets may call for data that is not available at all locations. In those
+        // cases, remove the ChartSeries entries that aren't available & set a flag
+        // on the preset so that an indicator can be shown to the user.
+        foreach (var p in SuggestedPresets)
+        {
+            p.MissingChartSeries = false;
+            
+            foreach (var csd in p.ChartSeriesList.ToArray())
+            {
+                if (csd.MeasurementDefinition == null)
+                {
+                    p.ChartSeriesList.Remove(csd);
+
+                    p.MissingChartSeries = true;
+                }
+            }
+
+            if (p.Variants != null)
+            {
+                foreach (var v in p.Variants)
+                {
+                    v.MissingChartSeries = false;
+
+                    foreach (var csd in v.ChartSeriesList.ToArray())
+                    {
+                        if (csd.MeasurementDefinition == null)
+                        {
+                            v.ChartSeriesList.Remove(csd);
+
+                            v.MissingChartSeries = true;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

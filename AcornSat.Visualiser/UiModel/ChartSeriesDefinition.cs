@@ -95,12 +95,19 @@ namespace AcornSat.Visualiser.UiModel
 
                 if (s.Length > 0) segments.Add(s);
 
-                if (MeasurementDefinition.DataCategory != null)
+                if (MeasurementDefinition != null)
                 {
-                    segments.Add(MeasurementDefinition.DataCategory.Value.ToString());
-                }
+                    if (MeasurementDefinition.DataCategory != null)
+                    {
+                        segments.Add(MeasurementDefinition.DataCategory.Value.ToString());
+                    }
 
-                segments.Add(MapDataTypeToFriendlyName(MeasurementDefinition.DataType));
+                    segments.Add(MapDataTypeToFriendlyName(MeasurementDefinition.DataType));
+                }
+                else
+                {
+                    segments.Add("[Missing MeasurementDefinition]");
+                }
 
                 return String.Join(" | ", segments);
             }
@@ -112,7 +119,7 @@ namespace AcornSat.Visualiser.UiModel
             {
                 List<string> segments = new List<string>();
 
-                if (MeasurementDefinition.DataAdjustment != null)
+                if (MeasurementDefinition?.DataAdjustment != null)
                 {
                     if (MeasurementDefinition.DataAdjustment != DataAdjustment.Adjusted ||
                         DataSetDefinition.MeasurementDefinitions.Any(
@@ -145,7 +152,10 @@ namespace AcornSat.Visualiser.UiModel
                     segments.Add("Value: " + Value);
                 }
 
-                segments.Add(Enums.UnitOfMeasureLabelShort(MeasurementDefinition.UnitOfMeasure));
+                if (MeasurementDefinition != null)
+                {
+                    segments.Add(Enums.UnitOfMeasureLabelShort(MeasurementDefinition.UnitOfMeasure));
+                }
 
                 return String.Join(" | ", segments);
             }
@@ -189,7 +199,7 @@ namespace AcornSat.Visualiser.UiModel
 
         public override string ToString()
         {
-            return $"CSD: {DataSetDefinition.Name} | {MeasurementDefinition.DataType} {MeasurementDefinition.DataAdjustment} | {DataResolution} | {LocationName} | {Smoothing} | {Aggregation} | {Value} | {DisplayStyle}";
+            return $"CSD: {DataSetDefinition.Name} | {MeasurementDefinition?.DataType} {MeasurementDefinition?.DataAdjustment} | {DataResolution} | {LocationName} | {Smoothing} | {Aggregation} | {Value} | {DisplayStyle}";
         }
 
         public class ChartSeriesDefinitionComparerWhichIgnoresYearAndIsLocked : IEqualityComparer<ChartSeriesDefinition>
