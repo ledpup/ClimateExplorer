@@ -40,6 +40,7 @@ namespace AcornSat.Visualiser
             var seriesList =
                 segments
                 .Select(x => ParseChartSeriesUrlComponent(logger, x, dataSetDefinitions, locations))
+                .Where(x => x != null)
                 .ToList();
 
             logger.LogInformation("returning seriesList with " + seriesList.Count + "elements");
@@ -66,10 +67,12 @@ namespace AcornSat.Visualiser
 
             var md =
                 dsd.MeasurementDefinitions
-                .Single(
+                .SingleOrDefault(
                     x =>
                         x.DataAdjustment == da &&
                         x.DataType == dt);
+
+            if (md == null) return null;
 
             Location? l = null;
             
@@ -100,6 +103,9 @@ namespace AcornSat.Visualiser
 
         static string BuildChartSeriesUrlComponent(ChartSeriesDefinition csd)
         {
+            if (csd.DataSetDefinition == null) throw new Exception("DataSetDefinition unset on ChartSeriesDefinition");
+            if (csd.MeasurementDefinition == null) throw new Exception("MeasurementDefinition unset on ChartSeriesDefinition");
+
             return
                 string.Join(
                     "|",
