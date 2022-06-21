@@ -1120,18 +1120,25 @@
             ? ChartType.Line
             : ChartType.Bar;
 
+        ChartDataset<float?> chartDataset = null;
+
         switch (chartSeries.ChartSeries.Smoothing)
         {
             case SeriesSmoothingOptions.None:
-                await chart.AddDataSet(
-                    GetChartDataset(label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour, absoluteValues, redPositive));
+                chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour, absoluteValues, redPositive);
+
                 break;
 
             case SeriesSmoothingOptions.MovingAverage:
-                await AddMovingAverage(chartSeries.ChartSeries.SmoothingWindow, label, values, dataSet.MeasurementDefinition.UnitOfMeasure, colour);
+                chartDataset = GetMovingAverageChartDataset(chartSeries.ChartSeries.SmoothingWindow, label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour);
 
                 break;
+
+            default:
+                throw new NotImplementedException($"SeriesSmoothingOptions {chartSeries.ChartSeries.Smoothing}");
         }
+
+        await chart.AddDataSet(chartDataset);
     }
 
     ChartTrendlineData CreateTrendline(int datasetIndex, ChartColor colour)
@@ -1145,11 +1152,19 @@
             };
     }
 
-    async Task AddMovingAverage(int smoothingWindow, string label, List<float?> values, UnitOfMeasure unitOfMeasure, ChartColor colour)
+    ChartDataset<float?> GetMovingAverageChartDataset(int smoothingWindow, string label, List<float?> values, UnitOfMeasure unitOfMeasure, ChartType chartType, ChartColor colour)
     {
         var simpleMovingAverages = SimpleMovingAverage.Calculate(smoothingWindow, values);
 
-        await chart.AddDataSet(GetLineChartDataset(label, simpleMovingAverages, colour, unitOfMeasure));
+        switch (chartType)
+        {
+            case ChartType.Line:
+                return GetLineChartDataset(label, simpleMovingAverages, colour, unitOfMeasure);
+            case ChartType.Bar:
+                return GetBarChartDataset(label, simpleMovingAverages, unitOfMeasure, false);
+            default:
+                throw new NotImplementedException($"ChartType {chartType}");
+        }
     }
 
     void BuildProcessedDataSetsForYearlyView(List<SeriesWithData> chartSeriesWithData, bool inclusiveStartYear = true)
@@ -1202,10 +1217,7 @@
 
             var startYear = dataSet.DataRecords.Min(x => x.Date);
             var temperatures = new List<DataRecord>();
-            //for (var i = superSetStartYear; i < startYear; i++)
-            //{
-            //    temperatures.Add(new DailyTemperatureRecord { Date = i });
-            //}
+
             temperatures.AddRange(dataSet.DataRecords);
             bufferedDataSet.DataRecords = temperatures;
         }
