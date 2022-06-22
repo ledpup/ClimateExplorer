@@ -1175,25 +1175,7 @@
             ? ChartType.Line
             : ChartType.Bar;
 
-        ChartDataset<float?> chartDataset = null;
-
-        switch (chartSeries.ChartSeries.Smoothing)
-        {
-            case SeriesSmoothingOptions.None:
-                chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour, absoluteValues, redPositive);
-
-                break;
-
-            case SeriesSmoothingOptions.MovingAverage:
-                chartDataset = GetMovingAverageChartDataset(chartSeries.ChartSeries.SmoothingWindow, label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour);
-
-                break;
-
-            default:
-                throw new NotImplementedException($"SeriesSmoothingOptions {chartSeries.ChartSeries.Smoothing}");
-        }
-
-        await chart.AddDataSet(chartDataset);
+        await chart.AddDataSet(GetChartDataset(label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour, absoluteValues, redPositive));
     }
 
     ChartTrendlineData CreateTrendline(int datasetIndex, ChartColor colour)
@@ -1221,11 +1203,37 @@
                 throw new NotImplementedException($"ChartType {chartType}");
         }
     }
-
     void BuildProcessedDataSetsForYearlyView(List<SeriesWithData> chartSeriesWithData, bool inclusiveStartYear = true)
     {
+        // If we're doing smoothing via the moving average, precalculate these data and add them to PreProcessedDataSets.
+        // We do this because the SimpleMovingAverage calculate function will remove some years from the start of the data set.
+        // It removes these years because it doesn't have a good enough average to present it to the user.
+        // Therefore, we need to calculate the smoothing before we calculate the start year - the basis for labelling the chart
+        // If we're not calculating a moving average, PreProcessedDataSets = SourceDataSets
+        foreach (var cs in chartSeriesWithData)
+        {
+            if (cs.ChartSeries.Smoothing == SeriesSmoothingOptions.MovingAverage)
+            {
+                cs.PreProcessedDataSets = cs.SourceDataSets
+                        .Select(
+                            x =>
+                                new DataSet
+                                    {
+                                        Location = x.Location,
+                                        MeasurementDefinition = x.MeasurementDefinition,
+                                        DataRecords = SimpleMovingAverage.Calculate(cs.ChartSeries.SmoothingWindow, x.DataRecords)
+                                    }
+                        )
+                        .ToList();
+            }
+            else
+            {
+                cs.PreProcessedDataSets = cs.SourceDataSets;
+            }
+        }
+
         // Calculate first and last year which we have a data record for, across all data sets underpinning all chart series
-        var allDataSets = chartSeriesWithData.SelectMany(x => x.SourceDataSets);
+        var allDataSets = chartSeriesWithData.SelectMany(x => x.PreProcessedDataSets);
         var allDataRecords = allDataSets.SelectMany(x => x.DataRecords);
 
         var startYear = inclusiveStartYear 
@@ -1237,7 +1245,7 @@
         {
             // Create new datasets, same as the source, but with any gap years filled with null records
             cs.ProcessedDataSets =
-                cs.SourceDataSets
+                cs.PreProcessedDataSets
                 .Select(
                     x =>
                         new DataSet

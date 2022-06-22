@@ -29,7 +29,31 @@ namespace AcornSat.Core
                 samples.Dequeue();
             }
 
-            return samples.Average();            
+            if (samples.Count > _windowSize * .25f)
+            {
+                return samples.Average();
+            }
+
+            return null;
+        }
+
+        public static List<DataRecord> Calculate(int windowSize, List<DataRecord> dataRecords)
+        {
+            var ma = new SimpleMovingAverage(windowSize);
+            var movingAverageValues = new List<float?>();
+            var values = dataRecords.Select(x => x.Value).ToList();
+            var returnDataRecords = new List<DataRecord>();
+
+            dataRecords.ForEach(x => returnDataRecords.Add(new DataRecord
+            {
+                Day = x.Day,
+                Month = x.Month,
+                Year = x.Year,
+                Label = x.Label,
+                Value = ma.AddSample(x.Value)
+            }));
+            returnDataRecords = returnDataRecords.SkipWhile(x => !x.Value.HasValue).ToList();
+            return returnDataRecords;
         }
 
         public static List<float?> Calculate(int windowSize, List<float?> values)
