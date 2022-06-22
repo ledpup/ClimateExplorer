@@ -46,15 +46,34 @@
 }
 
 @media only screen and (min-width: 1000px) {
+    .location-and-chart-container {
+        height: calc(100vh - 70px);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chart {
+        height: auto;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+    }
 
     .location-info-container {
         /* On larger screens, make room for the map to appear to the right of the location info section */
         margin-top: 0px;
     }
 
-    .chart {
-        /* Size the chart so that it's at least 250px high, and as much as the vertical height of the window minus 880px (to allow for other stuff that's visible) */
-        height: max(250px, calc(100vh - 880px));
+    .chart-collapsible-parent {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .childthing {
+        background: linear-gradient(blue, pink);
     }
 
     .map-space-reserver {
