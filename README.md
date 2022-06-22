@@ -18,7 +18,6 @@
 - Blazor, using
   - https://github.com/Megabit/Blazorise
   - https://github.com/DP-projects/DPBlazorMap
-  - https://github.com/darnton/BlazorDeviceInterop
   - https://github.com/AeonLucid/GeoCoordinate.NetStandard1
 - There are five projects:
   - Visualiser: Blazor website that displays the data to the user
