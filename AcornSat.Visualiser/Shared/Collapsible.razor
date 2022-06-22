@@ -40,12 +40,22 @@
     public RenderFragment Content { get; set; }
 
     [Parameter]
-    public bool ShadeBackground { get; set; }    
+    public bool ShadeBackground { get; set; }
+
+    [Parameter]
+    public bool InitiallyShown { get; set; }
 
     [Parameter]
     public EventCallback<bool> OnShowOrHide { get; set; }
 
     bool ShowContent = true;
+
+    protected override void OnInitialized()
+    {
+        ShowContent = InitiallyShown;
+
+        base.OnInitialized();
+    }
 
     void CollapserOnClick(EventArgs args)
     {

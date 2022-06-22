@@ -7,6 +7,8 @@ using AcornSat.Core;
 using static AcornSat.Core.Enums;
 using System.Net;
 using System.IO.Compression;
+using AcornSat.Core.Model;
+using AcornSat.Core.ViewModel;
 
 GenerateMapMarkers();
 
@@ -137,6 +139,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             {
                 new MeasurementDefinition
                 {
+                    DataCategory = DataCategory.Temperature,
                     DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.TempMax,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -148,6 +151,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
                 new MeasurementDefinition
                 {
+                    DataCategory = DataCategory.Temperature,
                     DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.TempMin,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -159,6 +163,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
                 new MeasurementDefinition
                 {
+                    DataCategory = DataCategory.Temperature,
                     DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.TempMax,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -170,6 +175,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
                 new MeasurementDefinition
                 {
+                    DataCategory = DataCategory.Temperature,
                     DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.TempMin,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -181,7 +187,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
                 new MeasurementDefinition
                 {
-                    DataAdjustment = DataAdjustment.Unadjusted,
                     DataType = DataType.Rainfall,
                     UnitOfMeasure = UnitOfMeasure.Millimetres,
                     DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
@@ -189,7 +194,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     SubFolderName = "daily_rainfall",
                     FileNameFormat = "[station]_daily_rainfall.csv",
                     PreferredColour = 1,
-                }
+                },
             },
             StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
             LocationInfoUrl = "http://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
@@ -207,6 +212,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             {
                 new MeasurementDefinition
                 {
+                    DataCategory = DataCategory.Temperature,
                     DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.TempMax,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -219,6 +225,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
                 new MeasurementDefinition
                 {
+                    DataCategory = DataCategory.Temperature,
                     DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.TempMin,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -245,7 +252,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             {
                 new MeasurementDefinition
                 {
-                    DataAdjustment = DataAdjustment.Unadjusted,
+                    DataCategory = DataCategory.Temperature,
                     DataType = DataType.TempMax,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                     DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$",
@@ -256,7 +263,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
                 new MeasurementDefinition
                 {
-                    DataAdjustment = DataAdjustment.Unadjusted,
+                    DataCategory = DataCategory.Temperature,
                     DataType = DataType.TempMin,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                     DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<tmax>-?[\d+\.\d+]*),-?\d*,(?<value>-?[\d+\.\d+]*),-?\d*,.*,D$",
@@ -281,15 +288,90 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             {
                 new MeasurementDefinition
                 {
-                    DataAdjustment = DataAdjustment.Unadjusted,
-                    DataType = DataType.ENSO,
-                    DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
+                    DataCategory = DataCategory.Enso,
+                    DataType = DataType.MEIv2,
+                    UnitOfMeasure = UnitOfMeasure.EnsoIndex,
+                    RowDataType = RowDataType.TwelveMonthsPerRow,
                     FileNameFormat = "meiv2.data.txt",
-                    NullValue = "-999.00",
+                    DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
+                    NullValue = "-999.00"
                 },
             },
             DataDownloadUrl = "https://psl.noaa.gov/enso/mei/data/meiv2.data",
-            HasLocations = false,
+            HasLocations = false
+        },
+        new DataSetDefinition
+        {
+            Id = Guid.Parse("c31270fa-b207-4d8f-b68e-4995698f1a4d"),
+            Name = "Inverted Southern Oscillation Index (ISOI)",
+            ShortName = "ISOI",
+            Description = "TBC",
+            MoreInformationUrl = "https://www.ncdc.noaa.gov/teleconnections/enso/soi",
+            FolderName = "ENSO",
+            DataResolution = DataResolution.Monthly,
+            MeasurementDefinitions = new List<MeasurementDefinition>
+            {
+                new MeasurementDefinition
+                {
+                    DataCategory = DataCategory.Enso,
+                    DataType = DataType.SOI,
+                    UnitOfMeasure = UnitOfMeasure.EnsoIndex,
+                    RowDataType = RowDataType.TwelveMonthsPerRow,
+                    FileNameFormat = "inverted.soi.long.data.txt",
+                    DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
+                    NullValue = "-99.99"
+                },
+            },
+            DataDownloadUrl = "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/soi.long.data",
+            HasLocations = false
+        },
+        new DataSetDefinition
+        {
+            Id = Guid.Parse("1042147a-8625-4ee7-bb5a-f0f17795c393"),
+            Name = "Oceanic Niño Index (ONI)",
+            ShortName = "ONI",
+            Description = "TBC",
+            MoreInformationUrl = "https://www.climate.gov/news-features/understanding-climate/climate-variability-oceanic-ni%C3%B1o-index",
+            FolderName = "ENSO",
+            DataResolution = DataResolution.Monthly,
+            MeasurementDefinitions = new List<MeasurementDefinition>
+            {
+                new MeasurementDefinition
+                {
+                    DataCategory = DataCategory.Enso,
+                    DataType = DataType.ONI,
+                    UnitOfMeasure = UnitOfMeasure.EnsoIndex,
+                    RowDataType = RowDataType.TwelveMonthsPerRow,
+                    FileNameFormat = "oni.data.txt",
+                    DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
+                    NullValue = "-99.9"
+                },
+            },
+            HasLocations = false
+        },
+        new DataSetDefinition
+        {
+            Id = Guid.Parse("bfbaa69b-c10d-4de3-a78c-1ed6ff307327"),
+            Name = "Niño 3.4",
+            ShortName = "Niño 3.4",
+            Description = "TBC",
+            MoreInformationUrl = "https://climatedataguide.ucar.edu/climate-data/nino-sst-indices-nino-12-3-34-4-oni-and-tni",
+            FolderName = "ENSO",
+            DataResolution = DataResolution.Monthly,
+            MeasurementDefinitions = new List<MeasurementDefinition>
+            {
+                new MeasurementDefinition
+                {
+                    DataCategory = DataCategory.Enso,
+                    DataType = DataType.Nino34,
+                    UnitOfMeasure = UnitOfMeasure.EnsoIndex,
+                    RowDataType = RowDataType.TwelveMonthsPerRow,
+                    FileNameFormat = "nino34.long.anom.data.txt",
+                    DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
+                    NullValue = "-99.99"
+                },
+            },
+            HasLocations = false
         },
         new DataSetDefinition
         {
@@ -304,7 +386,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             {
                 new MeasurementDefinition
                 {
-                    DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.CO2,
                     UnitOfMeasure = UnitOfMeasure.PartsPerMillion,
                     DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
@@ -328,7 +409,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             {
                 new MeasurementDefinition
                 {
-                    DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.CH4,
                     UnitOfMeasure = UnitOfMeasure.PartsPerBillion,
                     DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
@@ -352,7 +432,6 @@ List<DataSetDefinition> BuildDataSetDefinitions()
             {
                 new MeasurementDefinition
                 {
-                    DataAdjustment = DataAdjustment.Adjusted,
                     DataType = DataType.N2O,
                     UnitOfMeasure = UnitOfMeasure.PartsPerBillion,
                     DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
@@ -361,6 +440,35 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
             },
             DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/n2o/n2o_mm_gl.txt",
+            HasLocations = false,
+        },
+        new DataSetDefinition
+        {
+            Id = Guid.Parse("a3841b12-2dd4-424b-a96e-c35ddba66efc"),
+            Name = "Indian Ocean Dipole",
+            ShortName = "IOD",
+            Description = @"Indian Ocean Dipole (IOD) events are driven by changes in the tropical Indian Ocean. Sustained changes in the difference between normal sea surface temperatures in the tropical western and eastern Indian Ocean are what characterise IOD events.
+The IOD is commonly measured by an index (sometimes referred to as the Dipole Mode Index, or DMI) that is the difference between sea surface temperature (SST) anomalies in two regions of the tropical Indian Ocean (see map above):
+IOD west: 50°E to 70°E and 10°S to 10°N
+IOD east: 90°E to 110°E and 10°S to 0°S
+A positive IOD period is characterised by cooler than average water in the tropical eastern Indian Ocean and warmer than average water in the tropical western Indian Ocean. Conversely, a negative IOD period is characterised by warmer than average water in the tropical eastern Indian Ocean and cooler than average water in the tropical western Indian Ocean.
+For monitoring the IOD, Australian climatologists consider sustained values above +0.4 °C as typical of a positive IOD, and values below −0.4 °C as typical of a negative IOD.",
+            MoreInformationUrl = "http://www.bom.gov.au/climate/enso/indices/about.shtml",
+            FolderName = "IOD",
+            DataResolution = DataResolution.Monthly,
+            MeasurementDefinitions = new List<MeasurementDefinition>
+            {
+                new MeasurementDefinition
+                {
+                    DataType = DataType.IOD,
+                    UnitOfMeasure = UnitOfMeasure.DegreesCelsiusAnomaly,
+                    RowDataType = RowDataType.TwelveMonthsPerRow,
+                    DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
+                    FileNameFormat = "dmi.had.long.data.txt",
+                    NullValue = "-9999"
+                },
+            },
+            DataDownloadUrl = "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/dmi.had.long.data",
             HasLocations = false,
         }
     };

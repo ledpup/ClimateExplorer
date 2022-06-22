@@ -20,7 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.DataPipeline", "ClimateExplorer.DataPipeline\ClimateExplorer.DataPipeline.csproj", "{2A081DC6-8E29-48A5-B707-F125A6CD4A2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.SourceData", "ClimateExplorer.SourceData\ClimateExplorer.SourceData.csproj", "{5D8E01C7-7265-4D35-AE08-43C91C054E45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.SourceData", "ClimateExplorer.SourceData\ClimateExplorer.SourceData.csproj", "{5D8E01C7-7265-4D35-AE08-43C91C054E45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

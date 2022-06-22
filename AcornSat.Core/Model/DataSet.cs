@@ -12,7 +12,7 @@ public class DataSet
     public Location Location { get;  set; }
     public MeasurementDefinitionViewModel MeasurementDefinition { get; set; }
     public DataType DataType { get { return MeasurementDefinition.DataType; } }
-    public DataAdjustment DataAdjustment { get { return MeasurementDefinition.DataAdjustment; } }
+    public DataAdjustment? DataAdjustment { get { return MeasurementDefinition.DataAdjustment; } }
     public List<Location> Locations { get; set; }
 
     public string Station { get; set; }
@@ -22,26 +22,32 @@ public class DataSet
     {
         get 
         {
-            short? startYear = null;
-            if (DataRecords.Any())
-            {
-                switch (Resolution)
-                {
-                    case DataResolution.Daily:
-                        startYear = DataRecords.OrderBy(x => x.Date).First(x => x.Month == 1 && x.Day == 1).Year;
-                        break;
-                     case DataResolution.Monthly:
-                        startYear = DataRecords.OrderBy(x => x.Year).First(x => x.Month == 1).Year;
-                        break;
-                    case DataResolution.Yearly:
-                        startYear = DataRecords.OrderBy(x => x.Year).SkipWhile(x => !x.Value.HasValue).First().Year;
-                        break;
-                    default:
-                        throw new NotImplementedException();
-                }
-            }
+            if (!DataRecords.Any()) return null;
 
-            return startYear;
+            switch (Resolution)
+            {
+                case DataResolution.Daily:
+                    // Return the first year that has a data record for January 1st, regardless of whether
+                    // that data record has a value or not (this is different to the Yearly behaviour, not sure
+                    // whether it's intentional)
+                    return DataRecords.OrderBy(x => x.Date).First(x => x.Month == 1 && x.Day == 1).Year;
+
+                case DataResolution.Weekly:
+                    return DataRecords.Where(x => x.Value.HasValue).Min(x => x.Year);
+
+                case DataResolution.Monthly:
+                    // Return the first year that has a data record in January, regardless of whether that data
+                    // record has a value or not (this is different to the Yearly behaviour, not sure whether
+                    // it's intentional)
+                    return DataRecords.OrderBy(x => x.Year).First(x => x.Month == 1).Year;
+
+                case DataResolution.Yearly:
+                    // Return first year that has a data record that has a value
+                    return DataRecords.OrderBy(x => x.Year).SkipWhile(x => !x.Value.HasValue).First().Year;
+
+                default:
+                    throw new NotImplementedException($"Resolution {Resolution}");
+            }
         }
     }
     public short? Year { get; set; }

@@ -45,6 +45,12 @@
                     <td>Higher (El Niño)</td>
                 </tr>
                 <tr>
+                    <th>SOI</th>
+                    <td>Positive (!)</td>
+                    <td></td>
+                    <td>Negative (!)</td>
+                </tr>
+                <tr>
                     <th>West Pacific atmospheric pressures</th>
                     <td>Lower</td>
                     <td></td>
@@ -63,16 +69,16 @@
                     <td>~1 year increase in global avg. surface temp</td>
                 </tr>
                 <tr>
-                    <th>North American weather pattern</th>
-                    <td>Decreased wind shear leading to an <a href="https://www.weather.gov/jan/el_nino_and_la_nina#How_do_El_Nino_and_La_Nina_affect_the_Atlantic_hurricane_season_">increase in Atlantic hurricane frequency and intensity</a>. Increase in <a href="https://en.wikipedia.org/wiki/Southwestern_North_American_megadrought">south-western drought</a>. Higher bushfire risk.</td>
-                    <td></td>
-                    <td>Increased vertical wind shear, reducing the Atlantic hurricane season. <a href="https://www.weather.gov/jan/el_nino_and_la_nina#How_do_El_Nino_and_La_Nina_affect">Cooler weather with increased rainfall</a>.</td>
-                </tr>
-                <tr>
                     <th>South American weather pattern</th>
                     <td></td>
                     <td></td>
                     <td>Warm and very wet Apr-Oct</td>
+                </tr>
+                <tr>
+                    <th>North American weather pattern</th>
+                    <td>Decreased wind shear leading to an <a href="https://www.weather.gov/jan/el_nino_and_la_nina#How_do_El_Nino_and_La_Nina_affect_the_Atlantic_hurricane_season_">increase in Atlantic hurricane frequency and intensity</a>. Increase in <a href="https://en.wikipedia.org/wiki/Southwestern_North_American_megadrought">south-western drought</a>. Higher bushfire risk.</td>
+                    <td></td>
+                    <td>Increased vertical wind shear, reducing the Atlantic hurricane season. <a href="https://www.weather.gov/jan/el_nino_and_la_nina#How_do_El_Nino_and_La_Nina_affect">Cooler weather with increased rainfall</a>.</td>
                 </tr>
                 <tr>
                     <th>East Australian weather pattern</th>
@@ -103,11 +109,11 @@
         <Row>
             <Column ColumnSize="ColumnSize.Is5">
                 Index
-                <Select TValue="EnsoIndex" SelectedValue="@SelectedIndex" SelectedValueChanged="@OnSelectedIndexChanged">
-                    <SelectItem Value="@EnsoIndex.Mei">Multivariate ENSO index (MEI.v2)</SelectItem>
-                    <SelectItem Value="@EnsoIndex.Nino34">Niño 3.4</SelectItem>
-                    <SelectItem Value="@EnsoIndex.Oni">Oceanic Niño Index (ONI)</SelectItem>
-                    <SelectItem Value="@EnsoIndex.Soi">Southern Oscillation Index (SOI)</SelectItem>
+                <Select TValue="DataType" SelectedValue="@SelectedDataType" SelectedValueChanged="@OnSelectedDataTypeChanged">
+                    <SelectItem Value="@DataType.MEIv2">Multivariate ENSO index (MEI.v2)</SelectItem>
+                    <SelectItem Value="@DataType.Nino34">Niño 3.4</SelectItem>
+                    <SelectItem Value="@DataType.ONI">Oceanic Niño Index (ONI)</SelectItem>
+                    <SelectItem Value="@DataType.SOI">Inverted Southern Oscillation Index (SOI)</SelectItem>
                 </Select>
             </Column>
             <Column ColumnSize="ColumnSize.Is2">
@@ -117,26 +123,14 @@
                     <SelectItem Value="@DataResolution.Monthly">Monthly</SelectItem>
                 </Select>
             </Column>
-
-            @if (SelectedResolution == DataResolution.Yearly)
-            {
-                <Column ColumnSize="ColumnSize.Is2">
-                    Measure
-                    <Select TValue="string" SelectedValue="@SelectedMeasure" SelectedValueChanged="@OnSelectedMeasureChanged">
-                        <SelectItem Value="@("mean")">Mean</SelectItem>
-                        <SelectItem Value="@("median")">Median</SelectItem>
-                        <SelectItem Value="@("mode")">Mode</SelectItem>
-                    </Select>
-                </Column>
-            }
         </Row>
 
         <Row>
             <Column ColumnSize="ColumnSize.Is5">
                 <div class="selected-index-info">
-                    @switch (SelectedIndex)
+                    @switch (SelectedDataType)
                     {
-                        case EnsoIndex.Mei:
+                        case DataType.MEIv2:
                             <Collapsible Title="About the MEI">
                                 <Content>
                                     <p>
@@ -157,7 +151,7 @@
 
                             break;
 
-                        case EnsoIndex.Soi:
+                        case DataType.SOI:
                             <Collapsible Title="About the SOI">
                                 <Content>
                                     <p>
@@ -166,7 +160,7 @@
                                         High values of the SOI correlate with cold waters in the eastern tropical Pacific.
                                     </p>
                                     <p>
-                                        Unlike other ENSO indexes, positive values of the SOI indicate La Niña, and negative values indicate El Niño.
+                                        Note that unlike other ENSO indexes, positive values of the SOI indicate La Niña and negative values indicate El Niño. Because of this we have inverted the values in the SOI dataset and created the ISOI dataset. The ISOI can be read the same way as the other ENSO indexes.
                                     </p>
                                     <p>
                                         More information:
@@ -177,7 +171,7 @@
 
                             break;
 
-                        case EnsoIndex.Nino34:
+                        case DataType.Nino34:
                             <Collapsible Title="About the Niño 3.4 index">
                                 <Content>
                                     <p>
@@ -194,7 +188,7 @@
 
                             break;
 
-                        case EnsoIndex.Oni:
+                        case DataType.ONI:
                             <Collapsible Title="About Oceanic Niño Index (ONI)">
                                 <Content>
                                     <p>
@@ -238,23 +232,15 @@
     async Task OnSelectedResolutionChanged(DataResolution value)
     {
         SelectedResolution = value;
-        EnsoData = (await DataService.GetEnso(SelectedIndex, SelectedResolution, SelectedMeasure)).ToList();
+        EnsoData = (await DataService.GetDataSet(SelectedDataType, SelectedResolution, null, null)).ToList();
         await HandleRedraw();
     }
 
-    EnsoIndex SelectedIndex;
-    async Task OnSelectedIndexChanged(EnsoIndex value)
+    DataType SelectedDataType;
+    async Task OnSelectedDataTypeChanged(DataType value)
     {
-        SelectedIndex = value;
-        EnsoData = (await DataService.GetEnso(SelectedIndex, SelectedResolution, SelectedMeasure)).ToList();
-        await HandleRedraw();
-    }
-
-    string SelectedMeasure;
-    async Task OnSelectedMeasureChanged(string value)
-    {
-        SelectedMeasure = value;
-        EnsoData = (await DataService.GetEnso(SelectedIndex, SelectedResolution, SelectedMeasure)).ToList();
+        SelectedDataType = value;
+        EnsoData = (await DataService.GetDataSet(SelectedDataType, SelectedResolution, null, null)).ToList();
         await HandleRedraw();
     }
 
@@ -263,20 +249,18 @@
     [Inject]
     public IDataService DataService { get; set; }
 
-    List<DataRecord> EnsoData { get; set; }
-
-    List<EnsoMetaData> EnsoMetaData { get; set; }
+    List<DataSet> EnsoData { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        EnsoMetaData = (await DataService.GetEnsoMetaData()).ToList();
+        SelectedDataType = DataType.MEIv2;
+        SelectedResolution = DataResolution.Yearly;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            OnSelectedMeasureChanged("mean");
         }
     }
 
@@ -287,7 +271,7 @@
             return;
         }
 
-        var enso = EnsoMetaData.Single(x => x.Index == SelectedIndex);
+        var enso = EnsoData.Single().DataRecords;
 
         object chartOptions = new
         {
@@ -298,7 +282,7 @@
             {
                 Title = new
                 {
-                    Text = $"{enso.Name} {(SelectedResolution == DataResolution.Yearly ? "Yearly Average" : "Monthly")}",
+                    Text = $"{SelectedDataType} {(SelectedResolution == DataResolution.Yearly ? "Yearly Average" : "Monthly")}",
                     Display = true
                 },
             },
@@ -328,14 +312,14 @@
         string[] labels = null;
         if (SelectedResolution == DataResolution.Yearly)
         {
-            labels = EnsoData.Select(x => x.Year.ToString()).ToArray();
+            labels = enso.Select(x => x.Year.ToString()).ToArray();
         }
         else
         {
-            labels = EnsoData.Select(x => $"{x.Month}/{x.Year}").ToArray();
+            labels = enso.Select(x => $"{x.Month}/{x.Year}").ToArray();
         }
 
-        var values = EnsoData.Select(x => x.Value).ToList();
+        var values = enso.Select(x => x.Value).ToList();
 
         await chart.Clear();
         await chart.SetOptionsObject(chartOptions);
@@ -343,12 +327,12 @@
         if (SelectedChartType == ChartType.Bar)
         {
 
-            var dataSet = GetBarChartDataset($"{enso.ShortName} {SelectedMeasure} values", values);
+            var dataSet = GetBarChartDataset($"{SelectedDataType} mean values", values);
             await chart.AddDataSet(dataSet);
         }
         else
         {
-            var dataSet = GetLineChartDataset($"{enso.ShortName} {SelectedMeasure} values", values);
+            var dataSet = GetLineChartDataset($"{SelectedDataType} mean values", values);
             await chart.AddDataSet(dataSet);
         }
         await chart.Update();
@@ -394,9 +378,7 @@
 
     BarChartDataset<float?> GetBarChartDataset(string label, List<float?> values)
     {
-        var enso = EnsoMetaData.Single(x => x.Index == SelectedIndex);
-
-        var colour = GetBarChartColourSet(values, enso.ElNinoOrientation > 0);
+        var colour = GetBarChartColourSet(values, true);
 
         return new BarChartDataset<float?>
             {

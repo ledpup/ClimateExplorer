@@ -9,11 +9,8 @@
             {
                 colourIndex = preferredColour;
             }
-            if (colourIndex > set10.Length)
-            {
-                throw new Exception("We're all out of colours.");
-            }
-            var nextColour = set10[colourIndex];
+            // Re-use colours if we have to
+            var nextColour = set10[colourIndex % set10.Length];
             colourIndex++;
             return nextColour;
         }

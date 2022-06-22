@@ -3,9 +3,11 @@ using static AcornSat.Core.Enums;
 
 public class MeasurementDefinition
 {
+    public DataCategory? DataCategory { get; set; }
     public DataType DataType { get; set; }
-    public DataAdjustment DataAdjustment { get; set; }
     public UnitOfMeasure UnitOfMeasure { get; set; }
+    public RowDataType RowDataType { get; set; }
+    public DataAdjustment? DataAdjustment { get; set; }
     public string? FolderName { get; set; }
     public string? SubFolderName { get; set; }
     public string? FileNameFormat { get; set; }
@@ -18,11 +20,13 @@ public class MeasurementDefinition
     {
         var viewModel = new MeasurementDefinitionViewModel
         {
+            DataCategory = DataCategory,
             DataAdjustment = DataAdjustment,
             DataType = DataType,
             UnitOfMeasure = UnitOfMeasure,
             PreferredColour = PreferredColour
         };
+
         return viewModel;
     }
 }

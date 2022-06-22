@@ -19,10 +19,14 @@ public class DataService : IDataService
         _dataServiceCache = dataServiceCache;
     }
 
-    public async Task<IEnumerable<DataSet>> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short ? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f)
+    public async Task<IEnumerable<DataSet>> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short ? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f)
     {
-        var url = $"dataSet/{dataType}/{resolution}/{dataAdjustment}";
+        var url = $"dataSet/{dataType}/{resolution}";
 
+        if (dataAdjustment != null)
+        {
+            url = QueryHelpers.AddQueryString(url, "dataAdjustment", dataAdjustment.Value.ToString());
+        }
         if (locationId != null)
         {
             url = QueryHelpers.AddQueryString(url, "locationId", locationId.Value.ToString());
@@ -92,15 +96,5 @@ public class DataService : IDataService
         url = QueryHelpers.AddQueryString(url, "includeWarmingMetrics", includeWarmingMetrics.ToString());
         
         return await _httpClient.GetFromJsonAsync<Location[]>(url);
-    }
-
-    public async Task<IEnumerable<EnsoMetaData>> GetEnsoMetaData()
-    {
-        return await _httpClient.GetFromJsonAsync<EnsoMetaData[]>($"reference/enso-metadata");
-    }
-
-    public async Task<IEnumerable<DataRecord>> GetEnso(EnsoIndex index, DataResolution resolution, string measure)
-    {
-        return await _httpClient.GetFromJsonAsync<DataRecord[]>($"reference/enso/{index}/{resolution}?measure={measure}");
     }
 }

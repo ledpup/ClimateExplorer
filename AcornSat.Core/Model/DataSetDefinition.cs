@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AcornSat.Core.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,6 +33,11 @@ public class DataSetDefinition
         var ddd = JsonSerializer.Deserialize<List<DataSetDefinition>>(text);
 
         return ddd;
+    }
+
+    public override string ToString()
+    {
+        return "DSD " + Name;
     }
 }
 

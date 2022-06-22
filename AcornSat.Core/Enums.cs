@@ -13,10 +13,14 @@ namespace AcornSat.Core
             TempMax,
             TempMin,
             Rainfall,
-            ENSO,
+            MEIv2,
+            SOI,
+            Nino34,
+            ONI,
             CO2,
             CH4,
-            N2O
+            N2O,
+            IOD
         }
         public enum DataResolution
         {
@@ -40,6 +44,7 @@ namespace AcornSat.Core
             Millimetres,
             PartsPerMillion,
             PartsPerBillion,
+            EnsoIndex
         }
 
         public static string UnitOfMeasureLabel(UnitOfMeasure unitOfMeasure)
@@ -56,6 +61,8 @@ namespace AcornSat.Core
                     return "Parts per million (ppm)";
                 case UnitOfMeasure.PartsPerBillion:
                     return "Parts per billion (ppb)";
+                case UnitOfMeasure.EnsoIndex:
+                    return "ENSO index";
             }
             throw new NotImplementedException();
         }
@@ -74,16 +81,10 @@ namespace AcornSat.Core
                     return "ppm";
                 case UnitOfMeasure.PartsPerBillion:
                     return "ppb";
+                case UnitOfMeasure.EnsoIndex:
+                    return "ENSO index";
             }
             throw new NotImplementedException();
-        }
-
-        public enum EnsoIndex
-        {
-            Mei,
-            Nino34,
-            Oni,
-            Soi,
         }
 
         public enum AggregationMethod
@@ -91,7 +92,13 @@ namespace AcornSat.Core
             GroupByDayThenAverage,
             GroupByDayThenAverage_Anomaly,
             BinThenCount,
-            Sum,
+            Sum
+        }
+
+        public enum RowDataType
+        {
+            OneValuePerRow,
+            TwelveMonthsPerRow
         }
     }
 }

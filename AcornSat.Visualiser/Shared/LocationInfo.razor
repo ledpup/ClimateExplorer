@@ -9,7 +9,7 @@
     <a class="location-header-link" @onclick="ChangeLocationClicked">Change Location</a>
 </div>
 
-<Collapsible Title="Overview" OnShowOrHide="OverviewShowOrHideHandler">
+<Collapsible Title="Overview" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true">
     <Content>
         <!-- The awful HTML comments between OverviewField elements below are to avoid generating whitespace between OverviewField elements, which was
              causing them to be misaligned. Probably better to use flex layout, but this works for now.
@@ -134,7 +134,7 @@
         locationIdLastTimeOnParametersSetAsyncWasCalled = Location?.Id;
         dataSetDefinitionIdLastTimeOnParametersSetAsyncWasCalled = DataSetDefinition?.Id;
 
-        var dataAdjustment = Enums.DataAdjustment.Unadjusted;
+        Enums.DataAdjustment? dataAdjustment = null;
         if (DataSetDefinition.MeasurementDefinitions.Any(x => x.DataType == DataType.TempMax && x.DataAdjustment == Enums.DataAdjustment.Adjusted))
         {
             dataAdjustment = Enums.DataAdjustment.Adjusted;

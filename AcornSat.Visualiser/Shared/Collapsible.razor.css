@@ -8,6 +8,7 @@
     margin-bottom: 0.4rem;
     font-weight: bold;
     cursor: pointer;
+    user-select: none;
 }
 
     .collapser.content-shown {

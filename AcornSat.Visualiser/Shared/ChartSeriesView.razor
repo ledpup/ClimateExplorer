@@ -1,0 +1,197 @@
+﻿@using AcornSat.Visualiser.UiModel
+@using Blazorise
+@using Blazorise.Components
+@using Blazorise.Charts
+
+<div class="chart-series-config">
+    <div class="title-bar" @onclick="() => { expanded = !expanded; }" style="@GenerateStyleForTitleBar()">
+        <div class="colour-indicator" style="@GenerateStyleForColourIndicator()"></div>
+        <div class="title">@ChartSeries.FriendlyTitleShort</div>
+        <div class="description">@ChartSeries.FriendlyDescription</div>
+    </div>
+
+    @if (expanded)
+    {
+        <div class="content">
+            <table>
+                @if (ChartSeries.Year.HasValue)
+                {
+                    <tr>
+                        <td>Filter to year:</td>
+                        <td>@ChartSeries.Year</td>
+                    </tr>
+                }
+                <tr>
+                    <td>Smoothing:</td>
+                    <td>
+                        <Select TValue="SeriesSmoothingOptions" 
+                                Size="Size.ExtraSmall"
+                                SelectedValue="@ChartSeries.Smoothing"
+                                SelectedValueChanged="@OnSmoothingChanged">
+                            <SelectItem Value="SeriesSmoothingOptions.None">None</SelectItem>
+                            <SelectItem Value="SeriesSmoothingOptions.MovingAverage">Moving average</SelectItem>
+                        </Select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Smoothing window:</td>
+                    <td>
+                        <Select TValue="int"
+                                Size="Size.ExtraSmall"
+                                SelectedValue="@ChartSeries.SmoothingWindow"
+                                SelectedValueChanged="@OnSmoothingWindowChanged"
+                                Disabled="@ShouldDisableSmoothingWindow(ChartSeries)">
+                            <SelectItem Value="3">3</SelectItem>
+                            <SelectItem Value="5">5</SelectItem>
+                            <SelectItem Value="7">7</SelectItem>
+                            <SelectItem Value="10">10</SelectItem>
+                            <SelectItem Value="15">15</SelectItem>
+                            <SelectItem Value="20">20</SelectItem>
+                        </Select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Display:</td>
+                    <td>
+                        <Select TValue="SeriesValueOptions" 
+                                Size="Size.ExtraSmall"
+                                SelectedValue="@ChartSeries.Value"
+                                SelectedValueChanged="@OnValueChanged">
+                            <SelectItem Value="SeriesValueOptions.Value">Value</SelectItem>
+                            <SelectItem Value="SeriesValueOptions.AnomalyRelativeToMean">Anomaly relative to mean</SelectItem>
+                        </Select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Display style:</td>
+                    <td>
+                        <Select TValue="SeriesDisplayStyle" 
+                                Size="Size.ExtraSmall"
+                                SelectedValue="@ChartSeries.DisplayStyle"
+                                SelectedValueChanged="@OnDisplayStyleChanged">
+                            <SelectItem Value="SeriesDisplayStyle.Line">Line</SelectItem>
+                            <SelectItem Value="SeriesDisplayStyle.Bar">Bar</SelectItem>
+                        </Select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Show trendline</td>
+                    <td>
+                        <Check TValue="bool" Checked="@ChartSeries.ShowTrendline" CheckedChanged="@OnShowTrendlineChanged"></Check>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Lock?</td>
+                    <td>
+                        <Check TValue="bool" Checked="@ChartSeries.IsLocked" CheckedChanged="@OnIsLockedChanged"></Check>
+                    </td>
+                </tr>
+            </table>
+
+            <div>
+                <a class="series-action remove-series" @onclick="@OnRemoveSeriesClicked">Remove series</a>
+
+                <a class="series-action duplicate-series" @onclick="@OnDuplicateSeriesClicked">Duplicate series</a>
+            </div>
+        </div>
+    }
+</div>
+
+
+@code {
+    [Parameter]
+    public ChartSeriesDefinition ChartSeries { get; set; }
+
+    [Parameter]
+    public EventCallback OnSeriesChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<ChartSeriesDefinition> OnDuplicateSeries { get; set; }
+
+    [Parameter]
+    public EventCallback<ChartSeriesDefinition> OnRemoveSeries { get; set; }
+
+    [Parameter]
+    public ChartSeriesTitleStyle TitleStyle { get; set; }
+
+    public enum ChartSeriesTitleStyle
+    {
+        WholeTitleBarInSeriesColour,
+        OnlyIndicatorAndTextInSeriesColour
+    }
+
+    public string GenerateStyleForColourIndicator()
+    {
+        return "background-color: " + ChartSeries.Colour;
+    }
+
+    public string GenerateStyleForTitleBar()
+    {
+        switch (TitleStyle)
+        {
+            case ChartSeriesTitleStyle.WholeTitleBarInSeriesColour:
+                return "background-color: " + ChartSeries.Colour + "; color: #eee";
+            case ChartSeriesTitleStyle.OnlyIndicatorAndTextInSeriesColour:
+                return "background-color: #eee; color: " + ChartSeries.Colour;
+            default:
+                throw new NotImplementedException($"TitleStyle {TitleStyle}");
+        }
+    }
+
+    bool expanded;
+
+    bool ShouldDisableSmoothingWindow(ChartSeriesDefinition csd)
+    {
+        return csd.Smoothing != SeriesSmoothingOptions.MovingAverage;
+    }
+
+    async Task OnDuplicateSeriesClicked()
+    {
+        await OnDuplicateSeries.InvokeAsync(ChartSeries);
+    }
+
+    async Task OnRemoveSeriesClicked()
+    {
+        await OnRemoveSeries.InvokeAsync(ChartSeries);
+    }
+
+    async Task OnSmoothingChanged(SeriesSmoothingOptions o)
+    {
+        ChartSeries.Smoothing = o;
+
+        await OnSeriesChanged.InvokeAsync();
+    }
+
+    async Task OnSmoothingWindowChanged(int w)
+    {
+        ChartSeries.SmoothingWindow = w;
+
+        await OnSeriesChanged.InvokeAsync();
+    }
+
+    async Task OnValueChanged(SeriesValueOptions o)
+    {
+        ChartSeries.Value = o;
+
+        await OnSeriesChanged.InvokeAsync();
+    }
+
+    async Task OnDisplayStyleChanged(SeriesDisplayStyle s)
+    {
+        ChartSeries.DisplayStyle = s;
+
+        await OnSeriesChanged.InvokeAsync();
+    }
+
+    async Task OnIsLockedChanged(bool val)
+    {
+        ChartSeries.IsLocked = val;
+    }
+
+    async Task OnShowTrendlineChanged(bool val)
+    {
+        ChartSeries.ShowTrendline = val;
+
+        await OnSeriesChanged.InvokeAsync();
+    }
+}

@@ -1,0 +1,67 @@
+﻿.chart-series-config {
+    background-color: #eee;
+    margin: 20px;
+    padding: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
+    border-radius: 12px;
+    min-width: 350px;
+    font-size: 0.75rem;
+    display: inline-block;
+    color: #666;
+    user-select: none;
+    vertical-align: top;
+}
+
+
+    .chart-series-config .title-bar {
+        margin: -8px;
+        margin-left: -16px;
+        margin-right: -16px;
+        border-radius: 12px;
+        min-height: 44px;
+        padding: 0px;
+        cursor: pointer;
+    }
+
+
+        .chart-series-config .title-bar:hover {
+            box-shadow: rgba(0, 0, 0, 0.6) 2px 2px 2px;
+        }
+
+    .chart-series-config .colour-indicator {
+        border: solid 2px white;
+        border-radius: 12px;
+        height: 14px;
+        width: 14px;
+        margin-top: 4px;
+        margin-left: 6px;
+        display: inline-block;
+        position: relative;
+        top: 1px;
+    }
+
+    .chart-series-config .title {
+        display: inline-block;
+        font-weight: bold;
+        padding: 4px 10px 0px 4px;
+        position: relative;
+        top: -1px;
+    }
+
+    .chart-series-config .description {
+        padding-left: 26px;
+        color: #ddd;
+    }
+
+.series-action {
+    cursor: pointer;
+}
+
+.remove-series {
+    float: right;
+}
+
+.duplicate-series {
+    min-height: 1px;
+}

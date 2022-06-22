@@ -1,0 +1,60 @@
+﻿@using AcornSat.Visualiser.UiModel
+@using Blazorise
+@using Blazorise.Components
+@using Blazorise.Charts
+
+@if (ChartSeriesList.Count == 0)
+{
+    <div class="no-datasets-active-message">No datasets active. Choose a chart preset or add a dataset.</div>
+}
+
+@foreach (var cs in ChartSeriesList)
+{
+    <ChartSeriesView 
+        ChartSeries="@cs" 
+        OnSeriesChanged="@OnSeriesChangedInternal"
+        OnDuplicateSeries="@OnDuplicateSeries"
+        OnRemoveSeries="@OnRemoveSeries"
+        ></ChartSeriesView>
+}
+
+@code {
+    [Parameter]
+    public List<ChartSeriesDefinition> ChartSeriesList { get; set; }
+
+    [Parameter]
+    public EventCallback OnSeriesChanged { get; set; }
+
+    async Task OnSeriesChangedInternal()
+    {
+        await OnSeriesChanged.InvokeAsync();
+    }
+
+    async Task OnRemoveSeries(ChartSeriesDefinition csd)
+    {
+        ChartSeriesList.Remove(csd);
+
+        OnSeriesChangedInternal();
+    }
+
+    async Task OnDuplicateSeries(ChartSeriesDefinition csd)
+    {
+        ChartSeriesList.Add(
+            new ChartSeriesDefinition()
+            {
+                Aggregation = csd.Aggregation,
+                DataResolution = csd.DataResolution,
+                DataSetDefinition = csd.DataSetDefinition,
+                LocationId = csd.LocationId,
+                LocationName = csd.LocationName,
+                MeasurementDefinition = csd.MeasurementDefinition,
+                Smoothing = csd.Smoothing,
+                SmoothingWindow = csd.SmoothingWindow,
+                Value = csd.Value,
+                Year = csd.Year
+            }
+        );
+
+        OnSeriesChangedInternal();
+    }
+}
