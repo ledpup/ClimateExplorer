@@ -124,7 +124,6 @@
                                 Value = SeriesValueOptions.Value,
                                 Year = null
                             }
-
                         }
                 }
         );
@@ -233,43 +232,6 @@
                                         Year = null
                                     }
                                 }
-                        }
-                    }
-            }
-        );
-
-        SuggestedPresets.Add(
-            new SuggestedChartPresetModelWithVariants()
-            {
-                Title = "Temperature + ENSO MEIv.2",
-                Description = "Yearly view of average maximum daily temperature, plus the El Niño Southern Oscillation MEIv.2 index",
-                ChartSeriesList =
-                    new List<ChartSeriesDefinition>()
-                    {
-                        new ChartSeriesDefinition()
-                        {
-                            LocationId = SelectedLocation.Id,
-                            LocationName = SelectedLocation.Name,
-                            Aggregation = SeriesAggregationOptions.Mean,
-                            DataResolution = DataResolution.Yearly,
-                            DataSetDefinition = dsdLocation,
-                            MeasurementDefinition = mdTempMax,
-                            Smoothing = SeriesSmoothingOptions.None,
-                            SmoothingWindow = 5,
-                            Value = SeriesValueOptions.Value,
-                            Year = null
-                        },
-                        new ChartSeriesDefinition()
-                        {
-                            Aggregation = SeriesAggregationOptions.Mean,
-                            DataResolution = DataResolution.Yearly,
-                            DataSetDefinition = dsdMeiV2,
-                            MeasurementDefinition = mdMeiV2,
-                            Smoothing = SeriesSmoothingOptions.None,
-                            SmoothingWindow = 5,
-                            DisplayStyle = SeriesDisplayStyle.Bar,
-                            Value = SeriesValueOptions.Value,
-                            Year = null
                         }
                     }
             }

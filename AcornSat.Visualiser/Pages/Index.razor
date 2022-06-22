@@ -523,19 +523,36 @@
         {
             var location = Locations.Single(x => x.Id == locationId);
             var dsd = DataSetDefinitions.Single(x => x.Id == location.DataSetId);
-            var md = dsd.MeasurementDefinitions.Single(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted);
+            var mdTempMax = dsd.MeasurementDefinitions.Single(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted);
+            var mdRainfall = dsd.MeasurementDefinitions.Single(x => x.DataType == DataType.Rainfall);
 
             ChartSeriesList.Add(
                 new ChartSeriesDefinition()
                 {
-                    LocationId = locationId,
+                    LocationId = location.Id,
                     LocationName = location.Name,
                     Aggregation = SeriesAggregationOptions.Mean,
                     DataResolution = DataResolution.Yearly,
                     DataSetDefinition = dsd,
-                    MeasurementDefinition = md,
-                    Smoothing = SeriesSmoothingOptions.None,
-                    SmoothingWindow = 5,
+                    MeasurementDefinition = mdTempMax,
+                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                    SmoothingWindow = 20,
+                    Value = SeriesValueOptions.Value,
+                    Year = null
+                }
+            );
+
+            ChartSeriesList.Add(
+                new ChartSeriesDefinition()
+                {
+                    LocationId = location.Id,
+                    LocationName = location.Name,
+                    Aggregation = SeriesAggregationOptions.Sum,
+                    DataResolution = DataResolution.Yearly,
+                    DataSetDefinition = dsd,
+                    MeasurementDefinition = mdRainfall,
+                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                    SmoothingWindow = 20,
                     Value = SeriesValueOptions.Value,
                     Year = null
                 }
