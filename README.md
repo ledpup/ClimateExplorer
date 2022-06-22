@@ -1,10 +1,16 @@
-# AcornSatAnalyser
-Tool to calculate average temperatures from [BOM](http://www.bom.gov.au/) [ACORN-SAT](http://www.bom.gov.au/climate/data/acorn-sat/) and [NIWA](https://niwa.co.nz/) [11-station series](https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data).
+# Climate Explorer
+
+[Climate Explorer](https://www.climateexplorer.net/) is a website to help people understand climate change. It's focussed on trying to provide a simple and approachable interface for people to explore. It's available for Australian and New Zealand locations. The data is sourced from:
+
+- [BOM](http://www.bom.gov.au/) [ACORN-SAT](http://www.bom.gov.au/climate/data/acorn-sat/)
+- [NIWA](https://niwa.co.nz/) [11-station series](https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data).
+- [NOAA](https://www.noaa.gov/)
 
 ## Glossary
 - [ACORN-SAT](http://www.bom.gov.au/climate/data/acorn-sat/): Australian Climate Observations Reference Network – Surface Air Temperature
 - [RAIA](http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks): Remote Australian Islands and Antarctica (a monthly dataset that is a smaller part of ACORN-SAT)
 - [NIWA](https://niwa.co.nz/): New Zealand's National Institute of Water and Atmospheric Research
+- [NOAA](https://www.noaa.gov/): National Oceanic and Atmospheric Administration
 
 ## Technical
 - Built in [Visual Studio 2022 Community Edition](https://visualstudio.microsoft.com/vs/community/)
@@ -76,61 +82,3 @@ In rough order of priority
 - 2021-12-12: Create a location JSON file, with unique ID for each location and a site list of BOM sites. (BOM change their site IDs between versions of ACORN-SAT! Need an independant, unique ID.) Include geo-spatial data.
 - 2021-12-11: Add start and end year fields for the graph (so the user can constrain the series to the years they are interested in)
 - 2021-12-11: Ensure the temperature data is sent to the chart component on the correct starting year (n.b., datasets have different starting years)
-
-## Data sources
-
-### BOM ACORN-SAT temperature
-
-Files sourced from:
-- ftp://ftp.bom.gov.au/anon/home/ncc/www/change/ACORN_SAT_daily/
-- Accessed 2021-12-09
-
-Original adjusted file names are:
-- acorn_sat_v2.2.0_daily_tmax.tar.gz
-- acorn_sat_v2.2.0_daily_tmin.tar.gz
-
-Raw data file is:
-- raw-data-and-supporting-information.zip
-
-#### Adjustments
-
-The tmax and tmin file lengths aren't all the same. Some start on different dates to others, when there are missing records at the start or the end. It's usually just a few days. For the locations below, I adjusted the files so they all start and end on the same day, by adding blank rows. I explain in detailed for Esperance. All the other changes are similar adjustments. No other changes have been made to the v2.2.0 homogenised data from the BOM.
-
-- Esperance, 009789; tmax daily file starts on 1910-01-03. tmin starts on 1910-01-02. Added a null 1910-01-02 row for tmax
-- Forrest, 011052
-- Gabo Island, 084016
-- Low Head, 091293
-- Normanton, 029063
-- Oodnadatta, 017043
-- Orbost, 084145
-- Rockhampton, 039083
-
-### CO2
-
-NOAA
-- https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt
-- Accessed 2022-05-13
-
-### ENSO 
-
-#### MEI v2
-
-The MEI combines both oceanic and atmospheric variables to form a single index assessment of ENSO. It is an Empirical Orthogonal Function (EOF) of five different variables (sea level pressure (SLP), sea surface temperature (SST), zonal and meridional components of the surface wind, and outgoing longwave radiation (OLR)) over the tropical Pacific basin (30°S-30°N and 100°E-70°W).
-
-https://psl.noaa.gov/enso/mei/
-
-- File name: meiv2.data 
-- https://psl.noaa.gov/enso/mei/data/meiv2.data
-- Accessed 2021-12-21
-
-#### Other ENSO indexes
-
-ONI
-- File name: oni.data.txt
-- https://psl.noaa.gov/data/correlation/oni.data
-- Accessed 2021-12-25
-
-OSI 
-- File name: soi.long.data.txt
-- https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/soi.long.data
-- Accessed 2021-12-25
