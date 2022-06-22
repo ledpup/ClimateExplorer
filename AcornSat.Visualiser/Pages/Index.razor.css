@@ -49,6 +49,7 @@
     }
 
     .chart {
+        /* Size the chart so that it's at least 250px high, and as much as the vertical height of the window minus 880px (to allow for other stuff that's visible) */
         height: max(250px, calc(100vh - 880px));
     }
 
