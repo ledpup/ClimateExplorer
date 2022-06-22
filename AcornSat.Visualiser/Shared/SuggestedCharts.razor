@@ -63,13 +63,20 @@
     [Parameter]
     public EventCallback<List<ChartSeriesDefinition>> OnChartPresetSelected { get; set; }
 
+    [Parameter]
+    public bool ExpandUpwards { get; set; }
+
     List<SuggestedChartPresetModelWithVariants> SuggestedPresets { get; set; }
 
     string CalculateClassForSuggestedDataSetElement(SuggestedChartPresetModel s)
     {
-        if (s.MenuExpanded) return "suggested-data-set menu-expanded";
+        string c = "suggested-data-set";
 
-        return "suggested-data-set";
+        if (s.MenuExpanded) c += " menu-expanded";
+
+        if (ExpandUpwards) c += " expand-upwards";
+
+        return c;
     }
 
     protected override async Task OnParametersSetAsync()
