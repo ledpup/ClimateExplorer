@@ -49,29 +49,33 @@
     <div class="chart-collapsible-parent">
         <Collapsible Title="Chart" InitiallyShown="true" AllowCollapse="false">
             <Content>
-                <div class="chart">
-                    <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
-                        <ChartTrendline @ref="chartTrendline" TItem="float?" />
-                    </Chart>
+                <div class="chart-and-controls">
+                    <div class="chart-wrapper">
+                        <div class="minimum-height-enforcer-for-chart"></div>
+                        <div class="chart">
+                            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
+                                <ChartTrendline @ref="chartTrendline" TItem="float?" />
+                            </Chart>
+                        </div>
+                    </div>
+
+                    <div>
+                        <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
+                    </div>
+
+                    <div class="chart-controls">
+                        @if (SelectedResolution == DataResolution.Yearly)
+                        {
+                            <a class="chart-control" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download data</a>
+                        }
+
+                        <a class="chart-control" @onclick="() => locationInfoComponent.ChangeLocationClicked(null)"><i class="fas fa-map"></i> Change Location</a>
+                        <a class="chart-control" @onclick="ShowOptionsModal"><i class="fas fa-cog"></i> Chart options</a>
+                        <a class="chart-control" @onclick="ShowFilterModal"><i class="fas fa-calendar"></i> Year filtering</a>
+                        <a class="chart-control" @onclick="ShowAddDataSetModal"><i class="fas fa-plus"></i> Add data set</a>
+
+                    </div>
                 </div>
-
-                <div>
-                    <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
-                </div>
-
-                <div class="chart-controls">
-                    @if (SelectedResolution == DataResolution.Yearly)
-                    {
-                        <a class="chart-control" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download data</a>
-                    }
-
-                    <a class="chart-control" @onclick="() => locationInfoComponent.ChangeLocationClicked(null)"><i class="fas fa-map"></i> Change Location</a>
-                    <a class="chart-control" @onclick="ShowOptionsModal"><i class="fas fa-cog"></i> Chart options</a>
-                    <a class="chart-control" @onclick="ShowFilterModal"><i class="fas fa-calendar"></i> Year filtering</a>
-                    <a class="chart-control" @onclick="ShowAddDataSetModal"><i class="fas fa-plus"></i> Add data set</a>
-
-                </div>
-
             </Content>
         </Collapsible>    
     </div>

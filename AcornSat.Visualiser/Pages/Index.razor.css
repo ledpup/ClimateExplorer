@@ -61,6 +61,16 @@
         left: 0;
     }
 
+    .minimum-height-enforcer-for-chart {
+        height: 200px;
+    }
+
+    .chart-wrapper {
+        flex-grow: 1;
+        flex-shrink: 0;
+        position: relative;
+    }
+
     .location-info-container {
         /* On larger screens, make room for the map to appear to the right of the location info section */
         margin-top: 0px;
@@ -79,5 +89,15 @@
     .map-space-reserver {
         float: right;
         width: 50%;
+    }
+
+    .chart-and-controls {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
     }
 }
