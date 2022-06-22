@@ -18,13 +18,17 @@
     padding: 12px;
     background-color: #eee;
     border-radius: 12px;
-    margin-right: 8px;
+    margin-right: 16px;
     margin-bottom: 8px;
     text-decoration: none;
     color: #425f59;
     font-weight: bold;
     cursor: pointer;
     display: inline-block;
+}
+
+.chart-controls .chart-control i {
+    margin-right: 8px;
 }
 
 .chart-controls .chart-control:hover {

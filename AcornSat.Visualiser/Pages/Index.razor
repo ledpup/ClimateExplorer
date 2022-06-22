@@ -60,13 +60,13 @@
         <div class="chart-controls">
             @if (SelectedResolution == DataResolution.Yearly)
             {
-                <a class="chart-control" @onclick="OnDownloadDataClicked">Download data</a>
+                <a class="chart-control" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download data</a>
             }
 
-            <a class="chart-control" @onclick="() => locationInfoComponent.ChangeLocationClicked(null)">Change Location</a>
-            <a class="chart-control" @onclick="ShowOptionsModal">Chart options</a>
-            <a class="chart-control" @onclick="ShowFilterModal">Year filtering</a>
-            <a class="chart-control" @onclick="ShowAddDataSetModal">Add data set</a>
+            <a class="chart-control" @onclick="() => locationInfoComponent.ChangeLocationClicked(null)"><i class="fas fa-map"></i> Change Location</a>
+            <a class="chart-control" @onclick="ShowOptionsModal"><i class="fas fa-cog"></i> Chart options</a>
+            <a class="chart-control" @onclick="ShowFilterModal"><i class="fas fa-calendar"></i> Year filtering</a>
+            <a class="chart-control" @onclick="ShowAddDataSetModal"><i class="fas fa-plus"></i> Add data set</a>
 
         </div>
 
