@@ -774,7 +774,7 @@
                 {
                     case SeriesValueOptions.Value:
                         return AggregationMethod.GroupByDayThenAverage;
-                    case SeriesValueOptions.AnomalyRelativeToMean:
+                    case SeriesValueOptions.Anomaly:
                         return AggregationMethod.GroupByDayThenAverage_Anomaly;
                     default:
                         throw new NotImplementedException($"SeriesValueOptions {svo}");

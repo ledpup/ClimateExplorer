@@ -103,46 +103,46 @@
                     Title = "Temperature + Rainfall",
                     Description = "Smoothed maximum daily temperature and rainfall",
                     ChartSeriesList =
-                        new List<ChartSeriesDefinition>()
-                        {
-                            new ChartSeriesDefinition()
+                            new List<ChartSeriesDefinition>()
                             {
-                                LocationId = SelectedLocation.Id,
-                                LocationName = SelectedLocation.Name,
-                                Aggregation = SeriesAggregationOptions.Mean,
-                                DataResolution = DataResolution.Yearly,
-                                DataSetDefinition = dsdLocation,
-                                MeasurementDefinition = mdTempMax,
-                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                SmoothingWindow = 20,
-                                Value = SeriesValueOptions.Value,
-                                Year = null
-                            },
-                            new ChartSeriesDefinition()
-                            {
-                                LocationId = SelectedLocation.Id,
-                                LocationName = SelectedLocation.Name,
-                                Aggregation = SeriesAggregationOptions.Sum,
-                                DataResolution = DataResolution.Yearly,
-                                DataSetDefinition = dsdLocation,
-                                MeasurementDefinition = mdRainfall,
-                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                SmoothingWindow = 20,
-                                Value = SeriesValueOptions.Value,
-                                Year = null
+                                new ChartSeriesDefinition()
+                                {
+                                    LocationId = SelectedLocation.Id,
+                                    LocationName = SelectedLocation.Name,
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    DataResolution = DataResolution.Yearly,
+                                    DataSetDefinition = dsdLocation,
+                                    MeasurementDefinition = mdTempMax,
+                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                    SmoothingWindow = 20,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null
+                                },
+                                new ChartSeriesDefinition()
+                                {
+                                    LocationId = SelectedLocation.Id,
+                                    LocationName = SelectedLocation.Name,
+                                    Aggregation = SeriesAggregationOptions.Sum,
+                                    DataResolution = DataResolution.Yearly,
+                                    DataSetDefinition = dsdLocation,
+                                    MeasurementDefinition = mdRainfall,
+                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                    SmoothingWindow = 20,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null
+                                }
                             }
-                        }
                 }
         );
 
         SuggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
-            {
-                Title = "Temperature",
-                Description = "Yearly view of average maximum daily temperature",
-                ChartSeriesList =
-                    new List<ChartSeriesDefinition>()
-                    {
+                {
+                    Title = "Temperature",
+                    Description = "Yearly view of average maximum daily temperature",
+                    ChartSeriesList =
+                        new List<ChartSeriesDefinition>()
+                        {
                         new ChartSeriesDefinition()
                         {
                             LocationId = SelectedLocation.Id,
@@ -156,10 +156,10 @@
                             Value = SeriesValueOptions.Value,
                             Year = null
                         }
-                    },
-                Variants = 
-                    new List<SuggestedChartPresetModel>()
-                    {
+                        },
+                    Variants =
+                        new List<SuggestedChartPresetModel>()
+                        {
                         new SuggestedChartPresetModel()
                         {
                             Title = "Plus trendline",
@@ -240,9 +240,34 @@
                                     }
                                 }
                         }
-                    }
-            }
+                        }
+                }
         );
+
+        SuggestedPresets.Add(
+            new SuggestedChartPresetModelWithVariants()
+                {
+                    Title = "Temperature Anomoly",
+                    Description = "Yearly average maximum daily temperatures relative to the average of the whole dataset",
+                    ChartSeriesList =
+                            new List<ChartSeriesDefinition>()
+                                {
+                                    new ChartSeriesDefinition()
+                                    {
+                                        LocationId = SelectedLocation.Id,
+                                        LocationName = SelectedLocation.Name,
+                                        Aggregation = SeriesAggregationOptions.Mean,
+                                        DataResolution = DataResolution.Yearly,
+                                        DataSetDefinition = dsdLocation,
+                                        MeasurementDefinition = mdTempMax,
+                                        Smoothing = SeriesSmoothingOptions.None,
+                                        SmoothingWindow = 5,
+                                        Value = SeriesValueOptions.Anomaly,
+                                        Year = null,
+                                        DisplayStyle = SeriesDisplayStyle.Bar
+                                    }
+                                },
+                });
 
         // Presets may call for data that is not available at all locations. In those
         // cases, remove the ChartSeries entries that aren't available & set a flag
@@ -250,7 +275,7 @@
         foreach (var p in SuggestedPresets)
         {
             p.MissingChartSeries = false;
-            
+
             foreach (var csd in p.ChartSeriesList.ToArray())
             {
                 if (csd.MeasurementDefinition == null)
@@ -280,4 +305,4 @@
             }
         }
     }
-}
+    }

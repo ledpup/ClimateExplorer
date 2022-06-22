@@ -3,6 +3,6 @@
     public enum SeriesValueOptions
     {
         Value,
-        AnomalyRelativeToMean
+        Anomaly
     }
 }
