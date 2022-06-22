@@ -1111,6 +1111,11 @@
 
     void BuildProcessedDataSetsForYearlyView(List<SeriesWithData> chartSeriesWithData, bool inclusiveStartYear = true)
     {
+        // If we're doing smoothing via the moving average, precalculate these data and add them to PreProcessedDataSets.
+        // We do this because the SimpleMovingAverage calculate function will remove some years from the start of the data set.
+        // It removes these years because it doesn't have a good enough average to present it to the user.
+        // Therefore, we need to calculate the smoothing before we calculate the start year - the basis for labelling the chart
+        // If we're not calculating a moving average, PreProcessedDataSets = SourceDataSets
         foreach (var cs in chartSeriesWithData)
         {
             if (cs.ChartSeries.Smoothing == SeriesSmoothingOptions.MovingAverage)
