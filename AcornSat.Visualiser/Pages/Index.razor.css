@@ -9,24 +9,96 @@
     height: 60vh;
 }
 
+.chart-controls {
+    margin: 20px;
+    margin-bottom: 0px;
+}
+
+.chart-controls .chart-control {
+    padding: 12px;
+    background-color: #eee;
+    border-radius: 12px;
+    margin-right: 16px;
+    margin-bottom: 8px;
+    text-decoration: none;
+    color: #425f59;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.chart-controls .chart-control i {
+    margin-right: 8px;
+}
+
+.chart-controls .chart-control:hover {
+    background-color: #cfc;
+    transition: 0.25s;
+}
+
 @media only screen and (max-width: 1000px) {
     .map-space-reserver {
         margin-bottom: 10px;
     }
     .chart {
-        height: 30vh;
+        height: max(250px, calc(100vh - 600px));
     }
 }
 
 @media only screen and (min-width: 1000px) {
+    .location-and-chart-container {
+        height: calc(100vh - 70px);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chart {
+        height: auto;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+    }
+
+    .minimum-height-enforcer-for-chart {
+        height: 200px;
+    }
+
+    .chart-wrapper {
+        flex-grow: 1;
+        flex-shrink: 0;
+        position: relative;
+    }
 
     .location-info-container {
         /* On larger screens, make room for the map to appear to the right of the location info section */
         margin-top: 0px;
     }
 
+    .chart-collapsible-parent {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 400px;
+    }
+
+    .childthing {
+        background: linear-gradient(blue, pink);
+    }
+
     .map-space-reserver {
         float: right;
         width: 50%;
+    }
+
+    .chart-and-controls {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
     }
 }

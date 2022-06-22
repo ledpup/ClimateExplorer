@@ -1,4 +1,22 @@
-﻿.collapsible-with-background {
+﻿
+.collapsible-panel {
+    position: relative;
+    box-shadow: rgb(0 0 0 / 15%) 1px 1px 12px;
+    color: white;
+    margin-left: -8px;
+    margin-right: -8px;
+    margin-bottom: 32px;
+    padding: 16px;
+    border-radius: 12px;
+
+
+
+
+    flex-grow: 1;
+    flex-shrink: 0;
+}
+
+.collapsible-with-background {
     background-color: #f8f8f8;
     border-left: solid 4px #425f59;
 }

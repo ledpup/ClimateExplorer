@@ -58,8 +58,8 @@
 @media only screen and (min-width: 1000px) {
     .mapContainer {
         position: absolute;
-        top: 0px;
-        right: 0px;
+        top: 16px;
+        right: 8px;
         left: 0px;
         bottom: 0px;
         z-index: 20;

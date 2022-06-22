@@ -23,65 +23,94 @@
 
 <PageTitle>@GetPageTitle()</PageTitle>
 
-<div>
-    <div class="map-space-reserver" id="mapContainerContainer">
-        <MapContainer
-            @ref="mapContainer"
-            Locations="@Locations"
-            OnLocationChange="@SelectedLocationChanged"></MapContainer>
+<div class="location-and-chart-container">
+    <div>
+        <div class="map-space-reserver" id="mapContainerContainer">
+            <MapContainer
+                @ref="mapContainer"
+                Locations="@Locations"
+                OnLocationChange="@SelectedLocationChanged"></MapContainer>
 
+        </div>
+        <div class="location-info-container">
+            @if (SelectedLocation != null)
+            {
+                <LocationInfo
+                    @ref="locationInfoComponent"
+                    Location="@SelectedLocation"
+                    DataSetDefinition="@SelectedDataSetDefinition"
+                    RequestLocationChange="@ShowSelectLocationModal"
+                    OnOverviewShowOrHide="@OnOverviewShowHide"></LocationInfo>
+            }
+        </div>
+        <div style="clear: both;"></div>
     </div>
-    <div class="location-info-container">
-        @if (SelectedLocation != null)
-        {
-            <LocationInfo
-                Location="@SelectedLocation"
-                DataSetDefinition="@SelectedDataSetDefinition"
-                RequestLocationChange="@ShowSelectLocationModal"
-                OnOverviewShowOrHide="@OnOverviewShowHide"></LocationInfo>
-        }
+
+    <div class="chart-collapsible-parent">
+        <Collapsible Title="Chart" InitiallyShown="true" AllowCollapse="false">
+            <Content>
+                <div class="chart-and-controls">
+                    <div>
+                        <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
+                    </div>
+
+                    <div class="chart-wrapper">
+                        <div class="minimum-height-enforcer-for-chart"></div>
+                        <div class="chart">
+                            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
+                                <ChartTrendline @ref="chartTrendline" TItem="float?" />
+                            </Chart>
+                        </div>
+                    </div>
+
+                    <div class="chart-controls">
+                        <a class="chart-control" @onclick="() => locationInfoComponent.ChangeLocationClicked(null)"><i class="fas fa-map"></i> Change Location</a>
+                        <a class="chart-control" @onclick="ShowOptionsModal"><i class="fas fa-cog"></i> Chart options</a>
+                        <a class="chart-control" @onclick="ShowFilterModal"><i class="fas fa-calendar"></i> Year filtering</a>
+
+                        @if (SelectedResolution == DataResolution.Yearly)
+                        {
+                            <a class="chart-control" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download data</a>
+                        }
+
+                        <a class="chart-control" @onclick="ShowAddDataSetModal"><i class="fas fa-plus"></i> Add data set</a>
+
+                    </div>
+                </div>
+            </Content>
+        </Collapsible>    
     </div>
-    <div style="clear: both;"></div>
+
+    <div style="flex-grow: 0">
+        <Collapsible Title="Suggested charts" InitiallyShown="true">
+            <Content>
+                <SuggestedCharts @ref="suggestedChartsComponent" DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@SelectedLocation" OnChartPresetSelected="@OnChartPresetSelected" ExpandUpwards="true"></SuggestedCharts>
+            </Content>
+        </Collapsible>
+    </div>
 </div>
 
-<div style="min-height: 40px"></div>
 
-<Collapsible Title="Suggested charts" InitiallyShown="true">
-    <Content>
-        <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@SelectedLocation" OnChartPresetSelected="@OnChartPresetSelected"></SuggestedCharts>
-    </Content>
-</Collapsible>
 
-<Collapsible Title="Add a dataset" InitiallyShown="false">
-    <Content>
-        <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@SelectedLocation"></DataSetBrowser>
-    </Content>
-</Collapsible>
 
-@if (SelectedResolution == DataResolution.Yearly)
-{
-    <a class="large-link right-margin" @onclick="OnDownloadDataClicked">Download data</a>
-}
-
-<a class="large-link right-margin" @onclick="ShowOptionsModal">Chart options</a>
-<a class="large-link right-margin" @onclick="ShowFilterModal">Year filtering</a>
-
-<div>
-    <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
-</div>
-
-<div class="chart">
-    <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
-        <ChartTrendline @ref="chartTrendline" TItem="float?" />
-    </Chart>
-</div>
- 
 <SelectLocation
     @ref="selectLocationModal"
     Locations="@Locations"
     SelectedLocation="@SelectedLocation"
     OnLocationChange="@SelectedLocationChanged"
     />
+
+<Modal @ref="addDataSetModal">
+    <ModalContent>
+        <ModalHeader Background="Background.Light">
+            <ModalTitle>Add data set</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@SelectedLocation"></DataSetBrowser>
+        </ModalBody>
+    </ModalContent>
+</Modal>
 
  <Modal @ref="optionsModal">
     <ModalContent>
@@ -124,9 +153,15 @@
     OnEndYearTextChanged="@OnEndYearTextChanged"
     ></Filter>
 
+
+
+
 @code{
     [Parameter]
     public string LocationId { get; set; }
+
+    LocationInfo locationInfoComponent { get; set; }
+    SuggestedCharts suggestedChartsComponent { get; set; }
 
     @inject IJSRuntime JSRuntime
     @inject ILogger<Index> Logger;
@@ -225,6 +260,19 @@
     private Task HideSelectLocationModal()
     {
         return selectLocationModal.Hide();
+    }
+
+    
+    Modal addDataSetModal;
+
+    private Task ShowAddDataSetModal()
+    {
+        return addDataSetModal.Show();
+    }
+
+    private Task HideAddDataSetModal()
+    {
+        return addDataSetModal.Hide();
     }
 
     private Modal optionsModal;
@@ -486,6 +534,46 @@
         Logger.LogInformation("OnParametersSetAsync(): " + LocationId);
 
         Guid locationId = Guid.Parse(LocationId ?? "aed87aa0-1d0c-44aa-8561-cde0fc936395");
+
+        if (LocationId == null && ChartSeriesList.Count == 0)
+        {
+            var location = Locations.Single(x => x.Id == locationId);
+            var dsd = DataSetDefinitions.Single(x => x.Id == location.DataSetId);
+            var mdTempMax = dsd.MeasurementDefinitions.Single(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted);
+            var mdRainfall = dsd.MeasurementDefinitions.Single(x => x.DataType == DataType.Rainfall);
+
+            ChartSeriesList.Add(
+                new ChartSeriesDefinition()
+                {
+                    LocationId = location.Id,
+                    LocationName = location.Name,
+                    Aggregation = SeriesAggregationOptions.Mean,
+                    DataResolution = DataResolution.Yearly,
+                    DataSetDefinition = dsd,
+                    MeasurementDefinition = mdTempMax,
+                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                    SmoothingWindow = 20,
+                    Value = SeriesValueOptions.Value,
+                    Year = null
+                }
+            );
+
+            ChartSeriesList.Add(
+                new ChartSeriesDefinition()
+                {
+                    LocationId = location.Id,
+                    LocationName = location.Name,
+                    Aggregation = SeriesAggregationOptions.Sum,
+                    DataResolution = DataResolution.Yearly,
+                    DataSetDefinition = dsd,
+                    MeasurementDefinition = mdRainfall,
+                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                    SmoothingWindow = 20,
+                    Value = SeriesValueOptions.Value,
+                    Year = null
+                }
+            );
+        }
 
         // Pick up parameters from querystring
         await UpdateUiStateBasedOnQueryString();
@@ -1134,6 +1222,20 @@
             };
     }
 
+    ChartDataset<float?> GetMovingAverageChartDataset(int smoothingWindow, string label, List<float?> values, UnitOfMeasure unitOfMeasure, ChartType chartType, ChartColor colour)
+    {
+        var simpleMovingAverages = SimpleMovingAverage.Calculate(smoothingWindow, values);
+
+        switch (chartType)
+        {
+            case ChartType.Line:
+                return GetLineChartDataset(label, simpleMovingAverages, colour, unitOfMeasure);
+            case ChartType.Bar:
+                return GetBarChartDataset(label, simpleMovingAverages, unitOfMeasure, false);
+            default:
+                throw new NotImplementedException($"ChartType {chartType}");
+        }
+    }
     void BuildProcessedDataSetsForYearlyView(List<SeriesWithData> chartSeriesWithData, bool inclusiveStartYear = true)
     {
         // If we're doing smoothing via the moving average, precalculate these data and add them to PreProcessedDataSets.
@@ -1211,10 +1313,7 @@
 
             var startYear = dataSet.DataRecords.Min(x => x.Date);
             var temperatures = new List<DataRecord>();
-            //for (var i = superSetStartYear; i < startYear; i++)
-            //{
-            //    temperatures.Add(new DailyTemperatureRecord { Date = i });
-            //}
+
             temperatures.AddRange(dataSet.DataRecords);
             bufferedDataSet.DataRecords = temperatures;
         }
