@@ -9,8 +9,8 @@
     color: #7DB0DF;
     font-size: 1rem;
     font-weight: bold;
-    margin-left: 1em;
     cursor: pointer;
+    display: block;
 }
 
     .location-header-link:hover {

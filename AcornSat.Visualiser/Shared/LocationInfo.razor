@@ -3,14 +3,9 @@
 @using Blazorise
 @using static AcornSat.Core.Enums
 
-<div class="location-header">
-    @Location.Name
-            
-    <a class="location-header-link" @onclick="ChangeLocationClicked">Change Location</a>
-</div>
-
-<Collapsible Title="@Location.Name" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true">
+<Collapsible Title="@Location.Name" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
     <Content>
+        <a class="location-header-link" @onclick="ChangeLocationClicked">Change Location</a>
         <!-- The awful HTML comments between OverviewField elements below are to avoid generating whitespace between OverviewField elements, which was
              causing them to be misaligned. Probably better to use flex layout, but this works for now.
         -->
@@ -107,7 +102,7 @@
 <li>The station(s) has been operating for a long time. The effect of global warming is more obvious with a large dataset as temperatures in the past were cooler.</li>";
 
 
-    void ChangeLocationClicked(EventArgs args)
+    public void ChangeLocationClicked(EventArgs args)
     {
         RequestLocationChange.InvokeAsync();
     }
