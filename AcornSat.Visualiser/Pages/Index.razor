@@ -1153,15 +1153,16 @@
                             {
                                 Location = x.Location,
                                 MeasurementDefinition = x.MeasurementDefinition,
-                                DataRecords = Enumerable.Range(startYear, latestYearAcrossAllDataSets - startYear + 1)
-                                                        .Select(
-                                                            year =>
-                                                                // If there's a record in the source dataset, use it
-                                                                x.DataRecords.SingleOrDefault(z => z.Year == year)
-                                                                // Otherwise, create a null record
-                                                                ?? new DataRecord { Year = (short)year, Value = null }
-                                                        )
-                                                        .ToList()
+                                DataRecords =
+                                    Enumerable.Range(startYear, latestYearAcrossAllDataSets - startYear + 1)
+                                    .Select(
+                                        year =>
+                                            // If there's a record in the source dataset, use it
+                                            x.DataRecords.SingleOrDefault(z => z.Year == year)
+                                            // Otherwise, create a null record
+                                            ?? new DataRecord { Year = (short)year, Value = null }
+                                    )
+                                    .ToList()
                             }
                 )
                 .ToList();
