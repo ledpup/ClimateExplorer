@@ -43,8 +43,8 @@ In rough order of priority
 
 ### Done
 
-- 2022-05-22: Major graphical and functional redesign
-- 2022-05-22: Show graphs from two or more locations at once
+- 2022-06-22: Major graphical and functional redesign
+- 2022-06-22: Show graphs from two or more locations at once
 - 2022-05-19: Display the heating score as the map markers for each location on the map
 - 2022-05-19: Changed to use DPBlazorMap as the leaflet Blazor component
 - 2022-05-15: GHGs (CO2, CH4, etc) data and graphs
