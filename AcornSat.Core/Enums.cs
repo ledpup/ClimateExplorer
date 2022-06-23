@@ -20,8 +20,10 @@ namespace AcornSat.Core
             CO2,
             CH4,
             N2O,
-            IOD
+            IOD,
+            SolarRadiation,
         }
+
         public enum DataResolution
         {
             Yearly,
@@ -44,7 +46,8 @@ namespace AcornSat.Core
             Millimetres,
             PartsPerMillion,
             PartsPerBillion,
-            EnsoIndex
+            EnsoIndex,
+            MegajoulesPerSquareMetre
         }
 
         public static string UnitOfMeasureLabel(UnitOfMeasure unitOfMeasure)
@@ -63,6 +66,8 @@ namespace AcornSat.Core
                     return "Parts per billion (ppb)";
                 case UnitOfMeasure.EnsoIndex:
                     return "ENSO index";
+                case UnitOfMeasure.MegajoulesPerSquareMetre:
+                    return "Megajoules per square metre (MJ/m*m)";
             }
             throw new NotImplementedException();
         }
@@ -83,6 +88,8 @@ namespace AcornSat.Core
                     return "ppb";
                 case UnitOfMeasure.EnsoIndex:
                     return "ENSO index";
+                case UnitOfMeasure.MegajoulesPerSquareMetre:
+                    return "MJ/m*m";
             }
             throw new NotImplementedException();
         }

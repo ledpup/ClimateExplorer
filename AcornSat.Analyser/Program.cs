@@ -10,8 +10,8 @@ using System.IO.Compression;
 using AcornSat.Core.Model;
 using AcornSat.Core.ViewModel;
 
-GenerateMapMarkers();
 
+GenerateMapMarkers();
 var dataSetDefinitions = BuildDataSetDefinitions();
 BuildNiwaLocations(Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"));
 var locations = BuildAcornSatLocationsFromReferenceData(Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"));
@@ -39,13 +39,16 @@ async Task DownloadDataSetData(DataSetDefinition dataSetDefinition)
     }
 }
 
+var obsCodes = Enum.GetValues(typeof(ObsCode)).Cast<ObsCode>().ToList();
+
 foreach (var location in locations.ToList())
 {
     foreach (var site in location.Sites)
     {
-        await DownloadAndExtractDailyBomData(site, ObsCode.Daily_TempMax);
-        await DownloadAndExtractDailyBomData(site, ObsCode.Daily_TempMin);
-        await DownloadAndExtractDailyBomData(site, ObsCode.Daily_Rainfall);
+        foreach (var obsCode in obsCodes)
+        {
+            await DownloadAndExtractDailyBomData(site, obsCode);
+        }
     }
 }
 
@@ -194,6 +197,15 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     SubFolderName = "daily_rainfall",
                     FileNameFormat = "[station]_daily_rainfall.csv",
                     PreferredColour = 1,
+                },
+                new MeasurementDefinition
+                {
+                    DataType = DataType.SolarRadiation,
+                    UnitOfMeasure = UnitOfMeasure.MegajoulesPerSquareMetre,
+                    DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*)$",
+                    FolderName = "daily_solarradiation",
+                    FileNameFormat = "[station]_daily_solarradiation.csv",
+                    PreferredColour = 0,
                 },
             },
             StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
@@ -674,4 +686,5 @@ public enum ObsCode
     Daily_TempMax = 122,
     Daily_TempMin = 123,
     Daily_Rainfall = 136,
+    Daily_SolarRadiation = 193,
 }

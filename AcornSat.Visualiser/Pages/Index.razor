@@ -26,21 +26,19 @@
 <div class="location-and-chart-container">
     <div>
         <div class="map-space-reserver" id="mapContainerContainer">
-            <MapContainer
-                @ref="mapContainer"
-                Locations="@Locations"
-                OnLocationChange="@SelectedLocationChanged"></MapContainer>
+            <MapContainer @ref="mapContainer"
+                          Locations="@Locations"
+                          OnLocationChange="@SelectedLocationChanged"></MapContainer>
 
         </div>
         <div class="location-info-container">
             @if (SelectedLocation != null)
             {
-                <LocationInfo
-                    @ref="locationInfoComponent"
-                    Location="@SelectedLocation"
-                    DataSetDefinition="@SelectedDataSetDefinition"
-                    RequestLocationChange="@ShowSelectLocationModal"
-                    OnOverviewShowOrHide="@OnOverviewShowHide"></LocationInfo>
+                <LocationInfo @ref="locationInfoComponent"
+                          Location="@SelectedLocation"
+                          DataSetDefinition="@SelectedDataSetDefinition"
+                          RequestLocationChange="@ShowSelectLocationModal"
+                          OnOverviewShowOrHide="@OnOverviewShowHide"></LocationInfo>
             }
         </div>
         <div style="clear: both;"></div>
@@ -78,7 +76,7 @@
                     </div>
                 </div>
             </Content>
-        </Collapsible>    
+        </Collapsible>
     </div>
 
     <div style="flex-grow: 0">
@@ -93,12 +91,10 @@
 
 
 
-<SelectLocation
-    @ref="selectLocationModal"
-    Locations="@Locations"
-    SelectedLocation="@SelectedLocation"
-    OnLocationChange="@SelectedLocationChanged"
-    />
+<SelectLocation @ref="selectLocationModal"
+                Locations="@Locations"
+                SelectedLocation="@SelectedLocation"
+                OnLocationChange="@SelectedLocationChanged" />
 
 <Modal @ref="addDataSetModal">
     <ModalContent>
@@ -112,7 +108,7 @@
     </ModalContent>
 </Modal>
 
- <Modal @ref="optionsModal">
+<Modal @ref="optionsModal">
     <ModalContent>
         <ModalHeader Background="Background.Light">
             <ModalTitle>Options</ModalTitle>
@@ -120,7 +116,7 @@
         </ModalHeader>
         <ModalBody>
             <Alert Color="Color.Danger" Visible="true">
-                Day grouping<br/>
+                Day grouping<br />
                 <Select TValue="short" SelectedValue="@SelectedDayGrouping" SelectedValueChanged="@OnSelectedDayGroupingChanged">
                     <SelectItem Value="5">@DayGroupingText(5)</SelectItem>
                     <SelectItem Value="7">@DayGroupingText(7)</SelectItem>
@@ -132,7 +128,7 @@
                     <SelectItem Value="91">@DayGroupingText(91)</SelectItem>
                     <SelectItem Value="182">@DayGroupingText(182)</SelectItem>
                 </Select>
-                Threshold required to form a valid group (% percentage)<br/>
+                Threshold required to form a valid group (% percentage)<br />
                 <TextEdit Text="@DayGroupThresholdText" TextChanged="@OnDayGroupThresholdTextChanged" MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
                 <Button Color="Color.Primary" Clicked="@ApplyYearlyAverageParameters">Apply</Button>
             </Alert>
@@ -140,23 +136,21 @@
     </ModalContent>
 </Modal>
 
-<Filter
-    @ref="filter"
-    DatasetYears="@DatasetYears"
-    SelectedYears="@SelectedYears"
-    SelectedStartYear="@SelectedStartYear"
-    SelectedEndYear="@SelectedEndYear"
-    SelectedResolution="@SelectedResolution"
-    OnSelectedYearsChanged="@OnSelectedYearsChanged"
-    OnSelectedResolutionChanged="@OnSelectedResolutionChanged"
-    OnStartYearTextChanged="@OnStartYearTextChanged"
-    OnEndYearTextChanged="@OnEndYearTextChanged"
-    ></Filter>
+<Filter @ref="filter"
+        DatasetYears="@DatasetYears"
+        SelectedYears="@SelectedYears"
+        SelectedStartYear="@SelectedStartYear"
+        SelectedEndYear="@SelectedEndYear"
+        SelectedResolution="@SelectedResolution"
+        OnSelectedYearsChanged="@OnSelectedYearsChanged"
+        OnSelectedResolutionChanged="@OnSelectedResolutionChanged"
+        OnStartYearTextChanged="@OnStartYearTextChanged"
+        OnEndYearTextChanged="@OnEndYearTextChanged"></Filter>
 
 
 
 
-@code{
+@code {
     [Parameter]
     public string LocationId { get; set; }
 
@@ -169,7 +163,7 @@
     string GetPageTitle()
     {
         var locationText = SelectedLocation == null ? "" : " - " + SelectedLocation.Name;
-        return $"Climate explorer{ locationText }";
+        return $"Climate explorer{locationText}";
     }
 
     bool trendlinesOn = false;
@@ -188,7 +182,7 @@
                 return "Groups of 5 days (73 groups)";
             case 7:
                 return "Groups of 7 days (52 groups)";
-            case 13: 
+            case 13:
                 return "Groups of 13 days (28 groups)";
             case 14:
                 return "Groups of 14 days (26 groups)";
@@ -262,7 +256,7 @@
         return selectLocationModal.Hide();
     }
 
-    
+
     Modal addDataSetModal;
 
     private Task ShowAddDataSetModal()
@@ -346,7 +340,7 @@
             ChartSeriesList
             .Concat(
                 new List<ChartSeriesDefinition>()
-                {
+                    {
                     new ChartSeriesDefinition()
                     {
                         LocationId = dle.LocationId,
@@ -360,7 +354,7 @@
                         Value = SeriesValueOptions.Value,
                         Year = null
                     }
-                }
+                    }
             )
             .ToList();
 
@@ -462,23 +456,23 @@
         acornSatDsd.MeasurementDefinitions
             .Add(
                 new MeasurementDefinitionViewModel
-                {
-                    DataAdjustment = DataAdjustment.Difference,
-                    DataType = DataType.TempMax,
-                    UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
-                    PreferredColour = 0
-                }
+                    {
+                        DataAdjustment = DataAdjustment.Difference,
+                        DataType = DataType.TempMax,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                        PreferredColour = 0
+                    }
             );
 
         acornSatDsd.MeasurementDefinitions
             .Add(
                 new MeasurementDefinitionViewModel
-                {
-                    DataAdjustment = DataAdjustment.Difference,
-                    DataType = DataType.TempMin,
-                    UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
-                    PreferredColour = 0
-                }
+                    {
+                        DataAdjustment = DataAdjustment.Difference,
+                        DataType = DataType.TempMin,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                        PreferredColour = 0
+                    }
             );
 
         Locations = (await DataService.GetLocations(includeNearbyLocations: true, includeWarmingMetrics: true)).ToList();
@@ -516,7 +510,7 @@
 
                 Logger.LogInformation("Setting ChartSeriesList to list with " + csdList.Count + " items");
 
-                ChartSeriesList = csdList.ToList(); 
+                ChartSeriesList = csdList.ToList();
 
                 await BuildDataSets();
 
@@ -544,34 +538,34 @@
 
             ChartSeriesList.Add(
                 new ChartSeriesDefinition()
-                {
-                    LocationId = location.Id,
-                    LocationName = location.Name,
-                    Aggregation = SeriesAggregationOptions.Mean,
-                    DataResolution = DataResolution.Yearly,
-                    DataSetDefinition = dsd,
-                    MeasurementDefinition = mdTempMax,
-                    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                    SmoothingWindow = 20,
-                    Value = SeriesValueOptions.Value,
-                    Year = null
-                }
+                    {
+                        LocationId = location.Id,
+                        LocationName = location.Name,
+                        Aggregation = SeriesAggregationOptions.Mean,
+                        DataResolution = DataResolution.Yearly,
+                        DataSetDefinition = dsd,
+                        MeasurementDefinition = mdTempMax,
+                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                        SmoothingWindow = 20,
+                        Value = SeriesValueOptions.Value,
+                        Year = null
+                    }
             );
 
             ChartSeriesList.Add(
                 new ChartSeriesDefinition()
-                {
-                    LocationId = location.Id,
-                    LocationName = location.Name,
-                    Aggregation = SeriesAggregationOptions.Sum,
-                    DataResolution = DataResolution.Yearly,
-                    DataSetDefinition = dsd,
-                    MeasurementDefinition = mdRainfall,
-                    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                    SmoothingWindow = 20,
-                    Value = SeriesValueOptions.Value,
-                    Year = null
-                }
+                    {
+                        LocationId = location.Id,
+                        LocationName = location.Name,
+                        Aggregation = SeriesAggregationOptions.Sum,
+                        DataResolution = DataResolution.Yearly,
+                        DataSetDefinition = dsd,
+                        MeasurementDefinition = mdRainfall,
+                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                        SmoothingWindow = 20,
+                        Value = SeriesValueOptions.Value,
+                        Year = null
+                    }
             );
         }
 
@@ -604,7 +598,7 @@
         // Others currently are not, but probably should be (e.g. year filtering).
         //
         // Our strategy here is:
-        // 
+        //
         // This method has been called because something has happened that may require the chart to be
         // re-rendered. We calculate the URI reflecting the current UI state. If we're already at that
         // URI, then we conclude that one of the properties has changed that does NOT impact the URI,
@@ -661,7 +655,7 @@
 
         Logger.LogInformation("BuildDataSets() leaving");
     }
-        
+
     public void RebuildChartSeriesListToReflectSelectedYears()
     {
         var years = SelectedYears.Any() ? SelectedYears.Select(x => (short?)x).ToList() : new List<short?>() { null };
@@ -722,25 +716,33 @@
                 case DataType.TempMax:
                 case DataType.TempMin:
                 case DataType.Rainfall:
-                    datasets = 
+                case DataType.SolarRadiation:
+                    datasets =
                         (await DataService.GetDataSet(
-                            csd.MeasurementDefinition.DataType, 
-                            csd.DataResolution, 
-                            csd.MeasurementDefinition.DataAdjustment, 
-                            ChooseDataSetApiAggregationMethod(csd.Aggregation, csd.Value), 
-                            csd.LocationId, 
-                            csd.Year, 
+                            csd.MeasurementDefinition.DataType,
+                            csd.DataResolution,
+                            csd.MeasurementDefinition.DataAdjustment,
+                            ChooseDataSetApiAggregationMethod(csd.Aggregation, csd.Value),
+                            csd.LocationId,
+                            csd.Year,
 
                             // Ideally, these would be stored at CSD level, but for now, leaving them global
-                            dayGrouping: SelectedDayGrouping, 
+                            dayGrouping: SelectedDayGrouping,
                             dayGroupingThreshold: SelectedDayGroupThreshold
                         ))
                         .ToList();
 
                     break;
 
-                default:
-                    datasets = 
+                case DataType.CH4:
+                case DataType.CO2:
+                case DataType.IOD:
+                case DataType.MEIv2:
+                case DataType.N2O:
+                case DataType.Nino34:
+                case DataType.ONI:
+                case DataType.SOI:
+                    datasets =
                         (await DataService.GetDataSet(
                             csd.MeasurementDefinition.DataType,
                             csd.DataResolution,
@@ -750,6 +752,9 @@
                         .ToList();
 
                     break;
+
+                default:
+                    throw new NotImplementedException();
             }
 
             datasetsToReturn.AddRange(
@@ -761,8 +766,8 @@
         Logger.LogInformation("RetrieveDataSets: completed enumeration");
 
         return datasetsToReturn;
-    }                           
-  
+    }
+
     AggregationMethod ChooseDataSetApiAggregationMethod(SeriesAggregationOptions sao, SeriesValueOptions svo)
     {
         switch (sao)
@@ -810,7 +815,7 @@
     async Task OnEndYearTextChanged(string text)
     {
         SelectedEndYear = text;
-        
+
         await HandleRedraw();
     }
 
@@ -832,7 +837,7 @@
     {
         // Find the first and last year we have data for
         var superSetStartYear = chartSeriesWithData.SelectMany(x => x.ProcessedDataSets).SelectMany(x => x.DataRecords).Min(y => y.Year);
-        var superSetEndYear   = chartSeriesWithData.SelectMany(x => x.ProcessedDataSets).SelectMany(x => x.DataRecords).Max(y => y.Year);
+        var superSetEndYear = chartSeriesWithData.SelectMany(x => x.ProcessedDataSets).SelectMany(x => x.DataRecords).Max(y => y.Year);
 
         // Parse the start and end years, if any, specified by the user
         var userStartYear = string.IsNullOrEmpty(selectedStartYear) ? null : (short?)short.Parse(selectedStartYear);
@@ -845,7 +850,7 @@
             ? userStartYear.Value
             : superSetStartYear;
 
-        var chartEndYear = 
+        var chartEndYear =
             // If the user specified a year in the range of available data (not including the first available year) use it,
             // otherwise, use the last available year
             userEndYear != null && userEndYear > superSetStartYear && userEndYear <= superSetEndYear
@@ -937,7 +942,7 @@
                 cswd.ProcessedDataSets = cswd.SourceDataSets.ToList();
             }
 
-            subtitle = $"{string.Join(", ", SelectedYears)} {SelectedResolution} Chart";        
+            subtitle = $"{string.Join(", ", SelectedYears)} {SelectedResolution} Chart";
 
             var calendar = new GregorianCalendar();
 
@@ -965,82 +970,95 @@
         var xLabel = GetXAxisLabel();
 
         object scales = new
+        {
+            X = new
             {
-                X = new
+                Title = new
                 {
-                    Title = new
-                    {
-                        Text = xLabel,
-                        Display = true,
-                        Color = "blue",
-                    },
+                    Text = xLabel,
+                    Display = true,
+                    Color = "blue",
                 },
-                EnsoIndex = new
+            },
+            EnsoIndex = new
+            {
+                Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.EnsoIndex),
+                Axis = "y",
+                Position = "right",
+                Grid = new { DrawOnChartArea = false },
+                Title = new
                 {
-                    Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.EnsoIndex),
-                    Axis = "y",
-                    Position = "right",
-                    Grid = new { DrawOnChartArea = false },
-                    Title = new
-                    {
-                        Text = UnitOfMeasureLabel(UnitOfMeasure.EnsoIndex),
-                        Display = true,
-                        Color = "blue",
-                    },
+                    Text = UnitOfMeasureLabel(UnitOfMeasure.EnsoIndex),
+                    Display = true,
+                    Color = "blue",
                 },
-                Millimetres = new
+            },
+            Millimetres = new
+            {
+                Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.Millimetres),
+                Axis = "y",
+                Position = "right",
+                Grid = new { DrawOnChartArea = false },
+                Title = new
                 {
-                    Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.Millimetres),
-                    Axis = "y",
-                    Position = "right",
-                    Grid = new { DrawOnChartArea = false },
-                    Title = new
-                    {
-                        Text = UnitOfMeasureLabel(UnitOfMeasure.Millimetres),
-                        Display = true,
-                        Color = "blue",
-                    },
+                    Text = UnitOfMeasureLabel(UnitOfMeasure.Millimetres),
+                    Display = true,
+                    Color = "blue",
                 },
-                DegreesCelsius = new  
-                { 
-                    Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.DegreesCelsius || x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.DegreesCelsiusAnomaly),
-                    Axis = "y",
-                    Position = "left",
-                    Grid = new { DrawOnChartArea = false },
-                    Title = new
-                    {
-                        Text = SelectedChartType == ChartType.Line ? UnitOfMeasureLabel(UnitOfMeasure.DegreesCelsius) : UnitOfMeasureLabel(UnitOfMeasure.DegreesCelsiusAnomaly),
-                        Display = true,
-                        Color = "blue",
-                    },
-                },
-                PartsPerMillion = new
+            },
+            DegreesCelsius = new
+            {
+                Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.DegreesCelsius || x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.DegreesCelsiusAnomaly),
+                Axis = "y",
+                Position = "left",
+                Grid = new { DrawOnChartArea = false },
+                Title = new
                 {
-                    Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.PartsPerMillion),
-                    Axis = "y",
-                    Position = "right",
-                    Grid = new { DrawOnChartArea = false },
-                    Title = new
-                    {
-                        Text = UnitOfMeasureLabel(UnitOfMeasure.PartsPerMillion),
-                        Display = true,
-                        Color = "blue",
-                    },
+                    Text = SelectedChartType == ChartType.Line ? UnitOfMeasureLabel(UnitOfMeasure.DegreesCelsius) : UnitOfMeasureLabel(UnitOfMeasure.DegreesCelsiusAnomaly),
+                    Display = true,
+                    Color = "blue",
                 },
-                PartsPerBillion = new
+            },
+            PartsPerMillion = new
+            {
+                Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.PartsPerMillion),
+                Axis = "y",
+                Position = "right",
+                Grid = new { DrawOnChartArea = false },
+                Title = new
                 {
-                    Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.PartsPerBillion),
-                    Axis = "y",
-                    Position = "right",
-                    Grid = new { DrawOnChartArea = false },
-                    Title = new
-                    {
-                        Text = UnitOfMeasureLabel(UnitOfMeasure.PartsPerBillion),
-                        Display = true,
-                        Color = "blue",
-                    },
+                    Text = UnitOfMeasureLabel(UnitOfMeasure.PartsPerMillion),
+                    Display = true,
+                    Color = "blue",
                 },
-            };       
+            },
+            PartsPerBillion = new
+            {
+                Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.PartsPerBillion),
+                Axis = "y",
+                Position = "right",
+                Grid = new { DrawOnChartArea = false },
+                Title = new
+                {
+                    Text = UnitOfMeasureLabel(UnitOfMeasure.PartsPerBillion),
+                    Display = true,
+                    Color = "blue",
+                },
+            },
+            MegajoulesPerSquareMetre = new
+            {
+                Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.MegajoulesPerSquareMetre),
+                Axis = "y",
+                Position = "right",
+                Grid = new { DrawOnChartArea = false },
+                Title = new
+                {
+                    Text = UnitOfMeasureLabel(UnitOfMeasure.MegajoulesPerSquareMetre),
+                    Display = true,
+                    Color = "blue",
+                },
+            },
+        };
 
         object chartOptions = new
         {
@@ -1049,20 +1067,20 @@
             SpanGaps = false,
             Plugins = new
             {
-                Title = new 
-                { 
+                Title = new
+                {
                     Text = title,
                     Display = true
                 },
-                Subtitle = new 
-                { 
+                Subtitle = new
+                {
                     Text = subtitle,
                     Display = true
                 },
             },
             Scales = scales
         };
-        
+
         await chart.SetOptionsObject(chartOptions);
 
         await chart.Update();
@@ -1073,7 +1091,7 @@
         }
 
         // The below line is required to get the chart.js component to honour the styling applied on the parent div
-        // If you don't call resize, the chart will apply the styling only after you resize the window, 
+        // If you don't call resize, the chart will apply the styling only after you resize the window,
         // but it does not apply the style on the initial load of the page.
         // See https://www.chartjs.org/docs/latest/configuration/responsive.html for more information
         if (!_haveCalledResizeAtLeastOnce)
@@ -1203,7 +1221,7 @@
 
         chartSeries.ChartSeries.Colour = htmlColourCode;
 
-        var chartType = 
+        var chartType =
             chartSeries.ChartSeries.DisplayStyle == SeriesDisplayStyle.Line
             ? ChartType.Line
             : ChartType.Bar;
@@ -1215,11 +1233,11 @@
     {
         return
             new ChartTrendlineData
-            {
-                DatasetIndex = datasetIndex,
-                Width = 3,
-                Color = colour
-            };
+                {
+                    DatasetIndex = datasetIndex,
+                    Width = 3,
+                    Color = colour
+                };
     }
 
     ChartDataset<float?> GetMovingAverageChartDataset(int smoothingWindow, string label, List<float?> values, UnitOfMeasure unitOfMeasure, ChartType chartType, ChartColor colour)
@@ -1269,10 +1287,10 @@
         var allDataSets = chartSeriesWithData.SelectMany(x => x.PreProcessedDataSets);
         var allDataRecords = allDataSets.SelectMany(x => x.DataRecords);
 
-        var startYear = inclusiveStartYear 
+        var startYear = inclusiveStartYear
                                 ? allDataSets.Max(x => x.StartYear.Value)
                                 : allDataRecords.Min(y => y.Year);
-        var latestYearAcrossAllDataSets   = allDataRecords.Max(y => y.Year);
+        var latestYearAcrossAllDataSets = allDataRecords.Max(y => y.Year);
 
         foreach (var cs in chartSeriesWithData)
         {
@@ -1286,15 +1304,15 @@
                                 Location = x.Location,
                                 MeasurementDefinition = x.MeasurementDefinition,
                                 DataRecords =
-                                    Enumerable.Range(startYear, latestYearAcrossAllDataSets - startYear + 1)
-                                    .Select(
-                                        year =>
-                                            // If there's a record in the source dataset, use it
-                                            x.DataRecords.SingleOrDefault(z => z.Year == year)
-                                            // Otherwise, create a null record
-                                            ?? new DataRecord { Year = (short)year, Value = null }
-                                    )
-                                    .ToList()
+                                        Enumerable.Range(startYear, latestYearAcrossAllDataSets - startYear + 1)
+                                        .Select(
+                                            year =>
+                                                // If there's a record in the source dataset, use it
+                                                x.DataRecords.SingleOrDefault(z => z.Year == year)
+                                                // Otherwise, create a null record
+                                                ?? new DataRecord { Year = (short)year, Value = null }
+                                        )
+                                        .ToList()
                             }
                 )
                 .ToList();
@@ -1306,7 +1324,7 @@
         var bufferedDataSets = new List<DataSet>();
 
         var startDate = new DateOnly(dataSets.Min(x => x.DataRecords.Min(y => y.Year)), 1, 1);
-        foreach(var dataSet in dataSets)
+        foreach (var dataSet in dataSets)
         {
             var bufferedDataSet = new DataSet { Location = dataSet.Location, MeasurementDefinition = dataSet.MeasurementDefinition };
             bufferedDataSets.Add(bufferedDataSet);
@@ -1343,13 +1361,13 @@
         var colour = Enso.GetBarChartColourSet(values, redPositive);
 
         return new BarChartDataset<float?>
-                    {
-                        Label = label,
-                        Data = values.Select(x => absoluteValues.GetValueOrDefault() && x.HasValue ? MathF.Abs(x.Value) : x).ToList(),
-                        BorderColor = colour,
-                        BackgroundColor = colour,
-                        YAxisID = unitOfMeasure.ToString().ToLowerFirstChar(),
-                    };
+            {
+                Label = label,
+                Data = values.Select(x => absoluteValues.GetValueOrDefault() && x.HasValue ? MathF.Abs(x.Value) : x).ToList(),
+                BorderColor = colour,
+                BackgroundColor = colour,
+                YAxisID = unitOfMeasure.ToString().ToLowerFirstChar(),
+            };
     }
 
     LineChartDataset<float?> GetLineChartDataset(string label, List<float?> values, ChartColor chartColor, UnitOfMeasure unitOfMeasure)
@@ -1359,20 +1377,20 @@
         for (var i = 0; i < count; i++)
             colour.Add(chartColor);
 
-        var lineChartDataset = 
+        var lineChartDataset =
             new LineChartDataset<float?>
-            {
-                Label = label,
-                Data = values,
-                BorderColor = colour,
-                Fill = false,
-                PointRadius = 5,
-                PointBorderColor = "#eee",
-                PointHoverBackgroundColor = colour,
-                BorderDash = new List<int> { },
-                Tension = 0.1f,
-                YAxisID = unitOfMeasure.ToString().ToLowerFirstChar(),
-            };
+                {
+                    Label = label,
+                    Data = values,
+                    BorderColor = colour,
+                    Fill = false,
+                    PointRadius = 5,
+                    PointBorderColor = "#eee",
+                    PointHoverBackgroundColor = colour,
+                    BorderDash = new List<int> { },
+                    Tension = 0.1f,
+                    YAxisID = unitOfMeasure.ToString().ToLowerFirstChar(),
+                };
 
         return lineChartDataset;
     }
@@ -1392,7 +1410,7 @@
 
         List<ChartSeriesDefinition> additionalCsds = new List<ChartSeriesDefinition>();
 
-        // Update data series to reflect new location        
+        // Update data series to reflect new location
         foreach (var csd in ChartSeriesList)
         {
             if (!csd.IsLocked)
@@ -1408,8 +1426,8 @@
 
                     // Next, update the MeasurementDefinition. Look for a match on DataType and DataAdjustment
                     var oldMd = csd.MeasurementDefinition;
-                    
-                    var candidateMds = 
+
+                    var candidateMds =
                         csd.DataSetDefinition.MeasurementDefinitions
                         .Where(x => x.DataType == oldMd.DataType && x.DataAdjustment == oldMd.DataAdjustment)
                         .ToArray();

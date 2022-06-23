@@ -75,6 +75,19 @@
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
         "NullValue": null,
         "PreferredColour": 1
+      },
+      {
+        "DataCategory": null,
+        "DataType": 11,
+        "UnitOfMeasure": 6,
+        "RowDataType": 0,
+        "DataAdjustment": null,
+        "FolderName": "daily_solarradiation",
+        "SubFolderName": null,
+        "FileNameFormat": "[station]_daily_solarradiation.csv",
+        "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*)$",
+        "NullValue": null,
+        "PreferredColour": 0
       }
     ],
     "HasLocations": true,

@@ -86,9 +86,14 @@ namespace AcornSat.Core.InputOutput
                     return "Reference";
                 case DataType.Rainfall:
                     return "Rainfall";
-                default:
+                case DataType.TempMax:
+                case DataType.TempMin:
                     return "Temperature";
+                case DataType.SolarRadiation:
+                    return "SolarRadiation";
             }
+
+            throw new NotImplementedException();
         }
 
         static async Task<List<DataRecord>> ReadDataFile(
@@ -352,7 +357,7 @@ namespace AcornSat.Core.InputOutput
             while (!regEx.IsMatch(dataRows[index]))
             {
                 index++;
-                if (index > dataRows.Length)
+                if (index >= dataRows.Length)
                 {
                     throw new Exception("None of the data in the input file fits the regular expression.");
                 }

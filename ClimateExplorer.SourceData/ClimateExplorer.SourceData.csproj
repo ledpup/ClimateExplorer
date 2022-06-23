@@ -10,6 +10,7 @@
 	  <Content Include="Rainfall/**" />
 	  <Content Include="Reference/**" />
 	  <Content Include="Temperature/**" />
+    <Content Include="SolarRadiation/**" />
   </ItemGroup>
 
 </Project>
