@@ -19,7 +19,7 @@
         margin-left: -16px;
         margin-right: -16px;
         border-radius: 12px;
-        min-height: 44px;
+        min-height: 47px;
         padding: 0px;
         cursor: pointer;
     }
@@ -51,7 +51,7 @@
 
     .chart-series-config .description {
         padding-left: 26px;
-        color: #ddd;
+        color: #555;
     }
 
 .series-action {
