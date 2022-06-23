@@ -35,17 +35,16 @@
 ## TODO
 In rough order of priority
 
-- Make the ENSO page generic so that it can handle GHG reference data. After, create GHG page and remove GHGs from "locations" page
 - Display info on missing data (number of records missing per week/month/etc for min and max, number of missing consecutive days, etc.)
 - Analyse missing data to find an optimal grouping method - linear regression analysis??
-- Text display of the current filter is. e.g, "1979-present", "1980, 2020", etc.
 - Write an adaptor to query NIWA CliFlo website to pull in the 11-station series data automatically
 - Get ENSO data from URLs for indexes (still supporting offline mode)
 - Alternate averages (use median/mode - not sure how useful that is)
-- Show graphs from two or more locations at once? (not sure how useful that is)
 
 ### Done
 
+- 2022-05-22: Major graphical and functional redesign
+- 2022-05-22: Show graphs from two or more locations at once
 - 2022-05-19: Display the heating score as the map markers for each location on the map
 - 2022-05-19: Changed to use DPBlazorMap as the leaflet Blazor component
 - 2022-05-15: GHGs (CO2, CH4, etc) data and graphs
