@@ -91,6 +91,10 @@
             dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted) ??
             dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == null);
 
+        var mdTempMaxUnajusted =
+            dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Unadjusted) ??
+            dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == null);
+
         var mdRainfall =
             dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.Rainfall && x.DataAdjustment == null);
 
@@ -257,7 +261,7 @@
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         DataResolution = DataResolution.Yearly,
                                         DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = mdTempMax,
+                                        MeasurementDefinition = mdTempMaxUnajusted,
                                         ShowTrendline = false,
                                         Smoothing = SeriesSmoothingOptions.None,
                                         SmoothingWindow = 5,
