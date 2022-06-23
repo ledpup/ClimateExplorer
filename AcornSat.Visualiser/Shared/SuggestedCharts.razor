@@ -94,6 +94,9 @@
         var mdRainfall =
             dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.Rainfall && x.DataAdjustment == null);
 
+        var mdSolarRadiation =
+            dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.SolarRadiation && x.DataAdjustment == null);
+
         var dsdMeiV2 = DataSetDefinitions.Single(x => x.Id == Guid.Parse("ffd5f5e2-d8df-4779-a7f4-f5d148505033"));
         var mdMeiV2 = dsdMeiV2.MeasurementDefinitions.Single(x => x.DataType == DataType.MEIv2);
 
@@ -239,7 +242,44 @@
                                         Year = null
                                     }
                                 }
-                        }
+                        },
+                        new SuggestedChartPresetModel()
+                        {
+                            Title = "Temperature + solar radiation",
+                            Description = "Shows yearly solar radiation and maximum temperature averages",
+                            ChartSeriesList =
+                                new List<ChartSeriesDefinition>()
+                                {
+                                    new ChartSeriesDefinition()
+                                    {
+                                        LocationId = SelectedLocation.Id,
+                                        LocationName = SelectedLocation.Name,
+                                        Aggregation = SeriesAggregationOptions.Mean,
+                                        DataResolution = DataResolution.Yearly,
+                                        DataSetDefinition = dsdLocation,
+                                        MeasurementDefinition = mdTempMax,
+                                        ShowTrendline = false,
+                                        Smoothing = SeriesSmoothingOptions.None,
+                                        SmoothingWindow = 5,
+                                        Value = SeriesValueOptions.Value,
+                                        Year = null
+                                    },
+                                    new ChartSeriesDefinition()
+                                    {
+                                        LocationId = SelectedLocation.Id,
+                                        LocationName = SelectedLocation.Name,
+                                        Aggregation = SeriesAggregationOptions.Mean,
+                                        DataResolution = DataResolution.Yearly,
+                                        DataSetDefinition = dsdLocation,
+                                        MeasurementDefinition = mdSolarRadiation,
+                                        ShowTrendline = false,
+                                        Smoothing = SeriesSmoothingOptions.None,
+                                        SmoothingWindow = 5,
+                                        Value = SeriesValueOptions.Value,
+                                        Year = null
+                                    }
+                                }
+                        },
                         }
                 }
         );
