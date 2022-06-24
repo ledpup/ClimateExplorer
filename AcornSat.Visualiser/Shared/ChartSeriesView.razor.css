@@ -55,6 +55,15 @@
         color: #555;
     }
 
+    .chart-series-config td {
+        padding-right: 8px;
+    }
+
+        .chart-series-config td ::deep .form-check {
+            position: relative;
+            top: 3px;
+        }
+
 .series-action {
     cursor: pointer;
 }
