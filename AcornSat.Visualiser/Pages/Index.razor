@@ -163,7 +163,12 @@
     string GetPageTitle()
     {
         var locationText = SelectedLocation == null ? "" : " - " + SelectedLocation.Name;
-        return $"Climate explorer{locationText}";
+
+        string title = $"Climate explorer{locationText}";
+
+        Logger.LogInformation("GetPageTitle() returning '" + title + "' NavigateTo");
+
+        return title;
     }
 
     bool trendlinesOn = false;
@@ -340,7 +345,7 @@
             ChartSeriesList
             .Concat(
                 new List<ChartSeriesDefinition>()
-                    {
+                {
                     new ChartSeriesDefinition()
                     {
                         LocationId = dle.LocationId,
@@ -354,7 +359,7 @@
                         Value = SeriesValueOptions.Value,
                         Year = null
                     }
-                    }
+                }
             )
             .ToList();
 
@@ -525,11 +530,24 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        Logger.LogInformation("OnParametersSetAsync() " + NavManager.Uri + " (NavigateTo)");
+
         Logger.LogInformation("OnParametersSetAsync(): " + LocationId);
 
-        Guid locationId = Guid.Parse(LocationId ?? "aed87aa0-1d0c-44aa-8561-cde0fc936395");
+        bool setupDefaultChartSeries = LocationId == null && ChartSeriesList.Count == 0;
 
-        if (LocationId == null && ChartSeriesList.Count == 0)
+        if (LocationId == null)
+        {
+            // Not sure whether we're allowed to set parameters this way, but it's short-lived - we'll immediately navigate away after
+            // preparing querystring
+            LocationId = "aed87aa0-1d0c-44aa-8561-cde0fc936395";
+
+            setupDefaultChartSeries = true;
+        }
+
+        Guid locationId = Guid.Parse(LocationId);
+
+        if (setupDefaultChartSeries)
         {
             var location = Locations.Single(x => x.Id == locationId);
             var dsd = DataSetDefinitions.Single(x => x.Id == location.DataSetId);
@@ -633,8 +651,10 @@
         {
             Logger.LogInformation("Because the URI reflecting current UI state is different to the URI we're currently at, triggering navigation. After navigation occurs, the UI state will update accordingly.");
 
+            bool shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds = currentUri.IndexOf("csd=") == -1;
+            
             // Just let the navigation process trigger the UI updates
-            NavManager.NavigateTo(url);
+            NavigateTo(url, shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds);
         }
         else
         {
@@ -1397,7 +1417,13 @@
 
     async Task SelectedLocationChanged(Guid locationId)
     {
-        NavManager.NavigateTo("/location/" + locationId.ToString());
+        NavigateTo("/location/" + locationId.ToString());
+    }
+
+    public void NavigateTo(string uri, bool replace = false)
+    {
+        Logger.LogInformation("NavManager.NavigateTo(uri=" + uri + ", replace=" + replace + ")");
+        NavManager.NavigateTo(uri, false, replace);
     }
 
     async Task SelectedLocationChangedInternal(Guid newValue)
@@ -1471,27 +1497,36 @@
             {
                 // It's locked, so duplicate it & set the location on the duplicate to the new location
                 var newDsd = DataSetDefinitions.Single(x => x.Id == SelectedLocation.DataSetId);
-                var newMd = newDsd.MeasurementDefinitions.SingleOrDefault(x => x.DataType == csd.MeasurementDefinition.DataType && x.DataAdjustment == csd.MeasurementDefinition.DataAdjustment);
+                var newMd = 
+                    newDsd.MeasurementDefinitions
+                    .SingleOrDefault(x => x.DataType == csd.MeasurementDefinition.DataType && x.DataAdjustment == csd.MeasurementDefinition.DataAdjustment);
+
+                if (newMd == null)
+                {
+                    newMd = 
+                        newDsd.MeasurementDefinitions
+                        .SingleOrDefault(x => x.DataType == csd.MeasurementDefinition.DataType && x.DataAdjustment == null);
+                }
 
                 if (newMd != null)
                 {
                     additionalCsds.Add(
                         new ChartSeriesDefinition()
-                            {
-                                Aggregation = csd.Aggregation,
-                                DataResolution = csd.DataResolution,
-                                DataSetDefinition = DataSetDefinitions.Single(x => x.Id == SelectedLocation.DataSetId),
-                                DisplayStyle = csd.DisplayStyle,
-                                IsLocked = false,
-                                LocationId = newValue,
-                                LocationName = SelectedLocation.Name,
-                                MeasurementDefinition = newMd,
-                                ShowTrendline = csd.ShowTrendline,
-                                Smoothing = csd.Smoothing,
-                                SmoothingWindow = csd.SmoothingWindow,
-                                Value = csd.Value,
-                                Year = csd.Year
-                            }
+                        {
+                            Aggregation = csd.Aggregation,
+                            DataResolution = csd.DataResolution,
+                            DataSetDefinition = DataSetDefinitions.Single(x => x.Id == SelectedLocation.DataSetId),
+                            DisplayStyle = csd.DisplayStyle,
+                            IsLocked = false,
+                            LocationId = newValue,
+                            LocationName = SelectedLocation.Name,
+                            MeasurementDefinition = newMd,
+                            ShowTrendline = csd.ShowTrendline,
+                            Smoothing = csd.Smoothing,
+                            SmoothingWindow = csd.SmoothingWindow,
+                            Value = csd.Value,
+                            Year = csd.Year
+                        }
                     );
                 }
             }

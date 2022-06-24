@@ -190,7 +190,8 @@ namespace AcornSat.Visualiser.UiModel
         public int SmoothingWindow { get; set; }
         public SeriesAggregationOptions Aggregation { get; set; }
         public SeriesValueOptions Value { get; set; }
-        public string Colour { get; set; } = "#888";
+        public string Colour { get; set; } // Always allocated by ColourServer; TODO: Honour RequestedColour & expose in UI
+        public string RequestedColour { get; set; } // Ignored currently
 
         // Rendering option fields
         public SeriesDisplayStyle DisplayStyle { get; set; }
