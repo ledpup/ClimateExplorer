@@ -284,6 +284,43 @@
                                     }
                                 }
                         },
+                        new SuggestedChartPresetModel()
+                        {
+                            Title = "Adjusted vs raw",
+                            Description = "Compare temperature values that have been adjusted for abormalities with raw data",
+                            ChartSeriesList =
+                                new List<ChartSeriesDefinition>()
+                                {
+                                    new ChartSeriesDefinition()
+                                    {
+                                        LocationId = SelectedLocation.Id,
+                                        LocationName = SelectedLocation.Name,
+                                        Aggregation = SeriesAggregationOptions.Mean,
+                                        DataResolution = DataResolution.Yearly,
+                                        DataSetDefinition = dsdLocation,
+                                        MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted),
+                                        ShowTrendline = false,
+                                        Smoothing = SeriesSmoothingOptions.None,
+                                        SmoothingWindow = 5,
+                                        Value = SeriesValueOptions.Value,
+                                        Year = null
+                                    },
+                                    new ChartSeriesDefinition()
+                                    {
+                                        LocationId = SelectedLocation.Id,
+                                        LocationName = SelectedLocation.Name,
+                                        Aggregation = SeriesAggregationOptions.Mean,
+                                        DataResolution = DataResolution.Yearly,
+                                        DataSetDefinition = dsdLocation,
+                                        MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Unadjusted),
+                                        ShowTrendline = false,
+                                        Smoothing = SeriesSmoothingOptions.None,
+                                        SmoothingWindow = 5,
+                                        Value = SeriesValueOptions.Value,
+                                        Year = null
+                                    }
+                                }
+                        },
                         }
                 }
         );
