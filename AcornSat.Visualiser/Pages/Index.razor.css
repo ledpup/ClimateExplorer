@@ -43,11 +43,18 @@
     .chart {
         height: 250px;
     }
+
+    .chart-and-controls {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
 }
 
 @media only screen and (min-width: 1000px) {
     .location-and-chart-container {
-        height: calc(100vh - 70px);
+        min-height: calc(100vh - 70px);
         display: flex;
         flex-direction: column;
     }
@@ -95,10 +102,6 @@
     .chart-and-controls {
         display: flex;
         flex-direction: column;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
+        flex-grow: 1;
     }
 }

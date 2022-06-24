@@ -49,3 +49,9 @@
     margin-right: 0.6em;
     font-size: 1.2rem;
 }
+
+.flexbox-column-layout {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}

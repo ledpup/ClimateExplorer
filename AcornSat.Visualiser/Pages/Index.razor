@@ -45,10 +45,10 @@
     </div>
 
     <div class="chart-collapsible-parent">
-        <Collapsible Title="Chart" InitiallyShown="true" AllowCollapse="false">
+        <Collapsible Title="Chart" InitiallyShown="true" AllowCollapse="false" ContentLayoutType="Collapsible.CollapserContentLayoutType.FlexboxColumns">
             <Content>
                 <div class="chart-and-controls">
-                    <div>
+                    <div class="chart-series-list-wrapper">
                         <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
                     </div>
 
