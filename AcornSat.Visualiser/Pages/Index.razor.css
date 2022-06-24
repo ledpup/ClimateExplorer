@@ -12,34 +12,33 @@
 .chart-controls {
     margin: 20px;
     margin-bottom: 0px;
+    margin-left: 0px;
 }
 
-.chart-controls .chart-control {
-    padding: 12px;
-    background-color: #eee;
-    border-radius: 12px;
-    margin-right: 16px;
-    margin-bottom: 8px;
-    text-decoration: none;
-    color: #425f59;
-    font-weight: bold;
-    cursor: pointer;
-    display: inline-block;
-}
+    .chart-controls .chart-control {
+        padding: 8px;
+        background-color: #eee;
+        border-radius: 8px;
+        margin-right: 16px;
+        text-decoration: none;
+        color: #425f59;
+        cursor: pointer;
+    }
 
-.chart-controls .chart-control i {
-    margin-right: 8px;
-}
+        .chart-controls .chart-control i {
+            margin-right: 8px;
+        }
 
-.chart-controls .chart-control:hover {
-    background-color: #cfc;
-    transition: 0.25s;
-}
+        .chart-controls .chart-control:hover {
+            background-color: #cfc;
+            transition: 0.25s;
+        }
 
 @media only screen and (max-width: 1000px) {
     .map-space-reserver {
         margin-bottom: 10px;
     }
+
     .chart {
         height: 250px;
     }
@@ -49,7 +48,6 @@
         flex-direction: column;
         flex-grow: 1;
     }
-
 }
 
 @media only screen and (min-width: 1000px) {

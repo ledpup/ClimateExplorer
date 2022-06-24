@@ -6,6 +6,9 @@
     bottom: 0;
     border: #aaa solid 2px;
     border-radius: 10px;
+    margin-top: -16px;
+    margin-right: -16px;
+    margin-bottom: 0px;
 }
 
 /* The styles here (which position the map depending on screen width and whether the map has been "expanded" or not) dance around
