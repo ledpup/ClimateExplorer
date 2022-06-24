@@ -7,6 +7,11 @@ namespace AcornSat.Visualiser.UiModel
 {
     public class ChartSeriesDefinition
     {
+        /// <summary>
+        /// Used only for uniqueness tracking by UI controls
+        /// </summary>
+        public Guid Id { get; set; } = Guid.NewGuid();
+
         public string FriendlyTitle
         {
             get
@@ -197,6 +202,9 @@ namespace AcornSat.Visualiser.UiModel
         /// If IsLocked is set, then the series will remain in place even if the user navigates to another notification
         /// </summary>
         public bool IsLocked { get; set; }
+
+        // Transient view state
+        public bool IsExpanded { get; set; }
 
         public override string ToString()
         {

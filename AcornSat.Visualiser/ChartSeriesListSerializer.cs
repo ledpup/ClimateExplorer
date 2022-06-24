@@ -97,7 +97,8 @@ namespace AcornSat.Visualiser
                     Smoothing = ParseEnum<SeriesSmoothingOptions>(segments[10]),
                     SmoothingWindow = int.Parse(segments[11]),
                     Value = ParseEnum<SeriesValueOptions>(segments[12]),
-                    Year = ParseNullableShort(segments[13])
+                    Year = ParseNullableShort(segments[13]),
+                    IsExpanded = segments.Length < 15 ? false : bool.Parse(segments[14])
                 };
         }
 
@@ -124,7 +125,8 @@ namespace AcornSat.Visualiser
                     csd.Smoothing,
                     csd.SmoothingWindow,
                     csd.Value,
-                    csd.Year
+                    csd.Year,
+                    csd.IsExpanded
                 );
         }
 

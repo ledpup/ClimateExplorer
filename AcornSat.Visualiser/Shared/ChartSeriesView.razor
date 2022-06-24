@@ -4,13 +4,13 @@
 @using Blazorise.Charts
 
 <div class="chart-series-config">
-    <div class="title-bar" @onclick="() => { expanded = !expanded; }" style="@GenerateStyleForTitleBar()">
+    <div class="title-bar" @onclick="() => { ChartSeries.IsExpanded = !ChartSeries.IsExpanded; }" style="@GenerateStyleForTitleBar()">
         <div class="colour-indicator" style="@GenerateStyleForColourIndicator()"></div>
         <div class="title">@ChartSeries.FriendlyTitleShort</div>
         <div class="description">@ChartSeries.FriendlyDescription</div>
     </div>
 
-    @if (expanded)
+    @if (ChartSeries.IsExpanded)
     {
         <div class="content">
             <table>
@@ -137,8 +137,6 @@
                 throw new NotImplementedException($"TitleStyle {TitleStyle}");
         }
     }
-
-    bool expanded;
 
     bool ShouldDisableSmoothingWindow(ChartSeriesDefinition csd)
     {
