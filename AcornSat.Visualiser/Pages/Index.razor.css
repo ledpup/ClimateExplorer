@@ -41,7 +41,7 @@
         margin-bottom: 10px;
     }
     .chart {
-        height: max(250px, calc(100vh - 600px));
+        height: 250px;
     }
 }
 
