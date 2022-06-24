@@ -13,15 +13,17 @@ namespace AcornSat.Core
             TempMax,
             TempMin,
             Rainfall,
+            SolarRadiation,
+
             MEIv2,
             SOI,
             Nino34,
             ONI,
+
             CO2,
             CH4,
             N2O,
             IOD,
-            SolarRadiation,
         }
 
         public enum DataResolution

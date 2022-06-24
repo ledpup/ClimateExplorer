@@ -147,7 +147,7 @@ async Task<List<Location>> GetLocations(string dataSetFolder = null, bool includ
             {
                 var definition = definitions.Single(x => x.Id == location.DataSetId);
 
-                var dataAdjustment = Enums.DataAdjustment.Unadjusted;
+                Enums.DataAdjustment? dataAdjustment = null;
                 if (definition.MeasurementDefinitions.Any(x => x.DataType == DataType.TempMax && x.DataAdjustment == Enums.DataAdjustment.Adjusted))
                 {
                     dataAdjustment = Enums.DataAdjustment.Adjusted;
