@@ -2,14 +2,14 @@
 
 [Climate Explorer](https://www.climateexplorer.net/) is a website to help people understand climate change. It's focussed on trying to provide a simple and approachable interface for people to explore. It's available for Australian and New Zealand locations. The data is sourced from:
 
-- [BOM](http://www.bom.gov.au/) [ACORN-SAT](http://www.bom.gov.au/climate/data/acorn-sat/)
-- [NIWA](https://niwa.co.nz/) [11-station series](https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data).
+- [BOM](http://www.bom.gov.au/)
+- [NIWA](https://niwa.co.nz/)
 - [NOAA](https://www.noaa.gov/)
 
 ## Glossary
 - [ACORN-SAT](http://www.bom.gov.au/climate/data/acorn-sat/): Australian Climate Observations Reference Network – Surface Air Temperature
 - [RAIA](http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks): Remote Australian Islands and Antarctica (a monthly dataset that is a smaller part of ACORN-SAT)
-- [NIWA](https://niwa.co.nz/): New Zealand's National Institute of Water and Atmospheric Research
+- [NIWA](https://niwa.co.nz/): New Zealand's National Institute of Water and Atmospheric Research maintains the [11-station series](https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data)
 - [NOAA](https://www.noaa.gov/): National Oceanic and Atmospheric Administration
 
 ## Technical
