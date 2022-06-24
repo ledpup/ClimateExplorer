@@ -15,6 +15,7 @@
 
 
     .chart-series-config .title-bar {
+        background-color: #eee;
         margin: -8px;
         margin-left: -16px;
         margin-right: -16px;
@@ -26,7 +27,7 @@
 
 
         .chart-series-config .title-bar:hover {
-            box-shadow: rgba(0, 0, 0, 0.6) 2px 2px 2px;
+            background-color: #cfc;
         }
 
     .chart-series-config .colour-indicator {

@@ -130,9 +130,9 @@
         switch (TitleStyle)
         {
             case ChartSeriesTitleStyle.WholeTitleBarInSeriesColour:
-                return "background-color: #eee; color: #425f59; border-bottom: solid 3px " + ChartSeries.Colour + ";";
+                return "color: #425f59; border-bottom: solid 3px " + ChartSeries.Colour + ";";
             case ChartSeriesTitleStyle.OnlyIndicatorAndTextInSeriesColour:
-                return "background-color: #eee; color: " + ChartSeries.Colour;
+                return "color: " + ChartSeries.Colour;
             default:
                 throw new NotImplementedException($"TitleStyle {TitleStyle}");
         }
