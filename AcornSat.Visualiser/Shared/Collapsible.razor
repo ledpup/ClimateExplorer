@@ -1,4 +1,4 @@
-﻿<div class="@("collapsible-panel " + (ContentLayoutType == CollapserContentLayoutType.Block ? "block-layout" : "flexbox-column-layout"))">
+﻿<div class="@("collapsible-panel " + (ContentLayoutType == CollapserContentLayoutType.Block ? "block-layout" : "flexbox-column-layout") + (NoBottomMargin ? " no-bottom-margin" : ""))">
     @if (AllowCollapse)
     {
         <div>
@@ -64,6 +64,9 @@
 
     [Parameter]
     public EventCallback<bool> OnShowOrHide { get; set; }
+
+    [Parameter]
+    public bool NoBottomMargin { get; set; }
 
     bool ShowContent = true;
 

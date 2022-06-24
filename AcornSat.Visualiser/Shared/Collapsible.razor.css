@@ -2,9 +2,9 @@
 .collapsible-panel {
     position: relative;
     box-shadow: rgb(0 0 0 / 15%) 1px 1px 12px;
-    margin-left: -8px;
-    margin-right: -8px;
-    margin-bottom: 32px;
+    margin-left: -12px;
+    margin-right: -12px;
+    margin-bottom: 24px;
     padding: 16px;
     border-radius: 12px;
 
@@ -14,6 +14,10 @@
     flex-grow: 1;
     flex-shrink: 0;
 }
+
+    .collapsible-panel.no-bottom-margin {
+        margin-bottom: 4px;
+    }
 
 .collapsible-with-background {
     background-color: #f8f8f8;
