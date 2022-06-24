@@ -33,9 +33,10 @@ namespace AcornSat.Core
             // of them. (Note that, for example, this means that if the max size of the history window is
             // 20, and we have only seen 5 samples so far, and none of them are null, then we will return
             // an average).
-            if (samples.Count(x => x != null) >= _windowSize * .25f)
+            var nonNullSamplesInWindow = samples.Where(x => x != null).ToArray();
+            if (nonNullSamplesInWindow.Length >= _windowSize * .25f)
             {
-                return samples.Where(x => x != null).Average();
+                return nonNullSamplesInWindow.Average();
             }
 
             // Otherwise, we don't have enough data, so just return null
