@@ -19,7 +19,7 @@ a, .btn-link {
 }
 
 .content {
-    padding-top: 1.1rem;
+    padding-top: 12px;
     /* This is so that the map (which wants to use absolute positioning) is positioned relative to the top of the page content (which begins after the top navbar if any) */
     position: relative;
 }
