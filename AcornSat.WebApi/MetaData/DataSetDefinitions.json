@@ -78,7 +78,7 @@
       },
       {
         "DataCategory": null,
-        "DataType": 11,
+        "DataType": 3,
         "UnitOfMeasure": 6,
         "RowDataType": 0,
         "DataAdjustment": null,
@@ -191,7 +191,7 @@
     "MeasurementDefinitions": [
       {
         "DataCategory": 1,
-        "DataType": 3,
+        "DataType": 4,
         "UnitOfMeasure": 5,
         "RowDataType": 1,
         "DataAdjustment": null,
@@ -220,7 +220,7 @@
     "MeasurementDefinitions": [
       {
         "DataCategory": 1,
-        "DataType": 4,
+        "DataType": 5,
         "UnitOfMeasure": 5,
         "RowDataType": 1,
         "DataAdjustment": null,
@@ -249,7 +249,7 @@
     "MeasurementDefinitions": [
       {
         "DataCategory": 1,
-        "DataType": 6,
+        "DataType": 7,
         "UnitOfMeasure": 5,
         "RowDataType": 1,
         "DataAdjustment": null,
@@ -278,7 +278,7 @@
     "MeasurementDefinitions": [
       {
         "DataCategory": 1,
-        "DataType": 5,
+        "DataType": 6,
         "UnitOfMeasure": 5,
         "RowDataType": 1,
         "DataAdjustment": null,
@@ -307,7 +307,7 @@
     "MeasurementDefinitions": [
       {
         "DataCategory": null,
-        "DataType": 7,
+        "DataType": 8,
         "UnitOfMeasure": 3,
         "RowDataType": 0,
         "DataAdjustment": null,
@@ -336,7 +336,7 @@
     "MeasurementDefinitions": [
       {
         "DataCategory": null,
-        "DataType": 8,
+        "DataType": 9,
         "UnitOfMeasure": 4,
         "RowDataType": 0,
         "DataAdjustment": null,
@@ -365,7 +365,7 @@
     "MeasurementDefinitions": [
       {
         "DataCategory": null,
-        "DataType": 9,
+        "DataType": 10,
         "UnitOfMeasure": 4,
         "RowDataType": 0,
         "DataAdjustment": null,
@@ -394,7 +394,7 @@
     "MeasurementDefinitions": [
       {
         "DataCategory": null,
-        "DataType": 10,
+        "DataType": 11,
         "UnitOfMeasure": 1,
         "RowDataType": 1,
         "DataAdjustment": null,
