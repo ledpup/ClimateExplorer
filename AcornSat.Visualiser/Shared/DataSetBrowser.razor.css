@@ -1,14 +1,16 @@
 ﻿.dataset-folder {
-    margin-left: 28px;
-    display: inline-block;
+    margin-left: 0px;
+    display: block;
     vertical-align: top;
-    margin-right: 40px;
+    margin-right: 0px;
+    margin-bottom: 16px;
 }
 
 .dataset-folder-name {
     font-size: 0.75rem;
     color: #425f59;
     font-weight: bold;
+    margin-bottom: 4px;
 }
 
 .entry-list {

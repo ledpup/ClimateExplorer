@@ -17,23 +17,29 @@ namespace AcornSat.Core
 
         public float? AddSample(float? value)
         {
-            if (value == null)
-            {
-                return samples.Average();
-            }
-
+            // The "samples" queue contains the most recent data points, up to a max of _windowSize entries.
+            // Each can be null or have a value.
+            //
+            // Whether the new sample is null or not, we add it to the window.
             samples.Enqueue(value);
 
+            // If that has made our "history window" larger than its max size, we remove the oldest entry.
             if (samples.Count > _windowSize)
             {
                 samples.Dequeue();
             }
 
-            if (samples.Count > _windowSize * .25f)
+            // If we have at least (max size of history-window / 4) non-null samples, return the average
+            // of them. (Note that, for example, this means that if the max size of the history window is
+            // 20, and we have only seen 5 samples so far, and none of them are null, then we will return
+            // an average).
+            var nonNullSamplesInWindow = samples.Where(x => x != null).ToArray();
+            if (nonNullSamplesInWindow.Length >= _windowSize * .25f)
             {
-                return samples.Average();
+                return nonNullSamplesInWindow.Average();
             }
 
+            // Otherwise, we don't have enough data, so just return null
             return null;
         }
 

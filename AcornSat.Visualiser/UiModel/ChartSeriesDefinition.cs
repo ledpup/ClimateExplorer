@@ -7,6 +7,11 @@ namespace AcornSat.Visualiser.UiModel
 {
     public class ChartSeriesDefinition
     {
+        /// <summary>
+        /// Used only for uniqueness tracking by UI controls
+        /// </summary>
+        public Guid Id { get; set; } = Guid.NewGuid();
+
         public string FriendlyTitle
         {
             get
@@ -185,7 +190,8 @@ namespace AcornSat.Visualiser.UiModel
         public int SmoothingWindow { get; set; }
         public SeriesAggregationOptions Aggregation { get; set; }
         public SeriesValueOptions Value { get; set; }
-        public string Colour { get; set; } = "#888";
+        public string Colour { get; set; } // Always allocated by ColourServer; TODO: Honour RequestedColour & expose in UI
+        public string RequestedColour { get; set; } // Ignored currently
 
         // Rendering option fields
         public SeriesDisplayStyle DisplayStyle { get; set; }
@@ -197,6 +203,9 @@ namespace AcornSat.Visualiser.UiModel
         /// If IsLocked is set, then the series will remain in place even if the user navigates to another notification
         /// </summary>
         public bool IsLocked { get; set; }
+
+        // Transient view state
+        public bool IsExpanded { get; set; }
 
         public override string ToString()
         {

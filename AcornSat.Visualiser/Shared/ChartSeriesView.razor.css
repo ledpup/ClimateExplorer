@@ -15,6 +15,7 @@
 
 
     .chart-series-config .title-bar {
+        background-color: #eee;
         margin: -8px;
         margin-left: -16px;
         margin-right: -16px;
@@ -26,7 +27,7 @@
 
 
         .chart-series-config .title-bar:hover {
-            box-shadow: rgba(0, 0, 0, 0.6) 2px 2px 2px;
+            background-color: #cfc;
         }
 
     .chart-series-config .colour-indicator {
@@ -51,8 +52,18 @@
 
     .chart-series-config .description {
         padding-left: 26px;
+        padding-right: 16px;
         color: #555;
     }
+
+    .chart-series-config td {
+        padding-right: 8px;
+    }
+
+        .chart-series-config td ::deep .form-check {
+            position: relative;
+            top: 3px;
+        }
 
 .series-action {
     cursor: pointer;
@@ -64,4 +75,12 @@
 
 .duplicate-series {
     min-height: 1px;
+}
+
+@media only screen and (max-width: 1000px) {
+    .chart-series-config {
+        min-width: auto;
+
+    }
+
 }

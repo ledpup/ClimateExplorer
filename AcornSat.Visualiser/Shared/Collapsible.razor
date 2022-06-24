@@ -1,4 +1,4 @@
-﻿<div class="collapsible-panel">
+﻿<div class="@("collapsible-panel " + (ContentLayoutType == CollapserContentLayoutType.Block ? "block-layout" : "flexbox-column-layout"))">
     @if (AllowCollapse)
     {
         <div>
@@ -20,7 +20,7 @@
 
     @if (ShowContent)
     {
-        <div class="@(ShadeBackground ? "collapsible-with-background" : "")">
+        <div class="@((ShadeBackground ? "collapsible-with-background " : " ") + (ContentLayoutType == CollapserContentLayoutType.Block ? "block-layout" : "flexbox-column-layout"))">
             @Content
         </div>
     }
@@ -34,6 +34,15 @@
         Large,
         ExtraLarge
     }
+
+    public enum CollapserContentLayoutType
+    {
+        Block,
+        FlexboxColumns
+    }
+
+    [Parameter]
+    public CollapserContentLayoutType ContentLayoutType { get; set; }
 
     [Parameter]
     public CollapserSizes CollapserSize { get; set; }

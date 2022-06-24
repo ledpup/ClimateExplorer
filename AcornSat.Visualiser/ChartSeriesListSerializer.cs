@@ -88,7 +88,7 @@ namespace AcornSat.Visualiser
                     LocationId = l?.Id,
                     LocationName = l?.Name,
                     Aggregation = ParseEnum<SeriesAggregationOptions>(segments[2]),
-                    Colour = HttpUtility.UrlDecode(segments[3]),
+                    RequestedColour = HttpUtility.UrlDecode(segments[3]),
                     DataResolution = ParseEnum<DataResolution>(segments[4]),
                     DisplayStyle = ParseEnum<SeriesDisplayStyle>(segments[5]),
                     IsLocked = bool.Parse(segments[6]),
@@ -97,7 +97,8 @@ namespace AcornSat.Visualiser
                     Smoothing = ParseEnum<SeriesSmoothingOptions>(segments[10]),
                     SmoothingWindow = int.Parse(segments[11]),
                     Value = ParseEnum<SeriesValueOptions>(segments[12]),
-                    Year = ParseNullableShort(segments[13])
+                    Year = ParseNullableShort(segments[13]),
+                    IsExpanded = segments.Length < 15 ? false : bool.Parse(segments[14])
                 };
         }
 
@@ -113,7 +114,7 @@ namespace AcornSat.Visualiser
                     csd.DataSetDefinition.Id,
                     csd.LocationId,
                     csd.Aggregation,
-                    HttpUtility.UrlEncode(csd.Colour),
+                    HttpUtility.UrlEncode(csd.RequestedColour),
                     csd.DataResolution,
                     csd.DisplayStyle,
                     csd.IsLocked,
@@ -124,7 +125,8 @@ namespace AcornSat.Visualiser
                     csd.Smoothing,
                     csd.SmoothingWindow,
                     csd.Value,
-                    csd.Year
+                    csd.Year,
+                    csd.IsExpanded
                 );
         }
 

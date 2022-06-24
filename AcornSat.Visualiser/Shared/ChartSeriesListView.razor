@@ -11,6 +11,7 @@
 @foreach (var cs in ChartSeriesList)
 {
     <ChartSeriesView 
+        @key="@cs.Id"
         ChartSeries="@cs" 
         OnSeriesChanged="@OnSeriesChangedInternal"
         OnDuplicateSeries="@OnDuplicateSeries"

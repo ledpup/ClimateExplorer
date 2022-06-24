@@ -19,7 +19,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Datasets\Rainfall.zip" />
-    <None Remove="Datasets\Reference.zip" />
+	<None Remove="Datasets\Reference.zip" />
+	<None Remove="Datasets\SolarRadiation.zip" />
     <None Remove="Datasets\Temperature.zip" />
   </ItemGroup>
   <ItemGroup>
@@ -27,6 +28,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Datasets\Reference.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Datasets\SolarRadiation.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Datasets\Temperature.zip">
