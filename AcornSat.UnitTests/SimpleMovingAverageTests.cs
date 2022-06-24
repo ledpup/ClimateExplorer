@@ -19,11 +19,11 @@ namespace AcornSat.UnitTests
         [TestMethod]
         public void ValuesWithNullTest()
         {
-            var ma = new SimpleMovingAverage(5);
-            Assert.IsNull(ma.AddSample(3));         // 3                        | 1/5 = 0.2 values available < 0.25, so returns null
-            Assert.AreEqual(2, ma.AddSample(1));    // 3 1                      | 2/5 = 0.4 values available > 0.25, so returns val
-            Assert.AreEqual(2, ma.AddSample(null)); // 3 1 null                 | 2/5 = 0.4 values available > 0.25, so returns val
-            Assert.AreEqual(2, ma.AddSample(null)); // 3 1 null null            | 2/5 = 0.4 values available > 0.25, so returns val
+            var ma = new SimpleMovingAverage(5);    // null null null null null
+            Assert.IsNull(ma.AddSample(3));         // null null null null 3    | 1/5 = 0.2 values available < 0.25, so returns null
+            Assert.AreEqual(2, ma.AddSample(1));    // null null null 3 1       | 2/5 = 0.4 values available > 0.25, so returns val
+            Assert.AreEqual(2, ma.AddSample(null)); // null null 3 1 null       | 2/5 = 0.4 values available > 0.25, so returns val
+            Assert.AreEqual(2, ma.AddSample(null)); // null 3 1 null null       | 2/5 = 0.4 values available > 0.25, so returns val
             Assert.AreEqual(2, ma.AddSample(null)); // 3 1 null null null       | 2/5 = 0.4 values available > 0.25, so returns val
             Assert.AreEqual(3, ma.AddSample(5));    // 1 null null null 5       | 2/5 = 0.4 values available > 0.25, so returns val
             Assert.AreEqual(4, ma.AddSample(3));    // null null null 5 3       | 2/5 = 0.4 values available > 0.25, so returns val
@@ -35,8 +35,8 @@ namespace AcornSat.UnitTests
             Assert.IsNull(ma.AddSample(1));         // null null null null 1    | 1/5 = 0.2 values available < 0.25, so returns null
             Assert.AreEqual(2, ma.AddSample(3));    // null null null 1 3       | 2/5 = 0.4 values available > 0.25, so returns val
             Assert.AreEqual(3, ma.AddSample(5));    // null null 1 3 5          | 3/5 = 0.6 values available > 0.25, so returns val
-            Assert.AreEqual(2, ma.AddSample(-1));   // null 1 3 5 -1             | 4/5 = 0.8 values available > 0.25, so returns val
-            Assert.AreEqual(3, ma.AddSample(7));    // 1 3 5 -1 7                | 5/5 = 1.0 values available > 0.25, so returns val
+            Assert.AreEqual(2, ma.AddSample(-1));   // null 1 3 5 -1            | 4/5 = 0.8 values available > 0.25, so returns val
+            Assert.AreEqual(3, ma.AddSample(7));    // 1 3 5 -1 7               | 5/5 = 1.0 values available > 0.25, so returns val
         }
     }
 }
