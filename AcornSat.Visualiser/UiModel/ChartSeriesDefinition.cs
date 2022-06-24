@@ -167,6 +167,7 @@ namespace AcornSat.Visualiser.UiModel
             {
                 case DataType.TempMin: return "Daily minimum";
                 case DataType.TempMax: return "Daily maximum";
+                case DataType.SolarRadiation: return "Solar radiation";
                 default: return dataType.ToString();    
             }    
         }
