@@ -35,8 +35,6 @@
             return;
         }
 
-        Logger.LogInformation("OnParametersSetAsync() - actual change detected");
-
         if (DataRecords != null)
         {
             PreparedDataRecords = DataRecords.Where(x => x.Value.HasValue).ToList();

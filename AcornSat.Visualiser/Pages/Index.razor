@@ -2,6 +2,8 @@
 @page "/location/"
 @page "/location/{locationId}"
 
+@implements IDisposable
+
 @inject NavigationManager NavManager
 @inject IExporter Exporter
 
@@ -438,14 +440,19 @@
     IEnumerable<DataSetDefinitionViewModel> DataSetDefinitions;
     IEnumerable<Location> Locations;
     ColourServer colours = new ColourServer();
+    
+    Guid _componentInstanceId = Guid.NewGuid();
 
     public void Dispose()
     {
+        Logger.LogInformation("Instance " + _componentInstanceId + " disposing");
         NavManager.LocationChanged -= HandleLocationChanged;
     }
 
     protected override async Task OnInitializedAsync()
     {
+        Logger.LogInformation("Instance " + _componentInstanceId + " OnInitializedAsync");
+
         NavManager.LocationChanged += HandleLocationChanged;
 
         SelectedResolution = DataResolution.Yearly;
@@ -497,7 +504,7 @@
 
     void HandleLocationChanged(object sender, LocationChangedEventArgs e)
     {
-        Logger.LogInformation("HandleLocationChanged: " + NavManager.Uri);
+        Logger.LogInformation("Instance " + _componentInstanceId + " HandleLocationChanged: " + NavManager.Uri);
 
         // The URL changed. Update UI state to reflect what's in the URL.
         base.InvokeAsync(UpdateUiStateBasedOnQueryString);
@@ -541,8 +548,6 @@
             // Not sure whether we're allowed to set parameters this way, but it's short-lived - we'll immediately navigate away after
             // preparing querystring
             LocationId = "aed87aa0-1d0c-44aa-8561-cde0fc936395";
-
-            setupDefaultChartSeries = true;
         }
 
         Guid locationId = Guid.Parse(LocationId);
@@ -556,34 +561,34 @@
 
             ChartSeriesList.Add(
                 new ChartSeriesDefinition()
-                    {
-                        LocationId = location.Id,
-                        LocationName = location.Name,
-                        Aggregation = SeriesAggregationOptions.Mean,
-                        DataResolution = DataResolution.Yearly,
-                        DataSetDefinition = dsd,
-                        MeasurementDefinition = mdTempMax,
-                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                        SmoothingWindow = 20,
-                        Value = SeriesValueOptions.Value,
-                        Year = null
-                    }
+                {
+                    LocationId = location.Id,
+                    LocationName = location.Name,
+                    Aggregation = SeriesAggregationOptions.Mean,
+                    DataResolution = DataResolution.Yearly,
+                    DataSetDefinition = dsd,
+                    MeasurementDefinition = mdTempMax,
+                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                    SmoothingWindow = 20,
+                    Value = SeriesValueOptions.Value,
+                    Year = null
+                }
             );
 
             ChartSeriesList.Add(
                 new ChartSeriesDefinition()
-                    {
-                        LocationId = location.Id,
-                        LocationName = location.Name,
-                        Aggregation = SeriesAggregationOptions.Sum,
-                        DataResolution = DataResolution.Yearly,
-                        DataSetDefinition = dsd,
-                        MeasurementDefinition = mdRainfall,
-                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                        SmoothingWindow = 20,
-                        Value = SeriesValueOptions.Value,
-                        Year = null
-                    }
+                {
+                    LocationId = location.Id,
+                    LocationName = location.Name,
+                    Aggregation = SeriesAggregationOptions.Sum,
+                    DataResolution = DataResolution.Yearly,
+                    DataSetDefinition = dsd,
+                    MeasurementDefinition = mdRainfall,
+                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                    SmoothingWindow = 20,
+                    Value = SeriesValueOptions.Value,
+                    Year = null
+                }
             );
         }
 

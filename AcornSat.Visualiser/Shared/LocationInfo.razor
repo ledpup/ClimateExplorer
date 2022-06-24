@@ -119,11 +119,8 @@
         if (locationIdLastTimeOnParametersSetAsyncWasCalled == Location?.Id &&
             dataSetDefinitionIdLastTimeOnParametersSetAsyncWasCalled == DataSetDefinition?.Id)
         {
-            Logger.LogInformation($"OnParametersSetAsync() - {instanceId} {callId} bailing early because manual change detection shows the parameters haven't changed");
             return;
         }
-
-        Logger.LogInformation($"OnParametersSetAsync() - {instanceId} {callId} continuing because manual change detection shows the parameters have changed");
 
         locationIdLastTimeOnParametersSetAsyncWasCalled = Location?.Id;
         dataSetDefinitionIdLastTimeOnParametersSetAsyncWasCalled = DataSetDefinition?.Id;
