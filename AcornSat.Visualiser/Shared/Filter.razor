@@ -9,15 +9,12 @@
             <CloseButton />
         </ModalHeader>
         <ModalBody>
-            @if (SelectedResolution == DataResolution.Yearly)
-            {
-                <Field>
-                    <Tooltip Text="@MostRecentStartYearToolTip">
-                        <Check TValue="bool" Checked="@MostRecentStartYear" CheckedChanged="@MostRecentStartYearChanged">Change the start year of the chart to be the most recent start year in the datasets</Check>
-                    </Tooltip>
-                </Field>
-            }
-
+            <Field>
+                <Tooltip Text="@UseMostRecentStartYearToolTip">
+                    <Check TValue="bool" Checked="@UseMostRecentStartYear" CheckedChanged="@UseMostRecentStartYearChanged">@UseMostRecentStartYearLabel</Check>
+                </Tooltip>
+            </Field>
+            
             @if (DatasetYears != null)
             {
                 <Field>
@@ -73,7 +70,9 @@
 </Modal>
 
 @code {
-    [Parameter] public bool MostRecentStartYear { get; set; }
+    [Parameter] public bool UseMostRecentStartYear { get; set; }
+    [Parameter] public short? MostRecentStartYear { get; set; }
+    [Parameter] public short? OldestStartYear { get; set; }
 
     [Parameter] public List<short> DatasetYears { get; set; }
     [Parameter] public List<short> SelectedYears { get; set; }
@@ -81,7 +80,7 @@
     [Parameter] public string SelectedEndYear { get; set; }
     [Parameter] public DataResolution SelectedResolution { get; set; }
 
-    [Parameter] public EventCallback<bool> OnMostRecentStartYearChanged { get; set; }
+    [Parameter] public EventCallback<bool> OnUseMostRecentStartYearChanged { get; set; }
     [Parameter] public EventCallback<List<short>> OnSelectedYearsChanged { get; set; }
     [Parameter] public EventCallback<DataResolution> OnSelectedResolutionChanged { get; set; }
     [Parameter] public EventCallback<string> OnStartYearTextChanged { get; set; }
@@ -94,9 +93,10 @@
 
     public List<string> SelectedYearsText = new();
 
-    string MostRecentStartYearToolTip = @"If there is more than one dataset selected for the chart, and this is checked, we will ensure that the chart start year will be the latest start year in the datasets.<br/>
-If unchecked, dataset start years will appear on the chart at their original start year.<br/>
+    string UseMostRecentStartYearToolTip = @"If there is more than one dataset selected for the chart, and this is checked, we will ensure that the chart start year will be the most recent start year of the datasets.<br/>
+If unchecked, the chart start year will appear on the chart from the oldest start year.<br/>
 For example, rainfall data starts in 1870 and temperature data starts in 1910. Checked, the chart will begin in 1910. Unchecked, the chart will begin in 1870.";
+    string UseMostRecentStartYearLabel = "Set the start year of the chart to be the most recent start year of the datasets";
 
     public async Task Show()
     {
@@ -114,6 +114,15 @@ For example, rainfall data starts in 1870 and temperature data starts in 1910. C
         SelectedEndYearInternal = SelectedEndYear;
 
         SelectedYearsText = new();
+
+        if (MostRecentStartYear.HasValue && OldestStartYear.HasValue && MostRecentStartYear != OldestStartYear)
+        {
+            UseMostRecentStartYearToolTip = $@"There is more than one dataset selected for the chart.<br/>
+With this is checked, we will ensure that the chart start year will be the most recent start year of the datasets; i.e., {MostRecentStartYear}.<br/>
+If unchecked, the chart start year will appear on the chart from the oldest start year; i.e., {OldestStartYear}.";
+
+            UseMostRecentStartYearLabel = $"Set the start year of the chart to be the most recent start year of the datasets (i.e., use {MostRecentStartYear} instead of {OldestStartYear})";
+        }
 
         base.OnParametersSet();
     }
@@ -161,10 +170,10 @@ For example, rainfall data starts in 1870 and temperature data starts in 1910. C
         }
     }
 
-    async Task MostRecentStartYearChanged(bool value)
+    async Task UseMostRecentStartYearChanged(bool value)
     {
-        MostRecentStartYear = value;
+        UseMostRecentStartYear = value;
 
-        await OnMostRecentStartYearChanged.InvokeAsync(value);
+        await OnUseMostRecentStartYearChanged.InvokeAsync(value);
     }
 }
