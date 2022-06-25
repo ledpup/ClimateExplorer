@@ -144,10 +144,12 @@
         SelectedStartYear="@SelectedStartYear"
         SelectedEndYear="@SelectedEndYear"
         SelectedResolution="@SelectedResolution"
+        InclusiveStartYear="@InclusiveStartYear"
         OnSelectedYearsChanged="@OnSelectedYearsChanged"
         OnSelectedResolutionChanged="@OnSelectedResolutionChanged"
         OnStartYearTextChanged="@OnStartYearTextChanged"
-        OnEndYearTextChanged="@OnEndYearTextChanged"></Filter>
+        OnEndYearTextChanged="@OnEndYearTextChanged"
+        OnInclusiveStartYearChanged="@OnInclusiveStartYearChanged"></Filter>
 
 
 
@@ -442,6 +444,8 @@
     ColourServer colours = new ColourServer();
     
     Guid _componentInstanceId = Guid.NewGuid();
+
+    bool InclusiveStartYear { get; set; } = true;
 
     public void Dispose()
     {
@@ -844,6 +848,13 @@
         await HandleRedraw();
     }
 
+    async Task OnInclusiveStartYearChanged(bool value)
+    {
+        InclusiveStartYear = value;
+
+        await HandleRedraw();
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -936,7 +947,7 @@
             //
             // To ensure these gaps are handled correctly in the plotted chart, we build a new dataset that includes
             // records for each missing year. Value is set to null for those records.
-            BuildProcessedDataSetsForYearlyView(ChartSeriesWithData);
+            BuildProcessedDataSetsForYearlyView(ChartSeriesWithData, InclusiveStartYear);
 
             (ChartStartYear, ChartEndYear) = CalculateChartStartAndEndYear(ChartSeriesWithData, SelectedStartYear, SelectedEndYear);
 

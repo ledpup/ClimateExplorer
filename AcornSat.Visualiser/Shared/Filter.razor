@@ -9,28 +9,33 @@
             <CloseButton />
         </ModalHeader>
         <ModalBody>
-        
+            <Field>
+                <Tooltip Text="@InclusiveStartYearToolTip">
+                    <Check TValue="bool" Checked="@InclusiveStartYear" CheckedChanged="@InclusiveStartYearChanged">Inclusive start year</Check>
+                </Tooltip>
+            </Field>
+
             @if (DatasetYears != null)
             {
                 <Field>
                     Selected year(s)
-                <Autocomplete TItem="short"
-                        TValue="short"
-                        Data="@DatasetYears"
-                        TextField="@((item) => item.ToString())"
-                        ValueField="@((item) => item)"
-                        Multiple
-                        SelectedValuesChanged="@OnSelectedYearsChangedInternal"
-                        SelectedValues="@SelectedYears"
-                        SelectedTexts="@SelectedYearsText">
-                    <NotFoundContent>@context was not found</NotFoundContent>
-                </Autocomplete>
+                    <Autocomplete TItem="short"
+                              TValue="short"
+                              Data="@DatasetYears"
+                              TextField="@((item) => item.ToString())"
+                              ValueField="@((item) => item)"
+                              Multiple
+                              SelectedValuesChanged="@OnSelectedYearsChangedInternal"
+                              SelectedValues="@SelectedYears"
+                              SelectedTexts="@SelectedYearsText">
+                        <NotFoundContent>@context was not found</NotFoundContent>
+                    </Autocomplete>
                 </Field>
             }
-    
+
             @if (SelectedResolution == DataResolution.Yearly)
             {
-                <Field>        
+                <Field>
                     Start Year
                     <Validation Validator="ValidateYear">
                         <TextEdit Text="@SelectedStartYearInternal" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnStartYearTextChangedInternal">
@@ -51,13 +56,13 @@
             @if (SelectedResolution != DataResolution.Yearly)
             {
                 <Field>
-                Resolution
-                <Select TValue="DataResolution" SelectedValue="@SelectedResolution" SelectedValueChanged="@OnSelectedResolutionChangedInternal">
-                    <SelectItem Value="@(DataResolution.Yearly)">Yearly</SelectItem>
-                    <SelectItem Value="@(DataResolution.Monthly)">Monthly</SelectItem>
-                    <SelectItem Value="@(DataResolution.Weekly)">Weekly</SelectItem>
-                    <SelectItem Value="@(DataResolution.Daily)">Daily</SelectItem>
-                </Select>
+                    Resolution
+                    <Select TValue="DataResolution" SelectedValue="@SelectedResolution" SelectedValueChanged="@OnSelectedResolutionChangedInternal">
+                        <SelectItem Value="@(DataResolution.Yearly)">Yearly</SelectItem>
+                        <SelectItem Value="@(DataResolution.Monthly)">Monthly</SelectItem>
+                        <SelectItem Value="@(DataResolution.Weekly)">Weekly</SelectItem>
+                        <SelectItem Value="@(DataResolution.Daily)">Daily</SelectItem>
+                    </Select>
                 </Field>
             }
         </ModalBody>
@@ -65,12 +70,15 @@
 </Modal>
 
 @code {
+    [Parameter] public bool InclusiveStartYear { get; set; }
+
     [Parameter] public List<short> DatasetYears { get; set; }
     [Parameter] public List<short> SelectedYears { get; set; }
     [Parameter] public string SelectedStartYear { get; set; }
     [Parameter] public string SelectedEndYear { get; set; }
     [Parameter] public DataResolution SelectedResolution { get; set; }
 
+    [Parameter] public EventCallback<bool> OnInclusiveStartYearChanged { get; set; }
     [Parameter] public EventCallback<List<short>> OnSelectedYearsChanged { get; set; }
     [Parameter] public EventCallback<DataResolution> OnSelectedResolutionChanged { get; set; }
     [Parameter] public EventCallback<string> OnStartYearTextChanged { get; set; }
@@ -82,6 +90,10 @@
     Modal filterModal;
 
     public List<string> SelectedYearsText = new();
+
+    string InclusiveStartYearToolTip = @"If there is more than one dataset selected for the chart, and 'inclusive start year' is checked, we will ensure that the chart start year will be inclusive to all start years on the chart.<br/>
+If unchecked, dataset start years will appear on the chart at their original start year.<br/>
+For example, on a chart, rainfall data starts in 1870 and temperature data starts in 1910. Checked, the chart will begin in 1910. Unchecked, the chart will begin in 1870.";
 
     public async Task Show()
     {
@@ -105,7 +117,7 @@
 
     async Task OnSelectedYearsChangedInternal(List<short> values)
     {
-        await OnSelectedYearsChanged.InvokeAsync(values);        
+        await OnSelectedYearsChanged.InvokeAsync(values);
     }
 
     async Task OnSelectedResolutionChangedInternal(DataResolution value)
@@ -117,10 +129,10 @@
     {
         var year = Convert.ToString(e.Value);
 
-        e.Status = 
-            string.IsNullOrEmpty(year) 
+        e.Status =
+            string.IsNullOrEmpty(year)
             ? ValidationStatus.None
-            : 
+            :
                 year.Length == 4
                 ? ValidationStatus.Success
                 : ValidationStatus.Error;
@@ -144,5 +156,12 @@
         {
             await OnEndYearTextChanged.InvokeAsync(text);
         }
+    }
+
+    async Task InclusiveStartYearChanged(bool value)
+    {
+        InclusiveStartYear = value;
+
+        await OnInclusiveStartYearChanged.InvokeAsync(value);
     }
 }
