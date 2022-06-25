@@ -144,10 +144,12 @@
         SelectedStartYear="@SelectedStartYear"
         SelectedEndYear="@SelectedEndYear"
         SelectedResolution="@SelectedResolution"
+        MostRecentStartYear="@MostRecentStartYear"
         OnSelectedYearsChanged="@OnSelectedYearsChanged"
         OnSelectedResolutionChanged="@OnSelectedResolutionChanged"
         OnStartYearTextChanged="@OnStartYearTextChanged"
-        OnEndYearTextChanged="@OnEndYearTextChanged"></Filter>
+        OnEndYearTextChanged="@OnEndYearTextChanged"
+        OnMostRecentStartYearChanged="@OnMostRecentStartYearChanged"></Filter>
 
 
 
@@ -442,6 +444,8 @@
     ColourServer colours = new ColourServer();
     
     Guid _componentInstanceId = Guid.NewGuid();
+
+    bool MostRecentStartYear { get; set; } = true;
 
     public void Dispose()
     {
@@ -844,6 +848,13 @@
         await HandleRedraw();
     }
 
+    async Task OnMostRecentStartYearChanged(bool value)
+    {
+        MostRecentStartYear = value;
+
+        await HandleRedraw();
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -936,7 +947,7 @@
             //
             // To ensure these gaps are handled correctly in the plotted chart, we build a new dataset that includes
             // records for each missing year. Value is set to null for those records.
-            BuildProcessedDataSetsForYearlyView(ChartSeriesWithData);
+            BuildProcessedDataSetsForYearlyView(ChartSeriesWithData, MostRecentStartYear);
 
             (ChartStartYear, ChartEndYear) = CalculateChartStartAndEndYear(ChartSeriesWithData, SelectedStartYear, SelectedEndYear);
 
@@ -1279,7 +1290,8 @@
                 throw new NotImplementedException($"ChartType {chartType}");
         }
     }
-    void BuildProcessedDataSetsForYearlyView(List<SeriesWithData> chartSeriesWithData, bool inclusiveStartYear = true)
+
+    void BuildProcessedDataSetsForYearlyView(List<SeriesWithData> chartSeriesWithData, bool mostRecentStartYear = true)
     {
         // If we're doing smoothing via the moving average, precalculate these data and add them to PreProcessedDataSets.
         // We do this because the SimpleMovingAverage calculate function will remove some years from the start of the data set.
@@ -1312,7 +1324,7 @@
         var allDataSets = chartSeriesWithData.SelectMany(x => x.PreProcessedDataSets);
         var allDataRecords = allDataSets.SelectMany(x => x.DataRecords);
 
-        var startYear = inclusiveStartYear
+        var startYear = mostRecentStartYear
                                 ? allDataSets.Max(x => x.StartYear.Value)
                                 : allDataRecords.Min(y => y.Year);
         var latestYearAcrossAllDataSets = allDataRecords.Max(y => y.Year);
