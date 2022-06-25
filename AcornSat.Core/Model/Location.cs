@@ -38,7 +38,7 @@ public class Location
         {
             var distances = GetDistances(location, locations);
 
-            location.NearbyLocations = distances.OrderBy(x => x.Distance).Take(5).ToList();
+            location.NearbyLocations = distances.OrderBy(x => x.Distance).Take(10).ToList();
         });
     }
 
