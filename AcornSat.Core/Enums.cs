@@ -69,7 +69,7 @@ namespace AcornSat.Core
                 case UnitOfMeasure.EnsoIndex:
                     return "ENSO index";
                 case UnitOfMeasure.MegajoulesPerSquareMetre:
-                    return "Megajoules per square metre (MJ/m*m)";
+                    return "Megajoules per square metre (MJ/m²)";
             }
             throw new NotImplementedException();
         }
@@ -91,7 +91,7 @@ namespace AcornSat.Core
                 case UnitOfMeasure.EnsoIndex:
                     return "ENSO index";
                 case UnitOfMeasure.MegajoulesPerSquareMetre:
-                    return "MJ/m*m";
+                    return "MJ/m²";
             }
             throw new NotImplementedException();
         }

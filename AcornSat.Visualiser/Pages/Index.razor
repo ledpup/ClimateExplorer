@@ -144,12 +144,14 @@
         SelectedStartYear="@SelectedStartYear"
         SelectedEndYear="@SelectedEndYear"
         SelectedResolution="@SelectedResolution"
+        UseMostRecentStartYear="@UseMostRecentStartYear"
         MostRecentStartYear="@MostRecentStartYear"
+        OldestStartYear="@OldestStartYear"
         OnSelectedYearsChanged="@OnSelectedYearsChanged"
         OnSelectedResolutionChanged="@OnSelectedResolutionChanged"
         OnStartYearTextChanged="@OnStartYearTextChanged"
         OnEndYearTextChanged="@OnEndYearTextChanged"
-        OnMostRecentStartYearChanged="@OnMostRecentStartYearChanged"></Filter>
+        OnUseMostRecentStartYearChanged="@OnUseMostRecentStartYearChanged"></Filter>
 
 
 
@@ -372,6 +374,8 @@
 
     List<short>? DatasetYears { get; set; }
     List<short>? SelectedYears;
+    short? OldestStartYear { get; set; }
+    short? MostRecentStartYear { get; set; }
 
     async Task OnSelectedYearsChanged(List<short> values)
     {
@@ -445,7 +449,7 @@
     
     Guid _componentInstanceId = Guid.NewGuid();
 
-    bool MostRecentStartYear { get; set; } = true;
+    bool UseMostRecentStartYear { get; set; } = true;
 
     public void Dispose()
     {
@@ -848,9 +852,9 @@
         await HandleRedraw();
     }
 
-    async Task OnMostRecentStartYearChanged(bool value)
+    async Task OnUseMostRecentStartYearChanged(bool value)
     {
-        MostRecentStartYear = value;
+        UseMostRecentStartYear = value;
 
         await HandleRedraw();
     }
@@ -947,7 +951,7 @@
             //
             // To ensure these gaps are handled correctly in the plotted chart, we build a new dataset that includes
             // records for each missing year. Value is set to null for those records.
-            BuildProcessedDataSetsForYearlyView(ChartSeriesWithData, MostRecentStartYear);
+            BuildProcessedDataSetsForYearlyView(ChartSeriesWithData, UseMostRecentStartYear);
 
             (ChartStartYear, ChartEndYear) = CalculateChartStartAndEndYear(ChartSeriesWithData, SelectedStartYear, SelectedEndYear);
 
@@ -1318,15 +1322,18 @@
             {
                 cs.PreProcessedDataSets = cs.SourceDataSets;
             }
-        }
+        }       
 
         // Calculate first and last year which we have a data record for, across all data sets underpinning all chart series
         var allDataSets = chartSeriesWithData.SelectMany(x => x.PreProcessedDataSets);
         var allDataRecords = allDataSets.SelectMany(x => x.DataRecords);
 
-        var startYear = mostRecentStartYear
-                                ? allDataSets.Max(x => x.StartYear.Value)
-                                : allDataRecords.Min(y => y.Year);
+        OldestStartYear = allDataRecords.Min(y => y.Year);
+        MostRecentStartYear = allDataSets.Max(x => x.StartYear.Value);
+
+        var startYear = Convert.ToInt32(mostRecentStartYear
+                                                ? MostRecentStartYear
+                                                : OldestStartYear);
         var latestYearAcrossAllDataSets = allDataRecords.Max(y => y.Year);
 
         foreach (var cs in chartSeriesWithData)

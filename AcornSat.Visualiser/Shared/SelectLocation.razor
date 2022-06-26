@@ -74,6 +74,14 @@
     [Inject]
     public IJSRuntime JS { get; init; }
 
+    protected override void OnParametersSet()
+    {
+        if (Locations != null)
+        {
+            Locations = Locations.OrderBy(x => x.Name);    
+        }
+    }
+
     public Task Show(
     )
     {
