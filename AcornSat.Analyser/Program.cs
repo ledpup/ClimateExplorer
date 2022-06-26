@@ -24,6 +24,20 @@ foreach (var dataSetDefinition in dataSetDefinitions)
     }
 }
 
+var obsCodes = Enum.GetValues(typeof(ObsCode)).Cast<ObsCode>().ToList();
+foreach (var location in locations.ToList())
+{
+
+    foreach (var site in location.Sites)
+    {
+        foreach (var obsCode in obsCodes)
+        {
+            await DownloadAndExtractDailyBomData(site, obsCode);
+        }
+    }
+}
+
+
 async Task DownloadDataSetData(DataSetDefinition dataSetDefinition)
 {
     var userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
@@ -38,20 +52,6 @@ async Task DownloadDataSetData(DataSetDefinition dataSetDefinition)
         }
     }
 }
-
-var obsCodes = Enum.GetValues(typeof(ObsCode)).Cast<ObsCode>().ToList();
-
-foreach (var location in locations.ToList())
-{
-    foreach (var site in location.Sites)
-    {
-        foreach (var obsCode in obsCodes)
-        {
-            await DownloadAndExtractDailyBomData(site, obsCode);
-        }
-    }
-}
-
 
 async Task DownloadAndExtractDailyBomData(string station, ObsCode obsCode)
 {
@@ -82,6 +82,11 @@ async Task DownloadAndExtractDailyBomData(string station, ObsCode obsCode)
         var match = regEx.Match(responseContent);
         var p_c = match.Groups["p_c"].Value;
         var startYear = match.Groups["startYear"].Value;
+
+        if (string.IsNullOrWhiteSpace(startYear))
+        {
+            return;
+        }
 
         // The response of this request is a zip file that needs to be downloaded, extracted and named in a form that we'll be able to find it again by station number
         var zipFileUrl = $"http://www.bom.gov.au/jsp/ncc/cdio/weatherData/av?p_display_type=dailyZippedDataFile&p_stn_num={station}&p_nccObsCode={(int)obsCode}&p_c={p_c}&p_startYear={startYear}";
@@ -687,4 +692,13 @@ public enum ObsCode
     Daily_TempMin = 123,
     Daily_Rainfall = 136,
     Daily_SolarRadiation = 193,
+
+    //Unknown1 = 124,
+    //Unknown2 = 125,
+    //Unknown3 = 126,
+    //Unknown4 = 127,
+    //Unknown5 = 128,
+    //Unknown6 = 129,
+    //Unknown7 = 131,
+    //Unknown8 = 133,
 }
