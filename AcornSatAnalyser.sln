@@ -22,6 +22,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.DataPipelin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.SourceData", "ClimateExplorer.SourceData\ClimateExplorer.SourceData.csproj", "{5D8E01C7-7265-4D35-AE08-43C91C054E45}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.AcornSatTransferFunctionAnalysis", "ClimateExplorer.AcornSatTransferFunctionAnalysis\ClimateExplorer.AcornSatTransferFunctionAnalysis.csproj", "{D7A43FF5-A0AF-45D4-BBC3-C67B608A8B02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,10 @@ Global
 		{5D8E01C7-7265-4D35-AE08-43C91C054E45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D8E01C7-7265-4D35-AE08-43C91C054E45}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D8E01C7-7265-4D35-AE08-43C91C054E45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7A43FF5-A0AF-45D4-BBC3-C67B608A8B02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7A43FF5-A0AF-45D4-BBC3-C67B608A8B02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7A43FF5-A0AF-45D4-BBC3-C67B608A8B02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7A43FF5-A0AF-45D4-BBC3-C67B608A8B02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
