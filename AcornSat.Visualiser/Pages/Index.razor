@@ -144,9 +144,8 @@
         SelectedStartYear="@SelectedStartYear"
         SelectedEndYear="@SelectedEndYear"
         SelectedResolution="@SelectedResolution"
+        StartYears="@StartYears"
         UseMostRecentStartYear="@UseMostRecentStartYear"
-        MostRecentStartYear="@MostRecentStartYear"
-        OldestStartYear="@OldestStartYear"
         OnSelectedYearsChanged="@OnSelectedYearsChanged"
         OnSelectedResolutionChanged="@OnSelectedResolutionChanged"
         OnStartYearTextChanged="@OnStartYearTextChanged"
@@ -374,8 +373,6 @@
 
     List<short>? DatasetYears { get; set; }
     List<short>? SelectedYears;
-    short? OldestStartYear { get; set; }
-    short? MostRecentStartYear { get; set; }
 
     async Task OnSelectedYearsChanged(List<short> values)
     {
@@ -432,6 +429,8 @@
         await BuildDataSets();
     }
 
+    List<short> StartYears { get; set; }
+    bool UseMostRecentStartYear { get; set; } = true;
     string SelectedStartYear { get; set; }
     string SelectedEndYear { get; set; }
 
@@ -448,8 +447,6 @@
     ColourServer colours = new ColourServer();
     
     Guid _componentInstanceId = Guid.NewGuid();
-
-    bool UseMostRecentStartYear { get; set; } = true;
 
     public void Dispose()
     {
@@ -858,7 +855,6 @@
 
         await HandleRedraw();
     }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -1295,7 +1291,7 @@
         }
     }
 
-    void BuildProcessedDataSetsForYearlyView(List<SeriesWithData> chartSeriesWithData, bool mostRecentStartYear = true)
+    void BuildProcessedDataSetsForYearlyView(List<SeriesWithData> chartSeriesWithData, bool useMostRecentStartYear = true)
     {
         // If we're doing smoothing via the moving average, precalculate these data and add them to PreProcessedDataSets.
         // We do this because the SimpleMovingAverage calculate function will remove some years from the start of the data set.
@@ -1328,12 +1324,12 @@
         var allDataSets = chartSeriesWithData.SelectMany(x => x.PreProcessedDataSets);
         var allDataRecords = allDataSets.SelectMany(x => x.DataRecords);
 
-        OldestStartYear = allDataRecords.Min(y => y.Year);
-        MostRecentStartYear = allDataSets.Max(x => x.StartYear.Value);
+        StartYears = allDataSets.Where(x => x.StartYear.HasValue).Select(x => x.StartYear.Value).Distinct().OrderBy(x => x).ToList();
 
-        var startYear = Convert.ToInt32(mostRecentStartYear
-                                                ? MostRecentStartYear
-                                                : OldestStartYear);
+        var earliestYear = Convert.ToInt32(useMostRecentStartYear
+                                                ? StartYears.Last()
+                                                : StartYears.First());
+
         var latestYearAcrossAllDataSets = allDataRecords.Max(y => y.Year);
 
         foreach (var cs in chartSeriesWithData)
@@ -1348,7 +1344,7 @@
                                 Location = x.Location,
                                 MeasurementDefinition = x.MeasurementDefinition,
                                 DataRecords =
-                                        Enumerable.Range(startYear, latestYearAcrossAllDataSets - startYear + 1)
+                                        Enumerable.Range(earliestYear, latestYearAcrossAllDataSets - earliestYear + 1)
                                         .Select(
                                             year =>
                                                 // If there's a record in the source dataset, use it
