@@ -1216,16 +1216,18 @@
         {
             foreach (var dataSet in chartSeries.ProcessedDataSets)
             {
+                var htmlColourCode = colours.GetNextColour(dataSet.MeasurementDefinition.PreferredColour);
+
                 await AddDataSetToChart(
                     chartSeries,
                     dataSet,
                     dataSet.DataAdjustment,
                     $"{chartSeries.ChartSeries.FriendlyTitle} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}",
-                    dataSet.MeasurementDefinition.PreferredColour);
+                    htmlColourCode);
 
                 if (chartSeries.ChartSeries.ShowTrendline)
                 {
-                    trendlines.Add(CreateTrendline(dataSetIndex, ChartColor.FromHtmlColorCode(colours.GetNextColour(dataSet.MeasurementDefinition.PreferredColour))));
+                    trendlines.Add(CreateTrendline(dataSetIndex, ChartColor.FromHtmlColorCode(htmlColourCode)));
                 }
 
                 dataSetIndex++;
@@ -1240,7 +1242,7 @@
         DataSet dataSet,
         DataAdjustment? dataAdjustment,
         string label,
-        int preferredColour,
+        string htmlColourCode,
         bool absoluteValues = false,
         bool redPositive = true)
     {
@@ -1250,8 +1252,6 @@
             .ToList();
 
         Logger.LogInformation($"AddDataSetToChart: values has {values.Count} entries, of which {values.Count(x => x != null)} are not null");
-
-        string htmlColourCode = colours.GetNextColour(preferredColour);
 
         var colour = ChartColor.FromHtmlColorCode(htmlColourCode);
 
