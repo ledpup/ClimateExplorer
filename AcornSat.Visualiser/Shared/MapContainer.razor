@@ -1,13 +1,18 @@
 ﻿@using Blazorise
 @using DPBlazorMapLibrary;
 
-<div class="mapContainer" id="mapContainer">
+<div class="mapContainer collapsed" id="mapContainer">
     <DPBlazorMapLibrary.Map @ref="map" MapOptions="@mapOptions" AfterRender="@AfterMapRender"></DPBlazorMapLibrary.Map>
 
     <div class="@(IsMapExpanded ? "mapToggleExpanded" : "mapToggleCollapsed")">
-        <Button Color="Color.Primary" Clicked="@ToggleMapExpansion" Class="mapToggleButton">
-            @(IsMapExpanded ? "Collapse map" : "Expand")
-        </Button>
+        <Button Color="Color.Primary" Clicked="@ToggleMapExpansion" Class="map-toggle-button">
+            @if (IsMapExpanded)
+            {
+                <span><i class="fas fa-compress"></i> Collapse</span>
+            }            else
+            {
+                <span><i class="fas fa-expand"></i> Expand</span>
+            }        </Button>
     </div>
 </div>
 
