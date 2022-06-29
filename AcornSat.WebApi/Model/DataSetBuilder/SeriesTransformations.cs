@@ -5,6 +5,7 @@
         Identity,
         IsPositive,
         IsNegative,
-        EnsoCategory
+        EnsoCategory,
+        Negate
     }
 }

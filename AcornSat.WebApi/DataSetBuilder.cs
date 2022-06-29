@@ -13,15 +13,19 @@ namespace AcornSat.WebApi
         {
             ValidateRequest(request);
 
-            var dataPoints = await GetSeriesDataPointsForRequest(request);
+            // This method reads raw data & derives a series from it as per the request
+            var dataPoints = await GetSeriesDataPointsForRequest(request.SeriesDerivationType, request.SeriesSpecifications);
+
+            // This method applies the specified transformation to each data point in the series
+            var transformedDataPoints = ApplySeriesTransformation(dataPoints, request.SeriesTransformation);
 
             return
                 new DataSet()
                 {
                     MeasurementDefinition = new Core.ViewModel.MeasurementDefinitionViewModel(),
                     Location = new Location(),
-                    DataRecords = 
-                        dataPoints
+                    DataRecords =
+                        transformedDataPoints
                         .Select(
                             x => 
                             new DataRecord()
@@ -36,78 +40,120 @@ namespace AcornSat.WebApi
                 };
         }
 
+        private DataPoint[] ApplySeriesTransformation(DataPoint[] dataPoints, SeriesTransformations seriesTransformation)
+        {
+            switch (seriesTransformation)
+            {
+                case SeriesTransformations.Identity:
+                    // No side-effects - clone the input array
+                    return dataPoints.ToArray();
+
+                case SeriesTransformations.IsPositive:
+                    return 
+                        dataPoints
+                        .Select(x => x.WithValue(x.Value == null ? null : (x.Value > 0 ? 1 : 0)))
+                        .ToArray();
+
+                case SeriesTransformations.IsNegative:
+                    return
+                        dataPoints
+                        .Select(x => x.WithValue(x.Value == null ? null : (x.Value < 0 ? 1 : 0)))
+                        .ToArray();
+
+                case SeriesTransformations.EnsoCategory:
+                    return
+                        dataPoints
+                        .Select(x => x.WithValue(x.Value == null ? null : (x.Value > 0.5 ? 1 : (x.Value < -0.5 ? -1 : 0))))
+                        .ToArray();
+
+                case SeriesTransformations.Negate:
+                    return
+                        dataPoints
+                        .Select(x => x.WithValue(x.Value == null ? null : x.Value * -1))
+                        .ToArray();
+
+                default:
+                    throw new NotImplementedException($"SeriesTransformation {seriesTransformation}");
+            }
+        }
+
         public void ValidateRequest(PostDataSetsRequestBody request)
         {
             if (request.SeriesSpecifications == null) throw new ArgumentNullException(nameof(request.SeriesSpecifications));
         }
 
-        async Task<DataPoint[]> GetSeriesDataPointsForRequest(PostDataSetsRequestBody request)
+        async Task<DataPoint[]> GetSeriesDataPointsForRequest(SeriesDerivationTypes seriesDerivationType, SeriesSpecification[] seriesSpecifications)
         {
-            switch (request.SeriesDerivationType)
+            switch (seriesDerivationType)
             {
                 case SeriesDerivationTypes.ReturnSingleSeries:
-                    if (request.SeriesSpecifications.Length != 1)
+                    if (seriesSpecifications.Length != 1)
                     {
                         throw new Exception($"When SeriesDerivationType is {nameof(SeriesDerivationTypes.ReturnSingleSeries)}, exactly one SeriesSpecification must be provided.");
                     }
 
-                    return await GetSeriesDataPoints(request.SeriesSpecifications.Single());
+                    return await GetSeriesDataPoints(seriesSpecifications.Single());
 
                 case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
-                    if (request.SeriesSpecifications.Length != 2)
-                    {
-                        throw new Exception($"When SeriesDerivationType is {nameof(SeriesDerivationTypes.DifferenceBetweenTwoSeries)}, exactly two SeriesSpecifications must be provided.");
-                    }
-
-                    var dp1 = await GetSeriesDataPoints(request.SeriesSpecifications[0]);
-                    var dp2 = await GetSeriesDataPoints(request.SeriesSpecifications[1]);
-
-                    if (dp1.Length == 0 || dp2.Length == 0)
-                    {
-                        return new DataPoint[0];
-                    }
-
-                    var dp1Grouped = dp1.ToDictionary(x => new DateOnly(x.Year, x.Month ?? 1, x.Day ?? 1));
-                    var dp2Grouped = dp2.ToDictionary(x => new DateOnly(x.Year, x.Month ?? 1, x.Day ?? 1));
-
-                    DateOnly minDate1 = dp1Grouped.Select(x => x.Key).Min();
-                    DateOnly minDate2 = dp2Grouped.Select(x => x.Key).Min();
-
-                    DateOnly maxDate1 = dp1Grouped.Select(x => x.Key).Max();
-                    DateOnly maxDate2 = dp2Grouped.Select(x => x.Key).Max();
-
-                    DateOnly minDate = minDate1 < minDate2 ? minDate1 : minDate2;
-                    DateOnly maxDate = maxDate1 > maxDate2 ? maxDate1 : maxDate2;
-
-                    DateOnly d = minDate;
-
-                    List<DataPoint> results = new List<DataPoint>();
-
-                    while (d <= maxDate)
-                    {
-                        dp1Grouped.TryGetValue(d, out var dp1ForDate);
-                        dp2Grouped.TryGetValue(d, out var dp2ForDate);
-
-                        float? val = null;
-
-                        if (dp1ForDate != null && dp2ForDate != null)
-                        {
-                            val = dp1ForDate.Value - dp2ForDate.Value;
-                        }
-
-                        var dpToUse = dp1ForDate ?? dp2ForDate;
-
-                        results.Add(new DataPoint() { Year = dpToUse.Year, Month = dpToUse.Month, Day = dpToUse.Day, Value = val });
-
-                        d = d.AddDays(1);
-                    }
-
-                    return results.ToArray();
+                    return await BuildDifferenceBetweenTwoSeries(seriesSpecifications);
 
                 default:
-                    throw new NotImplementedException($"SeriesDerivationType {request.SeriesDerivationType}");
+                    throw new NotImplementedException($"SeriesDerivationType {seriesDerivationType}");
 
             }
+        }
+
+        private async Task<DataPoint[]> BuildDifferenceBetweenTwoSeries(SeriesSpecification[] seriesSpecifications)
+        {
+            if (seriesSpecifications.Length != 2)
+            {
+                throw new Exception($"When SeriesDerivationType is {nameof(SeriesDerivationTypes.DifferenceBetweenTwoSeries)}, exactly two SeriesSpecifications must be provided.");
+            }
+
+            var dp1 = await GetSeriesDataPoints(seriesSpecifications[0]);
+            var dp2 = await GetSeriesDataPoints(seriesSpecifications[1]);
+
+            if (dp1.Length == 0 || dp2.Length == 0)
+            {
+                return new DataPoint[0];
+            }
+
+            var dp1Grouped = dp1.ToDictionary(x => new DateOnly(x.Year, x.Month ?? 1, x.Day ?? 1));
+            var dp2Grouped = dp2.ToDictionary(x => new DateOnly(x.Year, x.Month ?? 1, x.Day ?? 1));
+
+            DateOnly minDate1 = dp1Grouped.Select(x => x.Key).Min();
+            DateOnly minDate2 = dp2Grouped.Select(x => x.Key).Min();
+
+            DateOnly maxDate1 = dp1Grouped.Select(x => x.Key).Max();
+            DateOnly maxDate2 = dp2Grouped.Select(x => x.Key).Max();
+
+            DateOnly minDate = minDate1 < minDate2 ? minDate1 : minDate2;
+            DateOnly maxDate = maxDate1 > maxDate2 ? maxDate1 : maxDate2;
+
+            DateOnly d = minDate;
+
+            List<DataPoint> results = new List<DataPoint>();
+
+            while (d <= maxDate)
+            {
+                var dp1ForDateExists = dp1Grouped.TryGetValue(d, out var dp1ForDate);
+                var dp2ForDateExists = dp2Grouped.TryGetValue(d, out var dp2ForDate);
+
+                float? val = null;
+
+                if (dp1ForDateExists && dp2ForDateExists)
+                {
+                    val = dp1ForDate.Value - dp2ForDate.Value;
+                }
+
+                var dpToUse = dp1ForDateExists ? dp1ForDate : dp2ForDate;
+
+                results.Add(dpToUse.WithValue(val));
+
+                d = d.AddDays(1);
+            }
+
+            return results.ToArray();
         }
 
         async Task<DataPoint[]> GetSeriesDataPoints(SeriesSpecification seriesSpecification)
