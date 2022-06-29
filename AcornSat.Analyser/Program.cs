@@ -9,12 +9,12 @@ using System.Net;
 using System.IO.Compression;
 using AcornSat.Core.Model;
 using AcornSat.Core.ViewModel;
-
+using System.Globalization;
 
 GenerateMapMarkers();
 var dataSetDefinitions = BuildDataSetDefinitions();
 BuildNiwaLocations(Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"));
-var locations = BuildAcornSatLocationsFromReferenceData(Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"));
+var locations = await BuildAcornSatLocationsFromReferenceDataAsync(Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"));
 
 foreach (var dataSetDefinition in dataSetDefinitions)
 {
@@ -28,11 +28,11 @@ var obsCodes = Enum.GetValues(typeof(ObsCode)).Cast<ObsCode>().ToList();
 foreach (var location in locations.ToList())
 {
 
-    foreach (var site in location.Sites)
+    foreach (var station in location.Stations)
     {
         foreach (var obsCode in obsCodes)
         {
-            await DownloadAndExtractDailyBomData(site, obsCode);
+            await DownloadAndExtractDailyBomData(station.Id, obsCode);
         }
     }
 }
@@ -509,7 +509,7 @@ void BuildNiwaLocations(Guid dataSetId)
         var location = new Location
         {
             Name = match.Groups["name"].Value,
-            Sites = new List<string> { match.Groups["station"].Value },
+            Stations = new List<Station> { new Station { Id = match.Groups["station"].Value } },
             Coordinates = new Coordinates
             {
                 Latitude = float.Parse(match.Groups["lat"].Value),
@@ -528,7 +528,7 @@ void BuildNiwaLocations(Guid dataSetId)
             Id = Guid.NewGuid(),
             DataSetId = dataSetId,
             Name = x.Key,
-            Sites = x.SelectMany(x => x.Sites).ToList(),
+            Stations = x.SelectMany(x => x.Stations).ToList(),
             Coordinates = new Coordinates
             {
                 Latitude = x.ToList().Average(x => x.Coordinates.Latitude),
@@ -541,7 +541,7 @@ void BuildNiwaLocations(Guid dataSetId)
     File.WriteAllText("niwa-locations.json", JsonSerializer.Serialize(locations, options));
 }
 
-List<Location> BuildAcornSatLocationsFromReferenceData(Guid dataSetId)
+async Task<List<Location>> BuildAcornSatLocationsFromReferenceDataAsync(Guid dataSetId)
 {
     var locations = new List<Location>();
 
@@ -555,11 +555,7 @@ List<Location> BuildAcornSatLocationsFromReferenceData(Guid dataSetId)
             DataSetId = dataSetId,
             Name = splitRow[0]
         };
-        location.Sites.Add(splitRow[1]);
-        if (splitRow.Length > 2 && !string.IsNullOrWhiteSpace(splitRow[2]))
-        {
-            location.Sites.Add(splitRow[2]);
-        }
+        location.PrimaryStation = splitRow[1];
         locations.Add(location);
     }
 
@@ -567,37 +563,42 @@ List<Location> BuildAcornSatLocationsFromReferenceData(Guid dataSetId)
 
     var siteSets = new Dictionary<string, List<string>>();
 
-    foreach (var primarySiteRow in primarySites)
+    foreach (var row in primarySites)
     {
-        var primarySite = primarySiteRow.Substring(0, 6);
-        var firstSite = primarySiteRow.Substring(7, 6);
-        var secondSite = primarySiteRow.Substring(32, 6);
-        var thirdSite = primarySiteRow.Substring(57, 6);
+        var rowRegEx = new Regex(@"^^(?<primarysite>\d+)\s(?<station1>\d+\s\d+\s\d+)\s(?<station2>\d+\s\d+\s\d+)\s(?<station3>\d+\s\d+\s\d+)$");
+        var groups = rowRegEx.Match(row).Groups;
+        var primarySite = groups["primarysite"].Value;
 
-        siteSets.Add(primarySite, new List<string>
+        var stations = new List<string>
         {
-            firstSite
-        });
+            groups["station1"].Value,
+            groups["station2"].Value,
+            groups["station3"].Value
+        };
 
-        if (secondSite != "999999")
+        var location = locations.Single(x => x.PrimaryStation == primarySite);
+
+        var stationRegEx = new Regex(@"^(?<id>\d+)\s(?<start>\d+)\s(?<end>\d+)$");
+        var provider = CultureInfo.InvariantCulture;
+        foreach (var station in stations)
         {
-            siteSets[primarySite].Add(secondSite);
-            if (thirdSite != "999999")
+            var stationGroups = stationRegEx.Match(station).Groups;
+            var id = stationGroups["id"].Value;
+
+            if (id == "999999")
             {
-                siteSets[primarySite].Add(thirdSite);
+                continue;
             }
-        }
-
-        var location = locations.Single(x => x.Sites.Contains(primarySite));
-        location.PrimaryStation = primarySite;
-        siteSets[primarySite].ForEach(x =>
-        {
-            if (!location.Sites.Contains(x))
+            
+            var start = DateTime.ParseExact(stationGroups["start"].Value, "yyyyMMdd", provider);
+            var end = DateTime.ParseExact(stationGroups["end"].Value, "yyyyMMdd", provider);
+            location.Stations.Add(new Station
             {
-                location.Sites.Add(x);
-            }
+                Id = id,
+                StartDate = start,
+                EndDate = end
+            });
         }
-        );
     }
 
     var moreLocationData = File.ReadAllLines(@"ReferenceData\ACORN-SAT\acorn_sat_v2.1.0_stations.csv");
@@ -607,7 +608,7 @@ List<Location> BuildAcornSatLocationsFromReferenceData(Guid dataSetId)
         var splitRow = moreLocationData[i].Split(',');
         var id = splitRow[0].PadLeft(6, '0');
 
-        var location = locations.Single(x => x.Sites.Contains(id));
+        var location = locations.Single(x => x.Stations.Any(y => y.Id == id));
 
         if (location.Name != splitRow[1])
         {
@@ -620,6 +621,21 @@ List<Location> BuildAcornSatLocationsFromReferenceData(Guid dataSetId)
             Longitude = float.Parse(splitRow[3]),
             Elevation = float.Parse(splitRow[4]),
         };
+    }
+
+
+    // Load an old locations file (from the last time we built these locations).
+    // Match on the primary station
+    // If we find a match, replace the new Id with the old one, so that we may main Ids between builds of this meta-data
+    var oldLocations = await Location.GetLocations(@"ReferenceData\ACORN-SAT\Locations.json");
+
+    foreach(var location in locations)
+    {
+        var oldLocation = oldLocations.SingleOrDefault(x => x.PrimaryStation == location.PrimaryStation);
+        if (oldLocation != null)
+        {
+            location.Id = oldLocation.Id;
+        }
     }
 
     var options = new JsonSerializerOptions { WriteIndented = true };

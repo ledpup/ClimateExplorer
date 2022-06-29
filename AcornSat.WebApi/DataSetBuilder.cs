@@ -230,7 +230,7 @@ namespace AcornSat.WebApi
                     x.DataType == seriesSpecification.DataType &&
                     x.DataAdjustment == seriesSpecification.DataAdjustment);
 
-            var location = seriesSpecification.LocationId == null ? null : (await Location.GetLocations(dsd.FolderName)).Single(x => x.Id == seriesSpecification.LocationId);
+            var location = seriesSpecification.LocationId == null ? null : (await Location.GetLocations(dsd.FolderName, false)).Single(x => x.Id == seriesSpecification.LocationId);
 
             var dataSets = await DataReader.ReadDataFile(dsd.FolderName, measurementDefinition, dsd.DataResolution, location);
 

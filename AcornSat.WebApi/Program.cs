@@ -180,7 +180,7 @@ async Task<List<Location>> GetLocations(string dataSetFolder = null, bool includ
 
         return locations.OrderByDescending(x => x.WarmingIndex).ToList();
     }
-    return await Location.GetLocations(dataSetFolder);
+    return await Location.GetLocations(dataSetFolder, false);
 }
 
 async Task<List<DataSet>> GetTemperaturesByLatitude(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float minLatitude, float maxLatitude, short dayGrouping, float dayGroupingThreshold, float locationGroupingThreshold)
@@ -637,7 +637,7 @@ async Task<List<DataSet>> GetAverageFromDailyRecords(DataSetDefinition dataSetDe
 
 async Task<List<DataSet>> GetDataFromFile(DataSetDefinition dataSetDefintion, DataType dataType, DataAdjustment? dataAdjustment, Guid? locationId = null, short? year = null)
 {
-    var location = locationId == null ? null : (await Location.GetLocations(dataSetDefintion.FolderName)).Single(x => x.Id == locationId);
+    var location = locationId == null ? null : (await Location.GetLocations(dataSetDefintion.FolderName, false)).Single(x => x.Id == locationId);
 
     var returnDataSets = new List<DataSet>();
 
@@ -652,7 +652,7 @@ async Task<List<DataSet>> GetDataFromFile(DataSetDefinition dataSetDefintion, Da
 
 async Task<List<DataSet>> GetYearlyRecordsFromDaily(DataSetDefinition dataSetDefintion, QueryParameters queryParameters)
 {
-    var location = (await Location.GetLocations(dataSetDefintion.FolderName)).Single(x => x.Id == queryParameters.LocationId);
+    var location = (await Location.GetLocations(dataSetDefintion.FolderName, false)).Single(x => x.Id == queryParameters.LocationId);
 
     var dailyDataSets = await GetDataFromFile(dataSetDefintion, queryParameters.DataType, queryParameters.DataAdjustment, queryParameters.LocationId);
 

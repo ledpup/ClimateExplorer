@@ -4,1659 +4,2816 @@
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Adelaide",
     "PrimaryStation": "023090",
-    "Sites": [
-      "023090",
-      "023000"
-    ],
     "Coordinates": {
       "Latitude": -34.92,
       "Longitude": 138.62,
       "Elevation": 48
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "023000",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1977-01-31T00:00:00"
+      },
+      {
+        "Id": "023090",
+        "StartDate": "1977-02-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "e491279a-781c-4eb0-8ccf-d49f3d9e2d5a",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Albany",
     "PrimaryStation": "009999",
-    "Sites": [
-      "009999",
-      "009500",
-      "009741"
-    ],
     "Coordinates": {
       "Latitude": -34.94,
       "Longitude": 117.82,
       "Elevation": 68
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "009500",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1965-04-11T00:00:00"
+      },
+      {
+        "Id": "009741",
+        "StartDate": "1965-04-12T00:00:00",
+        "EndDate": "2012-01-12T00:00:00"
+      },
+      {
+        "Id": "009999",
+        "StartDate": "2012-01-13T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "fbb67194-9253-4ed2-bd20-f4a0211b264b",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Alice Springs",
     "PrimaryStation": "015590",
-    "Sites": [
-      "015590",
-      "015540"
-    ],
     "Coordinates": {
       "Latitude": -23.8,
       "Longitude": 133.89,
       "Elevation": 546
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "015540",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1941-12-31T00:00:00"
+      },
+      {
+        "Id": "015590",
+        "StartDate": "1942-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "0cfb93a1-e0b6-4b87-87a6-90c0e01ca9ca",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Amberley",
     "PrimaryStation": "040004",
-    "Sites": [
-      "040004"
-    ],
     "Coordinates": {
       "Latitude": -27.63,
       "Longitude": 152.71,
       "Elevation": 24
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "040004",
+        "StartDate": "1941-08-25T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "176e8056-e246-4566-b307-3c0b1ca8fde4",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Barcaldine",
     "PrimaryStation": "036007",
-    "Sites": [
-      "036007"
-    ],
     "Coordinates": {
       "Latitude": -23.55,
       "Longitude": 145.29,
       "Elevation": 266
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "036007",
+        "StartDate": "1962-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "0b927604-fbaa-4930-bb5c-cf4b0f8b8914",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Bathurst",
     "PrimaryStation": "063005",
-    "Sites": [
-      "063005"
-    ],
     "Coordinates": {
       "Latitude": -33.43,
       "Longitude": 149.56,
       "Elevation": 713
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "063005",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "65aea1bb-5395-4b14-bf6f-8ca1559099cd",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Birdsville",
     "PrimaryStation": "038026",
-    "Sites": [
-      "038026",
-      "038002"
-    ],
     "Coordinates": {
       "Latitude": -25.9,
       "Longitude": 139.35,
       "Elevation": 46
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "038002",
+        "StartDate": "1954-05-10T00:00:00",
+        "EndDate": "2000-06-28T00:00:00"
+      },
+      {
+        "Id": "038026",
+        "StartDate": "2000-06-29T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "f285ba2b-d6d6-4390-a80f-803522668bde",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Boulia",
     "PrimaryStation": "038003",
-    "Sites": [
-      "038003"
-    ],
     "Coordinates": {
       "Latitude": -22.91,
       "Longitude": 139.9,
       "Elevation": 161
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "038003",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "bab198bd-3940-4f13-a4f7-68af10735039",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Bourke",
     "PrimaryStation": "048245",
-    "Sites": [
-      "048245",
-      "048013",
-      "048239"
-    ],
     "Coordinates": {
       "Latitude": -30.04,
       "Longitude": 145.95,
       "Elevation": 107
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "048013",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1994-11-10T00:00:00"
+      },
+      {
+        "Id": "048239",
+        "StartDate": "1994-11-11T00:00:00",
+        "EndDate": "1998-12-31T00:00:00"
+      },
+      {
+        "Id": "048245",
+        "StartDate": "1999-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "9ea5be14-0e54-4453-8e8b-4c11e075cb42",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Bridgetown",
     "PrimaryStation": "009617",
-    "Sites": [
-      "009617",
-      "009510"
-    ],
     "Coordinates": {
       "Latitude": -33.95,
       "Longitude": 116.13,
       "Elevation": 178
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "009510",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2007-12-31T00:00:00"
+      },
+      {
+        "Id": "009617",
+        "StartDate": "2008-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "b7e0c061-e71c-4fc4-8068-c0432398c24f",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Brisbane Airport",
     "PrimaryStation": "040842",
-    "Sites": [
-      "040842",
-      "040223"
-    ],
     "Coordinates": {
       "Latitude": -27.39,
       "Longitude": 153.13,
       "Elevation": 4
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "040223",
+        "StartDate": "1949-06-03T00:00:00",
+        "EndDate": "1995-12-31T00:00:00"
+      },
+      {
+        "Id": "040842",
+        "StartDate": "1996-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "05daa0ea-6227-4225-bf52-8204808709b5",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Broome Airport",
     "PrimaryStation": "003003",
-    "Sites": [
-      "003003",
-      "003002"
-    ],
     "Coordinates": {
       "Latitude": -17.95,
       "Longitude": 122.24,
       "Elevation": 7
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "003002",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1941-12-31T00:00:00"
+      },
+      {
+        "Id": "003003",
+        "StartDate": "1942-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "b2c819cd-b20b-48b0-8148-eef2f8fd88b7",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Bundaberg",
     "PrimaryStation": "039128",
-    "Sites": [
-      "039128",
-      "039015"
-    ],
     "Coordinates": {
       "Latitude": -24.91,
       "Longitude": 152.32,
       "Elevation": 30
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "039015",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1990-06-30T00:00:00"
+      },
+      {
+        "Id": "039128",
+        "StartDate": "1990-07-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "fba7ed39-c752-460d-aa2e-342da7b55817",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Burketown",
     "PrimaryStation": "029077",
-    "Sites": [
-      "029077",
-      "029004"
-    ],
     "Coordinates": {
       "Latitude": -17.75,
       "Longitude": 139.54,
       "Elevation": 5
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "029004",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2001-10-15T00:00:00"
+      },
+      {
+        "Id": "029077",
+        "StartDate": "2001-10-16T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "5f6f3d62-4c80-441d-b30f-104d2f5d2e96",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Butlers Gorge",
     "PrimaryStation": "096003",
-    "Sites": [
-      "096003",
-      "096071"
-    ],
     "Coordinates": {
       "Latitude": -42.28,
       "Longitude": 146.28,
       "Elevation": 667
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "096003",
+        "StartDate": "1944-06-01T00:00:00",
+        "EndDate": "1989-12-31T00:00:00"
+      },
+      {
+        "Id": "096071",
+        "StartDate": "1990-01-01T00:00:00",
+        "EndDate": "2008-05-20T00:00:00"
+      },
+      {
+        "Id": "096003",
+        "StartDate": "2008-05-21T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "f7a20e98-23e9-4920-be3c-b72f8a22754d",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Cabramurra",
     "PrimaryStation": "072161",
-    "Sites": [
-      "072161",
-      "072091"
-    ],
     "Coordinates": {
       "Latitude": -35.94,
       "Longitude": 148.38,
       "Elevation": 1482
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "072091",
+        "StartDate": "1962-01-01T00:00:00",
+        "EndDate": "1996-12-31T00:00:00"
+      },
+      {
+        "Id": "072161",
+        "StartDate": "1997-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "8fe98f5f-c239-4f2f-961a-5686147e53f7",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Cairns",
     "PrimaryStation": "031011",
-    "Sites": [
-      "031011",
-      "031010"
-    ],
     "Coordinates": {
       "Latitude": -16.87,
       "Longitude": 145.75,
       "Elevation": 2
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "031010",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1942-10-21T00:00:00"
+      },
+      {
+        "Id": "031011",
+        "StartDate": "1942-10-22T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "09a5ba01-f523-4be3-ae7b-7a29a0da581c",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Camooweal",
     "PrimaryStation": "037010",
-    "Sites": [
-      "037010"
-    ],
     "Coordinates": {
       "Latitude": -19.92,
       "Longitude": 138.12,
       "Elevation": 231
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "037010",
+        "StartDate": "1939-06-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "c0f2743b-fb00-4128-9024-bafa4e1c85ed",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Canberra",
     "PrimaryStation": "070351",
-    "Sites": [
-      "070351",
-      "070099",
-      "070014"
-    ],
     "Coordinates": {
       "Latitude": -35.31,
       "Longitude": 149.2,
       "Elevation": 577
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "070099",
+        "StartDate": "1921-01-01T00:00:00",
+        "EndDate": "1939-03-31T00:00:00"
+      },
+      {
+        "Id": "070014",
+        "StartDate": "1939-04-01T00:00:00",
+        "EndDate": "2010-11-30T00:00:00"
+      },
+      {
+        "Id": "070351",
+        "StartDate": "2010-12-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "f1be5e90-f9fd-40f4-9db8-2c5564a7e908",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Cape Borda",
     "PrimaryStation": "022823",
-    "Sites": [
-      "022823",
-      "022801"
-    ],
     "Coordinates": {
       "Latitude": -35.75,
       "Longitude": 136.6,
       "Elevation": 158
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "022801",
+        "StartDate": "1957-09-01T00:00:00",
+        "EndDate": "2002-09-09T00:00:00"
+      },
+      {
+        "Id": "022823",
+        "StartDate": "2002-09-10T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "eb75b5eb-8feb-4118-b6ab-bbe9b4fbc334",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Cape Bruny Lighthouse",
     "PrimaryStation": "094198",
-    "Sites": [
-      "094198",
-      "094010"
-    ],
     "Coordinates": {
       "Latitude": -43.49,
       "Longitude": 147.14,
       "Elevation": 60
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "094010",
+        "StartDate": "1923-01-01T00:00:00",
+        "EndDate": "2006-12-31T00:00:00"
+      },
+      {
+        "Id": "094198",
+        "StartDate": "2007-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "f8dfe45b-d49c-4c0f-8d69-27d2d92cdb4b",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Cape Leeuwin",
     "PrimaryStation": "009518",
-    "Sites": [
-      "009518"
-    ],
     "Coordinates": {
       "Latitude": -34.37,
       "Longitude": 115.14,
       "Elevation": 13
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "009518",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "33d2cd26-bded-4abc-8e03-2f3266e3923f",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Cape Moreton",
     "PrimaryStation": "040043",
-    "Sites": [
-      "040043"
-    ],
     "Coordinates": {
       "Latitude": -27.03,
       "Longitude": 153.47,
       "Elevation": 99
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "040043",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "592c8e33-cc36-4cce-9af1-82bb3f26a5af",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Cape Otway Lighthouse",
     "PrimaryStation": "090015",
-    "Sites": [
-      "090015"
-    ],
     "Coordinates": {
       "Latitude": -38.86,
       "Longitude": 143.51,
       "Elevation": 82
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "090015",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "1c72f3e1-7d98-4ac5-8b64-1b5b2a4d599e",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Carnarvon",
     "PrimaryStation": "006011",
-    "Sites": [
-      "006011",
-      "006062"
-    ],
     "Coordinates": {
       "Latitude": -24.89,
       "Longitude": 113.67,
       "Elevation": 4
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "006062",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1947-12-31T00:00:00"
+      },
+      {
+        "Id": "006011",
+        "StartDate": "1948-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "4397371d-a43b-4925-af58-bec79e6ca802",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Ceduna",
     "PrimaryStation": "018012",
-    "Sites": [
-      "018012"
-    ],
     "Coordinates": {
       "Latitude": -32.13,
       "Longitude": 133.7,
       "Elevation": 15
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "018012",
+        "StartDate": "1939-07-02T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "0bc92500-5977-4aa2-81ae-a57ff8eabed3",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Charleville",
     "PrimaryStation": "044021",
-    "Sites": [
-      "044021",
-      "044022"
-    ],
     "Coordinates": {
       "Latitude": -26.41,
       "Longitude": 146.26,
       "Elevation": 301
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "044022",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1948-12-31T00:00:00"
+      },
+      {
+        "Id": "044021",
+        "StartDate": "1949-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "80a5afb6-f043-4e61-b1e3-b60029b9c559",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Charters Towers",
     "PrimaryStation": "034084",
-    "Sites": [
-      "034084",
-      "034002"
-    ],
     "Coordinates": {
       "Latitude": -20.05,
       "Longitude": 146.27,
       "Elevation": 289
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "034002",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1992-12-14T00:00:00"
+      },
+      {
+        "Id": "034084",
+        "StartDate": "1992-12-15T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "6f523c50-bf77-44d1-8418-57ea555855a3",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Cobar",
     "PrimaryStation": "048027",
-    "Sites": [
-      "048027",
-      "048030"
-    ],
     "Coordinates": {
       "Latitude": -31.48,
       "Longitude": 145.83,
       "Elevation": 260
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "048030",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1962-05-20T00:00:00"
+      },
+      {
+        "Id": "048027",
+        "StartDate": "1962-05-21T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "8a63813f-8544-46b6-806e-6bc32dfc1b0d",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Coffs Harbour",
     "PrimaryStation": "059151",
-    "Sites": [
-      "059151",
-      "059040"
-    ],
     "Coordinates": {
       "Latitude": -30.32,
       "Longitude": 153.12,
       "Elevation": 3
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "059040",
+        "StartDate": "1943-02-01T00:00:00",
+        "EndDate": "2013-08-09T00:00:00"
+      },
+      {
+        "Id": "059151",
+        "StartDate": "2013-08-10T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "d7307020-9788-4269-ae25-19926ca9e198",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Cunderdin",
     "PrimaryStation": "010286",
-    "Sites": [
-      "010286",
-      "010035"
-    ],
     "Coordinates": {
       "Latitude": -31.62,
       "Longitude": 117.22,
       "Elevation": 216
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "010035",
+        "StartDate": "1950-07-16T00:00:00",
+        "EndDate": "1996-12-31T00:00:00"
+      },
+      {
+        "Id": "010286",
+        "StartDate": "1997-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "fc5ff168-2c7a-4913-bac7-957d7efa065b",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Dalwallinu",
     "PrimaryStation": "008297",
-    "Sites": [
-      "008297",
-      "008039"
-    ],
     "Coordinates": {
       "Latitude": -30.28,
       "Longitude": 116.67,
       "Elevation": 324
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "008039",
+        "StartDate": "1955-01-01T00:00:00",
+        "EndDate": "2006-12-31T00:00:00"
+      },
+      {
+        "Id": "008297",
+        "StartDate": "2007-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "00147d6f-1569-422f-8322-a42b98e25071",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Darwin",
     "PrimaryStation": "014015",
-    "Sites": [
-      "014015",
-      "014016"
-    ],
     "Coordinates": {
       "Latitude": -12.42,
       "Longitude": 130.89,
       "Elevation": 30
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "014016",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1941-02-01T00:00:00"
+      },
+      {
+        "Id": "014015",
+        "StartDate": "1941-02-02T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "2e2acf0b-592b-4ba4-adc9-b6f08546b92a",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Deniliquin",
     "PrimaryStation": "074258",
-    "Sites": [
-      "074258",
-      "074128"
-    ],
     "Coordinates": {
       "Latitude": -35.56,
       "Longitude": 144.95,
       "Elevation": 94
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "074128",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1997-06-02T00:00:00"
+      },
+      {
+        "Id": "074258",
+        "StartDate": "1997-06-03T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "5e5c8eee-e28d-4651-bb04-24d08e89c254",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Dubbo",
     "PrimaryStation": "065070",
-    "Sites": [
-      "065070",
-      "065012"
-    ],
     "Coordinates": {
       "Latitude": -32.22,
       "Longitude": 148.58,
       "Elevation": 284
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "065012",
+        "StartDate": "1921-01-01T00:00:00",
+        "EndDate": "1994-12-31T00:00:00"
+      },
+      {
+        "Id": "065070",
+        "StartDate": "1995-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "7c7d3560-0741-4966-a878-b2749afc7737",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Esperance",
     "PrimaryStation": "009789",
-    "Sites": [
-      "009789",
-      "009541"
-    ],
     "Coordinates": {
       "Latitude": -33.83,
       "Longitude": 121.89,
       "Elevation": 25
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "009541",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1969-06-29T00:00:00"
+      },
+      {
+        "Id": "009789",
+        "StartDate": "1969-06-30T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "663a6037-a8de-462a-9d74-396ec881ffeb",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Eucla",
     "PrimaryStation": "011003",
-    "Sites": [
-      "011003"
-    ],
     "Coordinates": {
       "Latitude": -31.68,
       "Longitude": 128.9,
       "Elevation": 93
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "011003",
+        "StartDate": "1913-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "a7a48420-7677-444a-a6aa-e8d6eb195729",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Forrest",
     "PrimaryStation": "011052",
-    "Sites": [
-      "011052",
-      "011004"
-    ],
     "Coordinates": {
       "Latitude": -30.85,
       "Longitude": 128.11,
       "Elevation": 159
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "011004",
+        "StartDate": "1946-02-01T00:00:00",
+        "EndDate": "1993-03-14T00:00:00"
+      },
+      {
+        "Id": "011052",
+        "StartDate": "1993-03-15T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "714a7fe5-cea8-4e9b-bac0-cb01f8d0fff3",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Gabo Island",
     "PrimaryStation": "084016",
-    "Sites": [
-      "084016"
-    ],
     "Coordinates": {
       "Latitude": -37.57,
       "Longitude": 149.92,
       "Elevation": 15
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "084016",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "64004954-c0c6-4de3-9ac1-3f50bada1ec9",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Gayndah",
     "PrimaryStation": "039066",
-    "Sites": [
-      "039066",
-      "039039"
-    ],
     "Coordinates": {
       "Latitude": -25.62,
       "Longitude": 151.62,
       "Elevation": 110
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "039039",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2005-12-31T00:00:00"
+      },
+      {
+        "Id": "039066",
+        "StartDate": "2006-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "2bf20585-6b1a-4e3c-a8ed-1d87e67789a6",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Georgetown",
     "PrimaryStation": "030124",
-    "Sites": [
-      "030124",
-      "030018"
-    ],
     "Coordinates": {
       "Latitude": -18.3,
       "Longitude": 143.53,
       "Elevation": 301
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "030018",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2004-06-30T00:00:00"
+      },
+      {
+        "Id": "030124",
+        "StartDate": "2004-07-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "c6ba58ea-6142-4954-afac-256ca81c67bc",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Geraldton",
     "PrimaryStation": "008315",
-    "Sites": [
-      "008315",
-      "008050",
-      "008051"
-    ],
     "Coordinates": {
       "Latitude": -28.8,
       "Longitude": 114.7,
       "Elevation": 29
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "008050",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1941-12-31T00:00:00"
+      },
+      {
+        "Id": "008051",
+        "StartDate": "1942-01-01T00:00:00",
+        "EndDate": "2011-07-19T00:00:00"
+      },
+      {
+        "Id": "008315",
+        "StartDate": "2011-07-20T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "e61fd5fb-f6a0-41b0-99bf-bc2eddb1a90c",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Giles",
     "PrimaryStation": "013017",
-    "Sites": [
-      "013017"
-    ],
     "Coordinates": {
       "Latitude": -25.03,
       "Longitude": 128.3,
       "Elevation": 598
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "013017",
+        "StartDate": "1956-08-13T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "db8309f6-72b8-49e2-89b3-69a13989a392",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Grove",
     "PrimaryStation": "094220",
-    "Sites": [
-      "094220",
-      "094069"
-    ],
     "Coordinates": {
       "Latitude": -42.99,
       "Longitude": 147.07,
       "Elevation": 65
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "094069",
+        "StartDate": "1952-05-01T00:00:00",
+        "EndDate": "2004-06-15T00:00:00"
+      },
+      {
+        "Id": "094220",
+        "StartDate": "2004-06-16T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "b8a3092a-041f-478d-951f-5ee4dda0a410",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Gunnedah",
     "PrimaryStation": "055024",
-    "Sites": [
-      "055024"
-    ],
     "Coordinates": {
       "Latitude": -31.03,
       "Longitude": 150.27,
       "Elevation": 307
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "055024",
+        "StartDate": "1948-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "ba6fb433-bc80-4890-8c8b-16830b95f633",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Halls Creek",
     "PrimaryStation": "002079",
-    "Sites": [
-      "002079",
-      "002011",
-      "002012"
-    ],
     "Coordinates": {
       "Latitude": -18.23,
       "Longitude": 127.67,
       "Elevation": 409
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "002011",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1949-12-31T00:00:00"
+      },
+      {
+        "Id": "002012",
+        "StartDate": "1950-01-01T00:00:00",
+        "EndDate": "2015-09-18T00:00:00"
+      },
+      {
+        "Id": "002079",
+        "StartDate": "2015-09-19T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "aed87aa0-1d0c-44aa-8561-cde0fc936395",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Hobart",
     "PrimaryStation": "094029",
-    "Sites": [
-      "094029"
-    ],
     "Coordinates": {
       "Latitude": -42.89,
       "Longitude": 147.33,
       "Elevation": 50
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "094029",
+        "StartDate": "1918-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "1d06ff8a-82ba-4613-875f-1b4893536c42",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Horn Island",
     "PrimaryStation": "027058",
-    "Sites": [
-      "027058",
-      "027022",
-      "027021"
-    ],
     "Coordinates": {
       "Latitude": -10.58,
       "Longitude": 142.29,
       "Elevation": 4
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "027022",
+        "StartDate": "1950-09-04T00:00:00",
+        "EndDate": "1992-12-31T00:00:00"
+      },
+      {
+        "Id": "027021",
+        "StartDate": "1993-01-01T00:00:00",
+        "EndDate": "1995-12-31T00:00:00"
+      },
+      {
+        "Id": "027058",
+        "StartDate": "1996-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "c5094f09-3fb3-4455-bf7b-b835928ad5f3",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Inverell",
     "PrimaryStation": "056242",
-    "Sites": [
-      "056242",
-      "056017"
-    ],
     "Coordinates": {
       "Latitude": -29.78,
       "Longitude": 151.11,
       "Elevation": 582
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "056017",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1996-12-31T00:00:00"
+      },
+      {
+        "Id": "056242",
+        "StartDate": "1997-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "6e8b7fce-49bf-41d2-959d-62130a40fb22",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Kalgoorlie-Boulder",
     "PrimaryStation": "012038",
-    "Sites": [
-      "012038",
-      "012039"
-    ],
     "Coordinates": {
       "Latitude": -30.78,
       "Longitude": 121.45,
       "Elevation": 365
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "012039",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1943-12-31T00:00:00"
+      },
+      {
+        "Id": "012038",
+        "StartDate": "1944-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "cbb11150-ec74-4401-8357-fae6fef70768",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Kalumburu",
     "PrimaryStation": "001019",
-    "Sites": [
-      "001019",
-      "001021"
-    ],
     "Coordinates": {
       "Latitude": -14.3,
       "Longitude": 126.65,
       "Elevation": 23
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "001021",
+        "StartDate": "1941-09-01T00:00:00",
+        "EndDate": "1998-09-15T00:00:00"
+      },
+      {
+        "Id": "001019",
+        "StartDate": "1998-09-16T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "aa0021dd-8c27-4101-96b7-5e6b60c0c70a",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Katanning",
     "PrimaryStation": "010916",
-    "Sites": [
-      "010916",
-      "010579"
-    ],
     "Coordinates": {
       "Latitude": -33.69,
       "Longitude": 117.61,
       "Elevation": 320
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "010579",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1999-01-08T00:00:00"
+      },
+      {
+        "Id": "010916",
+        "StartDate": "1999-01-09T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "23701518-8a46-4b7e-b9ef-da570d77b7cb",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Kerang",
     "PrimaryStation": "080023",
-    "Sites": [
-      "080023"
-    ],
     "Coordinates": {
       "Latitude": -35.72,
       "Longitude": 143.92,
       "Elevation": 77
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "080023",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "6b771c0b-97d3-45c7-9cd1-72fdee232e7c",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Kyancutta",
     "PrimaryStation": "018044",
-    "Sites": [
-      "018044"
-    ],
     "Coordinates": {
       "Latitude": -33.13,
       "Longitude": 135.55,
       "Elevation": 59
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "018044",
+        "StartDate": "1930-02-10T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "20ab0202-8038-4275-aad2-70788ec68d6e",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Larapuna (Eddystone Point)",
     "PrimaryStation": "092045",
-    "Sites": [
-      "092045"
-    ],
     "Coordinates": {
       "Latitude": -40.99,
       "Longitude": 148.35,
       "Elevation": 19
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "092045",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "b483cb66-25cc-45ee-b1c8-8db405f0415a",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Launceston Airport",
     "PrimaryStation": "091311",
-    "Sites": [
-      "091311",
-      "091049",
-      "091104"
-    ],
     "Coordinates": {
       "Latitude": -41.55,
       "Longitude": 147.22,
       "Elevation": 166
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "091049",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1939-03-31T00:00:00"
+      },
+      {
+        "Id": "091104",
+        "StartDate": "1939-04-01T00:00:00",
+        "EndDate": "2004-07-11T00:00:00"
+      },
+      {
+        "Id": "091311",
+        "StartDate": "2004-07-12T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "ddbdddc8-8f95-4a44-b55b-f52378460640",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Laverton RAAF",
     "PrimaryStation": "087031",
-    "Sites": [
-      "087031"
-    ],
     "Coordinates": {
       "Latitude": -37.86,
       "Longitude": 144.76,
       "Elevation": 20
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "087031",
+        "StartDate": "1943-10-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "2119d5bf-94b0-4724-b2b8-bcd5f787877b",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Learmonth",
     "PrimaryStation": "005007",
-    "Sites": [
-      "005007"
-    ],
     "Coordinates": {
       "Latitude": -22.24,
       "Longitude": 114.1,
       "Elevation": 5
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "005007",
+        "StartDate": "1975-03-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "9fff8b80-9230-4161-a626-c0f6e8c3b3e7",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Longreach",
     "PrimaryStation": "036031",
-    "Sites": [
-      "036031",
-      "036030"
-    ],
     "Coordinates": {
       "Latitude": -23.44,
       "Longitude": 144.28,
       "Elevation": 192
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "036030",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1967-03-31T00:00:00"
+      },
+      {
+        "Id": "036031",
+        "StartDate": "1967-04-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "1b4b65dc-5742-432d-a4ae-d83069397723",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Low Head",
     "PrimaryStation": "091293",
-    "Sites": [
-      "091293",
-      "091057"
-    ],
     "Coordinates": {
       "Latitude": -41.05,
       "Longitude": 146.79,
       "Elevation": 3
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "091057",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1998-01-07T00:00:00"
+      },
+      {
+        "Id": "091293",
+        "StartDate": "1998-01-08T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "a5bff3b7-d9dc-40cb-bdb0-f2f07af2e2b7",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Mackay",
     "PrimaryStation": "033119",
-    "Sites": [
-      "033119",
-      "033046",
-      "033047"
-    ],
     "Coordinates": {
       "Latitude": -21.12,
       "Longitude": 149.22,
       "Elevation": 30
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "033046",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1947-07-31T00:00:00"
+      },
+      {
+        "Id": "033047",
+        "StartDate": "1947-08-01T00:00:00",
+        "EndDate": "1959-09-24T00:00:00"
+      },
+      {
+        "Id": "033119",
+        "StartDate": "1959-09-25T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "909dadb1-c33b-412b-97e0-42f5704f4090",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Marble Bar",
     "PrimaryStation": "004106",
-    "Sites": [
-      "004106",
-      "004020"
-    ],
     "Coordinates": {
       "Latitude": -21.18,
       "Longitude": 119.75,
       "Elevation": 182
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "004020",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2000-09-25T00:00:00"
+      },
+      {
+        "Id": "004106",
+        "StartDate": "2000-09-26T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "516cbbab-1226-4caa-b18d-e5b2aeeff7d6",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Marree",
     "PrimaryStation": "017126",
-    "Sites": [
-      "017126",
-      "017024",
-      "017031"
-    ],
     "Coordinates": {
       "Latitude": -29.66,
       "Longitude": 138.07,
       "Elevation": 50
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "017024",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1939-03-31T00:00:00"
+      },
+      {
+        "Id": "017031",
+        "StartDate": "1939-04-01T00:00:00",
+        "EndDate": "2005-12-31T00:00:00"
+      },
+      {
+        "Id": "017126",
+        "StartDate": "2006-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "9ce454b6-7e6c-4516-88a7-6504444a4754",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Meekatharra",
     "PrimaryStation": "007045",
-    "Sites": [
-      "007045",
-      "007046"
-    ],
     "Coordinates": {
       "Latitude": -26.61,
       "Longitude": 118.54,
       "Elevation": 517
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "007046",
+        "StartDate": "1926-10-05T00:00:00",
+        "EndDate": "1950-04-24T00:00:00"
+      },
+      {
+        "Id": "007045",
+        "StartDate": "1950-04-25T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "1e743b5c-f9bf-477c-8b16-7d45c67909a7",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Melbourne",
     "PrimaryStation": "086338",
-    "Sites": [
-      "086338",
-      "086071"
-    ],
     "Coordinates": {
       "Latitude": -37.83,
       "Longitude": 144.98,
       "Elevation": 7
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "086071",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2013-06-01T00:00:00"
+      },
+      {
+        "Id": "086338",
+        "StartDate": "2013-06-02T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "fdd46b2e-4da4-4426-a17d-034ee9752ef6",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Merredin",
     "PrimaryStation": "010092",
-    "Sites": [
-      "010092",
-      "010093"
-    ],
     "Coordinates": {
       "Latitude": -31.48,
       "Longitude": 118.28,
       "Elevation": 315
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "010093",
+        "StartDate": "1912-12-01T00:00:00",
+        "EndDate": "1974-12-31T00:00:00"
+      },
+      {
+        "Id": "010092",
+        "StartDate": "1975-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "f6093d63-0476-4bd4-bb88-6322cf04dfaa",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Mildura",
     "PrimaryStation": "076031",
-    "Sites": [
-      "076031",
-      "076077"
-    ],
     "Coordinates": {
       "Latitude": -34.24,
       "Longitude": 142.09,
       "Elevation": 50
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "076077",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1946-08-25T00:00:00"
+      },
+      {
+        "Id": "076031",
+        "StartDate": "1946-08-26T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "a14c760f-4858-4f36-8d0a-7f219dc9b303",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Miles",
     "PrimaryStation": "042112",
-    "Sites": [
-      "042112",
-      "042023"
-    ],
     "Coordinates": {
       "Latitude": -26.66,
       "Longitude": 150.18,
       "Elevation": 304
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "042023",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1997-07-09T00:00:00"
+      },
+      {
+        "Id": "042112",
+        "StartDate": "1997-07-10T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "503be743-9f46-4f6f-8b3e-8ce830e12fe7",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Morawa",
     "PrimaryStation": "008296",
-    "Sites": [
-      "008296",
-      "008093"
-    ],
     "Coordinates": {
       "Latitude": -29.2,
       "Longitude": 116.02,
       "Elevation": 271
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "008093",
+        "StartDate": "1925-03-01T00:00:00",
+        "EndDate": "1997-03-25T00:00:00"
+      },
+      {
+        "Id": "008296",
+        "StartDate": "1997-03-26T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "8867cc4a-6da5-41e6-a4f7-e02dd9460cdd",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Moree",
     "PrimaryStation": "053115",
-    "Sites": [
-      "053115",
-      "053027",
-      "053048"
-    ],
     "Coordinates": {
       "Latitude": -29.49,
       "Longitude": 149.85,
       "Elevation": 213
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "053027",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1965-12-31T00:00:00"
+      },
+      {
+        "Id": "053048",
+        "StartDate": "1966-01-01T00:00:00",
+        "EndDate": "1995-05-16T00:00:00"
+      },
+      {
+        "Id": "053115",
+        "StartDate": "1995-05-17T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "59803ca9-d81b-4888-bd08-473f659e1fc0",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Moruya Heads",
     "PrimaryStation": "069018",
-    "Sites": [
-      "069018"
-    ],
     "Coordinates": {
       "Latitude": -35.91,
       "Longitude": 150.15,
       "Elevation": 17
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "069018",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "4865e9b4-d86a-4961-b65c-cc33f969ff04",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Mount Gambier",
     "PrimaryStation": "026021",
-    "Sites": [
-      "026021",
-      "026020"
-    ],
     "Coordinates": {
       "Latitude": -37.75,
       "Longitude": 140.77,
       "Elevation": 63
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "026020",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1941-12-31T00:00:00"
+      },
+      {
+        "Id": "026021",
+        "StartDate": "1942-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "4006f876-24bb-4b31-9318-72fcf44f47b0",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Nhill",
     "PrimaryStation": "078015",
-    "Sites": [
-      "078015",
-      "078031"
-    ],
     "Coordinates": {
       "Latitude": -36.31,
       "Longitude": 141.65,
       "Elevation": 138
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "078031",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2003-06-10T00:00:00"
+      },
+      {
+        "Id": "078015",
+        "StartDate": "2003-06-11T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "f0991551-814d-4323-9c0b-c8f12b887985",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Normanton",
     "PrimaryStation": "029063",
-    "Sites": [
-      "029063",
-      "029041"
-    ],
     "Coordinates": {
       "Latitude": -17.69,
       "Longitude": 141.07,
       "Elevation": 18
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "029041",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2001-04-30T00:00:00"
+      },
+      {
+        "Id": "029063",
+        "StartDate": "2001-05-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "6c8d1781-f74b-45b8-bfe2-8a952b278011",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Nowra",
     "PrimaryStation": "068072",
-    "Sites": [
-      "068072",
-      "068076"
-    ],
     "Coordinates": {
       "Latitude": -34.95,
       "Longitude": 150.54,
       "Elevation": 109
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "068076",
+        "StartDate": "1955-12-01T00:00:00",
+        "EndDate": "2000-11-27T00:00:00"
+      },
+      {
+        "Id": "068072",
+        "StartDate": "2000-11-28T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "b13e3137-51c7-432a-9194-2c3f42f0e438",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Nuriootpa",
     "PrimaryStation": "023373",
-    "Sites": [
-      "023373",
-      "023321"
-    ],
     "Coordinates": {
       "Latitude": -34.48,
       "Longitude": 139.01,
       "Elevation": 275
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "023321",
+        "StartDate": "1957-01-01T00:00:00",
+        "EndDate": "1996-08-27T00:00:00"
+      },
+      {
+        "Id": "023373",
+        "StartDate": "1996-08-28T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "69e0e687-7e35-466a-b518-ee4c76af5cf6",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Oodnadatta",
     "PrimaryStation": "017043",
-    "Sites": [
-      "017043",
-      "017114"
-    ],
     "Coordinates": {
       "Latitude": -27.56,
       "Longitude": 135.45,
       "Elevation": 116
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "017043",
+        "StartDate": "1940-02-01T00:00:00",
+        "EndDate": "1985-07-26T00:00:00"
+      },
+      {
+        "Id": "017114",
+        "StartDate": "1985-07-27T00:00:00",
+        "EndDate": "1994-12-11T00:00:00"
+      },
+      {
+        "Id": "017043",
+        "StartDate": "1994-12-12T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "32ecbe0c-95a6-4d39-b8f4-c7ac859c8122",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Orbost",
     "PrimaryStation": "084145",
-    "Sites": [
-      "084145",
-      "084030"
-    ],
     "Coordinates": {
       "Latitude": -37.69,
       "Longitude": 148.47,
       "Elevation": 62
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "084030",
+        "StartDate": "1938-01-01T00:00:00",
+        "EndDate": "2000-11-22T00:00:00"
+      },
+      {
+        "Id": "084145",
+        "StartDate": "2000-11-23T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "944b1732-d083-40b8-b865-fbf63941414c",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Palmerville",
     "PrimaryStation": "028004",
-    "Sites": [
-      "028004"
-    ],
     "Coordinates": {
       "Latitude": -16,
       "Longitude": 144.08,
       "Elevation": 203
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "028004",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "02619137-0d4d-4bcf-8ae3-f87697cd178d",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Perth",
     "PrimaryStation": "009021",
-    "Sites": [
-      "009021",
-      "009034"
-    ],
     "Coordinates": {
       "Latitude": -31.93,
       "Longitude": 115.98,
       "Elevation": 15
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "009034",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1963-12-31T00:00:00"
+      },
+      {
+        "Id": "009021",
+        "StartDate": "1964-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "1130dd09-dd90-4a8f-8a65-31f14dd449e3",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Point Perpendicular",
     "PrimaryStation": "068151",
-    "Sites": [
-      "068151",
-      "068034"
-    ],
     "Coordinates": {
       "Latitude": -35.09,
       "Longitude": 150.8,
       "Elevation": 85
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "068034",
+        "StartDate": "1946-01-01T00:00:00",
+        "EndDate": "2001-05-20T00:00:00"
+      },
+      {
+        "Id": "068151",
+        "StartDate": "2001-05-21T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "04d33b2f-2a8a-4cf0-b281-68b74475d2b4",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Port Hedland",
     "PrimaryStation": "004032",
-    "Sites": [
-      "004032",
-      "004002"
-    ],
     "Coordinates": {
       "Latitude": -20.37,
       "Longitude": 118.63,
       "Elevation": 6
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "004002",
+        "StartDate": "1912-10-10T00:00:00",
+        "EndDate": "1948-06-30T00:00:00"
+      },
+      {
+        "Id": "004032",
+        "StartDate": "1948-07-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "b4e10e95-ce0f-4ae6-85cf-bc611c8164e8",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Port Lincoln",
     "PrimaryStation": "018192",
-    "Sites": [
-      "018192",
-      "018070"
-    ],
     "Coordinates": {
       "Latitude": -34.6,
       "Longitude": 135.88,
       "Elevation": 8
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "018070",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1994-12-31T00:00:00"
+      },
+      {
+        "Id": "018192",
+        "StartDate": "1995-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "5d20e960-257d-4bc2-8d06-162c19fa86a2",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Port Macquarie",
     "PrimaryStation": "060139",
-    "Sites": [
-      "060139",
-      "060026"
-    ],
     "Coordinates": {
       "Latitude": -31.43,
       "Longitude": 152.87,
       "Elevation": 4
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "060026",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1999-12-31T00:00:00"
+      },
+      {
+        "Id": "060139",
+        "StartDate": "2000-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "916c204a-0847-4fd3-9ad0-0ccc5ae9c601",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Rabbit Flat",
     "PrimaryStation": "015666",
-    "Sites": [
-      "015666",
-      "015548"
-    ],
     "Coordinates": {
       "Latitude": -20.18,
       "Longitude": 130.01,
       "Elevation": 340
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "015548",
+        "StartDate": "1969-08-21T00:00:00",
+        "EndDate": "1996-12-31T00:00:00"
+      },
+      {
+        "Id": "015666",
+        "StartDate": "1997-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "6c834afc-799c-473e-9d59-91a7ec7974a2",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Richmond (NSW)",
     "PrimaryStation": "067105",
-    "Sites": [
-      "067105",
-      "067033"
-    ],
     "Coordinates": {
       "Latitude": -33.6,
       "Longitude": 150.78,
       "Elevation": 19
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "067033",
+        "StartDate": "1939-12-01T00:00:00",
+        "EndDate": "1994-10-31T00:00:00"
+      },
+      {
+        "Id": "067105",
+        "StartDate": "1994-11-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "53ea40d9-d6fb-4ffe-9bde-e4188698f2de",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Richmond (Qld)",
     "PrimaryStation": "030161",
-    "Sites": [
-      "030161",
-      "030045"
-    ],
     "Coordinates": {
       "Latitude": -20.7,
       "Longitude": 143.12,
       "Elevation": 206
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "030045",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2010-12-31T00:00:00"
+      },
+      {
+        "Id": "030161",
+        "StartDate": "2011-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "5885b48d-d66d-4e89-a30e-ff40a0c7d153",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Robe",
     "PrimaryStation": "026026",
-    "Sites": [
-      "026026"
-    ],
     "Coordinates": {
       "Latitude": -37.16,
       "Longitude": 139.76,
       "Elevation": 3
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "026026",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "e51c740e-2666-4f56-b397-0a68b26a6c3c",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Rockhampton",
     "PrimaryStation": "039083",
-    "Sites": [
-      "039083"
-    ],
     "Coordinates": {
       "Latitude": -23.38,
       "Longitude": 150.48,
       "Elevation": 10
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "039083",
+        "StartDate": "1939-08-06T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "9498f548-f000-4ff2-9c5d-fb7d3037493c",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Rutherglen",
     "PrimaryStation": "082039",
-    "Sites": [
-      "082039"
-    ],
     "Coordinates": {
       "Latitude": -36.1,
       "Longitude": 146.51,
       "Elevation": 175
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "082039",
+        "StartDate": "1912-11-07T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "7703f086-589e-406d-b152-dde26cbe6418",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Sale",
     "PrimaryStation": "085072",
-    "Sites": [
-      "085072",
-      "085133"
-    ],
     "Coordinates": {
       "Latitude": -38.12,
       "Longitude": 147.13,
       "Elevation": 4
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "085133",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1945-07-31T00:00:00"
+      },
+      {
+        "Id": "085072",
+        "StartDate": "1945-08-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "5a927fc5-5f9d-46a0-af66-3023610337d8",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Scone",
     "PrimaryStation": "061363",
-    "Sites": [
-      "061363",
-      "061089"
-    ],
     "Coordinates": {
       "Latitude": -32.03,
       "Longitude": 150.83,
       "Elevation": 221
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "061089",
+        "StartDate": "1965-01-01T00:00:00",
+        "EndDate": "1994-12-31T00:00:00"
+      },
+      {
+        "Id": "061363",
+        "StartDate": "1995-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "55f5699c-7d1f-4952-8bf1-4b924d7461d1",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Snowtown",
     "PrimaryStation": "021133",
-    "Sites": [
-      "021133",
-      "021046"
-    ],
     "Coordinates": {
       "Latitude": -33.77,
       "Longitude": 138.22,
       "Elevation": 109
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "021046",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1998-06-22T00:00:00"
+      },
+      {
+        "Id": "021133",
+        "StartDate": "1998-06-23T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "e9581d86-1e15-42aa-ad4b-b3960a119b10",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "St George",
     "PrimaryStation": "043109",
-    "Sites": [
-      "043109",
-      "043034"
-    ],
     "Coordinates": {
       "Latitude": -28.05,
       "Longitude": 148.59,
       "Elevation": 198
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "043034",
+        "StartDate": "1913-02-01T00:00:00",
+        "EndDate": "1997-05-31T00:00:00"
+      },
+      {
+        "Id": "043109",
+        "StartDate": "1997-06-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "0788f2da-2034-40e2-badc-b77fc7d4bbd3",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Sydney",
     "PrimaryStation": "066062",
-    "Sites": [
-      "066062",
-      "066214"
-    ],
     "Coordinates": {
       "Latitude": -33.86,
       "Longitude": 151.21,
       "Elevation": 39
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "066062",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "9882e6ca-a0aa-479c-b1a6-169e94481afd",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Tarcoola",
     "PrimaryStation": "016098",
-    "Sites": [
-      "016098",
-      "016044"
-    ],
     "Coordinates": {
       "Latitude": -30.71,
       "Longitude": 134.58,
       "Elevation": 123
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "016044",
+        "StartDate": "1921-11-01T00:00:00",
+        "EndDate": "1997-09-30T00:00:00"
+      },
+      {
+        "Id": "016098",
+        "StartDate": "1997-10-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "5cfaf343-06a2-4bc6-a451-b8f2d3751da9",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Tennant Creek",
     "PrimaryStation": "015135",
-    "Sites": [
-      "015135",
-      "015087"
-    ],
     "Coordinates": {
       "Latitude": -19.64,
       "Longitude": 134.18,
       "Elevation": 375
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "015087",
+        "StartDate": "1910-02-01T00:00:00",
+        "EndDate": "1969-12-31T00:00:00"
+      },
+      {
+        "Id": "015135",
+        "StartDate": "1970-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "a205d717-c18b-4082-9822-d3309f2637f7",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Thargomindah",
     "PrimaryStation": "045025",
-    "Sites": [
-      "045025",
-      "045017"
-    ],
     "Coordinates": {
       "Latitude": -27.99,
       "Longitude": 143.82,
       "Elevation": 130
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "045017",
+        "StartDate": "1957-01-01T00:00:00",
+        "EndDate": "1999-07-31T00:00:00"
+      },
+      {
+        "Id": "045025",
+        "StartDate": "1999-08-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "04f7dd04-7bc2-4c4f-ae1e-2ee7180d8649",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Tibooburra",
     "PrimaryStation": "046126",
-    "Sites": [
-      "046126",
-      "046037"
-    ],
     "Coordinates": {
       "Latitude": -29.44,
       "Longitude": 142.06,
       "Elevation": 176
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "046037",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2006-12-31T00:00:00"
+      },
+      {
+        "Id": "046126",
+        "StartDate": "2007-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "b0783cae-1c6f-4570-8ab3-19df57ee1820",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Townsville",
     "PrimaryStation": "032040",
-    "Sites": [
-      "032040"
-    ],
     "Coordinates": {
       "Latitude": -19.25,
       "Longitude": 146.77,
       "Elevation": 4
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "032040",
+        "StartDate": "1940-10-19T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "be54baa5-c044-41c3-affa-50884f7c9735",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Victoria River Downs",
     "PrimaryStation": "014825",
-    "Sites": [
-      "014825"
-    ],
     "Coordinates": {
       "Latitude": -16.4,
       "Longitude": 131.01,
       "Elevation": 88
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "014825",
+        "StartDate": "1965-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "d209e7e6-d3da-40d4-b377-61cf7056d376",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Wagga Wagga",
     "PrimaryStation": "072150",
-    "Sites": [
-      "072150",
-      "072151"
-    ],
     "Coordinates": {
       "Latitude": -35.16,
       "Longitude": 147.46,
       "Elevation": 212
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "072151",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1942-12-31T00:00:00"
+      },
+      {
+        "Id": "072150",
+        "StartDate": "1943-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "82fbe1bf-5c58-4f9b-8f5d-71fdd060d2e9",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Walgett",
     "PrimaryStation": "052088",
-    "Sites": [
-      "052088",
-      "052026"
-    ],
     "Coordinates": {
       "Latitude": -30.04,
       "Longitude": 148.12,
       "Elevation": 133
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "052026",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1993-05-31T00:00:00"
+      },
+      {
+        "Id": "052088",
+        "StartDate": "1993-06-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "81644c2e-0ddc-472f-bae6-d976e6d623bc",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Wandering",
     "PrimaryStation": "010917",
-    "Sites": [
-      "010917",
-      "010648"
-    ],
     "Coordinates": {
       "Latitude": -32.67,
       "Longitude": 116.67,
       "Elevation": 275
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "010648",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "1998-12-13T00:00:00"
+      },
+      {
+        "Id": "010917",
+        "StartDate": "1998-12-14T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "bc211d96-5bf6-4427-acac-81b40e17a4ce",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Weipa",
     "PrimaryStation": "027045",
-    "Sites": [
-      "027045",
-      "027042"
-    ],
     "Coordinates": {
       "Latitude": -12.68,
       "Longitude": 141.92,
       "Elevation": 18
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "027042",
+        "StartDate": "1959-01-01T00:00:00",
+        "EndDate": "1992-11-05T00:00:00"
+      },
+      {
+        "Id": "027045",
+        "StartDate": "1992-11-06T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "bd628d1f-9c2d-403c-abb5-e2e440fd3a02",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Wilcannia",
     "PrimaryStation": "046012",
-    "Sites": [
-      "046012",
-      "046043"
-    ],
     "Coordinates": {
       "Latitude": -31.52,
       "Longitude": 143.39,
       "Elevation": 94
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "046043",
+        "StartDate": "1957-01-01T00:00:00",
+        "EndDate": "2010-12-31T00:00:00"
+      },
+      {
+        "Id": "046012",
+        "StartDate": "2011-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "f0f62231-f0d3-4ded-a945-133d4ecc4255",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Williamtown",
     "PrimaryStation": "061078",
-    "Sites": [
-      "061078"
-    ],
     "Coordinates": {
       "Latitude": -32.79,
       "Longitude": 151.84,
       "Elevation": 7
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "061078",
+        "StartDate": "1942-09-10T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "45feed6f-2821-43de-99ec-e605e3f36f75",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Wilsons Promontory",
     "PrimaryStation": "085096",
-    "Sites": [
-      "085096"
-    ],
     "Coordinates": {
       "Latitude": -39.13,
       "Longitude": 146.42,
       "Elevation": 95
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "085096",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "48c35ccf-3ff8-4448-90de-1e491c500887",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Wittenoom",
     "PrimaryStation": "005098",
-    "Sites": [
-      "005098",
-      "005026"
-    ],
     "Coordinates": {
       "Latitude": -22.3,
       "Longitude": 118.45,
       "Elevation": 474
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "005026",
+        "StartDate": "1951-10-01T00:00:00",
+        "EndDate": "2018-08-31T00:00:00"
+      },
+      {
+        "Id": "005098",
+        "StartDate": "2018-09-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "b41a2fa1-ce5c-473e-b2d7-17d43e9dbc8b",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Woomera",
     "PrimaryStation": "016001",
-    "Sites": [
-      "016001"
-    ],
     "Coordinates": {
       "Latitude": -31.16,
       "Longitude": 136.81,
       "Elevation": 166
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "016001",
+        "StartDate": "1949-04-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "141b8a24-fc66-4ec5-a71c-2c779d802ca2",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Wyalong",
     "PrimaryStation": "050017",
-    "Sites": [
-      "050017",
-      "073054"
-    ],
     "Coordinates": {
       "Latitude": -33.94,
       "Longitude": 147.2,
       "Elevation": 257
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "073054",
+        "StartDate": "1965-01-01T00:00:00",
+        "EndDate": "2004-12-31T00:00:00"
+      },
+      {
+        "Id": "050017",
+        "StartDate": "2005-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   },
   {
     "Id": "54e1d0a7-54be-4fb9-b88e-d6a4b8a1b595",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Yamba",
     "PrimaryStation": "058012",
-    "Sites": [
-      "058012"
-    ],
     "Coordinates": {
       "Latitude": -29.43,
       "Longitude": 153.36,
       "Elevation": 27
-    }
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "Stations": [
+      {
+        "Id": "058012",
+        "StartDate": "1910-01-01T00:00:00",
+        "EndDate": "2019-12-31T00:00:00"
+      }
+    ],
+    "NearbyLocations": null
   }
 ]

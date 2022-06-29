@@ -12,17 +12,23 @@ public class Location
     public float? WarmingIndex { get; set; }
     public short? HeatingScore { get; set; }
 
-    public List<string> Sites { get; set; }
+    public List<Station> Stations { get; set; }
     public List<LocationDistance> NearbyLocations { get; set; }
     public Location()
     {
-        Sites = new List<string>();
+        Stations = new List<Station>();
     }
 
-    public static async Task<List<Location>> GetLocations(string folderName = "ACORN-SAT", bool setNearbyLocations = false)
+    public static async Task<List<Location>> GetLocations(string pathAndFileName)
     {
-        var locationText = await File.ReadAllTextAsync(@$"MetaData\{folderName}\Locations.json");
+        var locationText = await File.ReadAllTextAsync(pathAndFileName);
         var locations = JsonSerializer.Deserialize<List<Location>>(locationText);
+        return locations;
+    }
+
+    public static async Task<List<Location>> GetLocations(string folderName, bool setNearbyLocations)
+    {
+        var locations = await GetLocations(@$"MetaData\{folderName}\Locations.json");
 
         if (setNearbyLocations)
         {
