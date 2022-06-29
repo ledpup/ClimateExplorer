@@ -127,6 +127,12 @@ namespace AcornSat.WebApi
 
             var dataSets = await DataReader.ReadDataFile(dsd.FolderName, measurementDefinition, dsd.DataResolution, location);
 
+            if (seriesSpecification.DataAdjustment == Core.Enums.DataAdjustment.Unadjusted)
+            {
+                // TODO: There are probably multiple datasets here, and we need to "merge" them by referring to primarysites, and taking the ranges it specifies
+                throw new NotImplementedException("Not implemented: building unadjusted data for a main site out of out of subsets of the various contributing sites");
+            }
+
             dataSets = dataSets.Where(x => x.DataRecords != null).ToList();
 
             if (dataSets.Count > 1)
