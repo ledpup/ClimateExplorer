@@ -16,8 +16,17 @@ using AcornSat.Core.ViewModel;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
+using AcornSat.WebApi.Model.DataSetBuilder;
+using AcornSat.WebApi;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<JsonOptions>(
+    opt =>
+    {
+        opt.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 builder.Services.AddCors(
     options =>
@@ -88,6 +97,7 @@ app.MapGet("/location",                                             GetLocations
 app.MapGet("/dataset/{dataType}/{resolution}/{locationId}",         GetDataSets);
 //app.MapGet("/dataset/{dataType}/{resolution}/{dataAdjustment}",               GetTemperaturesByLatitude);
 app.MapGet("/dataset/{dataType}/{resolution}",                      GetDataSets);
+app.MapPost("/dataset",                                             PostDataSets);
 
 app.Run();
 
@@ -389,6 +399,14 @@ async Task<List<DataSet>> GetDataSetsInternal(QueryParameters queryParameters)
 
     return dataSets;
 }
+
+async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
+{
+    var dsb = new DataSetBuilder();
+
+    return await dsb.BuildDataSet(body);
+}
+
 
 async Task<List<DataSet>> BuildDataSet(QueryParameters queryParameters, List<DataSet> dataSets, DataSetDefinition definition, bool saveToCache)
 {
