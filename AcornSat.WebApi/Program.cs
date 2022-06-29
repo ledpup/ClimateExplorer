@@ -400,7 +400,7 @@ async Task<List<DataSet>> GetDataSetsInternal(QueryParameters queryParameters)
     return dataSets;
 }
 
-async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
+async Task<ChartableDataPoint[]> PostDataSets(PostDataSetsRequestBody body)
 {
     var dsb = new DataSetBuilder();
 

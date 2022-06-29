@@ -2,7 +2,7 @@
 
 namespace AcornSat.WebApi.Model.DataSetBuilder
 {
-    public struct DataPoint
+    public struct TemporalDataPoint
     {
         public short Year { get; set; }
         public short? Month { get; set; }
@@ -15,10 +15,10 @@ namespace AcornSat.WebApi.Model.DataSetBuilder
         /// <param name="v"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public DataPoint WithValue(float? value)
+        public TemporalDataPoint WithValue(float? value)
         {
             return
-                new DataPoint
+                new TemporalDataPoint
                 {
                     Year = Year,
                     Month = Month,

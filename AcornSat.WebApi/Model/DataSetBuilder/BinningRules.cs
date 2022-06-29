@@ -3,9 +3,9 @@
     public enum BinningRules
     {
         ByYear,
-        ByYearAndSeason,
         ByYearAndMonth,
-        BySeasonOnly,
+        ByTemperateSeasonOnly,
+        ByTropicalSeasonOnly,
         ByMonthOnly
     }
 }
