@@ -99,7 +99,7 @@
 
             var isMapCurrentlyExpanded = mapElement.className == "mapContainer expanded";
 
-            mapElement.className = isMapCurrentlyExpanded ? "mapContainer" : "mapContainer expanded";
+            mapElement.className = isMapCurrentlyExpanded ? "mapContainer collapsed" : "mapContainer expanded";
 
             // Fake a window resize so that the leaflet map control realises it has resized.
             window.dispatchEvent(new Event('resize'));

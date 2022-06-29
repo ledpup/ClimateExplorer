@@ -4,11 +4,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    border: #aaa solid 2px;
-    border-radius: 10px;
-    margin-top: -16px;
-    margin-right: -20px;
-    margin-bottom: -2px;
+    border: none;
 }
 
 /* The styles here (which position the map depending on screen width and whether the map has been "expanded" or not) dance around
@@ -21,6 +17,16 @@
        that has clear: both so that subsequent content doesn't overlap with the map.
 */
 @media only screen and (max-width: 1000px) {
+    ::deep.mapContainer.collapsed #mapId {
+        box-shadow: rgb(0 0 0 / 25%) 2px 2px 12px;
+        border: none;
+        border-radius: 10px;
+        margin-top: -0px;
+        margin-bottom: 4px;
+        margin-right: -12px;
+        margin-left: -12px;
+    }
+
     .mapContainer {
         position: absolute;
         top: 0px;
@@ -41,7 +47,7 @@
         position: fixed;
         top: 0px;
         right: 0px;
-        left: 0px;
+        left: auto;
         padding: 12px;
         text-align: right;
         z-index: 1000;
@@ -51,7 +57,7 @@
         position: absolute;
         height: 50px;
         left: unset;
-        right: 12px;
+        right: 0px;
         top: 12px;
         text-align: right;
         z-index: 1000;
@@ -59,6 +65,14 @@
 }
 
 @media only screen and (min-width: 1000px) {
+    ::deep.mapContainer.collapsed #mapId {
+
+        border-radius: 10px;
+        margin-top: -16px;
+        margin-right: -20px;
+        margin-bottom: -2px;
+    }
+
     .mapContainer {
         position: absolute;
         top: 16px;
@@ -80,7 +94,7 @@
         position: fixed;
         top: 0px;
         right: 0px;
-        left: 0px;
+        left: auto;
         padding: 12px;
         text-align: right;
         z-index: 1000;
@@ -89,9 +103,9 @@
     .mapToggleCollapsed {
         position: absolute;
         height: 50px;
-        left: unset;
-        right: 12px;
-        top: 12px;
+        left: auto;
+        right: -10px;
+        top: -4px;
         text-align: right;
         z-index: 1000;
     }
@@ -99,14 +113,18 @@
 
 
 
-::deep .mapToggleButton {
+::deep .map-toggle-button {
     background-color: #eee;
     color: #222;
     border: solid 2px #bbb;
     border-radius: 8px;
 }
 
-::deep .mapToggleButton:hover {
-    background-color: #ccc;
-    color: #222;
-}
+    ::deep .map-toggle-button i {
+        margin-right: 8px;
+    }
+
+    ::deep .map-toggle-button:hover {
+        background-color: #ccc;
+        color: #222;
+    }

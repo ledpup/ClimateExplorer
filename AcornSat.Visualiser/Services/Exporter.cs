@@ -4,18 +4,20 @@ namespace AcornSat.Visualiser.Services
 {
     public interface IExporter
     {
-        Stream ExportChartData(List<SeriesWithData> chartSeriesWithData, IEnumerable<Location> locations, string[] years);
+        Stream ExportChartData(List<SeriesWithData> chartSeriesWithData, IEnumerable<Location> locations, string[] years, string sourceUri);
     }
 
     public class Exporter : IExporter
     {
-        public Stream ExportChartData(List<SeriesWithData> chartSeriesWithData, IEnumerable<Location> locations, string[] years)
+        public Stream ExportChartData(List<SeriesWithData> chartSeriesWithData, IEnumerable<Location> locations, string[] years, string sourceUri)
         {
             var data = new List<string>();
 
             var locationIds = chartSeriesWithData.Select(x => x.ChartSeries.LocationId).Where(x => x != null).Distinct().ToArray();
 
             var relevantLocations = locationIds.Select(x => locations.Single(y => y.Id == x)).ToArray();
+
+            data.Add("Exported from," + sourceUri);
 
             foreach (var location in relevantLocations)
             {
@@ -54,13 +56,7 @@ namespace AcornSat.Visualiser.Services
 
         string BuildColumnHeader(Location[] relevantLocations, ChartSeriesDefinition csd)
         {
-            var s = "";
-
-            if (relevantLocations.Length > 1 && csd.LocationName != null) s += csd.LocationName + " ";
-
-            s += $"{csd.MeasurementDefinition.DataType} {csd.MeasurementDefinition.DataAdjustment}";
-
-            return s;
+            return csd.FriendlyTitle;
         }
     }
 }
