@@ -6,7 +6,8 @@
         public SeriesSpecification[] SeriesSpecifications { get; set; }
         public SeriesTransformations SeriesTransformation { get; set; }
 
-        public Seasons? FilterToSeason { get; set; }
+        public TemperateSeasons? FilterToTemperateSeason { get; set; }
+        public TropicalSeasons? FilterToTropicalSeason { get; set; }
         public int? FilterToYearsAfterAndIncluding { get; set; }
         public int? FilterToYearsBefore { get; set; }
 

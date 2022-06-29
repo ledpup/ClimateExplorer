@@ -19,13 +19,16 @@ namespace AcornSat.WebApi
             // This method applies the specified transformation to each data point in the series
             var transformedDataPoints = ApplySeriesTransformation(dataPoints, request.SeriesTransformation);
 
+            // This method applies the specified series filters
+            var filteredDataPoints = ApplySeriesFilters(transformedDataPoints, request.FilterToTemperateSeason, request.FilterToTropicalSeason, request.FilterToYearsAfterAndIncluding, request.FilterToYearsBefore);
+
             return
                 new DataSet()
                 {
                     MeasurementDefinition = new Core.ViewModel.MeasurementDefinitionViewModel(),
                     Location = new Location(),
                     DataRecords =
-                        transformedDataPoints
+                        filteredDataPoints
                         .Select(
                             x => 
                             new DataRecord()
@@ -38,6 +41,64 @@ namespace AcornSat.WebApi
                         )
                         .ToList()
                 };
+        }
+
+        DataPoint[] ApplySeriesFilters(
+            DataPoint[] transformedDataPoints, 
+            TemperateSeasons? filterToTemperateSeason, 
+            TropicalSeasons? filterToTropicalSeason,
+            int? filterToYearsAfterAndIncluding, 
+            int? filterToYearsBefore)
+        {
+            IEnumerable<DataPoint> query = transformedDataPoints;
+
+            if (filterToTemperateSeason != null)
+            {
+                var months = GetMonthsForSeason(filterToTemperateSeason.Value);
+
+                query = query.Where(x => months.Contains(x.Month.Value));
+            }
+
+            if (filterToTropicalSeason != null)
+            {
+                var months = GetMonthsForSeason(filterToTropicalSeason.Value);
+
+                query = query.Where(x => months.Contains(x.Month.Value));
+            }
+
+            if (filterToYearsAfterAndIncluding != null)
+            {
+                query = query.Where(x => x.Year >= filterToYearsAfterAndIncluding.Value);
+            }
+
+            if (filterToYearsBefore != null)
+            {
+                query = query.Where(x => x.Year >= filterToYearsBefore.Value);
+            }
+
+            return query.ToArray();
+        }
+
+        int[] GetMonthsForSeason(TemperateSeasons value)
+        {
+            switch (value)
+            {
+                case TemperateSeasons.Summer: return new int[] { 12,  1,  2 };
+                case TemperateSeasons.Autumn: return new int[] {  3,  4,  5 };
+                case TemperateSeasons.Winter: return new int[] {  6,  7,  8 };
+                case TemperateSeasons.Spring: return new int[] {  9, 10, 11 };
+                default: throw new NotImplementedException($"TemperateSeason {value}");
+            }
+        }
+
+        int[] GetMonthsForSeason(TropicalSeasons value)
+        {
+            switch (value)
+            {
+                case TropicalSeasons.Wet: return new int[] { 10, 11, 12, 1, 2, 3, 4 };
+                case TropicalSeasons.Dry: return new int[] { 5, 6, 7, 8, 9 };
+                default: throw new NotImplementedException($"TropicalSeason {value}");
+            }
         }
 
         private DataPoint[] ApplySeriesTransformation(DataPoint[] dataPoints, SeriesTransformations seriesTransformation)

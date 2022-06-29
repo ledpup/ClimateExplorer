@@ -1,6 +1,6 @@
 ﻿namespace AcornSat.WebApi.Model.DataSetBuilder
 {
-    public enum Seasons
+    public enum TemperateSeasons
     {
         Summer,
         Autumn,
