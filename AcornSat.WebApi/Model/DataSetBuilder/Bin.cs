@@ -2,7 +2,7 @@
 {
     public class Bin
     {
-        public string BinId { get; set; }
+        public BinIdentifier Identifier { get; set; }
         public float? Value { get; set; }
     }
 }

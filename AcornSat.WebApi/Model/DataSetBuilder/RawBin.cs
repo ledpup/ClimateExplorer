@@ -2,7 +2,7 @@
 {
     public class RawBin
     {
-        public string BinId { get; set; }
+        public BinIdentifier Identifier { get; set; }
         public string BinFriendlyName { get; set; }
         public TemporalDataPoint[][] SubBinnedDataPoints { get; set; }
     }

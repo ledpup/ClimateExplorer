@@ -30,7 +30,7 @@ namespace AcornSat.WebApi
 
             return
                 aggregatedBins
-                .Select(x => new ChartableDataPoint { Label = x.BinId, Value = x.Value })
+                .Select(x => new ChartableDataPoint { Label = x.Identifier.Label, Value = x.Value })
                 .ToArray();
         }
 
@@ -39,13 +39,19 @@ namespace AcornSat.WebApi
             switch (binAggregationFunction)
             {
                 case BinAggregationFunctions.Mean:
-                    return
+                    var w =
                         rawBins
                         // First, aggregate the data points in each bucket
                         .Select(x => new { RawBin = x, BucketAggregates = x.SubBinnedDataPoints.Select(y => y.Where(z => z.Value.HasValue).Average(z => z.Value)) })
-                        // Second, aggregate the bucket-level values we calculated in step one
-                        .Select(x => new Bin { BinId = x.RawBin.BinId, Value = x.BucketAggregates.Average() })
                         .ToArray();
+
+                    var z = 
+                        // Second, aggregate the bucket-level values we calculated in step one
+                        w
+                        .Select(x => new Bin { Identifier = x.RawBin.Identifier, Value = x.BucketAggregates.Average() })
+                        .ToArray();
+
+                    return z;
 
                 default:
                     throw new NotImplementedException($"BinAgregationFunction {binAggregationFunction}");
@@ -56,19 +62,20 @@ namespace AcornSat.WebApi
         {
             var dataPointsByBinId =
                 dataPoints
-                .ToLookup(x => GetBinId(x, binningRule));
+                .ToLookup(x => GetBinIdentifier(x, binningRule));
 
             switch (binningRule)
             {
                 case BinningRules.ByYear:
+                case BinningRules.ByYearAndMonth:
                     return
                         dataPointsByBinId
                         .Select(
                             x =>
                             new RawBin()
                             {
-                                BinId = x.Key,
-                                SubBinnedDataPoints = BuildBucketsForYear(x, subBinSize)
+                                Identifier = x.Key,
+                                SubBinnedDataPoints = BuildBucketsForGaplessBin(x, subBinSize)
                             }
                         )
                         .ToArray();
@@ -81,7 +88,7 @@ namespace AcornSat.WebApi
                             x =>
                             new RawBin()
                             {
-                                BinId = x.Key,
+                                Identifier = x.Key,
                                 SubBinnedDataPoints =
                                     // For now, just put everything in a single sub-bin, and don't reject
                                     new TemporalDataPoint[][]
@@ -94,16 +101,18 @@ namespace AcornSat.WebApi
             }
         }
 
-        TemporalDataPoint[][] BuildBucketsForYear(IGrouping<string, TemporalDataPoint> bin, int subBinSize)
+        TemporalDataPoint[][] BuildBucketsForGaplessBin(IGrouping<BinIdentifier, TemporalDataPoint> bin, int subBinSize)
         {
-            if (bin.Key[0] != 'y' || bin.Key.Length != 5 || !int.TryParse(bin.Key.Substring(1, 4), out var year))
+            var binIdentifier = bin.Key as BinIdentifierForGaplessBin;
+
+            if (binIdentifier == null)
             {
-                throw new Exception($"Unexpected year bin format {bin.Key}");
+                throw new Exception($"Cannot treat BinIdentifier of type {bin.Key.GetType().Name} as a {nameof(BinIdentifierForGaplessBin)}");
             }
 
             List<TemporalDataPoint[]> arrays = new List<TemporalDataPoint[]>();
 
-            var d = new DateOnly(year, 1, 1);
+            var d = binIdentifier.FirstDayInBin;
 
             List<TemporalDataPoint> bucket = new List<TemporalDataPoint>();
 
@@ -111,7 +120,7 @@ namespace AcornSat.WebApi
             var i = 0;
             int bucketCounter = 0;
 
-            while (d < new DateOnly(year + 1, 1, 1) && i < points.Length)
+            while (d <= binIdentifier.LastDayInBin && i < points.Length)
             {
                 if (points[i].Year == d.Year && points[i].Month == d.Month && points[i].Day == d.Day)
                 {
@@ -141,15 +150,15 @@ namespace AcornSat.WebApi
             return arrays.ToArray();
         }
 
-        string GetBinId(TemporalDataPoint dp, BinningRules binningRule)
+        BinIdentifier GetBinIdentifier(TemporalDataPoint dp, BinningRules binningRule)
         {
             switch (binningRule)
             {
-                case BinningRules.ByYear:                return $"y{dp.Year}";
-                case BinningRules.ByYearAndMonth:        return $"y{dp.Year}m{dp.Month.Value}";
-                case BinningRules.ByMonthOnly:           return $"m{dp.Month.Value}";
-                case BinningRules.ByTemperateSeasonOnly: return $"temps{GetTemperateSeasonForMonth(dp.Month.Value)}";
-                case BinningRules.ByTropicalSeasonOnly:  return $"trops{GetTropicalSeasonForMonth(dp.Month.Value)}";
+                case BinningRules.ByYear:                return new YearBinIdentifier(dp.Year);
+                case BinningRules.ByYearAndMonth:        return new YearAndMonthBinIdentifier(dp.Year, dp.Month.Value);
+                case BinningRules.ByMonthOnly:           return new MonthOnlyBinIdentifier(dp.Month.Value);
+                case BinningRules.ByTemperateSeasonOnly: return new TemperateSeasonOnlyBinIdentifier(GetTemperateSeasonForMonth(dp.Month.Value));
+                case BinningRules.ByTropicalSeasonOnly:  return new TropicalSeasonOnlyBinIdentifier(GetTropicalSeasonForMonth(dp.Month.Value));
                 default: throw new NotImplementedException($"BinningRule {binningRule}");
             }
         }
