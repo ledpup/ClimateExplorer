@@ -14,7 +14,7 @@
             <Value>
                 @{
                     bool firstSite = true;
-                    foreach (var site in Location.Sites)
+                    foreach (var station in Location.Stations)
                     {
                         if (!firstSite)
                         {
@@ -27,11 +27,11 @@
 
                         if (DataSetDefinition.StationInfoUrl != null)
                         {
-                            <span><a href="@DataSetDefinition.StationInfoUrl.Replace("[station]", site)" target="_blank">@site</a></span>
+                            <span><a href="@DataSetDefinition.StationInfoUrl.Replace("[station]", station.Id)" target="_blank">@station.Id</a></span>
                         }
                         else
                         {
-                            <span>@(site)</span>
+                            <span>@(station.Id)</span>
                         }
                     }
                 }
@@ -131,11 +131,10 @@
             dataAdjustment = Enums.DataAdjustment.Adjusted;
         }
 
-        var datasets = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage_Anomaly, Location.Id);
-        var dataset = datasets.Single();
+        var dataset = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage_Anomaly, Location.Id);
         dataRecordsRelative = dataset.DataRecords.Where(x => x.Value != null).ToList();
 
-        dataSet = (await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage, Location.Id)).SingleOrDefault();
+        dataSet = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage, Location.Id);
 
         await base.OnParametersSetAsync();
     }

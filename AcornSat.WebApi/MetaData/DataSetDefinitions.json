@@ -22,7 +22,8 @@
         "FileNameFormat": "tmax.[station].daily.csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E-?\\d*\\.?\\d*),*$",
         "NullValue": null,
-        "PreferredColour": 0
+        "PreferredColour": 0,
+        "UseStationDatesWhenCompilingAcrossFiles": false
       },
       {
         "DataCategory": 0,
@@ -35,7 +36,8 @@
         "FileNameFormat": "tmin.[station].daily.csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E-?\\d*\\.?\\d*),*$",
         "NullValue": null,
-        "PreferredColour": 1
+        "PreferredColour": 1,
+        "UseStationDatesWhenCompilingAcrossFiles": false
       },
       {
         "DataCategory": 0,
@@ -48,7 +50,8 @@
         "FileNameFormat": "[station]_daily_tempmax.csv",
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
         "NullValue": null,
-        "PreferredColour": 2
+        "PreferredColour": 2,
+        "UseStationDatesWhenCompilingAcrossFiles": true
       },
       {
         "DataCategory": 0,
@@ -61,7 +64,8 @@
         "FileNameFormat": "[station]_daily_tempmin.csv",
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
         "NullValue": null,
-        "PreferredColour": 3
+        "PreferredColour": 3,
+        "UseStationDatesWhenCompilingAcrossFiles": true
       },
       {
         "DataCategory": null,
@@ -74,7 +78,8 @@
         "FileNameFormat": "[station]_daily_rainfall.csv",
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
         "NullValue": null,
-        "PreferredColour": 1
+        "PreferredColour": 1,
+        "UseStationDatesWhenCompilingAcrossFiles": false
       },
       {
         "DataCategory": null,
@@ -87,7 +92,8 @@
         "FileNameFormat": "[station]_daily_solarradiation.csv",
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*)$",
         "NullValue": null,
-        "PreferredColour": 0
+        "PreferredColour": 0,
+        "UseStationDatesWhenCompilingAcrossFiles": false
       }
     ],
     "HasLocations": true,
@@ -116,7 +122,8 @@
         "FileNameFormat": "acorn.ria.maxT.[station].monthly.txt",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})\\d{2}\\s\\d\u002B\\s\u002B(?\u003Cvalue\u003E-?\\d\u002B\\.\\d\u002B)$",
         "NullValue": "99999.9",
-        "PreferredColour": 0
+        "PreferredColour": 0,
+        "UseStationDatesWhenCompilingAcrossFiles": false
       },
       {
         "DataCategory": 0,
@@ -129,7 +136,8 @@
         "FileNameFormat": "acorn.ria.minT.[station].monthly.txt",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})\\d{2}\\s\\d\u002B\\s\u002B(?\u003Cvalue\u003E-?\\d\u002B\\.\\d\u002B)$",
         "NullValue": "99999.9",
-        "PreferredColour": 1
+        "PreferredColour": 1,
+        "UseStationDatesWhenCompilingAcrossFiles": false
       }
     ],
     "HasLocations": true,
@@ -158,7 +166,8 @@
         "FileNameFormat": "[station].csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Ctmin\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
         "NullValue": "-",
-        "PreferredColour": 2
+        "PreferredColour": 2,
+        "UseStationDatesWhenCompilingAcrossFiles": false
       },
       {
         "DataCategory": 0,
@@ -171,7 +180,8 @@
         "FileNameFormat": "[station].csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Ctmax\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
         "NullValue": "-",
-        "PreferredColour": 3
+        "PreferredColour": 3,
+        "UseStationDatesWhenCompilingAcrossFiles": false
       }
     ],
     "HasLocations": true,
@@ -200,7 +210,8 @@
         "FileNameFormat": "meiv2.data.txt",
         "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
         "NullValue": "-999.00",
-        "PreferredColour": 0
+        "PreferredColour": 0,
+        "UseStationDatesWhenCompilingAcrossFiles": false
       }
     ],
     "HasLocations": false,
@@ -229,7 +240,8 @@
         "FileNameFormat": "inverted.soi.long.data.txt",
         "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
         "NullValue": "-99.99",
-        "PreferredColour": 0
+        "PreferredColour": 0,
+        "UseStationDatesWhenCompilingAcrossFiles": false
       }
     ],
     "HasLocations": false,
@@ -258,7 +270,8 @@
         "FileNameFormat": "oni.data.txt",
         "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
         "NullValue": "-99.9",
-        "PreferredColour": 0
+        "PreferredColour": 0,
+        "UseStationDatesWhenCompilingAcrossFiles": false
       }
     ],
     "HasLocations": false,
@@ -287,7 +300,8 @@
         "FileNameFormat": "nino34.long.anom.data.txt",
         "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
         "NullValue": "-99.99",
-        "PreferredColour": 0
+        "PreferredColour": 0,
+        "UseStationDatesWhenCompilingAcrossFiles": false
       }
     ],
     "HasLocations": false,
@@ -316,7 +330,8 @@
         "FileNameFormat": "co2_mm_mlo.txt",
         "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
         "NullValue": null,
-        "PreferredColour": 4
+        "PreferredColour": 4,
+        "UseStationDatesWhenCompilingAcrossFiles": false
       }
     ],
     "HasLocations": false,
@@ -345,7 +360,8 @@
         "FileNameFormat": "ch4_mm_gl.txt",
         "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
         "NullValue": null,
-        "PreferredColour": 4
+        "PreferredColour": 4,
+        "UseStationDatesWhenCompilingAcrossFiles": false
       }
     ],
     "HasLocations": false,
@@ -374,7 +390,8 @@
         "FileNameFormat": "n2o_mm_gl.txt",
         "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
         "NullValue": null,
-        "PreferredColour": 4
+        "PreferredColour": 4,
+        "UseStationDatesWhenCompilingAcrossFiles": false
       }
     ],
     "HasLocations": false,
@@ -403,7 +420,8 @@
         "FileNameFormat": "dmi.had.long.data.txt",
         "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
         "NullValue": "-9999",
-        "PreferredColour": 0
+        "PreferredColour": 0,
+        "UseStationDatesWhenCompilingAcrossFiles": false
       }
     ],
     "HasLocations": false,

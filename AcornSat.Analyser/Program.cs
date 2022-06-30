@@ -13,7 +13,7 @@ using System.Globalization;
 
 GenerateMapMarkers();
 var dataSetDefinitions = BuildDataSetDefinitions();
-BuildNiwaLocations(Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"));
+await BuildNiwaLocationsAsync(Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"));
 var locations = await BuildAcornSatLocationsFromReferenceDataAsync(Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"));
 
 foreach (var dataSetDefinition in dataSetDefinitions)
@@ -192,6 +192,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     SubFolderName = "daily_tempmin",
                     FileNameFormat = "[station]_daily_tempmin.csv",
                     PreferredColour = 3,
+                    //UseOnlyPrimaryStationForReadingData = true,
                 },
                 new MeasurementDefinition
                 {
@@ -496,7 +497,7 @@ For monitoring the IOD, Australian climatologists consider sustained values abov
     return dataSetDefinitions;
 }
 
-void BuildNiwaLocations(Guid dataSetId)
+async Task BuildNiwaLocationsAsync(Guid dataSetId)
 {
     var locations = new List<Location>();
 
@@ -536,6 +537,8 @@ void BuildNiwaLocations(Guid dataSetId)
                 Elevation = x.ToList().Average(x => x.Coordinates.Elevation),
             }
         }).ToList();
+
+    await RestoreLocationIds(locations, @"ReferenceData\NIWA\Locations.json");
 
     var options = new JsonSerializerOptions { WriteIndented = true };
     File.WriteAllText("niwa-locations.json", JsonSerializer.Serialize(locations, options));
@@ -580,8 +583,9 @@ async Task<List<Location>> BuildAcornSatLocationsFromReferenceDataAsync(Guid dat
 
         var stationRegEx = new Regex(@"^(?<id>\d+)\s(?<start>\d+)\s(?<end>\d+)$");
         var provider = CultureInfo.InvariantCulture;
-        foreach (var station in stations)
+        for (var i = 0; i < stations.Count; i++)
         {
+            var station = stations[i];
             var stationGroups = stationRegEx.Match(station).Groups;
             var id = stationGroups["id"].Value;
 
@@ -589,13 +593,18 @@ async Task<List<Location>> BuildAcornSatLocationsFromReferenceDataAsync(Guid dat
             {
                 continue;
             }
-            
+
             var start = DateTime.ParseExact(stationGroups["start"].Value, "yyyyMMdd", provider);
             var end = DateTime.ParseExact(stationGroups["end"].Value, "yyyyMMdd", provider);
+
+            // ACORN-SAT starts 1910/01/01.
+            // If a station start date starts on 1910/01/01, we want to ignore that start date so we can use whatever initial data is available in the records
+            DateTime? acornSatStartAdjustment = i == 0 ? null : start;
+
             location.Stations.Add(new Station
             {
                 Id = id,
-                StartDate = start,
+                StartDate = acornSatStartAdjustment,
                 EndDate = end
             });
         }
@@ -623,20 +632,7 @@ async Task<List<Location>> BuildAcornSatLocationsFromReferenceDataAsync(Guid dat
         };
     }
 
-
-    // Load an old locations file (from the last time we built these locations).
-    // Match on the primary station
-    // If we find a match, replace the new Id with the old one, so that we may main Ids between builds of this meta-data
-    var oldLocations = await Location.GetLocations(@"ReferenceData\ACORN-SAT\Locations.json");
-
-    foreach(var location in locations)
-    {
-        var oldLocation = oldLocations.SingleOrDefault(x => x.PrimaryStation == location.PrimaryStation);
-        if (oldLocation != null)
-        {
-            location.Id = oldLocation.Id;
-        }
-    }
+    await RestoreLocationIds(locations, @"ReferenceData\ACORN-SAT\Locations.json");
 
     var options = new JsonSerializerOptions { WriteIndented = true };
     File.WriteAllText("locations.json", JsonSerializer.Serialize(locations, options));
@@ -702,6 +698,31 @@ static void GenerateMapMarkers()
     }
 }
 
+static async Task RestoreLocationIds(List<Location> locations, string filePath)
+{
+    // Load an old locations file (from the last time we built these locations).
+    // Match on the primary station
+    // If we find a match, replace the new Id with the old one, so that we may main Ids between builds of this meta-data
+    var oldLocations = await Location.GetLocations(filePath);
+
+    foreach (var location in locations)
+    {
+        Location oldLocation;
+        if (!string.IsNullOrWhiteSpace(location.PrimaryStation))
+        {
+            oldLocation = oldLocations.SingleOrDefault(x => x.PrimaryStation == location.PrimaryStation);
+        }
+        else
+        {
+            oldLocation = oldLocations.SingleOrDefault(x => x.Stations.Any(y => y.Id == location.Stations[0].Id));
+        }
+        if (oldLocation != null)
+        {
+            location.Id = oldLocation.Id;
+        }
+    }
+}
+
 public enum ObsCode
 {
     Daily_TempMax = 122,
@@ -718,3 +739,4 @@ public enum ObsCode
     //Unknown7 = 131,
     //Unknown8 = 133,
 }
+

@@ -7,7 +7,14 @@ public class DataRecord
 
     }
 
-    public DataRecord(short year, short month, short? day, float? value)
+    public DataRecord(short year, float? value = null)
+    {
+        Year = year;
+        Value = value;
+        Key = year.ToString();
+    }
+
+    public DataRecord(short year, short? month, short? day, float? value)
     {
         Year = year;
         Month = month;
@@ -15,7 +22,15 @@ public class DataRecord
 
         Value = value;
 
-        Week = null;
+        Key = Year.ToString();
+        if (Month != null)
+        {
+            Key += "_" + Month;
+        }
+        if (Day != null)
+        {
+            Key += "_" + Day;
+        }
     }
 
     public DataRecord(DateTime date, float? value)
@@ -26,8 +41,10 @@ public class DataRecord
 
         Value = value;
 
-        Week = null;
+        Key = $"{Year}_{Month}_{Day}";
     }
+
+    public string Key { get; set; }
     public short? Day { get; set; }
     public short? Month { get; set; }
     public short Year { get; set; }

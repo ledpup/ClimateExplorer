@@ -15,7 +15,7 @@ namespace AcornSat.Core.InputOutput;
 
 public static class DataReader
 {
-    public static async Task<List<DataSet>> ReadDataFile(string dataSetFolderName, MeasurementDefinition measurementDefinition, DataResolution dataResolution, Location? location, short? yearFilter = null)
+    public static async Task<DataSet> GetDataSet(string dataSetFolderName, MeasurementDefinition measurementDefinition, DataResolution dataResolution, Location? location, short? yearFilter = null)
     {
         var dataTypeFolder = GetDataTypeFolder(measurementDefinition.DataType);
 
@@ -32,47 +32,58 @@ public static class DataReader
         var regEx = new Regex(measurementDefinition.DataRowRegEx);
 
         var dataSets = new List<DataSet>();
+
+        var dataSet = new DataSet
+        {
+            Resolution = dataResolution,
+            MeasurementDefinition = measurementDefinition.ToViewModel(),
+            Year = yearFilter,
+            Location = location
+        };
+
+        var records = new Dictionary<string, DataRecord>();
         if (location != null)
         {
+            var processedStations = new List<string>();
+
             foreach (var station in location.Stations)
             {
-                var dataSet = await GetDataSet(measurementDefinition, dataResolution, yearFilter, filePath, regEx, dataSets, station.Id);
-                if (dataSet != null)
+                if (!measurementDefinition.UseStationDatesWhenCompilingAcrossFiles && processedStations.Contains(station.Id))
                 {
-                    dataSet.Location = location;
-                    dataSets.Add(dataSet);
+                    continue;
                 }
 
+                var stationRecords = await ReadDataFile(station.Id, regEx, filePath, measurementDefinition.FileNameFormat, measurementDefinition.NullValue, dataResolution, yearFilter);
+
+                if (measurementDefinition.UseStationDatesWhenCompilingAcrossFiles)
+                {
+                    stationRecords = stationRecords
+                                                .Where(x => station.StartDate == null || x.Value.Date >= station.StartDate
+                                                                        && x.Value.Date <= station.EndDate)
+                                                .ToDictionary(x => x.Key, y => y.Value);
+                }
+
+                // There may still be duplicates. Only add records if it won't create a duplicate
+                foreach (var stationRecord in stationRecords)
+                {
+                    if (!records.ContainsKey(stationRecord.Key))
+                    {
+                        records.Add(stationRecord.Key, stationRecord.Value);
+                    }
+                }
             }
         }
         else
         {
-            var dataSet = await GetDataSet(measurementDefinition, dataResolution, yearFilter, filePath, regEx, dataSets);
-            if (dataSet != null)
-            {
-                dataSets.Add(dataSet);
-            }
+            records = await ReadDataFile(String.Empty, regEx, filePath, measurementDefinition.FileNameFormat, measurementDefinition.NullValue, dataResolution, yearFilter);
         }
-        return dataSets;
-    }
 
-    private static async Task<DataSet> GetDataSet(MeasurementDefinition measurementDefinition, DataResolution dataResolution, short? yearFilter, string filePath, Regex regEx, List<DataSet> dataSets, string site = null)
-    {
-        var records = await ReadDataFile(site, regEx, filePath, measurementDefinition.FileNameFormat, measurementDefinition.NullValue, dataResolution, yearFilter);
-
-        if (records.Any())
+        if (!records.Any())
         {
-            var dataSet = new DataSet
-            {
-                Resolution = dataResolution,
-                MeasurementDefinition = measurementDefinition.ToViewModel(),
-                Station = site,
-                Year = yearFilter,
-                DataRecords = records
-            };
-            return dataSet;
+            return null;
         }
-        return null;
+        dataSet.DataRecords = records.Values.ToList();
+        return dataSet;
     }
 
     private static object GetDataTypeFolder(DataType dataType)
@@ -97,7 +108,7 @@ public static class DataReader
         throw new NotImplementedException();
     }
 
-    static async Task<List<DataRecord>> ReadDataFile(
+    static async Task<Dictionary<string, DataRecord>> ReadDataFile(
         string station,
         Regex regEx,
         string filePath,
@@ -113,10 +124,10 @@ public static class DataReader
         if (lines == null)
         {
             // We couldn't find the data in any of the expected locations
-            return new List<DataRecord>();
+            return new Dictionary<string, DataRecord>();
         }
 
-        var dataRecords = new List<DataRecord>();
+        var dataRecords = new Dictionary<string, DataRecord>();
 
         var initialDataIndex = GetStartIndex(regEx, lines);
 
@@ -131,9 +142,9 @@ public static class DataReader
         var startDate = yearFilter == null ? startYearRecord : yearFilter.Value;
         var date = new DateTime(startDate, 1, 1);
         var previousDate = date.AddDays(-1);
-        foreach (var record in lines)
+        foreach (var line in lines)
         {
-            var match = regEx.Match(record);
+            var match = regEx.Match(line);
 
             if (!match.Success)
             {
@@ -169,12 +180,14 @@ public static class DataReader
             {
                 if (dataResolution == DataResolution.Daily)
                 {
-                    dataRecords.Add(new DataRecord(date, null));
+                    var record = new DataRecord(date, null);
+                    dataRecords.Add(record.Key, record);
                     date = date.AddDays(1);
                 }
                 else if (dataResolution == DataResolution.Monthly)
                 {
-                    dataRecords.Add(new DataRecord((short)date.Year, (short)date.Month, null, null));
+                    var record = new DataRecord((short)date.Year, (short)date.Month, null, null);
+                    dataRecords.Add(record.Key, record);
                     date = date.AddMonths(1);
                 }
             }
@@ -186,23 +199,14 @@ public static class DataReader
             previousDate = recordDate;
             if (dataResolution == DataResolution.Daily)
             {
-                dataRecords.Add(new DataRecord
-                {
-                    Day = day,
-                    Month = month,
-                    Year = year,
-                    Value = value,
-                });
+                var record = new DataRecord(year, month, day, value);
+                dataRecords.Add(record.Key, record);
                 date = date.AddDays(1);
             }
             else if (dataResolution == DataResolution.Monthly)
             {
-                dataRecords.Add(new DataRecord
-                {
-                    Month = month,
-                    Year = year,
-                    Value = value,
-                });
+                var record = new DataRecord(year, month, null, value);
+                dataRecords.Add(record.Key, record);
                 date = date.AddMonths(1);
             }
         }
@@ -210,13 +214,13 @@ public static class DataReader
         if (dataResolution == DataResolution.Daily)
         {
             var completeRecords = CompleteLastYearOfDailyData(dataRecords, ref date);
-            completeRecords.ValidateDaily();
+            completeRecords.Values.ValidateDaily();
             return completeRecords;
         }
         else if (dataResolution == DataResolution.Monthly)
         {
             var completeRecords = CompleteLastYearOfMonthlyData(dataRecords, ref date);
-            completeRecords.ValidateMonthly();
+            completeRecords.Values.ValidateMonthly();
             return completeRecords;
         }
         throw new NotImplementedException();
@@ -251,7 +255,7 @@ public static class DataReader
 
     static string[]? TryGetDataFromDatasetZipFile(string filePath)
     {
-        string[] pathComponents = 
+        string[] pathComponents =
             filePath.Split(
                 new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
                 StringSplitOptions.RemoveEmptyEntries
@@ -318,24 +322,25 @@ public static class DataReader
         }
     }
 
-    private static List<DataRecord> CompleteLastYearOfDailyData(List<DataRecord> temperatureRecords, ref DateTime date)
+    private static Dictionary<string, DataRecord> CompleteLastYearOfDailyData(Dictionary<string, DataRecord> records, ref DateTime date)
     {
-        if (!temperatureRecords.Any() || date.DayOfYear == 1)
+        if (!records.Any() || date.DayOfYear == 1)
         {
-            return temperatureRecords;
+            return records;
         }
 
         var endYear = date.Year;
         do
         {
-            temperatureRecords.Add(new DataRecord(date, null));
+            var record = new DataRecord(date, null);
+            records.Add(record.Key, record);
             date = date.AddDays(1);
         } while (endYear == date.Year);
 
-        return temperatureRecords;
+        return records;
     }
 
-    private static List<DataRecord> CompleteLastYearOfMonthlyData(List<DataRecord> temperatureRecords, ref DateTime date)
+    private static Dictionary<string, DataRecord> CompleteLastYearOfMonthlyData(Dictionary<string, DataRecord> temperatureRecords, ref DateTime date)
     {
         if (!temperatureRecords.Any() || date.Month == 12)
         {
@@ -345,7 +350,8 @@ public static class DataReader
         var endYear = date.Year;
         do
         {
-            temperatureRecords.Add(new DataRecord((short)date.Year, (short)date.Month, null, null));
+            var record = new DataRecord((short)date.Year, (short)date.Month, null, null);
+            temperatureRecords.Add(record.Key, record);
             date = date.AddMonths(1);
         } while (endYear == date.Year);
 

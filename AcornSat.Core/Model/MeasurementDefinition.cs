@@ -15,6 +15,7 @@ public class MeasurementDefinition
     public string? DataRowRegEx { get; set; }
     public string? NullValue { get; set; }
     public int PreferredColour { get; set; }
+    public bool UseStationDatesWhenCompilingAcrossFiles { get; set; }
 
     public MeasurementDefinitionViewModel ToViewModel()
     {

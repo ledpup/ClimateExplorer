@@ -37,9 +37,7 @@ public class Exporter : IExporter
             var dataRow = year + ",";
             foreach (var cswd in chartSeriesWithData)
             {
-                var pds = cswd.ProcessedDataSets.Single();
-
-                var dataRecord = pds.DataRecords.Single(x => x.Year == short.Parse(year));
+                var dataRecord = cswd.ProcessedDataSet.DataRecords.Single(x => x.Year == short.Parse(year));
                 dataRow += (dataRecord.Value == null ? string.Empty : MathF.Round((float)dataRecord.Value, 2).ToString("0.00")) + ",";
             }
             dataRow = dataRow.TrimEnd(',');
