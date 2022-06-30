@@ -13,10 +13,10 @@ namespace AcornSat.WebApi
         {
             ValidateRequest(request);
 
-            // This method reads raw data & derives a series from it as per the request
+            // Reads raw data (from one or multiple sources) & derive a series from it as per the request
             var dataPoints = await GetSeriesDataPointsForRequest(request.SeriesDerivationType, request.SeriesSpecifications);
 
-            // This method applies the specified transformation to each data point in the series
+            // Apply specified transformation (if any) to each data point in the series
             var transformedDataPoints = ApplySeriesTransformation(dataPoints, request.SeriesTransformation);
 
             // Filter data at series level
@@ -25,6 +25,7 @@ namespace AcornSat.WebApi
             // Assign to Bins, Buckets and Cups
             var rawBins = ApplyBinningRules(filteredDataPoints, request.BinningRule, request.SubBinSize);
 
+            // Reject bins that have a bucket containing a cup with insufficient data
             var filteredRawBins = ApplyBinRejectionRules(rawBins, request.SubBinRequiredDataProportion);
 
             // Calculate aggregates for each bin
