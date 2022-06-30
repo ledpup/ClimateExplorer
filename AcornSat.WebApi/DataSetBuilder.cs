@@ -22,20 +22,6 @@ namespace AcornSat.WebApi
             // Filter data at series level
             var filteredDataPoints = SeriesFilterer.ApplySeriesFilters(transformedDataPoints, request.FilterToTemperateSeason, request.FilterToTropicalSeason, request.FilterToYearsAfterAndIncluding, request.FilterToYearsBefore);
 
-            return
-                new DataSet()
-                {
-                    MeasurementDefinition = new Core.ViewModel.MeasurementDefinitionViewModel(),
-                    Location = new Location(),
-                    DataRecords =
-                        filteredDataPoints
-                        .Select(
-                            x => 
-                            new DataRecord(x.Year, x.Month, x.Day, x.Value)
-                        )
-                        .ToList()
-                };
-        }
             // Assign to Bins, Buckets and Cups
             var rawBins = Binner.ApplyBinningRules(filteredDataPoints, request.BinningRule, request.SubBinSize);
 
