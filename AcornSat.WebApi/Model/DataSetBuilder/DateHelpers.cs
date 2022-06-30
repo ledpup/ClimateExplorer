@@ -23,5 +23,19 @@ namespace AcornSat.WebApi.Model.DataSetBuilder
 
             return d;
         }
+
+        public static TemperateSeasons GetTemperateSeasonForMonth(int month)
+        {
+            if (month <= 2 || month == 12) return TemperateSeasons.Summer;
+            if (month <= 5) return TemperateSeasons.Autumn;
+            if (month <= 8) return TemperateSeasons.Winter;
+            return TemperateSeasons.Spring;
+        }
+
+        public static TropicalSeasons GetTropicalSeasonForMonth(int month)
+        {
+            if (month <= 4 || month >= 10) return TropicalSeasons.Wet;
+            return TropicalSeasons.Dry;
+        }
     }
 }
