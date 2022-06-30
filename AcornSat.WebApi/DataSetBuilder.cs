@@ -9,18 +9,18 @@ namespace AcornSat.WebApi
 {
     public class DataSetBuilder
     {
-        public async Task<DataSet> BuildDataSet(PostDataSetsRequestBody request)
+        public async Task<ChartableDataPoint[]> BuildDataSet(PostDataSetsRequestBody request)
         {
             ValidateRequest(request);
 
-            // This method reads raw data & derives a series from it as per the request
+            // Reads raw data (from one or multiple sources) & derive a series from it as per the request
             var dataPoints = await GetSeriesDataPointsForRequest(request.SeriesDerivationType, request.SeriesSpecifications);
 
-            // This method applies the specified transformation to each data point in the series
-            var transformedDataPoints = ApplySeriesTransformation(dataPoints, request.SeriesTransformation);
+            // Apply specified transformation (if any) to each data point in the series
+            var transformedDataPoints = SeriesTransformer.ApplySeriesTransformation(dataPoints, request.SeriesTransformation);
 
-            // This method applies the specified series filters
-            var filteredDataPoints = ApplySeriesFilters(transformedDataPoints, request.FilterToTemperateSeason, request.FilterToTropicalSeason, request.FilterToYearsAfterAndIncluding, request.FilterToYearsBefore);
+            // Filter data at series level
+            var filteredDataPoints = SeriesFilterer.ApplySeriesFilters(transformedDataPoints, request.FilterToTemperateSeason, request.FilterToTropicalSeason, request.FilterToYearsAfterAndIncluding, request.FilterToYearsBefore);
 
             return
                 new DataSet()
@@ -36,100 +36,19 @@ namespace AcornSat.WebApi
                         .ToList()
                 };
         }
+            // Assign to Bins, Buckets and Cups
+            var rawBins = Binner.ApplyBinningRules(filteredDataPoints, request.BinningRule, request.SubBinSize);
 
-        DataPoint[] ApplySeriesFilters(
-            DataPoint[] transformedDataPoints, 
-            TemperateSeasons? filterToTemperateSeason, 
-            TropicalSeasons? filterToTropicalSeason,
-            int? filterToYearsAfterAndIncluding, 
-            int? filterToYearsBefore)
-        {
-            IEnumerable<DataPoint> query = transformedDataPoints;
+            // Reject bins that have a bucket containing a cup with insufficient data
+            var filteredRawBins = BinRejector.ApplyBinRejectionRules(rawBins, request.SubBinRequiredDataProportion);
 
-            if (filterToTemperateSeason != null)
-            {
-                var months = GetMonthsForSeason(filterToTemperateSeason.Value);
+            // Calculate aggregates for each bin
+            var aggregatedBins = BinAggregator.AggregateBins(filteredRawBins, request.BinAggregationFunction);
 
-                query = query.Where(x => months.Contains(x.Month.Value));
-            }
-
-            if (filterToTropicalSeason != null)
-            {
-                var months = GetMonthsForSeason(filterToTropicalSeason.Value);
-
-                query = query.Where(x => months.Contains(x.Month.Value));
-            }
-
-            if (filterToYearsAfterAndIncluding != null)
-            {
-                query = query.Where(x => x.Year >= filterToYearsAfterAndIncluding.Value);
-            }
-
-            if (filterToYearsBefore != null)
-            {
-                query = query.Where(x => x.Year >= filterToYearsBefore.Value);
-            }
-
-            return query.ToArray();
-        }
-
-        int[] GetMonthsForSeason(TemperateSeasons value)
-        {
-            switch (value)
-            {
-                case TemperateSeasons.Summer: return new int[] { 12,  1,  2 };
-                case TemperateSeasons.Autumn: return new int[] {  3,  4,  5 };
-                case TemperateSeasons.Winter: return new int[] {  6,  7,  8 };
-                case TemperateSeasons.Spring: return new int[] {  9, 10, 11 };
-                default: throw new NotImplementedException($"TemperateSeason {value}");
-            }
-        }
-
-        int[] GetMonthsForSeason(TropicalSeasons value)
-        {
-            switch (value)
-            {
-                case TropicalSeasons.Wet: return new int[] { 10, 11, 12, 1, 2, 3, 4 };
-                case TropicalSeasons.Dry: return new int[] { 5, 6, 7, 8, 9 };
-                default: throw new NotImplementedException($"TropicalSeason {value}");
-            }
-        }
-
-        private DataPoint[] ApplySeriesTransformation(DataPoint[] dataPoints, SeriesTransformations seriesTransformation)
-        {
-            switch (seriesTransformation)
-            {
-                case SeriesTransformations.Identity:
-                    // No side-effects - clone the input array
-                    return dataPoints.ToArray();
-
-                case SeriesTransformations.IsPositive:
-                    return 
-                        dataPoints
-                        .Select(x => x.WithValue(x.Value == null ? null : (x.Value > 0 ? 1 : 0)))
-                        .ToArray();
-
-                case SeriesTransformations.IsNegative:
-                    return
-                        dataPoints
-                        .Select(x => x.WithValue(x.Value == null ? null : (x.Value < 0 ? 1 : 0)))
-                        .ToArray();
-
-                case SeriesTransformations.EnsoCategory:
-                    return
-                        dataPoints
-                        .Select(x => x.WithValue(x.Value == null ? null : (x.Value > 0.5 ? 1 : (x.Value < -0.5 ? -1 : 0))))
-                        .ToArray();
-
-                case SeriesTransformations.Negate:
-                    return
-                        dataPoints
-                        .Select(x => x.WithValue(x.Value == null ? null : x.Value * -1))
-                        .ToArray();
-
-                default:
-                    throw new NotImplementedException($"SeriesTransformation {seriesTransformation}");
-            }
+            return
+                aggregatedBins
+                .Select(x => new ChartableDataPoint { Label = x.Identifier.Label, Value = x.Value })
+                .ToArray();
         }
 
         public void ValidateRequest(PostDataSetsRequestBody request)
@@ -137,7 +56,7 @@ namespace AcornSat.WebApi
             if (request.SeriesSpecifications == null) throw new ArgumentNullException(nameof(request.SeriesSpecifications));
         }
 
-        async Task<DataPoint[]> GetSeriesDataPointsForRequest(SeriesDerivationTypes seriesDerivationType, SeriesSpecification[] seriesSpecifications)
+        async Task<TemporalDataPoint[]> GetSeriesDataPointsForRequest(SeriesDerivationTypes seriesDerivationType, SeriesSpecification[] seriesSpecifications)
         {
             switch (seriesDerivationType)
             {
@@ -158,7 +77,7 @@ namespace AcornSat.WebApi
             }
         }
 
-        private async Task<DataPoint[]> BuildDifferenceBetweenTwoSeries(SeriesSpecification[] seriesSpecifications)
+        private async Task<TemporalDataPoint[]> BuildDifferenceBetweenTwoSeries(SeriesSpecification[] seriesSpecifications)
         {
             if (seriesSpecifications.Length != 2)
             {
@@ -170,7 +89,7 @@ namespace AcornSat.WebApi
 
             if (dp1.Length == 0 || dp2.Length == 0)
             {
-                return new DataPoint[0];
+                return new TemporalDataPoint[0];
             }
 
             var dp1Grouped = dp1.ToDictionary(x => new DateOnly(x.Year, x.Month ?? 1, x.Day ?? 1));
@@ -187,7 +106,7 @@ namespace AcornSat.WebApi
 
             DateOnly d = minDate;
 
-            List<DataPoint> results = new List<DataPoint>();
+            List<TemporalDataPoint> results = new List<TemporalDataPoint>();
 
             while (d <= maxDate)
             {
@@ -211,7 +130,7 @@ namespace AcornSat.WebApi
             return results.ToArray();
         }
 
-        async Task<DataPoint[]> GetSeriesDataPoints(SeriesSpecification seriesSpecification)
+        async Task<TemporalDataPoint[]> GetSeriesDataPoints(SeriesSpecification seriesSpecification)
         {
             var definitions = await DataSetDefinition.GetDataSetDefinitions();
 
@@ -228,7 +147,7 @@ namespace AcornSat.WebApi
 
             var dataSet = await DataReader.GetDataSet(dsd.FolderName, measurementDefinition, dsd.DataResolution, location);
             
-            return dataSet.DataRecords.Select(x => new DataPoint { Year = x.Year, Month = x.Month, Day = x.Day, Value = x.Value }).ToArray();
+            return dataSet.DataRecords.Select(x => new TemporalDataPoint { Year = x.Year, Month = x.Month, Day = x.Day, Value = x.Value }).ToArray();
         }
     }
 }

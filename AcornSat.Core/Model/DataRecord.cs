@@ -65,4 +65,9 @@ public class DataRecord
             return null;
         } 
     }
+
+    public override string ToString()
+    {
+        return $"{Year}-{Month}-{Day}: {Value}";
+    }
 }
