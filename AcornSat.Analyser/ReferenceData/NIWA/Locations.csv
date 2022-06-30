@@ -1,22 +1,22 @@
-﻿Campbell Island,6172,K94400,-52.550,169.150,15,W,Metservice
-Campbell Island,6174,K94402,-52.55059,169.14978,16,H,Metservice
-Gisborne Aero,2807,D87692,-38.661,177.986,4,G,N/A
-Gisborne Aero,2810,D87695,-38.65860,177.98513,5,H,Metservice
-Hamilton, Ruakura,12616,C75733,-37.77879,175.31271,40,H,Niwa
-Hamilton, Ruakura,26117,C75734,-37.77389,175.30517,45,H,Niwa/Agresearch
-Hamilton, Ruakura,2101,C75731,-37.780,175.313,40,G,N/A
-Invercargill Aero,5814,I68433,-46.41741,168.33052,1,H,N/A
-Molesworth,4461,G23021,-42.088,173.258,890,T,N/A
-Molesworth,7427,G23022,-42.087,173.260,883,G,Metservice
-Mt Ruapehu, Chateau,18464,C95153,-39.19589,175.54504,1097,H,Niwa/Doc
-Mt Ruapehu, Chateau,2363,C95251,-39.202,175.540,1119,G,N/A
-Mt Ruapehu, Chateau,2357,C95152,-39.198,175.544,1097,G,N/A
-Palmerston North,21963,E0536D,-40.38195,175.60915,21,H,Niwa/Agresearch
-Palmerston North,3238,E05363,-40.382,175.609,34,G,N/A
-Queenstown,5446,I58061,-45.03476,168.66364,322,H,N/A
-Raoul Island,6169,J99700,-29.250,-177.917,38,W,Metservice
-Raoul Island,6170,J99701,-29.24488,-177.92913,50,H,Metservice
-Tauranga Aero,1612,B76621,-37.67242,176.19635,0,H,N/A
-Tauranga Aero,1615,B76624,-37.67068,176.19660,5,H,Metservice
-Westport Aero,3810,F11752,-41.740,171.578,2,G,N/A
-Westport Aero,7342,F11754,-41.74075,171.57985,5,H,Metservice
+﻿Campbell Island,6172,K94400,-52.550,169.150,15,W,Metservice,null,1994/12/31
+Campbell Island,6174,K94402,-52.55059,169.14978,16,H,Metservice,1995/01/01,null
+Gisborne Aero,2807,D87692,-38.661,177.986,4,G,N/A,null,1989/12/31
+Gisborne Aero,2810,D87695,-38.65860,177.98513,5,H,Metservice,1990/01/01,null
+Hamilton, Ruakura,2101,C75731,-37.780,175.313,40,G,N/A,null,1996/12/31
+Hamilton, Ruakura,12616,C75733,-37.77879,175.31271,40,H,Niwa,1997/01/01,2005/12/31
+Hamilton, Ruakura,26117,C75734,-37.77389,175.30517,45,H,Niwa/Agresearch,2006/01/01,null
+Invercargill Aero,5814,I68433,-46.41741,168.33052,1,H,N/A,null,null
+Molesworth,4461,G23021,-42.088,173.258,890,T,N/A,null,1992/12/31
+Molesworth,7427,G23022,-42.087,173.260,883,G,Metservice,1993/01/01,null
+Mt Ruapehu, Chateau,2363,C95251,-39.202,175.540,1119,G,N/A,null,1979/12/31
+Mt Ruapehu, Chateau,2357,C95152,-39.198,175.544,1097,G,N/A,1987/01/01,1999/12/31
+Mt Ruapehu, Chateau,18464,C95153,-39.19589,175.54504,1097,H,Niwa/Doc,2000/09/12,null
+Palmerston North,3238,E05363,-40.382,175.609,34,G,N/A,null,2000/12/31
+Palmerston North,21963,E0536D,-40.38195,175.60915,21,H,Niwa/Agresearch,2001/01/01,null
+Queenstown,5446,I58061,-45.03476,168.66364,322,H,N/A,null,null
+Raoul Island,6169,J99700,-29.250,-177.917,38,W,Metservice,null,1997/12/31
+Raoul Island,6170,J99701,-29.24488,-177.92913,50,H,Metservice,1998/01/01,null
+Tauranga Aero,1612,B76621,-37.67242,176.19635,0,H,N/A,null,1988/12/31
+Tauranga Aero,1615,B76624,-37.67068,176.19660,5,H,Metservice,1990/05/31,null
+Westport Aero,3810,F11752,-41.740,171.578,2,G,N/A,null,1991/10/12
+Westport Aero,7342,F11754,-41.74075,171.57985,5,H,Metservice,1991/10/13,null
