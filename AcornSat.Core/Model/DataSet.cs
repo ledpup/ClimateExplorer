@@ -15,7 +15,6 @@ public class DataSet
     public DataAdjustment? DataAdjustment { get { return MeasurementDefinition.DataAdjustment; } }
     public List<Location> Locations { get; set; }
 
-    public string Station { get; set; }
     public List<DataRecord> DataRecords { get; set; }
 
     public short? StartYear 

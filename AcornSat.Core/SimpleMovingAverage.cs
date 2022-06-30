@@ -50,13 +50,9 @@ namespace AcornSat.Core
             var values = dataRecords.Select(x => x.Value).ToList();
             var returnDataRecords = new List<DataRecord>();
 
-            dataRecords.ForEach(x => returnDataRecords.Add(new DataRecord
+            dataRecords.ForEach(x => returnDataRecords.Add(new DataRecord(x.Year, x.Month, x.Day, ma.AddSample(x.Value))
             {
-                Day = x.Day,
-                Month = x.Month,
-                Year = x.Year,
                 Label = x.Label,
-                Value = ma.AddSample(x.Value)
             }));
             returnDataRecords = returnDataRecords.SkipWhile(x => !x.Value.HasValue).ToList();
             return returnDataRecords;

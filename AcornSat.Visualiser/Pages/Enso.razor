@@ -232,7 +232,7 @@
     async Task OnSelectedResolutionChanged(DataResolution value)
     {
         SelectedResolution = value;
-        EnsoData = (await DataService.GetDataSet(SelectedDataType, SelectedResolution, null, null)).ToList();
+        EnsoData = await DataService.GetDataSet(SelectedDataType, SelectedResolution, null, null);
         await HandleRedraw();
     }
 
@@ -240,7 +240,7 @@
     async Task OnSelectedDataTypeChanged(DataType value)
     {
         SelectedDataType = value;
-        EnsoData = (await DataService.GetDataSet(SelectedDataType, SelectedResolution, null, null)).ToList();
+        EnsoData = await DataService.GetDataSet(SelectedDataType, SelectedResolution, null, null);
         await HandleRedraw();
     }
 
@@ -249,7 +249,7 @@
     [Inject]
     public IDataService DataService { get; set; }
 
-    List<DataSet> EnsoData { get; set; }
+    DataSet EnsoData { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -271,7 +271,7 @@
             return;
         }
 
-        var enso = EnsoData.Single().DataRecords;
+        var enso = EnsoData.DataRecords;
 
         object chartOptions = new
         {

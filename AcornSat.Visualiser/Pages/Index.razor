@@ -739,7 +739,7 @@
 
         foreach (var csd in chartSeriesList)
         {
-            List<DataSet> datasets;
+            DataSet dataSet;
 
             switch (csd.MeasurementDefinition.DataType)
             {
@@ -747,8 +747,8 @@
                 case DataType.TempMin:
                 case DataType.Rainfall:
                 case DataType.SolarRadiation:
-                    datasets =
-                        (await DataService.GetDataSet(
+                    dataSet =
+                        await DataService.GetDataSet(
                             csd.MeasurementDefinition.DataType,
                             csd.DataResolution,
                             csd.MeasurementDefinition.DataAdjustment,
@@ -758,9 +758,7 @@
 
                             // Ideally, these would be stored at CSD level, but for now, leaving them global
                             dayGrouping: SelectedDayGrouping,
-                            dayGroupingThreshold: SelectedDayGroupThreshold
-                        ))
-                        .ToList();
+                            dayGroupingThreshold: SelectedDayGroupThreshold);
 
                     break;
 
@@ -772,14 +770,12 @@
                 case DataType.Nino34:
                 case DataType.ONI:
                 case DataType.SOI:
-                    datasets =
-                        (await DataService.GetDataSet(
+                    dataSet =
+                        await DataService.GetDataSet(
                             csd.MeasurementDefinition.DataType,
                             csd.DataResolution,
                             csd.MeasurementDefinition.DataAdjustment,
-                            ChooseDataSetApiAggregationMethod(csd.Aggregation, csd.Value))
-                        )
-                        .ToList();
+                            ChooseDataSetApiAggregationMethod(csd.Aggregation, csd.Value));
 
                     break;
 
@@ -787,9 +783,8 @@
                     throw new NotImplementedException();
             }
 
-            datasetsToReturn.AddRange(
-                datasets
-                .Select(x => new SeriesWithData() { ChartSeries = csd, SourceDataSets = datasets })
+            datasetsToReturn.Add(
+                new SeriesWithData() { ChartSeries = csd, SourceDataSet = dataSet }
             );
         }
 
@@ -872,8 +867,8 @@
     )
     {
         // Find the first and last year we have data for
-        var superSetStartYear = chartSeriesWithData.SelectMany(x => x.ProcessedDataSets).SelectMany(x => x.DataRecords).Min(y => y.Year);
-        var superSetEndYear = chartSeriesWithData.SelectMany(x => x.ProcessedDataSets).SelectMany(x => x.DataRecords).Max(y => y.Year);
+        var superSetStartYear = chartSeriesWithData.Select(x => x.ProcessedDataSet).SelectMany(x => x.DataRecords).Min(y => y.Year);
+        var superSetEndYear = chartSeriesWithData.Select(x => x.ProcessedDataSet).SelectMany(x => x.DataRecords).Max(y => y.Year);
 
         // Parse the start and end years, if any, specified by the user
         var userStartYear = string.IsNullOrEmpty(selectedStartYear) ? null : (short?)short.Parse(selectedStartYear);
@@ -956,12 +951,11 @@
             {
                 Logger.LogInformation("HandleRedraw " + g + " - cswd");
 
-                foreach (var psd in cswd.ProcessedDataSets)
-                {
-                    Logger.LogInformation("HandleRedraw " + g + " -   psd");
+                var psd = cswd.ProcessedDataSet;
+                
+                Logger.LogInformation("HandleRedraw " + g + " -   psd");
 
-                    psd.DataRecords = psd.DataRecords.Where(x => x.Year >= ChartStartYear && x.Year <= ChartEndYear).ToList();
-                }
+                psd.DataRecords = psd.DataRecords.Where(x => x.Year >= ChartStartYear && x.Year <= ChartEndYear).ToList();
             }
 
             subtitle = $"({ChartStartYear}-{ChartEndYear})";
@@ -975,7 +969,7 @@
             foreach (var cswd in ChartSeriesWithData)
             {
                 // TODO: Is this shared reference okay? Or should we be cloning?
-                cswd.ProcessedDataSets = cswd.SourceDataSets.ToList();
+                cswd.ProcessedDataSet = cswd.SourceDataSet;
             }
 
             subtitle = $"{string.Join(", ", SelectedYears)} {SelectedResolution} Chart";
@@ -1214,24 +1208,23 @@
 
         foreach (var chartSeries in ChartSeriesWithData)
         {
-            foreach (var dataSet in chartSeries.ProcessedDataSets)
+            var dataSet = chartSeries.ProcessedDataSet;
+            
+            var htmlColourCode = colours.GetNextColour(dataSet.MeasurementDefinition.PreferredColour);
+
+            await AddDataSetToChart(
+                chartSeries,
+                dataSet,
+                dataSet.DataAdjustment,
+                $"{chartSeries.ChartSeries.FriendlyTitle} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}",
+                htmlColourCode);
+
+            if (chartSeries.ChartSeries.ShowTrendline)
             {
-                var htmlColourCode = colours.GetNextColour(dataSet.MeasurementDefinition.PreferredColour);
-
-                await AddDataSetToChart(
-                    chartSeries,
-                    dataSet,
-                    dataSet.DataAdjustment,
-                    $"{chartSeries.ChartSeries.FriendlyTitle} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}",
-                    htmlColourCode);
-
-                if (chartSeries.ChartSeries.ShowTrendline)
-                {
-                    trendlines.Add(CreateTrendline(dataSetIndex, ChartColor.FromHtmlColorCode(htmlColourCode)));
-                }
-
-                dataSetIndex++;
+                trendlines.Add(CreateTrendline(dataSetIndex, ChartColor.FromHtmlColorCode(htmlColourCode)));
             }
+
+            dataSetIndex++;
         }
 
         return trendlines;
@@ -1302,26 +1295,22 @@
         {
             if (cs.ChartSeries.Smoothing == SeriesSmoothingOptions.MovingAverage)
             {
-                cs.PreProcessedDataSets = cs.SourceDataSets
-                        .Select(
-                            x =>
+                cs.PreProcessedDataSet = 
                                 new DataSet
                                     {
-                                        Location = x.Location,
-                                        MeasurementDefinition = x.MeasurementDefinition,
-                                        DataRecords = SimpleMovingAverage.Calculate(cs.ChartSeries.SmoothingWindow, x.DataRecords)
-                                    }
-                        )
-                        .ToList();
+                                        Location = cs.SourceDataSet.Location,
+                                        MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
+                                        DataRecords = SimpleMovingAverage.Calculate(cs.ChartSeries.SmoothingWindow, cs.SourceDataSet.DataRecords)
+                                    };
             }
             else
             {
-                cs.PreProcessedDataSets = cs.SourceDataSets;
+                cs.PreProcessedDataSet = cs.SourceDataSet;
             }
         }       
 
         // Calculate first and last year which we have a data record for, across all data sets underpinning all chart series
-        var allDataSets = chartSeriesWithData.SelectMany(x => x.PreProcessedDataSets);
+        var allDataSets = chartSeriesWithData.Select(x => x.PreProcessedDataSet);
         var allDataRecords = allDataSets.SelectMany(x => x.DataRecords);
 
         StartYears = allDataSets.Where(x => x.StartYear.HasValue).Select(x => x.StartYear.Value).Distinct().OrderBy(x => x).ToList();
@@ -1335,27 +1324,23 @@
         foreach (var cs in chartSeriesWithData)
         {
             // Create new datasets, same as the source, but with any gap years filled with null records
-            cs.ProcessedDataSets =
-                cs.PreProcessedDataSets
-                .Select(
-                    x =>
+            cs.ProcessedDataSet =                
                         new DataSet
                             {
-                                Location = x.Location,
-                                MeasurementDefinition = x.MeasurementDefinition,
+                                Location = cs.PreProcessedDataSet.Location,
+                                MeasurementDefinition = cs.PreProcessedDataSet.MeasurementDefinition,
                                 DataRecords =
                                         Enumerable.Range(earliestYear, latestYearAcrossAllDataSets - earliestYear + 1)
                                         .Select(
                                             year =>
                                                 // If there's a record in the source dataset, use it
-                                                x.DataRecords.SingleOrDefault(z => z.Year == year)
+                                                cs.PreProcessedDataSet.DataRecords.SingleOrDefault(z => z.Year == year)
                                                 // Otherwise, create a null record
-                                                ?? new DataRecord { Year = (short)year, Value = null }
+                                                ?? new DataRecord((short)year)
                                         )
                                         .ToList()
                             }
-                )
-                .ToList();
+                ;
         }
     }
 

@@ -19,7 +19,7 @@ public class DataService : IDataService
         _dataServiceCache = dataServiceCache;
     }
 
-    public async Task<IEnumerable<DataSet>> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short ? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f)
+    public async Task<DataSet> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short ? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f)
     {
         var url = $"dataSet/{dataType}/{resolution}";
 
@@ -48,13 +48,13 @@ public class DataService : IDataService
             url = QueryHelpers.AddQueryString(url, "dayGroupingThreshold", dayGroupingThreshold.Value.ToString());
         }
 
-        var result = _dataServiceCache.Get<DataSet[]>(url);
+        var result = _dataServiceCache.Get<DataSet>(url);
 
         if (result == null)
         {
-            result = await _httpClient.GetFromJsonAsync<DataSet[]>(url);
+            result = await _httpClient.GetFromJsonAsync<DataSet>(url);
 
-            _dataServiceCache.Put(url, (DataSet[])result);
+            _dataServiceCache.Put(url, result);
         }
 
         return result;

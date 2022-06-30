@@ -94,9 +94,9 @@ app.MapGet(
 app.MapGet("/about",                                                GetAbout);
 app.MapGet("/datasetdefinition",                                    GetDataSetDefinitions);
 app.MapGet("/location",                                             GetLocations);
-app.MapGet("/dataset/{dataType}/{resolution}/{locationId}",         GetDataSets);
+app.MapGet("/dataset/{dataType}/{resolution}/{locationId}",         GetDataSet);
 //app.MapGet("/dataset/{dataType}/{resolution}/{dataAdjustment}",               GetTemperaturesByLatitude);
-app.MapGet("/dataset/{dataType}/{resolution}",                      GetDataSets);
+app.MapGet("/dataset/{dataType}/{resolution}",                      GetDataSet);
 app.MapPost("/dataset",                                             PostDataSets);
 
 app.Run();
@@ -163,8 +163,7 @@ async Task<List<Location>> GetLocations(string dataSetFolder = null, bool includ
                     dataAdjustment = Enums.DataAdjustment.Adjusted;
                 }
 
-                var datasets = await GetDataSets(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage, location.Id, null, 14, .7f, null);
-                var dataset = datasets.Single();
+                var dataset = await GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage, location.Id, null, 14, .7f, null);
                 location.WarmingIndex = dataset.WarmingIndex;
             }
 
@@ -180,7 +179,7 @@ async Task<List<Location>> GetLocations(string dataSetFolder = null, bool includ
 
         return locations.OrderByDescending(x => x.WarmingIndex).ToList();
     }
-    return await Location.GetLocations(dataSetFolder);
+    return await Location.GetLocations(dataSetFolder, false);
 }
 
 async Task<List<DataSet>> GetTemperaturesByLatitude(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float minLatitude, float maxLatitude, short dayGrouping, float dayGroupingThreshold, float locationGroupingThreshold)
@@ -212,7 +211,7 @@ async Task<List<DataSet>> GetTemperaturesByLatitude(DataType dataType, DataResol
                                                      .SelectMany(y => y.DataRecords.Where(z => z.Year == year))
                                                      .ToList();
 
-                    var temperatureRecord = new DataRecord() { Year = year };
+                    var temperatureRecord = new DataRecord(year);
 
                     temperatureRecord.Value = ((float)temperatureRecords.Count(y => y.Value != null) / (float)numberOfLocations) > locationGroupingThreshold ? temperatureRecords.Average(y => y.Value) : null;
 
@@ -259,7 +258,7 @@ async Task<List<DataSet>> YearlyTemperaturesAcrossLocations(
 
             var locationDataSet = await GetYearlyRecordsFromDaily(definition, queryParameters);
 
-            dataSet.AddRange(locationDataSet);
+            dataSet.Add(locationDataSet);
         });
 
     return dataSet;
@@ -291,7 +290,7 @@ async Task<List<Location>> GetLocationsInLatitudeBand(string dataSetName, float?
     return locationsInLatitudeBand;
 }
 
-async Task<List<DataSet>> LoadCachedDataSets(QueryParameters queryParameters)
+async Task<DataSet> LoadCachedDataSets(QueryParameters queryParameters)
 {
     var fileName = queryParameters.ToBase64String() + ".json";
 
@@ -308,7 +307,7 @@ async Task<List<DataSet>> LoadCachedDataSets(QueryParameters queryParameters)
         app.Logger.LogInformation($"Cache entry exists. File is at {filePath}");
 
         var file = await File.ReadAllTextAsync(filePath);
-        var dataSets = JsonSerializer.Deserialize<List<DataSet>>(file);
+        var dataSets = JsonSerializer.Deserialize<DataSet>(file);
         return dataSets;
     }
 
@@ -328,9 +327,9 @@ async Task SaveToCache<T>(QueryParameters queryParameters, T dataToSave)
     await File.WriteAllTextAsync(filePath, json);
 }
 
-async Task<List<DataSet>> GetDataSets(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId, short? year, short? dayGrouping, float? dayGroupingThreshold, short? numberOfBins)
+async Task<DataSet> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId, short? year, short? dayGrouping, float? dayGroupingThreshold, short? numberOfBins)
 {
-    return await GetDataSetsInternal(
+    return await GetDataSetInternal(
         new QueryParameters(
             dataType, 
             resolution, 
@@ -343,13 +342,13 @@ async Task<List<DataSet>> GetDataSets(DataType dataType, DataResolution resoluti
             numberOfBins));
 }
 
-async Task<List<DataSet>> GetDataSetsInternal(QueryParameters queryParameters)
+async Task<DataSet> GetDataSetInternal(QueryParameters queryParameters)
 {
-    var dataSets = await LoadCachedDataSets(queryParameters);
+    var dataSet = await LoadCachedDataSets(queryParameters);
 
-    if (dataSets != null)
+    if (dataSet != null)
     {
-        return dataSets;
+        return dataSet;
     }
 
     var definitions = await DataSetDefinition.GetDataSetDefinitions();
@@ -375,29 +374,27 @@ async Task<List<DataSet>> GetDataSetsInternal(QueryParameters queryParameters)
     if (queryParameters.DataAdjustment == DataAdjustment.Difference)
     {
         queryParameters.DataAdjustment = DataAdjustment.Unadjusted;
-        var unadjusted = await LoadCachedDataSets(queryParameters) ?? await BuildDataSet(queryParameters, dataSets, definition, true);
+        var unadjusted = await LoadCachedDataSets(queryParameters) ?? await BuildDataSet(queryParameters, definition, true);
 
         queryParameters.DataAdjustment = DataAdjustment.Adjusted;
-        var adjusted = await LoadCachedDataSets(queryParameters) ?? await BuildDataSet(queryParameters, dataSets, definition, true);
+        var adjusted = await LoadCachedDataSets(queryParameters) ?? await BuildDataSet(queryParameters, definition, true);
 
-        var dataSet = GenerateDifferenceDataSet(unadjusted.Single(), adjusted.Single(), location, queryParameters);
-
-        dataSets = new List<DataSet> { dataSet };
+        dataSet = GenerateDifferenceDataSet(unadjusted, adjusted, location, queryParameters);
 
         queryParameters.DataAdjustment = DataAdjustment.Difference;
-        await SaveToCache(queryParameters, dataSets);
+        await SaveToCache(queryParameters, dataSet);
     }
     else
     {
         if (!definition.MeasurementDefinitions.Any(x => x.DataType == queryParameters.DataType && x.DataAdjustment == queryParameters.DataAdjustment))
         {
-            return new List<DataSet>();
+            throw new Exception($"There is no data available for data-type {queryParameters.DataType}");
         }
 
-        dataSets = await BuildDataSet(queryParameters, dataSets, definition, true);
+        dataSet = await BuildDataSet(queryParameters, definition, true);
     }
 
-    return dataSets;
+    return dataSet;
 }
 
 async Task<ChartableDataPoint[]> PostDataSets(PostDataSetsRequestBody body)
@@ -408,41 +405,39 @@ async Task<ChartableDataPoint[]> PostDataSets(PostDataSetsRequestBody body)
 }
 
 
-async Task<List<DataSet>> BuildDataSet(QueryParameters queryParameters, List<DataSet> dataSets, DataSetDefinition definition, bool saveToCache)
+async Task<DataSet> BuildDataSet(QueryParameters queryParameters, DataSetDefinition definition, bool saveToCache)
 {
+    DataSet dataSet = null;
     switch (queryParameters.Resolution)
     {
         case DataResolution.Daily:
-            dataSets = await GetDataFromFile(definition, queryParameters.DataType, queryParameters.DataAdjustment, queryParameters.LocationId, queryParameters.Year);
+            dataSet = await GetDataFromFile(definition, queryParameters.DataType, queryParameters.DataAdjustment, queryParameters.LocationId, queryParameters.Year);
             break;
 
         case DataResolution.Yearly:
             if (definition.DataResolution == DataResolution.Daily)
             {
-                dataSets = await GetYearlyRecordsFromDaily(definition, queryParameters);
+                dataSet = await GetYearlyRecordsFromDaily(definition, queryParameters);
             }
             else if (definition.DataResolution == DataResolution.Monthly)
             {
-                dataSets = await GetYearlyRecordsFromMonthly(definition, queryParameters.DataType, queryParameters.DataAdjustment, queryParameters.LocationId, queryParameters.Year);
+                dataSet = await GetYearlyRecordsFromMonthly(definition, queryParameters.DataType, queryParameters.DataAdjustment, queryParameters.LocationId, queryParameters.Year);
             }
             if (queryParameters.AggregationMethod.HasValue && queryParameters.AggregationMethod == AggregationMethod.GroupByDayThenAverage_Anomaly)
             {
-                foreach (var dataSet in dataSets)
+                var mean = dataSet.Mean;
+                dataSet.DataRecords.ForEach(x =>
                 {
-                    var mean = dataSet.Mean;
-                    dataSet.DataRecords.ForEach(x =>
-                    {
-                        x.Value = x.Value - mean;
-                    });
-                }
+                    x.Value = x.Value - mean;
+                });
             }
 
-            dataSets = TrimNulls(dataSets);
+            dataSet = TrimLeadingAndPrecedingNullRecordsFromDataSet(dataSet);
 
             break;
 
         case DataResolution.Weekly:
-            dataSets = 
+            dataSet = 
                 await GetAverageFromDailyRecords(
                     definition, 
                     queryParameters.DataType, 
@@ -464,7 +459,7 @@ async Task<List<DataSet>> BuildDataSet(QueryParameters queryParameters, List<Dat
                     throw new Exception("Cannot transform daily data into monthly data if StatsParameters have not been supplied to govern that transformation.");
                 }
 
-                dataSets = 
+                dataSet = 
                     await GetAverageFromDailyRecords(
                         definition,
                         queryParameters.DataType,
@@ -483,10 +478,10 @@ async Task<List<DataSet>> BuildDataSet(QueryParameters queryParameters, List<Dat
                     switch (measurementDefinition.RowDataType)
                     {
                         case RowDataType.OneValuePerRow:
-                            dataSets = await GetDataFromFile(definition, queryParameters.DataType, queryParameters.DataAdjustment, queryParameters.LocationId);
+                            dataSet = await GetDataFromFile(definition, queryParameters.DataType, queryParameters.DataAdjustment, queryParameters.LocationId);
                             break;
                         case RowDataType.TwelveMonthsPerRow:
-                            dataSets = await GetTwelveMonthsPerRowData(definition, queryParameters.DataType, DataResolution.Monthly, "mean");
+                            dataSet = await GetTwelveMonthsPerRowData(definition, queryParameters.DataType, DataResolution.Monthly, "mean");
                             break;
                     }
                 }
@@ -497,10 +492,10 @@ async Task<List<DataSet>> BuildDataSet(QueryParameters queryParameters, List<Dat
 
     if (saveToCache)
     {
-        await SaveToCache(queryParameters, dataSets);
+        await SaveToCache(queryParameters, dataSet);
     }
 
-    return dataSets;
+    return dataSet;
 }
 
 DataSet GenerateDifferenceDataSet(DataSet unadjusted, DataSet adjusted, Location location, QueryParameters queryParameters)
@@ -521,204 +516,141 @@ DataSet GenerateDifferenceDataSet(DataSet unadjusted, DataSet adjusted, Location
                 return;
             }
             firstCompleteYear = true;
-            difference.DataRecords.Add(new DataRecord
-            {
-                Year = y.Year,
-                Value = adjustedTemp == null ? null : adjustedTemp.Value - y.Value,
-            });
+            difference.DataRecords.Add(new DataRecord(y.Year, adjustedTemp == null ? null : adjustedTemp.Value - y.Value));
         });
     return difference;
 }
 
-List<DataSet> TrimNulls(List<DataSet> dataSets)
+DataSet TrimLeadingAndPrecedingNullRecordsFromDataSet(DataSet dataSet)
 {
-    dataSets.ForEach(x =>
-    {
-        var trimmedNullsFromEndOfList = x.DataRecords.OrderByDescending(x => x.Year).SkipWhile(x => x.Value == null);
-        var trimmedNullsFromStartOfList = trimmedNullsFromEndOfList.OrderBy(x => x.Year).SkipWhile(x => x.Value == null);
-        x.DataRecords = trimmedNullsFromStartOfList.ToList();
-    });
-
-    return dataSets;
+    var trimmedNullsFromEndOfList = dataSet.DataRecords.OrderByDescending(x => x.Year).SkipWhile(x => x.Value == null);
+    var trimmedNullsFromStartOfList = trimmedNullsFromEndOfList.OrderBy(x => x.Year).SkipWhile(x => x.Value == null);
+    dataSet.DataRecords = trimmedNullsFromStartOfList.ToList();
+    
+    return dataSet;
 }
 
-async Task<List<DataSet>> GetYearlyRecordsFromMonthly(DataSetDefinition dataSetDefinition, DataType dataType, DataAdjustment? dataAdjustment, Guid? locationId, short? year)
+async Task<DataSet> GetYearlyRecordsFromMonthly(DataSetDefinition dataSetDefinition, DataType dataType, DataAdjustment? dataAdjustment, Guid? locationId, short? year)
 {
-    List<DataSet> dataSets = null;
+    DataSet dataSet = null;
 
     var measurementDefinition = dataSetDefinition.MeasurementDefinitions.Single(x => x.DataType == dataType);
     switch (measurementDefinition.RowDataType)
     {
         case RowDataType.OneValuePerRow:
-            dataSets = await GetDataFromFile(dataSetDefinition, dataType, dataAdjustment, locationId);
+            dataSet = await GetDataFromFile(dataSetDefinition, dataType, dataAdjustment, locationId);
             break;
         case RowDataType.TwelveMonthsPerRow:
-            dataSets = await GetTwelveMonthsPerRowData(dataSetDefinition, dataType, DataResolution.Monthly, "mean");
+            dataSet = await GetTwelveMonthsPerRowData(dataSetDefinition, dataType, DataResolution.Monthly, "mean");
             break;
     }
 
-    var returnDataSets = new List<DataSet>();
-    foreach (var dataset in dataSets)
+   
+    var grouping = dataSet.DataRecords.GroupBy(x => x.Year).ToList();
+    var records = new List<DataRecord>();
+    for (short i = 0; i < grouping.Count(); i++)
     {
-        var grouping = dataset.DataRecords.GroupBy(x => x.Year).ToList();
-        var records = new List<DataRecord>();
-        for (short i = 0; i < grouping.Count(); i++)
-        {
-            var value = (float)grouping[i].Count(x => x.Value != null) < 12 ? null : grouping[i].Average(x => x.Value);
-            var record = new DataRecord()
-            {
-                Year = grouping[i].Key,
-                Value = value,
-            };
+        var value = (float)grouping[i].Count(x => x.Value != null) < 12 ? null : grouping[i].Average(x => x.Value);
+        var record = new DataRecord(grouping[i].Key, value);
 
-            records.Add(record);
-        }
-
-        dataset.Resolution = DataResolution.Yearly;
-        dataset.DataRecords = records;
-
-        returnDataSets.Add(dataset);
+        records.Add(record);
     }
-    return returnDataSets;
+
+    dataSet.Resolution = DataResolution.Yearly;
+    dataSet.DataRecords = records;
+
+    
+    return dataSet;
 }
 
-async Task<List<DataSet>> GetAverageFromDailyRecords(DataSetDefinition dataSetDefinition, DataType dataType, DataResolution dataResolution, DataAdjustment? dataAdjustment, Guid locationId, short? year, float? threshold = .8f)
+async Task<DataSet> GetAverageFromDailyRecords(DataSetDefinition dataSetDefinition, DataType dataType, DataResolution dataResolution, DataAdjustment? dataAdjustment, Guid locationId, short? year, float? threshold = .8f)
 {
     if (threshold < 0 || threshold > 1)
     {
         throw new ArgumentOutOfRangeException("threshold", "Threshold needs to be between 0 and 1.");
     }
 
-    var dataSets = await GetDataFromFile(dataSetDefinition, dataType, dataAdjustment, locationId, year.Value);
+    var dataSet = await GetDataFromFile(dataSetDefinition, dataType, dataAdjustment, locationId, year.Value);
     var returnDataSets = new List<DataSet>();
-    foreach (var dataset in dataSets)
+    
+    List<IGrouping<short?, DataRecord>> grouping = null;
+    if (dataResolution == DataResolution.Weekly)
     {
-        List<IGrouping<short?, DataRecord>> grouping = null;
+        grouping = dataSet.DataRecords.GroupYearByWeek().ToList();
+    }
+    else if (dataResolution == DataResolution.Monthly)
+    {
+        grouping = dataSet.DataRecords.GroupYearByMonth().ToList();
+    }
+    var records = new List<DataRecord>();
+
+    for (short i = 0; i < grouping.Count(); i++)
+    {
+        var numberOfDaysInGroup = grouping[i].Count();
+
+        var value = (float)grouping[i].Count(x => x.Value != null) / numberOfDaysInGroup < threshold ? null : grouping[i].Average(x => x.Value);
+        var record = new DataRecord(year.Value, value);
         if (dataResolution == DataResolution.Weekly)
         {
-            grouping = dataset.DataRecords.GroupYearByWeek().ToList();
+            record.Week = i;
         }
         else if (dataResolution == DataResolution.Monthly)
         {
-            grouping = dataset.DataRecords.GroupYearByMonth().ToList();
-        }
-        var records = new List<DataRecord>();
-
-        for (short i = 0; i < grouping.Count(); i++)
-        {
-            var numberOfDaysInGroup = grouping[i].Count();
-
-            var value = (float)grouping[i].Count(x => x.Value != null) / numberOfDaysInGroup < threshold ? null : grouping[i].Average(x => x.Value);
-            var record = new DataRecord()
-            {
-                Year = year.Value,
-                Value = value,
-            };
-            if (dataResolution == DataResolution.Weekly)
-            {
-                record.Week = i;
-            }
-            else if (dataResolution == DataResolution.Monthly)
-            {
-                record.Month = i;
-            }
-
-            records.Add(record);
+            record.Month = i;
         }
 
-        dataset.Resolution = dataResolution;
-        dataset.DataRecords = records;
-
-        returnDataSets.Add(dataset);
+        records.Add(record);
     }
 
-    return returnDataSets;
+    dataSet.Resolution = dataResolution;
+    dataSet.DataRecords = records;
+
+    return dataSet;
 }
 
-async Task<List<DataSet>> GetDataFromFile(DataSetDefinition dataSetDefintion, DataType dataType, DataAdjustment? dataAdjustment, Guid? locationId = null, short? year = null)
+async Task<DataSet> GetDataFromFile(DataSetDefinition dataSetDefintion, DataType dataType, DataAdjustment? dataAdjustment, Guid? locationId = null, short? year = null)
 {
-    var location = locationId == null ? null : (await Location.GetLocations(dataSetDefintion.FolderName)).Single(x => x.Id == locationId);
-
-    var returnDataSets = new List<DataSet>();
+    var location = locationId == null ? null : (await Location.GetLocations(dataSetDefintion.FolderName, false)).Single(x => x.Id == locationId);
 
     var measurementDefinition = dataSetDefintion.MeasurementDefinitions.Single(x => x.DataAdjustment == dataAdjustment && x.DataType == dataType);
 
-    var dataSets = await DataReader.ReadDataFile(dataSetDefintion.FolderName, measurementDefinition, dataSetDefintion.DataResolution, location, year);
-    dataSets = dataSets.Where(x => x.DataRecords != null).ToList();
-    returnDataSets.AddRange(dataSets);
+    var dataSet = await DataReader.GetDataSet(dataSetDefintion.FolderName, measurementDefinition, dataSetDefintion.DataResolution, location, year);
     
-    return returnDataSets;
+    return dataSet;
 }
 
-async Task<List<DataSet>> GetYearlyRecordsFromDaily(DataSetDefinition dataSetDefintion, QueryParameters queryParameters)
+async Task<DataSet> GetYearlyRecordsFromDaily(DataSetDefinition dataSetDefintion, QueryParameters queryParameters)
 {
-    var location = (await Location.GetLocations(dataSetDefintion.FolderName)).Single(x => x.Id == queryParameters.LocationId);
+    var location = (await Location.GetLocations(dataSetDefintion.FolderName, false)).Single(x => x.Id == queryParameters.LocationId);
 
-    var dailyDataSets = await GetDataFromFile(dataSetDefintion, queryParameters.DataType, queryParameters.DataAdjustment, queryParameters.LocationId);
+    var dailyDataSet = await GetDataFromFile(dataSetDefintion, queryParameters.DataType, queryParameters.DataAdjustment, queryParameters.LocationId);
 
-    var averagedDataSets = new List<DataSet>();
+    var yearSets = dailyDataSet.DataRecords.GroupBy(x => x.Year);
 
-    foreach (var dailyDataSet in dailyDataSets)
+    List<DataRecord> returnDataRecords = null;
+    switch (queryParameters.AggregationMethod)
     {
-        var yearSets = dailyDataSet.DataRecords.GroupBy(x => x.Year);
-
-        List<DataRecord> returnDataRecords = null;
-        switch (queryParameters.AggregationMethod)
-        {
-            case AggregationMethod.GroupByDayThenAverage:
-            case AggregationMethod.GroupByDayThenAverage_Anomaly:
-            case AggregationMethod.Sum:
-                returnDataRecords = AggregateToYearlyValues(yearSets, queryParameters);
-                break;
-            case AggregationMethod.BinThenCount:
-                var min = dailyDataSet.DataRecords.Min(x => x.Value).Value;
-                var max = dailyDataSet.DataRecords.Max(x => x.Value).Value;
-                returnDataRecords = BinThenCount(yearSets, min, max, (BinThenCount)queryParameters.StatsParameters);
-                break;
-        }
+        case AggregationMethod.GroupByDayThenAverage:
+        case AggregationMethod.GroupByDayThenAverage_Anomaly:
+        case AggregationMethod.Sum:
+            returnDataRecords = AggregateToYearlyValues(yearSets, queryParameters);
+            break;
+        case AggregationMethod.BinThenCount:
+            var min = dailyDataSet.DataRecords.Min(x => x.Value).Value;
+            var max = dailyDataSet.DataRecords.Max(x => x.Value).Value;
+            returnDataRecords = BinThenCount(yearSets, min, max, (BinThenCount)queryParameters.StatsParameters);
+            break;
+    }
         
-        var returnDataSet = new DataSet
-        {
-            Location = location,
-            Resolution = DataResolution.Yearly,
-            MeasurementDefinition = dailyDataSet.MeasurementDefinition,
-            DataRecords = returnDataRecords,
-        };
-        averagedDataSets.Add(returnDataSet);
-    }
-
-    if (averagedDataSets.Count <= 1)
+    var returnDataSet = new DataSet
     {
-        return averagedDataSets;
-    }
-
-    // If the location has multiple datasets we need to average the year between the datasets
-    // e.g., unadjusted data in ACORN-SAT sometimes has multiple stations operating at the same time for the same location
-    {
-        var temperatures = averagedDataSets.SelectMany(x => x.DataRecords).ToList();
-        var yearGrouping = temperatures.GroupBy(x => x.Year).Select(x => x.ToList()).ToList();
-
-        var aggregatedAveragedTemperatures = new List<DataRecord>();
-        yearGrouping.ForEach(x =>
-        {
-            aggregatedAveragedTemperatures.Add(new DataRecord
-            {
-                Year = x.First().Year,
-                Value = x.Where(x => x.Value != null).Average(y => y.Value),
-            });
-        });
-
-        var aggregatedAveragedDataSets = new List<DataSet>();
-        var dataSet = new DataSet
-        {
-            Location = location,
-            Resolution = DataResolution.Yearly,
-            MeasurementDefinition = averagedDataSets.First().MeasurementDefinition,
-            DataRecords = aggregatedAveragedTemperatures
-        };
-        aggregatedAveragedDataSets.Add(dataSet);
-        return aggregatedAveragedDataSets;
-    }
+        Location = location,
+        Resolution = DataResolution.Yearly,
+        MeasurementDefinition = dailyDataSet.MeasurementDefinition,
+        DataRecords = returnDataRecords,
+    };
+    
+    return returnDataSet;
 }
 
 List<DataRecord> BinThenCount(IEnumerable<IGrouping<short, DataRecord>> yearSets, float min, float max, BinThenCount statsParameters)
@@ -735,11 +667,9 @@ List<DataRecord> BinThenCount(IEnumerable<IGrouping<short, DataRecord>> yearSets
             var start = min + (i * binSize);
             var end = min + ((i + 1) * binSize);
             var count = orderedValues.Count(x => x.Value >= start && x.Value < end);
-            bins.Add(new DataRecord() 
+            bins.Add(new DataRecord(yearSet.Key, count) 
             { 
-                Year = yearSet.Key,
                 Label = $"{MathF.Round(start, 1)}-{MathF.Round(end, 1)}",
-                Value = count, 
             });
         }
     }
@@ -764,10 +694,7 @@ List<DataRecord> AggregateToYearlyValues(IEnumerable<IGrouping<short, DataRecord
             {
                 groupValue = queryParameters.AggregationMethod == AggregationMethod.Sum ? grouping[i].Sum(x => x.Value) : grouping[i].Average(x => x.Value);
             }
-            var record = new DataRecord()
-            {
-                Value = groupValue,
-            };
+            var record = new DataRecord(yearSet.Key, groupValue);
 
             aggregates.Add(record);
         }
@@ -776,17 +703,13 @@ List<DataRecord> AggregateToYearlyValues(IEnumerable<IGrouping<short, DataRecord
                 queryParameters.AggregationMethod == AggregationMethod.Sum ? 
                     aggregates.Sum(x => x.Value) :
                     aggregates.Average(x => x.Value);
-        var yearlyAverageRecord = new DataRecord
-        {
-            Year = yearSet.Key,
-            Value = yearMean,
-        };
+        var yearlyAverageRecord = new DataRecord(yearSet.Key, yearMean);
         yearlyAverageRecords.Add(yearlyAverageRecord);
     }
     return yearlyAverageRecords;
 }
 
-async Task<List<DataSet>> GetTwelveMonthsPerRowData(DataSetDefinition dataSetDefinition, DataType dataType, DataResolution resolution, string measure)
+async Task<DataSet> GetTwelveMonthsPerRowData(DataSetDefinition dataSetDefinition, DataType dataType, DataResolution resolution, string measure)
 {
     string[]? records = null;
 
@@ -831,13 +754,7 @@ async Task<List<DataSet>> GetTwelveMonthsPerRowData(DataSetDefinition dataSetDef
 
                 if (resolution == DataResolution.Monthly)
                 {
-                    list.Add(
-                    new DataRecord
-                    {
-                        Month = (short)(i - 1),
-                        Year = short.Parse(groups[1].Value),
-                        Value = value,
-                    });
+                    list.Add(new DataRecord(short.Parse(groups[1].Value), (short)(i - 1), null, value));
                 }
                 else
                 {
@@ -848,26 +765,20 @@ async Task<List<DataSet>> GetTwelveMonthsPerRowData(DataSetDefinition dataSetDef
 
         if (resolution == DataResolution.Yearly)
         {
-            list.Add(
-            new DataRecord
-            {
-                Year = short.Parse(groups[1].Value),
-                Value = measure == "median"
+            var value = measure == "median"
                                         ? values.Median()
-                                        : (measure == "mode" ? values.Mode() : values.Average()),
-            });
+                                        : (measure == "mode" ? values.Mode() : values.Average());
+            
+            list.Add(new DataRecord(short.Parse(groups[1].Value), value));
         }
     }
 
-    var dataSets = new List<DataSet>()
+    var dataSet = new DataSet
     {
-        new DataSet
-        {
-            Resolution = resolution,
-            MeasurementDefinition = measurementDefinition.ToViewModel(),
-            DataRecords = list,
-        }
+        Resolution = resolution,
+        MeasurementDefinition = measurementDefinition.ToViewModel(),
+        DataRecords = list,
     };
 
-    return dataSets;
+    return dataSet;
 }

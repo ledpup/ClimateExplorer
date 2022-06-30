@@ -129,31 +129,11 @@ namespace AcornSat.WebApi
                     x.DataType == seriesSpecification.DataType &&
                     x.DataAdjustment == seriesSpecification.DataAdjustment);
 
-            var location = seriesSpecification.LocationId == null ? null : (await Location.GetLocations(dsd.FolderName)).Single(x => x.Id == seriesSpecification.LocationId);
+            var location = seriesSpecification.LocationId == null ? null : (await Location.GetLocations(dsd.FolderName, false)).Single(x => x.Id == seriesSpecification.LocationId);
 
-            var dataSets = await DataReader.ReadDataFile(dsd.FolderName, measurementDefinition, dsd.DataResolution, location);
-
-            if (seriesSpecification.DataAdjustment == Core.Enums.DataAdjustment.Unadjusted)
-            {
-                // TODO: There are probably multiple datasets here, and we need to "merge" them by referring to primarysites, and taking the ranges it specifies
-                throw new NotImplementedException("Not implemented: building unadjusted data for a main site out of out of subsets of the various contributing sites");
-            }
-
-            dataSets = dataSets.Where(x => x.DataRecords != null).ToList();
-
-            if (dataSets.Count > 1)
-            {
-                // TODO: Include SeriesSpecification in thrown exception
-                throw new Exception("Multiple data sets returned.");
-            }
-
-            if (dataSets.Count == 0)
-            {
-                // TODO: Include SeriesSpecification in thrown exception
-                throw new Exception("No data sets available.");
-            }
-
-            return dataSets.Single().DataRecords.Select(x => new TemporalDataPoint { Year = x.Year, Month = x.Month, Day = x.Day, Value = x.Value }).ToArray();
+            var dataSet = await DataReader.GetDataSet(dsd.FolderName, measurementDefinition, dsd.DataResolution, location);
+            
+            return dataSet.DataRecords.Select(x => new TemporalDataPoint { Year = x.Year, Month = x.Month, Day = x.Day, Value = x.Value }).ToArray();
         }
     }
 }
