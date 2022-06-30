@@ -4,6 +4,6 @@
     {
         public BinIdentifier Identifier { get; set; }
         public string BinFriendlyName { get; set; }
-        public TemporalDataPoint[][] SubBinnedDataPoints { get; set; }
+        public Bucket[] Buckets { get; set; }
     }
 }

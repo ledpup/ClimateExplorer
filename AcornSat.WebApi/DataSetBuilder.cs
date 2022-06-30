@@ -22,16 +22,32 @@ namespace AcornSat.WebApi
             // Filter data at series level
             var filteredDataPoints = ApplySeriesFilters(transformedDataPoints, request.FilterToTemperateSeason, request.FilterToTropicalSeason, request.FilterToYearsAfterAndIncluding, request.FilterToYearsBefore);
 
-            // Assign to Bins & Sub-bins, and reject Bins with insufficient data.
-            var rawBins = ApplyBinningRules(filteredDataPoints, request.BinningRule, request.SubBinSize, request.SubBinRequiredDataProportion);
+            // Assign to Bins, Buckets and Cups
+            var rawBins = ApplyBinningRules(filteredDataPoints, request.BinningRule, request.SubBinSize);
+
+            var filteredRawBins = ApplyBinRejectionRules(rawBins, request.SubBinRequiredDataProportion);
 
             // Calculate aggregates for each bin
-            var aggregatedBins = AggregateBins(rawBins, request.BinAggregationFunction);
+            var aggregatedBins = AggregateBins(filteredRawBins, request.BinAggregationFunction);
 
             return
                 aggregatedBins
                 .Select(x => new ChartableDataPoint { Label = x.Identifier.Label, Value = x.Value })
                 .ToArray();
+        }
+
+        IEnumerable<TemporalDataPoint> GetDataPointsInBucket(Bucket bucket)
+        {
+            var dataPoints = bucket.Cups.SelectMany(x => x.DataPoints);
+
+            return dataPoints;
+        }
+
+        float GetAverageOfDataPoints(IEnumerable<TemporalDataPoint> dataPoints)
+        {
+            var aggregate = dataPoints.Where(x => x.Value.HasValue).Average(x => x.Value.Value);
+
+            return aggregate;
         }
 
         Bin[] AggregateBins(RawBin[] rawBins, BinAggregationFunctions binAggregationFunction)
@@ -42,7 +58,18 @@ namespace AcornSat.WebApi
                     var w =
                         rawBins
                         // First, aggregate the data points in each bucket
-                        .Select(x => new { RawBin = x, BucketAggregates = x.SubBinnedDataPoints.Select(y => y.Where(z => z.Value.HasValue).Average(z => z.Value)) })
+                        .Select(
+                            x => 
+                            new
+                            {
+                                RawBin = x,
+                                BucketAggregates = 
+                                    x.Buckets
+                                    .Select(y => GetDataPointsInBucket(y))
+                                    .Select(y => GetAverageOfDataPoints(y))
+                                    .ToArray()
+                            }
+                        )
                         .ToArray();
 
                     var z = 
@@ -58,7 +85,37 @@ namespace AcornSat.WebApi
             }
         }
 
-        RawBin[] ApplyBinningRules(TemporalDataPoint[] dataPoints, BinningRules binningRule, int subBinSize, float subBinRequiredDataProportion)
+        RawBin[] ApplyBinRejectionRules(RawBin[] bins, float requiredDataProportion)
+        {
+            return
+                bins
+                .Where(x => !BinContainsAnyCupWithInsufficientData(x, requiredDataProportion))
+                .ToArray();
+        }
+
+        static bool BinContainsAnyCupWithInsufficientData(RawBin bin, float requiredDataProportion)
+        {
+            foreach (var bucket in bin.Buckets)
+            {
+                foreach (var cup in bucket.Cups)
+                {
+                    var daysInCup = (int)((cup.LastDayInCup.ToDateTime(new TimeOnly()) - cup.FirstDayInCup.ToDateTime(new TimeOnly())).TotalDays) + 1;
+
+                    var dataPointsInCup = cup.DataPoints.Count(x => x.Value.HasValue);
+
+                    var proportionOfPointsInCup = (float)dataPointsInCup / daysInCup;
+
+                    if (proportionOfPointsInCup < requiredDataProportion)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        RawBin[] ApplyBinningRules(TemporalDataPoint[] dataPoints, BinningRules binningRule, int subBinSize)
         {
             var dataPointsByBinId =
                 dataPoints
@@ -75,13 +132,12 @@ namespace AcornSat.WebApi
                             new RawBin()
                             {
                                 Identifier = x.Key,
-                                SubBinnedDataPoints = BuildBucketsForGaplessBin(x, subBinSize)
+                                Buckets = BuildBucketsForGaplessBin(x, subBinSize)
                             }
                         )
                         .ToArray();
 
                 default:
-                    // TODO: Sub-binning. Remember we will need to handle sub-binning across disjoint bins (e.g. the bin containing all Januaries across all years)
                     return
                         dataPointsByBinId
                         .Select(
@@ -89,11 +145,22 @@ namespace AcornSat.WebApi
                             new RawBin()
                             {
                                 Identifier = x.Key,
-                                SubBinnedDataPoints =
-                                    // For now, just put everything in a single sub-bin, and don't reject
-                                    new TemporalDataPoint[][]
+                                Buckets =
+                                    // For now, just put everything in a single cup in a single bucket
+                                    // TODO: the right thing
+                                    new Bucket[]
                                     {
-                                        x.ToArray()
+                                        new Bucket
+                                        {
+                                            Cups =
+                                                new Cup[]
+                                                {
+                                                    new Cup
+                                                    {
+                                                        DataPoints = x.ToArray()
+                                                    }
+                                                }
+                                        }
                                     }
                             }
                         )
@@ -101,8 +168,9 @@ namespace AcornSat.WebApi
             }
         }
 
-        TemporalDataPoint[][] BuildBucketsForGaplessBin(IGrouping<BinIdentifier, TemporalDataPoint> bin, int subBinSize)
+        Bucket[] BuildBucketsForGaplessBin(IGrouping<BinIdentifier, TemporalDataPoint> bin, int subBinSize)
         {
+            // For gapless bins, buckets and cups are the same size
             var binIdentifier = bin.Key as BinIdentifierForGaplessBin;
 
             if (binIdentifier == null)
@@ -110,30 +178,48 @@ namespace AcornSat.WebApi
                 throw new Exception($"Cannot treat BinIdentifier of type {bin.Key.GetType().Name} as a {nameof(BinIdentifierForGaplessBin)}");
             }
 
-            List<TemporalDataPoint[]> arrays = new List<TemporalDataPoint[]>();
+            List<Bucket> buckets = new List<Bucket>();
 
             var d = binIdentifier.FirstDayInBin;
 
-            List<TemporalDataPoint> bucket = new List<TemporalDataPoint>();
+            List<TemporalDataPoint> bucketPoints = new List<TemporalDataPoint>();
 
             var points = bin.ToArray();
             var i = 0;
             int bucketCounter = 0;
 
+            var firstDayInBucket = d;
+
             while (d <= binIdentifier.LastDayInBin && i < points.Length)
             {
                 if (points[i].Year == d.Year && points[i].Month == d.Month && points[i].Day == d.Day)
                 {
-                    bucket.Add(points[i]);
+                    bucketPoints.Add(points[i]);
                     i++;
                 }
 
                 bucketCounter++;
                 if (bucketCounter == subBinSize)
                 {
-                    arrays.Add(bucket.ToArray());
-                    bucket = new List<TemporalDataPoint>();
+                    buckets.Add(
+                        new Bucket
+                        {
+                            Cups = 
+                                new Cup[]
+                                {
+                                    new Cup
+                                    {
+                                        DataPoints = bucketPoints.ToArray(),
+                                        FirstDayInCup = firstDayInBucket,
+                                        LastDayInCup = d
+                                    }
+                                }
+                        }
+                    );
+
+                    bucketPoints = new List<TemporalDataPoint>();
                     bucketCounter = 0;
+                    firstDayInBucket = d.AddDays(1);
                 }
 
                 d = d.AddDays(1);
@@ -142,12 +228,12 @@ namespace AcornSat.WebApi
             // If we have leftovers, add them to the last bucket
             if (bucketCounter > 0)
             {
-                var last = arrays.Last();
-                arrays.Remove(last);
-                arrays.Add(last.Concat(bucket).ToArray());
+                var lastCup = buckets.Last().Cups.Last();
+                lastCup.DataPoints = lastCup.DataPoints.Concat(bucketPoints).ToArray();
+                lastCup.LastDayInCup = d.AddDays(-1);
             }
 
-            return arrays.ToArray();
+            return buckets.ToArray();
         }
 
         BinIdentifier GetBinIdentifier(TemporalDataPoint dp, BinningRules binningRule)
