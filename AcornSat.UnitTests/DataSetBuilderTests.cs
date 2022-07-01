@@ -22,8 +22,10 @@ namespace AcornSat.UnitTests
                 {
                     BinningRule = BinningRules.ByYear,
                     BinAggregationFunction = BinAggregationFunctions.Mean,
-                    SubBinSize = 14,
-                    SubBinRequiredDataProportion = 0.7f
+                    CupSize = 14,
+                    RequiredCupDataProportion = 0.7f,
+                    RequiredBucketDataProportion = 1.0f,
+                    RequiredBinDataProportion = 1.0f,
                 }
             );
 
@@ -41,8 +43,10 @@ namespace AcornSat.UnitTests
                 {
                     BinningRule = BinningRules.ByYear,
                     BinAggregationFunction = BinAggregationFunctions.Mean,
-                    SubBinSize = 14,
-                    SubBinRequiredDataProportion = 0.7f
+                    CupSize = 14,
+                    RequiredCupDataProportion = 0.7f,
+                    RequiredBucketDataProportion = 1.0f,
+                    RequiredBinDataProportion = 1.0f,
                 }
             );
 
@@ -62,8 +66,10 @@ namespace AcornSat.UnitTests
                 {
                     BinningRule = BinningRules.ByYear,
                     BinAggregationFunction = BinAggregationFunctions.Min,
-                    SubBinSize = 14,
-                    SubBinRequiredDataProportion = 0.7f
+                    CupSize = 14,
+                    RequiredCupDataProportion = 0.7f,
+                    RequiredBucketDataProportion = 1.0f,
+                    RequiredBinDataProportion = 1.0f,
                 }
             );
 
@@ -83,8 +89,10 @@ namespace AcornSat.UnitTests
                 {
                     BinningRule = BinningRules.ByYear,
                     BinAggregationFunction = BinAggregationFunctions.Max,
-                    SubBinSize = 14,
-                    SubBinRequiredDataProportion = 0.7f
+                    CupSize = 14,
+                    RequiredCupDataProportion = 0.7f,
+                    RequiredBucketDataProportion = 1.0f,
+                    RequiredBinDataProportion = 1.0f,
                 }
             );
 
@@ -104,8 +112,10 @@ namespace AcornSat.UnitTests
                 {
                     BinningRule = BinningRules.ByYearAndMonth,
                     BinAggregationFunction = BinAggregationFunctions.Mean,
-                    SubBinSize = 14,
-                    SubBinRequiredDataProportion = 0.7f
+                    CupSize = 14,
+                    RequiredCupDataProportion = 0.7f,
+                    RequiredBucketDataProportion = 1.0f,
+                    RequiredBinDataProportion = 1.0f,
                 }
             );
 
@@ -142,8 +152,10 @@ namespace AcornSat.UnitTests
                 {
                     BinningRule = BinningRules.ByYearAndMonth,
                     BinAggregationFunction = BinAggregationFunctions.Median,
-                    SubBinSize = 14,
-                    SubBinRequiredDataProportion = 0.7f
+                    CupSize = 14,
+                    RequiredCupDataProportion = 0.7f,
+                    RequiredBucketDataProportion = 1.0f,
+                    RequiredBinDataProportion = 1.0f,
                 }
             );
 
@@ -170,8 +182,10 @@ namespace AcornSat.UnitTests
                 {
                     BinningRule = BinningRules.ByYear,
                     BinAggregationFunction = BinAggregationFunctions.Sum,
-                    SubBinSize = 14,
-                    SubBinRequiredDataProportion = 0.7f
+                    CupSize = 14,
+                    RequiredCupDataProportion = 0.7f,
+                    RequiredBucketDataProportion = 1.0f,
+                    RequiredBinDataProportion = 1.0f,
                 }
             );
 
@@ -191,8 +205,10 @@ namespace AcornSat.UnitTests
                 {
                     BinningRule = BinningRules.ByYearAndMonth,
                     BinAggregationFunction = BinAggregationFunctions.Sum,
-                    SubBinSize = 14,
-                    SubBinRequiredDataProportion = 0.7f
+                    CupSize = 14,
+                    RequiredCupDataProportion = 0.7f,
+                    RequiredBucketDataProportion = 1.0f,
+                    RequiredBinDataProportion = 1.0f,
                 }
             );
 
@@ -201,6 +217,226 @@ namespace AcornSat.UnitTests
             Assert.AreEqual("Jan 1990", cdp[0].Label);
             Assert.AreEqual(280, cdp[1].Value); // Feb has 28 days
             Assert.AreEqual("Feb 1990", cdp[1].Label);
+        }
+
+        [TestMethod]
+        public void OneDayOfMissingDataDoesNotCauseMonthToBeRejected()
+        {
+            var dsb = new DataSetBuilder();
+
+            var dataPoints = 
+                BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f)
+                .Where(x => x.Month != 1 || x.Day < 11 || x.Day > 11)
+                .ToArray();
+
+            var cdp = dsb.BuildDataSetFromDataPoints(
+                dataPoints,
+                new PostDataSetsRequestBody
+                {
+                    BinningRule = BinningRules.ByYearAndMonth,
+                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    CupSize = 14,
+                    RequiredCupDataProportion = 0.7f,
+                    RequiredBucketDataProportion = 1.0f,
+                    RequiredBinDataProportion = 1.0f,
+                }
+            );
+
+            Assert.AreEqual(12, cdp.Length); // Twelve months
+            Assert.AreEqual(6.487841f, cdp[0].Value);
+            Assert.AreEqual("Jan 1990", cdp[0].Label);
+        }
+
+        [TestMethod]
+        public void TwoDaysOfMissingDataDoesNotCauseMonthToBeRejected()
+        {
+            var dsb = new DataSetBuilder();
+
+            var dataPoints =
+                BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f)
+                .Where(x => x.Month != 1 || x.Day < 11 || x.Day > 12)
+                .ToArray();
+
+            var cdp = dsb.BuildDataSetFromDataPoints(
+                dataPoints,
+                new PostDataSetsRequestBody
+                {
+                    BinningRule = BinningRules.ByYearAndMonth,
+                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    CupSize = 14,
+                    RequiredCupDataProportion = 0.7f,
+                    RequiredBucketDataProportion = 1.0f,
+                    RequiredBinDataProportion = 1.0f,
+                }
+            );
+
+            Assert.AreEqual(12, cdp.Length); // Twelve months
+            Assert.AreEqual(6.4698925f, cdp[0].Value);
+            Assert.AreEqual("Jan 1990", cdp[0].Label);
+        }
+
+        [TestMethod]
+        public void ThreeDaysOfMissingDataDoesNotCauseMonthToBeRejected()
+        {
+            var dsb = new DataSetBuilder();
+
+            var dataPoints =
+                BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f)
+                .Where(x => x.Month != 1 || x.Day < 11 || x.Day > 13)
+                .ToArray();
+
+            var cdp = dsb.BuildDataSetFromDataPoints(
+                dataPoints,
+                new PostDataSetsRequestBody
+                {
+                    BinningRule = BinningRules.ByYearAndMonth,
+                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    CupSize = 14,
+                    RequiredCupDataProportion = 0.7f,
+                    RequiredBucketDataProportion = 1.0f,
+                    RequiredBinDataProportion = 1.0f,
+                }
+            );
+
+            Assert.AreEqual(12, cdp.Length); // Twelve months
+            Assert.AreEqual(6.444575f, cdp[0].Value);
+            Assert.AreEqual("Jan 1990", cdp[0].Label);
+        }
+
+        [TestMethod]
+        public void FiveDaysOfMissingDataCausesMonthToBeRejected_YearAndMonthly()
+        {
+            var dsb = new DataSetBuilder();
+
+            var dataPoints =
+                BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f)
+                .Where(x => x.Month != 1 || x.Day < 10 || x.Day > 14)
+                .ToArray();
+
+            var cdp = dsb.BuildDataSetFromDataPoints(
+                dataPoints,
+                new PostDataSetsRequestBody
+                {
+                    BinningRule = BinningRules.ByYearAndMonth,
+                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    CupSize = 14,
+                    RequiredCupDataProportion = 0.7f,
+                    RequiredBucketDataProportion = 1.0f,
+                    RequiredBinDataProportion = 1.0f,
+                }
+            );
+
+            Assert.AreEqual(11, cdp.Length); // Eleven months because Jan is rejected
+            Assert.AreEqual("Feb 1990", cdp[0].Label);
+        }
+
+        [TestMethod]
+        public void FiveDaysOfMissingDataCausesYearToBeRejected_Yearly()
+        {
+            var dsb = new DataSetBuilder();
+
+            var dataPoints =
+                BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f)
+                .Where(x => x.Month != 1 || x.Day < 10 || x.Day > 14)
+                .ToArray();
+
+            var cdp = dsb.BuildDataSetFromDataPoints(
+                dataPoints,
+                new PostDataSetsRequestBody
+                {
+                    BinningRule = BinningRules.ByYear,
+                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    CupSize = 14,
+                    RequiredCupDataProportion = 0.7f,
+                    RequiredBucketDataProportion = 1f,
+                    RequiredBinDataProportion = 1f,
+                }
+            );
+
+            Assert.AreEqual(0, cdp.Length); // Year is rejected
+        }
+
+        [TestMethod]
+        public void FiveDaysOfMissingDataCausesMonthToBeRejected_MonthOnly()
+        {
+            var dsb = new DataSetBuilder();
+
+            var dataPoints =
+                BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f)
+                .Where(x => x.Month != 1 || x.Day < 10 || x.Day > 14)
+                .ToArray();
+
+            var cdp = dsb.BuildDataSetFromDataPoints(
+                dataPoints,
+                new PostDataSetsRequestBody
+                {
+                    BinningRule = BinningRules.ByMonthOnly,
+                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    CupSize = 14,
+                    RequiredCupDataProportion = 0.7f,
+                    RequiredBucketDataProportion = 1.0f,
+                    RequiredBinDataProportion = 1.0f,
+                }
+            );
+
+            Assert.AreEqual(11, cdp.Length); // Eleven months because Jan is rejected
+            Assert.AreEqual("Feb", cdp[0].Label);
+        }
+
+        [TestMethod]
+        public void MonthOnly()
+        {
+            var dsb = new DataSetBuilder();
+
+            var dataPoints =
+                BuildLinearlyIncreasingTemporalDataPointArray(new DateOnly(1990, 1, 1), 730, 5, 0.1f)
+                //.Where(x => x.Month != 1 || x.Day < 10 || x.Day > 14)
+                .ToArray();
+
+            var cdp = dsb.BuildDataSetFromDataPoints(
+                dataPoints,
+                new PostDataSetsRequestBody
+                {
+                    BinningRule = BinningRules.ByMonthOnly,
+                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    CupSize = 14,
+                    RequiredCupDataProportion = 0.7f,
+                    RequiredBucketDataProportion = 1.0f,
+                    RequiredBinDataProportion = 1.0f,
+                }
+            );
+
+            Assert.AreEqual(12, cdp.Length);
+            Assert.AreEqual("Jan", cdp[0].Label);
+            Assert.AreEqual(24.75, cdp[0].Value.Value);
+        }
+
+        [TestMethod]
+        public void SouthernHemisphereTemperateSeasonOnly()
+        {
+            var dsb = new DataSetBuilder();
+
+            var dataPoints =
+                BuildLinearlyIncreasingTemporalDataPointArray(new DateOnly(1990, 1, 1), 5000, 5, 0.1f)
+                //.Where(x => x.Month != 1 || x.Day < 10 || x.Day > 14)
+                .ToArray();
+
+            var cdp = dsb.BuildDataSetFromDataPoints(
+                dataPoints,
+                new PostDataSetsRequestBody
+                {
+                    BinningRule = BinningRules.BySouthernHemisphereTemperateSeasonOnly,
+                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    CupSize = 14,
+                    RequiredCupDataProportion = 0.7f,
+                    RequiredBucketDataProportion = 0.7f,
+                    RequiredBinDataProportion = 0.7f,
+                }
+            );
+
+            Assert.AreEqual(4, cdp.Length);
+            Assert.AreEqual("Summer", cdp[0].Label);
+            Assert.AreEqual(243.646973f, cdp[0].Value.Value);
         }
 
         TemporalDataPoint[] BuildConstantTemporalDataPointArrayFor1990()
@@ -217,6 +453,14 @@ namespace AcornSat.UnitTests
             return
                 Enumerable.Range(0, 365)
                 .Select(x => new TemporalDataPoint(new DateOnly(1990, 1, 1).AddDays(x), (float?)(min + x * dailyIncrement)))
+                .ToArray();
+        }
+
+        TemporalDataPoint[] BuildLinearlyIncreasingTemporalDataPointArray(DateOnly startDate, int nDays, float min, float dailyIncrement)
+        {
+            return
+                Enumerable.Range(0, nDays)
+                .Select(x => new TemporalDataPoint(startDate.AddDays(x), (float?)(min + x * dailyIncrement)))
                 .ToArray();
         }
 

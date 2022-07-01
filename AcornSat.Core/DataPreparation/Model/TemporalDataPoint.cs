@@ -42,5 +42,10 @@ namespace ClimateExplorer.Core.DataPreparation
                     Value = value
                 };
         }
+
+        public override string ToString()
+        {
+            return $"{Year}-{Month}-{Day}:{Value}";
+        }
     }
 }

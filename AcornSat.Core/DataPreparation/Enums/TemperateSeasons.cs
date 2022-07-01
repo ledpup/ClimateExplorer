@@ -1,6 +1,6 @@
 ﻿namespace ClimateExplorer.Core.DataPreparation
 {
-    public enum TemperateSeasons
+    public enum SouthernHemisphereTemperateSeasons
     {
         Summer,
         Autumn,

@@ -14,5 +14,10 @@ namespace ClimateExplorer.Core.DataPreparation
                 return (int)((LastDayInCup.ToDateTime(new TimeOnly()) - FirstDayInCup.ToDateTime(new TimeOnly())).TotalDays) + 1;
             }
         }
+
+        public override string ToString()
+        {
+            return FirstDayInCup.ToString("yyyy-MM-dd") + " -> " + LastDayInCup.ToString("yyyy-MM-dd") + " (" + DataPoints.Length + " data points / " + DaysInCup + " days)";
+        }
     }
 }

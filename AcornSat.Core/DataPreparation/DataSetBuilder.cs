@@ -27,13 +27,18 @@ namespace ClimateExplorer.Core.DataPreparation
             var transformedDataPoints = SeriesTransformer.ApplySeriesTransformation(dataPoints, request.SeriesTransformation);
 
             // Filter data at series level
-            var filteredDataPoints = SeriesFilterer.ApplySeriesFilters(transformedDataPoints, request.FilterToTemperateSeason, request.FilterToTropicalSeason, request.FilterToYearsAfterAndIncluding, request.FilterToYearsBefore);
+            var filteredDataPoints = SeriesFilterer.ApplySeriesFilters(transformedDataPoints, request.FilterToSouthernHemisphereTemperateSeason, request.FilterToTropicalSeason, request.FilterToYearsAfterAndIncluding, request.FilterToYearsBefore);
 
             // Assign to Bins, Buckets and Cups
-            var rawBins = Binner.ApplyBinningRules(filteredDataPoints, request.BinningRule, request.SubBinSize);
+            var rawBins = Binner.ApplyBinningRules(filteredDataPoints, request.BinningRule, request.CupSize);
 
             // Reject bins that have a bucket containing a cup with insufficient data
-            var filteredRawBins = BinRejector.ApplyBinRejectionRules(rawBins, request.SubBinRequiredDataProportion);
+            var filteredRawBins = 
+                BinRejector.ApplyBinRejectionRules(
+                    rawBins, 
+                    request.RequiredCupDataProportion,
+                    request.RequiredBucketDataProportion,
+                    request.RequiredBinDataProportion);
 
             // Calculate aggregates for each bin
             var aggregatedBins = BinAggregator.AggregateBins(filteredRawBins, request.BinAggregationFunction);

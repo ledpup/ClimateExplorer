@@ -26,6 +26,11 @@ namespace ClimateExplorer.Core.DataPreparation
         {
             return Id.GetHashCode();
         }
+
+        public override string ToString()
+        {
+            return "Bin " + Label;
+        }
     }
 
 
@@ -68,17 +73,22 @@ namespace ClimateExplorer.Core.DataPreparation
 
     public class MonthOnlyBinIdentifier : BinIdentifier
     {
+        int _month;
+
         public MonthOnlyBinIdentifier(short month)
             : base(
                 $"m{month}",
                 $"{DateHelpers.GetShortMonthName(month)}")
         {
+            _month = month;
         }
+
+        public int Month { get { return _month; } }
     }
 
-    public class TemperateSeasonOnlyBinIdentifier : BinIdentifier
+    public class SouthernHemisphereTemperateSeasonOnlyBinIdentifier : BinIdentifier
     {
-        public TemperateSeasonOnlyBinIdentifier(TemperateSeasons season)
+        public SouthernHemisphereTemperateSeasonOnlyBinIdentifier(SouthernHemisphereTemperateSeasons season)
             : base(
                 $"temps{season}",
                 $"{season}")

@@ -9,6 +9,7 @@ namespace ClimateExplorer.Core.DataPreparation
     {
         static float WeightedMean(IEnumerable<ContainerAggregate> data)
         {
+            if (!data.Any()) throw new NotImplementedException("Work out what to do when no data - .Average() throws, are you too good to throw?");
             var totalPeriods = data.Sum(x => x.NumberOfPeriodsCoveredByAggregate);
 
             return data.Select(x => x.Value * x.NumberOfPeriodsCoveredByAggregate / totalPeriods).Sum();
@@ -211,7 +212,7 @@ namespace ClimateExplorer.Core.DataPreparation
                     return AggregateBinsByApplyingAggregationFunctionOnceForAllDataPoints(rawBins, aggregationFunction);
 
                 default:
-                    throw new NotImplementedException($"BinAgregationFunction {binAggregationFunction}");
+                    throw new NotImplementedException($"BinAggregationFunction {binAggregationFunction}");
             }
         }
     }
