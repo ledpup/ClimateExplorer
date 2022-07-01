@@ -25,7 +25,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<JsonOptions>(
     opt =>
     {
-        opt.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+       // opt.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
 builder.Services.AddCors(

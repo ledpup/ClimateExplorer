@@ -13,7 +13,9 @@ using System.Globalization;
 
 GenerateMapMarkers();
 var dataSetDefinitions = BuildDataSetDefinitions();
-await BuildNiwaLocationsAsync(Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"));
+
+await NiwaLocations();
+
 var locations = await BuildAcornSatLocationsFromReferenceDataAsync(Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"));
 
 foreach (var dataSetDefinition in dataSetDefinitions)
@@ -180,6 +182,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     SubFolderName = "daily_tempmax",
                     FileNameFormat = "[station]_daily_tempmax.csv",
                     PreferredColour = 2,
+                    UseStationDatesWhenCompilingAcrossFiles = true,
                 },
                 new MeasurementDefinition
                 {
@@ -192,7 +195,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     SubFolderName = "daily_tempmin",
                     FileNameFormat = "[station]_daily_tempmin.csv",
                     PreferredColour = 3,
-                    //UseOnlyPrimaryStationForReadingData = true,
+                    UseStationDatesWhenCompilingAcrossFiles = true,
                 },
                 new MeasurementDefinition
                 {
@@ -203,6 +206,7 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                     SubFolderName = "daily_rainfall",
                     FileNameFormat = "[station]_daily_rainfall.csv",
                     PreferredColour = 1,
+                    UseStationDatesWhenCompilingAcrossFiles = true,
                 },
                 new MeasurementDefinition
                 {
@@ -256,6 +260,41 @@ List<DataSetDefinition> BuildDataSetDefinitions()
                 },
             },
             StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
+            HasLocations = true,
+        },
+        new DataSetDefinition
+        {
+            Id = Guid.Parse("7522E8EC-E743-4CB0-BC65-6E9F202FC824"),
+            Name = "NIWA 7-stations series",
+            Description = "NIWA's long-running 'seven-station' series shows NZ's average annual temperature has increased by about 1 °C over the past 100 years.",
+            MoreInformationUrl = "https://niwa.co.nz/seven-stations",
+            FolderName = "NIWA",
+            DataResolution = DataResolution.Daily,
+            MeasurementDefinitions = new List<MeasurementDefinition>
+            {
+                new MeasurementDefinition
+                {
+                    DataCategory = DataCategory.Temperature,
+                    DataType = DataType.TempMax,
+                    UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                    DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$",
+                    FolderName = "raw-data",
+                    FileNameFormat = "[station].csv",
+                    NullValue = "-",
+                    PreferredColour = 2,
+                },
+                new MeasurementDefinition
+                {
+                    DataCategory = DataCategory.Temperature,
+                    DataType = DataType.TempMin,
+                    UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                    DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<tmax>-?[\d+\.\d+]*),-?\d*,(?<value>-?[\d+\.\d+]*),-?\d*,.*,D$",
+                    FolderName = "raw-data",
+                    FileNameFormat = "[station].csv",
+                    NullValue = "-",
+                    PreferredColour = 3,
+                },
+            },
             HasLocations = true,
         },
         new DataSetDefinition
@@ -497,12 +536,12 @@ For monitoring the IOD, Australian climatologists consider sustained values abov
     return dataSetDefinitions;
 }
 
-async Task BuildNiwaLocationsAsync(Guid dataSetId)
+async Task<List<Location>> BuildNiwaLocationsAsync(Guid dataSetId, string sourceLocationsFileName)
 {
     var locations = new List<Location>();
 
-    var regEx = new Regex(@"^(?<name>[\w|\s|,]*),(?<station>\d+),\w\d+\w?,(?<lat>-?\d+\.\d+),(?<lng>-?\d+\.\d+),(?<alt>-?\d+),.*,.*,(?<startdate>.*),(?<enddate>.*)$");
-    var locationRowData = File.ReadAllLines(@"ReferenceData\NIWA\Locations.csv");
+    var regEx = new Regex(@"^(?<name>[\w|\s|,]*),(?<station>\d+),\w\d+\w?,(?<lat>-?\d+\.\d+),(?<lng>-?\d+\.\d+),(?<alt>-?\d+),.*,.*,(?<startdate>null|\d{4}\/\d{2}\/\d{2}),(?<enddate>null|\d{4}\/\d{2}\/\d{2}),(?<seriesName>[\w|'|\s|-]*),(?<stationName>[\w|\s|,]*)$");
+    var locationRowData = File.ReadAllLines(@$"ReferenceData\NIWA\{sourceLocationsFileName}");
 
     foreach (var row in locationRowData)
     {
@@ -540,16 +579,15 @@ async Task BuildNiwaLocationsAsync(Guid dataSetId)
             Stations = x.SelectMany(x => x.Stations).ToList(),
             Coordinates = new Coordinates
             {
-                Latitude = x.ToList().Average(x => x.Coordinates.Latitude),
-                Longitude = x.ToList().Average(x => x.Coordinates.Longitude),
-                Elevation = x.ToList().Average(x => x.Coordinates.Elevation),
+                Latitude = x.ToList().Last().Coordinates.Latitude,
+                Longitude = x.ToList().Last().Coordinates.Longitude,
+                Elevation = x.ToList().Last().Coordinates.Elevation,
             }
         }).ToList();
 
     await RestoreLocationIds(locations, @"ReferenceData\NIWA\Locations.json");
 
-    var options = new JsonSerializerOptions { WriteIndented = true };
-    File.WriteAllText("niwa-locations.json", JsonSerializer.Serialize(locations, options));
+    return locations;
 }
 
 async Task<List<Location>> BuildAcornSatLocationsFromReferenceDataAsync(Guid dataSetId)
@@ -730,6 +768,24 @@ static async Task RestoreLocationIds(List<Location> locations, string filePath)
             location.Id = oldLocation.Id;
         }
     }
+}
+
+async Task NiwaLocations()
+{
+    var seven = await BuildNiwaLocationsAsync(Guid.Parse("7522E8EC-E743-4CB0-BC65-6E9F202FC824"), "7-stations-locations.csv");
+    var eleven = await BuildNiwaLocationsAsync(Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"), "11-stations-locations.csv");
+
+    var locations = new List<Location>();
+    locations.AddRange(seven);
+    locations.AddRange(eleven);
+
+    var options = new JsonSerializerOptions { WriteIndented = true };
+    var path = new DirectoryInfo(@"Output\NIWA");
+    if (!path.Exists)
+    {
+        path.Create();
+    }
+    File.WriteAllText(@"Output\NIWA\Locations.json", JsonSerializer.Serialize(locations, options));
 }
 
 public enum ObsCode

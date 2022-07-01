@@ -13,4 +13,8 @@
     <Content Include="SolarRadiation/**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Remove="Temperature\NIWA\Daily\raw-data\15752.csv" />
+  </ItemGroup>
+
 </Project>
