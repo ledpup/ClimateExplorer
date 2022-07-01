@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AcornSat.WebApi.Model.DataSetBuilder
+namespace ClimateExplorer.Core.DataPreparation
 {
     public struct TemporalDataPoint
     {

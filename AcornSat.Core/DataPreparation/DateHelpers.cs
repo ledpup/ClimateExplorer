@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace AcornSat.WebApi.Model.DataSetBuilder
+namespace ClimateExplorer.Core.DataPreparation
 {
     public static class DateHelpers
     {

@@ -1,8 +1,9 @@
-﻿using System;
+﻿using ClimateExplorer.Core.DataPreparation.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AcornSat.WebApi.Model.DataSetBuilder
+namespace ClimateExplorer.Core.DataPreparation
 {
     public static class BinAggregator
     {

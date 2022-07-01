@@ -16,7 +16,7 @@ using AcornSat.Core.ViewModel;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
-using AcornSat.WebApi.Model.DataSetBuilder;
+using ClimateExplorer.Core.DataPreparation;
 using AcornSat.WebApi;
 using System.Text.Json.Serialization;
 
