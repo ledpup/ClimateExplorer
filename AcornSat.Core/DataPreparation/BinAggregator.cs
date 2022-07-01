@@ -14,19 +14,43 @@ namespace ClimateExplorer.Core.DataPreparation
             return data.Select(x => x.Value * x.NumberOfPeriodsCoveredByAggregate / totalPeriods).Sum();
         }
 
+        static float Median(IEnumerable<ContainerAggregate> data)
+        {
+            float[] sortedValues = data.Select(x => x.Value).OrderBy(x => x).ToArray();
+
+            int indexOfMidpoint = sortedValues.Length / 2;
+
+            if (sortedValues.Length % 2 == 1)
+            {
+                // Odd number of values, so there will be a unique "midpoint"
+                return sortedValues[indexOfMidpoint];
+            }
+            else
+            {
+                // Even number of values, so return mean of the two "midpoint" values
+                return (float)((sortedValues[indexOfMidpoint - 1] + sortedValues[indexOfMidpoint]) / 2);
+            }
+        }
+
         static Func<IEnumerable<ContainerAggregate>, float> GetAggregationFunction(BinAggregationFunctions function)
         {
             switch (function)
             {
                 // Weighted mean is mean of value weighted by number of periods covered
-                case BinAggregationFunctions.Mean: return (data) => WeightedMean(data);
-                case BinAggregationFunctions.Sum:  return (data) => data.Select(x => x.Value).Sum();
-                case BinAggregationFunctions.Min:  return (data) => data.Select(x => x.Value).Min();
-                case BinAggregationFunctions.Max:  return (data) => data.Select(x => x.Value).Max();
-
+                case BinAggregationFunctions.Mean:   return WeightedMean;
+                case BinAggregationFunctions.Sum:    return (data) => data.Select(x => x.Value).Sum();
+                case BinAggregationFunctions.Min:    return (data) => data.Select(x => x.Value).Min();
+                case BinAggregationFunctions.Max:    return (data) => data.Select(x => x.Value).Max();
+                case BinAggregationFunctions.Median: return Median;
                 default:
                     throw new NotImplementedException($"BinAggregationFunction {function}");
             }
+        }
+
+        struct ContainerAggregate
+        {
+            public float Value { get; set; }
+            public int NumberOfPeriodsCoveredByAggregate { get; set; }
         }
 
         struct AggregationIntermediate
@@ -59,7 +83,9 @@ namespace ClimateExplorer.Core.DataPreparation
                 };
         }
 
-        static Bin[] AggregateBinsByRepeatedlyApplyingAggregationFunction(RawBin[] rawBins, Func<IEnumerable<ContainerAggregate>, float> aggregationFunction)
+        static Bin[] AggregateBinsByRepeatedlyApplyingAggregationFunction(
+            RawBin[] rawBins, 
+            Func<IEnumerable<ContainerAggregate>, float> aggregationFunction)
         {
             // Strategy: we have an object tree - each bin has a list of buckets, each of which has a list of cups, each of which has a list of data points.
             // We're going to flatten out that tree into a list of AggregationIntermediates, one per cup. Then we're going to repeatedly aggregate, reducing
@@ -126,6 +152,30 @@ namespace ClimateExplorer.Core.DataPreparation
                 .ToArray();
         }
 
+        static Bin[] AggregateBinsByApplyingAggregationFunctionOnceForAllDataPoints(
+            RawBin[] rawBins, 
+            Func<IEnumerable<ContainerAggregate>, float> aggregationFunction)
+        {
+            return
+                rawBins
+                .Select(
+                    x =>
+                    new Bin
+                    {
+                        Identifier = x.Identifier,
+                        Value = 
+                            aggregationFunction(
+                                x.Buckets
+                                .SelectMany(y => y.Cups)
+                                .SelectMany(y => y.DataPoints)
+                                .Where(y => y.Value.HasValue)
+                                .Select(y => new ContainerAggregate() { Value = y.Value.Value, NumberOfPeriodsCoveredByAggregate = 1 })
+                            )
+                    }
+                )
+                .ToArray();
+        }
+
         static ContainerAggregate AggregateContainerAggregates(
             IEnumerable<ContainerAggregate> aggregates,
             Func<IEnumerable<ContainerAggregate>, float> aggregationFunction)
@@ -148,28 +198,21 @@ namespace ClimateExplorer.Core.DataPreparation
                 // those subsets). We take advantage of this by calculating the aggregate for each cup (based on the data points each
                 // contains), then the aggregate for each bucket (based on the cup-level aggregates calculated in the previous step), then
                 // the aggregates for each bin (based on the bucket-level aggregates calculated in the previous step).
+                //
+                // It's desirable to do this repeated application of aggregation functions where possible because doing so can "smooth out"
+                // small gaps in the source data without biasing the result as badly.
                 case BinAggregationFunctions.Mean:
                 case BinAggregationFunctions.Sum:
                 case BinAggregationFunctions.Min:
                 case BinAggregationFunctions.Max:
                     return AggregateBinsByRepeatedlyApplyingAggregationFunction(rawBins, aggregationFunction);
 
+                case BinAggregationFunctions.Median:
+                    return AggregateBinsByApplyingAggregationFunctionOnceForAllDataPoints(rawBins, aggregationFunction);
+
                 default:
                     throw new NotImplementedException($"BinAgregationFunction {binAggregationFunction}");
             }
-        }
-
-        static IEnumerable<TemporalDataPoint> GetDataPointsInBucket(Bucket bucket)
-        {
-            var dataPoints = bucket.Cups.SelectMany(x => x.DataPoints);
-
-            return dataPoints;
-        }
-
-        struct ContainerAggregate
-        {
-            public float Value { get; set; }
-            public int NumberOfPeriodsCoveredByAggregate { get; set; }
         }
     }
 }

@@ -132,6 +132,34 @@ namespace AcornSat.UnitTests
         }
 
         [TestMethod]
+        public void OneYearOfLinearlyIncreasingDataPoints_Monthly_Median()
+        {
+            var dsb = new DataSetBuilder();
+
+            var cdp = dsb.BuildDataSetFromDataPoints(
+                BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f),
+                new PostDataSetsRequestBody
+                {
+                    BinningRule = BinningRules.ByYearAndMonth,
+                    BinAggregationFunction = BinAggregationFunctions.Median,
+                    SubBinSize = 14,
+                    SubBinRequiredDataProportion = 0.7f
+                }
+            );
+
+            // We expect one entry per month in the year
+            Assert.AreEqual(12, cdp.Length);
+
+            // First entry should be for Jan
+            Assert.AreEqual("Jan 1990", cdp[0].Label);
+            Assert.AreEqual(6.5f, cdp[0].Value); // Jan has 31 entries - odd number, a unique midpoint, just return it.
+
+            // Second entry should be for Feb
+            Assert.AreEqual("Feb 1990", cdp[1].Label);
+            Assert.AreEqual(9.45f, cdp[1].Value); // Feb has 28 entries - even number, so average two neighbours of midpoint. Entries 14 and 15 are 9.4 and 9.5.
+        }
+
+        [TestMethod]
         public void OneYearOfIdenticalDataPoints_Sum()
         {
             var dsb = new DataSetBuilder();
