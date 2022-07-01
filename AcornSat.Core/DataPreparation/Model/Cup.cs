@@ -7,5 +7,12 @@ namespace ClimateExplorer.Core.DataPreparation
         public DateOnly FirstDayInCup { get; set; }
         public DateOnly LastDayInCup { get; set; }
         public TemporalDataPoint[] DataPoints { get; set; }
+        public int DaysInCup
+        {
+            get
+            {
+                return (int)((LastDayInCup.ToDateTime(new TimeOnly()) - FirstDayInCup.ToDateTime(new TimeOnly())).TotalDays) + 1;
+            }
+        }
     }
 }

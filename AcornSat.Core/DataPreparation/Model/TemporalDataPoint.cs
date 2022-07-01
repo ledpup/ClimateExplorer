@@ -9,7 +9,7 @@ namespace ClimateExplorer.Core.DataPreparation
         public short? Day { get; set; }
         public float? Value { get; set; }
 
-        public TemporalDataPoint(short year, short? month, short? day, short? value)
+        public TemporalDataPoint(short year, short? month, short? day, float? value)
         {
             Year = year;
             Month = month;
@@ -17,7 +17,7 @@ namespace ClimateExplorer.Core.DataPreparation
             Value = value;
         }
 
-        public TemporalDataPoint(DateOnly d, short? value)
+        public TemporalDataPoint(DateOnly d, float? value)
         {
             Year = (short)d.Year;
             Month = (short)d.Month;

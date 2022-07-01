@@ -19,7 +19,7 @@ namespace ClimateExplorer.Core.DataPreparation
             {
                 foreach (var cup in bucket.Cups)
                 {
-                    var daysInCup = (int)((cup.LastDayInCup.ToDateTime(new TimeOnly()) - cup.FirstDayInCup.ToDateTime(new TimeOnly())).TotalDays) + 1;
+                    var daysInCup = cup.DaysInCup;
 
                     var dataPointsInCup = cup.DataPoints.Count(x => x.Value.HasValue);
 

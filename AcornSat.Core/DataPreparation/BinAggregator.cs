@@ -7,12 +7,20 @@ namespace ClimateExplorer.Core.DataPreparation
 {
     public static class BinAggregator
     {
-        static Func<IEnumerable<float>, float> GetAggregationFunction(BinAggregationFunctions function)
+        static float WeightedMean(IEnumerable<Tuple<float, int>> data)
+        {
+            return data.Select(x => x.Item1 * x.Item2 / data.Sum(y => y.Item2)).Sum();
+        }
+
+        static Func<IEnumerable<Tuple<float, int>>, float> GetAggregationFunction(BinAggregationFunctions function)
         {
             switch (function)
             {
-                case BinAggregationFunctions.Mean: return (x) => x.Average();
-                case BinAggregationFunctions.Sum: return (x) => x.Sum();
+                // Weighted mean is mean of value (Item1) weighted by number of days (Item2)
+                case BinAggregationFunctions.Mean: return (data) => WeightedMean(data);
+                case BinAggregationFunctions.Sum:  return (data) => data.Select(x => x.Item1).Sum();
+                case BinAggregationFunctions.Min:  return (data) => data.Select(x => x.Item1).Min();
+                case BinAggregationFunctions.Max:  return (data) => data.Select(x => x.Item1).Max();
 
                 default:
                     throw new NotImplementedException($"BinAggregationFunction {function}");
@@ -27,9 +35,12 @@ namespace ClimateExplorer.Core.DataPreparation
             {
                 case BinAggregationFunctions.Mean:
                 case BinAggregationFunctions.Sum:
+                case BinAggregationFunctions.Min:
+                case BinAggregationFunctions.Max:
                     var w =
                         rawBins
-                        // First, aggregate the data points in each bucket
+                        // First, aggregate the data points in each bucket, keeping track of how many days each bucket represents, so that
+                        // we can do weighting later if necessary
                         .Select(
                             x =>
                             new
@@ -37,8 +48,23 @@ namespace ClimateExplorer.Core.DataPreparation
                                 RawBin = x,
                                 BucketAggregates =
                                     x.Buckets
-                                    .Select(y => GetDataPointsInBucket(y))
-                                    .Select(y => ApplyAggregationFunctionToNonNullDataPoints(y, aggregationFunction))
+                                    // Build a list of buckets, each entry containing the number of data points in the bucket and
+                                    // the number of days the bucket covers (this will be more than the number of data points in 
+                                    // the bucket if there are missing observations!)
+                                    .Select(y => new { DataPoints = GetDataPointsInBucket(y), DaysInPeriod = y.Cups.Sum(z => z.DaysInCup) })
+
+                                    // From that, build a list of buckets, each entry containing the calculated value for that bucket
+                                    // and the number of days the bucket covers.
+                                    .Select(
+                                        y => 
+                                        new Tuple<float, int>(
+                                            ApplyAggregationFunctionToNonNullDataPoints(
+                                                y.DataPoints.Select(x => new Tuple<TemporalDataPoint, int>(x, 1)),
+                                                aggregationFunction
+                                            ),
+                                            y.DaysInPeriod
+                                        )
+                                    )
                                     .ToArray()
                             }
                         )
@@ -65,14 +91,14 @@ namespace ClimateExplorer.Core.DataPreparation
         }
 
         static float ApplyAggregationFunctionToNonNullDataPoints(
-            IEnumerable<TemporalDataPoint> dataPoints, 
-            Func<IEnumerable<float>, float> aggregationFunction)
+            IEnumerable<Tuple<TemporalDataPoint, int>> dataPointsAndNumberOfDaysTheyRepresent, 
+            Func<IEnumerable<Tuple<float, int>>, float> aggregationFunction)
         {
             var aggregate = 
                 aggregationFunction(
-                    dataPoints
-                    .Where(x => x.Value.HasValue)
-                    .Select(x => x.Value.Value)
+                    dataPointsAndNumberOfDaysTheyRepresent
+                    .Where(x => x.Item1.Value.HasValue)
+                    .Select(x => new Tuple<float, int>(x.Item1.Value.Value, x.Item2))
                 );
 
             return aggregate;
