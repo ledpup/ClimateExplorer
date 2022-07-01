@@ -501,7 +501,7 @@ async Task BuildNiwaLocationsAsync(Guid dataSetId)
 {
     var locations = new List<Location>();
 
-    var regEx = new Regex(@"^(?<name>[\w|\s|,]*),(?<station>\d+),\w\d+\w?,(?<lat>-?\d+\.\d+),(?<lng>-?\d+\.\d+),(?<alt>-?\d+).*$");
+    var regEx = new Regex(@"^(?<name>[\w|\s|,]*),(?<station>\d+),\w\d+\w?,(?<lat>-?\d+\.\d+),(?<lng>-?\d+\.\d+),(?<alt>-?\d+),.*,.*,(?<startdate>.*),(?<enddate>.*)$");
     var locationRowData = File.ReadAllLines(@"ReferenceData\NIWA\Locations.csv");
 
     foreach (var row in locationRowData)
@@ -510,7 +510,15 @@ async Task BuildNiwaLocationsAsync(Guid dataSetId)
         var location = new Location
         {
             Name = match.Groups["name"].Value,
-            Stations = new List<Station> { new Station { Id = match.Groups["station"].Value } },
+            Stations = new List<Station>
+            {
+                new Station
+                {
+                    Id = match.Groups["station"].Value,
+                    StartDate  = match.Groups["startdate"].Value == "null" ? null : DateTime.Parse(match.Groups["startdate"].Value),
+                    EndDate  = match.Groups["enddate"].Value == "null" ? null : DateTime.Parse(match.Groups["enddate"].Value),
+                }
+            },
             Coordinates = new Coordinates
             {
                 Latitude = float.Parse(match.Groups["lat"].Value),
@@ -597,17 +605,18 @@ async Task<List<Location>> BuildAcornSatLocationsFromReferenceDataAsync(Guid dat
             var start = DateTime.ParseExact(stationGroups["start"].Value, "yyyyMMdd", provider);
             var end = DateTime.ParseExact(stationGroups["end"].Value, "yyyyMMdd", provider);
 
-            // ACORN-SAT starts 1910/01/01.
-            // If a station start date starts on 1910/01/01, we want to ignore that start date so we can use whatever initial data is available in the records
-            DateTime? acornSatStartAdjustment = i == 0 ? null : start;
+            // if it's the first station, ignore the start year
+            DateTime? startDate = i == 0 ? null : start;
 
             location.Stations.Add(new Station
             {
                 Id = id,
-                StartDate = acornSatStartAdjustment,
+                StartDate = startDate,
                 EndDate = end
             });
         }
+        // If it's the last station, ignore the end date
+        location.Stations.Last().EndDate = null;
     }
 
     var moreLocationData = File.ReadAllLines(@"ReferenceData\ACORN-SAT\acorn_sat_v2.1.0_stations.csv");

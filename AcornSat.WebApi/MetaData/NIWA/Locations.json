@@ -15,11 +15,11 @@
       {
         "Id": "6172",
         "StartDate": null,
-        "EndDate": null
+        "EndDate": "1994-12-31T00:00:00"
       },
       {
         "Id": "6174",
-        "StartDate": null,
+        "StartDate": "1995-01-01T00:00:00",
         "EndDate": null
       }
     ],
@@ -41,11 +41,11 @@
       {
         "Id": "2807",
         "StartDate": null,
-        "EndDate": null
+        "EndDate": "1989-12-31T00:00:00"
       },
       {
         "Id": "2810",
-        "StartDate": null,
+        "StartDate": "1990-01-01T00:00:00",
         "EndDate": null
       }
     ],
@@ -65,18 +65,18 @@
     "HeatingScore": null,
     "Stations": [
       {
-        "Id": "12616",
+        "Id": "2101",
         "StartDate": null,
-        "EndDate": null
+        "EndDate": "1996-12-31T00:00:00"
+      },
+      {
+        "Id": "12616",
+        "StartDate": "1997-01-01T00:00:00",
+        "EndDate": "2005-12-31T00:00:00"
       },
       {
         "Id": "26117",
-        "StartDate": null,
-        "EndDate": null
-      },
-      {
-        "Id": "2101",
-        "StartDate": null,
+        "StartDate": "2006-01-01T00:00:00",
         "EndDate": null
       }
     ],
@@ -119,11 +119,11 @@
       {
         "Id": "4461",
         "StartDate": null,
-        "EndDate": null
+        "EndDate": "1992-12-31T00:00:00"
       },
       {
         "Id": "7427",
-        "StartDate": null,
+        "StartDate": "1993-01-01T00:00:00",
         "EndDate": null
       }
     ],
@@ -143,18 +143,18 @@
     "HeatingScore": null,
     "Stations": [
       {
-        "Id": "18464",
-        "StartDate": null,
-        "EndDate": null
-      },
-      {
         "Id": "2363",
         "StartDate": null,
-        "EndDate": null
+        "EndDate": "1979-12-31T00:00:00"
       },
       {
         "Id": "2357",
-        "StartDate": null,
+        "StartDate": "1987-01-01T00:00:00",
+        "EndDate": "1999-12-31T00:00:00"
+      },
+      {
+        "Id": "18464",
+        "StartDate": "2000-09-12T00:00:00",
         "EndDate": null
       }
     ],
@@ -174,13 +174,13 @@
     "HeatingScore": null,
     "Stations": [
       {
-        "Id": "21963",
-        "StartDate": null,
-        "EndDate": null
-      },
-      {
         "Id": "3238",
         "StartDate": null,
+        "EndDate": "2000-12-31T00:00:00"
+      },
+      {
+        "Id": "21963",
+        "StartDate": "2001-01-01T00:00:00",
         "EndDate": null
       }
     ],
@@ -223,11 +223,11 @@
       {
         "Id": "6169",
         "StartDate": null,
-        "EndDate": null
+        "EndDate": "1997-12-31T00:00:00"
       },
       {
         "Id": "6170",
-        "StartDate": null,
+        "StartDate": "1998-01-01T00:00:00",
         "EndDate": null
       }
     ],
@@ -249,11 +249,11 @@
       {
         "Id": "1612",
         "StartDate": null,
-        "EndDate": null
+        "EndDate": "1988-12-31T00:00:00"
       },
       {
         "Id": "1615",
-        "StartDate": null,
+        "StartDate": "1990-05-31T00:00:00",
         "EndDate": null
       }
     ],
@@ -275,11 +275,11 @@
       {
         "Id": "3810",
         "StartDate": null,
-        "EndDate": null
+        "EndDate": "1991-10-12T00:00:00"
       },
       {
         "Id": "7342",
-        "StartDate": null,
+        "StartDate": "1991-10-13T00:00:00",
         "EndDate": null
       }
     ],

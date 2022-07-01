@@ -58,8 +58,8 @@ public static class DataReader
                 if (measurementDefinition.UseStationDatesWhenCompilingAcrossFiles)
                 {
                     stationRecords = stationRecords
-                                                .Where(x => station.StartDate == null || x.Value.Date >= station.StartDate
-                                                                        && x.Value.Date <= station.EndDate)
+                                                .Where(x =>    (station.StartDate == null || x.Value.Date >= station.StartDate)
+                                                            && (station.EndDate == null   || x.Value.Date <= station.EndDate))
                                                 .ToDictionary(x => x.Key, y => y.Value);
                 }
 
