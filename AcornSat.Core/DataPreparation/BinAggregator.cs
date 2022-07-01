@@ -7,11 +7,26 @@ namespace ClimateExplorer.Core.DataPreparation
 {
     public static class BinAggregator
     {
+        static Func<IEnumerable<float>, float> GetAggregationFunction(BinAggregationFunctions function)
+        {
+            switch (function)
+            {
+                case BinAggregationFunctions.Mean: return (x) => x.Average();
+                case BinAggregationFunctions.Sum: return (x) => x.Sum();
+
+                default:
+                    throw new NotImplementedException($"BinAggregationFunction {function}");
+            }
+        }
+
         public static Bin[] AggregateBins(RawBin[] rawBins, BinAggregationFunctions binAggregationFunction)
         {
+            var aggregationFunction = GetAggregationFunction(binAggregationFunction);
+
             switch (binAggregationFunction)
             {
                 case BinAggregationFunctions.Mean:
+                case BinAggregationFunctions.Sum:
                     var w =
                         rawBins
                         // First, aggregate the data points in each bucket
@@ -23,7 +38,7 @@ namespace ClimateExplorer.Core.DataPreparation
                                 BucketAggregates =
                                     x.Buckets
                                     .Select(y => GetDataPointsInBucket(y))
-                                    .Select(y => GetAverageOfDataPoints(y))
+                                    .Select(y => ApplyAggregationFunctionToNonNullDataPoints(y, aggregationFunction))
                                     .ToArray()
                             }
                         )
@@ -32,7 +47,7 @@ namespace ClimateExplorer.Core.DataPreparation
                     var z =
                         // Second, aggregate the bucket-level values we calculated in step one
                         w
-                        .Select(x => new Bin { Identifier = x.RawBin.Identifier, Value = x.BucketAggregates.Average() })
+                        .Select(x => new Bin { Identifier = x.RawBin.Identifier, Value = aggregationFunction(x.BucketAggregates) })
                         .ToArray();
 
                     return z;
@@ -49,9 +64,16 @@ namespace ClimateExplorer.Core.DataPreparation
             return dataPoints;
         }
 
-        static float GetAverageOfDataPoints(IEnumerable<TemporalDataPoint> dataPoints)
+        static float ApplyAggregationFunctionToNonNullDataPoints(
+            IEnumerable<TemporalDataPoint> dataPoints, 
+            Func<IEnumerable<float>, float> aggregationFunction)
         {
-            var aggregate = dataPoints.Where(x => x.Value.HasValue).Average(x => x.Value.Value);
+            var aggregate = 
+                aggregationFunction(
+                    dataPoints
+                    .Where(x => x.Value.HasValue)
+                    .Select(x => x.Value.Value)
+                );
 
             return aggregate;
         }

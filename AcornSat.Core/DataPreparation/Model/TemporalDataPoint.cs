@@ -9,6 +9,22 @@ namespace ClimateExplorer.Core.DataPreparation
         public short? Day { get; set; }
         public float? Value { get; set; }
 
+        public TemporalDataPoint(short year, short? month, short? day, short? value)
+        {
+            Year = year;
+            Month = month;
+            Day = day;
+            Value = value;
+        }
+
+        public TemporalDataPoint(DateOnly d, short? value)
+        {
+            Year = (short)d.Year;
+            Month = (short)d.Month;
+            Day = (short)d.Day;
+            Value = value;
+        }
+
         /// <summary>
         /// Returns a clone of this DataPoint, but with the specified value
         /// </summary>

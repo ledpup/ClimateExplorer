@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AcornSat.WebApi
+namespace ClimateExplorer.Core.DataPreparation
 {
     public class DataSetBuilder
     {
@@ -17,6 +17,11 @@ namespace AcornSat.WebApi
             // Reads raw data (from one or multiple sources) & derive a series from it as per the request
             var dataPoints = await SeriesProvider.GetSeriesDataPointsForRequest(request.SeriesDerivationType, request.SeriesSpecifications);
 
+            return BuildDataSetFromDataPoints(dataPoints, request);
+        }
+
+        public ChartableDataPoint[] BuildDataSetFromDataPoints(TemporalDataPoint[] dataPoints, PostDataSetsRequestBody request)
+        {
             // Apply specified transformation (if any) to each data point in the series
             var transformedDataPoints = SeriesTransformer.ApplySeriesTransformation(dataPoints, request.SeriesTransformation);
 
