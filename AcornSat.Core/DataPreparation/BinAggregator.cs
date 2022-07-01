@@ -7,20 +7,22 @@ namespace ClimateExplorer.Core.DataPreparation
 {
     public static class BinAggregator
     {
-        static float WeightedMean(IEnumerable<Tuple<float, int>> data)
+        static float WeightedMean(IEnumerable<ContainerAggregate> data)
         {
-            return data.Select(x => x.Item1 * x.Item2 / data.Sum(y => y.Item2)).Sum();
+            var totalPeriods = data.Sum(x => x.NumberOfPeriodsCoveredByAggregate);
+
+            return data.Select(x => x.Value * x.NumberOfPeriodsCoveredByAggregate / totalPeriods).Sum();
         }
 
-        static Func<IEnumerable<Tuple<float, int>>, float> GetAggregationFunction(BinAggregationFunctions function)
+        static Func<IEnumerable<ContainerAggregate>, float> GetAggregationFunction(BinAggregationFunctions function)
         {
             switch (function)
             {
-                // Weighted mean is mean of value (Item1) weighted by number of days (Item2)
+                // Weighted mean is mean of value weighted by number of periods covered
                 case BinAggregationFunctions.Mean: return (data) => WeightedMean(data);
-                case BinAggregationFunctions.Sum:  return (data) => data.Select(x => x.Item1).Sum();
-                case BinAggregationFunctions.Min:  return (data) => data.Select(x => x.Item1).Min();
-                case BinAggregationFunctions.Max:  return (data) => data.Select(x => x.Item1).Max();
+                case BinAggregationFunctions.Sum:  return (data) => data.Select(x => x.Value).Sum();
+                case BinAggregationFunctions.Min:  return (data) => data.Select(x => x.Value).Min();
+                case BinAggregationFunctions.Max:  return (data) => data.Select(x => x.Value).Max();
 
                 default:
                     throw new NotImplementedException($"BinAggregationFunction {function}");
@@ -37,10 +39,13 @@ namespace ClimateExplorer.Core.DataPreparation
                 case BinAggregationFunctions.Sum:
                 case BinAggregationFunctions.Min:
                 case BinAggregationFunctions.Max:
+                    // These aggregation functions give the same result if "repeated" (i.e. calculated for subsets and then recalculated over
+                    // those subsets)
                     var w =
                         rawBins
                         // First, aggregate the data points in each bucket, keeping track of how many days each bucket represents, so that
-                        // we can do weighting later if necessary
+                        // we can do weighting later if the aggregation function demands (e.g. mean is implemented as weighted mean by number
+                        // of periods)
                         .Select(
                             x =>
                             new
@@ -50,16 +55,17 @@ namespace ClimateExplorer.Core.DataPreparation
                                     x.Buckets
                                     .Select(
                                         y =>
-                                        new Tuple<float, int>(
-                                            // Tuple Item1 is the aggregate value calculated for the bucket
-                                            ApplyAggregationFunctionToNonNullDataPoints(
-                                                GetDataPointsInBucket(y).Select(x => new Tuple<TemporalDataPoint, int>(x, 1)),
-                                                aggregationFunction
-                                            ),
-
-                                            // Tuple Item2 is the number of days in the bucket
-                                            y.Cups.Sum(z => z.DaysInCup)
-                                        )
+                                        new ContainerAggregate()
+                                        {
+                                            Value =
+                                                aggregationFunction(
+                                                    GetDataPointsInBucket(y)
+                                                    .Where(x => x.Value.HasValue)
+                                                    .Select(x => new ContainerAggregate() { Value = x.Value.Value, NumberOfPeriodsCoveredByAggregate = 1 })
+                                                ),
+                                            NumberOfPeriodsCoveredByAggregate =
+                                                y.Cups.Sum(z => z.DaysInCup)
+                                        }
                                     )
                                     .ToArray()
                             }
@@ -86,19 +92,10 @@ namespace ClimateExplorer.Core.DataPreparation
             return dataPoints;
         }
 
-        static float ApplyAggregationFunctionToNonNullDataPoints(
-            IEnumerable<Tuple<TemporalDataPoint, int>> dataPointsAndNumberOfDaysTheyRepresent, 
-            Func<IEnumerable<Tuple<float, int>>, float> aggregationFunction)
+        struct ContainerAggregate
         {
-            var aggregate = 
-                aggregationFunction(
-                    dataPointsAndNumberOfDaysTheyRepresent
-                    .Where(x => x.Item1.Value.HasValue)
-                    .Select(x => new Tuple<float, int>(x.Item1.Value.Value, x.Item2))
-                );
-
-            return aggregate;
+            public float Value { get; set; }
+            public int NumberOfPeriodsCoveredByAggregate { get; set; }
         }
-
     }
 }
