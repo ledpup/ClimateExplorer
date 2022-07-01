@@ -17,6 +17,7 @@ namespace ClimateExplorer.Core.DataPreparation
             // Reads raw data (from one or multiple sources) & derive a series from it as per the request
             var dataPoints = await SeriesProvider.GetSeriesDataPointsForRequest(request.SeriesDerivationType, request.SeriesSpecifications);
 
+            // Run the rest of the pipeline (this is a separate method for testability)
             return BuildDataSetFromDataPoints(dataPoints, request);
         }
 

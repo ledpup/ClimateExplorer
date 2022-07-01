@@ -48,21 +48,17 @@ namespace ClimateExplorer.Core.DataPreparation
                                 RawBin = x,
                                 BucketAggregates =
                                     x.Buckets
-                                    // Build a list of buckets, each entry containing the number of data points in the bucket and
-                                    // the number of days the bucket covers (this will be more than the number of data points in 
-                                    // the bucket if there are missing observations!)
-                                    .Select(y => new { DataPoints = GetDataPointsInBucket(y), DaysInPeriod = y.Cups.Sum(z => z.DaysInCup) })
-
-                                    // From that, build a list of buckets, each entry containing the calculated value for that bucket
-                                    // and the number of days the bucket covers.
                                     .Select(
-                                        y => 
+                                        y =>
                                         new Tuple<float, int>(
+                                            // Tuple Item1 is the aggregate value calculated for the bucket
                                             ApplyAggregationFunctionToNonNullDataPoints(
-                                                y.DataPoints.Select(x => new Tuple<TemporalDataPoint, int>(x, 1)),
+                                                GetDataPointsInBucket(y).Select(x => new Tuple<TemporalDataPoint, int>(x, 1)),
                                                 aggregationFunction
                                             ),
-                                            y.DaysInPeriod
+
+                                            // Tuple Item2 is the number of days in the bucket
+                                            y.Cups.Sum(z => z.DaysInCup)
                                         )
                                     )
                                     .ToArray()
