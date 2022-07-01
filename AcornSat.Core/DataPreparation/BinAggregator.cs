@@ -29,56 +29,130 @@ namespace ClimateExplorer.Core.DataPreparation
             }
         }
 
+        struct AggregationIntermediate
+        {
+            public RawBin Bin { get; set; }
+            public Bucket Bucket { get; set; }
+            public Cup Cup { get; set; }
+            public ContainerAggregate Aggregate { get; set; }
+        }
+
+        static ContainerAggregate BuildContainerAggregateForCup(Cup cup, Func<IEnumerable<ContainerAggregate>, float> aggregationFunction)
+        {
+            return
+                new ContainerAggregate
+                {
+                    NumberOfPeriodsCoveredByAggregate = cup.DaysInCup,
+                    Value = 
+                        aggregationFunction(
+                            cup.DataPoints
+                            .Where(x => x.Value.HasValue)
+                            .Select(
+                                x => 
+                                new ContainerAggregate 
+                                { 
+                                    Value = x.Value.Value, 
+                                    NumberOfPeriodsCoveredByAggregate = 1 
+                                }
+                            )
+                        )
+                };
+        }
+
+        static Bin[] AggregateBinsByRepeatedlyApplyingAggregationFunction(RawBin[] rawBins, Func<IEnumerable<ContainerAggregate>, float> aggregationFunction)
+        {
+            // Strategy: we have an object tree - each bin has a list of buckets, each of which has a list of cups, each of which has a list of data points.
+            // We're going to flatten out that tree into a list of AggregationIntermediates, one per cup. Then we're going to repeatedly aggregate, reducing
+            // the number of entries in our list of AggregationIntermediates each time, until we have one entry per bin.
+
+            // First, build a list of cups, each with a calculated aggregate based on the data points inside that cup.
+            List<AggregationIntermediate> cupLevelIntermediates = new List<AggregationIntermediate>();
+
+            foreach (var bin in rawBins)
+            {
+                foreach (var bucket in bin.Buckets)
+                {
+                    foreach (var cup in bucket.Cups)
+                    {
+                        cupLevelIntermediates.Add(
+                            new AggregationIntermediate
+                            {
+                                Bin = bin,
+                                Bucket = bucket,
+                                Cup = cup,
+                                Aggregate = BuildContainerAggregateForCup(cup, aggregationFunction)                                    
+                            }
+                        );
+                    }
+                }
+            }
+
+            // Now we have a list of cups. Next, we aggregate up to the bucket level.
+            var bucketLevelIntermediates =
+                cupLevelIntermediates
+                .GroupBy(x => new { x.Bin, x.Bucket })
+                .Select(
+                    kvp =>
+                    new AggregationIntermediate
+                    {
+                        Bin = kvp.Key.Bin,
+                        Bucket = kvp.Key.Bucket,
+                        Aggregate = AggregateContainerAggregates(kvp.Select(y => y.Aggregate), aggregationFunction)
+                    }
+                )
+                .ToArray();
+
+            // Now we have a list of buckets. Next, we aggregate up to the bin level.
+            var binLevelIntermediates =
+                bucketLevelIntermediates
+                .GroupBy(x => new { x.Bin })
+                .Select(
+                    kvp =>
+                    new AggregationIntermediate
+                    {
+                        Bin = kvp.Key.Bin,
+                        Aggregate = AggregateContainerAggregates(kvp.Select(y => y.Aggregate), aggregationFunction)
+                    }
+                )
+                .ToArray();
+
+            // That's the data we need. Transform and return it.
+            return
+                binLevelIntermediates
+                .Select(
+                    x =>
+                    new Bin { Identifier = x.Bin.Identifier, Value = x.Aggregate.Value }
+                )
+                .ToArray();
+        }
+
+        static ContainerAggregate AggregateContainerAggregates(
+            IEnumerable<ContainerAggregate> aggregates,
+            Func<IEnumerable<ContainerAggregate>, float> aggregationFunction)
+        {
+            return
+                new ContainerAggregate()
+                {
+                    Value = aggregationFunction(aggregates),
+                    NumberOfPeriodsCoveredByAggregate = aggregates.Sum(y => y.NumberOfPeriodsCoveredByAggregate)
+                };
+        }
+
         public static Bin[] AggregateBins(RawBin[] rawBins, BinAggregationFunctions binAggregationFunction)
         {
             var aggregationFunction = GetAggregationFunction(binAggregationFunction);
 
             switch (binAggregationFunction)
             {
+                // These aggregation functions give the same result if "repeated" (i.e. calculated for subsets and then recalculated over
+                // those subsets). We take advantage of this by calculating the aggregate for each cup (based on the data points each
+                // contains), then the aggregate for each bucket (based on the cup-level aggregates calculated in the previous step), then
+                // the aggregates for each bin (based on the bucket-level aggregates calculated in the previous step).
                 case BinAggregationFunctions.Mean:
                 case BinAggregationFunctions.Sum:
                 case BinAggregationFunctions.Min:
                 case BinAggregationFunctions.Max:
-                    // These aggregation functions give the same result if "repeated" (i.e. calculated for subsets and then recalculated over
-                    // those subsets)
-                    var w =
-                        rawBins
-                        // First, aggregate the data points in each bucket, keeping track of how many days each bucket represents, so that
-                        // we can do weighting later if the aggregation function demands (e.g. mean is implemented as weighted mean by number
-                        // of periods)
-                        .Select(
-                            x =>
-                            new
-                            {
-                                RawBin = x,
-                                BucketAggregates =
-                                    x.Buckets
-                                    .Select(
-                                        y =>
-                                        new ContainerAggregate()
-                                        {
-                                            Value =
-                                                aggregationFunction(
-                                                    GetDataPointsInBucket(y)
-                                                    .Where(x => x.Value.HasValue)
-                                                    .Select(x => new ContainerAggregate() { Value = x.Value.Value, NumberOfPeriodsCoveredByAggregate = 1 })
-                                                ),
-                                            NumberOfPeriodsCoveredByAggregate =
-                                                y.Cups.Sum(z => z.DaysInCup)
-                                        }
-                                    )
-                                    .ToArray()
-                            }
-                        )
-                        .ToArray();
-
-                    var z =
-                        // Second, aggregate the bucket-level values we calculated in step one
-                        w
-                        .Select(x => new Bin { Identifier = x.RawBin.Identifier, Value = aggregationFunction(x.BucketAggregates) })
-                        .ToArray();
-
-                    return z;
+                    return AggregateBinsByRepeatedlyApplyingAggregationFunction(rawBins, aggregationFunction);
 
                 default:
                     throw new NotImplementedException($"BinAgregationFunction {binAggregationFunction}");
