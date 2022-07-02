@@ -271,7 +271,7 @@ namespace AcornSat.UnitTests
             );
 
             Assert.AreEqual(12, cdp.Length); // Twelve months
-            Assert.AreEqual(6.4698925f, cdp[0].Value);
+            Assert.AreEqual(6.469893f, cdp[0].Value.Value, 0.00001f);
             Assert.AreEqual("Jan 1990", cdp[0].Label);
         }
 
@@ -438,6 +438,63 @@ namespace AcornSat.UnitTests
             Assert.AreEqual("Summer", cdp[0].Label);
             Assert.AreEqual(243.646973f, cdp[0].Value.Value);
         }
+
+
+        [TestMethod]
+        public void WeightedMeanHandlesMissingCupValues()
+        {
+            var dsb = new DataSetBuilder();
+
+            var dataPoints =
+                new TemporalDataPoint[]
+                {
+                    new TemporalDataPoint(1990, 01, 01, 10)
+                };
+
+            var cdp = dsb.BuildDataSetFromDataPoints(
+                dataPoints,
+                new PostDataSetsRequestBody
+                {
+                    BinningRule = BinningRules.ByYearAndMonth,
+                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    CupSize = 14,
+                    RequiredCupDataProportion = 0f, // Note that we don't have any data level requirements, so nulls will get through
+                    RequiredBucketDataProportion = 0f,
+                    RequiredBinDataProportion = 0f,
+                }
+            );
+
+            Assert.AreEqual(1, cdp.Length); // One month, because that's the only month with any data
+            Assert.AreEqual("Jan 1990", cdp[0].Label);
+            Assert.AreEqual(10.0f, cdp[0].Value); // There's only one sample
+        }
+
+        [TestMethod]
+        public void NoDataReturnsNoData()
+        {
+            var dsb = new DataSetBuilder();
+
+            var dataPoints =
+                new TemporalDataPoint[]
+                {
+                };
+
+            var cdp = dsb.BuildDataSetFromDataPoints(
+                dataPoints,
+                new PostDataSetsRequestBody
+                {
+                    BinningRule = BinningRules.ByYearAndMonth,
+                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    CupSize = 14,
+                    RequiredCupDataProportion = 0f, // Note that we don't have any data level requirements, so nulls will get through
+                    RequiredBucketDataProportion = 0f,
+                    RequiredBinDataProportion = 0f,
+                }
+            );
+
+            Assert.AreEqual(0, cdp.Length);
+        }
+
 
         TemporalDataPoint[] BuildConstantTemporalDataPointArrayFor1990()
         {

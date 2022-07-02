@@ -6,7 +6,7 @@ namespace ClimateExplorer.Core.DataPreparation.Model
 {
     public static class Binner
     {
-        public static RawBin[] ApplyBinningRules(TemporalDataPoint[] dataPoints, BinningRules binningRule, int CupSize)
+        public static RawBin[] ApplyBinningRules(TemporalDataPoint[] dataPoints, BinningRules binningRule, int cupSize)
         {
             var dataPointsByBinId =
                 dataPoints
@@ -19,7 +19,7 @@ namespace ClimateExplorer.Core.DataPreparation.Model
                     new RawBin()
                     {
                         Identifier = x.Key,
-                        Buckets = BuildBucketsForBin(binningRule, x, CupSize)
+                        Buckets = BuildBucketsForBin(binningRule, x, cupSize)
                     }
                 )
                 .ToArray();
@@ -28,19 +28,19 @@ namespace ClimateExplorer.Core.DataPreparation.Model
         static Bucket[] BuildBucketsForBin(
             BinningRules binningRule, 
             IGrouping<BinIdentifier, TemporalDataPoint> bin, 
-            int CupSize)
+            int cupSize)
         {
             switch (binningRule)
             {
                 case BinningRules.ByYear:
                 case BinningRules.ByYearAndMonth:
-                    return BuildBucketsForGaplessBin(bin, CupSize);
+                    return BuildBucketsForGaplessBin(bin, cupSize);
 
                 case BinningRules.ByMonthOnly:
-                    return BuildBucketsForMonth(bin, CupSize);
+                    return BuildBucketsForMonth(bin, cupSize);
 
                 case BinningRules.BySouthernHemisphereTemperateSeasonOnly:
-                    return BuildBucketsForSouthernHemisphereTemperateSeason(bin, CupSize);
+                    return BuildBucketsForSouthernHemisphereTemperateSeason(bin, cupSize);
 
                 default:
                     throw new NotImplementedException($"BinningRule {binningRule}");
@@ -49,7 +49,7 @@ namespace ClimateExplorer.Core.DataPreparation.Model
 
         static Bucket[] BuildBucketsForMonth(
             IGrouping<BinIdentifier, TemporalDataPoint> bin,
-            int CupSize)
+            int cupSize)
         {
             // Bin is month
             // Bucket is year + month
@@ -70,7 +70,7 @@ namespace ClimateExplorer.Core.DataPreparation.Model
                                 new DateOnly(group.Key.Year, group.Key.Month.Value, 1),
                                 DateHelpers.GetLastDayInMonth(group.Key.Year, group.Key.Month.Value),
                                 group.ToArray(),
-                                CupSize)
+                                cupSize)
                             .ToArray()
                     }
                 );
@@ -81,11 +81,11 @@ namespace ClimateExplorer.Core.DataPreparation.Model
 
         static Bucket[] BuildBucketsForSouthernHemisphereTemperateSeason(
             IGrouping<BinIdentifier, TemporalDataPoint> bin,
-            int CupSize)
+            int cupSize)
         {
             // Bin is temperate season
             // Bucket is year + temperate season
-            // Cup is a CupSize segment of bucket
+            // Cup is a cupSize segment of bucket
             var binIdentifier = bin.Key as SouthernHemisphereTemperateSeasonOnlyBinIdentifier;
 
             List<Bucket> buckets = new List<Bucket>();
@@ -102,7 +102,7 @@ namespace ClimateExplorer.Core.DataPreparation.Model
                                 DateHelpers.GetFirstDayInTemperateSeasonOccurrence(seasonOccurrence.Key),
                                 DateHelpers.GetLastDayInTemperateSeasonOccurrence(seasonOccurrence.Key),
                                 seasonOccurrence.ToArray(),
-                                CupSize)
+                                cupSize)
                             .ToArray()
                     }
                 );
@@ -168,9 +168,9 @@ namespace ClimateExplorer.Core.DataPreparation.Model
 
         static Bucket[] BuildBucketsForGaplessBin(
             IGrouping<BinIdentifier, TemporalDataPoint> bin, 
-            int CupSize)
+            int cupSize)
         {
-            // For gapless bins, buckets and cups are the same size
+            // For gapless bins, buckets and cups are the same size.
             var binIdentifier = bin.Key as BinIdentifierForGaplessBin;
 
             if (binIdentifier == null)
@@ -178,62 +178,48 @@ namespace ClimateExplorer.Core.DataPreparation.Model
                 throw new Exception($"Cannot treat BinIdentifier of type {bin.Key.GetType().Name} as a {nameof(BinIdentifierForGaplessBin)}");
             }
 
-            List<Bucket> buckets = new List<Bucket>();
-
-            var d = binIdentifier.FirstDayInBin;
-
-            List<TemporalDataPoint> bucketPoints = new List<TemporalDataPoint>();
+            var cupSegments =
+                DateHelpers.DivideDateSpanIntoSegmentsWithIncompleteFinalSegmentAddedToFinalSegment(
+                    binIdentifier.FirstDayInBin,
+                    binIdentifier.LastDayInBin,
+                    cupSize
+                );
 
             var points = bin.ToArray();
-            var i = 0;
-            int bucketCounter = 0;
 
-            var firstDayInBucket = d;
+            var cups =
+                cupSegments
+                .Select(
+                    x =>
+                    new Cup
+                    {
+                        FirstDayInCup = x.Start,
+                        LastDayInCup = x.End,
+                        DataPoints = points.Where(y => DataPointFallsInInclusiveRange(y, x.Start, x.End)).ToArray()
+                    }
+                );
 
-            while (d <= binIdentifier.LastDayInBin && i < points.Length)
-            {
-                if (points[i].Year == d.Year && points[i].Month == d.Month && points[i].Day == d.Day)
-                {
-                    bucketPoints.Add(points[i]);
-                    i++;
-                }
+            var buckets =
+                cups
+                .Select(
+                    x =>
+                    new Bucket
+                    {
+                        FirstDayInBucket = x.FirstDayInCup,
+                        LastDayInBucket = x.LastDayInCup,
+                        Cups = new Cup[] { x }
+                    }
+                )
+                .ToArray();
 
-                bucketCounter++;
-                if (bucketCounter == CupSize || i == points.Length)
-                {
-                    buckets.Add(
-                        new Bucket
-                        {
-                            Cups =
-                                new Cup[]
-                                {
-                                    new Cup
-                                    {
-                                        DataPoints = bucketPoints.ToArray(),
-                                        FirstDayInCup = firstDayInBucket,
-                                        LastDayInCup = d
-                                    }
-                                }
-                        }
-                    );
+            return buckets;
+        }
 
-                    bucketPoints = new List<TemporalDataPoint>();
-                    bucketCounter = 0;
-                    firstDayInBucket = d.AddDays(1);
-                }
+        static bool DataPointFallsInInclusiveRange(TemporalDataPoint dp, DateOnly start, DateOnly end)
+        {
+            DateOnly d = new DateOnly(dp.Year, dp.Month ?? 1, dp.Day ?? 1);
 
-                d = d.AddDays(1);
-            }
-
-            // If we have leftovers, add them to the last bucket
-            if (bucketCounter > 0)
-            {
-                var lastCup = buckets.Last().Cups.Last();
-                lastCup.DataPoints = lastCup.DataPoints.Concat(bucketPoints).ToArray();
-                lastCup.LastDayInCup = d.AddDays(-1);
-            }
-
-            return buckets.ToArray();
+            return d >= start && d <= end;
         }
 
         static BinIdentifier GetBinIdentifier(TemporalDataPoint dp, BinningRules binningRule)

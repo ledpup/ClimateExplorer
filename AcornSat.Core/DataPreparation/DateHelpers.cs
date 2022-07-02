@@ -97,5 +97,44 @@ namespace ClimateExplorer.Core.DataPreparation
                 default: throw new NotImplementedException($"SouthernHemisphereTemperateSeason {seasonOccurrence}");
             }
         }
+
+        public struct DateOnlySpan
+        {
+            public DateOnly Start { get; set; }
+            public DateOnly End { get; set; }
+        }
+
+        public static DateOnlySpan[] DivideDateSpanIntoSegmentsWithIncompleteFinalSegmentAddedToFinalSegment(DateOnly start, DateOnly end, int segmentSizeInDays)
+        {
+            int daysInSpan =
+                (int)((end.ToDateTime(new TimeOnly()) - start.ToDateTime(new TimeOnly())).TotalDays) + 1;
+
+            int completeSegmentsInSpan = daysInSpan / segmentSizeInDays;
+
+            // Special case: if the requested segment size is bigger than the span we're dividing up, just return the whole span
+            if (completeSegmentsInSpan == 0)
+            {
+                return new DateOnlySpan[]
+                {
+                    new DateOnlySpan { Start = start, End = end }
+                };
+            }
+
+            DateOnlySpan[] result = new DateOnlySpan[completeSegmentsInSpan];
+
+            DateOnly runningStart = start;
+
+            for (int i = 0; i < completeSegmentsInSpan; i++)
+            {
+                result[i].Start = runningStart;
+                result[i].End = runningStart.AddDays(segmentSizeInDays - 1);
+
+                runningStart = runningStart.AddDays(segmentSizeInDays);
+            }
+
+            result[completeSegmentsInSpan - 1].End = end;
+
+            return result;
+        }
     }
 }

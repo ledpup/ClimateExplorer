@@ -7,17 +7,29 @@ namespace ClimateExplorer.Core.DataPreparation
 {
     public static class BinAggregator
     {
-        static float WeightedMean(IEnumerable<ContainerAggregate> data)
+        static float? WeightedMean(IEnumerable<ContainerAggregate> data)
         {
-            if (!data.Any()) throw new NotImplementedException("Work out what to do when no data - .Average() throws, are you too good to throw?");
-            var totalPeriods = data.Sum(x => x.NumberOfPeriodsCoveredByAggregate);
+            var containersWithData = data.Where(x => x.Value.HasValue);
 
-            return data.Select(x => x.Value * x.NumberOfPeriodsCoveredByAggregate / totalPeriods).Sum();
+            if (!containersWithData.Any()) return null;
+
+            var totalPeriodsCoveredByContainersWithData =
+                containersWithData
+                .Sum(x => x.NumberOfPeriodsCoveredByAggregate);
+
+            return 
+                containersWithData
+                .Select(x => x.Value * x.NumberOfPeriodsCoveredByAggregate / totalPeriodsCoveredByContainersWithData)
+                .Sum();
         }
 
-        static float Median(IEnumerable<ContainerAggregate> data)
+        static float? Median(IEnumerable<ContainerAggregate> data)
         {
-            float[] sortedValues = data.Select(x => x.Value).OrderBy(x => x).ToArray();
+            var containersWithData = data.Where(x => x.Value.HasValue).ToArray();
+
+            if (!containersWithData.Any()) return null;
+
+            float[] sortedValues = containersWithData.Select(x => x.Value.Value).OrderBy(x => x).ToArray();
 
             int indexOfMidpoint = sortedValues.Length / 2;
 
@@ -33,7 +45,7 @@ namespace ClimateExplorer.Core.DataPreparation
             }
         }
 
-        static Func<IEnumerable<ContainerAggregate>, float> GetAggregationFunction(BinAggregationFunctions function)
+        static Func<IEnumerable<ContainerAggregate>, float?> GetAggregationFunction(BinAggregationFunctions function)
         {
             switch (function)
             {
@@ -50,7 +62,7 @@ namespace ClimateExplorer.Core.DataPreparation
 
         struct ContainerAggregate
         {
-            public float Value { get; set; }
+            public float? Value { get; set; }
             public int NumberOfPeriodsCoveredByAggregate { get; set; }
         }
 
@@ -62,7 +74,7 @@ namespace ClimateExplorer.Core.DataPreparation
             public ContainerAggregate Aggregate { get; set; }
         }
 
-        static ContainerAggregate BuildContainerAggregateForCup(Cup cup, Func<IEnumerable<ContainerAggregate>, float> aggregationFunction)
+        static ContainerAggregate BuildContainerAggregateForCup(Cup cup, Func<IEnumerable<ContainerAggregate>, float?> aggregationFunction)
         {
             return
                 new ContainerAggregate
@@ -86,7 +98,7 @@ namespace ClimateExplorer.Core.DataPreparation
 
         static Bin[] AggregateBinsByRepeatedlyApplyingAggregationFunction(
             RawBin[] rawBins, 
-            Func<IEnumerable<ContainerAggregate>, float> aggregationFunction)
+            Func<IEnumerable<ContainerAggregate>, float?> aggregationFunction)
         {
             // Strategy: we have an object tree - each bin has a list of buckets, each of which has a list of cups, each of which has a list of data points.
             // We're going to flatten out that tree into a list of AggregationIntermediates, one per cup. Then we're going to repeatedly aggregate, reducing
@@ -155,7 +167,7 @@ namespace ClimateExplorer.Core.DataPreparation
 
         static Bin[] AggregateBinsByApplyingAggregationFunctionOnceForAllDataPoints(
             RawBin[] rawBins, 
-            Func<IEnumerable<ContainerAggregate>, float> aggregationFunction)
+            Func<IEnumerable<ContainerAggregate>, float?> aggregationFunction)
         {
             return
                 rawBins
@@ -179,7 +191,7 @@ namespace ClimateExplorer.Core.DataPreparation
 
         static ContainerAggregate AggregateContainerAggregates(
             IEnumerable<ContainerAggregate> aggregates,
-            Func<IEnumerable<ContainerAggregate>, float> aggregationFunction)
+            Func<IEnumerable<ContainerAggregate>, float?> aggregationFunction)
         {
             return
                 new ContainerAggregate()
