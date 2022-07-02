@@ -117,75 +117,12 @@ namespace ClimateExplorer.Core.DataPreparation.Model
             TemporalDataPoint[] points,
             int cupSize)
         {
-            DateOnly d = firstDay;
-
-            int i = 0;
-            int cupCounter = 0;
-            DateOnly firstDayInCup = firstDay;
-
-            List<TemporalDataPoint> cupPoints = new List<TemporalDataPoint>();
-
-            List<Cup> cups = new List<Cup>();
-
-            while (d <= lastDay && i < points.Length)
-            {
-                if (points[i].Year == d.Year && points[i].Month == d.Month && points[i].Day == d.Day)
-                {
-                    cupPoints.Add(points[i]);
-                    i++;
-                }
-
-                cupCounter++;
-                if (cupCounter == cupSize || i == points.Length)
-                {
-                    cups.Add(
-                        new Cup
-                        {
-                            DataPoints = cupPoints.ToArray(),
-                            FirstDayInCup = firstDayInCup,
-                            LastDayInCup = d
-                        }
-                    );
-
-                    cupPoints = new List<TemporalDataPoint>();
-                    cupCounter = 0;
-                    firstDayInCup = d.AddDays(1);
-                }
-
-                d = d.AddDays(1);
-            }
-
-            // If we have leftovers, add them to the last cup
-            if (cupCounter > 0)
-            {
-                var lastCup = cups.Last();
-                lastCup.DataPoints = lastCup.DataPoints.Concat(cupPoints).ToArray();
-                lastCup.LastDayInCup = d.AddDays(-1);
-            }
-
-            return cups;
-        }
-
-        static Bucket[] BuildBucketsForGaplessBin(
-            IGrouping<BinIdentifier, TemporalDataPoint> bin, 
-            int cupSize)
-        {
-            // For gapless bins, buckets and cups are the same size.
-            var binIdentifier = bin.Key as BinIdentifierForGaplessBin;
-
-            if (binIdentifier == null)
-            {
-                throw new Exception($"Cannot treat BinIdentifier of type {bin.Key.GetType().Name} as a {nameof(BinIdentifierForGaplessBin)}");
-            }
-
             var cupSegments =
                 DateHelpers.DivideDateSpanIntoSegmentsWithIncompleteFinalSegmentAddedToFinalSegment(
-                    binIdentifier.FirstDayInBin,
-                    binIdentifier.LastDayInBin,
+                    firstDay,
+                    lastDay,
                     cupSize
                 );
-
-            var points = bin.ToArray();
 
             var cups =
                 cupSegments
@@ -198,6 +135,28 @@ namespace ClimateExplorer.Core.DataPreparation.Model
                         DataPoints = points.Where(y => DataPointFallsInInclusiveRange(y, x.Start, x.End)).ToArray()
                     }
                 );
+
+            return cups;
+        }
+
+        static Bucket[] BuildBucketsForGaplessBin(
+            IGrouping<BinIdentifier, TemporalDataPoint> bin, 
+            int cupSize)
+        {
+            var binIdentifier = bin.Key as BinIdentifierForGaplessBin;
+
+            if (binIdentifier == null)
+            {
+                throw new Exception($"Cannot treat BinIdentifier of type {bin.Key.GetType().Name} as a {nameof(BinIdentifierForGaplessBin)}");
+            }
+
+            // For gapless bins, buckets and cups are the same size - we just build cups covering the bin, and assign each cup to one bucket.
+            var cups =
+                BuildCupsForDataPointRange(
+                    binIdentifier.FirstDayInBin,
+                    binIdentifier.LastDayInBin,
+                    bin.ToArray(),
+                    cupSize);
 
             var buckets =
                 cups
