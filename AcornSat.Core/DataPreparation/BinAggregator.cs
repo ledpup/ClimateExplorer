@@ -220,6 +220,8 @@ namespace ClimateExplorer.Core.DataPreparation
                 case BinAggregationFunctions.Max:
                     return AggregateBinsByRepeatedlyApplyingAggregationFunction(rawBins, aggregationFunction);
 
+                // But these aggregation functions do NOT give the same result if repeated in that way. So instead, we calculate the aggregate
+                // once, across all available data points.
                 case BinAggregationFunctions.Median:
                     return AggregateBinsByApplyingAggregationFunctionOnceForAllDataPoints(rawBins, aggregationFunction);
 
