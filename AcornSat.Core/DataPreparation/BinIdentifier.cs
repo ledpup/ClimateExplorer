@@ -2,7 +2,7 @@
 
 namespace ClimateExplorer.Core.DataPreparation
 {
-    public abstract class BinIdentifier
+    public abstract class BinIdentifier : IComparable<BinIdentifier>
     {
         public string Id { get; private set; }
         public string Label { get; private set; }
@@ -31,10 +31,47 @@ namespace ClimateExplorer.Core.DataPreparation
         {
             return "Bin " + Label;
         }
+
+        public static BinIdentifier Parse(string id)
+        {
+            if (id == null)
+            {
+                throw new ArgumentNullException("id");
+            }
+
+            if (id.StartsWith("y"))
+            {
+                short year = (short)int.Parse(id.Substring(1, 4));
+                
+                if (id.Contains("m"))
+                {
+                    short month = (short)int.Parse(id.Substring(6, 2));
+
+                    return new YearAndMonthBinIdentifier(year, month);
+                }
+                else
+                {
+                    return new YearBinIdentifier(year);
+                }
+            }
+
+            throw new NotImplementedException("Bin identifier id " + id);
+        }
+
+        public int CompareTo(BinIdentifier? other)
+        {
+            if (this is BinIdentifierForGaplessBin b1 &&
+                other is BinIdentifierForGaplessBin b2)
+            {
+                return b1.CompareTo(b2);
+            }
+
+            throw new NotImplementedException();
+        }
     }
 
 
-    public abstract class BinIdentifierForGaplessBin : BinIdentifier
+    public abstract class BinIdentifierForGaplessBin : BinIdentifier, IComparable<BinIdentifierForGaplessBin>
     {
         public DateOnly FirstDayInBin { get; private set; }
         public DateOnly LastDayInBin { get; private set; }
@@ -45,10 +82,17 @@ namespace ClimateExplorer.Core.DataPreparation
             FirstDayInBin = firstDayInBin;
             LastDayInBin = lastDayInBin;
         }
+
+        public int CompareTo(BinIdentifierForGaplessBin? other)
+        {
+            return this.FirstDayInBin.CompareTo(other?.FirstDayInBin);
+        }
     }
 
     public class YearBinIdentifier : BinIdentifierForGaplessBin
     {
+        short _year;
+
         public YearBinIdentifier(short year) 
             : base(
                 $"y{year}",
@@ -56,11 +100,25 @@ namespace ClimateExplorer.Core.DataPreparation
                 new DateOnly(year, 1, 1),
                 new DateOnly(year, 12, 31))
         {
+            _year = year;
+        }
+
+        public short Year => _year;
+
+        public IEnumerable<YearBinIdentifier> EnumerateYearBinRangeUpTo(YearBinIdentifier endOfRange)
+        {
+            for (short i = _year; i <= endOfRange.Year; i++)
+            {
+                yield return new YearBinIdentifier(i);
+            }
         }
     }
 
     public class YearAndMonthBinIdentifier : BinIdentifierForGaplessBin
     {
+        short _year;
+        short _month;
+
         public YearAndMonthBinIdentifier(short year, short month)
             : base(
                   $"y{year}m{month.ToString().PadLeft(2, '0')}", 
@@ -68,6 +126,17 @@ namespace ClimateExplorer.Core.DataPreparation
                   new DateOnly(year, month, 1),
                   DateHelpers.GetLastDayInMonth(year, month))
         {
+        }
+
+        public short Year => _year;
+        public short Month => _month;
+
+        public IEnumerable<YearAndMonthBinIdentifier> EnumerateYearAndMonthBinRangeUpTo(YearAndMonthBinIdentifier endOfRange)
+        {
+            for (int i = _year * 12 + _month; i <= endOfRange.Year * 12 + endOfRange.Month; i++)
+            {
+                yield return new YearAndMonthBinIdentifier((short)(i / 12), (short)(i % 12));
+            }
         }
     }
 

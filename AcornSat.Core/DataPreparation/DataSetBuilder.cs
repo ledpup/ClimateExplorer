@@ -45,7 +45,15 @@ namespace ClimateExplorer.Core.DataPreparation
 
             return
                 aggregatedBins
-                .Select(x => new ChartableDataPoint { Label = x.Identifier.Label, Value = x.Value })
+                .Select(
+                    x => 
+                    new ChartableDataPoint 
+                    {
+                        BinId = x.Identifier.Id,
+                        Label = x.Identifier.Label, 
+                        Value = x.Value
+                    }
+                )
                 .ToArray();
         }
 

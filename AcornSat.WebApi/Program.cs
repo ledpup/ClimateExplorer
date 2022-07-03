@@ -25,7 +25,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<JsonOptions>(
     opt =>
     {
-        opt.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+//        opt.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
 builder.Services.AddCors(
@@ -49,6 +49,8 @@ builder.Services.AddCors(
                 //       do anything using their credentials against our API site because they don't have
                 //       credentials, and can't modify any data via the API. The exposure is minimal.
                 builder.AllowAnyOrigin();
+
+                builder.AllowAnyHeader();
             }
         );
     }
@@ -397,11 +399,40 @@ async Task<DataSet> GetDataSetInternal(QueryParameters queryParameters)
     return dataSet;
 }
 
-async Task<ChartableDataPoint[]> PostDataSets(PostDataSetsRequestBody body)
+async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
 {
     var dsb = new DataSetBuilder();
 
-    return await dsb.BuildDataSet(body);
+    var records = await dsb.BuildDataSet(body);
+
+    var definitions = await DataSetDefinition.GetDataSetDefinitions();
+    var spec = body.SeriesSpecifications[0];
+    var dsd = definitions.Single(x => x.Id == spec.DataSetDefinitionId);
+
+    var location = (await Location.GetLocations(dsd.FolderName, false)).Single(x => x.Id == spec.LocationId);
+
+    var returnDataSet =
+        new DataSet
+        {
+            Location = location,
+            Resolution = DataResolution.Yearly,
+            MeasurementDefinition = new MeasurementDefinitionViewModel { DataAdjustment = spec.DataAdjustment, DataType = spec.DataType.Value },
+            DataRecords = 
+                records
+                .Select(
+                    x => 
+                    new DataRecord 
+                    { 
+                        Label = x.Label, 
+                        Value = x.Value, 
+                        BinId = x.BinId,
+                    }
+                )
+                .ToList(),
+        };
+
+    return returnDataSet;
+
 }
 
 

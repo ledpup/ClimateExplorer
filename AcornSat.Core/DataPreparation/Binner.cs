@@ -6,7 +6,7 @@ namespace ClimateExplorer.Core.DataPreparation.Model
 {
     public static class Binner
     {
-        public static RawBin[] ApplyBinningRules(TemporalDataPoint[] dataPoints, BinningRules binningRule, int cupSize)
+        public static RawBin[] ApplyBinningRules(TemporalDataPoint[] dataPoints, BinGranularities binningRule, int cupSize)
         {
             var dataPointsByBinId =
                 dataPoints
@@ -26,20 +26,20 @@ namespace ClimateExplorer.Core.DataPreparation.Model
         }
 
         static Bucket[] BuildBucketsForBin(
-            BinningRules binningRule, 
+            BinGranularities binningRule, 
             IGrouping<BinIdentifier, TemporalDataPoint> bin, 
             int cupSize)
         {
             switch (binningRule)
             {
-                case BinningRules.ByYear:
-                case BinningRules.ByYearAndMonth:
+                case BinGranularities.ByYear:
+                case BinGranularities.ByYearAndMonth:
                     return BuildBucketsForGaplessBin(bin, cupSize);
 
-                case BinningRules.ByMonthOnly:
+                case BinGranularities.ByMonthOnly:
                     return BuildBucketsForMonth(bin, cupSize);
 
-                case BinningRules.BySouthernHemisphereTemperateSeasonOnly:
+                case BinGranularities.BySouthernHemisphereTemperateSeasonOnly:
                     return BuildBucketsForSouthernHemisphereTemperateSeason(bin, cupSize);
 
                 default:
@@ -181,17 +181,17 @@ namespace ClimateExplorer.Core.DataPreparation.Model
             return d >= start && d <= end;
         }
 
-        static BinIdentifier GetBinIdentifier(TemporalDataPoint dp, BinningRules binningRule)
+        static BinIdentifier GetBinIdentifier(TemporalDataPoint dp, BinGranularities binningRule)
         {
             // TODO: Notice that (for example) for a year with 365 data points, we will allocate 365 otherwise identical year bin identifiers.
             // We could cache them centrally and re-use to reduce allocations.
             switch (binningRule)
             {
-                case BinningRules.ByYear: return new YearBinIdentifier(dp.Year);
-                case BinningRules.ByYearAndMonth: return new YearAndMonthBinIdentifier(dp.Year, dp.Month.Value);
-                case BinningRules.ByMonthOnly: return new MonthOnlyBinIdentifier(dp.Month.Value);
-                case BinningRules.BySouthernHemisphereTemperateSeasonOnly: return new SouthernHemisphereTemperateSeasonOnlyBinIdentifier(DateHelpers.GetSouthernHemisphereTemperateSeasonForMonth(dp.Month.Value));
-                case BinningRules.ByTropicalSeasonOnly: return new TropicalSeasonOnlyBinIdentifier(DateHelpers.GetTropicalSeasonForMonth(dp.Month.Value));
+                case BinGranularities.ByYear: return new YearBinIdentifier(dp.Year);
+                case BinGranularities.ByYearAndMonth: return new YearAndMonthBinIdentifier(dp.Year, dp.Month.Value);
+                case BinGranularities.ByMonthOnly: return new MonthOnlyBinIdentifier(dp.Month.Value);
+                case BinGranularities.BySouthernHemisphereTemperateSeasonOnly: return new SouthernHemisphereTemperateSeasonOnlyBinIdentifier(DateHelpers.GetSouthernHemisphereTemperateSeasonForMonth(dp.Month.Value));
+                case BinGranularities.ByTropicalSeasonOnly: return new TropicalSeasonOnlyBinIdentifier(DateHelpers.GetTropicalSeasonForMonth(dp.Month.Value));
                 default: throw new NotImplementedException($"BinningRule {binningRule}");
             }
         }

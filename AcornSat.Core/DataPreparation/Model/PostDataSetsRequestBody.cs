@@ -17,7 +17,7 @@
         public float RequiredBinDataProportion { get; set; }
 
 
-        public BinningRules BinningRule { get; set; }
+        public BinGranularities BinningRule { get; set; }
         public BinAggregationFunctions BinAggregationFunction { get; set; }
     }
 }

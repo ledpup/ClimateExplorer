@@ -4,5 +4,6 @@
     {
         public string Label { get; set; }
         public float? Value { get; set; }
+        public string BinId { get; set; }
     }
 }

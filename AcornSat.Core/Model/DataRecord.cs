@@ -52,6 +52,7 @@ public class DataRecord
     public float? Value { get; set; }
 
     public string Label { get; set; }
+    public string BinId { get; set; }
 
     [JsonIgnore]
     public DateTime? Date

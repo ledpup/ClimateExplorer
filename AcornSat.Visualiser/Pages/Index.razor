@@ -19,6 +19,7 @@
 @using System.IO;
 @using System.Globalization
 @using static AcornSat.Core.Enums
+@using ClimateExplorer.Core.DataPreparation
 @using Microsoft.AspNetCore.WebUtilities
 @using System.Text
 @using DPBlazorMapLibrary
@@ -212,13 +213,13 @@
 
     private async Task OnDownloadDataClicked()
     {
-        var fileStream = Exporter.ExportChartData(ChartSeriesWithData, Locations, GetLabels(SelectedResolution, ChartStartYear, ChartEndYear));
+        var fileStream = Exporter.ExportChartData(ChartSeriesWithData, Locations, GetLabels(SelectedResolution, ChartStartBin, ChartEndBin));
 
         var locationNames = ChartSeriesWithData.Select(x => x.ChartSeries.LocationName).Where(x => x != null).Distinct().ToArray();
 
         var fileName = locationNames.Any() ? String.Join("-", locationNames) + "-" : "";
 
-        fileName = $"Export-{fileName}{ChartStartYear}-{ChartEndYear}.csv";
+        fileName = $"Export-{fileName}{ChartStartBin.Label}-{ChartEndBin.Label}.csv";
 
         using var streamRef = new DotNetStreamReference(stream: fileStream);
 
@@ -580,21 +581,21 @@
                 }
             );
 
-            ChartSeriesList.Add(
-                new ChartSeriesDefinition()
-                {
-                    LocationId = location.Id,
-                    LocationName = location.Name,
-                    Aggregation = SeriesAggregationOptions.Sum,
-                    DataResolution = DataResolution.Yearly,
-                    DataSetDefinition = dsd,
-                    MeasurementDefinition = mdRainfall,
-                    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                    SmoothingWindow = 20,
-                    Value = SeriesValueOptions.Value,
-                    Year = null
-                }
-            );
+            //ChartSeriesList.Add(
+            //    new ChartSeriesDefinition()
+            //    {
+            //        LocationId = location.Id,
+            //        LocationName = location.Name,
+            //        Aggregation = SeriesAggregationOptions.Sum,
+            //        DataResolution = DataResolution.Yearly,
+            //        DataSetDefinition = dsd,
+            //        MeasurementDefinition = mdRainfall,
+            //        Smoothing = SeriesSmoothingOptions.MovingAverage,
+            //        SmoothingWindow = 20,
+            //        Value = SeriesValueOptions.Value,
+            //        Year = null
+            //    }
+            //);
         }
 
         // Pick up parameters from querystring
@@ -744,6 +745,15 @@
             switch (csd.MeasurementDefinition.DataType)
             {
                 case DataType.TempMax:
+                    dataSet = 
+                        await DataService.PostDataSet(
+                            csd.DataSetDefinition.Id,
+                            csd.MeasurementDefinition.DataType,
+                            csd.MeasurementDefinition.DataAdjustment,
+                            csd.LocationId
+                        );
+
+                    break;
                 case DataType.TempMin:
                 case DataType.Rainfall:
                 case DataType.SolarRadiation:
@@ -858,37 +868,56 @@
         }
     }
 
-    short ChartStartYear, ChartEndYear;
+    BinIdentifier ChartStartBin, ChartEndBin;
 
-    static Tuple<short, short> CalculateChartStartAndEndYear(
+    static Tuple<BinIdentifier, BinIdentifier> CalculateChartStartAndEndBin(
         List<SeriesWithData> chartSeriesWithData,
         string selectedStartYear,
         string selectedEndYear
     )
     {
-        // Find the first and last year we have data for
-        var superSetStartYear = chartSeriesWithData.Select(x => x.ProcessedDataSet).SelectMany(x => x.DataRecords).Min(y => y.Year);
-        var superSetEndYear = chartSeriesWithData.Select(x => x.ProcessedDataSet).SelectMany(x => x.DataRecords).Max(y => y.Year);
+        // Find the first and last bin we have data for
+        var superSetStartBin = chartSeriesWithData.Select(x => x.ProcessedDataSet).SelectMany(x => x.DataRecords).Min(y => BinIdentifier.Parse(y.BinId));
+        var superSetEndBin = chartSeriesWithData.Select(x => x.ProcessedDataSet).SelectMany(x => x.DataRecords).Max(y => BinIdentifier.Parse(y.BinId));
 
         // Parse the start and end years, if any, specified by the user
         var userStartYear = string.IsNullOrEmpty(selectedStartYear) ? null : (short?)short.Parse(selectedStartYear);
         var userEndYear = string.IsNullOrEmpty(selectedEndYear) ? null : (short?)short.Parse(selectedEndYear);
 
-        // Calculate chart start and end year
-        var chartStartYear =
-            // If the user specified a year in the range of available data, use it, otherwise, use the first available year
-            userStartYear != null && userStartYear >= superSetStartYear && userStartYear <= superSetEndYear
-            ? userStartYear.Value
-            : superSetStartYear;
+        BinIdentifier chartStartBin = BinIdentifier.Parse(superSetStartBin.Id);
+        BinIdentifier chartEndBin = BinIdentifier.Parse(superSetEndBin.Id);
 
-        var chartEndYear =
-            // If the user specified a year in the range of available data (not including the first available year) use it,
-            // otherwise, use the last available year
-            userEndYear != null && userEndYear > superSetStartYear && userEndYear <= superSetEndYear
-            ? userEndYear.Value
-            : superSetEndYear;
+        if (superSetStartBin is BinIdentifierForGaplessBin startBinWithDate &&
+            superSetEndBin is BinIdentifierForGaplessBin endBinWithDate)
+        {
+            if (userStartYear != null && userStartYear >= startBinWithDate.FirstDayInBin.Year && userStartYear <= endBinWithDate.FirstDayInBin.Year)
+            {
+                if (startBinWithDate is YearBinIdentifier)
+                {
+                    chartStartBin = new YearBinIdentifier(userStartYear.Value);
+                }
 
-        return new Tuple<short, short>(chartStartYear, chartEndYear);
+                if (startBinWithDate is YearAndMonthBinIdentifier)
+                {
+                    chartStartBin = new YearAndMonthBinIdentifier(userStartYear.Value, 1);
+                }
+            }
+
+            if (userEndYear != null && userEndYear >= startBinWithDate.FirstDayInBin.Year && userStartYear <= endBinWithDate.FirstDayInBin.Year)
+            {
+                if (startBinWithDate is YearBinIdentifier)
+                {
+                    chartEndBin = new YearBinIdentifier(userEndYear.Value);
+                }
+
+                if (startBinWithDate is YearAndMonthBinIdentifier)
+                {
+                    chartEndBin = new YearAndMonthBinIdentifier(userEndYear.Value, 12);
+                }
+            }
+        }
+
+        return new Tuple<BinIdentifier, BinIdentifier>(chartStartBin, chartEndBin);
     }
 
     async Task HandleRedraw()
@@ -925,14 +954,13 @@
 
         var labels = new string[0];
 
-        var title = string.Empty;
         var subtitle = string.Empty;
 
         List<ChartTrendlineData> trendlines = null;
 
         var locationNames = ChartSeriesWithData.Select(x => x.ChartSeries.LocationName).Where(x => x != null).Distinct().ToArray();
 
-        title = ChartSeriesWithData.Count > 1 ? String.Join(", ", locationNames) : ChartSeriesWithData.Single().ChartSeries.FriendlyTitle;
+        var title = locationNames.Length > 1 ? String.Join(", ", locationNames) : ChartSeriesWithData.Single().ChartSeries.FriendlyTitle;
 
         if (SelectedResolution == DataResolution.Yearly)
         {
@@ -944,23 +972,23 @@
             // records for each missing year. Value is set to null for those records.
             BuildProcessedDataSetsForYearlyView(ChartSeriesWithData, UseMostRecentStartYear);
 
-            (ChartStartYear, ChartEndYear) = CalculateChartStartAndEndYear(ChartSeriesWithData, SelectedStartYear, SelectedEndYear);
+            (ChartStartBin, ChartEndBin) = CalculateChartStartAndEndBin(ChartSeriesWithData, SelectedStartYear, SelectedEndYear);
 
-            // Now, we cut down the processed datasets to just the years that we intend to display on the chart.
+            // Now, we cut down the processed datasets to just the bins that we intend to display on the chart.
             foreach (var cswd in ChartSeriesWithData)
             {
-                Logger.LogInformation("HandleRedraw " + g + " - cswd");
-
-                var psd = cswd.ProcessedDataSet;
-                
-                Logger.LogInformation("HandleRedraw " + g + " -   psd");
-
-                psd.DataRecords = psd.DataRecords.Where(x => x.Year >= ChartStartYear && x.Year <= ChartEndYear).ToList();
+                cswd.ProcessedDataSet.DataRecords = 
+                    cswd.ProcessedDataSet.DataRecords
+                    .Where(
+                        x => 
+                        BinIdentifier.Parse(x.BinId).CompareTo(ChartStartBin) >= 0 && 
+                        BinIdentifier.Parse(x.BinId).CompareTo(ChartEndBin) <= 0)
+                    .ToList();
             }
 
-            subtitle = $"({ChartStartYear}-{ChartEndYear})";
+            subtitle = $"({ChartStartBin.Label}-{ChartEndBin.Label})";
 
-            Labels = GetLabels(SelectedResolution, ChartStartYear, ChartEndYear);
+            Labels = GetLabels(SelectedResolution, ChartStartBin, ChartEndBin);
 
             trendlines = await AddDataSetsToGraph();
         }
@@ -978,20 +1006,21 @@
 
             if (SelectedYears.Any())
             {
+                throw new NotImplementedException();
                 // Build a list of x axis labels. Because we may have multiple years selected, and leap years
                 // have a different number of days to non-leap years, we prefer to use a leap year when preparing
                 // the list of x axis labels, if one is present in the user's list of selected years.
-                var selectedYear = SelectedYears.FirstOrDefault(x => calendar.IsLeapYear(x));
+                //var selectedYear = SelectedYears.FirstOrDefault(x => calendar.IsLeapYear(x));
 
-                if (selectedYear == 0)
-                {
-                    selectedYear = SelectedYears.First();
-                }
+                //if (selectedYear == 0)
+                //{
+                //    selectedYear = SelectedYears.First();
+                //}
 
-                labels = GetLabels(SelectedResolution, selectedYear: selectedYear);
-                Labels = labels;
+                //labels = GetLabels(SelectedResolution);
+                //Labels = labels;
 
-                await AddDataSetsToGraph();
+                //await AddDataSetsToGraph();
             }
         }
 
@@ -1133,53 +1162,11 @@
 
     bool _haveCalledResizeAtLeastOnce = false;
 
-    string[] GetLabels(DataResolution dataResolution, short? chartStartYear = null, short? chartEndYear = null, short? selectedYear = null)
+    string[] GetLabels(DataResolution dataResolution, BinIdentifier startBin, BinIdentifier endBin)
     {
-        switch (dataResolution)
-        {
-            case DataResolution.Yearly:
-                {
-                    var numberOfYears = chartEndYear.Value - chartStartYear.Value;
-                    var labels = new string[numberOfYears + 1];
-                    for (var i = 0; i <= numberOfYears; i++)
-                    {
-                        labels[i] = (chartStartYear.Value + i).ToString();
-                    }
-                    return labels;
-                }
-            case DataResolution.Daily:
-                {
-                    var calendar = new GregorianCalendar();
-                    var numberOfDays = calendar.GetDaysInYear(selectedYear.Value);
-                    var labels = new string[numberOfDays];
-                    var date = new DateOnly(selectedYear.Value, 1, 1);
-                    for (var i = 0; i < numberOfDays; i++)
-                    {
-                        labels[i] = date.ToString("dd/MM");
-                        date = date.AddDays(1);
-                    }
-                    return labels;
-                }
-            case DataResolution.Weekly:
-                {
-                    var labels = new string[52];
-                    for (var i = 0; i < 52; i++)
-                    {
-                        labels[i] = $"Week {i + 1}";
-                    }
-                    return labels;
-                }
-            case DataResolution.Monthly:
-                {
-                    var labels = new string[12];
-                    for (var i = 0; i < 12; i++)
-                    {
-                        labels[i] = new DateTime(2010, i + 1, 1).ToString("MMMM", CultureInfo.InvariantCulture);
-                    }
-                    return labels;
-                }
-        }
-        throw new NotImplementedException();
+        var bins = BinHelpers.EnumerateBinsInRange(startBin, endBin);
+
+        return bins.Select(x => x.Label).ToArray();
     }
 
     string GetXAxisLabel()
@@ -1284,6 +1271,40 @@
         }
     }
 
+    static short GetYearForDataRecord(DataRecord dr)
+    {
+        string binId = dr.BinId;
+
+        BinIdentifier parsedId = BinIdentifier.Parse(binId);
+
+        if (parsedId is BinIdentifierForGaplessBin id)
+        {
+            return (short)id.FirstDayInBin.Year;
+        }
+
+        throw new NotImplementedException();
+    }
+
+    static DataRecord GetFirstDataRecordWithValueInDataSet(DataSet dataSet)
+    {
+        return dataSet.DataRecords.First(x => x.Value.HasValue);
+    }
+
+    static DataRecord GetLastDataRecordWithValueInDataSet(DataSet dataSet)
+    {
+        return dataSet.DataRecords.Last(x => x.Value.HasValue);
+    }
+
+    static short GetStartYearForDataSet(DataSet dataSet)
+    {
+        return GetYearForDataRecord(GetFirstDataRecordWithValueInDataSet(dataSet));
+    }
+
+    static short GetEndYearForDataSet(DataSet dataSet)
+    {
+        return GetYearForDataRecord(GetLastDataRecordWithValueInDataSet(dataSet));
+    }
+
     void BuildProcessedDataSetsForYearlyView(List<SeriesWithData> chartSeriesWithData, bool useMostRecentStartYear = true)
     {
         // If we're doing smoothing via the moving average, precalculate these data and add them to PreProcessedDataSets.
@@ -1296,12 +1317,12 @@
             if (cs.ChartSeries.Smoothing == SeriesSmoothingOptions.MovingAverage)
             {
                 cs.PreProcessedDataSet = 
-                                new DataSet
-                                    {
-                                        Location = cs.SourceDataSet.Location,
-                                        MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
-                                        DataRecords = SimpleMovingAverage.Calculate(cs.ChartSeries.SmoothingWindow, cs.SourceDataSet.DataRecords)
-                                    };
+                    new DataSet
+                    {
+                        Location = cs.SourceDataSet.Location,
+                        MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
+                        DataRecords = SimpleMovingAverage.Calculate(cs.ChartSeries.SmoothingWindow, cs.SourceDataSet.DataRecords)
+                    };
             }
             else
             {
@@ -1312,35 +1333,59 @@
         // Calculate first and last year which we have a data record for, across all data sets underpinning all chart series
         var allDataSets = chartSeriesWithData.Select(x => x.PreProcessedDataSet);
         var allDataRecords = allDataSets.SelectMany(x => x.DataRecords);
+        
+        // There must be exactly one bin granularity or else something odd's going on.
+        var binGranularity = allDataSets.Select(x => x.BinGranularity).Distinct().Single();
 
-        StartYears = allDataSets.Where(x => x.StartYear.HasValue).Select(x => x.StartYear.Value).Distinct().OrderBy(x => x).ToList();
-
-        var earliestYear = Convert.ToInt32(useMostRecentStartYear
-                                                ? StartYears.Last()
-                                                : StartYears.First());
-
-        var latestYearAcrossAllDataSets = allDataRecords.Max(y => y.Year);
-
-        foreach (var cs in chartSeriesWithData)
+        // If the series covers linear time
+        if (binGranularity == BinGranularities.ByYear || binGranularity == BinGranularities.ByYearAndMonth)
         {
-            // Create new datasets, same as the source, but with any gap years filled with null records
-            cs.ProcessedDataSet =                
-                        new DataSet
-                            {
-                                Location = cs.PreProcessedDataSet.Location,
-                                MeasurementDefinition = cs.PreProcessedDataSet.MeasurementDefinition,
-                                DataRecords =
-                                        Enumerable.Range(earliestYear, latestYearAcrossAllDataSets - earliestYear + 1)
-                                        .Select(
-                                            year =>
-                                                // If there's a record in the source dataset, use it
-                                                cs.PreProcessedDataSet.DataRecords.SingleOrDefault(z => z.Year == year)
-                                                // Otherwise, create a null record
-                                                ?? new DataRecord((short)year)
-                                        )
-                                        .ToList()
-                            }
-                ;
+            var firstBinInEachDataSet =
+                allDataSets
+                .Select(GetFirstDataRecordWithValueInDataSet)
+                .Select(x => (BinIdentifierForGaplessBin)BinIdentifier.Parse(x.BinId));
+
+            var lastBinInEachDataSet = 
+                allDataSets
+                .Select(GetLastDataRecordWithValueInDataSet)
+                .Select(x => (BinIdentifierForGaplessBin)BinIdentifier.Parse(x.BinId));
+
+            var firstBinAcrossAllDataSets = firstBinInEachDataSet.Min();
+            var lastBinAcrossAllDataSets = lastBinInEachDataSet.Max();
+
+            Logger.LogInformation("firstBinAcrossAllDataSets: " + firstBinAcrossAllDataSets.Id);
+            Logger.LogInformation("lastBinAcrossAllDataSets: " + lastBinAcrossAllDataSets.Id);
+
+            StartYears = allDataSets.Select(GetStartYearForDataSet).ToList();
+
+            var earliestYear = Convert.ToInt32(useMostRecentStartYear ? StartYears.Last() : StartYears.First());
+
+            var latestYearAcrossAllDataSets = allDataSets.Select(GetEndYearForDataSet).Max();
+
+            foreach (var cs in chartSeriesWithData)
+            {
+                // Create new datasets, same as the source, but with any gaps filled with null records
+                cs.ProcessedDataSet =                
+                    new DataSet
+                    {
+                        Location = cs.PreProcessedDataSet.Location,
+                        MeasurementDefinition = cs.PreProcessedDataSet.MeasurementDefinition,
+                        DataRecords =
+                            BinHelpers.EnumerateBinsInRange(firstBinAcrossAllDataSets, lastBinAcrossAllDataSets)
+                            .Select(
+                                bin =>
+                                // If there's a record in the source dataset, use it
+                                cs.PreProcessedDataSet.DataRecords.SingleOrDefault(z => z.BinId == bin.Id)
+                                // Otherwise, create a null record
+                                ?? new DataRecord { BinId = bin.Id, Value = null }
+                            )
+                            .ToList()
+                    };
+            }
+        }
+        else
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -1560,13 +1605,15 @@
             return;
         }
 
-        var year = (short)(ChartStartYear + e.Index);
+        throw new NotImplementedException();
 
-        SelectedYears = new List<short> { year };
-        SelectedResolution = DataResolution.Monthly;
+        //var year = (short)(ChartStartYear + e.Index);
 
-        RebuildChartSeriesListToReflectSelectedYears();
+        //SelectedYears = new List<short> { year };
+        //SelectedResolution = DataResolution.Monthly;
 
-        await BuildDataSets();
+        //RebuildChartSeriesListToReflectSelectedYears();
+
+        //await BuildDataSets();
     }
 }

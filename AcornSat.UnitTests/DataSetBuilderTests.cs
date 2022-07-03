@@ -20,7 +20,7 @@ namespace AcornSat.UnitTests
                 new TemporalDataPoint[] { },
                 new PostDataSetsRequestBody
                 {
-                    BinningRule = BinningRules.ByYear,
+                    BinningRule = BinGranularities.ByYear,
                     BinAggregationFunction = BinAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
@@ -41,7 +41,7 @@ namespace AcornSat.UnitTests
                 BuildConstantTemporalDataPointArrayFor1990(),
                 new PostDataSetsRequestBody
                 {
-                    BinningRule = BinningRules.ByYear,
+                    BinningRule = BinGranularities.ByYear,
                     BinAggregationFunction = BinAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
@@ -64,7 +64,7 @@ namespace AcornSat.UnitTests
                 BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f),
                 new PostDataSetsRequestBody
                 {
-                    BinningRule = BinningRules.ByYear,
+                    BinningRule = BinGranularities.ByYear,
                     BinAggregationFunction = BinAggregationFunctions.Min,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
@@ -87,7 +87,7 @@ namespace AcornSat.UnitTests
                 BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f),
                 new PostDataSetsRequestBody
                 {
-                    BinningRule = BinningRules.ByYear,
+                    BinningRule = BinGranularities.ByYear,
                     BinAggregationFunction = BinAggregationFunctions.Max,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
@@ -110,7 +110,7 @@ namespace AcornSat.UnitTests
                 BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f),
                 new PostDataSetsRequestBody
                 {
-                    BinningRule = BinningRules.ByYearAndMonth,
+                    BinningRule = BinGranularities.ByYearAndMonth,
                     BinAggregationFunction = BinAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
@@ -150,7 +150,7 @@ namespace AcornSat.UnitTests
                 BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f),
                 new PostDataSetsRequestBody
                 {
-                    BinningRule = BinningRules.ByYearAndMonth,
+                    BinningRule = BinGranularities.ByYearAndMonth,
                     BinAggregationFunction = BinAggregationFunctions.Median,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
@@ -180,7 +180,7 @@ namespace AcornSat.UnitTests
                 BuildConstantTemporalDataPointArrayFor1990(),
                 new PostDataSetsRequestBody
                 {
-                    BinningRule = BinningRules.ByYear,
+                    BinningRule = BinGranularities.ByYear,
                     BinAggregationFunction = BinAggregationFunctions.Sum,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
@@ -203,7 +203,7 @@ namespace AcornSat.UnitTests
                 BuildConstantTemporalDataPointArrayFor1990(),
                 new PostDataSetsRequestBody
                 {
-                    BinningRule = BinningRules.ByYearAndMonth,
+                    BinningRule = BinGranularities.ByYearAndMonth,
                     BinAggregationFunction = BinAggregationFunctions.Sum,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
@@ -233,7 +233,7 @@ namespace AcornSat.UnitTests
                 dataPoints,
                 new PostDataSetsRequestBody
                 {
-                    BinningRule = BinningRules.ByYearAndMonth,
+                    BinningRule = BinGranularities.ByYearAndMonth,
                     BinAggregationFunction = BinAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
@@ -261,7 +261,7 @@ namespace AcornSat.UnitTests
                 dataPoints,
                 new PostDataSetsRequestBody
                 {
-                    BinningRule = BinningRules.ByYearAndMonth,
+                    BinningRule = BinGranularities.ByYearAndMonth,
                     BinAggregationFunction = BinAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
@@ -289,7 +289,7 @@ namespace AcornSat.UnitTests
                 dataPoints,
                 new PostDataSetsRequestBody
                 {
-                    BinningRule = BinningRules.ByYearAndMonth,
+                    BinningRule = BinGranularities.ByYearAndMonth,
                     BinAggregationFunction = BinAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
@@ -317,7 +317,7 @@ namespace AcornSat.UnitTests
                 dataPoints,
                 new PostDataSetsRequestBody
                 {
-                    BinningRule = BinningRules.ByYearAndMonth,
+                    BinningRule = BinGranularities.ByYearAndMonth,
                     BinAggregationFunction = BinAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
@@ -344,7 +344,7 @@ namespace AcornSat.UnitTests
                 dataPoints,
                 new PostDataSetsRequestBody
                 {
-                    BinningRule = BinningRules.ByYear,
+                    BinningRule = BinGranularities.ByYear,
                     BinAggregationFunction = BinAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
@@ -370,7 +370,7 @@ namespace AcornSat.UnitTests
                 dataPoints,
                 new PostDataSetsRequestBody
                 {
-                    BinningRule = BinningRules.ByMonthOnly,
+                    BinningRule = BinGranularities.ByMonthOnly,
                     BinAggregationFunction = BinAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
@@ -397,7 +397,7 @@ namespace AcornSat.UnitTests
                 dataPoints,
                 new PostDataSetsRequestBody
                 {
-                    BinningRule = BinningRules.ByMonthOnly,
+                    BinningRule = BinGranularities.ByMonthOnly,
                     BinAggregationFunction = BinAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
@@ -425,7 +425,7 @@ namespace AcornSat.UnitTests
                 dataPoints,
                 new PostDataSetsRequestBody
                 {
-                    BinningRule = BinningRules.BySouthernHemisphereTemperateSeasonOnly,
+                    BinningRule = BinGranularities.BySouthernHemisphereTemperateSeasonOnly,
                     BinAggregationFunction = BinAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
@@ -455,7 +455,7 @@ namespace AcornSat.UnitTests
                 dataPoints,
                 new PostDataSetsRequestBody
                 {
-                    BinningRule = BinningRules.ByYearAndMonth,
+                    BinningRule = BinGranularities.ByYearAndMonth,
                     BinAggregationFunction = BinAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0f, // Note that we don't have any data level requirements, so nulls will get through
@@ -483,7 +483,7 @@ namespace AcornSat.UnitTests
                 dataPoints,
                 new PostDataSetsRequestBody
                 {
-                    BinningRule = BinningRules.ByYearAndMonth,
+                    BinningRule = BinGranularities.ByYearAndMonth,
                     BinAggregationFunction = BinAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0f, // Note that we don't have any data level requirements, so nulls will get through
