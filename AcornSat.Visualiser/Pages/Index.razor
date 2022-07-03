@@ -23,6 +23,8 @@
 @using Microsoft.AspNetCore.WebUtilities
 @using System.Text
 @using DPBlazorMapLibrary
+@using System.Diagnostics
+@using System.Diagnostics
 
 <PageTitle>@GetPageTitle()</PageTitle>
 
@@ -640,8 +642,11 @@
         // re-rendering the chart on two different async call chains at the same time (bad for correctness -
         // this was leading to the same series being rendered more than once, and the year labels on the
         // X axis being added more than once).
+        Guid g = Guid.NewGuid();
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
 
-        Logger.LogInformation("BuildDataSets running with following CSDS:");
+        Logger.LogInformation(g + "BuildDataSets running with following CSDS: (start is " + DateTime.Now + ")");
 
         foreach (var csd in ChartSeriesList)
         {
@@ -660,7 +665,7 @@
 
         if (currentUri != newUri)
         {
-            Logger.LogInformation("Because the URI reflecting current UI state is different to the URI we're currently at, triggering navigation. After navigation occurs, the UI state will update accordingly.");
+            Logger.LogInformation(g + "BuildDataSets: Because the URI reflecting current UI state is different to the URI we're currently at, triggering navigation. After navigation occurs, the UI state will update accordingly." + sw.Elapsed);
 
             bool shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds = currentUri.IndexOf("csd=") == -1;
             
@@ -669,11 +674,11 @@
         }
         else
         {
-            Logger.LogInformation("Not calling NavigationManager.NavigateTo().");
+            Logger.LogInformation(g + "BuildDataSets: Not calling NavigationManager.NavigateTo()." + sw.Elapsed);
 
             // Fetch the data required to render the selected data series
             ChartSeriesWithData = await RetrieveDataSets(ChartSeriesList);
-            Logger.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + ChartSeriesWithData.Count + " entries.");
+            Logger.LogInformation(g + "BuildDataSets: Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + ChartSeriesWithData.Count + " entries." + sw.Elapsed);
 
             // Render the series
             await HandleRedraw();
@@ -684,7 +689,7 @@
             await mapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
         }
 
-        Logger.LogInformation("BuildDataSets() leaving");
+        Logger.LogInformation(g + "BuildDataSets() leaving (start is " + DateTime.Now + ")" + sw.Elapsed);
     }
 
     public void RebuildChartSeriesListToReflectSelectedYears()
@@ -920,17 +925,39 @@
         return new Tuple<BinIdentifier, BinIdentifier>(chartStartBin, chartEndBin);
     }
 
+    public class LogAugmenter
+    {
+        Guid _g = Guid.NewGuid();
+        string _name;
+        ILogger _logger;
+        Stopwatch _sw;
+
+        public LogAugmenter(ILogger logger, string name)
+        {
+            _logger = logger;
+            _name = name;
+            _sw = new Stopwatch();
+            _sw.Start();
+        }
+
+        public void LogInformation(string s)
+        {
+            _logger.LogInformation(_name + " " + _g + " " + s + " (" + _sw.Elapsed + ")");
+        }
+    }
     async Task HandleRedraw()
     {
-        Guid g = Guid.NewGuid();
+        var l = new LogAugmenter(Logger, "HandleRedraw");
 
-        Logger.LogInformation("HandleRedraw " + g);
+        l.LogInformation("Entering");
 
         await chart.Clear();
 
         // This can happen at startup, or if the user switches off all data series
         if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0)
         {
+            l.LogInformation("Bailing early as no chart data available");
+
             return;
         }
 
@@ -968,7 +995,12 @@
         //
         // To ensure these gaps are handled correctly in the plotted chart, we build a new dataset that includes
         // records for each missing year. Value is set to null for those records.
+
+        l.LogInformation("Calling BuildProcessedDataSetsForYearlyView");
+
         BuildProcessedDataSetsForYearlyView(ChartSeriesWithData, UseMostRecentStartYear);
+
+        l.LogInformation("Calling CalculateChartStartAndEndBin");
 
         (ChartStartBin, ChartEndBin) = CalculateChartStartAndEndBin(ChartSeriesWithData, SelectedStartYear, SelectedEndYear);
 
@@ -988,7 +1020,11 @@
 
         Labels = GetLabels(SelectedResolution, ChartStartBin, ChartEndBin);
 
+        l.LogInformation("Calling AddDataSetsToGraph");
+
         trendlines = await AddDataSetsToGraph();
+
+        l.LogInformation("Calling AddLabels");
 
         await chart.AddLabels(Labels);
 
@@ -1124,6 +1160,8 @@
             await chart.Resize();
             _haveCalledResizeAtLeastOnce = true;
         }
+
+        l.LogInformation("Leaving");
     }
 
     bool _haveCalledResizeAtLeastOnce = false;
@@ -1273,6 +1311,10 @@
 
     void BuildProcessedDataSetsForYearlyView(List<SeriesWithData> chartSeriesWithData, bool useMostRecentStartYear = true)
     {
+        var l = new LogAugmenter(Logger, "BuildProcessedDataSetsForYearlyView");
+
+        l.LogInformation("entering");
+
         // If we're doing smoothing via the moving average, precalculate these data and add them to PreProcessedDataSets.
         // We do this because the SimpleMovingAverage calculate function will remove some years from the start of the data set.
         // It removes these years because it doesn't have a good enough average to present it to the user.
@@ -1306,6 +1348,8 @@
         // If the series covers linear time
         if (binGranularity == BinGranularities.ByYear || binGranularity == BinGranularities.ByYearAndMonth)
         {
+            l.LogInformation("getting bounds");
+
             var firstBinInEachDataSet =
                 allDataSets
                 .Select(GetFirstDataRecordWithValueInDataSet)
@@ -1319,8 +1363,8 @@
             var firstBinAcrossAllDataSets = firstBinInEachDataSet.Min();
             var lastBinAcrossAllDataSets = lastBinInEachDataSet.Max();
 
-            Logger.LogInformation("firstBinAcrossAllDataSets: " + firstBinAcrossAllDataSets.Id);
-            Logger.LogInformation("lastBinAcrossAllDataSets: " + lastBinAcrossAllDataSets.Id);
+            l.LogInformation("firstBinAcrossAllDataSets: " + firstBinAcrossAllDataSets.Id);
+            l.LogInformation("lastBinAcrossAllDataSets: " + lastBinAcrossAllDataSets.Id);
 
             StartYears = allDataSets.Select(GetStartYearForDataSet).ToList();
 
@@ -1330,6 +1374,10 @@
 
             foreach (var cs in chartSeriesWithData)
             {
+                l.LogInformation("constructing ProcessedDataSet");
+
+                var recordsByBinId = cs.PreProcessedDataSet.DataRecords.ToLookup(x => x.BinId);
+
                 // Create new datasets, same as the source, but with any gaps filled with null records
                 cs.ProcessedDataSet =                
                     new DataSet
@@ -1341,7 +1389,7 @@
                             .Select(
                                 bin =>
                                 // If there's a record in the source dataset, use it
-                                cs.PreProcessedDataSet.DataRecords.SingleOrDefault(z => z.BinId == bin.Id)
+                                recordsByBinId[bin.Id].SingleOrDefault()
                                 // Otherwise, create a null record
                                 ?? new DataRecord { BinId = bin.Id, Value = null }
                             )
@@ -1353,6 +1401,8 @@
         {
             throw new NotImplementedException();
         }
+
+        l.LogInformation("leaving");
     }
 
     List<DataSet> CreateDailyBufferedDataSet(List<DataSet> dataSets)
