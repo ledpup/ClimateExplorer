@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using ClimateExplorer.Core.DataPreparation;
+using System.Text.Json.Serialization;
 
 public class DataRecord
 {
@@ -53,6 +54,18 @@ public class DataRecord
 
     public string Label { get; set; }
     public string BinId { get; set; }
+
+    BinIdentifier _cachedParsedBinId;
+
+    public BinIdentifier GetBinIdentifier()
+    {
+        if (_cachedParsedBinId == null)
+        {
+            _cachedParsedBinId = BinIdentifier.Parse(BinId);
+        }
+
+        return _cachedParsedBinId;
+    }
 
     [JsonIgnore]
     public DateTime? Date

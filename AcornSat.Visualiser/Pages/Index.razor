@@ -642,15 +642,14 @@
         // re-rendering the chart on two different async call chains at the same time (bad for correctness -
         // this was leading to the same series being rendered more than once, and the year labels on the
         // X axis being added more than once).
-        Guid g = Guid.NewGuid();
-        Stopwatch sw = new Stopwatch();
-        sw.Start();
 
-        Logger.LogInformation(g + "BuildDataSets running with following CSDS: (start is " + DateTime.Now + ")");
+        var l = new LogAugmenter(Logger, "BuildDataSets");
+
+        l.LogInformation("running with following data sets.");
 
         foreach (var csd in ChartSeriesList)
         {
-            Logger.LogInformation("    " + csd.ToString());
+            Logger.LogInformation("    BuildDataSets: " + csd.ToString());
         }
 
         // Recalculate the URL
@@ -665,7 +664,7 @@
 
         if (currentUri != newUri)
         {
-            Logger.LogInformation(g + "BuildDataSets: Because the URI reflecting current UI state is different to the URI we're currently at, triggering navigation. After navigation occurs, the UI state will update accordingly." + sw.Elapsed);
+            l.LogInformation("Because the URI reflecting current UI state is different to the URI we're currently at, triggering navigation. After navigation occurs, the UI state will update accordingly.");
 
             bool shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds = currentUri.IndexOf("csd=") == -1;
             
@@ -674,11 +673,11 @@
         }
         else
         {
-            Logger.LogInformation(g + "BuildDataSets: Not calling NavigationManager.NavigateTo()." + sw.Elapsed);
+            l.LogInformation("Not calling NavigationManager.NavigateTo().");
 
             // Fetch the data required to render the selected data series
             ChartSeriesWithData = await RetrieveDataSets(ChartSeriesList);
-            Logger.LogInformation(g + "BuildDataSets: Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + ChartSeriesWithData.Count + " entries." + sw.Elapsed);
+            l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + ChartSeriesWithData.Count + " entries.");
 
             // Render the series
             await HandleRedraw();
@@ -689,7 +688,7 @@
             await mapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
         }
 
-        Logger.LogInformation(g + "BuildDataSets() leaving (start is " + DateTime.Now + ")" + sw.Elapsed);
+        l.LogInformation("leaving");
     }
 
     public void RebuildChartSeriesListToReflectSelectedYears()
@@ -882,8 +881,8 @@
     )
     {
         // Find the first and last bin we have data for
-        var superSetStartBin = chartSeriesWithData.Select(x => x.ProcessedDataSet).SelectMany(x => x.DataRecords).Min(y => BinIdentifier.Parse(y.BinId));
-        var superSetEndBin = chartSeriesWithData.Select(x => x.ProcessedDataSet).SelectMany(x => x.DataRecords).Max(y => BinIdentifier.Parse(y.BinId));
+        var superSetStartBin = chartSeriesWithData.Select(x => x.ProcessedDataSet).SelectMany(x => x.DataRecords).Min(y => y.GetBinIdentifier());
+        var superSetEndBin = chartSeriesWithData.Select(x => x.ProcessedDataSet).SelectMany(x => x.DataRecords).Max(y => y.GetBinIdentifier());
 
         // Parse the start and end years, if any, specified by the user
         var userStartYear = string.IsNullOrEmpty(selectedStartYear) ? null : (short?)short.Parse(selectedStartYear);
@@ -1011,8 +1010,8 @@
                 cswd.ProcessedDataSet.DataRecords
                 .Where(
                     x => 
-                    BinIdentifier.Parse(x.BinId).CompareTo(ChartStartBin) >= 0 && 
-                    BinIdentifier.Parse(x.BinId).CompareTo(ChartEndBin) <= 0)
+                    x.GetBinIdentifier().CompareTo(ChartStartBin) >= 0 && 
+                    x.GetBinIdentifier().CompareTo(ChartEndBin) <= 0)
                 .ToList();
         }
 
@@ -1277,9 +1276,7 @@
 
     static short GetYearForDataRecord(DataRecord dr)
     {
-        string binId = dr.BinId;
-
-        BinIdentifier parsedId = BinIdentifier.Parse(binId);
+        BinIdentifier parsedId = dr.GetBinIdentifier();
 
         if (parsedId is BinIdentifierForGaplessBin id)
         {
@@ -1353,12 +1350,12 @@
             var firstBinInEachDataSet =
                 allDataSets
                 .Select(GetFirstDataRecordWithValueInDataSet)
-                .Select(x => (BinIdentifierForGaplessBin)BinIdentifier.Parse(x.BinId));
+                .Select(x => (BinIdentifierForGaplessBin)x.GetBinIdentifier());
 
             var lastBinInEachDataSet = 
                 allDataSets
                 .Select(GetLastDataRecordWithValueInDataSet)
-                .Select(x => (BinIdentifierForGaplessBin)BinIdentifier.Parse(x.BinId));
+                .Select(x => (BinIdentifierForGaplessBin)x.GetBinIdentifier());
 
             var firstBinAcrossAllDataSets = firstBinInEachDataSet.Min();
             var lastBinAcrossAllDataSets = lastBinInEachDataSet.Max();
