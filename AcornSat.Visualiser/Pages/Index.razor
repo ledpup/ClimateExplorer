@@ -68,8 +68,6 @@
 
                     <div class="chart-controls">
                         <a class="chart-control" @onclick="() => locationInfoComponent.ChangeLocationClicked(null)"><i class="fas fa-map"></i> Change Location</a>
-                        <a class="chart-control" @onclick="() => locationInfoComponent.ChangeLocationClicked(null)"><i class="fas fa-map"></i> Yearly data</a>
-                        <a class="chart-control" @onclick="() => locationInfoComponent.ChangeLocationClicked(null)"><i class="fas fa-map"></i> Year + month data</a>
                         <a class="chart-control" @onclick="ShowOptionsModal"><i class="fas fa-cog"></i> Chart options</a>
                         <a class="chart-control" @onclick="ShowFilterModal"><i class="fas fa-calendar"></i> Year filtering</a>
 
@@ -600,6 +598,16 @@
         await base.OnParametersSetAsync();
     }
 
+    void DumpChartSeriesList()
+    {
+        Logger.LogInformation("ChartSeriesList: (SelectedBinGranularity is " + SelectedBinGranularity + ")");
+
+        foreach (var csd in ChartSeriesList)
+        {
+            Logger.LogInformation("    " + csd.ToString());
+        }
+    }
+
     List<ChartSeriesDefinition> ChartSeriesList { get; set; } = new List<ChartSeriesDefinition>();
 
     List<SeriesWithData> ChartSeriesWithData { get; set; }
@@ -637,12 +645,9 @@
 
         var l = new LogAugmenter(Logger, "BuildDataSets");
 
-        l.LogInformation("running with following data sets.");
+        l.LogInformation("starting");
 
-        foreach (var csd in ChartSeriesList)
-        {
-            Logger.LogInformation("    BuildDataSets: " + csd.ToString());
-        }
+        DumpChartSeriesList();
 
         // Recalculate the URL
         string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(ChartSeriesList);
@@ -669,7 +674,8 @@
 
             // Fetch the data required to render the selected data series
             ChartSeriesWithData = await RetrieveDataSets(ChartSeriesList);
-            l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + ChartSeriesWithData.Count + " entries.");
+
+            l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + ChartSeriesWithData.Count + " entries. ChartSeriesWithData[0].BinGranularity is " + ChartSeriesWithData[0].ChartSeries.BinGranularity);
 
             // Render the series
             await HandleRedraw();
@@ -746,6 +752,7 @@
                 case DataType.SolarRadiation:
                     dataSet = 
                         await DataService.PostDataSet(
+                            SelectedBinGranularity,
                             csd.DataSetDefinition.Id,
                             csd.MeasurementDefinition.DataType,
                             csd.MeasurementDefinition.DataAdjustment,
@@ -943,6 +950,8 @@
         var l = new LogAugmenter(Logger, "HandleRedraw");
 
         l.LogInformation("Entering");
+
+        DumpChartSeriesList();
 
         await chart.Clear();
 
@@ -1337,7 +1346,7 @@
         var allDataRecords = allDataSets.SelectMany(x => x.DataRecords);
         
         // There must be exactly one bin granularity or else something odd's going on.
-        var binGranularity = allDataSets.Select(x => x.BinGranularity).Distinct().Single();
+        var binGranularity = chartSeriesWithData.Select(x => x.ChartSeries.BinGranularity).Distinct().Single();
 
         if (binGranularity != SelectedBinGranularity)
         {

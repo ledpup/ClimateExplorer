@@ -62,7 +62,7 @@ public class DataService : IDataService
     }
 
 
-    public async Task<DataSet> PostDataSet(Guid dataSetDefinitionId, DataType dataType, DataAdjustment? dataAdjustment, Guid? locationId)
+    public async Task<DataSet> PostDataSet(BinGranularities binGranularity, Guid dataSetDefinitionId, DataType dataType, DataAdjustment? dataAdjustment, Guid? locationId)
     {
         var response = 
             await _httpClient.PostAsJsonAsync<PostDataSetsRequestBody>(
@@ -70,7 +70,7 @@ public class DataService : IDataService
                 new PostDataSetsRequestBody
                 {
                     BinAggregationFunction = BinAggregationFunctions.Mean,
-                    BinningRule = BinGranularities.ByYearAndMonth,
+                    BinningRule = binGranularity,
                     CupSize = 14,
                     RequiredBinDataProportion = 0.7f,
                     RequiredBucketDataProportion = 0.7f,
