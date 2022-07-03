@@ -126,6 +126,8 @@ namespace ClimateExplorer.Core.DataPreparation
                   new DateOnly(year, month, 1),
                   DateHelpers.GetLastDayInMonth(year, month))
         {
+            _year = year;
+            _month = month;
         }
 
         public short Year => _year;
@@ -135,7 +137,7 @@ namespace ClimateExplorer.Core.DataPreparation
         {
             for (int i = _year * 12 + _month; i <= endOfRange.Year * 12 + endOfRange.Month; i++)
             {
-                yield return new YearAndMonthBinIdentifier((short)(i / 12), (short)(i % 12));
+                yield return new YearAndMonthBinIdentifier((short)(i / 12), (short)((i % 12) + 1));
             }
         }
     }

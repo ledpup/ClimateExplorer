@@ -962,67 +962,33 @@
 
         var title = locationNames.Length > 1 ? String.Join(", ", locationNames) : ChartSeriesWithData.Single().ChartSeries.FriendlyTitle;
 
-        if (SelectedResolution == DataResolution.Yearly)
+        // Data sets sometimes have internal gaps in data (i.e. years which have no data even though earlier
+        // and later years have data). Additionally, they may have external gaps in data if the overall period
+        // to be charted goes beyond the range of the available data in one particular data set.
+        //
+        // To ensure these gaps are handled correctly in the plotted chart, we build a new dataset that includes
+        // records for each missing year. Value is set to null for those records.
+        BuildProcessedDataSetsForYearlyView(ChartSeriesWithData, UseMostRecentStartYear);
+
+        (ChartStartBin, ChartEndBin) = CalculateChartStartAndEndBin(ChartSeriesWithData, SelectedStartYear, SelectedEndYear);
+
+        // Now, we cut down the processed datasets to just the bins that we intend to display on the chart.
+        foreach (var cswd in ChartSeriesWithData)
         {
-            // Data sets sometimes have internal gaps in data (i.e. years which have no data even though earlier
-            // and later years have data). Additionally, they may have external gaps in data if the overall period
-            // to be charted goes beyond the range of the available data in one particular data set.
-            //
-            // To ensure these gaps are handled correctly in the plotted chart, we build a new dataset that includes
-            // records for each missing year. Value is set to null for those records.
-            BuildProcessedDataSetsForYearlyView(ChartSeriesWithData, UseMostRecentStartYear);
-
-            (ChartStartBin, ChartEndBin) = CalculateChartStartAndEndBin(ChartSeriesWithData, SelectedStartYear, SelectedEndYear);
-
-            // Now, we cut down the processed datasets to just the bins that we intend to display on the chart.
-            foreach (var cswd in ChartSeriesWithData)
-            {
-                cswd.ProcessedDataSet.DataRecords = 
-                    cswd.ProcessedDataSet.DataRecords
-                    .Where(
-                        x => 
-                        BinIdentifier.Parse(x.BinId).CompareTo(ChartStartBin) >= 0 && 
-                        BinIdentifier.Parse(x.BinId).CompareTo(ChartEndBin) <= 0)
-                    .ToList();
-            }
-
-            subtitle = $"({ChartStartBin.Label}-{ChartEndBin.Label})";
-
-            Labels = GetLabels(SelectedResolution, ChartStartBin, ChartEndBin);
-
-            trendlines = await AddDataSetsToGraph();
+            cswd.ProcessedDataSet.DataRecords = 
+                cswd.ProcessedDataSet.DataRecords
+                .Where(
+                    x => 
+                    BinIdentifier.Parse(x.BinId).CompareTo(ChartStartBin) >= 0 && 
+                    BinIdentifier.Parse(x.BinId).CompareTo(ChartEndBin) <= 0)
+                .ToList();
         }
-        else
-        {
-            foreach (var cswd in ChartSeriesWithData)
-            {
-                // TODO: Is this shared reference okay? Or should we be cloning?
-                cswd.ProcessedDataSet = cswd.SourceDataSet;
-            }
 
-            subtitle = $"{string.Join(", ", SelectedYears)} {SelectedResolution} Chart";
+        subtitle = $"({ChartStartBin.Label}-{ChartEndBin.Label})";
 
-            var calendar = new GregorianCalendar();
+        Labels = GetLabels(SelectedResolution, ChartStartBin, ChartEndBin);
 
-            if (SelectedYears.Any())
-            {
-                throw new NotImplementedException();
-                // Build a list of x axis labels. Because we may have multiple years selected, and leap years
-                // have a different number of days to non-leap years, we prefer to use a leap year when preparing
-                // the list of x axis labels, if one is present in the user's list of selected years.
-                //var selectedYear = SelectedYears.FirstOrDefault(x => calendar.IsLeapYear(x));
-
-                //if (selectedYear == 0)
-                //{
-                //    selectedYear = SelectedYears.First();
-                //}
-
-                //labels = GetLabels(SelectedResolution);
-                //Labels = labels;
-
-                //await AddDataSetsToGraph();
-            }
-        }
+        trendlines = await AddDataSetsToGraph();
 
         await chart.AddLabels(Labels);
 

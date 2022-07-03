@@ -7,6 +7,11 @@ namespace ClimateExplorer.Core.DataPreparation
     {
         public static string GetShortMonthName(short monthNumber)
         {
+            if (monthNumber < 1 || monthNumber > 12)
+            {
+                throw new ArgumentOutOfRangeException("monthNumber " + monthNumber);
+            }
+
             return new DateTime(2000, monthNumber, 1).ToString("MMM", CultureInfo.InvariantCulture);
         }
 

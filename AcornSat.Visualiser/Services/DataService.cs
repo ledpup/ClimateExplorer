@@ -70,7 +70,7 @@ public class DataService : IDataService
                 new PostDataSetsRequestBody
                 {
                     BinAggregationFunction = BinAggregationFunctions.Mean,
-                    BinningRule = BinGranularities.ByYear,
+                    BinningRule = BinGranularities.ByYearAndMonth,
                     CupSize = 14,
                     RequiredBinDataProportion = 0.7f,
                     RequiredBucketDataProportion = 0.7f,
