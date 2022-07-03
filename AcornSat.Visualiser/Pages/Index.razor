@@ -996,9 +996,9 @@
         // To ensure these gaps are handled correctly in the plotted chart, we build a new dataset that includes
         // records for each missing year. Value is set to null for those records.
 
-        l.LogInformation("Calling BuildProcessedDataSetsForYearlyView");
+        l.LogInformation("Calling BuildProcessedDataSets");
 
-        BuildProcessedDataSetsForYearlyView(ChartSeriesWithData, UseMostRecentStartYear);
+        BuildProcessedDataSets(ChartSeriesWithData, UseMostRecentStartYear);
 
         l.LogInformation("Calling CalculateChartStartAndEndBin");
 
@@ -1309,9 +1309,9 @@
         return GetYearForDataRecord(GetLastDataRecordWithValueInDataSet(dataSet));
     }
 
-    void BuildProcessedDataSetsForYearlyView(List<SeriesWithData> chartSeriesWithData, bool useMostRecentStartYear = true)
+    void BuildProcessedDataSets(List<SeriesWithData> chartSeriesWithData, bool useMostRecentStartYear = true)
     {
-        var l = new LogAugmenter(Logger, "BuildProcessedDataSetsForYearlyView");
+        var l = new LogAugmenter(Logger, "BuildProcessedDataSets");
 
         l.LogInformation("entering");
 
