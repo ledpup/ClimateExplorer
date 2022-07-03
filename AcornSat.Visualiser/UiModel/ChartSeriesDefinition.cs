@@ -1,5 +1,6 @@
 ﻿using AcornSat.Core;
 using AcornSat.Core.ViewModel;
+using ClimateExplorer.Core.DataPreparation;
 using System.Diagnostics.CodeAnalysis;
 using static AcornSat.Core.Enums;
 
@@ -180,7 +181,7 @@ namespace AcornSat.Visualiser.UiModel
         // Source data fields
         public DataSetDefinitionViewModel DataSetDefinition { get; set; }
         public MeasurementDefinitionViewModel MeasurementDefinition { get; set; }
-        public DataResolution DataResolution { get; set; }
+        public BinGranularities BinGranularity { get; set; }
         public short? Year { get; set; }
         public Guid? LocationId { get; set; }
         public string? LocationName { get; set; }
@@ -209,7 +210,7 @@ namespace AcornSat.Visualiser.UiModel
 
         public override string ToString()
         {
-            return $"CSD: {DataSetDefinition.Name} | {MeasurementDefinition?.DataType} {MeasurementDefinition?.DataAdjustment} | {DataResolution} | {LocationName} | {Smoothing} | {Aggregation} | {Value} | {DisplayStyle}";
+            return $"CSD: {DataSetDefinition.Name} | {MeasurementDefinition?.DataType} {MeasurementDefinition?.DataAdjustment} | {BinGranularity} | {LocationName} | {Smoothing} | {Aggregation} | {Value} | {DisplayStyle}";
         }
 
         public class ChartSeriesDefinitionComparerWhichIgnoresYearAndIsLocked : IEqualityComparer<ChartSeriesDefinition>
@@ -220,7 +221,7 @@ namespace AcornSat.Visualiser.UiModel
                 if (x == null || y == null) return false;
 
                 if (x.Aggregation != y.Aggregation) return false;
-                if (x.DataResolution != y.DataResolution) return false;
+                if (x.BinGranularity != y.BinGranularity) return false;
                 if (x.DataSetDefinition != y.DataSetDefinition) return false;
                 if (x.DisplayStyle != y.DisplayStyle) return false;
                 if (x.LocationId != y.LocationId) return false;
@@ -238,7 +239,7 @@ namespace AcornSat.Visualiser.UiModel
             {
                 return
                     obj.Aggregation.GetHashCode() ^
-                    obj.DataResolution.GetHashCode() ^
+                    obj.BinGranularity.GetHashCode() ^
                     obj.DataSetDefinition.Id.GetHashCode() ^
                     obj.DisplayStyle.GetHashCode() ^
                     obj.LocationId.GetHashCode() ^
@@ -259,7 +260,7 @@ namespace AcornSat.Visualiser.UiModel
                 if (x == null || y == null) return false;
 
                 if (x.Aggregation != y.Aggregation) return false;
-                if (x.DataResolution != y.DataResolution) return false;
+                if (x.BinGranularity != y.BinGranularity) return false;
                 if (x.DataSetDefinition != y.DataSetDefinition) return false;
                 if (x.DisplayStyle != y.DisplayStyle) return false;
                 if (x.IsLocked != y.IsLocked) return false;
@@ -279,7 +280,7 @@ namespace AcornSat.Visualiser.UiModel
             {
                 return
                     obj.Aggregation.GetHashCode() ^
-                    obj.DataResolution.GetHashCode() ^
+                    obj.BinGranularity.GetHashCode() ^
                     obj.DataSetDefinition.Id.GetHashCode() ^
                     obj.DisplayStyle.GetHashCode() ^
                     obj.IsLocked.GetHashCode() ^

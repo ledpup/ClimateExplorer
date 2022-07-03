@@ -1,6 +1,7 @@
 ﻿using AcornSat.Core.Model;
 using AcornSat.Core.ViewModel;
 using AcornSat.Visualiser.UiModel;
+using ClimateExplorer.Core.DataPreparation;
 using System.Web;
 using static AcornSat.Core.Enums;
 
@@ -90,7 +91,7 @@ public static class ChartSeriesListSerializer
                 LocationName = l?.Name,
                 Aggregation = ParseEnum<SeriesAggregationOptions>(segments[2]),
                 RequestedColour = HttpUtility.UrlDecode(segments[3]),
-                DataResolution = ParseEnum<DataResolution>(segments[4]),
+                BinGranularity = ParseEnum<BinGranularities>(segments[4]),
                 DisplayStyle = ParseEnum<SeriesDisplayStyle>(segments[5]),
                 IsLocked = bool.Parse(segments[6]),
                 MeasurementDefinition = md,
@@ -116,7 +117,7 @@ public static class ChartSeriesListSerializer
                 csd.LocationId,
                 csd.Aggregation,
                 HttpUtility.UrlEncode(csd.RequestedColour),
-                csd.DataResolution,
+                csd.BinGranularity,
                 csd.DisplayStyle,
                 csd.IsLocked,
                 // Just enough MeasurementDefinition fields that we can identify the correct one when we deserialize

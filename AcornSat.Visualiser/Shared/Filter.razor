@@ -1,6 +1,7 @@
 ﻿@using Blazorise
 @using Blazorise.Components
 @using static AcornSat.Core.Enums
+@using ClimateExplorer.Core.DataPreparation
 
 <Modal @ref="filterModal">
     <ModalContent>
@@ -28,7 +29,7 @@
                 </Field>
             }
 
-            @if (SelectedResolution == DataResolution.Yearly)
+            @if (SelectedBinGranularity == BinGranularities.ByYear)
             {
                 <Field>
                     <strong>
@@ -70,18 +71,13 @@
                 </Field>
             }
 
-            @if (SelectedResolution != DataResolution.Yearly)
-            {
-                <Field>
-                    Resolution
-                    <Select TValue="DataResolution" SelectedValue="@SelectedResolution" SelectedValueChanged="@OnSelectedResolutionChangedInternal">
-                        <SelectItem Value="@(DataResolution.Yearly)">Yearly</SelectItem>
-                        <SelectItem Value="@(DataResolution.Monthly)">Monthly</SelectItem>
-                        <SelectItem Value="@(DataResolution.Weekly)">Weekly</SelectItem>
-                        <SelectItem Value="@(DataResolution.Daily)">Daily</SelectItem>
-                    </Select>
-                </Field>
-            }
+            <Field>
+                Resolution
+                <Select TValue="BinGranularities" SelectedValue="@SelectedBinGranularity" SelectedValueChanged="@OnSelectedBinGranularityChangedInternal">
+                    <SelectItem Value="@(BinGranularities.ByYear)">Yearly</SelectItem>
+                    <SelectItem Value="@(BinGranularities.ByYearAndMonth)">Year + Month</SelectItem>
+                </Select>
+            </Field>
         </ModalBody>
     </ModalContent>
 </Modal>
@@ -94,11 +90,11 @@
     [Parameter] public List<short> SelectedYears { get; set; }
     [Parameter] public string SelectedStartYear { get; set; }
     [Parameter] public string SelectedEndYear { get; set; }
-    [Parameter] public DataResolution SelectedResolution { get; set; }
+    [Parameter] public BinGranularities SelectedBinGranularity { get; set; }
 
     [Parameter] public EventCallback<bool> OnUseMostRecentStartYearChanged { get; set; }
     [Parameter] public EventCallback<List<short>> OnSelectedYearsChanged { get; set; }
-    [Parameter] public EventCallback<DataResolution> OnSelectedResolutionChanged { get; set; }
+    [Parameter] public EventCallback<BinGranularities> OnSelectedBinGranularityChanged { get; set; }
     [Parameter] public EventCallback<string> OnStartYearTextChanged { get; set; }
     [Parameter] public EventCallback<string> OnEndYearTextChanged { get; set; }
 
@@ -156,9 +152,9 @@ For example, rainfall data starts in 1870 and temperature data starts in 1910. C
         await OnSelectedYearsChanged.InvokeAsync(values);
     }
 
-    async Task OnSelectedResolutionChangedInternal(DataResolution value)
+    async Task OnSelectedBinGranularityChangedInternal(BinGranularities value)
     {
-        await OnSelectedResolutionChanged.InvokeAsync(value);
+        await OnSelectedBinGranularityChanged.InvokeAsync(value);
     }
 
     void ValidateYear(ValidatorEventArgs e)
