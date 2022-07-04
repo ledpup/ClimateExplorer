@@ -15,20 +15,14 @@ namespace ClimateExplorer.Core.DataPreparation
 
         static bool BinMeetsDataRequirements(RawBin bin, float requiredCupDataProportion, float requiredBucketDataProportion, float requiredBinDataProportion)
         {
-            Console.WriteLine("bin " + bin.ToString());
-
             int fullEnoughBuckets = 0;
 
             foreach (var bucket in bin.Buckets)
             {
-                Console.WriteLine("  bucket " + bucket.ToString());
-
                 int fullEnoughCups = 0;
 
                 foreach (var cup in bucket.Cups)
                 {
-                    Console.WriteLine("    cup " + cup.ToString());
-
                     var daysInCup = cup.DaysInCup;
 
                     var dataPointsInCup = cup.DataPoints.Count(x => x.Value.HasValue);
@@ -39,13 +33,7 @@ namespace ClimateExplorer.Core.DataPreparation
                     {
                         fullEnoughCups++;
                     }
-                    else
-                    {
-                        Console.WriteLine("        Cup has too few points");
-                    }
                 }
-
-                Console.WriteLine("    ** BUCKET SUMMARY ** " + fullEnoughCups + " / " + bucket.Cups.Length + " = " + (float)fullEnoughCups / bucket.Cups.Length);
 
                 if ((float)fullEnoughCups / bucket.Cups.Length >= requiredBucketDataProportion)
                 {
@@ -53,7 +41,6 @@ namespace ClimateExplorer.Core.DataPreparation
                 }
             }
 
-            Console.WriteLine("  ** BIN SUMMARY ** " + fullEnoughBuckets + " / " + bin.Buckets.Length + " = " + (float)fullEnoughBuckets / bin.Buckets.Length);
             if ((float)fullEnoughBuckets / bin.Buckets.Length >= requiredBinDataProportion)
             {
                 return true;
