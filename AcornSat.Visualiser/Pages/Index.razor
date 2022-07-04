@@ -24,7 +24,6 @@
 @using System.Text
 @using DPBlazorMapLibrary
 @using System.Diagnostics
-@using System.Diagnostics
 
 <PageTitle>@GetPageTitle()</PageTitle>
 
@@ -578,21 +577,21 @@
                 }
             );
 
-            //ChartSeriesList.Add(
-            //    new ChartSeriesDefinition()
-            //    {
-            //        LocationId = location.Id,
-            //        LocationName = location.Name,
-            //        Aggregation = SeriesAggregationOptions.Sum,
-            //        BinGranularity = BinGranularities.ByYear,
-            //        DataSetDefinition = dsd,
-            //        MeasurementDefinition = mdRainfall,
-            //        Smoothing = SeriesSmoothingOptions.MovingAverage,
-            //        SmoothingWindow = 20,
-            //        Value = SeriesValueOptions.Value,
-            //        Year = null
-            //    }
-            //);
+            ChartSeriesList.Add(
+                new ChartSeriesDefinition()
+                {
+                    LocationId = location.Id,
+                    LocationName = location.Name,
+                    Aggregation = SeriesAggregationOptions.Sum,
+                    BinGranularity = BinGranularities.ByYear,
+                    DataSetDefinition = dsd,
+                    MeasurementDefinition = mdRainfall,
+                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                    SmoothingWindow = 20,
+                    Value = SeriesValueOptions.Value,
+                    Year = null
+                }
+            );
         }
 
         // Pick up parameters from querystring
@@ -1412,10 +1411,18 @@
                 .Select(x => (BinIdentifierForGaplessBin)x.GetBinIdentifier());
 
             var firstBinAcrossAllDataSets = firstBinInEachDataSet.Min();
+            var lastFirstBinAcrossAllDataSets = firstBinInEachDataSet.Max();
             var lastBinAcrossAllDataSets = lastBinInEachDataSet.Max();
 
             l.LogInformation("firstBinAcrossAllDataSets: " + firstBinAcrossAllDataSets.Id);
+            l.LogInformation("lastFirstBinAcrossAllDataSets: " + lastFirstBinAcrossAllDataSets.Id);
             l.LogInformation("lastBinAcrossAllDataSets: " + lastBinAcrossAllDataSets.Id);
+
+            var startBin = useMostRecentStartYear ? lastFirstBinAcrossAllDataSets : firstBinAcrossAllDataSets;
+            var endBin = lastBinAcrossAllDataSets;
+
+            l.LogInformation("startBin: " + startBin.Id);
+            l.LogInformation("endBin: " + endBin.Id);
 
             StartYears = allDataSets.Select(GetStartYearForDataSet).ToList();
 
@@ -1425,7 +1432,7 @@
 
                 var recordsByBinId = cs.PreProcessedDataSet.DataRecords.ToLookup(x => x.BinId);
 
-                var binRange = BinHelpers.EnumerateBinsInRange(firstBinAcrossAllDataSets, lastBinAcrossAllDataSets);
+                var binRange = BinHelpers.EnumerateBinsInRange(startBin, endBin);
 
                 l.LogInformation("First bin in range: " + binRange.First() + ", last bin in range: " + binRange.Last());
 
