@@ -19,5 +19,6 @@
 
         public BinGranularities BinningRule { get; set; }
         public BinAggregationFunctions BinAggregationFunction { get; set; }
+        public bool Anomaly { get; set; }
     }
 }

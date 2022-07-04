@@ -2,6 +2,7 @@
 using AcornSat.Core.Model;
 using AcornSat.Core.ViewModel;
 using AcornSat.Visualiser.Services;
+using AcornSat.Visualiser.UiModel;
 using ClimateExplorer.Core.DataPreparation;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Net.Http.Json;
@@ -62,7 +63,14 @@ public class DataService : IDataService
     }
 
 
-    public async Task<DataSet> PostDataSet(BinGranularities binGranularity, BinAggregationFunctions aggregationFunction, Guid dataSetDefinitionId, DataType dataType, DataAdjustment? dataAdjustment, Guid? locationId)
+    public async Task<DataSet> PostDataSet(
+        BinGranularities binGranularity, 
+        BinAggregationFunctions aggregationFunction, 
+        SeriesValueOptions seriesValueOption,
+        Guid dataSetDefinitionId, 
+        DataType dataType, 
+        DataAdjustment? dataAdjustment, 
+        Guid? locationId)
     {
         var response = 
             await _httpClient.PostAsJsonAsync<PostDataSetsRequestBody>(
@@ -87,7 +95,8 @@ public class DataService : IDataService
                                 DataType = dataType
                             }
                         },
-                    SeriesTransformation = SeriesTransformations.Identity
+                    SeriesTransformation = SeriesTransformations.Identity,
+                    Anomaly = seriesValueOption == SeriesValueOptions.Anomaly
                 });
 
         var result = await response.Content.ReadFromJsonAsync<DataSet>();

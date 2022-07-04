@@ -771,6 +771,7 @@
                         await DataService.PostDataSet(
                             SelectedBinGranularity,
                             MapSeriesAggregationOptionToBinAggregationFunction(csd.Aggregation),
+                            csd.Value,
                             csd.DataSetDefinition.Id,
                             csd.MeasurementDefinition.DataType,
                             csd.MeasurementDefinition.DataAdjustment,

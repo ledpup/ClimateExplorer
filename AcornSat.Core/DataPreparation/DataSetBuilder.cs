@@ -82,11 +82,14 @@ namespace ClimateExplorer.Core.DataPreparation
             // Calculate aggregates for each bin
             var aggregatedBins = BinAggregator.AggregateBins(filteredRawBins, request.BinAggregationFunction);
 
+            // Calculate final value based on bin aggregates
+            var finalBins = FinalBinValueCalculator.CalculateFinalBinValues(aggregatedBins, request.Anomaly);
+
             Console.WriteLine("AggregateBins completed in " + sw.Elapsed);
             sw.Restart();
 
             return
-                aggregatedBins
+                finalBins
                 .Select(
                     x => 
                     new ChartableDataPoint 

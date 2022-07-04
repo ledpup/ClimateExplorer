@@ -9,5 +9,6 @@ namespace ClimateExplorer.Core.DataPreparation
         public Enums.DataAdjustment? DataAdjustment { get; set; }
         public Enums.DataType? DataType { get; set; }
         public Guid? LocationId { get; set; }
+        public bool Anomaly { get; set; }
     }
 }
