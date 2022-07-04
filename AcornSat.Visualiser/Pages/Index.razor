@@ -683,11 +683,11 @@
 
             // Render the series
             await HandleRedraw();
-        }
 
-        if (SelectedLocation != null)
-        {
-            await mapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
+            if (SelectedLocation != null)
+            {
+                await mapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
+            }
         }
 
         l.LogInformation("leaving");
@@ -901,11 +901,14 @@
         string selectedEndYear
     )
     {
+        var l = new LogAugmenter(logger, "CalculateChartStartAndEndBin");
+
+        l.LogInformation("Enter");
         // Find the first and last bin we have data for
         var superSetStartBin = chartSeriesWithData.Select(x => x.ProcessedDataSet).SelectMany(x => x.DataRecords).Min(y => y.GetBinIdentifier());
         var superSetEndBin = chartSeriesWithData.Select(x => x.ProcessedDataSet).SelectMany(x => x.DataRecords).Max(y => y.GetBinIdentifier());
 
-        logger.LogInformation("CalculateChartStartAndEndBin calculated superSetEndBin " + superSetEndBin);
+        l.LogInformation("CalculateChartStartAndEndBin calculated superSetEndBin " + superSetEndBin);
 
         // Parse the start and end years, if any, specified by the user
         var userStartYear = string.IsNullOrEmpty(selectedStartYear) ? null : (short?)short.Parse(selectedStartYear);
@@ -943,6 +946,8 @@
                 }
             }
         }
+
+        l.LogInformation("Leave");
 
         return new Tuple<BinIdentifier, BinIdentifier>(chartStartBin, chartEndBin);
     }
@@ -1168,6 +1173,7 @@
 
         object chartOptions = new
         {
+            Animation = false,
             Responsive = true,
             MaintainAspectRatio = false,
             SpanGaps = false,
@@ -1184,7 +1190,8 @@
                     Display = true
                 },
             },
-            Scales = scales
+            Scales = scales,
+            //Parsing = false
         };
 
         await chart.SetOptionsObject(chartOptions);
@@ -1310,7 +1317,9 @@
 
     ChartDataset<float?> GetMovingAverageChartDataset(int smoothingWindow, string label, List<float?> values, UnitOfMeasure unitOfMeasure, ChartType chartType, ChartColor colour)
     {
-        var simpleMovingAverages = SimpleMovingAverage.Calculate(smoothingWindow, values);
+        var c = new OptimizedMovingAverageCalculator(smoothingWindow);
+
+        var simpleMovingAverages = values.Select(x => c.AddSample(x)).ToList();
 
         switch (chartType)
         {
@@ -1370,19 +1379,26 @@
         {
             if (cs.ChartSeries.Smoothing == SeriesSmoothingOptions.MovingAverage)
             {
+                var c = new DataRecordMovingAverageCalculator(new OptimizedMovingAverageCalculator(cs.ChartSeries.SmoothingWindow));
+                l.LogInformation("Calculating moving average");
+                var dr = c.Calculate(cs.SourceDataSet.DataRecords);
+                l.LogInformation("Done");
+
                 cs.PreProcessedDataSet = 
                     new DataSet
                     {
                         Location = cs.SourceDataSet.Location,
                         MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
-                        DataRecords = SimpleMovingAverage.Calculate(cs.ChartSeries.SmoothingWindow, cs.SourceDataSet.DataRecords)
+                        DataRecords = dr
                     };
             }
             else
             {
                 cs.PreProcessedDataSet = cs.SourceDataSet;
             }
-        }       
+        }
+
+        l.LogInformation("done with moving average calculation");
 
         // Calculate first and last year which we have a data record for, across all data sets underpinning all chart series
         var allDataSets = chartSeriesWithData.Select(x => x.PreProcessedDataSet);
@@ -1529,11 +1545,12 @@
                     Data = values,
                     BorderColor = colour,
                     Fill = false,
-                    PointRadius = 5,
+                    PointRadius = 3,
+                    ShowLine = true,
                     PointBorderColor = "#eee",
                     PointHoverBackgroundColor = colour,
                     BorderDash = new List<int> { },
-                    Tension = 0.1f,
+                    //Tension = 0.1f,
                     YAxisID = unitOfMeasure.ToString().ToLowerFirstChar(),
                 };
 
