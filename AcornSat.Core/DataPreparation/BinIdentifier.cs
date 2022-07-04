@@ -70,7 +70,6 @@ namespace ClimateExplorer.Core.DataPreparation
         }
     }
 
-
     public abstract class BinIdentifierForGaplessBin : BinIdentifier, IComparable<BinIdentifierForGaplessBin>
     {
         public DateOnly FirstDayInBin { get; private set; }
@@ -135,7 +134,7 @@ namespace ClimateExplorer.Core.DataPreparation
 
         public IEnumerable<YearAndMonthBinIdentifier> EnumerateYearAndMonthBinRangeUpTo(YearAndMonthBinIdentifier endOfRange)
         {
-            for (int i = _year * 12 + _month; i <= endOfRange.Year * 12 + endOfRange.Month; i++)
+            for (int i = _year * 12 + _month - 1; i <= endOfRange.Year * 12 + endOfRange.Month - 1; i++)
             {
                 yield return new YearAndMonthBinIdentifier((short)(i / 12), (short)((i % 12) + 1));
             }

@@ -214,7 +214,7 @@
 
     private async Task OnDownloadDataClicked()
     {
-        var fileStream = Exporter.ExportChartData(ChartSeriesWithData, Locations, GetLabels(ChartStartBin, ChartEndBin));
+        var fileStream = Exporter.ExportChartData(Logger, ChartSeriesWithData, Locations, ChartStartBin, ChartEndBin);
 
         var locationNames = ChartSeriesWithData.Select(x => x.ChartSeries.LocationName).Where(x => x != null).Distinct().ToArray();
 
@@ -517,6 +517,11 @@
             try
             {
                 var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger, csdSpecifier, DataSetDefinitions, Locations);
+
+                if (csdList.Any())
+                {
+                    SelectedBinGranularity = csdList.First().BinGranularity;
+                }
 
                 Logger.LogInformation("Setting ChartSeriesList to list with " + csdList.Count + " items");
 
@@ -876,6 +881,7 @@
     BinIdentifier ChartStartBin, ChartEndBin;
 
     static Tuple<BinIdentifier, BinIdentifier> CalculateChartStartAndEndBin(
+        ILogger logger,
         List<SeriesWithData> chartSeriesWithData,
         string selectedStartYear,
         string selectedEndYear
@@ -884,6 +890,8 @@
         // Find the first and last bin we have data for
         var superSetStartBin = chartSeriesWithData.Select(x => x.ProcessedDataSet).SelectMany(x => x.DataRecords).Min(y => y.GetBinIdentifier());
         var superSetEndBin = chartSeriesWithData.Select(x => x.ProcessedDataSet).SelectMany(x => x.DataRecords).Max(y => y.GetBinIdentifier());
+
+        logger.LogInformation("CalculateChartStartAndEndBin calculated superSetEndBin " + superSetEndBin);
 
         // Parse the start and end years, if any, specified by the user
         var userStartYear = string.IsNullOrEmpty(selectedStartYear) ? null : (short?)short.Parse(selectedStartYear);
@@ -1025,7 +1033,7 @@
 
         l.LogInformation("Calling CalculateChartStartAndEndBin");
 
-        (ChartStartBin, ChartEndBin) = CalculateChartStartAndEndBin(ChartSeriesWithData, SelectedStartYear, SelectedEndYear);
+        (ChartStartBin, ChartEndBin) = CalculateChartStartAndEndBin(Logger, ChartSeriesWithData, SelectedStartYear, SelectedEndYear);
 
         // Now, we cut down the processed datasets to just the bins that we intend to display on the chart.
         foreach (var cswd in ChartSeriesWithData)
@@ -1397,15 +1405,15 @@
 
             StartYears = allDataSets.Select(GetStartYearForDataSet).ToList();
 
-            var earliestYear = Convert.ToInt32(useMostRecentStartYear ? StartYears.Last() : StartYears.First());
-
-            var latestYearAcrossAllDataSets = allDataSets.Select(GetEndYearForDataSet).Max();
-
             foreach (var cs in chartSeriesWithData)
             {
                 l.LogInformation("constructing ProcessedDataSet");
 
                 var recordsByBinId = cs.PreProcessedDataSet.DataRecords.ToLookup(x => x.BinId);
+
+                var binRange = BinHelpers.EnumerateBinsInRange(firstBinAcrossAllDataSets, lastBinAcrossAllDataSets);
+
+                l.LogInformation("First bin in range: " + binRange.First() + ", last bin in range: " + binRange.Last());
 
                 // Create new datasets, same as the source, but with any gaps filled with null records
                 cs.ProcessedDataSet =                
@@ -1414,7 +1422,7 @@
                         Location = cs.PreProcessedDataSet.Location,
                         MeasurementDefinition = cs.PreProcessedDataSet.MeasurementDefinition,
                         DataRecords =
-                            BinHelpers.EnumerateBinsInRange(firstBinAcrossAllDataSets, lastBinAcrossAllDataSets)
+                            binRange
                             .Select(
                                 bin =>
                                 // If there's a record in the source dataset, use it
