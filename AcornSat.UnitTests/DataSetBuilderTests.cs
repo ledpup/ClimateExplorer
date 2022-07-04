@@ -436,6 +436,7 @@ namespace AcornSat.UnitTests
 
             Assert.AreEqual(4, cdp.Length);
             Assert.AreEqual("Summer", cdp[0].Label);
+            // This needs manual verification
             Assert.AreEqual(243.646973f, cdp[0].Value.Value);
         }
 
