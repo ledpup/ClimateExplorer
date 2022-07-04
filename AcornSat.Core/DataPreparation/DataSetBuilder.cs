@@ -1,24 +1,42 @@
 ﻿using AcornSat.Core.InputOutput;
+using AcornSat.Core.ViewModel;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.DataPreparation.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static AcornSat.Core.Enums;
 
 namespace ClimateExplorer.Core.DataPreparation
 {
     public class DataSetBuilder
     {
-        public async Task<ChartableDataPoint[]> BuildDataSet(PostDataSetsRequestBody request)
+        public class BuildDataSetResult
+        {
+            public UnitOfMeasure UnitOfMeasure { get; set; }
+            public DataCategory? DataCategory { get; set; }
+
+            public ChartableDataPoint[] DataPoints { get; set; }
+        }
+
+        public async Task<BuildDataSetResult> BuildDataSet(PostDataSetsRequestBody request)
         {
             ValidateRequest(request);
 
             // Reads raw data (from one or multiple sources) & derive a series from it as per the request
-            var dataPoints = await SeriesProvider.GetSeriesDataPointsForRequest(request.SeriesDerivationType, request.SeriesSpecifications);
+            var series = await SeriesProvider.GetSeriesDataPointsForRequest(request.SeriesDerivationType, request.SeriesSpecifications);
 
             // Run the rest of the pipeline (this is a separate method for testability)
-            return BuildDataSetFromDataPoints(dataPoints, request);
+            var dataPoints = BuildDataSetFromDataPoints(series.DataPoints, request);
+
+            return
+                new BuildDataSetResult
+                {
+                    DataPoints = dataPoints,
+                    UnitOfMeasure = series.UnitOfMeasure,
+                    DataCategory = series.DataCategory
+                };
         }
 
         public ChartableDataPoint[] BuildDataSetFromDataPoints(TemporalDataPoint[] dataPoints, PostDataSetsRequestBody request)

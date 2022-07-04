@@ -403,7 +403,7 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
 {
     var dsb = new DataSetBuilder();
 
-    var records = await dsb.BuildDataSet(body);
+    var series = await dsb.BuildDataSet(body);
 
     var definitions = await DataSetDefinition.GetDataSetDefinitions();
     var spec = body.SeriesSpecifications[0];
@@ -416,9 +416,16 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
         {
             Location = location,
             Resolution = DataResolution.Yearly,
-            MeasurementDefinition = new MeasurementDefinitionViewModel { DataAdjustment = spec.DataAdjustment, DataType = spec.DataType.Value },
+            MeasurementDefinition = 
+                new MeasurementDefinitionViewModel 
+                { 
+                    DataAdjustment = spec.DataAdjustment, 
+                    DataType = spec.DataType.Value,
+                    UnitOfMeasure = series.UnitOfMeasure,
+                    DataCategory = series.DataCategory
+                },
             DataRecords = 
-                records
+                series.DataPoints
                 .Select(
                     x => 
                     new DataRecord 

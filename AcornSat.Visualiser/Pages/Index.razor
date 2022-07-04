@@ -739,6 +739,19 @@
         return SeriesDisplayStyle.Line;
     }
 
+    static BinAggregationFunctions MapSeriesAggregationOptionToBinAggregationFunction(SeriesAggregationOptions a)
+    {
+        switch (a)
+        {
+            case SeriesAggregationOptions.Mean: return BinAggregationFunctions.Mean;
+            case SeriesAggregationOptions.Minimum: return BinAggregationFunctions.Min;
+            case SeriesAggregationOptions.Maximum: return BinAggregationFunctions.Max;
+            case SeriesAggregationOptions.Median: return BinAggregationFunctions.Median;
+            case SeriesAggregationOptions.Sum: return BinAggregationFunctions.Sum;
+            default: throw new NotImplementedException($"SeriesAggregationOptions {a}");
+        }
+    }
+
     async Task<List<SeriesWithData>> RetrieveDataSets(List<ChartSeriesDefinition> chartSeriesList)
     {
         var datasetsToReturn = new List<SeriesWithData>();
@@ -758,6 +771,7 @@
                     dataSet = 
                         await DataService.PostDataSet(
                             SelectedBinGranularity,
+                            MapSeriesAggregationOptionToBinAggregationFunction(csd.Aggregation),
                             csd.DataSetDefinition.Id,
                             csd.MeasurementDefinition.DataType,
                             csd.MeasurementDefinition.DataAdjustment,

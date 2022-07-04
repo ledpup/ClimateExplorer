@@ -5,6 +5,7 @@
         Mean,
         Maximum,
         Minimum,
-        Sum
+        Sum,
+        Median
     }
 }

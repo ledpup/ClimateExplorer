@@ -1,14 +1,23 @@
 ﻿using AcornSat.Core.InputOutput;
+using AcornSat.Core.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static AcornSat.Core.Enums;
 
 namespace ClimateExplorer.Core.DataPreparation
 {
     public static class SeriesProvider
     {
-        static public async Task<TemporalDataPoint[]> GetSeriesDataPointsForRequest(SeriesDerivationTypes seriesDerivationType, SeriesSpecification[] seriesSpecifications)
+        public class Series
+        {
+            public TemporalDataPoint[] DataPoints { get; set; }
+            public UnitOfMeasure UnitOfMeasure { get; set; }
+            public DataCategory? DataCategory { get; set; }
+        }
+
+        static public async Task<Series> GetSeriesDataPointsForRequest(SeriesDerivationTypes seriesDerivationType, SeriesSpecification[] seriesSpecifications)
         {
             switch (seriesDerivationType)
             {
@@ -29,19 +38,22 @@ namespace ClimateExplorer.Core.DataPreparation
             }
         }
 
-        static async Task<TemporalDataPoint[]> BuildDifferenceBetweenTwoSeries(SeriesSpecification[] seriesSpecifications)
+        static async Task<Series> BuildDifferenceBetweenTwoSeries(SeriesSpecification[] seriesSpecifications)
         {
             if (seriesSpecifications.Length != 2)
             {
                 throw new Exception($"When SeriesDerivationType is {nameof(SeriesDerivationTypes.DifferenceBetweenTwoSeries)}, exactly two SeriesSpecifications must be provided.");
             }
 
-            var dp1 = await GetSeriesDataPoints(seriesSpecifications[0]);
-            var dp2 = await GetSeriesDataPoints(seriesSpecifications[1]);
+            var series1 = await GetSeriesDataPoints(seriesSpecifications[0]);
+            var series2 = await GetSeriesDataPoints(seriesSpecifications[1]);
+
+            var dp1 = series1.DataPoints;
+            var dp2 = series2.DataPoints;
 
             if (dp1.Length == 0 || dp2.Length == 0)
             {
-                return new TemporalDataPoint[0];
+                return new Series { DataPoints = new TemporalDataPoint[0], UnitOfMeasure = series1.UnitOfMeasure };
             }
 
             var dp1Grouped = dp1.ToDictionary(x => new DateOnly(x.Year, x.Month ?? 1, x.Day ?? 1));
@@ -79,10 +91,16 @@ namespace ClimateExplorer.Core.DataPreparation
                 d = d.AddDays(1);
             }
 
-            return results.ToArray();
+            return
+                new Series
+                {
+                    DataPoints = results.ToArray(),
+                    UnitOfMeasure = series1.UnitOfMeasure,
+                    DataCategory = series1.DataCategory
+                };
         }
 
-        static async Task<TemporalDataPoint[]> GetSeriesDataPoints(SeriesSpecification seriesSpecification)
+        static async Task<Series> GetSeriesDataPoints(SeriesSpecification seriesSpecification)
         {
             var definitions = await DataSetDefinition.GetDataSetDefinitions();
 
@@ -99,7 +117,13 @@ namespace ClimateExplorer.Core.DataPreparation
 
             var dataSet = await DataReader.GetDataSet(dsd.FolderName, measurementDefinition, dsd.DataResolution, location);
 
-            return dataSet.DataRecords.Select(x => new TemporalDataPoint { Year = x.Year, Month = x.Month, Day = x.Day, Value = x.Value }).ToArray();
+            return
+                new Series
+                {
+                    DataPoints = dataSet.DataRecords.Select(x => new TemporalDataPoint { Year = x.Year, Month = x.Month, Day = x.Day, Value = x.Value }).ToArray(),
+                    UnitOfMeasure = measurementDefinition.UnitOfMeasure,
+                    DataCategory = measurementDefinition.DataCategory
+                };
         }
     }
 }
