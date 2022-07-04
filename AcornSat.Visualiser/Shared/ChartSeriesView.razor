@@ -22,6 +22,21 @@
                     </tr>
                 }
                 <tr>
+                    <td>Aggregation</td>
+                    <td>
+                        <Select TValue="SeriesAggregationOptions" 
+                                Size="Size.ExtraSmall"
+                                SelectedValue="@ChartSeries.Aggregation"
+                                SelectedValueChanged="@OnAggregationChanged">
+                            <SelectItem Value="SeriesAggregationOptions.Mean">Mean</SelectItem>
+                            <SelectItem Value="SeriesAggregationOptions.Minimum">Minimum</SelectItem>
+                            <SelectItem Value="SeriesAggregationOptions.Maximum">Maximum</SelectItem>
+                            <SelectItem Value="SeriesAggregationOptions.Median">Median</SelectItem>
+                            <SelectItem Value="SeriesAggregationOptions.Sum">Sum</SelectItem>
+                        </Select>
+                    </td>
+                </tr>
+                <tr>
                     <td>Smoothing</td>
                     <td>
                         <Select TValue="SeriesSmoothingOptions" 
@@ -152,6 +167,13 @@
     async Task OnRemoveSeriesClicked()
     {
         await OnRemoveSeries.InvokeAsync(ChartSeries);
+    }
+
+    async Task OnAggregationChanged(SeriesAggregationOptions o)
+    {
+        ChartSeries.Aggregation = o;
+
+        await OnSeriesChanged.InvokeAsync();
     }
 
     async Task OnSmoothingChanged(SeriesSmoothingOptions o)
