@@ -945,6 +945,29 @@
             _logger.LogInformation(_name + " " + _g + " " + s + " (" + _sw.Elapsed + ")");
         }
     }
+
+    static string BuildTitle(List<SeriesWithData> chartSeriesWithData)
+    {
+        if (chartSeriesWithData.Count == 1)
+        {
+            return chartSeriesWithData.Single().ChartSeries.FriendlyTitle;
+        }
+
+        var locationNames = 
+            chartSeriesWithData
+            .Select(x => x.ChartSeries.LocationName)
+            .Where(x => x != null)
+            .Distinct()
+            .ToArray();
+
+        if (locationNames.Length > 0)
+        {
+            return String.Join(", ", locationNames);
+        }
+
+        return "Climate data";
+    }
+
     async Task HandleRedraw()
     {
         var l = new LogAugmenter(Logger, "HandleRedraw");
@@ -987,9 +1010,7 @@
 
         List<ChartTrendlineData> trendlines = null;
 
-        var locationNames = ChartSeriesWithData.Select(x => x.ChartSeries.LocationName).Where(x => x != null).Distinct().ToArray();
-
-        var title = locationNames.Length > 1 ? String.Join(", ", locationNames) : ChartSeriesWithData.Single().ChartSeries.FriendlyTitle;
+        var title = BuildTitle(ChartSeriesWithData);
 
         // Data sets sometimes have internal gaps in data (i.e. years which have no data even though earlier
         // and later years have data). Additionally, they may have external gaps in data if the overall period
