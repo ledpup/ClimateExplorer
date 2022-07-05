@@ -1285,12 +1285,14 @@
         bool absoluteValues = false,
         bool redPositive = true)
     {
+        var l = new LogAugmenter(Logger, "AddDataSetToChart");
+
         var values =
             dataSet.DataRecords
             .Select(x => x.Value)
             .ToList();
 
-        Logger.LogInformation($"AddDataSetToChart: values has {values.Count} entries, of which {values.Count(x => x != null)} are not null");
+        l.LogInformation($"AddDataSetToChart: values has {values.Count} entries, of which {values.Count(x => x != null)} are not null");
 
         var colour = ChartColor.FromHtmlColorCode(htmlColourCode);
 
@@ -1301,7 +1303,13 @@
             ? ChartType.Line
             : ChartType.Bar;
 
-        await chart.AddDataSet(GetChartDataset(label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour, absoluteValues, redPositive));
+        var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour, absoluteValues, redPositive);
+
+        l.LogInformation("GetchartDataset complete. Calling AddDataSet");
+
+        await chart.AddDataSet(chartDataset);
+
+        l.LogInformation("AddDataSet complete.");
     }
 
     ChartTrendlineData CreateTrendline(int datasetIndex, ChartColor colour)
