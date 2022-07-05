@@ -79,7 +79,7 @@ namespace ClimateExplorer.Core.DataPreparation
             return
                 new ContainerAggregate
                 {
-                    NumberOfPeriodsCoveredByAggregate = cup.DaysInCup,
+                    NumberOfPeriodsCoveredByAggregate = cup.ExpectedDataPointsInCup,
                     Value = 
                         aggregationFunction(
                             cup.DataPoints

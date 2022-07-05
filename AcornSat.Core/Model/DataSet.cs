@@ -155,5 +155,10 @@ public class DataSet
 <p>Over the long-term, with no external influences, we'd expect the warming index to trend towards zero. A non-zero warming index may indicate an effect of climate change. A positive warming index may indicate global warming.</p>";
         }
     }
+
+    public override string ToString()
+    {
+        return $"{DataType} | {DataAdjustment} | {BinGranularity} | {Location} | {DataRecords.Count}";
+    }
 }
 

@@ -23,11 +23,9 @@ namespace ClimateExplorer.Core.DataPreparation
 
                 foreach (var cup in bucket.Cups)
                 {
-                    var daysInCup = cup.DaysInCup;
-
                     var dataPointsInCup = cup.DataPoints.Count(x => x.Value.HasValue);
 
-                    var proportionOfPointsInCup = (float)dataPointsInCup / daysInCup;
+                    var proportionOfPointsInCup = (float)dataPointsInCup / cup.ExpectedDataPointsInCup;
 
                     if (proportionOfPointsInCup >= requiredCupDataProportion)
                     {

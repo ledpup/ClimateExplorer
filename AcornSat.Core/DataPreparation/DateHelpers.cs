@@ -105,8 +105,49 @@ namespace ClimateExplorer.Core.DataPreparation
 
         public struct DateOnlySpan
         {
+            public DateOnlySpan(DateOnly start, DateOnly end)
+            {
+                Start = start;
+                End = end;
+            }
+
             public DateOnly Start { get; set; }
             public DateOnly End { get; set; }
+        }
+
+        public static int GetMonthIndex(DateOnly d)
+        {
+            return d.Year * 12 + d.Month - 1;
+        }
+
+        public static DateOnly GetFirstDayInMonthByMonthIndex(int monthIndex)
+        {
+            return new DateOnly(monthIndex / 12, (monthIndex % 12) + 1, 1);
+        }
+
+        public static DateOnly GetLastDayInMonthByMonthIndex(int monthIndex)
+        {
+            var nextMonthIndex = monthIndex + 1;
+
+            return new DateOnly(nextMonthIndex / 12, (nextMonthIndex % 12) + 1, 1).AddDays(-1);
+        }
+
+        public static DateOnlySpan[] DivideDateSpanIntoMonthSegments(DateOnly start, DateOnly end)
+        {
+            if (start.Day != 1) throw new Exception($"Day component of start date must be 1 - {start}");
+            if (end.AddDays(1).Day != 1) throw new Exception($"Day day of end date must be last day of month - {end}");
+
+            List<DateOnlySpan> spans = new List<DateOnlySpan>();
+
+            int firstMonthIndex = GetMonthIndex(start);
+            int lastMonthIndex = GetMonthIndex(end);
+
+            for (int monthIndex = firstMonthIndex; monthIndex <= lastMonthIndex; monthIndex++)
+            {
+                spans.Add(new DateOnlySpan(GetFirstDayInMonthByMonthIndex(monthIndex), GetLastDayInMonthByMonthIndex(monthIndex)));
+            }
+
+            return spans.ToArray();
         }
 
         public static DateOnlySpan[] DivideDateSpanIntoSegmentsWithIncompleteFinalSegmentAddedToFinalSegment(DateOnly start, DateOnly end, int segmentSizeInDays)
@@ -140,6 +181,11 @@ namespace ClimateExplorer.Core.DataPreparation
             result[completeSegmentsInSpan - 1].End = end;
 
             return result;
+        }
+
+        public static int CountDaysInRange(DateOnly start, DateOnly end)
+        {
+            return (int)((end.ToDateTime(new TimeOnly()) - start.ToDateTime(new TimeOnly())).TotalDays) + 1;
         }
     }
 }

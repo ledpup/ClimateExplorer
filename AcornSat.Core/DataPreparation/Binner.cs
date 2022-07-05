@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using static AcornSat.Core.Enums;
 
 namespace ClimateExplorer.Core.DataPreparation.Model
 {
     public static class Binner
     {
-        public static RawBin[] ApplyBinningRules(TemporalDataPoint[] dataPoints, BinGranularities binningRule, int cupSize)
+        public static RawBin[] ApplyBinningRules(TemporalDataPoint[] dataPoints, BinGranularities binningRule, int cupSize, DataResolution dataResolution)
         {
             var dataPointsByBinId =
                 dataPoints
@@ -19,7 +20,7 @@ namespace ClimateExplorer.Core.DataPreparation.Model
                     new RawBin()
                     {
                         Identifier = x.Key,
-                        Buckets = BuildBucketsForBin(binningRule, x, cupSize)
+                        Buckets = BuildBucketsForBin(binningRule, x, cupSize, dataResolution)
                     }
                 )
                 .ToArray();
@@ -28,19 +29,20 @@ namespace ClimateExplorer.Core.DataPreparation.Model
         static Bucket[] BuildBucketsForBin(
             BinGranularities binningRule, 
             IGrouping<BinIdentifier, TemporalDataPoint> bin, 
-            int cupSize)
+            int cupSize,
+            DataResolution dataResolution)
         {
             switch (binningRule)
             {
                 case BinGranularities.ByYear:
                 case BinGranularities.ByYearAndMonth:
-                    return BuildBucketsForGaplessBin(bin, cupSize);
+                    return BuildBucketsForGaplessBin(bin, cupSize, dataResolution);
 
                 case BinGranularities.ByMonthOnly:
-                    return BuildBucketsForMonth(bin, cupSize);
+                    return BuildBucketsForMonth(bin, cupSize, dataResolution);
 
                 case BinGranularities.BySouthernHemisphereTemperateSeasonOnly:
-                    return BuildBucketsForSouthernHemisphereTemperateSeason(bin, cupSize);
+                    return BuildBucketsForSouthernHemisphereTemperateSeason(bin, cupSize, dataResolution);
 
                 default:
                     throw new NotImplementedException($"BinningRule {binningRule}");
@@ -49,7 +51,8 @@ namespace ClimateExplorer.Core.DataPreparation.Model
 
         static Bucket[] BuildBucketsForMonth(
             IGrouping<BinIdentifier, TemporalDataPoint> bin,
-            int cupSize)
+            int cupSize,
+            DataResolution dataResolution)
         {
             // Bin is month
             // Bucket is year + month
@@ -62,26 +65,55 @@ namespace ClimateExplorer.Core.DataPreparation.Model
 
             foreach (var group in dataPointsByMonth)
             {
-                buckets.Add(
-                    new Bucket
-                    {
-                        Cups = 
-                            BuildCupsForDataPointRange(
-                                new DateOnly(group.Key.Year, group.Key.Month.Value, 1),
-                                DateHelpers.GetLastDayInMonth(group.Key.Year, group.Key.Month.Value),
-                                group.ToArray(),
-                                cupSize)
-                            .ToArray()
-                    }
-                );
+                var firstDayInMonth = new DateOnly(group.Key.Year, group.Key.Month.Value, 1);
+                var lastDayInMonth = DateHelpers.GetLastDayInMonth(group.Key.Year, group.Key.Month.Value);
+
+                switch (dataResolution)
+                {
+                    case DataResolution.Daily:
+                        buckets.Add(
+                            new Bucket
+                            {
+                                Cups =
+                                    BuildCupsForDataPointRange(
+                                        firstDayInMonth,
+                                        lastDayInMonth,
+                                        group.ToArray(),
+                                        cupSize)
+                                    .ToArray()
+                            }
+                        );
+                        break;
+                    case DataResolution.Monthly:
+                        buckets.Add(
+                            new Bucket
+                            {
+                                Cups =
+                                    new Cup[]
+                                    {
+                                        new Cup
+                                        {
+                                            FirstDayInCup = firstDayInMonth,
+                                            LastDayInCup = lastDayInMonth,
+                                            DataPoints = group.ToArray(),
+                                            ExpectedDataPointsInCup = 1
+                                        }
+                                    }
+                            }
+                        );
+                        break;
+                    default:
+                        throw new Exception($"Cannot convert underlying data at resolution {dataResolution} into bins at monthly level");
+                }
             }
-            
+
             return buckets.ToArray();
         }
 
         static Bucket[] BuildBucketsForSouthernHemisphereTemperateSeason(
             IGrouping<BinIdentifier, TemporalDataPoint> bin,
-            int cupSize)
+            int cupSize,
+            DataResolution dataResolution)
         {
             // Bin is temperate season
             // Bucket is year + temperate season
@@ -111,6 +143,30 @@ namespace ClimateExplorer.Core.DataPreparation.Model
             return buckets.ToArray();
         }
 
+        static IEnumerable<Cup> BuildMonthlyCupsForMonthlyData(
+            DateOnly firstDay,
+            DateOnly lastDay,
+            TemporalDataPoint[] points)
+        {
+            var cupSegments =
+                DateHelpers.DivideDateSpanIntoMonthSegments(firstDay, lastDay);
+
+            var cups =
+                cupSegments
+                .Select(
+                    x =>
+                    new Cup
+                    {
+                        FirstDayInCup = x.Start,
+                        LastDayInCup = x.End,
+                        DataPoints = points.Where(y => DataPointFallsInInclusiveRange(y, x.Start, x.End)).ToArray(),
+                        ExpectedDataPointsInCup = 1
+                    }
+                );
+
+            return cups;
+        }
+
         static IEnumerable<Cup> BuildCupsForDataPointRange(
             DateOnly firstDay, 
             DateOnly lastDay, 
@@ -132,7 +188,8 @@ namespace ClimateExplorer.Core.DataPreparation.Model
                     {
                         FirstDayInCup = x.Start,
                         LastDayInCup = x.End,
-                        DataPoints = points.Where(y => DataPointFallsInInclusiveRange(y, x.Start, x.End)).ToArray()
+                        DataPoints = points.Where(y => DataPointFallsInInclusiveRange(y, x.Start, x.End)).ToArray(),
+                        ExpectedDataPointsInCup = DateHelpers.CountDaysInRange(x.Start, x.End)
                     }
                 );
 
@@ -141,7 +198,8 @@ namespace ClimateExplorer.Core.DataPreparation.Model
 
         static Bucket[] BuildBucketsForGaplessBin(
             IGrouping<BinIdentifier, TemporalDataPoint> bin, 
-            int cupSize)
+            int cupSize,
+            DataResolution dataResolution)
         {
             var binIdentifier = bin.Key as BinIdentifierForGaplessBin;
 
@@ -151,12 +209,30 @@ namespace ClimateExplorer.Core.DataPreparation.Model
             }
 
             // For gapless bins, buckets and cups are the same size - we just build cups covering the bin, and assign each cup to one bucket.
-            var cups =
-                BuildCupsForDataPointRange(
-                    binIdentifier.FirstDayInBin,
-                    binIdentifier.LastDayInBin,
-                    bin.ToArray(),
-                    cupSize);
+            IEnumerable<Cup> cups;
+
+            switch (dataResolution)
+            {
+                case DataResolution.Daily:
+                    // If the underlying data is daily resolution, we honour the cup size
+                    cups =
+                        BuildCupsForDataPointRange(
+                            binIdentifier.FirstDayInBin,
+                            binIdentifier.LastDayInBin,
+                            bin.ToArray(),
+                            cupSize);
+
+                    break;
+
+                case DataResolution.Monthly:
+                    // If the underlying data is monthly resolution, we create one cup per month in the bin
+                    cups = BuildMonthlyCupsForMonthlyData(binIdentifier.FirstDayInBin, binIdentifier.LastDayInBin, bin.ToArray());
+                    break;
+
+                default:
+                    throw new NotImplementedException($"DataResolution {dataResolution}");
+            }
+
 
             var buckets =
                 cups
@@ -172,6 +248,7 @@ namespace ClimateExplorer.Core.DataPreparation.Model
                 .ToArray();
 
             return buckets;
+
         }
 
         static bool DataPointFallsInInclusiveRange(TemporalDataPoint dp, DateOnly start, DateOnly end)

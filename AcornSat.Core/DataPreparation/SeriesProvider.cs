@@ -15,6 +15,7 @@ namespace ClimateExplorer.Core.DataPreparation
             public TemporalDataPoint[] DataPoints { get; set; }
             public UnitOfMeasure UnitOfMeasure { get; set; }
             public DataCategory? DataCategory { get; set; }
+            public DataResolution DataResolution { get; set; }
         }
 
         static public async Task<Series> GetSeriesDataPointsForRequest(SeriesDerivationTypes seriesDerivationType, SeriesSpecification[] seriesSpecifications)
@@ -96,7 +97,8 @@ namespace ClimateExplorer.Core.DataPreparation
                 {
                     DataPoints = results.ToArray(),
                     UnitOfMeasure = series1.UnitOfMeasure,
-                    DataCategory = series1.DataCategory
+                    DataCategory = series1.DataCategory,
+                    DataResolution = series1.DataResolution
                 };
         }
 
@@ -122,7 +124,8 @@ namespace ClimateExplorer.Core.DataPreparation
                 {
                     DataPoints = dataSet.DataRecords.Select(x => new TemporalDataPoint { Year = x.Year, Month = x.Month, Day = x.Day, Value = x.Value }).ToArray(),
                     UnitOfMeasure = measurementDefinition.UnitOfMeasure,
-                    DataCategory = measurementDefinition.DataCategory
+                    DataCategory = measurementDefinition.DataCategory,
+                    DataResolution = dsd.DataResolution
                 };
         }
     }

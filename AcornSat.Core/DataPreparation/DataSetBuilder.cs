@@ -34,7 +34,7 @@ namespace ClimateExplorer.Core.DataPreparation
             Console.WriteLine("GetSeriesDataPointsForRequest completed in " + sw.Elapsed);
 
             // Run the rest of the pipeline (this is a separate method for testability)
-            var dataPoints = BuildDataSetFromDataPoints(series.DataPoints, request);
+            var dataPoints = BuildDataSetFromDataPoints(series.DataPoints, series.DataResolution, request);
 
             return
                 new BuildDataSetResult
@@ -45,7 +45,7 @@ namespace ClimateExplorer.Core.DataPreparation
                 };
         }
 
-        public ChartableDataPoint[] BuildDataSetFromDataPoints(TemporalDataPoint[] dataPoints, PostDataSetsRequestBody request)
+        public ChartableDataPoint[] BuildDataSetFromDataPoints(TemporalDataPoint[] dataPoints, DataResolution dataResolution, PostDataSetsRequestBody request)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -63,7 +63,7 @@ namespace ClimateExplorer.Core.DataPreparation
             sw.Restart();
 
             // Assign to Bins, Buckets and Cups
-            var rawBins = Binner.ApplyBinningRules(filteredDataPoints, request.BinningRule, request.CupSize);
+            var rawBins = Binner.ApplyBinningRules(filteredDataPoints, request.BinningRule, request.CupSize, dataResolution);
 
             Console.WriteLine("ApplyBinningRules completed in " + sw.Elapsed);
             sw.Restart();

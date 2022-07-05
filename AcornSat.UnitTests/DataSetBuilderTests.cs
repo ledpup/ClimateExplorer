@@ -18,6 +18,7 @@ namespace AcornSat.UnitTests
 
             var cdp = dsb.BuildDataSetFromDataPoints(
                 new TemporalDataPoint[] { },
+                Core.Enums.DataResolution.Daily,
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYear,
@@ -39,6 +40,7 @@ namespace AcornSat.UnitTests
 
             var cdp = dsb.BuildDataSetFromDataPoints(
                 BuildConstantTemporalDataPointArrayFor1990(),
+                Core.Enums.DataResolution.Daily,
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYear,
@@ -62,6 +64,7 @@ namespace AcornSat.UnitTests
 
             var cdp = dsb.BuildDataSetFromDataPoints(
                 BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f),
+                Core.Enums.DataResolution.Daily,
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYear,
@@ -85,6 +88,7 @@ namespace AcornSat.UnitTests
 
             var cdp = dsb.BuildDataSetFromDataPoints(
                 BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f),
+                Core.Enums.DataResolution.Daily,
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYear,
@@ -108,6 +112,7 @@ namespace AcornSat.UnitTests
 
             var cdp = dsb.BuildDataSetFromDataPoints(
                 BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f),
+                Core.Enums.DataResolution.Daily,
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYearAndMonth,
@@ -148,6 +153,7 @@ namespace AcornSat.UnitTests
 
             var cdp = dsb.BuildDataSetFromDataPoints(
                 BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f),
+                Core.Enums.DataResolution.Daily,
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYearAndMonth,
@@ -178,6 +184,7 @@ namespace AcornSat.UnitTests
 
             var cdp = dsb.BuildDataSetFromDataPoints(
                 BuildConstantTemporalDataPointArrayFor1990(),
+                Core.Enums.DataResolution.Daily,
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYear,
@@ -201,6 +208,7 @@ namespace AcornSat.UnitTests
 
             var cdp = dsb.BuildDataSetFromDataPoints(
                 BuildConstantTemporalDataPointArrayFor1990(),
+                Core.Enums.DataResolution.Daily,
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYearAndMonth,
@@ -231,6 +239,7 @@ namespace AcornSat.UnitTests
 
             var cdp = dsb.BuildDataSetFromDataPoints(
                 dataPoints,
+                Core.Enums.DataResolution.Daily,
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYearAndMonth,
@@ -259,6 +268,7 @@ namespace AcornSat.UnitTests
 
             var cdp = dsb.BuildDataSetFromDataPoints(
                 dataPoints,
+                Core.Enums.DataResolution.Daily,
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYearAndMonth,
@@ -287,6 +297,7 @@ namespace AcornSat.UnitTests
 
             var cdp = dsb.BuildDataSetFromDataPoints(
                 dataPoints,
+                Core.Enums.DataResolution.Daily,
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYearAndMonth,
@@ -315,6 +326,7 @@ namespace AcornSat.UnitTests
 
             var cdp = dsb.BuildDataSetFromDataPoints(
                 dataPoints,
+                Core.Enums.DataResolution.Daily,
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYearAndMonth,
@@ -342,6 +354,7 @@ namespace AcornSat.UnitTests
 
             var cdp = dsb.BuildDataSetFromDataPoints(
                 dataPoints,
+                Core.Enums.DataResolution.Daily,
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYear,
@@ -368,6 +381,7 @@ namespace AcornSat.UnitTests
 
             var cdp = dsb.BuildDataSetFromDataPoints(
                 dataPoints,
+                Core.Enums.DataResolution.Daily,
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByMonthOnly,
@@ -395,6 +409,7 @@ namespace AcornSat.UnitTests
 
             var cdp = dsb.BuildDataSetFromDataPoints(
                 dataPoints,
+                Core.Enums.DataResolution.Daily,
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByMonthOnly,
@@ -423,6 +438,7 @@ namespace AcornSat.UnitTests
 
             var cdp = dsb.BuildDataSetFromDataPoints(
                 dataPoints,
+                Core.Enums.DataResolution.Daily,
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.BySouthernHemisphereTemperateSeasonOnly,
@@ -454,6 +470,7 @@ namespace AcornSat.UnitTests
 
             var cdp = dsb.BuildDataSetFromDataPoints(
                 dataPoints,
+                Core.Enums.DataResolution.Daily,
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYearAndMonth,
@@ -482,6 +499,7 @@ namespace AcornSat.UnitTests
 
             var cdp = dsb.BuildDataSetFromDataPoints(
                 dataPoints,
+                Core.Enums.DataResolution.Daily,
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYearAndMonth,
