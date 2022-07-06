@@ -6,12 +6,12 @@ namespace AcornSat.Visualiser.Services;
 
 public interface IExporter
 {
-    Stream ExportChartData(ILogger logger, List<SeriesWithData> chartSeriesWithData, IEnumerable<Location> locations, BinIdentifier startBin, BinIdentifier endBin);
+    Stream ExportChartData(ILogger logger, List<SeriesWithData> chartSeriesWithData, IEnumerable<Location> locations, BinIdentifier startBin, BinIdentifier endBin, string sourceUri);
 }
 
 public class Exporter : IExporter
 {
-    public Stream ExportChartData(ILogger logger, List<SeriesWithData> chartSeriesWithData, IEnumerable<Location> locations, BinIdentifier startBin, BinIdentifier endBin)
+    public Stream ExportChartData(ILogger logger, List<SeriesWithData> chartSeriesWithData, IEnumerable<Location> locations, BinIdentifier startBin, BinIdentifier endBin, string sourceUri)
     {
         logger.LogInformation("ExportChartData from " + startBin.ToString() + " to " + endBin.ToString());
 
@@ -20,6 +20,8 @@ public class Exporter : IExporter
         logger.LogInformation("ExportChartData got bin range " + bins[0].ToString() + " to " + bins.Last().ToString());
 
         var data = new List<string>();
+
+        data.Add("Exported from," + sourceUri);
 
         var locationIds = chartSeriesWithData.Select(x => x.ChartSeries.LocationId).Where(x => x != null).Distinct().ToArray();
 

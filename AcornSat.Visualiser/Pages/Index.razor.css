@@ -11,7 +11,10 @@
 
 .chart-controls {
     margin: 20px;
-    margin-bottom: 0px;
+    /* This negative bottom margin is to compensate for the bottom margin on .chart-control, so that there's no
+     * unnecessary large gap below the bottom row of .chart-controls
+    */
+    margin-bottom: -16px;
     margin-left: 0px;
     user-select: none;
 }
@@ -24,6 +27,9 @@
         text-decoration: none;
         color: #425f59;
         cursor: pointer;
+
+        margin-bottom: 16px;
+        display: inline-block;
     }
 
         .chart-controls .chart-control i {

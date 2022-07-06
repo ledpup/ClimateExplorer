@@ -213,7 +213,7 @@
 
     private async Task OnDownloadDataClicked()
     {
-        var fileStream = Exporter.ExportChartData(Logger, ChartSeriesWithData, Locations, ChartStartBin, ChartEndBin);
+        var fileStream = Exporter.ExportChartData(Logger, ChartSeriesWithData, Locations, ChartStartBin, ChartEndBin, NavManager.Uri.ToString());
 
         var locationNames = ChartSeriesWithData.Select(x => x.ChartSeries.LocationName).Where(x => x != null).Distinct().ToArray();
 
