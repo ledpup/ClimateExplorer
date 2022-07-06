@@ -17,6 +17,7 @@ public interface IDataService
         Guid dataSetDefinitionId, 
         DataType dataType, 
         DataAdjustment? dataAdjustment, 
-        Guid? locationId);
+        Guid? locationId,
+        int cupSize);
     Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .7f, float locationGroupingThreshold = .7f);
 }

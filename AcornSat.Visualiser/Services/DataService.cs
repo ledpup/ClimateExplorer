@@ -70,7 +70,8 @@ public class DataService : IDataService
         Guid dataSetDefinitionId, 
         DataType dataType, 
         DataAdjustment? dataAdjustment, 
-        Guid? locationId)
+        Guid? locationId,
+        int cupSize)
     {
         var response = 
             await _httpClient.PostAsJsonAsync<PostDataSetsRequestBody>(
@@ -79,7 +80,7 @@ public class DataService : IDataService
                 {
                     BinAggregationFunction = aggregationFunction,
                     BinningRule = binGranularity,
-                    CupSize = 14,
+                    CupSize = cupSize,
                     RequiredBinDataProportion = 0.7f,
                     RequiredBucketDataProportion = 0.7f,
                     RequiredCupDataProportion = 0.7f,

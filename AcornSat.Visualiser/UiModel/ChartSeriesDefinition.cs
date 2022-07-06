@@ -13,6 +13,41 @@ namespace AcornSat.Visualiser.UiModel
         /// </summary>
         public Guid Id { get; set; } = Guid.NewGuid();
 
+        // Source data fields
+        public DataSetDefinitionViewModel DataSetDefinition { get; set; }
+        public MeasurementDefinitionViewModel MeasurementDefinition { get; set; }
+        public BinGranularities BinGranularity { get; set; }
+        public short? Year { get; set; }
+        public Guid? LocationId { get; set; }
+        public string? LocationName { get; set; }
+
+        // Data presentation fields
+        public SeriesSmoothingOptions Smoothing { get; set; }
+        public int SmoothingWindow { get; set; }
+        public SeriesAggregationOptions Aggregation { get; set; }
+        public SeriesValueOptions Value { get; set; }
+        public string Colour { get; set; } // Always allocated by ColourServer; TODO: Honour RequestedColour & expose in UI
+        public string RequestedColour { get; set; } // Ignored currently
+
+        // Rendering option fields
+        public SeriesDisplayStyle DisplayStyle { get; set; }
+        public bool ShowTrendline { get; set; }
+
+        // Editing mode fields
+
+        /// <summary>
+        /// If IsLocked is set, then the series will remain in place even if the user navigates to another notification
+        /// </summary>
+        public bool IsLocked { get; set; }
+
+        // Transient view state
+        public bool IsExpanded { get; set; }
+
+        public override string ToString()
+        {
+            return $"CSD: {DataSetDefinition.Name} | {MeasurementDefinition?.DataType} {MeasurementDefinition?.DataAdjustment} | {BinGranularity} | {LocationName} | {Smoothing} | {Aggregation} | {Value} | {DisplayStyle}";
+        }
+
         public string FriendlyTitle
         {
             get
@@ -172,50 +207,15 @@ namespace AcornSat.Visualiser.UiModel
             return String.Join(" | ", segments);
         }
 
-        private string MapDataTypeToFriendlyName(DataType dataType)
+        string MapDataTypeToFriendlyName(DataType dataType)
         {
             switch (dataType)
             {
                 case DataType.TempMin: return "Daily minimum";
                 case DataType.TempMax: return "Daily maximum";
                 case DataType.SolarRadiation: return "Solar radiation";
-                default: return dataType.ToString();    
-            }    
-        }
-
-        // Source data fields
-        public DataSetDefinitionViewModel DataSetDefinition { get; set; }
-        public MeasurementDefinitionViewModel MeasurementDefinition { get; set; }
-        public BinGranularities BinGranularity { get; set; }
-        public short? Year { get; set; }
-        public Guid? LocationId { get; set; }
-        public string? LocationName { get; set; }
-
-        // Data presentation fields
-        public SeriesSmoothingOptions Smoothing { get; set; }
-        public int SmoothingWindow { get; set; }
-        public SeriesAggregationOptions Aggregation { get; set; }
-        public SeriesValueOptions Value { get; set; }
-        public string Colour { get; set; } // Always allocated by ColourServer; TODO: Honour RequestedColour & expose in UI
-        public string RequestedColour { get; set; } // Ignored currently
-
-        // Rendering option fields
-        public SeriesDisplayStyle DisplayStyle { get; set; }
-        public bool ShowTrendline { get; set; }
-
-        // Editing mode fields
-
-        /// <summary>
-        /// If IsLocked is set, then the series will remain in place even if the user navigates to another notification
-        /// </summary>
-        public bool IsLocked { get; set; }
-
-        // Transient view state
-        public bool IsExpanded { get; set; }
-
-        public override string ToString()
-        {
-            return $"CSD: {DataSetDefinition.Name} | {MeasurementDefinition?.DataType} {MeasurementDefinition?.DataAdjustment} | {BinGranularity} | {LocationName} | {Smoothing} | {Aggregation} | {Value} | {DisplayStyle}";
+                default: return dataType.ToString();
+            }
         }
 
         public class ChartSeriesDefinitionComparerWhichIgnoresYearAndIsLocked : IEqualityComparer<ChartSeriesDefinition>
