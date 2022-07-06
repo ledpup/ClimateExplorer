@@ -1,6 +1,6 @@
 ﻿namespace ClimateExplorer.Core.DataPreparation
 {
-    public enum TropicalSeasons
+    public enum SouthernHemisphereTropicalSeasons
     {
         Wet,
         Dry

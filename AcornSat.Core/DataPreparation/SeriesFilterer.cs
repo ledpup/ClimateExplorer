@@ -8,7 +8,7 @@ namespace ClimateExplorer.Core.DataPreparation
         public static TemporalDataPoint[] ApplySeriesFilters(
             TemporalDataPoint[] transformedDataPoints,
             SouthernHemisphereTemperateSeasons? filterToSouthernHemisphereTemperateSeason,
-            TropicalSeasons? filterToTropicalSeason,
+            SouthernHemisphereTropicalSeasons? filterToTropicalSeason,
             int? filterToYearsAfterAndIncluding,
             int? filterToYearsBefore)
         {
@@ -21,7 +21,7 @@ namespace ClimateExplorer.Core.DataPreparation
 
             if (filterToTropicalSeason != null)
             {
-                query = query.Where(x => DateHelpers.GetTropicalSeasonForMonth(x.Month.Value) == filterToTropicalSeason.Value);
+                query = query.Where(x => DateHelpers.GetSouthernHemisphereTropicalSeasonForMonth(x.Month.Value) == filterToTropicalSeason.Value);
             }
 
             if (filterToYearsAfterAndIncluding != null)

@@ -48,8 +48,8 @@ namespace ClimateExplorer.Core.DataPreparation
             return
                 new BinIdentifier[]
                 {
-                    new TropicalSeasonOnlyBinIdentifier(TropicalSeasons.Wet),
-                    new TropicalSeasonOnlyBinIdentifier(TropicalSeasons.Dry),
+                    new SouthernHemisphereTropicalSeasonOnlyBinIdentifier(SouthernHemisphereTropicalSeasons.Wet),
+                    new SouthernHemisphereTropicalSeasonOnlyBinIdentifier(SouthernHemisphereTropicalSeasons.Dry),
                 };
         }
 
@@ -59,7 +59,7 @@ namespace ClimateExplorer.Core.DataPreparation
             {
                 case BinGranularities.ByMonthOnly: return GetMonthBins();
                 case BinGranularities.BySouthernHemisphereTemperateSeasonOnly: return GetSouthernHemisphereTemperateSeasonBins();
-                case BinGranularities.ByTropicalSeasonOnly: return GetTropicalSeasonBins();
+                case BinGranularities.BySouthernHemisphereTropicalSeasonOnly: return GetTropicalSeasonBins();
                 default: throw new NotImplementedException($"binGranularity {binGranularity}");
             }
         }

@@ -5,7 +5,7 @@
         ByYear,
         ByYearAndMonth,
         BySouthernHemisphereTemperateSeasonOnly,
-        ByTropicalSeasonOnly,
+        BySouthernHemisphereTropicalSeasonOnly,
         ByMonthOnly
     }
 

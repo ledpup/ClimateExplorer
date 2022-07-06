@@ -1119,7 +1119,7 @@
                 return "Month of the year";
             case BinGranularities.BySouthernHemisphereTemperateSeasonOnly:
                 return "Southern hemisphere temperate season";
-            case BinGranularities.ByTropicalSeasonOnly:
+            case BinGranularities.BySouthernHemisphereTropicalSeasonOnly:
                 return "Southern hemisphere tropical season";
         }
 
@@ -1397,7 +1397,7 @@
 
             case BinGranularities.ByMonthOnly:
             case BinGranularities.BySouthernHemisphereTemperateSeasonOnly:
-            case BinGranularities.ByTropicalSeasonOnly:
+            case BinGranularities.BySouthernHemisphereTropicalSeasonOnly:
                 ChartStartBin = null;
                 ChartEndBin = null;
                 chartBins = BinHelpers.GetBinsForModularGranularity(binGranularity);

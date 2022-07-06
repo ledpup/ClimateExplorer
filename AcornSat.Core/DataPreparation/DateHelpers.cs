@@ -55,12 +55,56 @@ namespace ClimateExplorer.Core.DataPreparation
 
         }
 
+        public class SouthernHemisphereTropicalSeasonOccurrence
+        {
+            public int Year;
+            public SouthernHemisphereTropicalSeasons Season;
+
+            public override bool Equals(object? obj)
+            {
+                var other = obj as SouthernHemisphereTropicalSeasonOccurrence;
+
+                if (other == null) return false;
+
+                return Year == other.Year && Season == other.Season;
+            }
+
+            public override int GetHashCode()
+            {
+                return Year * (((int)Season) + 10);
+            }
+
+            public override string ToString()
+            {
+                return $"{Season} {Year}";
+            }
+        }
+
+        const int FirstMonthOfSouthernHemisphereSummer = 12;
+
         public static SouthernHemisphereTemperateSeasonOccurrence GetSouthernHemisphereTemperateSeasonAndYear(short year, short month)
         {
-            // Special case: December is Summer, and we place it in the next year's summer.
-            if (month == 12) return new SouthernHemisphereTemperateSeasonOccurrence { Year = year + 1, Season = SouthernHemisphereTemperateSeasons.Summer };
+            return 
+                new SouthernHemisphereTemperateSeasonOccurrence
+                {
+                    // Special case: December is Summer, and we place it in the next year's summer.
+                    Year = year + ((month == 12) ? 1 : 0),
+                    Season = GetSouthernHemisphereTemperateSeasonForMonth(month)
+                };
+        }
 
-            return new SouthernHemisphereTemperateSeasonOccurrence { Year = year, Season = GetSouthernHemisphereTemperateSeasonForMonth(month) };
+        const int FirstMonthOfSouthernHemisphereWetSeason = 10;
+        const int LastMonthOfSouthernHemisphereWetSeason = 4;
+
+        public static SouthernHemisphereTropicalSeasonOccurrence GetSouthernHemisphereTropicalSeasonAndYear(short year, short month)
+        {
+            return 
+                new SouthernHemisphereTropicalSeasonOccurrence
+                {
+                    // Special case: Oct-Dec are wet season, and we place them in the next year's wet season.
+                    Year = year + ((month >= FirstMonthOfSouthernHemisphereWetSeason) ? 1 : 0),
+                    Season = GetSouthernHemisphereTropicalSeasonForMonth(month)
+                };
         }
 
         public static SouthernHemisphereTemperateSeasons GetSouthernHemisphereTemperateSeasonForMonth(int month)
@@ -71,10 +115,10 @@ namespace ClimateExplorer.Core.DataPreparation
             return SouthernHemisphereTemperateSeasons.Spring;
         }
 
-        public static TropicalSeasons GetTropicalSeasonForMonth(int month)
+        public static SouthernHemisphereTropicalSeasons GetSouthernHemisphereTropicalSeasonForMonth(int month)
         {
-            if (month <= 4 || month >= 10) return TropicalSeasons.Wet;
-            return TropicalSeasons.Dry;
+            if (month <= LastMonthOfSouthernHemisphereWetSeason || month >= FirstMonthOfSouthernHemisphereWetSeason) return SouthernHemisphereTropicalSeasons.Wet;
+            return SouthernHemisphereTropicalSeasons.Dry;
         }
 
         public static DateOnly GetFirstDayInTemperateSeasonOccurrence(SouthernHemisphereTemperateSeasonOccurrence seasonOccurrence)
@@ -100,6 +144,29 @@ namespace ClimateExplorer.Core.DataPreparation
                 case SouthernHemisphereTemperateSeasons.Spring: return new DateOnly(seasonOccurrence.Year, 11, 30);
 
                 default: throw new NotImplementedException($"SouthernHemisphereTemperateSeason {seasonOccurrence}");
+            }
+        }
+
+
+        public static DateOnly GetFirstDayInTropicalSeasonOccurrence(SouthernHemisphereTropicalSeasonOccurrence seasonOccurrence)
+        {
+            switch (seasonOccurrence.Season)
+            {
+                case SouthernHemisphereTropicalSeasons.Wet: return new DateOnly(seasonOccurrence.Year - 1, FirstMonthOfSouthernHemisphereWetSeason, 1);
+                case SouthernHemisphereTropicalSeasons.Dry: return new DateOnly(seasonOccurrence.Year, LastMonthOfSouthernHemisphereWetSeason + 1, 1);
+
+                default: throw new NotImplementedException($"SouthernHemisphereTropicalSeasonOccurrence {seasonOccurrence}");
+            }
+        }
+
+        public static DateOnly GetLastDayInTropicalSeasonOccurrence(SouthernHemisphereTropicalSeasonOccurrence seasonOccurrence)
+        {
+            switch (seasonOccurrence.Season)
+            {
+                case SouthernHemisphereTropicalSeasons.Wet: return new DateOnly(seasonOccurrence.Year, LastMonthOfSouthernHemisphereWetSeason + 1, 1).AddDays(-1);
+                case SouthernHemisphereTropicalSeasons.Dry: return new DateOnly(seasonOccurrence.Year, FirstMonthOfSouthernHemisphereWetSeason, 1).AddDays(-1);
+
+                default: throw new NotImplementedException($"SouthernHemisphereTropicalSeasonOccurrence {seasonOccurrence}");
             }
         }
 

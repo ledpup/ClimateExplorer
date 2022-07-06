@@ -7,7 +7,7 @@
         public SeriesTransformations SeriesTransformation { get; set; }
 
         public SouthernHemisphereTemperateSeasons? FilterToSouthernHemisphereTemperateSeason { get; set; }
-        public TropicalSeasons? FilterToTropicalSeason { get; set; }
+        public SouthernHemisphereTropicalSeasons? FilterToTropicalSeason { get; set; }
         public int? FilterToYearsAfterAndIncluding { get; set; }
         public int? FilterToYearsBefore { get; set; }
 

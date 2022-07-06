@@ -198,9 +198,9 @@ namespace ClimateExplorer.Core.DataPreparation
         }
     }
 
-    public class TropicalSeasonOnlyBinIdentifier : BinIdentifier
+    public class SouthernHemisphereTropicalSeasonOnlyBinIdentifier : BinIdentifier
     {
-        public TropicalSeasonOnlyBinIdentifier(TropicalSeasons season)
+        public SouthernHemisphereTropicalSeasonOnlyBinIdentifier(SouthernHemisphereTropicalSeasons season)
             : base(
                 $"trops{season}",
                 $"{season}")

@@ -44,6 +44,9 @@ namespace ClimateExplorer.Core.DataPreparation.Model
                 case BinGranularities.BySouthernHemisphereTemperateSeasonOnly:
                     return BuildBucketsForSouthernHemisphereTemperateSeason(bin, cupSize, dataResolution);
 
+                case BinGranularities.BySouthernHemisphereTropicalSeasonOnly:
+                    return BuildBucketsForSouthernHemisphereTropicalSeason(bin, cupSize, dataResolution);
+
                 default:
                     throw new NotImplementedException($"BinningRule {binningRule}");
             }
@@ -133,6 +136,39 @@ namespace ClimateExplorer.Core.DataPreparation.Model
                             BuildCupsForDataPointRange(
                                 DateHelpers.GetFirstDayInTemperateSeasonOccurrence(seasonOccurrence.Key),
                                 DateHelpers.GetLastDayInTemperateSeasonOccurrence(seasonOccurrence.Key),
+                                seasonOccurrence.ToArray(),
+                                cupSize)
+                            .ToArray()
+                    }
+                );
+            }
+
+            return buckets.ToArray();
+        }
+
+        static Bucket[] BuildBucketsForSouthernHemisphereTropicalSeason(
+            IGrouping<BinIdentifier, TemporalDataPoint> bin,
+            int cupSize,
+            DataResolution dataResolution)
+        {
+            // Bin is tropical season
+            // Bucket is year + temperate season
+            // Cup is a cupSize segment of bucket
+            var binIdentifier = bin.Key as SouthernHemisphereTropicalSeasonOnlyBinIdentifier;
+
+            List<Bucket> buckets = new List<Bucket>();
+
+            var dataPointsBySeasonOccurrence = bin.GroupBy(x => DateHelpers.GetSouthernHemisphereTropicalSeasonAndYear(x.Year, x.Month.Value));
+
+            foreach (var seasonOccurrence in dataPointsBySeasonOccurrence)
+            {
+                buckets.Add(
+                    new Bucket
+                    {
+                        Cups =
+                            BuildCupsForDataPointRange(
+                                DateHelpers.GetFirstDayInTropicalSeasonOccurrence(seasonOccurrence.Key),
+                                DateHelpers.GetLastDayInTropicalSeasonOccurrence(seasonOccurrence.Key),
                                 seasonOccurrence.ToArray(),
                                 cupSize)
                             .ToArray()
@@ -268,7 +304,7 @@ namespace ClimateExplorer.Core.DataPreparation.Model
                 case BinGranularities.ByYearAndMonth: return new YearAndMonthBinIdentifier(dp.Year, dp.Month.Value);
                 case BinGranularities.ByMonthOnly: return new MonthOnlyBinIdentifier(dp.Month.Value);
                 case BinGranularities.BySouthernHemisphereTemperateSeasonOnly: return new SouthernHemisphereTemperateSeasonOnlyBinIdentifier(DateHelpers.GetSouthernHemisphereTemperateSeasonForMonth(dp.Month.Value));
-                case BinGranularities.ByTropicalSeasonOnly: return new TropicalSeasonOnlyBinIdentifier(DateHelpers.GetTropicalSeasonForMonth(dp.Month.Value));
+                case BinGranularities.BySouthernHemisphereTropicalSeasonOnly: return new SouthernHemisphereTropicalSeasonOnlyBinIdentifier(DateHelpers.GetSouthernHemisphereTropicalSeasonForMonth(dp.Month.Value));
                 default: throw new NotImplementedException($"BinningRule {binningRule}");
             }
         }
