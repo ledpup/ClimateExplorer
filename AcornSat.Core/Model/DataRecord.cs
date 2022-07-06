@@ -11,7 +11,7 @@ public class DataRecord
     {
         Year = year;
         Value = value;
-        Key = year.ToString();
+        CreateKey();
     }
 
     public DataRecord(short year, short? month, short? day, float? value)
@@ -22,15 +22,7 @@ public class DataRecord
 
         Value = value;
 
-        Key = Year.ToString();
-        if (Month != null)
-        {
-            Key += "_" + Month;
-        }
-        if (Day != null)
-        {
-            Key += "_" + Day;
-        }
+        CreateKey();
     }
 
     public DataRecord(DateTime date, float? value)
@@ -41,7 +33,7 @@ public class DataRecord
 
         Value = value;
 
-        Key = $"{Year}_{Month}_{Day}";
+        CreateKey();
     }
 
     public string Key { get; set; }
@@ -66,6 +58,18 @@ public class DataRecord
         } 
     }
 
+    private void CreateKey()
+    {
+        Key = Year.ToString();
+        if (Month != null)
+        {
+            Key += "_" + Month;
+        }
+        if (Day != null)
+        {
+            Key += "_" + Day;
+        }
+    }
     public override string ToString()
     {
         return $"{Year}-{Month}-{Day}: {Value}";

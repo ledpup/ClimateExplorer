@@ -5,18 +5,14 @@ using System.Text.Json;
 public class Location
 {
     public Guid Id { get; set; }
-    public Guid DataSetId { get; set; }
     public string Name { get; set; }
-    public string PrimaryStation { get; set; }
     public Coordinates Coordinates { get; set;}
     public float? WarmingIndex { get; set; }
     public short? HeatingScore { get; set; }
-
-    public List<Station> Stations { get; set; }
     public List<LocationDistance> NearbyLocations { get; set; }
     public Location()
     {
-        Stations = new List<Station>();
+        
     }
 
     public static async Task<List<Location>> GetLocations(string pathAndFileName)
@@ -26,9 +22,9 @@ public class Location
         return locations;
     }
 
-    public static async Task<List<Location>> GetLocations(string folderName, bool setNearbyLocations)
+    public static async Task<List<Location>> GetLocations(bool setNearbyLocations)
     {
-        var locations = await GetLocations(@$"MetaData\{folderName}\Locations.json");
+        var locations = await GetLocations(@$"MetaData\Locations.json");
 
         if (setNearbyLocations)
         {

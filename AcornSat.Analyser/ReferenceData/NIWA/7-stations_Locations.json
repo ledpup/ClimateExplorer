@@ -1,0 +1,86 @@
+[
+  {
+    "Id": "a28e017a-a23b-4f59-914d-d1171bfd60be",
+    "Name": "Auckland",
+    "Coordinates": {
+      "Latitude": -37.00813,
+      "Longitude": 174.78873,
+      "Elevation": 7
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null
+  },
+  {
+    "Id": "0c75321e-ffc1-48cd-afd2-2d30301a545d",
+    "Name": "Dunedin",
+    "Coordinates": {
+      "Latitude": -45.90129,
+      "Longitude": 170.5147,
+      "Elevation": 4
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null
+  },
+  {
+    "Id": "53fc123f-ea7e-493a-a9e4-474b798a763c",
+    "Name": "Masterton",
+    "Coordinates": {
+      "Latitude": -41.25231,
+      "Longitude": 175.38985,
+      "Elevation": 20
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null
+  },
+  {
+    "Id": "f7f809a7-6755-4ab7-b1e6-3ae933dd89ae",
+    "Name": "Hokitika",
+    "Coordinates": {
+      "Latitude": -42.712,
+      "Longitude": 170.984,
+      "Elevation": 39
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null
+  },
+  {
+    "Id": "ccbb9417-cc42-4503-b5f6-58e01ae7ebfa",
+    "Name": "Lincoln",
+    "Coordinates": {
+      "Latitude": -43.62622,
+      "Longitude": 172.4704,
+      "Elevation": 18
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null
+  },
+  {
+    "Id": "4977fb61-9228-45d4-be28-e9d19d23088b",
+    "Name": "Nelson",
+    "Coordinates": {
+      "Latitude": -41.299,
+      "Longitude": 173.226,
+      "Elevation": 2
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null
+  },
+  {
+    "Id": "24c35f2d-a4a3-44e4-9a5e-6ea16cec8c9c",
+    "Name": "Wellington",
+    "Coordinates": {
+      "Latitude": -41.28445,
+      "Longitude": 174.76794,
+      "Elevation": 125
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null
+  }
+]

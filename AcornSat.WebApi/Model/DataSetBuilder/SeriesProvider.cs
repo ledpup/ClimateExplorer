@@ -95,11 +95,12 @@ namespace AcornSat.WebApi.Model.DataSetBuilder
                     x.DataType == seriesSpecification.DataType &&
                     x.DataAdjustment == seriesSpecification.DataAdjustment);
 
-            var location = seriesSpecification.LocationId == null ? null : (await Location.GetLocations(dsd.FolderName, false)).Single(x => x.Id == seriesSpecification.LocationId);
+            var location = seriesSpecification.LocationId == null ? null : (await Location.GetLocations(false)).Single(x => x.Id == seriesSpecification.LocationId);
 
-            var dataSet = await DataReader.GetDataSet(dsd.FolderName, measurementDefinition, dsd.DataResolution, location);
+            throw new NotImplementedException();
+            var dataRecords = await DataReader.GetDataRecords(measurementDefinition);
 
-            return dataSet.DataRecords.Select(x => new TemporalDataPoint { Year = x.Year, Month = x.Month, Day = x.Day, Value = x.Value }).ToArray();
+            return dataRecords.Select(x => new TemporalDataPoint { Year = x.Year, Month = x.Month, Day = x.Day, Value = x.Value }).ToArray();
         }
     }
 }

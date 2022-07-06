@@ -19,9 +19,6 @@ public class DataSetDefinitionViewModel
     public string MoreInformationUrl { get; set; }
     public string StationInfoUrl { get; set; }
     public string LocationInfoUrl { get; set; }
-    public DataResolution DataResolution { get; set; }
-    public bool HasLocations { get; set; }
 
     public List<MeasurementDefinitionViewModel> MeasurementDefinitions { get; set; }
-    public List<Location> Locations { get; set; }
 }

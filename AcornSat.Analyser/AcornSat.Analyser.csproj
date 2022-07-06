@@ -22,19 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="locations.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="ReferenceData\ACORN-SAT\acorn_sat_v2.1.0_stations.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="ReferenceData\NIWA\11-stations-locations.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="ReferenceData\NIWA\7-stations-locations.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="ReferenceData\NIWA\Locations.json">
+    
+    <None Update="ReferenceData/**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

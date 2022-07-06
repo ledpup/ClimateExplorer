@@ -165,7 +165,7 @@
   {
     "Id": "05daa0ea-6227-4225-bf52-8204808709b5",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
-    "Name": "Broome Airport",
+    "Name": "Broome",
     "PrimaryStation": "003003",
     "Sites": [
       "003003",
@@ -300,7 +300,7 @@
   {
     "Id": "eb75b5eb-8feb-4118-b6ab-bbe9b4fbc334",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
-    "Name": "Cape Bruny Lighthouse",
+    "Name": "Cape Bruny",
     "PrimaryStation": "094198",
     "Sites": [
       "094198",
@@ -343,7 +343,7 @@
   {
     "Id": "592c8e33-cc36-4cce-9af1-82bb3f26a5af",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
-    "Name": "Cape Otway Lighthouse",
+    "Name": "Cape Otway",
     "PrimaryStation": "090015",
     "Sites": [
       "090015"
@@ -832,7 +832,7 @@
   {
     "Id": "ddbdddc8-8f95-4a44-b55b-f52378460640",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
-    "Name": "Laverton RAAF",
+    "Name": "Laverton",
     "PrimaryStation": "087031",
     "Sites": [
       "087031"
@@ -1176,7 +1176,7 @@
   {
     "Id": "02619137-0d4d-4bcf-8ae3-f87697cd178d",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
-    "Name": "Perth",
+    "Name": "Perth Airport",
     "PrimaryStation": "009021",
     "Sites": [
       "009021",
@@ -1604,7 +1604,7 @@
   {
     "Id": "48c35ccf-3ff8-4448-90de-1e491c500887",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
-    "Name": "Wittenoom",
+    "Name": "Karijini North (Wittenoom)",
     "PrimaryStation": "005098",
     "Sites": [
       "005098",
@@ -1633,7 +1633,7 @@
   {
     "Id": "141b8a24-fc66-4ec5-a71c-2c779d802ca2",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
-    "Name": "Wyalong",
+    "Name": "West Wyalong",
     "PrimaryStation": "050017",
     "Sites": [
       "050017",

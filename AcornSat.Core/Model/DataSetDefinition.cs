@@ -16,16 +16,13 @@ public class DataSetDefinition
     public string ShortName { get; set; }
     public string Description { get; set; }
     public string MoreInformationUrl { get; set; }
-    public DataResolution DataResolution { get; set; }
-    public string FolderName { get; set; }
     public string StationInfoUrl { get; set; }
     public string LocationInfoUrl { get; set; }
     public string DataDownloadUrl { get; set; }
 
     public List<MeasurementDefinition> MeasurementDefinitions { get; set; }
 
-    public bool HasLocations { get; set; }
-    public List<Location> Locations { get; set; }
+    public DataLocationMapping DataLocationMapping { get; set; }
 
     public static async Task<List<DataSetDefinition>> GetDataSetDefinitions(string filePath = @"MetaData\DataSetDefinitions.json")
     {

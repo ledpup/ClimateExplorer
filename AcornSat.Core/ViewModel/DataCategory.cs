@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AcornSat.Core.ViewModel
+namespace AcornSat.Core.ViewModel;
+
+public enum DataCategory
 {
-    public enum DataCategory
-    {
-        Temperature,
-        Enso
-    }
+    Temperature,
+    Enso
 }
