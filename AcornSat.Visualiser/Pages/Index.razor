@@ -616,6 +616,8 @@
 
     List<SeriesWithData> ChartSeriesWithData { get; set; }
 
+    BinIdentifier[] ChartBins { get; set; }
+
     protected async Task BuildDataSets()
     {
         // This method is called whenever anything has occurred that may require the chart to
@@ -847,64 +849,6 @@
 
     BinIdentifier ChartStartBin, ChartEndBin;
 
-    static Tuple<BinIdentifier, BinIdentifier> CalculateChartStartAndEndBin(
-        ILogger logger,
-        List<SeriesWithData> chartSeriesWithData,
-        string selectedStartYear,
-        string selectedEndYear
-    )
-    {
-        var l = new LogAugmenter(logger, "CalculateChartStartAndEndBin");
-
-        l.LogInformation("Enter");
-        // Find the first and last bin we have data for
-        var superSetStartBin = chartSeriesWithData.Select(x => x.ProcessedDataSet).SelectMany(x => x.DataRecords).Min(y => y.GetBinIdentifier());
-        var superSetEndBin = chartSeriesWithData.Select(x => x.ProcessedDataSet).SelectMany(x => x.DataRecords).Max(y => y.GetBinIdentifier());
-
-        l.LogInformation("CalculateChartStartAndEndBin calculated superSetEndBin " + superSetEndBin);
-
-        // Parse the start and end years, if any, specified by the user
-        var userStartYear = string.IsNullOrEmpty(selectedStartYear) ? null : (short?)short.Parse(selectedStartYear);
-        var userEndYear = string.IsNullOrEmpty(selectedEndYear) ? null : (short?)short.Parse(selectedEndYear);
-
-        BinIdentifier chartStartBin = BinIdentifier.Parse(superSetStartBin.Id);
-        BinIdentifier chartEndBin = BinIdentifier.Parse(superSetEndBin.Id);
-
-        if (superSetStartBin is BinIdentifierForGaplessBin startBinWithDate &&
-            superSetEndBin is BinIdentifierForGaplessBin endBinWithDate)
-        {
-            if (userStartYear != null && userStartYear >= startBinWithDate.FirstDayInBin.Year && userStartYear <= endBinWithDate.FirstDayInBin.Year)
-            {
-                if (startBinWithDate is YearBinIdentifier)
-                {
-                    chartStartBin = new YearBinIdentifier(userStartYear.Value);
-                }
-
-                if (startBinWithDate is YearAndMonthBinIdentifier)
-                {
-                    chartStartBin = new YearAndMonthBinIdentifier(userStartYear.Value, 1);
-                }
-            }
-
-            if (userEndYear != null && userEndYear >= startBinWithDate.FirstDayInBin.Year && userStartYear <= endBinWithDate.FirstDayInBin.Year)
-            {
-                if (startBinWithDate is YearBinIdentifier)
-                {
-                    chartEndBin = new YearBinIdentifier(userEndYear.Value);
-                }
-
-                if (startBinWithDate is YearAndMonthBinIdentifier)
-                {
-                    chartEndBin = new YearAndMonthBinIdentifier(userEndYear.Value, 12);
-                }
-            }
-        }
-
-        l.LogInformation("Leave");
-
-        return new Tuple<BinIdentifier, BinIdentifier>(chartStartBin, chartEndBin);
-    }
-
     public class LogAugmenter
     {
         Guid _g = Guid.NewGuid();
@@ -1003,25 +947,12 @@
 
         BuildProcessedDataSets(ChartSeriesWithData, UseMostRecentStartYear);
 
-        l.LogInformation("Calling CalculateChartStartAndEndBin");
+        subtitle =
+            (ChartStartBin != null & ChartEndBin != null)
+            ? $"({ChartStartBin.Label}-{ChartEndBin.Label})"
+            : SelectedBinGranularity.ToString();
 
-        (ChartStartBin, ChartEndBin) = CalculateChartStartAndEndBin(Logger, ChartSeriesWithData, SelectedStartYear, SelectedEndYear);
-
-        // Now, we cut down the processed datasets to just the bins that we intend to display on the chart.
-        foreach (var cswd in ChartSeriesWithData)
-        {
-            cswd.ProcessedDataSet.DataRecords = 
-                cswd.ProcessedDataSet.DataRecords
-                .Where(
-                    x => 
-                    x.GetBinIdentifier().CompareTo(ChartStartBin) >= 0 && 
-                    x.GetBinIdentifier().CompareTo(ChartEndBin) <= 0)
-                .ToList();
-        }
-
-        subtitle = $"({ChartStartBin.Label}-{ChartEndBin.Label})";
-
-        Labels = GetLabels(ChartStartBin, ChartEndBin);
+        Labels = GetLabels();
 
         l.LogInformation("Calling AddDataSetsToGraph");
 
@@ -1171,11 +1102,9 @@
 
     bool _haveCalledResizeAtLeastOnce = false;
 
-    string[] GetLabels(BinIdentifier startBin, BinIdentifier endBin)
+    string[] GetLabels()
     {
-        var bins = BinHelpers.EnumerateBinsInRange(startBin, endBin);
-
-        return bins.Select(x => x.Label).ToArray();
+        return ChartBins.Select(x => x.Label).ToArray();
     }
 
     string GetXAxisLabel()
@@ -1332,6 +1261,69 @@
         return GetYearForDataRecord(GetLastDataRecordWithValueInDataSet(dataSet));
     }
 
+    static Tuple<BinIdentifier, BinIdentifier> GetBinRangeToPlotForGaplessRange(
+        IEnumerable<DataSet> preProcessedDataSets, 
+        bool useMostRecentStartYear,
+        string selectedStartYear,
+        string selectedEndYear)
+    {
+        // Parse the start and end years, if any, specified by the user
+        var userStartYear = string.IsNullOrEmpty(selectedStartYear) ? null : (short?)short.Parse(selectedStartYear);
+        var userEndYear = string.IsNullOrEmpty(selectedEndYear) ? null : (short?)short.Parse(selectedEndYear);
+
+        // Analyse the data we want to plot, to find the first & last bin we have a value for, for each data set
+        var firstBinInEachDataSet =
+            preProcessedDataSets
+            .Select(GetFirstDataRecordWithValueInDataSet)
+            .Select(x => (BinIdentifierForGaplessBin)x.GetBinIdentifier());
+
+        var lastBinInEachDataSet =
+            preProcessedDataSets
+            .Select(GetLastDataRecordWithValueInDataSet)
+            .Select(x => (BinIdentifierForGaplessBin)x.GetBinIdentifier());
+
+        var firstBinAcrossAllDataSets = firstBinInEachDataSet.Min();
+        var lastFirstBinAcrossAllDataSets = firstBinInEachDataSet.Max();
+        var lastBinAcrossAllDataSets = lastBinInEachDataSet.Max();
+
+        var startBin = useMostRecentStartYear ? lastFirstBinAcrossAllDataSets : firstBinAcrossAllDataSets;
+        var endBin = lastBinAcrossAllDataSets;
+
+        if (userStartYear != null)
+        {
+            if (userStartYear.Value > startBin.FirstDayInBin.Year)
+            {
+                if (startBin is YearBinIdentifier)
+                {
+                    startBin = new YearBinIdentifier(userStartYear.Value);
+                }
+
+                if (startBin is YearAndMonthBinIdentifier)
+                {
+                    startBin = new YearAndMonthBinIdentifier(userStartYear.Value, 1);
+                }
+            }
+        }
+
+        if (userEndYear != null)
+        {
+            if (userEndYear.Value < endBin.FirstDayInBin.Year)
+            {
+                if (endBin is YearBinIdentifier)
+                {
+                    endBin = new YearBinIdentifier(userEndYear.Value);
+                }
+
+                if (endBin is YearAndMonthBinIdentifier)
+                {
+                    endBin = new YearAndMonthBinIdentifier(userEndYear.Value, 1);
+                }
+            }
+        }
+
+        return new Tuple<BinIdentifier, BinIdentifier>(startBin, endBin);
+    }
+
     void BuildProcessedDataSets(List<SeriesWithData> chartSeriesWithData, bool useMostRecentStartYear = true)
     {
         var l = new LogAugmenter(Logger, "BuildProcessedDataSets");
@@ -1345,20 +1337,21 @@
         // If we're not calculating a moving average, PreProcessedDataSets = SourceDataSets
         foreach (var cs in chartSeriesWithData)
         {
-            if (cs.ChartSeries.Smoothing == SeriesSmoothingOptions.MovingAverage)
+            // We only support moving averages on linear bin granularities (e.g. Year, YearAndMonth) - not modular ones like MonthOnly
+            if (SelectedBinGranularity.IsLinear() && cs.ChartSeries.Smoothing == SeriesSmoothingOptions.MovingAverage)
             {
                 var c = new DataRecordMovingAverageCalculator(new OptimizedMovingAverageCalculator(cs.ChartSeries.SmoothingWindow));
                 l.LogInformation("Calculating moving average");
                 var dr = c.Calculate(cs.SourceDataSet.DataRecords);
                 l.LogInformation("Done");
 
-                cs.PreProcessedDataSet = 
+                cs.PreProcessedDataSet =
                     new DataSet
-                    {
-                        Location = cs.SourceDataSet.Location,
-                        MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
-                        DataRecords = dr
-                    };
+                        {
+                            Location = cs.SourceDataSet.Location,
+                            MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
+                            DataRecords = dr
+                        };
             }
             else
             {
@@ -1367,10 +1360,6 @@
         }
 
         l.LogInformation("done with moving average calculation");
-
-        // Calculate first and last year which we have a data record for, across all data sets underpinning all chart series
-        var allDataSets = chartSeriesWithData.Select(x => x.PreProcessedDataSet);
-        var allDataRecords = allDataSets.SelectMany(x => x.DataRecords);
         
         // There must be exactly one bin granularity or else something odd's going on.
         var binGranularity = chartSeriesWithData.Select(x => x.ChartSeries.BinGranularity).Distinct().Single();
@@ -1380,69 +1369,84 @@
             throw new Exception($"BinGranularity selected for series ({binGranularity}) doesn't match overall selected granularity {SelectedBinGranularity}");
         }
 
-        // If the series covers linear time
-        if (binGranularity == BinGranularities.ByYear || binGranularity == BinGranularities.ByYearAndMonth)
+        BinIdentifier[] chartBins = null;
+
+        switch (binGranularity)
         {
-            l.LogInformation("getting bounds");
+            case BinGranularities.ByYear:
+            case BinGranularities.ByYearAndMonth:
+                // Calculate first and last year which we have a data record for, across all data sets underpinning all chart series
+                var preProcessedDataSets = chartSeriesWithData.Select(x => x.PreProcessedDataSet);
+                var allDataRecords = preProcessedDataSets.SelectMany(x => x.DataRecords);
 
-            var firstBinInEachDataSet =
-                allDataSets
-                .Select(GetFirstDataRecordWithValueInDataSet)
-                .Select(x => (BinIdentifierForGaplessBin)x.GetBinIdentifier());
+                (ChartStartBin, ChartEndBin) = 
+                    GetBinRangeToPlotForGaplessRange(
+                        // Pass in the data available for plotting
+                        preProcessedDataSets, 
+                        // and the user's preferences about what x axis range they'd like plotted
+                        useMostRecentStartYear, 
+                        SelectedStartYear, 
+                        SelectedEndYear);
 
-            var lastBinInEachDataSet = 
-                allDataSets
-                .Select(GetLastDataRecordWithValueInDataSet)
-                .Select(x => (BinIdentifierForGaplessBin)x.GetBinIdentifier());
+                chartBins = BinHelpers.EnumerateBinsInRange(ChartStartBin, ChartEndBin).ToArray();
 
-            var firstBinAcrossAllDataSets = firstBinInEachDataSet.Min();
-            var lastFirstBinAcrossAllDataSets = firstBinInEachDataSet.Max();
-            var lastBinAcrossAllDataSets = lastBinInEachDataSet.Max();
+                // build a list of all the years in which data sets start, used by the UI to allow the user to conveniently select from them
+                StartYears = preProcessedDataSets.Select(GetStartYearForDataSet).Distinct().OrderBy(x => x).ToList();
 
-            l.LogInformation("firstBinAcrossAllDataSets: " + firstBinAcrossAllDataSets.Id);
-            l.LogInformation("lastFirstBinAcrossAllDataSets: " + lastFirstBinAcrossAllDataSets.Id);
-            l.LogInformation("lastBinAcrossAllDataSets: " + lastBinAcrossAllDataSets.Id);
+                break;
 
-            var startBin = useMostRecentStartYear ? lastFirstBinAcrossAllDataSets : firstBinAcrossAllDataSets;
-            var endBin = lastBinAcrossAllDataSets;
+            case BinGranularities.ByMonthOnly:
+            case BinGranularities.BySouthernHemisphereTemperateSeasonOnly:
+            case BinGranularities.ByTropicalSeasonOnly:
+                ChartStartBin = null;
+                ChartEndBin = null;
+                chartBins = BinHelpers.GetBinsForModularGranularity(binGranularity);
+                break;
 
-            l.LogInformation("startBin: " + startBin.Id);
-            l.LogInformation("endBin: " + endBin.Id);
-
-            StartYears = allDataSets.Select(GetStartYearForDataSet).ToList();
-
-            foreach (var cs in chartSeriesWithData)
-            {
-                l.LogInformation("constructing ProcessedDataSet");
-
-                var recordsByBinId = cs.PreProcessedDataSet.DataRecords.ToLookup(x => x.BinId);
-
-                var binRange = BinHelpers.EnumerateBinsInRange(startBin, endBin);
-
-                l.LogInformation("First bin in range: " + binRange.First() + ", last bin in range: " + binRange.Last());
-
-                // Create new datasets, same as the source, but with any gaps filled with null records
-                cs.ProcessedDataSet =                
-                    new DataSet
-                    {
-                        Location = cs.PreProcessedDataSet.Location,
-                        MeasurementDefinition = cs.PreProcessedDataSet.MeasurementDefinition,
-                        DataRecords =
-                            binRange
-                            .Select(
-                                bin =>
-                                // If there's a record in the source dataset, use it
-                                recordsByBinId[bin.Id].SingleOrDefault()
-                                // Otherwise, create a null record
-                                ?? new DataRecord { BinId = bin.Id, Value = null }
-                            )
-                            .ToList()
-                    };
-            }
+            default:
+                throw new NotImplementedException($"binGranularity {binGranularity}");
         }
-        else
+
+        foreach (var cs in chartSeriesWithData)
         {
-            throw new NotImplementedException();
+            l.LogInformation("constructing ProcessedDataSet");
+
+            var recordsByBinId = cs.PreProcessedDataSet.DataRecords.ToLookup(x => x.BinId);
+
+            l.LogInformation("First chart bin: " + chartBins.First() + ", last chart: " + chartBins.Last());
+
+            // Create new datasets, same as the source, but with any gaps filled with null records
+            cs.ProcessedDataSet =
+                new DataSet
+                {
+                    Location = cs.PreProcessedDataSet.Location,
+                    MeasurementDefinition = cs.PreProcessedDataSet.MeasurementDefinition,
+                    DataRecords =
+                        chartBins
+                        .Select(
+                            bin =>
+                            // If there's a record in the source dataset, use it
+                            recordsByBinId[bin.Id].SingleOrDefault()
+                            // Otherwise, create a null record
+                            ?? new DataRecord { BinId = bin.Id, Value = null }
+                        )
+                        .ToList()
+                };
+        }
+
+        ChartBins = chartBins;
+
+        // Now, we cut down the processed datasets to just the bins that we intend to display on the chart.
+        // This should only affect linear (gapless) BinGranularities, but executes either way, in case we
+        // later allow users to say "just give me month-ignoring-year, but only for months after 4 and before 7",
+        // for example.
+        HashSet<string> binIdsToPlot = new HashSet<string>(ChartBins.Select(x => x.Id));
+        foreach (var cswd in ChartSeriesWithData)
+        {
+            cswd.ProcessedDataSet.DataRecords = 
+                cswd.ProcessedDataSet.DataRecords
+                .Where(x => binIdsToPlot.Contains(x.BinId))
+                .ToList();
         }
 
         l.LogInformation("leaving");

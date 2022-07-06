@@ -133,22 +133,25 @@ namespace AcornSat.Visualiser.UiModel
                 }
             }
 
-            switch (Smoothing)
+            if (BinGranularity.IsLinear())
             {
-                case SeriesSmoothingOptions.MovingAverage:
-                    string unit = null;
+                switch (Smoothing)
+                {
+                    case SeriesSmoothingOptions.MovingAverage:
+                        string unit = null;
 
-                    switch (BinGranularity)
-                    {
-                        case BinGranularities.ByYear: unit = "year"; break;
-                        case BinGranularities.ByYearAndMonth: unit = "month"; break;
-                        default: throw new NotImplementedException($"BinGranularity {BinGranularity}");
-                    }
-                    segments.Add($"{SmoothingWindow} {unit} moving average");
-                    break;
-                case SeriesSmoothingOptions.Trendline:
-                    segments.Add("Trendline");
-                    break;
+                        switch (BinGranularity)
+                        {
+                            case BinGranularities.ByYear: unit = "year"; break;
+                            case BinGranularities.ByYearAndMonth: unit = "month"; break;
+                            default: throw new NotImplementedException($"BinGranularity {BinGranularity}");
+                        }
+                        segments.Add($"{SmoothingWindow} {unit} moving average");
+                        break;
+                    case SeriesSmoothingOptions.Trendline:
+                        segments.Add("Trendline");
+                        break;
+                }
             }
 
             if (Aggregation != SeriesAggregationOptions.Mean)

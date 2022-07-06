@@ -22,5 +22,46 @@ namespace ClimateExplorer.Core.DataPreparation
 
             throw new Exception("Only supported for parameter pairs of type YearBinIdentifier or YearAndMonthBinIdentifier");
         }
+
+        public static BinIdentifier[] GetMonthBins()
+        {
+            return 
+                Enumerable.Range(1, 12)
+                .Select(x => new MonthOnlyBinIdentifier((short)x))
+                .ToArray();
+        }
+
+        public static BinIdentifier[] GetSouthernHemisphereTemperateSeasonBins()
+        {
+            return
+                new BinIdentifier[]
+                {
+                    new SouthernHemisphereTemperateSeasonOnlyBinIdentifier(SouthernHemisphereTemperateSeasons.Summer),
+                    new SouthernHemisphereTemperateSeasonOnlyBinIdentifier(SouthernHemisphereTemperateSeasons.Autumn),
+                    new SouthernHemisphereTemperateSeasonOnlyBinIdentifier(SouthernHemisphereTemperateSeasons.Winter),
+                    new SouthernHemisphereTemperateSeasonOnlyBinIdentifier(SouthernHemisphereTemperateSeasons.Spring),
+                };
+        }
+
+        public static BinIdentifier[] GetTropicalSeasonBins()
+        {
+            return
+                new BinIdentifier[]
+                {
+                    new TropicalSeasonOnlyBinIdentifier(TropicalSeasons.Wet),
+                    new TropicalSeasonOnlyBinIdentifier(TropicalSeasons.Dry),
+                };
+        }
+
+        public static BinIdentifier[] GetBinsForModularGranularity(BinGranularities binGranularity)
+        {
+            switch (binGranularity)
+            {
+                case BinGranularities.ByMonthOnly: return GetMonthBins();
+                case BinGranularities.BySouthernHemisphereTemperateSeasonOnly: return GetSouthernHemisphereTemperateSeasonBins();
+                case BinGranularities.ByTropicalSeasonOnly: return GetTropicalSeasonBins();
+                default: throw new NotImplementedException($"binGranularity {binGranularity}");
+            }
+        }
     }
 }

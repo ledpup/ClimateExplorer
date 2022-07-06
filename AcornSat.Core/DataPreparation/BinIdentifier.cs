@@ -34,28 +34,42 @@ namespace ClimateExplorer.Core.DataPreparation
 
         public static BinIdentifier Parse(string id)
         {
-            if (id == null)
+            try
             {
-                throw new ArgumentNullException("id");
-            }
+                if (id == null)
+                {
+                    throw new ArgumentNullException("id");
+                }
 
-            if (id.StartsWith("y"))
+                if (id.StartsWith("y"))
+                {
+                    short year = (short)int.Parse(id.Substring(1, 4));
+
+                    if (id.Contains("m"))
+                    {
+                        short month = (short)int.Parse(id.Substring(6, 2));
+
+                        return new YearAndMonthBinIdentifier(year, month);
+                    }
+                    else
+                    {
+                        return new YearBinIdentifier(year);
+                    }
+                }
+
+                if (id.StartsWith("m"))
+                {
+                    short month = (short)int.Parse(id.Substring(1));
+
+                    return new MonthOnlyBinIdentifier(month);
+                }
+
+                throw new NotImplementedException("Bin identifier id " + id);
+            }
+            catch (Exception ex)
             {
-                short year = (short)int.Parse(id.Substring(1, 4));
-                
-                if (id.Contains("m"))
-                {
-                    short month = (short)int.Parse(id.Substring(6, 2));
-
-                    return new YearAndMonthBinIdentifier(year, month);
-                }
-                else
-                {
-                    return new YearBinIdentifier(year);
-                }
+                throw new Exception($"Failed to parse identifier {id}", ex);
             }
-
-            throw new NotImplementedException("Bin identifier id " + id);
         }
 
         public int CompareTo(BinIdentifier? other)
@@ -64,6 +78,12 @@ namespace ClimateExplorer.Core.DataPreparation
                 other is BinIdentifierForGaplessBin b2)
             {
                 return b1.CompareTo(b2);
+            }
+
+            if (this is MonthOnlyBinIdentifier m1 &&
+                other is MonthOnlyBinIdentifier m2)
+            {
+                return m1.CompareTo(m2);
             }
 
             throw new NotImplementedException();
@@ -141,7 +161,7 @@ namespace ClimateExplorer.Core.DataPreparation
         }
     }
 
-    public class MonthOnlyBinIdentifier : BinIdentifier
+    public class MonthOnlyBinIdentifier : BinIdentifier, IComparable<MonthOnlyBinIdentifier>
     {
         int _month;
 
@@ -154,6 +174,18 @@ namespace ClimateExplorer.Core.DataPreparation
         }
 
         public int Month { get { return _month; } }
+
+        public int CompareTo(MonthOnlyBinIdentifier? other)
+        {
+            if (other == null) throw new ArgumentNullException(nameof(other));
+
+            return this._month - other._month;
+        }
+
+        public override bool Equals(object other)
+        {
+            return this._month == (other as MonthOnlyBinIdentifier)?._month;
+        }
     }
 
     public class SouthernHemisphereTemperateSeasonOnlyBinIdentifier : BinIdentifier
