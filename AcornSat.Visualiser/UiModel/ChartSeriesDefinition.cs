@@ -79,92 +79,94 @@ namespace AcornSat.Visualiser.UiModel
             }
         }
 
-        public string FriendlyTitleShort
+        public string GetFriendlyTitleShort()
         {
-            get
+            List<string> segments = new List<string>();
+
+            string s = "";
+
+            if (Year != null) s += Year;
+
+            if (LocationName != null)
             {
-                List<string> segments = new List<string>();
-
-                string s = "";
-
-                if (Year != null) s += Year;
-
-                if (LocationName != null)
+                if (s.Length > 0)
                 {
-                    if (s.Length > 0)
-                    {
-                        s += " ";
-                    }
-
-                    s += LocationName;
+                    s += " ";
                 }
 
-                if (s.Length > 0) segments.Add(s);
-
-                if (MeasurementDefinition != null)
-                {
-                    if (MeasurementDefinition.DataCategory != null)
-                    {
-                        segments.Add(MeasurementDefinition.DataCategory.Value.ToString());
-                    }
-
-                    segments.Add(MapDataTypeToFriendlyName(MeasurementDefinition.DataType));
-                }
-                else
-                {
-                    segments.Add("[Missing MeasurementDefinition]");
-                }
-
-                return String.Join(" | ", segments);
+                s += LocationName;
             }
+
+            if (s.Length > 0) segments.Add(s);
+
+            if (MeasurementDefinition != null)
+            {
+                if (MeasurementDefinition.DataCategory != null)
+                {
+                    segments.Add(MeasurementDefinition.DataCategory.Value.ToString());
+                }
+
+                segments.Add(MapDataTypeToFriendlyName(MeasurementDefinition.DataType));
+            }
+            else
+            {
+                segments.Add("[Missing MeasurementDefinition]");
+            }
+
+            return String.Join(" | ", segments);
         }
 
-        public string FriendlyDescription
+        public string GetFriendlyDescription()
         {
-            get
+            List<string> segments = new List<string>();
+
+            if (MeasurementDefinition?.DataAdjustment != null)
             {
-                List<string> segments = new List<string>();
-
-                if (MeasurementDefinition?.DataAdjustment != null)
+                if (MeasurementDefinition.DataAdjustment != DataAdjustment.Adjusted ||
+                    DataSetDefinition.MeasurementDefinitions.Any(
+                        x =>
+                            x != MeasurementDefinition &&
+                            x.DataType == MeasurementDefinition.DataType &&
+                            x.DataAdjustment != MeasurementDefinition.DataAdjustment))
                 {
-                    if (MeasurementDefinition.DataAdjustment != DataAdjustment.Adjusted ||
-                        DataSetDefinition.MeasurementDefinitions.Any(
-                            x =>
-                                x != MeasurementDefinition &&
-                                x.DataType == MeasurementDefinition.DataType &&
-                                x.DataAdjustment != MeasurementDefinition.DataAdjustment))
-                    {
-                        segments.Add(MeasurementDefinition.DataAdjustment.ToString());
-                    }
+                    segments.Add(MeasurementDefinition.DataAdjustment.ToString());
                 }
-
-                switch (Smoothing)
-                {
-                    case SeriesSmoothingOptions.MovingAverage:
-                        segments.Add(SmoothingWindow + " year moving average");
-                        break;
-                    case SeriesSmoothingOptions.Trendline:
-                        segments.Add("Trendline");
-                        break;
-                }
-
-                if (Aggregation != SeriesAggregationOptions.Mean)
-                {
-                    segments.Add("Aggregation: " + Aggregation);
-                }
-
-                if (Value != SeriesValueOptions.Value)
-                {
-                    segments.Add("Value: " + Value);
-                }
-
-                if (MeasurementDefinition != null)
-                {
-                    segments.Add(Enums.UnitOfMeasureLabelShort(MeasurementDefinition.UnitOfMeasure));
-                }
-
-                return String.Join(" | ", segments);
             }
+
+            switch (Smoothing)
+            {
+                case SeriesSmoothingOptions.MovingAverage:
+                    string unit = null;
+
+                    switch (BinGranularity)
+                    {
+                        case BinGranularities.ByYear: unit = "year"; break;
+                        case BinGranularities.ByYearAndMonth: unit = "month"; break;
+                        default: throw new NotImplementedException($"BinGranularity {BinGranularity}");
+                    }
+                    segments.Add($"{SmoothingWindow} {unit} moving average");
+                    break;
+                case SeriesSmoothingOptions.Trendline:
+                    segments.Add("Trendline");
+                    break;
+            }
+
+            if (Aggregation != SeriesAggregationOptions.Mean)
+            {
+                segments.Add("Aggregation: " + Aggregation);
+            }
+
+            if (Value != SeriesValueOptions.Value)
+            {
+                segments.Add("Value: " + Value);
+            }
+
+            if (MeasurementDefinition != null)
+            {
+                segments.Add(Enums.UnitOfMeasureLabelShort(MeasurementDefinition.UnitOfMeasure));
+            }
+
+            return String.Join(" | ", segments);
         }
 
         private string MapDataTypeToFriendlyName(DataType dataType)
