@@ -11,13 +11,16 @@ public interface IDataService
     Task<IEnumerable<Location>> GetLocations(string? dataSetName = null, bool includeNearbyLocations = false, bool includeWarmingMetrics = false);
     Task<DataSet> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f);
     Task<DataSet> PostDataSet(
-        BinGranularities binGranularity, 
-        BinAggregationFunctions aggregationFunction, 
-        SeriesValueOptions seriesValueOption, 
-        Guid dataSetDefinitionId, 
-        DataType dataType, 
-        DataAdjustment? dataAdjustment, 
+        BinGranularities binGranularity,
+        BinAggregationFunctions aggregationFunction,
+        SeriesValueOptions seriesValueOption,
+        Guid dataSetDefinitionId,
+        DataType dataType,
+        DataAdjustment? dataAdjustment,
         Guid? locationId,
+        float requiredBinDataProportion,
+        float requiredBucketDataProportion,
+        float requiredCupDataProportion,
         int cupSize);
     Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .7f, float locationGroupingThreshold = .7f);
 }

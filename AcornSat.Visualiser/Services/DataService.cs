@@ -71,6 +71,9 @@ public class DataService : IDataService
         DataType dataType, 
         DataAdjustment? dataAdjustment, 
         Guid? locationId,
+        float requiredBinDataProportion,
+        float requiredBucketDataProportion,
+        float requiredCupDataProportion,
         int cupSize)
     {
         var response = 
@@ -81,9 +84,9 @@ public class DataService : IDataService
                     BinAggregationFunction = aggregationFunction,
                     BinningRule = binGranularity,
                     CupSize = cupSize,
-                    RequiredBinDataProportion = 0.7f,
-                    RequiredBucketDataProportion = 0.7f,
-                    RequiredCupDataProportion = 0.7f,
+                    RequiredBinDataProportion = requiredBinDataProportion,
+                    RequiredBucketDataProportion = requiredBucketDataProportion,
+                    RequiredCupDataProportion = requiredCupDataProportion,
                     SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                     SeriesSpecifications =
                         new SeriesSpecification[]
