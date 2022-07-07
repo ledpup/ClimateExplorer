@@ -45,10 +45,20 @@
             {
                 Aggregation = csd.Aggregation,
                 BinGranularity = csd.BinGranularity,
-                DataSetDefinition = csd.DataSetDefinition,
-                LocationId = csd.LocationId,
-                LocationName = csd.LocationName,
-                MeasurementDefinition = csd.MeasurementDefinition,
+                SeriesDerivationType = csd.SeriesDerivationType,
+                SourceSeriesSpecifications =
+                    csd.SourceSeriesSpecifications
+                    .Select(
+                        x =>
+                        new ChartSeriesDefinition.SourceSeriesSpecification
+                        {
+                            DataSetDefinition = x.DataSetDefinition,
+                            LocationId = x.LocationId,
+                            LocationName = x.LocationName,
+                            MeasurementDefinition = x.MeasurementDefinition,
+                        }
+                    )
+                    .ToArray(),
                 Smoothing = csd.Smoothing,
                 SmoothingWindow = csd.SmoothingWindow,
                 Value = csd.Value,

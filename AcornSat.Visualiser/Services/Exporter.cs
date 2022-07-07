@@ -19,7 +19,7 @@ public class Exporter : IExporter
 
         data.Add("Exported from," + sourceUri);
 
-        var locationIds = chartSeriesWithData.Select(x => x.ChartSeries.LocationId).Where(x => x != null).Distinct().ToArray();
+        var locationIds = chartSeriesWithData.SelectMany(x => x.ChartSeries.SourceSeriesSpecifications).Select(x => x.LocationId).Where(x => x != null).Distinct().ToArray();
 
         var relevantLocations = locationIds.Select(x => locations.Single(y => y.Id == x)).ToArray();
 
@@ -56,9 +56,31 @@ public class Exporter : IExporter
     {
         var s = "";
 
-        if (relevantLocations.Length > 1 && csd.LocationName != null) s += csd.LocationName + " ";
+        bool includeLocationInColumnHeader = relevantLocations.Length > 1;
 
-        s += $"{csd.MeasurementDefinition.DataType} {csd.MeasurementDefinition.DataAdjustment}";
+        switch (csd.SeriesDerivationType)
+        {
+            case SeriesDerivationTypes.ReturnSingleSeries:
+                return s + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications.Single());
+
+            case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
+                return s + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications.First()) + " minus " + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications.Last());
+
+            default:
+                throw new NotImplementedException($"SeriesDerivationType {csd.SeriesDerivationType}");
+        }
+    }
+
+    string BuildColumnHeader(bool includeLocationInColumnHeader, ChartSeriesDefinition.SourceSeriesSpecification sss)
+    {
+        string s = "";
+
+        if (includeLocationInColumnHeader)
+        {
+            s += sss.LocationName + " ";
+        }
+
+        s += $"{sss.MeasurementDefinition.DataType} {sss.MeasurementDefinition.DataAdjustment}";
 
         return s;
     }

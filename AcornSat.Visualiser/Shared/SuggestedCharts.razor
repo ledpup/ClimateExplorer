@@ -115,12 +115,21 @@
                 {
                     new ChartSeriesDefinition()
                     {
-                        LocationId = SelectedLocation.Id,
-                        LocationName = SelectedLocation.Name,
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications =
+                            new ChartSeriesDefinition.SourceSeriesSpecification[]
+                            {
+                                new ChartSeriesDefinition.SourceSeriesSpecification
+                                {
+                                    LocationId = SelectedLocation.Id,
+                                    LocationName = SelectedLocation.Name,
+                                    DataSetDefinition = dsdLocation,
+                                    MeasurementDefinition = mdTempMax,
+                               }
+                            },
+
                         Aggregation = SeriesAggregationOptions.Mean,
                         BinGranularity = BinGranularities.ByYear,
-                        DataSetDefinition = dsdLocation,
-                        MeasurementDefinition = mdTempMax,
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
@@ -128,12 +137,20 @@
                     },
                     new ChartSeriesDefinition()
                     {
-                        LocationId = SelectedLocation.Id,
-                        LocationName = SelectedLocation.Name,
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications =
+                            new ChartSeriesDefinition.SourceSeriesSpecification[]
+                            {
+                                new ChartSeriesDefinition.SourceSeriesSpecification
+                                {
+                                    LocationId = SelectedLocation.Id,
+                                    LocationName = SelectedLocation.Name,
+                                    DataSetDefinition = dsdLocation,
+                                    MeasurementDefinition = mdRainfall,
+                                }
+                            },
                         Aggregation = SeriesAggregationOptions.Sum,
                         BinGranularity = BinGranularities.ByYear,
-                        DataSetDefinition = dsdLocation,
-                        MeasurementDefinition = mdRainfall,
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
@@ -153,12 +170,20 @@
                     {
                         new ChartSeriesDefinition()
                         {
-                            LocationId = SelectedLocation.Id,
-                            LocationName = SelectedLocation.Name,
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SourceSeriesSpecifications =
+                                new ChartSeriesDefinition.SourceSeriesSpecification[]
+                                {
+                                    new ChartSeriesDefinition.SourceSeriesSpecification
+                                    {
+                                        LocationId = SelectedLocation.Id,
+                                        LocationName = SelectedLocation.Name,
+                                        DataSetDefinition = dsdLocation,
+                                        MeasurementDefinition = mdTempMax,
+                                    }
+                                },
                             Aggregation = SeriesAggregationOptions.Mean,
                             BinGranularity = BinGranularities.ByYear,
-                            DataSetDefinition = dsdLocation,
-                            MeasurementDefinition = mdTempMax,
                             Smoothing = SeriesSmoothingOptions.None,
                             SmoothingWindow = 5,
                             Value = SeriesValueOptions.Value,
@@ -177,12 +202,20 @@
                                 {
                                     new ChartSeriesDefinition()
                                     {
-                                        LocationId = SelectedLocation.Id,
-                                        LocationName = SelectedLocation.Name,
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications =
+                                            new ChartSeriesDefinition.SourceSeriesSpecification[]
+                                            {
+                                                new ChartSeriesDefinition.SourceSeriesSpecification
+                                                {
+                                                    LocationId = SelectedLocation.Id,
+                                                    LocationName = SelectedLocation.Name,
+                                                    DataSetDefinition = dsdLocation,
+                                                    MeasurementDefinition = mdTempMax,
+                                                }
+                                            },
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
-                                        DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = mdTempMax,
                                         ShowTrendline = true,
                                         Smoothing = SeriesSmoothingOptions.None,
                                         SmoothingWindow = 5,
@@ -200,12 +233,20 @@
                                 {
                                     new ChartSeriesDefinition()
                                     {
-                                        LocationId = SelectedLocation.Id,
-                                        LocationName = SelectedLocation.Name,
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications =
+                                            new ChartSeriesDefinition.SourceSeriesSpecification[]
+                                            {
+                                                new ChartSeriesDefinition.SourceSeriesSpecification
+                                                {
+                                                    LocationId = SelectedLocation.Id,
+                                                    LocationName = SelectedLocation.Name,
+                                                    DataSetDefinition = dsdLocation,
+                                                    MeasurementDefinition = mdTempMax,
+                                                }
+                                            },
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
-                                        DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = mdTempMax,
                                         Smoothing = SeriesSmoothingOptions.None,
                                         SmoothingWindow = 5,
                                         Value = SeriesValueOptions.Value,
@@ -213,12 +254,20 @@
                                     },
                                     new ChartSeriesDefinition()
                                     {
-                                        LocationId = SelectedLocation.Id,
-                                        LocationName = SelectedLocation.Name,
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                            SourceSeriesSpecifications =
+                                                new ChartSeriesDefinition.SourceSeriesSpecification[]
+                                                {
+                                                    new ChartSeriesDefinition.SourceSeriesSpecification
+                                                    {
+                                                        LocationId = SelectedLocation.Id,
+                                                        LocationName = SelectedLocation.Name,
+                                                        DataSetDefinition = dsdLocation,
+                                                        MeasurementDefinition = mdTempMax,
+                                                    }
+                                                },
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
-                                        DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = mdTempMax,
                                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                                         SmoothingWindow = 5,
                                         Value = SeriesValueOptions.Value,
@@ -235,12 +284,20 @@
                                 {
                                     new ChartSeriesDefinition()
                                     {
-                                        LocationId = SelectedLocation.Id,
-                                        LocationName = SelectedLocation.Name,
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications =
+                                            new ChartSeriesDefinition.SourceSeriesSpecification[]
+                                            {
+                                                new ChartSeriesDefinition.SourceSeriesSpecification
+                                                {
+                                                    LocationId = SelectedLocation.Id,
+                                                    LocationName = SelectedLocation.Name,
+                                                    DataSetDefinition = dsdLocation,
+                                                    MeasurementDefinition = mdTempMax,
+                                                }
+                                            },
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
-                                        DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = mdTempMax,
                                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                                         SmoothingWindow = 5,
                                         Value = SeriesValueOptions.Value,
@@ -257,12 +314,20 @@
                                 {
                                     new ChartSeriesDefinition()
                                     {
-                                        LocationId = SelectedLocation.Id,
-                                        LocationName = SelectedLocation.Name,
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                            SourceSeriesSpecifications =
+                                                new ChartSeriesDefinition.SourceSeriesSpecification[]
+                                                {
+                                                    new ChartSeriesDefinition.SourceSeriesSpecification
+                                                    {
+                                                        LocationId = SelectedLocation.Id,
+                                                        LocationName = SelectedLocation.Name,
+                                                        DataSetDefinition = dsdLocation,
+                                                        MeasurementDefinition = mdTempMaxUnajusted,
+                                                    }
+                                                },
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
-                                        DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = mdTempMaxUnajusted,
                                         ShowTrendline = false,
                                         Smoothing = SeriesSmoothingOptions.None,
                                         SmoothingWindow = 5,
@@ -271,12 +336,20 @@
                                     },
                                     new ChartSeriesDefinition()
                                     {
-                                        LocationId = SelectedLocation.Id,
-                                        LocationName = SelectedLocation.Name,
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications =
+                                            new ChartSeriesDefinition.SourceSeriesSpecification[]
+                                            {
+                                                new ChartSeriesDefinition.SourceSeriesSpecification
+                                                {
+                                                    LocationId = SelectedLocation.Id,
+                                                    LocationName = SelectedLocation.Name,
+                                                    DataSetDefinition = dsdLocation,
+                                                    MeasurementDefinition = mdSolarRadiation,
+                                                }
+                                            },
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
-                                        DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = mdSolarRadiation,
                                         ShowTrendline = false,
                                         Smoothing = SeriesSmoothingOptions.None,
                                         SmoothingWindow = 5,
@@ -299,12 +372,20 @@
                     {
                         new ChartSeriesDefinition()
                         {
-                            LocationId = SelectedLocation.Id,
-                            LocationName = SelectedLocation.Name,
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SourceSeriesSpecifications =
+                                new ChartSeriesDefinition.SourceSeriesSpecification[]
+                                {
+                                    new ChartSeriesDefinition.SourceSeriesSpecification
+                                    {
+                                        LocationId = SelectedLocation.Id,
+                                        LocationName = SelectedLocation.Name,
+                                        DataSetDefinition = dsdLocation,
+                                        MeasurementDefinition = mdTempMax,
+                                    }
+                                },
                             Aggregation = SeriesAggregationOptions.Mean,
                             BinGranularity = BinGranularities.ByYear,
-                            DataSetDefinition = dsdLocation,
-                            MeasurementDefinition = mdTempMax,
                             Smoothing = SeriesSmoothingOptions.None,
                             SmoothingWindow = 5,
                             Value = SeriesValueOptions.Anomaly,
@@ -325,12 +406,20 @@
                     {
                         new ChartSeriesDefinition()
                         {
-                            LocationId = SelectedLocation.Id,
-                            LocationName = SelectedLocation.Name,
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SourceSeriesSpecifications =
+                                new ChartSeriesDefinition.SourceSeriesSpecification[]
+                                {
+                                    new ChartSeriesDefinition.SourceSeriesSpecification
+                                    {
+                                        LocationId = SelectedLocation.Id,
+                                        LocationName = SelectedLocation.Name,
+                                        DataSetDefinition = dsdLocation,
+                                        MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted),
+                                    }
+                                },
                             Aggregation = SeriesAggregationOptions.Mean,
                             BinGranularity = BinGranularities.ByYear,
-                            DataSetDefinition = dsdLocation,
-                            MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted),
                             ShowTrendline = false,
                             Smoothing = SeriesSmoothingOptions.None,
                             SmoothingWindow = 5,
@@ -339,12 +428,20 @@
                         },
                         new ChartSeriesDefinition()
                         {
-                            LocationId = SelectedLocation.Id,
-                            LocationName = SelectedLocation.Name,
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SourceSeriesSpecifications =
+                                new ChartSeriesDefinition.SourceSeriesSpecification[]
+                                {
+                                    new ChartSeriesDefinition.SourceSeriesSpecification
+                                    {
+                                        LocationId = SelectedLocation.Id,
+                                        LocationName = SelectedLocation.Name,
+                                        DataSetDefinition = dsdLocation,
+                                        MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Unadjusted),
+                                    }
+                                },
                             Aggregation = SeriesAggregationOptions.Mean,
                             BinGranularity = BinGranularities.ByYear,
-                            DataSetDefinition = dsdLocation,
-                            MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Unadjusted),
                             ShowTrendline = false,
                             Smoothing = SeriesSmoothingOptions.None,
                             SmoothingWindow = 5,
@@ -364,12 +461,20 @@
                                 {
                                     new ChartSeriesDefinition()
                                     {
-                                        LocationId = SelectedLocation.Id,
-                                        LocationName = SelectedLocation.Name,
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications =
+                                            new ChartSeriesDefinition.SourceSeriesSpecification[]
+                                            {
+                                                new ChartSeriesDefinition.SourceSeriesSpecification
+                                                {
+                                                    LocationId = SelectedLocation.Id,
+                                                    LocationName = SelectedLocation.Name,
+                                                    DataSetDefinition = dsdLocation,
+                                                    MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted),
+                                                }
+                                            },
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
-                                        DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted),
                                         ShowTrendline = true,
                                         Smoothing = SeriesSmoothingOptions.None,
                                         SmoothingWindow = 5,
@@ -378,12 +483,20 @@
                                     },
                                     new ChartSeriesDefinition()
                                     {
-                                        LocationId = SelectedLocation.Id,
-                                        LocationName = SelectedLocation.Name,
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications =
+                                            new ChartSeriesDefinition.SourceSeriesSpecification[]
+                                            {
+                                                new ChartSeriesDefinition.SourceSeriesSpecification
+                                                {
+                                                    LocationId = SelectedLocation.Id,
+                                                    LocationName = SelectedLocation.Name,
+                                                    DataSetDefinition = dsdLocation,
+                                                    MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Unadjusted),
+                                                }
+                                            },
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
-                                        DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Unadjusted),
                                         ShowTrendline = true,
                                         Smoothing = SeriesSmoothingOptions.None,
                                         SmoothingWindow = 5,
@@ -401,12 +514,20 @@
                                 {
                                     new ChartSeriesDefinition()
                                     {
-                                        LocationId = SelectedLocation.Id,
-                                        LocationName = SelectedLocation.Name,
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications =
+                                            new ChartSeriesDefinition.SourceSeriesSpecification[]
+                                            {
+                                                new ChartSeriesDefinition.SourceSeriesSpecification
+                                                {
+                                                    LocationId = SelectedLocation.Id,
+                                                    LocationName = SelectedLocation.Name,
+                                                    DataSetDefinition = dsdLocation,
+                                                    MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted),
+                                                }
+                                            },
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
-                                        DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted),
                                         ShowTrendline = false,
                                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                                         SmoothingWindow = 10,
@@ -415,12 +536,20 @@
                                     },
                                     new ChartSeriesDefinition()
                                     {
-                                        LocationId = SelectedLocation.Id,
-                                        LocationName = SelectedLocation.Name,
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications =
+                                            new ChartSeriesDefinition.SourceSeriesSpecification[]
+                                            {
+                                                new ChartSeriesDefinition.SourceSeriesSpecification
+                                                {
+                                                    LocationId = SelectedLocation.Id,
+                                                    LocationName = SelectedLocation.Name,
+                                                    DataSetDefinition = dsdLocation,
+                                                    MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Unadjusted),
+                                                }
+                                            },
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
-                                        DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Unadjusted),
                                         ShowTrendline = false,
                                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                                         SmoothingWindow = 10,
@@ -442,7 +571,7 @@
 
             foreach (var csd in p.ChartSeriesList.ToArray())
             {
-                if (csd.MeasurementDefinition == null)
+                if (csd.SourceSeriesSpecifications.Any(x => x.MeasurementDefinition == null))
                 {
                     p.ChartSeriesList.Remove(csd);
 
@@ -458,7 +587,7 @@
 
                     foreach (var csd in v.ChartSeriesList.ToArray())
                     {
-                        if (csd.MeasurementDefinition == null)
+                        if (csd.SourceSeriesSpecifications.Any(x => x.MeasurementDefinition == null))
                         {
                             v.ChartSeriesList.Remove(csd);
 

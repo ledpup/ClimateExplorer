@@ -13,13 +13,20 @@ namespace AcornSat.Visualiser.UiModel
         /// </summary>
         public Guid Id { get; set; } = Guid.NewGuid();
 
+
+        public class SourceSeriesSpecification
+        {
+            public DataSetDefinitionViewModel DataSetDefinition { get; set; }
+            public MeasurementDefinitionViewModel MeasurementDefinition { get; set; }
+            public Guid? LocationId { get; set; }
+            public string? LocationName { get; set; }
+        }
+
         // Source data fields
-        public DataSetDefinitionViewModel DataSetDefinition { get; set; }
-        public MeasurementDefinitionViewModel MeasurementDefinition { get; set; }
+        public SourceSeriesSpecification[] SourceSeriesSpecifications { get; set; }
+        public SeriesDerivationTypes SeriesDerivationType { get; set; }
         public BinGranularities BinGranularity { get; set; }
         public short? Year { get; set; }
-        public Guid? LocationId { get; set; }
-        public string? LocationName { get; set; }
 
         // Data presentation fields
         public SeriesSmoothingOptions Smoothing { get; set; }
@@ -45,7 +52,7 @@ namespace AcornSat.Visualiser.UiModel
 
         public override string ToString()
         {
-            return $"CSD: {DataSetDefinition.Name} | {MeasurementDefinition?.DataType} {MeasurementDefinition?.DataAdjustment} | {BinGranularity} | {LocationName} | {Smoothing} | {Aggregation} | {Value} | {DisplayStyle}";
+            return $"CSD: {BinGranularity} | {Smoothing} | {Aggregation} | {Value} | {DisplayStyle}";
         }
 
         public string FriendlyTitle
@@ -58,36 +65,45 @@ namespace AcornSat.Visualiser.UiModel
 
                 if (Year != null) s += Year;
 
-                if (LocationName != null)
+                if (SourceSeriesSpecifications.Length == 1)
                 {
-                    if (s.Length > 0)
+                    var sss = SourceSeriesSpecifications.Single();
+
+                    if (sss.LocationName != null)
                     {
-                        s += " ";
+                        if (s.Length > 0)
+                        {
+                            s += " ";
+                        }
+
+                        s += sss.LocationName;
                     }
 
-                    s += LocationName;
-                }
+                    if (s.Length > 0) segments.Add(s);
 
-                if (s.Length > 0) segments.Add(s);
-
-                if (MeasurementDefinition.DataCategory != null)
-                {
-                    segments.Add(MeasurementDefinition.DataCategory.Value.ToString());
-                }
-
-                segments.Add(MapDataTypeToFriendlyName(MeasurementDefinition.DataType));
-
-                if (MeasurementDefinition.DataAdjustment != null)
-                {
-                    if (MeasurementDefinition.DataAdjustment != DataAdjustment.Adjusted ||
-                        DataSetDefinition.MeasurementDefinitions.Any(
-                            x =>
-                                x != MeasurementDefinition &&
-                                x.DataType == MeasurementDefinition.DataType &&
-                                x.DataAdjustment != MeasurementDefinition.DataAdjustment))
+                    if (sss.MeasurementDefinition.DataCategory != null)
                     {
-                        segments.Add(MeasurementDefinition.DataAdjustment.ToString());
+                        segments.Add(sss.MeasurementDefinition.DataCategory.Value.ToString());
                     }
+
+                    segments.Add(MapDataTypeToFriendlyName(sss.MeasurementDefinition.DataType));
+
+                    if (sss.MeasurementDefinition.DataAdjustment != null)
+                    {
+                        if (sss.MeasurementDefinition.DataAdjustment != DataAdjustment.Adjusted ||
+                            sss.DataSetDefinition.MeasurementDefinitions.Any(
+                                x =>
+                                    x != sss.MeasurementDefinition &&
+                                    x.DataType == sss.MeasurementDefinition.DataType &&
+                                    x.DataAdjustment != sss.MeasurementDefinition.DataAdjustment))
+                        {
+                            segments.Add(sss.MeasurementDefinition.DataAdjustment.ToString());
+                        }
+                    }
+                }
+                else
+                {
+                    segments.Add("Derived series");
                 }
 
                 switch (Smoothing)
@@ -122,30 +138,39 @@ namespace AcornSat.Visualiser.UiModel
 
             if (Year != null) s += Year;
 
-            if (LocationName != null)
+            if (SourceSeriesSpecifications.Length == 1)
             {
-                if (s.Length > 0)
+                var sss = SourceSeriesSpecifications.Single();
+
+                if (sss.LocationName != null)
                 {
-                    s += " ";
+                    if (s.Length > 0)
+                    {
+                        s += " ";
+                    }
+
+                    s += sss.LocationName;
                 }
 
-                s += LocationName;
-            }
+                if (s.Length > 0) segments.Add(s);
 
-            if (s.Length > 0) segments.Add(s);
-
-            if (MeasurementDefinition != null)
-            {
-                if (MeasurementDefinition.DataCategory != null)
+                if (sss.MeasurementDefinition != null)
                 {
-                    segments.Add(MeasurementDefinition.DataCategory.Value.ToString());
-                }
+                    if (sss.MeasurementDefinition.DataCategory != null)
+                    {
+                        segments.Add(sss.MeasurementDefinition.DataCategory.Value.ToString());
+                    }
 
-                segments.Add(MapDataTypeToFriendlyName(MeasurementDefinition.DataType));
+                    segments.Add(MapDataTypeToFriendlyName(sss.MeasurementDefinition.DataType));
+                }
+                else
+                {
+                    segments.Add("[Missing MeasurementDefinition]");
+                }
             }
             else
             {
-                segments.Add("[Missing MeasurementDefinition]");
+                segments.Add("Derived series");
             }
 
             return String.Join(" | ", segments);
@@ -155,17 +180,33 @@ namespace AcornSat.Visualiser.UiModel
         {
             List<string> segments = new List<string>();
 
-            if (MeasurementDefinition?.DataAdjustment != null)
+            string uomLabel = null;
+
+            if (SourceSeriesSpecifications.Length == 1)
             {
-                if (MeasurementDefinition.DataAdjustment != DataAdjustment.Adjusted ||
-                    DataSetDefinition.MeasurementDefinitions.Any(
-                        x =>
-                            x != MeasurementDefinition &&
-                            x.DataType == MeasurementDefinition.DataType &&
-                            x.DataAdjustment != MeasurementDefinition.DataAdjustment))
+                var sss = SourceSeriesSpecifications.Single();
+
+                if (sss.MeasurementDefinition?.DataAdjustment != null)
                 {
-                    segments.Add(MeasurementDefinition.DataAdjustment.ToString());
+                    if (sss.MeasurementDefinition.DataAdjustment != DataAdjustment.Adjusted ||
+                        sss.DataSetDefinition.MeasurementDefinitions.Any(
+                            x =>
+                                x != sss.MeasurementDefinition &&
+                                x.DataType == sss.MeasurementDefinition.DataType &&
+                                x.DataAdjustment != sss.MeasurementDefinition.DataAdjustment))
+                    {
+                        segments.Add(sss.MeasurementDefinition.DataAdjustment.ToString());
+                    }
                 }
+
+                if (sss.MeasurementDefinition != null)
+                {
+                    uomLabel = Enums.UnitOfMeasureLabelShort(sss.MeasurementDefinition.UnitOfMeasure);
+                }
+            }
+            else
+            {
+                segments.Add("Derived series");
             }
 
             if (BinGranularity.IsLinear())
@@ -199,9 +240,9 @@ namespace AcornSat.Visualiser.UiModel
                 segments.Add("Value: " + Value);
             }
 
-            if (MeasurementDefinition != null)
+            if (uomLabel != null)
             {
-                segments.Add(Enums.UnitOfMeasureLabelShort(MeasurementDefinition.UnitOfMeasure));
+                segments.Add(uomLabel);
             }
 
             return String.Join(" | ", segments);
@@ -227,33 +268,53 @@ namespace AcornSat.Visualiser.UiModel
 
                 if (x.Aggregation != y.Aggregation) return false;
                 if (x.BinGranularity != y.BinGranularity) return false;
-                if (x.DataSetDefinition != y.DataSetDefinition) return false;
                 if (x.DisplayStyle != y.DisplayStyle) return false;
-                if (x.LocationId != y.LocationId) return false;
-                if (x.LocationName != y.LocationName) return false;
-                if (x.MeasurementDefinition != y.MeasurementDefinition) return false;
                 if (x.ShowTrendline != y.ShowTrendline) return false;
                 if (x.Smoothing != y.Smoothing) return false;
                 if (x.SmoothingWindow != y.SmoothingWindow) return false;
                 if (x.Value != y.Value) return false;
+
+                if (x.SourceSeriesSpecifications.Length != y.SourceSeriesSpecifications.Length) return false;
+
+                for (int i = 0; i < x.SourceSeriesSpecifications.Length; i++)
+                {
+                    var sssX = x.SourceSeriesSpecifications[i];
+                    var sssY = y.SourceSeriesSpecifications[i];
+
+                    if (sssX.DataSetDefinition != sssY.DataSetDefinition) return false;
+                    if (sssX.LocationId != sssY.LocationId) return false;
+                    if (sssX.LocationName != sssY.LocationName) return false;
+                    if (sssX.MeasurementDefinition != sssY.MeasurementDefinition) return false;
+
+                }
 
                 return true;
             }
 
             public int GetHashCode([DisallowNull] ChartSeriesDefinition obj)
             {
-                return
+                var hashCode =
                     obj.Aggregation.GetHashCode() ^
                     obj.BinGranularity.GetHashCode() ^
-                    obj.DataSetDefinition.Id.GetHashCode() ^
                     obj.DisplayStyle.GetHashCode() ^
-                    obj.LocationId.GetHashCode() ^
-                    obj.LocationName.GetHashCode() ^
-                    obj.MeasurementDefinition.GetHashCode() ^
                     obj.ShowTrendline.GetHashCode() ^
                     obj.Smoothing.GetHashCode() ^
                     obj.SmoothingWindow.GetHashCode() ^
                     obj.Value.GetHashCode();
+
+                for (int i = 0; i < obj.SourceSeriesSpecifications.Length; i++)
+                {
+                    var sss = obj.SourceSeriesSpecifications[i];
+
+                    hashCode =
+                        hashCode ^
+                        sss.DataSetDefinition.Id.GetHashCode() ^
+                        sss.LocationId.GetHashCode() ^
+                        sss.MeasurementDefinition.DataType.GetHashCode() ^
+                        sss.MeasurementDefinition.DataAdjustment.GetHashCode();
+                }
+
+                return hashCode;
             }
         }
 
@@ -266,38 +327,58 @@ namespace AcornSat.Visualiser.UiModel
 
                 if (x.Aggregation != y.Aggregation) return false;
                 if (x.BinGranularity != y.BinGranularity) return false;
-                if (x.DataSetDefinition != y.DataSetDefinition) return false;
                 if (x.DisplayStyle != y.DisplayStyle) return false;
                 if (x.IsLocked != y.IsLocked) return false;
-                if (x.LocationId != y.LocationId) return false;
-                if (x.LocationName != y.LocationName) return false;
-                if (x.MeasurementDefinition != y.MeasurementDefinition) return false;
                 if (x.ShowTrendline != y.ShowTrendline) return false;
                 if (x.Smoothing != y.Smoothing) return false;
                 if (x.SmoothingWindow != y.SmoothingWindow) return false;
                 if (x.Value != y.Value) return false;
                 if (x.Year != y.Year) return false;
 
+                if (x.SourceSeriesSpecifications.Length != y.SourceSeriesSpecifications.Length) return false;
+
+                for (int i = 0; i < x.SourceSeriesSpecifications.Length; i++)
+                {
+                    var sssX = x.SourceSeriesSpecifications[i];
+                    var sssY = y.SourceSeriesSpecifications[i];
+
+                    if (sssX.DataSetDefinition != sssY.DataSetDefinition) return false;
+                    if (sssX.LocationId != sssY.LocationId) return false;
+                    if (sssX.LocationName != sssY.LocationName) return false;
+                    if (sssX.MeasurementDefinition != sssY.MeasurementDefinition) return false;
+                }
+
                 return true;
             }
 
             public int GetHashCode([DisallowNull] ChartSeriesDefinition obj)
             {
-                return
+                var hashCode =
                     obj.Aggregation.GetHashCode() ^
                     obj.BinGranularity.GetHashCode() ^
-                    obj.DataSetDefinition.Id.GetHashCode() ^
                     obj.DisplayStyle.GetHashCode() ^
                     obj.IsLocked.GetHashCode() ^
-                    obj.LocationId?.GetHashCode() ?? 0 ^
-                    obj.LocationName?.GetHashCode() ?? 0 ^
-                    obj.MeasurementDefinition.GetHashCode() ^
                     obj.ShowTrendline.GetHashCode() ^
                     obj.Smoothing.GetHashCode() ^
                     obj.SmoothingWindow.GetHashCode() ^
                     obj.Value.GetHashCode() ^
                     obj.Year.GetHashCode();
+
+                for (int i = 0; i < obj.SourceSeriesSpecifications.Length; i++)
+                {
+                    var sss = obj.SourceSeriesSpecifications[i];
+
+                    hashCode =
+                        hashCode ^
+                        sss.DataSetDefinition.Id.GetHashCode() ^
+                        sss.LocationId.GetHashCode() ^
+                        sss.MeasurementDefinition.DataType.GetHashCode() ^
+                        sss.MeasurementDefinition.DataAdjustment.GetHashCode();
+                }
+
+                return hashCode;
             }
+
         }
     }
 }
