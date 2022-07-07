@@ -771,6 +771,25 @@
                 ? ContainerAggregationFunctions.Mean
                 : cupAggregationFunction;
 
+            SeriesSpecification[] seriesSpecifications =
+                {
+                    new SeriesSpecification
+                    {
+                        DataSetDefinitionId = csd.DataSetDefinition.Id,
+                        DataType = csd.MeasurementDefinition.DataType,
+                        DataAdjustment = csd.MeasurementDefinition.DataAdjustment,
+                        LocationId = csd.LocationId
+                    },
+                    //new SeriesSpecification
+                    //{
+                    //    DataSetDefinitionId = csd.DataSetDefinition.Id,
+                    //    DataType = csd.MeasurementDefinition.DataType,
+                    //    DataAdjustment = csd.MeasurementDefinition.DataAdjustment,
+                    //    // Launceston
+                    //    LocationId = Guid.Parse("b483cb66-25cc-45ee-b1c8-8db405f0415a")
+                    //}
+                };
+
             DataSet dataSet = 
                 await DataService.PostDataSet(
                     SelectedBinGranularity,
@@ -778,10 +797,8 @@
                     bucketAggregationFunction,
                     cupAggregationFunction,
                     csd.Value,
-                    csd.DataSetDefinition.Id,
-                    csd.MeasurementDefinition.DataType,
-                    csd.MeasurementDefinition.DataAdjustment,
-                    csd.LocationId,
+                    seriesSpecifications,
+                    SeriesDerivationTypes.ReturnSingleSeries, //SeriesDerivationTypes.DifferenceBetweenTwoSeries,
                     SelectedDayGroupThreshold,
                     SelectedDayGroupThreshold,
                     SelectedDayGroupThreshold,

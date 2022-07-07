@@ -69,10 +69,8 @@ public class DataService : IDataService
         ContainerAggregationFunctions bucketAggregationFunction,
         ContainerAggregationFunctions cupAggregationFunction,
         SeriesValueOptions seriesValueOption,
-        Guid dataSetDefinitionId, 
-        DataType dataType, 
-        DataAdjustment? dataAdjustment, 
-        Guid? locationId,
+        SeriesSpecification[] seriesSpecifications,
+        SeriesDerivationTypes seriesDerivationType,
         float requiredBinDataProportion,
         float requiredBucketDataProportion,
         float requiredCupDataProportion,
@@ -91,18 +89,8 @@ public class DataService : IDataService
                     RequiredBinDataProportion = requiredBinDataProportion,
                     RequiredBucketDataProportion = requiredBucketDataProportion,
                     RequiredCupDataProportion = requiredCupDataProportion,
-                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                    SeriesSpecifications =
-                        new SeriesSpecification[]
-                        {
-                            new SeriesSpecification
-                            {
-                                DataSetDefinitionId = dataSetDefinitionId,
-                                LocationId = locationId,
-                                DataAdjustment = dataAdjustment,
-                                DataType = dataType
-                            }
-                        },
+                    SeriesDerivationType = seriesDerivationType,
+                    SeriesSpecifications = seriesSpecifications,
                     SeriesTransformation = SeriesTransformations.Identity,
                     Anomaly = seriesValueOption == SeriesValueOptions.Anomaly
                 });
