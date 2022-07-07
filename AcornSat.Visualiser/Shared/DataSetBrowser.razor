@@ -110,6 +110,33 @@
                 }
             }
 
+            currentLocationFolder.DataSets.Add(
+                new DataSetLibraryEntry()
+                    {
+                        SourceSeriesSpecifications =
+                            new DataSetLibraryEntry.SourceSeriesSpecification[]
+                            {
+                                new DataSetLibraryEntry.SourceSeriesSpecification
+                                {
+                                    DataType = DataType.TempMax,
+                                    DataAdjustment = DataAdjustment.Adjusted,
+                                    SourceDataSetId = CurrentLocation.DataSetId,
+                                    LocationId = CurrentLocation.Id,
+                                    LocationName = CurrentLocation.Name
+                                },
+                                new DataSetLibraryEntry.SourceSeriesSpecification
+                                {
+                                    DataType = DataType.TempMin,
+                                    DataAdjustment = DataAdjustment.Adjusted,
+                                    SourceDataSetId = CurrentLocation.DataSetId,
+                                    LocationId = CurrentLocation.Id,
+                                    LocationName = CurrentLocation.Name
+                                }
+                            },
+                        SeriesDerivationType = ClimateExplorer.Core.DataPreparation.SeriesDerivationTypes.DifferenceBetweenTwoSeries,
+                        Name = "Daily temperature range"
+                    });
+
             RootFolders.Add(currentLocationFolder);
         }
 
