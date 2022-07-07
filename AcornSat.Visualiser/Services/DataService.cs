@@ -64,8 +64,10 @@ public class DataService : IDataService
 
 
     public async Task<DataSet> PostDataSet(
-        BinGranularities binGranularity, 
-        BinAggregationFunctions aggregationFunction, 
+        BinGranularities binGranularity,
+        BinAggregationFunctions binAggregationFunction,
+        BinAggregationFunctions bucketAggregationFunction,
+        BinAggregationFunctions cupAggregationFunction,
         SeriesValueOptions seriesValueOption,
         Guid dataSetDefinitionId, 
         DataType dataType, 
@@ -81,7 +83,9 @@ public class DataService : IDataService
                 "dataset",
                 new PostDataSetsRequestBody
                 {
-                    BinAggregationFunction = aggregationFunction,
+                    BinAggregationFunction = binAggregationFunction,
+                    BucketAggregationFunction = bucketAggregationFunction,
+                    CupAggregationFunction = cupAggregationFunction,
                     BinningRule = binGranularity,
                     CupSize = cupSize,
                     RequiredBinDataProportion = requiredBinDataProportion,

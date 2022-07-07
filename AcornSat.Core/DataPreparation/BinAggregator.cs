@@ -96,9 +96,11 @@ namespace ClimateExplorer.Core.DataPreparation
                 };
         }
 
-        static Bin[] AggregateBinsByRepeatedlyApplyingAggregationFunction(
+        static Bin[] AggregateBinsByRepeatedlyApplyingAggregationFunctions(
             RawBin[] rawBins, 
-            Func<IEnumerable<ContainerAggregate>, float?> aggregationFunction)
+            Func<IEnumerable<ContainerAggregate>, float?> binAggregationFunctionImpl,
+            Func<IEnumerable<ContainerAggregate>, float?> bucketAggregationFunctionImpl,
+            Func<IEnumerable<ContainerAggregate>, float?> cupAggregationFunctionImpl)
         {
             // Strategy: we have an object tree - each bin has a list of buckets, each of which has a list of cups, each of which has a list of data points.
             // We're going to flatten out that tree into a list of AggregationIntermediates, one per cup. Then we're going to repeatedly aggregate, reducing
@@ -119,7 +121,7 @@ namespace ClimateExplorer.Core.DataPreparation
                                 Bin = bin,
                                 Bucket = bucket,
                                 Cup = cup,
-                                Aggregate = BuildContainerAggregateForCup(cup, aggregationFunction)                                    
+                                Aggregate = BuildContainerAggregateForCup(cup, cupAggregationFunctionImpl)
                             }
                         );
                     }
@@ -136,7 +138,7 @@ namespace ClimateExplorer.Core.DataPreparation
                     {
                         Bin = kvp.Key.Bin,
                         Bucket = kvp.Key.Bucket,
-                        Aggregate = AggregateContainerAggregates(kvp.Select(y => y.Aggregate), aggregationFunction)
+                        Aggregate = AggregateContainerAggregates(kvp.Select(y => y.Aggregate), bucketAggregationFunctionImpl)
                     }
                 )
                 .ToArray();
@@ -150,7 +152,7 @@ namespace ClimateExplorer.Core.DataPreparation
                     new AggregationIntermediate
                     {
                         Bin = kvp.Key.Bin,
-                        Aggregate = AggregateContainerAggregates(kvp.Select(y => y.Aggregate), aggregationFunction)
+                        Aggregate = AggregateContainerAggregates(kvp.Select(y => y.Aggregate), binAggregationFunctionImpl)
                     }
                 )
                 .ToArray();
@@ -201,9 +203,26 @@ namespace ClimateExplorer.Core.DataPreparation
                 };
         }
 
-        public static Bin[] AggregateBins(RawBin[] rawBins, BinAggregationFunctions binAggregationFunction)
+        public static Bin[] AggregateBins(
+            RawBin[] rawBins, 
+            BinAggregationFunctions binAggregationFunction,
+            BinAggregationFunctions bucketAggregationFunction,
+            BinAggregationFunctions cupAggregationFunction)
         {
-            var aggregationFunction = GetAggregationFunction(binAggregationFunction);
+            if ((bucketAggregationFunction == BinAggregationFunctions.Median) != (cupAggregationFunction == BinAggregationFunctions.Median))
+            {
+                throw new Exception("If one of bucket and cup aggregation is median, then both must be, because median aggregation is applied once across all data points.");
+            }
+
+            if (((bucketAggregationFunction == BinAggregationFunctions.Median) || (cupAggregationFunction == BinAggregationFunctions.Median)) &&
+                binAggregationFunction != BinAggregationFunctions.Median)
+            {
+                throw new Exception("If at least one of bucket and cup aggregation is median, then bin must also be, because median aggregation is applied once across all data points.");
+            }
+
+            var binAggregationFunctionImpl = GetAggregationFunction(binAggregationFunction);
+            var bucketAggregationFunctionImpl = GetAggregationFunction(bucketAggregationFunction);
+            var cupAggregationFunctionImpl = GetAggregationFunction(cupAggregationFunction);
 
             switch (binAggregationFunction)
             {
@@ -218,12 +237,12 @@ namespace ClimateExplorer.Core.DataPreparation
                 case BinAggregationFunctions.Sum:
                 case BinAggregationFunctions.Min:
                 case BinAggregationFunctions.Max:
-                    return AggregateBinsByRepeatedlyApplyingAggregationFunction(rawBins, aggregationFunction);
+                    return AggregateBinsByRepeatedlyApplyingAggregationFunctions(rawBins, binAggregationFunctionImpl, bucketAggregationFunctionImpl, cupAggregationFunctionImpl);
 
                 // But these aggregation functions do NOT give the same result if repeated in that way. So instead, we calculate the aggregate
                 // once, across all available data points.
                 case BinAggregationFunctions.Median:
-                    return AggregateBinsByApplyingAggregationFunctionOnceForAllDataPoints(rawBins, aggregationFunction);
+                    return AggregateBinsByApplyingAggregationFunctionOnceForAllDataPoints(rawBins, binAggregationFunctionImpl);
 
                 default:
                     throw new NotImplementedException($"BinAggregationFunction {binAggregationFunction}");

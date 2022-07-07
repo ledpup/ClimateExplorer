@@ -761,10 +761,22 @@
 
         foreach (var csd in chartSeriesList)
         {
+            var cupAggregationFunction = MapSeriesAggregationOptionToBinAggregationFunction(csd.Aggregation);
+            var bucketAggregationFunction = cupAggregationFunction;
+
+            // If we're doing modular binning and the aggregation function is sum, then force mean aggregation at
+            // top level
+            var binAggregationFunction =
+                SelectedBinGranularity.IsModular() && cupAggregationFunction == BinAggregationFunctions.Sum
+                ? BinAggregationFunctions.Mean
+                : cupAggregationFunction;
+
             DataSet dataSet = 
                 await DataService.PostDataSet(
                     SelectedBinGranularity,
-                    MapSeriesAggregationOptionToBinAggregationFunction(csd.Aggregation),
+                    binAggregationFunction,
+                    bucketAggregationFunction,
+                    cupAggregationFunction,
                     csd.Value,
                     csd.DataSetDefinition.Id,
                     csd.MeasurementDefinition.DataType,
