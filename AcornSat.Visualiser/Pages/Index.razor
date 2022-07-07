@@ -213,13 +213,13 @@
 
     private async Task OnDownloadDataClicked()
     {
-        var fileStream = Exporter.ExportChartData(Logger, ChartSeriesWithData, Locations, ChartStartBin, ChartEndBin, NavManager.Uri.ToString());
+        var fileStream = Exporter.ExportChartData(Logger, ChartSeriesWithData, Locations, ChartBins, NavManager.Uri.ToString());
 
         var locationNames = ChartSeriesWithData.Select(x => x.ChartSeries.LocationName).Where(x => x != null).Distinct().ToArray();
 
         var fileName = locationNames.Any() ? String.Join("-", locationNames) + "-" : "";
 
-        fileName = $"Export-{fileName}{ChartStartBin.Label}-{ChartEndBin.Label}.csv";
+        fileName = $"Export-{fileName}-{SelectedBinGranularity}-{ChartBins.First().Label}-{ChartBins.Last().Label}.csv";
 
         using var streamRef = new DotNetStreamReference(stream: fileStream);
 
