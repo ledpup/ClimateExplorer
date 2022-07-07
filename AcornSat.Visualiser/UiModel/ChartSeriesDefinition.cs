@@ -132,45 +132,39 @@ namespace AcornSat.Visualiser.UiModel
 
         public string GetFriendlyTitleShort()
         {
+            switch (SeriesDerivationType)
+            {
+                case SeriesDerivationTypes.ReturnSingleSeries:
+                    return BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications.Single());
+
+                case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
+                    return $"[{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[0])}] minus [{BuildFriendlyTitleBuildFriendlyTitleShortForSeriesForSeries(SourceSeriesSpecifications[1])}]";
+
+                default: throw new NotImplementedException($"SeriesDerivationType {SeriesDerivationType}");
+            }            
+        }
+
+        string BuildFriendlyTitleShortForSeries(SourceSeriesSpecification sss)
+        {
             List<string> segments = new List<string>();
 
-            string s = "";
-
-            if (Year != null) s += Year;
-
-            if (SourceSeriesSpecifications.Length == 1)
+            if (sss.LocationName != null)
             {
-                var sss = SourceSeriesSpecifications.Single();
+                segments.Add(sss.LocationName);
+            }
 
-                if (sss.LocationName != null)
+            if (sss.MeasurementDefinition != null)
+            {
+                if (sss.MeasurementDefinition.DataCategory != null)
                 {
-                    if (s.Length > 0)
-                    {
-                        s += " ";
-                    }
-
-                    s += sss.LocationName;
+                    segments.Add(sss.MeasurementDefinition.DataCategory.Value.ToString());
                 }
 
-                if (s.Length > 0) segments.Add(s);
-
-                if (sss.MeasurementDefinition != null)
-                {
-                    if (sss.MeasurementDefinition.DataCategory != null)
-                    {
-                        segments.Add(sss.MeasurementDefinition.DataCategory.Value.ToString());
-                    }
-
-                    segments.Add(MapDataTypeToFriendlyName(sss.MeasurementDefinition.DataType));
-                }
-                else
-                {
-                    segments.Add("[Missing MeasurementDefinition]");
-                }
+                segments.Add(MapDataTypeToFriendlyName(sss.MeasurementDefinition.DataType));
             }
             else
             {
-                segments.Add("Derived series");
+                segments.Add("[Missing MeasurementDefinition]");
             }
 
             return String.Join(" | ", segments);
@@ -203,10 +197,6 @@ namespace AcornSat.Visualiser.UiModel
                 {
                     uomLabel = Enums.UnitOfMeasureLabelShort(sss.MeasurementDefinition.UnitOfMeasure);
                 }
-            }
-            else
-            {
-                segments.Add("Derived series");
             }
 
             if (BinGranularity.IsLinear())
@@ -285,7 +275,6 @@ namespace AcornSat.Visualiser.UiModel
                     if (sssX.LocationId != sssY.LocationId) return false;
                     if (sssX.LocationName != sssY.LocationName) return false;
                     if (sssX.MeasurementDefinition != sssY.MeasurementDefinition) return false;
-
                 }
 
                 return true;
