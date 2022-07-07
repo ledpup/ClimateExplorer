@@ -65,9 +65,9 @@ public class DataService : IDataService
 
     public async Task<DataSet> PostDataSet(
         BinGranularities binGranularity,
-        BinAggregationFunctions binAggregationFunction,
-        BinAggregationFunctions bucketAggregationFunction,
-        BinAggregationFunctions cupAggregationFunction,
+        ContainerAggregationFunctions binAggregationFunction,
+        ContainerAggregationFunctions bucketAggregationFunction,
+        ContainerAggregationFunctions cupAggregationFunction,
         SeriesValueOptions seriesValueOption,
         Guid dataSetDefinitionId, 
         DataType dataType, 

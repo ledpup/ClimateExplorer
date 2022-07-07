@@ -740,15 +740,15 @@
         return SeriesDisplayStyle.Line;
     }
 
-    static BinAggregationFunctions MapSeriesAggregationOptionToBinAggregationFunction(SeriesAggregationOptions a)
+    static ContainerAggregationFunctions MapSeriesAggregationOptionToBinAggregationFunction(SeriesAggregationOptions a)
     {
         switch (a)
         {
-            case SeriesAggregationOptions.Mean: return BinAggregationFunctions.Mean;
-            case SeriesAggregationOptions.Minimum: return BinAggregationFunctions.Min;
-            case SeriesAggregationOptions.Maximum: return BinAggregationFunctions.Max;
-            case SeriesAggregationOptions.Median: return BinAggregationFunctions.Median;
-            case SeriesAggregationOptions.Sum: return BinAggregationFunctions.Sum;
+            case SeriesAggregationOptions.Mean: return ContainerAggregationFunctions.Mean;
+            case SeriesAggregationOptions.Minimum: return ContainerAggregationFunctions.Min;
+            case SeriesAggregationOptions.Maximum: return ContainerAggregationFunctions.Max;
+            case SeriesAggregationOptions.Median: return ContainerAggregationFunctions.Median;
+            case SeriesAggregationOptions.Sum: return ContainerAggregationFunctions.Sum;
             default: throw new NotImplementedException($"SeriesAggregationOptions {a}");
         }
     }
@@ -767,8 +767,8 @@
             // If we're doing modular binning and the aggregation function is sum, then force mean aggregation at
             // top level
             var binAggregationFunction =
-                SelectedBinGranularity.IsModular() && cupAggregationFunction == BinAggregationFunctions.Sum
-                ? BinAggregationFunctions.Mean
+                SelectedBinGranularity.IsModular() && cupAggregationFunction == ContainerAggregationFunctions.Sum
+                ? ContainerAggregationFunctions.Mean
                 : cupAggregationFunction;
 
             DataSet dataSet = 

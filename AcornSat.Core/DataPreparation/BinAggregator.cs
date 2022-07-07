@@ -45,16 +45,16 @@ namespace ClimateExplorer.Core.DataPreparation
             }
         }
 
-        static Func<IEnumerable<ContainerAggregate>, float?> GetAggregationFunction(BinAggregationFunctions function)
+        static Func<IEnumerable<ContainerAggregate>, float?> GetAggregationFunction(ContainerAggregationFunctions function)
         {
             switch (function)
             {
                 // Weighted mean is mean of value weighted by number of periods covered
-                case BinAggregationFunctions.Mean:   return WeightedMean;
-                case BinAggregationFunctions.Sum:    return (data) => data.Select(x => x.Value).Sum();
-                case BinAggregationFunctions.Min:    return (data) => data.Select(x => x.Value).Min();
-                case BinAggregationFunctions.Max:    return (data) => data.Select(x => x.Value).Max();
-                case BinAggregationFunctions.Median: return Median;
+                case ContainerAggregationFunctions.Mean:   return WeightedMean;
+                case ContainerAggregationFunctions.Sum:    return (data) => data.Select(x => x.Value).Sum();
+                case ContainerAggregationFunctions.Min:    return (data) => data.Select(x => x.Value).Min();
+                case ContainerAggregationFunctions.Max:    return (data) => data.Select(x => x.Value).Max();
+                case ContainerAggregationFunctions.Median: return Median;
                 default:
                     throw new NotImplementedException($"BinAggregationFunction {function}");
             }
@@ -205,17 +205,17 @@ namespace ClimateExplorer.Core.DataPreparation
 
         public static Bin[] AggregateBins(
             RawBin[] rawBins, 
-            BinAggregationFunctions binAggregationFunction,
-            BinAggregationFunctions bucketAggregationFunction,
-            BinAggregationFunctions cupAggregationFunction)
+            ContainerAggregationFunctions binAggregationFunction,
+            ContainerAggregationFunctions bucketAggregationFunction,
+            ContainerAggregationFunctions cupAggregationFunction)
         {
-            if ((bucketAggregationFunction == BinAggregationFunctions.Median) != (cupAggregationFunction == BinAggregationFunctions.Median))
+            if ((bucketAggregationFunction == ContainerAggregationFunctions.Median) != (cupAggregationFunction == ContainerAggregationFunctions.Median))
             {
                 throw new Exception("If one of bucket and cup aggregation is median, then both must be, because median aggregation is applied once across all data points.");
             }
 
-            if (((bucketAggregationFunction == BinAggregationFunctions.Median) || (cupAggregationFunction == BinAggregationFunctions.Median)) &&
-                binAggregationFunction != BinAggregationFunctions.Median)
+            if (((bucketAggregationFunction == ContainerAggregationFunctions.Median) || (cupAggregationFunction == ContainerAggregationFunctions.Median)) &&
+                binAggregationFunction != ContainerAggregationFunctions.Median)
             {
                 throw new Exception("If at least one of bucket and cup aggregation is median, then bin must also be, because median aggregation is applied once across all data points.");
             }
@@ -233,15 +233,15 @@ namespace ClimateExplorer.Core.DataPreparation
                 //
                 // It's desirable to do this repeated application of aggregation functions where possible because doing so can "smooth out"
                 // small gaps in the source data without biasing the result as badly.
-                case BinAggregationFunctions.Mean:
-                case BinAggregationFunctions.Sum:
-                case BinAggregationFunctions.Min:
-                case BinAggregationFunctions.Max:
+                case ContainerAggregationFunctions.Mean:
+                case ContainerAggregationFunctions.Sum:
+                case ContainerAggregationFunctions.Min:
+                case ContainerAggregationFunctions.Max:
                     return AggregateBinsByRepeatedlyApplyingAggregationFunctions(rawBins, binAggregationFunctionImpl, bucketAggregationFunctionImpl, cupAggregationFunctionImpl);
 
                 // But these aggregation functions do NOT give the same result if repeated in that way. So instead, we calculate the aggregate
                 // once, across all available data points.
-                case BinAggregationFunctions.Median:
+                case ContainerAggregationFunctions.Median:
                     return AggregateBinsByApplyingAggregationFunctionOnceForAllDataPoints(rawBins, binAggregationFunctionImpl);
 
                 default:

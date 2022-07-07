@@ -18,9 +18,9 @@
 
 
         public BinGranularities BinningRule { get; set; }
-        public BinAggregationFunctions BinAggregationFunction { get; set; }
-        public BinAggregationFunctions BucketAggregationFunction { get; set; }
-        public BinAggregationFunctions CupAggregationFunction { get; set; }
+        public ContainerAggregationFunctions BinAggregationFunction { get; set; }
+        public ContainerAggregationFunctions BucketAggregationFunction { get; set; }
+        public ContainerAggregationFunctions CupAggregationFunction { get; set; }
         public bool Anomaly { get; set; }
     }
 }

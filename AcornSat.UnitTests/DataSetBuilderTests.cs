@@ -22,7 +22,7 @@ namespace AcornSat.UnitTests
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYear,
-                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    BinAggregationFunction = ContainerAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
                     RequiredBucketDataProportion = 1.0f,
@@ -44,7 +44,7 @@ namespace AcornSat.UnitTests
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYear,
-                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    BinAggregationFunction = ContainerAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
                     RequiredBucketDataProportion = 1.0f,
@@ -68,7 +68,7 @@ namespace AcornSat.UnitTests
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYear,
-                    BinAggregationFunction = BinAggregationFunctions.Min,
+                    BinAggregationFunction = ContainerAggregationFunctions.Min,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
                     RequiredBucketDataProportion = 1.0f,
@@ -92,7 +92,7 @@ namespace AcornSat.UnitTests
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYear,
-                    BinAggregationFunction = BinAggregationFunctions.Max,
+                    BinAggregationFunction = ContainerAggregationFunctions.Max,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
                     RequiredBucketDataProportion = 1.0f,
@@ -116,7 +116,7 @@ namespace AcornSat.UnitTests
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYearAndMonth,
-                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    BinAggregationFunction = ContainerAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
                     RequiredBucketDataProportion = 1.0f,
@@ -157,7 +157,7 @@ namespace AcornSat.UnitTests
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYearAndMonth,
-                    BinAggregationFunction = BinAggregationFunctions.Median,
+                    BinAggregationFunction = ContainerAggregationFunctions.Median,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
                     RequiredBucketDataProportion = 1.0f,
@@ -188,7 +188,7 @@ namespace AcornSat.UnitTests
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYear,
-                    BinAggregationFunction = BinAggregationFunctions.Sum,
+                    BinAggregationFunction = ContainerAggregationFunctions.Sum,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
                     RequiredBucketDataProportion = 1.0f,
@@ -212,7 +212,7 @@ namespace AcornSat.UnitTests
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYearAndMonth,
-                    BinAggregationFunction = BinAggregationFunctions.Sum,
+                    BinAggregationFunction = ContainerAggregationFunctions.Sum,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
                     RequiredBucketDataProportion = 1.0f,
@@ -243,7 +243,7 @@ namespace AcornSat.UnitTests
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYearAndMonth,
-                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    BinAggregationFunction = ContainerAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
                     RequiredBucketDataProportion = 1.0f,
@@ -272,7 +272,7 @@ namespace AcornSat.UnitTests
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYearAndMonth,
-                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    BinAggregationFunction = ContainerAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
                     RequiredBucketDataProportion = 1.0f,
@@ -301,7 +301,7 @@ namespace AcornSat.UnitTests
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYearAndMonth,
-                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    BinAggregationFunction = ContainerAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
                     RequiredBucketDataProportion = 1.0f,
@@ -330,7 +330,7 @@ namespace AcornSat.UnitTests
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYearAndMonth,
-                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    BinAggregationFunction = ContainerAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
                     RequiredBucketDataProportion = 1.0f,
@@ -358,7 +358,7 @@ namespace AcornSat.UnitTests
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYear,
-                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    BinAggregationFunction = ContainerAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
                     RequiredBucketDataProportion = 1f,
@@ -385,7 +385,7 @@ namespace AcornSat.UnitTests
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByMonthOnly,
-                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    BinAggregationFunction = ContainerAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
                     RequiredBucketDataProportion = 1.0f,
@@ -413,7 +413,7 @@ namespace AcornSat.UnitTests
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByMonthOnly,
-                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    BinAggregationFunction = ContainerAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
                     RequiredBucketDataProportion = 1.0f,
@@ -442,7 +442,7 @@ namespace AcornSat.UnitTests
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.BySouthernHemisphereTemperateSeasonOnly,
-                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    BinAggregationFunction = ContainerAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0.7f,
                     RequiredBucketDataProportion = 0.7f,
@@ -474,7 +474,7 @@ namespace AcornSat.UnitTests
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYearAndMonth,
-                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    BinAggregationFunction = ContainerAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0f, // Note that we don't have any data level requirements, so nulls will get through
                     RequiredBucketDataProportion = 0f,
@@ -503,7 +503,7 @@ namespace AcornSat.UnitTests
                 new PostDataSetsRequestBody
                 {
                     BinningRule = BinGranularities.ByYearAndMonth,
-                    BinAggregationFunction = BinAggregationFunctions.Mean,
+                    BinAggregationFunction = ContainerAggregationFunctions.Mean,
                     CupSize = 14,
                     RequiredCupDataProportion = 0f, // Note that we don't have any data level requirements, so nulls will get through
                     RequiredBucketDataProportion = 0f,

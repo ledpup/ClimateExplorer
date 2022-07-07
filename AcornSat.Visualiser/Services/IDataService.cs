@@ -12,9 +12,9 @@ public interface IDataService
     Task<DataSet> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f);
     Task<DataSet> PostDataSet(
         BinGranularities binGranularity,
-        BinAggregationFunctions binAggregationFunction,
-        BinAggregationFunctions bucketAggregationFunction,
-        BinAggregationFunctions cupAggregationFunction,
+        ContainerAggregationFunctions binAggregationFunction,
+        ContainerAggregationFunctions bucketAggregationFunction,
+        ContainerAggregationFunctions cupAggregationFunction,
         SeriesValueOptions seriesValueOption,
         Guid dataSetDefinitionId,
         DataType dataType,

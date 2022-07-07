@@ -1,6 +1,6 @@
 ﻿namespace ClimateExplorer.Core.DataPreparation
 {
-    public enum BinAggregationFunctions
+    public enum ContainerAggregationFunctions
     {
         Mean,
         Sum,
