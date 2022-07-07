@@ -103,7 +103,7 @@ namespace AcornSat.Visualiser.UiModel
                 }
                 else
                 {
-                    segments.Add("Derived series");
+                    return GetFriendlyTitleShort();
                 }
 
                 switch (Smoothing)
@@ -138,7 +138,7 @@ namespace AcornSat.Visualiser.UiModel
                     return BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications.Single());
 
                 case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
-                    return $"[{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[0])}] minus [{BuildFriendlyTitleBuildFriendlyTitleShortForSeriesForSeries(SourceSeriesSpecifications[1])}]";
+                    return $"[{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[0])}] minus [{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[1])}]";
 
                 default: throw new NotImplementedException($"SeriesDerivationType {SeriesDerivationType}");
             }            

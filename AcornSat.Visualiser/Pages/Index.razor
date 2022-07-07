@@ -104,7 +104,7 @@
             <CloseButton />
         </ModalHeader>
         <ModalBody>
-            <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@SelectedLocation"></DataSetBrowser>
+            <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@SelectedLocation" PreviousLocation="@PreviousLocation"></DataSetBrowser>
         </ModalBody>
     </ModalContent>
 </Modal>
@@ -438,7 +438,25 @@
     string SelectedEndYear { get; set; }
 
     Guid SelectedLocationId { get; set; }
-    Location SelectedLocation { get; set; }
+    Location _selectedLocation;
+
+    Location SelectedLocation 
+    { 
+        get 
+        { 
+            return _selectedLocation; 
+        } 
+        set
+        {
+            if (value != _selectedLocation)
+            {
+                PreviousLocation = _selectedLocation;
+                _selectedLocation = value;
+            }
+        }
+    }
+
+    Location PreviousLocation { get; set;  }
     DataSetDefinitionViewModel SelectedDataSetDefinition { get; set; }
 
     [Inject]

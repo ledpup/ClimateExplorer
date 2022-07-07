@@ -28,6 +28,9 @@
     [Parameter]
     public Location? CurrentLocation { get; set; }
 
+    [Parameter]
+    public Location? PreviousLocation { get; set; }
+
     List<DataSetLibraryFolder> RootFolders { get; set; }
 
     string BuildDataSetName(MeasurementDefinitionViewModel md, DataSetDefinitionViewModel dsd)
@@ -138,6 +141,54 @@
                     });
 
             RootFolders.Add(currentLocationFolder);
+
+            if (PreviousLocation != null)
+            {
+                var dsdPrevious = DataSetDefinitions.SingleOrDefault(x => x.Id == CurrentLocation.DataSetId);
+
+                var comparisonFolder =
+                    new DataSetLibraryFolder()
+                    {
+                        Name = $"{CurrentLocation.Name} relative to {PreviousLocation.Name}",
+                        DataSets = new List<DataSetLibraryEntry>()
+                    };
+
+                if (dsd != null && dsdPrevious != null)
+                {
+                    foreach (var md in dsdPrevious.MeasurementDefinitions.OrderBy(x => x.DataType.ToString()).ThenBy(x => x.DataAdjustment.ToString()))
+                    {
+                        comparisonFolder.DataSets.Add(
+                            new DataSetLibraryEntry()
+                                {
+                                    SourceSeriesSpecifications =
+                                        new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                        {
+                                            new DataSetLibraryEntry.SourceSeriesSpecification
+                                            {
+                                                DataType = md.DataType,
+                                                DataAdjustment = md.DataAdjustment,
+                                                SourceDataSetId = CurrentLocation.DataSetId,
+                                                LocationId = CurrentLocation.Id,
+                                                LocationName = CurrentLocation.Name
+                                            },
+                                            new DataSetLibraryEntry.SourceSeriesSpecification
+                                            {
+                                                DataType = md.DataType,
+                                                DataAdjustment = md.DataAdjustment,
+                                                SourceDataSetId = CurrentLocation.DataSetId,
+                                                LocationId = PreviousLocation.Id,
+                                                LocationName = PreviousLocation.Name
+                                            }
+                                        },
+                                    SeriesDerivationType = ClimateExplorer.Core.DataPreparation.SeriesDerivationTypes.DifferenceBetweenTwoSeries,
+                                    Name = BuildDataSetName(md, dsd)
+                                });
+                    }
+                }
+
+
+                RootFolders.Add(comparisonFolder);
+            }
         }
 
         RootFolders.AddRange(
