@@ -13,13 +13,13 @@ namespace AcornSat.Analyser;
 
 public static class BomLocationsAndStationsMapper
 {
-    public static async Task<List<Station>> BuildAcornSatLocationsFromReferenceDataAsync(Guid dataSetDefintionId)
+    public static async Task<List<Station>> BuildAcornSatLocationsFromReferenceDataAsync(Guid dataSetDefintionId, string outputFileSuffix)
     {
         var oldLocations = await Location.GetLocations(@"ReferenceData\ACORN-SAT\Locations.json");
 
         var locations = new List<Location>();
         var stations = new List<Station>();
-        var dataFileLocationMapping = new DataLocationMapping() { DataSetDefinitionId = dataSetDefintionId };
+        var dataFileLocationMapping = new DataFileLocationMapping() { DataSetDefinitionId = dataSetDefintionId };
         var stationToLocationMapping = new Dictionary<string, Guid>();
 
         // Get the friendly location name and the "primary station", as best we can do.
@@ -82,8 +82,8 @@ public static class BomLocationsAndStationsMapper
                 var end = DateTime.ParseExact(stationSubGroups["end"].Value, "yyyyMMdd", provider);
 
 
-                var dataFileFilterAndAdjustment = new DataFileFilterAndAdjustment() 
-                { 
+                var dataFileFilterAndAdjustment = new DataFileFilterAndAdjustment()
+                {
                     ExternalStationCode = externalStationCode,
                     StartDate = start,
                     EndDate = end,
@@ -114,7 +114,51 @@ public static class BomLocationsAndStationsMapper
             }
             dataFileLocationMapping.LocationIdToDataFileMappings.Add(locationId.Value, locationDataFileFilterAndAdjustments);
         }
-       
+
+        WriteFiles(outputFileSuffix, locations, stations, dataFileLocationMapping);
+
+        return stations;
+    }
+
+    private static void WriteFiles(string outputFileSuffix, List<Location> locations, List<Station> stations, DataFileLocationMapping dataFileLocationMapping)
+    {
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            Converters =
+            {
+                new JsonStringEnumConverter()
+            }
+        };
+        Directory.CreateDirectory(@"Output\Location");
+        Directory.CreateDirectory(@"Output\Station");
+        Directory.CreateDirectory(@"Output\DataFileLocationMapping");
+
+        File.WriteAllText($@"Output\Location\Locations{outputFileSuffix}.json", JsonSerializer.Serialize(locations, options));
+        File.WriteAllText($@"Output\Station\Stations{outputFileSuffix}.json", JsonSerializer.Serialize(stations, options));
+        File.WriteAllText($@"Output\DataFileLocationMapping\DataFileLocationMapping{outputFileSuffix}.json", JsonSerializer.Serialize(dataFileLocationMapping, options));
+    }
+
+    internal static async Task BuildAcornSatAdjustedDataFileLocationMappingAsync(Guid dataSetDefintionId, string unadjustedDataFileLocationMappingPath, string outputFileSuffix)
+    {
+        var file = await File.ReadAllTextAsync(unadjustedDataFileLocationMappingPath);
+        var unadjustedDataFileLocationMapping = JsonSerializer.Deserialize<DataFileLocationMapping>(file);
+        var locationIdToDataFileMappings = unadjustedDataFileLocationMapping.LocationIdToDataFileMappings;
+        var stations = await File.ReadAllLinesAsync(@"ReferenceData\ACORN-SAT\acorn_sat_v2.2.0_stations.txt");
+
+        var dataFileLocationMapping = new DataFileLocationMapping() { DataSetDefinitionId = dataSetDefintionId };
+        foreach (var station in stations)
+        {
+            foreach (var locationIdToDataFileMapping in locationIdToDataFileMappings)
+            {
+                if (locationIdToDataFileMapping.Value.Any(x => x.ExternalStationCode == station))
+                {
+                    dataFileLocationMapping.LocationIdToDataFileMappings.Add(locationIdToDataFileMapping.Key, new List<DataFileFilterAndAdjustment>());
+                    dataFileLocationMapping.LocationIdToDataFileMappings[locationIdToDataFileMapping.Key].Add(new DataFileFilterAndAdjustment { ExternalStationCode = station });
+                    break;
+                }
+            }
+        }
 
         var options = new JsonSerializerOptions
         {
@@ -124,54 +168,46 @@ public static class BomLocationsAndStationsMapper
                 new JsonStringEnumConverter()
             }
         };
-        File.WriteAllText(@"Output\Locations.json", JsonSerializer.Serialize(locations, options));
-        File.WriteAllText(@"Output\Stations.json", JsonSerializer.Serialize(stations, options));
-        File.WriteAllText(@"Output\DataFileLocationMapping.json", JsonSerializer.Serialize(dataFileLocationMapping, options));
-
-        return stations;
+        File.WriteAllText($@"Output\DataFileLocationMapping\DataFileLocationMapping{outputFileSuffix}.json", JsonSerializer.Serialize(dataFileLocationMapping, options));
     }
 
-
-    public static async Task BuildAdjustedList()
+    public static async Task BuildRaiaLocationsFromReferenceDataAsync(Guid dataSetDefintionId, string outputFileSuffix)
     {
-        // Get the most recent list of files names for ACORN-SAT files.
-        var adjustedStationV220List = File.ReadAllLines(@"ReferenceData\ACORN-SAT\acorn_sat_v2.2.0_stations.txt").ToList();
+        var oldLocations = await Location.GetLocations(@"ReferenceData\RAIA\Locations.json");
 
-        //var location = adjustedStationV220List.Single(x => x == primarySite);
+        var locations = new List<Location>();
+        var stations = new List<Station>();
+        var dataFileLocationMapping = new DataFileLocationMapping() { DataSetDefinitionId = dataSetDefintionId };
 
-        adjustedStationV220List.ForEach(x =>
+        var locationRowData = File.ReadAllLines(@"ReferenceData\RAIA\RAIA.csv");
+        foreach (var row in locationRowData)
         {
-            //if (!locations.Any(y => x == y.Stations.Single().ExternalStationCode))
-            //{
-            //    throw new Exception($"We can not match up the ACORN-SAT primary station and location for station code {x}");
-            //}
-        });
-        return;
-    }
+            var splitRow = row.Split(',');
+            var stationCode = splitRow[0].PadLeft(6, '0');
+            var name = splitRow[1];
+            var oldLocation = oldLocations.Single(x => x.Name == name);
 
-    static async Task RestoreLocationIds(List<Location> locations, string filePath)
-    {
-        // Load an old locations file (from the last time we built these locations).
-        // Match on the primary station
-        // If we find a match, replace the new Id with the old one, so that we may main Ids between builds of this meta-data
-        var oldLocations = await Location.GetLocations(filePath);
+            var coordinates = new Coordinates
+            {
+                Latitude = float.Parse(splitRow[2]),
+                Longitude = float.Parse(splitRow[3]),
+                Elevation = float.Parse(splitRow[4]),
+            };
 
-        foreach (var location in locations)
-        {
-            Location oldLocation = null;
-            if (!string.IsNullOrWhiteSpace(location.Name))
+            var location = new Location
             {
-                oldLocation = oldLocations.SingleOrDefault(x => x.Name == location.Name);
-            }
+                Id = oldLocation.Id,
+                Name = name,
+                Coordinates = coordinates,
+            };
+            locations.Add(location);
 
-            if (oldLocation != null)
-            {
-                location.Id = oldLocation.Id;
-            }
-            else
-            {
-                throw new Exception("Unable to find a location in the restored list of locations. This should be because it is new. If this is expected, instead of this exception, assign a new GUID.");
-            }
+            dataFileLocationMapping.LocationIdToDataFileMappings.Add(location.Id, new List<DataFileFilterAndAdjustment>());
+            dataFileLocationMapping.LocationIdToDataFileMappings[location.Id].Add(new DataFileFilterAndAdjustment { ExternalStationCode = stationCode });
+
+            stations.Add(new Station { ExternalStationCode = stationCode, Coordinates = coordinates });
         }
+
+        WriteFiles(outputFileSuffix, locations, stations, dataFileLocationMapping);
     }
 }

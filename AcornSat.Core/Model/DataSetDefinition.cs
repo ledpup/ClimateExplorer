@@ -22,7 +22,7 @@ public class DataSetDefinition
 
     public List<MeasurementDefinition> MeasurementDefinitions { get; set; }
 
-    public DataLocationMapping DataLocationMapping { get; set; }
+    public DataFileLocationMapping DataLocationMapping { get; set; }
 
     public static async Task<List<DataSetDefinition>> GetDataSetDefinitions(string filePath = @"MetaData\DataSetDefinitions.json")
     {

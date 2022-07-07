@@ -6,13 +6,13 @@ public class Location
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
-    public Coordinates Coordinates { get; set;}
+    public Coordinates Coordinates { get; set; }
     public float? WarmingIndex { get; set; }
     public short? HeatingScore { get; set; }
     public List<LocationDistance> NearbyLocations { get; set; }
     public Location()
     {
-        
+
     }
 
     public static async Task<List<Location>> GetLocations(string pathAndFileName)

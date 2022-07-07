@@ -16,23 +16,23 @@ public class DataReaderTests
     [TestMethod]
     public async Task ProcessDataTest()
     {
-        var stations = new List<DataFileFilterAndAdjustment>()
-        {
-            new DataFileFilterAndAdjustment
-            {
-                ExternalStationCode = "1427",
-                StartDate = DateTime.Parse("1909/09/01"),
-                EndDate = DateTime.Parse("1950/12/31"),
-                ValueAdjustment = -0.62f,
-            },
-            new DataFileFilterAndAdjustment
-            {
-                ExternalStationCode = "1427",
-                StartDate = DateTime.Parse("1951/01/01"),
-                EndDate = DateTime.Parse("1976/03/31"),
-                ValueAdjustment = -0.65f,
-            }
-        };
+        //var stations = new List<DataFileFilterAndAdjustment>()
+        //{
+        //    new DataFileFilterAndAdjustment
+        //    {
+        //        ExternalStationCode = "1427",
+        //        StartDate = DateTime.Parse("1909/09/01"),
+        //        EndDate = DateTime.Parse("1950/12/31"),
+        //        ValueAdjustment = -0.62f,
+        //    },
+        //    new DataFileFilterAndAdjustment
+        //    {
+        //        ExternalStationCode = "1427",
+        //        StartDate = DateTime.Parse("1951/01/01"),
+        //        EndDate = DateTime.Parse("1976/03/31"),
+        //        ValueAdjustment = -0.65f,
+        //    }
+        //};
 
         string[]? lines = new []
         {
@@ -61,6 +61,31 @@ public class DataReaderTests
     }
 
     [TestMethod]
+    public async Task ProcessDataWithNullRecordsTest()
+    {
+        string[]? lines = new[]
+        {
+            "Header",
+            "1427,19501230:2100,21.8,24,15.6,24,-,-,-,-,-,D",
+            "1427,19501231:2100,-,24,18.4,24,-,-,-,-,-,D",
+            "1427,19510101:2100,-,24,16.2,24,-,-,-,-,-,D",
+            "1427,19510102:2100,19.0,24,12.6,24,-,-,-,-,-,D",
+            "EOF",
+        };
+
+        var regEx = new Regex(@"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$");
+
+        var records = await DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily);
+
+        Assert.AreEqual(4, records.Count);
+
+        Assert.AreEqual(21.8f, records["1950_12_30"].Value);
+        Assert.AreEqual(null,  records["1950_12_31"].Value);
+        Assert.AreEqual(null,  records["1951_1_1"].Value);
+        Assert.AreEqual(19.0f, records["1951_1_2"].Value);
+    }
+
+    [TestMethod]
     public async Task ProcessDataWithMissingRecordsTest()
     {
         string[]? lines = new[]
@@ -80,8 +105,8 @@ public class DataReaderTests
         Assert.AreEqual(4, records.Count);
 
         Assert.AreEqual(21.8f, records["1950_12_30"].Value);
-        Assert.AreEqual(null,  records["1950_12_31"].Value);
-        Assert.AreEqual(null,  records["1951_1_1"].Value);
+        Assert.AreEqual(null, records["1950_12_31"].Value);
+        Assert.AreEqual(null, records["1951_1_1"].Value);
         Assert.AreEqual(19.0f, records["1951_1_2"].Value);
     }
 

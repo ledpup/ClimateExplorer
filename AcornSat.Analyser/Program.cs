@@ -17,11 +17,15 @@ GenerateMapMarkers();
 
 var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
 
-await NiwaLocationsAndStationsMapper.BuildNiwaLocationsAsync(Guid.Parse("7522E8EC-E743-4CB0-BC65-6E9F202FC824"), "7-stations_locations_adjusted.csv", "7-stations_Locations.json");
+await NiwaLocationsAndStationsMapper.BuildNiwaLocationsAsync(Guid.Parse("7522E8EC-E743-4CB0-BC65-6E9F202FC824"), "7-stations_locations_adjusted.csv", "7-stations_Locations.json", "_NewZealand_7stations_adjusted");
+await NiwaLocationsAndStationsMapper.BuildNiwaLocationsAsync(Guid.Parse("534950DC-EDA4-4DB5-8816-3705358F1797"), "7-stations_locations_unadjusted.csv", "7-stations_Locations.json", "_NewZealand_7stations_unadjusted");
+await NiwaLocationsAndStationsMapper.BuildNiwaLocationsAsync(Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"), "11-stations_locations.csv", "11-stations_Locations.json", "_NewZealand_11stations");
 
-var stations = await BomLocationsAndStationsMapper.BuildAcornSatLocationsFromReferenceDataAsync(Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"));
-
+var stations = await BomLocationsAndStationsMapper.BuildAcornSatLocationsFromReferenceDataAsync(Guid.Parse("E5EEA4D6-5FD5-49AB-BF85-144A8921111E"), "_Australia_unadjusted");
 await BomDataDownloader.GetDataForEachStation(stations);
+await BomLocationsAndStationsMapper.BuildAcornSatAdjustedDataFileLocationMappingAsync(Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"), @"Output\BOM\DataFileLocationMapping_Australia_unadjusted.json", "_Australia_adjusted");
+
+await BomLocationsAndStationsMapper.BuildRaiaLocationsFromReferenceDataAsync(Guid.Parse("E5EEA4D6-5FD5-49AB-BF85-144A8921111E"), "_Australia_Raia");
 
 async Task DownloadDataSetData(DataSetDefinition dataSetDefinition)
 {

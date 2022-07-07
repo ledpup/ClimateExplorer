@@ -1,0 +1,122 @@
+[
+  {
+    "Id": "e0ddbbca-2d03-4ad3-b901-bacf5fff19c0",
+    "DataSetId": "647b6a05-43e4-48e0-a43e-04ae81a74653",
+    "Name": "Casey",
+    "Stations": [
+      {
+        "Id": "300017"
+      }
+    ],
+    "Coordinates": {
+      "Latitude": -66.28,
+      "Longitude": 110.52,
+      "Elevation": 40
+    }
+  },
+  {
+    "Id": "fe4f7ca3-f92c-459b-a85b-e37be4871fda",
+    "DataSetId": "647b6a05-43e4-48e0-a43e-04ae81a74653",
+    "Name": "Cocos Island",
+    "Stations": [
+      {
+        "Id": "200284"
+      }
+    ],
+    "Coordinates": {
+      "Latitude": -12.19,
+      "Longitude": 96.83,
+      "Elevation": 3
+    }
+  },
+  {
+    "Id": "4fec65a7-6c18-4a3e-bbd0-ec80a0baaa59",
+    "DataSetId": "647b6a05-43e4-48e0-a43e-04ae81a74653",
+    "Name": "Davis",
+    "Stations": [
+      {
+        "Id": "300000"
+      }
+    ],
+    "Coordinates": {
+      "Latitude": -68.57,
+      "Longitude": 77.97,
+      "Elevation": 18
+    }
+  },
+  {
+    "Id": "8eb51f35-e4ff-4686-ad76-306778fcc706",
+    "DataSetId": "647b6a05-43e4-48e0-a43e-04ae81a74653",
+    "Name": "Lord Howe Island",
+    "Stations": [
+      {
+        "Id": "200839"
+      }
+    ],
+    "Coordinates": {
+      "Latitude": -31.54,
+      "Longitude": 159.08,
+      "Elevation": 5
+    }
+  },
+  {
+    "Id": "07987b31-4934-47f7-b62c-5c5f39e49935",
+    "DataSetId": "647b6a05-43e4-48e0-a43e-04ae81a74653",
+    "Name": "Macquarie Island",
+    "Stations": [
+      {
+        "Id": "300004"
+      }
+    ],
+    "Coordinates": {
+      "Latitude": -54.50,
+      "Longitude": 158.94,
+      "Elevation": 6
+    }
+  },
+  {
+    "Id": "484e686d-c55e-420c-aa53-71293e73dafe",
+    "DataSetId": "647b6a05-43e4-48e0-a43e-04ae81a74653",
+    "Name": "Mawson",
+    "Stations": [
+      {
+        "Id": "300001"
+      }
+    ],
+    "Coordinates": {
+      "Latitude": -67.60,
+      "Longitude": 62.88,
+      "Elevation": 10
+    }
+  },
+  {
+    "Id": "bf97eea8-252d-4f89-9ba8-924341973039",
+    "DataSetId": "647b6a05-43e4-48e0-a43e-04ae81a74653",
+    "Name": "Norfolk Island",
+    "Stations": [
+      {
+        "Id": "200288"
+      }
+    ],
+    "Coordinates": {
+      "Latitude": -29.04,
+      "Longitude": 167.94,
+      "Elevation": 112
+    }
+  },
+  {
+    "Id": "9433c91f-acd9-4a8f-9bbd-31f0af2e8e42",
+    "DataSetId": "647b6a05-43e4-48e0-a43e-04ae81a74653",
+    "Name": "Willis Island",
+    "Stations": [
+      {
+        "Id": "200283"
+      }
+    ],
+    "Coordinates": {
+      "Latitude": -16.29,
+      "Longitude": 149.97,
+      "Elevation": 8
+    }
+  }
+]

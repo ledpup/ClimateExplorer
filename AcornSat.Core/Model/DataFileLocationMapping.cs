@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace AcornSat.Core.Model;
 
-public class DataLocationMapping
+public class DataFileLocationMapping
 {
-    public DataLocationMapping()
+    public DataFileLocationMapping()
     {
         LocationIdToDataFileMappings = new Dictionary<Guid, List<DataFileFilterAndAdjustment>>();
     }

@@ -12,15 +12,15 @@ namespace AcornSat.Analyser;
 
 public static class NiwaLocationsAndStationsMapper
 {
-    public static async Task BuildNiwaLocationsAsync(Guid dataSetDefintionId, string sourceLocationsFileName, string oldLocationsFileName)
+    public static async Task BuildNiwaLocationsAsync(Guid dataSetDefintionId, string sourceLocationsFileName, string oldLocationsFileName, string outputFileSuffix)
     {
         var oldLocations = await Location.GetLocations($@"ReferenceData\NIWA\{oldLocationsFileName}");
 
         var locations = new List<Location>();
         var stations = new List<Station>();
-        var dataFileLocationMapping = new DataLocationMapping() { DataSetDefinitionId = dataSetDefintionId };
+        var dataFileLocationMapping = new DataFileLocationMapping() { DataSetDefinitionId = dataSetDefintionId };
 
-        var regEx = new Regex(@"^(?<name>[\w|\s]*),(?<station>\d+),\w\d+\w?,(?<lat>-?\d+\.\d+),(?<lng>-?\d+\.\d+),(?<alt>-?\d+),.*,.*,(?<startdate>null|\d{4}\/\d{2}\/\d{2}),(?<enddate>null|\d{4}\/\d{2}\/\d{2})\s*,(?<adjustment>0|-?\d*\.\d*)\s*,(?<seriesName>[\w|'|\s|-]*),(?<stationName>[\w|\s]*)$");
+        var regEx = new Regex(@"^(?<name>[\w|\s]*),(?<station>\d+),\w\d+\w?,(?<lat>-?\d+\.\d+),(?<lng>-?\d+\.\d+),(?<alt>-?\d+),.*,.*,(?<startdate>null|\d{4}\/\d{2}\/\d{2})\s*,(?<enddate>null|\d{4}\/\d{2}\/\d{2})\s*,(?<adjustment>0|-?\d*\.\d*)\s*,(?<seriesName>[\w|'|\s|-]*),(?<stationName>[\w|\s|,]*)$");
         var locationRowData = File.ReadAllLines(@$"ReferenceData\NIWA\{sourceLocationsFileName}");
 
         // Create the initial list of locations
@@ -40,13 +40,16 @@ public static class NiwaLocationsAndStationsMapper
                 };
                 locations.Add(location);
             }
-            // The last entry will have the coordinates we'll use for this location. Just update them everytime.
-            location.Coordinates = new Coordinates
+
+            var coordinates = new Coordinates
             {
                 Latitude = float.Parse(match.Groups["lat"].Value),
                 Longitude = float.Parse(match.Groups["lng"].Value),
                 Elevation = float.Parse(match.Groups["alt"].Value),
             };
+
+            // The last entry will have the coordinates we'll use for this location. Just update them everytime.
+            location.Coordinates = coordinates;
 
             var oldLocation = oldLocations.SingleOrDefault(x => x.Name == location.Name);
             if (oldLocation != null)
@@ -55,7 +58,7 @@ public static class NiwaLocationsAndStationsMapper
             }
             else
             {
-                throw new Exception("Expecting that there would be no knew location added");
+                throw new Exception("Expecting that there would be no unknown locations");
             }
 
             var externalStationCode = match.Groups["station"].Value;
@@ -72,7 +75,8 @@ public static class NiwaLocationsAndStationsMapper
                 stations.Add(new Station 
                 { 
                     Name = match.Groups["stationName"].Value,
-                    ExternalStationCode = externalStationCode 
+                    ExternalStationCode = externalStationCode,
+                    Coordinates = coordinates,
                 });
             }
 
@@ -93,13 +97,12 @@ public static class NiwaLocationsAndStationsMapper
             new JsonStringEnumConverter()
         }
         };
-        var path = new DirectoryInfo(@"Output\NIWA");
-        if (!path.Exists)
-        {
-            path.Create();
-        }
-        File.WriteAllText(@"Output\NIWA\Locations.json", JsonSerializer.Serialize(locations, options));
-        File.WriteAllText(@"Output\NIWA\Stations.json", JsonSerializer.Serialize(stations, options));
-        File.WriteAllText(@"Output\NIWA\DataFileLocationMapping.json", JsonSerializer.Serialize(dataFileLocationMapping, options));
+        Directory.CreateDirectory(@"Output\Location");
+        Directory.CreateDirectory(@"Output\Station");
+        Directory.CreateDirectory(@"Output\DataFileLocationMapping");
+
+        File.WriteAllText($@"Output\Location\Locations{outputFileSuffix}.json", JsonSerializer.Serialize(locations, options));
+        File.WriteAllText($@"Output\Station\Stations{outputFileSuffix}.json", JsonSerializer.Serialize(stations, options));
+        File.WriteAllText($@"Output\DataFileLocationMapping\DataFileLocationMapping{outputFileSuffix}.json", JsonSerializer.Serialize(dataFileLocationMapping, options));
     }
 }

@@ -153,13 +153,14 @@ internal class DataSetDefinitionsBuilder
             new DataSetDefinition
             {
                 Id = Guid.Parse("7522E8EC-E743-4CB0-BC65-6E9F202FC824"),
-                Name = "NIWA 7-stations series",
+                Name = "NIWA 7-stations series adjusted",
                 Description = "NIWA's long-running 'seven-station' series shows NZ's average annual temperature has increased by about 1 °C over the past 100 years.",
                 MoreInformationUrl = "https://niwa.co.nz/seven-stations",
                 MeasurementDefinitions = new List<MeasurementDefinition>
                 {
                     new MeasurementDefinition
                     {
+                        DataAdjustment = DataAdjustment.Adjusted,
                         DataCategory = DataCategory.Temperature,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -172,6 +173,7 @@ internal class DataSetDefinitionsBuilder
                     },
                     new MeasurementDefinition
                     {
+                        DataAdjustment = DataAdjustment.Adjusted,
                         DataCategory = DataCategory.Temperature,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -184,6 +186,46 @@ internal class DataSetDefinitionsBuilder
                     },
                 },
             },
+            new DataSetDefinition
+            {
+                Id = Guid.Parse("534950DC-EDA4-4DB5-8816-3705358F1797"),
+                Name = "NIWA 7-stations series unadjusted",
+                Description = "NIWA's long-running 'seven-station' series shows NZ's average annual temperature has increased by about 1 °C over the past 100 years.",
+                MoreInformationUrl = "https://niwa.co.nz/seven-stations",
+                MeasurementDefinitions = new List<MeasurementDefinition>
+                {
+                    new MeasurementDefinition
+                    {
+                        DataAdjustment = DataAdjustment.Unadjusted,
+                        DataCategory = DataCategory.Temperature,
+                        DataType = DataType.TempMax,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                        DataResolution = DataResolution.Daily,
+                        DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$",
+                        FolderName = @"Temperature\NIWA\Daily\raw-data",
+                        FileNameFormat = "[station].csv",
+                        NullValue = "-",
+                        PreferredColour = 2,
+                    },
+                    new MeasurementDefinition
+                    {
+                        DataAdjustment = DataAdjustment.Unadjusted,
+                        DataCategory = DataCategory.Temperature,
+                        DataType = DataType.TempMin,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                        DataResolution = DataResolution.Daily,
+                        DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<tmax>-?[\d+\.\d+]*),-?\d*,(?<value>-?[\d+\.\d+]*),-?\d*,.*,D$",
+                        FolderName = @"Temperature\NIWA\Daily\raw-data",
+                        FileNameFormat = "[station].csv",
+                        NullValue = "-",
+                        PreferredColour = 3,
+                    },
+                },
+            },
+
+
+
+
             new DataSetDefinition
             {
                 Id = Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"),
