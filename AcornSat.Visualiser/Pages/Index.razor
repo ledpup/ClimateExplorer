@@ -177,14 +177,6 @@
         return title;
     }
 
-    bool trendlinesOn = false;
-    async Task OnTrendlinesButtonClicked()
-    {
-        trendlinesOn = !trendlinesOn;
-
-        await HandleRedraw();
-    }
-
     string DayGroupingText(int dayGrouping)
     {
         switch (dayGrouping)
@@ -1027,6 +1019,8 @@
 
         trendlines = await AddDataSetsToGraph();
 
+        l.LogInformation("Trendlines count: " + trendlines.Count);
+
         l.LogInformation("Calling AddLabels");
 
         await chart.AddLabels(Labels);
@@ -1149,12 +1143,12 @@
 
         await chart.SetOptionsObject(chartOptions);
 
-        await chart.Update();
-
         if (trendlines != null)
         {
             await chartTrendline.AddTrendLineOptions(trendlines);
         }
+
+        await chart.Update();
 
         // The below line is required to get the chart.js component to honour the styling applied on the parent div
         // If you don't call resize, the chart will apply the styling only after you resize the window,
