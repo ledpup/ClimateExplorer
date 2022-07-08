@@ -9,6 +9,11 @@
     height: 60vh;
 }
 
+.chart-series-list-wrapper {
+    /* To compensate for the unwanted 10px vertical gutter after the last row of series lozenges */
+    margin-bottom: -10px;
+}
+
 .chart-controls {
     margin: 20px;
     /* This negative bottom margin is to compensate for the bottom margin on .chart-control, so that there's no
