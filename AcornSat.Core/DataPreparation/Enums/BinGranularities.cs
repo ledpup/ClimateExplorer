@@ -20,5 +20,18 @@
         {
             return !b.IsLinear();
         }
+
+        public static string ToFriendlyString(this BinGranularities b)
+        {
+            switch (b)
+            {
+                case BinGranularities.ByYear: return "By year";
+                case BinGranularities.ByYearAndMonth: return "By year and month";
+                case BinGranularities.BySouthernHemisphereTemperateSeasonOnly: return "By season";
+                case BinGranularities.BySouthernHemisphereTropicalSeasonOnly: return "By tropical season";
+                case BinGranularities.ByMonthOnly: return "By month";
+                default: throw new NotImplementedException($"BinGranularities {b}");
+            }
+        }
     }
 }

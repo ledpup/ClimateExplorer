@@ -1019,7 +1019,7 @@
         subtitle =
             (ChartStartBin != null & ChartEndBin != null)
             ? $"({ChartStartBin.Label}-{ChartEndBin.Label})"
-            : SelectedBinGranularity.ToString();
+            : SelectedBinGranularity.ToFriendlyString();
 
         Labels = GetLabels();
 
