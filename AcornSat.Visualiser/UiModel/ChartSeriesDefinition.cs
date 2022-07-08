@@ -106,14 +106,18 @@ namespace AcornSat.Visualiser.UiModel
                     return GetFriendlyTitleShort();
                 }
 
-                switch (Smoothing)
+                // Smoothing only happens when the x-axis is linear
+                if (BinGranularity.IsLinear())
                 {
-                    case SeriesSmoothingOptions.MovingAverage:
-                        segments.Add(SmoothingWindow + " year moving average");
-                        break;
-                    case SeriesSmoothingOptions.Trendline:
-                        segments.Add("Trendline");
-                        break;
+                    switch (Smoothing)
+                    {
+                        case SeriesSmoothingOptions.MovingAverage:
+                            segments.Add(SmoothingWindow + " year moving average");
+                            break;
+                        case SeriesSmoothingOptions.Trendline:
+                            segments.Add("Trendline");
+                            break;
+                    }
                 }
 
                 if (Aggregation != SeriesAggregationOptions.Mean)
@@ -199,6 +203,7 @@ namespace AcornSat.Visualiser.UiModel
                 }
             }
 
+            // Smoothing only happens when the x-axis is linear
             if (BinGranularity.IsLinear())
             {
                 switch (Smoothing)
