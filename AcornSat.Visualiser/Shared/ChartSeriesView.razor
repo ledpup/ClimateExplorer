@@ -2,6 +2,7 @@
 @using Blazorise
 @using Blazorise.Components
 @using Blazorise.Charts
+@using ClimateExplorer.Core.DataPreparation
 
 <div class="chart-series-config">
     <div class="title-bar" @onclick="() => { ChartSeries.IsExpanded = !ChartSeries.IsExpanded; }" style="@GenerateStyleForTitleBar()">
@@ -36,6 +37,13 @@
                         </Select>
                     </td>
                 </tr>
+
+                @if (ChartSeries.Smoothing != SeriesSmoothingOptions.None && !ChartSeries.BinGranularity.IsLinear())
+                {
+                <tr>
+                    <td colspan="2" class="info-message">Note that smoothing is not currently being applied because the x-axis is not linear.</td>
+                </tr>
+                }
                 <tr>
                     <td>Smoothing</td>
                     <td>

@@ -85,3 +85,8 @@
     }
 
 }
+
+.info-message {
+    color: darkorange;
+    font-weight:bold;
+}
