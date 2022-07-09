@@ -15,7 +15,7 @@ namespace AcornSat.Core.InputOutput;
 
 public static class DataReader
 {
-    public static async Task<DataSet> GetDataSet(MeasurementDefinition measurementDefinition, List<DataFileFilterAndAdjustment> dataFileDefinitions = null)
+    public static async Task<DataSet> GetDataSet(MeasurementDefinition measurementDefinition, List<DataFileFilterAndAdjustment> dataFileDefinitions)
     {
         var records = await GetDataRecords(measurementDefinition, dataFileDefinitions);
 
@@ -37,11 +37,11 @@ public static class DataReader
         return dataSet;
     }
 
-    public static async Task<List<DataRecord>> GetDataRecords(MeasurementDefinition measurementDefinition, List<DataFileFilterAndAdjustment> dataFileDefinitions = null)
+    public static async Task<List<DataRecord>> GetDataRecords(MeasurementDefinition measurementDefinition, List<DataFileFilterAndAdjustment> dataFileFilterAndAdjustments)
     {
-        if (dataFileDefinitions == null)
+        if (dataFileFilterAndAdjustments == null)
         {
-            dataFileDefinitions = new List<DataFileFilterAndAdjustment>
+            dataFileFilterAndAdjustments = new List<DataFileFilterAndAdjustment>
             {
                 new DataFileFilterAndAdjustment
                 {
@@ -53,7 +53,7 @@ public static class DataReader
         var regEx = new Regex(measurementDefinition.DataRowRegEx);
 
         var records = new Dictionary<string, DataRecord>();
-        foreach (var dataFileDefinition in dataFileDefinitions)
+        foreach (var dataFileDefinition in dataFileFilterAndAdjustments)
         {
             var filePath = measurementDefinition.FolderName + @"\" + measurementDefinition.FileNameFormat.Replace("[station]", dataFileDefinition.ExternalStationCode);
             var fileRecords = await ReadDataFile(filePath, regEx, measurementDefinition.NullValue, measurementDefinition.DataResolution, dataFileDefinition.StartDate, dataFileDefinition.EndDate);
@@ -143,6 +143,7 @@ public static class DataReader
 
         var date = new DateTime(startYear, startMonth, startDay);
         var previousDate = date.AddDays(-1);
+        var resetDate = false;
         foreach (var line in lines)
         {
             var match = regEx.Match(line);
@@ -163,14 +164,7 @@ public static class DataReader
             var filterDate = new DateTime(year, month, day);
             if (startDate.HasValue && filterDate < startDate.Value)
             {
-                if (dataResolution == DataResolution.Daily)
-                {
-                    date = date.AddDays(1);
-                }
-                else if(dataResolution == DataResolution.Monthly)
-                {
-                    date = date.AddMonths(1);
-                }
+                resetDate = true;
                 continue;
             }
             else if (endDate.HasValue && filterDate > endDate.Value)
@@ -178,6 +172,11 @@ public static class DataReader
                 break;
             }
 
+            if (resetDate)
+            {
+                date = filterDate;
+                resetDate = false;
+            }
             var recordDate = new DateTime(year, month, day);
             if (recordDate <= previousDate)
             {

@@ -3,7 +3,7 @@
     "Id": "e0ddbbca-2d03-4ad3-b901-bacf5fff19c0",
     "Name": "Casey",
     "Coordinates": {
-      "Latitude": 66.28,
+      "Latitude": -66.28,
       "Longitude": 110.52,
       "Elevation": 40
     },
@@ -15,7 +15,7 @@
     "Id": "fe4f7ca3-f92c-459b-a85b-e37be4871fda",
     "Name": "Cocos Island",
     "Coordinates": {
-      "Latitude": 12.19,
+      "Latitude": -12.19,
       "Longitude": 96.83,
       "Elevation": 3
     },
@@ -27,7 +27,7 @@
     "Id": "4fec65a7-6c18-4a3e-bbd0-ec80a0baaa59",
     "Name": "Davis",
     "Coordinates": {
-      "Latitude": 68.57,
+      "Latitude": -68.57,
       "Longitude": 77.97,
       "Elevation": 18
     },
@@ -39,7 +39,7 @@
     "Id": "8eb51f35-e4ff-4686-ad76-306778fcc706",
     "Name": "Lord Howe Island",
     "Coordinates": {
-      "Latitude": 31.54,
+      "Latitude": -31.54,
       "Longitude": 159.08,
       "Elevation": 5
     },
@@ -51,7 +51,7 @@
     "Id": "07987b31-4934-47f7-b62c-5c5f39e49935",
     "Name": "Macquarie Island",
     "Coordinates": {
-      "Latitude": 54.5,
+      "Latitude": -54.5,
       "Longitude": 158.94,
       "Elevation": 6
     },
@@ -63,7 +63,7 @@
     "Id": "484e686d-c55e-420c-aa53-71293e73dafe",
     "Name": "Mawson",
     "Coordinates": {
-      "Latitude": 67.6,
+      "Latitude": -67.6,
       "Longitude": 62.88,
       "Elevation": 10
     },
@@ -75,7 +75,7 @@
     "Id": "bf97eea8-252d-4f89-9ba8-924341973039",
     "Name": "Norfolk Island",
     "Coordinates": {
-      "Latitude": 29.04,
+      "Latitude": -29.04,
       "Longitude": 167.94,
       "Elevation": 112
     },
@@ -87,7 +87,7 @@
     "Id": "9433c91f-acd9-4a8f-9bbd-31f0af2e8e42",
     "Name": "Willis Island",
     "Coordinates": {
-      "Latitude": 16.29,
+      "Latitude": -16.29,
       "Longitude": 149.97,
       "Elevation": 8
     },

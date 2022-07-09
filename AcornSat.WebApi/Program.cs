@@ -19,6 +19,7 @@ using System.Reflection;
 using AcornSat.WebApi.Model.DataSetBuilder;
 using AcornSat.WebApi;
 using System.Text.Json.Serialization;
+using AcornSat.Core.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -202,7 +203,9 @@ async Task<List<DataSet>> YearlyTemperaturesAcrossLocations(
                                                                         && x.DataResolution == queryParameters.Resolution
                                                                         && (!queryParameters.DataAdjustment.HasValue || x.DataAdjustment == queryParameters.DataAdjustment));
 
-            var locationDataSet = await GetYearlyRecordsFromDaily(measurementDefinition, queryParameters);
+            var dfms = dataSetDefinition.DataLocationMapping.LocationIdToDataFileMappings[location.Id];
+
+            var locationDataSet = await GetYearlyRecordsFromDaily(measurementDefinition, dfms, queryParameters);
 
             dataSet.Add(locationDataSet);
         });
@@ -299,10 +302,9 @@ async Task<DataSet> GetDataSetInternal(QueryParameters queryParameters)
 
     var definitions = await DataSetDefinition.GetDataSetDefinitions();
 
-    var definition = definitions.Single(x => x.MeasurementDefinitions.Any(y => 
-                               y.DataType == queryParameters.DataType 
-                            && y.DataResolution == queryParameters.Resolution
-                            && y.DataAdjustment == queryParameters.DataAdjustment));
+    var definition = definitions.Single(x => x.DataLocationMapping != null
+                                                && x.DataLocationMapping.LocationIdToDataFileMappings.Keys.Any(y => y == queryParameters.LocationId)
+                                                && x.MeasurementDefinitions.Any(y => y.DataType == queryParameters.DataType && y.DataAdjustment == queryParameters.DataAdjustment));
     Location location = null;
     if (queryParameters.LocationId != null)
     {
@@ -354,23 +356,28 @@ async Task<DataSet> BuildDataSet(QueryParameters queryParameters, DataSetDefinit
     DataSet dataSet = null;
 
     var measurementDefinition = definition.MeasurementDefinitions.Single(x =>  x.DataType == queryParameters.DataType 
-                                                                            && x.DataResolution == queryParameters.Resolution
                                                                             && (!queryParameters.DataAdjustment.HasValue || x.DataAdjustment == queryParameters.DataAdjustment));
+
+    List<DataFileFilterAndAdjustment> dfms = null;
+    if (queryParameters.LocationId != null)
+    {
+        dfms = definition.DataLocationMapping.LocationIdToDataFileMappings[queryParameters.LocationId.Value];
+    }
 
     switch (queryParameters.Resolution)
     {
         case DataResolution.Daily:
-            dataSet = await GetDataFromFile(measurementDefinition, queryParameters.LocationId, queryParameters.Year);
+            dataSet = await GetDataFromFile(measurementDefinition, dfms);
             break;
 
         case DataResolution.Yearly:
             if (measurementDefinition.DataResolution == DataResolution.Daily)
             {
-                dataSet = await GetYearlyRecordsFromDaily(measurementDefinition, queryParameters);
+                dataSet = await GetYearlyRecordsFromDaily(measurementDefinition, dfms, queryParameters);
             }
             else if (measurementDefinition.DataResolution == DataResolution.Monthly)
             {
-                dataSet = await GetYearlyRecordsFromMonthly(measurementDefinition, queryParameters.LocationId, queryParameters.Year);
+                dataSet = await GetYearlyRecordsFromMonthly(measurementDefinition, dfms);
             }
             if (queryParameters.AggregationMethod.HasValue && queryParameters.AggregationMethod == AggregationMethod.GroupByDayThenAverage_Anomaly)
             {
@@ -389,7 +396,7 @@ async Task<DataSet> BuildDataSet(QueryParameters queryParameters, DataSetDefinit
             dataSet = 
                 await GetAverageFromDailyRecords(
                     measurementDefinition,
-                    queryParameters.LocationId.Value, 
+                    dfms, 
                     queryParameters.Year.Value, 
                     ((GroupThenAverage)queryParameters.StatsParameters).DayGroupingThreshold);
 
@@ -408,7 +415,7 @@ async Task<DataSet> BuildDataSet(QueryParameters queryParameters, DataSetDefinit
                 dataSet = 
                     await GetAverageFromDailyRecords(
                         measurementDefinition,
-                        queryParameters.LocationId.Value,
+                        dfms,
                         queryParameters.Year.Value,
                         statsParameters.DayGroupingThreshold
                     );
@@ -420,7 +427,7 @@ async Task<DataSet> BuildDataSet(QueryParameters queryParameters, DataSetDefinit
                     switch (measurementDefinition.RowDataType)
                     {
                         case RowDataType.OneValuePerRow:
-                            dataSet = await GetDataFromFile(measurementDefinition, queryParameters.LocationId);
+                            dataSet = await GetDataFromFile(measurementDefinition, dfms);
                             break;
                         case RowDataType.TwelveMonthsPerRow:
                             dataSet = await GetTwelveMonthsPerRowData(measurementDefinition, "mean");
@@ -472,14 +479,14 @@ DataSet TrimLeadingAndPrecedingNullRecordsFromDataSet(DataSet dataSet)
     return dataSet;
 }
 
-async Task<DataSet> GetYearlyRecordsFromMonthly(MeasurementDefinition measurementDefinition, Guid? locationId, short? year)
+async Task<DataSet> GetYearlyRecordsFromMonthly(MeasurementDefinition measurementDefinition, List<DataFileFilterAndAdjustment> dataFileFilterAndAdjustments)
 {
     DataSet dataSet = null;
 
     switch (measurementDefinition.RowDataType)
     {
         case RowDataType.OneValuePerRow:
-            dataSet = await GetDataFromFile(measurementDefinition, locationId);
+            dataSet = await GetDataFromFile(measurementDefinition, dataFileFilterAndAdjustments);
             break;
         case RowDataType.TwelveMonthsPerRow:
             dataSet = await GetTwelveMonthsPerRowData(measurementDefinition, "mean");
@@ -504,14 +511,14 @@ async Task<DataSet> GetYearlyRecordsFromMonthly(MeasurementDefinition measuremen
     return dataSet;
 }
 
-async Task<DataSet> GetAverageFromDailyRecords(MeasurementDefinition measurementDefinition, Guid locationId, short? year, float? threshold = .8f)
+async Task<DataSet> GetAverageFromDailyRecords(MeasurementDefinition measurementDefinition, List<DataFileFilterAndAdjustment> dataFileFilterAndAdjustments, short? year, float? threshold = .8f)
 {
     if (threshold < 0 || threshold > 1)
     {
         throw new ArgumentOutOfRangeException("threshold", "Threshold needs to be between 0 and 1.");
     }
 
-    var dataSet = await GetDataFromFile(measurementDefinition, locationId, year.Value);
+    var dataSet = await GetDataFromFile(measurementDefinition, dataFileFilterAndAdjustments);
     var returnDataSets = new List<DataSet>();
     
     List<IGrouping<short?, DataRecord>> grouping = null;
@@ -549,21 +556,18 @@ async Task<DataSet> GetAverageFromDailyRecords(MeasurementDefinition measurement
     return dataSet;
 }
 
-async Task<DataSet> GetDataFromFile(MeasurementDefinition measurementDefinition, Guid? locationId = null, short? year = null)
+async Task<DataSet> GetDataFromFile(MeasurementDefinition measurementDefinition, List<DataFileFilterAndAdjustment> dataFileFilterAndAdjustments)
 {
-    var location = locationId == null ? null : (await Location.GetLocations(false)).Single(x => x.Id == locationId);
-
-    throw new NotImplementedException();
-    var dataSet = await DataReader.GetDataSet(measurementDefinition);
+    var dataSet = await DataReader.GetDataSet(measurementDefinition, dataFileFilterAndAdjustments);
     
     return dataSet;
 }
 
-async Task<DataSet> GetYearlyRecordsFromDaily(MeasurementDefinition measurementDefinition, QueryParameters queryParameters)
+async Task<DataSet> GetYearlyRecordsFromDaily(MeasurementDefinition measurementDefinition, List<DataFileFilterAndAdjustment> dataFileFilterAndAdjustments, QueryParameters queryParameters)
 {
     var location = (await Location.GetLocations(false)).Single(x => x.Id == queryParameters.LocationId);
 
-    var dailyDataSet = await GetDataFromFile(measurementDefinition, queryParameters.LocationId);
+    var dailyDataSet = await GetDataFromFile(measurementDefinition, dataFileFilterAndAdjustments);
 
     var yearSets = dailyDataSet.DataRecords.GroupBy(x => x.Year);
 

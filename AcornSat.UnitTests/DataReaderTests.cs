@@ -16,25 +16,7 @@ public class DataReaderTests
     [TestMethod]
     public async Task ProcessDataTest()
     {
-        //var stations = new List<DataFileFilterAndAdjustment>()
-        //{
-        //    new DataFileFilterAndAdjustment
-        //    {
-        //        ExternalStationCode = "1427",
-        //        StartDate = DateTime.Parse("1909/09/01"),
-        //        EndDate = DateTime.Parse("1950/12/31"),
-        //        ValueAdjustment = -0.62f,
-        //    },
-        //    new DataFileFilterAndAdjustment
-        //    {
-        //        ExternalStationCode = "1427",
-        //        StartDate = DateTime.Parse("1951/01/01"),
-        //        EndDate = DateTime.Parse("1976/03/31"),
-        //        ValueAdjustment = -0.65f,
-        //    }
-        //};
-
-        string[]? lines = new []
+        string[]? lines = new[]
         {
             "Header",
             "1427,19501230:2100,21.8,24,15.6,24,-,-,-,-,-,D",
@@ -80,8 +62,8 @@ public class DataReaderTests
         Assert.AreEqual(4, records.Count);
 
         Assert.AreEqual(21.8f, records["1950_12_30"].Value);
-        Assert.AreEqual(null,  records["1950_12_31"].Value);
-        Assert.AreEqual(null,  records["1951_1_1"].Value);
+        Assert.AreEqual(null, records["1950_12_31"].Value);
+        Assert.AreEqual(null, records["1951_1_1"].Value);
         Assert.AreEqual(19.0f, records["1951_1_2"].Value);
     }
 
@@ -155,7 +137,7 @@ public class DataReaderTests
         var recordsList = records.Values.ToList();
 
         Assert.AreEqual(4, records.Count);
-        Assert.AreEqual("1940_8"  , recordsList[0].Key);
+        Assert.AreEqual("1940_8", recordsList[0].Key);
         Assert.AreEqual("1940_11", recordsList[3].Key);
         Assert.AreEqual(null, records["1940_11"].Date);
 
@@ -188,7 +170,7 @@ public class DataReaderTests
         Assert.AreEqual("1940_11", recordsList[3].Key);
 
         Assert.AreEqual(18.7f, records["1940_8"].Value);
-        Assert.AreEqual(null,  records["1940_9"].Value);
+        Assert.AreEqual(null, records["1940_9"].Value);
         Assert.AreEqual(19.7f, records["1940_10"].Value);
         Assert.AreEqual(21.1f, records["1940_11"].Value);
     }
@@ -244,5 +226,56 @@ public class DataReaderTests
 
         Assert.AreEqual(19.5f, records["1940_9"].Value);
         Assert.AreEqual(19.7f, records["1940_10"].Value);
+    }
+
+    [TestMethod]
+    public async Task MultiFileReadAndAdjustTest()
+    {
+        var dataFileFilterAndAdjustments = new List<DataFileFilterAndAdjustment>()
+        {
+            new DataFileFilterAndAdjustment
+            {
+                ExternalStationCode = "1427",
+                StartDate = DateTime.Parse("1909/09/01"),
+                EndDate = DateTime.Parse("1950/12/31"),
+                ValueAdjustment = -0.62f,
+            },
+            new DataFileFilterAndAdjustment
+            {
+                ExternalStationCode = "1427",
+                StartDate = DateTime.Parse("1951/01/01"),
+                EndDate = DateTime.Parse("1976/03/31"),
+                ValueAdjustment = -0.65f,
+            },
+            new DataFileFilterAndAdjustment
+            {
+                ExternalStationCode = "1945",
+                StartDate = DateTime.Parse("1976-04-01"),
+                EndDate = DateTime.Parse("1998-07-31"),
+                ValueAdjustment = 0.01f
+            },
+            new DataFileFilterAndAdjustment
+            {
+                ExternalStationCode = "1962",
+                StartDate = DateTime.Parse("1998-08-01T00:00:00"),
+                EndDate = null,
+                ValueAdjustment = 0
+            }
+        };
+
+        var regEx = new Regex(@"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$");
+
+        var md = new MeasurementDefinition
+        {
+            DataAdjustment = Core.Enums.DataAdjustment.Adjusted,
+            DataType = Core.Enums.DataType.TempMax,
+            DataResolution = Core.Enums.DataResolution.Daily,
+            NullValue = "-",
+            DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$",
+            FolderName = @"Auckland",
+            FileNameFormat = "[station].csv"
+        };
+
+        await DataReader.GetDataRecords(md, dataFileFilterAndAdjustments);
     }
 }

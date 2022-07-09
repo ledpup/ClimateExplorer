@@ -26,19 +26,19 @@ public class DataSetDefinitionViewModel
 
     public static Tuple<DataSetDefinitionViewModel, MeasurementDefinitionViewModel>  GetDataSetDefinitionAndMeasurement(IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, Guid locationId, DataType dataType, DataAdjustment? dataAdjustment, bool allowNullDataAdjustment = false)
     {
-        var dsds = dataSetDefinitions.Where(x => x.LocationIds != null
+        var dsds = dataSetDefinitions.Where(x =>   x.LocationIds != null
                                                 && x.LocationIds.Any(y => y == locationId) 
                                                 && x.MeasurementDefinitions.Any(y => y.DataType == dataType && y.DataAdjustment == dataAdjustment))
                                      .ToList();
 
         if (!dsds.Any() && allowNullDataAdjustment)
         {
-
-            dsds = dataSetDefinitions.Where(x => x.LocationIds.Any()
-                                                && x.LocationIds.Any(y => y == locationId)
-                                                && x.MeasurementDefinitions.Any(y => y.DataType == dataType && y.DataAdjustment == null))
-                                     .ToList();
             dataAdjustment = null;
+            dsds = dataSetDefinitions.Where(x =>   x.LocationIds != null
+                                                && x.LocationIds.Any(y => y == locationId)
+                                                && x.MeasurementDefinitions.Any(y => y.DataType == dataType && y.DataAdjustment == dataAdjustment))
+                                     .ToList();
+            
         }
 
         if (!dsds.Any())
@@ -51,5 +51,4 @@ public class DataSetDefinitionViewModel
                 
         return new Tuple<DataSetDefinitionViewModel, MeasurementDefinitionViewModel>(dsd, md);
     }
-
 }

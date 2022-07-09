@@ -1,4 +1,5 @@
 ﻿using AcornSat.Core.InputOutput;
+using AcornSat.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -95,10 +96,16 @@ namespace AcornSat.WebApi.Model.DataSetBuilder
                     x.DataType == seriesSpecification.DataType &&
                     x.DataAdjustment == seriesSpecification.DataAdjustment);
 
+
             var location = seriesSpecification.LocationId == null ? null : (await Location.GetLocations(false)).Single(x => x.Id == seriesSpecification.LocationId);
 
-            throw new NotImplementedException();
-            var dataRecords = await DataReader.GetDataRecords(measurementDefinition);
+            List<DataFileFilterAndAdjustment> dataFileFilterAndAdjustments = null;
+            if (location != null)
+            {
+                dataFileFilterAndAdjustments = dsd.DataLocationMapping.LocationIdToDataFileMappings[location.Id];
+            }
+            
+            var dataRecords = await DataReader.GetDataRecords(measurementDefinition, dataFileFilterAndAdjustments);
 
             return dataRecords.Select(x => new TemporalDataPoint { Year = x.Year, Month = x.Month, Day = x.Day, Value = x.Value }).ToArray();
         }
