@@ -439,6 +439,11 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
                     }
                 )
                 .ToList(),
+            RawDataRecords =
+                body.IncludeRawDataPoints
+                ? series.RawDataPoints
+                : null
+
         };
 
     return returnDataSet;

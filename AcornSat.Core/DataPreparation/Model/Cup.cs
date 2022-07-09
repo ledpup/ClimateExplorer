@@ -17,7 +17,7 @@ namespace ClimateExplorer.Core.DataPreparation
 
         public override string ToString()
         {
-            return FirstDayInCup.ToString("yyyy-MM-dd") + " -> " + LastDayInCup.ToString("yyyy-MM-dd") + " (" + DataPoints.Length + " data points / " + ExpectedDataPointsInCup + " expected)";
+            return FirstDayInCup.ToString("yyyy-MM-dd") + " -> " + LastDayInCup.ToString("yyyy-MM-dd") + " (" + DataPoints.Where(x => x.Value != null).Count() + " data points / " + ExpectedDataPointsInCup + " expected)";
         }
     }
 }

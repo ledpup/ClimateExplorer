@@ -22,5 +22,8 @@
         public ContainerAggregationFunctions BucketAggregationFunction { get; set; }
         public ContainerAggregationFunctions CupAggregationFunction { get; set; }
         public bool Anomaly { get; set; }
+
+
+        public bool IncludeRawDataPoints { get; set; }
     }
 }

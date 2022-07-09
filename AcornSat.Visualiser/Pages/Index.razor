@@ -816,7 +816,7 @@
                 SelectedBinGranularity.IsModular() && cupAggregationFunction == ContainerAggregationFunctions.Sum
                 ? ContainerAggregationFunctions.Mean
                 : cupAggregationFunction;
-
+            
             DataSet dataSet = 
                 await DataService.PostDataSet(
                     SelectedBinGranularity,
@@ -826,8 +826,11 @@
                     csd.Value,
                     csd.SourceSeriesSpecifications.Select(BuildDataPrepSeriesSpecification).ToArray(),
                     csd.SeriesDerivationType,
-                    SelectedDayGroupThreshold,
-                    SelectedDayGroupThreshold,
+                    // If we're in linear time, all buckets in a bin must have passed the data completeness test. Otherwise we just apply SelectedDayGroupThreshold
+                    csd.BinGranularity.IsLinear() ? 1.0f : SelectedDayGroupThreshold,
+                    // If we're in linear time, all cups in a bucket must have passed the data completeness test. Otherwise we just apply SelectedDayGroupThreshold
+                    csd.BinGranularity.IsLinear() ? 1.0f : SelectedDayGroupThreshold,
+                    // We always require that the cup have at least SelectedDayGroupThreshold of its entries populated
                     SelectedDayGroupThreshold,
                     SelectedDayGrouping
                 );

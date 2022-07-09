@@ -24,6 +24,7 @@ public class DataSet
     public List<Location> Locations { get; set; }
 
     public List<DataRecord> DataRecords { get; set; }
+    public TemporalDataPoint[] RawDataRecords { get; set; }
 
     // TODO: This will go (replaced by code that is bin-oriented)
     public short? StartYear 

@@ -19,6 +19,8 @@ namespace ClimateExplorer.Core.DataPreparation
             public DataCategory? DataCategory { get; set; }
 
             public ChartableDataPoint[] DataPoints { get; set; }
+
+            public TemporalDataPoint[] RawDataPoints { get; set; }
         }
 
         public async Task<BuildDataSetResult> BuildDataSet(PostDataSetsRequestBody request)
@@ -40,6 +42,7 @@ namespace ClimateExplorer.Core.DataPreparation
                 new BuildDataSetResult
                 {
                     DataPoints = dataPoints,
+                    RawDataPoints = request.IncludeRawDataPoints ? series.DataPoints : null,
                     UnitOfMeasure = series.UnitOfMeasure,
                     DataCategory = series.DataCategory
                 };
