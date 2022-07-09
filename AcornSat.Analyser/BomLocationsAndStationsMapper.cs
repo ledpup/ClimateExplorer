@@ -15,7 +15,7 @@ public static class BomLocationsAndStationsMapper
 {
     public static async Task<List<Station>> BuildAcornSatLocationsFromReferenceDataAsync(Guid dataSetDefintionId, string outputFileSuffix)
     {
-        var oldLocations = await Location.GetLocations(@"ReferenceData\ACORN-SAT\Locations.json");
+        var oldLocations = await Location.GetLocationsFromFile(@"ReferenceData\ACORN-SAT\Locations.json");
 
         var locations = new List<Location>();
         var stations = new List<Station>();
@@ -173,7 +173,7 @@ public static class BomLocationsAndStationsMapper
 
     public static async Task BuildRaiaLocationsFromReferenceDataAsync(Guid dataSetDefintionId, string outputFileSuffix)
     {
-        var oldLocations = await Location.GetLocations(@"ReferenceData\RAIA\Locations.json");
+        var oldLocations = await Location.GetLocationsFromFile(@"ReferenceData\RAIA\Locations.json");
 
         var locations = new List<Location>();
         var stations = new List<Station>();

@@ -15,16 +15,24 @@ public class Location
 
     }
 
-    public static async Task<List<Location>> GetLocations(string pathAndFileName)
+    public static async Task<List<Location>> GetLocationsFromFile(string pathAndFileName)
     {
         var locationText = await File.ReadAllTextAsync(pathAndFileName);
         var locations = JsonSerializer.Deserialize<List<Location>>(locationText);
         return locations;
     }
 
-    public static async Task<List<Location>> GetLocations(bool setNearbyLocations)
+    public static async Task<List<Location>> GetLocations(bool setNearbyLocations, string? folderName = null)
     {
-        var locations = await GetLocations(@$"MetaData\Locations.json");
+        folderName = folderName ?? @"MetaData\Location";
+        var locations = new List<Location>();
+        var locationFiles = Directory.GetFiles(folderName).ToList();
+        foreach (var file in locationFiles)
+        {
+            var locationsInFile = await GetLocationsFromFile(file);
+            locations.AddRange(locationsInFile);
+        }
+        
 
         if (setNearbyLocations)
         {

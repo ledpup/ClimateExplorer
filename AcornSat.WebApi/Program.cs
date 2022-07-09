@@ -25,7 +25,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<JsonOptions>(
     opt =>
     {
-       // opt.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        opt.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
 builder.Services.AddCors(
@@ -128,6 +128,7 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
                 StationInfoUrl = x.StationInfoUrl,
                 LocationInfoUrl = x.LocationInfoUrl,
                 Description = x.Description,
+                LocationIds = x.DataLocationMapping?.LocationIdToDataFileMappings.Keys.ToList(),
                 MeasurementDefinitions = x.MeasurementDefinitions.Select(x => x.ToViewModel()).ToList(),
             })
         .Select(x => x.Result)

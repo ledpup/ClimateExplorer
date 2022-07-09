@@ -85,21 +85,18 @@
 
         if (SelectedLocation == null) return;
 
-        var dsdLocation = DataSetDefinitions.Single(x => x.Id == SelectedLocation.DataSetId);
+        var dsdMaxAdjusted = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMax, DataAdjustment.Adjusted, true);
+        var mdTempMax = dsdMaxAdjusted.Item2;
 
-        var mdTempMax =
-            dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted) ??
-            dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == null);
+        var dsdMaxUnadjusted = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMax, DataAdjustment.Adjusted, true);
+        var mdTempMaxUnajusted = dsdMaxUnadjusted.Item2;
 
-        var mdTempMaxUnajusted =
-            dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Unadjusted) ??
-            dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == null);
+        var dsdRainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.Rainfall, null);
+        var mdRainfall = dsdRainfall.Item2;
 
-        var mdRainfall =
-            dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.Rainfall && x.DataAdjustment == null);
-
-        var mdSolarRadiation =
-            dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.SolarRadiation && x.DataAdjustment == null);
+        var dsdSolarRadiation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.SolarRadiation, null);
+        var mdSolarRadiation = dsdSolarRadiation.Item2;
+            
 
         var dsdMeiV2 = DataSetDefinitions.Single(x => x.Id == Guid.Parse("ffd5f5e2-d8df-4779-a7f4-f5d148505033"));
         var mdMeiV2 = dsdMeiV2.MeasurementDefinitions.Single(x => x.DataType == DataType.MEIv2);
@@ -118,7 +115,7 @@
                                     LocationName = SelectedLocation.Name,
                                     Aggregation = SeriesAggregationOptions.Mean,
                                     DataResolution = DataResolution.Yearly,
-                                    DataSetDefinition = dsdLocation,
+                                    DataSetDefinition = dsdMaxAdjusted.Item1,
                                     MeasurementDefinition = mdTempMax,
                                     Smoothing = SeriesSmoothingOptions.MovingAverage,
                                     SmoothingWindow = 20,
@@ -131,7 +128,7 @@
                                     LocationName = SelectedLocation.Name,
                                     Aggregation = SeriesAggregationOptions.Sum,
                                     DataResolution = DataResolution.Yearly,
-                                    DataSetDefinition = dsdLocation,
+                                    DataSetDefinition = dsdRainfall.Item1,
                                     MeasurementDefinition = mdRainfall,
                                     Smoothing = SeriesSmoothingOptions.MovingAverage,
                                     SmoothingWindow = 20,
@@ -156,7 +153,7 @@
                             LocationName = SelectedLocation.Name,
                             Aggregation = SeriesAggregationOptions.Mean,
                             DataResolution = DataResolution.Yearly,
-                            DataSetDefinition = dsdLocation,
+                            DataSetDefinition = dsdMaxAdjusted.Item1,
                             MeasurementDefinition = mdTempMax,
                             Smoothing = SeriesSmoothingOptions.None,
                             SmoothingWindow = 5,
@@ -180,7 +177,7 @@
                                         LocationName = SelectedLocation.Name,
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         DataResolution = DataResolution.Yearly,
-                                        DataSetDefinition = dsdLocation,
+                                        DataSetDefinition = dsdMaxAdjusted.Item1,
                                         MeasurementDefinition = mdTempMax,
                                         ShowTrendline = true,
                                         Smoothing = SeriesSmoothingOptions.None,
@@ -203,7 +200,7 @@
                                         LocationName = SelectedLocation.Name,
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         DataResolution = DataResolution.Yearly,
-                                        DataSetDefinition = dsdLocation,
+                                        DataSetDefinition = dsdMaxAdjusted.Item1,
                                         MeasurementDefinition = mdTempMax,
                                         Smoothing = SeriesSmoothingOptions.None,
                                         SmoothingWindow = 5,
@@ -216,7 +213,7 @@
                                         LocationName = SelectedLocation.Name,
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         DataResolution = DataResolution.Yearly,
-                                        DataSetDefinition = dsdLocation,
+                                        DataSetDefinition = dsdMaxAdjusted.Item1,
                                         MeasurementDefinition = mdTempMax,
                                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                                         SmoothingWindow = 5,
@@ -238,7 +235,7 @@
                                         LocationName = SelectedLocation.Name,
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         DataResolution = DataResolution.Yearly,
-                                        DataSetDefinition = dsdLocation,
+                                        DataSetDefinition = dsdMaxAdjusted.Item1,
                                         MeasurementDefinition = mdTempMax,
                                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                                         SmoothingWindow = 5,
@@ -260,7 +257,7 @@
                                         LocationName = SelectedLocation.Name,
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         DataResolution = DataResolution.Yearly,
-                                        DataSetDefinition = dsdLocation,
+                                        DataSetDefinition = dsdMaxUnadjusted.Item1,
                                         MeasurementDefinition = mdTempMaxUnajusted,
                                         ShowTrendline = false,
                                         Smoothing = SeriesSmoothingOptions.None,
@@ -274,7 +271,7 @@
                                         LocationName = SelectedLocation.Name,
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         DataResolution = DataResolution.Yearly,
-                                        DataSetDefinition = dsdLocation,
+                                        DataSetDefinition = dsdSolarRadiation.Item1,
                                         MeasurementDefinition = mdSolarRadiation,
                                         ShowTrendline = false,
                                         Smoothing = SeriesSmoothingOptions.None,
@@ -301,7 +298,7 @@
                                         LocationName = SelectedLocation.Name,
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         DataResolution = DataResolution.Yearly,
-                                        DataSetDefinition = dsdLocation,
+                                        DataSetDefinition = dsdMaxAdjusted.Item1,
                                         MeasurementDefinition = mdTempMax,
                                         Smoothing = SeriesSmoothingOptions.None,
                                         SmoothingWindow = 5,
@@ -326,8 +323,8 @@
                                 LocationName = SelectedLocation.Name,
                                 Aggregation = SeriesAggregationOptions.Mean,
                                 DataResolution = DataResolution.Yearly,
-                                DataSetDefinition = dsdLocation,
-                                MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted),
+                                DataSetDefinition = dsdMaxAdjusted.Item1,
+                                MeasurementDefinition = mdTempMax,
                                 ShowTrendline = false,
                                 Smoothing = SeriesSmoothingOptions.None,
                                 SmoothingWindow = 5,
@@ -340,8 +337,8 @@
                                 LocationName = SelectedLocation.Name,
                                 Aggregation = SeriesAggregationOptions.Mean,
                                 DataResolution = DataResolution.Yearly,
-                                DataSetDefinition = dsdLocation,
-                                MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Unadjusted),
+                                DataSetDefinition = dsdMaxUnadjusted.Item1,
+                                MeasurementDefinition = mdTempMaxUnajusted,
                                 ShowTrendline = false,
                                 Smoothing = SeriesSmoothingOptions.None,
                                 SmoothingWindow = 5,
@@ -365,8 +362,8 @@
                                                 LocationName = SelectedLocation.Name,
                                                 Aggregation = SeriesAggregationOptions.Mean,
                                                 DataResolution = DataResolution.Yearly,
-                                                DataSetDefinition = dsdLocation,
-                                                MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted),
+                                                DataSetDefinition = dsdMaxAdjusted.Item1,
+                                                MeasurementDefinition = mdTempMax,
                                                 ShowTrendline = true,
                                                 Smoothing = SeriesSmoothingOptions.None,
                                                 SmoothingWindow = 5,
@@ -379,8 +376,8 @@
                                                 LocationName = SelectedLocation.Name,
                                                 Aggregation = SeriesAggregationOptions.Mean,
                                                 DataResolution = DataResolution.Yearly,
-                                                DataSetDefinition = dsdLocation,
-                                                MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Unadjusted),
+                                                DataSetDefinition = dsdMaxUnadjusted.Item1,
+                                                MeasurementDefinition = mdTempMaxUnajusted,
                                                 ShowTrendline = true,
                                                 Smoothing = SeriesSmoothingOptions.None,
                                                 SmoothingWindow = 5,
@@ -402,8 +399,8 @@
                                                 LocationName = SelectedLocation.Name,
                                                 Aggregation = SeriesAggregationOptions.Mean,
                                                 DataResolution = DataResolution.Yearly,
-                                                DataSetDefinition = dsdLocation,
-                                                MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted),
+                                                DataSetDefinition = dsdMaxAdjusted.Item1,
+                                                MeasurementDefinition = mdTempMax,
                                                 ShowTrendline = false,
                                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                                 SmoothingWindow = 10,
@@ -416,8 +413,8 @@
                                                 LocationName = SelectedLocation.Name,
                                                 Aggregation = SeriesAggregationOptions.Mean,
                                                 DataResolution = DataResolution.Yearly,
-                                                DataSetDefinition = dsdLocation,
-                                                MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Unadjusted),
+                                                DataSetDefinition = dsdMaxUnadjusted.Item1,
+                                                MeasurementDefinition = mdTempMaxUnajusted,
                                                 ShowTrendline = false,
                                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                                 SmoothingWindow = 10,

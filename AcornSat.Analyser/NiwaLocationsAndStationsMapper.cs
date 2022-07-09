@@ -14,7 +14,7 @@ public static class NiwaLocationsAndStationsMapper
 {
     public static async Task BuildNiwaLocationsAsync(Guid dataSetDefintionId, string sourceLocationsFileName, string oldLocationsFileName, string outputFileSuffix)
     {
-        var oldLocations = await Location.GetLocations($@"ReferenceData\NIWA\{oldLocationsFileName}");
+        var oldLocations = await Location.GetLocationsFromFile($@"ReferenceData\NIWA\{oldLocationsFileName}");
 
         var locations = new List<Location>();
         var stations = new List<Station>();

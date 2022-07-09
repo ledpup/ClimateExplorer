@@ -472,7 +472,7 @@ internal class DataSetDefinitionsBuilder
                 new JsonStringEnumConverter()
             }
         };
-        File.WriteAllText("DataSetDefinitions.json", JsonSerializer.Serialize(dataSetDefinitions, options));
+        File.WriteAllText(@"Output\DataSetDefinitions.json", JsonSerializer.Serialize(dataSetDefinitions, options));
 
         return dataSetDefinitions;
     }

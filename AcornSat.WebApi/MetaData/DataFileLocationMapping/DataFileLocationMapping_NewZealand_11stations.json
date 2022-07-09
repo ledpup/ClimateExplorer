@@ -1,0 +1,160 @@
+{
+  "DataSetDefinitionId": "88e52edd-3c67-484a-b614-91070037d47a",
+  "MeasurementDefinitionId": null,
+  "LocationIdToDataFileMappings": {
+    "1e69bdc6-1bdd-42b6-96ad-35b0648aa9d0": [
+      {
+        "ExternalStationCode": "6172",
+        "StartDate": null,
+        "EndDate": "1994-12-31T00:00:00",
+        "ValueAdjustment": 0
+      },
+      {
+        "ExternalStationCode": "6174",
+        "StartDate": "1995-01-01T00:00:00",
+        "EndDate": null,
+        "ValueAdjustment": 0
+      }
+    ],
+    "28e0e278-1bc8-46b8-b809-23b85618623e": [
+      {
+        "ExternalStationCode": "2807",
+        "StartDate": null,
+        "EndDate": "1989-12-31T00:00:00",
+        "ValueAdjustment": 0
+      },
+      {
+        "ExternalStationCode": "2810",
+        "StartDate": "1990-01-01T00:00:00",
+        "EndDate": null,
+        "ValueAdjustment": 0
+      }
+    ],
+    "f5a8a194-681a-4116-8a75-97fcbb57e20b": [
+      {
+        "ExternalStationCode": "2101",
+        "StartDate": null,
+        "EndDate": "1996-12-31T00:00:00",
+        "ValueAdjustment": 0
+      },
+      {
+        "ExternalStationCode": "12616",
+        "StartDate": "1997-01-01T00:00:00",
+        "EndDate": "2005-12-31T00:00:00",
+        "ValueAdjustment": 0
+      },
+      {
+        "ExternalStationCode": "26117",
+        "StartDate": "2006-01-01T00:00:00",
+        "EndDate": null,
+        "ValueAdjustment": 0
+      }
+    ],
+    "7a6c3b06-bfed-4cee-b256-a456e6fb6e1d": [
+      {
+        "ExternalStationCode": "5814",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": 0
+      }
+    ],
+    "42d5c5d9-ed1c-4517-8c49-005a0991d252": [
+      {
+        "ExternalStationCode": "4461",
+        "StartDate": null,
+        "EndDate": "1992-12-31T00:00:00",
+        "ValueAdjustment": 0
+      },
+      {
+        "ExternalStationCode": "7427",
+        "StartDate": "1993-01-01T00:00:00",
+        "EndDate": null,
+        "ValueAdjustment": 0
+      }
+    ],
+    "9344c843-31d8-4b66-ba9f-d1c99e57cfbe": [
+      {
+        "ExternalStationCode": "2363",
+        "StartDate": null,
+        "EndDate": "1979-12-31T00:00:00",
+        "ValueAdjustment": 0
+      },
+      {
+        "ExternalStationCode": "2357",
+        "StartDate": "1987-01-01T00:00:00",
+        "EndDate": "1999-12-31T00:00:00",
+        "ValueAdjustment": 0
+      },
+      {
+        "ExternalStationCode": "18464",
+        "StartDate": "2000-09-12T00:00:00",
+        "EndDate": null,
+        "ValueAdjustment": 0
+      }
+    ],
+    "c0c902ba-64b3-46d7-a844-837d237537f2": [
+      {
+        "ExternalStationCode": "3238",
+        "StartDate": null,
+        "EndDate": "2000-12-31T00:00:00",
+        "ValueAdjustment": 0
+      },
+      {
+        "ExternalStationCode": "21963",
+        "StartDate": "2001-01-01T00:00:00",
+        "EndDate": null,
+        "ValueAdjustment": 0
+      }
+    ],
+    "47685338-885d-4c7b-82db-8bd5def52cc4": [
+      {
+        "ExternalStationCode": "5446",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": 0
+      }
+    ],
+    "22ce0fe4-99d7-4522-87f1-e1a0b024a098": [
+      {
+        "ExternalStationCode": "6169",
+        "StartDate": null,
+        "EndDate": "1997-12-31T00:00:00",
+        "ValueAdjustment": 0
+      },
+      {
+        "ExternalStationCode": "6170",
+        "StartDate": "1998-01-01T00:00:00",
+        "EndDate": null,
+        "ValueAdjustment": 0
+      }
+    ],
+    "fc05dce1-79cd-4f0a-b84d-6b2919b8450a": [
+      {
+        "ExternalStationCode": "1612",
+        "StartDate": null,
+        "EndDate": "1988-12-31T00:00:00",
+        "ValueAdjustment": 0
+      },
+      {
+        "ExternalStationCode": "1615",
+        "StartDate": "1990-05-31T00:00:00",
+        "EndDate": null,
+        "ValueAdjustment": 0
+      }
+    ],
+    "50a2dd7c-afe5-4645-8f49-508fd805e8f5": [
+      {
+        "ExternalStationCode": "3810",
+        "StartDate": null,
+        "EndDate": "1991-10-12T00:00:00",
+        "ValueAdjustment": 0
+      },
+      {
+        "ExternalStationCode": "7342",
+        "StartDate": "1991-10-13T00:00:00",
+        "EndDate": null,
+        "ValueAdjustment": 0
+      }
+    ]
+  }
+}

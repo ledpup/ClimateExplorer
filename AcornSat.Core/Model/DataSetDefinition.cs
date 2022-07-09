@@ -24,12 +24,20 @@ public class DataSetDefinition
 
     public DataFileLocationMapping DataLocationMapping { get; set; }
 
-    public static async Task<List<DataSetDefinition>> GetDataSetDefinitions(string filePath = @"MetaData\DataSetDefinitions.json")
+    public static async Task<List<DataSetDefinition>> GetDataSetDefinitions(string filePath = @"MetaData\DataSetDefinitions.json", string dataFileLocationMappingFolder = null)
     {
         var text = await File.ReadAllTextAsync(filePath);
-        var ddd = JsonSerializer.Deserialize<List<DataSetDefinition>>(text);
+        var options = new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() } };
+        var ddds = JsonSerializer.Deserialize<List<DataSetDefinition>>(text, options);
 
-        return ddd;
+        var dataFileLocationMappings = await DataFileLocationMapping.GetDataFileLocationMappings();
+        foreach (var ddd in ddds)
+        {
+            var dataFileLocationMapping = dataFileLocationMappings.SingleOrDefault(x => x.DataSetDefinitionId == ddd.Id);
+            ddd.DataLocationMapping = dataFileLocationMapping;
+        }
+
+        return ddds;
     }
 
     public override string ToString()

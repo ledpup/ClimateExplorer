@@ -14,26 +14,26 @@
             <Value>
                 @{
                     bool firstSite = true;
-                    foreach (var station in Location.Stations)
-                    {
-                        if (!firstSite)
-                        {
-                            <span>, </span>
-                        }
-                        else
-                        {
-                            firstSite = false;
-                        }
+                    //foreach (var station in Location.Stations)
+                    //{
+                    //    if (!firstSite)
+                    //    {
+                    //        <span>, </span>
+                    //    }
+                    //    else
+                    //    {
+                    //        firstSite = false;
+                    //    }
 
-                        if (DataSetDefinition.StationInfoUrl != null)
-                        {
-                            <span><a href="@DataSetDefinition.StationInfoUrl.Replace("[station]", station.Id)" target="_blank">@station.Id</a></span>
-                        }
-                        else
-                        {
-                            <span>@(station.Id)</span>
-                        }
-                    }
+                    //    if (DataSetDefinition.StationInfoUrl != null)
+                    //    {
+                    //        <span><a href="@DataSetDefinition.StationInfoUrl.Replace("[station]", station.Id)" target="_blank">@station.Id</a></span>
+                    //    }
+                    //    else
+                    //    {
+                    //        <span>@(station.Id)</span>
+                    //    }
+                    //}
                 }
             </Value>
         </OverviewField><!--

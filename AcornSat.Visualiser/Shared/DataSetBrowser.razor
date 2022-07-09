@@ -83,7 +83,7 @@
                         DataSets = new List<DataSetLibraryEntry>()
                     };
 
-            var dsd = DataSetDefinitions.SingleOrDefault(x => x.Id == CurrentLocation.DataSetId);
+            DataSetDefinitionViewModel dsd = null; //DataSetDefinitionViewModel.GetDefaultDataSetDefinitionForLocation(DataSetDefinitions, CurrentLocation.Id);
 
             if (dsd != null)
             {
@@ -94,7 +94,7 @@
                             {
                                 DataType = md.DataType,
                                 DataAdjustment = md.DataAdjustment,
-                                SourceDataSetId = CurrentLocation.DataSetId,
+                                SourceDataSetId = dsd.Id,
                                 LocationId = CurrentLocation.Id,
                                 LocationName = CurrentLocation.Name,
                                 Name = BuildDataSetName(md, dsd)

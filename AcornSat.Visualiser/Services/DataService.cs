@@ -4,12 +4,15 @@ using AcornSat.Core.ViewModel;
 using AcornSat.Visualiser.Services;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using static AcornSat.Core.Enums;
 
 public class DataService : IDataService
 {   
     private readonly HttpClient _httpClient;
     private readonly IDataServiceCache _dataServiceCache;
+    JsonSerializerOptions _jsonSerializerOptions;
 
     public DataService(
         HttpClient httpClient,
@@ -17,6 +20,7 @@ public class DataService : IDataService
     {
         _httpClient = httpClient;
         _dataServiceCache = dataServiceCache;
+        _jsonSerializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web) { Converters = { new JsonStringEnumConverter() } };
     }
 
     public async Task<DataSet> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short ? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f)
@@ -52,7 +56,7 @@ public class DataService : IDataService
 
         if (result == null)
         {
-            result = await _httpClient.GetFromJsonAsync<DataSet>(url);
+            result = await _httpClient.GetFromJsonAsync<DataSet>(url, _jsonSerializerOptions);
 
             _dataServiceCache.Put(url, result);
         }
@@ -82,7 +86,7 @@ public class DataService : IDataService
     public async Task<IEnumerable<DataSetDefinitionViewModel>> GetDataSetDefinitions()
     {
         var url = "/datasetdefinition";
-        return await _httpClient.GetFromJsonAsync<DataSetDefinitionViewModel[]>(url);
+        return await _httpClient.GetFromJsonAsync<DataSetDefinitionViewModel[]>(url, _jsonSerializerOptions);
     }
 
     public async Task<IEnumerable<Location>> GetLocations(string dataSetName = null, bool includeNearbyLocations = false, bool includeWarmingMetrics = false)

@@ -560,9 +560,10 @@
         if (setupDefaultChartSeries)
         {
             var location = Locations.Single(x => x.Id == locationId);
-            var dsd = DataSetDefinitions.Single(x => x.Id == location.DataSetId);
-            var mdTempMax = dsd.MeasurementDefinitions.Single(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted);
-            var mdRainfall = dsd.MeasurementDefinitions.Single(x => x.DataType == DataType.Rainfall);
+            var dsd1 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMax, DataAdjustment.Adjusted);
+            var mdTempMax = dsd1.Item2;
+            var dsd2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.Rainfall, null);
+            var mdRainfall = dsd2.Item2;
 
             ChartSeriesList.Add(
                 new ChartSeriesDefinition()
@@ -571,7 +572,7 @@
                     LocationName = location.Name,
                     Aggregation = SeriesAggregationOptions.Mean,
                     DataResolution = DataResolution.Yearly,
-                    DataSetDefinition = dsd,
+                    DataSetDefinition = dsd1.Item1,
                     MeasurementDefinition = mdTempMax,
                     Smoothing = SeriesSmoothingOptions.MovingAverage,
                     SmoothingWindow = 20,
@@ -587,7 +588,7 @@
                     LocationName = location.Name,
                     Aggregation = SeriesAggregationOptions.Sum,
                     DataResolution = DataResolution.Yearly,
-                    DataSetDefinition = dsd,
+                    DataSetDefinition = dsd2.Item1,
                     MeasurementDefinition = mdRainfall,
                     Smoothing = SeriesSmoothingOptions.MovingAverage,
                     SmoothingWindow = 20,
@@ -1437,7 +1438,7 @@
 
         SelectedLocationId = newValue;
         SelectedLocation = Locations.Single(x => x.Id == SelectedLocationId);
-        SelectedDataSetDefinition = DataSetDefinitions.Single(x => x.Id == SelectedLocation.DataSetId);
+        SelectedDataSetDefinition = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocationId, DataType.TempMax, DataAdjustment.Adjusted).Item1;
 
         List<ChartSeriesDefinition> additionalCsds = new List<ChartSeriesDefinition>();
 
@@ -1501,7 +1502,7 @@
             else
             {
                 // It's locked, so duplicate it & set the location on the duplicate to the new location
-                var newDsd = DataSetDefinitions.Single(x => x.Id == SelectedLocation.DataSetId);
+                var newDsd = DataSetDefinitions.Single(x => x.Id == SelectedDataSetDefinition.Id);
                 var newMd = 
                     newDsd.MeasurementDefinitions
                     .SingleOrDefault(x => x.DataType == csd.MeasurementDefinition.DataType && x.DataAdjustment == csd.MeasurementDefinition.DataAdjustment);
@@ -1520,7 +1521,7 @@
                         {
                             Aggregation = csd.Aggregation,
                             DataResolution = csd.DataResolution,
-                            DataSetDefinition = DataSetDefinitions.Single(x => x.Id == SelectedLocation.DataSetId),
+                            DataSetDefinition = DataSetDefinitions.Single(x => x.Id == SelectedDataSetDefinition.Id),
                             DisplayStyle = csd.DisplayStyle,
                             IsLocked = false,
                             LocationId = newValue,

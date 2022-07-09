@@ -17,19 +17,37 @@ GenerateMapMarkers();
 
 var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
 
+// await ValidateLocations();
+
 await NiwaLocationsAndStationsMapper.BuildNiwaLocationsAsync(Guid.Parse("7522E8EC-E743-4CB0-BC65-6E9F202FC824"), "7-stations_locations_adjusted.csv", "7-stations_Locations.json", "_NewZealand_7stations_adjusted");
 await NiwaLocationsAndStationsMapper.BuildNiwaLocationsAsync(Guid.Parse("534950DC-EDA4-4DB5-8816-3705358F1797"), "7-stations_locations_unadjusted.csv", "7-stations_Locations.json", "_NewZealand_7stations_unadjusted");
 await NiwaLocationsAndStationsMapper.BuildNiwaLocationsAsync(Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"), "11-stations_locations.csv", "11-stations_Locations.json", "_NewZealand_11stations");
 
 var stations = await BomLocationsAndStationsMapper.BuildAcornSatLocationsFromReferenceDataAsync(Guid.Parse("E5EEA4D6-5FD5-49AB-BF85-144A8921111E"), "_Australia_unadjusted");
 await BomDataDownloader.GetDataForEachStation(stations);
-await BomLocationsAndStationsMapper.BuildAcornSatAdjustedDataFileLocationMappingAsync(Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"), @"Output\BOM\DataFileLocationMapping_Australia_unadjusted.json", "_Australia_adjusted");
+await BomLocationsAndStationsMapper.BuildAcornSatAdjustedDataFileLocationMappingAsync(Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"), @"Output\DataFileLocationMapping\DataFileLocationMapping_Australia_unadjusted.json", "_Australia_adjusted");
 
-await BomLocationsAndStationsMapper.BuildRaiaLocationsFromReferenceDataAsync(Guid.Parse("E5EEA4D6-5FD5-49AB-BF85-144A8921111E"), "_Australia_Raia");
+await BomLocationsAndStationsMapper.BuildRaiaLocationsFromReferenceDataAsync(Guid.Parse("647b6a05-43e4-48e0-a43e-04ae81a74653"), "_Australia_Raia");
+
+
+
+async Task ValidateLocations()
+{
+    var locations = await Location.GetLocations(false, @"Output\Location");
+
+    if (locations.GroupBy(x => x.Id).Any(x => x.Count() > 1))
+    {
+        throw new Exception("There are duplicate location IDs");
+    }
+    if (locations.GroupBy(x => x.Name).Any(x => x.Count() > 1))
+    {
+        throw new Exception("There are duplicate location names");
+    }
+}
 
 async Task DownloadDataSetData(DataSetDefinition dataSetDefinition)
 {
-    var userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
+    var userAgent = "Mozilla /5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
     var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
     using (var httpClient = new HttpClient())
     {
