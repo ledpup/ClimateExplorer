@@ -37,7 +37,7 @@
                 }
             </Value>
         </OverviewField><!--
-     --><OverviewField Label="Dataset">
+     -->@*<OverviewField Label="Dataset">
             <Value>
                 @if (!String.IsNullOrWhiteSpace(DataSetDefinition.MoreInformationUrl))
                 {
@@ -48,7 +48,7 @@
                     @DataSetDefinition.Name
                 }
             </Value>
-        </OverviewField>
+        </OverviewField>*@
         @if (dataSet != null)
         {
             <OverviewField Label="Warming index" PopupText="@dataSet.WarmingIndexDescription"><Value>@dataSet.WarmingIndexAsString</Value></OverviewField>
@@ -70,9 +70,6 @@
 
     [Parameter]
     public Location Location { get; set; }
-
-    [Parameter]
-    public DataSetDefinitionViewModel DataSetDefinition { get; set; }
 
     [Parameter]
     public EventCallback RequestLocationChange { get; set; }
@@ -116,25 +113,25 @@
         // We do manual change detection here because Blazor calls OnParametersSetAsync() repeatedly with the same input values.
         Guid callId = Guid.NewGuid();
 
-        if (locationIdLastTimeOnParametersSetAsyncWasCalled == Location?.Id &&
-            dataSetDefinitionIdLastTimeOnParametersSetAsyncWasCalled == DataSetDefinition?.Id)
-        {
-            return;
-        }
+        //if (locationIdLastTimeOnParametersSetAsyncWasCalled == Location?.Id &&
+        //    dataSetDefinitionIdLastTimeOnParametersSetAsyncWasCalled == DataSetDefinition?.Id)
+        //{
+        //    return;
+        //}
 
         locationIdLastTimeOnParametersSetAsyncWasCalled = Location?.Id;
-        dataSetDefinitionIdLastTimeOnParametersSetAsyncWasCalled = DataSetDefinition?.Id;
+        //dataSetDefinitionIdLastTimeOnParametersSetAsyncWasCalled = DataSetDefinition?.Id;
 
-        Enums.DataAdjustment? dataAdjustment = null;
-        if (DataSetDefinition.MeasurementDefinitions.Any(x => x.DataType == DataType.TempMax && x.DataAdjustment == Enums.DataAdjustment.Adjusted))
-        {
-            dataAdjustment = Enums.DataAdjustment.Adjusted;
-        }
+        //Enums.DataAdjustment? dataAdjustment = null;
+        //if (DataSetDefinition.MeasurementDefinitions.Any(x => x.DataType == DataType.TempMax && x.DataAdjustment == Enums.DataAdjustment.Adjusted))
+        //{
+        //    dataAdjustment = Enums.DataAdjustment.Adjusted;
+        //}
 
-        var dataset = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage_Anomaly, Location.Id);
-        dataRecordsRelative = dataset.DataRecords.Where(x => x.Value != null).ToList();
+        //var dataset = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage_Anomaly, Location.Id);
+        //dataRecordsRelative = dataset.DataRecords.Where(x => x.Value != null).ToList();
 
-        dataSet = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage, Location.Id);
+        //dataSet = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage, Location.Id);
 
         await base.OnParametersSetAsync();
     }

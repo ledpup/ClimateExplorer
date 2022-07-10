@@ -12,14 +12,14 @@
       {
         "ExternalStationCode": "001019",
         "StartDate": "1998-09-16T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "ba6fb433-bc80-4890-8c8b-16830b95f633": [
       {
         "ExternalStationCode": "002011",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1949-12-31T00:00:00",
         "ValueAdjustment": null
       },
@@ -32,21 +32,21 @@
       {
         "ExternalStationCode": "002079",
         "StartDate": "2015-09-19T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "05daa0ea-6227-4225-bf52-8204808709b5": [
       {
         "ExternalStationCode": "003002",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1941-12-31T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "003003",
         "StartDate": "1942-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -60,21 +60,21 @@
       {
         "ExternalStationCode": "004032",
         "StartDate": "1948-07-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "909dadb1-c33b-412b-97e0-42f5704f4090": [
       {
         "ExternalStationCode": "004020",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "2000-09-25T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "004106",
         "StartDate": "2000-09-26T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -82,7 +82,7 @@
       {
         "ExternalStationCode": "005007",
         "StartDate": "1975-03-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -96,21 +96,21 @@
       {
         "ExternalStationCode": "005098",
         "StartDate": "2018-09-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "1c72f3e1-7d98-4ac5-8b64-1b5b2a4d599e": [
       {
         "ExternalStationCode": "006062",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1947-12-31T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "006011",
         "StartDate": "1948-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -124,7 +124,7 @@
       {
         "ExternalStationCode": "007045",
         "StartDate": "1950-04-25T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -138,7 +138,7 @@
       {
         "ExternalStationCode": "008296",
         "StartDate": "1997-03-26T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -152,14 +152,14 @@
       {
         "ExternalStationCode": "008297",
         "StartDate": "2007-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "c6ba58ea-6142-4954-afac-256ca81c67bc": [
       {
         "ExternalStationCode": "008050",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1941-12-31T00:00:00",
         "ValueAdjustment": null
       },
@@ -172,64 +172,64 @@
       {
         "ExternalStationCode": "008315",
         "StartDate": "2011-07-20T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "02619137-0d4d-4bcf-8ae3-f87697cd178d": [
       {
         "ExternalStationCode": "009034",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1963-12-31T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "009021",
         "StartDate": "1964-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "f8dfe45b-d49c-4c0f-8d69-27d2d92cdb4b": [
       {
         "ExternalStationCode": "009518",
-        "StartDate": "1910-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "StartDate": null,
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "9ea5be14-0e54-4453-8e8b-4c11e075cb42": [
       {
         "ExternalStationCode": "009510",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "2007-12-31T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "009617",
         "StartDate": "2008-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "7c7d3560-0741-4966-a878-b2749afc7737": [
       {
         "ExternalStationCode": "009541",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1969-06-29T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "009789",
         "StartDate": "1969-06-30T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "e491279a-781c-4eb0-8ccf-d49f3d9e2d5a": [
       {
         "ExternalStationCode": "009500",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1965-04-11T00:00:00",
         "ValueAdjustment": null
       },
@@ -242,7 +242,7 @@
       {
         "ExternalStationCode": "009999",
         "StartDate": "2012-01-13T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -256,7 +256,7 @@
       {
         "ExternalStationCode": "010092",
         "StartDate": "1975-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -270,35 +270,35 @@
       {
         "ExternalStationCode": "010286",
         "StartDate": "1997-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "aa0021dd-8c27-4101-96b7-5e6b60c0c70a": [
       {
         "ExternalStationCode": "010579",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1999-01-08T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "010916",
         "StartDate": "1999-01-09T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "81644c2e-0ddc-472f-bae6-d976e6d623bc": [
       {
         "ExternalStationCode": "010648",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1998-12-13T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "010917",
         "StartDate": "1998-12-14T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -306,7 +306,7 @@
       {
         "ExternalStationCode": "011003",
         "StartDate": "1913-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -320,21 +320,21 @@
       {
         "ExternalStationCode": "011052",
         "StartDate": "1993-03-15T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "6e8b7fce-49bf-41d2-959d-62130a40fb22": [
       {
         "ExternalStationCode": "012039",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1943-12-31T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "012038",
         "StartDate": "1944-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -342,21 +342,21 @@
       {
         "ExternalStationCode": "013017",
         "StartDate": "1956-08-13T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "00147d6f-1569-422f-8322-a42b98e25071": [
       {
         "ExternalStationCode": "014016",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1941-02-01T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "014015",
         "StartDate": "1941-02-02T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -364,7 +364,7 @@
       {
         "ExternalStationCode": "014825",
         "StartDate": "1965-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -378,21 +378,21 @@
       {
         "ExternalStationCode": "015135",
         "StartDate": "1970-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "fbb67194-9253-4ed2-bd20-f4a0211b264b": [
       {
         "ExternalStationCode": "015540",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1941-12-31T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "015590",
         "StartDate": "1942-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -406,7 +406,7 @@
       {
         "ExternalStationCode": "015666",
         "StartDate": "1997-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -414,7 +414,7 @@
       {
         "ExternalStationCode": "016001",
         "StartDate": "1949-04-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -428,7 +428,7 @@
       {
         "ExternalStationCode": "016098",
         "StartDate": "1997-10-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -448,14 +448,14 @@
       {
         "ExternalStationCode": "017043",
         "StartDate": "1994-12-12T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "516cbbab-1226-4caa-b18d-e5b2aeeff7d6": [
       {
         "ExternalStationCode": "017024",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1939-03-31T00:00:00",
         "ValueAdjustment": null
       },
@@ -468,7 +468,7 @@
       {
         "ExternalStationCode": "017126",
         "StartDate": "2006-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -476,7 +476,7 @@
       {
         "ExternalStationCode": "018012",
         "StartDate": "1939-07-02T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -484,35 +484,35 @@
       {
         "ExternalStationCode": "018044",
         "StartDate": "1930-02-10T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "b4e10e95-ce0f-4ae6-85cf-bc611c8164e8": [
       {
         "ExternalStationCode": "018070",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1994-12-31T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "018192",
         "StartDate": "1995-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "55f5699c-7d1f-4952-8bf1-4b924d7461d1": [
       {
         "ExternalStationCode": "021046",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1998-06-22T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "021133",
         "StartDate": "1998-06-23T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -526,21 +526,21 @@
       {
         "ExternalStationCode": "022823",
         "StartDate": "2002-09-10T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "70a07bb0-2220-402b-be83-f2c35edfdd12": [
       {
         "ExternalStationCode": "023000",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1977-01-31T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "023090",
         "StartDate": "1977-02-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -554,29 +554,29 @@
       {
         "ExternalStationCode": "023373",
         "StartDate": "1996-08-28T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "4865e9b4-d86a-4961-b65c-cc33f969ff04": [
       {
         "ExternalStationCode": "026020",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1941-12-31T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "026021",
         "StartDate": "1942-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "5885b48d-d66d-4e89-a30e-ff40a0c7d153": [
       {
         "ExternalStationCode": "026026",
-        "StartDate": "1910-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "StartDate": null,
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -590,7 +590,7 @@
       {
         "ExternalStationCode": "027045",
         "StartDate": "1992-11-06T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -610,85 +610,85 @@
       {
         "ExternalStationCode": "027058",
         "StartDate": "1996-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "944b1732-d083-40b8-b865-fbf63941414c": [
       {
         "ExternalStationCode": "028004",
-        "StartDate": "1910-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "StartDate": null,
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "f0991551-814d-4323-9c0b-c8f12b887985": [
       {
         "ExternalStationCode": "029041",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "2001-04-30T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "029063",
         "StartDate": "2001-05-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "fba7ed39-c752-460d-aa2e-342da7b55817": [
       {
         "ExternalStationCode": "029004",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "2001-10-15T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "029077",
         "StartDate": "2001-10-16T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "53ea40d9-d6fb-4ffe-9bde-e4188698f2de": [
       {
         "ExternalStationCode": "030045",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "2010-12-31T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "030161",
         "StartDate": "2011-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "2bf20585-6b1a-4e3c-a8ed-1d87e67789a6": [
       {
         "ExternalStationCode": "030018",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "2004-06-30T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "030124",
         "StartDate": "2004-07-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "8fe98f5f-c239-4f2f-961a-5686147e53f7": [
       {
         "ExternalStationCode": "031010",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1942-10-21T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "031011",
         "StartDate": "1942-10-22T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -696,14 +696,14 @@
       {
         "ExternalStationCode": "032040",
         "StartDate": "1940-10-19T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "a5bff3b7-d9dc-40cb-bdb0-f2f07af2e2b7": [
       {
         "ExternalStationCode": "033046",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1947-07-31T00:00:00",
         "ValueAdjustment": null
       },
@@ -716,21 +716,21 @@
       {
         "ExternalStationCode": "033119",
         "StartDate": "1959-09-25T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "80a5afb6-f043-4e61-b1e3-b60029b9c559": [
       {
         "ExternalStationCode": "034002",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1992-12-14T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "034084",
         "StartDate": "1992-12-15T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -738,21 +738,21 @@
       {
         "ExternalStationCode": "036007",
         "StartDate": "1962-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "9fff8b80-9230-4161-a626-c0f6e8c3b3e7": [
       {
         "ExternalStationCode": "036030",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1967-03-31T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "036031",
         "StartDate": "1967-04-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -760,15 +760,15 @@
       {
         "ExternalStationCode": "037010",
         "StartDate": "1939-06-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "f285ba2b-d6d6-4390-a80f-803522668bde": [
       {
         "ExternalStationCode": "038003",
-        "StartDate": "1910-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "StartDate": null,
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -782,21 +782,21 @@
       {
         "ExternalStationCode": "038026",
         "StartDate": "2000-06-29T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "64004954-c0c6-4de3-9ac1-3f50bada1ec9": [
       {
         "ExternalStationCode": "039039",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "2005-12-31T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "039066",
         "StartDate": "2006-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -804,21 +804,21 @@
       {
         "ExternalStationCode": "039083",
         "StartDate": "1939-08-06T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "b2c819cd-b20b-48b0-8148-eef2f8fd88b7": [
       {
         "ExternalStationCode": "039015",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1990-06-30T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "039128",
         "StartDate": "1990-07-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -826,15 +826,15 @@
       {
         "ExternalStationCode": "040004",
         "StartDate": "1941-08-25T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "33d2cd26-bded-4abc-8e03-2f3266e3923f": [
       {
         "ExternalStationCode": "040043",
-        "StartDate": "1910-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "StartDate": null,
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -848,21 +848,21 @@
       {
         "ExternalStationCode": "040842",
         "StartDate": "1996-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "a14c760f-4858-4f36-8d0a-7f219dc9b303": [
       {
         "ExternalStationCode": "042023",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1997-07-09T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "042112",
         "StartDate": "1997-07-10T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -876,21 +876,21 @@
       {
         "ExternalStationCode": "043109",
         "StartDate": "1997-06-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "0bc92500-5977-4aa2-81ae-a57ff8eabed3": [
       {
         "ExternalStationCode": "044022",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1948-12-31T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "044021",
         "StartDate": "1949-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -904,7 +904,7 @@
       {
         "ExternalStationCode": "045025",
         "StartDate": "1999-08-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -918,42 +918,42 @@
       {
         "ExternalStationCode": "046012",
         "StartDate": "2011-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "04f7dd04-7bc2-4c4f-ae1e-2ee7180d8649": [
       {
         "ExternalStationCode": "046037",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "2006-12-31T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "046126",
         "StartDate": "2007-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "6f523c50-bf77-44d1-8418-57ea555855a3": [
       {
         "ExternalStationCode": "048030",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1962-05-20T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "048027",
         "StartDate": "1962-05-21T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "bab198bd-3940-4f13-a4f7-68af10735039": [
       {
         "ExternalStationCode": "048013",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1994-11-10T00:00:00",
         "ValueAdjustment": null
       },
@@ -966,7 +966,7 @@
       {
         "ExternalStationCode": "048245",
         "StartDate": "1999-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -980,28 +980,28 @@
       {
         "ExternalStationCode": "050017",
         "StartDate": "2005-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "82fbe1bf-5c58-4f9b-8f5d-71fdd060d2e9": [
       {
         "ExternalStationCode": "052026",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1993-05-31T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "052088",
         "StartDate": "1993-06-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "8867cc4a-6da5-41e6-a4f7-e02dd9460cdd": [
       {
         "ExternalStationCode": "053027",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1965-12-31T00:00:00",
         "ValueAdjustment": null
       },
@@ -1014,7 +1014,7 @@
       {
         "ExternalStationCode": "053115",
         "StartDate": "1995-05-17T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -1022,29 +1022,29 @@
       {
         "ExternalStationCode": "055024",
         "StartDate": "1948-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "c5094f09-3fb3-4455-bf7b-b835928ad5f3": [
       {
         "ExternalStationCode": "056017",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1996-12-31T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "056242",
         "StartDate": "1997-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "54e1d0a7-54be-4fb9-b88e-d6a4b8a1b595": [
       {
         "ExternalStationCode": "058012",
-        "StartDate": "1910-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "StartDate": null,
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -1058,21 +1058,21 @@
       {
         "ExternalStationCode": "059151",
         "StartDate": "2013-08-10T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "5d20e960-257d-4bc2-8d06-162c19fa86a2": [
       {
         "ExternalStationCode": "060026",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1999-12-31T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "060139",
         "StartDate": "2000-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -1080,7 +1080,7 @@
       {
         "ExternalStationCode": "061078",
         "StartDate": "1942-09-10T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -1094,15 +1094,15 @@
       {
         "ExternalStationCode": "061363",
         "StartDate": "1995-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "0b927604-fbaa-4930-bb5c-cf4b0f8b8914": [
       {
         "ExternalStationCode": "063005",
-        "StartDate": "1910-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "StartDate": null,
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -1116,20 +1116,20 @@
       {
         "ExternalStationCode": "065070",
         "StartDate": "1995-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "0788f2da-2034-40e2-badc-b77fc7d4bbd3": [
       {
         "ExternalStationCode": "066062",
-        "StartDate": "1910-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "StartDate": null,
+        "EndDate": "2020-08-31T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "066214",
-        "StartDate": "2020-01-01T00:00:00",
+        "StartDate": "2020-09-01T00:00:00",
         "EndDate": "2022-12-31T00:00:00",
         "ValueAdjustment": null
       }
@@ -1144,7 +1144,7 @@
       {
         "ExternalStationCode": "067105",
         "StartDate": "1994-11-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -1158,7 +1158,7 @@
       {
         "ExternalStationCode": "068072",
         "StartDate": "2000-11-28T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -1172,15 +1172,15 @@
       {
         "ExternalStationCode": "068151",
         "StartDate": "2001-05-21T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "59803ca9-d81b-4888-bd08-473f659e1fc0": [
       {
         "ExternalStationCode": "069018",
-        "StartDate": "1910-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "StartDate": null,
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -1200,21 +1200,21 @@
       {
         "ExternalStationCode": "070351",
         "StartDate": "2010-12-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "d209e7e6-d3da-40d4-b377-61cf7056d376": [
       {
         "ExternalStationCode": "072151",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1942-12-31T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "072150",
         "StartDate": "1943-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -1228,57 +1228,57 @@
       {
         "ExternalStationCode": "072161",
         "StartDate": "1997-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "2e2acf0b-592b-4ba4-adc9-b6f08546b92a": [
       {
         "ExternalStationCode": "074128",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1997-06-02T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "074258",
         "StartDate": "1997-06-03T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "f6093d63-0476-4bd4-bb88-6322cf04dfaa": [
       {
         "ExternalStationCode": "076077",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1946-08-25T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "076031",
         "StartDate": "1946-08-26T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "4006f876-24bb-4b31-9318-72fcf44f47b0": [
       {
         "ExternalStationCode": "078031",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "2003-06-10T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "078015",
         "StartDate": "2003-06-11T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "23701518-8a46-4b7e-b9ef-da570d77b7cb": [
       {
         "ExternalStationCode": "080023",
-        "StartDate": "1910-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "StartDate": null,
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -1286,15 +1286,15 @@
       {
         "ExternalStationCode": "082039",
         "StartDate": "1912-11-07T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "714a7fe5-cea8-4e9b-bac0-cb01f8d0fff3": [
       {
         "ExternalStationCode": "084016",
-        "StartDate": "1910-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "StartDate": null,
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -1308,43 +1308,43 @@
       {
         "ExternalStationCode": "084145",
         "StartDate": "2000-11-23T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "7703f086-589e-406d-b152-dde26cbe6418": [
       {
         "ExternalStationCode": "085133",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1945-07-31T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "085072",
         "StartDate": "1945-08-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "45feed6f-2821-43de-99ec-e605e3f36f75": [
       {
         "ExternalStationCode": "085096",
-        "StartDate": "1910-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "StartDate": null,
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "1e743b5c-f9bf-477c-8b16-7d45c67909a7": [
       {
         "ExternalStationCode": "086071",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "2013-06-01T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "086338",
         "StartDate": "2013-06-02T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -1352,36 +1352,36 @@
       {
         "ExternalStationCode": "087031",
         "StartDate": "1943-10-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "592c8e33-cc36-4cce-9af1-82bb3f26a5af": [
       {
         "ExternalStationCode": "090015",
-        "StartDate": "1910-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "StartDate": null,
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "1b4b65dc-5742-432d-a4ae-d83069397723": [
       {
         "ExternalStationCode": "091057",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1998-01-07T00:00:00",
         "ValueAdjustment": null
       },
       {
         "ExternalStationCode": "091293",
         "StartDate": "1998-01-08T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "b483cb66-25cc-45ee-b1c8-8db405f0415a": [
       {
         "ExternalStationCode": "091049",
-        "StartDate": "1910-01-01T00:00:00",
+        "StartDate": null,
         "EndDate": "1939-03-31T00:00:00",
         "ValueAdjustment": null
       },
@@ -1394,15 +1394,15 @@
       {
         "ExternalStationCode": "091311",
         "StartDate": "2004-07-12T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
     "20ab0202-8038-4275-aad2-70788ec68d6e": [
       {
         "ExternalStationCode": "092045",
-        "StartDate": "1910-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "StartDate": null,
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -1416,7 +1416,7 @@
       {
         "ExternalStationCode": "094198",
         "StartDate": "2007-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -1424,7 +1424,7 @@
       {
         "ExternalStationCode": "094029",
         "StartDate": "1918-01-01T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -1438,7 +1438,7 @@
       {
         "ExternalStationCode": "094220",
         "StartDate": "2004-06-16T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ],
@@ -1458,7 +1458,7 @@
       {
         "ExternalStationCode": "096003",
         "StartDate": "2008-05-21T00:00:00",
-        "EndDate": "2019-12-31T00:00:00",
+        "EndDate": null,
         "ValueAdjustment": null
       }
     ]

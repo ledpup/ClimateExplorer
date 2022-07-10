@@ -40,7 +40,6 @@
             {
                 <LocationInfo @ref="locationInfoComponent"
                           Location="@SelectedLocation"
-                          DataSetDefinition="@SelectedDataSetDefinition"
                           RequestLocationChange="@ShowSelectLocationModal"
                           OnOverviewShowOrHide="@OnOverviewShowHide"></LocationInfo>
             }
@@ -449,7 +448,6 @@
     }
 
     Location PreviousLocation { get; set;  }
-    DataSetDefinitionViewModel SelectedDataSetDefinition { get; set; }
 
     [Inject]
     public IDataService DataService { get; set; }
@@ -1611,7 +1609,6 @@
 
         SelectedLocationId = newValue;
         SelectedLocation = Locations.Single(x => x.Id == SelectedLocationId);
-        SelectedDataSetDefinition = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocationId, DataType.TempMax, DataAdjustment.Adjusted).Item1;
 
         List<ChartSeriesDefinition> additionalCsds = new List<ChartSeriesDefinition>();
 
@@ -1629,7 +1626,8 @@
 
                         // But: the new location may not have data of the requested type. Since this series is location-specific, and we
                         // determine the DSD for a location based just on the location, let's update the CSD accordingly
-                        sss.DataSetDefinition = SelectedDataSetDefinition;
+                        var dsd = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocationId, sss.MeasurementDefinition.DataType, sss.MeasurementDefinition.DataAdjustment);
+                        sss.DataSetDefinition = dsd.Item1;
 
                         // Next, update the MeasurementDefinition. Look for a match on DataType and DataAdjustment
                         var oldMd = sss.MeasurementDefinition;
@@ -1677,7 +1675,7 @@
                 else
                 {
                     // It's locked, so duplicate it & set the location on the duplicate to the new location
-                    var newDsd = DataSetDefinitions.Single(x => x.Id == SelectedDataSetDefinition.Id);
+                    var newDsd = DataSetDefinitions.Single(x => x.Id == sss.DataSetDefinition.Id);
                     var newMd = 
                         newDsd.MeasurementDefinitions
                         .SingleOrDefault(x => x.DataType == sss.MeasurementDefinition.DataType && x.DataAdjustment == sss.MeasurementDefinition.DataAdjustment);
@@ -1700,7 +1698,7 @@
                                     {
                                         new ChartSeriesDefinition.SourceSeriesSpecification
                                         {
-                                            DataSetDefinition = DataSetDefinitions.Single(x => x.Id == SelectedDataSetDefinition.Id),
+                                            DataSetDefinition = DataSetDefinitions.Single(x => x.Id == sss.DataSetDefinition.Id),
                                             LocationId = newValue,
                                             LocationName = SelectedLocation.Name,
                                             MeasurementDefinition = newMd,

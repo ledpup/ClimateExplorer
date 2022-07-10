@@ -87,7 +87,7 @@
         if (SelectedLocation == null) return;
 
         (var dsdMaxAdjusted, var mdTempMax) = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMax, DataAdjustment.Adjusted, true);
-        (var dsdMaxUnadjusted, var mdTempMaxUnajusted) = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMax, DataAdjustment.Adjusted, true);
+        (var dsdMaxUnadjusted, var mdTempMaxUnajusted) = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMax, DataAdjustment.Unadjusted, true);
         (var dsdRainfall, var mdRainfall) = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.Rainfall, null);
         (var dsdSolarRadiation, var mdSolarRadiation) = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.SolarRadiation, null);
             
