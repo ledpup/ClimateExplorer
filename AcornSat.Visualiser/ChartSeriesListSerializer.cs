@@ -98,7 +98,10 @@ public static class ChartSeriesListSerializer
                     x.DataAdjustment == da &&
                     x.DataType == dt);
 
-        if (md == null) return null;
+        if (md == null)
+        {
+            throw new NullReferenceException($"Cannot find measurement definition in dataset {dsd.Id} with data type {dt} and data adjustment {da}.");
+        }
 
         Location? l = null;
 
@@ -121,6 +124,11 @@ public static class ChartSeriesListSerializer
 
     static string BuildSourceSeriesSpecificationsUrlComponent(ChartSeriesDefinition.SourceSeriesSpecification sss)
     {
+        if (sss == null || sss.MeasurementDefinition == null || sss.DataSetDefinition == null)
+        {
+            throw new ArgumentNullException();
+        }
+
         return
             string.Join(
                 SeparatorsByLevel[3],

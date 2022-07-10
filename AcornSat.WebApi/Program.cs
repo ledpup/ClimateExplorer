@@ -357,7 +357,7 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
 
     Location location =
         spec.LocationId != null
-        ? (await Location.GetLocations(dsd.FolderName, false)).Single(x => x.Id == spec.LocationId)
+        ? (await Location.GetLocations(false)).Single(x => x.Id == spec.LocationId)
         : null;
 
     var returnDataSet =

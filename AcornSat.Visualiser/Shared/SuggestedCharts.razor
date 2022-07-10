@@ -86,19 +86,11 @@
 
         if (SelectedLocation == null) return;
 
-        var dsdMaxAdjusted = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMax, DataAdjustment.Adjusted, true);
-        var mdTempMax = dsdMaxAdjusted.Item2;
-
-        var dsdMaxUnadjusted = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMax, DataAdjustment.Adjusted, true);
-        var mdTempMaxUnajusted = dsdMaxUnadjusted.Item2;
-
-        var dsdRainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.Rainfall, null);
-        var mdRainfall = dsdRainfall.Item2;
-
-        var dsdSolarRadiation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.SolarRadiation, null);
-        var mdSolarRadiation = dsdSolarRadiation.Item2;
+        (var dsdMaxAdjusted, var mdTempMax) = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMax, DataAdjustment.Adjusted, true);
+        (var dsdMaxUnadjusted, var mdTempMaxUnajusted) = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMax, DataAdjustment.Adjusted, true);
+        (var dsdRainfall, var mdRainfall) = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.Rainfall, null);
+        (var dsdSolarRadiation, var mdSolarRadiation) = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.SolarRadiation, null);
             
-
         var dsdMeiV2 = DataSetDefinitions.Single(x => x.Id == Guid.Parse("ffd5f5e2-d8df-4779-a7f4-f5d148505033"));
         var mdMeiV2 = dsdMeiV2.MeasurementDefinitions.Single(x => x.DataType == DataType.MEIv2);
 
@@ -120,7 +112,7 @@
                                 {
                                     LocationId = SelectedLocation.Id,
                                     LocationName = SelectedLocation.Name,
-                                    DataSetDefinition = dsdMaxAdjusted.Item1,
+                                    DataSetDefinition = dsdMaxAdjusted,
                                     MeasurementDefinition = mdTempMax,
                                }
                             },
@@ -142,7 +134,7 @@
                                 {
                                     LocationId = SelectedLocation.Id,
                                     LocationName = SelectedLocation.Name,
-                                    DataSetDefinition = dsdRainfall.Item1,
+                                    DataSetDefinition = dsdRainfall,
                                     MeasurementDefinition = mdRainfall,
                                 }
                             },
@@ -175,7 +167,7 @@
                                     {
                                         LocationId = SelectedLocation.Id,
                                         LocationName = SelectedLocation.Name,
-                                        DataSetDefinition = dsdMaxAdjusted.Item1,
+                                        DataSetDefinition = dsdMaxAdjusted,
                                         MeasurementDefinition = mdTempMax,
                                     }
                                 },
@@ -207,7 +199,7 @@
                                                 {
                                                     LocationId = SelectedLocation.Id,
                                                     LocationName = SelectedLocation.Name,
-                                                    DataSetDefinition = dsdMaxAdjusted.Item1,
+                                                    DataSetDefinition = dsdMaxAdjusted,
                                                     MeasurementDefinition = mdTempMax,
                                                 }
                                             },
@@ -238,7 +230,7 @@
                                                 {
                                                     LocationId = SelectedLocation.Id,
                                                     LocationName = SelectedLocation.Name,
-                                                    DataSetDefinition = dsdMaxAdjusted.Item1,
+                                                    DataSetDefinition = dsdMaxAdjusted,
                                                     MeasurementDefinition = mdTempMax,
                                                 }
                                             },
@@ -259,7 +251,7 @@
                                                     {
                                                         LocationId = SelectedLocation.Id,
                                                         LocationName = SelectedLocation.Name,
-                                                        DataSetDefinition = dsdMaxAdjusted.Item1,
+                                                        DataSetDefinition = dsdMaxAdjusted,
                                                         MeasurementDefinition = mdTempMax,
                                                     }
                                                 },
@@ -289,7 +281,7 @@
                                                 {
                                                     LocationId = SelectedLocation.Id,
                                                     LocationName = SelectedLocation.Name,
-                                                    DataSetDefinition = dsdMaxAdjusted.Item1,
+                                                    DataSetDefinition = dsdMaxAdjusted,
                                                     MeasurementDefinition = mdTempMax,
                                                 }
                                             },
@@ -319,7 +311,7 @@
                                                     {
                                                         LocationId = SelectedLocation.Id,
                                                         LocationName = SelectedLocation.Name,
-                                                        DataSetDefinition = dsdMaxUnadjusted.Item1,
+                                                        DataSetDefinition = dsdMaxUnadjusted,
                                                         MeasurementDefinition = mdTempMaxUnajusted,
                                                     }
                                                 },
@@ -341,7 +333,7 @@
                                                 {
                                                     LocationId = SelectedLocation.Id,
                                                     LocationName = SelectedLocation.Name,
-                                                    DataSetDefinition = dsdSolarRadiation.Item1,
+                                                    DataSetDefinition = dsdSolarRadiation,
                                                     MeasurementDefinition = mdSolarRadiation,
                                                 }
                                             },
@@ -377,7 +369,7 @@
                                     {
                                         LocationId = SelectedLocation.Id,
                                         LocationName = SelectedLocation.Name,
-                                        DataSetDefinition = dsdMaxAdjusted.Item1,
+                                        DataSetDefinition = dsdMaxAdjusted,
                                         MeasurementDefinition = mdTempMax,
                                     }
                                 },
@@ -411,8 +403,8 @@
                                     {
                                         LocationId = SelectedLocation.Id,
                                         LocationName = SelectedLocation.Name,
-                                        DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted),
+                                        DataSetDefinition = dsdMaxAdjusted,
+                                        MeasurementDefinition = mdTempMax,
                                     }
                                 },
                             Aggregation = SeriesAggregationOptions.Mean,
@@ -433,8 +425,8 @@
                                     {
                                         LocationId = SelectedLocation.Id,
                                         LocationName = SelectedLocation.Name,
-                                        DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Unadjusted),
+                                        DataSetDefinition = dsdMaxUnadjusted,
+                                        MeasurementDefinition = mdTempMaxUnajusted,
                                     }
                                 },
                             Aggregation = SeriesAggregationOptions.Mean,
@@ -466,8 +458,8 @@
                                                 {
                                                     LocationId = SelectedLocation.Id,
                                                     LocationName = SelectedLocation.Name,
-                                                    DataSetDefinition = dsdLocation,
-                                                    MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted),
+                                                    DataSetDefinition = dsdMaxAdjusted,
+                                                    MeasurementDefinition = mdTempMax,
                                                 }
                                             },
                                         Aggregation = SeriesAggregationOptions.Mean,
@@ -488,8 +480,8 @@
                                                 {
                                                     LocationId = SelectedLocation.Id,
                                                     LocationName = SelectedLocation.Name,
-                                                    DataSetDefinition = dsdLocation,
-                                                    MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Unadjusted),
+                                                    DataSetDefinition = dsdMaxUnadjusted,
+                                                    MeasurementDefinition = mdTempMaxUnajusted,
                                                 }
                                             },
                                         Aggregation = SeriesAggregationOptions.Mean,
@@ -519,8 +511,8 @@
                                                 {
                                                     LocationId = SelectedLocation.Id,
                                                     LocationName = SelectedLocation.Name,
-                                                    DataSetDefinition = dsdLocation,
-                                                    MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted),
+                                                    DataSetDefinition = dsdMaxAdjusted,
+                                                    MeasurementDefinition = mdTempMax,
                                                 }
                                             },
                                         Aggregation = SeriesAggregationOptions.Mean,
@@ -541,8 +533,8 @@
                                                 {
                                                     LocationId = SelectedLocation.Id,
                                                     LocationName = SelectedLocation.Name,
-                                                    DataSetDefinition = dsdLocation,
-                                                    MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Unadjusted),
+                                                    DataSetDefinition = dsdMaxUnadjusted,
+                                                    MeasurementDefinition = mdTempMaxUnajusted,
                                                 }
                                             },
                                         Aggregation = SeriesAggregationOptions.Mean,
