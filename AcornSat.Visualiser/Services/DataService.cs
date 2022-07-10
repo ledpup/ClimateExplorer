@@ -2,6 +2,8 @@
 using AcornSat.Core.Model;
 using AcornSat.Core.ViewModel;
 using AcornSat.Visualiser.Services;
+using AcornSat.Visualiser.UiModel;
+using ClimateExplorer.Core.DataPreparation;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -60,6 +62,44 @@ public class DataService : IDataService
 
             _dataServiceCache.Put(url, result);
         }
+
+        return result;
+    }
+
+
+    public async Task<DataSet> PostDataSet(
+        BinGranularities binGranularity,
+        ContainerAggregationFunctions binAggregationFunction,
+        ContainerAggregationFunctions bucketAggregationFunction,
+        ContainerAggregationFunctions cupAggregationFunction,
+        SeriesValueOptions seriesValueOption,
+        SeriesSpecification[] seriesSpecifications,
+        SeriesDerivationTypes seriesDerivationType,
+        float requiredBinDataProportion,
+        float requiredBucketDataProportion,
+        float requiredCupDataProportion,
+        int cupSize)
+    {
+        var response = 
+            await _httpClient.PostAsJsonAsync<PostDataSetsRequestBody>(
+                "dataset",
+                new PostDataSetsRequestBody
+                {
+                    BinAggregationFunction = binAggregationFunction,
+                    BucketAggregationFunction = bucketAggregationFunction,
+                    CupAggregationFunction = cupAggregationFunction,
+                    BinningRule = binGranularity,
+                    CupSize = cupSize,
+                    RequiredBinDataProportion = requiredBinDataProportion,
+                    RequiredBucketDataProportion = requiredBucketDataProportion,
+                    RequiredCupDataProportion = requiredCupDataProportion,
+                    SeriesDerivationType = seriesDerivationType,
+                    SeriesSpecifications = seriesSpecifications,
+                    SeriesTransformation = SeriesTransformations.Identity,
+                    Anomaly = seriesValueOption == SeriesValueOptions.Anomaly
+                });
+
+        var result = await response.Content.ReadFromJsonAsync<DataSet>();
 
         return result;
     }

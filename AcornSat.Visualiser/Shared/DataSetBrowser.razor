@@ -28,6 +28,9 @@
     [Parameter]
     public Location? CurrentLocation { get; set; }
 
+    [Parameter]
+    public Location? PreviousLocation { get; set; }
+
     List<DataSetLibraryFolder> RootFolders { get; set; }
 
     string BuildDataSetName(MeasurementDefinitionViewModel md, DataSetDefinitionViewModel dsd)
@@ -83,26 +86,110 @@
                         DataSets = new List<DataSetLibraryEntry>()
                     };
 
-            DataSetDefinitionViewModel dsd = null; //DataSetDefinitionViewModel.GetDefaultDataSetDefinitionForLocation(DataSetDefinitions, CurrentLocation.Id);
+            var measurements = DataSetDefinitionViewModel.GetMeasurementsForLocation(DataSetDefinitions, CurrentLocation.Id);
 
-            if (dsd != null)
+            foreach (var measurement in measurements)
             {
-                foreach (var md in dsd.MeasurementDefinitions.OrderBy(x => x.DataType.ToString()).ThenBy(x => x.DataAdjustment.ToString()))
-                {
-                    currentLocationFolder.DataSets.Add(
-                        new DataSetLibraryEntry()
-                            {
-                                DataType = md.DataType,
-                                DataAdjustment = md.DataAdjustment,
-                                SourceDataSetId = dsd.Id,
-                                LocationId = CurrentLocation.Id,
-                                LocationName = CurrentLocation.Name,
-                                Name = BuildDataSetName(md, dsd)
-                            });
-                }
+                var dsd = measurement.Item1;
+                var md = measurement.Item2;
+
+                currentLocationFolder.DataSets.Add(
+                    new DataSetLibraryEntry()
+                        {
+                            SourceSeriesSpecifications =
+                                new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                {
+                                    new DataSetLibraryEntry.SourceSeriesSpecification
+                                    {
+                                        DataType = md.DataType,
+                                        DataAdjustment = md.DataAdjustment,
+                                        SourceDataSetId = dsd.Id,
+                                        LocationId = CurrentLocation.Id,
+                                        LocationName = CurrentLocation.Name
+                                    }
+                                },
+                            SeriesDerivationType = ClimateExplorer.Core.DataPreparation.SeriesDerivationTypes.ReturnSingleSeries,
+                            Name = BuildDataSetName(md, dsd)
+                        });
             }
+            
+
+            currentLocationFolder.DataSets.Add(
+                new DataSetLibraryEntry()
+                    {
+                        SourceSeriesSpecifications =
+                            new DataSetLibraryEntry.SourceSeriesSpecification[]
+                            {
+                                new DataSetLibraryEntry.SourceSeriesSpecification
+                                {
+                                    DataType = DataType.TempMax,
+                                    DataAdjustment = DataAdjustment.Adjusted,
+                                    SourceDataSetId = dsd.Id,
+                                    LocationId = CurrentLocation.Id,
+                                    LocationName = CurrentLocation.Name
+                                },
+                                new DataSetLibraryEntry.SourceSeriesSpecification
+                                {
+                                    DataType = DataType.TempMin,
+                                    DataAdjustment = DataAdjustment.Adjusted,
+                                    SourceDataSetId = dsd.Id,
+                                    LocationId = CurrentLocation.Id,
+                                    LocationName = CurrentLocation.Name
+                                }
+                            },
+                        SeriesDerivationType = ClimateExplorer.Core.DataPreparation.SeriesDerivationTypes.DifferenceBetweenTwoSeries,
+                        Name = "Daily temperature range"
+                    });
 
             RootFolders.Add(currentLocationFolder);
+
+            //if (PreviousLocation != null)
+            //{
+            //    var dsdPrevious = DataSetDefinitions.SingleOrDefault(x => x.Id == dsd.Id);
+
+            //    var comparisonFolder =
+            //        new DataSetLibraryFolder()
+            //        {
+            //            Name = $"{CurrentLocation.Name} relative to {PreviousLocation.Name}",
+            //            DataSets = new List<DataSetLibraryEntry>()
+            //        };
+
+            //    if (dsd != null && dsdPrevious != null)
+            //    {
+            //        foreach (var md in dsdPrevious.MeasurementDefinitions.OrderBy(x => x.DataType.ToString()).ThenBy(x => x.DataAdjustment.ToString()))
+            //        {
+            //            comparisonFolder.DataSets.Add(
+            //                new DataSetLibraryEntry()
+            //                    {
+            //                        SourceSeriesSpecifications =
+            //                            new DataSetLibraryEntry.SourceSeriesSpecification[]
+            //                            {
+            //                                new DataSetLibraryEntry.SourceSeriesSpecification
+            //                                {
+            //                                    DataType = md.DataType,
+            //                                    DataAdjustment = md.DataAdjustment,
+            //                                    SourceDataSetId = dsdPrevious.Id,
+            //                                    LocationId = CurrentLocation.Id,
+            //                                    LocationName = CurrentLocation.Name
+            //                                },
+            //                                new DataSetLibraryEntry.SourceSeriesSpecification
+            //                                {
+            //                                    DataType = md.DataType,
+            //                                    DataAdjustment = md.DataAdjustment,
+            //                                    SourceDataSetId = dsd.Id,
+            //                                    LocationId = PreviousLocation.Id,
+            //                                    LocationName = PreviousLocation.Name
+            //                                }
+            //                            },
+            //                        SeriesDerivationType = ClimateExplorer.Core.DataPreparation.SeriesDerivationTypes.DifferenceBetweenTwoSeries,
+            //                        Name = BuildDataSetName(md, dsd)
+            //                    });
+            //        }
+            //    }
+
+
+              //  RootFolders.Add(comparisonFolder);
+            }
         }
 
         RootFolders.AddRange(
@@ -117,20 +204,42 @@
                             new DataSetLibraryEntry()
                             {
                                 Name = "CO₂ (Carbon Dioxide) adjusted parts per million",
-                                SourceDataSetId = Guid.Parse("42c9195e-edc0-4894-97dc-923f9d5e72f0"),
-                                DataType = DataType.CO2
+                                SourceSeriesSpecifications = 
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            SourceDataSetId = Guid.Parse("42c9195e-edc0-4894-97dc-923f9d5e72f0"),
+                                            DataType = DataType.CO2
+                                        }
+                                    }
                             },
                             new DataSetLibraryEntry()
                             {
                                 Name = "CH₄ (Methane) adjusted parts per billion",
-                                SourceDataSetId = Guid.Parse("2debe203-cbaa-4015-977c-2f40e2782547"),
-                                DataType = DataType.CH4
+                                SourceSeriesSpecifications = 
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            SourceDataSetId = Guid.Parse("2debe203-cbaa-4015-977c-2f40e2782547"),
+                                            DataType = DataType.CH4
+                                        }
+                                    }
+
                             },
                             new DataSetLibraryEntry()
                             {
                                 Name = "N₂O (Nitrous Oxide) adjusted parts per billion",
-                                SourceDataSetId = Guid.Parse("6e84e743-3c77-488f-8a1c-152306c3d6f0"),
-                                DataType = DataType.N2O
+                                SourceSeriesSpecifications = 
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            SourceDataSetId = Guid.Parse("6e84e743-3c77-488f-8a1c-152306c3d6f0"),
+                                            DataType = DataType.N2O
+                                        }
+                                    }
                             }
                         }
                 },
@@ -143,26 +252,54 @@
                             new DataSetLibraryEntry()
                             {
                                 Name = "Multivariate ENSO index (MEI.v2)",
-                                SourceDataSetId = Guid.Parse("ffd5f5e2-d8df-4779-a7f4-f5d148505033"),
-                                DataType = DataType.MEIv2
+                                SourceSeriesSpecifications = 
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            SourceDataSetId = Guid.Parse("ffd5f5e2-d8df-4779-a7f4-f5d148505033"),
+                                            DataType = DataType.MEIv2
+                                        }
+                                    }
                             },
                             new DataSetLibraryEntry()
                             {
                                 Name = "Inverted Southern Oscillation Index (ISOI)",
-                                SourceDataSetId = Guid.Parse("c31270fa-b207-4d8f-b68e-4995698f1a4d"),
-                                DataType = DataType.SOI
+                                SourceSeriesSpecifications = 
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            SourceDataSetId = Guid.Parse("c31270fa-b207-4d8f-b68e-4995698f1a4d"),
+                                            DataType = DataType.SOI
+                                        }
+                                    }
                             },
                             new DataSetLibraryEntry()
                             {
                                 Name = "Niño 3.4",
-                                SourceDataSetId = Guid.Parse("bfbaa69b-c10d-4de3-a78c-1ed6ff307327"),
-                                DataType = DataType.Nino34
+                                SourceSeriesSpecifications = 
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            SourceDataSetId = Guid.Parse("bfbaa69b-c10d-4de3-a78c-1ed6ff307327"),
+                                            DataType = DataType.Nino34
+                                        }
+                                    }
                             },
                             new DataSetLibraryEntry()
                             {
                                 Name = "Oceanic Niño Index (ONI)",
-                                SourceDataSetId = Guid.Parse("1042147a-8625-4ee7-bb5a-f0f17795c393"),
-                                DataType = DataType.ONI
+                                SourceSeriesSpecifications = 
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            SourceDataSetId = Guid.Parse("1042147a-8625-4ee7-bb5a-f0f17795c393"),
+                                            DataType = DataType.ONI
+                                        }
+                                    }
                             }
                         }
                 },
@@ -175,9 +312,16 @@
                             new DataSetLibraryEntry()
                             {
                                 Name = "Indian Ocean Dipole (IOD)",
-                                SourceDataSetId = Guid.Parse("a3841b12-2dd4-424b-a96e-c35ddba66efc"),
-                                DataType = DataType.IOD
-                            },
+                                SourceSeriesSpecifications = 
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            SourceDataSetId = Guid.Parse("a3841b12-2dd4-424b-a96e-c35ddba66efc"),
+                                            DataType = DataType.IOD
+                                        }
+                                    }
+                            }
                         }
                 }
             }

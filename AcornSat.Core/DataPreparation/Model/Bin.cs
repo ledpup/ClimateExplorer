@@ -1,4 +1,4 @@
-﻿namespace AcornSat.WebApi.Model.DataSetBuilder
+﻿namespace ClimateExplorer.Core.DataPreparation.Model
 {
     public class Bin
     {

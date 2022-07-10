@@ -24,6 +24,21 @@ public class DataSetDefinitionViewModel
     public List<MeasurementDefinitionViewModel> MeasurementDefinitions { get; set; }
 
 
+    public static IEnumerable<Tuple<DataSetDefinitionViewModel, MeasurementDefinitionViewModel>> GetMeasurementsForLocation(IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, Guid locationId)
+    {
+        var dsds = dataSetDefinitions.Where(x => x.LocationIds != null
+                                        && x.LocationIds.Any(y => y == locationId))
+                                     .ToList();
+
+        foreach (var dsd in dsds)
+        {
+            foreach (var md in dsd.MeasurementDefinitions)
+            {
+                yield return new Tuple<DataSetDefinitionViewModel, MeasurementDefinitionViewModel>(dsd, md);
+            }           
+        }
+    }
+
     public static Tuple<DataSetDefinitionViewModel, MeasurementDefinitionViewModel>  GetDataSetDefinitionAndMeasurement(IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, Guid locationId, DataType dataType, DataAdjustment? dataAdjustment, bool allowNullDataAdjustment = false)
     {
         var dsds = dataSetDefinitions.Where(x =>   x.LocationIds != null

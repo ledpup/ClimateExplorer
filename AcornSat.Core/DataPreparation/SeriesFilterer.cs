@@ -1,27 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace AcornSat.WebApi.Model.DataSetBuilder
+namespace ClimateExplorer.Core.DataPreparation
 {
     public static class SeriesFilterer
     {
         public static TemporalDataPoint[] ApplySeriesFilters(
             TemporalDataPoint[] transformedDataPoints,
-            TemperateSeasons? filterToTemperateSeason,
-            TropicalSeasons? filterToTropicalSeason,
+            SouthernHemisphereTemperateSeasons? filterToSouthernHemisphereTemperateSeason,
+            SouthernHemisphereTropicalSeasons? filterToTropicalSeason,
             int? filterToYearsAfterAndIncluding,
             int? filterToYearsBefore)
         {
             IEnumerable<TemporalDataPoint> query = transformedDataPoints;
 
-            if (filterToTemperateSeason != null)
+            if (filterToSouthernHemisphereTemperateSeason != null)
             {
-                query = query.Where(x => DateHelpers.GetTemperateSeasonForMonth(x.Month.Value) == filterToTemperateSeason.Value);
+                query = query.Where(x => DateHelpers.GetSouthernHemisphereTemperateSeasonForMonth(x.Month.Value) == filterToSouthernHemisphereTemperateSeason.Value);
             }
 
             if (filterToTropicalSeason != null)
             {
-                query = query.Where(x => DateHelpers.GetTropicalSeasonForMonth(x.Month.Value) == filterToTropicalSeason.Value);
+                query = query.Where(x => DateHelpers.GetSouthernHemisphereTropicalSeasonForMonth(x.Month.Value) == filterToTropicalSeason.Value);
             }
 
             if (filterToYearsAfterAndIncluding != null)

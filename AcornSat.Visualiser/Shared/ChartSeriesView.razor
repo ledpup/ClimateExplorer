@@ -2,12 +2,13 @@
 @using Blazorise
 @using Blazorise.Components
 @using Blazorise.Charts
+@using ClimateExplorer.Core.DataPreparation
 
 <div class="chart-series-config">
     <div class="title-bar" @onclick="() => { ChartSeries.IsExpanded = !ChartSeries.IsExpanded; }" style="@GenerateStyleForTitleBar()">
         <div class="colour-indicator" style="@GenerateStyleForColourIndicator()"></div>
-        <div class="title">@ChartSeries.FriendlyTitleShort</div>
-        <div class="description">@ChartSeries.FriendlyDescription</div>
+        <div class="title">@ChartSeries.GetFriendlyTitleShort()</div>
+        <div class="description">@ChartSeries.GetFriendlyDescription()</div>
     </div>
 
     @if (ChartSeries.IsExpanded)
@@ -20,6 +21,28 @@
                         <td>Filter to year</td>
                         <td>@ChartSeries.Year</td>
                     </tr>
+                }
+                <tr>
+                    <td>Aggregation</td>
+                    <td>
+                        <Select TValue="SeriesAggregationOptions" 
+                                Size="Size.ExtraSmall"
+                                SelectedValue="@ChartSeries.Aggregation"
+                                SelectedValueChanged="@OnAggregationChanged">
+                            <SelectItem Value="SeriesAggregationOptions.Mean">Mean</SelectItem>
+                            <SelectItem Value="SeriesAggregationOptions.Minimum">Minimum</SelectItem>
+                            <SelectItem Value="SeriesAggregationOptions.Maximum">Maximum</SelectItem>
+                            <SelectItem Value="SeriesAggregationOptions.Median">Median</SelectItem>
+                            <SelectItem Value="SeriesAggregationOptions.Sum">Sum</SelectItem>
+                        </Select>
+                    </td>
+                </tr>
+
+                @if (ChartSeries.Smoothing != SeriesSmoothingOptions.None && !ChartSeries.BinGranularity.IsLinear())
+                {
+                <tr>
+                    <td colspan="2" class="info-message">Note that smoothing is not currently being applied because the x-axis is not linear.</td>
+                </tr>
                 }
                 <tr>
                     <td>Smoothing</td>
@@ -45,6 +68,7 @@
                             <SelectItem Value="5">5</SelectItem>
                             <SelectItem Value="7">7</SelectItem>
                             <SelectItem Value="10">10</SelectItem>
+                            <SelectItem Value="12">12</SelectItem>
                             <SelectItem Value="15">15</SelectItem>
                             <SelectItem Value="20">20</SelectItem>
                         </Select>
@@ -151,6 +175,13 @@
     async Task OnRemoveSeriesClicked()
     {
         await OnRemoveSeries.InvokeAsync(ChartSeries);
+    }
+
+    async Task OnAggregationChanged(SeriesAggregationOptions o)
+    {
+        ChartSeries.Aggregation = o;
+
+        await OnSeriesChanged.InvokeAsync();
     }
 
     async Task OnSmoothingChanged(SeriesSmoothingOptions o)

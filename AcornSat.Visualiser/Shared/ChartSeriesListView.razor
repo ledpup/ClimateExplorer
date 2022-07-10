@@ -44,11 +44,21 @@
             new ChartSeriesDefinition()
             {
                 Aggregation = csd.Aggregation,
-                DataResolution = csd.DataResolution,
-                DataSetDefinition = csd.DataSetDefinition,
-                LocationId = csd.LocationId,
-                LocationName = csd.LocationName,
-                MeasurementDefinition = csd.MeasurementDefinition,
+                BinGranularity = csd.BinGranularity,
+                SeriesDerivationType = csd.SeriesDerivationType,
+                SourceSeriesSpecifications =
+                    csd.SourceSeriesSpecifications
+                    .Select(
+                        x =>
+                        new ChartSeriesDefinition.SourceSeriesSpecification
+                        {
+                            DataSetDefinition = x.DataSetDefinition,
+                            LocationId = x.LocationId,
+                            LocationName = x.LocationName,
+                            MeasurementDefinition = x.MeasurementDefinition,
+                        }
+                    )
+                    .ToArray(),
                 Smoothing = csd.Smoothing,
                 SmoothingWindow = csd.SmoothingWindow,
                 Value = csd.Value,

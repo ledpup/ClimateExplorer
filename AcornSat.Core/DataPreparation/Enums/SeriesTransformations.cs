@@ -1,4 +1,4 @@
-﻿namespace AcornSat.WebApi.Model.DataSetBuilder
+﻿namespace ClimateExplorer.Core.DataPreparation
 {
     public enum SeriesTransformations
     {

@@ -19,9 +19,11 @@
 @using System.IO;
 @using System.Globalization
 @using static AcornSat.Core.Enums
+@using ClimateExplorer.Core.DataPreparation
 @using Microsoft.AspNetCore.WebUtilities
 @using System.Text
 @using DPBlazorMapLibrary
+@using System.Diagnostics
 
 <PageTitle>@GetPageTitle()</PageTitle>
 
@@ -68,10 +70,7 @@
                         <a class="chart-control" @onclick="ShowOptionsModal"><i class="fas fa-cog"></i> Chart options</a>
                         <a class="chart-control" @onclick="ShowFilterModal"><i class="fas fa-calendar"></i> Year filtering</a>
 
-                        @if (SelectedResolution == DataResolution.Yearly)
-                        {
-                            <a class="chart-control" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download data</a>
-                        }
+                        <a class="chart-control" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download data</a>
 
                         <a class="chart-control" @onclick="ShowAddDataSetModal"><i class="fas fa-plus"></i> Add data set</a>
 
@@ -105,7 +104,7 @@
             <CloseButton />
         </ModalHeader>
         <ModalBody>
-            <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@SelectedLocation"></DataSetBrowser>
+            <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@SelectedLocation" PreviousLocation="@PreviousLocation"></DataSetBrowser>
         </ModalBody>
     </ModalContent>
 </Modal>
@@ -143,11 +142,11 @@
         SelectedYears="@SelectedYears"
         SelectedStartYear="@SelectedStartYear"
         SelectedEndYear="@SelectedEndYear"
-        SelectedResolution="@SelectedResolution"
+        SelectedBinGranularity="@SelectedBinGranularity"
         StartYears="@StartYears"
         UseMostRecentStartYear="@UseMostRecentStartYear"
         OnSelectedYearsChanged="@OnSelectedYearsChanged"
-        OnSelectedResolutionChanged="@OnSelectedResolutionChanged"
+        OnSelectedBinGranularityChanged="@OnSelectedBinGranularityChanged"
         OnStartYearTextChanged="@OnStartYearTextChanged"
         OnEndYearTextChanged="@OnEndYearTextChanged"
         OnUseMostRecentStartYearChanged="@OnUseMostRecentStartYearChanged"></Filter>
@@ -162,6 +161,8 @@
     LocationInfo locationInfoComponent { get; set; }
     SuggestedCharts suggestedChartsComponent { get; set; }
 
+    BinGranularities SelectedBinGranularity {get; set; } = BinGranularities.ByYear;
+
     @inject IJSRuntime JSRuntime
     @inject ILogger<Index> Logger;
 
@@ -174,14 +175,6 @@
         Logger.LogInformation("GetPageTitle() returning '" + title + "' NavigateTo");
 
         return title;
-    }
-
-    bool trendlinesOn = false;
-    async Task OnTrendlinesButtonClicked()
-    {
-        trendlinesOn = !trendlinesOn;
-
-        await HandleRedraw();
     }
 
     string DayGroupingText(int dayGrouping)
@@ -212,13 +205,13 @@
 
     private async Task OnDownloadDataClicked()
     {
-        var fileStream = Exporter.ExportChartData(ChartSeriesWithData, Locations, GetLabels(SelectedResolution, ChartStartYear, ChartEndYear));
+        var fileStream = Exporter.ExportChartData(Logger, ChartSeriesWithData, Locations, ChartBins, NavManager.Uri.ToString());
 
-        var locationNames = ChartSeriesWithData.Select(x => x.ChartSeries.LocationName).Where(x => x != null).Distinct().ToArray();
+        var locationNames = ChartSeriesWithData.SelectMany(x => x.ChartSeries.SourceSeriesSpecifications).Select(x => x.LocationName).Where(x => x != null).Distinct().ToArray();
 
         var fileName = locationNames.Any() ? String.Join("-", locationNames) + "-" : "";
 
-        fileName = $"Export-{fileName}{ChartStartYear}-{ChartEndYear}.csv";
+        fileName = $"Export-{fileName}-{SelectedBinGranularity}-{ChartBins.First().Label}-{ChartBins.Last().Label}.csv";
 
         using var streamRef = new DotNetStreamReference(stream: fileStream);
 
@@ -331,20 +324,32 @@
 
     public async Task OnChartPresetSelected(List<ChartSeriesDefinition> chartSeriesDefinitions)
     {
-        SelectedResolution = DataResolution.Yearly;
+        SelectedBinGranularity = chartSeriesDefinitions.First().BinGranularity;
 
         ChartSeriesList = chartSeriesDefinitions.ToList();
 
         await BuildDataSets();
     }
 
+    ChartSeriesDefinition.SourceSeriesSpecification BuildSourceSeriesSpecification(DataSetLibraryEntry.SourceSeriesSpecification sss)
+    {
+        var dsd = DataSetDefinitions.Single(x => x.Id == sss.SourceDataSetId);
+
+        var md = dsd.MeasurementDefinitions.Single(x => x.DataType == sss.DataType && x.DataAdjustment == sss.DataAdjustment);
+
+        return
+            new ChartSeriesDefinition.SourceSeriesSpecification
+            {
+                LocationId = sss.LocationId,
+                LocationName = sss.LocationName,
+                DataSetDefinition = dsd,
+                MeasurementDefinition = md
+            };
+    }
+
     async Task OnAddDataSet(DataSetLibraryEntry dle)
     {
-        Logger.LogInformation("Adding dle " + dle.SourceDataSetId);
-
-        var dsd = DataSetDefinitions.Single(x => x.Id == dle.SourceDataSetId);
-
-        var md = dsd.MeasurementDefinitions.Single(x => x.DataType == dle.DataType && x.DataAdjustment == dle.DataAdjustment);
+        Logger.LogInformation("Adding dle " + dle.Name);
 
         ChartSeriesList =
             ChartSeriesList
@@ -353,12 +358,10 @@
                 {
                     new ChartSeriesDefinition()
                     {
-                        LocationId = dle.LocationId,
-                        LocationName = dle.LocationName,
-                        Aggregation = md.DataType == DataType.Rainfall ? SeriesAggregationOptions.Sum : SeriesAggregationOptions.Mean,
-                        DataResolution = DataResolution.Yearly,
-                        DataSetDefinition = dsd,
-                        MeasurementDefinition = md,
+                        SeriesDerivationType = dle.SeriesDerivationType,
+                        SourceSeriesSpecifications = dle.SourceSeriesSpecifications.Select(BuildSourceSeriesSpecification).ToArray(),
+                        Aggregation = dle.SeriesAggregation,
+                        BinGranularity = SelectedBinGranularity,
                         Smoothing = SeriesSmoothingOptions.None,
                         SmoothingWindow = 5,
                         Value = SeriesValueOptions.Value,
@@ -378,7 +381,7 @@
     {
         if (!SelectedYears.Any() && values.Count == 0)
         {
-            SelectedResolution = DataResolution.Yearly;
+            SelectedBinGranularity = BinGranularities.ByYear;
             await InvokeAsync(StateHasChanged);
 
             RebuildChartSeriesListToReflectSelectedYears();
@@ -397,10 +400,7 @@
         }
         SelectedYears = validValues;
 
-        if (SelectedResolution == DataResolution.Yearly)
-        {
-            SelectedResolution = DataResolution.Monthly;
-        }
+        SelectedBinGranularity = BinGranularities.ByMonthOnly;
 
         await InvokeAsync(StateHasChanged);
         RebuildChartSeriesListToReflectSelectedYears();
@@ -410,18 +410,13 @@
 
     List<string> StationsWithData { get; set; }
 
-    DataResolution SelectedResolution { get; set; }
-    async Task OnSelectedResolutionChanged(DataResolution value)
+    async Task OnSelectedBinGranularityChanged(BinGranularities value)
     {
-        SelectedResolution = value;
-        if (SelectedResolution == DataResolution.Yearly)
-        {
-            SelectedYears = new List<short>();
-        }
+        SelectedBinGranularity = value;
 
         foreach (var csd in ChartSeriesList)
         {
-            csd.DataResolution = value;
+            csd.BinGranularity = value;
         }
 
         ChartSeriesList = EliminateDuplicatesFromChartSeriesList(ChartSeriesList);
@@ -435,7 +430,25 @@
     string SelectedEndYear { get; set; }
 
     Guid SelectedLocationId { get; set; }
-    Location SelectedLocation { get; set; }
+    Location _selectedLocation;
+
+    Location SelectedLocation 
+    { 
+        get 
+        { 
+            return _selectedLocation; 
+        } 
+        set
+        {
+            if (value != _selectedLocation)
+            {
+                PreviousLocation = _selectedLocation;
+                _selectedLocation = value;
+            }
+        }
+    }
+
+    Location PreviousLocation { get; set;  }
     DataSetDefinitionViewModel SelectedDataSetDefinition { get; set; }
 
     [Inject]
@@ -460,7 +473,6 @@
 
         NavManager.LocationChanged += HandleLocationChanged;
 
-        SelectedResolution = DataResolution.Yearly;
         if (DataService == null)
         {
             throw new NullReferenceException(nameof(DataService));
@@ -525,6 +537,11 @@
             {
                 var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger, csdSpecifier, DataSetDefinitions, Locations);
 
+                if (csdList.Any())
+                {
+                    SelectedBinGranularity = csdList.First().BinGranularity;
+                }
+
                 Logger.LogInformation("Setting ChartSeriesList to list with " + csdList.Count + " items");
 
                 ChartSeriesList = csdList.ToList();
@@ -560,20 +577,26 @@
         if (setupDefaultChartSeries)
         {
             var location = Locations.Single(x => x.Id == locationId);
-            var dsd1 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMax, DataAdjustment.Adjusted);
-            var mdTempMax = dsd1.Item2;
-            var dsd2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.Rainfall, null);
-            var mdRainfall = dsd2.Item2;
+            (var dsdTempMax, var mdTempMax) = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMax, DataAdjustment.Adjusted);
+            (var dsdRainfall, var mdRainfall) = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.Rainfall, null);
 
             ChartSeriesList.Add(
                 new ChartSeriesDefinition()
                 {
-                    LocationId = location.Id,
-                    LocationName = location.Name,
+                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                    SourceSeriesSpecifications =
+                        new ChartSeriesDefinition.SourceSeriesSpecification[]
+                        {
+                            new ChartSeriesDefinition.SourceSeriesSpecification
+                            {
+                                LocationId = location.Id,
+                                LocationName = location.Name,
+                                DataSetDefinition = dsdTempMax,
+                                MeasurementDefinition = mdTempMax,
+                            }
+                        },
                     Aggregation = SeriesAggregationOptions.Mean,
-                    DataResolution = DataResolution.Yearly,
-                    DataSetDefinition = dsd1.Item1,
-                    MeasurementDefinition = mdTempMax,
+                    BinGranularity = BinGranularities.ByYear,
                     Smoothing = SeriesSmoothingOptions.MovingAverage,
                     SmoothingWindow = 20,
                     Value = SeriesValueOptions.Value,
@@ -584,12 +607,20 @@
             ChartSeriesList.Add(
                 new ChartSeriesDefinition()
                 {
-                    LocationId = location.Id,
-                    LocationName = location.Name,
+                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                    SourceSeriesSpecifications =
+                        new ChartSeriesDefinition.SourceSeriesSpecification[]
+                        {
+                            new ChartSeriesDefinition.SourceSeriesSpecification
+                            {
+                                LocationId = location.Id,
+                                LocationName = location.Name,
+                                DataSetDefinition = dsdRainfall,
+                                MeasurementDefinition = mdRainfall,
+                            }
+                        },
                     Aggregation = SeriesAggregationOptions.Sum,
-                    DataResolution = DataResolution.Yearly,
-                    DataSetDefinition = dsd2.Item1,
-                    MeasurementDefinition = mdRainfall,
+                    BinGranularity = BinGranularities.ByYear,
                     Smoothing = SeriesSmoothingOptions.MovingAverage,
                     SmoothingWindow = 20,
                     Value = SeriesValueOptions.Value,
@@ -606,9 +637,21 @@
         await base.OnParametersSetAsync();
     }
 
+    void DumpChartSeriesList()
+    {
+        Logger.LogInformation("ChartSeriesList: (SelectedBinGranularity is " + SelectedBinGranularity + ")");
+
+        foreach (var csd in ChartSeriesList)
+        {
+            Logger.LogInformation("    " + csd.ToString());
+        }
+    }
+
     List<ChartSeriesDefinition> ChartSeriesList { get; set; } = new List<ChartSeriesDefinition>();
 
     List<SeriesWithData> ChartSeriesWithData { get; set; }
+
+    BinIdentifier[] ChartBins { get; set; }
 
     protected async Task BuildDataSets()
     {
@@ -641,12 +684,11 @@
         // this was leading to the same series being rendered more than once, and the year labels on the
         // X axis being added more than once).
 
-        Logger.LogInformation("BuildDataSets running with following CSDS:");
+        var l = new LogAugmenter(Logger, "BuildDataSets");
 
-        foreach (var csd in ChartSeriesList)
-        {
-            Logger.LogInformation("    " + csd.ToString());
-        }
+        l.LogInformation("starting");
+
+        DumpChartSeriesList();
 
         // Recalculate the URL
         string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(ChartSeriesList);
@@ -660,7 +702,7 @@
 
         if (currentUri != newUri)
         {
-            Logger.LogInformation("Because the URI reflecting current UI state is different to the URI we're currently at, triggering navigation. After navigation occurs, the UI state will update accordingly.");
+            l.LogInformation("Because the URI reflecting current UI state is different to the URI we're currently at, triggering navigation. After navigation occurs, the UI state will update accordingly.");
 
             bool shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds = currentUri.IndexOf("csd=") == -1;
             
@@ -669,22 +711,23 @@
         }
         else
         {
-            Logger.LogInformation("Not calling NavigationManager.NavigateTo().");
+            l.LogInformation("Not calling NavigationManager.NavigateTo().");
 
             // Fetch the data required to render the selected data series
             ChartSeriesWithData = await RetrieveDataSets(ChartSeriesList);
-            Logger.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + ChartSeriesWithData.Count + " entries.");
+
+            l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + ChartSeriesWithData.Count + " entries. ChartSeriesWithData[0].BinGranularity is " + ChartSeriesWithData[0].ChartSeries.BinGranularity);
 
             // Render the series
             await HandleRedraw();
+
+            if (SelectedLocation != null)
+            {
+                await mapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
+            }
         }
 
-        if (SelectedLocation != null)
-        {
-            await mapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
-        }
-
-        Logger.LogInformation("BuildDataSets() leaving");
+        l.LogInformation("leaving");
     }
 
     public void RebuildChartSeriesListToReflectSelectedYears()
@@ -702,14 +745,12 @@
                 newCsds.Add(
                     new ChartSeriesDefinition()
                         {
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SourceSeriesSpecifications = csd.SourceSeriesSpecifications,
                             Aggregation = csd.Aggregation,
-                            DataResolution = year == null ? DataResolution.Yearly : DataResolution.Monthly,
-                            DataSetDefinition = csd.DataSetDefinition,
+                            BinGranularity = year == null ? BinGranularities.ByYear : BinGranularities.ByYearAndMonth,
                             DisplayStyle = csd.DisplayStyle,
                             IsLocked = csd.IsLocked,
-                            LocationId = csd.LocationId,
-                            LocationName = csd.LocationName,
-                            MeasurementDefinition = csd.MeasurementDefinition,
                             ShowTrendline = csd.ShowTrendline,
                             Smoothing = csd.Smoothing,
                             SmoothingWindow = csd.SmoothingWindow,
@@ -732,6 +773,31 @@
         return SeriesDisplayStyle.Line;
     }
 
+    static ContainerAggregationFunctions MapSeriesAggregationOptionToBinAggregationFunction(SeriesAggregationOptions a)
+    {
+        switch (a)
+        {
+            case SeriesAggregationOptions.Mean: return ContainerAggregationFunctions.Mean;
+            case SeriesAggregationOptions.Minimum: return ContainerAggregationFunctions.Min;
+            case SeriesAggregationOptions.Maximum: return ContainerAggregationFunctions.Max;
+            case SeriesAggregationOptions.Median: return ContainerAggregationFunctions.Median;
+            case SeriesAggregationOptions.Sum: return ContainerAggregationFunctions.Sum;
+            default: throw new NotImplementedException($"SeriesAggregationOptions {a}");
+        }
+    }
+
+    SeriesSpecification BuildDataPrepSeriesSpecification(ChartSeriesDefinition.SourceSeriesSpecification sss)
+    {
+        return 
+            new SeriesSpecification
+            {
+                DataSetDefinitionId = sss.DataSetDefinition.Id,
+                DataType = sss.MeasurementDefinition.DataType,
+                DataAdjustment = sss.MeasurementDefinition.DataAdjustment,
+                LocationId = sss.LocationId
+            };
+    }
+
     async Task<List<SeriesWithData>> RetrieveDataSets(List<ChartSeriesDefinition> chartSeriesList)
     {
         var datasetsToReturn = new List<SeriesWithData>();
@@ -740,49 +806,33 @@
 
         foreach (var csd in chartSeriesList)
         {
-            DataSet dataSet;
+            var cupAggregationFunction = MapSeriesAggregationOptionToBinAggregationFunction(csd.Aggregation);
+            var bucketAggregationFunction = cupAggregationFunction;
 
-            switch (csd.MeasurementDefinition.DataType)
-            {
-                case DataType.TempMax:
-                case DataType.TempMin:
-                case DataType.Rainfall:
-                case DataType.SolarRadiation:
-                    dataSet =
-                        await DataService.GetDataSet(
-                            csd.MeasurementDefinition.DataType,
-                            csd.DataResolution,
-                            csd.MeasurementDefinition.DataAdjustment,
-                            ChooseDataSetApiAggregationMethod(csd.Aggregation, csd.Value),
-                            csd.LocationId,
-                            csd.Year,
-
-                            // Ideally, these would be stored at CSD level, but for now, leaving them global
-                            dayGrouping: SelectedDayGrouping,
-                            dayGroupingThreshold: SelectedDayGroupThreshold);
-
-                    break;
-
-                case DataType.CH4:
-                case DataType.CO2:
-                case DataType.IOD:
-                case DataType.MEIv2:
-                case DataType.N2O:
-                case DataType.Nino34:
-                case DataType.ONI:
-                case DataType.SOI:
-                    dataSet =
-                        await DataService.GetDataSet(
-                            csd.MeasurementDefinition.DataType,
-                            csd.DataResolution,
-                            csd.MeasurementDefinition.DataAdjustment,
-                            ChooseDataSetApiAggregationMethod(csd.Aggregation, csd.Value));
-
-                    break;
-
-                default:
-                    throw new NotImplementedException();
-            }
+            // If we're doing modular binning and the aggregation function is sum, then force mean aggregation at
+            // top level
+            var binAggregationFunction =
+                SelectedBinGranularity.IsModular() && cupAggregationFunction == ContainerAggregationFunctions.Sum
+                ? ContainerAggregationFunctions.Mean
+                : cupAggregationFunction;
+            
+            DataSet dataSet = 
+                await DataService.PostDataSet(
+                    SelectedBinGranularity,
+                    binAggregationFunction,
+                    bucketAggregationFunction,
+                    cupAggregationFunction,
+                    csd.Value,
+                    csd.SourceSeriesSpecifications.Select(BuildDataPrepSeriesSpecification).ToArray(),
+                    csd.SeriesDerivationType,
+                    // If we're in linear time, all buckets in a bin must have passed the data completeness test. Otherwise we just apply SelectedDayGroupThreshold
+                    csd.BinGranularity.IsLinear() ? 1.0f : SelectedDayGroupThreshold,
+                    // If we're in linear time, all cups in a bucket must have passed the data completeness test. Otherwise we just apply SelectedDayGroupThreshold
+                    csd.BinGranularity.IsLinear() ? 1.0f : SelectedDayGroupThreshold,
+                    // We always require that the cup have at least SelectedDayGroupThreshold of its entries populated
+                    SelectedDayGroupThreshold,
+                    SelectedDayGrouping
+                );
 
             datasetsToReturn.Add(
                 new SeriesWithData() { ChartSeries = csd, SourceDataSet = dataSet }
@@ -859,50 +909,67 @@
         }
     }
 
-    short ChartStartYear, ChartEndYear;
+    BinIdentifier ChartStartBin, ChartEndBin;
 
-    static Tuple<short, short> CalculateChartStartAndEndYear(
-        List<SeriesWithData> chartSeriesWithData,
-        string selectedStartYear,
-        string selectedEndYear
-    )
+    public class LogAugmenter
     {
-        // Find the first and last year we have data for
-        var superSetStartYear = chartSeriesWithData.Select(x => x.ProcessedDataSet).SelectMany(x => x.DataRecords).Min(y => y.Year);
-        var superSetEndYear = chartSeriesWithData.Select(x => x.ProcessedDataSet).SelectMany(x => x.DataRecords).Max(y => y.Year);
+        Guid _g = Guid.NewGuid();
+        string _name;
+        ILogger _logger;
+        Stopwatch _sw;
 
-        // Parse the start and end years, if any, specified by the user
-        var userStartYear = string.IsNullOrEmpty(selectedStartYear) ? null : (short?)short.Parse(selectedStartYear);
-        var userEndYear = string.IsNullOrEmpty(selectedEndYear) ? null : (short?)short.Parse(selectedEndYear);
+        public LogAugmenter(ILogger logger, string name)
+        {
+            _logger = logger;
+            _name = name;
+            _sw = new Stopwatch();
+            _sw.Start();
+        }
 
-        // Calculate chart start and end year
-        var chartStartYear =
-            // If the user specified a year in the range of available data, use it, otherwise, use the first available year
-            userStartYear != null && userStartYear >= superSetStartYear && userStartYear <= superSetEndYear
-            ? userStartYear.Value
-            : superSetStartYear;
+        public void LogInformation(string s)
+        {
+            _logger.LogInformation(_name + " " + _g + " " + s + " (" + _sw.Elapsed + ")");
+        }
+    }
 
-        var chartEndYear =
-            // If the user specified a year in the range of available data (not including the first available year) use it,
-            // otherwise, use the last available year
-            userEndYear != null && userEndYear > superSetStartYear && userEndYear <= superSetEndYear
-            ? userEndYear.Value
-            : superSetEndYear;
+    static string BuildTitle(List<SeriesWithData> chartSeriesWithData)
+    {
+        if (chartSeriesWithData.Count == 1)
+        {
+            return chartSeriesWithData.Single().ChartSeries.FriendlyTitle;
+        }
 
-        return new Tuple<short, short>(chartStartYear, chartEndYear);
+        var locationNames = 
+            chartSeriesWithData
+            .SelectMany(x => x.ChartSeries.SourceSeriesSpecifications)
+            .Select(x => x.LocationName)
+            .Where(x => x != null)
+            .Distinct()
+            .ToArray();
+
+        if (locationNames.Length > 0)
+        {
+            return String.Join(", ", locationNames);
+        }
+
+        return "Climate data";
     }
 
     async Task HandleRedraw()
     {
-        Guid g = Guid.NewGuid();
+        var l = new LogAugmenter(Logger, "HandleRedraw");
 
-        Logger.LogInformation("HandleRedraw " + g);
+        l.LogInformation("Entering");
+
+        DumpChartSeriesList();
 
         await chart.Clear();
 
         // This can happen at startup, or if the user switches off all data series
         if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0)
         {
+            l.LogInformation("Bailing early as no chart data available");
+
             return;
         }
 
@@ -926,75 +993,37 @@
 
         var labels = new string[0];
 
-        var title = string.Empty;
         var subtitle = string.Empty;
 
         List<ChartTrendlineData> trendlines = null;
 
-        var locationNames = ChartSeriesWithData.Select(x => x.ChartSeries.LocationName).Where(x => x != null).Distinct().ToArray();
+        var title = BuildTitle(ChartSeriesWithData);
 
-        title = ChartSeriesWithData.Count > 1 ? String.Join(", ", locationNames) : ChartSeriesWithData.Single().ChartSeries.FriendlyTitle;
+        // Data sets sometimes have internal gaps in data (i.e. years which have no data even though earlier
+        // and later years have data). Additionally, they may have external gaps in data if the overall period
+        // to be charted goes beyond the range of the available data in one particular data set.
+        //
+        // To ensure these gaps are handled correctly in the plotted chart, we build a new dataset that includes
+        // records for each missing year. Value is set to null for those records.
 
-        if (SelectedResolution == DataResolution.Yearly)
-        {
-            // Data sets sometimes have internal gaps in data (i.e. years which have no data even though earlier
-            // and later years have data). Additionally, they may have external gaps in data if the overall period
-            // to be charted goes beyond the range of the available data in one particular data set.
-            //
-            // To ensure these gaps are handled correctly in the plotted chart, we build a new dataset that includes
-            // records for each missing year. Value is set to null for those records.
-            BuildProcessedDataSetsForYearlyView(ChartSeriesWithData, UseMostRecentStartYear);
+        l.LogInformation("Calling BuildProcessedDataSets");
 
-            (ChartStartYear, ChartEndYear) = CalculateChartStartAndEndYear(ChartSeriesWithData, SelectedStartYear, SelectedEndYear);
+        BuildProcessedDataSets(ChartSeriesWithData, UseMostRecentStartYear);
 
-            // Now, we cut down the processed datasets to just the years that we intend to display on the chart.
-            foreach (var cswd in ChartSeriesWithData)
-            {
-                Logger.LogInformation("HandleRedraw " + g + " - cswd");
+        subtitle =
+            (ChartStartBin != null & ChartEndBin != null)
+            ? $"({ChartStartBin.Label}-{ChartEndBin.Label})"
+            : SelectedBinGranularity.ToFriendlyString();
 
-                var psd = cswd.ProcessedDataSet;
-                
-                Logger.LogInformation("HandleRedraw " + g + " -   psd");
+        Labels = GetLabels();
 
-                psd.DataRecords = psd.DataRecords.Where(x => x.Year >= ChartStartYear && x.Year <= ChartEndYear).ToList();
-            }
+        l.LogInformation("Calling AddDataSetsToGraph");
 
-            subtitle = $"({ChartStartYear}-{ChartEndYear})";
+        trendlines = await AddDataSetsToGraph();
 
-            Labels = GetLabels(SelectedResolution, ChartStartYear, ChartEndYear);
+        l.LogInformation("Trendlines count: " + trendlines.Count);
 
-            trendlines = await AddDataSetsToGraph();
-        }
-        else
-        {
-            foreach (var cswd in ChartSeriesWithData)
-            {
-                // TODO: Is this shared reference okay? Or should we be cloning?
-                cswd.ProcessedDataSet = cswd.SourceDataSet;
-            }
-
-            subtitle = $"{string.Join(", ", SelectedYears)} {SelectedResolution} Chart";
-
-            var calendar = new GregorianCalendar();
-
-            if (SelectedYears.Any())
-            {
-                // Build a list of x axis labels. Because we may have multiple years selected, and leap years
-                // have a different number of days to non-leap years, we prefer to use a leap year when preparing
-                // the list of x axis labels, if one is present in the user's list of selected years.
-                var selectedYear = SelectedYears.FirstOrDefault(x => calendar.IsLeapYear(x));
-
-                if (selectedYear == 0)
-                {
-                    selectedYear = SelectedYears.First();
-                }
-
-                labels = GetLabels(SelectedResolution, selectedYear: selectedYear);
-                Labels = labels;
-
-                await AddDataSetsToGraph();
-            }
-        }
+        l.LogInformation("Calling AddLabels");
 
         await chart.AddLabels(Labels);
 
@@ -1013,7 +1042,7 @@
             },
             EnsoIndex = new
             {
-                Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.EnsoIndex),
+                Display = ChartSeriesList.Any(x => x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.EnsoIndex),
                 Axis = "y",
                 Position = "right",
                 Grid = new { DrawOnChartArea = false },
@@ -1026,7 +1055,7 @@
             },
             Millimetres = new
             {
-                Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.Millimetres),
+                Display = ChartSeriesList.Any(x => x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.Millimetres),
                 Axis = "y",
                 Position = "right",
                 Grid = new { DrawOnChartArea = false },
@@ -1039,7 +1068,7 @@
             },
             DegreesCelsius = new
             {
-                Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.DegreesCelsius || x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.DegreesCelsiusAnomaly),
+                Display = ChartSeriesList.Any(x => x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.DegreesCelsius || x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.DegreesCelsiusAnomaly),
                 Axis = "y",
                 Position = "left",
                 Grid = new { DrawOnChartArea = false },
@@ -1052,7 +1081,7 @@
             },
             PartsPerMillion = new
             {
-                Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.PartsPerMillion),
+                Display = ChartSeriesList.Any(x => x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.PartsPerMillion),
                 Axis = "y",
                 Position = "right",
                 Grid = new { DrawOnChartArea = false },
@@ -1065,7 +1094,7 @@
             },
             PartsPerBillion = new
             {
-                Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.PartsPerBillion),
+                Display = ChartSeriesList.Any(x => x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.PartsPerBillion),
                 Axis = "y",
                 Position = "right",
                 Grid = new { DrawOnChartArea = false },
@@ -1078,7 +1107,7 @@
             },
             MegajoulesPerSquareMetre = new
             {
-                Display = ChartSeriesList.Any(x => x.MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.MegajoulesPerSquareMetre),
+                Display = ChartSeriesList.Any(x => x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.MegajoulesPerSquareMetre),
                 Axis = "y",
                 Position = "right",
                 Grid = new { DrawOnChartArea = false },
@@ -1093,6 +1122,7 @@
 
         object chartOptions = new
         {
+            Animation = false,
             Responsive = true,
             MaintainAspectRatio = false,
             SpanGaps = false,
@@ -1109,17 +1139,18 @@
                     Display = true
                 },
             },
-            Scales = scales
+            Scales = scales,
+            //Parsing = false
         };
 
         await chart.SetOptionsObject(chartOptions);
-
-        await chart.Update();
 
         if (trendlines != null)
         {
             await chartTrendline.AddTrendLineOptions(trendlines);
         }
+
+        await chart.Update();
 
         // The below line is required to get the chart.js component to honour the styling applied on the parent div
         // If you don't call resize, the chart will apply the styling only after you resize the window,
@@ -1130,72 +1161,33 @@
             await chart.Resize();
             _haveCalledResizeAtLeastOnce = true;
         }
+
+        l.LogInformation("Leaving");
     }
 
     bool _haveCalledResizeAtLeastOnce = false;
 
-    string[] GetLabels(DataResolution dataResolution, short? chartStartYear = null, short? chartEndYear = null, short? selectedYear = null)
+    string[] GetLabels()
     {
-        switch (dataResolution)
-        {
-            case DataResolution.Yearly:
-                {
-                    var numberOfYears = chartEndYear.Value - chartStartYear.Value;
-                    var labels = new string[numberOfYears + 1];
-                    for (var i = 0; i <= numberOfYears; i++)
-                    {
-                        labels[i] = (chartStartYear.Value + i).ToString();
-                    }
-                    return labels;
-                }
-            case DataResolution.Daily:
-                {
-                    var calendar = new GregorianCalendar();
-                    var numberOfDays = calendar.GetDaysInYear(selectedYear.Value);
-                    var labels = new string[numberOfDays];
-                    var date = new DateOnly(selectedYear.Value, 1, 1);
-                    for (var i = 0; i < numberOfDays; i++)
-                    {
-                        labels[i] = date.ToString("dd/MM");
-                        date = date.AddDays(1);
-                    }
-                    return labels;
-                }
-            case DataResolution.Weekly:
-                {
-                    var labels = new string[52];
-                    for (var i = 0; i < 52; i++)
-                    {
-                        labels[i] = $"Week {i + 1}";
-                    }
-                    return labels;
-                }
-            case DataResolution.Monthly:
-                {
-                    var labels = new string[12];
-                    for (var i = 0; i < 12; i++)
-                    {
-                        labels[i] = new DateTime(2010, i + 1, 1).ToString("MMMM", CultureInfo.InvariantCulture);
-                    }
-                    return labels;
-                }
-        }
-        throw new NotImplementedException();
+        return ChartBins.Select(x => x.Label).ToArray();
     }
 
     string GetXAxisLabel()
     {
-        switch (SelectedResolution)
+        switch (SelectedBinGranularity)
         {
-            case DataResolution.Yearly:
+            case BinGranularities.ByYear:
                 return "Year";
-            case DataResolution.Monthly:
+            case BinGranularities.ByYearAndMonth:
                 return "Month";
-            case DataResolution.Weekly:
-                return "Week";
-            case DataResolution.Daily:
-                return "Date (dd/mm)";
+            case BinGranularities.ByMonthOnly:
+                return "Month of the year";
+            case BinGranularities.BySouthernHemisphereTemperateSeasonOnly:
+                return "Southern hemisphere temperate season";
+            case BinGranularities.BySouthernHemisphereTropicalSeasonOnly:
+                return "Southern hemisphere tropical season";
         }
+
         throw new Exception();
     }
 
@@ -1240,12 +1232,14 @@
         bool absoluteValues = false,
         bool redPositive = true)
     {
+        var l = new LogAugmenter(Logger, "AddDataSetToChart");
+
         var values =
             dataSet.DataRecords
             .Select(x => x.Value)
             .ToList();
 
-        Logger.LogInformation($"AddDataSetToChart: values has {values.Count} entries, of which {values.Count(x => x != null)} are not null");
+        l.LogInformation($"AddDataSetToChart: values has {values.Count} entries, of which {values.Count(x => x != null)} are not null");
 
         var colour = ChartColor.FromHtmlColorCode(htmlColourCode);
 
@@ -1256,7 +1250,13 @@
             ? ChartType.Line
             : ChartType.Bar;
 
-        await chart.AddDataSet(GetChartDataset(label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour, absoluteValues, redPositive));
+        var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour, absoluteValues, redPositive);
+
+        l.LogInformation("GetchartDataset complete. Calling AddDataSet");
+
+        await chart.AddDataSet(chartDataset);
+
+        l.LogInformation("AddDataSet complete.");
     }
 
     ChartTrendlineData CreateTrendline(int datasetIndex, ChartColor colour)
@@ -1272,7 +1272,9 @@
 
     ChartDataset<float?> GetMovingAverageChartDataset(int smoothingWindow, string label, List<float?> values, UnitOfMeasure unitOfMeasure, ChartType chartType, ChartColor colour)
     {
-        var simpleMovingAverages = SimpleMovingAverage.Calculate(smoothingWindow, values);
+        var c = new OptimizedMovingAverageCalculator(smoothingWindow);
+
+        var simpleMovingAverages = values.Select(x => c.AddSample(x)).ToList();
 
         switch (chartType)
         {
@@ -1285,8 +1287,114 @@
         }
     }
 
-    void BuildProcessedDataSetsForYearlyView(List<SeriesWithData> chartSeriesWithData, bool useMostRecentStartYear = true)
+    static short GetYearForDataRecord(DataRecord dr)
     {
+        BinIdentifier parsedId = dr.GetBinIdentifier();
+
+        if (parsedId is BinIdentifierForGaplessBin id)
+        {
+            return (short)id.FirstDayInBin.Year;
+        }
+
+        throw new NotImplementedException();
+    }
+
+    static DataRecord GetFirstDataRecordWithValueInDataSet(DataSet dataSet)
+    {
+        var firstRecordWithValueIfAny = dataSet.DataRecords.FirstOrDefault(x => x.Value.HasValue);
+
+        if (firstRecordWithValueIfAny == null)
+        {
+            throw new Exception("No records have a value in DataSet " + dataSet.ToString());
+        }
+
+        return firstRecordWithValueIfAny;
+    }
+
+    static DataRecord GetLastDataRecordWithValueInDataSet(DataSet dataSet)
+    {
+        return dataSet.DataRecords.Last(x => x.Value.HasValue);
+    }
+
+    static short GetStartYearForDataSet(DataSet dataSet)
+    {
+        return GetYearForDataRecord(GetFirstDataRecordWithValueInDataSet(dataSet));
+    }
+
+    static short GetEndYearForDataSet(DataSet dataSet)
+    {
+        return GetYearForDataRecord(GetLastDataRecordWithValueInDataSet(dataSet));
+    }
+
+    static Tuple<BinIdentifier, BinIdentifier> GetBinRangeToPlotForGaplessRange(
+        IEnumerable<DataSet> preProcessedDataSets, 
+        bool useMostRecentStartYear,
+        string selectedStartYear,
+        string selectedEndYear)
+    {
+        // Parse the start and end years, if any, specified by the user
+        var userStartYear = string.IsNullOrEmpty(selectedStartYear) ? null : (short?)short.Parse(selectedStartYear);
+        var userEndYear = string.IsNullOrEmpty(selectedEndYear) ? null : (short?)short.Parse(selectedEndYear);
+
+        // Analyse the data we want to plot, to find the first & last bin we have a value for, for each data set
+        var firstBinInEachDataSet =
+            preProcessedDataSets
+            .Select(GetFirstDataRecordWithValueInDataSet)
+            .Select(x => (BinIdentifierForGaplessBin)x.GetBinIdentifier());
+
+        var lastBinInEachDataSet =
+            preProcessedDataSets
+            .Select(GetLastDataRecordWithValueInDataSet)
+            .Select(x => (BinIdentifierForGaplessBin)x.GetBinIdentifier());
+
+        var firstBinAcrossAllDataSets = firstBinInEachDataSet.Min();
+        var lastFirstBinAcrossAllDataSets = firstBinInEachDataSet.Max();
+        var lastBinAcrossAllDataSets = lastBinInEachDataSet.Max();
+
+        var startBin = useMostRecentStartYear ? lastFirstBinAcrossAllDataSets : firstBinAcrossAllDataSets;
+        var endBin = lastBinAcrossAllDataSets;
+
+        if (userStartYear != null)
+        {
+            if (userStartYear.Value > startBin.FirstDayInBin.Year)
+            {
+                if (startBin is YearBinIdentifier)
+                {
+                    startBin = new YearBinIdentifier(userStartYear.Value);
+                }
+
+                if (startBin is YearAndMonthBinIdentifier)
+                {
+                    startBin = new YearAndMonthBinIdentifier(userStartYear.Value, 1);
+                }
+            }
+        }
+
+        if (userEndYear != null)
+        {
+            if (userEndYear.Value < endBin.FirstDayInBin.Year)
+            {
+                if (endBin is YearBinIdentifier)
+                {
+                    endBin = new YearBinIdentifier(userEndYear.Value);
+                }
+
+                if (endBin is YearAndMonthBinIdentifier)
+                {
+                    endBin = new YearAndMonthBinIdentifier(userEndYear.Value, 1);
+                }
+            }
+        }
+
+        return new Tuple<BinIdentifier, BinIdentifier>(startBin, endBin);
+    }
+
+    void BuildProcessedDataSets(List<SeriesWithData> chartSeriesWithData, bool useMostRecentStartYear = true)
+    {
+        var l = new LogAugmenter(Logger, "BuildProcessedDataSets");
+
+        l.LogInformation("entering");
+
         // If we're doing smoothing via the moving average, precalculate these data and add them to PreProcessedDataSets.
         // We do this because the SimpleMovingAverage calculate function will remove some years from the start of the data set.
         // It removes these years because it doesn't have a good enough average to present it to the user.
@@ -1294,55 +1402,119 @@
         // If we're not calculating a moving average, PreProcessedDataSets = SourceDataSets
         foreach (var cs in chartSeriesWithData)
         {
-            if (cs.ChartSeries.Smoothing == SeriesSmoothingOptions.MovingAverage)
+            // We only support moving averages on linear bin granularities (e.g. Year, YearAndMonth) - not modular ones like MonthOnly
+            if (SelectedBinGranularity.IsLinear() && cs.ChartSeries.Smoothing == SeriesSmoothingOptions.MovingAverage)
             {
-                cs.PreProcessedDataSet = 
-                                new DataSet
-                                    {
-                                        Location = cs.SourceDataSet.Location,
-                                        MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
-                                        DataRecords = SimpleMovingAverage.Calculate(cs.ChartSeries.SmoothingWindow, cs.SourceDataSet.DataRecords)
-                                    };
+                var c = new DataRecordMovingAverageCalculator(new OptimizedMovingAverageCalculator(cs.ChartSeries.SmoothingWindow));
+                l.LogInformation("Calculating moving average");
+                var dr = c.Calculate(cs.SourceDataSet.DataRecords);
+                l.LogInformation("Done");
+
+                cs.PreProcessedDataSet =
+                    new DataSet
+                        {
+                            Location = cs.SourceDataSet.Location,
+                            MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
+                            DataRecords = dr
+                        };
             }
             else
             {
                 cs.PreProcessedDataSet = cs.SourceDataSet;
             }
-        }       
+        }
 
-        // Calculate first and last year which we have a data record for, across all data sets underpinning all chart series
-        var allDataSets = chartSeriesWithData.Select(x => x.PreProcessedDataSet);
-        var allDataRecords = allDataSets.SelectMany(x => x.DataRecords);
+        l.LogInformation("done with moving average calculation");
+        
+        // There must be exactly one bin granularity or else something odd's going on.
+        var binGranularity = chartSeriesWithData.Select(x => x.ChartSeries.BinGranularity).Distinct().Single();
 
-        StartYears = allDataSets.Where(x => x.StartYear.HasValue).Select(x => x.StartYear.Value).Distinct().OrderBy(x => x).ToList();
+        if (binGranularity != SelectedBinGranularity)
+        {
+            throw new Exception($"BinGranularity selected for series ({binGranularity}) doesn't match overall selected granularity {SelectedBinGranularity}");
+        }
 
-        var earliestYear = Convert.ToInt32(useMostRecentStartYear
-                                                ? StartYears.Last()
-                                                : StartYears.First());
+        BinIdentifier[] chartBins = null;
 
-        var latestYearAcrossAllDataSets = allDataRecords.Max(y => y.Year);
+        switch (binGranularity)
+        {
+            case BinGranularities.ByYear:
+            case BinGranularities.ByYearAndMonth:
+                // Calculate first and last year which we have a data record for, across all data sets underpinning all chart series
+                var preProcessedDataSets = chartSeriesWithData.Select(x => x.PreProcessedDataSet);
+                var allDataRecords = preProcessedDataSets.SelectMany(x => x.DataRecords);
+
+                (ChartStartBin, ChartEndBin) = 
+                    GetBinRangeToPlotForGaplessRange(
+                        // Pass in the data available for plotting
+                        preProcessedDataSets, 
+                        // and the user's preferences about what x axis range they'd like plotted
+                        useMostRecentStartYear, 
+                        SelectedStartYear, 
+                        SelectedEndYear);
+
+                chartBins = BinHelpers.EnumerateBinsInRange(ChartStartBin, ChartEndBin).ToArray();
+
+                // build a list of all the years in which data sets start, used by the UI to allow the user to conveniently select from them
+                StartYears = preProcessedDataSets.Select(GetStartYearForDataSet).Distinct().OrderBy(x => x).ToList();
+
+                break;
+
+            case BinGranularities.ByMonthOnly:
+            case BinGranularities.BySouthernHemisphereTemperateSeasonOnly:
+            case BinGranularities.BySouthernHemisphereTropicalSeasonOnly:
+                ChartStartBin = null;
+                ChartEndBin = null;
+                chartBins = BinHelpers.GetBinsForModularGranularity(binGranularity);
+                break;
+
+            default:
+                throw new NotImplementedException($"binGranularity {binGranularity}");
+        }
 
         foreach (var cs in chartSeriesWithData)
         {
-            // Create new datasets, same as the source, but with any gap years filled with null records
-            cs.ProcessedDataSet =                
-                        new DataSet
-                            {
-                                Location = cs.PreProcessedDataSet.Location,
-                                MeasurementDefinition = cs.PreProcessedDataSet.MeasurementDefinition,
-                                DataRecords =
-                                        Enumerable.Range(earliestYear, latestYearAcrossAllDataSets - earliestYear + 1)
-                                        .Select(
-                                            year =>
-                                                // If there's a record in the source dataset, use it
-                                                cs.PreProcessedDataSet.DataRecords.SingleOrDefault(z => z.Year == year)
-                                                // Otherwise, create a null record
-                                                ?? new DataRecord((short)year)
-                                        )
-                                        .ToList()
-                            }
-                ;
+            l.LogInformation("constructing ProcessedDataSet");
+
+            var recordsByBinId = cs.PreProcessedDataSet.DataRecords.ToLookup(x => x.BinId);
+
+            l.LogInformation("First chart bin: " + chartBins.First() + ", last chart: " + chartBins.Last());
+
+            // Create new datasets, same as the source, but with any gaps filled with null records
+            cs.ProcessedDataSet =
+                new DataSet
+                {
+                    Location = cs.PreProcessedDataSet.Location,
+                    MeasurementDefinition = cs.PreProcessedDataSet.MeasurementDefinition,
+                    DataRecords =
+                        chartBins
+                        .Select(
+                            bin =>
+                            // If there's a record in the source dataset, use it
+                            recordsByBinId[bin.Id].SingleOrDefault()
+                            // Otherwise, create a null record
+                            ?? new DataRecord { BinId = bin.Id, Value = null }
+                        )
+                        .ToList()
+                };
         }
+
+        ChartBins = chartBins;
+
+        // Now, we cut down the processed datasets to just the bins that we intend to display on the chart.
+        // This should only affect linear (gapless) BinGranularities, but executes either way, in case we
+        // later allow users to say "just give me month-ignoring-year, but only for months after 4 and before 7",
+        // for example.
+        HashSet<string> binIdsToPlot = new HashSet<string>(ChartBins.Select(x => x.Id));
+        foreach (var cswd in ChartSeriesWithData)
+        {
+            cswd.ProcessedDataSet.DataRecords = 
+                cswd.ProcessedDataSet.DataRecords
+                .Where(x => binIdsToPlot.Contains(x.BinId))
+                .ToList();
+        }
+
+        l.LogInformation("leaving");
     }
 
     List<DataSet> CreateDailyBufferedDataSet(List<DataSet> dataSets)
@@ -1410,11 +1582,12 @@
                     Data = values,
                     BorderColor = colour,
                     Fill = false,
-                    PointRadius = 5,
+                    PointRadius = 3,
+                    ShowLine = true,
                     PointBorderColor = "#eee",
                     PointHoverBackgroundColor = colour,
                     BorderDash = new List<int> { },
-                    Tension = 0.1f,
+                    //Tension = 0.1f,
                     YAxisID = unitOfMeasure.ToString().ToLowerFirstChar(),
                 };
 
@@ -1445,95 +1618,106 @@
         // Update data series to reflect new location
         foreach (var csd in ChartSeriesList)
         {
-            if (!csd.IsLocked)
+            foreach (var sss in csd.SourceSeriesSpecifications)
             {
-                if (csd.LocationId != null)
+                if (!csd.IsLocked)
                 {
-                    csd.LocationId = newValue;
-                    csd.LocationName = SelectedLocation.Name;
-
-                    // But: the new location may not have data of the requested type. Since this series is location-specific, and we
-                    // determine the DSD for a location based just on the location, let's update the CSD accordingly
-                    csd.DataSetDefinition = SelectedDataSetDefinition;
-
-                    // Next, update the MeasurementDefinition. Look for a match on DataType and DataAdjustment
-                    var oldMd = csd.MeasurementDefinition;
-
-                    var candidateMds =
-                        csd.DataSetDefinition.MeasurementDefinitions
-                        .Where(x => x.DataType == oldMd.DataType && x.DataAdjustment == oldMd.DataAdjustment)
-                        .ToArray();
-
-                    switch (candidateMds.Length)
+                    if (sss.LocationId != null)
                     {
-                        case 0:
-                            // There was no exact match. It's possible that the new location has data of the requested type, but not the specified adjustment type.
-                            // If so, try defaulting.
-                            candidateMds = csd.DataSetDefinition.MeasurementDefinitions.Where(x => x.DataType == oldMd.DataType).ToArray();
+                        sss.LocationId = newValue;
+                        sss.LocationName = SelectedLocation.Name;
 
-                            if (candidateMds.Length == 1)
-                            {
-                                // If only one is available, just use it
-                                csd.MeasurementDefinition = candidateMds.Single();
-                            }
-                            else
-                            {
-                                // Otherwise, use "Adjusted" if available
-                                var adjustedMd = candidateMds.SingleOrDefault(x => x.DataAdjustment == DataAdjustment.Adjusted);
+                        // But: the new location may not have data of the requested type. Since this series is location-specific, and we
+                        // determine the DSD for a location based just on the location, let's update the CSD accordingly
+                        sss.DataSetDefinition = SelectedDataSetDefinition;
 
-                                if (adjustedMd != null)
+                        // Next, update the MeasurementDefinition. Look for a match on DataType and DataAdjustment
+                        var oldMd = sss.MeasurementDefinition;
+
+                        var candidateMds =
+                            sss.DataSetDefinition.MeasurementDefinitions
+                            .Where(x => x.DataType == oldMd.DataType && x.DataAdjustment == oldMd.DataAdjustment)
+                            .ToArray();
+
+                        switch (candidateMds.Length)
+                        {
+                            case 0:
+                                // There was no exact match. It's possible that the new location has data of the requested type, but not the specified adjustment type.
+                                // If so, try defaulting.
+                                candidateMds = sss.DataSetDefinition.MeasurementDefinitions.Where(x => x.DataType == oldMd.DataType).ToArray();
+
+                                if (candidateMds.Length == 1)
                                 {
-                                    csd.MeasurementDefinition = adjustedMd;
+                                    // If only one is available, just use it
+                                    sss.MeasurementDefinition = candidateMds.Single();
                                 }
-                            }
+                                else
+                                {
+                                    // Otherwise, use "Adjusted" if available
+                                    var adjustedMd = candidateMds.SingleOrDefault(x => x.DataAdjustment == DataAdjustment.Adjusted);
 
-                            break;
+                                    if (adjustedMd != null)
+                                    {
+                                        sss.MeasurementDefinition = adjustedMd;
+                                    }
+                                }
 
-                        case 1:
-                            csd.MeasurementDefinition = candidateMds.Single();
-                            break;
+                                break;
 
-                        default:
-                            // There were multiple matches. That's unexpected.
-                            throw new Exception("Unexpected condition: after changing location, while updating ChartSeriesDefinitions, there were multiple compatible MeasurementDefinitions for one CSD.");
+                            case 1:
+                                sss.MeasurementDefinition = candidateMds.Single();
+                                break;
+
+                            default:
+                                // There were multiple matches. That's unexpected.
+                                throw new Exception("Unexpected condition: after changing location, while updating ChartSeriesDefinitions, there were multiple compatible MeasurementDefinitions for one CSD.");
+                        }
                     }
                 }
-            }
-            else
-            {
-                // It's locked, so duplicate it & set the location on the duplicate to the new location
-                var newDsd = DataSetDefinitions.Single(x => x.Id == SelectedDataSetDefinition.Id);
-                var newMd = 
-                    newDsd.MeasurementDefinitions
-                    .SingleOrDefault(x => x.DataType == csd.MeasurementDefinition.DataType && x.DataAdjustment == csd.MeasurementDefinition.DataAdjustment);
-
-                if (newMd == null)
+                else
                 {
-                    newMd = 
+                    // It's locked, so duplicate it & set the location on the duplicate to the new location
+                    var newDsd = DataSetDefinitions.Single(x => x.Id == SelectedDataSetDefinition.Id);
+                    var newMd = 
                         newDsd.MeasurementDefinitions
-                        .SingleOrDefault(x => x.DataType == csd.MeasurementDefinition.DataType && x.DataAdjustment == null);
-                }
+                        .SingleOrDefault(x => x.DataType == sss.MeasurementDefinition.DataType && x.DataAdjustment == sss.MeasurementDefinition.DataAdjustment);
 
-                if (newMd != null)
-                {
-                    additionalCsds.Add(
-                        new ChartSeriesDefinition()
-                        {
-                            Aggregation = csd.Aggregation,
-                            DataResolution = csd.DataResolution,
-                            DataSetDefinition = DataSetDefinitions.Single(x => x.Id == SelectedDataSetDefinition.Id),
-                            DisplayStyle = csd.DisplayStyle,
-                            IsLocked = false,
-                            LocationId = newValue,
-                            LocationName = SelectedLocation.Name,
-                            MeasurementDefinition = newMd,
-                            ShowTrendline = csd.ShowTrendline,
-                            Smoothing = csd.Smoothing,
-                            SmoothingWindow = csd.SmoothingWindow,
-                            Value = csd.Value,
-                            Year = csd.Year
-                        }
-                    );
+                    if (newMd == null)
+                    {
+                        newMd = 
+                            newDsd.MeasurementDefinitions
+                            .SingleOrDefault(x => x.DataType == sss.MeasurementDefinition.DataType && x.DataAdjustment == null);
+                    }
+
+                    if (newMd != null)
+                    {
+                        additionalCsds.Add(
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications =
+                                    new ChartSeriesDefinition.SourceSeriesSpecification[]
+                                    {
+                                        new ChartSeriesDefinition.SourceSeriesSpecification
+                                        {
+                                            DataSetDefinition = DataSetDefinitions.Single(x => x.Id == SelectedDataSetDefinition.Id),
+                                            LocationId = newValue,
+                                            LocationName = SelectedLocation.Name,
+                                            MeasurementDefinition = newMd,
+                                        }
+                                    },
+                                Aggregation = csd.Aggregation,
+                                BinGranularity = csd.BinGranularity,
+                                DisplayStyle = csd.DisplayStyle,
+                                IsLocked = false,
+                                ShowTrendline = csd.ShowTrendline,
+                                Smoothing = csd.Smoothing,
+                                SmoothingWindow = csd.SmoothingWindow,
+                                Value = csd.Value,
+                                Year = csd.Year
+                            }
+                        );
+                    }
                 }
             }
         }
@@ -1556,18 +1740,15 @@
 
     async Task OnLineChartClicked(ChartMouseEventArgs e)
     {
-        if (SelectedResolution != DataResolution.Yearly)
-        {
-            return;
-        }
+        throw new NotImplementedException();
 
-        var year = (short)(ChartStartYear + e.Index);
+        //var year = (short)(ChartStartYear + e.Index);
 
-        SelectedYears = new List<short> { year };
-        SelectedResolution = DataResolution.Monthly;
+        //SelectedYears = new List<short> { year };
+        //SelectedResolution = DataResolution.Monthly;
 
-        RebuildChartSeriesListToReflectSelectedYears();
+        //RebuildChartSeriesListToReflectSelectedYears();
 
-        await BuildDataSets();
+        //await BuildDataSets();
     }
 }

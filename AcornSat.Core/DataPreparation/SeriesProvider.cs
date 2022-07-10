@@ -1,15 +1,25 @@
 ﻿using AcornSat.Core.InputOutput;
+using AcornSat.Core.ViewModel;
 using AcornSat.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static AcornSat.Core.Enums;
 
-namespace AcornSat.WebApi.Model.DataSetBuilder
+namespace ClimateExplorer.Core.DataPreparation
 {
     public static class SeriesProvider
     {
-        static public async Task<TemporalDataPoint[]> GetSeriesDataPointsForRequest(SeriesDerivationTypes seriesDerivationType, SeriesSpecification[] seriesSpecifications)
+        public class Series
+        {
+            public TemporalDataPoint[] DataPoints { get; set; }
+            public UnitOfMeasure UnitOfMeasure { get; set; }
+            public DataCategory? DataCategory { get; set; }
+            public DataResolution DataResolution { get; set; }
+        }
+
+        static public async Task<Series> GetSeriesDataPointsForRequest(SeriesDerivationTypes seriesDerivationType, SeriesSpecification[] seriesSpecifications)
         {
             switch (seriesDerivationType)
             {
@@ -30,19 +40,22 @@ namespace AcornSat.WebApi.Model.DataSetBuilder
             }
         }
 
-        static async Task<TemporalDataPoint[]> BuildDifferenceBetweenTwoSeries(SeriesSpecification[] seriesSpecifications)
+        static async Task<Series> BuildDifferenceBetweenTwoSeries(SeriesSpecification[] seriesSpecifications)
         {
             if (seriesSpecifications.Length != 2)
             {
                 throw new Exception($"When SeriesDerivationType is {nameof(SeriesDerivationTypes.DifferenceBetweenTwoSeries)}, exactly two SeriesSpecifications must be provided.");
             }
 
-            var dp1 = await GetSeriesDataPoints(seriesSpecifications[0]);
-            var dp2 = await GetSeriesDataPoints(seriesSpecifications[1]);
+            var series1 = await GetSeriesDataPoints(seriesSpecifications[0]);
+            var series2 = await GetSeriesDataPoints(seriesSpecifications[1]);
+
+            var dp1 = series1.DataPoints;
+            var dp2 = series2.DataPoints;
 
             if (dp1.Length == 0 || dp2.Length == 0)
             {
-                return new TemporalDataPoint[0];
+                return new Series { DataPoints = new TemporalDataPoint[0], UnitOfMeasure = series1.UnitOfMeasure };
             }
 
             var dp1Grouped = dp1.ToDictionary(x => new DateOnly(x.Year, x.Month ?? 1, x.Day ?? 1));
@@ -80,10 +93,17 @@ namespace AcornSat.WebApi.Model.DataSetBuilder
                 d = d.AddDays(1);
             }
 
-            return results.ToArray();
+            return
+                new Series
+                {
+                    DataPoints = results.ToArray(),
+                    UnitOfMeasure = series1.UnitOfMeasure,
+                    DataCategory = series1.DataCategory,
+                    DataResolution = series1.DataResolution
+                };
         }
 
-        static async Task<TemporalDataPoint[]> GetSeriesDataPoints(SeriesSpecification seriesSpecification)
+        static async Task<Series> GetSeriesDataPoints(SeriesSpecification seriesSpecification)
         {
             var definitions = await DataSetDefinition.GetDataSetDefinitions();
 
@@ -107,7 +127,14 @@ namespace AcornSat.WebApi.Model.DataSetBuilder
             
             var dataRecords = await DataReader.GetDataRecords(measurementDefinition, dataFileFilterAndAdjustments);
 
-            return dataRecords.Select(x => new TemporalDataPoint { Year = x.Year, Month = x.Month, Day = x.Day, Value = x.Value }).ToArray();
+            return
+                new Series
+                {
+                    DataPoints = dataRecords.Select(x => new TemporalDataPoint { Year = x.Year, Month = x.Month, Day = x.Day, Value = x.Value }).ToArray(),
+                    UnitOfMeasure = measurementDefinition.UnitOfMeasure,
+                    DataCategory = measurementDefinition.DataCategory,
+                    DataResolution = measurementDefinition.DataResolution
+                };
         }
     }
 }

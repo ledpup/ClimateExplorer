@@ -1,7 +1,7 @@
 ﻿using AcornSat.Core;
 using System;
 
-namespace AcornSat.WebApi.Model.DataSetBuilder
+namespace ClimateExplorer.Core.DataPreparation
 {
     public class SeriesSpecification
     {

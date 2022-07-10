@@ -1,4 +1,5 @@
 ﻿using AcornSat.Core.ViewModel;
+using ClimateExplorer.Core.DataPreparation;
 using static AcornSat.Core.Enums;
 
 public class DataSet
@@ -8,15 +9,24 @@ public class DataSet
         DataRecords = new List<DataRecord>();
     }
 
+    public BinGranularities BinGranularity { get; set; }
+
+    // TODO: This will go (replaced by BinGranularity)
     public DataResolution Resolution { get; set; }
     public Location Location { get;  set; }
     public MeasurementDefinitionViewModel MeasurementDefinition { get; set; }
     public DataType DataType { get { return MeasurementDefinition.DataType; } }
     public DataAdjustment? DataAdjustment { get { return MeasurementDefinition.DataAdjustment; } }
+
+    /// <summary>
+    /// Used when doing multi-location series like "Temperature by latitude"
+    /// </summary>
     public List<Location> Locations { get; set; }
 
     public List<DataRecord> DataRecords { get; set; }
+    public TemporalDataPoint[] RawDataRecords { get; set; }
 
+    // TODO: This will go (replaced by code that is bin-oriented)
     public short? StartYear 
     {
         get 
@@ -145,6 +155,11 @@ public class DataSet
 <p>The difference is <strong>{WarmingIndexAsString}</strong> (after rounding to 1 decimal place).</p>
 <p>Over the long-term, with no external influences, we'd expect the warming index to trend towards zero. A non-zero warming index may indicate an effect of climate change. A positive warming index may indicate global warming.</p>";
         }
+    }
+
+    public override string ToString()
+    {
+        return $"{DataType} | {DataAdjustment} | {BinGranularity} | {Location} | {DataRecords.Count}";
     }
 }
 
