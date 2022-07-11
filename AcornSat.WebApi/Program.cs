@@ -140,38 +140,56 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
     return dtos;
 }
 
-async Task<List<Location>> GetLocations(bool includeNearbyLocations = false)
+async Task<List<Location>> GetLocations(bool includeNearbyLocations = false, bool includeWarmingMetrics = false)
 {
-    
     var locations = (await Location.GetLocations(includeNearbyLocations)).OrderBy(x => x.Name).ToList();
 
-    //if (includeWarmingMetrics)
-    //{
-    //    var definitions = GetDataSetDefinitions();
-    //    foreach (var location in locations)
-    //    {
-    //        var definition = definitions.Single(x => x.Id == location.DataSetId);
+    if (includeWarmingMetrics)
+    {
+        var definitions = await GetDataSetDefinitions();
 
-    //        Enums.DataAdjustment? dataAdjustment = null;
-    //        if (definition.MeasurementDefinitions.Any(x => x.DataType == DataType.TempMax && x.DataAdjustment == Enums.DataAdjustment.Adjusted))
-    //        {
-    //            dataAdjustment = Enums.DataAdjustment.Adjusted;
-    //        }
+        // For each location, retrieve the TempMax dataset (Adjusted if available, Adjustment null otherwise), and copy its WarmingIndex
+        // to the location we're about to return.
+        foreach (var location in locations)
+        {
+            // First, find what data adjustments are available for TempMax for that location.
+            (var dsdOfferingTempMax, var mdTempMax) =
+                DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
+                    definitions,
+                    location.Id,
+                    DataType.TempMax,
+                    Enums.DataAdjustment.Adjusted,
+                    true);
 
-    //        var dataset = await GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage, location.Id, null, 14, .7f, null);
-    //        location.WarmingIndex = dataset.WarmingIndex;
-    //    }
+            // Next, request that dataset (omitting DataSetDefinition.Id because GetDataSet looks it up manually
+            // on the assumption (valid for now) that there's only ever one DataSetDefinition offering a given
+            // DataType and DataAdjustment for a given location).
+            var dataset = 
+                await GetDataSet(
+                    DataType.TempMax, 
+                    DataResolution.Yearly,
+                    mdTempMax.DataAdjustment,
+                    AggregationMethod.GroupByDayThenAverage, 
+                    location.Id, 
+                    null, 
+                    14, 
+                    .7f, 
+                    null);
 
-    //    var maxWarmingIndex = locations.Max(x => x.WarmingIndex).Value;
-    //    locations
-    //        .ToList()
-    //        .ForEach(x => x.HeatingScore = x.WarmingIndex == null 
-    //                                            ? null 
-    //                                            : x.WarmingIndex > 0 
-    //                                                    ? Convert.ToInt16(MathF.Round(x.WarmingIndex.Value / maxWarmingIndex * 9, 0))
-    //                                                    : Convert.ToInt16(MathF.Round(x.WarmingIndex.Value, 0)));
-    //}
-    
+            location.WarmingIndex = dataset.WarmingIndex;
+        }
+
+        var maxWarmingIndex = locations.Max(x => x.WarmingIndex).Value;
+
+        locations
+            .ToList()
+            .ForEach(x => x.HeatingScore = x.WarmingIndex == null
+                                                ? null
+                                                : x.WarmingIndex > 0
+                                                        ? Convert.ToInt16(MathF.Round(x.WarmingIndex.Value / maxWarmingIndex * 9, 0))
+                                                        : Convert.ToInt16(MathF.Round(x.WarmingIndex.Value, 0)));
+    }
+
     return await Location.GetLocations(false);
 }
 
