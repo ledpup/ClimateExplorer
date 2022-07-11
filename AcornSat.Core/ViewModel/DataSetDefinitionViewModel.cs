@@ -61,7 +61,9 @@ public class DataSetDefinitionViewModel
             throw new Exception($"No matching dataset defintion found with parameters: location ID = {locationId}, data type = {dataType} data adjustment {dataAdjustment}");
         }
 
+        // TODO: This could be generalised in case one day we incorporate multiple "publishers" of the same data for the same location
         var dsd = dsds.SingleOrDefault();
+
         var md = dsd.MeasurementDefinitions.Single(x => x.DataType == dataType && x.DataAdjustment == dataAdjustment);
                 
         return new Tuple<DataSetDefinitionViewModel, MeasurementDefinitionViewModel>(dsd, md);

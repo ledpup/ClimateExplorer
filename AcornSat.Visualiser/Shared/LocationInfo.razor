@@ -49,13 +49,13 @@
                 }
             </Value>
         </OverviewField>*@
-        @if (dataSet != null)
+        @if (_maxTempAbsoluteRecords != null)
         {
-            <OverviewField Label="Warming index" PopupText="@dataSet.WarmingIndexDescription"><Value>@dataSet.WarmingIndexAsString</Value></OverviewField>
+            <OverviewField Label="Warming index" PopupText="@_maxTempAbsoluteRecords.WarmingIndexDescription"><Value>@_maxTempAbsoluteRecords.WarmingIndexAsString</Value></OverviewField>
         }
         <OverviewField Label="Heating score" PopupText="@HeatingScoreDescription"><Value>@Location.HeatingScore</Value></OverviewField>
-        <WarmingStripe DataRecords="@dataRecordsRelative" />
-        <WarmestYears DataRecords="@dataRecordsRelative" />
+        <WarmingStripe DataRecords="@_maxTempAnomalyRecords" />
+        <WarmestYears DataRecords="@_maxTempAnomalyRecords" />
     </Content>
 </Collapsible>
 
@@ -75,6 +75,9 @@
     public EventCallback RequestLocationChange { get; set; }
 
     [Parameter]
+    public IEnumerable<DataSetDefinitionViewModel> DataSetDefinitions { get; set; }
+
+    [Parameter]
     public EventCallback<bool> OnOverviewShowOrHide { get; set; }
 
     Guid instanceId = Guid.NewGuid();
@@ -83,11 +86,10 @@
     string LocationAsString => $"{Math.Round(Location.Coordinates.Latitude, 1)}°, {Math.Round(Location.Coordinates.Longitude, 1)}°";
     string ElevationAsString => $"{Math.Round(Location.Coordinates.Elevation, 1)}m";
 
-    DataSet dataSet { get; set; }
-    List<DataRecord> dataRecordsRelative { get; set; }
+    DataSet _maxTempAbsoluteRecords { get; set; }
+    List<DataRecord> _maxTempAnomalyRecords { get; set; }
 
     Guid? locationIdLastTimeOnParametersSetAsyncWasCalled;
-    Guid? dataSetDefinitionIdLastTimeOnParametersSetAsyncWasCalled;
 
     const string HeatingScoreDescription = @"<p>The heating score is a number typically between 0 and 9. It is derived from comparing all warming indexes across the locations in the dataset. The highest warming index is used to standardise the values.</p>
 <p>To calculate the heating score:</p>
@@ -96,7 +98,6 @@
 <p>The score may be higher if:</p>
 <ul><li>The location is inland. The ocean is warming more slowly compared with the land. Coastal locations are therefore likely to have warmed less than inland locations.</li>
 <li>The station(s) has been operating for a long time. The effect of global warming is more obvious with a large dataset as temperatures in the past were cooler.</li>";
-
 
     public void ChangeLocationClicked(EventArgs args)
     {
@@ -111,27 +112,46 @@
     protected override async Task OnParametersSetAsync()
     {
         // We do manual change detection here because Blazor calls OnParametersSetAsync() repeatedly with the same input values.
-        Guid callId = Guid.NewGuid();
+        if (locationIdLastTimeOnParametersSetAsyncWasCalled == Location?.Id)
+        {
+            return;
+        }
 
-        //if (locationIdLastTimeOnParametersSetAsyncWasCalled == Location?.Id &&
-        //    dataSetDefinitionIdLastTimeOnParametersSetAsyncWasCalled == DataSetDefinition?.Id)
-        //{
-        //    return;
-        //}
+        // We can't do anything until we're supplied our tasty, tasty DataSetDefinitions
+        if (DataSetDefinitions == null)
+        {
+            return;
+        }
 
         locationIdLastTimeOnParametersSetAsyncWasCalled = Location?.Id;
-        //dataSetDefinitionIdLastTimeOnParametersSetAsyncWasCalled = DataSetDefinition?.Id;
 
-        //Enums.DataAdjustment? dataAdjustment = null;
-        //if (DataSetDefinition.MeasurementDefinitions.Any(x => x.DataType == DataType.TempMax && x.DataAdjustment == Enums.DataAdjustment.Adjusted))
-        //{
-        //    dataAdjustment = Enums.DataAdjustment.Adjusted;
-        //}
+        if (Location != null)
+        {
+            var tempMaxMeasurementForLocation = 
+                DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
+                    DataSetDefinitions,
+                    Location.Id,
+                    DataType.TempMax,
+                    Enums.DataAdjustment.Adjusted,
+                    true);
 
-        //var dataset = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage_Anomaly, Location.Id);
-        //dataRecordsRelative = dataset.DataRecords.Where(x => x.Value != null).ToList();
+            if (tempMaxMeasurementForLocation == null)
+            {
+                _maxTempAnomalyRecords = null;
+                _maxTempAbsoluteRecords = null;
+            }
+            else
+            {
+                // Retrieve TempMax anomaly
+                var tempMaxAnomalyRecords = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, tempMaxMeasurementForLocation.Item2.DataAdjustment, AggregationMethod.GroupByDayThenAverage_Anomaly, Location.Id);
 
-        //dataSet = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage, Location.Id);
+                // Filter to records that have values
+                _maxTempAnomalyRecords = tempMaxAnomalyRecords.DataRecords.Where(x => x.Value != null).ToList();
+
+                // Retrieve TempMax absolute
+                _maxTempAbsoluteRecords = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, tempMaxMeasurementForLocation.Item2.DataAdjustment, AggregationMethod.GroupByDayThenAverage, Location.Id);
+            }
+        }
 
         await base.OnParametersSetAsync();
     }
