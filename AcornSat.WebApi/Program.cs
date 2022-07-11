@@ -152,31 +152,39 @@ async Task<List<Location>> GetLocations(bool includeNearbyLocations = false, boo
         // to the location we're about to return.
         foreach (var location in locations)
         {
-            // First, find what data adjustments are available for TempMax for that location.
-            (var dsdOfferingTempMax, var mdTempMax) =
-                DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
-                    definitions,
-                    location.Id,
-                    DataType.TempMax,
-                    Enums.DataAdjustment.Adjusted,
-                    true);
+            try
+            {
+                // First, find what data adjustments are available for TempMax for that location.
+                (var dsdOfferingTempMax, var mdTempMax) =
+                    DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
+                        definitions,
+                        location.Id,
+                        DataType.TempMax,
+                        Enums.DataAdjustment.Adjusted,
+                        true);
 
-            // Next, request that dataset (omitting DataSetDefinition.Id because GetDataSet looks it up manually
-            // on the assumption (valid for now) that there's only ever one DataSetDefinition offering a given
-            // DataType and DataAdjustment for a given location).
-            var dataset = 
-                await GetDataSet(
-                    DataType.TempMax, 
-                    DataResolution.Yearly,
-                    mdTempMax.DataAdjustment,
-                    AggregationMethod.GroupByDayThenAverage, 
-                    location.Id, 
-                    null, 
-                    14, 
-                    .7f, 
-                    null);
+                // Next, request that dataset (omitting DataSetDefinition.Id because GetDataSet looks it up manually
+                // on the assumption (valid for now) that there's only ever one DataSetDefinition offering a given
+                // DataType and DataAdjustment for a given location).
+                var dataset =
+                    await GetDataSet(
+                        DataType.TempMax,
+                        DataResolution.Yearly,
+                        mdTempMax.DataAdjustment,
+                        AggregationMethod.GroupByDayThenAverage,
+                        location.Id,
+                        null,
+                        14,
+                        .7f,
+                        null);
 
-            location.WarmingIndex = dataset.WarmingIndex;
+                location.WarmingIndex = dataset.WarmingIndex;
+            }
+            catch (Exception ex)
+            {
+                // For now, just swallow failures here, caused by missing data
+                Console.WriteLine("Exception while calculating warming index for " + location.Name + ": " + ex.ToString());
+            }
         }
 
         var maxWarmingIndex = locations.Max(x => x.WarmingIndex).Value;
@@ -188,6 +196,8 @@ async Task<List<Location>> GetLocations(bool includeNearbyLocations = false, boo
                                                 : x.WarmingIndex > 0
                                                         ? Convert.ToInt16(MathF.Round(x.WarmingIndex.Value / maxWarmingIndex * 9, 0))
                                                         : Convert.ToInt16(MathF.Round(x.WarmingIndex.Value, 0)));
+
+        return locations;
     }
 
     return await Location.GetLocations(false);
