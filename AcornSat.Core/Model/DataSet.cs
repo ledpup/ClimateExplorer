@@ -134,7 +134,7 @@ public class DataSet
     {
         get
         {
-            if (DataType != DataType.TempMax && DataType != DataType.TempMin)
+            if (Location == null || DataType != DataType.TempMax && DataType != DataType.TempMin)
             {
                 return "NA";
             }
