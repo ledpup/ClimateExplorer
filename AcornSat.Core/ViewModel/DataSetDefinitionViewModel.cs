@@ -58,7 +58,7 @@ public class DataSetDefinitionViewModel
 
         if (!dsds.Any())
         {
-            throw new Exception($"No matching dataset defintion found with parameters: location ID = {locationId}, data type = {dataType} data adjustment {dataAdjustment}");
+            throw new Exception($"No matching dataset definition found with parameters: location ID = {locationId}, data type = {dataType} data adjustment {dataAdjustment}");
         }
 
         // TODO: This could be generalised in case one day we incorporate multiple "publishers" of the same data for the same location

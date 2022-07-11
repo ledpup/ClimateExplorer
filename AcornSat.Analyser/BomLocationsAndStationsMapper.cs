@@ -13,13 +13,13 @@ namespace AcornSat.Analyser;
 
 public static class BomLocationsAndStationsMapper
 {
-    public static async Task<List<Station>> BuildAcornSatLocationsFromReferenceDataAsync(Guid dataSetDefintionId, string outputFileSuffix)
+    public static async Task<List<Station>> BuildAcornSatLocationsFromReferenceDataAsync(Guid dataSetDefinitionId, string outputFileSuffix)
     {
         var oldLocations = await Location.GetLocationsFromFile(@"ReferenceData\ACORN-SAT\Locations.json");
 
         var locations = new List<Location>();
         var stations = new List<Station>();
-        var dataFileLocationMapping = new DataFileLocationMapping() { DataSetDefinitionId = dataSetDefintionId };
+        var dataFileLocationMapping = new DataFileLocationMapping() { DataSetDefinitionId = dataSetDefinitionId };
         var stationToLocationMapping = new Dictionary<string, Guid>();
 
         // Get the friendly location name and the "primary station", as best we can do.
@@ -143,14 +143,14 @@ public static class BomLocationsAndStationsMapper
         File.WriteAllText($@"Output\DataFileLocationMapping\DataFileLocationMapping{outputFileSuffix}.json", JsonSerializer.Serialize(dataFileLocationMapping, options));
     }
 
-    internal static async Task BuildAcornSatAdjustedDataFileLocationMappingAsync(Guid dataSetDefintionId, string unadjustedDataFileLocationMappingPath, string outputFileSuffix)
+    internal static async Task BuildAcornSatAdjustedDataFileLocationMappingAsync(Guid dataSetDefinitionId, string unadjustedDataFileLocationMappingPath, string outputFileSuffix)
     {
         var file = await File.ReadAllTextAsync(unadjustedDataFileLocationMappingPath);
         var unadjustedDataFileLocationMapping = JsonSerializer.Deserialize<DataFileLocationMapping>(file);
         var locationIdToDataFileMappings = unadjustedDataFileLocationMapping.LocationIdToDataFileMappings;
         var stations = await File.ReadAllLinesAsync(@"ReferenceData\ACORN-SAT\acorn_sat_v2.2.0_stations.txt");
 
-        var dataFileLocationMapping = new DataFileLocationMapping() { DataSetDefinitionId = dataSetDefintionId };
+        var dataFileLocationMapping = new DataFileLocationMapping() { DataSetDefinitionId = dataSetDefinitionId };
         foreach (var station in stations)
         {
             foreach (var locationIdToDataFileMapping in locationIdToDataFileMappings)
@@ -175,13 +175,13 @@ public static class BomLocationsAndStationsMapper
         File.WriteAllText($@"Output\DataFileLocationMapping\DataFileLocationMapping{outputFileSuffix}.json", JsonSerializer.Serialize(dataFileLocationMapping, options));
     }
 
-    public static async Task BuildRaiaLocationsFromReferenceDataAsync(Guid dataSetDefintionId, string outputFileSuffix)
+    public static async Task BuildRaiaLocationsFromReferenceDataAsync(Guid dataSetDefinitionId, string outputFileSuffix)
     {
         var oldLocations = await Location.GetLocationsFromFile(@"ReferenceData\RAIA\Locations.json");
 
         var locations = new List<Location>();
         var stations = new List<Station>();
-        var dataFileLocationMapping = new DataFileLocationMapping() { DataSetDefinitionId = dataSetDefintionId };
+        var dataFileLocationMapping = new DataFileLocationMapping() { DataSetDefinitionId = dataSetDefinitionId };
 
         var locationRowData = File.ReadAllLines(@"ReferenceData\RAIA\RAIA.csv");
         foreach (var row in locationRowData)
