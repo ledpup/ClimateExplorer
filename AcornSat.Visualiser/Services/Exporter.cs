@@ -71,7 +71,7 @@ public class Exporter : IExporter
         }
     }
 
-    string BuildColumnHeader(bool includeLocationInColumnHeader, ChartSeriesDefinition.SourceSeriesSpecification sss)
+    string BuildColumnHeader(bool includeLocationInColumnHeader, SourceSeriesSpecification sss)
     {
         string s = "";
 

@@ -73,7 +73,7 @@ public static class ChartSeriesListSerializer
             };
     }
 
-    static ChartSeriesDefinition.SourceSeriesSpecification[] ParseSourceSeriesSpecifications(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<Location> locations)
+    static SourceSeriesSpecification[] ParseSourceSeriesSpecifications(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<Location> locations)
     {
         string[] segments = s.Split(SeparatorsByLevel[2]);
 
@@ -83,7 +83,7 @@ public static class ChartSeriesListSerializer
             .ToArray();
     }
 
-    static ChartSeriesDefinition.SourceSeriesSpecification ParseSourceSeriesSpecification(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<Location> locations)
+    static SourceSeriesSpecification ParseSourceSeriesSpecification(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<Location> locations)
     {
         string[] segments = s.Split(SeparatorsByLevel[3]);
 
@@ -111,7 +111,7 @@ public static class ChartSeriesListSerializer
         }
 
         return
-            new ChartSeriesDefinition.SourceSeriesSpecification
+            new SourceSeriesSpecification
             {
                 DataSetDefinition = dsd,
                 MeasurementDefinition = md,
@@ -122,7 +122,7 @@ public static class ChartSeriesListSerializer
 
     static readonly char[] SeparatorsByLevel = { ';', ',', '|', '*' };
 
-    static string BuildSourceSeriesSpecificationsUrlComponent(ChartSeriesDefinition.SourceSeriesSpecification sss)
+    static string BuildSourceSeriesSpecificationsUrlComponent(SourceSeriesSpecification sss)
     {
         if (sss == null || sss.MeasurementDefinition == null || sss.DataSetDefinition == null)
         {
@@ -139,7 +139,7 @@ public static class ChartSeriesListSerializer
             );
     }
 
-    static string BuildSourceSeriesSpecificationsUrlComponent(ChartSeriesDefinition.SourceSeriesSpecification[] sss)
+    static string BuildSourceSeriesSpecificationsUrlComponent(SourceSeriesSpecification[] sss)
     {
         return
             string.Join(

@@ -1,6 +1,7 @@
 ﻿using AcornSat.Core;
 using AcornSat.Core.ViewModel;
 using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.ViewModel;
 using System.Diagnostics.CodeAnalysis;
 using static AcornSat.Core.Enums;
 
@@ -12,15 +13,6 @@ namespace AcornSat.Visualiser.UiModel
         /// Used only for uniqueness tracking by UI controls
         /// </summary>
         public Guid Id { get; set; } = Guid.NewGuid();
-
-
-        public class SourceSeriesSpecification
-        {
-            public DataSetDefinitionViewModel DataSetDefinition { get; set; }
-            public MeasurementDefinitionViewModel MeasurementDefinition { get; set; }
-            public Guid? LocationId { get; set; }
-            public string? LocationName { get; set; }
-        }
 
         // Source data fields
         public SourceSeriesSpecification[] SourceSeriesSpecifications { get; set; }

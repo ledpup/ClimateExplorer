@@ -155,7 +155,7 @@ async Task<List<Location>> GetLocations(bool includeNearbyLocations = false, boo
             try
             {
                 // First, find what data adjustments are available for TempMax for that location.
-                (var dsdOfferingTempMax, var mdTempMax) =
+                var dsdmd =
                     DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
                         definitions,
                         location.Id,
@@ -170,7 +170,7 @@ async Task<List<Location>> GetLocations(bool includeNearbyLocations = false, boo
                     await GetDataSet(
                         DataType.TempMax,
                         DataResolution.Yearly,
-                        mdTempMax.DataAdjustment,
+                        dsdmd.MeasurementDefinition.DataAdjustment,
                         AggregationMethod.GroupByDayThenAverage,
                         location.Id,
                         null,

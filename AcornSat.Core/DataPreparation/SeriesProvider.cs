@@ -120,9 +120,13 @@ namespace ClimateExplorer.Core.DataPreparation
             var location = seriesSpecification.LocationId == null ? null : (await Location.GetLocations(false)).Single(x => x.Id == seriesSpecification.LocationId);
 
             List<DataFileFilterAndAdjustment> dataFileFilterAndAdjustments = null;
+
             if (location != null)
             {
-                dataFileFilterAndAdjustments = dsd.DataLocationMapping.LocationIdToDataFileMappings[location.Id];
+                if (!dsd.DataLocationMapping.LocationIdToDataFileMappings.TryGetValue(location.Id, out dataFileFilterAndAdjustments))
+                {
+                    throw new Exception($"DataSetDefinition {dsd.Id} does not have a LocationIdToDataFileMapping entry for location {location.Id}");
+                }
             }
             
             var dataRecords = await DataReader.GetDataRecords(measurementDefinition, dataFileFilterAndAdjustments);

@@ -104,13 +104,13 @@
             else
             {
                 // Retrieve TempMax anomaly
-                var tempMaxAnomalyRecords = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, tempMaxMeasurementForLocation.Item2.DataAdjustment, AggregationMethod.GroupByDayThenAverage_Anomaly, Location.Id);
+                var tempMaxAnomalyRecords = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, tempMaxMeasurementForLocation.MeasurementDefinition.DataAdjustment, AggregationMethod.GroupByDayThenAverage_Anomaly, Location.Id);
 
                 // Filter to records that have values
                 _maxTempAnomalyRecords = tempMaxAnomalyRecords.DataRecords.Where(x => x.Value != null).ToList();
 
                 // Retrieve TempMax absolute
-                _maxTempAbsoluteRecords = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, tempMaxMeasurementForLocation.Item2.DataAdjustment, AggregationMethod.GroupByDayThenAverage, Location.Id);
+                _maxTempAbsoluteRecords = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, tempMaxMeasurementForLocation.MeasurementDefinition.DataAdjustment, AggregationMethod.GroupByDayThenAverage, Location.Id);
             }
         }
 

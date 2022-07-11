@@ -1,5 +1,6 @@
 ﻿using AcornSat.Core;
 using AcornSat.Core.Model;
+using ClimateExplorer.Core.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,16 +40,27 @@ public class DataSetDefinitionViewModel
         }
     }
 
-    public static Tuple<DataSetDefinitionViewModel, MeasurementDefinitionViewModel>  GetDataSetDefinitionAndMeasurement(IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, Guid locationId, DataType dataType, DataAdjustment? dataAdjustment, bool allowNullDataAdjustment = false)
+    public static DataSetAndMeasurementDefinition GetDataSetDefinitionAndMeasurement(
+        IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, 
+        Guid locationId, 
+        DataType dataType, 
+        DataAdjustment? dataAdjustment, 
+        bool allowNullDataAdjustment = false,
+        bool throwIfNoMatch = true)
     {
+        // Exact match first.
         var dsds = dataSetDefinitions.Where(x =>   x.LocationIds != null
                                                 && x.LocationIds.Any(y => y == locationId) 
                                                 && x.MeasurementDefinitions.Any(y => y.DataType == dataType && y.DataAdjustment == dataAdjustment))
                                      .ToList();
 
+        // If no exact match
         if (!dsds.Any() && allowNullDataAdjustment)
         {
-            dataAdjustment = null;
+            // If they did not specify a value for adjustment, try again, looking for "Adjusted". If they did specify
+            // a value, try again, looking for null.
+            dataAdjustment = (dataAdjustment == null) ? DataAdjustment.Adjusted : null;
+
             dsds = dataSetDefinitions.Where(x =>   x.LocationIds != null
                                                 && x.LocationIds.Any(y => y == locationId)
                                                 && x.MeasurementDefinitions.Any(y => y.DataType == dataType && y.DataAdjustment == dataAdjustment))
@@ -58,14 +70,26 @@ public class DataSetDefinitionViewModel
 
         if (!dsds.Any())
         {
-            throw new Exception($"No matching dataset definition found with parameters: location ID = {locationId}, data type = {dataType} data adjustment {dataAdjustment}");
+            if (throwIfNoMatch)
+            {
+                throw new Exception($"No matching dataset definition found with parameters: location ID = {locationId}, data type = {dataType} data adjustment {dataAdjustment}");
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // TODO: This could be generalised in case one day we incorporate multiple "publishers" of the same data for the same location
         var dsd = dsds.SingleOrDefault();
 
         var md = dsd.MeasurementDefinitions.Single(x => x.DataType == dataType && x.DataAdjustment == dataAdjustment);
-                
-        return new Tuple<DataSetDefinitionViewModel, MeasurementDefinitionViewModel>(dsd, md);
+
+        return 
+            new DataSetAndMeasurementDefinition
+            {
+                DataSetDefinition = dsd,
+                MeasurementDefinition = md
+            };
     }
 }

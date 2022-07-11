@@ -20,6 +20,7 @@
 @using System.Globalization
 @using static AcornSat.Core.Enums
 @using ClimateExplorer.Core.DataPreparation
+@using ClimateExplorer.Core.ViewModel
 @using Microsoft.AspNetCore.WebUtilities
 @using System.Text
 @using DPBlazorMapLibrary
@@ -331,14 +332,14 @@
         await BuildDataSets();
     }
 
-    ChartSeriesDefinition.SourceSeriesSpecification BuildSourceSeriesSpecification(DataSetLibraryEntry.SourceSeriesSpecification sss)
+    SourceSeriesSpecification BuildSourceSeriesSpecification(DataSetLibraryEntry.SourceSeriesSpecification sss)
     {
         var dsd = DataSetDefinitions.Single(x => x.Id == sss.SourceDataSetId);
 
         var md = dsd.MeasurementDefinitions.Single(x => x.DataType == sss.DataType && x.DataAdjustment == sss.DataAdjustment);
 
         return
-            new ChartSeriesDefinition.SourceSeriesSpecification
+            new SourceSeriesSpecification
             {
                 LocationId = sss.LocationId,
                 LocationName = sss.LocationName,
@@ -576,56 +577,43 @@
         if (setupDefaultChartSeries)
         {
             var location = Locations.Single(x => x.Id == locationId);
-            (var dsdTempMax, var mdTempMax) = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMax, DataAdjustment.Adjusted);
-            (var dsdRainfall, var mdRainfall) = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.Rainfall, null);
 
-            ChartSeriesList.Add(
-                new ChartSeriesDefinition()
-                {
-                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                    SourceSeriesSpecifications =
-                        new ChartSeriesDefinition.SourceSeriesSpecification[]
-                        {
-                            new ChartSeriesDefinition.SourceSeriesSpecification
-                            {
-                                LocationId = location.Id,
-                                LocationName = location.Name,
-                                DataSetDefinition = dsdTempMax,
-                                MeasurementDefinition = mdTempMax,
-                            }
-                        },
-                    Aggregation = SeriesAggregationOptions.Mean,
-                    BinGranularity = BinGranularities.ByYear,
-                    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                    SmoothingWindow = 20,
-                    Value = SeriesValueOptions.Value,
-                    Year = null
-                }
-            );
+            var tempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMax, DataAdjustment.Adjusted);
+            var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.Rainfall, null);
 
-            ChartSeriesList.Add(
-                new ChartSeriesDefinition()
-                {
-                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                    SourceSeriesSpecifications =
-                        new ChartSeriesDefinition.SourceSeriesSpecification[]
+            if (tempMax != null)
+            {
+                ChartSeriesList.Add(
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax),
+                        Aggregation = SeriesAggregationOptions.Mean,
+                        BinGranularity = BinGranularities.ByYear,
+                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                        SmoothingWindow = 20,
+                        Value = SeriesValueOptions.Value,
+                        Year = null
+                    }
+                );
+            }
+
+            if (rainfall != null)
+            {
+                ChartSeriesList.Add(
+                    new ChartSeriesDefinition()
                         {
-                            new ChartSeriesDefinition.SourceSeriesSpecification
-                            {
-                                LocationId = location.Id,
-                                LocationName = location.Name,
-                                DataSetDefinition = dsdRainfall,
-                                MeasurementDefinition = mdRainfall,
-                            }
-                        },
-                    Aggregation = SeriesAggregationOptions.Sum,
-                    BinGranularity = BinGranularities.ByYear,
-                    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                    SmoothingWindow = 20,
-                    Value = SeriesValueOptions.Value,
-                    Year = null
-                }
-            );
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, rainfall),
+                            Aggregation = SeriesAggregationOptions.Sum,
+                            BinGranularity = BinGranularities.ByYear,
+                            Smoothing = SeriesSmoothingOptions.MovingAverage,
+                            SmoothingWindow = 20,
+                            Value = SeriesValueOptions.Value,
+                            Year = null
+                        }
+                );
+            }
         }
 
         // Pick up parameters from querystring
@@ -715,7 +703,7 @@
             // Fetch the data required to render the selected data series
             ChartSeriesWithData = await RetrieveDataSets(ChartSeriesList);
 
-            l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + ChartSeriesWithData.Count + " entries. ChartSeriesWithData[0].BinGranularity is " + ChartSeriesWithData[0].ChartSeries.BinGranularity);
+            l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + ChartSeriesWithData.Count + " entries.");
 
             // Render the series
             await HandleRedraw();
@@ -785,7 +773,7 @@
         }
     }
 
-    SeriesSpecification BuildDataPrepSeriesSpecification(ChartSeriesDefinition.SourceSeriesSpecification sss)
+    SeriesSpecification BuildDataPrepSeriesSpecification(SourceSeriesSpecification sss)
     {
         return 
             new SeriesSpecification
@@ -1614,7 +1602,7 @@
         List<ChartSeriesDefinition> additionalCsds = new List<ChartSeriesDefinition>();
 
         // Update data series to reflect new location
-        foreach (var csd in ChartSeriesList)
+        foreach (var csd in ChartSeriesList.ToArray())
         {
             foreach (var sss in csd.SourceSeriesSpecifications)
             {
@@ -1625,51 +1613,70 @@
                         sss.LocationId = newValue;
                         sss.LocationName = SelectedLocation.Name;
 
-                        // But: the new location may not have data of the requested type. Since this series is location-specific, and we
-                        // determine the DSD for a location based just on the location, let's update the CSD accordingly
-                        var dsd = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocationId, sss.MeasurementDefinition.DataType, sss.MeasurementDefinition.DataAdjustment);
-                        sss.DataSetDefinition = dsd.Item1;
+                        // But: the new location may not have data of the requested type. Let's see if there is any.
+                        DataSetAndMeasurementDefinition dsd = 
+                            DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
+                                DataSetDefinitions, 
+                                SelectedLocationId, 
+                                sss.MeasurementDefinition.DataType, 
+                                sss.MeasurementDefinition.DataAdjustment,
+                                allowNullDataAdjustment: true,
+                                throwIfNoMatch: false);
 
-                        // Next, update the MeasurementDefinition. Look for a match on DataType and DataAdjustment
-                        var oldMd = sss.MeasurementDefinition;
-
-                        var candidateMds =
-                            sss.DataSetDefinition.MeasurementDefinitions
-                            .Where(x => x.DataType == oldMd.DataType && x.DataAdjustment == oldMd.DataAdjustment)
-                            .ToArray();
-
-                        switch (candidateMds.Length)
+                        if (dsd == null)
                         {
-                            case 0:
-                                // There was no exact match. It's possible that the new location has data of the requested type, but not the specified adjustment type.
-                                // If so, try defaulting.
-                                candidateMds = sss.DataSetDefinition.MeasurementDefinitions.Where(x => x.DataType == oldMd.DataType).ToArray();
+                            // This data is not available for the new location. For now, just leave this series as is.
+                            // Probably kinder to the user if we show a warning of some kind.
+                            ChartSeriesList.Remove(csd);
 
-                                if (candidateMds.Length == 1)
-                                {
-                                    // If only one is available, just use it
-                                    sss.MeasurementDefinition = candidateMds.Single();
-                                }
-                                else
-                                {
-                                    // Otherwise, use "Adjusted" if available
-                                    var adjustedMd = candidateMds.SingleOrDefault(x => x.DataAdjustment == DataAdjustment.Adjusted);
+                            break;
+                        }
+                        else
+                        {
+                            // This data IS available at the new location. Now, update the series accordingly.
+                            sss.DataSetDefinition = dsd.DataSetDefinition;
 
-                                    if (adjustedMd != null)
+                            // Next, update the MeasurementDefinition. Look for a match on DataType and DataAdjustment
+                            var oldMd = sss.MeasurementDefinition;
+
+                            var candidateMds =
+                                sss.DataSetDefinition.MeasurementDefinitions
+                                .Where(x => x.DataType == oldMd.DataType && x.DataAdjustment == oldMd.DataAdjustment)
+                                .ToArray();
+
+                            switch (candidateMds.Length)
+                            {
+                                case 0:
+                                    // There was no exact match. It's possible that the new location has data of the requested type, but not the specified adjustment type.
+                                    // If so, try defaulting.
+                                    candidateMds = sss.DataSetDefinition.MeasurementDefinitions.Where(x => x.DataType == oldMd.DataType).ToArray();
+
+                                    if (candidateMds.Length == 1)
                                     {
-                                        sss.MeasurementDefinition = adjustedMd;
+                                        // If only one is available, just use it
+                                        sss.MeasurementDefinition = candidateMds.Single();
                                     }
-                                }
+                                    else
+                                    {
+                                        // Otherwise, use "Adjusted" if available
+                                        var adjustedMd = candidateMds.SingleOrDefault(x => x.DataAdjustment == DataAdjustment.Adjusted);
 
-                                break;
+                                        if (adjustedMd != null)
+                                        {
+                                            sss.MeasurementDefinition = adjustedMd;
+                                        }
+                                    }
 
-                            case 1:
-                                sss.MeasurementDefinition = candidateMds.Single();
-                                break;
+                                    break;
 
-                            default:
-                                // There were multiple matches. That's unexpected.
-                                throw new Exception("Unexpected condition: after changing location, while updating ChartSeriesDefinitions, there were multiple compatible MeasurementDefinitions for one CSD.");
+                                case 1:
+                                    sss.MeasurementDefinition = candidateMds.Single();
+                                    break;
+
+                                default:
+                                    // There were multiple matches. That's unexpected.
+                                    throw new Exception("Unexpected condition: after changing location, while updating ChartSeriesDefinitions, there were multiple compatible MeasurementDefinitions for one CSD.");
+                            }   
                         }
                     }
                 }
@@ -1695,9 +1702,9 @@
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                                 SourceSeriesSpecifications =
-                                    new ChartSeriesDefinition.SourceSeriesSpecification[]
+                                    new SourceSeriesSpecification[]
                                     {
-                                        new ChartSeriesDefinition.SourceSeriesSpecification
+                                        new SourceSeriesSpecification
                                         {
                                             DataSetDefinition = DataSetDefinitions.Single(x => x.Id == sss.DataSetDefinition.Id),
                                             LocationId = newValue,
