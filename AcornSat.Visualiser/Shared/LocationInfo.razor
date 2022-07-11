@@ -10,46 +10,7 @@
         -->
         <OverviewField Label="Location"><Value> <span><a href="@LocationMapUrl" target="_blank">@LocationAsString</a></span></Value></OverviewField><!--
      --><OverviewField Label="Elevation"><Value>@ElevationAsString</Value></OverviewField><!--
-     --><OverviewField Label="Station id">
-            <Value>
-                @{
-                    bool firstSite = true;
-                    //foreach (var station in Location.Stations)
-                    //{
-                    //    if (!firstSite)
-                    //    {
-                    //        <span>, </span>
-                    //    }
-                    //    else
-                    //    {
-                    //        firstSite = false;
-                    //    }
-
-                    //    if (DataSetDefinition.StationInfoUrl != null)
-                    //    {
-                    //        <span><a href="@DataSetDefinition.StationInfoUrl.Replace("[station]", station.Id)" target="_blank">@station.Id</a></span>
-                    //    }
-                    //    else
-                    //    {
-                    //        <span>@(station.Id)</span>
-                    //    }
-                    //}
-                }
-            </Value>
-        </OverviewField><!--
-     -->@*<OverviewField Label="Dataset">
-            <Value>
-                @if (!String.IsNullOrWhiteSpace(DataSetDefinition.MoreInformationUrl))
-                {
-                    <a href="@DataSetDefinition.MoreInformationUrl" target="_blank">@DataSetDefinition.Name</a>
-                }
-                else
-                {
-                    @DataSetDefinition.Name
-                }
-            </Value>
-        </OverviewField>*@
-        @if (_maxTempAbsoluteRecords != null)
+     -->@if (_maxTempAbsoluteRecords != null)
         {
             <OverviewField Label="Warming index" PopupText="@_maxTempAbsoluteRecords.WarmingIndexDescription"><Value>@_maxTempAbsoluteRecords.WarmingIndexAsString</Value></OverviewField>
         }
