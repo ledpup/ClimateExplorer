@@ -76,11 +76,6 @@ namespace AcornSat.WebApi.Infrastructure
             _cacheFolderName = cacheFolderName;
         }
 
-        string GenerateCacheFileName(string cacheEntryKey)
-        {
-            return Path.Combine(_cacheFolderName, Convert.ToBase64String(Encoding.UTF8.GetBytes(cacheEntryKey)) + ".json");
-        }
-
         void EnsureCacheDirectoryExists()
         {
             var cacheDirectory = new DirectoryInfo(_cacheFolderName);
@@ -166,18 +161,26 @@ namespace AcornSat.WebApi.Infrastructure
 
         public async Task<T> Get<T>(string key)
         {
-            EnsureCacheDirectoryExists();
-
-            var keyHash = GetDeterministicHashCode(key);
-
-            // Check if the cache index contains the key
-            var mapping = ReadKeyToFileMappingForHashcode(keyHash);
-
-            if (mapping.TryGetValue(key, out var filename))
+            try
             {
-                var content = File.ReadAllText(Path.Combine(_cacheFolderName, filename));
+                EnsureCacheDirectoryExists();
 
-                return JsonSerializer.Deserialize<T>(content);
+                var keyHash = GetDeterministicHashCode(key);
+
+                // Check if the cache index contains the key
+                var mapping = ReadKeyToFileMappingForHashcode(keyHash);
+
+                if (mapping.TryGetValue(key, out var filename))
+                {
+                    var content = File.ReadAllText(Path.Combine(_cacheFolderName, filename));
+
+                    return JsonSerializer.Deserialize<T>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO: Organised logging for web tier.
+                Console.WriteLine(ex.ToString());
             }
 
             return default(T);
@@ -185,30 +188,38 @@ namespace AcornSat.WebApi.Infrastructure
 
         public async Task Put<T>(string key, T obj)
         {
-            EnsureCacheDirectoryExists();
+            try
+            {
+                EnsureCacheDirectoryExists();
 
-            var keyHash = GetDeterministicHashCode(key);
+                var keyHash = GetDeterministicHashCode(key);
 
-            // Check if the cache index contains the key
-            var mapping = ReadKeyToFileMappingForHashcode(keyHash);
+                // Check if the cache index contains the key
+                var mapping = ReadKeyToFileMappingForHashcode(keyHash);
 
-            Guid id = Guid.NewGuid();
-            string filename = Guid.NewGuid().ToString() + ".json";
+                Guid id = Guid.NewGuid();
+                string filename = Guid.NewGuid().ToString() + ".json";
 
-            mapping[key] = filename;
+                mapping[key] = filename;
 
-            File.WriteAllText(
-                Path.Combine(_cacheFolderName, filename), 
-                JsonSerializer.Serialize(
-                    obj, 
-                    new JsonSerializerOptions()
-                    {
-                        WriteIndented = true
-                    }
-                )
-            );
+                File.WriteAllText(
+                    Path.Combine(_cacheFolderName, filename), 
+                    JsonSerializer.Serialize(
+                        obj, 
+                        new JsonSerializerOptions()
+                        {
+                            WriteIndented = true
+                        }
+                    )
+                );
 
-            WriteKeyToFileMappingForHashcode(keyHash, mapping);
+                WriteKeyToFileMappingForHashcode(keyHash, mapping);
+            }
+            catch (Exception ex)
+            {
+                // TODO: Organised logging for web tier.
+                Console.WriteLine(ex.ToString());
+            }
         }
     }
 
