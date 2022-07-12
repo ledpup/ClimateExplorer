@@ -1,28 +1,19 @@
-﻿using AcornSat.Core.InputOutput;
-using AcornSat.Core;
+﻿using AcornSat.Core;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using static AcornSat.Core.Enums;
 using System.Threading.Tasks;
-using AcornSat.WebApi.Model;
-using System.Text.Json;
 using AcornSat.Core.ViewModel;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using ClimateExplorer.Core.DataPreparation;
-using AcornSat.WebApi;
-using System.Text.Json.Serialization;
-using AcornSat.Core.Model;
 using ClimateExplorer.Core.Calculators;
 using AcornSat.WebApi.Infrastructure;
-using ClimateExplorer.Core.InputOutput;
 
 ICache _cache = new FileBackedCache("cache");
 
@@ -80,13 +71,16 @@ app.MapGet(
         "Hello, from minimal ACORN-SAT Web API!\n" +
         "\n" +
         "Operations:\n" +
-        "   Call /about for basic API metadata\n" +
-        "   Call /datasetdefinition for a list of the dataset definitions. (E.g., ACORN-SAT)\n" +
-        "   Call /location for list of locations.\n" +
-        "      Parameters:\n" +
-        "          locationId: filter to a particular location by id (still returns an array of location, but max one entry)\n" +
-        "      Examples:\n" +
-        "          /location?dataSetName=ACORN-SET.\n");
+        "   GET /about\n" +
+        "       Returns basic API metadata\n" +
+        "   GET /datasetdefinition\n" +
+        "       Returns a list of dataset definitions. (E.g., ACORN-SAT)\n" +
+        "   GET /location\n" +
+        "       Returns a list of locations.\n" +
+        "           Parameters:\n" +
+        "               locationId: filter to a particular location by id (still returns an array of location, but max one entry)\n" +
+        "   POST /dataset\n" +
+        "       Returns the specified data set, transformed as requested");
 
 app.MapGet("/about",                                                GetAbout);
 app.MapGet("/datasetdefinition",                                    GetDataSetDefinitions);
