@@ -13,7 +13,7 @@
     {
         public static bool IsLinear(this BinGranularities b)
         {
-            return b == BinGranularities.ByYear || b == BinGranularities.ByYear;
+            return b == BinGranularities.ByYear || b == BinGranularities.ByYearAndMonth;
         }
 
         public static bool IsModular(this BinGranularities b)
