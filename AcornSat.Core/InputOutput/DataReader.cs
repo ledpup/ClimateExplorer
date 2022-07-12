@@ -37,7 +37,9 @@ public static class DataReader
         return dataSet;
     }
 
-    public static async Task<List<DataRecord>> GetDataRecords(MeasurementDefinition measurementDefinition, List<DataFileFilterAndAdjustment> dataFileFilterAndAdjustments)
+    public static async Task<List<DataRecord>> GetDataRecords(
+        MeasurementDefinition measurementDefinition, 
+        List<DataFileFilterAndAdjustment> dataFileFilterAndAdjustments)
     {
         if (dataFileFilterAndAdjustments == null)
         {

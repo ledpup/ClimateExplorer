@@ -99,6 +99,11 @@ public class DataService : IDataService
                     Anomaly = seriesValueOption == SeriesValueOptions.Anomaly
                 });
 
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Received non-success status code {response.StatusCode} with body {await response.Content.ReadAsStringAsync()}");
+        }
+
         var result = await response.Content.ReadFromJsonAsync<DataSet>();
 
         return result;

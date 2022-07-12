@@ -22,6 +22,7 @@ using System.Text.Json.Serialization;
 using AcornSat.Core.Model;
 using ClimateExplorer.Core.Calculators;
 using AcornSat.WebApi.Infrastructure;
+using ClimateExplorer.Core.InputOutput;
 
 ICache _cache = new FileBackedCache("cache");
 
@@ -509,8 +510,8 @@ async Task<DataSet> BuildDataSet(QueryParameters queryParameters, DataSetDefinit
                             dataSet = await GetDataFromFile(measurementDefinition, dfms);
                             break;
                         case RowDataType.TwelveMonthsPerRow:
-                            dataSet = await GetTwelveMonthsPerRowData(measurementDefinition, "mean");
-                            break;
+                            throw new NotImplementedException("This has to go.");
+                            //dataSet = await TwelveMonthPerLineDataReader.GetTwelveMonthsPerRowData(measurementDefinition, "mean");
                     }
                 }
             }
@@ -568,10 +569,9 @@ async Task<DataSet> GetYearlyRecordsFromMonthly(MeasurementDefinition measuremen
             dataSet = await GetDataFromFile(measurementDefinition, dataFileFilterAndAdjustments);
             break;
         case RowDataType.TwelveMonthsPerRow:
-            dataSet = await GetTwelveMonthsPerRowData(measurementDefinition, "mean");
+            dataSet = await TwelveMonthPerLineDataReader.GetTwelveMonthsPerRowData(measurementDefinition);
             break;
     }
-
    
     var grouping = dataSet.DataRecords.GroupBy(x => x.Year).ToList();
     var records = new List<DataRecord>();
@@ -730,76 +730,4 @@ List<DataRecord> AggregateToYearlyValues(IEnumerable<IGrouping<short, DataRecord
         yearlyAverageRecords.Add(yearlyAverageRecord);
     }
     return yearlyAverageRecords;
-}
-
-async Task<DataSet> GetTwelveMonthsPerRowData(MeasurementDefinition measurementDefinition, string measure)
-{
-    string[]? records = null;
-
-    string dataPath = $@"Reference\{measurementDefinition.FolderName}\{measurementDefinition.FileNameFormat}";
-
-    records = await DataReader.GetLinesInDataFileWithCascade(dataPath);
-
-    if (records == null)
-    {
-        throw new Exception("Unable to read ENSO data " + dataPath);
-    }
-    
-    var regEx = new Regex(measurementDefinition.DataRowRegEx);
-
-    var list = new List<DataRecord>();
-    var dataRowFound = false;
-    foreach (var record in records)
-    {
-        if (!regEx.Match(record).Success)
-        {
-            if (dataRowFound)
-            {
-                break;
-            }
-            else
-            {
-                continue;
-            }
-        }
-        dataRowFound = true;
-
-        var groups = regEx.Match(record).Groups;
-
-        var values = new List<float>();
-        for (var i = 2; i < groups.Count; i++)
-        {
-            if (!groups[i].Value.StartsWith(measurementDefinition.NullValue))
-            {
-                var value = float.Parse(groups[i].Value);
-
-                if (measurementDefinition.DataResolution == DataResolution.Monthly)
-                {
-                    list.Add(new DataRecord(short.Parse(groups[1].Value), (short)(i - 1), null, value));
-                }
-                else
-                {
-                    values.Add(value);
-                }
-            }
-        }
-
-        if (measurementDefinition.DataResolution == DataResolution.Yearly)
-        {
-            var value = measure == "median"
-                                        ? values.Median()
-                                        : (measure == "mode" ? values.Mode() : values.Average());
-            
-            list.Add(new DataRecord(short.Parse(groups[1].Value), value));
-        }
-    }
-
-    var dataSet = new DataSet
-    {
-        Resolution = measurementDefinition.DataResolution,
-        MeasurementDefinition = measurementDefinition.ToViewModel(),
-        DataRecords = list,
-    };
-
-    return dataSet;
 }

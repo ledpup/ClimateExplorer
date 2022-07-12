@@ -104,7 +104,7 @@ namespace AcornSat.Visualiser.UiModel
                     switch (Smoothing)
                     {
                         case SeriesSmoothingOptions.MovingAverage:
-                            segments.Add(SmoothingWindow + " year moving average");
+                            segments.Add($"{SmoothingWindow} {(BinGranularity == BinGranularities.ByYear ? "year": "month")} moving average");
                             break;
                         case SeriesSmoothingOptions.Trendline:
                             segments.Add("Trendline");

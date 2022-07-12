@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static AcornSat.Core.Enums;
+using ClimateExplorer.Core.InputOutput;
 
 namespace ClimateExplorer.Core.DataPreparation
 {
@@ -128,8 +129,29 @@ namespace ClimateExplorer.Core.DataPreparation
                     throw new Exception($"DataSetDefinition {dsd.Id} does not have a LocationIdToDataFileMapping entry for location {location.Id}");
                 }
             }
-            
-            var dataRecords = await DataReader.GetDataRecords(measurementDefinition, dataFileFilterAndAdjustments);
+
+            // We have two different "data readers".
+            //
+            // DataReader is the configurable reg-ex-y one that can handle one-sample-per-line file formats. It's
+            // used for temperature, rainfall and CO2, for example.
+            //
+            // The other one is a twelve-month-per-line reader.
+            List<DataRecord> dataRecords;
+
+            switch (measurementDefinition.RowDataType)
+            {
+                case RowDataType.OneValuePerRow:
+                    dataRecords = await DataReader.GetDataRecords(measurementDefinition, dataFileFilterAndAdjustments);
+                    break;
+
+                case RowDataType.TwelveMonthsPerRow:
+                    var dataSet = await TwelveMonthPerLineDataReader.GetTwelveMonthsPerRowData(measurementDefinition);
+                    dataRecords = dataSet.DataRecords;
+                    break;
+
+                default:
+                    throw new NotImplementedException($"RowDataType {measurementDefinition.RowDataType}");
+            }
 
             return
                 new Series
