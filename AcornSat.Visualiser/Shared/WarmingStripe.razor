@@ -1,14 +1,16 @@
-﻿@using static AcornSat.Core.Enums
+﻿@using AcornSat.Visualiser.UiModel
+@using ClimateExplorer.Core.DataPreparation
+@using static AcornSat.Core.Enums
 
 <div class="warming-stripe">
-    @if (PreparedDataRecords != null)
+    @if (DataRecords != null)
     {
-        foreach (var record in PreparedDataRecords)
+        foreach (var record in DataRecords)
         {
-            <div title="@GetTitle(record.Value.Value)" class="single-stripe" style="background-color: @GetColour(record.Value.Value);">
+            <div title="@GetTitle(record.Value)" class="single-stripe" style="background-color: @GetColour(record.Value);">
                 <div class="label">
-                    <div class="year" style="color: @GetTextColour(record.Value.Value, "#ccc", "#333")">@record.Year</div>
-                    <div class="amt" style="color: @GetTextColour(record.Value.Value, "#eee", "#555")">@GetRelativeTemp(record)</div>
+                    <div class="year" style="color: @GetTextColour(record.Value, "#ccc", "#333")">@record.Year</div>
+                    <div class="amt" style="color: @GetTextColour(record.Value, "#eee", "#555")">@GetRelativeTemp(record.Value)</div>
                 </div>
             </div>
         }
@@ -17,10 +19,9 @@
 
 @code {
     [Parameter]
-    public List<DataRecord> DataRecords { get; set; }
+    public List<YearAndValue> DataRecords { get; set; }
 
-    List<DataRecord> PreviouslySeenDataRecords { get; set; }
-    List<DataRecord> PreparedDataRecords { get; set; }
+    List<YearAndValue> PreviouslySeenDataRecords { get; set; }
 
     [Inject]
     public ILogger<WarmingStripe> Logger { get; set; }
@@ -30,17 +31,15 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        if (DataRecordListsAreEqual(PreviouslySeenDataRecords, DataRecords))
+        if (YearAndValueListsAreEqual(PreviouslySeenDataRecords, DataRecords))
         {
             return;
         }
 
         if (DataRecords != null)
         {
-            PreparedDataRecords = DataRecords.Where(x => x.Value.HasValue).ToList();
-
-            min = PreparedDataRecords.Min(x => x.Value.Value);
-            max = PreparedDataRecords.Max(x => x.Value.Value);
+            min = DataRecords.Min(x => x.Value);
+            max = DataRecords.Max(x => x.Value);
 
             // If the max and min are not above or below 1, set them to 1
             // This will wash out the colours on a stripe where the values don't deviate much from the average
@@ -54,7 +53,7 @@
         await base.OnParametersSetAsync();
     }
 
-    bool DataRecordListsAreEqual(List<DataRecord> a, List<DataRecord> b)
+    bool YearAndValueListsAreEqual(List<YearAndValue> a, List<YearAndValue> b)
     {
         // If they're both null, the lists are the same
         if (a == null && b == null) return true;
@@ -67,8 +66,8 @@
 
         for (int i = 0; i < a.Count; i++)
         {
-            // If a date is different, the lists are different
-            if (a[i].Date != b[i].Date) return false;
+            // If a year is different, the lists are different
+            if (a[i].Year != b[i].Year) return false;
 
             // If a value is different, the lists are different
             if (a[i].Value != b[i].Value) return false;
@@ -89,7 +88,7 @@
         }
     }
 
-    string GetRelativeTemp(DataRecord r) => $"{(r.Value.Value >= 0 ? "+" : "")}{MathF.Round(r.Value.Value, 1)}°C";
+    string GetRelativeTemp(float v) => $"{(v >= 0 ? "+" : "")}{MathF.Round(v, 1)}°C";
 
     string GetTitle(float value)
     {

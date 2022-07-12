@@ -20,6 +20,10 @@ using ClimateExplorer.Core.DataPreparation;
 using AcornSat.WebApi;
 using System.Text.Json.Serialization;
 using AcornSat.Core.Model;
+using ClimateExplorer.Core.Calculators;
+using AcornSat.WebApi.Infrastructure;
+
+ICache _cache = new FileBackedCache("cache");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,7 +83,7 @@ app.MapGet(
         "   Call /datasetdefinition for a list of the dataset definitions. (E.g., ACORN-SAT)\n" +
         "   Call /location for list of locations.\n" +
         "      Parameters:\n" +
-        "          dataSetName (querystring parameter): filters to a particular dataset\n" +
+        "          locationId: filter to a particular location by id (still returns an array of location, but max one entry)\n" +
         "      Examples:\n" +
         "          /location?dataSetName=ACORN-SET.\n" +
         "   Call /dataSet/{DataType}/{DataResolution}/{DataAdjustment}/{LocationId}?statisticalMethod=GroupThenAverage&dayGrouping=14&dayGroupingThreshold=0.7 for yearly average temperature records at locationId. Records are grouped by dayGrouping. If the number of records in the group does not meet the threshold, the data is considered invalid.\n" +
@@ -140,9 +144,22 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
     return dtos;
 }
 
-async Task<List<Location>> GetLocations(bool includeNearbyLocations = false, bool includeWarmingMetrics = false)
+async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool includeNearbyLocations = false, bool includeWarmingMetrics = false)
 {
-    var locations = (await Location.GetLocations(includeNearbyLocations)).OrderBy(x => x.Name).ToList();
+    string cacheKey = $"Locations_{locationId}_{includeNearbyLocations}_{includeWarmingMetrics}";
+
+    var result = await _cache.Get<Location[]>(cacheKey);
+
+    if (result != null) return result;
+
+    IEnumerable<Location> locations = (await Location.GetLocations(includeNearbyLocations)).OrderBy(x => x.Name);
+    
+    if (locationId != null)
+    {
+        locations = locations.Where(x => x.Id == Guid.Parse(locationId));
+    }
+
+    locations = locations.ToList();
 
     if (includeWarmingMetrics)
     {
@@ -166,19 +183,36 @@ async Task<List<Location>> GetLocations(bool includeNearbyLocations = false, boo
                 // Next, request that dataset (omitting DataSetDefinition.Id because GetDataSet looks it up manually
                 // on the assumption (valid for now) that there's only ever one DataSetDefinition offering a given
                 // DataType and DataAdjustment for a given location).
-                var dataset =
-                    await GetDataSet(
-                        DataType.TempMax,
-                        DataResolution.Yearly,
-                        dsdmd.MeasurementDefinition.DataAdjustment,
-                        AggregationMethod.GroupByDayThenAverage,
-                        location.Id,
-                        null,
-                        14,
-                        .7f,
-                        null);
+                var dsb = new DataSetBuilder();
 
-                location.WarmingIndex = dataset.WarmingIndex;
+                var series =
+                    await dsb.BuildDataSet(
+                        new PostDataSetsRequestBody
+                        {
+                            BinAggregationFunction = ContainerAggregationFunctions.Mean,
+                            BinningRule = BinGranularities.ByYear,
+                            BucketAggregationFunction = ContainerAggregationFunctions.Mean,
+                            CupAggregationFunction = ContainerAggregationFunctions.Mean,
+                            CupSize = 14,
+                            RequiredBinDataProportion = 1.0f,
+                            RequiredBucketDataProportion = 1.0f,
+                            RequiredCupDataProportion = 0.7f,
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SeriesSpecifications =
+                                new SeriesSpecification[]
+                                {
+                                    new SeriesSpecification
+                                    {
+                                        DataAdjustment = dsdmd.MeasurementDefinition.DataAdjustment,
+                                        DataSetDefinitionId = dsdmd.DataSetDefinition.Id,
+                                        DataType = dsdmd.MeasurementDefinition.DataType,
+                                        LocationId = location.Id
+                                    }
+                                }
+                        }
+                    );
+
+                location.WarmingIndex = WarmingIndexCalculator.CalculateWarmingIndex(series.DataPoints)?.WarmingIndexValue;
             }
             catch (Exception ex)
             {
@@ -187,20 +221,24 @@ async Task<List<Location>> GetLocations(bool includeNearbyLocations = false, boo
             }
         }
 
-        var maxWarmingIndex = locations.Max(x => x.WarmingIndex).Value;
+        // heatingScore is calculated across the full set of locations. If we've been asked for details on just one location, we don't calculate it.
+        if (locationId == null)
+        {
+            var maxWarmingIndex = locations.Max(x => x.WarmingIndex).Value;
 
-        locations
-            .ToList()
-            .ForEach(x => x.HeatingScore = x.WarmingIndex == null
-                                                ? null
-                                                : x.WarmingIndex > 0
-                                                        ? Convert.ToInt16(MathF.Round(x.WarmingIndex.Value / maxWarmingIndex * 9, 0))
-                                                        : Convert.ToInt16(MathF.Round(x.WarmingIndex.Value, 0)));
-
-        return locations;
+            locations
+                .ToList()
+                .ForEach(x => x.HeatingScore = x.WarmingIndex == null
+                                                    ? null
+                                                    : x.WarmingIndex > 0
+                                                            ? Convert.ToInt16(MathF.Round(x.WarmingIndex.Value / maxWarmingIndex * 9, 0))
+                                                            : Convert.ToInt16(MathF.Round(x.WarmingIndex.Value, 0)));
+        }
     }
 
-    return await Location.GetLocations(false);
+    await _cache.Put<Location[]>(cacheKey, locations.ToArray());
+
+    return locations;
 }
 
 async Task<List<DataSet>> YearlyTemperaturesAcrossLocations(
@@ -269,43 +307,6 @@ async Task<List<Location>> GetLocationsInLatitudeBand(float? minLatitude, float?
     return locationsInLatitudeBand;
 }
 
-async Task<DataSet> LoadCachedDataSets(QueryParameters queryParameters)
-{
-    var fileName = queryParameters.ToBase64String() + ".json";
-
-    var cache = new DirectoryInfo("cache");
-    if (!cache.Exists)
-    {
-        app.Logger.LogInformation("Creating cache folder");
-        cache.Create();
-    }
-
-    var filePath = @"cache\" + fileName;
-    if (File.Exists(filePath))
-    {
-        app.Logger.LogInformation($"Cache entry exists. File is at {filePath}");
-
-        var file = await File.ReadAllTextAsync(filePath);
-        var dataSets = JsonSerializer.Deserialize<DataSet>(file);
-        return dataSets;
-    }
-
-    app.Logger.LogInformation($"Cache entry does not exist. Checked path {filePath}");
-
-    return null;
-}
-
-async Task SaveToCache<T>(QueryParameters queryParameters, T dataToSave)
-{
-    var fileName = queryParameters.ToBase64String() + ".json";
-    var filePath = @"cache\" + fileName;
-
-    app.Logger.LogInformation($"Writing to cache file at {filePath}");
-
-    var json = JsonSerializer.Serialize(dataToSave);
-    await File.WriteAllTextAsync(filePath, json);
-}
-
 async Task<DataSet> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId, short? year, short? dayGrouping, float? dayGroupingThreshold, short? numberOfBins)
 {
     return await GetDataSetInternal(
@@ -323,7 +324,7 @@ async Task<DataSet> GetDataSet(DataType dataType, DataResolution resolution, Dat
 
 async Task<DataSet> GetDataSetInternal(QueryParameters queryParameters)
 {
-    var dataSet = await LoadCachedDataSets(queryParameters);
+    var dataSet = await _cache.Get<DataSet>(queryParameters.ToBase64String());
 
     if (dataSet != null)
     {
@@ -338,8 +339,8 @@ async Task<DataSet> GetDataSetInternal(QueryParameters queryParameters)
     Location location = null;
     if (queryParameters.LocationId != null)
     {
-        var locations = await GetLocations();
-        location = locations.Single(x => x.Id == queryParameters.LocationId);
+        var locations = await GetLocations(queryParameters.LocationId.ToString());
+        location = locations.Single();
     }
 
     if (definition == null)
@@ -350,15 +351,19 @@ async Task<DataSet> GetDataSetInternal(QueryParameters queryParameters)
     if (queryParameters.DataAdjustment == DataAdjustment.Difference)
     {
         queryParameters.DataAdjustment = DataAdjustment.Unadjusted;
-        var unadjusted = await LoadCachedDataSets(queryParameters) ?? await BuildDataSet(queryParameters, definition, true);
+        var unadjusted = 
+            await _cache.Get<DataSet>(queryParameters.ToBase64String())
+            ?? await BuildDataSet(queryParameters, definition, true);
 
         queryParameters.DataAdjustment = DataAdjustment.Adjusted;
-        var adjusted = await LoadCachedDataSets(queryParameters) ?? await BuildDataSet(queryParameters, definition, true);
+        var adjusted =
+            await _cache.Get<DataSet>(queryParameters.ToBase64String())
+            ?? await BuildDataSet(queryParameters, definition, true);
 
         dataSet = GenerateDifferenceDataSet(unadjusted, adjusted, location, queryParameters);
 
         queryParameters.DataAdjustment = DataAdjustment.Difference;
-        await SaveToCache(queryParameters, dataSet);
+        await _cache.Put(queryParameters.ToBase64String(), dataSet);
     }
     else
     {
@@ -515,7 +520,7 @@ async Task<DataSet> BuildDataSet(QueryParameters queryParameters, DataSetDefinit
 
     if (saveToCache)
     {
-        await SaveToCache(queryParameters, dataSet);
+        await _cache.Put(queryParameters.ToBase64String(), dataSet);
     }
 
     return dataSet;

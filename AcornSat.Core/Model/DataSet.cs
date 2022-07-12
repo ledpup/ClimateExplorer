@@ -94,69 +94,6 @@ public class DataSet
         get { return DataRecords.Average(x => x.Value); }
     }
 
-    float? averageOfEarliestTemperatures;
-    float? averageOfLastTwentyYearsTemperatures;
-
-    public float? WarmingIndex
-    {
-        get
-        {
-            var dataRecords = DataRecords.Where(x => x.Value.HasValue).ToList();
-            float? warmingIndex = null;
-            if (DataType == DataType.TempMax || DataType == DataType.TempMin)
-            {
-                if (dataRecords.Count > 40)
-                {
-                    averageOfEarliestTemperatures = dataRecords.OrderBy(x => x.Year).Take(dataRecords.Count / 2).Average(x => x.Value).Value;
-                    averageOfLastTwentyYearsTemperatures = dataRecords.OrderByDescending(x => x.Year).Take(20).Average(x => x.Value).Value;
-                    warmingIndex = averageOfLastTwentyYearsTemperatures.Value - averageOfEarliestTemperatures.Value;
-                }
-            }
-            return warmingIndex;
-        }
-    }
-
-    public string WarmingIndexAsString
-    {
-        get
-        {
-            var warmingIndex = WarmingIndex;
-            var warmingIndexAsString = "NA";
-            if (warmingIndex != null)
-            {
-                warmingIndexAsString = $"{ (warmingIndex >= 0 ? "+" : "") }{ string.Format("{0:0.#}", MathF.Round(warmingIndex.Value, 1))}°C";
-            }
-            return warmingIndexAsString;
-        }
-    }
-
-    public string WarmingIndexDescription
-    {
-        get
-        {
-            if (Location == null || DataType != DataType.TempMax && DataType != DataType.TempMin)
-            {
-                return "NA";
-            }
-
-            if (WarmingIndex == null)
-            {
-                return $@"<p>The warming index is the temperature difference between the average of the last 20 years of maximum temperatures compared with the average of the first half of the dataset.</p>
-<p>Over the long-term, with no external influences, we'd expect the warming index to trend towards zero. A non-zero warming index may indicate an effect of climate change. A positive warming index may indicate global warming.</p>";
-            }
-
-            var dataRecords = DataRecords.Where(x => x.Value.HasValue).ToList();
-            var twentyYears = dataRecords.OrderByDescending(x => x.Year).Take(20);
-            var firstHalf = dataRecords.OrderBy(x => x.Year).Take(dataRecords.Count / 2);
-
-            return $@"<p>The warming index is the temperature difference between the average of the last 20 years of maximum temperatures compared with the average of the first half ({firstHalf.Count()} years) of the dataset.</p>
-<p>{Location.Name}, between the years {twentyYears.Last().Year}-{twentyYears.First().Year}, had an average max temp of <strong>{string.Format("{0:0.##}", MathF.Round(averageOfLastTwentyYearsTemperatures.Value, 2))}°C</strong>.</p>
-<p>{Location.Name}, between the years {firstHalf.First().Year}-{firstHalf.Last().Year}, had an average max temp of <strong>{string.Format("{0:0.##}", MathF.Round(averageOfEarliestTemperatures.Value, 2))}°C</strong>.</p>
-<p>The difference is <strong>{WarmingIndexAsString}</strong> (after rounding to 1 decimal place).</p>
-<p>Over the long-term, with no external influences, we'd expect the warming index to trend towards zero. A non-zero warming index may indicate an effect of climate change. A positive warming index may indicate global warming.</p>";
-        }
-    }
-
     public override string ToString()
     {
         return $"{DataType} | {DataAdjustment} | {BinGranularity} | {Location} | {DataRecords.Count}";
