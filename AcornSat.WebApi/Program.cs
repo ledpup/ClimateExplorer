@@ -14,8 +14,11 @@ using System.Reflection;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Calculators;
 using AcornSat.WebApi.Infrastructure;
+using System.Text.Json;
 
-ICache _cache = new FileBackedCache("cache");
+//ICache _cache = new FileBackedCache("cache");
+ICache _cache = new FileBackedTwoLayerCache("cache");
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -223,6 +226,12 @@ async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool in
 
 async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
 {
+    string cacheKey = $"DataSet_" + JsonSerializer.Serialize(body);
+
+    var result = await _cache.Get<DataSet>(cacheKey);
+
+    if (result != null) return result;
+
     var dsb = new DataSetBuilder();
 
     var series = await dsb.BuildDataSet(body);
@@ -268,6 +277,7 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
 
         };
 
-    return returnDataSet;
+    await _cache.Put<DataSet>(cacheKey, returnDataSet);
 
+    return returnDataSet;
 }
