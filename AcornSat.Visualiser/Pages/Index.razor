@@ -19,6 +19,7 @@
 @using System.IO;
 @using System.Globalization
 @using static AcornSat.Core.Enums
+@using ClimateExplorer.Core
 @using ClimateExplorer.Core.DataPreparation
 @using ClimateExplorer.Core.ViewModel
 @using Microsoft.AspNetCore.WebUtilities
@@ -1257,23 +1258,6 @@
                 };
     }
 
-    ChartDataset<float?> GetMovingAverageChartDataset(int smoothingWindow, string label, List<float?> values, UnitOfMeasure unitOfMeasure, ChartType chartType, ChartColor colour)
-    {
-        var c = new OptimizedMovingAverageCalculator(smoothingWindow);
-
-        var simpleMovingAverages = values.Select(x => c.AddSample(x)).ToList();
-
-        switch (chartType)
-        {
-            case ChartType.Line:
-                return GetLineChartDataset(label, simpleMovingAverages, colour, unitOfMeasure);
-            case ChartType.Bar:
-                return GetBarChartDataset(label, simpleMovingAverages, unitOfMeasure, false);
-            default:
-                throw new NotImplementedException($"ChartType {chartType}");
-        }
-    }
-
     static short GetYearForDataRecord(DataRecord dr)
     {
         BinIdentifier parsedId = dr.GetBinIdentifier();
@@ -1392,18 +1376,32 @@
             // We only support moving averages on linear bin granularities (e.g. Year, YearAndMonth) - not modular ones like MonthOnly
             if (SelectedBinGranularity.IsLinear() && cs.ChartSeries.Smoothing == SeriesSmoothingOptions.MovingAverage)
             {
-                var c = new DataRecordMovingAverageCalculator(new OptimizedMovingAverageCalculator(cs.ChartSeries.SmoothingWindow));
-                l.LogInformation("Calculating moving average");
-                var dr = c.Calculate(cs.SourceDataSet.DataRecords);
-                l.LogInformation("Done");
+                var movingAverageValues =
+                    cs.SourceDataSet.DataRecords
+                    .Select(x => x.Value)
+                    .CalculateCentredMovingAverage(cs.ChartSeries.SmoothingWindow, 1.0f);
 
-                cs.PreProcessedDataSet =
-                    new DataSet
+                // Now, join back to the original DataRecord set
+                var newDataRecords =
+                    movingAverageValues
+                    .Zip(
+                        cs.SourceDataSet.DataRecords,
+                        (val, dr) => new DataRecord
                         {
-                            Location = cs.SourceDataSet.Location,
-                            MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
-                            DataRecords = dr
-                        };
+                            Label = dr.Label,
+                            BinId = dr.BinId,
+                            Value = val
+                        }
+                    )
+                    .ToList();
+
+                cs.PreProcessedDataSet = 
+                    new DataSet
+                    {
+                        Location = cs.SourceDataSet.Location,
+                        MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
+                        DataRecords = newDataRecords
+                    };
             }
             else
             {
