@@ -339,17 +339,17 @@ namespace AcornSat.Visualiser.Pages
                 .Concat(
                     new List<ChartSeriesDefinition>()
                     {
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = dle.SeriesDerivationType,
-                        SourceSeriesSpecifications = dle.SourceSeriesSpecifications.Select(BuildSourceSeriesSpecification).ToArray(),
-                        Aggregation = dle.SeriesAggregation,
-                        BinGranularity = SelectedBinGranularity,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 5,
-                        Value = SeriesValueOptions.Value,
-                        Year = null
-                    }
+                        new ChartSeriesDefinition()
+                        {
+                            SeriesDerivationType = dle.SeriesDerivationType,
+                            SourceSeriesSpecifications = dle.SourceSeriesSpecifications.Select(BuildSourceSeriesSpecification).ToArray(),
+                            Aggregation = dle.SeriesAggregation,
+                            BinGranularity = SelectedBinGranularity,
+                            Smoothing = SeriesSmoothingOptions.None,
+                            SmoothingWindow = 5,
+                            Value = SeriesValueOptions.Value,
+                            Year = null
+                        }
                     }
                 )
                 .ToList();
@@ -928,7 +928,7 @@ namespace AcornSat.Visualiser.Pages
                     var movingAverageValues =
                         cs.SourceDataSet.DataRecords
                         .Select(x => x.Value)
-                        .CalculateCentredMovingAverage(cs.ChartSeries.SmoothingWindow, 1.0f);
+                        .CalculateCentredMovingAverage(cs.ChartSeries.SmoothingWindow, 0.75f);
 
                     // Now, join back to the original DataRecord set
                     var newDataRecords =
