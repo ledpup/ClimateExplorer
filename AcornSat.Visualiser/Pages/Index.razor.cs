@@ -2,6 +2,7 @@
 using AcornSat.Core.ViewModel;
 using AcornSat.Visualiser.Services;
 using AcornSat.Visualiser.Shared;
+using AcornSat.Visualiser.UiLogic;
 using AcornSat.Visualiser.UiModel;
 using Blazorise;
 using Blazorise.Charts;
@@ -9,6 +10,7 @@ using Blazorise.Charts.Trendline;
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Infrastructure;
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using DPBlazorMapLibrary;
 using Microsoft.AspNetCore.Components;
@@ -68,7 +70,6 @@ namespace AcornSat.Visualiser.Pages
         ChartTrendline<float?> chartTrendline;
         BinIdentifier ChartStartBin, ChartEndBin;
         bool _haveCalledResizeAtLeastOnce = false;
-        string[] Labels = new string[1];
         SelectLocation selectLocationModal;
 
         [Inject] IDataService DataService { get; set; }
@@ -76,6 +77,138 @@ namespace AcornSat.Visualiser.Pages
         [Inject] IExporter Exporter { get; set; }
         [Inject] IJSRuntime JSRuntime { get; set; }
         [Inject] ILogger<Index> Logger { get; set; }
+
+        protected override async Task OnInitializedAsync()
+        {
+            Logger.LogInformation("Instance " + _componentInstanceId + " OnInitializedAsync");
+
+            NavManager.LocationChanged += HandleLocationChanged;
+
+            if (DataService == null)
+            {
+                throw new NullReferenceException(nameof(DataService));
+            }
+            DataSetDefinitions = (await DataService.GetDataSetDefinitions()).ToList();
+
+            // A cheat: register some 'derived' measurement types. Could be done better.
+            var acornSatDsd = DataSetDefinitions.Single(x => x.Id == Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"));
+
+            acornSatDsd.MeasurementDefinitions
+                .Add(
+                    new MeasurementDefinitionViewModel
+                    {
+                        DataAdjustment = DataAdjustment.Difference,
+                        DataType = DataType.TempMax,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                        PreferredColour = 0
+                    }
+                );
+
+            acornSatDsd.MeasurementDefinitions
+                .Add(
+                    new MeasurementDefinitionViewModel
+                    {
+                        DataAdjustment = DataAdjustment.Difference,
+                        DataType = DataType.TempMin,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                        PreferredColour = 0
+                    }
+                );
+
+            Locations = (await DataService.GetLocations(includeNearbyLocations: true, includeWarmingMetrics: true)).ToList();
+
+            SelectedYears = new List<short>();
+
+            var datasetYears = new List<short>();
+            for (short i = 1800; i <= (short)DateTime.Now.Year; i++)
+            {
+                datasetYears.Add(i);
+            }
+            DatasetYears = datasetYears;
+
+            await base.OnInitializedAsync();
+        }
+
+        protected override async Task OnParametersSetAsync()
+        {
+            Logger.LogInformation("OnParametersSetAsync() " + NavManager.Uri + " (NavigateTo)");
+
+            Logger.LogInformation("OnParametersSetAsync(): " + LocationId);
+
+            bool setupDefaultChartSeries = LocationId == null && ChartSeriesList.Count == 0;
+
+            if (LocationId == null)
+            {
+                // Not sure whether we're allowed to set parameters this way, but it's short-lived - we'll immediately navigate away after
+                // preparing querystring
+                LocationId = "aed87aa0-1d0c-44aa-8561-cde0fc936395";
+            }
+
+            Guid locationId = Guid.Parse(LocationId);
+
+            if (setupDefaultChartSeries)
+            {
+                var location = Locations.Single(x => x.Id == locationId);
+
+                var tempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMax, DataAdjustment.Adjusted);
+                var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.Rainfall, null);
+
+                if (tempMax != null)
+                {
+                    ChartSeriesList.Add(
+                        new ChartSeriesDefinition()
+                        {
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax),
+                            Aggregation = SeriesAggregationOptions.Mean,
+                            BinGranularity = BinGranularities.ByYear,
+                            Smoothing = SeriesSmoothingOptions.MovingAverage,
+                            SmoothingWindow = 20,
+                            Value = SeriesValueOptions.Value,
+                            Year = null
+                        }
+                    );
+                }
+
+                if (rainfall != null)
+                {
+                    ChartSeriesList.Add(
+                        new ChartSeriesDefinition()
+                        {
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, rainfall),
+                            Aggregation = SeriesAggregationOptions.Sum,
+                            BinGranularity = BinGranularities.ByYear,
+                            Smoothing = SeriesSmoothingOptions.MovingAverage,
+                            SmoothingWindow = 20,
+                            Value = SeriesValueOptions.Value,
+                            Year = null
+                        }
+                    );
+                }
+            }
+
+            // Pick up parameters from querystring
+            await UpdateUiStateBasedOnQueryString();
+
+            await SelectedLocationChangedInternal(locationId);
+
+            await base.OnParametersSetAsync();
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await HandleRedraw();
+            }
+        }
+
+        public void Dispose()
+        {
+            Logger.LogInformation("Instance " + _componentInstanceId + " disposing");
+            NavManager.LocationChanged -= HandleLocationChanged;
+        }
 
         string GetPageTitle()
         {
@@ -172,13 +305,6 @@ namespace AcornSat.Visualiser.Pages
             await filter.Show();
         }
 
-        async Task UpdateInternalChartType()
-        {
-            _haveCalledResizeAtLeastOnce = false;
-
-            await BuildDataSets();
-        }
-
         public async Task OnChartPresetSelected(List<ChartSeriesDefinition> chartSeriesDefinitions)
         {
             SelectedBinGranularity = chartSeriesDefinitions.First().BinGranularity;
@@ -271,7 +397,7 @@ namespace AcornSat.Visualiser.Pages
                 csd.BinGranularity = value;
             }
 
-            ChartSeriesList = EliminateDuplicatesFromChartSeriesList(ChartSeriesList);
+            ChartSeriesList = ChartSeriesList.CreateNewListWithoutDuplicates();
 
             await BuildDataSets();
         }
@@ -290,63 +416,6 @@ namespace AcornSat.Visualiser.Pages
                     _selectedLocation = value;
                 }
             }
-        }
-
-        public void Dispose()
-        {
-            Logger.LogInformation("Instance " + _componentInstanceId + " disposing");
-            NavManager.LocationChanged -= HandleLocationChanged;
-        }
-
-        protected override async Task OnInitializedAsync()
-        {
-            Logger.LogInformation("Instance " + _componentInstanceId + " OnInitializedAsync");
-
-            NavManager.LocationChanged += HandleLocationChanged;
-
-            if (DataService == null)
-            {
-                throw new NullReferenceException(nameof(DataService));
-            }
-            DataSetDefinitions = (await DataService.GetDataSetDefinitions()).ToList();
-
-            // A cheat: register some 'derived' measurement types. Could be done better.
-            var acornSatDsd = DataSetDefinitions.Single(x => x.Id == Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"));
-
-            acornSatDsd.MeasurementDefinitions
-                .Add(
-                    new MeasurementDefinitionViewModel
-                    {
-                        DataAdjustment = DataAdjustment.Difference,
-                        DataType = DataType.TempMax,
-                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
-                        PreferredColour = 0
-                    }
-                );
-
-            acornSatDsd.MeasurementDefinitions
-                .Add(
-                    new MeasurementDefinitionViewModel
-                    {
-                        DataAdjustment = DataAdjustment.Difference,
-                        DataType = DataType.TempMin,
-                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
-                        PreferredColour = 0
-                    }
-                );
-
-            Locations = (await DataService.GetLocations(includeNearbyLocations: true, includeWarmingMetrics: true)).ToList();
-
-            SelectedYears = new List<short>();
-
-            var datasetYears = new List<short>();
-            for (short i = 1800; i <= (short)DateTime.Now.Year; i++)
-            {
-                datasetYears.Add(i);
-            }
-            DatasetYears = datasetYears;
-
-            await base.OnInitializedAsync();
         }
 
         void HandleLocationChanged(object sender, LocationChangedEventArgs e)
@@ -385,73 +454,6 @@ namespace AcornSat.Visualiser.Pages
                     Logger.LogError(ex.ToString());
                 }
             }
-        }
-
-        protected override async Task OnParametersSetAsync()
-        {
-            Logger.LogInformation("OnParametersSetAsync() " + NavManager.Uri + " (NavigateTo)");
-
-            Logger.LogInformation("OnParametersSetAsync(): " + LocationId);
-
-            bool setupDefaultChartSeries = LocationId == null && ChartSeriesList.Count == 0;
-
-            if (LocationId == null)
-            {
-                // Not sure whether we're allowed to set parameters this way, but it's short-lived - we'll immediately navigate away after
-                // preparing querystring
-                LocationId = "aed87aa0-1d0c-44aa-8561-cde0fc936395";
-            }
-
-            Guid locationId = Guid.Parse(LocationId);
-
-            if (setupDefaultChartSeries)
-            {
-                var location = Locations.Single(x => x.Id == locationId);
-
-                var tempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMax, DataAdjustment.Adjusted);
-                var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.Rainfall, null);
-
-                if (tempMax != null)
-                {
-                    ChartSeriesList.Add(
-                        new ChartSeriesDefinition()
-                        {
-                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax),
-                            Aggregation = SeriesAggregationOptions.Mean,
-                            BinGranularity = BinGranularities.ByYear,
-                            Smoothing = SeriesSmoothingOptions.MovingAverage,
-                            SmoothingWindow = 20,
-                            Value = SeriesValueOptions.Value,
-                            Year = null
-                        }
-                    );
-                }
-
-                if (rainfall != null)
-                {
-                    ChartSeriesList.Add(
-                        new ChartSeriesDefinition()
-                        {
-                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, rainfall),
-                            Aggregation = SeriesAggregationOptions.Sum,
-                            BinGranularity = BinGranularities.ByYear,
-                            Smoothing = SeriesSmoothingOptions.MovingAverage,
-                            SmoothingWindow = 20,
-                            Value = SeriesValueOptions.Value,
-                            Year = null
-                        }
-                    );
-                }
-            }
-
-            // Pick up parameters from querystring
-            await UpdateUiStateBasedOnQueryString();
-
-            await SelectedLocationChangedInternal(locationId);
-
-            await base.OnParametersSetAsync();
         }
 
         void DumpChartSeriesList()
@@ -667,37 +669,6 @@ namespace AcornSat.Visualiser.Pages
             await HandleRedraw();
         }
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            if (firstRender)
-            {
-                await HandleRedraw();
-            }
-        }
-
-        static string BuildTitle(List<SeriesWithData> chartSeriesWithData)
-        {
-            if (chartSeriesWithData.Count == 1)
-            {
-                return chartSeriesWithData.Single().ChartSeries.FriendlyTitle;
-            }
-
-            var locationNames =
-                chartSeriesWithData
-                .SelectMany(x => x.ChartSeries.SourceSeriesSpecifications)
-                .Select(x => x.LocationName)
-                .Where(x => x != null)
-                .Distinct()
-                .ToArray();
-
-            if (locationNames.Length > 0)
-            {
-                return String.Join(", ", locationNames);
-            }
-
-            return "Climate data";
-        }
-
         async Task HandleRedraw()
         {
             var l = new LogAugmenter(Logger, "HandleRedraw");
@@ -734,13 +705,11 @@ namespace AcornSat.Visualiser.Pages
 
             colours = new ColourServer();
 
-            var labels = new string[0];
-
             var subtitle = string.Empty;
 
             List<ChartTrendlineData> trendlines = null;
 
-            var title = BuildTitle(ChartSeriesWithData);
+            var title = ChartLogic.BuildChartTitle(ChartSeriesWithData);
 
             // Data sets sometimes have internal gaps in data (i.e. years which have no data even though earlier
             // and later years have data). Additionally, they may have external gaps in data if the overall period
@@ -758,19 +727,18 @@ namespace AcornSat.Visualiser.Pages
                 ? $"({ChartStartBin.Label}-{ChartEndBin.Label})"
                 : SelectedBinGranularity.ToFriendlyString();
 
-            Labels = GetLabels();
-
             l.LogInformation("Calling AddDataSetsToGraph");
 
-            trendlines = await AddDataSetsToGraph();
+            trendlines = await AddDataSetsToChart();
 
             l.LogInformation("Trendlines count: " + trendlines.Count);
 
             l.LogInformation("Calling AddLabels");
 
-            await chart.AddLabels(Labels);
+            var labels = ChartBins.Select(x => x.Label).ToArray();
+            await chart.AddLabels(labels);
 
-            var xLabel = GetXAxisLabel();
+            var xLabel = ChartLogic.GetXAxisLabel(SelectedBinGranularity);
 
             object scales = new
             {
@@ -908,31 +876,7 @@ namespace AcornSat.Visualiser.Pages
             l.LogInformation("Leaving");
         }
 
-        string[] GetLabels()
-        {
-            return ChartBins.Select(x => x.Label).ToArray();
-        }
-
-        string GetXAxisLabel()
-        {
-            switch (SelectedBinGranularity)
-            {
-                case BinGranularities.ByYear:
-                    return "Year";
-                case BinGranularities.ByYearAndMonth:
-                    return "Month";
-                case BinGranularities.ByMonthOnly:
-                    return "Month of the year";
-                case BinGranularities.BySouthernHemisphereTemperateSeasonOnly:
-                    return "Southern hemisphere temperate season";
-                case BinGranularities.BySouthernHemisphereTropicalSeasonOnly:
-                    return "Southern hemisphere tropical season";
-            }
-
-            throw new Exception();
-        }
-
-        async Task<List<ChartTrendlineData>> AddDataSetsToGraph()
+        async Task<List<ChartTrendlineData>> AddDataSetsToChart()
         {
             var dataSetIndex = 0;
 
@@ -946,7 +890,8 @@ namespace AcornSat.Visualiser.Pages
 
                 var htmlColourCode = colours.GetNextColour(dataSet.MeasurementDefinition.PreferredColour);
 
-                await AddDataSetToChart(
+                await ChartLogic.AddDataSetToChart(
+                    chart,
                     chartSeries,
                     dataSet,
                     dataSet.DataAdjustment,
@@ -955,157 +900,13 @@ namespace AcornSat.Visualiser.Pages
 
                 if (chartSeries.ChartSeries.ShowTrendline)
                 {
-                    trendlines.Add(CreateTrendline(dataSetIndex, ChartColor.FromHtmlColorCode(htmlColourCode)));
+                    trendlines.Add(ChartLogic.CreateTrendline(dataSetIndex, ChartColor.FromHtmlColorCode(htmlColourCode)));
                 }
 
                 dataSetIndex++;
             }
 
             return trendlines;
-        }
-
-        async Task AddDataSetToChart(
-            SeriesWithData chartSeries,
-            DataSet dataSet,
-            DataAdjustment? dataAdjustment,
-            string label,
-            string htmlColourCode,
-            bool absoluteValues = false,
-            bool redPositive = true)
-        {
-            var l = new LogAugmenter(Logger, "AddDataSetToChart");
-
-            var values =
-                dataSet.DataRecords
-                .Select(x => x.Value)
-                .ToList();
-
-            l.LogInformation($"AddDataSetToChart: values has {values.Count} entries, of which {values.Count(x => x != null)} are not null");
-
-            var colour = ChartColor.FromHtmlColorCode(htmlColourCode);
-
-            chartSeries.ChartSeries.Colour = htmlColourCode;
-
-            var chartType =
-                chartSeries.ChartSeries.DisplayStyle == SeriesDisplayStyle.Line
-                ? ChartType.Line
-                : ChartType.Bar;
-
-            var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour, absoluteValues, redPositive);
-
-            l.LogInformation("GetchartDataset complete. Calling AddDataSet");
-
-            await chart.AddDataSet(chartDataset);
-
-            l.LogInformation("AddDataSet complete.");
-        }
-
-        ChartTrendlineData CreateTrendline(int datasetIndex, ChartColor colour)
-        {
-            return
-                new ChartTrendlineData
-                {
-                    DatasetIndex = datasetIndex,
-                    Width = 3,
-                    Color = colour
-                };
-        }
-
-        static short GetYearForDataRecord(DataRecord dr)
-        {
-            BinIdentifier parsedId = dr.GetBinIdentifier();
-
-            if (parsedId is BinIdentifierForGaplessBin id)
-            {
-                return (short)id.FirstDayInBin.Year;
-            }
-
-            throw new NotImplementedException();
-        }
-
-        static DataRecord GetFirstDataRecordWithValueInDataSet(DataSet dataSet)
-        {
-            var firstRecordWithValueIfAny = dataSet.DataRecords.FirstOrDefault(x => x.Value.HasValue);
-
-            if (firstRecordWithValueIfAny == null)
-            {
-                throw new Exception("No records have a value in DataSet " + dataSet.ToString());
-            }
-
-            return firstRecordWithValueIfAny;
-        }
-
-        static DataRecord GetLastDataRecordWithValueInDataSet(DataSet dataSet)
-        {
-            return dataSet.DataRecords.Last(x => x.Value.HasValue);
-        }
-
-        static short GetStartYearForDataSet(DataSet dataSet)
-        {
-            return GetYearForDataRecord(GetFirstDataRecordWithValueInDataSet(dataSet));
-        }
-
-        static Tuple<BinIdentifier, BinIdentifier> GetBinRangeToPlotForGaplessRange(
-            IEnumerable<DataSet> preProcessedDataSets,
-            bool useMostRecentStartYear,
-            string selectedStartYear,
-            string selectedEndYear)
-        {
-            // Parse the start and end years, if any, specified by the user
-            var userStartYear = string.IsNullOrEmpty(selectedStartYear) ? null : (short?)short.Parse(selectedStartYear);
-            var userEndYear = string.IsNullOrEmpty(selectedEndYear) ? null : (short?)short.Parse(selectedEndYear);
-
-            // Analyse the data we want to plot, to find the first & last bin we have a value for, for each data set
-            var firstBinInEachDataSet =
-                preProcessedDataSets
-                .Select(GetFirstDataRecordWithValueInDataSet)
-                .Select(x => (BinIdentifierForGaplessBin)x.GetBinIdentifier());
-
-            var lastBinInEachDataSet =
-                preProcessedDataSets
-                .Select(GetLastDataRecordWithValueInDataSet)
-                .Select(x => (BinIdentifierForGaplessBin)x.GetBinIdentifier());
-
-            var firstBinAcrossAllDataSets = firstBinInEachDataSet.Min();
-            var lastFirstBinAcrossAllDataSets = firstBinInEachDataSet.Max();
-            var lastBinAcrossAllDataSets = lastBinInEachDataSet.Max();
-
-            var startBin = useMostRecentStartYear ? lastFirstBinAcrossAllDataSets : firstBinAcrossAllDataSets;
-            var endBin = lastBinAcrossAllDataSets;
-
-            if (userStartYear != null)
-            {
-                if (userStartYear.Value > startBin.FirstDayInBin.Year)
-                {
-                    if (startBin is YearBinIdentifier)
-                    {
-                        startBin = new YearBinIdentifier(userStartYear.Value);
-                    }
-
-                    if (startBin is YearAndMonthBinIdentifier)
-                    {
-                        startBin = new YearAndMonthBinIdentifier(userStartYear.Value, 1);
-                    }
-                }
-            }
-
-            if (userEndYear != null)
-            {
-                if (userEndYear.Value < endBin.FirstDayInBin.Year)
-                {
-                    if (endBin is YearBinIdentifier)
-                    {
-                        endBin = new YearBinIdentifier(userEndYear.Value);
-                    }
-
-                    if (endBin is YearAndMonthBinIdentifier)
-                    {
-                        endBin = new YearAndMonthBinIdentifier(userEndYear.Value, 1);
-                    }
-                }
-            }
-
-            return new Tuple<BinIdentifier, BinIdentifier>(startBin, endBin);
         }
 
         void BuildProcessedDataSets(List<SeriesWithData> chartSeriesWithData, bool useMostRecentStartYear = true)
@@ -1178,7 +979,7 @@ namespace AcornSat.Visualiser.Pages
                     var allDataRecords = preProcessedDataSets.SelectMany(x => x.DataRecords);
 
                     (ChartStartBin, ChartEndBin) =
-                        GetBinRangeToPlotForGaplessRange(
+                        ChartLogic.GetBinRangeToPlotForGaplessRange(
                             // Pass in the data available for plotting
                             preProcessedDataSets,
                             // and the user's preferences about what x axis range they'd like plotted
@@ -1189,7 +990,7 @@ namespace AcornSat.Visualiser.Pages
                     chartBins = BinHelpers.EnumerateBinsInRange(ChartStartBin, ChartEndBin).ToArray();
 
                     // build a list of all the years in which data sets start, used by the UI to allow the user to conveniently select from them
-                    StartYears = preProcessedDataSets.Select(GetStartYearForDataSet).Distinct().OrderBy(x => x).ToList();
+                    StartYears = preProcessedDataSets.Select(x => x.GetStartYearForDataSet()).Distinct().OrderBy(x => x).ToList();
 
                     break;
 
@@ -1248,63 +1049,6 @@ namespace AcornSat.Visualiser.Pages
             }
 
             l.LogInformation("leaving");
-        }
-
-        ChartDataset<float?> GetChartDataset(string label, List<float?> values, UnitOfMeasure unitOfMeasure, ChartType chartType, ChartColor? chartColour = null, bool? absoluteValues = false, bool redPositive = true)
-        {
-            switch (chartType)
-            {
-                case ChartType.Line:
-                    if (!chartColour.HasValue)
-                    {
-                        throw new NullReferenceException(nameof(chartColour));
-                    }
-                    return GetLineChartDataset(label, values, chartColour.Value, unitOfMeasure);
-                case ChartType.Bar:
-                    return GetBarChartDataset(label, values, unitOfMeasure, absoluteValues, redPositive);
-            }
-
-            throw new NotImplementedException();
-        }
-
-        BarChartDataset<float?> GetBarChartDataset(string label, List<float?> values, UnitOfMeasure unitOfMeasure, bool? absoluteValues, bool redPositive = true)
-        {
-            var colour = Enso.GetBarChartColourSet(values, redPositive);
-
-            return new BarChartDataset<float?>
-            {
-                Label = label,
-                Data = values.Select(x => absoluteValues.GetValueOrDefault() && x.HasValue ? MathF.Abs(x.Value) : x).ToList(),
-                BorderColor = colour,
-                BackgroundColor = colour,
-                YAxisID = unitOfMeasure.ToString().ToLowerFirstChar(),
-            };
-        }
-
-        LineChartDataset<float?> GetLineChartDataset(string label, List<float?> values, ChartColor chartColor, UnitOfMeasure unitOfMeasure)
-        {
-            var count = values.Count;
-            var colour = new List<string>();
-            for (var i = 0; i < count; i++)
-                colour.Add(chartColor);
-
-            var lineChartDataset =
-                new LineChartDataset<float?>
-                {
-                    Label = label,
-                    Data = values,
-                    BorderColor = colour,
-                    Fill = false,
-                    PointRadius = 3,
-                    ShowLine = true,
-                    PointBorderColor = "#eee",
-                    PointHoverBackgroundColor = colour,
-                    BorderDash = new List<int> { },
-                //Tension = 0.1f,
-                YAxisID = unitOfMeasure.ToString().ToLowerFirstChar(),
-                };
-
-            return lineChartDataset;
         }
 
         async Task SelectedLocationChanged(Guid locationId)
@@ -1464,14 +1208,9 @@ namespace AcornSat.Visualiser.Pages
 
             var draftList = ChartSeriesList.Concat(additionalCsds).ToList();
 
-            ChartSeriesList = EliminateDuplicatesFromChartSeriesList(draftList);
+            ChartSeriesList = draftList.CreateNewListWithoutDuplicates();
 
             await BuildDataSets();
-        }
-
-        static List<ChartSeriesDefinition> EliminateDuplicatesFromChartSeriesList(List<ChartSeriesDefinition> csds)
-        {
-            return csds.Distinct(new ChartSeriesDefinition.ChartSeriesDefinitionComparer()).ToList();
         }
 
         async Task OnLineChartClicked(ChartMouseEventArgs e)

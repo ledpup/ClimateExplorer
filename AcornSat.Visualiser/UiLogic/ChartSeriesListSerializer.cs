@@ -5,7 +5,7 @@ using ClimateExplorer.Core.DataPreparation;
 using System.Web;
 using static AcornSat.Core.Enums;
 
-namespace AcornSat.Visualiser;
+namespace AcornSat.Visualiser.UiLogic;
 
 public static class ChartSeriesListSerializer
 {

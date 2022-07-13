@@ -1,4 +1,4 @@
-﻿namespace AcornSat.Visualiser
+﻿namespace AcornSat.Visualiser.UiLogic
 {
     public class ColourServer
     {

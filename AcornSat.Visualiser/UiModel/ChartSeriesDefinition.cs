@@ -364,7 +364,6 @@ namespace AcornSat.Visualiser.UiModel
 
                 return hashCode;
             }
-
         }
     }
 }
