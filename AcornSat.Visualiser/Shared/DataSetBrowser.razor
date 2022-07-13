@@ -154,53 +154,57 @@
 
             RootFolders.Add(currentLocationFolder);
 
-            //if (PreviousLocation != null)
-            //{
-            //    var dsdPrevious = DataSetDefinitions.SingleOrDefault(x => x.Id == dsd.Id);
+            if (PreviousLocation != null)
+            {
+                var measurementsForPreviousLocation = DataSetDefinitionViewModel.GetMeasurementsForLocation(DataSetDefinitions, PreviousLocation.Id);
 
-            //    var comparisonFolder =
-            //        new DataSetLibraryFolder()
-            //        {
-            //            Name = $"{CurrentLocation.Name} relative to {PreviousLocation.Name}",
-            //            DataSets = new List<DataSetLibraryEntry>()
-            //        };
+                var comparisonFolder =
+                    new DataSetLibraryFolder()
+                    {
+                        Name = $"{CurrentLocation.Name} relative to {PreviousLocation.Name}",
+                        DataSets = new List<DataSetLibraryEntry>()
+                    };
 
-            //    if (dsd != null && dsdPrevious != null)
-            //    {
-            //        foreach (var md in dsdPrevious.MeasurementDefinitions.OrderBy(x => x.DataType.ToString()).ThenBy(x => x.DataAdjustment.ToString()))
-            //        {
-            //            comparisonFolder.DataSets.Add(
-            //                new DataSetLibraryEntry()
-            //                    {
-            //                        SourceSeriesSpecifications =
-            //                            new DataSetLibraryEntry.SourceSeriesSpecification[]
-            //                            {
-            //                                new DataSetLibraryEntry.SourceSeriesSpecification
-            //                                {
-            //                                    DataType = md.DataType,
-            //                                    DataAdjustment = md.DataAdjustment,
-            //                                    SourceDataSetId = dsdPrevious.Id,
-            //                                    LocationId = CurrentLocation.Id,
-            //                                    LocationName = CurrentLocation.Name
-            //                                },
-            //                                new DataSetLibraryEntry.SourceSeriesSpecification
-            //                                {
-            //                                    DataType = md.DataType,
-            //                                    DataAdjustment = md.DataAdjustment,
-            //                                    SourceDataSetId = dsd.Id,
-            //                                    LocationId = PreviousLocation.Id,
-            //                                    LocationName = PreviousLocation.Name
-            //                                }
-            //                            },
-            //                        SeriesDerivationType = ClimateExplorer.Core.DataPreparation.SeriesDerivationTypes.DifferenceBetweenTwoSeries,
-            //                        Name = BuildDataSetName(md, dsd)
-            //                    });
-            //        }
-            //    }
+                foreach (var measurementAtCurrentLocation in measurements)
+                {
+                    // Look for a matching measurement at new site
+                    var bestMatchingMeasurementAtPreviousLocation =
+                        measurementsForPreviousLocation
+                        .SingleOrDefault(x => x.Item2.DataType == measurementAtCurrentLocation.Item2.DataType && x.Item2.DataAdjustment == measurementAtCurrentLocation.Item2.DataAdjustment);
 
+                    if (bestMatchingMeasurementAtPreviousLocation != null)
+                    {
+                        comparisonFolder.DataSets.Add(
+                            new DataSetLibraryEntry()
+                                {
+                                    SourceSeriesSpecifications =
+                                        new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                        {
+                                            new DataSetLibraryEntry.SourceSeriesSpecification
+                                            {
+                                                DataType = bestMatchingMeasurementAtPreviousLocation.Item2.DataType,
+                                                DataAdjustment = bestMatchingMeasurementAtPreviousLocation.Item2.DataAdjustment,
+                                                SourceDataSetId = bestMatchingMeasurementAtPreviousLocation.Item1.Id,
+                                                LocationId = PreviousLocation.Id,
+                                                LocationName = PreviousLocation.Name
+                                            },
+                                            new DataSetLibraryEntry.SourceSeriesSpecification
+                                            {
+                                                DataType = measurementAtCurrentLocation.Item2.DataType,
+                                                DataAdjustment = measurementAtCurrentLocation.Item2.DataAdjustment,
+                                                SourceDataSetId = measurementAtCurrentLocation.Item1.Id,
+                                                LocationId = CurrentLocation.Id,
+                                                LocationName = CurrentLocation.Name
+                                            }
+                                        },
+                                    SeriesDerivationType = ClimateExplorer.Core.DataPreparation.SeriesDerivationTypes.DifferenceBetweenTwoSeries,
+                                    Name = BuildDataSetName(measurementAtCurrentLocation.Item2, measurementAtCurrentLocation.Item1)
+                                });
+                    }
+                }
 
-              //  RootFolders.Add(comparisonFolder);
-            //}
+                RootFolders.Add(comparisonFolder);
+            }
         }
 
         RootFolders.AddRange(
