@@ -8,6 +8,7 @@ using Blazorise.Charts;
 using Blazorise.Charts.Trendline;
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.ViewModel;
 using DPBlazorMapLibrary;
 using Microsoft.AspNetCore.Components;
@@ -68,6 +69,7 @@ namespace AcornSat.Visualiser.Pages
         BinIdentifier ChartStartBin, ChartEndBin;
         bool _haveCalledResizeAtLeastOnce = false;
         string[] Labels = new string[1];
+        SelectLocation selectLocationModal;
 
         [Inject] IDataService DataService { get; set; }
         [Inject] NavigationManager NavManager { get; set; }
@@ -149,26 +151,14 @@ namespace AcornSat.Visualiser.Pages
             await JSRuntime.InvokeVoidAsync("showOrHideMap", isOverviewVisible);
         }
 
-        private SelectLocation selectLocationModal;
-
         private Task ShowSelectLocationModal()
         {
             return selectLocationModal.Show();
         }
 
-        private Task HideSelectLocationModal()
-        {
-            return selectLocationModal.Hide();
-        }
-
         private Task ShowAddDataSetModal()
         {
             return addDataSetModal.Show();
-        }
-
-        private Task HideAddDataSetModal()
-        {
-            return addDataSetModal.Hide();
         }
 
         private Task ShowOptionsModal()
@@ -177,26 +167,9 @@ namespace AcornSat.Visualiser.Pages
             return optionsModal.Show();
         }
 
-        private Task HideOptionsModal()
-        {
-            return optionsModal.Hide();
-        }
-
         async Task ShowFilterModal()
         {
             await filter.Show();
-        }
-
-        async Task HideFilterModal()
-        {
-            await filter.Hide();
-        }
-
-        async Task OnSelectedChartTypeValueChanged(ChartType value)
-        {
-            SelectedChartType = value;
-
-            await UpdateInternalChartType();
         }
 
         async Task UpdateInternalChartType()
@@ -603,14 +576,6 @@ namespace AcornSat.Visualiser.Pages
             ChartSeriesList = newCsds;
         }
 
-        public SeriesDisplayStyle ChooseSeriesDisplayStyleForChartSeries(MeasurementDefinitionViewModel measurementDefinition)
-        {
-            if (measurementDefinition.DataType == DataType.Rainfall) return SeriesDisplayStyle.Bar;
-            if (measurementDefinition.DataAdjustment == DataAdjustment.Difference) return SeriesDisplayStyle.Bar;
-
-            return SeriesDisplayStyle.Line;
-        }
-
         static ContainerAggregationFunctions MapSeriesAggregationOptionToBinAggregationFunction(SeriesAggregationOptions a)
         {
             switch (a)
@@ -682,41 +647,6 @@ namespace AcornSat.Visualiser.Pages
             return datasetsToReturn;
         }
 
-        AggregationMethod ChooseDataSetApiAggregationMethod(SeriesAggregationOptions sao, SeriesValueOptions svo)
-        {
-            switch (sao)
-            {
-                case SeriesAggregationOptions.Sum:
-                    return AggregationMethod.Sum;
-                case SeriesAggregationOptions.Mean:
-                    switch (svo)
-                    {
-                        case SeriesValueOptions.Value:
-                            return AggregationMethod.GroupByDayThenAverage;
-                        case SeriesValueOptions.Anomaly:
-                            return AggregationMethod.GroupByDayThenAverage_Anomaly;
-                        default:
-                            throw new NotImplementedException($"SeriesValueOptions {svo}");
-                    }
-                default:
-                    throw new NotImplementedException($"SeriesAggregationOptions {sao}");
-            }
-        }
-
-        static SeriesAggregationOptions MapAggregationMethodToSeriesAggregationOptions(AggregationMethod m)
-        {
-            switch (m)
-            {
-                case AggregationMethod.GroupByDayThenAverage:
-                case AggregationMethod.GroupByDayThenAverage_Anomaly:
-                    return SeriesAggregationOptions.Mean;
-                case AggregationMethod.Sum:
-                    return SeriesAggregationOptions.Sum;
-                default:
-                    throw new NotImplementedException($"AggregationMethod {m}");
-            }
-        }
-
         async Task OnStartYearTextChanged(string text)
         {
             SelectedStartYear = text;
@@ -736,32 +666,12 @@ namespace AcornSat.Visualiser.Pages
 
             await HandleRedraw();
         }
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
             {
                 await HandleRedraw();
-            }
-        }
-
-        public class LogAugmenter
-        {
-            Guid _g = Guid.NewGuid();
-            string _name;
-            ILogger _logger;
-            Stopwatch _sw;
-
-            public LogAugmenter(ILogger logger, string name)
-            {
-                _logger = logger;
-                _name = name;
-                _sw = new Stopwatch();
-                _sw.Start();
-            }
-
-            public void LogInformation(string s)
-            {
-                _logger.LogInformation(_name + " " + _g + " " + s + " (" + _sw.Elapsed + ")");
             }
         }
 
@@ -1135,11 +1045,6 @@ namespace AcornSat.Visualiser.Pages
             return GetYearForDataRecord(GetFirstDataRecordWithValueInDataSet(dataSet));
         }
 
-        static short GetEndYearForDataSet(DataSet dataSet)
-        {
-            return GetYearForDataRecord(GetLastDataRecordWithValueInDataSet(dataSet));
-        }
-
         static Tuple<BinIdentifier, BinIdentifier> GetBinRangeToPlotForGaplessRange(
             IEnumerable<DataSet> preProcessedDataSets,
             bool useMostRecentStartYear,
@@ -1343,26 +1248,6 @@ namespace AcornSat.Visualiser.Pages
             }
 
             l.LogInformation("leaving");
-        }
-
-        List<DataSet> CreateDailyBufferedDataSet(List<DataSet> dataSets)
-        {
-            var bufferedDataSets = new List<DataSet>();
-
-            var startDate = new DateOnly(dataSets.Min(x => x.DataRecords.Min(y => y.Year)), 1, 1);
-            foreach (var dataSet in dataSets)
-            {
-                var bufferedDataSet = new DataSet { Location = dataSet.Location, MeasurementDefinition = dataSet.MeasurementDefinition };
-                bufferedDataSets.Add(bufferedDataSet);
-
-                var startYear = dataSet.DataRecords.Min(x => x.Date);
-                var temperatures = new List<DataRecord>();
-
-                temperatures.AddRange(dataSet.DataRecords);
-                bufferedDataSet.DataRecords = temperatures;
-            }
-
-            return bufferedDataSets;
         }
 
         ChartDataset<float?> GetChartDataset(string label, List<float?> values, UnitOfMeasure unitOfMeasure, ChartType chartType, ChartColor? chartColour = null, bool? absoluteValues = false, bool redPositive = true)

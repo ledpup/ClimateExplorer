@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="GeoCoordinate.NetStandard1" Version="1.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
   </ItemGroup>
 
 </Project>
