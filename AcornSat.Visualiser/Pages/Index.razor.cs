@@ -25,7 +25,6 @@ namespace AcornSat.Visualiser.Pages
         public string LocationId { get; set; }
 
         LocationInfo locationInfoComponent { get; set; }
-        SuggestedCharts suggestedChartsComponent { get; set; }
         BinGranularities SelectedBinGranularity { get; set; } = BinGranularities.ByYear;
         List<ChartSeriesDefinition> ChartSeriesList { get; set; } = new List<ChartSeriesDefinition>();
         List<SeriesWithData> ChartSeriesWithData { get; set; }
@@ -60,7 +59,6 @@ namespace AcornSat.Visualiser.Pages
         Guid SelectedLocationId { get; set; }
         Location _selectedLocation { get; set; }
         Location PreviousLocation { get; set; }
-        List<DataSet> Datasets { get; set; }
         IEnumerable<DataSetDefinitionViewModel> DataSetDefinitions { get; set; }
         IEnumerable<Location> Locations { get; set; }
         ColourServer colours { get; set; } = new ColourServer();
@@ -366,7 +364,6 @@ namespace AcornSat.Visualiser.Pages
 
             Locations = (await DataService.GetLocations(includeNearbyLocations: true, includeWarmingMetrics: true)).ToList();
 
-            Datasets = new List<DataSet>();
             SelectedYears = new List<short>();
 
             var datasetYears = new List<short>();
