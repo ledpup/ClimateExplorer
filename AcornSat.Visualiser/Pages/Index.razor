@@ -1606,7 +1606,13 @@
             {
                 if (!csd.IsLocked)
                 {
-                    if (sss.LocationId != null && (PreviousLocation == null || sss.LocationId == PreviousLocation.Id))
+                    // If this source series is location-specific
+                    if (sss.LocationId != null && 
+                        // and this is a simple series (only one data source), or we're not changing location, or this series belongs
+                        // to the location we were previously on. (this check is to ensure that when the user changes location, when
+                        // we update compound series that are comparing across locations, we don't update both source series to the
+                        // same location, which would be nonsense.)
+                        (csd.SourceSeriesSpecifications.Length == 1 || PreviousLocation == null || sss.LocationId == PreviousLocation.Id))
                     {
                         sss.LocationId = newValue;
                         sss.LocationName = SelectedLocation.Name;
