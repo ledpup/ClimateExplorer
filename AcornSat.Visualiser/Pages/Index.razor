@@ -1606,7 +1606,7 @@
             {
                 if (!csd.IsLocked)
                 {
-                    if (sss.LocationId != null)
+                    if (sss.LocationId != null && (PreviousLocation == null || sss.LocationId == PreviousLocation.Id))
                     {
                         sss.LocationId = newValue;
                         sss.LocationName = SelectedLocation.Name;
