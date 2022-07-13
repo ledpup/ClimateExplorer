@@ -112,34 +112,45 @@
                             Name = BuildDataSetName(md, dsd)
                         });
             }
-            
 
-            //currentLocationFolder.DataSets.Add(
-            //    new DataSetLibraryEntry()
-            //        {
-            //            SourceSeriesSpecifications =
-            //                new DataSetLibraryEntry.SourceSeriesSpecification[]
-            //                {
-            //                    new DataSetLibraryEntry.SourceSeriesSpecification
-            //                    {
-            //                        DataType = DataType.TempMax,
-            //                        DataAdjustment = DataAdjustment.Adjusted,
-            //                        SourceDataSetId = dsd.Id,
-            //                        LocationId = CurrentLocation.Id,
-            //                        LocationName = CurrentLocation.Name
-            //                    },
-            //                    new DataSetLibraryEntry.SourceSeriesSpecification
-            //                    {
-            //                        DataType = DataType.TempMin,
-            //                        DataAdjustment = DataAdjustment.Adjusted,
-            //                        SourceDataSetId = dsd.Id,
-            //                        LocationId = CurrentLocation.Id,
-            //                        LocationName = CurrentLocation.Name
-            //                    }
-            //                },
-            //            SeriesDerivationType = ClimateExplorer.Core.DataPreparation.SeriesDerivationTypes.DifferenceBetweenTwoSeries,
-            //            Name = "Daily temperature range"
-            //        });
+            // Daily temperature range
+            var bestAvailableTempMax =
+                   measurements.SingleOrDefault(x => x.Item2.DataType == DataType.TempMax && x.Item2.DataAdjustment == DataAdjustment.Adjusted)
+                ?? measurements.SingleOrDefault(x => x.Item2.DataType == DataType.TempMax && x.Item2.DataAdjustment == null);
+
+            var bestAvailableTempMin =
+                   measurements.SingleOrDefault(x => x.Item2.DataType == DataType.TempMax && x.Item2.DataAdjustment == DataAdjustment.Adjusted)
+                ?? measurements.SingleOrDefault(x => x.Item2.DataType == DataType.TempMax && x.Item2.DataAdjustment == null);
+
+            if (bestAvailableTempMax != null && bestAvailableTempMin != null)
+            {
+                currentLocationFolder.DataSets.Add(
+                    new DataSetLibraryEntry()
+                    {
+                        SourceSeriesSpecifications =
+                            new DataSetLibraryEntry.SourceSeriesSpecification[]
+                            {
+                                new DataSetLibraryEntry.SourceSeriesSpecification
+                                {
+                                    DataType = DataType.TempMax,
+                                    DataAdjustment = bestAvailableTempMax.Item2.DataAdjustment,
+                                    SourceDataSetId = bestAvailableTempMax.Item1.Id,
+                                    LocationId = CurrentLocation.Id,
+                                    LocationName = CurrentLocation.Name
+                                },
+                                new DataSetLibraryEntry.SourceSeriesSpecification
+                                {
+                                    DataType = DataType.TempMin,
+                                    DataAdjustment = bestAvailableTempMin.Item2.DataAdjustment,
+                                    SourceDataSetId = bestAvailableTempMin.Item1.Id,
+                                    LocationId = CurrentLocation.Id,
+                                    LocationName = CurrentLocation.Name
+                                }
+                            },
+                        SeriesDerivationType = ClimateExplorer.Core.DataPreparation.SeriesDerivationTypes.DifferenceBetweenTwoSeries,
+                        Name = "Daily temperature range"
+                    });
+            }
 
             RootFolders.Add(currentLocationFolder);
 
