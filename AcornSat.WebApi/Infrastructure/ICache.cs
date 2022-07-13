@@ -63,9 +63,22 @@ namespace AcornSat.WebApi.Infrastructure
     }
 
     /// <summary>
-    /// This is a little more complex than FileBackedCache - to support long cache keys (long enough that they exceed Windows
-    /// path length limitations), there's an intermediate file layer that stores a mapping from hashes of cache keys to the list
-    /// of actual underlying files storing cache entries whose keys hash to that value.
+    /// This cache implementation is file-backed (as is FileBackedCache), but adds some complexity so that it can support longer keys.
+    /// Because FileBackedCache stored the value for a given key in a file whose name was a Base64 encoding of the key, long keys would
+    /// result in longer file names, which eventually bumps up against Windows path length limitations.
+    /// 
+    /// To get around that problem, this implementation introduces an intermediate file layer that stores a mapping from hashes of cache
+    /// keys to the list of actual underlying files storing cache entries whose keys hash to that value.
+    /// 
+    /// Because string.GetHashCode() gives different values across process instances, we use a deterministic hashing function.
+    /// 
+    ///     /[cacheFolderName]/hash_[hashcode].json files
+    ///         The hashcode in the filename is a deterministic hash of the cache key. Each of these files contains one to many entries:
+    ///         one entry for every cache key (there may be multiple, but in practice this is rare) which hashes to the same 32-bit
+    ///         hashcode. Each of those entries maps from that cache key to a randomly assigned guid. The guid can be used to locate the
+    ///         file containing the cached value for that cache key.
+    ///     /[cacheFolderName]/[guid].json files
+    ///         These files contain the actual cached content.
     /// </summary>
     public class FileBackedTwoLayerCache : ICache
     {
