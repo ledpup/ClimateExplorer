@@ -5,11 +5,19 @@ namespace ClimateExplorer.Core.DataPreparation
 {
     public static class BinRejector
     {
-        public static RawBin[] ApplyBinRejectionRules(RawBin[] bins, float requiredCupDataProportion, float requiredBucketDataProportion, float requiredBinDataProportion)
+        public static RawBinWithDataAdequacyFlag[] ApplyBinRejectionRules(RawBin[] bins, float requiredCupDataProportion, float requiredBucketDataProportion, float requiredBinDataProportion)
         {
             return
                 bins
-                .Where(x => BinMeetsDataRequirements(x, requiredCupDataProportion, requiredBucketDataProportion, requiredBinDataProportion))
+                .Select(
+                    x =>
+                    new RawBinWithDataAdequacyFlag
+                    {
+                        Identifier = x.Identifier,
+                        Buckets = x.Buckets,
+                        MeetsDataRequirements = BinMeetsDataRequirements(x, requiredCupDataProportion, requiredBucketDataProportion, requiredBinDataProportion)
+                    }
+                )
                 .ToArray();
         }
 

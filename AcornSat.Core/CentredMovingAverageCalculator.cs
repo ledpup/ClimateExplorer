@@ -25,9 +25,12 @@ namespace ClimateExplorer.Core
                     continue;
                 }
 
-                var window = valuesArray.Skip(startIndex).Take(windowSize);
+                var window = valuesArray.Skip(startIndex).Take(windowSize).ToArray();
 
-                if (window.Count(x => x.HasValue) / (float)windowSize >= requiredDataThreshold)
+                var countOfValuesInWindowWithValue = window.Count(x => x.HasValue);
+                var proportionOfDataPresentInWindow = countOfValuesInWindowWithValue / (float)windowSize;
+
+                if (proportionOfDataPresentInWindow >= requiredDataThreshold)
                 {
                     result.Add(window.Average());
                 }

@@ -10,4 +10,9 @@
             return Identifier.ToString();
         }
     }
+
+    public class RawBinWithDataAdequacyFlag : RawBin
+    {
+        public bool MeetsDataRequirements { get; set; }
+    }
 }

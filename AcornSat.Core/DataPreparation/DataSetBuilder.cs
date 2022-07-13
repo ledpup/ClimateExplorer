@@ -71,7 +71,7 @@ namespace ClimateExplorer.Core.DataPreparation
             Console.WriteLine("ApplyBinningRules completed in " + sw.Elapsed);
             sw.Restart();
 
-            // Reject bins that have a bucket containing a cup with insufficient data
+            // Flag bins that have a bucket containing a cup with insufficient data
             var filteredRawBins = 
                 BinRejector.ApplyBinRejectionRules(
                     rawBins, 

@@ -68,7 +68,7 @@ namespace ClimateExplorer.Core.DataPreparation
 
         struct AggregationIntermediate
         {
-            public RawBin Bin { get; set; }
+            public RawBinWithDataAdequacyFlag Bin { get; set; }
             public Bucket Bucket { get; set; }
             public Cup Cup { get; set; }
             public ContainerAggregate Aggregate { get; set; }
@@ -97,7 +97,7 @@ namespace ClimateExplorer.Core.DataPreparation
         }
 
         static Bin[] AggregateBinsByRepeatedlyApplyingAggregationFunctions(
-            RawBin[] rawBins, 
+            RawBinWithDataAdequacyFlag[] rawBins, 
             Func<IEnumerable<ContainerAggregate>, float?> binAggregationFunctionImpl,
             Func<IEnumerable<ContainerAggregate>, float?> bucketAggregationFunctionImpl,
             Func<IEnumerable<ContainerAggregate>, float?> cupAggregationFunctionImpl)
@@ -162,13 +162,13 @@ namespace ClimateExplorer.Core.DataPreparation
                 binLevelIntermediates
                 .Select(
                     x =>
-                    new Bin { Identifier = x.Bin.Identifier, Value = x.Aggregate.Value }
+                    new Bin { Identifier = x.Bin.Identifier, Value = x.Bin.MeetsDataRequirements ? x.Aggregate.Value : null }
                 )
                 .ToArray();
         }
 
         static Bin[] AggregateBinsByApplyingAggregationFunctionOnceForAllDataPoints(
-            RawBin[] rawBins, 
+            RawBinWithDataAdequacyFlag[] rawBins, 
             Func<IEnumerable<ContainerAggregate>, float?> aggregationFunction)
         {
             return
@@ -179,13 +179,15 @@ namespace ClimateExplorer.Core.DataPreparation
                     {
                         Identifier = x.Identifier,
                         Value = 
-                            aggregationFunction(
+                            x.MeetsDataRequirements
+                            ? aggregationFunction(
                                 x.Buckets
                                 .SelectMany(y => y.Cups)
                                 .SelectMany(y => y.DataPoints)
                                 .Where(y => y.Value.HasValue)
                                 .Select(y => new ContainerAggregate() { Value = y.Value.Value, NumberOfPeriodsCoveredByAggregate = 1 })
                             )
+                            : null
                     }
                 )
                 .ToArray();
@@ -204,7 +206,7 @@ namespace ClimateExplorer.Core.DataPreparation
         }
 
         public static Bin[] AggregateBins(
-            RawBin[] rawBins, 
+            RawBinWithDataAdequacyFlag[] rawBins, 
             ContainerAggregationFunctions binAggregationFunction,
             ContainerAggregationFunctions bucketAggregationFunction,
             ContainerAggregationFunctions cupAggregationFunction)

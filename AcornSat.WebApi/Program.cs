@@ -274,7 +274,6 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
                 body.IncludeRawDataPoints
                 ? series.RawDataPoints
                 : null
-
         };
 
     await _cache.Put<DataSet>(cacheKey, returnDataSet);
