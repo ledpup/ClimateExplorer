@@ -140,7 +140,7 @@ namespace AcornSat.Visualiser.UiModel
             }            
         }
 
-        string BuildFriendlyTitleShortForSeries(SourceSeriesSpecification sss)
+        public static string BuildFriendlyTitleShortForSeries(SourceSeriesSpecification sss)
         {
             List<string> segments = new List<string>();
 
@@ -235,7 +235,7 @@ namespace AcornSat.Visualiser.UiModel
             return String.Join(" | ", segments);
         }
 
-        string MapDataTypeToFriendlyName(DataType dataType)
+        static string MapDataTypeToFriendlyName(DataType dataType)
         {
             switch (dataType)
             {

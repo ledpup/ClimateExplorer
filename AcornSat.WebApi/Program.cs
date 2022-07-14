@@ -120,6 +120,8 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
                 StationInfoUrl = x.StationInfoUrl,
                 LocationInfoUrl = x.LocationInfoUrl,
                 Description = x.Description,
+                Publisher = x.Publisher,
+                PublisherUrl = x.PublisherUrl,
                 LocationIds = x.DataLocationMapping?.LocationIdToDataFileMappings.Keys.ToList(),
                 MeasurementDefinitions = x.MeasurementDefinitions.Select(x => x.ToViewModel()).ToList(),
             })

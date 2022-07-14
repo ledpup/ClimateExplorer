@@ -17,6 +17,8 @@ public class DataSetDefinitionViewModel
     public Guid Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
+    public string Publisher { get; set; }
+    public string PublisherUrl { get; set; }
     public string MoreInformationUrl { get; set; }
     public string StationInfoUrl { get; set; }
     public string LocationInfoUrl { get; set; }

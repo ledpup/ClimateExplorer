@@ -21,7 +21,9 @@ internal class DataSetDefinitionsBuilder
             {
                 Id = Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"),
                 Name = "ACORN-SAT",
-                Description = "The Australian Climate Observations Reference Network - Surface Air Temperature data set, is a homogenized daily maximum and minimum temperature data set containing data from 112 locations across Australia extending from 1910 to the present.",
+                Description = "The Australian Climate Observations Reference Network - Surface Air Temperature data set is a homogenized daily maximum and minimum temperature data set containing data from 112 locations across Australia extending from 1910 to the present.",
+                Publisher = "Australian Bureau of Meteorology",
+                PublisherUrl = "http://www.bom.gov.au/",
                 MoreInformationUrl = "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
                 StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
                 LocationInfoUrl = "http://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
@@ -472,6 +474,9 @@ internal class DataSetDefinitionsBuilder
                 new JsonStringEnumConverter()
             }
         };
+
+        Directory.CreateDirectory("Output");
+
         File.WriteAllText(@"Output\DataSetDefinitions.json", JsonSerializer.Serialize(dataSetDefinitions, options));
 
         return dataSetDefinitions;

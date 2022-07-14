@@ -13,7 +13,11 @@
 
     @if (ChartSeries.IsExpanded)
     {
-        <div class="content">
+        <div class="content">            
+            <div>
+                <a class="series-action" @onclick="@OnAboutThisDataClicked">About this data</a>
+            </div>
+
             <table>
                 @if (ChartSeries.Year.HasValue)
                 {
@@ -121,6 +125,7 @@
     }
 </div>
 
+<AboutData @ref="_aboutData" ChartSeries="@ChartSeries" />
 
 @code {
     [Parameter]
@@ -137,6 +142,8 @@
 
     [Parameter]
     public ChartSeriesTitleStyle TitleStyle { get; set; }
+
+    AboutData _aboutData;
 
     public enum ChartSeriesTitleStyle
     {
@@ -165,6 +172,11 @@
     bool ShouldDisableSmoothingWindow(ChartSeriesDefinition csd)
     {
         return csd.Smoothing != SeriesSmoothingOptions.MovingAverage;
+    }
+
+    async Task OnAboutThisDataClicked()
+    {
+        await _aboutData.Show();
     }
 
     async Task OnDuplicateSeriesClicked()
