@@ -60,6 +60,8 @@ internal class DataSetDefinitionsBuilder
                 Id = Guid.Parse("E5EEA4D6-5FD5-49AB-BF85-144A8921111E"),
                 Name = "Bureau of Meteorology",
                 Description = null,
+                Publisher = "Australian Bureau of Meteorology",
+                PublisherUrl = "http://www.bom.gov.au/",
                 //MoreInformationUrl = "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
                 StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
                 LocationInfoUrl = "http://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
@@ -116,6 +118,8 @@ internal class DataSetDefinitionsBuilder
                 Id = Guid.Parse("647b6a05-43e4-48e0-a43e-04ae81a74653"),
                 Name = "RAIA",
                 Description = "This ACORN-SAT dataset includes homogenised monthly data from the Remote Australian Islands and Antarctica network of 8 locations, which provide ground-based temperature records.",
+                Publisher = "Australian Bureau of Meteorology",
+                PublisherUrl = "http://www.bom.gov.au/",
                 MoreInformationUrl = "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
                 StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
                 MeasurementDefinitions = new List<MeasurementDefinition>
@@ -157,6 +161,8 @@ internal class DataSetDefinitionsBuilder
                 Id = Guid.Parse("7522E8EC-E743-4CB0-BC65-6E9F202FC824"),
                 Name = "NIWA 7-stations series adjusted",
                 Description = "NIWA's long-running 'seven-station' series shows NZ's average annual temperature has increased by about 1 °C over the past 100 years.",
+                Publisher = "National Institute of Water and Atmospheric Research (NIWA)",
+                PublisherUrl = "http://www.niwa.co.nz/",
                 MoreInformationUrl = "https://niwa.co.nz/seven-stations",
                 MeasurementDefinitions = new List<MeasurementDefinition>
                 {
@@ -193,6 +199,8 @@ internal class DataSetDefinitionsBuilder
                 Id = Guid.Parse("534950DC-EDA4-4DB5-8816-3705358F1797"),
                 Name = "NIWA 7-stations series unadjusted",
                 Description = "NIWA's long-running 'seven-station' series shows NZ's average annual temperature has increased by about 1 °C over the past 100 years.",
+                Publisher = "National Institute of Water and Atmospheric Research (NIWA)",
+                PublisherUrl = "http://www.niwa.co.nz/",
                 MoreInformationUrl = "https://niwa.co.nz/seven-stations",
                 MeasurementDefinitions = new List<MeasurementDefinition>
                 {
@@ -233,6 +241,8 @@ internal class DataSetDefinitionsBuilder
                 Id = Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"),
                 Name = "NIWA 11-stations series",
                 Description = "The National Institute of Water and Atmospheric Research (NIWA) eleven-station series are New Zealand temperature trends from a set of eleven climate stations with no significant site changes since the 1930s.",
+                Publisher = "National Institute of Water and Atmospheric Research (NIWA)",
+                PublisherUrl = "http://www.niwa.co.nz/",
                 MoreInformationUrl = "https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data",
                 MeasurementDefinitions = new List<MeasurementDefinition>
                 {
@@ -272,6 +282,8 @@ internal class DataSetDefinitionsBuilder
                 Name = "Multivariate ENSO index (MEI)",
                 ShortName = "MEI.v2",
                 Description = "The MEI combines both oceanic and atmospheric variables to form a single index assessment of ENSO. It is an Empirical Orthogonal Function (EOF) of five different variables (sea level pressure (SLP), sea surface temperature (SST), zonal and meridional components of the surface wind, and outgoing longwave radiation (OLR)) over the tropical Pacific basin (30°S-30°N and 100°E-70°W).",
+                Publisher = "US National Oceanic and Atmospheric Administration's Physical Sciences Laboratory (NOAA PSL)",
+                PublisherUrl = "https://psl.noaa.gov/",
                 MoreInformationUrl = "https://psl.noaa.gov/enso/mei/",
                 MeasurementDefinitions = new List<MeasurementDefinition>
                 {

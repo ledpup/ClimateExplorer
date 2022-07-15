@@ -6,14 +6,19 @@
 
 <div class="chart-series-config">
     <div class="title-bar" @onclick="() => { ChartSeries.IsExpanded = !ChartSeries.IsExpanded; }" style="@GenerateStyleForTitleBar()">
-        <div class="colour-indicator" style="@GenerateStyleForColourIndicator()"></div>
-        <div class="title">@ChartSeries.GetFriendlyTitleShort()</div>
-        <div class="description">@ChartSeries.GetFriendlyDescription()</div>
+        <!--<div class="about-this-data-button" style="@GenerateStyleForColourIndicator()"><i class="fas fa-info"></i></div>-->
+        <div class="main">
+            <div class="title">@ChartSeries.GetFriendlyTitleShort()</div>
+            <div class="description">@ChartSeries.GetFriendlyDescription()</div>
+        </div>
+        <div class="expander">
+            <span class="oi oi-chevron-bottom" aria-hidden="true"></span>
+        </div>
     </div>
 
     @if (ChartSeries.IsExpanded)
     {
-        <div class="content">            
+        <div class="chart-series-config-content">            
             <div>
                 <a class="series-action" @onclick="@OnAboutThisDataClicked">About this data</a>
             </div>
@@ -161,7 +166,7 @@
         switch (TitleStyle)
         {
             case ChartSeriesTitleStyle.WholeTitleBarInSeriesColour:
-                return "color: #425f59; border-bottom: solid 3px " + ChartSeries.Colour + ";";
+                return "color: #425f59; border-left: solid 12px " + ChartSeries.Colour + ";";
             case ChartSeriesTitleStyle.OnlyIndicatorAndTextInSeriesColour:
                 return "color: " + ChartSeries.Colour;
             default:
