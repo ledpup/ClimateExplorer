@@ -68,9 +68,45 @@
     }
 
     .chart-series-config-content {
-        padding: 12px;
-        padding-left: 30px;
+        background: #f8f8f8;
     }
+        .chart-series-config-content .edit-form {
+            padding-left: 14px;
+        }
+
+        .chart-series-config-content .series-controls {
+            padding-left: 10px;
+        }
+
+            .chart-series-config-content .series-controls .series-control {
+                color: #444;
+                display: inline-block;
+                padding: 8px;
+                font-size: 24px;
+                width: 40px;
+                text-align: center;
+                cursor: pointer;
+                transition: 0.25s;
+                border-radius: 12px;
+                margin-right: 8px;
+            }
+
+            .chart-series-config-content .series-controls .series-control:hover {
+                color: #000;
+            }
+
+                .chart-series-config-content .series-controls .series-control.danger {
+                    color: #bd0000;
+                }
+
+                    .chart-series-config-content .series-controls .series-control.danger:hover {
+                        color: #dd1111;
+                        background-color: #fcc;
+                    }
+
+            .chart-series-config-content .series-controls .series-control:hover {
+                background-color: #cfc;
+            }
 
     .chart-series-config td {
         padding-right: 8px;
