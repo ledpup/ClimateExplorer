@@ -70,8 +70,10 @@
     .chart-series-config-content {
         background: #f8f8f8;
     }
+
         .chart-series-config-content .edit-form {
             padding-left: 14px;
+            padding-top: 8px;
         }
 
         .chart-series-config-content .series-controls {
@@ -82,7 +84,7 @@
                 color: #444;
                 display: inline-block;
                 padding: 8px;
-                font-size: 24px;
+                font-size: 18px;
                 width: 40px;
                 text-align: center;
                 cursor: pointer;
