@@ -119,9 +119,18 @@
             </div>
 
             <div class="series-controls">
-                <div class="series-control" title="About this data" @onclick="@OnAboutThisDataClicked"><i class="fas fa-info"></i></div>
-                <div class="series-control" title="Duplicate this series" @onclick="@OnDuplicateSeriesClicked"><i class="fas fa-clone"></i></div>
-                <div class="series-control danger" title="Remove this series" @onclick="@OnRemoveSeriesClicked"><i class="fas fa-trash"></i></div>
+                <div class="series-control" title="About this data" @onclick="@OnAboutThisDataClicked">
+                    <i class="fas fa-info"></i>
+                    <div class="label">About</div>
+                </div>
+                <div class="series-control" title="Duplicate this series" @onclick="@OnDuplicateSeriesClicked">
+                    <i class="fas fa-clone"></i>
+                    <div class="label">Clone</div>
+                </div>
+                <div class="series-control danger" title="Remove this series" @onclick="@OnRemoveSeriesClicked">
+                    <i class="fas fa-trash"></i>
+                    <div class="label">Remove</div>
+                </div>
             </div>
 
         </div>
