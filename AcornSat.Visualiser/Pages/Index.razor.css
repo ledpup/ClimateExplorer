@@ -115,3 +115,26 @@
         flex-grow: 1;
     }
 }
+
+.add-series-button {
+    box-shadow: rgb(0 0 0 / 20%) 0px 0px 6px;
+    display: inline-block;
+    min-height: 44px;
+    padding: 8px;
+    padding-bottom: 6px;
+    padding-top: 10px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #425f59;
+    cursor: pointer;
+    user-select: none;
+}
+
+    .add-series-button i {
+        margin-right: 8px;
+    }
+
+    .add-series-button:hover {
+        background: #cfc;
+        transition: 0.25s;
+    }
