@@ -24,6 +24,31 @@
     user-select: none;
 }
 
+    ::deep .chart-controls .dropdown {
+        text-decoration: none;
+        margin-bottom: 16px;
+        margin-right: 16px;
+        display: inline-block;
+        top: -1px;
+    }
+
+        ::deep .chart-controls .dropdown .btn {
+            padding: 8px;
+            background: #eee;
+            border-radius: 8px;
+            color: #425f59;
+            border: 0px;
+        }
+
+            ::deep .chart-controls .dropdown .btn i {
+                margin-right: 8px;
+            }
+
+            ::deep .chart-controls .dropdown .btn:hover {
+                background: #cfc !important;
+                transition: 0.25s;
+            }
+
     .chart-controls .chart-control {
         padding: 8px;
         background-color: #eee;

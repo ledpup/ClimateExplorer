@@ -5,6 +5,7 @@
 @using Blazorise
 @using Blazorise.Charts
 @using Blazorise.Charts.Trendline
+@using ClimateExplorer.Core.DataPreparation
 
 <PageTitle>@GetPageTitle()</PageTitle>
 
@@ -55,7 +56,20 @@
                     <div class="chart-controls">
                         <a class="chart-control" @onclick="() => locationInfoComponent.ChangeLocationClicked(null)"><i class="fas fa-map"></i> Change Location</a>
                         <a class="chart-control" @onclick="ShowOptionsModal"><i class="fas fa-cog"></i> Chart options</a>
-                        <a class="chart-control" @onclick="ShowFilterModal"><i class="fas fa-calendar"></i> Year filtering</a>
+                        <a class="chart-control" @onclick="ShowFilterModal"><i class="fas fa-filter"></i> Year filtering</a>
+
+                        <Dropdown>
+                            <DropdownToggle>
+                                <i class="fas fa-calendar"></i> Grouping
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYear)">Yearly</DropdownItem>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYearAndMonth)">Year + Month</DropdownItem>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly)">Month (ignoring year)</DropdownItem>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.BySouthernHemisphereTemperateSeasonOnly)">Southern hemisphere temperate season only (ignoring year)</DropdownItem>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.BySouthernHemisphereTropicalSeasonOnly)">Southern hemisphere tropical season only (ignoring year)</DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
 
                         <a class="chart-control" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download data</a>
 
