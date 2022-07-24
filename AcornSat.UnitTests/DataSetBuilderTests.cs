@@ -58,6 +58,32 @@ namespace AcornSat.UnitTests
         }
 
         [TestMethod]
+        public void OneYearOfIdenticalDataPoints_CountIfOne()
+        {
+            var dsb = new DataSetBuilder();
+
+            var cdp = dsb.BuildDataSetFromDataPoints(
+                BuildConstantTemporalDataPointArrayFor1990(1),
+                Core.Enums.DataResolution.Daily,
+                new PostDataSetsRequestBody
+                {
+                    BinningRule = BinGranularities.ByYear,
+                    BinAggregationFunction = ContainerAggregationFunctions.Sum,
+                    BucketAggregationFunction = ContainerAggregationFunctions.Sum,
+                    CupAggregationFunction = ContainerAggregationFunctions.Sum,
+                    CupSize = 14,
+                    RequiredCupDataProportion = 0.7f,
+                    RequiredBucketDataProportion = 1.0f,
+                    RequiredBinDataProportion = 1.0f,
+                }
+            );
+
+            Assert.AreEqual(1, cdp.Length);
+            Assert.AreEqual(10, cdp[0].Value);
+            Assert.AreEqual("1990", cdp[0].Label);
+        }
+
+        [TestMethod]
         public void OneYearOfLinearlyIncreasingDataPoints_Min()
         {
             var dsb = new DataSetBuilder();
@@ -515,12 +541,12 @@ namespace AcornSat.UnitTests
         }
 
 
-        TemporalDataPoint[] BuildConstantTemporalDataPointArrayFor1990()
+        TemporalDataPoint[] BuildConstantTemporalDataPointArrayFor1990(float? value = 10)
         {
             return 
                 Enumerable.Range(0, 365)
                 .Select(x => new TemporalDataPoint(new DateOnly(1990, 1, 1)
-                .AddDays(x), 10))
+                .AddDays(x), value))
                 .ToArray();
         }
 

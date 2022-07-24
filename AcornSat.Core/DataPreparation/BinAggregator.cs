@@ -50,11 +50,11 @@ namespace ClimateExplorer.Core.DataPreparation
             switch (function)
             {
                 // Weighted mean is mean of value weighted by number of periods covered
-                case ContainerAggregationFunctions.Mean:   return WeightedMean;
-                case ContainerAggregationFunctions.Sum:    return (data) => data.Select(x => x.Value).Sum();
-                case ContainerAggregationFunctions.Min:    return (data) => data.Select(x => x.Value).Min();
-                case ContainerAggregationFunctions.Max:    return (data) => data.Select(x => x.Value).Max();
-                case ContainerAggregationFunctions.Median: return Median;
+                case ContainerAggregationFunctions.Mean:        return WeightedMean;
+                case ContainerAggregationFunctions.Sum:         return (data) => data.Select(x => x.Value).Sum();
+                case ContainerAggregationFunctions.Min:         return (data) => data.Select(x => x.Value).Min();
+                case ContainerAggregationFunctions.Max:         return (data) => data.Select(x => x.Value).Max();
+                case ContainerAggregationFunctions.Median:      return Median;
                 default:
                     throw new NotImplementedException($"BinAggregationFunction {function}");
             }

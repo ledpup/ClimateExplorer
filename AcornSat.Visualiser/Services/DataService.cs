@@ -78,7 +78,8 @@ public class DataService : IDataService
         float requiredBinDataProportion,
         float requiredBucketDataProportion,
         float requiredCupDataProportion,
-        int cupSize)
+        int cupSize,
+        SeriesTransformations seriesTransformation)
     {
         var response = 
             await _httpClient.PostAsJsonAsync<PostDataSetsRequestBody>(
@@ -95,7 +96,7 @@ public class DataService : IDataService
                     RequiredCupDataProportion = requiredCupDataProportion,
                     SeriesDerivationType = seriesDerivationType,
                     SeriesSpecifications = seriesSpecifications,
-                    SeriesTransformation = SeriesTransformations.Identity,
+                    SeriesTransformation = seriesTransformation,
                     Anomaly = seriesValueOption == SeriesValueOptions.Anomaly
                 });
 

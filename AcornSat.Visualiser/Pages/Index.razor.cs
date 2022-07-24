@@ -636,7 +636,8 @@ namespace AcornSat.Visualiser.Pages
                         csd.BinGranularity.IsLinear() ? 1.0f : SelectedDayGroupThreshold,
                         // We always require that the cup have at least SelectedDayGroupThreshold of its entries populated
                         SelectedDayGroupThreshold,
-                        SelectedDayGrouping
+                        SelectedDayGrouping,
+                        csd.SeriesTransformation
                     );
 
                 datasetsToReturn.Add(
@@ -1196,7 +1197,8 @@ namespace AcornSat.Visualiser.Pages
                                     Smoothing = csd.Smoothing,
                                     SmoothingWindow = csd.SmoothingWindow,
                                     Value = csd.Value,
-                                    Year = csd.Year
+                                    Year = csd.Year,
+                                    SeriesTransformation = csd.SeriesTransformation,
                                 }
                             );
                         }

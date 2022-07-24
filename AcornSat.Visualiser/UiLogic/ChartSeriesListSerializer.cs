@@ -69,7 +69,8 @@ public static class ChartSeriesListSerializer
                 SmoothingWindow = int.Parse(segments[9]),
                 Value = ParseEnum<SeriesValueOptions>(segments[10]),
                 Year = ParseNullableShort(segments[11]),
-                IsExpanded = bool.Parse(segments[12])
+                IsExpanded = bool.Parse(segments[12]),
+                SeriesTransformation = ParseEnum<SeriesTransformations>(segments[13]),
             };
     }
 
@@ -166,7 +167,8 @@ public static class ChartSeriesListSerializer
                 csd.SmoothingWindow,
                 csd.Value,
                 csd.Year,
-                csd.IsExpanded
+                csd.IsExpanded,
+                csd.SeriesTransformation
             );
     }
 

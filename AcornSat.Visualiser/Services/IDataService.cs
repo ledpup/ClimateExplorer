@@ -21,6 +21,7 @@ public interface IDataService
         float requiredBinDataProportion,
         float requiredBucketDataProportion,
         float requiredCupDataProportion,
-        int cupSize);
+        int cupSize,
+        SeriesTransformations seriesTransformation);
     Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .7f, float locationGroupingThreshold = .7f);
 }

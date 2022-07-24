@@ -19,6 +19,7 @@ namespace AcornSat.Visualiser.UiModel
         public SeriesDerivationTypes SeriesDerivationType { get; set; }
         public BinGranularities BinGranularity { get; set; }
         public short? Year { get; set; }
+        public SeriesTransformations SeriesTransformation { get; set; }
 
         // Data presentation fields
         public SeriesSmoothingOptions Smoothing { get; set; }
