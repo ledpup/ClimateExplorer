@@ -1,62 +1,87 @@
-﻿using AcornSat.Visualiser.UiModel;
+﻿using AcornSat.Core.Model;
+using AcornSat.Visualiser.UiModel;
+using ClimateExplorer.Core.DataPreparation;
 
-namespace AcornSat.Visualiser.Services
+namespace AcornSat.Visualiser.Services;
+
+public interface IExporter
 {
-    public interface IExporter
+    Stream ExportChartData(ILogger logger, List<SeriesWithData> chartSeriesWithData, IEnumerable<Location> locations, BinIdentifier[] bins, string sourceUri);
+}
+
+public class Exporter : IExporter
+{
+    public Stream ExportChartData(ILogger logger, List<SeriesWithData> chartSeriesWithData, IEnumerable<Location> locations, BinIdentifier[] bins, string sourceUri)
     {
-        Stream ExportChartData(List<SeriesWithData> chartSeriesWithData, IEnumerable<Location> locations, string[] years, string sourceUri);
+        logger.LogInformation("ExportChartData got bin range " + bins[0].ToString() + " to " + bins.Last().ToString());
+
+        var data = new List<string>();
+
+        data.Add("Exported from," + sourceUri);
+
+        var locationIds = chartSeriesWithData.SelectMany(x => x.ChartSeries.SourceSeriesSpecifications).Select(x => x.LocationId).Where(x => x != null).Distinct().ToArray();
+
+        var relevantLocations = locationIds.Select(x => locations.Single(y => y.Id == x)).ToArray();
+
+        foreach (var location in relevantLocations)
+        {
+            data.Add($"{location.Name},{location.Coordinates.ToString(true)}");
+        }
+
+        data.Add(string.Empty);
+
+        var header = "Year," + string.Join(",", chartSeriesWithData.Select(x => BuildColumnHeader(relevantLocations, x.ChartSeries)));
+        data.Add(header);
+
+        foreach (var bin in bins)
+        {
+            var dataRow = bin.Label + ",";
+            foreach (var cswd in chartSeriesWithData)
+            {
+                var val = cswd.ProcessedDataSet.DataRecords.SingleOrDefault(x => x.BinId == bin.Id)?.Value;
+                dataRow += (val == null ? string.Empty : MathF.Round((float)val, 2).ToString("0.00")) + ",";
+            }
+            dataRow = dataRow.TrimEnd(',');
+            data.Add(dataRow);
+        }
+
+        // Include a UTF-8 BOM to ensure degrees symbol is handled correctly when exported CSV is opened by excel
+        var bytes = new byte[] { 0xEF, 0xBB, 0xBF }.Concat(data.SelectMany(s => System.Text.Encoding.UTF8.GetBytes(s + Environment.NewLine))).ToArray();
+        var fileStream = new MemoryStream(bytes);
+
+        return fileStream;
     }
 
-    public class Exporter : IExporter
+    string BuildColumnHeader(Location[] relevantLocations, ChartSeriesDefinition csd)
     {
-        public Stream ExportChartData(List<SeriesWithData> chartSeriesWithData, IEnumerable<Location> locations, string[] years, string sourceUri)
+        var s = "";
+
+        bool includeLocationInColumnHeader = relevantLocations.Length > 1;
+
+        switch (csd.SeriesDerivationType)
         {
-            var data = new List<string>();
+            case SeriesDerivationTypes.ReturnSingleSeries:
+                return s + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications.Single());
 
-            var locationIds = chartSeriesWithData.Select(x => x.ChartSeries.LocationId).Where(x => x != null).Distinct().ToArray();
+            case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
+                return s + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications.First()) + " minus " + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications.Last());
 
-            var relevantLocations = locationIds.Select(x => locations.Single(y => y.Id == x)).ToArray();
+            default:
+                throw new NotImplementedException($"SeriesDerivationType {csd.SeriesDerivationType}");
+        }
+    }
 
-            data.Add("Exported from," + sourceUri);
+    string BuildColumnHeader(bool includeLocationInColumnHeader, SourceSeriesSpecification sss)
+    {
+        string s = "";
 
-            foreach (var location in relevantLocations)
-            {
-                data.Add($"{location.Name},{location.Coordinates.ToString(true)}");
-            }
-
-            // TODO: This is now series-level information (i.e. one per column, not one per export) - how should we include this?
-            //            var resolution = SelectedChartType == ChartType.Line ? "Yearly average" : "Yearly values relative to average";
-            //data.Add($"{resolution},{ChartStartYear}-{ChartEndYear},Averaging method: {DayGroupingText(SelectedDayGrouping).ToLower()} with a threshold of {SelectedDayGroupThreshold},average requiring all groupings for a full data set - otherwise record null");
-
-            data.Add(string.Empty);
-
-            var header = "Year," + string.Join(",", chartSeriesWithData.Select(x => BuildColumnHeader(relevantLocations, x.ChartSeries)));
-            data.Add(header);
-
-            foreach (var year in years)
-            {
-                var dataRow = year + ",";
-                foreach (var cswd in chartSeriesWithData)
-                {
-                    var pds = cswd.ProcessedDataSets.Single();
-
-                    var dataRecord = pds.DataRecords.Single(x => x.Year == short.Parse(year));
-                    dataRow += (dataRecord.Value == null ? string.Empty : MathF.Round((float)dataRecord.Value, 2).ToString("0.00")) + ",";
-                }
-                dataRow = dataRow.TrimEnd(',');
-                data.Add(dataRow);
-            }
-
-            // Include a UTF-8 BOM to ensure degrees symbol is handled correctly when exported CSV is opened by excel
-            var bytes = new byte[] { 0xEF, 0xBB, 0xBF }.Concat(data.SelectMany(s => System.Text.Encoding.UTF8.GetBytes(s + Environment.NewLine))).ToArray();
-            var fileStream = new MemoryStream(bytes);
-
-            return fileStream;
+        if (includeLocationInColumnHeader)
+        {
+            s += sss.LocationName + " ";
         }
 
-        string BuildColumnHeader(Location[] relevantLocations, ChartSeriesDefinition csd)
-        {
-            return csd.FriendlyTitle;
-        }
+        s += $"{sss.MeasurementDefinition.DataType} {sss.MeasurementDefinition.DataAdjustment}";
+
+        return s;
     }
 }

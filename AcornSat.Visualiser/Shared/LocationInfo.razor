@@ -1,6 +1,9 @@
 ﻿@using AcornSat.Core
 @using AcornSat.Core.ViewModel
+@using AcornSat.Visualiser.UiModel
 @using Blazorise
+@using ClimateExplorer.Core.Calculators
+@using ClimateExplorer.Core.DataPreparation
 @using static AcornSat.Core.Enums
 
 <Collapsible Title="@Location.Name" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
@@ -10,52 +13,13 @@
         -->
         <OverviewField Label="Location"><Value> <span><a href="@LocationMapUrl" target="_blank">@LocationAsString</a></span></Value></OverviewField><!--
      --><OverviewField Label="Elevation"><Value>@ElevationAsString</Value></OverviewField><!--
-     --><OverviewField Label="Station id">
-            <Value>
-                @{
-                    bool firstSite = true;
-                    foreach (var site in Location.Sites)
-                    {
-                        if (!firstSite)
-                        {
-                            <span>, </span>
-                        }
-                        else
-                        {
-                            firstSite = false;
-                        }
-
-                        if (DataSetDefinition.StationInfoUrl != null)
-                        {
-                            <span><a href="@DataSetDefinition.StationInfoUrl.Replace("[station]", site)" target="_blank">@site</a></span>
-                        }
-                        else
-                        {
-                            <span>@(site)</span>
-                        }
-                    }
-                }
-            </Value>
-        </OverviewField><!--
-     --><OverviewField Label="Dataset">
-            <Value>
-                @if (!String.IsNullOrWhiteSpace(DataSetDefinition.MoreInformationUrl))
-                {
-                    <a href="@DataSetDefinition.MoreInformationUrl" target="_blank">@DataSetDefinition.Name</a>
-                }
-                else
-                {
-                    @DataSetDefinition.Name
-                }
-            </Value>
-        </OverviewField>
-        @if (dataSet != null)
+     -->@if (_warmingIndexDescription != null)
         {
-            <OverviewField Label="Warming index" PopupText="@dataSet.WarmingIndexDescription"><Value>@dataSet.WarmingIndexAsString</Value></OverviewField>
+            <OverviewField Label="Warming index" PopupText="@_warmingIndexDescription"><Value>@_warmingIndexAsString</Value></OverviewField>
         }
         <OverviewField Label="Heating score" PopupText="@HeatingScoreDescription"><Value>@Location.HeatingScore</Value></OverviewField>
-        <WarmingStripe DataRecords="@dataRecordsRelative" />
-        <WarmestYears DataRecords="@dataRecordsRelative" />
+        <WarmingStripe DataRecords="@_maxTempAnomalyRecords" />
+        <WarmestYears DataRecords="@_maxTempAnomalyRecords" />
     </Content>
 </Collapsible>
 
@@ -72,10 +36,10 @@
     public Location Location { get; set; }
 
     [Parameter]
-    public DataSetDefinitionViewModel DataSetDefinition { get; set; }
+    public EventCallback RequestLocationChange { get; set; }
 
     [Parameter]
-    public EventCallback RequestLocationChange { get; set; }
+    public IEnumerable<DataSetDefinitionViewModel> DataSetDefinitions { get; set; }
 
     [Parameter]
     public EventCallback<bool> OnOverviewShowOrHide { get; set; }
@@ -86,11 +50,15 @@
     string LocationAsString => $"{Math.Round(Location.Coordinates.Latitude, 1)}°, {Math.Round(Location.Coordinates.Longitude, 1)}°";
     string ElevationAsString => $"{Math.Round(Location.Coordinates.Elevation, 1)}m";
 
-    DataSet dataSet { get; set; }
-    List<DataRecord> dataRecordsRelative { get; set; }
+    /// <summary>
+    /// Used by the warming stripe
+    /// </summary>
+    List<YearAndValue> _maxTempAnomalyRecords { get; set; }
+
+    string _warmingIndexDescription;
+    string _warmingIndexAsString;
 
     Guid? locationIdLastTimeOnParametersSetAsyncWasCalled;
-    Guid? dataSetDefinitionIdLastTimeOnParametersSetAsyncWasCalled;
 
     const string HeatingScoreDescription = @"<p>The heating score is a number typically between 0 and 9. It is derived from comparing all warming indexes across the locations in the dataset. The highest warming index is used to standardise the values.</p>
 <p>To calculate the heating score:</p>
@@ -99,7 +67,6 @@
 <p>The score may be higher if:</p>
 <ul><li>The location is inland. The ocean is warming more slowly compared with the land. Coastal locations are therefore likely to have warmed less than inland locations.</li>
 <li>The station(s) has been operating for a long time. The effect of global warming is more obvious with a large dataset as temperatures in the past were cooler.</li>";
-
 
     public void ChangeLocationClicked(EventArgs args)
     {
@@ -114,29 +81,131 @@
     protected override async Task OnParametersSetAsync()
     {
         // We do manual change detection here because Blazor calls OnParametersSetAsync() repeatedly with the same input values.
-        Guid callId = Guid.NewGuid();
+        if (locationIdLastTimeOnParametersSetAsyncWasCalled == Location?.Id)
+        {
+            return;
+        }
 
-        if (locationIdLastTimeOnParametersSetAsyncWasCalled == Location?.Id &&
-            dataSetDefinitionIdLastTimeOnParametersSetAsyncWasCalled == DataSetDefinition?.Id)
+        // We can't do anything until we're supplied our tasty, tasty DataSetDefinitions
+        if (DataSetDefinitions == null)
         {
             return;
         }
 
         locationIdLastTimeOnParametersSetAsyncWasCalled = Location?.Id;
-        dataSetDefinitionIdLastTimeOnParametersSetAsyncWasCalled = DataSetDefinition?.Id;
 
-        Enums.DataAdjustment? dataAdjustment = null;
-        if (DataSetDefinition.MeasurementDefinitions.Any(x => x.DataType == DataType.TempMax && x.DataAdjustment == Enums.DataAdjustment.Adjusted))
+        if (Location != null)
         {
-            dataAdjustment = Enums.DataAdjustment.Adjusted;
+            var tempMaxMeasurementForLocation = 
+                DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
+                    DataSetDefinitions,
+                    Location.Id,
+                    DataType.TempMax,
+                    Enums.DataAdjustment.Adjusted,
+                    true);
+
+            if (tempMaxMeasurementForLocation == null)
+            {
+                _maxTempAnomalyRecords = null;
+            }
+            else
+            {
+                // Retrieve TempMax anomaly
+                var series =
+                    await DataService.PostDataSet(
+                        BinGranularities.ByYear,
+                        ContainerAggregationFunctions.Mean,
+                        ContainerAggregationFunctions.Mean,
+                        ContainerAggregationFunctions.Mean,
+                        SeriesValueOptions.Anomaly,
+                        new SeriesSpecification[]
+                            {
+                                new SeriesSpecification
+                                {
+                                    DataAdjustment = tempMaxMeasurementForLocation.MeasurementDefinition.DataAdjustment,
+                                    DataSetDefinitionId = tempMaxMeasurementForLocation.DataSetDefinition.Id,
+                                    DataType = tempMaxMeasurementForLocation.MeasurementDefinition.DataType,
+                                    LocationId = Location.Id
+                                }
+                            },
+                        SeriesDerivationTypes.ReturnSingleSeries,
+                        1.0f,
+                        1.0f,
+                        0.7f,
+                        14);
+
+                // Filter to records that have values
+                _maxTempAnomalyRecords =
+                    series.DataRecords
+                    .Where(x => x.Value != null)
+                    .Select(x => new YearAndValue(((YearBinIdentifier)BinIdentifier.Parse(x.BinId)).Year, x.Value.Value))
+                    .ToList();
+
+                // Retrieve TempMax absolute
+                series =
+                    await DataService.PostDataSet(
+                        BinGranularities.ByYear,
+                        ContainerAggregationFunctions.Mean,
+                        ContainerAggregationFunctions.Mean,
+                        ContainerAggregationFunctions.Mean,
+                        SeriesValueOptions.Value,
+                        new SeriesSpecification[]
+                            {
+                                new SeriesSpecification
+                                {
+                                    DataAdjustment = tempMaxMeasurementForLocation.MeasurementDefinition.DataAdjustment,
+                                    DataSetDefinitionId = tempMaxMeasurementForLocation.DataSetDefinition.Id,
+                                    DataType = tempMaxMeasurementForLocation.MeasurementDefinition.DataType,
+                                    LocationId = Location.Id
+                                }
+                            },
+                        SeriesDerivationTypes.ReturnSingleSeries,
+                        1.0f,
+                        1.0f,
+                        0.7f,
+                        14);
+
+                var warmingIndex = WarmingIndexCalculator.CalculateWarmingIndex(series.DataRecords);
+
+                _warmingIndexDescription = GenerateWarmingIndexDescription(warmingIndex);
+                _warmingIndexAsString = GenerateWarmingIndexAsString(warmingIndex);
+            }
         }
 
-        var datasets = await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage_Anomaly, Location.Id);
-        var dataset = datasets.Single();
-        dataRecordsRelative = dataset.DataRecords.Where(x => x.Value != null).ToList();
-
-        dataSet = (await DataService.GetDataSet(DataType.TempMax, DataResolution.Yearly, dataAdjustment, AggregationMethod.GroupByDayThenAverage, Location.Id)).SingleOrDefault();
-
         await base.OnParametersSetAsync();
+    }
+
+
+    string GenerateWarmingIndexDescription(CalculatedWarmingIndex warmingIndex)
+    {
+        if (Location == null)
+        {
+            return "NA";
+        }
+
+        string warmingIndexAsString = GenerateWarmingIndexAsString(warmingIndex);
+
+        if (warmingIndex == null)
+        {
+            return $@"<p>The warming index is the temperature difference between the average of the last 20 years of maximum temperatures compared with the average of the first half of the dataset.</p>
+<p>Over the long-term, with no external influences, we'd expect the warming index to trend towards zero. A non-zero warming index may indicate an effect of climate change. A positive warming index may indicate global warming.</p>";
+        }
+
+        return
+            String.Join(
+                Environment.NewLine,
+                $"<p>The warming index is the temperature difference between the average of the last 20 years of maximum temperatures compared with the average of the first half ({warmingIndex.CountOfFirstHalfOfTemperatures} years) of the dataset.</p>",
+                $"<p>{Location.Name}, between the years {warmingIndex.FirstYearInLast20YearsOfTemperatures}-{warmingIndex.LastYearInLast20YearsOfTemperatures}, had an average max temp of <strong>{string.Format("{0:0.##}", MathF.Round(warmingIndex.AverageOfLastTwentyYearsTemperatures, 2))}°C</strong>.</p>",
+                $"<p>{Location.Name}, between the years {warmingIndex.FirstYearInFirstHalfOfTemperatures}-{warmingIndex.LastYearInFirstHalfOfTemperatures}, had an average max temp of <strong>{string.Format("{0:0.##}", MathF.Round(warmingIndex.AverageOfFirstHalfOfTemperatures, 2))}°C</strong>.</p>",
+                $"<p>The difference is <strong>{warmingIndexAsString}</strong> (after rounding to 1 decimal place).</p>",
+                $"<p>Over the long-term, with no external influences, we'd expect the warming index to trend towards zero. A non-zero warming index may indicate an effect of climate change. A positive warming index may indicate global warming.</p>"
+            );
+    }
+    
+    static string GenerateWarmingIndexAsString(CalculatedWarmingIndex warmingIndex)
+    {
+        if (warmingIndex == null) return "NA";
+
+        return $"{ (warmingIndex.WarmingIndexValue >= 0 ? "+" : "") }{ string.Format("{0:0.#}", MathF.Round(warmingIndex.WarmingIndexValue, 1))}°C";
     }
 }

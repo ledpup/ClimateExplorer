@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using ClimateExplorer.Core.DataPreparation;
+using System.Text.Json.Serialization;
 
 public class DataRecord
 {
@@ -7,7 +8,14 @@ public class DataRecord
 
     }
 
-    public DataRecord(short year, short month, short? day, float? value)
+    public DataRecord(short year, float? value = null)
+    {
+        Year = year;
+        Value = value;
+        CreateKey();
+    }
+
+    public DataRecord(short year, short? month, short? day, float? value)
     {
         Year = year;
         Month = month;
@@ -15,7 +23,7 @@ public class DataRecord
 
         Value = value;
 
-        Week = null;
+        CreateKey();
     }
 
     public DataRecord(DateTime date, float? value)
@@ -26,8 +34,10 @@ public class DataRecord
 
         Value = value;
 
-        Week = null;
+        CreateKey();
     }
+
+    public string Key { get; set; }
     public short? Day { get; set; }
     public short? Month { get; set; }
     public short Year { get; set; }
@@ -35,6 +45,19 @@ public class DataRecord
     public float? Value { get; set; }
 
     public string Label { get; set; }
+    public string BinId { get; set; }
+
+    BinIdentifier _cachedParsedBinId;
+
+    public BinIdentifier GetBinIdentifier()
+    {
+        if (_cachedParsedBinId == null)
+        {
+            _cachedParsedBinId = BinIdentifier.Parse(BinId);
+        }
+
+        return _cachedParsedBinId;
+    }
 
     [JsonIgnore]
     public DateTime? Date
@@ -47,5 +70,22 @@ public class DataRecord
             }
             return null;
         } 
+    }
+
+    private void CreateKey()
+    {
+        Key = Year.ToString();
+        if (Month != null)
+        {
+            Key += "_" + Month;
+        }
+        if (Day != null)
+        {
+            Key += "_" + Day;
+        }
+    }
+    public override string ToString()
+    {
+        return $"{Year}-{Month}-{Day}: {Value}";
     }
 }

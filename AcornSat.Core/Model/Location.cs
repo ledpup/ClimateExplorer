@@ -5,24 +5,34 @@ using System.Text.Json;
 public class Location
 {
     public Guid Id { get; set; }
-    public Guid DataSetId { get; set; }
     public string Name { get; set; }
-    public string PrimaryStation { get; set; }
-    public Coordinates Coordinates { get; set;}
+    public Coordinates Coordinates { get; set; }
     public float? WarmingIndex { get; set; }
     public short? HeatingScore { get; set; }
-
-    public List<string> Sites { get; set; }
     public List<LocationDistance> NearbyLocations { get; set; }
     public Location()
     {
-        Sites = new List<string>();
+
     }
 
-    public static async Task<List<Location>> GetLocations(string folderName = "ACORN-SAT", bool setNearbyLocations = false)
+    public static async Task<List<Location>> GetLocationsFromFile(string pathAndFileName)
     {
-        var locationText = await File.ReadAllTextAsync(@$"MetaData\{folderName}\Locations.json");
+        var locationText = await File.ReadAllTextAsync(pathAndFileName);
         var locations = JsonSerializer.Deserialize<List<Location>>(locationText);
+        return locations;
+    }
+
+    public static async Task<List<Location>> GetLocations(bool setNearbyLocations, string? folderName = null)
+    {
+        folderName = folderName ?? @"MetaData\Location";
+        var locations = new List<Location>();
+        var locationFiles = Directory.GetFiles(folderName).ToList();
+        foreach (var file in locationFiles)
+        {
+            var locationsInFile = await GetLocationsFromFile(file);
+            locations.AddRange(locationsInFile);
+        }
+        
 
         if (setNearbyLocations)
         {

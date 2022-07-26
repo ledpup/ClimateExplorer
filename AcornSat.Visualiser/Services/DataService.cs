@@ -2,14 +2,19 @@
 using AcornSat.Core.Model;
 using AcornSat.Core.ViewModel;
 using AcornSat.Visualiser.Services;
+using AcornSat.Visualiser.UiModel;
+using ClimateExplorer.Core.DataPreparation;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using static AcornSat.Core.Enums;
 
 public class DataService : IDataService
 {   
     private readonly HttpClient _httpClient;
     private readonly IDataServiceCache _dataServiceCache;
+    JsonSerializerOptions _jsonSerializerOptions;
 
     public DataService(
         HttpClient httpClient,
@@ -17,9 +22,10 @@ public class DataService : IDataService
     {
         _httpClient = httpClient;
         _dataServiceCache = dataServiceCache;
+        _jsonSerializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web) { Converters = { new JsonStringEnumConverter() } };
     }
 
-    public async Task<IEnumerable<DataSet>> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short ? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f)
+    public async Task<DataSet> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short ? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f)
     {
         var url = $"dataSet/{dataType}/{resolution}";
 
@@ -48,14 +54,57 @@ public class DataService : IDataService
             url = QueryHelpers.AddQueryString(url, "dayGroupingThreshold", dayGroupingThreshold.Value.ToString());
         }
 
-        var result = _dataServiceCache.Get<DataSet[]>(url);
+        var result = _dataServiceCache.Get<DataSet>(url);
 
         if (result == null)
         {
-            result = await _httpClient.GetFromJsonAsync<DataSet[]>(url);
+            result = await _httpClient.GetFromJsonAsync<DataSet>(url, _jsonSerializerOptions);
 
-            _dataServiceCache.Put(url, (DataSet[])result);
+            _dataServiceCache.Put(url, result);
         }
+
+        return result;
+    }
+
+
+    public async Task<DataSet> PostDataSet(
+        BinGranularities binGranularity,
+        ContainerAggregationFunctions binAggregationFunction,
+        ContainerAggregationFunctions bucketAggregationFunction,
+        ContainerAggregationFunctions cupAggregationFunction,
+        SeriesValueOptions seriesValueOption,
+        SeriesSpecification[] seriesSpecifications,
+        SeriesDerivationTypes seriesDerivationType,
+        float requiredBinDataProportion,
+        float requiredBucketDataProportion,
+        float requiredCupDataProportion,
+        int cupSize)
+    {
+        var response = 
+            await _httpClient.PostAsJsonAsync<PostDataSetsRequestBody>(
+                "dataset",
+                new PostDataSetsRequestBody
+                {
+                    BinAggregationFunction = binAggregationFunction,
+                    BucketAggregationFunction = bucketAggregationFunction,
+                    CupAggregationFunction = cupAggregationFunction,
+                    BinningRule = binGranularity,
+                    CupSize = cupSize,
+                    RequiredBinDataProportion = requiredBinDataProportion,
+                    RequiredBucketDataProportion = requiredBucketDataProportion,
+                    RequiredCupDataProportion = requiredCupDataProportion,
+                    SeriesDerivationType = seriesDerivationType,
+                    SeriesSpecifications = seriesSpecifications,
+                    SeriesTransformation = SeriesTransformations.Identity,
+                    Anomaly = seriesValueOption == SeriesValueOptions.Anomaly
+                });
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Received non-success status code {response.StatusCode} with body {await response.Content.ReadAsStringAsync()}");
+        }
+
+        var result = await response.Content.ReadFromJsonAsync<DataSet>();
 
         return result;
     }
@@ -82,7 +131,7 @@ public class DataService : IDataService
     public async Task<IEnumerable<DataSetDefinitionViewModel>> GetDataSetDefinitions()
     {
         var url = "/datasetdefinition";
-        return await _httpClient.GetFromJsonAsync<DataSetDefinitionViewModel[]>(url);
+        return await _httpClient.GetFromJsonAsync<DataSetDefinitionViewModel[]>(url, _jsonSerializerOptions);
     }
 
     public async Task<IEnumerable<Location>> GetLocations(string dataSetName = null, bool includeNearbyLocations = false, bool includeWarmingMetrics = false)

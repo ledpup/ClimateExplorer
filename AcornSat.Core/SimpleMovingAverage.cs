@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 
 namespace AcornSat.Core
 {
-    public class SimpleMovingAverage
+    public interface IMovingAverageCalculator
     {
-        public SimpleMovingAverage(int windowSize)
+        public float? AddSample(float? value);
+    }
+
+    public class SimpleMovingAverageCalculator : IMovingAverageCalculator
+    {
+        public SimpleMovingAverageCalculator(int windowSize)
         {
             _windowSize = windowSize;
         }
@@ -42,32 +47,95 @@ namespace AcornSat.Core
             // Otherwise, we don't have enough data, so just return null
             return null;
         }
+    }
 
-        public static List<DataRecord> Calculate(int windowSize, List<DataRecord> dataRecords)
+    public class OptimizedMovingAverageCalculator : IMovingAverageCalculator
+    {
+        public OptimizedMovingAverageCalculator(int windowSize)
         {
-            var ma = new SimpleMovingAverage(windowSize);
-            var movingAverageValues = new List<float?>();
-            var values = dataRecords.Select(x => x.Value).ToList();
-            var returnDataRecords = new List<DataRecord>();
+            _windowSize = windowSize;
+        }
+        private Queue<float?> samples = new Queue<float?>();
+        private int _windowSize = 5;
 
-            dataRecords.ForEach(x => returnDataRecords.Add(new DataRecord
+        int _numberOfNonNullSamplesInQueue = 0;
+        float _runningTotalOfNonNullSamplesInQueue = 0;
+
+        public float? AddSample(float? value)
+        {
+            var requiredNumberOfNonNullSamples = (int)(_windowSize * 0.25f);
+
+            // The "samples" queue contains the most recent data points, up to a max of _windowSize entries.
+            // Each can be null or have a value.
+            //
+            // Whether the new sample is null or not, we add it to the window.
+            samples.Enqueue(value);
+
+            if (value != null)
             {
-                Day = x.Day,
-                Month = x.Month,
-                Year = x.Year,
-                Label = x.Label,
-                Value = ma.AddSample(x.Value)
-            }));
-            returnDataRecords = returnDataRecords.SkipWhile(x => !x.Value.HasValue).ToList();
-            return returnDataRecords;
+                _numberOfNonNullSamplesInQueue++;
+                _runningTotalOfNonNullSamplesInQueue += value.Value;
+            }
+
+            // If that has made our "history window" larger than its max size, we remove the oldest entry.
+            if (samples.Count > _windowSize)
+            {
+                var dequeued = samples.Dequeue();
+
+                if (dequeued != null)
+                {
+                    _numberOfNonNullSamplesInQueue--;
+                    _runningTotalOfNonNullSamplesInQueue -= dequeued.Value;
+                }
+            }
+
+            // If we have at least (max size of history-window / 4) non-null samples, return the average
+            // of them. (Note that, for example, this means that if the max size of the history window is
+            // 20, and we have only seen 5 samples so far, and none of them are null, then we will return
+            // an average).
+            if (_numberOfNonNullSamplesInQueue >= requiredNumberOfNonNullSamples)
+            {
+                return _runningTotalOfNonNullSamplesInQueue / _numberOfNonNullSamplesInQueue;
+            }
+
+            // Otherwise, we don't have enough data, so just return null
+            return null;
+        }
+    }
+
+    public class DataRecordMovingAverageCalculator
+    {
+        IMovingAverageCalculator _calculator;
+
+        public DataRecordMovingAverageCalculator(IMovingAverageCalculator calculator)
+        {
+            _calculator = calculator;
         }
 
-        public static List<float?> Calculate(int windowSize, List<float?> values)
+        public List<DataRecord> Calculate(IEnumerable<DataRecord> dataRecords)
         {
-            var ma = new SimpleMovingAverage(windowSize);
-            var movingAverageValues = new List<float?>();
-            values.ForEach(x => movingAverageValues.Add(ma.AddSample(x)));
-            return movingAverageValues;
+            var returnDataRecords = new List<DataRecord>();
+
+            bool haveEmittedAnyRecords = false;
+
+            foreach (var dr in dataRecords)
+            {
+                var val = _calculator.AddSample(dr.Value);
+
+                if (val != null || haveEmittedAnyRecords)
+                {
+                    returnDataRecords.Add(
+                        new DataRecord
+                        {
+                            Label = dr.Label,
+                            BinId = dr.BinId,
+                            Value = val
+                        }
+                    );
+                }
+            }
+
+            return returnDataRecords;
         }
     }
 }

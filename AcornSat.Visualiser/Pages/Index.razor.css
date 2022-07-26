@@ -9,6 +9,11 @@
     height: 60vh;
 }
 
+.chart-series-list-wrapper {
+    /* To compensate for the unwanted 10px vertical gutter after the last row of series lozenges */
+    margin-bottom: -10px;
+}
+
 .chart-controls {
     margin: 20px;
     /* This negative bottom margin is to compensate for the bottom margin on .chart-control, so that there's no
@@ -16,7 +21,33 @@
     */
     margin-bottom: -16px;
     margin-left: 0px;
+    user-select: none;
 }
+
+    ::deep .chart-controls .dropdown {
+        text-decoration: none;
+        margin-bottom: 16px;
+        margin-right: 16px;
+        display: inline-block;
+        top: -1px;
+    }
+
+        ::deep .chart-controls .dropdown .btn {
+            padding: 8px;
+            background: #eee;
+            border-radius: 8px;
+            color: #425f59;
+            border: 0px;
+        }
+
+            ::deep .chart-controls .dropdown .btn i {
+                margin-right: 8px;
+            }
+
+            ::deep .chart-controls .dropdown .btn:hover {
+                background: #cfc !important;
+                transition: 0.25s;
+            }
 
     .chart-controls .chart-control {
         padding: 8px;
@@ -109,3 +140,26 @@
         flex-grow: 1;
     }
 }
+
+.add-series-button {
+    box-shadow: rgb(0 0 0 / 20%) 0px 0px 6px;
+    display: inline-block;
+    min-height: 44px;
+    padding: 8px;
+    padding-bottom: 6px;
+    padding-top: 10px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #425f59;
+    cursor: pointer;
+    user-select: none;
+}
+
+    .add-series-button i {
+        margin-right: 8px;
+    }
+
+    .add-series-button:hover {
+        background: #cfc;
+        transition: 0.25s;
+    }

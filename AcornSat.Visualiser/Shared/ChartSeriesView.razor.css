@@ -1,34 +1,44 @@
 ﻿.chart-series-config {
-    background-color: #eee;
+    background-color: white;
     margin: 0px;
     margin-right: 10px;
-    padding: 8px;
-    padding-left: 16px;
-    padding-right: 16px;
-    border-radius: 12px;
+    margin-bottom: 10px;
+    border-radius: 8px;
     min-width: 350px;
     font-size: 0.75rem;
     display: inline-block;
     color: #666;
     user-select: none;
     vertical-align: top;
+    overflow: hidden;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 6px;
 }
 
 
     .chart-series-config .title-bar {
-        background-color: #eee;
-        margin: -8px;
-        margin-left: -16px;
-        margin-right: -16px;
-        border-radius: 12px;
-        min-height: 47px;
+        background-color: white;
+        min-height: 44px;
         padding: 0px;
         cursor: pointer;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
     }
 
 
         .chart-series-config .title-bar:hover {
             background-color: #cfc;
+            transition: 0.25s;
+        }
+
+        .chart-series-config .title-bar .expander {
+            padding: 8px;
+            padding-top: 12px;
+            color: #888;
+        }
+
+        .chart-series-config .title-bar:hover .expander {
+            color: #222;
         }
 
     .chart-series-config .colour-indicator {
@@ -46,16 +56,72 @@
     .chart-series-config .title {
         display: inline-block;
         font-weight: bold;
-        padding: 4px 10px 0px 4px;
+        padding: 4px 10px 0px 8px;
         position: relative;
         top: -1px;
     }
 
     .chart-series-config .description {
-        padding-left: 26px;
+        padding-left: 8px;
         padding-right: 16px;
         color: #555;
     }
+
+    .chart-series-config-content {
+        background: #f8f8f8;
+    }
+
+        .chart-series-config-content .edit-form {
+            padding-left: 14px;
+            padding-top: 8px;
+        }
+
+        .chart-series-config-content .series-controls {
+            padding-left: 10px;
+        }
+
+            .chart-series-config-content .series-controls .series-control {
+                color: #444;
+                display: inline-block;
+                padding: 8px;
+                font-size: 18px;
+                width: 56px;
+                text-align: center;
+                cursor: pointer;
+                transition: 0.25s;
+                border-radius: 12px;
+                margin-right: 8px;
+
+                text-align: center;
+            }
+
+            .chart-series-config-content .series-controls .series-control:hover {
+                color: #000;
+            }
+
+                .chart-series-config-content .series-controls .series-control.danger {
+                    color: #bd0000;
+                }
+
+                    .chart-series-config-content .series-controls .series-control.danger:hover {
+                        color: #dd1111;
+                        background-color: #fcc;
+                    }
+
+                .chart-series-config-content .series-controls .series-control .label {
+                    font-size: 11px;
+                    opacity: 0.7;
+                }
+
+                .chart-series-config-content .series-controls .series-control:hover .label {
+                    opacity: 1;
+                    transition: 0.25s;
+                }
+
+
+            .chart-series-config-content .series-controls .series-control:hover {
+                background-color: #cfc;
+            }
 
     .chart-series-config td {
         padding-right: 8px;
@@ -85,3 +151,25 @@
     }
 
 }
+
+.info-message {
+    color: darkorange;
+    font-weight:bold;
+}
+
+.about-this-data-button {
+    position: absolute;
+    right: 8px;
+    top: 4px;
+    font-size: 1rem;
+    background: #ddd;
+    border-radius: 120px;
+    width: 30px;
+    text-align: center;
+    z-index: 5;
+    color: #ddd;
+}
+
+    .about-this-data-button:hover {
+        background-color: #afa;
+    }

@@ -1,4 +1,5 @@
-﻿@using static AcornSat.Core.Enums
+﻿@using AcornSat.Visualiser.UiModel
+@using static AcornSat.Core.Enums
 
 @if (DataRecords != null)
 {
@@ -9,7 +10,7 @@
 @code {
 
     [Parameter]
-    public List<DataRecord> DataRecords { get; set; }
+    public List<YearAndValue> DataRecords { get; set; }
 
     string WarmestYearsAsString => string.Join(", ", DataRecords.OrderByDescending(x => x.Value).Take(5).Select(x => x.Year));
     string CoolestYearsAsString => string.Join(", ", DataRecords.OrderBy(x => x.Value).Take(5).Select(x => x.Year));

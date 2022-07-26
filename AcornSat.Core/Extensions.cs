@@ -65,17 +65,13 @@ namespace AcornSat.Core
             }
             var calendar = new GregorianCalendar();
             var numberOfDaysInYear = calendar.GetDaysInYear(year);
-            if (values.Count() != numberOfDaysInYear)
-            {
-                throw new Exception($"Year {year} needs {numberOfDaysInYear} temperature records for the year to be complete. You've supplied {values.Count()} records");
-            }
 
             if (!values.GroupBy(x => x.Date.Value.DayOfYear).All(x => x.Count() == 1))
             {
                 throw new Exception("All data must be for distinct dates");
             }
 
-            return numberOfDaysInYear;
+            return values.Count() != numberOfDaysInYear ? 0 : values.Count();
         }
 
         public static void ValidateDaily(this IEnumerable<DataRecord> values)

@@ -3,6 +3,7 @@
 @using Blazorise
 @using Blazorise.Components
 @using Blazorise.Charts
+@using ClimateExplorer.Core.DataPreparation
 @using static AcornSat.Core.Enums
 
 <div class="suggested-data-set-list">
@@ -85,88 +86,72 @@
 
         if (SelectedLocation == null) return;
 
-        var dsdLocation = DataSetDefinitions.Single(x => x.Id == SelectedLocation.DataSetId);
-
-        var mdTempMax =
-            dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted) ??
-            dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == null);
-
-        var mdTempMaxUnajusted =
-            dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Unadjusted) ??
-            dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == null);
-
-        var mdRainfall =
-            dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.Rainfall && x.DataAdjustment == null);
-
-        var mdSolarRadiation =
-            dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.SolarRadiation && x.DataAdjustment == null);
-
+        var tempMax                        = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMax,        DataAdjustment.Adjusted,   true,  throwIfNoMatch: false);
+        var tempMaxUnadjusted              = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMax,        DataAdjustment.Unadjusted, false, throwIfNoMatch: false);
+        var tempMaxUnadjustedOrUnspecified = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMax,        DataAdjustment.Unadjusted, true,  throwIfNoMatch: false);
+        var rainfall                       = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.Rainfall,       null,                             throwIfNoMatch: false);
+        var solarRadiation                 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.SolarRadiation, null,                             throwIfNoMatch: false);
+            
         var dsdMeiV2 = DataSetDefinitions.Single(x => x.Id == Guid.Parse("ffd5f5e2-d8df-4779-a7f4-f5d148505033"));
         var mdMeiV2 = dsdMeiV2.MeasurementDefinitions.Single(x => x.DataType == DataType.MEIv2);
 
         SuggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
+            {
+                Title = "Temperature + Rainfall",
+                Description = "Smoothed maximum daily temperature and rainfall",
+                ChartSeriesList =
+                new List<ChartSeriesDefinition>()
                 {
-                    Title = "Temperature + Rainfall",
-                    Description = "Smoothed maximum daily temperature and rainfall",
-                    ChartSeriesList =
-                                new List<ChartSeriesDefinition>()
-                                {
-                                new ChartSeriesDefinition()
-                                {
-                                    LocationId = SelectedLocation.Id,
-                                    LocationName = SelectedLocation.Name,
-                                    Aggregation = SeriesAggregationOptions.Mean,
-                                    DataResolution = DataResolution.Yearly,
-                                    DataSetDefinition = dsdLocation,
-                                    MeasurementDefinition = mdTempMax,
-                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                    SmoothingWindow = 20,
-                                    Value = SeriesValueOptions.Value,
-                                    Year = null
-                                },
-                                new ChartSeriesDefinition()
-                                {
-                                    LocationId = SelectedLocation.Id,
-                                    LocationName = SelectedLocation.Name,
-                                    Aggregation = SeriesAggregationOptions.Sum,
-                                    DataResolution = DataResolution.Yearly,
-                                    DataSetDefinition = dsdLocation,
-                                    MeasurementDefinition = mdRainfall,
-                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                    SmoothingWindow = 20,
-                                    Value = SeriesValueOptions.Value,
-                                    Year = null
-                                }
-                                }
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
+                        Aggregation = SeriesAggregationOptions.Mean,
+                        BinGranularity = BinGranularities.ByYear,
+                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                        SmoothingWindow = 20,
+                        Value = SeriesValueOptions.Value,
+                        Year = null
+                    },
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, rainfall),
+                        Aggregation = SeriesAggregationOptions.Sum,
+                        BinGranularity = BinGranularities.ByYear,
+                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                        SmoothingWindow = 20,
+                        Value = SeriesValueOptions.Value,
+                        Year = null
+                    }
                 }
+            }
         );
 
         SuggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
-                {
-                    Title = "Temperature",
-                    Description = "Yearly view of average maximum daily temperature",
-                    ChartSeriesList =
-                            new List<ChartSeriesDefinition>()
-                            {
+            {
+                Title = "Temperature",
+                Description = "Yearly view of average maximum daily temperature",
+                ChartSeriesList =
+                    new List<ChartSeriesDefinition>()
+                    {
                         new ChartSeriesDefinition()
                         {
-                            LocationId = SelectedLocation.Id,
-                            LocationName = SelectedLocation.Name,
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
                             Aggregation = SeriesAggregationOptions.Mean,
-                            DataResolution = DataResolution.Yearly,
-                            DataSetDefinition = dsdLocation,
-                            MeasurementDefinition = mdTempMax,
+                            BinGranularity = BinGranularities.ByYear,
                             Smoothing = SeriesSmoothingOptions.None,
                             SmoothingWindow = 5,
                             Value = SeriesValueOptions.Value,
                             Year = null
                         }
-                            },
-                    Variants =
-                            new List<SuggestedChartPresetModel>()
-                            {
+                    },
+                Variants =
+                    new List<SuggestedChartPresetModel>()
+                    {
                         new SuggestedChartPresetModel()
                         {
                             Title = "Plus trendline",
@@ -176,12 +161,10 @@
                                 {
                                     new ChartSeriesDefinition()
                                     {
-                                        LocationId = SelectedLocation.Id,
-                                        LocationName = SelectedLocation.Name,
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
                                         Aggregation = SeriesAggregationOptions.Mean,
-                                        DataResolution = DataResolution.Yearly,
-                                        DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = mdTempMax,
+                                        BinGranularity = BinGranularities.ByYear,
                                         ShowTrendline = true,
                                         Smoothing = SeriesSmoothingOptions.None,
                                         SmoothingWindow = 5,
@@ -199,12 +182,10 @@
                                 {
                                     new ChartSeriesDefinition()
                                     {
-                                        LocationId = SelectedLocation.Id,
-                                        LocationName = SelectedLocation.Name,
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
                                         Aggregation = SeriesAggregationOptions.Mean,
-                                        DataResolution = DataResolution.Yearly,
-                                        DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = mdTempMax,
+                                        BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.None,
                                         SmoothingWindow = 5,
                                         Value = SeriesValueOptions.Value,
@@ -212,12 +193,10 @@
                                     },
                                     new ChartSeriesDefinition()
                                     {
-                                        LocationId = SelectedLocation.Id,
-                                        LocationName = SelectedLocation.Name,
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
                                         Aggregation = SeriesAggregationOptions.Mean,
-                                        DataResolution = DataResolution.Yearly,
-                                        DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = mdTempMax,
+                                        BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                                         SmoothingWindow = 5,
                                         Value = SeriesValueOptions.Value,
@@ -234,12 +213,10 @@
                                 {
                                     new ChartSeriesDefinition()
                                     {
-                                        LocationId = SelectedLocation.Id,
-                                        LocationName = SelectedLocation.Name,
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
                                         Aggregation = SeriesAggregationOptions.Mean,
-                                        DataResolution = DataResolution.Yearly,
-                                        DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = mdTempMax,
+                                        BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                                         SmoothingWindow = 5,
                                         Value = SeriesValueOptions.Value,
@@ -256,12 +233,10 @@
                                 {
                                     new ChartSeriesDefinition()
                                     {
-                                        LocationId = SelectedLocation.Id,
-                                        LocationName = SelectedLocation.Name,
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMaxUnadjustedOrUnspecified),
                                         Aggregation = SeriesAggregationOptions.Mean,
-                                        DataResolution = DataResolution.Yearly,
-                                        DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = mdTempMaxUnajusted,
+                                        BinGranularity = BinGranularities.ByYear,
                                         ShowTrendline = false,
                                         Smoothing = SeriesSmoothingOptions.None,
                                         SmoothingWindow = 5,
@@ -270,164 +245,151 @@
                                     },
                                     new ChartSeriesDefinition()
                                     {
-                                        LocationId = SelectedLocation.Id,
-                                        LocationName = SelectedLocation.Name,
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, rainfall),
                                         Aggregation = SeriesAggregationOptions.Mean,
-                                        DataResolution = DataResolution.Yearly,
-                                        DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = mdSolarRadiation,
+                                        BinGranularity = BinGranularities.ByYear,
                                         ShowTrendline = false,
                                         Smoothing = SeriesSmoothingOptions.None,
                                         SmoothingWindow = 5,
                                         Value = SeriesValueOptions.Value,
                                         Year = null
                                     }
-                                },
+                                }
                         }
-                        }
-                });
+                    }
+            }
+        );
 
         SuggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
-                {
-                    Title = "Temperature Anomaly",
-                    Description = "Yearly average maximum daily temperatures relative to the average of the whole dataset",
-                    ChartSeriesList =
-                                new List<ChartSeriesDefinition>()
-                                    {
-                                    new ChartSeriesDefinition()
-                                    {
-                                        LocationId = SelectedLocation.Id,
-                                        LocationName = SelectedLocation.Name,
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        DataResolution = DataResolution.Yearly,
-                                        DataSetDefinition = dsdLocation,
-                                        MeasurementDefinition = mdTempMax,
-                                        Smoothing = SeriesSmoothingOptions.None,
-                                        SmoothingWindow = 5,
-                                        Value = SeriesValueOptions.Anomaly,
-                                        Year = null,
-                                        DisplayStyle = SeriesDisplayStyle.Bar
-                                    }
-                                    },
-                });
+            {
+                Title = "Temperature Anomaly",
+                Description = "Yearly average maximum daily temperatures relative to the average of the whole dataset",
+                ChartSeriesList =
+                    new List<ChartSeriesDefinition>()
+                    {
+                        new ChartSeriesDefinition()
+                        {
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
+                            Aggregation = SeriesAggregationOptions.Mean,
+                            BinGranularity = BinGranularities.ByYear,
+                            Smoothing = SeriesSmoothingOptions.None,
+                            SmoothingWindow = 5,
+                            Value = SeriesValueOptions.Anomaly,
+                            Year = null,
+                            DisplayStyle = SeriesDisplayStyle.Bar
+                        }
+                    }
+            }
+        );
 
         SuggestedPresets.Add(
-           new SuggestedChartPresetModelWithVariants()
-               {
-                   Title = "Adjusted vs raw",
-                   Description = "Compare temperature values that have been adjusted for abormalities with raw data",
-                   ChartSeriesList =
-                           new List<ChartSeriesDefinition>()
-                           {
-                            new ChartSeriesDefinition()
-                            {
-                                LocationId = SelectedLocation.Id,
-                                LocationName = SelectedLocation.Name,
-                                Aggregation = SeriesAggregationOptions.Mean,
-                                DataResolution = DataResolution.Yearly,
-                                DataSetDefinition = dsdLocation,
-                                MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted),
-                                ShowTrendline = false,
-                                Smoothing = SeriesSmoothingOptions.None,
-                                SmoothingWindow = 5,
-                                Value = SeriesValueOptions.Value,
-                                Year = null
-                            },
-                            new ChartSeriesDefinition()
-                            {
-                                LocationId = SelectedLocation.Id,
-                                LocationName = SelectedLocation.Name,
-                                Aggregation = SeriesAggregationOptions.Mean,
-                                DataResolution = DataResolution.Yearly,
-                                DataSetDefinition = dsdLocation,
-                                MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Unadjusted),
-                                ShowTrendline = false,
-                                Smoothing = SeriesSmoothingOptions.None,
-                                SmoothingWindow = 5,
-                                Value = SeriesValueOptions.Value,
-                                Year = null
-                            }
-                           },
-                   Variants =
-                           new List<SuggestedChartPresetModel>()
-                           {
-                                new SuggestedChartPresetModel()
+            new SuggestedChartPresetModelWithVariants()
+            {
+                Title = "Adjusted vs raw",
+                Description = "Compare temperature values that have been adjusted for abormalities with raw data",
+                ChartSeriesList =
+                    new List<ChartSeriesDefinition>()
+                    {
+                        new ChartSeriesDefinition()
+                        {
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
+                            Aggregation = SeriesAggregationOptions.Mean,
+                            BinGranularity = BinGranularities.ByYear,
+                            ShowTrendline = false,
+                            Smoothing = SeriesSmoothingOptions.None,
+                            SmoothingWindow = 5,
+                            Value = SeriesValueOptions.Value,
+                            Year = null
+                        },
+                        new ChartSeriesDefinition()
+                        {
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMaxUnadjusted),
+                            Aggregation = SeriesAggregationOptions.Mean,
+                            BinGranularity = BinGranularities.ByYear,
+                            ShowTrendline = false,
+                            Smoothing = SeriesSmoothingOptions.None,
+                            SmoothingWindow = 5,
+                            Value = SeriesValueOptions.Value,
+                            Year = null
+                        }
+                    },
+                Variants =
+                    new List<SuggestedChartPresetModel>()
+                    {
+                        new SuggestedChartPresetModel()
+                        {
+                            Title = "Plus trendline",
+                            Description = "Adds a straight line, fit to the data",
+                            ChartSeriesList =
+                                new List<ChartSeriesDefinition>()
                                 {
-                                    Title = "Plus trendline",
-                                    Description = "Adds a straight line, fit to the data",
-                                    ChartSeriesList =
-                                        new List<ChartSeriesDefinition>()
-                                        {
-                                            new ChartSeriesDefinition()
-                                            {
-                                                LocationId = SelectedLocation.Id,
-                                                LocationName = SelectedLocation.Name,
-                                                Aggregation = SeriesAggregationOptions.Mean,
-                                                DataResolution = DataResolution.Yearly,
-                                                DataSetDefinition = dsdLocation,
-                                                MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted),
-                                                ShowTrendline = true,
-                                                Smoothing = SeriesSmoothingOptions.None,
-                                                SmoothingWindow = 5,
-                                                Value = SeriesValueOptions.Value,
-                                                Year = null
-                                            },
-                                            new ChartSeriesDefinition()
-                                            {
-                                                LocationId = SelectedLocation.Id,
-                                                LocationName = SelectedLocation.Name,
-                                                Aggregation = SeriesAggregationOptions.Mean,
-                                                DataResolution = DataResolution.Yearly,
-                                                DataSetDefinition = dsdLocation,
-                                                MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Unadjusted),
-                                                ShowTrendline = true,
-                                                Smoothing = SeriesSmoothingOptions.None,
-                                                SmoothingWindow = 5,
-                                                Value = SeriesValueOptions.Value,
-                                                Year = null
-                                            }
-                                        }
-                                },
-                                new SuggestedChartPresetModel()
+                                    new ChartSeriesDefinition()
+                                    {
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
+                                        Aggregation = SeriesAggregationOptions.Mean,
+                                        BinGranularity = BinGranularities.ByYear,
+                                        ShowTrendline = true,
+                                        Smoothing = SeriesSmoothingOptions.None,
+                                        SmoothingWindow = 5,
+                                        Value = SeriesValueOptions.Value,
+                                        Year = null
+                                    },
+                                    new ChartSeriesDefinition()
+                                    {
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMaxUnadjusted),
+                                        Aggregation = SeriesAggregationOptions.Mean,
+                                        BinGranularity = BinGranularities.ByYear,
+                                        ShowTrendline = true,
+                                        Smoothing = SeriesSmoothingOptions.None,
+                                        SmoothingWindow = 5,
+                                        Value = SeriesValueOptions.Value,
+                                        Year = null
+                                    }
+                                }
+                        },
+                        new SuggestedChartPresetModel()
+                        {
+                            Title = "Moving average only",
+                            Description = "Shows 10 year moving average for each dataset",
+                            ChartSeriesList =
+                                new List<ChartSeriesDefinition>()
                                 {
-                                    Title = "Moving average only",
-                                    Description = "Shows 10 year moving average for each dataset",
-                                    ChartSeriesList =
-                                        new List<ChartSeriesDefinition>()
-                                        {
-                                            new ChartSeriesDefinition()
-                                            {
-                                                LocationId = SelectedLocation.Id,
-                                                LocationName = SelectedLocation.Name,
-                                                Aggregation = SeriesAggregationOptions.Mean,
-                                                DataResolution = DataResolution.Yearly,
-                                                DataSetDefinition = dsdLocation,
-                                                MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Adjusted),
-                                                ShowTrendline = false,
-                                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                                SmoothingWindow = 10,
-                                                Value = SeriesValueOptions.Value,
-                                                Year = null
-                                            },
-                                            new ChartSeriesDefinition()
-                                            {
-                                                LocationId = SelectedLocation.Id,
-                                                LocationName = SelectedLocation.Name,
-                                                Aggregation = SeriesAggregationOptions.Mean,
-                                                DataResolution = DataResolution.Yearly,
-                                                DataSetDefinition = dsdLocation,
-                                                MeasurementDefinition = dsdLocation.MeasurementDefinitions.SingleOrDefault(x => x.DataType == DataType.TempMax && x.DataAdjustment == DataAdjustment.Unadjusted),
-                                                ShowTrendline = false,
-                                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                                SmoothingWindow = 10,
-                                                Value = SeriesValueOptions.Value,
-                                                Year = null
-                                            }
-                                        }
-                                },
-                           }
-               });
+                                    new ChartSeriesDefinition()
+                                    {
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
+                                        Aggregation = SeriesAggregationOptions.Mean,
+                                        BinGranularity = BinGranularities.ByYear,
+                                        ShowTrendline = false,
+                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                        SmoothingWindow = 10,
+                                        Value = SeriesValueOptions.Value,
+                                        Year = null
+                                    },
+                                    new ChartSeriesDefinition()
+                                    {
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMaxUnadjusted),
+                                        Aggregation = SeriesAggregationOptions.Mean,
+                                        BinGranularity = BinGranularities.ByYear,
+                                        ShowTrendline = false,
+                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                        SmoothingWindow = 10,
+                                        Value = SeriesValueOptions.Value,
+                                        Year = null
+                                    }
+                                }
+                        }
+                    }
+            }
+        );
 
         // Presets may call for data that is not available at all locations. In those
         // cases, remove the ChartSeries entries that aren't available & set a flag
@@ -438,7 +400,7 @@
 
             foreach (var csd in p.ChartSeriesList.ToArray())
             {
-                if (csd.MeasurementDefinition == null)
+                if (!csd.SourceSeriesSpecifications.Any() || csd.SourceSeriesSpecifications.Any(x => x.MeasurementDefinition == null))
                 {
                     p.ChartSeriesList.Remove(csd);
 
@@ -454,7 +416,7 @@
 
                     foreach (var csd in v.ChartSeriesList.ToArray())
                     {
-                        if (csd.MeasurementDefinition == null)
+                        if (!csd.SourceSeriesSpecifications.Any() || csd.SourceSeriesSpecifications.Any(x => x.MeasurementDefinition == null))
                         {
                             v.ChartSeriesList.Remove(csd);
 
@@ -465,4 +427,4 @@
             }
         }
     }
-    }
+}

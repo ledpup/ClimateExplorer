@@ -1,4 +1,5 @@
-﻿using AcornSat.Core.ViewModel;
+﻿using AcornSat.Core.Model;
+using AcornSat.Core.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,359 +11,326 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static AcornSat.Core.Enums;
 
-namespace AcornSat.Core.InputOutput
+namespace AcornSat.Core.InputOutput;
+
+public static class DataReader
 {
-    public static class DataReader
+    public static async Task<DataSet> GetDataSet(MeasurementDefinition measurementDefinition, List<DataFileFilterAndAdjustment> dataFileDefinitions)
     {
-        public static async Task<List<DataSet>> ReadDataFile(string dataSetFolderName, MeasurementDefinition measurementDefinition, DataResolution dataResolution, Location? location, short? yearFilter = null)
+        var records = await GetDataRecords(measurementDefinition, dataFileDefinitions);
+
+        short? year = null;
+        if (records != null && records.Any())
         {
-            var dataTypeFolder = GetDataTypeFolder(measurementDefinition.DataType);
+            var firstYear = records.First().Year;
+            year = records.All(x => x.Year == firstYear) ? firstYear : null;
+        }
 
-            var filePath = @$"{dataTypeFolder}\{dataSetFolderName}\{dataResolution}";
+        var dataSet = new DataSet
+        {
+            Resolution = measurementDefinition.DataResolution,
+            MeasurementDefinition = measurementDefinition.ToViewModel(),
+            Year = year,
+            DataRecords = records,
+        };
 
-            if (!string.IsNullOrWhiteSpace(measurementDefinition.FolderName))
-                filePath += "\\" + measurementDefinition.FolderName;
+        return dataSet;
+    }
 
-            if (!string.IsNullOrWhiteSpace(measurementDefinition.SubFolderName))
-                filePath += "\\" + measurementDefinition.SubFolderName;
-
-            filePath += "\\";
-
-            var regEx = new Regex(measurementDefinition.DataRowRegEx);
-
-            var dataSets = new List<DataSet>();
-            if (location != null)
+    public static async Task<List<DataRecord>> GetDataRecords(
+        MeasurementDefinition measurementDefinition, 
+        List<DataFileFilterAndAdjustment> dataFileFilterAndAdjustments)
+    {
+        if (dataFileFilterAndAdjustments == null)
+        {
+            dataFileFilterAndAdjustments = new List<DataFileFilterAndAdjustment>
             {
-                foreach (var site in location.Sites)
+                new DataFileFilterAndAdjustment
                 {
-                    var dataSet = await GetDataSet(measurementDefinition, dataResolution, yearFilter, filePath, regEx, dataSets, site);
-                    if (dataSet != null)
+                    ExternalStationCode = string.Empty
+                }
+            };
+        }
+
+        var regEx = new Regex(measurementDefinition.DataRowRegEx);
+
+        var records = new Dictionary<string, DataRecord>();
+        foreach (var dataFileDefinition in dataFileFilterAndAdjustments)
+        {
+            var filePath = measurementDefinition.FolderName + @"\" + measurementDefinition.FileNameFormat.Replace("[station]", dataFileDefinition.ExternalStationCode);
+            var fileRecords = await ReadDataFile(filePath, regEx, measurementDefinition.NullValue, measurementDefinition.DataResolution, dataFileDefinition.StartDate, dataFileDefinition.EndDate);
+
+            // Apply any adjustment
+            var values = fileRecords.Values.ToList();
+            if (dataFileDefinition.ValueAdjustment != null)
+            {
+                values.ForEach(x =>
+                {
+                    if (x.Value.HasValue)
                     {
-                        dataSet.Location = location;
-                        dataSets.Add(dataSet);
+                        x.Value += dataFileDefinition.ValueAdjustment;
                     }
+                });
+            }
 
+            // Add to full record set
+            if (fileRecords != null)
+            {
+                foreach (var dataRecord in fileRecords)
+                {
+                    if (!records.ContainsKey(dataRecord.Key))
+                    {
+                        records.Add(dataRecord.Key, dataRecord.Value);
+                    }
+                    else
+                    {
+                        throw new Exception($"Key {dataRecord.Key} already exists in the collection");
+                    }
                 }
             }
-            else
-            {
-                var dataSet = await GetDataSet(measurementDefinition, dataResolution, yearFilter, filePath, regEx, dataSets);
-                if (dataSet != null)
-                {
-                    dataSets.Add(dataSet);
-                }
-            }
-            return dataSets;
         }
 
-        private static async Task<DataSet> GetDataSet(MeasurementDefinition measurementDefinition, DataResolution dataResolution, short? yearFilter, string filePath, Regex regEx, List<DataSet> dataSets, string site = null)
-        {
-            var records = await ReadDataFile(site, regEx, filePath, measurementDefinition.FileNameFormat, measurementDefinition.NullValue, dataResolution, yearFilter);
+        return records.Values.ToList();
+    }
 
-            if (records.Any())
-            {
-                var dataSet = new DataSet
-                {
-                    Resolution = dataResolution,
-                    MeasurementDefinition = measurementDefinition.ToViewModel(),
-                    Station = site,
-                    Year = yearFilter,
-                    DataRecords = records
-                };
-                return dataSet;
-            }
-            return null;
+    static async Task<Dictionary<string, DataRecord>> ReadDataFile(
+        string pathAndFile,
+        Regex regEx,
+        string nullValue,
+        DataResolution dataResolution,
+        DateTime? startDate = null,
+        DateTime? endDate = null)
+    {
+        string[]? lines = await GetLinesInDataFileWithCascade(pathAndFile);
+
+        return await ProcessDataFile(lines, regEx, nullValue, dataResolution, startDate, endDate);
+    }
+
+    public static async Task<Dictionary<string, DataRecord>> ProcessDataFile(
+    string[]? linesOfFile,
+    Regex regEx,
+    string nullValue,
+    DataResolution dataResolution,
+    DateTime? startDate = null,
+    DateTime? endDate = null)
+    {
+        switch (dataResolution)
+        {
+            case DataResolution.Yearly:
+            case DataResolution.Weekly:
+                throw new NotImplementedException("Supported data resolution is currently only daily or monthly.");
         }
 
-        private static object GetDataTypeFolder(DataType dataType)
-        {
-            switch (dataType)
-            {
-                case DataType.MEIv2:
-                case DataType.CO2:
-                case DataType.CH4:
-                case DataType.N2O:
-                case DataType.IOD:
-                    return "Reference";
-                case DataType.Rainfall:
-                    return "Rainfall";
-                case DataType.TempMax:
-                case DataType.TempMin:
-                    return "Temperature";
-                case DataType.SolarRadiation:
-                    return "SolarRadiation";
-            }
+        var lines = linesOfFile;
 
-            throw new NotImplementedException();
+        if (lines == null)
+        {
+            // We couldn't find the data in any of the expected locations
+            return new Dictionary<string, DataRecord>();
         }
 
-        static async Task<List<DataRecord>> ReadDataFile(
-            string station,
-            Regex regEx,
-            string filePath,
-            string fileName,
-            string nullValue,
-            DataResolution dataResolution,
-            short? yearFilter = null)
+        var dataRecords = new Dictionary<string, DataRecord>();
+
+        var initialDataIndex = GetStartIndex(regEx, lines);
+
+        var firstValidLine = regEx.Match(lines[initialDataIndex]);
+
+        var startYear = short.Parse(firstValidLine.Groups["year"].Value);
+        var startMonth = short.Parse(firstValidLine.Groups["month"].Value);
+        short startDay = 1;
+        if (dataResolution == DataResolution.Daily)
         {
-            var siteFilePath = filePath + fileName.Replace("[station]", station);
+            startDay = short.Parse(firstValidLine.Groups["day"].Value);
+        }
 
-            string[]? lines = await GetLinesInDataFileWithCascade(siteFilePath);
-
-            if (lines == null)
+        var date = new DateTime(startYear, startMonth, startDay);
+        var previousDate = date.AddDays(-1);
+        var resetDate = false;
+        foreach (var line in lines)
+        {
+            var match = regEx.Match(line);
+            // Is the line we've moved to a line that fits as a DataRecord? If not, skip it
+            if (!match.Success)
             {
-                // We couldn't find the data in any of the expected locations
-                return new List<DataRecord>();
+                continue;
             }
 
-            var dataRecords = new List<DataRecord>();
-
-            var initialDataIndex = GetStartIndex(regEx, lines);
-
-            var startYearRecord = short.Parse(regEx.Match(lines[initialDataIndex]).Groups["year"].Value);
-
-            // Check to see if the station had started recording by the year we want
-            if (yearFilter != null && startYearRecord > yearFilter)
+            var year = short.Parse(match.Groups["year"].Value);
+            var month = short.Parse(match.Groups["month"].Value);
+            short day = 1;
+            if (dataResolution == DataResolution.Daily)
             {
-                return dataRecords;
+                day = short.Parse(match.Groups["day"].Value);
             }
 
-            var startDate = yearFilter == null ? startYearRecord : yearFilter.Value;
-            var date = new DateTime(startDate, 1, 1);
-            var previousDate = date.AddDays(-1);
-            foreach (var record in lines)
+            var filterDate = new DateTime(year, month, day);
+            if (startDate.HasValue && filterDate < startDate.Value)
             {
-                var match = regEx.Match(record);
+                resetDate = true;
+                continue;
+            }
+            else if (endDate.HasValue && filterDate > endDate.Value)
+            {
+                break;
+            }
 
-                if (!match.Success)
-                {
-                    continue;
-                }
-                var year = short.Parse(match.Groups["year"].Value);
-                var month = short.Parse(match.Groups["month"].Value);
-                short day = 1;
+            if (resetDate)
+            {
+                date = filterDate;
+                resetDate = false;
+            }
+            var recordDate = new DateTime(year, month, day);
+            if (recordDate <= previousDate)
+            {
+                Console.Error.WriteLine($"Date of current record ({recordDate}) is earlier than or equal to the previous date ({previousDate}). The file is not ordered by date properly and/or there are duplicate records. Will skip this record.");
+                continue;
+            }
+
+            // If the record date is beyond the date we're expecting, add in the gaps as null and then go to the next day/month
+            while (recordDate > date)
+            {
                 if (dataResolution == DataResolution.Daily)
                 {
-                    day = short.Parse(match.Groups["day"].Value);
-                }
-
-                if (yearFilter != null)
-                {
-                    if (year < yearFilter)
-                    {
-                        continue;
-                    }
-                    else if (year > yearFilter)
-                    {
-                        break;
-                    }
-                }
-
-                var recordDate = new DateTime(year, month, day);
-                if (recordDate <= previousDate)
-                {
-                    Console.Error.WriteLine($"Date of current record ({recordDate}) is earlier than or equal to the previous date ({previousDate}). The file is not ordered by date properly and/or there are duplicate records. Will skip this record.");
-                    continue;
-                }
-                while (recordDate > date)
-                {
-                    if (dataResolution == DataResolution.Daily)
-                    {
-                        dataRecords.Add(new DataRecord(date, null));
-                        date = date.AddDays(1);
-                    }
-                    else if (dataResolution == DataResolution.Monthly)
-                    {
-                        dataRecords.Add(new DataRecord((short)date.Year, (short)date.Month, null, null));
-                        date = date.AddMonths(1);
-                    }
-                }
-
-                var valueString = match.Groups["value"].Value;
-
-                float? value = string.IsNullOrWhiteSpace(valueString) || valueString == nullValue ? null : float.Parse(valueString);
-
-                previousDate = recordDate;
-                if (dataResolution == DataResolution.Daily)
-                {
-                    dataRecords.Add(new DataRecord
-                    {
-                        Day = day,
-                        Month = month,
-                        Year = year,
-                        Value = value,
-                    });
+                    var record = new DataRecord(date, null);
+                    dataRecords.Add(record.Key, record);
                     date = date.AddDays(1);
                 }
                 else if (dataResolution == DataResolution.Monthly)
                 {
-                    dataRecords.Add(new DataRecord
-                    {
-                        Month = month,
-                        Year = year,
-                        Value = value,
-                    });
+                    var record = new DataRecord((short)date.Year, (short)date.Month, null, null);
+                    dataRecords.Add(record.Key, record);
                     date = date.AddMonths(1);
                 }
             }
 
+            var valueString = match.Groups["value"].Value;
+            float? value = string.IsNullOrWhiteSpace(valueString) || valueString == nullValue ? null : float.Parse(valueString);
+
+            previousDate = recordDate;
             if (dataResolution == DataResolution.Daily)
             {
-                var completeRecords = CompleteLastYearOfDailyData(dataRecords, ref date);
-                completeRecords.ValidateDaily();
-                return completeRecords;
+                var record = new DataRecord(year, month, day, value);
+                dataRecords.Add(record.Key, record);
+                date = date.AddDays(1);
             }
             else if (dataResolution == DataResolution.Monthly)
             {
-                var completeRecords = CompleteLastYearOfMonthlyData(dataRecords, ref date);
-                completeRecords.ValidateMonthly();
-                return completeRecords;
-            }
-            throw new NotImplementedException();
-        }
-
-        public static async Task<string[]> GetLinesInDataFileWithCascade(string dataFilePath)
-        {
-            string[]? lines = TryGetDataFromDatasetZipFile(dataFilePath);
-
-            if (lines == null)
-            {
-                lines = TryGetDataFromSingleEntryZipFile(dataFilePath);
-            }
-
-            if (lines == null)
-            {
-                lines = await TryGetDataFromUncompressedSingleFile(dataFilePath);
-            }
-
-            return lines;
-        }
-
-        static async Task<string[]?> TryGetDataFromUncompressedSingleFile(string siteFilePath)
-        {
-            if (File.Exists(siteFilePath))
-            {
-                return await File.ReadAllLinesAsync(siteFilePath);
-            }
-
-            return null;
-        }
-
-        static string[]? TryGetDataFromDatasetZipFile(string filePath)
-        {
-            string[] pathComponents = 
-                filePath.Split(
-                    new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
-                    StringSplitOptions.RemoveEmptyEntries
-                );
-
-            var shallowestFolderName = pathComponents.First();
-
-            var datasetName = shallowestFolderName;
-
-            string zipPath = Path.Combine("Datasets", datasetName + ".zip");
-
-            if (!File.Exists(zipPath)) return null;
-
-            var zipEntryPath = string.Join('/', pathComponents.Skip(1));
-
-            Debug.WriteLine("Reading from zip " + zipPath);
-            return ReadLinesFromZipFileEntry(zipPath, zipEntryPath);
-        }
-
-        static string[]? TryGetDataFromSingleEntryZipFile(string filePath)
-        {
-            var zipPath = Path.ChangeExtension(filePath, ".zip");
-
-            if (!File.Exists(zipPath)) return null;
-
-            return ReadLinesFromZipFileEntry(zipPath, Path.GetFileName(filePath));
-        }
-
-        static string[]? ReadLinesFromZipFileEntry(string zipFilename, string zipEntryFilename)
-        {
-            using (FileStream zipFileStream = new FileStream(zipFilename, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                using (ZipArchive archive = new ZipArchive(zipFileStream, ZipArchiveMode.Read))
-                {
-                    ZipArchiveEntry? siteFileEntry = archive.GetEntry(zipEntryFilename);
-
-                    if (siteFileEntry == null)
-                    {
-                        return null;
-                    }
-
-                    using (StreamReader sr = new StreamReader(siteFileEntry.Open()))
-                    {
-                        // This could probably be optimized
-                        var lineList = new List<string>();
-
-                        while (true)
-                        {
-                            var line = sr.ReadLine();
-
-                            if (line != null)
-                            {
-                                lineList.Add(line);
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-
-                        return lineList.ToArray();
-                    }
-                }
-            }
-        }
-
-        private static List<DataRecord> CompleteLastYearOfDailyData(List<DataRecord> temperatureRecords, ref DateTime date)
-        {
-            if (!temperatureRecords.Any() || date.DayOfYear == 1)
-            {
-                return temperatureRecords;
-            }
-
-            var endYear = date.Year;
-            do
-            {
-                temperatureRecords.Add(new DataRecord(date, null));
-                date = date.AddDays(1);
-            } while (endYear == date.Year);
-
-            return temperatureRecords;
-        }
-
-        private static List<DataRecord> CompleteLastYearOfMonthlyData(List<DataRecord> temperatureRecords, ref DateTime date)
-        {
-            if (!temperatureRecords.Any() || date.Month == 12)
-            {
-                return temperatureRecords;
-            }
-
-            var endYear = date.Year;
-            do
-            {
-                temperatureRecords.Add(new DataRecord((short)date.Year, (short)date.Month, null, null));
+                var record = new DataRecord(year, month, null, value);
+                dataRecords.Add(record.Key, record);
                 date = date.AddMonths(1);
-            } while (endYear == date.Year);
-
-            return temperatureRecords;
+            }
         }
 
-        private static int GetStartIndex(Regex regEx, string[] dataRows)
+        return dataRecords;
+    }
+
+    public static async Task<string[]> GetLinesInDataFileWithCascade(string dataFilePath)
+    {
+        string[]? lines = TryGetDataFromDatasetZipFile(dataFilePath);
+
+        if (lines == null)
         {
-            var index = 0;
-            while (!regEx.IsMatch(dataRows[index]))
+            lines = TryGetDataFromSingleEntryZipFile(dataFilePath);
+        }
+
+        if (lines == null)
+        {
+            lines = await TryGetDataFromUncompressedSingleFile(dataFilePath);
+        }
+
+        return lines;
+    }
+
+    static async Task<string[]?> TryGetDataFromUncompressedSingleFile(string siteFilePath)
+    {
+        if (File.Exists(siteFilePath))
+        {
+            return await File.ReadAllLinesAsync(siteFilePath);
+        }
+
+        return null;
+    }
+
+    static string[]? TryGetDataFromDatasetZipFile(string filePath)
+    {
+        string[] pathComponents =
+            filePath.Split(
+                new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
+                StringSplitOptions.RemoveEmptyEntries
+            );
+
+        var shallowestFolderName = pathComponents.First();
+
+        var datasetName = shallowestFolderName;
+
+        string zipPath = Path.Combine("Datasets", datasetName + ".zip");
+
+        if (!File.Exists(zipPath)) return null;
+
+        var zipEntryPath = string.Join('/', pathComponents.Skip(1));
+
+        Debug.WriteLine("Reading from zip " + zipPath);
+        return ReadLinesFromZipFileEntry(zipPath, zipEntryPath);
+    }
+
+    static string[]? TryGetDataFromSingleEntryZipFile(string filePath)
+    {
+        var zipPath = Path.ChangeExtension(filePath, ".zip");
+
+        if (!File.Exists(zipPath)) return null;
+
+        return ReadLinesFromZipFileEntry(zipPath, Path.GetFileName(filePath));
+    }
+
+    static string[]? ReadLinesFromZipFileEntry(string zipFilename, string zipEntryFilename)
+    {
+        using (FileStream zipFileStream = new FileStream(zipFilename, FileMode.Open, FileAccess.Read, FileShare.Read))
+        {
+            using (ZipArchive archive = new ZipArchive(zipFileStream, ZipArchiveMode.Read))
             {
-                index++;
-                if (index >= dataRows.Length)
+                ZipArchiveEntry? siteFileEntry = archive.GetEntry(zipEntryFilename);
+
+                if (siteFileEntry == null)
                 {
-                    throw new Exception("None of the data in the input file fits the regular expression.");
+                    return null;
+                }
+
+                using (StreamReader sr = new StreamReader(siteFileEntry.Open()))
+                {
+                    // This could probably be optimized
+                    var lineList = new List<string>();
+
+                    while (true)
+                    {
+                        var line = sr.ReadLine();
+
+                        if (line != null)
+                        {
+                            lineList.Add(line);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    return lineList.ToArray();
                 }
             }
-            return index;
         }
+    }
+
+    private static int GetStartIndex(Regex regEx, string[] dataRows)
+    {
+        var index = 0;
+        while (!regEx.IsMatch(dataRows[index]))
+        {
+            index++;
+            if (index >= dataRows.Length)
+            {
+                throw new Exception("None of the data in the input file fits the regular expression.");
+            }
+        }
+        return index;
     }
 }

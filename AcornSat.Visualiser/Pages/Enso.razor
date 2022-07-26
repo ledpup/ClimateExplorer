@@ -1,8 +1,10 @@
 ﻿@page "/enso"
 @using AcornSat.Core
+@using AcornSat.Visualiser.UiModel
 @using Blazorise
 @using Blazorise.Components
 @using Blazorise.Charts
+@using ClimateExplorer.Core.DataPreparation
 @using static AcornSat.Core.Enums
 
 <PageTitle>Climate explorer - ENSO</PageTitle>
@@ -225,23 +227,61 @@
     async Task OnSelectedChartTypeChanged(ChartType value)
     {
         SelectedChartType = value;
-        await HandleRedraw();
+        await Rebuild();
     }
 
     DataResolution SelectedResolution;
     async Task OnSelectedResolutionChanged(DataResolution value)
     {
         SelectedResolution = value;
-        EnsoData = (await DataService.GetDataSet(SelectedDataType, SelectedResolution, null, null)).ToList();
-        await HandleRedraw();
+        await Rebuild();
     }
 
     DataType SelectedDataType;
     async Task OnSelectedDataTypeChanged(DataType value)
     {
         SelectedDataType = value;
-        EnsoData = (await DataService.GetDataSet(SelectedDataType, SelectedResolution, null, null)).ToList();
+        await Rebuild();
+    }
+
+    async Task Rebuild()
+    {
+        EnsoData = 
+            await DataService.PostDataSet(
+                SelectedResolution == DataResolution.Yearly ? BinGranularities.ByYear : BinGranularities.ByYearAndMonth,
+                ContainerAggregationFunctions.Mean,
+                ContainerAggregationFunctions.Mean,
+                ContainerAggregationFunctions.Mean,
+                SeriesValueOptions.Value,
+                new SeriesSpecification[]
+                {
+                    new SeriesSpecification
+                    {
+                        DataAdjustment = null,
+                        DataSetDefinitionId = MapSelectedDataTypeToDataSetDefinitionId(SelectedDataType),
+                        DataType = SelectedDataType
+                    }
+                },
+                SeriesDerivationTypes.ReturnSingleSeries,
+                1.0f,
+                1.0f,
+                0.7f,
+                14
+            );
+
         await HandleRedraw();
+    }
+
+    static Guid MapSelectedDataTypeToDataSetDefinitionId(DataType dataType)
+    {
+        switch (dataType)
+        {
+            case DataType.MEIv2: return Guid.Parse("ffd5f5e2-d8df-4779-a7f4-f5d148505033");
+            case DataType.SOI: return Guid.Parse("c31270fa-b207-4d8f-b68e-4995698f1a4d");
+            case DataType.ONI: return Guid.Parse("1042147a-8625-4ee7-bb5a-f0f17795c393");
+            case DataType.Nino34: return Guid.Parse("bfbaa69b-c10d-4de3-a78c-1ed6ff307327");
+            default: throw new NotImplementedException($"DataType {dataType}");
+        }
     }
 
     Chart<float?> chart;
@@ -249,29 +289,28 @@
     [Inject]
     public IDataService DataService { get; set; }
 
-    List<DataSet> EnsoData { get; set; }
+    DataSet EnsoData { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         SelectedDataType = DataType.MEIv2;
         SelectedResolution = DataResolution.Yearly;
+
+        await Rebuild();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
-        {
-        }
     }
 
     async Task HandleRedraw()
     {
-        if (EnsoData == null)
+        if (EnsoData == null || chart == null)
         {
             return;
         }
 
-        var enso = EnsoData.Single().DataRecords;
+        var enso = EnsoData.DataRecords;
 
         object chartOptions = new
         {
@@ -312,11 +351,19 @@
         string[] labels = null;
         if (SelectedResolution == DataResolution.Yearly)
         {
-            labels = enso.Select(x => x.Year.ToString()).ToArray();
+            labels = 
+                enso
+                .Select(x => (YearBinIdentifier)BinIdentifier.Parse(x.BinId))
+                .Select(x => x.Label)
+                .ToArray();
         }
         else
         {
-            labels = enso.Select(x => $"{x.Month}/{x.Year}").ToArray();
+            labels = 
+                enso
+                .Select(x => (YearAndMonthBinIdentifier)BinIdentifier.Parse(x.BinId))
+                .Select(x => x.Label)
+                .ToArray();
         }
 
         var values = enso.Select(x => x.Value).ToList();
@@ -397,9 +444,7 @@
             {
                 Label = label,
                 Data = values,
-                //BorderColor = colour,
                 BackgroundColor = colour,
-                //PointBackgroundColor = colour,
                 Fill = true,
                 PointRadius = 2,
                 BorderDash = new List<int> { },
