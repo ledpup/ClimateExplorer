@@ -896,7 +896,9 @@ namespace AcornSat.Visualiser.Pages
                     chartSeries,
                     dataSet,
                     dataSet.DataAdjustment,
-                    $"{chartSeries.ChartSeries.FriendlyTitle} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}",
+                    string.IsNullOrWhiteSpace(chartSeries.ChartSeries.OverrideChartLabel) 
+                        ? $"{chartSeries.ChartSeries.FriendlyTitle} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}"
+                        : chartSeries.ChartSeries.OverrideChartLabel,
                     htmlColourCode);
 
                 if (chartSeries.ChartSeries.ShowTrendline)

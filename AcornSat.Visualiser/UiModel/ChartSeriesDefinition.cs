@@ -2,6 +2,7 @@
 using AcornSat.Core.ViewModel;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.ViewModel;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using static AcornSat.Core.Enums;
 
@@ -42,6 +43,8 @@ namespace AcornSat.Visualiser.UiModel
 
         // Transient view state
         public bool IsExpanded { get; set; }
+
+        public string OverrideChartLabel { get; set; }
 
         public override string ToString()
         {
