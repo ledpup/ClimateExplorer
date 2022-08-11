@@ -52,7 +52,7 @@
             var getCurrentPositionPromise =
                 new Promise((resolve, reject) => {
                     if (!navigator.geolocation) {
-                        reject({ errorCode: 0, message: 'This device does not support geolocation.' });
+                        reject({ errorCode: 255, message: 'This device does not support geolocation.' });
                     } else {
                         navigator.geolocation.getCurrentPosition(resolve, reject, null);
                     }
@@ -68,8 +68,8 @@
             ).catch(
                 // Ignored
                 (error) => {
-                    result.errorCode = error.errorCode;
-                    result.errorMessage = error.errorMessage;
+                    result.errorCode = error.code;
+                    result.errorMessage = error.message;
                 }
             );
 
