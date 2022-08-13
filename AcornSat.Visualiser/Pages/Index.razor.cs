@@ -851,7 +851,7 @@ namespace AcornSat.Visualiser.Pages
                     Grid = new { DrawOnChartArea = false },
                     Title = new
                     {
-                        Text = "Days of 35°C and above",
+                        Text = "Days of 35°C or above",
                         Display = true,
                         Color = "red",
                     },
@@ -941,7 +941,7 @@ namespace AcornSat.Visualiser.Pages
             return seriesTransformation switch
             {
                 SeriesTransformations.IsFrosty => "Number of days of frost",
-                SeriesTransformations.Above35 => "Number of days 35°C and above",
+                SeriesTransformations.Above35 => "Number of days 35°C or above",
                 _ => defaultLabel,
             };
         }
