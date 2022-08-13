@@ -44,8 +44,6 @@ namespace AcornSat.Visualiser.UiModel
         // Transient view state
         public bool IsExpanded { get; set; }
 
-        public string OverrideChartLabel { get; set; }
-
         public override string ToString()
         {
             return $"CSD: {BinGranularity} | {Smoothing} | {Aggregation} | {Value} | {DisplayStyle}";

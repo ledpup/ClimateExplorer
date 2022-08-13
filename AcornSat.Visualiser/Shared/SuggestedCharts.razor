@@ -91,7 +91,7 @@
         var tempMaxUnadjustedOrUnspecified = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMax,        DataAdjustment.Unadjusted, true,  throwIfNoMatch: false);
         var rainfall                       = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.Rainfall,       null,                             throwIfNoMatch: false);
         var solarRadiation                 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.SolarRadiation, null,                             throwIfNoMatch: false);
-        var tempMinUnadjustedOrUnspecified = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMin,        DataAdjustment.Unadjusted, true,  throwIfNoMatch: false);
+        var tempMin                        = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMin,        DataAdjustment.Adjusted,   true,  throwIfNoMatch: false);
             
         var dsdMeiV2 = DataSetDefinitions.Single(x => x.Id == Guid.Parse("ffd5f5e2-d8df-4779-a7f4-f5d148505033"));
         var mdMeiV2 = dsdMeiV2.MeasurementDefinitions.Single(x => x.DataType == DataType.MEIv2);
@@ -290,39 +290,37 @@
             new SuggestedChartPresetModelWithVariants()
             {
                 Title = "Days of extremes",
-                Description = "Number of frosty days (<= 2°C) and days above 35°C with 5-year smoothing",
+                Description = "Number of frosty days (<= 2.2°C) and days 35°C and above; 10-year smoothing",
                 ChartSeriesList =
                     new List<ChartSeriesDefinition>()
                     {
                         new ChartSeriesDefinition()
                         {
-                            
+
                             SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMinUnadjustedOrUnspecified),
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
                             Aggregation = SeriesAggregationOptions.Sum,
                             BinGranularity = BinGranularities.ByYear,
                             Smoothing = SeriesSmoothingOptions.MovingAverage,
-                            SmoothingWindow = 5,
+                            SmoothingWindow = 10,
                             Value = SeriesValueOptions.Value,
                             Year = null,
-                            DisplayStyle = SeriesDisplayStyle.Bar,
-                            SeriesTransformation = SeriesTransformations.IsFrosty,
-                            OverrideChartLabel = "Number of days of Frost",
-                            //OverrideChartYAxisLabel = "Days of Frost",
+                            DisplayStyle = SeriesDisplayStyle.Line,
+                            SeriesTransformation = SeriesTransformations.Above35,
                         },
                         new ChartSeriesDefinition()
                         {
                             
                             SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMaxUnadjustedOrUnspecified),
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMin),
                             Aggregation = SeriesAggregationOptions.Sum,
                             BinGranularity = BinGranularities.ByYear,
                             Smoothing = SeriesSmoothingOptions.MovingAverage,
-                            SmoothingWindow = 5,
+                            SmoothingWindow = 10,
                             Value = SeriesValueOptions.Value,
                             Year = null,
-                            DisplayStyle = SeriesDisplayStyle.Bar,
-                            SeriesTransformation = SeriesTransformations.Above35
+                            DisplayStyle = SeriesDisplayStyle.Line,
+                            SeriesTransformation = SeriesTransformations.IsFrosty,
                         }
                     }
             }

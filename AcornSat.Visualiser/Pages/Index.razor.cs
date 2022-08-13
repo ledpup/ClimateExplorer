@@ -780,7 +780,7 @@ namespace AcornSat.Visualiser.Pages
                 },
                 DegreesCelsius = new
                 {
-                    Display = ChartSeriesList.Any(x => x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.DegreesCelsius || x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.DegreesCelsiusAnomaly),
+                    Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.Identity && (x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.DegreesCelsius || x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.DegreesCelsiusAnomaly)),
                     Axis = "y",
                     Position = "left",
                     Grid = new { DrawOnChartArea = false },
@@ -828,6 +828,32 @@ namespace AcornSat.Visualiser.Pages
                         Text = UnitOfMeasureLabel(UnitOfMeasure.MegajoulesPerSquareMetre),
                         Display = true,
                         Color = "blue",
+                    },
+                },
+                DaysOfFrost = new
+                {
+                    Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.IsFrosty),
+                    Axis = "y",
+                    Position = "left",
+                    Grid = new { DrawOnChartArea = false },
+                    Title = new
+                    {
+                        Text = "Days of frost",
+                        Display = true,
+                        Color = "blue",
+                    },
+                },
+                DaysAbove35C = new
+                {
+                    Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.Above35),
+                    Axis = "y",
+                    Position = "right",
+                    Grid = new { DrawOnChartArea = false },
+                    Title = new
+                    {
+                        Text = "Days of 35°C and above",
+                        Display = true,
+                        Color = "red",
                     },
                 },
             };
@@ -896,9 +922,7 @@ namespace AcornSat.Visualiser.Pages
                     chartSeries,
                     dataSet,
                     dataSet.DataAdjustment,
-                    string.IsNullOrWhiteSpace(chartSeries.ChartSeries.OverrideChartLabel) 
-                        ? $"{chartSeries.ChartSeries.FriendlyTitle} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}"
-                        : chartSeries.ChartSeries.OverrideChartLabel,
+                    GetChartLabel(chartSeries.ChartSeries.SeriesTransformation, $"{chartSeries.ChartSeries.FriendlyTitle} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}"),
                     htmlColourCode);
 
                 if (chartSeries.ChartSeries.ShowTrendline)
@@ -910,6 +934,16 @@ namespace AcornSat.Visualiser.Pages
             }
 
             return trendlines;
+        }
+
+        private string GetChartLabel(SeriesTransformations seriesTransformation, string defaultLabel)
+        {
+            return seriesTransformation switch
+            {
+                SeriesTransformations.IsFrosty => "Number of days of frost",
+                SeriesTransformations.Above35 => "Number of days 35°C and above",
+                _ => defaultLabel,
+            };
         }
 
         void BuildProcessedDataSets(List<SeriesWithData> chartSeriesWithData, bool useMostRecentStartYear = true)

@@ -38,7 +38,8 @@ namespace AcornSat.Visualiser.UiLogic
             string label, 
             List<float?> values, 
             ChartColor chartColor, 
-            UnitOfMeasure unitOfMeasure)
+            UnitOfMeasure unitOfMeasure,
+            SeriesTransformations seriesTransformations)
         {
             var count = values.Count;
             var colour = new List<string>();
@@ -58,10 +59,20 @@ namespace AcornSat.Visualiser.UiLogic
                     PointHoverBackgroundColor = colour,
                     BorderDash = new List<int> { },
                     //Tension = 0.1f,
-                    YAxisID = unitOfMeasure.ToString().ToLowerFirstChar(),
+                    YAxisID = GetYAxisId(seriesTransformations, unitOfMeasure),
                 };
 
             return lineChartDataset;
+        }
+
+        private static string GetYAxisId(SeriesTransformations seriesTransformations, UnitOfMeasure unitOfMeasure)
+        {
+            return seriesTransformations switch
+            {
+                SeriesTransformations.IsFrosty  => "daysOfFrost",
+                SeriesTransformations.Above35   => "daysAbove35C",
+                _                               => unitOfMeasure.ToString().ToLowerFirstChar()
+            };
         }
 
         public static BarChartDataset<float?> GetBarChartDataset(
@@ -69,9 +80,10 @@ namespace AcornSat.Visualiser.UiLogic
             List<float?> values, 
             UnitOfMeasure unitOfMeasure, 
             bool? absoluteValues, 
-            bool redPositive = true)
+            bool redPositive,
+            SeriesTransformations seriesTransformations)
         {
-            var colour = Enso.GetBarChartColourSet(values, redPositive);
+            var colour = Enso.GetBarChartColourSet(values, seriesTransformations == SeriesTransformations.IsFrosty ? false : redPositive);
 
             return 
                 new BarChartDataset<float?>
@@ -80,7 +92,7 @@ namespace AcornSat.Visualiser.UiLogic
                     Data = values.Select(x => absoluteValues.GetValueOrDefault() && x.HasValue ? MathF.Abs(x.Value) : x).ToList(),
                     BorderColor = colour,
                     BackgroundColor = colour,
-                    YAxisID = unitOfMeasure.ToString().ToLowerFirstChar(),
+                    YAxisID = GetYAxisId(seriesTransformations, unitOfMeasure),
                 };
         }
 
@@ -91,7 +103,8 @@ namespace AcornSat.Visualiser.UiLogic
             ChartType chartType, 
             ChartColor? chartColour = null, 
             bool? absoluteValues = false, 
-            bool redPositive = true)
+            bool redPositive = true,
+            SeriesTransformations seriesTransformations = SeriesTransformations.Identity)
         {
             switch (chartType)
             {
@@ -100,9 +113,9 @@ namespace AcornSat.Visualiser.UiLogic
                     {
                         throw new NullReferenceException(nameof(chartColour));
                     }
-                    return GetLineChartDataset(label, values, chartColour.Value, unitOfMeasure);
+                    return GetLineChartDataset(label, values, chartColour.Value, unitOfMeasure, seriesTransformations);
                 case ChartType.Bar:
-                    return GetBarChartDataset(label, values, unitOfMeasure, absoluteValues, redPositive);
+                    return GetBarChartDataset(label, values, unitOfMeasure, absoluteValues, redPositive, seriesTransformations);
             }
 
             throw new NotImplementedException($"ChartType {chartType}");
@@ -162,7 +175,7 @@ namespace AcornSat.Visualiser.UiLogic
                 ? ChartType.Line
                 : ChartType.Bar;
 
-            var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour, absoluteValues, redPositive);
+            var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour, absoluteValues, redPositive, chartSeries.ChartSeries.SeriesTransformation);
 
             await chart.AddDataSet(chartDataset);
         }
