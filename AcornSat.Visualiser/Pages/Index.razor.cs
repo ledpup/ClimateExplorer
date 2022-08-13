@@ -636,7 +636,8 @@ namespace AcornSat.Visualiser.Pages
                         csd.BinGranularity.IsLinear() ? 1.0f : SelectedDayGroupThreshold,
                         // We always require that the cup have at least SelectedDayGroupThreshold of its entries populated
                         SelectedDayGroupThreshold,
-                        SelectedDayGrouping
+                        SelectedDayGrouping,
+                        csd.SeriesTransformation
                     );
 
                 datasetsToReturn.Add(
@@ -779,7 +780,7 @@ namespace AcornSat.Visualiser.Pages
                 },
                 DegreesCelsius = new
                 {
-                    Display = ChartSeriesList.Any(x => x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.DegreesCelsius || x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.DegreesCelsiusAnomaly),
+                    Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.Identity && (x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.DegreesCelsius || x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.DegreesCelsiusAnomaly)),
                     Axis = "y",
                     Position = "left",
                     Grid = new { DrawOnChartArea = false },
@@ -827,6 +828,32 @@ namespace AcornSat.Visualiser.Pages
                         Text = UnitOfMeasureLabel(UnitOfMeasure.MegajoulesPerSquareMetre),
                         Display = true,
                         Color = "blue",
+                    },
+                },
+                DaysOfFrost = new
+                {
+                    Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.IsFrosty),
+                    Axis = "y",
+                    Position = "left",
+                    Grid = new { DrawOnChartArea = false },
+                    Title = new
+                    {
+                        Text = "Days of frost",
+                        Display = true,
+                        Color = "blue",
+                    },
+                },
+                DaysAbove35C = new
+                {
+                    Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.Above35),
+                    Axis = "y",
+                    Position = "right",
+                    Grid = new { DrawOnChartArea = false },
+                    Title = new
+                    {
+                        Text = "Days of 35°C or above",
+                        Display = true,
+                        Color = "red",
                     },
                 },
             };
@@ -895,7 +922,7 @@ namespace AcornSat.Visualiser.Pages
                     chartSeries,
                     dataSet,
                     dataSet.DataAdjustment,
-                    $"{chartSeries.ChartSeries.FriendlyTitle} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}",
+                    GetChartLabel(chartSeries.ChartSeries.SeriesTransformation, $"{chartSeries.ChartSeries.FriendlyTitle} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}"),
                     htmlColourCode);
 
                 if (chartSeries.ChartSeries.ShowTrendline)
@@ -907,6 +934,16 @@ namespace AcornSat.Visualiser.Pages
             }
 
             return trendlines;
+        }
+
+        private string GetChartLabel(SeriesTransformations seriesTransformation, string defaultLabel)
+        {
+            return seriesTransformation switch
+            {
+                SeriesTransformations.IsFrosty => "Number of days of frost",
+                SeriesTransformations.Above35 => "Number of days 35°C or above",
+                _ => defaultLabel,
+            };
         }
 
         void BuildProcessedDataSets(List<SeriesWithData> chartSeriesWithData, bool useMostRecentStartYear = true)
@@ -1196,7 +1233,8 @@ namespace AcornSat.Visualiser.Pages
                                     Smoothing = csd.Smoothing,
                                     SmoothingWindow = csd.SmoothingWindow,
                                     Value = csd.Value,
-                                    Year = csd.Year
+                                    Year = csd.Year,
+                                    SeriesTransformation = csd.SeriesTransformation,
                                 }
                             );
                         }

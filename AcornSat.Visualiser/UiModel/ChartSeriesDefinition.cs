@@ -2,6 +2,7 @@
 using AcornSat.Core.ViewModel;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.ViewModel;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using static AcornSat.Core.Enums;
 
@@ -19,6 +20,7 @@ namespace AcornSat.Visualiser.UiModel
         public SeriesDerivationTypes SeriesDerivationType { get; set; }
         public BinGranularities BinGranularity { get; set; }
         public short? Year { get; set; }
+        public SeriesTransformations SeriesTransformation { get; set; }
 
         // Data presentation fields
         public SeriesSmoothingOptions Smoothing { get; set; }

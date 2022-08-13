@@ -132,7 +132,8 @@
                         1.0f,
                         1.0f,
                         0.7f,
-                        14);
+                        14,
+                        SeriesTransformations.Identity);
 
                 // Filter to records that have values
                 _maxTempAnomalyRecords =
@@ -163,7 +164,8 @@
                         1.0f,
                         1.0f,
                         0.7f,
-                        14);
+                        14,
+                        SeriesTransformations.Identity);
 
                 var warmingIndex = WarmingIndexCalculator.CalculateWarmingIndex(series.DataRecords);
 

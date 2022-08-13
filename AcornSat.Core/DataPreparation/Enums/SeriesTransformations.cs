@@ -6,6 +6,8 @@
         IsPositive,
         IsNegative,
         EnsoCategory,
-        Negate
+        Negate,
+        IsFrosty,
+        Above35
     }
 }

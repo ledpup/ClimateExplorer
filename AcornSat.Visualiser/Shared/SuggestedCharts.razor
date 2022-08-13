@@ -91,6 +91,7 @@
         var tempMaxUnadjustedOrUnspecified = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMax,        DataAdjustment.Unadjusted, true,  throwIfNoMatch: false);
         var rainfall                       = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.Rainfall,       null,                             throwIfNoMatch: false);
         var solarRadiation                 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.SolarRadiation, null,                             throwIfNoMatch: false);
+        var tempMin                        = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMin,        DataAdjustment.Adjusted,   true,  throwIfNoMatch: false);
             
         var dsdMeiV2 = DataSetDefinitions.Single(x => x.Id == Guid.Parse("ffd5f5e2-d8df-4779-a7f4-f5d148505033"));
         var mdMeiV2 = dsdMeiV2.MeasurementDefinitions.Single(x => x.DataType == DataType.MEIv2);
@@ -280,6 +281,46 @@
                             Value = SeriesValueOptions.Anomaly,
                             Year = null,
                             DisplayStyle = SeriesDisplayStyle.Bar
+                        }
+                    }
+            }
+        );
+
+        SuggestedPresets.Add(
+            new SuggestedChartPresetModelWithVariants()
+            {
+                Title = "Days of extremes",
+                Description = "Number of frosty days (<= 2.2°C) and days 35°C or above; 10-year smoothing",
+                ChartSeriesList =
+                    new List<ChartSeriesDefinition>()
+                    {
+                        new ChartSeriesDefinition()
+                        {
+
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
+                            Aggregation = SeriesAggregationOptions.Sum,
+                            BinGranularity = BinGranularities.ByYear,
+                            Smoothing = SeriesSmoothingOptions.MovingAverage,
+                            SmoothingWindow = 10,
+                            Value = SeriesValueOptions.Value,
+                            Year = null,
+                            DisplayStyle = SeriesDisplayStyle.Line,
+                            SeriesTransformation = SeriesTransformations.Above35,
+                        },
+                        new ChartSeriesDefinition()
+                        {
+                            
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMin),
+                            Aggregation = SeriesAggregationOptions.Sum,
+                            BinGranularity = BinGranularities.ByYear,
+                            Smoothing = SeriesSmoothingOptions.MovingAverage,
+                            SmoothingWindow = 10,
+                            Value = SeriesValueOptions.Value,
+                            Year = null,
+                            DisplayStyle = SeriesDisplayStyle.Line,
+                            SeriesTransformation = SeriesTransformations.IsFrosty,
                         }
                     }
             }

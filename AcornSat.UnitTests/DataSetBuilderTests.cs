@@ -515,12 +515,12 @@ namespace AcornSat.UnitTests
         }
 
 
-        TemporalDataPoint[] BuildConstantTemporalDataPointArrayFor1990()
+        TemporalDataPoint[] BuildConstantTemporalDataPointArrayFor1990(float? value = 10)
         {
             return 
                 Enumerable.Range(0, 365)
                 .Select(x => new TemporalDataPoint(new DateOnly(1990, 1, 1)
-                .AddDays(x), 10))
+                .AddDays(x), value))
                 .ToArray();
         }
 

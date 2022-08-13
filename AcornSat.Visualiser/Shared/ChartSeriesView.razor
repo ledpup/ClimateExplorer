@@ -92,6 +92,19 @@
                         </td>
                     </tr>
                     <tr>
+                        <td>Transformation</td>
+                        <td>
+                            <Select TValue="SeriesTransformations" 
+                                    Size="Size.ExtraSmall"
+                                    SelectedValue="@ChartSeries.SeriesTransformation"
+                                    SelectedValueChanged="@OnTransformationChanged">
+                                <SelectItem Value="SeriesTransformations.Identity">Identity</SelectItem>
+                                <SelectItem Value="SeriesTransformations.Above35">Days above 35°C</SelectItem>
+                                <SelectItem Value="SeriesTransformations.IsFrosty">Days of frost</SelectItem>
+                            </Select>
+                        </td>
+                    </tr>
+                    <tr>
                         <td>Display style</td>
                         <td>
                             <Select TValue="SeriesDisplayStyle" 
@@ -232,6 +245,13 @@
     async Task OnDisplayStyleChanged(SeriesDisplayStyle s)
     {
         ChartSeries.DisplayStyle = s;
+
+        await OnSeriesChanged.InvokeAsync();
+    }
+
+    async Task OnTransformationChanged(SeriesTransformations s)
+    {
+        ChartSeries.SeriesTransformation = s;
 
         await OnSeriesChanged.InvokeAsync();
     }
