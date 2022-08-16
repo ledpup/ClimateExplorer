@@ -1,0 +1,455 @@
+﻿@page "/enso"
+@using ClimateExplorer.Core
+@using ClimateExplorer.Visualiser.UiModel
+@using Blazorise
+@using Blazorise.Components
+@using Blazorise.Charts
+@using ClimateExplorer.Core.DataPreparation
+@using static ClimateExplorer.Core.Enums
+
+<PageTitle>Climate explorer - ENSO</PageTitle>
+
+<Collapsible Title="About the ENSO" CollapserSize="Collapsible.CollapserSizes.Large" ShadeBackground="true">
+    <Content>
+        <div class="enso-about-content">
+            <p>
+                The El Niño–Southern Oscillation (ENSO) is a climate pattern of Pacific ocean temperatures and air pressures
+                that strongly influences weather around the Pacific. The oscillation has three phases. They are:
+            </p>
+
+            <ul>
+                <li>
+                    Index values of <strong>greater than 0.5</strong> (or &lt; -0.5 for SOI) indicate an <strong>El Niño</strong> event ("little boy" in Spanish). <span style="color:red;">RED on charts.</span>
+                </li>
+                <li>
+                    Index values of <strong>less than -0.5</strong> (or &gt; 0.5 for SOI) indicate a <strong>La Niña</strong> event ("little girl" in Spanish). <span style="color:blue;">BLUE on charts.</span>
+                </li>
+                <li>
+                    Index values between -0.5 and 0.5 indicate normal conditions.
+                </li>
+            </ul>
+
+            <p>
+                The datasets on this page measure the ENSO climate pattern over time.
+            </p>
+
+            <table class="factor-table">
+                <tr>
+                    <td></td>
+                    <th>Negative ENSO</th>
+                    <th>Neutral ENSO</th>
+                    <th>Positive ENSO</th>
+                </tr>
+                <tr>
+                    <th>East Pacific ocean temperatures</th>
+                    <td>Lower (La Niña)</td>
+                    <td></td>
+                    <td>Higher (El Niño)</td>
+                </tr>
+                <tr>
+                    <th>SOI</th>
+                    <td>Positive (!)</td>
+                    <td></td>
+                    <td>Negative (!)</td>
+                </tr>
+                <tr>
+                    <th>West Pacific atmospheric pressures</th>
+                    <td>Lower</td>
+                    <td></td>
+                    <td>Higher</td>
+                </tr>
+                <tr>
+                    <th>Walker circulation (inc. trade winds)</th>
+                    <td>Weak/reversed</td>
+                    <td>Normal</td>
+                    <td>Normal</td>
+                </tr>
+                <tr>
+                    <th>Global surface temperature</th>
+                    <td>~1 year drop in global avg. surface temp</td>
+                    <td></td>
+                    <td>~1 year increase in global avg. surface temp</td>
+                </tr>
+                <tr>
+                    <th>South American weather pattern</th>
+                    <td></td>
+                    <td></td>
+                    <td>Warm and very wet Apr-Oct</td>
+                </tr>
+                <tr>
+                    <th>North American weather pattern</th>
+                    <td>Decreased wind shear leading to an <a href="https://www.weather.gov/jan/el_nino_and_la_nina#How_do_El_Nino_and_La_Nina_affect_the_Atlantic_hurricane_season_">increase in Atlantic hurricane frequency and intensity</a>. Increase in <a href="https://en.wikipedia.org/wiki/Southwestern_North_American_megadrought">south-western drought</a>. Higher bushfire risk.</td>
+                    <td></td>
+                    <td>Increased vertical wind shear, reducing the Atlantic hurricane season. <a href="https://www.weather.gov/jan/el_nino_and_la_nina#How_do_El_Nino_and_La_Nina_affect">Cooler weather with increased rainfall</a>.</td>
+                </tr>
+                <tr>
+                    <th>East Australian weather pattern</th>
+                    <td>Increased rainfall, flooding. Earlier monsoon start. More snow depth. Cooler daytime temperatures in South, fewer extreme highs.</td>
+                    <td></td>
+                    <td>Reduced rainfall. Delayed monsoon start. Less snow depth. Warmer daytime temperatures in South, often cooler overnight temperatures (reduced cloud cover). Higher bushfire risk.</td>
+                </tr>
+                <tr>
+                    <th>Climate models generally predict</th>
+                    <td>Decrease in frequency</td>
+                    <td></td>
+                    <td>Increase in frequency</td>
+                </tr>
+                <tr>
+                    <th>Recent observations - 21st Century</th>
+                    <td>Increase in frequency</td>
+                    <td></td>
+                    <td>Decrease in frequency</td>
+                </tr>
+            </table>
+        </div>
+    </Content>
+</Collapsible>
+
+
+<Collapsible Title="ENSO Charts" CollapserSize="Collapsible.CollapserSizes.Large" ShadeBackground="false">
+    <Content>
+        <Row>
+            <Column ColumnSize="ColumnSize.Is5">
+                Index
+                <Select TValue="DataType" SelectedValue="@SelectedDataType" SelectedValueChanged="@OnSelectedDataTypeChanged">
+                    <SelectItem Value="@DataType.MEIv2">Multivariate ENSO index (MEI.v2)</SelectItem>
+                    <SelectItem Value="@DataType.Nino34">Niño 3.4</SelectItem>
+                    <SelectItem Value="@DataType.ONI">Oceanic Niño Index (ONI)</SelectItem>
+                    <SelectItem Value="@DataType.SOI">Inverted Southern Oscillation Index (SOI)</SelectItem>
+                </Select>
+            </Column>
+            <Column ColumnSize="ColumnSize.Is2">
+                Resolution
+                <Select TValue="DataResolution" SelectedValue="@SelectedResolution" SelectedValueChanged="@OnSelectedResolutionChanged">
+                    <SelectItem Value="@DataResolution.Yearly">Yearly</SelectItem>
+                    <SelectItem Value="@DataResolution.Monthly">Monthly</SelectItem>
+                </Select>
+            </Column>
+        </Row>
+
+        <Row>
+            <Column ColumnSize="ColumnSize.Is5">
+                <div class="selected-index-info">
+                    @switch (SelectedDataType)
+                    {
+                        case DataType.MEIv2:
+                            <Collapsible Title="About the MEI">
+                                <Content>
+                                    <p>
+                                        The Multivariate ENSO index (MEI.v2) is a measure of the strength and direction of the El Niño–Southern Oscillation.
+                                        It is a single figure index calculated based on sea level pressure, surface wind, sea surface temperature and outgoing
+                                        longwave radiation over a large area of the tropical Pacific (30 deg S to 30 deg N and 100 deg E to 70 deg W). Because it
+                                        draws on multiple relevant measurement types, MEI is less susceptible to misleading variation because of unusual conditions
+                                        affecting a single measurement type. However, the process of dimensional reduction from multiple measurements down to a
+                                        single index value is relatively complex, and the extensive input dataset requirement means that MEI cannot directly be
+                                        extended as far back as simpler indices.
+                                    </p>
+                                    <p>
+                                        More information:
+                                        <a target="_blank" href="https://psl.noaa.gov/enso/mei/">Multivariate ENSO Index Version 2 (MEI.v2)</a>
+                                    </p>
+                                </Content>
+                            </Collapsible>
+
+                            break;
+
+                        case DataType.SOI:
+                            <Collapsible Title="About the SOI">
+                                <Content>
+                                    <p>
+                                        The Southern Oscillation Index is calculated based on atmospheric pressure difference between Tahiti and Darwin. Higher values of the SOI
+                                        indicate that Tahiti has higher atmospheric pressure, relative to its typical value, than Darwin does relative to <em>its</em> typical value.
+                                        High values of the SOI correlate with cold waters in the eastern tropical Pacific.
+                                    </p>
+                                    <p>
+                                        Note that unlike other ENSO indexes, positive values of the SOI indicate La Niña and negative values indicate El Niño. Because of this we have inverted the values in the SOI dataset and created the ISOI dataset. The ISOI can be read the same way as the other ENSO indexes.
+                                    </p>
+                                    <p>
+                                        More information:
+                                        <a target="_blank" href="https://www.ncdc.noaa.gov/teleconnections/enso/soi">Southern Oscillation Index (SOI)</a> at the NOAA
+                                    </p>
+                                </Content>
+                            </Collapsible>
+
+                            break;
+
+                        case DataType.Nino34:
+                            <Collapsible Title="About the Niño 3.4 index">
+                                <Content>
+                                    <p>
+                                        The Niño 3.4 index is calculated as a 3-month running average of sea surface temperature measurements around the equator
+                                        in the East Pacific (5 deg N to 5 deg C, 170 deg W to 120 deg W), and then expressed as an anomaly (i.e. difference from the average).
+                                        Niño 3.4 conditions of +0.4 deg C or higher are considered El Niño, and -0.4 deg C or lower are considered La Niña.
+                                    </p>
+                                    <p>
+                                        More information:
+                                        <a target="_blank" href="https://climatedataguide.ucar.edu/climate-data/nino-sst-indices-nino-12-3-34-4-oni-and-tni">Climate Data Nino SST Indices (Nino 1+2, 3, 3.4, 4; ONI and TNI)</a>
+                                    </p>
+                                </Content>
+                            </Collapsible>
+
+                            break;
+
+                        case DataType.ONI:
+                            <Collapsible Title="About Oceanic Niño Index (ONI)">
+                                <Content>
+                                    <p>
+                                        The Oceanic Niño Index (ONI) is calculated from 3-month running averages of sea surface temperature measurements from the same area
+                                        as Niño 3.4 (around the equator in the East Pacific, 5 deg N to 5 deg C, 170 deg W to 120 deg W), and then expressed as an anomaly
+                                        (i.e. difference from a 30 year rolling average). ONI conditions of +0.5 deg C or higher are considered El Niño, and -0.5 deg C or lower
+                                        are considered La Niña. El Niño or La Niña conditions must prevail for at least five consecutive months to be considered an El Niño or
+                                        La Niña event.
+                                    </p>
+                                    <p>
+                                        More information:
+                                        <a target="_blank" href="https://www.climate.gov/news-features/understanding-climate/climate-variability-oceanic-ni%C3%B1o-index">Climate Variability: Oceanic Niño Index</a>
+                                    </p>
+                                </Content>
+                            </Collapsible>
+
+                            break;
+                    }
+                </div>
+            </Column>
+        </Row>
+
+        <div style="min-height: 40px"></div>
+
+        <div class="chart">
+            <Chart @ref="chart" TItem="float?" Type="@SelectedChartType" />
+        </div>
+    </Content>
+</Collapsible>
+
+@code {
+
+    ChartType SelectedChartType = ChartType.Bar;
+    async Task OnSelectedChartTypeChanged(ChartType value)
+    {
+        SelectedChartType = value;
+        await Rebuild();
+    }
+
+    DataResolution SelectedResolution;
+    async Task OnSelectedResolutionChanged(DataResolution value)
+    {
+        SelectedResolution = value;
+        await Rebuild();
+    }
+
+    DataType SelectedDataType;
+    async Task OnSelectedDataTypeChanged(DataType value)
+    {
+        SelectedDataType = value;
+        await Rebuild();
+    }
+
+    async Task Rebuild()
+    {
+        EnsoData = 
+            await DataService.PostDataSet(
+                SelectedResolution == DataResolution.Yearly ? BinGranularities.ByYear : BinGranularities.ByYearAndMonth,
+                ContainerAggregationFunctions.Mean,
+                ContainerAggregationFunctions.Mean,
+                ContainerAggregationFunctions.Mean,
+                SeriesValueOptions.Value,
+                new SeriesSpecification[]
+                {
+                    new SeriesSpecification
+                    {
+                        DataAdjustment = null,
+                        DataSetDefinitionId = MapSelectedDataTypeToDataSetDefinitionId(SelectedDataType),
+                        DataType = SelectedDataType
+                    }
+                },
+                SeriesDerivationTypes.ReturnSingleSeries,
+                1.0f,
+                1.0f,
+                0.7f,
+                14,
+                SeriesTransformations.Identity
+            );
+
+        await HandleRedraw();
+    }
+
+    static Guid MapSelectedDataTypeToDataSetDefinitionId(DataType dataType)
+    {
+        switch (dataType)
+        {
+            case DataType.MEIv2: return Guid.Parse("ffd5f5e2-d8df-4779-a7f4-f5d148505033");
+            case DataType.SOI: return Guid.Parse("c31270fa-b207-4d8f-b68e-4995698f1a4d");
+            case DataType.ONI: return Guid.Parse("1042147a-8625-4ee7-bb5a-f0f17795c393");
+            case DataType.Nino34: return Guid.Parse("bfbaa69b-c10d-4de3-a78c-1ed6ff307327");
+            default: throw new NotImplementedException($"DataType {dataType}");
+        }
+    }
+
+    Chart<float?> chart;
+
+    [Inject]
+    public IDataService DataService { get; set; }
+
+    DataSet EnsoData { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        SelectedDataType = DataType.MEIv2;
+        SelectedResolution = DataResolution.Yearly;
+
+        await Rebuild();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+    }
+
+    async Task HandleRedraw()
+    {
+        if (EnsoData == null || chart == null)
+        {
+            return;
+        }
+
+        var enso = EnsoData.DataRecords;
+
+        object chartOptions = new
+        {
+            Responsive = true,
+            MaintainAspectRatio = false,
+            SpanGaps = false,
+            Plugins = new
+            {
+                Title = new
+                {
+                    Text = $"{SelectedDataType} {(SelectedResolution == DataResolution.Yearly ? "Yearly Average" : "Monthly")}",
+                    Display = true
+                },
+            },
+            Scales = new
+            {
+                Y = new
+                {
+                    Title = new
+                    {
+                        Text = "Index values",
+                        Display = true,
+                        Color = "blue",
+                    }
+                },
+                X = new
+                {
+                    Title = new
+                    {
+                        Text = SelectedResolution == DataResolution.Yearly ? "Year" : "Month/Year",
+                        Display = true,
+                        Color = "blue",
+                    }
+                }
+            }
+        };
+
+        string[] labels = null;
+        if (SelectedResolution == DataResolution.Yearly)
+        {
+            labels = 
+                enso
+                .Select(x => (YearBinIdentifier)BinIdentifier.Parse(x.BinId))
+                .Select(x => x.Label)
+                .ToArray();
+        }
+        else
+        {
+            labels = 
+                enso
+                .Select(x => (YearAndMonthBinIdentifier)BinIdentifier.Parse(x.BinId))
+                .Select(x => x.Label)
+                .ToArray();
+        }
+
+        var values = enso.Select(x => x.Value).ToList();
+
+        await chart.Clear();
+        await chart.SetOptionsObject(chartOptions);
+        await chart.AddLabels(labels);
+        if (SelectedChartType == ChartType.Bar)
+        {
+
+            var dataSet = GetBarChartDataset($"{SelectedDataType} mean values", values);
+            await chart.AddDataSet(dataSet);
+        }
+        else
+        {
+            var dataSet = GetLineChartDataset($"{SelectedDataType} mean values", values);
+            await chart.AddDataSet(dataSet);
+        }
+        await chart.Update();
+        await chart.Resize();
+    }
+
+    public static List<string> GetBarChartColourSet(List<float?> values, bool redPositive = true)
+    {
+        var count = values.Count;
+
+        var min = (redPositive ? values.Min() : values.Max()).Value;
+        var max = (redPositive ? values.Max() : values.Min()).Value;
+
+        var colour = new List<string>();
+        for (var i = 0; i < count; i++)
+        {
+            ChartColor chartColor;
+            if (values[i].HasValue)
+            {
+                var adjustedValue = values[i].Value * (redPositive ? 1f : -1f);
+                if (Math.Abs(adjustedValue) < .5)
+                {
+                    chartColor = ChartColor.FromHtmlColorCode("#000000");
+                }
+                else if (adjustedValue > 0)
+                {
+                    chartColor = ChartColor.FromRgba((byte)(63 + (Math.Abs(adjustedValue / max)) * 192), 0, 0, 1f);
+                }
+                else
+                {
+                    chartColor = ChartColor.FromRgba(0, 0, (byte)(63 + (Math.Abs(adjustedValue / min)) * 192), 1f);
+                }
+                colour.Add(chartColor);
+            }
+            else
+            {
+                colour.Add(null);
+            }
+        }
+
+        return colour;
+    }
+
+    BarChartDataset<float?> GetBarChartDataset(string label, List<float?> values)
+    {
+        var colour = GetBarChartColourSet(values, true);
+
+        return new BarChartDataset<float?>
+            {
+                Label = label,
+                Data = values,
+                BorderColor = colour,
+                BackgroundColor = colour,
+            };
+    }
+
+    LineChartDataset<float?> GetLineChartDataset(string label, List<float?> values)
+    {
+        var colour = GetBarChartColourSet(values);
+
+        return new LineChartDataset<float?>
+            {
+                Label = label,
+                Data = values,
+                BackgroundColor = colour,
+                Fill = true,
+                PointRadius = 2,
+                BorderDash = new List<int> { },
+                Tension = 0.1f,
+            };
+    }
+}

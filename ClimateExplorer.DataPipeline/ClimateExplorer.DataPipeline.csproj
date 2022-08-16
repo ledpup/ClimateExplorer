@@ -8,11 +8,11 @@
   </PropertyGroup>
 
 	<Target Name="CompressZipFiles" AfterTargets="Build">
-		<ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Temperature" DestinationFile="$(SolutionDir)\AcornSat.WebApi\Datasets\Temperature.zip" Overwrite="true" />
+		<ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Temperature" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Temperature.zip" Overwrite="true" />
 
-		<ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Rainfall" DestinationFile="$(SolutionDir)\AcornSat.WebApi\Datasets\Rainfall.zip" Overwrite="true" />
+		<ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Rainfall" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Rainfall.zip" Overwrite="true" />
 
-		<ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Reference" DestinationFile="$(SolutionDir)\AcornSat.WebApi\Datasets\Reference.zip" Overwrite="true" />
+		<ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Reference" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Reference.zip" Overwrite="true" />
 
 	</Target>
 

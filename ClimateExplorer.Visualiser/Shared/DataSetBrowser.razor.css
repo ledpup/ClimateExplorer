@@ -1,0 +1,42 @@
+﻿.dataset-folder {
+    margin-left: 0px;
+    display: block;
+    vertical-align: top;
+    margin-right: 0px;
+    margin-bottom: 16px;
+}
+
+.dataset-folder-name {
+    font-size: 0.75rem;
+    color: #425f59;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.entry-list {
+    margin-left: 12px;
+}
+
+.add-dataset {
+    cursor: pointer;
+    color: #09C2FC;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.add-dataset:hover {
+    color: #0a58ca
+}
+
+.add-dataset .add-icon {
+    padding-right: 8px;
+}
+
+.dataset-name {
+    top: -3px;
+    left: 4px;
+    position: relative;
+    font-size: 0.8rem;
+    color: #888;
+}

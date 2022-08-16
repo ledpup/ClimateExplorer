@@ -1,0 +1,21 @@
+::deep .navbar-dark .navbar-brand {
+    font-size: 1em;
+    font-weight: bold;
+}
+
+::deep .navbar-nav {
+    flex-direction: row;
+    display: block;
+}
+
+::deep .nav-item {
+    display: inline;
+    margin-right: 8px;
+}
+::deep .nav-link {
+    display: inline;
+}
+
+::deep .bg-dark {
+    background-color: #425f59 !important;
+}

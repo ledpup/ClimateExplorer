@@ -1,0 +1,13 @@
+﻿.entry .title {
+    font-weight: bold;
+}
+.entry .value {
+    margin-bottom: 12px;
+}
+
+h4 {
+    margin-top: 32px;
+    font-size: 1.25rem;
+    color: #555;
+    font-weight: bold;
+}

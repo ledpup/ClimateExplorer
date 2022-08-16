@@ -1,0 +1,149 @@
+﻿@page "/"
+@page "/location/"
+@page "/location/{locationId}"
+
+@using Blazorise
+@using Blazorise.Charts
+@using Blazorise.Charts.Trendline
+@using ClimateExplorer.Core.DataPreparation
+
+<PageTitle>@GetPageTitle()</PageTitle>
+
+<div class="location-and-chart-container">
+    <div>
+        <div class="map-space-reserver" id="mapContainerContainer">
+            <MapContainer @ref="mapContainer"
+                          Locations="@Locations"
+                          OnLocationChange="@SelectedLocationChanged"></MapContainer>
+        </div>
+
+        <div class="location-info-container">
+            @if (SelectedLocation != null)
+            {
+                <LocationInfo @ref="locationInfoComponent"
+                          Location="@SelectedLocation"
+                          DataSetDefinitions="@DataSetDefinitions"
+                          RequestLocationChange="@ShowSelectLocationModal"
+                          OnOverviewShowOrHide="@OnOverviewShowHide"></LocationInfo>
+            }
+        </div>
+
+        <div style="clear: both;"></div>
+    </div>
+
+    <div class="chart-collapsible-parent">
+        <Collapsible Title="Chart" InitiallyShown="true" AllowCollapse="false" ContentLayoutType="Collapsible.CollapserContentLayoutType.FlexboxColumns">
+            <Content>
+                <div class="chart-and-controls">
+                    <div class="chart-series-list-wrapper">
+                        <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
+
+                        <a class="add-series-button" @onclick="ShowAddDataSetModal">
+                            <i class="fas fa-plus"></i> Add
+                        </a>
+
+                    </div>
+
+                    <div class="chart-wrapper">
+                        <div class="minimum-height-enforcer-for-chart"></div>
+                        <div class="chart">
+                            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
+                                <ChartTrendline @ref="chartTrendline" TItem="float?" />
+                            </Chart>
+                        </div>
+                    </div>
+
+                    <div class="chart-controls">
+                        <a class="chart-control" @onclick="ShowOptionsModal"><i class="fas fa-cog"></i> Chart options</a>
+                        <a class="chart-control" @onclick="ShowFilterModal"><i class="fas fa-filter"></i> Year filtering</a>
+
+                        <Dropdown>
+                            <DropdownToggle>
+                                <i class="fas fa-calendar"></i> Grouping
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYear)">Yearly</DropdownItem>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYearAndMonth)">Year + Month</DropdownItem>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly)">Month (ignoring year)</DropdownItem>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.BySouthernHemisphereTemperateSeasonOnly)">Southern hemisphere temperate season only (ignoring year)</DropdownItem>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.BySouthernHemisphereTropicalSeasonOnly)">Southern hemisphere tropical season only (ignoring year)</DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+
+                        <a class="chart-control" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download data</a>
+
+                        <a class="chart-control" @onclick="ShowAddDataSetModal"><i class="fas fa-plus"></i> Add data set</a>
+
+                    </div>
+                </div>
+            </Content>
+        </Collapsible>
+    </div>
+
+    <div style="flex-grow: 0">
+        <Collapsible Title="Suggested charts" InitiallyShown="true" NoBottomMargin="true">
+            <Content>
+                <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@SelectedLocation" OnChartPresetSelected="@OnChartPresetSelected" ExpandUpwards="true"></SuggestedCharts>
+            </Content>
+        </Collapsible>
+    </div>
+</div>
+
+<SelectLocation @ref="selectLocationModal"
+                Locations="@Locations"
+                SelectedLocation="@SelectedLocation"
+                OnLocationChange="@SelectedLocationChanged" />
+
+<Modal @ref="addDataSetModal">
+    <ModalContent>
+        <ModalHeader Background="Background.Light">
+            <ModalTitle>Add data set</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@SelectedLocation" PreviousLocation="@PreviousLocation"></DataSetBrowser>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+<Modal @ref="optionsModal">
+    <ModalContent>
+        <ModalHeader Background="Background.Light">
+            <ModalTitle>Options</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <Alert Color="Color.Danger" Visible="true">
+                Day grouping<br />
+                <Select TValue="short" SelectedValue="@SelectedDayGrouping" SelectedValueChanged="@OnSelectedDayGroupingChanged">
+                    <SelectItem Value="5">@DayGroupingText(5)</SelectItem>
+                    <SelectItem Value="7">@DayGroupingText(7)</SelectItem>
+                    <SelectItem Value="13">@DayGroupingText(13)</SelectItem>
+                    <SelectItem Value="14">@DayGroupingText(14)</SelectItem>
+                    <SelectItem Value="26">@DayGroupingText(26)</SelectItem>
+                    <SelectItem Value="28">@DayGroupingText(28)</SelectItem>
+                    <SelectItem Value="73">@DayGroupingText(73)</SelectItem>
+                    <SelectItem Value="91">@DayGroupingText(91)</SelectItem>
+                    <SelectItem Value="182">@DayGroupingText(182)</SelectItem>
+                </Select>
+                Threshold required to form a valid group (% percentage)<br />
+                <TextEdit Text="@DayGroupThresholdText" TextChanged="@OnDayGroupThresholdTextChanged" MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
+                <Button Color="Color.Primary" Clicked="@ApplyYearlyAverageParameters">Apply</Button>
+            </Alert>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+<Filter @ref="filter"
+        DatasetYears="@DatasetYears"
+        SelectedYears="@SelectedYears"
+        SelectedStartYear="@SelectedStartYear"
+        SelectedEndYear="@SelectedEndYear"
+        SelectedBinGranularity="@SelectedBinGranularity"
+        StartYears="@StartYears"
+        UseMostRecentStartYear="@UseMostRecentStartYear"
+        OnSelectedYearsChanged="@OnSelectedYearsChanged"
+        OnSelectedBinGranularityChanged="@OnSelectedBinGranularityChanged"
+        OnStartYearTextChanged="@OnStartYearTextChanged"
+        OnEndYearTextChanged="@OnEndYearTextChanged"
+        OnUseMostRecentStartYearChanged="@OnUseMostRecentStartYearChanged"></Filter>

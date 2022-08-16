@@ -1,0 +1,1430 @@
+[
+  {
+    "ExternalStationCode": "001021",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "001019",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "002011",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "002012",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "002079",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "003002",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "003003",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "004002",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "004032",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "004020",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "004106",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "005007",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "005026",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "005098",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "006062",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "006011",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "007046",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "007045",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "008093",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "008296",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "008039",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "008297",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "008050",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "008051",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "008315",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "009034",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "009021",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "009518",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "009510",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "009617",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "009541",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "009789",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "009500",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "009741",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "009999",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "010093",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "010092",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "010035",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "010286",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "010579",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "010916",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "010648",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "010917",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "011003",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "011004",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "011052",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "012039",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "012038",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "013017",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "014016",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "014015",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "014825",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "015087",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "015135",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "015540",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "015590",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "015548",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "015666",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "016001",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "016044",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "016098",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "017043",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "017114",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "017024",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "017031",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "017126",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "018012",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "018044",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "018070",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "018192",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "021046",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "021133",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "022801",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "022823",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "023000",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "023090",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "023321",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "023373",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "026020",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "026021",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "026026",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "027042",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "027045",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "027022",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "027021",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "027058",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "028004",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "029041",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "029063",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "029004",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "029077",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "030045",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "030161",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "030018",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "030124",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "031010",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "031011",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "032040",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "033046",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "033047",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "033119",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "034002",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "034084",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "036007",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "036030",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "036031",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "037010",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "038003",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "038002",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "038026",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "039039",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "039066",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "039083",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "039015",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "039128",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "040004",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "040043",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "040223",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "040842",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "042023",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "042112",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "043034",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "043109",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "044022",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "044021",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "045017",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "045025",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "046043",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "046012",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "046037",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "046126",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "048030",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "048027",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "048013",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "048239",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "048245",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "073054",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "050017",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "052026",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "052088",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "053027",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "053048",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "053115",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "055024",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "056017",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "056242",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "058012",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "059040",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "059151",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "060026",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "060139",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "061078",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "061089",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "061363",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "063005",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "065012",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "065070",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "066062",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "066214",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "067033",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "067105",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "068076",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "068072",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "068034",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "068151",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "069018",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "070099",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "070014",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "070351",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "072151",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "072150",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "072091",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "072161",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "074128",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "074258",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "076077",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "076031",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "078031",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "078015",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "080023",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "082039",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "084016",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "084030",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "084145",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "085133",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "085072",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "085096",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "086071",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "086338",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "087031",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "090015",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "091057",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "091293",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "091049",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "091104",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "091311",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "092045",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "094010",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "094198",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "094029",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "094069",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "094220",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "096003",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "096071",
+    "Name": null,
+    "Coordinates": null,
+    "Opened": null,
+    "Closed": null
+  }
+]
