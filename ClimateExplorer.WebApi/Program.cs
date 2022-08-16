@@ -71,7 +71,7 @@ app.UseCors();
 
 app.MapGet(
     "/", () =>
-        "Hello, from minimal ACORN-SAT Web API!\n" +
+        "Hello, from minimal Climate Explorer Web API!\n" +
         "\n" +
         "Operations:\n" +
         "   GET /about\n" +
