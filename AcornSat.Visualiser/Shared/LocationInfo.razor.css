@@ -16,3 +16,23 @@
     .location-header-link:hover {
         color: #0a58ca;
     }
+
+.chart-controls .chart-control {
+    padding: 8px;
+    background-color: #eee;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #425f59;
+    cursor: pointer;
+    display: inline-block;
+    margin-left: 32px;
+}
+
+    .chart-controls .chart-control i {
+        margin-right: 8px;
+    }
+
+    .chart-controls .chart-control:hover {
+        background-color: #cfc;
+        transition: 0.25s;
+    }

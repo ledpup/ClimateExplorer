@@ -15,6 +15,7 @@
 
                 @Title
             </span>
+            @HeaderContent
         </div>
     }
 
@@ -49,6 +50,9 @@
 
     [Parameter]
     public string Title { get; set; }
+
+    [Parameter]
+    public RenderFragment HeaderContent { get; set; }
 
     [Parameter]
     public RenderFragment Content { get; set; }
