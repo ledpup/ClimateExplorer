@@ -265,7 +265,7 @@
         SuggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
-                Title = "Temperature Anomaly",
+                Title = "Temperature anomaly",
                 Description = "Yearly average maximum daily temperatures relative to the average of the whole dataset",
                 ChartSeriesList =
                     new List<ChartSeriesDefinition>()
@@ -290,7 +290,7 @@
             new SuggestedChartPresetModelWithVariants()
             {
                 Title = "Days of extremes",
-                Description = "Number of frosty days (<= 2.2°C) and days 35°C or above; 10-year smoothing",
+                Description = "Number of frosty days (<= 2.2°C) and days 35°C or above; 20-year smoothing",
                 ChartSeriesList =
                     new List<ChartSeriesDefinition>()
                     {
@@ -302,7 +302,7 @@
                             Aggregation = SeriesAggregationOptions.Sum,
                             BinGranularity = BinGranularities.ByYear,
                             Smoothing = SeriesSmoothingOptions.MovingAverage,
-                            SmoothingWindow = 10,
+                            SmoothingWindow = 20,
                             Value = SeriesValueOptions.Value,
                             Year = null,
                             DisplayStyle = SeriesDisplayStyle.Line,
@@ -316,7 +316,7 @@
                             Aggregation = SeriesAggregationOptions.Sum,
                             BinGranularity = BinGranularities.ByYear,
                             Smoothing = SeriesSmoothingOptions.MovingAverage,
-                            SmoothingWindow = 10,
+                            SmoothingWindow = 20,
                             Value = SeriesValueOptions.Value,
                             Year = null,
                             DisplayStyle = SeriesDisplayStyle.Line,
