@@ -7,7 +7,7 @@ using System.IO.Compression;
 var foldersToProcess =
     new string[]
     {
-        @"..\..\..\..\AcornSat.WebApi\Temperature"
+        @"..\..\..\..\ClimateExplorer.WebApi\Temperature"
     };
 
 foreach (var folder in foldersToProcess)

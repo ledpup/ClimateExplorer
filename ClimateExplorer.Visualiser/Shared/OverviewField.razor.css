@@ -1,0 +1,35 @@
+.overview-field {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    min-width: 145px;
+    margin-right: 10px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.label {
+    font-size: 0.8rem;
+    color: #888888;
+    margin-bottom: -6px;
+    color: #99a;
+}
+
+.value {
+    font-size: 1.25rem;
+    color: #666666;
+    font-weight: bold;
+    margin-bottom: -6px;
+}
+
+    ::deep .value a {
+        color: #7DB0DF;
+    }
+
+        ::deep .value a:hover {
+            color: #0a58ca;
+        }
+
+.additional-info {
+    font-size: 0.7rem;
+    color: #50c880;
+}
