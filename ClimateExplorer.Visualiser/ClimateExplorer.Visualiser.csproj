@@ -29,7 +29,7 @@
 
   <ItemGroup>
     <Reference Include="DPBlazorMapLibrary">
-      <HintPath>..\..\DPBlazorMap-fork\DPBlazorMapLibrary\bin\Debug\net6.0\DPBlazorMapLibrary.dll</HintPath>
+      <HintPath>lib\DPBlazorMapLibrary.dll</HintPath>
     </Reference>
   </ItemGroup>
 
