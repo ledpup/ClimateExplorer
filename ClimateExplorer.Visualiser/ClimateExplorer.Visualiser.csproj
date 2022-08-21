@@ -28,10 +28,4 @@
     <ProjectReference Include="..\ClimateExplorer.Core\ClimateExplorer.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="DPBlazorMapLibrary">
-      <HintPath>lib\DPBlazorMapLibrary.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
