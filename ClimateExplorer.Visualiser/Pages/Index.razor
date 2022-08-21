@@ -14,7 +14,8 @@
         <div class="map-space-reserver" id="mapContainerContainer">
             <MapContainer @ref="mapContainer"
                           Locations="@Locations"
-                          OnLocationChange="@SelectedLocationChanged"></MapContainer>
+                          OnLocationChange="@SelectedLocationChanged"
+                          IsMobileDevice="@IsMobileDevice"></MapContainer>
         </div>
 
         <div class="location-info-container">

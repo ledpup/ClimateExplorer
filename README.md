@@ -19,6 +19,7 @@
   - https://github.com/Megabit/Blazorise
   - https://github.com/DP-projects/DPBlazorMap
   - https://github.com/AeonLucid/GeoCoordinate.NetStandard1
+  - https://github.com/arivera12/BlazorCurrentDevice
 - There are five projects:
   - Visualiser: Blazor website that displays the data to the user
   - WebApi: Web API that gets and processes the data that Visualiser uses

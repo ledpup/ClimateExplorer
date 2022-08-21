@@ -7,17 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blazorise" Version="1.0.5" />
-    <PackageReference Include="Blazorise.Bootstrap5" Version="1.0.5" />
-    <PackageReference Include="Blazorise.Charts" Version="1.0.5" />
-    <PackageReference Include="Blazorise.Charts.Trendline" Version="1.0.5" />
-    <PackageReference Include="Blazorise.Components" Version="1.0.5" />
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.0.5" />
-    <PackageReference Include="DPBlazorMapLibrary" Version="1.2.0" />
+    <PackageReference Include="BlazorCurrentDevice" Version="1.0.7" />
+    <PackageReference Include="Blazorise" Version="1.0.6" />
+    <PackageReference Include="Blazorise.Bootstrap5" Version="1.0.6" />
+    <PackageReference Include="Blazorise.Charts" Version="1.0.6" />
+    <PackageReference Include="Blazorise.Charts.Trendline" Version="1.0.6" />
+    <PackageReference Include="Blazorise.Components" Version="1.0.6" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.0.6" />
     <PackageReference Include="GeoCoordinate.NetStandard1" Version="1.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.6" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.6" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
     <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
@@ -25,6 +25,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClimateExplorer.Core\ClimateExplorer.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DPBlazorMapLibrary">
+      <HintPath>..\..\DPBlazorMap-fork\DPBlazorMapLibrary\bin\Debug\net6.0\DPBlazorMapLibrary.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

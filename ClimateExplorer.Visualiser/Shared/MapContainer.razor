@@ -21,6 +21,7 @@
 @code {
     [Parameter] public IEnumerable<Location> Locations { get; set; }
     [Parameter] public EventCallback<Guid> OnLocationChange { get; set; }
+    [Parameter] public bool IsMobileDevice { get; set; }
 
     [Inject] public LayerFactory LayerFactory { get; init; }
     [Inject] IIconFactory IconFactory { get; init; }
@@ -36,11 +37,14 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
+
         mapOptions =
             new MapOptions()
             {
                 Center = new LatLng(-25.6, 134.3),
                 Zoom = 8,
+                Dragging = !IsMobileDevice,
+                Touch = !IsMobileDevice,
             };
     }
 

@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using System.Diagnostics;
 using static ClimateExplorer.Core.Enums;
+using BlazorCurrentDevice;
 
 namespace ClimateExplorer.Visualiser.Pages;
 
@@ -71,12 +72,15 @@ public partial class Index : IDisposable
     BinIdentifier ChartStartBin, ChartEndBin;
     bool _haveCalledResizeAtLeastOnce = false;
     SelectLocation selectLocationModal;
+    bool IsMobileDevice;
 
     [Inject] IDataService DataService { get; set; }
     [Inject] NavigationManager NavManager { get; set; }
     [Inject] IExporter Exporter { get; set; }
     [Inject] IJSRuntime JSRuntime { get; set; }
     [Inject] ILogger<Index> Logger { get; set; }
+
+    [Inject] IBlazorCurrentDeviceService BlazorCurrentDeviceService { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -125,6 +129,8 @@ public partial class Index : IDisposable
             datasetYears.Add(i);
         }
         DatasetYears = datasetYears;
+
+        IsMobileDevice = await BlazorCurrentDeviceService.Mobile();
 
         await base.OnInitializedAsync();
     }
