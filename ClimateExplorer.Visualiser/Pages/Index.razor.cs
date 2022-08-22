@@ -86,6 +86,8 @@ public partial class Index : IDisposable
     {
         Logger.LogInformation("Instance " + _componentInstanceId + " OnInitializedAsync");
 
+        IsMobileDevice = await BlazorCurrentDeviceService.Mobile();
+
         NavManager.LocationChanged += HandleLocationChanged;
 
         if (DataService == null)
@@ -129,8 +131,6 @@ public partial class Index : IDisposable
             datasetYears.Add(i);
         }
         DatasetYears = datasetYears;
-
-        IsMobileDevice = await BlazorCurrentDeviceService.Mobile();
 
         await base.OnInitializedAsync();
     }
