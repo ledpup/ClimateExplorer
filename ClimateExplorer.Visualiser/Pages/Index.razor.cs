@@ -78,7 +78,6 @@ public partial class Index : IDisposable
     [Inject] IJSRuntime JSRuntime { get; set; }
     [Inject] ILogger<Index> Logger { get; set; }
 
-
     protected override async Task OnInitializedAsync()
     {
         Logger.LogInformation("Instance " + _componentInstanceId + " OnInitializedAsync");
