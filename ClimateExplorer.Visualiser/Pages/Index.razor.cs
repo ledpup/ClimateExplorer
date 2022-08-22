@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using System.Diagnostics;
 using static ClimateExplorer.Core.Enums;
-using BlazorCurrentDevice;
 
 namespace ClimateExplorer.Visualiser.Pages;
 
@@ -72,7 +71,6 @@ public partial class Index : IDisposable
     BinIdentifier ChartStartBin, ChartEndBin;
     bool _haveCalledResizeAtLeastOnce = false;
     SelectLocation selectLocationModal;
-    bool IsMobileDevice;
 
     [Inject] IDataService DataService { get; set; }
     [Inject] NavigationManager NavManager { get; set; }
@@ -80,13 +78,10 @@ public partial class Index : IDisposable
     [Inject] IJSRuntime JSRuntime { get; set; }
     [Inject] ILogger<Index> Logger { get; set; }
 
-    [Inject] IBlazorCurrentDeviceService BlazorCurrentDeviceService { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         Logger.LogInformation("Instance " + _componentInstanceId + " OnInitializedAsync");
-
-        IsMobileDevice = await BlazorCurrentDeviceService.Mobile();
 
         NavManager.LocationChanged += HandleLocationChanged;
 

@@ -2,7 +2,10 @@
 @using DPBlazorMapLibrary;
 
 <div class="mapContainer collapsed" id="mapContainer">
-    <DPBlazorMapLibrary.Map @ref="map" MapOptions="@mapOptions" AfterRender="@AfterMapRender"></DPBlazorMapLibrary.Map>
+    @if (mapOptions != null)
+    {
+        <DPBlazorMapLibrary.Map @ref="map" MapOptions="@mapOptions" AfterRender="@AfterMapRender"></DPBlazorMapLibrary.Map>
+    }
 
     <div class="@(IsMapExpanded ? "mapToggleExpanded" : "mapToggleCollapsed")">
         <Button Color="Color.Primary" Clicked="@ToggleMapExpansion" Class="map-toggle-button">
@@ -21,12 +24,12 @@
 @code {
     [Parameter] public IEnumerable<Location> Locations { get; set; }
     [Parameter] public EventCallback<Guid> OnLocationChange { get; set; }
-    [Parameter] public bool IsMobileDevice { get; set; }
 
     [Inject] public LayerFactory LayerFactory { get; init; }
     [Inject] IIconFactory IconFactory { get; init; }
     [Inject] IJSRuntime JS { get; init; }
     [Inject] ILogger<MapContainer> Logger { get; init; }
+    [Inject] IBlazorCurrentDeviceService BlazorCurrentDeviceService { get; set; }
 
     Map map;
     private MapOptions mapOptions;
@@ -34,18 +37,29 @@
 
     bool _mapMarkersCreated = false;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        var isMobileDevice = await BlazorCurrentDeviceService.Mobile();
 
         mapOptions =
             new MapOptions()
-            {
-                Center = new LatLng(-25.6, 134.3),
-                Zoom = 8,
-                Dragging = !IsMobileDevice,
-                //Touch = !IsMobileDevice,
-            };
+                {
+                    Center = new LatLng(-25.6, 134.3),
+                    Zoom = 8,
+                    Dragging = !isMobileDevice
+                };
+
+        await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Locations != null)
+        {
+            await EnsureMapMarkers();
+        }
+
+        await base.OnParametersSetAsync();
     }
 
     private async Task AfterMapRender()
@@ -59,17 +73,6 @@
 
         var mainTileLayer = await LayerFactory.CreateTileLayerAndAddToMap("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", map, tileLayerOptions);
     }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        if (Locations != null)
-        {
-            await EnsureMapMarkers();
-        }
-
-        await base.OnParametersSetAsync();
-    }
-
 
     public async Task ScrollToPoint(LatLng point)
     {
