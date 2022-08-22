@@ -17,6 +17,14 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="cache\**" />
+    <Content Remove="cache\**" />
+    <EmbeddedResource Remove="cache\**" />
+    <None Remove="cache\**" />
+  </ItemGroup>
+  
   <ItemGroup>
     <None Remove="Datasets\Rainfall.zip" />
     <None Remove="Datasets\Reference.zip" />

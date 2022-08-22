@@ -6,6 +6,7 @@ using Blazorise.Icons.FontAwesome;
 using DPBlazorMapLibrary;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using BlazorCurrentDevice;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -21,6 +22,7 @@ builder.Services
     .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
     .AddSingleton<IDataServiceCache, DataServiceCache>()
     .AddTransient<IExporter, Exporter>()
+    .AddBlazorCurrentDevice()
     .AddHttpClient<IDataService, DataService>(client =>
     {
         client.BaseAddress = new Uri(builder.Configuration["dataServiceBaseUri"]);
