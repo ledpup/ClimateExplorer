@@ -767,7 +767,7 @@ public partial class Index : IDisposable
             },
             Millimetres = new
             {
-                Display = ChartSeriesList.Any(x => x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.Millimetres),
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.Identity && x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.Millimetres),
                 Axis = "y",
                 Position = "right",
                 Grid = new { DrawOnChartArea = false },
@@ -853,7 +853,59 @@ public partial class Index : IDisposable
                 {
                     Text = "Days of 35°C or above",
                     Display = true,
-                    Color = "red",
+                    Color = "blue",
+                },
+            },
+            DaysAbove1 = new
+            {
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.Above1),
+                Axis = "y",
+                Position = "left",
+                Grid = new { DrawOnChartArea = false },
+                Title = new
+                {
+                    Text = "Days with 1mm of rain or more",
+                    Display = true,
+                    Color = "blue",
+                },
+            },
+            DaysAbove10 = new
+            {
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.Above10),
+                Axis = "y",
+                Position = "right",
+                Grid = new { DrawOnChartArea = false },
+                Title = new
+                {
+                    Text = "Days with 10mm of rain or more",
+                    Display = true,
+                    Color = "blue",
+                },
+            },
+            DaysAbove25 = new
+            {
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.Above25),
+                Axis = "y",
+                Position = "right",
+                Grid = new { DrawOnChartArea = false },
+                Title = new
+                {
+                    Text = "Days with 25mm of rain or more",
+                    Display = true,
+                    Color = "blue",
+                },
+            },
+            DaysAbove50 = new
+            {
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.Above50),
+                Axis = "y",
+                Position = "right",
+                Grid = new { DrawOnChartArea = false },
+                Title = new
+                {
+                    Text = "Days with 50mm of rain or more",
+                    Display = true,
+                    Color = "blue",
                 },
             },
         };
@@ -941,7 +993,11 @@ public partial class Index : IDisposable
         return seriesTransformation switch
         {
             SeriesTransformations.IsFrosty => "Number of days of frost",
-            SeriesTransformations.Above35 => "Number of days 35°C or above",
+            SeriesTransformations.Above35  => "Number of days 35°C or above",
+            SeriesTransformations.Above1   => "Number of days with 1mm of rain or more",
+            SeriesTransformations.Above10  => "Number of days with 10mm of rain or more",
+            SeriesTransformations.Above25  => "Number of days with 25mm of rain or more",
+            SeriesTransformations.Above50  => "Number of days with 50mm of rain or more",
             _ => defaultLabel,
         };
     }

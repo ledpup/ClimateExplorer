@@ -71,6 +71,10 @@ public static class ChartLogic
         {
             SeriesTransformations.IsFrosty  => "daysOfFrost",
             SeriesTransformations.Above35   => "daysAbove35C",
+            SeriesTransformations.Above1    => "daysAbove1",
+            SeriesTransformations.Above10   => "daysAbove10",
+            SeriesTransformations.Above25   => "daysAbove25",
+            SeriesTransformations.Above50   => "daysAbove50",
             _                               => unitOfMeasure.ToString().ToLowerFirstChar()
         };
     }

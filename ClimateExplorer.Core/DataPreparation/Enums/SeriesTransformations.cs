@@ -8,6 +8,10 @@
         EnsoCategory,
         Negate,
         IsFrosty,
-        Above35
+        Above35,
+        Above1,
+        Above10,
+        Above25,
+        Above50,
     }
 }
