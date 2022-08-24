@@ -69,13 +69,13 @@ public static class ChartLogic
     {
         return seriesTransformations switch
         {
-            SeriesTransformations.IsFrosty  => "daysOfFrost",
-            SeriesTransformations.Above35   => "daysAbove35C",
-            SeriesTransformations.Above1    => "daysAbove1",
-            SeriesTransformations.Above10   => "daysAbove10",
-            SeriesTransformations.Above25   => "daysAbove25",
-            SeriesTransformations.Above50   => "daysAbove50",
-            _                               => unitOfMeasure.ToString().ToLowerFirstChar()
+            SeriesTransformations.IsFrosty                      => "daysOfFrost",
+            SeriesTransformations.EqualOrAbove35                => "daysEqualOrAbove35",
+            SeriesTransformations.EqualOrAbove1LessThan10       => "daysEqualOrAbove1LessThan10",
+            SeriesTransformations.EqualOrAbove10                => "daysEqualOrAbove10",
+            SeriesTransformations.EqualOrAbove10LessThan25      => "daysEqualOrAbove10LessThan25",
+            SeriesTransformations.EqualOrAbove25                => "daysEqualOrAbove25",
+            _                                                   => unitOfMeasure.ToString().ToLowerFirstChar()
         };
     }
 

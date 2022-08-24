@@ -305,7 +305,7 @@
                             Value = SeriesValueOptions.Value,
                             Year = null,
                             DisplayStyle = SeriesDisplayStyle.Line,
-                            SeriesTransformation = SeriesTransformations.Above35,
+                            SeriesTransformation = SeriesTransformations.EqualOrAbove35,
                         },
                         new ChartSeriesDefinition()
                         {
@@ -322,6 +322,44 @@
                         }
                     }
             }
+        );
+
+        SuggestedPresets.Add(
+            new SuggestedChartPresetModelWithVariants()
+                {
+                    Title = "First and last day of frost",
+                    Description = "",
+                    ChartSeriesList =
+                        new List<ChartSeriesDefinition>()
+                        {
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMin),
+                                Aggregation = SeriesAggregationOptions.Maximum,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.None,
+                                SmoothingWindow = 20,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
+                            },
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMin),
+                                Aggregation = SeriesAggregationOptions.Minimum,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.None,
+                                SmoothingWindow = 20,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
+                            }
+                        }
+                }
         );
 
         SuggestedPresets.Add(
@@ -449,7 +487,7 @@
                                 Value = SeriesValueOptions.Value,
                                 Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
-                                SeriesTransformation = SeriesTransformations.Above1,
+                                SeriesTransformation = SeriesTransformations.EqualOrAbove1LessThan10,
                             },
                             new ChartSeriesDefinition()
                             {
@@ -462,7 +500,7 @@
                                 Value = SeriesValueOptions.Value,
                                 Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
-                                SeriesTransformation = SeriesTransformations.Above10,
+                                SeriesTransformation = SeriesTransformations.EqualOrAbove10,
                             }
                     },
                 Variants =
@@ -471,7 +509,7 @@
                             new SuggestedChartPresetModel()
                             {
                                 Title = "Heavy rain",
-                                Description = "Number of rainy days, ≥ 1mm and ≥ 50mm; 20-year smoothing",
+                                Description = "Number of rainy days, ≥ 10mm and ≥ 25mm; 20-year smoothing",
                                 ChartSeriesList =
                                     new List<ChartSeriesDefinition>()
                                     {
@@ -486,7 +524,7 @@
                                             Value = SeriesValueOptions.Value,
                                             Year = null,
                                             DisplayStyle = SeriesDisplayStyle.Line,
-                                            SeriesTransformation = SeriesTransformations.Above1,
+                                            SeriesTransformation = SeriesTransformations.EqualOrAbove10LessThan25,
                                         },
                                         new ChartSeriesDefinition()
                                         {
@@ -499,7 +537,7 @@
                                             Value = SeriesValueOptions.Value,
                                             Year = null,
                                             DisplayStyle = SeriesDisplayStyle.Line,
-                                            SeriesTransformation = SeriesTransformations.Above50,
+                                            SeriesTransformation = SeriesTransformations.EqualOrAbove25,
                                         }
                                     }
                             }

@@ -322,6 +322,7 @@ public class ChartSeriesDefinition
             if (x.SmoothingWindow != y.SmoothingWindow) return false;
             if (x.Value != y.Value) return false;
             if (x.Year != y.Year) return false;
+            if (x.SeriesTransformation != y.SeriesTransformation) return false;
 
             if (x.SourceSeriesSpecifications.Length != y.SourceSeriesSpecifications.Length) return false;
 

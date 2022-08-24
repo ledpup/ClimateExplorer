@@ -6,18 +6,15 @@ using ClimateExplorer.Visualiser.UiModel;
 using Blazorise;
 using Blazorise.Charts;
 using Blazorise.Charts.Trendline;
-using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.Model;
-using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Visualiser.Services;
 using DPBlazorMapLibrary;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
-using System.Diagnostics;
 using static ClimateExplorer.Core.Enums;
 
 namespace ClimateExplorer.Visualiser.Pages;
@@ -568,7 +565,8 @@ public partial class Index : IDisposable
                         Smoothing = csd.Smoothing,
                         SmoothingWindow = csd.SmoothingWindow,
                         Value = csd.Value,
-                        Year = year
+                        Year = year,
+                        SeriesTransformation = csd.SeriesTransformation,
                     }
                 );
             }
@@ -842,10 +840,11 @@ public partial class Index : IDisposable
                     Display = true,
                     Color = "blue",
                 },
+                BeginAtZero = true,
             },
-            DaysAbove35C = new
+            DaysEqualOrAbove35 = new
             {
-                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.Above35),
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove35),
                 Axis = "y",
                 Position = "right",
                 Grid = new { DrawOnChartArea = false },
@@ -855,58 +854,63 @@ public partial class Index : IDisposable
                     Display = true,
                     Color = "blue",
                 },
+                BeginAtZero = true,
             },
-            DaysAbove1 = new
+            DaysEqualOrAbove1LessThan10 = new
             {
-                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.Above1),
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove1LessThan10),
                 Axis = "y",
                 Position = "left",
                 Grid = new { DrawOnChartArea = false },
                 Title = new
                 {
-                    Text = "Days with 1mm of rain or more",
+                    Text = "Days between 1mm and 10mm of rain",
                     Display = true,
                     Color = "blue",
                 },
+                BeginAtZero = true,
             },
-            DaysAbove10 = new
+            DaysEqualOrAbove10 = new
             {
-                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.Above10),
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove10),
                 Axis = "y",
                 Position = "right",
                 Grid = new { DrawOnChartArea = false },
                 Title = new
                 {
-                    Text = "Days with 10mm of rain or more",
+                    Text = "Days of 10mm of rain or more",
                     Display = true,
                     Color = "blue",
                 },
+                BeginAtZero = true,
             },
-            DaysAbove25 = new
+            DaysEqualOrAbove10LessThan25 = new
             {
-                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.Above25),
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove10LessThan25),
+                Axis = "y",
+                Position = "left",
+                Grid = new { DrawOnChartArea = false },
+                Title = new
+                {
+                    Text = "Days between 10mm and 25mm of rain",
+                    Display = true,
+                    Color = "blue",
+                },
+                BeginAtZero = true,
+            },
+            DaysEqualOrAbove25 = new
+            {
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove25),
                 Axis = "y",
                 Position = "right",
                 Grid = new { DrawOnChartArea = false },
                 Title = new
                 {
-                    Text = "Days with 25mm of rain or more",
+                    Text = "Days of 25mm of rain or more",
                     Display = true,
                     Color = "blue",
                 },
-            },
-            DaysAbove50 = new
-            {
-                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.Above50),
-                Axis = "y",
-                Position = "right",
-                Grid = new { DrawOnChartArea = false },
-                Title = new
-                {
-                    Text = "Days with 50mm of rain or more",
-                    Display = true,
-                    Color = "blue",
-                },
+                BeginAtZero = true,
             },
         };
 
@@ -992,12 +996,12 @@ public partial class Index : IDisposable
     {
         return seriesTransformation switch
         {
-            SeriesTransformations.IsFrosty => "Number of days of frost",
-            SeriesTransformations.Above35  => "Number of days 35°C or above",
-            SeriesTransformations.Above1   => "Number of days with 1mm of rain or more",
-            SeriesTransformations.Above10  => "Number of days with 10mm of rain or more",
-            SeriesTransformations.Above25  => "Number of days with 25mm of rain or more",
-            SeriesTransformations.Above50  => "Number of days with 50mm of rain or more",
+            SeriesTransformations.IsFrosty                      => "Number of days of frost",
+            SeriesTransformations.EqualOrAbove35                       => "Number of days 35°C or above",
+            SeriesTransformations.EqualOrAbove1LessThan10       => "Number of days between 1mm and 10mm of rain",
+            SeriesTransformations.EqualOrAbove10                => "Number of days with 10mm of rain or more",
+            SeriesTransformations.EqualOrAbove10LessThan25      => "Number of days between 10mm and 25mm of rain",
+            SeriesTransformations.EqualOrAbove25                => "Number of days with 25mm of rain or more",
             _ => defaultLabel,
         };
     }

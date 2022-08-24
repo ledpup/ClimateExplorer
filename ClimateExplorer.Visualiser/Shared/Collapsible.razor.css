@@ -23,6 +23,7 @@
 .collapser {
     color: #aaa;
     margin-bottom: 0.4rem;
+    margin-right: 32px;
     font-weight: bold;
     cursor: pointer;
     user-select: none;
