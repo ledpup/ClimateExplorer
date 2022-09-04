@@ -320,46 +320,55 @@
                             DisplayStyle = SeriesDisplayStyle.Line,
                             SeriesTransformation = SeriesTransformations.IsFrosty,
                         }
+                    },
+                    Variants = new List<SuggestedChartPresetModel>()
+                    {
+                        new SuggestedChartPresetModelWithVariants()
+                        {
+                            Title = "First day of frost",
+                            Description = "First day of the year that has temperature ≤ 2.2°C; 20-year smoothing",
+                            ChartSeriesList =
+                                new List<ChartSeriesDefinition>()
+                                {
+                                    new ChartSeriesDefinition()
+                                    {
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMin),
+                                        Aggregation = SeriesAggregationOptions.Minimum,
+                                        BinGranularity = BinGranularities.ByYear,
+                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                        SmoothingWindow = 20,
+                                        Value = SeriesValueOptions.Value,
+                                        Year = null,
+                                        DisplayStyle = SeriesDisplayStyle.Line,
+                                        SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
+                                    },
+                                }
+                        },
+                        new SuggestedChartPresetModelWithVariants()
+                        {
+                            Title = "Last day of frost",
+                            Description = "Last day of the year that has temperature ≤ 2.2°C; 20-year smoothing",
+                            ChartSeriesList =
+                                new List<ChartSeriesDefinition>()
+                                {
+                                    new ChartSeriesDefinition()
+                                    {
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMin),
+                                        Aggregation = SeriesAggregationOptions.Maximum,
+                                        BinGranularity = BinGranularities.ByYear,
+                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                        SmoothingWindow = 20,
+                                        Value = SeriesValueOptions.Value,
+                                        Year = null,
+                                        DisplayStyle = SeriesDisplayStyle.Line,
+                                        SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
+                                    }
+                                }
+                        }
                     }
             }
-        );
-
-        SuggestedPresets.Add(
-            new SuggestedChartPresetModelWithVariants()
-                {
-                    Title = "First and last day of frost",
-                    Description = "",
-                    ChartSeriesList =
-                        new List<ChartSeriesDefinition>()
-                        {
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMin),
-                                Aggregation = SeriesAggregationOptions.Maximum,
-                                BinGranularity = BinGranularities.ByYear,
-                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                SmoothingWindow = 20,
-                                Value = SeriesValueOptions.Value,
-                                Year = null,
-                                DisplayStyle = SeriesDisplayStyle.Line,
-                                SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
-                            },
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMin),
-                                Aggregation = SeriesAggregationOptions.Minimum,
-                                BinGranularity = BinGranularities.ByYear,
-                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                SmoothingWindow = 20,
-                                Value = SeriesValueOptions.Value,
-                                Year = null,
-                                DisplayStyle = SeriesDisplayStyle.Line,
-                                SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
-                            }
-                        }
-                }
         );
 
         SuggestedPresets.Add(
