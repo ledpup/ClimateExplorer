@@ -856,28 +856,15 @@ public partial class Index : IDisposable
                 },
                 BeginAtZero = true,
             },
-            FirstDayOfFrost = new
+            DayOfYear = new
             {
-                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.DayOfYearIfFrost && x.Aggregation == SeriesAggregationOptions.Minimum),
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.DayOfYearIfFrost),
                 Axis = "y",
                 Position = "left",
                 Grid = new { DrawOnChartArea = false },
                 Title = new
                 {
-                    Text = "First day of frost",
-                    Display = true,
-                    Color = "blue",
-                },
-            },
-            LastDayOfFrost = new
-            {
-                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.DayOfYearIfFrost && x.Aggregation == SeriesAggregationOptions.Maximum),
-                Axis = "y",
-                Position = "right",
-                Grid = new { DrawOnChartArea = false },
-                Title = new
-                {
-                    Text = "Last day of frost",
+                    Text = "Day of year",
                     Display = true,
                     Color = "blue",
                 },

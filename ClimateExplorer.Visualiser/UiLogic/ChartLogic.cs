@@ -39,8 +39,7 @@ public static class ChartLogic
         List<float?> values, 
         ChartColor chartColor, 
         UnitOfMeasure unitOfMeasure,
-        SeriesTransformations seriesTransformations,
-        SeriesAggregationOptions seriesAggregationOptions)
+        SeriesTransformations seriesTransformations)
     {
         var count = values.Count;
         var colour = new List<string>();
@@ -60,18 +59,18 @@ public static class ChartLogic
                 PointHoverBackgroundColor = colour,
                 BorderDash = new List<int> { },
                 //Tension = 0.1f,
-                YAxisID = GetYAxisId(seriesTransformations, unitOfMeasure, seriesAggregationOptions),
+                YAxisID = GetYAxisId(seriesTransformations, unitOfMeasure),
             };
 
         return lineChartDataset;
     }
 
-    private static string GetYAxisId(SeriesTransformations seriesTransformations, UnitOfMeasure unitOfMeasure, SeriesAggregationOptions seriesAggregationOptions)
+    private static string GetYAxisId(SeriesTransformations seriesTransformations, UnitOfMeasure unitOfMeasure)
     {
         return seriesTransformations switch
         {
             SeriesTransformations.IsFrosty                      => "daysOfFrost",
-            SeriesTransformations.DayOfYearIfFrost              => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "lastDayOfFrost" : "firstDayOfFrost",
+            SeriesTransformations.DayOfYearIfFrost              => "dayOfYear",
             SeriesTransformations.EqualOrAbove35                => "daysEqualOrAbove35",
             SeriesTransformations.EqualOrAbove1                 => "daysEqualOrAbove1",
             SeriesTransformations.EqualOrAbove1AndLessThan10    => "daysEqualOrAbove1LessThan10",
@@ -88,8 +87,7 @@ public static class ChartLogic
         UnitOfMeasure unitOfMeasure, 
         bool? absoluteValues, 
         bool redPositive,
-        SeriesTransformations seriesTransformations,
-        SeriesAggregationOptions seriesAggregationOptions)
+        SeriesTransformations seriesTransformations)
     {
         var colour = Enso.GetBarChartColourSet(values, seriesTransformations == SeriesTransformations.IsFrosty ? false : redPositive);
 
@@ -100,7 +98,7 @@ public static class ChartLogic
                 Data = values.Select(x => absoluteValues.GetValueOrDefault() && x.HasValue ? MathF.Abs(x.Value) : x).ToList(),
                 BorderColor = colour,
                 BackgroundColor = colour,
-                YAxisID = GetYAxisId(seriesTransformations, unitOfMeasure, seriesAggregationOptions),
+                YAxisID = GetYAxisId(seriesTransformations, unitOfMeasure),
             };
     }
 
@@ -122,9 +120,9 @@ public static class ChartLogic
                 {
                     throw new NullReferenceException(nameof(chartColour));
                 }
-                return GetLineChartDataset(label, values, chartColour.Value, unitOfMeasure, seriesTransformations, seriesAggregationOptions);
+                return GetLineChartDataset(label, values, chartColour.Value, unitOfMeasure, seriesTransformations);
             case ChartType.Bar:
-                return GetBarChartDataset(label, values, unitOfMeasure, absoluteValues, redPositive, seriesTransformations, seriesAggregationOptions);
+                return GetBarChartDataset(label, values, unitOfMeasure, absoluteValues, redPositive, seriesTransformations);
         }
 
         throw new NotImplementedException($"ChartType {chartType}");
