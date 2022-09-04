@@ -83,7 +83,7 @@ namespace ClimateExplorer.Core.DataPreparation
             sw.Restart();
 
             // Calculate aggregates for each bin
-            var aggregatedBins = BinAggregator.AggregateBins(filteredRawBins, request.BinAggregationFunction, request.BucketAggregationFunction, request.CupAggregationFunction);
+            var aggregatedBins = BinAggregator.AggregateBins(filteredRawBins, request.BinAggregationFunction, request.BucketAggregationFunction, request.CupAggregationFunction, request.SeriesTransformation);
 
             // Calculate final value based on bin aggregates
             var finalBins = FinalBinValueCalculator.CalculateFinalBinValues(aggregatedBins, request.Anomaly);

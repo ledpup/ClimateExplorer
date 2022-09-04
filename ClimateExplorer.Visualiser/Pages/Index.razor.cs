@@ -856,9 +856,49 @@ public partial class Index : IDisposable
                 },
                 BeginAtZero = true,
             },
+            FirstDayOfFrost = new
+            {
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.DayOfYearIfFrost && x.Aggregation == SeriesAggregationOptions.Minimum),
+                Axis = "y",
+                Position = "left",
+                Grid = new { DrawOnChartArea = false },
+                Title = new
+                {
+                    Text = "First day of frost",
+                    Display = true,
+                    Color = "blue",
+                },
+            },
+            LastDayOfFrost = new
+            {
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.DayOfYearIfFrost && x.Aggregation == SeriesAggregationOptions.Maximum),
+                Axis = "y",
+                Position = "right",
+                Grid = new { DrawOnChartArea = false },
+                Title = new
+                {
+                    Text = "Last day of frost",
+                    Display = true,
+                    Color = "blue",
+                },
+            },
+            DaysEqualOrAbove1 = new
+            {
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove1),
+                Axis = "y",
+                Position = "left",
+                Grid = new { DrawOnChartArea = false },
+                Title = new
+                {
+                    Text = "Days of 1mm of rain or more",
+                    Display = true,
+                    Color = "blue",
+                },
+                BeginAtZero = true,
+            },
             DaysEqualOrAbove1LessThan10 = new
             {
-                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove1LessThan10),
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove1AndLessThan10),
                 Axis = "y",
                 Position = "left",
                 Grid = new { DrawOnChartArea = false },
@@ -886,7 +926,7 @@ public partial class Index : IDisposable
             },
             DaysEqualOrAbove10LessThan25 = new
             {
-                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove10LessThan25),
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove10AndLessThan25),
                 Axis = "y",
                 Position = "left",
                 Grid = new { DrawOnChartArea = false },
@@ -977,8 +1017,7 @@ public partial class Index : IDisposable
                 chart,
                 chartSeries,
                 dataSet,
-                dataSet.DataAdjustment,
-                GetChartLabel(chartSeries.ChartSeries.SeriesTransformation, $"{chartSeries.ChartSeries.FriendlyTitle} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}"),
+                GetChartLabel(chartSeries.ChartSeries.SeriesTransformation, $"{chartSeries.ChartSeries.FriendlyTitle} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}", chartSeries.ChartSeries.Aggregation),
                 htmlColourCode);
 
             if (chartSeries.ChartSeries.ShowTrendline)
@@ -992,15 +1031,17 @@ public partial class Index : IDisposable
         return trendlines;
     }
 
-    private string GetChartLabel(SeriesTransformations seriesTransformation, string defaultLabel)
+    private string GetChartLabel(SeriesTransformations seriesTransformation, string defaultLabel, SeriesAggregationOptions seriesAggregationOptions)
     {
         return seriesTransformation switch
         {
             SeriesTransformations.IsFrosty                      => "Number of days of frost",
-            SeriesTransformations.EqualOrAbove35                       => "Number of days 35°C or above",
-            SeriesTransformations.EqualOrAbove1LessThan10       => "Number of days between 1mm and 10mm of rain",
+            SeriesTransformations.DayOfYearIfFrost              => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "Last day of frost" : "First day of frost",
+            SeriesTransformations.EqualOrAbove35                => "Number of days 35°C or above",
+            SeriesTransformations.EqualOrAbove1                 => "Number of days with 1mm of rain or more",
+            SeriesTransformations.EqualOrAbove1AndLessThan10    => "Number of days between 1mm and 10mm of rain",
             SeriesTransformations.EqualOrAbove10                => "Number of days with 10mm of rain or more",
-            SeriesTransformations.EqualOrAbove10LessThan25      => "Number of days between 10mm and 25mm of rain",
+            SeriesTransformations.EqualOrAbove10AndLessThan25   => "Number of days between 10mm and 25mm of rain",
             SeriesTransformations.EqualOrAbove25                => "Number of days with 25mm of rain or more",
             _ => defaultLabel,
         };

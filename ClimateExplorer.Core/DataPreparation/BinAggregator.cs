@@ -45,14 +45,17 @@ namespace ClimateExplorer.Core.DataPreparation
             }
         }
 
-        static Func<IEnumerable<ContainerAggregate>, float?> GetAggregationFunction(ContainerAggregationFunctions function)
+        static Func<IEnumerable<ContainerAggregate>, float?> GetAggregationFunction(ContainerAggregationFunctions function, SeriesTransformations seriesTransformation)
         {
             switch (function)
             {
                 // Weighted mean is mean of value weighted by number of periods covered
                 case ContainerAggregationFunctions.Mean:        return WeightedMean;
                 case ContainerAggregationFunctions.Sum:         return (data) => data.Select(x => x.Value).Sum();
-                case ContainerAggregationFunctions.Min:         return (data) => data.Select(x => x.Value).Min();
+                case ContainerAggregationFunctions.Min:         return (data) => data
+                                                                                .Where(x => seriesTransformation == SeriesTransformations.DayOfYearIfFrost && x.Value != 0)
+                                                                                .Select(x => x.Value)
+                                                                                .Min();
                 case ContainerAggregationFunctions.Max:         return (data) => data.Select(x => x.Value).Max();
                 case ContainerAggregationFunctions.Median:      return Median;
                 default:
@@ -209,7 +212,8 @@ namespace ClimateExplorer.Core.DataPreparation
             RawBinWithDataAdequacyFlag[] rawBins, 
             ContainerAggregationFunctions binAggregationFunction,
             ContainerAggregationFunctions bucketAggregationFunction,
-            ContainerAggregationFunctions cupAggregationFunction)
+            ContainerAggregationFunctions cupAggregationFunction,
+            SeriesTransformations seriesTransformation)
         {
             if ((bucketAggregationFunction == ContainerAggregationFunctions.Median) != (cupAggregationFunction == ContainerAggregationFunctions.Median))
             {
@@ -222,9 +226,9 @@ namespace ClimateExplorer.Core.DataPreparation
                 throw new Exception("If at least one of bucket and cup aggregation is median, then bin must also be, because median aggregation is applied once across all data points.");
             }
 
-            var binAggregationFunctionImpl = GetAggregationFunction(binAggregationFunction);
-            var bucketAggregationFunctionImpl = GetAggregationFunction(bucketAggregationFunction);
-            var cupAggregationFunctionImpl = GetAggregationFunction(cupAggregationFunction);
+            var binAggregationFunctionImpl = GetAggregationFunction(binAggregationFunction, seriesTransformation);
+            var bucketAggregationFunctionImpl = GetAggregationFunction(bucketAggregationFunction, seriesTransformation);
+            var cupAggregationFunctionImpl = GetAggregationFunction(cupAggregationFunction, seriesTransformation);
 
             switch (binAggregationFunction)
             {

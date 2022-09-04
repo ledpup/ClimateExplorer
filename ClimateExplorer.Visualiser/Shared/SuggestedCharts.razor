@@ -338,7 +338,7 @@
                                 SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMin),
                                 Aggregation = SeriesAggregationOptions.Maximum,
                                 BinGranularity = BinGranularities.ByYear,
-                                Smoothing = SeriesSmoothingOptions.None,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
                                 Year = null,
@@ -351,7 +351,7 @@
                                 SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMin),
                                 Aggregation = SeriesAggregationOptions.Minimum,
                                 BinGranularity = BinGranularities.ByYear,
-                                Smoothing = SeriesSmoothingOptions.None,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
                                 Year = null,
@@ -487,7 +487,7 @@
                                 Value = SeriesValueOptions.Value,
                                 Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
-                                SeriesTransformation = SeriesTransformations.EqualOrAbove1LessThan10,
+                                SeriesTransformation = SeriesTransformations.EqualOrAbove1,
                             },
                             new ChartSeriesDefinition()
                             {
@@ -524,7 +524,7 @@
                                             Value = SeriesValueOptions.Value,
                                             Year = null,
                                             DisplayStyle = SeriesDisplayStyle.Line,
-                                            SeriesTransformation = SeriesTransformations.EqualOrAbove10LessThan25,
+                                            SeriesTransformation = SeriesTransformations.EqualOrAbove10AndLessThan25,
                                         },
                                         new ChartSeriesDefinition()
                                         {

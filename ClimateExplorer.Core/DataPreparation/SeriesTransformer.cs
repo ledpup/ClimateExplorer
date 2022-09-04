@@ -59,7 +59,13 @@ namespace ClimateExplorer.Core.DataPreparation
                 // A rainfall total of 0.2 mm is quite a small amount of rain, and unlikely to have much impact on many activities.
                 // Therefore, days of rain greater than or equal to 1 mm, 10 mm, and 25 mm are often used as indicators of the number of "wet" days.
                 // http://www.bom.gov.au/climate/data-services/content/faqs-elements.html
-                case SeriesTransformations.EqualOrAbove1LessThan10:
+                case SeriesTransformations.EqualOrAbove1:
+                    return
+                        dataPoints
+                        .Select(x => x.WithValue(x.Value == null ? null : (x.Value >= 1 ? 1 : 0)))
+                        .ToArray();
+
+                case SeriesTransformations.EqualOrAbove1AndLessThan10:
                     return
                         dataPoints
                         .Select(x => x.WithValue(x.Value == null ? null : (x.Value >= 1 && x.Value < 10 ? 1 : 0)))
@@ -71,7 +77,7 @@ namespace ClimateExplorer.Core.DataPreparation
                         .Select(x => x.WithValue(x.Value == null ? null : (x.Value >= 10 ? 1 : 0)))
                         .ToArray();
 
-                case SeriesTransformations.EqualOrAbove10LessThan25:
+                case SeriesTransformations.EqualOrAbove10AndLessThan25:
                     return
                         dataPoints
                         .Select(x => x.WithValue(x.Value == null ? null : (x.Value >= 10 && x.Value < 25 ? 1 : 0)))
@@ -86,7 +92,7 @@ namespace ClimateExplorer.Core.DataPreparation
                 case SeriesTransformations.DayOfYearIfFrost:
                     return
                         dataPoints
-                        .Select(x => x.WithValue(x.Value == null ? null : (x.Value <= 2.2 ? new DateTime(x.Year, x.Month.Value, x.Day.Value).DayOfYear : null)))
+                        .Select(x => x.WithValue(x.Value == null ? null : (x.Value <= 2.2 ? new DateTime(x.Year, x.Month.Value, x.Day.Value).DayOfYear : 0)))
                         .ToArray();
 
                 default:

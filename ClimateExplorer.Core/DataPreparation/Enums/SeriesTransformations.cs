@@ -10,9 +10,10 @@
         IsFrosty,
         DayOfYearIfFrost,
         EqualOrAbove35,
-        EqualOrAbove1LessThan10,
+        EqualOrAbove1,
+        EqualOrAbove1AndLessThan10,
         EqualOrAbove10,
-        EqualOrAbove10LessThan25,
+        EqualOrAbove10AndLessThan25,
         EqualOrAbove25,
     }
 }
