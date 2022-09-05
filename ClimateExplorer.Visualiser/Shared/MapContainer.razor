@@ -81,7 +81,7 @@
 
     public async Task EnsureMapMarkers()
     {
-        if (_mapMarkersCreated)
+        if (_mapMarkersCreated || map == null)
         {
             return;
         }
