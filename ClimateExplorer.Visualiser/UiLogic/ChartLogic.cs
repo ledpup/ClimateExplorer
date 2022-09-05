@@ -65,22 +65,6 @@ public static class ChartLogic
         return lineChartDataset;
     }
 
-    private static string GetYAxisId(SeriesTransformations seriesTransformations, UnitOfMeasure unitOfMeasure)
-    {
-        return seriesTransformations switch
-        {
-            SeriesTransformations.IsFrosty                      => "daysOfFrost",
-            SeriesTransformations.DayOfYearIfFrost              => "dayOfYear",
-            SeriesTransformations.EqualOrAbove35                => "daysEqualOrAbove35",
-            SeriesTransformations.EqualOrAbove1                 => "daysEqualOrAbove1",
-            SeriesTransformations.EqualOrAbove1AndLessThan10    => "daysEqualOrAbove1LessThan10",
-            SeriesTransformations.EqualOrAbove10                => "daysEqualOrAbove10",
-            SeriesTransformations.EqualOrAbove10AndLessThan25   => "daysEqualOrAbove10LessThan25",
-            SeriesTransformations.EqualOrAbove25                => "daysEqualOrAbove25",
-            _                                                   => unitOfMeasure.ToString().ToLowerFirstChar()
-        };
-    }
-
     public static BarChartDataset<float?> GetBarChartDataset(
         string label, 
         List<float?> values, 
@@ -247,5 +231,21 @@ public static class ChartLogic
         }
 
         return new Tuple<BinIdentifier, BinIdentifier>(startBin, endBin);
+    }
+
+    private static string GetYAxisId(SeriesTransformations seriesTransformations, UnitOfMeasure unitOfMeasure)
+    {
+        return seriesTransformations switch
+        {
+            SeriesTransformations.IsFrosty => "daysOfFrost",
+            SeriesTransformations.DayOfYearIfFrost => "dayOfYear",
+            SeriesTransformations.EqualOrAbove35 => "daysEqualOrAbove35",
+            SeriesTransformations.EqualOrAbove1 => "daysEqualOrAbove1",
+            SeriesTransformations.EqualOrAbove1AndLessThan10 => "daysEqualOrAbove1LessThan10",
+            SeriesTransformations.EqualOrAbove10 => "daysEqualOrAbove10",
+            SeriesTransformations.EqualOrAbove10AndLessThan25 => "daysEqualOrAbove10LessThan25",
+            SeriesTransformations.EqualOrAbove25 => "daysEqualOrAbove25",
+            _ => unitOfMeasure.ToString().ToLowerFirstChar()
+        };
     }
 }

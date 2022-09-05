@@ -105,6 +105,16 @@ public class ChartSeriesDefinition
                 segments.Add("Transformation: " + GetFriendlySeriesTransformationLabel(SeriesTransformation));
             }
 
+            if (Aggregation != SeriesAggregationOptions.Mean)
+            {
+                segments.Add("Aggregation: " + Aggregation);
+            }
+
+            if (Value != SeriesValueOptions.Value)
+            {
+                segments.Add("Value: " + Value);
+            }
+
             // Smoothing only happens when the x-axis is linear
             if (BinGranularity.IsLinear())
             {
@@ -117,16 +127,6 @@ public class ChartSeriesDefinition
                         segments.Add("Trendline");
                         break;
                 }
-            }
-
-            if (Aggregation != SeriesAggregationOptions.Mean)
-            {
-                segments.Add("Aggregation: " + Aggregation);
-            }
-
-            if (Value != SeriesValueOptions.Value)
-            {
-                segments.Add("Value: " + Value);
             }
 
             return String.Join(" | ", segments);
@@ -223,6 +223,16 @@ public class ChartSeriesDefinition
             segments.Add(GetFriendlySeriesTransformationLabel(SeriesTransformation));
         }
 
+        if (Aggregation != SeriesAggregationOptions.Mean)
+        {
+            segments.Add(Aggregation.ToString());
+        }
+
+        if (Value != SeriesValueOptions.Value)
+        {
+            segments.Add("Value: " + Value);
+        }
+
         // Smoothing only happens when the x-axis is linear
         if (BinGranularity.IsLinear())
         {
@@ -243,16 +253,6 @@ public class ChartSeriesDefinition
                     segments.Add("Trendline");
                     break;
             }
-        }
-
-        if (Aggregation != SeriesAggregationOptions.Mean)
-        {
-            segments.Add("Aggregation: " + Aggregation);
-        }
-
-        if (Value != SeriesValueOptions.Value)
-        {
-            segments.Add("Value: " + Value);
         }
 
         if (uomLabel != null)
