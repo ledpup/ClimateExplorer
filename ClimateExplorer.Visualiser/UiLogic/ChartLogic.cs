@@ -69,9 +69,15 @@ public static class ChartLogic
     {
         return seriesTransformations switch
         {
-            SeriesTransformations.IsFrosty  => "daysOfFrost",
-            SeriesTransformations.Above35   => "daysAbove35C",
-            _                               => unitOfMeasure.ToString().ToLowerFirstChar()
+            SeriesTransformations.IsFrosty                      => "daysOfFrost",
+            SeriesTransformations.DayOfYearIfFrost              => "dayOfYear",
+            SeriesTransformations.EqualOrAbove35                => "daysEqualOrAbove35",
+            SeriesTransformations.EqualOrAbove1                 => "daysEqualOrAbove1",
+            SeriesTransformations.EqualOrAbove1AndLessThan10    => "daysEqualOrAbove1LessThan10",
+            SeriesTransformations.EqualOrAbove10                => "daysEqualOrAbove10",
+            SeriesTransformations.EqualOrAbove10AndLessThan25   => "daysEqualOrAbove10LessThan25",
+            SeriesTransformations.EqualOrAbove25                => "daysEqualOrAbove25",
+            _                                                   => unitOfMeasure.ToString().ToLowerFirstChar()
         };
     }
 
@@ -104,7 +110,8 @@ public static class ChartLogic
         ChartColor? chartColour = null, 
         bool? absoluteValues = false, 
         bool redPositive = true,
-        SeriesTransformations seriesTransformations = SeriesTransformations.Identity)
+        SeriesTransformations seriesTransformations = SeriesTransformations.Identity,
+        SeriesAggregationOptions seriesAggregationOptions = SeriesAggregationOptions.Mean)
     {
         switch (chartType)
         {
@@ -155,7 +162,6 @@ public static class ChartLogic
         Chart<float?> chart,
         SeriesWithData chartSeries,
         DataSet dataSet,
-        DataAdjustment? dataAdjustment,
         string label,
         string htmlColourCode,
         bool absoluteValues = false,
@@ -175,7 +181,7 @@ public static class ChartLogic
             ? ChartType.Line
             : ChartType.Bar;
 
-        var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour, absoluteValues, redPositive, chartSeries.ChartSeries.SeriesTransformation);
+        var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour, absoluteValues, redPositive, chartSeries.ChartSeries.SeriesTransformation, chartSeries.ChartSeries.Aggregation);
 
         await chart.AddDataSet(chartDataset);
     }

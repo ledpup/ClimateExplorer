@@ -100,6 +100,11 @@ public class ChartSeriesDefinition
                 return GetFriendlyTitleShort();
             }
 
+            if (SeriesTransformation != SeriesTransformations.Identity)
+            {
+                segments.Add("Transformation: " + GetFriendlySeriesTransformationLabel(SeriesTransformation));
+            }
+
             // Smoothing only happens when the x-axis is linear
             if (BinGranularity.IsLinear())
             {
@@ -126,6 +131,22 @@ public class ChartSeriesDefinition
 
             return String.Join(" | ", segments);
         }
+    }
+
+    string GetFriendlySeriesTransformationLabel(SeriesTransformations seriesTransformation)
+    {
+        return seriesTransformation switch
+        {
+            SeriesTransformations.IsFrosty => "Is Frost",
+            SeriesTransformations.DayOfYearIfFrost => "Day if frost",
+            SeriesTransformations.EqualOrAbove35 => "35°C or above",
+            SeriesTransformations.EqualOrAbove1 => "1mm or more",
+            SeriesTransformations.EqualOrAbove1AndLessThan10 => "Between 1mm and 10mm",
+            SeriesTransformations.EqualOrAbove10 => "10mm or more",
+            SeriesTransformations.EqualOrAbove10AndLessThan25 => "Between 10mm and 25mm",
+            SeriesTransformations.EqualOrAbove25 => "25mm or more",
+            _ => seriesTransformation.ToString(),
+        };
     }
 
     public string GetFriendlyTitleShort()
@@ -195,6 +216,11 @@ public class ChartSeriesDefinition
             {
                 uomLabel = Enums.UnitOfMeasureLabelShort(sss.MeasurementDefinition.UnitOfMeasure);
             }
+        }
+
+        if (SeriesTransformation != SeriesTransformations.Identity)
+        {
+            segments.Add(GetFriendlySeriesTransformationLabel(SeriesTransformation));
         }
 
         // Smoothing only happens when the x-axis is linear
@@ -322,6 +348,7 @@ public class ChartSeriesDefinition
             if (x.SmoothingWindow != y.SmoothingWindow) return false;
             if (x.Value != y.Value) return false;
             if (x.Year != y.Year) return false;
+            if (x.SeriesTransformation != y.SeriesTransformation) return false;
 
             if (x.SourceSeriesSpecifications.Length != y.SourceSeriesSpecifications.Length) return false;
 

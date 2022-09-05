@@ -6,18 +6,15 @@ using ClimateExplorer.Visualiser.UiModel;
 using Blazorise;
 using Blazorise.Charts;
 using Blazorise.Charts.Trendline;
-using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.Model;
-using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Visualiser.Services;
 using DPBlazorMapLibrary;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
-using System.Diagnostics;
 using static ClimateExplorer.Core.Enums;
 
 namespace ClimateExplorer.Visualiser.Pages;
@@ -568,7 +565,8 @@ public partial class Index : IDisposable
                         Smoothing = csd.Smoothing,
                         SmoothingWindow = csd.SmoothingWindow,
                         Value = csd.Value,
-                        Year = year
+                        Year = year,
+                        SeriesTransformation = csd.SeriesTransformation,
                     }
                 );
             }
@@ -767,7 +765,7 @@ public partial class Index : IDisposable
             },
             Millimetres = new
             {
-                Display = ChartSeriesList.Any(x => x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.Millimetres),
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.Identity && x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.Millimetres),
                 Axis = "y",
                 Position = "right",
                 Grid = new { DrawOnChartArea = false },
@@ -842,10 +840,11 @@ public partial class Index : IDisposable
                     Display = true,
                     Color = "blue",
                 },
+                BeginAtZero = true,
             },
-            DaysAbove35C = new
+            DaysEqualOrAbove35 = new
             {
-                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.Above35),
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove35),
                 Axis = "y",
                 Position = "right",
                 Grid = new { DrawOnChartArea = false },
@@ -853,8 +852,92 @@ public partial class Index : IDisposable
                 {
                     Text = "Days of 35°C or above",
                     Display = true,
-                    Color = "red",
+                    Color = "blue",
                 },
+                BeginAtZero = true,
+            },
+            DayOfYear = new
+            {
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.DayOfYearIfFrost),
+                Axis = "y",
+                Position = "left",
+                Grid = new { DrawOnChartArea = false },
+                Title = new
+                {
+                    Text = "Day of year",
+                    Display = true,
+                    Color = "blue",
+                },
+            },
+            DaysEqualOrAbove1 = new
+            {
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove1),
+                Axis = "y",
+                Position = "left",
+                Grid = new { DrawOnChartArea = false },
+                Title = new
+                {
+                    Text = "Days of 1mm of rain or more",
+                    Display = true,
+                    Color = "blue",
+                },
+                BeginAtZero = true,
+            },
+            DaysEqualOrAbove1LessThan10 = new
+            {
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove1AndLessThan10),
+                Axis = "y",
+                Position = "left",
+                Grid = new { DrawOnChartArea = false },
+                Title = new
+                {
+                    Text = "Days between 1mm and 10mm of rain",
+                    Display = true,
+                    Color = "blue",
+                },
+                BeginAtZero = true,
+            },
+            DaysEqualOrAbove10 = new
+            {
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove10),
+                Axis = "y",
+                Position = "right",
+                Grid = new { DrawOnChartArea = false },
+                Title = new
+                {
+                    Text = "Days of 10mm of rain or more",
+                    Display = true,
+                    Color = "blue",
+                },
+                BeginAtZero = true,
+            },
+            DaysEqualOrAbove10LessThan25 = new
+            {
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove10AndLessThan25),
+                Axis = "y",
+                Position = "left",
+                Grid = new { DrawOnChartArea = false },
+                Title = new
+                {
+                    Text = "Days between 10mm and 25mm of rain",
+                    Display = true,
+                    Color = "blue",
+                },
+                BeginAtZero = true,
+            },
+            DaysEqualOrAbove25 = new
+            {
+                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove25),
+                Axis = "y",
+                Position = "right",
+                Grid = new { DrawOnChartArea = false },
+                Title = new
+                {
+                    Text = "Days of 25mm of rain or more",
+                    Display = true,
+                    Color = "blue",
+                },
+                BeginAtZero = true,
             },
         };
 
@@ -921,8 +1004,7 @@ public partial class Index : IDisposable
                 chart,
                 chartSeries,
                 dataSet,
-                dataSet.DataAdjustment,
-                GetChartLabel(chartSeries.ChartSeries.SeriesTransformation, $"{chartSeries.ChartSeries.FriendlyTitle} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}"),
+                GetChartLabel(chartSeries.ChartSeries.SeriesTransformation, $"{chartSeries.ChartSeries.FriendlyTitle} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}", chartSeries.ChartSeries.Aggregation),
                 htmlColourCode);
 
             if (chartSeries.ChartSeries.ShowTrendline)
@@ -936,12 +1018,18 @@ public partial class Index : IDisposable
         return trendlines;
     }
 
-    private string GetChartLabel(SeriesTransformations seriesTransformation, string defaultLabel)
+    private string GetChartLabel(SeriesTransformations seriesTransformation, string defaultLabel, SeriesAggregationOptions seriesAggregationOptions)
     {
         return seriesTransformation switch
         {
-            SeriesTransformations.IsFrosty => "Number of days of frost",
-            SeriesTransformations.Above35 => "Number of days 35°C or above",
+            SeriesTransformations.IsFrosty                      => "Number of days of frost",
+            SeriesTransformations.DayOfYearIfFrost              => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "Last day of frost" : "First day of frost",
+            SeriesTransformations.EqualOrAbove35                => "Number of days 35°C or above",
+            SeriesTransformations.EqualOrAbove1                 => "Number of days with 1mm of rain or more",
+            SeriesTransformations.EqualOrAbove1AndLessThan10    => "Number of days between 1mm and 10mm of rain",
+            SeriesTransformations.EqualOrAbove10                => "Number of days with 10mm of rain or more",
+            SeriesTransformations.EqualOrAbove10AndLessThan25   => "Number of days between 10mm and 25mm of rain",
+            SeriesTransformations.EqualOrAbove25                => "Number of days with 25mm of rain or more",
             _ => defaultLabel,
         };
     }

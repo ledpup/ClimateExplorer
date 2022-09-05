@@ -8,6 +8,12 @@
         EnsoCategory,
         Negate,
         IsFrosty,
-        Above35
+        DayOfYearIfFrost,
+        EqualOrAbove35,
+        EqualOrAbove1,
+        EqualOrAbove1AndLessThan10,
+        EqualOrAbove10,
+        EqualOrAbove10AndLessThan25,
+        EqualOrAbove25,
     }
 }

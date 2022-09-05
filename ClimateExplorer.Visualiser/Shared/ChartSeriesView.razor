@@ -99,8 +99,14 @@
                                     SelectedValue="@ChartSeries.SeriesTransformation"
                                     SelectedValueChanged="@OnTransformationChanged">
                                 <SelectItem Value="SeriesTransformations.Identity">Identity</SelectItem>
-                                <SelectItem Value="SeriesTransformations.Above35">Days 35°C or above</SelectItem>
+                                <SelectItem Value="SeriesTransformations.EqualOrAbove35">Days 35°C or above</SelectItem>
                                 <SelectItem Value="SeriesTransformations.IsFrosty">Days of frost</SelectItem>
+                                <SelectItem Value="SeriesTransformations.DayOfYearIfFrost">Day Of Year If Frost</SelectItem>
+                                <SelectItem Value="SeriesTransformations.EqualOrAbove1">Days of 1mm of rain or more</SelectItem>
+                                <SelectItem Value="SeriesTransformations.EqualOrAbove1AndLessThan10">Days between 1mm and 10mm of rain</SelectItem>
+                                <SelectItem Value="SeriesTransformations.EqualOrAbove10">Days of 10mm of rain or more</SelectItem>
+                                <SelectItem Value="SeriesTransformations.EqualOrAbove10AndLessThan25">Days between 10mm and 25mm of rain</SelectItem>
+                                <SelectItem Value="SeriesTransformations.EqualOrAbove25">Days of 25mm of rain or more</SelectItem>
                             </Select>
                         </td>
                     </tr>
