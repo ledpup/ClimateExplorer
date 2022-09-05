@@ -54,7 +54,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        if (Locations != null)
+        if (Locations != null && map != null)
         {
             await EnsureMapMarkers();
         }
@@ -81,7 +81,7 @@
 
     public async Task EnsureMapMarkers()
     {
-        if (_mapMarkersCreated || map == null)
+        if (_mapMarkersCreated)
         {
             return;
         }
