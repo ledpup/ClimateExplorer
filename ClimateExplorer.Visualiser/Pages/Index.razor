@@ -53,6 +53,8 @@
                         </div>
                     </div>
 
+                    <DualRangeSlider Min="SliderMinStartYear" Max="SliderMaxEndYear" FromValue="SliderStartYear" ToValue="SliderEndYear" OnFromChanged="@OnStartYearTextChanged" OnToChanged="@OnEndYearTextChanged" />
+
                     <div class="chart-controls">
                         <a class="chart-control" @onclick="ShowOptionsModal"><i class="fas fa-cog"></i> Chart options</a>
                         <a class="chart-control" @onclick="ShowFilterModal"><i class="fas fa-filter"></i> Year filtering</a>

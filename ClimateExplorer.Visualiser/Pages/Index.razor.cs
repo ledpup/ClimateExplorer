@@ -69,6 +69,11 @@ public partial class Index : IDisposable
     bool _haveCalledResizeAtLeastOnce = false;
     SelectLocation selectLocationModal;
 
+    int SliderMinStartYear { get; set; }
+    int SliderMaxEndYear { get; set; }
+    int? SliderStartYear { get; set; }
+    int? SliderEndYear { get; set; }
+
     [Inject] IDataService DataService { get; set; }
     [Inject] NavigationManager NavManager { get; set; }
     [Inject] IExporter Exporter { get; set; }
@@ -122,6 +127,8 @@ public partial class Index : IDisposable
             datasetYears.Add(i);
         }
         DatasetYears = datasetYears;
+
+        SliderMaxEndYear = DateTime.Now.Year;
 
         await base.OnInitializedAsync();
     }
@@ -651,13 +658,14 @@ public partial class Index : IDisposable
     async Task OnStartYearTextChanged(string text)
     {
         SelectedStartYear = text;
+        SliderStartYear = Convert.ToInt32(SelectedStartYear);
         await HandleRedraw();
     }
 
     async Task OnEndYearTextChanged(string text)
     {
         SelectedEndYear = text;
-
+        SliderEndYear = Convert.ToInt32(SelectedEndYear);
         await HandleRedraw();
     }
 
@@ -1116,6 +1124,11 @@ public partial class Index : IDisposable
 
                 // build a list of all the years in which data sets start, used by the UI to allow the user to conveniently select from them
                 StartYears = preProcessedDataSets.Select(x => x.GetStartYearForDataSet()).Distinct().OrderBy(x => x).ToList();
+                SliderMinStartYear = StartYears.Min();
+                if (SliderStartYear < SliderMinStartYear)
+                {
+                    SliderStartYear = null;
+                }
 
                 break;
 

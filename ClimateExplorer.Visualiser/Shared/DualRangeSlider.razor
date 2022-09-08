@@ -1,0 +1,16 @@
+﻿<div class="range_container">
+    <div class="sliders_control">
+        <input value="@InternalFromValue" type="range" min="@Min" max="@Max" @onchange="FromChanged" />
+        <input value="@InternalToValue" type="range" min="@Min" max="@Max" @onchange="ToChanged" style="@ToGradient" />
+    </div>
+    <div class="form_control">
+        <div class="form_control_container">
+            <span class="form_control_container__time">Start Year</span>
+            <input class="form_control_container__time__input" type="number" value="@InternalFromValue" min="@Min" max="@Max" @onchange="FromChanged" @onchange:preventDefault="true" />
+        </div>
+        <div class="form_control_container">
+            <span class="form_control_container__time">End Year</span>
+            <input class="form_control_container__time__input" type="number" value="@InternalToValue" min="@Min" max="@Max" @onchange="ToChanged" @onchange:preventDefault="true" />
+        </div>
+    </div>
+</div>
