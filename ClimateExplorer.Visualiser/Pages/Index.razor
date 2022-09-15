@@ -76,9 +76,9 @@
 
                     </div>
 
-                    @if (SelectedBinGranularity == BinGranularities.ByYear || SelectedBinGranularity == BinGranularities.ByYearAndMonth)
+                    @if (EnableRangeSlider.HasValue && EnableRangeSlider.Value && (SelectedBinGranularity == BinGranularities.ByYear || SelectedBinGranularity == BinGranularities.ByYearAndMonth))
                     {
-                        <DualRangeSlider Min="SliderMinStartYear" Max="SliderMaxEndYear" FromValue="SliderStartYear" ToValue="SliderEndYear" OnValuesChanged="@OnSelectedYearsChanged" />
+                        <DualRangeSlider Min="SliderMin" Max="SliderMax" FromValue="SliderStart" ToValue="SliderEnd" OnValuesChanged="@OnSelectedYearsChanged" />
                     }
                 </div>
             </Content>
@@ -150,4 +150,6 @@
         OnSelectedYearsChanged="@OnSelectedYearsChanged"
         OnStartYearTextChanged="@OnStartYearTextChanged"
         OnEndYearTextChanged="@OnEndYearTextChanged"
-        OnUseMostRecentStartYearChanged="@OnUseMostRecentStartYearChanged"></Filter>
+        OnUseMostRecentStartYearChanged="@OnUseMostRecentStartYearChanged"
+        ShowRangeSlider=@EnableRangeSlider
+        OnShowRangeSliderChanged=@ShowRangeSliderChanged></Filter>

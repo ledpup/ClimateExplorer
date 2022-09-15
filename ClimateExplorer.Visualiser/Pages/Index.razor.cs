@@ -69,10 +69,11 @@ public partial class Index : IDisposable
     bool _haveCalledResizeAtLeastOnce = false;
     SelectLocation selectLocationModal;
 
-    int SliderMinStartYear { get; set; }
-    int SliderMaxEndYear { get; set; }
-    int? SliderStartYear { get; set; }
-    int? SliderEndYear { get; set; }
+    bool? EnableRangeSlider { get; set; }
+    int SliderMin { get; set; }
+    int SliderMax { get; set; }
+    int? SliderStart { get; set; }
+    int? SliderEnd { get; set; }
 
     [Inject] IDataService DataService { get; set; }
     [Inject] NavigationManager NavManager { get; set; }
@@ -128,7 +129,7 @@ public partial class Index : IDisposable
         }
         DatasetYears = datasetYears;
 
-        SliderMaxEndYear = DateTime.Now.Year;
+        SliderMax = DateTime.Now.Year;
 
         await base.OnInitializedAsync();
     }
@@ -403,6 +404,11 @@ public partial class Index : IDisposable
 
         ChartSeriesList = ChartSeriesList.CreateNewListWithoutDuplicates();
 
+        if (EnableRangeSlider == null && SelectedBinGranularity == BinGranularities.ByYearAndMonth)
+        {
+            await ShowRangeSliderChanged(true);
+        }
+
         await BuildDataSets();
     }
 
@@ -671,7 +677,7 @@ public partial class Index : IDisposable
     {
         SelectedStartYear = text;
         UseMostRecentStartYear = false;
-        SliderStartYear = Convert.ToInt32(SelectedStartYear);
+        SliderStart = Convert.ToInt32(SelectedStartYear);
         if (redraw)
         {
             await HandleRedraw();
@@ -686,7 +692,7 @@ public partial class Index : IDisposable
     private async Task ChangeEndYear(string text, bool redraw)
     {
         SelectedEndYear = text;
-        SliderEndYear = Convert.ToInt32(SelectedEndYear);
+        SliderEnd = Convert.ToInt32(SelectedEndYear);
         if (redraw)
         {
             await HandleRedraw();
@@ -696,7 +702,11 @@ public partial class Index : IDisposable
     async Task OnUseMostRecentStartYearChanged(bool value)
     {
         UseMostRecentStartYear = value;
-        SliderStartYear = null;
+        if (value)
+        {
+            SliderStart = null;
+            SelectedStartYear = null;
+        }
 
         await HandleRedraw();
     }
@@ -1149,10 +1159,17 @@ public partial class Index : IDisposable
 
                 // build a list of all the years in which data sets start, used by the UI to allow the user to conveniently select from them
                 StartYears = preProcessedDataSets.Select(x => x.GetStartYearForDataSet()).Distinct().OrderBy(x => x).ToList();
-                SliderMinStartYear = StartYears.Min();
-                if (SliderStartYear < SliderMinStartYear)
+                SliderMin = StartYears.Min();
+                if (SliderStart < SliderMin)
                 {
-                    SliderStartYear = null;
+                    SliderStart = SliderMin;
+                }
+
+                var lastYear = preProcessedDataSets.Select(x => x.GetEndYearForDataSet()).Distinct().OrderBy(x => x).ToList();
+                SliderMax = lastYear.Max();
+                if (SliderEnd > SliderMax)
+                {
+                    SliderEnd = SliderMax;
                 }
 
                 break;
@@ -1389,5 +1406,14 @@ public partial class Index : IDisposable
         //RebuildChartSeriesListToReflectSelectedYears();
 
         //await BuildDataSets();
+    }
+
+    async Task ShowRangeSliderChanged(bool? value)
+    {
+        EnableRangeSlider = value;
+        if (EnableRangeSlider.GetValueOrDefault() && SliderStart == null)
+        {
+            await OnStartYearTextChanged("1990");
+        }
     }
 }
