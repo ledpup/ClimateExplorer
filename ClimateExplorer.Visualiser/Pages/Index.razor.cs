@@ -655,23 +655,48 @@ public partial class Index : IDisposable
         return datasetsToReturn;
     }
 
+    async Task OnSelectedYearsChanged(ExtentValues extentValues)
+    {
+        await ChangeStartYear(extentValues.FromValue, false);
+        await ChangeEndYear(extentValues.ToValue, false);
+        await HandleRedraw();
+    }
+
     async Task OnStartYearTextChanged(string text)
     {
+        await ChangeStartYear(text, true);
+    }
+
+    private async Task ChangeStartYear(string text, bool redraw)
+    {
         SelectedStartYear = text;
+        UseMostRecentStartYear = false;
         SliderStartYear = Convert.ToInt32(SelectedStartYear);
-        await HandleRedraw();
+        if (redraw)
+        {
+            await HandleRedraw();
+        }
     }
 
     async Task OnEndYearTextChanged(string text)
     {
+        await ChangeEndYear(text, true);
+    }
+
+    private async Task ChangeEndYear(string text, bool redraw)
+    {
         SelectedEndYear = text;
         SliderEndYear = Convert.ToInt32(SelectedEndYear);
-        await HandleRedraw();
+        if (redraw)
+        {
+            await HandleRedraw();
+        }
     }
 
     async Task OnUseMostRecentStartYearChanged(bool value)
     {
         UseMostRecentStartYear = value;
+        SliderStartYear = null;
 
         await HandleRedraw();
     }

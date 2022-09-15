@@ -1,16 +1,27 @@
 ﻿<div class="range_container">
     <div class="sliders_control">
-        <input value="@InternalFromValue" type="range" min="@Min" max="@Max" @onchange="FromChanged" />
-        <input value="@InternalToValue" type="range" min="@Min" max="@Max" @onchange="ToChanged" style="@ToGradient" />
+        <input id="fromSlider" value="@InternalFromValue" type="range" min="@Min" max="@Max" @onchange="FromChangedAsync" @oninput="SliderOnInput" class="extents-slider" />
+        <span style="position: absolute; width: 100%; text-align: center; z-index: 0; font-size: larger;">@SliderOutput</span>
+        <input value="@InternalToValue" type="range" min="@Min" max="@Max" @onchange="ToChangedAsync" @oninput="SliderOnInput" class="extents-slider" />
+        <input type="range" min="@RangeMin" max="@RangeMax" value="@RangeValue" @onchange="RangeChangedAsync" @oninput="RangeOnInputAsync" class="range-slider" id="myRangeSlider">
     </div>
+    <style>
+        #myRangeSlider::-webkit-slider-thumb {
+            width: @RangeWidth;
+        }
+    </style>
     <div class="form_control">
         <div class="form_control_container">
-            <span class="form_control_container__time">Start Year</span>
-            <input class="form_control_container__time__input" type="number" value="@InternalFromValue" min="@Min" max="@Max" @onchange="FromChanged" @onchange:preventDefault="true" />
+            <span class="form_control_container__time">Start</span>
+            <input class="form_control_container__time__input" type="number" value="@InternalFromValue" min="@Min" max="@Max" @onchange="FromChangedAsync" @onchange:preventDefault="true" />
         </div>
         <div class="form_control_container">
-            <span class="form_control_container__time">End Year</span>
-            <input class="form_control_container__time__input" type="number" value="@InternalToValue" min="@Min" max="@Max" @onchange="ToChanged" @onchange:preventDefault="true" />
+            <span class="form_control_container__time">Middle</span>
+            <input class="form_control_container__time__input" type="number" value="@RangeValue" min="@Min" max="@Max" @onchange="RangeChangedAsync" @onchange:preventDefault="true" />
+        </div>
+        <div class="form_control_container">
+            <span class="form_control_container__time">End</span>
+            <input class="form_control_container__time__input" type="number" value="@InternalToValue" min="@Min" max="@Max" @onchange="ToChangedAsync" @onchange:preventDefault="true" />
         </div>
     </div>
 </div>

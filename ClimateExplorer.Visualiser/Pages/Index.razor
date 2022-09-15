@@ -53,8 +53,6 @@
                         </div>
                     </div>
 
-                    <DualRangeSlider Min="SliderMinStartYear" Max="SliderMaxEndYear" FromValue="SliderStartYear" ToValue="SliderEndYear" OnFromChanged="@OnStartYearTextChanged" OnToChanged="@OnEndYearTextChanged" />
-
                     <div class="chart-controls">
                         <a class="chart-control" @onclick="ShowOptionsModal"><i class="fas fa-cog"></i> Chart options</a>
                         <a class="chart-control" @onclick="ShowFilterModal"><i class="fas fa-filter"></i> Year filtering</a>
@@ -77,6 +75,7 @@
                         <a class="chart-control" @onclick="ShowAddDataSetModal"><i class="fas fa-plus"></i> Add data set</a>
 
                     </div>
+                    <DualRangeSlider Min="SliderMinStartYear" Max="SliderMaxEndYear" FromValue="SliderStartYear" ToValue="SliderEndYear" OnValuesChanged="@OnSelectedYearsChanged" />
                 </div>
             </Content>
         </Collapsible>
@@ -145,7 +144,6 @@
         StartYears="@StartYears"
         UseMostRecentStartYear="@UseMostRecentStartYear"
         OnSelectedYearsChanged="@OnSelectedYearsChanged"
-        OnSelectedBinGranularityChanged="@OnSelectedBinGranularityChanged"
         OnStartYearTextChanged="@OnStartYearTextChanged"
         OnEndYearTextChanged="@OnEndYearTextChanged"
         OnUseMostRecentStartYearChanged="@OnUseMostRecentStartYearChanged"></Filter>
