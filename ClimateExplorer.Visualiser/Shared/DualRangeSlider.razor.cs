@@ -44,17 +44,14 @@ public partial class DualRangeSlider
 
     protected override void OnParametersSet()
     {
-        if (Min >= 0)
+        if (Min > 0 && Max > Min)
         {
             InternalFromValue = FromValue == null ? Min : FromValue.Value;
-        }
-        if (Max > 0)
-        {
             InternalToValue = ToValue == null ? Max : ToValue.Value;
+            SetRangeSlider();
+            StateHasChanged();
         }
-
-        SetRangeSlider();
-
+        
         base.OnParametersSet();
     }
 

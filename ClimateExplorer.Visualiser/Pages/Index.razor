@@ -75,7 +75,11 @@
                         <a class="chart-control" @onclick="ShowAddDataSetModal"><i class="fas fa-plus"></i> Add data set</a>
 
                     </div>
-                    <DualRangeSlider Min="SliderMinStartYear" Max="SliderMaxEndYear" FromValue="SliderStartYear" ToValue="SliderEndYear" OnValuesChanged="@OnSelectedYearsChanged" />
+
+                    @if (SelectedBinGranularity == BinGranularities.ByYear || SelectedBinGranularity == BinGranularities.ByYearAndMonth)
+                    {
+                        <DualRangeSlider Min="SliderMinStartYear" Max="SliderMaxEndYear" FromValue="SliderStartYear" ToValue="SliderEndYear" OnValuesChanged="@OnSelectedYearsChanged" />
+                    }
                 </div>
             </Content>
         </Collapsible>
