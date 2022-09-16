@@ -78,7 +78,7 @@
 
                     @if (EnableRangeSlider.HasValue && EnableRangeSlider.Value && (SelectedBinGranularity == BinGranularities.ByYear || SelectedBinGranularity == BinGranularities.ByYearAndMonth))
                     {
-                        <DualRangeSlider Min="SliderMin" Max="SliderMax" FromValue="SliderStart" ToValue="SliderEnd" OnValuesChanged="@OnSelectedYearsChanged" />
+                        <DualRangeSlider Min="SliderMin" Max="SliderMax" FromValue="SliderStart" ToValue="SliderEnd" OnValuesChanged="@OnSelectedYearsChanged" OnShowComponent="@ShowRangeSliderChanged" />
                     }
                 </div>
             </Content>

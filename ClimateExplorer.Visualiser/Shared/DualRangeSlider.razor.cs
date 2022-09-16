@@ -23,6 +23,7 @@ public partial class DualRangeSlider
     public string? RangeColor { get; set; }
 
     [Parameter] public EventCallback<ExtentValues> OnValuesChanged { get; set; }
+    [Parameter] public EventCallback<bool?> OnShowComponent { get; set; }
 
     private string? SliderOutput { get;set; }
 
@@ -42,14 +43,20 @@ public partial class DualRangeSlider
         base.OnInitialized();
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
         if (Min > 0 && Max > Min)
         {
+            // This block is a hack to force an update to the UI components
+            // https://github.com/dotnet/aspnetcore/issues/38656
+            InternalFromValue = Min + 1;
+            InternalToValue = Max - 1;
+            await Task.Yield();
+
+
             InternalFromValue = FromValue == null ? Min : FromValue.Value;
             InternalToValue = ToValue == null ? Max : ToValue.Value;
             SetRangeSlider();
-            StateHasChanged();
         }
         
         base.OnParametersSet();
@@ -132,6 +139,11 @@ public partial class DualRangeSlider
     private void SliderOnInput(ChangeEventArgs e)
     {
         SliderOutput = e.Value.ToString();
+    }
+
+    async Task Close()
+    {
+        await OnShowComponent.InvokeAsync(false);
     }
 }
 

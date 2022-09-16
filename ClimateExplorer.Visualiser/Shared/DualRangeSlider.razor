@@ -1,7 +1,10 @@
-﻿<div class="range_container">
+﻿<div class="flex-end">
+    <button type="button" class="btn-close" aria-label="Close" @onclick="Close"></button>
+</div>
+<div class="range_container">
     <div class="sliders_control">
+        <span class="output-text">@SliderOutput</span>
         <input id="fromSlider" value="@InternalFromValue" type="range" min="@Min" max="@Max" @onchange="FromChangedAsync" @oninput="SliderOnInput" class="extents-slider" />
-        <span style="position: absolute; width: 100%; text-align: center; z-index: 0; font-size: larger;">@SliderOutput</span>
         <input value="@InternalToValue" type="range" min="@Min" max="@Max" @onchange="ToChangedAsync" @oninput="SliderOnInput" class="extents-slider" />
         <input type="range" min="@RangeMin" max="@RangeMax" value="@RangeValue" @onchange="RangeChangedAsync" @oninput="RangeOnInputAsync" class="range-slider" id="myRangeSlider">
     </div>

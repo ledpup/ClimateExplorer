@@ -1413,7 +1413,7 @@ public partial class Index : IDisposable
         EnableRangeSlider = value;
         if (EnableRangeSlider.GetValueOrDefault() && SliderStart == null)
         {
-            await OnStartYearTextChanged("1990");
+            await OnStartYearTextChanged((DateTime.Now.Year - 31).ToString());
         }
     }
 }
