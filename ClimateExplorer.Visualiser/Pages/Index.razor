@@ -75,6 +75,11 @@
                         <a class="chart-control" @onclick="ShowAddDataSetModal"><i class="fas fa-plus"></i> Add data set</a>
 
                     </div>
+
+                    @if (EnableRangeSlider.HasValue && EnableRangeSlider.Value && (SelectedBinGranularity == BinGranularities.ByYear || SelectedBinGranularity == BinGranularities.ByYearAndMonth))
+                    {
+                        <DualRangeSlider Min="SliderMin" Max="SliderMax" FromValue="SliderStart" ToValue="SliderEnd" OnValuesChanged="@OnSelectedYearsChanged" OnShowComponent="@ShowRangeSliderChanged" />
+                    }
                 </div>
             </Content>
         </Collapsible>
@@ -143,7 +148,8 @@
         StartYears="@StartYears"
         UseMostRecentStartYear="@UseMostRecentStartYear"
         OnSelectedYearsChanged="@OnSelectedYearsChanged"
-        OnSelectedBinGranularityChanged="@OnSelectedBinGranularityChanged"
         OnStartYearTextChanged="@OnStartYearTextChanged"
         OnEndYearTextChanged="@OnEndYearTextChanged"
-        OnUseMostRecentStartYearChanged="@OnUseMostRecentStartYearChanged"></Filter>
+        OnUseMostRecentStartYearChanged="@OnUseMostRecentStartYearChanged"
+        ShowRangeSlider=@EnableRangeSlider
+        OnShowRangeSliderChanged=@ShowRangeSliderChanged></Filter>

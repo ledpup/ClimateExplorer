@@ -26,6 +26,11 @@ namespace ClimateExplorer.Core.Model
             return dataSet.DataRecords.Last(x => x.Value.HasValue);
         }
 
+        public static short GetEndYearForDataSet(this DataSet dataSet)
+        {
+            return GetYearForDataRecord(GetLastDataRecordWithValueInDataSet(dataSet));
+        }
+
         public static short GetStartYearForDataSet(this DataSet dataSet)
         {
             return GetYearForDataRecord(GetFirstDataRecordWithValueInDataSet(dataSet));

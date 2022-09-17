@@ -11,6 +11,10 @@
         </ModalHeader>
         <ModalBody>
 
+            <Field>
+                <Check TValue="bool?" Checked="ShowRangeSlider" CheckedChanged="ShowRangeSliderChanged">Show range slider</Check>
+            </Field>
+
             @if (DatasetYears != null)
             {
                 <Field>
@@ -71,16 +75,6 @@
                 </Field>
             }
 
-            <Field>
-                Resolution
-                <Select TValue="BinGranularities" SelectedValue="@SelectedBinGranularity" SelectedValueChanged="@OnSelectedBinGranularityChangedInternal">
-                    <SelectItem Value="@(BinGranularities.ByYear)">Yearly</SelectItem>
-                    <SelectItem Value="@(BinGranularities.ByYearAndMonth)">Year + Month</SelectItem>
-                    <SelectItem Value="@(BinGranularities.ByMonthOnly)">Month only (ignoring year)</SelectItem>
-                    <SelectItem Value="@(BinGranularities.BySouthernHemisphereTemperateSeasonOnly)">Southern hemisphere temperate season only (ignoring year)</SelectItem>
-                    <SelectItem Value="@(BinGranularities.BySouthernHemisphereTropicalSeasonOnly)">Southern hemisphere tropical season only (ignoring year)</SelectItem>
-                </Select>
-            </Field>
         </ModalBody>
     </ModalContent>
 </Modal>
@@ -97,12 +91,14 @@
 
     [Parameter] public EventCallback<bool> OnUseMostRecentStartYearChanged { get; set; }
     [Parameter] public EventCallback<List<short>> OnSelectedYearsChanged { get; set; }
-    [Parameter] public EventCallback<BinGranularities> OnSelectedBinGranularityChanged { get; set; }
     [Parameter] public EventCallback<string> OnStartYearTextChanged { get; set; }
     [Parameter] public EventCallback<string> OnEndYearTextChanged { get; set; }
+    [Parameter] public EventCallback<bool?> OnShowRangeSliderChanged { get; set; }
+    [Parameter] public bool? ShowRangeSlider { get; set; }
 
     public string SelectedStartYearInternal { get; set; }
     public string SelectedEndYearInternal { get; set; }
+
 
     int StartYearOption = -1;
 
@@ -153,11 +149,6 @@ For example, rainfall data starts in 1870 and temperature data starts in 1910. C
     async Task OnSelectedYearsChangedInternal(List<short> values)
     {
         await OnSelectedYearsChanged.InvokeAsync(values);
-    }
-
-    async Task OnSelectedBinGranularityChangedInternal(BinGranularities value)
-    {
-        await OnSelectedBinGranularityChanged.InvokeAsync(value);
     }
 
     void ValidateYear(ValidatorEventArgs e)
@@ -220,5 +211,11 @@ For example, rainfall data starts in 1870 and temperature data starts in 1910. C
             StartYearOption = -1;
         }
         await OnUseMostRecentStartYearChanged.InvokeAsync(value);
+    }
+
+    async Task ShowRangeSliderChanged(bool? value)
+    {
+        ShowRangeSlider = value;
+        await OnShowRangeSliderChanged.InvokeAsync(value);
     }
 }

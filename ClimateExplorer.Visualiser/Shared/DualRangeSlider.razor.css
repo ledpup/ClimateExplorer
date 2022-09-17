@@ -1,0 +1,123 @@
+﻿.flex-end {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.range_container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+}
+
+.sliders_control {
+    position: relative;
+    min-height: 16px;
+}
+
+.output-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    z-index: 3;
+    font-size: larger;
+    margin-top: -32px;
+}
+
+.form_control {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    color: #635a5a;
+}
+
+.extents-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 0px;
+    width: 100%;
+    position: absolute;
+    background-color: #C6C6C6;
+    pointer-events: none;
+    z-index: 1;
+}
+
+    .extents-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        pointer-events: all;
+        width: 24px;
+        height: 24px;
+        background-color: #fff;
+        border-radius: 50%;
+        box-shadow: 0 0 0 1px #C6C6C6;
+        cursor: pointer;
+    }
+
+    .extents-slider::-moz-range-thumb {
+        -webkit-appearance: none;
+        pointer-events: all;
+        width: 24px;
+        height: 24px;
+        background-color: #fff;
+        border-radius: 50%;
+        box-shadow: 0 0 0 1px #C6C6C6;
+        cursor: pointer;
+    }
+
+    .extents-slider::-webkit-slider-thumb:hover {
+        background: #f7f7f7;
+    }
+
+    .extents-slider::-webkit-slider-thumb:active {
+        box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
+        -webkit-box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
+    }
+
+input[type="number"] {
+    color: #8a8383;
+    height: 30px;
+    border: none;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    opacity: 1;
+}
+
+#fromSlider {
+    height: 0;
+    z-index: 2;
+}
+
+
+
+.range-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    position: absolute;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 1;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    z-index: 0;
+}
+
+    .range-slider:hover {
+        opacity: 1;
+    }
+
+    .range-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        height: 6px;
+        background: #25DAA5;
+        cursor: pointer;
+    }
+
+    .range-slider::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        background: #04AA6D;
+        cursor: pointer;
+    }
