@@ -1,19 +1,15 @@
-﻿using ClimateExplorer.Core.InputOutput;
-using System.Linq;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using GeoCoordinatePortable;
-using ClimateExplorer.Core;
-using static ClimateExplorer.Core.Enums;
-using System.Net;
-using System.IO.Compression;
-using ClimateExplorer.Core.Model;
-using ClimateExplorer.Core.ViewModel;
-using System.Globalization;
-using ClimateExplorer.Analyser;
-using System.Text.Json.Serialization;
+﻿using ClimateExplorer.Analyser;
 
 GenerateMapMarkers();
+
+var niwaStations = await Station.GetStationsFromFiles(
+    new List<string> 
+    { 
+        $@"ReferenceData\NIWA\Stations_NewZealand_7stations_unadjusted.json",
+        $@"ReferenceData\NIWA\Stations_NewZealand_11stations.json",
+    });
+
+await NiwaCliFloClient.GetDataForEachStation(niwaStations);
 
 var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
 

@@ -1,7 +1,7 @@
 [
   {
     "ExternalStationCode": "6172",
-    "Name": "Campbell Is\t",
+    "Name": "Campbell Is",
     "Coordinates": {
       "Latitude": -52.55,
       "Longitude": 169.15,
@@ -100,7 +100,7 @@
   },
   {
     "ExternalStationCode": "7427",
-    "Name": "Molesworth Aws\t",
+    "Name": "Molesworth Aws",
     "Coordinates": {
       "Latitude": -42.087,
       "Longitude": 173.26,
