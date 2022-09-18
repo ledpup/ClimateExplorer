@@ -57,7 +57,7 @@ public class NiwaCliFloClient
         httpClient.DefaultRequestHeaders.Add("origin", "https://cliflo.niwa.co.nz");
         httpClient.DefaultRequestHeaders.Add("referer", "https://cliflo.niwa.co.nz/pls/niwp/wgenf.genform1?cdt=ls_ra&cdel=t");
 
-        var startYear = 1900;
+        var startYear = 1940;
         var endYear = DateTime.Now.Year;
 
         var dictionary = new Dictionary<string, string>
