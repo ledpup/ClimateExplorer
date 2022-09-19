@@ -236,8 +236,8 @@
         "RowDataType": "OneValuePerRow",
         "FolderName": "Rainfall\\NIWA\\Daily",
         "FileNameFormat": "[station]_rainfall.csv",
-        "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,-?\\d*,.*,D$",
-        "NullValue": null,
+        "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),.*,D$",
+        "NullValue": "-",
         "PreferredColour": 1
       }
     ],
@@ -290,8 +290,8 @@
         "RowDataType": "OneValuePerRow",
         "FolderName": "Rainfall\\NIWA\\Daily",
         "FileNameFormat": "[station]_rainfall.csv",
-        "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,-?\\d*,.*,D$",
-        "NullValue": null,
+        "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),.*,D$",
+        "NullValue": "-",
         "PreferredColour": 1
       }
     ],

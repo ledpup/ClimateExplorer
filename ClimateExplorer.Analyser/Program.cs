@@ -2,6 +2,8 @@
 
 GenerateMapMarkers();
 
+var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
+
 var niwaStations = await Station.GetStationsFromFiles(
     new List<string> 
     { 
@@ -10,8 +12,6 @@ var niwaStations = await Station.GetStationsFromFiles(
     });
 
 await NiwaCliFloClient.GetDataForEachStation(niwaStations);
-
-var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
 
 // await ValidateLocations();
 
