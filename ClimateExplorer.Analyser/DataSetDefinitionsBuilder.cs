@@ -230,6 +230,17 @@ internal class DataSetDefinitionsBuilder
                         NullValue = "-",
                         PreferredColour = 3,
                     },
+                    new MeasurementDefinition
+                    {
+                        DataType = DataType.Rainfall,
+                        UnitOfMeasure = UnitOfMeasure.Millimetres,
+                        DataResolution = DataResolution.Daily,
+                        DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),.*,D$",
+                        FolderName = @"Rainfall\NIWA\Daily",
+                        FileNameFormat = "[station]_rainfall.csv",
+                        NullValue = "-",
+                        PreferredColour = 1,
+                    },
                 },
             },
 
@@ -269,6 +280,17 @@ internal class DataSetDefinitionsBuilder
                         FileNameFormat = "[station].csv",
                         NullValue = "-",
                         PreferredColour = 3,
+                    },
+                    new MeasurementDefinition
+                    {
+                        DataType = DataType.Rainfall,
+                        UnitOfMeasure = UnitOfMeasure.Millimetres,
+                        DataResolution = DataResolution.Daily,
+                        DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),.*,D$",
+                        FolderName = @"Rainfall\NIWA\Daily",
+                        FileNameFormat = "[station]_rainfall.csv",
+                        NullValue = "-",
+                        PreferredColour = 1,
                     },
                 },
             },
