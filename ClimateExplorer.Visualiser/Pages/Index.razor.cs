@@ -467,7 +467,7 @@ public partial class Index : IDisposable
         }
     }
 
-    void DumpChartSeriesList()
+    void LogChartSeriesList()
     {
         Logger.LogInformation("ChartSeriesList: (SelectedBinGranularity is " + SelectedBinGranularity + ")");
 
@@ -512,7 +512,7 @@ public partial class Index : IDisposable
 
         l.LogInformation("starting");
 
-        DumpChartSeriesList();
+        LogChartSeriesList();
 
         // Recalculate the URL
         string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(ChartSeriesList);
@@ -545,7 +545,7 @@ public partial class Index : IDisposable
             // Render the series
             await HandleRedraw();
 
-            if (SelectedLocation != null)
+            if (SelectedLocation != null && mapContainer != null)
             {
                 await mapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
             }
@@ -718,17 +718,17 @@ public partial class Index : IDisposable
 
         l.LogInformation("Entering");
 
-        DumpChartSeriesList();
-
-        await chart.Clear();
-
         // This can happen at startup, or if the user switches off all data series
-        if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0)
+        if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0 || chart == null)
         {
             l.LogInformation("Bailing early as no chart data available");
 
             return;
         }
+
+        LogChartSeriesList();
+
+        await chart.Clear();
 
         // We used to choose set ChartType to Bar if the user's selected chart type was bar or difference or rainfall,
         // and line otherwise.
