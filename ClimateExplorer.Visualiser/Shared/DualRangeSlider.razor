@@ -14,7 +14,9 @@
         }
     </style>
     <div class="form_control">
+        <span>@Min</span>
         <div class="form_control_container">
+            
             <span class="form_control_container__time">Start</span>
             <input class="form_control_container__time__input" type="number" value="@InternalFromValue" min="@Min" max="@Max" @onchange="FromChangedAsync" @onchange:preventDefault="true" />
         </div>
@@ -26,5 +28,6 @@
             <span class="form_control_container__time">End</span>
             <input class="form_control_container__time__input" type="number" value="@InternalToValue" min="@Min" max="@Max" @onchange="ToChangedAsync" @onchange:preventDefault="true" />
         </div>
+        <span>@Max</span>
     </div>
 </div>
