@@ -233,7 +233,7 @@ public static class ChartLogic
         return new Tuple<BinIdentifier, BinIdentifier>(startBin, endBin);
     }
 
-    private static string GetYAxisId(SeriesTransformations seriesTransformations, UnitOfMeasure unitOfMeasure)
+    public static string GetYAxisId(SeriesTransformations seriesTransformations, UnitOfMeasure unitOfMeasure)
     {
         return seriesTransformations switch
         {
