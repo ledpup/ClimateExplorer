@@ -90,14 +90,6 @@ public partial class DualRangeSlider
         SliderOutput = "";
     }
 
-    private async Task RangeOnInputAsync(ChangeEventArgs e)
-    {
-        var newRange = Convert.ToInt32(e.Value);
-        SliderOutput = newRange.ToString();
-
-        await SetFromAndToValuesAsync(newRange);
-    }
-
     private async Task RangeChangedAsync(ChangeEventArgs e)
     {
         var newRange = Convert.ToInt32(e.Value);
@@ -136,9 +128,27 @@ public partial class DualRangeSlider
         }
     }
 
-    private void SliderOnInput(ChangeEventArgs e)
+    private void FromOnInput(ChangeEventArgs e)
     {
-        SliderOutput = e.Value.ToString();
+        SliderOutput = $"{e.Value}-{InternalToValue}";
+    }
+
+    private void ToOnInput(ChangeEventArgs e)
+    {
+        SliderOutput = $"{InternalFromValue}-{e.Value}";
+    }
+
+    private async Task RangeOnInputAsync(ChangeEventArgs e)
+    {
+        var newRange = Convert.ToInt32(e.Value);
+
+        var extent = InternalToValue - InternalFromValue;
+        var newFrom = Math.Round(newRange - (extent / 2f));
+        var newTo = Math.Round(newRange + (extent / 2f));
+
+        SliderOutput = $"{newFrom}-{newTo}";
+
+        await SetFromAndToValuesAsync(newRange);
     }
 
     async Task Close()
