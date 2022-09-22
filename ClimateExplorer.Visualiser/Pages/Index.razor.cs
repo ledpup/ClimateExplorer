@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
+using System.Dynamic;
 
 namespace ClimateExplorer.Visualiser.Pages;
 
@@ -466,7 +467,7 @@ public partial class Index : IDisposable
         }
     }
 
-    void DumpChartSeriesList()
+    void LogChartSeriesList()
     {
         Logger.LogInformation("ChartSeriesList: (SelectedBinGranularity is " + SelectedBinGranularity + ")");
 
@@ -511,7 +512,7 @@ public partial class Index : IDisposable
 
         l.LogInformation("starting");
 
-        DumpChartSeriesList();
+        LogChartSeriesList();
 
         // Recalculate the URL
         string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(ChartSeriesList);
@@ -544,7 +545,7 @@ public partial class Index : IDisposable
             // Render the series
             await HandleRedraw();
 
-            if (SelectedLocation != null)
+            if (SelectedLocation != null && mapContainer != null)
             {
                 await mapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
             }
@@ -779,210 +780,8 @@ public partial class Index : IDisposable
 
         var labels = ChartBins.Select(x => x.Label).ToArray();
         await chart.AddLabels(labels);
-
-        var xLabel = ChartLogic.GetXAxisLabel(SelectedBinGranularity);
-
-        object scales = new
-        {
-            X = new
-            {
-                Title = new
-                {
-                    Text = xLabel,
-                    Display = true,
-                    Color = "blue",
-                },
-            },
-            EnsoIndex = new
-            {
-                Display = ChartSeriesList.Any(x => x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.EnsoIndex),
-                Axis = "y",
-                Position = "right",
-                Grid = new { DrawOnChartArea = false },
-                Title = new
-                {
-                    Text = UnitOfMeasureLabel(UnitOfMeasure.EnsoIndex),
-                    Display = true,
-                    Color = "blue",
-                },
-            },
-            Millimetres = new
-            {
-                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.Identity && x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.Millimetres),
-                Axis = "y",
-                Position = "right",
-                Grid = new { DrawOnChartArea = false },
-                Title = new
-                {
-                    Text = UnitOfMeasureLabel(UnitOfMeasure.Millimetres),
-                    Display = true,
-                    Color = "blue",
-                },
-            },
-            DegreesCelsius = new
-            {
-                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.Identity && (x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.DegreesCelsius || x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.DegreesCelsiusAnomaly)),
-                Axis = "y",
-                Position = "left",
-                Grid = new { DrawOnChartArea = false },
-                Title = new
-                {
-                    Text = SelectedChartType == ChartType.Line ? UnitOfMeasureLabel(UnitOfMeasure.DegreesCelsius) : UnitOfMeasureLabel(UnitOfMeasure.DegreesCelsiusAnomaly),
-                    Display = true,
-                    Color = "blue",
-                },
-            },
-            PartsPerMillion = new
-            {
-                Display = ChartSeriesList.Any(x => x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.PartsPerMillion),
-                Axis = "y",
-                Position = "right",
-                Grid = new { DrawOnChartArea = false },
-                Title = new
-                {
-                    Text = UnitOfMeasureLabel(UnitOfMeasure.PartsPerMillion),
-                    Display = true,
-                    Color = "blue",
-                },
-            },
-            PartsPerBillion = new
-            {
-                Display = ChartSeriesList.Any(x => x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.PartsPerBillion),
-                Axis = "y",
-                Position = "right",
-                Grid = new { DrawOnChartArea = false },
-                Title = new
-                {
-                    Text = UnitOfMeasureLabel(UnitOfMeasure.PartsPerBillion),
-                    Display = true,
-                    Color = "blue",
-                },
-            },
-            MegajoulesPerSquareMetre = new
-            {
-                Display = ChartSeriesList.Any(x => x.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure == UnitOfMeasure.MegajoulesPerSquareMetre),
-                Axis = "y",
-                Position = "right",
-                Grid = new { DrawOnChartArea = false },
-                Title = new
-                {
-                    Text = UnitOfMeasureLabel(UnitOfMeasure.MegajoulesPerSquareMetre),
-                    Display = true,
-                    Color = "blue",
-                },
-            },
-            DaysOfFrost = new
-            {
-                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.IsFrosty),
-                Axis = "y",
-                Position = "left",
-                Grid = new { DrawOnChartArea = false },
-                Title = new
-                {
-                    Text = "Days of frost",
-                    Display = true,
-                    Color = "blue",
-                },
-                BeginAtZero = true,
-            },
-            DaysEqualOrAbove35 = new
-            {
-                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove35),
-                Axis = "y",
-                Position = "right",
-                Grid = new { DrawOnChartArea = false },
-                Title = new
-                {
-                    Text = "Days of 35°C or above",
-                    Display = true,
-                    Color = "blue",
-                },
-                BeginAtZero = true,
-            },
-            DayOfYear = new
-            {
-                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.DayOfYearIfFrost),
-                Axis = "y",
-                Position = "left",
-                Grid = new { DrawOnChartArea = false },
-                Title = new
-                {
-                    Text = "Day of year",
-                    Display = true,
-                    Color = "blue",
-                },
-            },
-            DaysEqualOrAbove1 = new
-            {
-                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove1),
-                Axis = "y",
-                Position = "left",
-                Grid = new { DrawOnChartArea = false },
-                Title = new
-                {
-                    Text = "Days of 1mm of rain or more",
-                    Display = true,
-                    Color = "blue",
-                },
-                BeginAtZero = true,
-            },
-            DaysEqualOrAbove1LessThan10 = new
-            {
-                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove1AndLessThan10),
-                Axis = "y",
-                Position = "left",
-                Grid = new { DrawOnChartArea = false },
-                Title = new
-                {
-                    Text = "Days between 1mm and 10mm of rain",
-                    Display = true,
-                    Color = "blue",
-                },
-                BeginAtZero = true,
-            },
-            DaysEqualOrAbove10 = new
-            {
-                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove10),
-                Axis = "y",
-                Position = "right",
-                Grid = new { DrawOnChartArea = false },
-                Title = new
-                {
-                    Text = "Days of 10mm of rain or more",
-                    Display = true,
-                    Color = "blue",
-                },
-                BeginAtZero = true,
-            },
-            DaysEqualOrAbove10LessThan25 = new
-            {
-                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove10AndLessThan25),
-                Axis = "y",
-                Position = "left",
-                Grid = new { DrawOnChartArea = false },
-                Title = new
-                {
-                    Text = "Days between 10mm and 25mm of rain",
-                    Display = true,
-                    Color = "blue",
-                },
-                BeginAtZero = true,
-            },
-            DaysEqualOrAbove25 = new
-            {
-                Display = ChartSeriesList.Any(x => x.SeriesTransformation == SeriesTransformations.EqualOrAbove25),
-                Axis = "y",
-                Position = "right",
-                Grid = new { DrawOnChartArea = false },
-                Title = new
-                {
-                    Text = "Days of 25mm of rain or more",
-                    Display = true,
-                    Color = "blue",
-                },
-                BeginAtZero = true,
-            },
-        };
+        
+        dynamic scales = BuildChartScales();
 
         object chartOptions = new
         {
@@ -1027,6 +826,49 @@ public partial class Index : IDisposable
         }
 
         l.LogInformation("Leaving");
+    }
+
+    private dynamic BuildChartScales()
+    {
+        dynamic scales = new ExpandoObject();
+
+        var xLabel = ChartLogic.GetXAxisLabel(SelectedBinGranularity);
+        scales.X = new
+        {
+            Title = new
+            {
+                Text = xLabel,
+                Display = true,
+                Color = "blue",
+            },
+        };
+
+        var axes = new List<string>();
+        foreach (var s in ChartSeriesList)
+        {
+            var uom = s.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure;
+            var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, uom);
+            if (!axes.Contains(axisId))
+            {
+                ((IDictionary<string, object>)scales).Add(axisId,
+                    new
+                    {
+                        Display = true,
+                        Axis = "y",
+                        Position = axes.Count % 2 == 0 ? "left" : "right",
+                        Grid = new { DrawOnChartArea = false },
+                        Title = new
+                        {
+                            Text = UnitOfMeasureLabel(s.SeriesTransformation, uom),
+                            Display = true,
+                            Color = "blue",
+                        },
+                    });
+                axes.Add(axisId);
+            }
+        }
+
+        return scales;
     }
 
     async Task<List<ChartTrendlineData>> AddDataSetsToChart()

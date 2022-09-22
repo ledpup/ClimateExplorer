@@ -4,8 +4,8 @@
 <div class="range_container">
     <div class="sliders_control">
         <span class="output-text">@SliderOutput</span>
-        <input id="fromSlider" value="@InternalFromValue" type="range" min="@Min" max="@Max" @onchange="FromChangedAsync" @oninput="SliderOnInput" class="extents-slider" />
-        <input value="@InternalToValue" type="range" min="@Min" max="@Max" @onchange="ToChangedAsync" @oninput="SliderOnInput" class="extents-slider" />
+        <input id="fromSlider" value="@InternalFromValue" type="range" min="@Min" max="@Max" @onchange="FromChangedAsync" @oninput="FromOnInput" class="extents-slider" />
+        <input value="@InternalToValue" type="range" min="@Min" max="@Max" @onchange="ToChangedAsync" @oninput="ToOnInput" class="extents-slider" />
         <input type="range" min="@RangeMin" max="@RangeMax" value="@RangeValue" @onchange="RangeChangedAsync" @oninput="RangeOnInputAsync" class="range-slider" id="myRangeSlider">
     </div>
     <style>
@@ -14,17 +14,15 @@
         }
     </style>
     <div class="form_control">
+        <span>@Min</span>
         <div class="form_control_container">
-            <span class="form_control_container__time">Start</span>
+            <span>Start</span>
             <input class="form_control_container__time__input" type="number" value="@InternalFromValue" min="@Min" max="@Max" @onchange="FromChangedAsync" @onchange:preventDefault="true" />
         </div>
         <div class="form_control_container">
-            <span class="form_control_container__time">Middle</span>
-            <input class="form_control_container__time__input" type="number" value="@RangeValue" min="@Min" max="@Max" @onchange="RangeChangedAsync" @onchange:preventDefault="true" />
-        </div>
-        <div class="form_control_container">
-            <span class="form_control_container__time">End</span>
+            <span>End</span>
             <input class="form_control_container__time__input" type="number" value="@InternalToValue" min="@Min" max="@Max" @onchange="ToChangedAsync" @onchange:preventDefault="true" />
         </div>
+        <span>@Max</span>
     </div>
 </div>

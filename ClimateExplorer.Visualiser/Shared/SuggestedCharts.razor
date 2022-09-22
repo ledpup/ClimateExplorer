@@ -20,7 +20,7 @@
                 <div class="description">@s.Description</div>
                 @if (s.MissingChartSeries)
                 {
-                    <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available for this location</div>
+                    <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available here</div>
                 }
             </div>
 
@@ -43,7 +43,7 @@
                                 <div class="description">@v.Description</div>
                                 @if (v.MissingChartSeries)
                                 {
-                                    <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available for this location</div>
+                                    <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available here</div>
                                 }
                             </div>
                         }
@@ -392,7 +392,7 @@
                         new SuggestedChartPresetModel()
                         {
                             Title = "Compare minimums",
-                            Description = "Adjusted vs raw minimum temperature values",
+                            Description = "Adjusted vs raw minimum temperatures",
                             ChartSeriesList =
                                 new List<ChartSeriesDefinition>()
                                 {
