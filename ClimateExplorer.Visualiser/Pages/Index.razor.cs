@@ -833,6 +833,10 @@ public partial class Index : IDisposable
         dynamic scales = new ExpandoObject();
 
         var xLabel = ChartLogic.GetXAxisLabel(SelectedBinGranularity);
+
+        // The casing on the names of the scales is case-sensitive.
+        // The x axis needs to be x (not X) or the chart will not register the scale correctly.
+        // This will at least break the trendlines component
         scales.x = new
         {
             Title = new
@@ -850,7 +854,8 @@ public partial class Index : IDisposable
             var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, uom);
             if (!axes.Contains(axisId))
             {
-                ((IDictionary<string, object>)scales).Add(axisId,
+                ((IDictionary<string, object>)scales).Add(
+                    axisId,
                     new
                     {
                         Display = true,
