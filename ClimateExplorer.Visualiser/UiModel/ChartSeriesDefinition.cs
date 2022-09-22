@@ -278,6 +278,11 @@ public class ChartSeriesDefinition
     {
         public bool Equals(ChartSeriesDefinition? x, ChartSeriesDefinition? y)
         {
+            return BaseComparer(x, y);
+        }
+
+        public static bool BaseComparer(ChartSeriesDefinition? x, ChartSeriesDefinition? y)
+        {
             if (x == null && y == null) return true;
             if (x == null || y == null) return false;
 
@@ -288,6 +293,7 @@ public class ChartSeriesDefinition
             if (x.Smoothing != y.Smoothing) return false;
             if (x.SmoothingWindow != y.SmoothingWindow) return false;
             if (x.Value != y.Value) return false;
+            if (x.SeriesTransformation != y.SeriesTransformation) return false;
 
             if (x.SourceSeriesSpecifications.Length != y.SourceSeriesSpecifications.Length) return false;
 
@@ -336,32 +342,15 @@ public class ChartSeriesDefinition
     {
         public bool Equals(ChartSeriesDefinition? x, ChartSeriesDefinition? y)
         {
-            if (x == null && y == null) return true;
-            if (x == null || y == null) return false;
+            var baseComparison = ChartSeriesDefinitionComparerWhichIgnoresYearAndIsLocked.BaseComparer(x, y);
 
-            if (x.Aggregation != y.Aggregation) return false;
-            if (x.BinGranularity != y.BinGranularity) return false;
-            if (x.DisplayStyle != y.DisplayStyle) return false;
-            if (x.IsLocked != y.IsLocked) return false;
-            if (x.ShowTrendline != y.ShowTrendline) return false;
-            if (x.Smoothing != y.Smoothing) return false;
-            if (x.SmoothingWindow != y.SmoothingWindow) return false;
-            if (x.Value != y.Value) return false;
-            if (x.Year != y.Year) return false;
-            if (x.SeriesTransformation != y.SeriesTransformation) return false;
-
-            if (x.SourceSeriesSpecifications.Length != y.SourceSeriesSpecifications.Length) return false;
-
-            for (int i = 0; i < x.SourceSeriesSpecifications.Length; i++)
+            if (!baseComparison)
             {
-                var sssX = x.SourceSeriesSpecifications[i];
-                var sssY = y.SourceSeriesSpecifications[i];
-
-                if (sssX.DataSetDefinition != sssY.DataSetDefinition) return false;
-                if (sssX.LocationId != sssY.LocationId) return false;
-                if (sssX.LocationName != sssY.LocationName) return false;
-                if (sssX.MeasurementDefinition != sssY.MeasurementDefinition) return false;
+                return false;
             }
+
+            if (x.IsLocked != y.IsLocked) return false;
+            if (x.Year != y.Year) return false;
 
             return true;
         }

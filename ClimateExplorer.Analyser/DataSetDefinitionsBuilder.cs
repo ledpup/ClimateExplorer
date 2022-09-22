@@ -459,7 +459,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.PartsPerBillion,
                         DataResolution = DataResolution.Monthly,
                         DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Reference\N20\Monthly",
+                        FolderName = @"Reference\N2O\Monthly",
                         FileNameFormat = "n2o_mm_gl.txt",
                         PreferredColour = 4
                     },

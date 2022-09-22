@@ -97,6 +97,10 @@
         var dsdMeiV2 = DataSetDefinitions.Single(x => x.Id == Guid.Parse("ffd5f5e2-d8df-4779-a7f4-f5d148505033"));
         var mdMeiV2 = dsdMeiV2.MeasurementDefinitions.Single(x => x.DataType == DataType.MEIv2);
 
+        var c2o = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.CO2, null, false, throwIfNoMatch: true);
+        var ch4 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.CH4, null, false, throwIfNoMatch: true);
+        var n2o = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.N2O, null, false, throwIfNoMatch: true);
+
         SuggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
@@ -587,6 +591,76 @@
                         }
             }
         );
+
+        SuggestedPresets.Add(
+            new SuggestedChartPresetModelWithVariants()
+                {
+                    Title = "Greenhouse Gases (GHGs)",
+                    Description = "Carbon dioxide (CO\u2082), the most significant anthropogenic GHG.",
+                    ChartSeriesList =
+                        new List<ChartSeriesDefinition>()
+                        {
+                                new ChartSeriesDefinition()
+                                {
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, c2o),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYearAndMonth,
+                                    Smoothing = SeriesSmoothingOptions.None,
+                                    SmoothingWindow = 5,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null,
+                                    DisplayStyle = SeriesDisplayStyle.Line,
+                                },
+                        },
+                    Variants =
+                            new List<SuggestedChartPresetModel>()
+                            {
+                                new SuggestedChartPresetModel()
+                                {
+                                    Title = "Methane (CH\u2084)",
+                                    Description = "Anthropogenic emission sources include agriculture, oil and natural gas systems and landfills.",
+                                    ChartSeriesList =
+                                        new List<ChartSeriesDefinition>()
+                                        {
+                                            new ChartSeriesDefinition()
+                                            {
+                                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, ch4),
+                                                Aggregation = SeriesAggregationOptions.Mean,
+                                                BinGranularity = BinGranularities.ByYearAndMonth,
+                                                Smoothing = SeriesSmoothingOptions.None,
+                                                SmoothingWindow = 5,
+                                                Value = SeriesValueOptions.Value,
+                                                Year = null,
+                                                DisplayStyle = SeriesDisplayStyle.Line,
+                                            },
+                                        }
+                                },
+                                new SuggestedChartPresetModel()
+                                {
+                                    Title = "Nitrous oxide (N\u2082O)",
+                                    Description = "Human agricultural accounts for about two-thirds of global N\u2082O emissions.",
+                                    ChartSeriesList =
+                                        new List<ChartSeriesDefinition>()
+                                        {
+                                            new ChartSeriesDefinition()
+                                            {
+                                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, n2o),
+                                                Aggregation = SeriesAggregationOptions.Mean,
+                                                BinGranularity = BinGranularities.ByYearAndMonth,
+                                                Smoothing = SeriesSmoothingOptions.None,
+                                                SmoothingWindow = 5,
+                                                Value = SeriesValueOptions.Value,
+                                                Year = null,
+                                                DisplayStyle = SeriesDisplayStyle.Line,
+                                            }
+                                        }
+                                }
+                            }
+                }
+            );
 
         // Presets may call for data that is not available at all locations. In those
         // cases, remove the ChartSeries entries that aren't available & set a flag
