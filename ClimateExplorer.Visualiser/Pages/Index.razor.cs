@@ -726,7 +726,7 @@ public partial class Index : IDisposable
             return;
         }
 
-        DumpChartSeriesList();
+        LogChartSeriesList();
 
         await chart.Clear();
 
