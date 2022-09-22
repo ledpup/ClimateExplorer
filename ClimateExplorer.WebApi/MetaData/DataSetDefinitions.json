@@ -484,7 +484,7 @@
         "DataResolution": "Monthly",
         "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Reference\\N20\\Monthly",
+        "FolderName": "Reference\\N2O\\Monthly",
         "FileNameFormat": "n2o_mm_gl.txt",
         "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
         "NullValue": null,
