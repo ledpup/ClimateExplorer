@@ -719,7 +719,7 @@ public partial class Index : IDisposable
         l.LogInformation("Entering");
 
         // This can happen at startup, or if the user switches off all data series
-        if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0 || chart == null)
+        if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0 || chart == null || chartTrendline == null)
         {
             l.LogInformation("Bailing early as no chart data available");
 
@@ -808,7 +808,7 @@ public partial class Index : IDisposable
 
         await chart.SetOptionsObject(chartOptions);
 
-        if (trendlines != null)
+        if (trendlines != null && trendlines.Count > 0)
         {
             await chartTrendline.AddTrendLineOptions(trendlines);
         }
@@ -833,7 +833,11 @@ public partial class Index : IDisposable
         dynamic scales = new ExpandoObject();
 
         var xLabel = ChartLogic.GetXAxisLabel(SelectedBinGranularity);
-        scales.X = new
+
+        // The casing on the names of the scales is case-sensitive.
+        // The x axis needs to be x (not X) or the chart will not register the scale correctly.
+        // This will at least break the trendlines component
+        scales.x = new
         {
             Title = new
             {
@@ -850,7 +854,8 @@ public partial class Index : IDisposable
             var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, uom);
             if (!axes.Contains(axisId))
             {
-                ((IDictionary<string, object>)scales).Add(axisId,
+                ((IDictionary<string, object>)scales).Add(
+                    axisId,
                     new
                     {
                         Display = true,
