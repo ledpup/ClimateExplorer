@@ -44,17 +44,29 @@ public class DataSetDefinitionViewModel
 
     public static DataSetAndMeasurementDefinition GetDataSetDefinitionAndMeasurement(
         IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, 
-        Guid locationId, 
+        Guid? locationId, 
         DataType dataType, 
         DataAdjustment? dataAdjustment, 
         bool allowNullDataAdjustment = false,
         bool throwIfNoMatch = true)
     {
-        // Exact match first.
-        var dsds = dataSetDefinitions.Where(x =>   x.LocationIds != null
-                                                && x.LocationIds.Any(y => y == locationId) 
-                                                && x.MeasurementDefinitions.Any(y => y.DataType == dataType && y.DataAdjustment == dataAdjustment))
-                                     .ToList();
+        var dsds = new List<DataSetDefinitionViewModel>();
+
+        if (locationId == null)
+        {
+            // Reference data
+            dsds = dataSetDefinitions.Where(x =>    x.LocationIds == null
+                                                 && x.MeasurementDefinitions.Any(y => y.DataType == dataType && y.DataAdjustment == dataAdjustment))
+                                         .ToList();
+        }
+        else
+        {
+            // Exact match first.
+            dsds = dataSetDefinitions.Where(x =>    x.LocationIds != null
+                                                 && x.LocationIds.Any(y => y == locationId)
+                                                 && x.MeasurementDefinitions.Any(y => y.DataType == dataType && y.DataAdjustment == dataAdjustment))
+                                         .ToList();
+        }
 
         // If no exact match
         if (!dsds.Any() && allowNullDataAdjustment)
