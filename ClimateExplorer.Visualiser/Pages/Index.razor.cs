@@ -833,7 +833,7 @@ public partial class Index : IDisposable
         dynamic scales = new ExpandoObject();
 
         var xLabel = ChartLogic.GetXAxisLabel(SelectedBinGranularity);
-        scales.X = new
+        scales.x = new
         {
             Title = new
             {
