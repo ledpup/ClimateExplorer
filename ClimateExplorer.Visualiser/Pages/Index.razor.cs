@@ -717,17 +717,17 @@ public partial class Index : IDisposable
 
         l.LogInformation("Entering");
 
-        DumpChartSeriesList();
-
-        await chart.Clear();
-
         // This can happen at startup, or if the user switches off all data series
-        if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0)
+        if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0 || chart == null || chartTrendline == null)
         {
             l.LogInformation("Bailing early as no chart data available");
 
             return;
         }
+
+        DumpChartSeriesList();
+
+        await chart.Clear();
 
         // We used to choose set ChartType to Bar if the user's selected chart type was bar or difference or rainfall,
         // and line otherwise.
@@ -1009,7 +1009,7 @@ public partial class Index : IDisposable
 
         await chart.SetOptionsObject(chartOptions);
 
-        if (trendlines != null)
+        if (trendlines != null && trendlines.Count > 0)
         {
             await chartTrendline.AddTrendLineOptions(trendlines);
         }
