@@ -242,10 +242,10 @@
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                                         SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMaxUnadjustedOrUnspecified),
                                         Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYear,
+                                        BinGranularity = BinGranularities.ByYearAndMonth,
                                         ShowTrendline = false,
-                                        Smoothing = SeriesSmoothingOptions.None,
-                                        SmoothingWindow = 5,
+                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                        SmoothingWindow = 3,
                                         Value = SeriesValueOptions.Value,
                                         Year = null
                                     },
@@ -254,10 +254,10 @@
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                                         SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, solarRadiation),
                                         Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYear,
+                                        BinGranularity = BinGranularities.ByYearAndMonth,
                                         ShowTrendline = false,
-                                        Smoothing = SeriesSmoothingOptions.None,
-                                        SmoothingWindow = 5,
+                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                        SmoothingWindow = 3,
                                         Value = SeriesValueOptions.Value,
                                         Year = null
                                     }
@@ -596,7 +596,7 @@
             new SuggestedChartPresetModelWithVariants()
                 {
                     Title = "Greenhouse Gases (GHGs)",
-                    Description = "Carbon dioxide (CO\u2082), the most significant anthropogenic GHG.",
+                    Description = "The Keeling Curve: carbon dioxide (CO\u2082) records from the Mauna Loa Observatory since 1958",
                     ChartSeriesList =
                         new List<ChartSeriesDefinition>()
                         {
@@ -619,7 +619,7 @@
                                 new SuggestedChartPresetModel()
                                 {
                                     Title = "Methane (CH\u2084)",
-                                    Description = "Anthropogenic emission sources include agriculture, oil and natural gas systems and landfills.",
+                                    Description = "NOAA's Earth System Research Laboratory has measured methane since 1983",
                                     ChartSeriesList =
                                         new List<ChartSeriesDefinition>()
                                         {
@@ -640,7 +640,7 @@
                                 new SuggestedChartPresetModel()
                                 {
                                     Title = "Nitrous oxide (N\u2082O)",
-                                    Description = "Human agricultural accounts for about two-thirds of global N\u2082O emissions.",
+                                    Description = "NOAA's Earth System Research Laboratory has measured nitrous oxide since 1997",
                                     ChartSeriesList =
                                         new List<ChartSeriesDefinition>()
                                         {
