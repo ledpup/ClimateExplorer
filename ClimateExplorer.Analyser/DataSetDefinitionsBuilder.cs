@@ -402,7 +402,7 @@ internal class DataSetDefinitionsBuilder
             new DataSetDefinition
             {
                 Id = Guid.Parse("42c9195e-edc0-4894-97dc-923f9d5e72f0"),
-                Name = "Carbon dioxide (CO₂) from Mauna Loa Observatory",
+                Name = "Carbon dioxide (CO₂) from the Mauna Loa Observatory",
                 ShortName = "Carbon Dioxide (CO₂)",
                 Description = "The carbon dioxide data on Mauna Loa constitute the longest record of direct measurements of CO2 in the atmosphere. They were started by C. David Keeling of the Scripps Institution of Oceanography in March of 1958 at a facility of the National Oceanic and Atmospheric Administration [Keeling, 1976]. NOAA started its own CO2 measurements in May of 1974, and they have run in parallel with those made by Scripps since then [Thoning, 1989].",
                 MoreInformationUrl = "https://gml.noaa.gov/ccgg/trends/mlo.html",
