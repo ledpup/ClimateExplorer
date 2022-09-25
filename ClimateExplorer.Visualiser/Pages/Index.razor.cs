@@ -55,8 +55,8 @@ public partial class Index : IDisposable
     List<short>? SelectedYears { get; set; }
     List<short> StartYears { get; set; }
     bool UseMostRecentStartYear { get; set; } = true;
-    string SelectedStartYear { get; set; }
-    string SelectedEndYear { get; set; }
+    string? SelectedStartYear { get; set; }
+    string? SelectedEndYear { get; set; }
     Guid SelectedLocationId { get; set; }
     Location _selectedLocation { get; set; }
     Location PreviousLocation { get; set; }
@@ -1262,5 +1262,17 @@ public partial class Index : IDisposable
         {
             await OnStartYearTextChanged((DateTime.Now.Year - 31).ToString());
         }
+    }
+
+    async Task OnClearFilter()
+    {
+        UseMostRecentStartYear = true;
+        SelectedStartYear = null;
+        SelectedEndYear = null;
+        SliderStart = null;
+        SliderEnd = null;
+        EnableRangeSlider = false;
+
+        await HandleRedraw();
     }
 }
