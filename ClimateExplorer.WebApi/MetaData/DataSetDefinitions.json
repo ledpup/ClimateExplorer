@@ -21,8 +21,7 @@
         "FolderName": "Temperature\\ACORN-SAT\\Daily\\adjusted\\daily_tmax",
         "FileNameFormat": "tmax.[station].daily.csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E-?\\d*\\.?\\d*),*$",
-        "NullValue": null,
-        "PreferredColour": 0
+        "NullValue": null
       },
       {
         "DataCategory": "Temperature",
@@ -34,8 +33,7 @@
         "FolderName": "Temperature\\ACORN-SAT\\Daily\\adjusted\\daily_tmin",
         "FileNameFormat": "tmin.[station].daily.csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E-?\\d*\\.?\\d*),*$",
-        "NullValue": null,
-        "PreferredColour": 1
+        "NullValue": null
       }
     ],
     "DataLocationMapping": null
@@ -62,8 +60,7 @@
         "FolderName": "Temperature\\ACORN-SAT\\Daily\\raw-data\\daily_tempmax",
         "FileNameFormat": "[station]_daily_tempmax.csv",
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
-        "NullValue": null,
-        "PreferredColour": 2
+        "NullValue": null
       },
       {
         "DataCategory": "Temperature",
@@ -75,8 +72,7 @@
         "FolderName": "Temperature\\ACORN-SAT\\Daily\\raw-data\\daily_tempmin",
         "FileNameFormat": "[station]_daily_tempmin.csv",
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
-        "NullValue": null,
-        "PreferredColour": 3
+        "NullValue": null
       },
       {
         "DataCategory": null,
@@ -88,8 +84,7 @@
         "FolderName": "Rainfall\\ACORN-SAT\\Daily\\raw-data\\daily_rainfall",
         "FileNameFormat": "[station]_daily_rainfall.csv",
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
-        "NullValue": null,
-        "PreferredColour": 1
+        "NullValue": null
       },
       {
         "DataCategory": null,
@@ -101,8 +96,7 @@
         "FolderName": "SolarRadiation\\ACORN-SAT\\Daily\\daily_solarradiation",
         "FileNameFormat": "[station]_daily_solarradiation.csv",
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*)$",
-        "NullValue": null,
-        "PreferredColour": 0
+        "NullValue": null
       }
     ],
     "DataLocationMapping": null
@@ -129,8 +123,7 @@
         "FolderName": "Temperature\\RAIA\\Monthly\\adjusted\\maxT",
         "FileNameFormat": "acorn.ria.maxT.[station].monthly.txt",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})\\d{2}\\s\\d\u002B\\s\u002B(?\u003Cvalue\u003E-?\\d\u002B\\.\\d\u002B)$",
-        "NullValue": "99999.9",
-        "PreferredColour": 0
+        "NullValue": "99999.9"
       },
       {
         "DataCategory": "Temperature",
@@ -142,8 +135,7 @@
         "FolderName": "Temperature\\RAIA\\Monthly\\adjusted\\minT",
         "FileNameFormat": "acorn.ria.minT.[station].monthly.txt",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})\\d{2}\\s\\d\u002B\\s\u002B(?\u003Cvalue\u003E-?\\d\u002B\\.\\d\u002B)$",
-        "NullValue": "99999.9",
-        "PreferredColour": 1
+        "NullValue": "99999.9"
       }
     ],
     "DataLocationMapping": null
@@ -170,8 +162,7 @@
         "FolderName": "Temperature\\NIWA\\Daily\\raw-data",
         "FileNameFormat": "[station].csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Ctmin\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-        "NullValue": "-",
-        "PreferredColour": 2
+        "NullValue": "-"
       },
       {
         "DataCategory": "Temperature",
@@ -183,8 +174,7 @@
         "FolderName": "Temperature\\NIWA\\Daily\\raw-data",
         "FileNameFormat": "[station].csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Ctmax\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-        "NullValue": "-",
-        "PreferredColour": 3
+        "NullValue": "-"
       }
     ],
     "DataLocationMapping": null
@@ -211,8 +201,7 @@
         "FolderName": "Temperature\\NIWA\\Daily\\raw-data",
         "FileNameFormat": "[station].csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Ctmin\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-        "NullValue": "-",
-        "PreferredColour": 2
+        "NullValue": "-"
       },
       {
         "DataCategory": "Temperature",
@@ -224,8 +213,7 @@
         "FolderName": "Temperature\\NIWA\\Daily\\raw-data",
         "FileNameFormat": "[station].csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Ctmax\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-        "NullValue": "-",
-        "PreferredColour": 3
+        "NullValue": "-"
       },
       {
         "DataCategory": null,
@@ -237,8 +225,7 @@
         "FolderName": "Rainfall\\NIWA\\Daily",
         "FileNameFormat": "[station]_rainfall.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),.*,D$",
-        "NullValue": "-",
-        "PreferredColour": 1
+        "NullValue": "-"
       }
     ],
     "DataLocationMapping": null
@@ -265,8 +252,7 @@
         "FolderName": "Temperature\\NIWA\\Daily\\raw-data",
         "FileNameFormat": "[station].csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Ctmin\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-        "NullValue": "-",
-        "PreferredColour": 2
+        "NullValue": "-"
       },
       {
         "DataCategory": "Temperature",
@@ -278,8 +264,7 @@
         "FolderName": "Temperature\\NIWA\\Daily\\raw-data",
         "FileNameFormat": "[station].csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Ctmax\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-        "NullValue": "-",
-        "PreferredColour": 3
+        "NullValue": "-"
       },
       {
         "DataCategory": null,
@@ -291,8 +276,7 @@
         "FolderName": "Rainfall\\NIWA\\Daily",
         "FileNameFormat": "[station]_rainfall.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),.*,D$",
-        "NullValue": "-",
-        "PreferredColour": 1
+        "NullValue": "-"
       }
     ],
     "DataLocationMapping": null
@@ -319,8 +303,7 @@
         "FolderName": "Reference\\ENSO",
         "FileNameFormat": "meiv2.data.txt",
         "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
-        "NullValue": "-999.00",
-        "PreferredColour": 0
+        "NullValue": "-999.00"
       }
     ],
     "DataLocationMapping": null
@@ -347,8 +330,7 @@
         "FolderName": "Reference\\ENSO",
         "FileNameFormat": "soi.long.data.txt",
         "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
-        "NullValue": "-99.99",
-        "PreferredColour": 0
+        "NullValue": "-99.99"
       }
     ],
     "DataLocationMapping": null
@@ -375,8 +357,7 @@
         "FolderName": "Reference\\ENSO",
         "FileNameFormat": "oni.data.txt",
         "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
-        "NullValue": "-99.9",
-        "PreferredColour": 0
+        "NullValue": "-99.9"
       }
     ],
     "DataLocationMapping": null
@@ -403,8 +384,7 @@
         "FolderName": "Reference\\ENSO",
         "FileNameFormat": "nino34.long.anom.data.txt",
         "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
-        "NullValue": "-99.99",
-        "PreferredColour": 0
+        "NullValue": "-99.99"
       }
     ],
     "DataLocationMapping": null
@@ -431,8 +411,7 @@
         "FolderName": "Reference\\CO2\\Monthly",
         "FileNameFormat": "co2_mm_mlo.txt",
         "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
-        "NullValue": null,
-        "PreferredColour": 4
+        "NullValue": null
       }
     ],
     "DataLocationMapping": null
@@ -459,8 +438,7 @@
         "FolderName": "Reference\\CH4\\Monthly",
         "FileNameFormat": "ch4_mm_gl.txt",
         "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
-        "NullValue": null,
-        "PreferredColour": 4
+        "NullValue": null
       }
     ],
     "DataLocationMapping": null
@@ -487,8 +465,7 @@
         "FolderName": "Reference\\N2O\\Monthly",
         "FileNameFormat": "n2o_mm_gl.txt",
         "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
-        "NullValue": null,
-        "PreferredColour": 4
+        "NullValue": null
       }
     ],
     "DataLocationMapping": null
@@ -515,8 +492,7 @@
         "FolderName": "Reference\\IOD",
         "FileNameFormat": "dmi.had.long.data.txt",
         "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
-        "NullValue": "-9999",
-        "PreferredColour": 0
+        "NullValue": "-9999"
       }
     ],
     "DataLocationMapping": null
@@ -543,8 +519,7 @@
         "FolderName": "Reference\\SeaIce\\Daily",
         "FileNameFormat": "N_seaice_extent_daily_v3.0.csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d\u002B),\\s\u002B(?\u003Cmonth\u003E\\d\u002B),\\s\u002B(?\u003Cday\u003E\\d\u002B),\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
-        "NullValue": null,
-        "PreferredColour": 0
+        "NullValue": null
       }
     ],
     "DataLocationMapping": null
@@ -571,8 +546,7 @@
         "FolderName": "Reference\\SeaIce\\Daily",
         "FileNameFormat": "S_seaice_extent_daily_v3.0.csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d\u002B),\\s\u002B(?\u003Cmonth\u003E\\d\u002B),\\s\u002B(?\u003Cday\u003E\\d\u002B),\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
-        "NullValue": null,
-        "PreferredColour": 0
+        "NullValue": null
       }
     ],
     "DataLocationMapping": null

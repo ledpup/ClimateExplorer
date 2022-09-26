@@ -27,8 +27,8 @@ public class ChartSeriesDefinition
     public int SmoothingWindow { get; set; }
     public SeriesAggregationOptions Aggregation { get; set; }
     public SeriesValueOptions Value { get; set; }
-    public string Colour { get; set; } // Always allocated by ColourServer; TODO: Honour RequestedColour & expose in UI
-    public string RequestedColour { get; set; } // Ignored currently
+    public string Colour { get; set; } // Always allocated by ColourServer
+    public string RequestedColour { get; set; }
 
     // Rendering option fields
     public SeriesDisplayStyle DisplayStyle { get; set; }

@@ -13,7 +13,6 @@ public class MeasurementDefinition
     public string? FileNameFormat { get; set; }
     public string? DataRowRegEx { get; set; }
     public string? NullValue { get; set; }
-    public int PreferredColour { get; set; }
 
     public MeasurementDefinitionViewModel ToViewModel()
     {
@@ -22,8 +21,7 @@ public class MeasurementDefinition
             DataCategory = DataCategory,
             DataAdjustment = DataAdjustment,
             DataType = DataType,
-            UnitOfMeasure = UnitOfMeasure,
-            PreferredColour = PreferredColour
+            UnitOfMeasure = UnitOfMeasure
         };
 
         return viewModel;
