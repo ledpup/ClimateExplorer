@@ -20,6 +20,9 @@ public static class Enums
         CH4,
         N2O,
         IOD,
+
+        NorthSeaIce,
+        SouthSeaIce,
     }
 
     public enum DataResolution
@@ -45,7 +48,8 @@ public static class Enums
         PartsPerMillion,
         PartsPerBillion,
         EnsoIndex,
-        MegajoulesPerSquareMetre
+        MegajoulesPerSquareMetre,
+        MillionSqKm,
     }
 
     public static string UnitOfMeasureLabel(SeriesTransformations seriesTransformations, UnitOfMeasure unitOfMeasure)
@@ -66,46 +70,34 @@ public static class Enums
 
     static string UnitOfMeasureLabel(UnitOfMeasure unitOfMeasure)
     {
-        switch (unitOfMeasure)
+        return unitOfMeasure switch
         {
-            case UnitOfMeasure.DegreesCelsius:
-                return "Degrees Celsius (°C)";
-            case UnitOfMeasure.DegreesCelsiusAnomaly:
-                return "Degrees Celsius (°C) - Anomaly";
-            case UnitOfMeasure.Millimetres:
-                return "Millimetres (mm)";
-            case UnitOfMeasure.PartsPerMillion:
-                return "Parts per million (ppm)";
-            case UnitOfMeasure.PartsPerBillion:
-                return "Parts per billion (ppb)";
-            case UnitOfMeasure.EnsoIndex:
-                return "ENSO index";
-            case UnitOfMeasure.MegajoulesPerSquareMetre:
-                return "Megajoules per square metre (MJ/m²)";
-        }
-        throw new NotImplementedException();
+            UnitOfMeasure.DegreesCelsius => "Degrees Celsius (°C)",
+            UnitOfMeasure.DegreesCelsiusAnomaly => "Degrees Celsius (°C) - Anomaly",
+            UnitOfMeasure.Millimetres => "Millimetres (mm)",
+            UnitOfMeasure.PartsPerMillion => "Parts per million (ppm)",
+            UnitOfMeasure.PartsPerBillion => "Parts per billion (ppb)",
+            UnitOfMeasure.EnsoIndex => "ENSO index",
+            UnitOfMeasure.MegajoulesPerSquareMetre => "Megajoules per square metre (MJ/m²)",
+            UnitOfMeasure.MillionSqKm => "Million square kilometres",
+            _ => throw new NotImplementedException(),
+        };
     }
 
     public static string UnitOfMeasureLabelShort(UnitOfMeasure unitOfMeasure)
     {
-        switch (unitOfMeasure)
+        return unitOfMeasure switch
         {
-            case UnitOfMeasure.DegreesCelsius:
-                return "°C";
-            case UnitOfMeasure.DegreesCelsiusAnomaly:
-                return "°C Anomaly";
-            case UnitOfMeasure.Millimetres:
-                return "mm";
-            case UnitOfMeasure.PartsPerMillion:
-                return "ppm";
-            case UnitOfMeasure.PartsPerBillion:
-                return "ppb";
-            case UnitOfMeasure.EnsoIndex:
-                return "ENSO index";
-            case UnitOfMeasure.MegajoulesPerSquareMetre:
-                return "MJ/m²";
-        }
-        throw new NotImplementedException();
+            UnitOfMeasure.DegreesCelsius => "°C",
+            UnitOfMeasure.DegreesCelsiusAnomaly => "°C Anomaly",
+            UnitOfMeasure.Millimetres => "mm",
+            UnitOfMeasure.PartsPerMillion => "ppm",
+            UnitOfMeasure.PartsPerBillion => "ppb",
+            UnitOfMeasure.EnsoIndex => "ENSO index",
+            UnitOfMeasure.MegajoulesPerSquareMetre => "MJ/m²",
+            UnitOfMeasure.MillionSqKm => "million km²",
+            _ => throw new NotImplementedException(),
+        };
     }
 
     public enum AggregationMethod

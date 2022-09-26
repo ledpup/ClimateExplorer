@@ -265,13 +265,24 @@ public class ChartSeriesDefinition
 
     static string MapDataTypeToFriendlyName(DataType dataType)
     {
-        switch (dataType)
+        return dataType switch
         {
-            case DataType.TempMin: return "Daily minimum";
-            case DataType.TempMax: return "Daily maximum";
-            case DataType.SolarRadiation: return "Solar radiation";
-            default: return dataType.ToString();
-        }
+            DataType.TempMin => "Daily minimum",
+            DataType.TempMax => "Daily maximum",
+            DataType.SolarRadiation => "Solar radiation",
+            DataType.Rainfall => "Rainfall",
+            DataType.MEIv2 => "MEI v2",
+            DataType.SOI => "SOI",
+            DataType.Nino34 => "Nino 3.4",
+            DataType.ONI => "ONI",
+            DataType.CO2 => "Carbon dioxide (CO\u2082)",
+            DataType.CH4 => "Methane (CH\u2084)",
+            DataType.N2O => "Nitrous oxide (N\u2082O)",
+            DataType.IOD => "Indian Ocean Dipole (IOD)",
+            DataType.NorthSeaIce => "Arctic sea ice",
+            DataType.SouthSeaIce => "Antarctic sea ice",
+            _ => throw new NotImplementedException(),
+        };
     }
 
     public class ChartSeriesDefinitionComparerWhichIgnoresYearAndIsLocked : IEqualityComparer<ChartSeriesDefinition>

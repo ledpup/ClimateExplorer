@@ -411,7 +411,7 @@
   },
   {
     "Id": "42c9195e-edc0-4894-97dc-923f9d5e72f0",
-    "Name": "Carbon dioxide (CO\u2082) from Mauna Loa Observatory",
+    "Name": "Carbon dioxide (CO\u2082) from the Mauna Loa Observatory",
     "ShortName": "Carbon Dioxide (CO\u2082)",
     "Description": "The carbon dioxide data on Mauna Loa constitute the longest record of direct measurements of CO2 in the atmosphere. They were started by C. David Keeling of the Scripps Institution of Oceanography in March of 1958 at a facility of the National Oceanic and Atmospheric Administration [Keeling, 1976]. NOAA started its own CO2 measurements in May of 1974, and they have run in parallel with those made by Scripps since then [Thoning, 1989].",
     "Publisher": null,
@@ -516,6 +516,62 @@
         "FileNameFormat": "dmi.had.long.data.txt",
         "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
         "NullValue": "-9999",
+        "PreferredColour": 0
+      }
+    ],
+    "DataLocationMapping": null
+  },
+  {
+    "Id": "4ea1e30b-af74-4be8-b55d-c28764cf384e",
+    "Name": "Arctic sea ice extent",
+    "ShortName": "Arctic sea ice extent",
+    "Description": "The daily Sea Ice Index provides a quick look at Arctic-wide changes in sea ice. It provides consistently processed daily ice extent and concentration images and data since 1979.",
+    "Publisher": null,
+    "PublisherUrl": null,
+    "MoreInformationUrl": "https://nsidc.org/data/seaice_index/",
+    "StationInfoUrl": null,
+    "LocationInfoUrl": null,
+    "DataDownloadUrl": "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v3.0.csv",
+    "MeasurementDefinitions": [
+      {
+        "DataCategory": null,
+        "DataType": "NorthSeaIce",
+        "UnitOfMeasure": "MillionSqKm",
+        "DataResolution": "Daily",
+        "DataAdjustment": null,
+        "RowDataType": "OneValuePerRow",
+        "FolderName": "Reference\\SeaIce\\Daily",
+        "FileNameFormat": "N_seaice_extent_daily_v3.0.csv",
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d\u002B),\\s\u002B(?\u003Cmonth\u003E\\d\u002B),\\s\u002B(?\u003Cday\u003E\\d\u002B),\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
+        "NullValue": null,
+        "PreferredColour": 0
+      }
+    ],
+    "DataLocationMapping": null
+  },
+  {
+    "Id": "ec8af0ac-215f-4d9c-9770-cc24ee24fbc7",
+    "Name": "Antarctic sea ice extent",
+    "ShortName": "Antarctic sea ice extent",
+    "Description": "The daily Sea Ice Index provides a quick look at Antarctic-wide changes in sea ice. It provides consistently processed daily ice extent and concentration images and data since 1979.",
+    "Publisher": null,
+    "PublisherUrl": null,
+    "MoreInformationUrl": "https://nsidc.org/data/seaice_index/",
+    "StationInfoUrl": null,
+    "LocationInfoUrl": null,
+    "DataDownloadUrl": "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v3.0.csv",
+    "MeasurementDefinitions": [
+      {
+        "DataCategory": null,
+        "DataType": "SouthSeaIce",
+        "UnitOfMeasure": "MillionSqKm",
+        "DataResolution": "Daily",
+        "DataAdjustment": null,
+        "RowDataType": "OneValuePerRow",
+        "FolderName": "Reference\\SeaIce\\Daily",
+        "FileNameFormat": "S_seaice_extent_daily_v3.0.csv",
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d\u002B),\\s\u002B(?\u003Cmonth\u003E\\d\u002B),\\s\u002B(?\u003Cday\u003E\\d\u002B),\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
+        "NullValue": null,
         "PreferredColour": 0
       }
     ],

@@ -101,6 +101,9 @@
         var ch4 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.CH4, null, false, throwIfNoMatch: true);
         var n2o = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.N2O, null, false, throwIfNoMatch: true);
 
+        var northSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.NorthSeaIce, null, false, throwIfNoMatch: true);
+        var southSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.SouthSeaIce, null, false, throwIfNoMatch: true);
+
         SuggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
@@ -595,7 +598,7 @@
         SuggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
                 {
-                    Title = "Greenhouse Gases (GHGs)",
+                    Title = "Greenhouse gases (GHGs)",
                     Description = "The Keeling Curve: carbon dioxide (CO\u2082) records from the Mauna Loa Observatory since 1958",
                     ChartSeriesList =
                         new List<ChartSeriesDefinition>()
@@ -661,6 +664,55 @@
                             }
                 }
             );
+
+        SuggestedPresets.Add(
+        new SuggestedChartPresetModelWithVariants()
+            {
+                Title = "Antarctic sea ice",
+                Description = "Measured in millions of square kilometres since 1979",
+                ChartSeriesList =
+                        new List<ChartSeriesDefinition>()
+                        {
+                                new ChartSeriesDefinition()
+                                {
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, southSeaIceExtent),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYear,
+                                    Smoothing = SeriesSmoothingOptions.None,
+                                    SmoothingWindow = 5,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null,
+                                    DisplayStyle = SeriesDisplayStyle.Line,
+                                },
+                        },
+                Variants =
+                            new List<SuggestedChartPresetModel>()
+                            {
+                                new SuggestedChartPresetModel()
+                                {
+                                    Title = "Arctic sea ice",
+                                    Description = "Measured in millions of square kilometres since 1979",
+                                    ChartSeriesList =
+                                        new List<ChartSeriesDefinition>()
+                                        {
+                                            new ChartSeriesDefinition()
+                                            {
+                                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, northSeaIceExtent),
+                                                Aggregation = SeriesAggregationOptions.Mean,
+                                                BinGranularity = BinGranularities.ByYear,
+                                                Smoothing = SeriesSmoothingOptions.None,
+                                                SmoothingWindow = 5,
+                                                Value = SeriesValueOptions.Value,
+                                                Year = null,
+                                                DisplayStyle = SeriesDisplayStyle.Line,
+                                            },
+                                        }
+                                },
+                            }
+            }
+        );
 
         // Presets may call for data that is not available at all locations. In those
         // cases, remove the ChartSeries entries that aren't available & set a flag

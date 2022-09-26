@@ -54,7 +54,6 @@
                     </div>
 
                     <div class="chart-controls">
-                        <a class="chart-control" @onclick="ShowOptionsModal"><i class="fas fa-cog"></i> Chart options</a>
                         <a class="chart-control" @onclick="ShowFilterModal"><i class="fas fa-filter"></i> Year filtering</a>
                         
                         @if (!string.IsNullOrWhiteSpace(SelectedStartYear) || !string.IsNullOrWhiteSpace(SelectedEndYear))
@@ -76,6 +75,8 @@
                         </Dropdown>
 
                         <a class="chart-control" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download data</a>
+
+                        <a class="chart-control" @onclick="ShowOptionsModal"><i class="fas fa-cog"></i> Chart options</a>
 
                         <a class="chart-control" @onclick="ShowAddDataSetModal"><i class="fas fa-plus"></i> Add data set</a>
 

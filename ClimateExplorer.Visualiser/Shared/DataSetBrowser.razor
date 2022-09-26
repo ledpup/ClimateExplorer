@@ -68,6 +68,14 @@
             case DataType.SolarRadiation:
                 segments.Add("Solar radiation");
                 break;
+
+            case DataType.SouthSeaIce:
+                segments.Add("Antarctic sea ice");
+                break;
+
+            case DataType.NorthSeaIce:
+                segments.Add("Arctic sea ice");
+                break;
         }
 
         return String.Join(" | ", segments);
@@ -338,7 +346,41 @@
                                     }
                             }
                         }
-                }
+                },
+                new DataSetLibraryFolder
+                {
+                    Name = "Sea ice",
+                    DataSets =
+                        new List<DataSetLibraryEntry>()
+                        {
+                            new DataSetLibraryEntry()
+                            {
+                                Name = "Antarctic sea ice extent",
+                                SourceSeriesSpecifications =
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            SourceDataSetId = Guid.Parse("EC8AF0AC-215F-4D9C-9770-CC24EE24FBC7"),
+                                            DataType = DataType.SouthSeaIce
+                                        }
+                                    }
+                            },
+                            new DataSetLibraryEntry()
+                            {
+                                Name = "Arctic sea ice extent",
+                                SourceSeriesSpecifications =
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            SourceDataSetId = Guid.Parse("4EA1E30B-AF74-4BE8-B55D-C28764CF384E"),
+                                            DataType = DataType.NorthSeaIce
+                                        }
+                                    }
+                            },
+                        }
+                },
             }
         );
     }
