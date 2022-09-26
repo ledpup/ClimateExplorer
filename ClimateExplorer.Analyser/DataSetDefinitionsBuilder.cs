@@ -327,7 +327,7 @@ internal class DataSetDefinitionsBuilder
             new DataSetDefinition
             {
                 Id = Guid.Parse("c31270fa-b207-4d8f-b68e-4995698f1a4d"),
-                Name = "Southern Oscillation Index (ISOI)",
+                Name = "Southern Oscillation Index (SOI)",
                 ShortName = "SOI",
                 Description = "TBC",
                 MoreInformationUrl = "https://www.ncdc.noaa.gov/teleconnections/enso/soi",
@@ -497,7 +497,51 @@ internal class DataSetDefinitionsBuilder
                         NullValue = "-9999"
                     },
                 },
-            }
+            },
+
+
+            new DataSetDefinition
+            {
+                Id = Guid.Parse("4EA1E30B-AF74-4BE8-B55D-C28764CF384E"),
+                Name = "Arctic sea ice extent",
+                ShortName = "Arctic sea ice extent",
+                Description = "The daily Sea Ice Index provides a quick look at Arctic-wide changes in sea ice. It provides consistently processed daily ice extent and concentration images and data since 1979.",
+                MoreInformationUrl = "https://nsidc.org/data/seaice_index/",
+                DataDownloadUrl = "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v3.0.csv",
+                MeasurementDefinitions = new List<MeasurementDefinition>
+                {
+                    new MeasurementDefinition
+                    {
+                        DataType = DataType.NorthSeaIce,
+                        UnitOfMeasure = UnitOfMeasure.MillionSqKm,
+                        DataResolution = DataResolution.Daily,
+                        DataRowRegEx = @"^(?<year>\d+),\s+(?<month>\d+),\s+(?<day>\d+),\s+(?<value>\d+\.\d+).*$",
+                        FolderName = @"Reference\SeaIce\Daily",
+                        FileNameFormat = "N_seaice_extent_daily_v3.0.csv",
+                    },
+                },
+            },
+            new DataSetDefinition
+            {
+                Id = Guid.Parse("EC8AF0AC-215F-4D9C-9770-CC24EE24FBC7"),
+                Name = "Antarctic sea ice extent",
+                ShortName = "Antarctic sea ice extent",
+                Description = "The daily Sea Ice Index provides a quick look at Antarctic-wide changes in sea ice. It provides consistently processed daily ice extent and concentration images and data since 1979.",
+                MoreInformationUrl = "https://nsidc.org/data/seaice_index/",
+                DataDownloadUrl = "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v3.0.csv",
+                MeasurementDefinitions = new List<MeasurementDefinition>
+                {
+                    new MeasurementDefinition
+                    {
+                        DataType = DataType.SouthSeaIce,
+                        UnitOfMeasure = UnitOfMeasure.MillionSqKm,
+                        DataResolution = DataResolution.Daily,
+                        DataRowRegEx = @"^(?<year>\d+),\s+(?<month>\d+),\s+(?<day>\d+),\s+(?<value>\d+\.\d+).*$",
+                        FolderName = @"Reference\SeaIce\Daily",
+                        FileNameFormat = "S_seaice_extent_daily_v3.0.csv",
+                    },
+                },
+            },
         };
 
         var options = new JsonSerializerOptions
