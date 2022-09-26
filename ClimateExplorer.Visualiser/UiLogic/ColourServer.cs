@@ -1,14 +1,22 @@
-﻿namespace ClimateExplorer.Visualiser.UiLogic;
+﻿using Microsoft.VisualBasic;
+
+namespace ClimateExplorer.Visualiser.UiLogic;
 
 public class ColourServer
 {
     int colourIndex;
-    public string GetNextColour(int preferredColour = 0)
+    public string GetNextColour(string requestedColour)
     {
-        if (colourIndex < preferredColour)
+        if (!string.IsNullOrWhiteSpace(requestedColour) && !set10.Contains(requestedColour))
+            throw new ArgumentException("Requested colour not in list of available colours");
+
+        var requestedIndex = Array.IndexOf(set10, requestedColour);
+
+        if (colourIndex < requestedIndex)
         {
-            colourIndex = preferredColour;
+            colourIndex = requestedIndex;
         }
+
         // Re-use colours if we have to
         var nextColour = set10[colourIndex % set10.Length];
         colourIndex++;

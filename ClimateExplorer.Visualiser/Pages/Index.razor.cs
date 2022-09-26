@@ -104,7 +104,6 @@ public partial class Index : IDisposable
                     DataAdjustment = DataAdjustment.Difference,
                     DataType = DataType.TempMax,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
-                    PreferredColour = 0
                 }
             );
 
@@ -115,7 +114,6 @@ public partial class Index : IDisposable
                     DataAdjustment = DataAdjustment.Difference,
                     DataType = DataType.TempMin,
                     UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
-                    PreferredColour = 0
                 }
             );
 
@@ -888,7 +886,7 @@ public partial class Index : IDisposable
         {
             var dataSet = chartSeries.ProcessedDataSet;
 
-            var htmlColourCode = colours.GetNextColour(dataSet.MeasurementDefinition.PreferredColour);
+            var htmlColourCode = colours.GetNextColour(chartSeries.ChartSeries.RequestedColour);
 
             await ChartLogic.AddDataSetToChart(
                 chart,

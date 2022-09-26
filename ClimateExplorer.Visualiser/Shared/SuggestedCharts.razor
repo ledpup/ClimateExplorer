@@ -94,8 +94,7 @@
         var tempMin                        = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMin,        DataAdjustment.Adjusted,   true,  throwIfNoMatch: false);
         var tempMinUnadjusted              = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMin,        DataAdjustment.Unadjusted, false, throwIfNoMatch: false);
 
-        var dsdMeiV2 = DataSetDefinitions.Single(x => x.Id == Guid.Parse("ffd5f5e2-d8df-4779-a7f4-f5d148505033"));
-        var mdMeiV2 = dsdMeiV2.MeasurementDefinitions.Single(x => x.DataType == DataType.MEIv2);
+        var nino34 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.Nino34, null, false, throwIfNoMatch: true);
 
         var c2o = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.CO2, null, false, throwIfNoMatch: true);
         var ch4 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.CH4, null, false, throwIfNoMatch: true);
@@ -596,6 +595,45 @@
         );
 
         SuggestedPresets.Add(
+        new SuggestedChartPresetModelWithVariants()
+            {
+                Title = "ENSO + rainfall",
+                Description = "Monthly chart of the Nino 3.4 index and rainfall",
+                ChartSeriesList =
+                        new List<ChartSeriesDefinition>()
+                        {
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, rainfall),
+                                Aggregation = SeriesAggregationOptions.Sum,
+                                BinGranularity = BinGranularities.ByYearAndMonth,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 3,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                SeriesTransformation = SeriesTransformations.Identity,
+                                RequestedColour = "#4daf4a",
+                            },
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, nino34),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYearAndMonth,
+                                Smoothing = SeriesSmoothingOptions.None,
+                                SmoothingWindow = 5,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Bar,
+                                SeriesTransformation = SeriesTransformations.Identity,
+                            },
+                        },
+            }
+        );
+
+        SuggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
                 {
                     Title = "Greenhouse gases (GHGs)",
@@ -684,6 +722,7 @@
                                     Value = SeriesValueOptions.Value,
                                     Year = null,
                                     DisplayStyle = SeriesDisplayStyle.Line,
+                                    RequestedColour = "#377eb8",
                                 },
                         },
                 Variants =
@@ -707,6 +746,7 @@
                                                 Value = SeriesValueOptions.Value,
                                                 Year = null,
                                                 DisplayStyle = SeriesDisplayStyle.Line,
+                                                RequestedColour = "#377eb8",
                                             },
                                         }
                                 },

@@ -39,7 +39,6 @@ internal class DataSetDefinitionsBuilder
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d*\.?\d*),*$",
                         FolderName = @"Temperature\ACORN-SAT\Daily\adjusted\daily_tmax",
                         FileNameFormat = "tmax.[station].daily.csv",
-                        PreferredColour = 0,
                     },
                     new MeasurementDefinition
                     {
@@ -51,7 +50,6 @@ internal class DataSetDefinitionsBuilder
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d*\.?\d*),*$",
                         FolderName = @"Temperature\ACORN-SAT\Daily\adjusted\daily_tmin",
                         FileNameFormat = "tmin.[station].daily.csv",
-                        PreferredColour = 1,
                     },
                 },
             },
@@ -77,7 +75,6 @@ internal class DataSetDefinitionsBuilder
                         DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
                         FolderName = @"Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax",
                         FileNameFormat = "[station]_daily_tempmax.csv",
-                        PreferredColour = 2,
                     },
                     new MeasurementDefinition
                     {
@@ -89,7 +86,6 @@ internal class DataSetDefinitionsBuilder
                         DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
                         FolderName = @"Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin",
                         FileNameFormat = "[station]_daily_tempmin.csv",
-                        PreferredColour = 3,
                     },
                     new MeasurementDefinition
                     {
@@ -99,7 +95,6 @@ internal class DataSetDefinitionsBuilder
                         DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
                         FolderName = @"Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall",
                         FileNameFormat = "[station]_daily_rainfall.csv",
-                        PreferredColour = 1,
                     },
                     new MeasurementDefinition
                     {
@@ -109,7 +104,6 @@ internal class DataSetDefinitionsBuilder
                         DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*)$",
                         FolderName = @"SolarRadiation\ACORN-SAT\Daily\daily_solarradiation",
                         FileNameFormat = "[station]_daily_solarradiation.csv",
-                        PreferredColour = 0,
                     },
                 },
             },
@@ -135,7 +129,6 @@ internal class DataSetDefinitionsBuilder
                         FolderName = @"Temperature\RAIA\Monthly\adjusted\maxT",
                         FileNameFormat = "acorn.ria.maxT.[station].monthly.txt",
                         NullValue = "99999.9",
-                        PreferredColour = 0,
                     },
                     new MeasurementDefinition
                     {
@@ -148,7 +141,6 @@ internal class DataSetDefinitionsBuilder
                         FolderName = @"Temperature\RAIA\Monthly\adjusted\minT",
                         FileNameFormat = "acorn.ria.minT.[station].monthly.txt",
                         NullValue = "99999.9",
-                        PreferredColour = 1,
                     },
                 },
             },
@@ -177,7 +169,6 @@ internal class DataSetDefinitionsBuilder
                         FolderName = @"Temperature\NIWA\Daily\raw-data",
                         FileNameFormat = "[station].csv",
                         NullValue = "-",
-                        PreferredColour = 2,
                     },
                     new MeasurementDefinition
                     {
@@ -190,7 +181,6 @@ internal class DataSetDefinitionsBuilder
                         FolderName = @"Temperature\NIWA\Daily\raw-data",
                         FileNameFormat = "[station].csv",
                         NullValue = "-",
-                        PreferredColour = 3,
                     },
                 },
             },
@@ -215,7 +205,6 @@ internal class DataSetDefinitionsBuilder
                         FolderName = @"Temperature\NIWA\Daily\raw-data",
                         FileNameFormat = "[station].csv",
                         NullValue = "-",
-                        PreferredColour = 2,
                     },
                     new MeasurementDefinition
                     {
@@ -228,7 +217,6 @@ internal class DataSetDefinitionsBuilder
                         FolderName = @"Temperature\NIWA\Daily\raw-data",
                         FileNameFormat = "[station].csv",
                         NullValue = "-",
-                        PreferredColour = 3,
                     },
                     new MeasurementDefinition
                     {
@@ -239,7 +227,6 @@ internal class DataSetDefinitionsBuilder
                         FolderName = @"Rainfall\NIWA\Daily",
                         FileNameFormat = "[station]_rainfall.csv",
                         NullValue = "-",
-                        PreferredColour = 1,
                     },
                 },
             },
@@ -267,7 +254,6 @@ internal class DataSetDefinitionsBuilder
                         FolderName = @"Temperature\NIWA\Daily\raw-data",
                         FileNameFormat = "[station].csv",
                         NullValue = "-",
-                        PreferredColour = 2,
                     },
                     new MeasurementDefinition
                     {
@@ -279,7 +265,6 @@ internal class DataSetDefinitionsBuilder
                         FolderName = @"Temperature\NIWA\Daily\raw-data",
                         FileNameFormat = "[station].csv",
                         NullValue = "-",
-                        PreferredColour = 3,
                     },
                     new MeasurementDefinition
                     {
@@ -290,7 +275,6 @@ internal class DataSetDefinitionsBuilder
                         FolderName = @"Rainfall\NIWA\Daily",
                         FileNameFormat = "[station]_rainfall.csv",
                         NullValue = "-",
-                        PreferredColour = 1,
                     },
                 },
             },
@@ -417,7 +401,6 @@ internal class DataSetDefinitionsBuilder
                         DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
                         FolderName = @"Reference\CO2\Monthly",
                         FileNameFormat = "co2_mm_mlo.txt",
-                        PreferredColour = 4
                     },
                 },
             },
@@ -439,7 +422,6 @@ internal class DataSetDefinitionsBuilder
                         DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
                         FolderName = @"Reference\CH4\Monthly",
                         FileNameFormat = "ch4_mm_gl.txt",
-                        PreferredColour = 4
                     },
                 },
             },
@@ -461,7 +443,6 @@ internal class DataSetDefinitionsBuilder
                         DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
                         FolderName = @"Reference\N2O\Monthly",
                         FileNameFormat = "n2o_mm_gl.txt",
-                        PreferredColour = 4
                     },
                 },
             },
