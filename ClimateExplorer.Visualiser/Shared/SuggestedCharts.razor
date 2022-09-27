@@ -181,10 +181,10 @@
                                     }
                                 }
                         },
-                        new SuggestedChartPresetModel()
+                        new SuggestedChartPresetModelWithVariants()
                         {
-                            Title = "Plus moving average",
-                            Description = "Adds a 5 year moving average",
+                            Title = "Temperature anomaly",
+                            Description = "Yearly average maximum daily temperatures relative to the average of the whole dataset",
                             ChartSeriesList =
                                 new List<ChartSeriesDefinition>()
                                 {
@@ -196,39 +196,9 @@
                                         BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.None,
                                         SmoothingWindow = 5,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null
-                                    },
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 5,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null
-                                    }
-                                }
-                        },
-                        new SuggestedChartPresetModel()
-                        {
-                            Title = "Moving average only",
-                            Description = "Shows only a 5 year moving average",
-                            ChartSeriesList =
-                                new List<ChartSeriesDefinition>()
-                                {
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 5,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null
+                                        Value = SeriesValueOptions.Anomaly,
+                                        Year = null,
+                                        DisplayStyle = SeriesDisplayStyle.Bar
                                     }
                                 }
                         },
@@ -264,30 +234,6 @@
                                         Year = null
                                     }
                                 }
-                        }
-                    }
-            }
-        );
-
-        SuggestedPresets.Add(
-            new SuggestedChartPresetModelWithVariants()
-            {
-                Title = "Temperature anomaly",
-                Description = "Yearly average maximum daily temperatures relative to the average of the whole dataset",
-                ChartSeriesList =
-                    new List<ChartSeriesDefinition>()
-                    {
-                        new ChartSeriesDefinition()
-                        {
-                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
-                            Aggregation = SeriesAggregationOptions.Mean,
-                            BinGranularity = BinGranularities.ByYear,
-                            Smoothing = SeriesSmoothingOptions.None,
-                            SmoothingWindow = 5,
-                            Value = SeriesValueOptions.Anomaly,
-                            Year = null,
-                            DisplayStyle = SeriesDisplayStyle.Bar
                         }
                     }
             }
@@ -706,7 +652,7 @@
         SuggestedPresets.Add(
         new SuggestedChartPresetModelWithVariants()
             {
-                Title = "Antarctic sea ice",
+                Title = "Antarctic sea ice extent",
                 Description = "Measured in millions of square kilometres since 1979",
                 ChartSeriesList =
                         new List<ChartSeriesDefinition>()
@@ -730,7 +676,7 @@
                             {
                                 new SuggestedChartPresetModel()
                                 {
-                                    Title = "Arctic sea ice",
+                                    Title = "Arctic sea ice extent",
                                     Description = "Measured in millions of square kilometres since 1979",
                                     ChartSeriesList =
                                         new List<ChartSeriesDefinition>()
