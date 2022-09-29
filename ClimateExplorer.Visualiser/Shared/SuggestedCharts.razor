@@ -652,8 +652,8 @@
         SuggestedPresets.Add(
         new SuggestedChartPresetModelWithVariants()
             {
-                Title = "Antarctic sea ice extent",
-                Description = "Smoothed sea ice extent. Measured in millions of square kilometres since 1979",
+                Title = "Sea ice extent",
+                Description = "Antarctic and Arctic sea ice, measured in millions of square kilometres since 1979",
                 ChartSeriesList =
                         new List<ChartSeriesDefinition>()
                         {
@@ -670,36 +670,26 @@
                                     DisplayStyle = SeriesDisplayStyle.Line,
                                     RequestedColour = "#377eb8",
                                 },
+                                new ChartSeriesDefinition()
+                                {
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, northSeaIceExtent),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYear,
+                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                    SmoothingWindow = 5,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null,
+                                    DisplayStyle = SeriesDisplayStyle.Line,
+                                },
                         },
                 Variants =
                             new List<SuggestedChartPresetModel>()
                             {
                                 new SuggestedChartPresetModel()
                                 {
-                                    Title = "Arctic sea ice extent",
-                                    Description = "Smoothed sea ice extent. Measured in millions of square kilometres since 1979",
-                                    ChartSeriesList =
-                                        new List<ChartSeriesDefinition>()
-                                        {
-                                            new ChartSeriesDefinition()
-                                            {
-                                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, northSeaIceExtent),
-                                                Aggregation = SeriesAggregationOptions.Mean,
-                                                BinGranularity = BinGranularities.ByYear,
-                                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                                SmoothingWindow = 5,
-                                                Value = SeriesValueOptions.Value,
-                                                Year = null,
-                                                DisplayStyle = SeriesDisplayStyle.Line,
-                                                RequestedColour = "#377eb8",
-                                            },
-                                        }
-                                },
-                                new SuggestedChartPresetModel()
-                                {
                                     Title = "Greenland ice melt area",
-                                    Description = "Smoothed ice melt. Measured in square kilometres since 1979",
+                                    Description = "Smoothed ice melt area, measured in square kilometres since 1979",
                                     ChartSeriesList =
                                         new List<ChartSeriesDefinition>()
                                         {
