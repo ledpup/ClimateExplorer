@@ -516,7 +516,7 @@
         "DataResolution": "Daily",
         "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Reference\\SeaIce\\Daily",
+        "FolderName": "Reference\\Ice\\Daily",
         "FileNameFormat": "N_seaice_extent_daily_v3.0.csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d\u002B),\\s\u002B(?\u003Cmonth\u003E\\d\u002B),\\s\u002B(?\u003Cday\u003E\\d\u002B),\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
         "NullValue": null
@@ -543,9 +543,36 @@
         "DataResolution": "Daily",
         "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Reference\\SeaIce\\Daily",
+        "FolderName": "Reference\\Ice\\Daily",
         "FileNameFormat": "S_seaice_extent_daily_v3.0.csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d\u002B),\\s\u002B(?\u003Cmonth\u003E\\d\u002B),\\s\u002B(?\u003Cday\u003E\\d\u002B),\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
+        "NullValue": null
+      }
+    ],
+    "DataLocationMapping": null
+  },
+  {
+    "Id": "6484a7f8-43bc-4b16-8c4d-9168f8d6699c",
+    "Name": "Greenland ice melt area",
+    "ShortName": "Greenland ice melt",
+    "Description": "Greenland ice melt area since 1979",
+    "Publisher": null,
+    "PublisherUrl": null,
+    "MoreInformationUrl": "https://nsidc.org/greenland-today",
+    "StationInfoUrl": null,
+    "LocationInfoUrl": null,
+    "DataDownloadUrl": "https://nsidc.org/api/greenland/melt_area/{year}",
+    "MeasurementDefinitions": [
+      {
+        "DataCategory": null,
+        "DataType": "GreenlandIceMelt",
+        "UnitOfMeasure": "SqKm",
+        "DataResolution": "Daily",
+        "DataAdjustment": null,
+        "RowDataType": "OneValuePerRow",
+        "FolderName": "Reference\\Ice\\Daily",
+        "FileNameFormat": "greenland-melt-area.csv",
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E\\d*).*$",
         "NullValue": null
       }
     ],

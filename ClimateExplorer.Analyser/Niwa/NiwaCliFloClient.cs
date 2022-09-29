@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace ClimateExplorer.Analyser;
+namespace ClimateExplorer.Analyser.Niwa;
 
 public class NiwaCliFloClient
 {
@@ -27,7 +27,7 @@ public class NiwaCliFloClient
             }
         }
     }
-    
+
 
     async static Task DownloadAndExtractDailyBomData(string station, string dataTypeName, string obsCode, string columns)
     {

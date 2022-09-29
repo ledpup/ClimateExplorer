@@ -17,4 +17,8 @@
     <Content Remove="Temperature\NIWA\Daily\raw-data\15752.csv" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Reference\Ice\Daily\greenland-melt-area.csv" />
+  </ItemGroup>
+
 </Project>

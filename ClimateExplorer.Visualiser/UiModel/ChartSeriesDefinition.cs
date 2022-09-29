@@ -281,6 +281,7 @@ public class ChartSeriesDefinition
             DataType.IOD => "Indian Ocean Dipole (IOD)",
             DataType.NorthSeaIce => "Arctic sea ice",
             DataType.SouthSeaIce => "Antarctic sea ice",
+            DataType.GreenlandIceMelt => "Greenland ice melt",
             _ => throw new NotImplementedException(),
         };
     }

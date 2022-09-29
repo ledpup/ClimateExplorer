@@ -1,8 +1,13 @@
 ﻿using ClimateExplorer.Analyser;
+using ClimateExplorer.Analyser.Bom;
+using ClimateExplorer.Analyser.Greenland;
+using ClimateExplorer.Analyser.Niwa;
 
 GenerateMapMarkers();
 
 var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
+
+await GreenlandApiClient.GetMeltDataAndSave();
 
 var niwaStations = await Station.GetStationsFromFiles(
     new List<string> 

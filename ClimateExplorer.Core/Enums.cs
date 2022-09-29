@@ -23,6 +23,7 @@ public static class Enums
 
         NorthSeaIce,
         SouthSeaIce,
+        GreenlandIceMelt,
     }
 
     public enum DataResolution
@@ -50,6 +51,7 @@ public static class Enums
         EnsoIndex,
         MegajoulesPerSquareMetre,
         MillionSqKm,
+        SqKm,
     }
 
     public static string UnitOfMeasureLabel(SeriesTransformations seriesTransformations, UnitOfMeasure unitOfMeasure)
@@ -80,6 +82,7 @@ public static class Enums
             UnitOfMeasure.EnsoIndex => "ENSO index",
             UnitOfMeasure.MegajoulesPerSquareMetre => "Megajoules per square metre (MJ/m²)",
             UnitOfMeasure.MillionSqKm => "Million square kilometres",
+            UnitOfMeasure.SqKm => "Square kilometres (km²)",
             _ => throw new NotImplementedException(),
         };
     }
@@ -96,6 +99,7 @@ public static class Enums
             UnitOfMeasure.EnsoIndex => "ENSO index",
             UnitOfMeasure.MegajoulesPerSquareMetre => "MJ/m²",
             UnitOfMeasure.MillionSqKm => "million km²",
+            UnitOfMeasure.SqKm => "km²",
             _ => throw new NotImplementedException(),
         };
     }

@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace ClimateExplorer.Analyser;
+namespace ClimateExplorer.Analyser.Niwa;
 
 public static class NiwaLocationsAndStationsMapper
 {
@@ -72,8 +72,8 @@ public static class NiwaLocationsAndStationsMapper
 
             if (!stations.Any(x => x.ExternalStationCode == externalStationCode))
             {
-                stations.Add(new Station 
-                { 
+                stations.Add(new Station
+                {
                     Name = match.Groups["stationName"].Value,
                     ExternalStationCode = externalStationCode,
                     Coordinates = coordinates,
@@ -84,7 +84,7 @@ public static class NiwaLocationsAndStationsMapper
             {
                 dataFileLocationMapping.LocationIdToDataFileMappings.Add(location.Id, new List<DataFileFilterAndAdjustment>());
             }
-            
+
             dataFileLocationMapping.LocationIdToDataFileMappings[location.Id].Add(dataFileFilterAndAdjustment);
         }
 

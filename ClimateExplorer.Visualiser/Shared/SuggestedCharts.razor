@@ -102,11 +102,12 @@
 
         var northSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.NorthSeaIce, null, false, throwIfNoMatch: true);
         var southSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.SouthSeaIce, null, false, throwIfNoMatch: true);
+        var greenland = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.GreenlandIceMelt, null, false, throwIfNoMatch: true);
 
         SuggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
-                Title = "Temperature + Rainfall",
+                Title = "Temperature + rainfall",
                 Description = "Smoothed maximum daily temperature and rainfall",
                 ChartSeriesList =
                 new List<ChartSeriesDefinition>()
@@ -132,6 +133,44 @@
                         SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
                         Year = null
+                    }
+                },
+                Variants = new List<SuggestedChartPresetModel> {
+                    new SuggestedChartPresetModelWithVariants()
+                    {
+                        Title = "ENSO + rainfall",
+                        Description = "Monthly chart of the Nino 3.4 index and rainfall",
+                        ChartSeriesList =
+                        new List<ChartSeriesDefinition>()
+                        {
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, rainfall),
+                                Aggregation = SeriesAggregationOptions.Sum,
+                                BinGranularity = BinGranularities.ByYearAndMonth,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 3,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                SeriesTransformation = SeriesTransformations.Identity,
+                                RequestedColour = "#4daf4a",
+                            },
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, nino34),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYearAndMonth,
+                                Smoothing = SeriesSmoothingOptions.None,
+                                SmoothingWindow = 5,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Bar,
+                                SeriesTransformation = SeriesTransformations.Identity,
+                            },
+                        },
                     }
                 }
             }
@@ -541,45 +580,6 @@
         );
 
         SuggestedPresets.Add(
-        new SuggestedChartPresetModelWithVariants()
-            {
-                Title = "ENSO + rainfall",
-                Description = "Monthly chart of the Nino 3.4 index and rainfall",
-                ChartSeriesList =
-                        new List<ChartSeriesDefinition>()
-                        {
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, rainfall),
-                                Aggregation = SeriesAggregationOptions.Sum,
-                                BinGranularity = BinGranularities.ByYearAndMonth,
-                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                SmoothingWindow = 3,
-                                Value = SeriesValueOptions.Value,
-                                Year = null,
-                                DisplayStyle = SeriesDisplayStyle.Line,
-                                SeriesTransformation = SeriesTransformations.Identity,
-                                RequestedColour = "#4daf4a",
-                            },
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, nino34),
-                                Aggregation = SeriesAggregationOptions.Mean,
-                                BinGranularity = BinGranularities.ByYearAndMonth,
-                                Smoothing = SeriesSmoothingOptions.None,
-                                SmoothingWindow = 5,
-                                Value = SeriesValueOptions.Value,
-                                Year = null,
-                                DisplayStyle = SeriesDisplayStyle.Bar,
-                                SeriesTransformation = SeriesTransformations.Identity,
-                            },
-                        },
-            }
-        );
-
-        SuggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
                 {
                     Title = "Greenhouse gases (GHGs)",
@@ -653,7 +653,7 @@
         new SuggestedChartPresetModelWithVariants()
             {
                 Title = "Antarctic sea ice extent",
-                Description = "Measured in millions of square kilometres since 1979",
+                Description = "Smoothed sea ice extent. Measured in millions of square kilometres since 1979",
                 ChartSeriesList =
                         new List<ChartSeriesDefinition>()
                         {
@@ -663,7 +663,7 @@
                                     SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, southSeaIceExtent),
                                     Aggregation = SeriesAggregationOptions.Mean,
                                     BinGranularity = BinGranularities.ByYear,
-                                    Smoothing = SeriesSmoothingOptions.None,
+                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
                                     SmoothingWindow = 5,
                                     Value = SeriesValueOptions.Value,
                                     Year = null,
@@ -677,7 +677,7 @@
                                 new SuggestedChartPresetModel()
                                 {
                                     Title = "Arctic sea ice extent",
-                                    Description = "Measured in millions of square kilometres since 1979",
+                                    Description = "Smoothed sea ice extent. Measured in millions of square kilometres since 1979",
                                     ChartSeriesList =
                                         new List<ChartSeriesDefinition>()
                                         {
@@ -687,7 +687,7 @@
                                                 SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, northSeaIceExtent),
                                                 Aggregation = SeriesAggregationOptions.Mean,
                                                 BinGranularity = BinGranularities.ByYear,
-                                                Smoothing = SeriesSmoothingOptions.None,
+                                                Smoothing = SeriesSmoothingOptions.MovingAverage,
                                                 SmoothingWindow = 5,
                                                 Value = SeriesValueOptions.Value,
                                                 Year = null,
@@ -696,7 +696,29 @@
                                             },
                                         }
                                 },
-                            }
+                                new SuggestedChartPresetModel()
+                                {
+                                    Title = "Greenland ice melt area",
+                                    Description = "Smoothed ice melt. Measured in square kilometres since 1979",
+                                    ChartSeriesList =
+                                        new List<ChartSeriesDefinition>()
+                                        {
+                                            new ChartSeriesDefinition()
+                                            {
+                                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, greenland),
+                                                Aggregation = SeriesAggregationOptions.Sum,
+                                                BinGranularity = BinGranularities.ByYear,
+                                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                                SmoothingWindow = 5,
+                                                Value = SeriesValueOptions.Value,
+                                                Year = null,
+                                                DisplayStyle = SeriesDisplayStyle.Line,
+                                                RequestedColour = "#377eb8",
+                                            },
+                                        }
+                                },
+                            },
             }
         );
 
