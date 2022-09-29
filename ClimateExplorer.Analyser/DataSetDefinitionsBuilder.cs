@@ -497,7 +497,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.MillionSqKm,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<year>\d+),\s+(?<month>\d+),\s+(?<day>\d+),\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Reference\SeaIce\Daily",
+                        FolderName = @"Reference\Ice\Daily",
                         FileNameFormat = "N_seaice_extent_daily_v3.0.csv",
                     },
                 },
@@ -518,8 +518,29 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.MillionSqKm,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<year>\d+),\s+(?<month>\d+),\s+(?<day>\d+),\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Reference\SeaIce\Daily",
+                        FolderName = @"Reference\Ice\Daily",
                         FileNameFormat = "S_seaice_extent_daily_v3.0.csv",
+                    },
+                },
+            },
+            new DataSetDefinition
+            {
+                Id = Guid.Parse("6484A7F8-43BC-4B16-8C4D-9168F8D6699C"),
+                Name = "Greenland ice melt area",
+                ShortName = "Greenland ice melt",
+                Description = "Greenland ice melt area since 1979",
+                MoreInformationUrl = "https://nsidc.org/greenland-today",
+                DataDownloadUrl = "https://nsidc.org/api/greenland/melt_area/{year}",
+                MeasurementDefinitions = new List<MeasurementDefinition>
+                {
+                    new MeasurementDefinition
+                    {
+                        DataType = DataType.GreenlandIceMelt,
+                        UnitOfMeasure = UnitOfMeasure.SqKm,
+                        DataResolution = DataResolution.Daily,
+                        DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>\d*).*$",
+                        FolderName = @"Reference\Ice\Daily",
+                        FileNameFormat = "greenland-melt-area.csv",
                     },
                 },
             },

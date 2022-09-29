@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace ClimateExplorer.Analyser;
+namespace ClimateExplorer.Analyser.Bom;
 
 public static class BomLocationsAndStationsMapper
 {

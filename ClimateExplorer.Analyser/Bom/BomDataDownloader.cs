@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace ClimateExplorer.Analyser;
+namespace ClimateExplorer.Analyser.Bom;
 
 public class BomDataDownloader
 {

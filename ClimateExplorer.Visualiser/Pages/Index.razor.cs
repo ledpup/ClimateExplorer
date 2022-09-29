@@ -54,6 +54,7 @@ public partial class Index : IDisposable
     List<short>? DatasetYears { get; set; }
     List<short>? SelectedYears { get; set; }
     List<short> StartYears { get; set; }
+    short EndYear { get; set; }
     bool UseMostRecentStartYear { get; set; } = true;
     string? SelectedStartYear { get; set; }
     string? SelectedEndYear { get; set; }
@@ -1010,8 +1011,8 @@ public partial class Index : IDisposable
                     SliderStart = SliderMin;
                 }
 
-                var lastYear = preProcessedDataSets.Select(x => x.GetEndYearForDataSet()).Distinct().OrderBy(x => x).ToList();
-                SliderMax = lastYear.Max();
+                var lastYears = preProcessedDataSets.Select(x => x.GetEndYearForDataSet()).Distinct().OrderBy(x => x).ToList();
+                SliderMax = EndYear = lastYears.Max();
                 if (SliderEnd > SliderMax)
                 {
                     SliderEnd = SliderMax;
@@ -1258,7 +1259,8 @@ public partial class Index : IDisposable
         EnableRangeSlider = value;
         if (EnableRangeSlider.GetValueOrDefault() && SliderStart == null)
         {
-            await OnStartYearTextChanged((DateTime.Now.Year - 31).ToString());
+            var rangeStart = (int)((EndYear - StartYears.Max()) * .2);
+            await OnStartYearTextChanged((EndYear - rangeStart).ToString());
         }
     }
 
