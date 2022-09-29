@@ -893,7 +893,7 @@ public partial class Index : IDisposable
                 chart,
                 chartSeries,
                 dataSet,
-                GetChartLabel(chartSeries.ChartSeries.SeriesTransformation, $"{chartSeries.ChartSeries.FriendlyTitle} {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}", chartSeries.ChartSeries.Aggregation),
+                GetChartLabel(chartSeries.ChartSeries.SeriesTransformation, $"{chartSeries.ChartSeries.FriendlyTitle} | {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}", chartSeries.ChartSeries.Aggregation),
                 htmlColourCode);
 
             if (chartSeries.ChartSeries.ShowTrendline)
