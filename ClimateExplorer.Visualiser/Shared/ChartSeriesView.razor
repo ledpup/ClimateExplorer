@@ -1,4 +1,5 @@
-﻿@using ClimateExplorer.Visualiser.UiModel
+﻿@using ClimateExplorer.Visualiser.UiLogic
+@using ClimateExplorer.Visualiser.UiModel
 @using Blazorise
 @using Blazorise.Components
 @using Blazorise.Charts
@@ -120,6 +121,21 @@
                                     SelectedValueChanged="@OnDisplayStyleChanged">
                                 <SelectItem Value="SeriesDisplayStyle.Line">Line</SelectItem>
                                 <SelectItem Value="SeriesDisplayStyle.Bar">Bar</SelectItem>
+                            </Select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Colour</td>
+                        <td>
+                            <Select TValue="Colours"
+                                Size="Size.ExtraSmall"
+                                SelectedValue="@ChartSeries.RequestedColour"
+                                SelectedValueChanged="@OnColourChanged"
+                                Disabled="@(ChartSeries.DisplayStyle == SeriesDisplayStyle.Bar)">
+                                @foreach (var colour in (Colours[])Enum.GetValues(typeof(Colours)))
+                                {
+                                    <SelectItem Value="@colour">@GetColourName(colour)</SelectItem>
+                                }
                             </Select>
                         </td>
                     </tr>
@@ -256,6 +272,13 @@
         await OnSeriesChanged.InvokeAsync();
     }
 
+    async Task OnColourChanged(Colours c)
+    {
+        ChartSeries.RequestedColour = c;
+
+        await OnSeriesChanged.InvokeAsync();
+    }
+
     async Task OnTransformationChanged(SeriesTransformations s)
     {
         ChartSeries.SeriesTransformation = s;
@@ -273,5 +296,14 @@
         ChartSeries.ShowTrendline = val;
 
         await OnSeriesChanged.InvokeAsync();
+    }
+
+    string GetColourName(Colours colour)
+    {
+        return colour switch
+        {
+            Colours.AutoAssigned => "Automatic",
+            _ => colour.ToString(),
+        };
     }
 }

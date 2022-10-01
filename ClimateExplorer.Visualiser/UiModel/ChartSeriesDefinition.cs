@@ -5,6 +5,7 @@ using ClimateExplorer.Core.ViewModel;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using static ClimateExplorer.Core.Enums;
+using ClimateExplorer.Visualiser.UiLogic;
 
 namespace ClimateExplorer.Visualiser.UiModel;
 
@@ -28,7 +29,7 @@ public class ChartSeriesDefinition
     public SeriesAggregationOptions Aggregation { get; set; }
     public SeriesValueOptions Value { get; set; }
     public string Colour { get; set; } // Always allocated by ColourServer
-    public string RequestedColour { get; set; }
+    public Colours RequestedColour { get; set; }
 
     // Rendering option fields
     public SeriesDisplayStyle DisplayStyle { get; set; }
