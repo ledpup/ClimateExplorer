@@ -130,7 +130,8 @@
                             <Select TValue="Colours"
                                 Size="Size.ExtraSmall"
                                 SelectedValue="@ChartSeries.RequestedColour"
-                                SelectedValueChanged="@OnColourChanged">
+                                SelectedValueChanged="@OnColourChanged"
+                                Disabled="@(ChartSeries.DisplayStyle == SeriesDisplayStyle.Bar)">
                                 @foreach (var colour in (Colours[])Enum.GetValues(typeof(Colours)))
                                 {
                                     <SelectItem Value="@colour">@GetColourName(colour)</SelectItem>
