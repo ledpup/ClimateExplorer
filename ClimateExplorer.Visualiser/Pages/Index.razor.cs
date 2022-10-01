@@ -883,11 +883,16 @@ public partial class Index : IDisposable
 
         var trendlines = new List<ChartTrendlineData>();
 
+        var requestedColours = ChartSeriesWithData
+            .Where(x => x.ChartSeries.RequestedColour != Colours.AutoAssigned)
+            .Select(x => x.ChartSeries.RequestedColour)
+            .ToList();
+
         foreach (var chartSeries in ChartSeriesWithData)
         {
             var dataSet = chartSeries.ProcessedDataSet;
 
-            var htmlColourCode = colours.GetNextColour(chartSeries.ChartSeries.RequestedColour);
+            var htmlColourCode = colours.GetNextColour(chartSeries.ChartSeries.RequestedColour, requestedColours);
 
             await ChartLogic.AddDataSetToChart(
                 chart,
