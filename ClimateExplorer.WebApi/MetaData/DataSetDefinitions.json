@@ -577,5 +577,56 @@
       }
     ],
     "DataLocationMapping": null
+  },
+  {
+    "Id": "0561cf7e-83f2-4617-ac61-4962a0e95093",
+    "Name": "Hadley Centre observations",
+    "ShortName": null,
+    "Description": null,
+    "Publisher": "Met Office",
+    "PublisherUrl": "https://www.metoffice.gov.uk/",
+    "MoreInformationUrl": null,
+    "StationInfoUrl": "https://www.metoffice.gov.uk/hadobs/",
+    "LocationInfoUrl": null,
+    "DataDownloadUrl": null,
+    "MeasurementDefinitions": [
+      {
+        "DataCategory": "Temperature",
+        "DataType": "TempMax",
+        "UnitOfMeasure": "DegreesCelsius",
+        "DataResolution": "Daily",
+        "DataAdjustment": "Adjusted",
+        "RowDataType": "OneValuePerRow",
+        "FolderName": "Temperature\\Met\\Daily\\Adjusted",
+        "FileNameFormat": "maxtemp_daily_totals.txt",
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2})\\s\u002B(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*)$",
+        "NullValue": null
+      },
+      {
+        "DataCategory": "Temperature",
+        "DataType": "TempMin",
+        "UnitOfMeasure": "DegreesCelsius",
+        "DataResolution": "Daily",
+        "DataAdjustment": "Adjusted",
+        "RowDataType": "OneValuePerRow",
+        "FolderName": "Temperature\\Met\\Daily\\Adjusted",
+        "FileNameFormat": "mintemp_daily_totals.txt",
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2})\\s\u002B(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*)$",
+        "NullValue": null
+      },
+      {
+        "DataCategory": null,
+        "DataType": "Rainfall",
+        "UnitOfMeasure": "Millimetres",
+        "DataResolution": "Daily",
+        "DataAdjustment": null,
+        "RowDataType": "OneValuePerRow",
+        "FolderName": "Rainfall\\Met\\Daily",
+        "FileNameFormat": "HadCEP_daily_totals.txt",
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2})\\s\u002B(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*)$",
+        "NullValue": null
+      }
+    ],
+    "DataLocationMapping": null
   }
 ]
