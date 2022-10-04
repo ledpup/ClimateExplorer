@@ -544,6 +544,58 @@ internal class DataSetDefinitionsBuilder
                     },
                 },
             },
+
+
+
+            new DataSetDefinition
+            {
+                Id = Guid.Parse("0561CF7E-83F2-4617-AC61-4962A0E95093"),
+                Name = "Hadley Centre observations",
+                Description = null,
+                Publisher = "Met Office",
+                PublisherUrl = "https://www.metoffice.gov.uk/",
+                StationInfoUrl = "https://www.metoffice.gov.uk/hadobs/",
+                MeasurementDefinitions = new List<MeasurementDefinition>
+                {
+                    new MeasurementDefinition
+                    {
+                        DataCategory = DataCategory.Temperature,
+                        DataAdjustment = DataAdjustment.Adjusted,
+                        DataType = DataType.TempMax,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                        DataResolution = DataResolution.Daily,
+                        DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})\s+(?<value>-?[\d+\.\d+]*)$",
+                        FolderName = @"Temperature\Met\Daily\Adjusted",
+                        FileNameFormat = "maxtemp_daily_totals.txt",
+                    },
+                    new MeasurementDefinition
+                    {
+                        DataCategory = DataCategory.Temperature,
+                        DataAdjustment = DataAdjustment.Adjusted,
+                        DataType = DataType.TempMin,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                        DataResolution = DataResolution.Daily,
+                        DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})\s+(?<value>-?[\d+\.\d+]*)$",
+                        FolderName = @"Temperature\Met\Daily\Adjusted",
+                        FileNameFormat = "mintemp_daily_totals.txt",
+                    },
+                    new MeasurementDefinition
+                    {
+                        DataType = DataType.Rainfall,
+                        UnitOfMeasure = UnitOfMeasure.Millimetres,
+                        DataResolution = DataResolution.Daily,
+                        DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})\s+(?<value>-?[\d+\.\d+]*)$",
+                        FolderName = @"Rainfall\Met\Daily",
+                        FileNameFormat = "HadCEP_daily_totals.txt",
+                    },
+                },
+            },
+
+
+
+
+
+
         };
 
         var options = new JsonSerializerOptions
