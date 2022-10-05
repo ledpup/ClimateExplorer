@@ -6,10 +6,12 @@
 - [NIWA](https://niwa.co.nz/) New Zealand's **National Institute of Water and Atmospheric Research** (maintains the [7-stations](https://niwa.co.nz/seven-stations) and [11-station](https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data) series)
 - [NOAA](https://www.noaa.gov/) United States of America's **National Oceanic and Atmospheric Administration**
 - [NSIDC](https://nsidc.org/home) United States of America's **National Snow & Ice Data Center**
+- [Met Office](https://www.metoffice.gov.uk/) United Kingdom's national weather service
 
 ## Glossary
 - [ACORN-SAT](http://www.bom.gov.au/climate/data/acorn-sat/): Australian Climate Observations Reference Network – Surface Air Temperature
 - [RAIA](http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks): Remote Australian Islands and Antarctica (a monthly dataset that is a smaller part of ACORN-SAT)
+- [HadCET](https://www.metoffice.gov.uk/hadobs/hadcet/index.html): The Hadley Centre Central England Temperature (HadCET) dataset is the longest instrumental record of temperature in the world.
 
 ## Technical
 - Built in [Visual Studio 2022 Community Edition](https://visualstudio.microsoft.com/vs/community/)
