@@ -4,6 +4,7 @@
     {
         ByYear,
         ByYearAndMonth,
+        ByYearAndDay,
         BySouthernHemisphereTemperateSeasonOnly,
         BySouthernHemisphereTropicalSeasonOnly,
         ByMonthOnly
