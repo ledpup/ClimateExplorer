@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
 using System.Dynamic;
+using GeoCoordinatePortable;
 
 namespace ClimateExplorer.Visualiser.Pages;
 
@@ -144,9 +145,14 @@ public partial class Index : IDisposable
 
         if (LocationId == null)
         {
-            // Not sure whether we're allowed to set parameters this way, but it's short-lived - we'll immediately navigate away after
-            // preparing querystring
-            LocationId = "aed87aa0-1d0c-44aa-8561-cde0fc936395";
+            LocationId = (await OnUseCurrentLocation()).ToString();
+
+            if (LocationId == null)
+            {
+                // Not sure whether we're allowed to set parameters this way, but it's short-lived - we'll immediately navigate away after
+                // preparing querystring
+                LocationId = "aed87aa0-1d0c-44aa-8561-cde0fc936395";
+            }
         }
 
         Guid locationId = Guid.Parse(LocationId);
@@ -1279,5 +1285,31 @@ public partial class Index : IDisposable
         EnableRangeSlider = false;
 
         await HandleRedraw();
+    }
+
+    class GetLocationResult
+    {
+        public float Latitude { get; set; }
+        public float Longitude { get; set; }
+
+        public float ErrorCode { get; set; }
+        public string ErrorMessage { get; set; }
+    }
+
+    async Task<Guid?> OnUseCurrentLocation()
+    {
+        var getLocationResult = await JSRuntime.InvokeAsync<GetLocationResult>("getLocation");
+
+        if (getLocationResult.ErrorCode > 0)
+        {
+            return null;
+        }
+
+        var geoCoord = new GeoCoordinate(getLocationResult.Latitude, getLocationResult.Longitude);
+
+        var distances = Location.GetDistances(geoCoord, Locations);
+        var closestLocation = distances.OrderBy(x => x.Distance).First();
+
+        return closestLocation.LocationId;
     }
 }
