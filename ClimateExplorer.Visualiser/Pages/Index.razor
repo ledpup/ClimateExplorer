@@ -13,8 +13,8 @@
     <div>
         <div class="map-space-reserver" id="mapContainerContainer">
             <MapContainer @ref="mapContainer"
-                    Locations="@Locations"
-                    OnLocationChange="@SelectedLocationChanged"></MapContainer>
+                Locations="@Locations"
+                OnLocationChange="@SelectedLocationChanged"></MapContainer>
         </div>
 
         <div class="location-info-container">
@@ -24,7 +24,7 @@
                           Location="@SelectedLocation"
                           DataSetDefinitions="@DataSetDefinitions"
                           RequestLocationChange="@ShowSelectLocationModal"
-                          OnOverviewShowOrHide="@OnOverviewShowHide"></LocationInfo>
+                          OnOverviewShowOrHide="@OnOverviewShowHide" />
             }
         </div>
 
@@ -103,7 +103,9 @@
 <SelectLocation @ref="selectLocationModal"
                 Locations="@Locations"
                 SelectedLocation="@SelectedLocation"
-                OnLocationChange="@SelectedLocationChanged" />
+                OnLocationChange="@SelectedLocationChanged"
+                SetCurrentLocation=@SetCurrentLocation
+                BrowserLocationErrorMessage=@BrowserLocationErrorMessage />
 
 <Modal @ref="addDataSetModal">
     <ModalContent>
@@ -124,23 +126,21 @@
             <CloseButton />
         </ModalHeader>
         <ModalBody>
-            <Alert Color="Color.Danger" Visible="true">
-                Day grouping<br />
-                <Select TValue="short" SelectedValue="@SelectedDayGrouping" SelectedValueChanged="@OnSelectedDayGroupingChanged">
-                    <SelectItem Value="5">@DayGroupingText(5)</SelectItem>
-                    <SelectItem Value="7">@DayGroupingText(7)</SelectItem>
-                    <SelectItem Value="13">@DayGroupingText(13)</SelectItem>
-                    <SelectItem Value="14">@DayGroupingText(14)</SelectItem>
-                    <SelectItem Value="26">@DayGroupingText(26)</SelectItem>
-                    <SelectItem Value="28">@DayGroupingText(28)</SelectItem>
-                    <SelectItem Value="73">@DayGroupingText(73)</SelectItem>
-                    <SelectItem Value="91">@DayGroupingText(91)</SelectItem>
-                    <SelectItem Value="182">@DayGroupingText(182)</SelectItem>
-                </Select>
-                Threshold required to form a valid group (% percentage)<br />
-                <TextEdit Text="@DayGroupThresholdText" TextChanged="@OnDayGroupThresholdTextChanged" MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
-                <Button Color="Color.Primary" Clicked="@ApplyYearlyAverageParameters">Apply</Button>
-            </Alert>
+            Day grouping<br />
+            <Select TValue="short" SelectedValue="@SelectedDayGrouping" SelectedValueChanged="@OnSelectedDayGroupingChanged">
+                <SelectItem Value="5">@DayGroupingText(5)</SelectItem>
+                <SelectItem Value="7">@DayGroupingText(7)</SelectItem>
+                <SelectItem Value="13">@DayGroupingText(13)</SelectItem>
+                <SelectItem Value="14">@DayGroupingText(14)</SelectItem>
+                <SelectItem Value="26">@DayGroupingText(26)</SelectItem>
+                <SelectItem Value="28">@DayGroupingText(28)</SelectItem>
+                <SelectItem Value="73">@DayGroupingText(73)</SelectItem>
+                <SelectItem Value="91">@DayGroupingText(91)</SelectItem>
+                <SelectItem Value="182">@DayGroupingText(182)</SelectItem>
+            </Select>
+            Threshold required to form a valid group (% percentage)<br />
+            <TextEdit Text="@DayGroupThresholdText" TextChanged="@OnDayGroupThresholdTextChanged" MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
+            <Button Color="Color.Primary" Clicked="@ApplyYearlyAverageParameters">Apply</Button>
         </ModalBody>
     </ModalContent>
 </Modal>
