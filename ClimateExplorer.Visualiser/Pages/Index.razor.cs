@@ -37,6 +37,7 @@ public partial class Index : IDisposable
     short SelectingDayGrouping { get; set; }
     Modal addDataSetModal { get; set; }
     Modal optionsModal { get; set; }
+    SelectLocation selectLocationModal { get; set; }
     MapContainer mapContainer { get; set; }
     Filter filter { get; set; }
 
@@ -70,7 +71,6 @@ public partial class Index : IDisposable
     ChartTrendline<float?> chartTrendline;
     BinIdentifier ChartStartBin, ChartEndBin;
     bool _haveCalledResizeAtLeastOnce = false;
-    SelectLocation selectLocationModal;
 
     bool? EnableRangeSlider { get; set; }
     int SliderMin { get; set; }
@@ -78,10 +78,12 @@ public partial class Index : IDisposable
     int? SliderStart { get; set; }
     int? SliderEnd { get; set; }
 
+    string? BrowserLocationErrorMessage { get; set; }
+
     [Inject] IDataService DataService { get; set; }
     [Inject] NavigationManager NavManager { get; set; }
     [Inject] IExporter Exporter { get; set; }
-    [Inject] IJSRuntime JSRuntime { get; set; }
+    [Inject] IJSRuntime JsRuntime { get; set; }
     [Inject] ILogger<Index> Logger { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -145,7 +147,7 @@ public partial class Index : IDisposable
 
         if (LocationId == null)
         {
-            LocationId = (await OnUseCurrentLocation()).ToString();
+            LocationId = (await GetCurrentLocation())?.ToString();
 
             if (LocationId == null)
             {
@@ -270,7 +272,7 @@ public partial class Index : IDisposable
 
         using var streamRef = new DotNetStreamReference(stream: fileStream);
 
-        await JSRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+        await JsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 
     async Task OnSelectedDayGroupingChanged(short value)
@@ -292,7 +294,7 @@ public partial class Index : IDisposable
 
     private async Task OnOverviewShowHide(bool isOverviewVisible)
     {
-        await JSRuntime.InvokeVoidAsync("showOrHideMap", isOverviewVisible);
+        await JsRuntime.InvokeVoidAsync("showOrHideMap", isOverviewVisible);
     }
 
     private Task ShowSelectLocationModal()
@@ -1296,12 +1298,20 @@ public partial class Index : IDisposable
         public string ErrorMessage { get; set; }
     }
 
-    async Task<Guid?> OnUseCurrentLocation()
+    async Task<Guid?> GetCurrentLocation()
     {
-        var getLocationResult = await JSRuntime.InvokeAsync<GetLocationResult>("getLocation");
+        if (JsRuntime == null)
+        {
+            return null;
+        }
 
+        var getLocationResult = await JsRuntime.InvokeAsync<GetLocationResult>("getLocation");
+
+        BrowserLocationErrorMessage = null;
         if (getLocationResult.ErrorCode > 0)
         {
+            BrowserLocationErrorMessage = "Unable to determine your location" + (!String.IsNullOrWhiteSpace(getLocationResult.ErrorMessage) ? $" ({getLocationResult.ErrorMessage})" : "");
+            Logger.LogError(BrowserLocationErrorMessage);
             return null;
         }
 
@@ -1311,5 +1321,14 @@ public partial class Index : IDisposable
         var closestLocation = distances.OrderBy(x => x.Distance).First();
 
         return closestLocation.LocationId;
+    }
+
+    async Task SetCurrentLocation()
+    {
+        var locationId = await GetCurrentLocation();
+        if (locationId != null)
+        {
+            await SelectedLocationChangedInternal(locationId.Value);
+        }
     }
 }

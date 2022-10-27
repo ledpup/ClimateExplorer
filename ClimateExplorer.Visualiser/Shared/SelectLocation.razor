@@ -16,12 +16,12 @@
                 </Field>
             }
             <Field>
-                <Button Clicked="@OnUseCurrentLocation" Color="Color.Primary">Use Your Location</Button>
+                <Button Clicked="@FireUseCurrentLocation" Color="Color.Primary">Use Your Location</Button>
 
-                @if (_getBrowserLocationErrorMessage != null)
+                @if (BrowserLocationErrorMessage != null)
                 {
                     <div class="error-message">
-                        @_getBrowserLocationErrorMessage
+                        @BrowserLocationErrorMessage
                     </div>
                 }
             </Field>
@@ -76,15 +76,13 @@
     public Location SelectedLocation { get; set; }
 
     [Parameter]
+    public string? BrowserLocationErrorMessage { get; set; }
+
+    [Parameter]
     public EventCallback<Guid> OnLocationChange { get; set; }
 
     [Parameter]
-    public EventCallback UseCurrentLocation { get; set; }
-
-    [Inject]
-    public IJSRuntime JS { get; init; }
-
-    string _getBrowserLocationErrorMessage;
+    public EventCallback SetCurrentLocation { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -94,20 +92,18 @@
         }
     }
 
-    public Task Show(
-    )
+    public Task Show()
     {
         return modal.Show();
     }
-
     public Task Hide()
     {
         return modal.Hide();
     }
 
-    async Task OnUseCurrentLocation()
+    async Task FireUseCurrentLocation()
     {
-        await UseCurrentLocation.InvokeAsync();
+        await SetCurrentLocation.InvokeAsync();
     }
 
     async Task FireOnLocationChange(Guid locationId)
