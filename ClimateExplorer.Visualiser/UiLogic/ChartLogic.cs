@@ -39,7 +39,8 @@ public static class ChartLogic
         List<float?> values, 
         ChartColor chartColor, 
         UnitOfMeasure unitOfMeasure,
-        SeriesTransformations seriesTransformations)
+        SeriesTransformations seriesTransformations,
+        bool renderSmallPoints)
     {
         var count = values.Count;
         var colour = new List<string>();
@@ -54,9 +55,9 @@ public static class ChartLogic
                 BackgroundColor = colour,
                 BorderColor = colour,
                 Fill = false,
-                PointRadius = values.Count > 400 ? 0.1f : 3,
+                PointRadius = renderSmallPoints ? 0.1f : 3,
                 ShowLine = true,
-                PointBorderColor = values.Count > 400 ? colour : "#bbb",
+                PointBorderColor = renderSmallPoints ? colour : "#bbb",
                 PointHoverBackgroundColor = colour,
                 BorderDash = new List<int> { },
                 //Tension = 0.1f,
@@ -96,7 +97,8 @@ public static class ChartLogic
         bool? absoluteValues = false, 
         bool redPositive = true,
         SeriesTransformations seriesTransformations = SeriesTransformations.Identity,
-        SeriesAggregationOptions seriesAggregationOptions = SeriesAggregationOptions.Mean)
+        SeriesAggregationOptions seriesAggregationOptions = SeriesAggregationOptions.Mean,
+        bool renderSmallPoints = false)
     {
         switch (chartType)
         {
@@ -105,7 +107,7 @@ public static class ChartLogic
                 {
                     throw new NullReferenceException(nameof(chartColour));
                 }
-                return GetLineChartDataset(label, values, chartColour.Value, unitOfMeasure, seriesTransformations);
+                return GetLineChartDataset(label, values, chartColour.Value, unitOfMeasure, seriesTransformations, renderSmallPoints);
             case ChartType.Bar:
                 return GetBarChartDataset(label, values, unitOfMeasure, absoluteValues, redPositive, seriesTransformations);
         }
@@ -150,7 +152,8 @@ public static class ChartLogic
         string label,
         string htmlColourCode,
         bool absoluteValues = false,
-        bool redPositive = true)
+        bool redPositive = true,
+        bool renderSmallPoints = false)
     {
         var values =
             dataSet.DataRecords
@@ -166,7 +169,7 @@ public static class ChartLogic
             ? ChartType.Line
             : ChartType.Bar;
 
-        var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour, absoluteValues, redPositive, chartSeries.ChartSeries.SeriesTransformation, chartSeries.ChartSeries.Aggregation);
+        var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour, absoluteValues, redPositive, chartSeries.ChartSeries.SeriesTransformation, chartSeries.ChartSeries.Aggregation, renderSmallPoints);
 
         await chart.AddDataSet(chartDataset);
     }
