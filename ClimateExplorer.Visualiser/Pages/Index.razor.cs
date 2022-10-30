@@ -412,7 +412,7 @@ public partial class Index : IDisposable
 
         ChartSeriesList = ChartSeriesList.CreateNewListWithoutDuplicates();
 
-        if (EnableRangeSlider == null && SelectedBinGranularity == BinGranularities.ByYearAndMonth)
+        if (EnableRangeSlider == null && (SelectedBinGranularity == BinGranularities.ByYearAndMonth || SelectedBinGranularity == BinGranularities.ByYearAndDay))
         {
             await ShowRangeSliderChanged(true);
         }

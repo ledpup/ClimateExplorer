@@ -298,15 +298,16 @@ namespace ClimateExplorer.Core.DataPreparation.Model
         {
             // TODO: Notice that (for example) for a year with 365 data points, we will allocate 365 otherwise identical year bin identifiers.
             // We could cache them centrally and re-use to reduce allocations.
-            switch (binningRule)
+            return binningRule switch
             {
-                case BinGranularities.ByYear: return new YearBinIdentifier(dp.Year);
-                case BinGranularities.ByYearAndMonth: return new YearAndMonthBinIdentifier(dp.Year, dp.Month.Value);
-                case BinGranularities.ByMonthOnly: return new MonthOnlyBinIdentifier(dp.Month.Value);
-                case BinGranularities.BySouthernHemisphereTemperateSeasonOnly: return new SouthernHemisphereTemperateSeasonOnlyBinIdentifier(DateHelpers.GetSouthernHemisphereTemperateSeasonForMonth(dp.Month.Value));
-                case BinGranularities.BySouthernHemisphereTropicalSeasonOnly: return new SouthernHemisphereTropicalSeasonOnlyBinIdentifier(DateHelpers.GetSouthernHemisphereTropicalSeasonForMonth(dp.Month.Value));
-                default: throw new NotImplementedException($"BinningRule {binningRule}");
-            }
+                BinGranularities.ByYear => new YearBinIdentifier(dp.Year),
+                BinGranularities.ByYearAndDay => new YearAndDayBinIdentifier(dp.Year, dp.Month.Value),
+                BinGranularities.ByYearAndMonth => new YearAndMonthBinIdentifier(dp.Year, dp.Month.Value),
+                BinGranularities.ByMonthOnly => new MonthOnlyBinIdentifier(dp.Month.Value),
+                BinGranularities.BySouthernHemisphereTemperateSeasonOnly => new SouthernHemisphereTemperateSeasonOnlyBinIdentifier(DateHelpers.GetSouthernHemisphereTemperateSeasonForMonth(dp.Month.Value)),
+                BinGranularities.BySouthernHemisphereTropicalSeasonOnly => new SouthernHemisphereTropicalSeasonOnlyBinIdentifier(DateHelpers.GetSouthernHemisphereTropicalSeasonForMonth(dp.Month.Value)),
+                _ => throw new NotImplementedException($"BinningRule {binningRule}"),
+            };
         }
     }
 }

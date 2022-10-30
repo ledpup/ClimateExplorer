@@ -130,6 +130,8 @@ public static class ChartLogic
         {
             case BinGranularities.ByYear:
                 return "Year";
+            case BinGranularities.ByYearAndDay:
+                return "Date";
             case BinGranularities.ByYearAndMonth:
                 return "Month";
             case BinGranularities.ByMonthOnly:

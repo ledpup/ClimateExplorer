@@ -67,6 +67,7 @@
                             </DropdownToggle>
                             <DropdownMenu>
                                 <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYear)">Yearly</DropdownItem>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYearAndDay)">Year + Day</DropdownItem>
                                 <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYearAndMonth)">Year + Month</DropdownItem>
                                 <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly)">Month (ignoring year)</DropdownItem>
                                 <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.BySouthernHemisphereTemperateSeasonOnly)">Southern hemisphere temperate season only (ignoring year)</DropdownItem>
@@ -82,7 +83,7 @@
 
                     </div>
 
-                    @if (EnableRangeSlider.HasValue && EnableRangeSlider.Value && (SelectedBinGranularity == BinGranularities.ByYear || SelectedBinGranularity == BinGranularities.ByYearAndMonth))
+                    @if (EnableRangeSlider.HasValue && EnableRangeSlider.Value && (SelectedBinGranularity == BinGranularities.ByYear || SelectedBinGranularity == BinGranularities.ByYearAndMonth || SelectedBinGranularity == BinGranularities.ByYearAndDay))
                     {
                         <DualRangeSlider Min="SliderMin" Max="SliderMax" FromValue="SliderStart" ToValue="SliderEnd" OnValuesChanged="@OnSelectedYearsChanged" OnShowComponent="@ShowRangeSliderChanged" />
                     }

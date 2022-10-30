@@ -33,7 +33,9 @@
                 </Field>
             }
 
-            @if (SelectedBinGranularity == BinGranularities.ByYear || SelectedBinGranularity == BinGranularities.ByYearAndMonth)
+            @if (SelectedBinGranularity == BinGranularities.ByYear
+                    || SelectedBinGranularity == BinGranularities.ByYearAndDay
+                    || SelectedBinGranularity == BinGranularities.ByYearAndMonth)
             {
                 <Field>
                     <strong>
