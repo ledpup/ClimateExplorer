@@ -906,16 +906,18 @@ public partial class Index : IDisposable
         foreach (var chartSeries in ChartSeriesWithData)
         {
             var dataSet = chartSeries.ProcessedDataSet;
-
             var htmlColourCode = colours.GetNextColour(chartSeries.ChartSeries.RequestedColour, requestedColours);
-
             var renderSmallPoints = IsMobileDevice || dataSet.DataRecords.Count > 400;
+            var defaultLabel = IsMobileDevice 
+                ? chartSeries.ChartSeries.GetFriendlyTitleShort() 
+                : $"{chartSeries.ChartSeries.FriendlyTitle} | {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}";
+            
 
             await ChartLogic.AddDataSetToChart(
                 chart,
                 chartSeries,
                 dataSet,
-                GetChartLabel(chartSeries.ChartSeries.SeriesTransformation, $"{chartSeries.ChartSeries.FriendlyTitle} | {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}", chartSeries.ChartSeries.Aggregation),
+                GetChartLabel(chartSeries.ChartSeries.SeriesTransformation, defaultLabel, chartSeries.ChartSeries.Aggregation),
                 htmlColourCode,
                 renderSmallPoints: renderSmallPoints);
 
