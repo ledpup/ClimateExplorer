@@ -18,6 +18,7 @@ using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
 using System.Dynamic;
 using GeoCoordinatePortable;
+using BlazorCurrentDevice;
 
 namespace ClimateExplorer.Visualiser.Pages;
 
@@ -80,15 +81,21 @@ public partial class Index : IDisposable
 
     string? BrowserLocationErrorMessage { get; set; }
 
+    bool IsMobileDevice { get; set; }
+
     [Inject] IDataService DataService { get; set; }
     [Inject] NavigationManager NavManager { get; set; }
     [Inject] IExporter Exporter { get; set; }
     [Inject] IJSRuntime JsRuntime { get; set; }
     [Inject] ILogger<Index> Logger { get; set; }
 
+    [Inject] IBlazorCurrentDeviceService BlazorCurrentDeviceService { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         Logger.LogInformation("Instance " + _componentInstanceId + " OnInitializedAsync");
+
+        IsMobileDevice = await BlazorCurrentDeviceService.Mobile();
 
         NavManager.LocationChanged += HandleLocationChanged;
 
@@ -899,15 +906,20 @@ public partial class Index : IDisposable
         foreach (var chartSeries in ChartSeriesWithData)
         {
             var dataSet = chartSeries.ProcessedDataSet;
-
             var htmlColourCode = colours.GetNextColour(chartSeries.ChartSeries.RequestedColour, requestedColours);
+            var renderSmallPoints = IsMobileDevice || dataSet.DataRecords.Count > 400;
+            var defaultLabel = IsMobileDevice 
+                ? chartSeries.ChartSeries.GetFriendlyTitleShort() 
+                : $"{chartSeries.ChartSeries.FriendlyTitle} | {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}";
+            
 
             await ChartLogic.AddDataSetToChart(
                 chart,
                 chartSeries,
                 dataSet,
-                GetChartLabel(chartSeries.ChartSeries.SeriesTransformation, $"{chartSeries.ChartSeries.FriendlyTitle} | {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}", chartSeries.ChartSeries.Aggregation),
-                htmlColourCode);
+                GetChartLabel(chartSeries.ChartSeries.SeriesTransformation, defaultLabel, chartSeries.ChartSeries.Aggregation),
+                htmlColourCode,
+                renderSmallPoints: renderSmallPoints);
 
             if (chartSeries.ChartSeries.ShowTrendline)
             {
