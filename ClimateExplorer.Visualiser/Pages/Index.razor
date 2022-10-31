@@ -6,6 +6,7 @@
 @using Blazorise.Charts
 @using Blazorise.Charts.Trendline
 @using ClimateExplorer.Core.DataPreparation
+@using Blazorise.SpinKit
 
 <PageTitle>@GetPageTitle()</PageTitle>
 
@@ -47,9 +48,15 @@
                     <div class="chart-wrapper">
                         <div class="minimum-height-enforcer-for-chart"></div>
                         <div class="chart">
-                            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
-                                <ChartTrendline @ref="chartTrendline" TItem="float?" />
-                            </Chart>
+                            @*@if (ChartSeriesWithData == null)
+                            {
+                                
+                            }
+                            else
+                            {*@
+                                <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
+                                    <ChartTrendline @ref="chartTrendline" TItem="float?" />
+                                </Chart>
                         </div>
                     </div>
 
@@ -94,6 +101,7 @@
     <div style="flex-grow: 0">
         <Collapsible Title="Suggested charts" InitiallyShown="true" NoBottomMargin="true">
             <Content>
+                <SpinKit Type="SpinKitType.Plane" />
                 <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@SelectedLocation" OnChartPresetSelected="@OnChartPresetSelected" ExpandUpwards="true"></SuggestedCharts>
             </Content>
         </Collapsible>
