@@ -31,8 +31,8 @@
     [Inject] ILogger<MapContainer> Logger { get; init; }
     [Inject] IBlazorCurrentDeviceService BlazorCurrentDeviceService { get; set; }
 
-    Map map;
-    private MapOptions mapOptions;
+    Map? map;
+    MapOptions? mapOptions;
     bool IsMapExpanded { get; set; } = false;
     bool IsMobileDevice { get; set; }
 
@@ -41,7 +41,13 @@
     protected override async Task OnInitializedAsync()
     {
         IsMobileDevice = await BlazorCurrentDeviceService.Mobile();
-        await SetMapOptions();
+        mapOptions =
+            new MapOptions()
+                {
+                    Center = new LatLng(-25.6, 134.3),
+                    Zoom = 8,
+                    Dragging = !IsMobileDevice
+                };
 
         await base.OnInitializedAsync();
     }
@@ -72,7 +78,7 @@
 
     public async Task EnsureMapMarkers()
     {
-        if (Locations == null || mapOptions == null || map == null || this.IconFactory == null || this.LayerFactory == null || JS == null)
+        if (Locations == null || map == null || mapOptions == null || this.IconFactory == null || this.LayerFactory == null || JS == null)
         {
             return;
         }
@@ -153,17 +159,9 @@
 
         IsMapExpanded = !IsMapExpanded;
 
-        await SetMapOptions();
-    }
-
-    async Task SetMapOptions()
-    {
-        mapOptions =
-            new MapOptions()
-                {
-                    Center = new LatLng(-25.6, 134.3),
-                    Zoom = 8,
-                    Dragging = !IsMobileDevice || IsMapExpanded
-                };
+        if (mapOptions != null)
+        {
+            mapOptions.Dragging = !IsMobileDevice || IsMapExpanded;
+        }
     }
 }
