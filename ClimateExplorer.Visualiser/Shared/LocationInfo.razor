@@ -1,28 +1,36 @@
-﻿@using ClimateExplorer.Core
+﻿@using Blazorise
+@using Blazorise.SpinKit
+@using ClimateExplorer.Core
 @using ClimateExplorer.Core.ViewModel
 @using ClimateExplorer.Visualiser.UiModel
-@using Blazorise
 @using ClimateExplorer.Core.Calculators
 @using ClimateExplorer.Core.DataPreparation
 @using static ClimateExplorer.Core.Enums
 
-<Collapsible Title="@Location.Name" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
+<Collapsible Title="@Location?.Name" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
     <HeaderContent>
         <span class="chart-controls"><a class="chart-control" @onclick="() => ChangeLocationClicked(null)"><i class="fas fa-map"></i> Change Location</a></span>
     </HeaderContent>
     <Content>
-        <!-- The awful HTML comments between OverviewField elements below are to avoid generating whitespace between OverviewField elements, which was
-             causing them to be misaligned. Probably better to use flex layout, but this works for now.
-        -->
-        <OverviewField Label="Location"><Value> <span><a href="@LocationMapUrl" target="_blank">@LocationAsString</a></span></Value></OverviewField><!--
-     --><OverviewField Label="Elevation"><Value>@ElevationAsString</Value></OverviewField><!--
-     -->@if (_warmingIndexDescription != null)
+        @if (Location == null || MaxTempAnomalyRecords == null)
         {
-            <OverviewField Label="Warming index" PopupText="@_warmingIndexDescription"><Value>@_warmingIndexAsString</Value></OverviewField>
+            <SpinKit Type="SpinKitType.Plane" />
         }
-        <OverviewField Label="Heating score" PopupText="@HeatingScoreDescription"><Value>@Location.HeatingScore</Value></OverviewField>
-        <WarmingStripe DataRecords="@_maxTempAnomalyRecords" />
-        <WarmestYears DataRecords="@_maxTempAnomalyRecords" />
+        else
+        {
+            <!-- The awful HTML comments between OverviewField elements below are to avoid generating whitespace between OverviewField elements, which was
+                 causing them to be misaligned. Probably better to use flex layout, but this works for now.
+            -->
+            <OverviewField Label="Location"><Value> <span><a href="@LocationMapUrl" target="_blank">@LocationAsString</a></span></Value></OverviewField><!--
+         --><OverviewField Label="Elevation"><Value>@ElevationAsString</Value></OverviewField><!--
+         -->@if (WarmingIndexDescription != null)
+            {
+                <OverviewField Label="Warming index" PopupText="@WarmingIndexDescription"><Value>@WarmingIndexAsString</Value></OverviewField>
+            }
+            <OverviewField Label="Heating score" PopupText="@HeatingScoreDescription"><Value>@Location.HeatingScore</Value></OverviewField>
+            <WarmingStripe DataRecords="@MaxTempAnomalyRecords" />
+            <WarmestYears DataRecords="@MaxTempAnomalyRecords" />
+        }
     </Content>
 </Collapsible>
 
@@ -36,7 +44,7 @@
     public IDataService DataService { get; set; }
 
     [Parameter]
-    public Location Location { get; set; }
+    public Location? Location { get; set; }
 
     [Parameter]
     public EventCallback RequestLocationChange { get; set; }
@@ -56,10 +64,10 @@
     /// <summary>
     /// Used by the warming stripe
     /// </summary>
-    List<YearAndValue> _maxTempAnomalyRecords { get; set; }
+    List<YearAndValue>? MaxTempAnomalyRecords { get; set; }
 
-    string _warmingIndexDescription;
-    string _warmingIndexAsString;
+    string? WarmingIndexDescription;
+    string? WarmingIndexAsString;
 
     Guid? locationIdLastTimeOnParametersSetAsyncWasCalled;
 
@@ -83,11 +91,18 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        if (Location == null)
+        {
+            return;
+        }
+
         // We do manual change detection here because Blazor calls OnParametersSetAsync() repeatedly with the same input values.
         if (locationIdLastTimeOnParametersSetAsyncWasCalled == Location?.Id)
         {
             return;
         }
+
+        locationIdLastTimeOnParametersSetAsyncWasCalled = Location?.Id;
 
         // We can't do anything until we're supplied our tasty, tasty DataSetDefinitions
         if (DataSetDefinitions == null)
@@ -95,86 +110,81 @@
             return;
         }
 
-        locationIdLastTimeOnParametersSetAsyncWasCalled = Location?.Id;
+        var tempMaxMeasurementForLocation = 
+            DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
+                DataSetDefinitions,
+                Location.Id,
+                DataType.TempMax,
+                Enums.DataAdjustment.Adjusted,
+                true);
 
-        if (Location != null)
+        if (tempMaxMeasurementForLocation == null)
         {
-            var tempMaxMeasurementForLocation = 
-                DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
-                    DataSetDefinitions,
-                    Location.Id,
-                    DataType.TempMax,
-                    Enums.DataAdjustment.Adjusted,
-                    true);
-
-            if (tempMaxMeasurementForLocation == null)
-            {
-                _maxTempAnomalyRecords = null;
-            }
-            else
-            {
-                // Retrieve TempMax anomaly
-                var series =
-                    await DataService.PostDataSet(
-                        BinGranularities.ByYear,
-                        ContainerAggregationFunctions.Mean,
-                        ContainerAggregationFunctions.Mean,
-                        ContainerAggregationFunctions.Mean,
-                        SeriesValueOptions.Anomaly,
-                        new SeriesSpecification[]
+            MaxTempAnomalyRecords = null;
+        }
+        else
+        {
+            // Retrieve TempMax anomaly
+            var series =
+                await DataService.PostDataSet(
+                    BinGranularities.ByYear,
+                    ContainerAggregationFunctions.Mean,
+                    ContainerAggregationFunctions.Mean,
+                    ContainerAggregationFunctions.Mean,
+                    SeriesValueOptions.Anomaly,
+                    new SeriesSpecification[]
+                        {
+                            new SeriesSpecification
                             {
-                                new SeriesSpecification
-                                {
-                                    DataAdjustment = tempMaxMeasurementForLocation.MeasurementDefinition.DataAdjustment,
-                                    DataSetDefinitionId = tempMaxMeasurementForLocation.DataSetDefinition.Id,
-                                    DataType = tempMaxMeasurementForLocation.MeasurementDefinition.DataType,
-                                    LocationId = Location.Id
-                                }
-                            },
-                        SeriesDerivationTypes.ReturnSingleSeries,
-                        1.0f,
-                        1.0f,
-                        0.7f,
-                        14,
-                        SeriesTransformations.Identity);
+                                DataAdjustment = tempMaxMeasurementForLocation.MeasurementDefinition.DataAdjustment,
+                                DataSetDefinitionId = tempMaxMeasurementForLocation.DataSetDefinition.Id,
+                                DataType = tempMaxMeasurementForLocation.MeasurementDefinition.DataType,
+                                LocationId = Location.Id
+                            }
+                        },
+                    SeriesDerivationTypes.ReturnSingleSeries,
+                    1.0f,
+                    1.0f,
+                    0.7f,
+                    14,
+                    SeriesTransformations.Identity);
 
-                // Filter to records that have values
-                _maxTempAnomalyRecords =
-                    series.DataRecords
-                    .Where(x => x.Value != null)
-                    .Select(x => new YearAndValue(((YearBinIdentifier)BinIdentifier.Parse(x.BinId)).Year, x.Value.Value))
-                    .ToList();
+            // Filter to records that have values
+            MaxTempAnomalyRecords =
+                series.DataRecords
+                .Where(x => x.Value != null)
+                .Select(x => new YearAndValue(((YearBinIdentifier)BinIdentifier.Parse(x.BinId)).Year, x.Value.Value))
+                .ToList();
 
-                // Retrieve TempMax absolute
-                series =
-                    await DataService.PostDataSet(
-                        BinGranularities.ByYear,
-                        ContainerAggregationFunctions.Mean,
-                        ContainerAggregationFunctions.Mean,
-                        ContainerAggregationFunctions.Mean,
-                        SeriesValueOptions.Value,
-                        new SeriesSpecification[]
+            // Retrieve TempMax absolute
+            series =
+                await DataService.PostDataSet(
+                    BinGranularities.ByYear,
+                    ContainerAggregationFunctions.Mean,
+                    ContainerAggregationFunctions.Mean,
+                    ContainerAggregationFunctions.Mean,
+                    SeriesValueOptions.Value,
+                    new SeriesSpecification[]
+                        {
+                            new SeriesSpecification
                             {
-                                new SeriesSpecification
-                                {
-                                    DataAdjustment = tempMaxMeasurementForLocation.MeasurementDefinition.DataAdjustment,
-                                    DataSetDefinitionId = tempMaxMeasurementForLocation.DataSetDefinition.Id,
-                                    DataType = tempMaxMeasurementForLocation.MeasurementDefinition.DataType,
-                                    LocationId = Location.Id
-                                }
-                            },
-                        SeriesDerivationTypes.ReturnSingleSeries,
-                        1.0f,
-                        1.0f,
-                        0.7f,
-                        14,
-                        SeriesTransformations.Identity);
+                                DataAdjustment = tempMaxMeasurementForLocation.MeasurementDefinition.DataAdjustment,
+                                DataSetDefinitionId = tempMaxMeasurementForLocation.DataSetDefinition.Id,
+                                DataType = tempMaxMeasurementForLocation.MeasurementDefinition.DataType,
+                                LocationId = Location.Id
+                            }
+                        },
+                    SeriesDerivationTypes.ReturnSingleSeries,
+                    1.0f,
+                    1.0f,
+                    0.7f,
+                    14,
+                    SeriesTransformations.Identity);
 
-                var warmingIndex = WarmingIndexCalculator.CalculateWarmingIndex(series.DataRecords);
+            var warmingIndex = WarmingIndexCalculator.CalculateWarmingIndex(series.DataRecords);
 
-                _warmingIndexDescription = GenerateWarmingIndexDescription(warmingIndex);
-                _warmingIndexAsString = GenerateWarmingIndexAsString(warmingIndex);
-            }
+            WarmingIndexDescription = GenerateWarmingIndexDescription(warmingIndex);
+            WarmingIndexAsString = GenerateWarmingIndexAsString(warmingIndex);
         }
 
         await base.OnParametersSetAsync();
