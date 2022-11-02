@@ -34,20 +34,14 @@
     Map map;
     private MapOptions mapOptions;
     bool IsMapExpanded { get; set; } = false;
+    bool IsMobileDevice { get; set; }
 
     bool _mapMarkersCreated = false;
 
     protected override async Task OnInitializedAsync()
     {
-        var isMobileDevice = await BlazorCurrentDeviceService.Mobile();
-
-        mapOptions =
-            new MapOptions()
-                {
-                    Center = new LatLng(-25.6, 134.3),
-                    Zoom = 8,
-                    Dragging = !isMobileDevice
-                };
+        IsMobileDevice = await BlazorCurrentDeviceService.Mobile();
+        await SetMapOptions();
 
         await base.OnInitializedAsync();
     }
@@ -158,5 +152,18 @@
         await JS.InvokeVoidAsync("toggleMapExpansion", null);
 
         IsMapExpanded = !IsMapExpanded;
+
+        await SetMapOptions();
+    }
+
+    async Task SetMapOptions()
+    {
+        mapOptions =
+            new MapOptions()
+                {
+                    Center = new LatLng(-25.6, 134.3),
+                    Zoom = 8,
+                    Dragging = !IsMobileDevice || IsMapExpanded
+                };
     }
 }
