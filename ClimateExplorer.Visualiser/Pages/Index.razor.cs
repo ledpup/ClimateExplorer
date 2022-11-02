@@ -551,8 +551,6 @@ public partial class Index : IDisposable
         {
             l.LogInformation("Not calling NavigationManager.NavigateTo().");
 
-            ChartSeriesWithData = null;
-
             // Fetch the data required to render the selected data series
             ChartSeriesWithData = await RetrieveDataSets(ChartSeriesList);
 

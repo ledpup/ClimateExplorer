@@ -15,7 +15,6 @@ using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.WebApi.Infrastructure;
 using System.Text.Json;
-using System.Threading;
 
 //ICache _cache = new FileBackedCache("cache");
 ICache _cache = new FileBackedTwoLayerCache("cache");
@@ -232,8 +231,6 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
     string cacheKey = $"DataSet_" + JsonSerializer.Serialize(body);
 
     var result = await _cache.Get<DataSet>(cacheKey);
-
-    Thread.Sleep(2000);
 
     if (result != null) return result;
 
