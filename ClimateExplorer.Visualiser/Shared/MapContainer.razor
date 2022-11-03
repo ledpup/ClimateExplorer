@@ -174,7 +174,7 @@
                 {
                     Center = new LatLng(LocationCoordinates.Latitude, LocationCoordinates.Longitude),
                     Zoom = lastZoom,
-                    Dragging = IsMobileDevice || IsMapExpanded
+                    Dragging = !IsMobileDevice || IsMapExpanded
                 };
         }
     }
