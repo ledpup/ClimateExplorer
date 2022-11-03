@@ -24,37 +24,50 @@
 @code {
     [Parameter] public IEnumerable<Location> Locations { get; set; }
     [Parameter] public EventCallback<Guid> OnLocationChange { get; set; }
+    [Parameter] public Coordinates LocationCoordinates { get; set; }
 
     [Inject] public LayerFactory LayerFactory { get; init; }
     [Inject] IIconFactory IconFactory { get; init; }
-    [Inject] IJSRuntime JS { get; init; }
+    [Inject] IJSRuntime JsRuntime { get; init; }
     [Inject] ILogger<MapContainer> Logger { get; init; }
     [Inject] IBlazorCurrentDeviceService BlazorCurrentDeviceService { get; set; }
 
-    Map map;
-    private MapOptions mapOptions;
+    Map? map;
+    MapOptions? mapOptions;
     bool IsMapExpanded { get; set; } = false;
     bool IsMobileDevice { get; set; }
 
     bool _mapMarkersCreated = false;
 
+    int lastZoom = 8;
+
     protected override async Task OnInitializedAsync()
     {
         IsMobileDevice = await BlazorCurrentDeviceService.Mobile();
-        await SetMapOptions();
 
         await base.OnInitializedAsync();
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        await EnsureMapMarkers();
+        if (IsMapExpanded)
+        {
+            await ToggleMapExpansion();
+            StateHasChanged();
+        }
+        else
+        {
+            InitialiseMapOptions();
+            await EnsureMapMarkers();
+        }
 
         await base.OnParametersSetAsync();
     }
 
     private async Task AfterMapRender()
     {
+        await EnsureMapMarkers();
+
         // Create Tile Layer
         var tileLayerOptions =
             new TileLayerOptions()
@@ -72,7 +85,7 @@
 
     public async Task EnsureMapMarkers()
     {
-        if (Locations == null || mapOptions == null || map == null || this.IconFactory == null || this.LayerFactory == null || JS == null)
+        if (Locations == null || mapOptions == null || map == null || this.IconFactory == null || this.LayerFactory == null || JsRuntime == null)
         {
             return;
         }
@@ -126,6 +139,8 @@
         }
 
         _mapMarkersCreated = true;
+
+        Logger.LogInformation("Created map markers");
     }
 
     async Task HandleMapMouseEvent(MouseEvent mouseEvent)
@@ -135,35 +150,32 @@
         var lat = Math.Round(mouseEvent.LatLng.Lat, 1);
         var lng = Math.Round(mouseEvent.LatLng.Lng, 1);
         var newLocation = Locations.Single(x => Math.Round(x.Coordinates.Latitude, 1) == lat && Math.Round(x.Coordinates.Longitude, 1) == lng);
-        await CollapseMapIfExpanded();
         await OnLocationChange.InvokeAsync(newLocation.Id);
-    }
-
-    async Task CollapseMapIfExpanded()
-    {
-        if (IsMapExpanded)
-        {
-            await ToggleMapExpansion();
-        }
     }
 
     async Task ToggleMapExpansion()
     {
-        await JS.InvokeVoidAsync("toggleMapExpansion", null);
+        _mapMarkersCreated = false;
+        mapOptions = null;
 
+        await JsRuntime.InvokeVoidAsync("toggleMapExpansion", null);
         IsMapExpanded = !IsMapExpanded;
 
-        await SetMapOptions();
+        InitialiseMapOptions();
     }
 
-    async Task SetMapOptions()
+    void InitialiseMapOptions()
     {
-        mapOptions =
-            new MapOptions()
+        Logger.LogInformation($"IsMapExpanded = {IsMapExpanded}");
+
+        if (mapOptions == null)
+        {
+            mapOptions = new MapOptions()
                 {
-                    Center = new LatLng(-25.6, 134.3),
-                    Zoom = 8,
+                    Center = new LatLng(LocationCoordinates.Latitude, LocationCoordinates.Longitude),
+                    Zoom = lastZoom,
                     Dragging = !IsMobileDevice || IsMapExpanded
                 };
+        }
     }
 }
