@@ -439,9 +439,11 @@ public partial class Index : IDisposable
             {
                 PreviousLocation = _selectedLocation;
                 _selectedLocation = value;
+                LocationCoordinates = _selectedLocation.Coordinates;
             }
         }
     }
+    Coordinates LocationCoordinates;
 
     void HandleLocationChanged(object sender, LocationChangedEventArgs e)
     {
@@ -1102,7 +1104,7 @@ public partial class Index : IDisposable
         l.LogInformation("leaving");
     }
 
-    async Task SelectedLocationChanged(Guid locationId)
+    void SelectedLocationChanged(Guid locationId)
     {
         NavigateTo("/location/" + locationId.ToString());
     }
