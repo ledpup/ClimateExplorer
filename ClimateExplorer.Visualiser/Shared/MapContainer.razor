@@ -50,8 +50,16 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        InitialiseMapOptions();
-        await EnsureMapMarkers();
+        if (IsMapExpanded)
+        {
+            await ToggleMapExpansion();
+            StateHasChanged();
+        }
+        else
+        {
+            InitialiseMapOptions();
+            await EnsureMapMarkers();
+        }
 
         await base.OnParametersSetAsync();
     }
@@ -143,15 +151,6 @@
         var lng = Math.Round(mouseEvent.LatLng.Lng, 1);
         var newLocation = Locations.Single(x => Math.Round(x.Coordinates.Latitude, 1) == lat && Math.Round(x.Coordinates.Longitude, 1) == lng);
         await OnLocationChange.InvokeAsync(newLocation.Id);
-        await CollapseMapIfExpanded();
-    }
-
-    async Task CollapseMapIfExpanded()
-    {
-        if (IsMapExpanded)
-        {
-            await ToggleMapExpansion();
-        }
     }
 
     async Task ToggleMapExpansion()
@@ -175,7 +174,7 @@
                 {
                     Center = new LatLng(LocationCoordinates.Latitude, LocationCoordinates.Longitude),
                     Zoom = lastZoom,
-                    Dragging = !IsMobileDevice || IsMapExpanded
+                    Dragging = IsMobileDevice || IsMapExpanded
                 };
         }
     }
