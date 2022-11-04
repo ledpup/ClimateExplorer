@@ -1,1 +1,0 @@
-bundle exec jekyll build --destination "C:\Users\ledpu\Source\Repos\ClimateExplorer\AcornSat.Visualiser\wwwroot\blog"
