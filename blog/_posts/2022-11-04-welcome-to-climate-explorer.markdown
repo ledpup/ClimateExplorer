@@ -27,5 +27,5 @@ A sceptical response to the BoM may be: "you haven't provided all of the evidenc
 
 ## Contact us
 
-If you have any feeback, suggestions or questions, feel free to let us know at [climateexplorerteam@gmail.com](mailto:climateexplorerteam@gmail.com).
+If you have any feedback, suggestions or questions, feel free to let us know at [climateexplorerteam@gmail.com](mailto:climateexplorerteam@gmail.com).
 
