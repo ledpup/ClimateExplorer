@@ -363,4 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Ignore the WebApi cache
-/AcornSat.WebApi/cache
+/ClimateExplorer.WebApi/cache

@@ -1,0 +1,14 @@
+{
+  "DataSetDefinitionId": "0561CF7E-83F2-4617-AC61-4962A0E95093",
+  "MeasurementDefinitionId": null,
+  "LocationIdToDataFileMappings": {
+    "A5A179B5-5394-44D1-B653-BBF6B052279C": [
+      {
+        "ExternalStationCode": "HadCE",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ]
+  }
+}

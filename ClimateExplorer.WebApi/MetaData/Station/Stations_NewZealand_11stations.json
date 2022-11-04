@@ -1,0 +1,244 @@
+[
+  {
+    "ExternalStationCode": "6172",
+    "Name": "Campbell Is",
+    "Coordinates": {
+      "Latitude": -52.55,
+      "Longitude": 169.15,
+      "Elevation": 15
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "6174",
+    "Name": "Campbell Island Aws",
+    "Coordinates": {
+      "Latitude": -52.55059,
+      "Longitude": 169.14978,
+      "Elevation": 16
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "2807",
+    "Name": "Gisborne Aero",
+    "Coordinates": {
+      "Latitude": -38.661,
+      "Longitude": 177.986,
+      "Elevation": 4
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "2810",
+    "Name": "Gisborne Aws",
+    "Coordinates": {
+      "Latitude": -38.6586,
+      "Longitude": 177.98512,
+      "Elevation": 5
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "2101",
+    "Name": "Hamilton, Ruakura",
+    "Coordinates": {
+      "Latitude": -37.78,
+      "Longitude": 175.313,
+      "Elevation": 40
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "12616",
+    "Name": "Hamilton, Ruakura Ews",
+    "Coordinates": {
+      "Latitude": -37.77879,
+      "Longitude": 175.31271,
+      "Elevation": 40
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "26117",
+    "Name": "Hamilton, Ruakura 2 Ews",
+    "Coordinates": {
+      "Latitude": -37.77389,
+      "Longitude": 175.30518,
+      "Elevation": 45
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "5814",
+    "Name": "Invercargill Aero",
+    "Coordinates": {
+      "Latitude": -46.41741,
+      "Longitude": 168.33052,
+      "Elevation": 1
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "4461",
+    "Name": "Molesworth",
+    "Coordinates": {
+      "Latitude": -42.088,
+      "Longitude": 173.258,
+      "Elevation": 890
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "7427",
+    "Name": "Molesworth Aws",
+    "Coordinates": {
+      "Latitude": -42.087,
+      "Longitude": 173.26,
+      "Elevation": 883
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "2363",
+    "Name": "Mt Ruapehu, Chateau 1",
+    "Coordinates": {
+      "Latitude": -39.202,
+      "Longitude": 175.54,
+      "Elevation": 1119
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "2357",
+    "Name": "Mt Ruapehu, Chateau 2",
+    "Coordinates": {
+      "Latitude": -39.198,
+      "Longitude": 175.544,
+      "Elevation": 1097
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "18464",
+    "Name": "Mt Ruapehu, Chateau Ews",
+    "Coordinates": {
+      "Latitude": -39.19589,
+      "Longitude": 175.54504,
+      "Elevation": 1097
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "3238",
+    "Name": "Palmerston North Aws",
+    "Coordinates": {
+      "Latitude": -40.382,
+      "Longitude": 175.609,
+      "Elevation": 34
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "21963",
+    "Name": "Palmerston North Ews",
+    "Coordinates": {
+      "Latitude": -40.38195,
+      "Longitude": 175.60915,
+      "Elevation": 21
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "5446",
+    "Name": "Queenstown",
+    "Coordinates": {
+      "Latitude": -45.03476,
+      "Longitude": 168.66364,
+      "Elevation": 322
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "6169",
+    "Name": "Raoul Is",
+    "Coordinates": {
+      "Latitude": -29.25,
+      "Longitude": -177.917,
+      "Elevation": 38
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "6170",
+    "Name": "Raoul Island Aws",
+    "Coordinates": {
+      "Latitude": -29.24488,
+      "Longitude": -177.92912,
+      "Elevation": 50
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "1612",
+    "Name": "Tauranga Aero",
+    "Coordinates": {
+      "Latitude": -37.67242,
+      "Longitude": 176.19635,
+      "Elevation": 0
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "1615",
+    "Name": "Tauranga Aero Aws",
+    "Coordinates": {
+      "Latitude": -37.67068,
+      "Longitude": 176.1966,
+      "Elevation": 5
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "3810",
+    "Name": "Westport Aero",
+    "Coordinates": {
+      "Latitude": -41.74,
+      "Longitude": 171.578,
+      "Elevation": 2
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "7342",
+    "Name": "Westport Aero Aws",
+    "Coordinates": {
+      "Latitude": -41.74075,
+      "Longitude": 171.57985,
+      "Elevation": 5
+    },
+    "Opened": null,
+    "Closed": null
+  }
+]

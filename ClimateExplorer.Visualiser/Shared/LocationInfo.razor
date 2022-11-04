@@ -1,0 +1,226 @@
+﻿@using Blazorise
+@using Blazorise.SpinKit
+@using ClimateExplorer.Core
+@using ClimateExplorer.Core.ViewModel
+@using ClimateExplorer.Visualiser.UiModel
+@using ClimateExplorer.Core.Calculators
+@using ClimateExplorer.Core.DataPreparation
+@using static ClimateExplorer.Core.Enums
+
+<Collapsible Title="@Location?.Name" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
+    <HeaderContent>
+        <span class="chart-controls"><a class="chart-control" @onclick="() => ChangeLocationClicked(null)"><i class="fas fa-map"></i> Change Location</a></span>
+    </HeaderContent>
+    <Content>
+        @if (Location == null || MaxTempAnomalyRecords == null)
+        {
+            <SpinKit Type="SpinKitType.Plane" />
+        }
+        else
+        {
+            <!-- The awful HTML comments between OverviewField elements below are to avoid generating whitespace between OverviewField elements, which was
+                 causing them to be misaligned. Probably better to use flex layout, but this works for now.
+            -->
+            <OverviewField Label="Location"><Value> <span><a href="@LocationMapUrl" target="_blank">@LocationAsString</a></span></Value></OverviewField><!--
+         --><OverviewField Label="Elevation"><Value>@ElevationAsString</Value></OverviewField><!--
+         -->@if (WarmingIndexDescription != null)
+            {
+                <OverviewField Label="Warming index" PopupText="@WarmingIndexDescription"><Value>@WarmingIndexAsString</Value></OverviewField>
+            }
+            <OverviewField Label="Heating score" PopupText="@HeatingScoreDescription"><Value>@Location.HeatingScore</Value></OverviewField>
+            <WarmingStripe DataRecords="@MaxTempAnomalyRecords" />
+            <WarmestYears DataRecords="@MaxTempAnomalyRecords" />
+        }
+    </Content>
+</Collapsible>
+
+
+
+@code {
+    [Inject]
+    ILogger<LocationInfo> Logger { get; set; }
+
+    [Inject]
+    public IDataService DataService { get; set; }
+
+    [Parameter]
+    public Location? Location { get; set; }
+
+    [Parameter]
+    public EventCallback RequestLocationChange { get; set; }
+
+    [Parameter]
+    public IEnumerable<DataSetDefinitionViewModel> DataSetDefinitions { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnOverviewShowOrHide { get; set; }
+
+    Guid instanceId = Guid.NewGuid();
+
+    string LocationMapUrl => $"https://maps.google.com/?q={Location.Coordinates.Latitude},{Location.Coordinates.Longitude}";
+    string LocationAsString => $"{Math.Round(Location.Coordinates.Latitude, 1)}°, {Math.Round(Location.Coordinates.Longitude, 1)}°";
+    string ElevationAsString => $"{Math.Round(Location.Coordinates.Elevation, 1)}m";
+
+    /// <summary>
+    /// Used by the warming stripe
+    /// </summary>
+    List<YearAndValue>? MaxTempAnomalyRecords { get; set; }
+
+    string? WarmingIndexDescription;
+    string? WarmingIndexAsString;
+
+    Guid? locationIdLastTimeOnParametersSetAsyncWasCalled;
+
+    const string HeatingScoreDescription = @"<p>The heating score is a number typically between 0 and 9. It is derived from comparing all warming indexes across the locations in the dataset. The highest warming index is used to standardise the values.</p>
+<p>To calculate the heating score:</p>
+<ul><li>For warming indexes that are greater than zero, divide the warming index by the maximum warming index in the set, multiple by 9 and round to zero decimal places.</li>
+<li>For warming indexes that are less than zero, the only operation done is to round the number to zero demical places.</li></ul>
+<p>The score may be higher if:</p>
+<ul><li>The location is inland. The ocean is warming more slowly compared with the land. Coastal locations are therefore likely to have warmed less than inland locations.</li>
+<li>The station(s) has been operating for a long time. The effect of global warming is more obvious with a large dataset as temperatures in the past were cooler.</li>";
+
+    public void ChangeLocationClicked(EventArgs args)
+    {
+        RequestLocationChange.InvokeAsync();
+    }
+
+    void OverviewShowOrHideHandler(bool showOrHide)
+    {
+        OnOverviewShowOrHide.InvokeAsync(showOrHide);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Location == null)
+        {
+            return;
+        }
+
+        // We do manual change detection here because Blazor calls OnParametersSetAsync() repeatedly with the same input values.
+        if (locationIdLastTimeOnParametersSetAsyncWasCalled == Location?.Id)
+        {
+            return;
+        }
+
+        locationIdLastTimeOnParametersSetAsyncWasCalled = Location?.Id;
+
+        // We can't do anything until we're supplied our tasty, tasty DataSetDefinitions
+        if (DataSetDefinitions == null)
+        {
+            return;
+        }
+
+        var tempMaxMeasurementForLocation = 
+            DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
+                DataSetDefinitions,
+                Location.Id,
+                DataType.TempMax,
+                Enums.DataAdjustment.Adjusted,
+                true);
+
+        if (tempMaxMeasurementForLocation == null)
+        {
+            MaxTempAnomalyRecords = null;
+        }
+        else
+        {
+            // Retrieve TempMax anomaly
+            var series =
+                await DataService.PostDataSet(
+                    BinGranularities.ByYear,
+                    ContainerAggregationFunctions.Mean,
+                    ContainerAggregationFunctions.Mean,
+                    ContainerAggregationFunctions.Mean,
+                    SeriesValueOptions.Anomaly,
+                    new SeriesSpecification[]
+                        {
+                            new SeriesSpecification
+                            {
+                                DataAdjustment = tempMaxMeasurementForLocation.MeasurementDefinition.DataAdjustment,
+                                DataSetDefinitionId = tempMaxMeasurementForLocation.DataSetDefinition.Id,
+                                DataType = tempMaxMeasurementForLocation.MeasurementDefinition.DataType,
+                                LocationId = Location.Id
+                            }
+                        },
+                    SeriesDerivationTypes.ReturnSingleSeries,
+                    1.0f,
+                    1.0f,
+                    0.7f,
+                    14,
+                    SeriesTransformations.Identity);
+
+            // Filter to records that have values
+            MaxTempAnomalyRecords =
+                series.DataRecords
+                .Where(x => x.Value != null)
+                .Select(x => new YearAndValue(((YearBinIdentifier)BinIdentifier.Parse(x.BinId)).Year, x.Value.Value))
+                .ToList();
+
+            // Retrieve TempMax absolute
+            series =
+                await DataService.PostDataSet(
+                    BinGranularities.ByYear,
+                    ContainerAggregationFunctions.Mean,
+                    ContainerAggregationFunctions.Mean,
+                    ContainerAggregationFunctions.Mean,
+                    SeriesValueOptions.Value,
+                    new SeriesSpecification[]
+                        {
+                            new SeriesSpecification
+                            {
+                                DataAdjustment = tempMaxMeasurementForLocation.MeasurementDefinition.DataAdjustment,
+                                DataSetDefinitionId = tempMaxMeasurementForLocation.DataSetDefinition.Id,
+                                DataType = tempMaxMeasurementForLocation.MeasurementDefinition.DataType,
+                                LocationId = Location.Id
+                            }
+                        },
+                    SeriesDerivationTypes.ReturnSingleSeries,
+                    1.0f,
+                    1.0f,
+                    0.7f,
+                    14,
+                    SeriesTransformations.Identity);
+
+            var warmingIndex = WarmingIndexCalculator.CalculateWarmingIndex(series.DataRecords);
+
+            WarmingIndexDescription = GenerateWarmingIndexDescription(warmingIndex);
+            WarmingIndexAsString = GenerateWarmingIndexAsString(warmingIndex);
+        }
+
+        await base.OnParametersSetAsync();
+    }
+
+
+    string GenerateWarmingIndexDescription(CalculatedWarmingIndex warmingIndex)
+    {
+        if (Location == null)
+        {
+            return "NA";
+        }
+
+        string warmingIndexAsString = GenerateWarmingIndexAsString(warmingIndex);
+
+        if (warmingIndex == null)
+        {
+            return $@"<p>The warming index is the temperature difference between the average of the last 20 years of maximum temperatures compared with the average of the first half of the dataset.</p>
+<p>Over the long-term, with no external influences, we'd expect the warming index to trend towards zero. A non-zero warming index may indicate an effect of climate change. A positive warming index may indicate global warming.</p>";
+        }
+
+        return
+            String.Join(
+                Environment.NewLine,
+                $"<p>The warming index is the temperature difference between the average of the last 20 years of maximum temperatures compared with the average of the first half ({warmingIndex.CountOfFirstHalfOfTemperatures} years) of the dataset.</p>",
+                $"<p>{Location.Name}, between the years {warmingIndex.FirstYearInLast20YearsOfTemperatures}-{warmingIndex.LastYearInLast20YearsOfTemperatures}, had an average max temp of <strong>{string.Format("{0:0.##}", MathF.Round(warmingIndex.AverageOfLastTwentyYearsTemperatures, 2))}°C</strong>.</p>",
+                $"<p>{Location.Name}, between the years {warmingIndex.FirstYearInFirstHalfOfTemperatures}-{warmingIndex.LastYearInFirstHalfOfTemperatures}, had an average max temp of <strong>{string.Format("{0:0.##}", MathF.Round(warmingIndex.AverageOfFirstHalfOfTemperatures, 2))}°C</strong>.</p>",
+                $"<p>The difference is <strong>{warmingIndexAsString}</strong> (after rounding to 1 decimal place).</p>",
+                $"<p>Over the long-term, with no external influences, we'd expect the warming index to trend towards zero. A non-zero warming index may indicate an effect of climate change. A positive warming index may indicate global warming.</p>"
+            );
+    }
+    
+    static string GenerateWarmingIndexAsString(CalculatedWarmingIndex warmingIndex)
+    {
+        if (warmingIndex == null) return "NA";
+
+        return $"{ (warmingIndex.WarmingIndexValue >= 0 ? "+" : "") }{ string.Format("{0:0.#}", MathF.Round(warmingIndex.WarmingIndexValue, 1))}°C";
+    }
+}

@@ -1,0 +1,266 @@
+[
+  {
+    "ExternalStationCode": "1427",
+    "Name": "Albert Park",
+    "Coordinates": {
+      "Latitude": -36.853,
+      "Longitude": 174.767,
+      "Elevation": 49
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "1945",
+    "Name": "Mangere",
+    "Coordinates": {
+      "Latitude": -36.97,
+      "Longitude": 174.776,
+      "Elevation": 2
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "1962",
+    "Name": "Auckland Aero",
+    "Coordinates": {
+      "Latitude": -37.00813,
+      "Longitude": 174.78873,
+      "Elevation": 7
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "5380",
+    "Name": "Leith Valley",
+    "Coordinates": {
+      "Latitude": -45.85,
+      "Longitude": 170.5,
+      "Elevation": 94
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "5375",
+    "Name": "Btl Gardens",
+    "Coordinates": {
+      "Latitude": -45.86,
+      "Longitude": 170.522,
+      "Elevation": 73
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "5379",
+    "Name": "Beta St",
+    "Coordinates": {
+      "Latitude": -45.867,
+      "Longitude": 170.5,
+      "Elevation": 210
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "5402",
+    "Name": "Musselburgh",
+    "Coordinates": {
+      "Latitude": -45.904,
+      "Longitude": 170.513,
+      "Elevation": 2
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "15752",
+    "Name": "Musselburgh Ews",
+    "Coordinates": {
+      "Latitude": -45.90129,
+      "Longitude": 170.5147,
+      "Elevation": 4
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "2473",
+    "Name": "Waingawa",
+    "Coordinates": {
+      "Latitude": -40.98,
+      "Longitude": 175.611,
+      "Elevation": 114
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "2612",
+    "Name": "East Taratahi AWS",
+    "Coordinates": {
+      "Latitude": -41.016,
+      "Longitude": 175.622,
+      "Elevation": 91
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "21938",
+    "Name": "Martinborough Ews",
+    "Coordinates": {
+      "Latitude": -41.25231,
+      "Longitude": 175.38985,
+      "Elevation": 20
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "3907",
+    "Name": "Hokitika Town",
+    "Coordinates": {
+      "Latitude": -42.722,
+      "Longitude": 170.963,
+      "Elevation": 2
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "37939",
+    "Name": "Hokitika Southside",
+    "Coordinates": {
+      "Latitude": -42.729,
+      "Longitude": 170.96,
+      "Elevation": 4
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "3909",
+    "Name": "Hokitika Aero",
+    "Coordinates": {
+      "Latitude": -42.712,
+      "Longitude": 170.984,
+      "Elevation": 39
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "4881",
+    "Name": "Lincoln",
+    "Coordinates": {
+      "Latitude": -43.648,
+      "Longitude": 172.463,
+      "Elevation": 11
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "4882",
+    "Name": "Lincoln Broadfield EDL",
+    "Coordinates": {
+      "Latitude": -43.628,
+      "Longitude": 172.468,
+      "Elevation": 12
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "17603",
+    "Name": "Lincoln Broadfield EWS",
+    "Coordinates": {
+      "Latitude": -43.62622,
+      "Longitude": 172.4704,
+      "Elevation": 18
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "4244",
+    "Name": "Nelson",
+    "Coordinates": {
+      "Latitude": -41.275,
+      "Longitude": 173.295,
+      "Elevation": 10
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "4239",
+    "Name": "Appleby",
+    "Coordinates": {
+      "Latitude": -41.293,
+      "Longitude": 173.099,
+      "Elevation": 17
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "4241",
+    "Name": "Nelson Aero",
+    "Coordinates": {
+      "Latitude": -41.299,
+      "Longitude": 173.226,
+      "Elevation": 2
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "3431",
+    "Name": "Buckle St",
+    "Coordinates": {
+      "Latitude": -41.3,
+      "Longitude": 174.783,
+      "Elevation": 34
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "3391",
+    "Name": "Thorndon",
+    "Coordinates": {
+      "Latitude": -41.283,
+      "Longitude": 174.783,
+      "Elevation": 3
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "3385",
+    "Name": "Kelburn",
+    "Coordinates": {
+      "Latitude": -41.286,
+      "Longitude": 174.767,
+      "Elevation": 125
+    },
+    "Opened": null,
+    "Closed": null
+  },
+  {
+    "ExternalStationCode": "25354",
+    "Name": "Kelburn Aws",
+    "Coordinates": {
+      "Latitude": -41.28445,
+      "Longitude": 174.76794,
+      "Elevation": 125
+    },
+    "Opened": null,
+    "Closed": null
+  }
+]
