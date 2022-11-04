@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+<loc>/blog/meta/2022/06/27/welcome-to-jekyll.html</loc>
+<lastmod>2022-06-27T12:10:17+10:00</lastmod>
+</url>
+<url>
+<loc>/blog/about/</loc>
+</url>
+<url>
+<loc>/blog/</loc>
+</url>
+</urlset>
