@@ -1345,4 +1345,32 @@ public partial class Index : IDisposable
             await SelectedLocationChangedInternal(locationId.Value);
         }
     }
+
+    async Task HandleOnYearFilterChange(short year)
+    {
+        await OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly);
+
+        ChartSeriesList =
+            ChartSeriesList
+            .Concat(
+                new List<ChartSeriesDefinition>()
+                {
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = ChartSeriesList.First().SourceSeriesSpecifications.Where(x => x.MeasurementDefinition.DataType == DataType.TempMax).ToArray(),
+                        Aggregation = SeriesAggregationOptions.Mean,
+                        BinGranularity = SelectedBinGranularity,
+                        Smoothing = SeriesSmoothingOptions.None,
+                        SmoothingWindow = 5,
+                        Value = SeriesValueOptions.Value,
+                        Year = year,
+                        IsLocked = true,
+                    }
+                }
+            )
+            .ToList();
+
+        await BuildDataSets();
+    }
 }
