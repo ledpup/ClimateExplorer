@@ -29,7 +29,7 @@
             }
             <OverviewField Label="Heating score" PopupText="@HeatingScoreDescription"><Value>@Location.HeatingScore</Value></OverviewField>
             <WarmingStripe DataRecords="@MaxTempAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
-            <WarmestYears DataRecords="@MaxTempAnomalyRecords" />
+            <WarmestYears DataRecords="@MaxTempAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
         }
     </Content>
 </Collapsible>

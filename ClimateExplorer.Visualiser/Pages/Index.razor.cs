@@ -665,7 +665,8 @@ public partial class Index : IDisposable
                     // We always require that the cup have at least SelectedDayGroupThreshold of its entries populated
                     SelectedDayGroupThreshold,
                     SelectedDayGrouping,
-                    csd.SeriesTransformation
+                    csd.SeriesTransformation,
+                    csd.Year
                 );
 
             datasetsToReturn.Add(
@@ -1365,7 +1366,6 @@ public partial class Index : IDisposable
                         SmoothingWindow = 5,
                         Value = SeriesValueOptions.Value,
                         Year = year,
-                        IsLocked = true,
                     }
                 }
             )
