@@ -56,25 +56,19 @@ public class ChartSeriesDefinition
         {
             List<string> segments = new List<string>();
 
-            string s = "";
-
-            if (Year != null) s += Year;
-
             if (SourceSeriesSpecifications.Length == 1)
             {
                 var sss = SourceSeriesSpecifications.Single();
 
                 if (sss.LocationName != null)
                 {
-                    if (s.Length > 0)
-                    {
-                        s += " ";
-                    }
-
-                    s += sss.LocationName;
+                    segments.Add(sss.LocationName);
                 }
 
-                if (s.Length > 0) segments.Add(s);
+                if (Year != null)
+                {
+                    segments.Add(Year.ToString());
+                }
 
                 if (sss.MeasurementDefinition.DataCategory != null)
                 {
@@ -106,7 +100,7 @@ public class ChartSeriesDefinition
                 segments.Add("Transformation: " + GetFriendlySeriesTransformationLabel(SeriesTransformation));
             }
 
-            if (Aggregation != SeriesAggregationOptions.Mean)
+            if (Aggregation != SeriesAggregationOptions.Mean || (Year == null && BinGranularity == BinGranularities.ByMonthOnly))
             {
                 segments.Add("Aggregation: " + Aggregation);
             }
@@ -155,22 +149,27 @@ public class ChartSeriesDefinition
         switch (SeriesDerivationType)
         {
             case SeriesDerivationTypes.ReturnSingleSeries:
-                return BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications.Single());
+                return BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications.Single(), BinGranularity, Aggregation, Year);
 
             case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
-                return $"[{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[0])}] minus [{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[1])}]";
+                return $"[{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[0], BinGranularity, Aggregation, Year)}] minus [{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[1], BinGranularity, Aggregation, Year)}]";
 
             default: throw new NotImplementedException($"SeriesDerivationType {SeriesDerivationType}");
         }            
     }
 
-    public static string BuildFriendlyTitleShortForSeries(SourceSeriesSpecification sss)
+    public static string BuildFriendlyTitleShortForSeries(SourceSeriesSpecification sss, BinGranularities binGranularity, SeriesAggregationOptions aggregation, short? year = null)
     {
         List<string> segments = new List<string>();
 
         if (sss.LocationName != null)
         {
             segments.Add(sss.LocationName);
+        }
+
+        if (year != null)
+        {
+            segments.Add(year.ToString());
         }
 
         if (sss.MeasurementDefinition != null)
@@ -185,6 +184,11 @@ public class ChartSeriesDefinition
         else
         {
             segments.Add("[Missing MeasurementDefinition]");
+        }
+
+        if (year == null && binGranularity == BinGranularities.ByMonthOnly)
+        {
+            segments.Add(aggregation.ToString());
         }
 
         return String.Join(" | ", segments);

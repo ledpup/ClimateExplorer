@@ -3,15 +3,28 @@
 
 @if (DataRecords != null)
 {
-    <OverviewField Label="Warmest years"><Value>@WarmestYearsAsString</Value></OverviewField>
-    <OverviewField Label="Coolest years"><Value>@CoolestYearsAsString</Value></OverviewField>
-}
-
-@code {
-
-    [Parameter]
-    public List<YearAndValue> DataRecords { get; set; }
-
-    string WarmestYearsAsString => string.Join(", ", DataRecords.OrderByDescending(x => x.Value).Take(5).Select(x => x.Year));
-    string CoolestYearsAsString => string.Join(", ", DataRecords.OrderBy(x => x.Value).Take(5).Select(x => x.Year));
+    <OverviewField Label="Warmest years">
+        <Value>
+            @foreach (var year in WarmestYearsList)
+            {
+                <span @onclick="() => FilterToYear(year)" style="cursor: pointer;">
+                    @(WarmestYearsList.IndexOf(year) < WarmestYearsList.Count - 1 ? @year + ", " : year)
+                </span>
+            }
+        </Value>
+    </OverviewField>
+    <OverviewField Label="Coolest years">
+        <Value>
+            @foreach (var year in CoolestYears)
+            {
+                <span @onclick="() => FilterToYear(year)" style="cursor: pointer;">
+                    @year
+                </span>
+                if (CoolestYears.IndexOf(year) < CoolestYears.Count - 1)
+                {
+                    <span>, </span>
+                }
+            }
+        </Value>
+    </OverviewField>
 }

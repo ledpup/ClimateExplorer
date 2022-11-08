@@ -9,6 +9,7 @@ namespace ClimateExplorer.Core.DataPreparation
             TemporalDataPoint[] transformedDataPoints,
             SouthernHemisphereTemperateSeasons? filterToSouthernHemisphereTemperateSeason,
             SouthernHemisphereTropicalSeasons? filterToTropicalSeason,
+            short? filterToYear,
             int? filterToYearsAfterAndIncluding,
             int? filterToYearsBefore)
         {
@@ -31,7 +32,12 @@ namespace ClimateExplorer.Core.DataPreparation
 
             if (filterToYearsBefore != null)
             {
-                query = query.Where(x => x.Year >= filterToYearsBefore.Value);
+                query = query.Where(x => x.Year < filterToYearsBefore.Value);
+            }
+
+            if(filterToYear != null)
+            {
+                query = query.Where(x => x.Year == filterToYear.Value);
             }
 
             return query.ToArray();

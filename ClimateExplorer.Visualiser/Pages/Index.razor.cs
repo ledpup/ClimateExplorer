@@ -665,7 +665,8 @@ public partial class Index : IDisposable
                     // We always require that the cup have at least SelectedDayGroupThreshold of its entries populated
                     SelectedDayGroupThreshold,
                     SelectedDayGrouping,
-                    csd.SeriesTransformation
+                    csd.SeriesTransformation,
+                    csd.Year
                 );
 
             datasetsToReturn.Add(
@@ -1269,16 +1270,24 @@ public partial class Index : IDisposable
 
     async Task OnLineChartClicked(ChartMouseEventArgs e)
     {
-        throw new NotImplementedException();
+        if (SelectedBinGranularity != BinGranularities.ByYear)
+        {
+            // TODO: Add support for SelectedBinGranularity != BinGranularities.ByYear
+            return;
+        }
 
-        //var year = (short)(ChartStartYear + e.Index);
+        var startYear = UseMostRecentStartYear 
+            ? StartYears.Last()
+            : SelectedStartYear != null 
+                ? Convert.ToInt16(SelectedStartYear) 
+                : throw new NotImplementedException();
 
-        //SelectedYears = new List<short> { year };
-        //SelectedResolution = DataResolution.Monthly;
+        var year = (short)(startYear + e.Index);
 
-        //RebuildChartSeriesListToReflectSelectedYears();
+        var dataType = ChartSeriesWithData[e.DatasetIndex].SourceDataSet.DataType;
+        var dataAdjustment = ChartSeriesWithData[e.DatasetIndex].SourceDataSet.DataAdjustment;
 
-        //await BuildDataSets();
+        await HandleOnYearFilterChange(new YearAndDataTypeFilter(year) { DataType = dataType, DataAdjustment = dataAdjustment });
     }
 
     async Task ShowRangeSliderChanged(bool? value)
@@ -1344,5 +1353,44 @@ public partial class Index : IDisposable
         {
             await SelectedLocationChangedInternal(locationId.Value);
         }
+    }
+
+    async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)
+    {
+        await OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly);
+
+        var chartWithData = ChartSeriesWithData
+            .First(x => 
+            (x.SourceDataSet.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
+            (x.SourceDataSet.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null));
+
+        var chartSeries = ChartSeriesList
+            .First(x => x.SourceSeriesSpecifications.Any(y => 
+               (y.MeasurementDefinition.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
+               (y.MeasurementDefinition.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null)));
+
+        ChartSeriesList.RemoveAll(x => x != chartSeries && x.Year == null);
+
+        ChartSeriesList =
+            ChartSeriesList
+            .Concat(
+                new List<ChartSeriesDefinition>()
+                {
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = chartWithData.ChartSeries.SourceSeriesSpecifications,
+                        Aggregation = chartSeries.Aggregation,
+                        BinGranularity = SelectedBinGranularity,
+                        Smoothing = SeriesSmoothingOptions.None,
+                        SmoothingWindow = 5,
+                        Value = SeriesValueOptions.Value,
+                        Year = yearAndDataTypeFilter.Year,
+                    }
+                }
+            )
+            .ToList();
+
+        await BuildDataSets();
     }
 }
