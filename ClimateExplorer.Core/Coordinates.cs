@@ -1,5 +1,12 @@
 ﻿public struct Coordinates
 {
+    public Coordinates(float lat, float lng)
+    {
+        Latitude = lat;
+        Longitude = lng;
+        Elevation = 0;
+    }
+
     public float Latitude { get; set; }
     public float Longitude { get; set; }
     public float Elevation { get; set; }

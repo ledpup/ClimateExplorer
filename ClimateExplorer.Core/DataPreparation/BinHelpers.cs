@@ -55,13 +55,13 @@ namespace ClimateExplorer.Core.DataPreparation
 
         public static BinIdentifier[] GetBinsForModularGranularity(BinGranularities binGranularity)
         {
-            switch (binGranularity)
+            return binGranularity switch
             {
-                case BinGranularities.ByMonthOnly: return GetMonthBins();
-                case BinGranularities.BySouthernHemisphereTemperateSeasonOnly: return GetSouthernHemisphereTemperateSeasonBins();
-                case BinGranularities.BySouthernHemisphereTropicalSeasonOnly: return GetTropicalSeasonBins();
-                default: throw new NotImplementedException($"binGranularity {binGranularity}");
-            }
+                BinGranularities.ByMonthOnly => GetMonthBins(),
+                BinGranularities.BySouthernHemisphereTemperateSeasonOnly => GetSouthernHemisphereTemperateSeasonBins(),
+                BinGranularities.BySouthernHemisphereTropicalSeasonOnly => GetTropicalSeasonBins(),
+                _ => throw new NotImplementedException($"binGranularity {binGranularity}"),
+            };
         }
     }
 }

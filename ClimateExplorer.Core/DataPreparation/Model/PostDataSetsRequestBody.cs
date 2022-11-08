@@ -10,6 +10,7 @@
         public SouthernHemisphereTropicalSeasons? FilterToTropicalSeason { get; set; }
         public int? FilterToYearsAfterAndIncluding { get; set; }
         public int? FilterToYearsBefore { get; set; }
+        public short? FilterToYear { get; set; }
 
         public int CupSize { get; set; }
         public float RequiredCupDataProportion { get; set; }

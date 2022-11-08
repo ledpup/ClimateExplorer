@@ -9,7 +9,7 @@
             <ModalTitle>
                 @if (ChartSeries.SourceSeriesSpecifications.Length == 1)
                 {
-                    @ChartSeriesDefinition.BuildFriendlyTitleShortForSeries(ChartSeries.SourceSeriesSpecifications[0])
+                    @ChartSeriesDefinition.BuildFriendlyTitleShortForSeries(ChartSeries.SourceSeriesSpecifications[0], ChartSeries.BinGranularity, ChartSeries.Aggregation)
                 }
                 else
                 {
@@ -28,7 +28,7 @@
             {
                 @if (ChartSeries.SourceSeriesSpecifications.Length > 1)
                 {
-                    <h4>@ChartSeriesDefinition.BuildFriendlyTitleShortForSeries(sss)</h4>
+                    <h4>@ChartSeriesDefinition.BuildFriendlyTitleShortForSeries(sss, ChartSeries.BinGranularity, ChartSeries.Aggregation)</h4>
                 }
                 <div class="entry">
                     <div class="title">Dataset</div>

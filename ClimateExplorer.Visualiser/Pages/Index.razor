@@ -15,7 +15,8 @@
         <div class="map-space-reserver" id="mapContainerContainer">
             <MapContainer @ref="mapContainer"
                 Locations="@Locations"
-                OnLocationChange="@SelectedLocationChanged"></MapContainer>
+                OnLocationChange="@SelectedLocationChanged"
+                LocationCoordinates="@LocationCoordinates"></MapContainer>
         </div>
 
         <div class="location-info-container">
@@ -23,7 +24,8 @@
                         Location="@SelectedLocation"
                         DataSetDefinitions="@DataSetDefinitions"
                         RequestLocationChange="@ShowSelectLocationModal"
-                        OnOverviewShowOrHide="@OnOverviewShowHide" />
+                        OnOverviewShowOrHide="@OnOverviewShowHide"
+                        OnYearFilterChange=HandleOnYearFilterChange />
         </div>
 
         <div style="clear: both;"></div>

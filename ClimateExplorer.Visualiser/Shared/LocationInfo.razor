@@ -28,8 +28,8 @@
                 <OverviewField Label="Warming index" PopupText="@WarmingIndexDescription"><Value>@WarmingIndexAsString</Value></OverviewField>
             }
             <OverviewField Label="Heating score" PopupText="@HeatingScoreDescription"><Value>@Location.HeatingScore</Value></OverviewField>
-            <WarmingStripe LocationName=@Location.Name LocationTemperatureMean=@LocationTemperatureMean DataRecords="@MaxTempAnomalyRecords" />
-            <WarmestYears DataRecords="@MaxTempAnomalyRecords" />
+            <WarmingStripe LocationName=@Location.Name LocationTemperatureMean=@LocationTemperatureMean DataRecords="@MaxTempAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange/>
+            <WarmestYears DataRecords="@MaxTempAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
         }
     </Content>
 </Collapsible>
@@ -54,6 +54,9 @@
 
     [Parameter]
     public EventCallback<bool> OnOverviewShowOrHide { get; set; }
+
+    [Parameter]
+    public EventCallback<YearAndDataTypeFilter> OnYearFilterChange { get; set; }
 
     Guid instanceId = Guid.NewGuid();
 
@@ -220,11 +223,16 @@
                 $"<p>Over the long-term, with no external influences, we'd expect the warming index to trend towards zero. A non-zero warming index may indicate an effect of climate change. A positive warming index may indicate global warming.</p>"
             );
     }
-    
+
     static string GenerateWarmingIndexAsString(CalculatedWarmingIndex warmingIndex)
     {
         if (warmingIndex == null) return "NA";
 
         return $"{ (warmingIndex.WarmingIndexValue >= 0 ? "+" : "") }{ string.Format("{0:0.#}", MathF.Round(warmingIndex.WarmingIndexValue, 1))}°C";
+    }
+
+    async Task HandleOnYearFilterChange(short year)
+    {
+        await OnYearFilterChange.InvokeAsync(new YearAndDataTypeFilter(year));
     }
 }
