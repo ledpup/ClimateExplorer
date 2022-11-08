@@ -1284,7 +1284,10 @@ public partial class Index : IDisposable
 
         var year = (short)(startYear + e.Index);
 
-        await HandleOnYearFilterChange(year);
+        var dataType = ChartSeriesWithData[e.DatasetIndex].SourceDataSet.DataType;
+        var dataAdjustment = ChartSeriesWithData[e.DatasetIndex].SourceDataSet.DataAdjustment;
+
+        await HandleOnYearFilterChange(new YearAndDataTypeFilter(year) { DataType = dataType, DataAdjustment = dataAdjustment });
     }
 
     async Task ShowRangeSliderChanged(bool? value)
@@ -1352,9 +1355,21 @@ public partial class Index : IDisposable
         }
     }
 
-    async Task HandleOnYearFilterChange(short year)
+    async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)
     {
         await OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly);
+
+        var chartWithData = ChartSeriesWithData
+            .First(x => 
+            (x.SourceDataSet.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
+            (x.SourceDataSet.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null));
+
+        var chartSeries = ChartSeriesList
+            .First(x => x.SourceSeriesSpecifications.Any(y => 
+               (y.MeasurementDefinition.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
+               (y.MeasurementDefinition.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null)));
+
+        ChartSeriesList.RemoveAll(x => x != chartSeries && x.Year == null);
 
         ChartSeriesList =
             ChartSeriesList
@@ -1364,13 +1379,13 @@ public partial class Index : IDisposable
                     new ChartSeriesDefinition()
                     {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = ChartSeriesList.First().SourceSeriesSpecifications.Where(x => x.MeasurementDefinition.DataType == DataType.TempMax).ToArray(),
-                        Aggregation = SeriesAggregationOptions.Mean,
+                        SourceSeriesSpecifications = chartWithData.ChartSeries.SourceSeriesSpecifications,
+                        Aggregation = chartSeries.Aggregation,
                         BinGranularity = SelectedBinGranularity,
                         Smoothing = SeriesSmoothingOptions.None,
                         SmoothingWindow = 5,
                         Value = SeriesValueOptions.Value,
-                        Year = year,
+                        Year = yearAndDataTypeFilter.Year,
                     }
                 }
             )

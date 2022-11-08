@@ -56,7 +56,7 @@
     public EventCallback<bool> OnOverviewShowOrHide { get; set; }
 
     [Parameter]
-    public EventCallback<short> OnYearFilterChange { get; set; }
+    public EventCallback<YearAndDataTypeFilter> OnYearFilterChange { get; set; }
 
     Guid instanceId = Guid.NewGuid();
 
@@ -229,6 +229,6 @@
 
     async Task HandleOnYearFilterChange(short year)
     {
-        await OnYearFilterChange.InvokeAsync(year);
+        await OnYearFilterChange.InvokeAsync(new YearAndDataTypeFilter(year));
     }
 }
