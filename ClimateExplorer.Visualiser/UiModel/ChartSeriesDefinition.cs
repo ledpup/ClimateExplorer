@@ -100,7 +100,7 @@ public class ChartSeriesDefinition
                 segments.Add("Transformation: " + GetFriendlySeriesTransformationLabel(SeriesTransformation));
             }
 
-            if (Aggregation != SeriesAggregationOptions.Mean)
+            if (Aggregation != SeriesAggregationOptions.Mean || (Year == null && BinGranularity == BinGranularities.ByMonthOnly))
             {
                 segments.Add("Aggregation: " + Aggregation);
             }
@@ -149,16 +149,16 @@ public class ChartSeriesDefinition
         switch (SeriesDerivationType)
         {
             case SeriesDerivationTypes.ReturnSingleSeries:
-                return BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications.Single(), Year);
+                return BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications.Single(), BinGranularity, Aggregation, Year);
 
             case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
-                return $"[{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[0], Year)}] minus [{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[1], Year)}]";
+                return $"[{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[0], BinGranularity, Aggregation, Year)}] minus [{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[1], BinGranularity, Aggregation, Year)}]";
 
             default: throw new NotImplementedException($"SeriesDerivationType {SeriesDerivationType}");
         }            
     }
 
-    public static string BuildFriendlyTitleShortForSeries(SourceSeriesSpecification sss, short? year = null)
+    public static string BuildFriendlyTitleShortForSeries(SourceSeriesSpecification sss, BinGranularities binGranularity, SeriesAggregationOptions aggregation, short? year = null)
     {
         List<string> segments = new List<string>();
 
@@ -184,6 +184,11 @@ public class ChartSeriesDefinition
         else
         {
             segments.Add("[Missing MeasurementDefinition]");
+        }
+
+        if (year == null && binGranularity == BinGranularities.ByMonthOnly)
+        {
+            segments.Add(aggregation.ToString());
         }
 
         return String.Join(" | ", segments);

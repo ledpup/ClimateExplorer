@@ -11,8 +11,8 @@ namespace ClimateExplorer.Visualiser.Shared
         [Parameter]
         public EventCallback<short> OnYearFilterChange { get; set; }
 
-        string WarmestYearsAsString => string.Join(", ", DataRecords.OrderByDescending(x => x.Value).Take(5).Select(x => x.Year));
-        string CoolestYearsAsString => string.Join(", ", DataRecords.OrderBy(x => x.Value).Take(5).Select(x => x.Year));
+        List<short> WarmestYearsList => DataRecords.OrderByDescending(x => x.Value).Take(5).Select(x => x.Year).ToList();
+        List<short> CoolestYears => DataRecords.OrderBy(x => x.Value).Take(5).Select(x => x.Year).ToList();
 
         async Task FilterToYear(short year)
         {

@@ -1270,16 +1270,21 @@ public partial class Index : IDisposable
 
     async Task OnLineChartClicked(ChartMouseEventArgs e)
     {
-        throw new NotImplementedException();
+        if (SelectedBinGranularity != BinGranularities.ByYear)
+        {
+            // TODO: Add support for SelectedBinGranularity != BinGranularities.ByYear
+            return;
+        }
 
-        //var year = (short)(ChartStartYear + e.Index);
+        var startYear = UseMostRecentStartYear 
+            ? StartYears.Last()
+            : SelectedStartYear != null 
+                ? Convert.ToInt16(SelectedStartYear) 
+                : throw new NotImplementedException();
 
-        //SelectedYears = new List<short> { year };
-        //SelectedResolution = DataResolution.Monthly;
+        var year = (short)(startYear + e.Index);
 
-        //RebuildChartSeriesListToReflectSelectedYears();
-
-        //await BuildDataSets();
+        await HandleOnYearFilterChange(year);
     }
 
     async Task ShowRangeSliderChanged(bool? value)
