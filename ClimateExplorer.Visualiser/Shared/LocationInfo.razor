@@ -28,7 +28,7 @@
                 <OverviewField Label="Warming index" PopupText="@WarmingIndexDescription"><Value>@WarmingIndexAsString</Value></OverviewField>
             }
             <OverviewField Label="Heating score" PopupText="@HeatingScoreDescription"><Value>@Location.HeatingScore</Value></OverviewField>
-            <WarmingStripe DataRecords="@MaxTempAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
+            <WarmingStripe LocationName=@Location.Name LocationTemperatureMean=@LocationTemperatureMean DataRecords="@MaxTempAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange/>
             <WarmestYears DataRecords="@MaxTempAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
         }
     </Content>
@@ -81,6 +81,8 @@
 <p>The score may be higher if:</p>
 <ul><li>The location is inland. The ocean is warming more slowly compared with the land. Coastal locations are therefore likely to have warmed less than inland locations.</li>
 <li>The station(s) has been operating for a long time. The effect of global warming is more obvious with a large dataset as temperatures in the past were cooler.</li>";
+
+    float? LocationTemperatureMean { get; set; }
 
     public void ChangeLocationClicked(EventArgs args)
     {
@@ -188,6 +190,8 @@
 
             WarmingIndexDescription = GenerateWarmingIndexDescription(warmingIndex);
             WarmingIndexAsString = GenerateWarmingIndexAsString(warmingIndex);
+
+            LocationTemperatureMean = series.DataRecords.Average(x => x.Value);
         }
 
         await base.OnParametersSetAsync();
