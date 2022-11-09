@@ -74,9 +74,9 @@ namespace ClimateExplorer.Visualiser.Shared
 <li>Calculate the average temperature for the whole series (e.g., {LocationName} {DataRecords.First().Year}-{DataRecords.Last().Year} mean is {Math.Round(LocationTemperatureMean.Value, 1)}°C)</li>
 <li>For each year in the series, subtract the average temperature for the <strong>year</strong> from the average for the <strong>series</strong>. Note:</li>
     <ul>
-        <li>This value in step 2 is often called the temperature anomaly.</li>
-        <li>If the anomaly is above 0°C, we consider it a warmer than average year.</li>
-        <li>If the anomaly is below 0°C, we consider it a colder than average year.</li>
+        <li>This value in step 2 is often called the temperature anomaly</li>
+        <li>If the anomaly is above 0°C, we consider it a warmer than average year</li>
+        <li>If the anomaly is below 0°C, we consider it a colder than average year</li>
     </ul>
 <li>Find the coldest anomaly (e.g., {LocationName}'s is {Math.Round(Min, 1)}°C) and assign it the strongest colour of blue</li>
 <li>Find the warmest anomaly (e.g., {LocationName}'s is {Math.Round(Max, 1)}°C) and assign it the strongest colour of red</li>

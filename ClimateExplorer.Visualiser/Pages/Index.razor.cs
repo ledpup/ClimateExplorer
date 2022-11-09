@@ -547,7 +547,7 @@ public partial class Index : IDisposable
             bool shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds = currentUri.IndexOf("csd=") == -1;
 
             // Just let the navigation process trigger the UI updates
-            NavigateTo(url, shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds);
+            await NavigateTo(url, shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds);
         }
         else
         {
@@ -1105,14 +1105,19 @@ public partial class Index : IDisposable
         l.LogInformation("leaving");
     }
 
-    void SelectedLocationChanged(Guid locationId)
+    async Task SelectedLocationChanged(Guid locationId)
     {
-        NavigateTo("/location/" + locationId.ToString());
+        await NavigateTo("/location/" + locationId.ToString());
     }
 
-    public void NavigateTo(string uri, bool replace = false)
+    public async Task NavigateTo(string uri, bool replace = false)
     {
         Logger.LogInformation("NavManager.NavigateTo(uri=" + uri + ", replace=" + replace + ")");
+
+        // Below is a JavaScript hack to stop NavigateTo from scrolling to the top of the page.
+        // See: https://github.com/dotnet/aspnetcore/issues/40190 and index.html
+        await JsRuntime.InvokeVoidAsync("changeShouldSkip", true);
+
         NavManager.NavigateTo(uri, false, replace);
     }
 

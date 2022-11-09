@@ -119,6 +119,23 @@
             }
         }
     </script>
+
+    <script>
+        var shouldSkip = false;
+
+        const origScrollTo = window.scrollTo;
+        window.scrollTo = (x, y) => {
+            if (x === 0 && y === 0 && shouldSkip) {
+                shouldSkip = false;
+                return;
+            } 
+            return origScrollTo.apply(this, arguments);
+        };
+
+        function changeShouldSkip(newValue) {
+            shouldSkip = newValue;
+        }
+    </script>
 </body>
 
 </html>
