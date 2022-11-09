@@ -408,7 +408,7 @@ public partial class Index : IDisposable
         await BuildDataSets();
     }
 
-    async Task OnSelectedBinGranularityChanged(BinGranularities value)
+    async Task OnSelectedBinGranularityChanged(BinGranularities value, bool rebuildDataSets = true)
     {
         SelectedBinGranularity = value;
 
@@ -424,7 +424,10 @@ public partial class Index : IDisposable
             await ShowRangeSliderChanged(true);
         }
 
-        await BuildDataSets();
+        if (rebuildDataSets)
+        {
+            await BuildDataSets();
+        }
     }
 
     Location SelectedLocation
@@ -1362,7 +1365,7 @@ public partial class Index : IDisposable
 
     async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)
     {
-        await OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly);
+        await OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly, false);
 
         var chartWithData = ChartSeriesWithData
             .First(x => 
