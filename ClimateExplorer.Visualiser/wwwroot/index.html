@@ -119,6 +119,26 @@
             }
         }
     </script>
+
+
+    <script>
+        // Below is a JavaScript hack to stop NavigateTo from scrolling to the top of the page.
+        // See: https://github.com/dotnet/aspnetcore/issues/40190
+
+        var skipScrollTo = false;
+        const origScrollTo = window.scrollTo;
+        window.scrollTo = (x, y) => {
+            if (x === 0 && y === 0 && skipScrollTo) {
+                skipScrollTo = false;
+                return;
+            }
+            return origScrollTo.apply(this, arguments);
+        };
+
+        function willSkipScrollTo(newValue) {
+            skipScrollTo = newValue;
+        }
+    </script>
 </body>
 
 </html>
