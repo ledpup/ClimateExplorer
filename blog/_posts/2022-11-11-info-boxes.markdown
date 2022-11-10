@@ -4,7 +4,7 @@ title: "Info boxes"
 date: 2022-11-11 06:39:00 +1100
 categories: meta
 ---
-There are three info boxes that explain a few of the temperature-related concepts presented in the web application. They are:
+When you use the ClimateExplorer application, you may see three info boxes that explain a few of the temperature-related concepts presented in the web application. They are:
 
 - Warming index
 - Heating score
@@ -42,7 +42,7 @@ The score may be higher if:
 
 ## Climate stripe
 
-[Climate stripes](https://en.wikipedia.org/wiki/Warming_stripes) are a simplified bar chart of average temperatures, ordered by year, from the earliest year in the record until the most recent. Each coloured stripe represents a single year of temperature data. A blue stripe is a year where the temperature is below the average of the whole series. A red stripe represents an above average temperature.
+<a href="https://en.wikipedia.org/wiki/Warming_stripes" target="_blank">Climate stripes</a> are a simplified bar chart of average temperatures, ordered by year, from the earliest year in the record until the most recent. Each coloured stripe represents a single year of temperature data. A blue stripe is a year where the temperature is below the average of the whole series. A red stripe represents an above average temperature.
 
 Climate stripe colours are calculated by the following algorithm.
 
@@ -50,7 +50,7 @@ Climate stripe colours are calculated by the following algorithm.
 
 2. For each year in the series, subtract the average temperature for the **year** from the average for the **series**. Note:
 
-3. - This value in step 2 is often called the temperature anomaly
+   - This value in step 2 is often called the temperature anomaly
    - If the anomaly is above 0°C, we consider it a warmer than average year
    - If the anomaly is below 0°C, we consider it a colder than average year
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="/blog/" rel="alternate" type="text/html" /><updated>2022-11-11T07:08:47+11:00</updated><id>/blog/feed.xml</id><title type="html">Climate Explorer</title><subtitle>The official blog of www.climateexplorer.net.</subtitle><entry><title type="html">Info boxes</title><link href="/blog/meta/2022/11/11/info-boxes.html" rel="alternate" type="text/html" title="Info boxes" /><published>2022-11-11T06:39:00+11:00</published><updated>2022-11-11T06:39:00+11:00</updated><id>/blog/meta/2022/11/11/info-boxes</id><content type="html" xml:base="/blog/meta/2022/11/11/info-boxes.html">&lt;p&gt;There are three info boxes that explain a few of the temperature-related concepts presented in the web application. They are:&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="/blog/" rel="alternate" type="text/html" /><updated>2022-11-11T07:31:07+11:00</updated><id>/blog/feed.xml</id><title type="html">Climate Explorer</title><subtitle>The official blog of www.climateexplorer.net.</subtitle><entry><title type="html">Info boxes</title><link href="/blog/meta/2022/11/11/info-boxes.html" rel="alternate" type="text/html" title="Info boxes" /><published>2022-11-11T06:39:00+11:00</published><updated>2022-11-11T06:39:00+11:00</updated><id>/blog/meta/2022/11/11/info-boxes</id><content type="html" xml:base="/blog/meta/2022/11/11/info-boxes.html">&lt;p&gt;When you use the ClimateExplorer application, you may see three info boxes that explain a few of the temperature-related concepts presented in the web application. They are:&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;Warming index&lt;/li&gt;
@@ -42,7 +42,7 @@
 
 &lt;h2 id=&quot;climate-stripe&quot;&gt;Climate stripe&lt;/h2&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Warming_stripes&quot;&gt;Climate stripes&lt;/a&gt; are a simplified bar chart of average temperatures, ordered by year, from the earliest year in the record until the most recent. Each coloured stripe represents a single year of temperature data. A blue stripe is a year where the temperature is below the average of the whole series. A red stripe represents an above average temperature.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Warming_stripes&quot; target=&quot;_blank&quot;&gt;Climate stripes&lt;/a&gt; are a simplified bar chart of average temperatures, ordered by year, from the earliest year in the record until the most recent. Each coloured stripe represents a single year of temperature data. A blue stripe is a year where the temperature is below the average of the whole series. A red stripe represents an above average temperature.&lt;/p&gt;
 
 &lt;p&gt;Climate stripe colours are calculated by the following algorithm.&lt;/p&gt;
 
@@ -52,8 +52,7 @@
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;For each year in the series, subtract the average temperature for the &lt;strong&gt;year&lt;/strong&gt; from the average for the &lt;strong&gt;series&lt;/strong&gt;. Note:&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
+
     &lt;ul&gt;
       &lt;li&gt;This value in step 2 is often called the temperature anomaly&lt;/li&gt;
       &lt;li&gt;If the anomaly is above 0°C, we consider it a warmer than average year&lt;/li&gt;
@@ -66,10 +65,12 @@
   &lt;li&gt;
     &lt;p&gt;Find the warmest anomaly (e.g., Canberra’s is 2.9°C) and assign it the strongest colour of red&lt;/p&gt;
   &lt;/li&gt;
-  &lt;li&gt;All anomalies between the extremes are lighter shades of blue or red&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;All anomalies between the extremes are lighter shades of blue or red&lt;/p&gt;
+  &lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;Climate Explorer’s stripe is interactive. Hover over any year in the series then click. The chart will update with a monthly view of the selected year.&lt;/p&gt;</content><author><name></name></author><category term="meta" /><summary type="html">There are three info boxes that explain a few of the temperature-related concepts presented in the web application. They are:</summary></entry><entry><title type="html">Welcome to the Climate Explorer blog</title><link href="/blog/meta/2022/11/04/welcome-to-climate-explorer.html" rel="alternate" type="text/html" title="Welcome to the Climate Explorer blog" /><published>2022-11-04T14:40:17+11:00</published><updated>2022-11-04T14:40:17+11:00</updated><id>/blog/meta/2022/11/04/welcome-to-climate-explorer</id><content type="html" xml:base="/blog/meta/2022/11/04/welcome-to-climate-explorer.html">&lt;p&gt;Hey, welcome to the &lt;a href=&quot;https://www.climateexplorer.net/&quot;&gt;Climate Explorer&lt;/a&gt; blog! We plan to use this blog to keep you up to date as we add features &amp;amp; data sets to &lt;a href=&quot;https://www.climateexplorer.net/&quot;&gt;Climate Explorer&lt;/a&gt;, as well as linking to further reading on the source data sets and climate concepts related to the site. We may also talk a little about how the site is implemented behind the scenes.&lt;/p&gt;
+&lt;p&gt;Climate Explorer’s stripe is interactive. Hover over any year in the series then click. The chart will update with a monthly view of the selected year.&lt;/p&gt;</content><author><name></name></author><category term="meta" /><summary type="html">When you use the ClimateExplorer application, you may see three info boxes that explain a few of the temperature-related concepts presented in the web application. They are:</summary></entry><entry><title type="html">Welcome to the Climate Explorer blog</title><link href="/blog/meta/2022/11/04/welcome-to-climate-explorer.html" rel="alternate" type="text/html" title="Welcome to the Climate Explorer blog" /><published>2022-11-04T14:40:17+11:00</published><updated>2022-11-04T14:40:17+11:00</updated><id>/blog/meta/2022/11/04/welcome-to-climate-explorer</id><content type="html" xml:base="/blog/meta/2022/11/04/welcome-to-climate-explorer.html">&lt;p&gt;Hey, welcome to the &lt;a href=&quot;https://www.climateexplorer.net/&quot;&gt;Climate Explorer&lt;/a&gt; blog! We plan to use this blog to keep you up to date as we add features &amp;amp; data sets to &lt;a href=&quot;https://www.climateexplorer.net/&quot;&gt;Climate Explorer&lt;/a&gt;, as well as linking to further reading on the source data sets and climate concepts related to the site. We may also talk a little about how the site is implemented behind the scenes.&lt;/p&gt;
 
 &lt;h2 id=&quot;what-is-climate-explorer&quot;&gt;What is Climate Explorer?&lt;/h2&gt;
 
