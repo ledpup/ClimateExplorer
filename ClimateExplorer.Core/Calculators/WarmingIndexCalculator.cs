@@ -54,7 +54,11 @@ namespace ClimateExplorer.Core.Calculators
             var countOfFirstHalfOfTemperatures = nonNullDataPoints.Length / 2;
             var firstHalfOfTemperatures = nonNullDataPoints.OrderBy(x => x.Year).Take(countOfFirstHalfOfTemperatures).ToArray();
             var averageOfFirstHalfOfTemperatures = firstHalfOfTemperatures.Average(x => x.Value).Value;
-            var lastTwentyYearsOfTemperatures = nonNullDataPoints.OrderByDescending(x => x.Year).Take(20).ToArray();
+            var lastTwentyYearsOfTemperatures = nonNullDataPoints
+                                                            .OrderByDescending(x => x.Year)
+                                                            .Take(20)
+                                                            .OrderBy(x => x.Year)
+                                                            .ToArray();
             var averageOfLastTwentyYearsTemperatures = lastTwentyYearsOfTemperatures.Average(x => x.Value).Value;
 
             return

@@ -1,4 +1,75 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="/blog/" rel="alternate" type="text/html" /><updated>2022-11-05T06:39:24+11:00</updated><id>/blog/feed.xml</id><title type="html">Climate Explorer</title><subtitle>The official blog of www.climateexplorer.net.</subtitle><entry><title type="html">Welcome to the Climate Explorer blog</title><link href="/blog/meta/2022/11/04/welcome-to-climate-explorer.html" rel="alternate" type="text/html" title="Welcome to the Climate Explorer blog" /><published>2022-11-04T14:40:17+11:00</published><updated>2022-11-04T14:40:17+11:00</updated><id>/blog/meta/2022/11/04/welcome-to-climate-explorer</id><content type="html" xml:base="/blog/meta/2022/11/04/welcome-to-climate-explorer.html">&lt;p&gt;Hey, welcome to the &lt;a href=&quot;https://www.climateexplorer.net/&quot;&gt;Climate Explorer&lt;/a&gt; blog! We plan to use this blog to keep you up to date as we add features &amp;amp; data sets to &lt;a href=&quot;https://www.climateexplorer.net/&quot;&gt;Climate Explorer&lt;/a&gt;, as well as linking to further reading on the source data sets and climate concepts related to the site. We may also talk a little about how the site is implemented behind the scenes.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="/blog/" rel="alternate" type="text/html" /><updated>2022-11-11T07:08:47+11:00</updated><id>/blog/feed.xml</id><title type="html">Climate Explorer</title><subtitle>The official blog of www.climateexplorer.net.</subtitle><entry><title type="html">Info boxes</title><link href="/blog/meta/2022/11/11/info-boxes.html" rel="alternate" type="text/html" title="Info boxes" /><published>2022-11-11T06:39:00+11:00</published><updated>2022-11-11T06:39:00+11:00</updated><id>/blog/meta/2022/11/11/info-boxes</id><content type="html" xml:base="/blog/meta/2022/11/11/info-boxes.html">&lt;p&gt;There are three info boxes that explain a few of the temperature-related concepts presented in the web application. They are:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Warming index&lt;/li&gt;
+  &lt;li&gt;Heating score&lt;/li&gt;
+  &lt;li&gt;Climate stripe&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;We thought it might be a good idea to present the text on the blog, as a summary of some of the concepts. Below is what you may see as pop-up text if you click on the corresponding area in the application.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/assets/Canberra-location-info.png&quot; alt=&quot;Canberra-location-info&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;warming-index&quot;&gt;Warming index&lt;/h2&gt;
+
+&lt;p&gt;The warming index is the temperature difference between the average of the last 20 years of maximum temperatures compared with the average of the first half (50 years) of the dataset.&lt;/p&gt;
+
+&lt;p&gt;Canberra, between the years 2001-2020, had an average max temp of &lt;strong&gt;21.06°C&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Canberra, between the years 1914-1970, had an average max temp of &lt;strong&gt;19.29°C&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;The difference is &lt;strong&gt;+1.8°C&lt;/strong&gt; (after rounding to 1 decimal place).&lt;/p&gt;
+
+&lt;p&gt;Over the long-term, with no external influences, we’d expect the warming index to trend towards zero. A non-zero warming index may indicate an effect of climate change. A positive warming index may indicate global warming.&lt;/p&gt;
+
+&lt;h2 id=&quot;heating-score&quot;&gt;Heating score&lt;/h2&gt;
+
+&lt;p&gt;The heating score is a number typically between 0 and 9. It is derived from comparing all warming indexes across the locations in the dataset. The highest warming index is used to standardise the values.&lt;/p&gt;
+
+&lt;p&gt;To calculate the heating score:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;For warming indexes that are greater than zero, divide the warming index by the maximum warming index in the set, multiple by 9 and round to zero decimal places.&lt;/li&gt;
+  &lt;li&gt;For warming indexes that are less than zero, the only operation done is to round the number to zero demical places.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The score may be higher if:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The location is inland. The ocean is warming more slowly compared with the land. Coastal locations are therefore likely to have warmed less than inland locations.&lt;/li&gt;
+  &lt;li&gt;The station(s) has been operating for a long time. The effect of global warming is more obvious with a large dataset as temperatures in the past were cooler.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;climate-stripe&quot;&gt;Climate stripe&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Warming_stripes&quot;&gt;Climate stripes&lt;/a&gt; are a simplified bar chart of average temperatures, ordered by year, from the earliest year in the record until the most recent. Each coloured stripe represents a single year of temperature data. A blue stripe is a year where the temperature is below the average of the whole series. A red stripe represents an above average temperature.&lt;/p&gt;
+
+&lt;p&gt;Climate stripe colours are calculated by the following algorithm.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Calculate the average temperature for the whole series (e.g., Canberra 1914-2020 mean is 19.8°C)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;For each year in the series, subtract the average temperature for the &lt;strong&gt;year&lt;/strong&gt; from the average for the &lt;strong&gt;series&lt;/strong&gt;. Note:&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;ul&gt;
+      &lt;li&gt;This value in step 2 is often called the temperature anomaly&lt;/li&gt;
+      &lt;li&gt;If the anomaly is above 0°C, we consider it a warmer than average year&lt;/li&gt;
+      &lt;li&gt;If the anomaly is below 0°C, we consider it a colder than average year&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Find the coldest anomaly (e.g., Canberra’s is -2°C) and assign it the strongest colour of blue&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Find the warmest anomaly (e.g., Canberra’s is 2.9°C) and assign it the strongest colour of red&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;All anomalies between the extremes are lighter shades of blue or red&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Climate Explorer’s stripe is interactive. Hover over any year in the series then click. The chart will update with a monthly view of the selected year.&lt;/p&gt;</content><author><name></name></author><category term="meta" /><summary type="html">There are three info boxes that explain a few of the temperature-related concepts presented in the web application. They are:</summary></entry><entry><title type="html">Welcome to the Climate Explorer blog</title><link href="/blog/meta/2022/11/04/welcome-to-climate-explorer.html" rel="alternate" type="text/html" title="Welcome to the Climate Explorer blog" /><published>2022-11-04T14:40:17+11:00</published><updated>2022-11-04T14:40:17+11:00</updated><id>/blog/meta/2022/11/04/welcome-to-climate-explorer</id><content type="html" xml:base="/blog/meta/2022/11/04/welcome-to-climate-explorer.html">&lt;p&gt;Hey, welcome to the &lt;a href=&quot;https://www.climateexplorer.net/&quot;&gt;Climate Explorer&lt;/a&gt; blog! We plan to use this blog to keep you up to date as we add features &amp;amp; data sets to &lt;a href=&quot;https://www.climateexplorer.net/&quot;&gt;Climate Explorer&lt;/a&gt;, as well as linking to further reading on the source data sets and climate concepts related to the site. We may also talk a little about how the site is implemented behind the scenes.&lt;/p&gt;
 
 &lt;h2 id=&quot;what-is-climate-explorer&quot;&gt;What is Climate Explorer?&lt;/h2&gt;
 

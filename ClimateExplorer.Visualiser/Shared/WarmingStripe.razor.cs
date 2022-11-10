@@ -68,7 +68,7 @@ namespace ClimateExplorer.Visualiser.Shared
 
             var url = "\"https://en.wikipedia.org/wiki/Warming_stripes\"";
 
-            PopupText = $@"<p>A <a href={url} target=""_blank"">climate stripe</a> is a simplified graph of coloured stripes, ordered by year, representing the average temperate for each year. They visually portray long-term temperature trends.</p>
+            PopupText = $@"<p><a href={url} target=""_blank"">Climate stripes</a> are a simplified bar chart of average temperatures, ordered by year, from the earliest year in the record until the most recent. Each coloured stripe represents a single year of temperature data. A blue stripe is a year where the temperature is below the average of the whole series. A red stripe represents an above average temperature.</p>
 <p>Climate stripe colours are calculated by the following algorithm.</p>
 <ol>
 <li>Calculate the average temperature for the whole series (e.g., {LocationName} {DataRecords.First().Year}-{DataRecords.Last().Year} mean is {Math.Round(LocationTemperatureMean.Value, 1)}°C)</li>
