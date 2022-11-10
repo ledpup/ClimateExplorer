@@ -4,7 +4,7 @@ title: "Info boxes"
 date: 2022-11-11 06:39:00 +1100
 categories: meta
 ---
-There are three info boxes that explain a few of the temperature-related concepts presented in the web application. They are:
+When you use the ClimateExplorer application, you may see three info boxes that explain a few of the temperature-related concepts presented in the web application. They are:
 
 - Warming index
 - Heating score
