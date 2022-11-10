@@ -1,4 +1,6 @@
-﻿public struct Coordinates
+﻿using System.Diagnostics.CodeAnalysis;
+
+public struct Coordinates
 {
     public Coordinates(float lat, float lng)
     {
@@ -10,6 +12,10 @@
     public float Latitude { get; set; }
     public float Longitude { get; set; }
     public float Elevation { get; set; }
+
+    public bool Equals(Coordinates obj) => Latitude == obj.Latitude && Longitude == obj.Longitude && Elevation == obj.Elevation;
+    public static bool operator ==(Coordinates lhs, Coordinates rhs) => lhs.Equals(rhs);
+    public static bool operator !=(Coordinates lhs, Coordinates rhs) => !(lhs == rhs);
 
     public override string ToString()
     {

@@ -41,6 +41,8 @@
 
     int lastZoom = 8;
 
+    Coordinates PreviousSeenLocationCoordinates;
+
     protected override async Task OnInitializedAsync()
     {
         IsMobileDevice = await BlazorCurrentDeviceService.Mobile();
@@ -50,15 +52,19 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        if (PreviousSeenLocationCoordinates == LocationCoordinates)
+        {
+            return;
+        }
+
+        PreviousSeenLocationCoordinates = LocationCoordinates;
+
+        InitialiseMapOptions();
+        await EnsureMapMarkers();
+
         if (IsMapExpanded)
         {
             await ToggleMapExpansion();
-            StateHasChanged();
-        }
-        else
-        {
-            InitialiseMapOptions();
-            await EnsureMapMarkers();
         }
 
         await base.OnParametersSetAsync();
