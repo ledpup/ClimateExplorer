@@ -2,6 +2,7 @@ using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using static System.Net.WebRequestMethods;
 
 namespace ClimateExplorer.Visualiser.UiTests
 {
@@ -13,12 +14,15 @@ namespace ClimateExplorer.Visualiser.UiTests
         IBrowser _browser;
         IPage _page;
 
+        string _baseApiUrl = "http://localhost:54836";
+        string _baseSiteUrl = "http://localhost:5298";
+
         [SetUp]
         public async Task Setup()
         {
             _playwright = await Playwright.CreateAsync();
             var chromium = _playwright.Chromium;
-            _browser = await chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = false, });
+            _browser = await chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true, });
             var context = await _browser.NewContextAsync( new BrowserNewContextOptions { ViewportSize = new ViewportSize { Width = 1440, Height = 845} });
             _page = await context.NewPageAsync();           
         }
@@ -35,7 +39,7 @@ namespace ClimateExplorer.Visualiser.UiTests
         {
             var request = await _playwright.APIRequest.NewContextAsync(new()
             {
-                BaseURL = "http://localhost:54836",
+                BaseURL = _baseApiUrl,
             });
 
             var response = await request.GetAsync("location");
@@ -56,21 +60,36 @@ namespace ClimateExplorer.Visualiser.UiTests
                 locations.Add(location);
             }
 
-            var di = new DirectoryInfo("Locations");
+            var di = new DirectoryInfo("Assets\\Locations");
             if (!di.Exists)
             {
                 di.Create();
             }
 
+            var locationsTemplate = System.IO.File.ReadAllText("locations-template.markdown");
+
+            locationsTemplate = locationsTemplate.Replace("NumberOfLocations", locations.Count.ToString());
+
+            var markdown = new List<string>();
+
+            var firstLocation = true;
+
             foreach (var location in locations)
             {
-                await _page.GotoAsync($"http://localhost:5298/location/{location.Id}");
-                Thread.Sleep(5000);
+                await _page.GotoAsync($"{_baseSiteUrl}/location/{location.Id}");
+                Thread.Sleep(firstLocation ? 5000 : 3000);
                 await _page.ScreenshotAsync(new()
                 {
-                    Path = $"Locations\\{location.Name}.png",
+                    Path = $"Assets\\Locations\\{location.Name}.png",
                 });
+
+                markdown.Add($"| [{location.Name}]({_baseSiteUrl}/location/{location.Id}) | ![{location.Name}]({{{{site.url}}}}/blog/assets/locations/{location.Name}.png){{: width=\"400\" }} | \r\n");
+                firstLocation = false;
             }
+
+            markdown.ForEach(x => locationsTemplate += x);
+
+            System.IO.File.WriteAllText("locations.markdown", locationsTemplate);
         }
 
     }
