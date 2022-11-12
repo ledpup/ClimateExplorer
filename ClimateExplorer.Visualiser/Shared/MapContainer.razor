@@ -86,6 +86,11 @@
 
     public async Task ScrollToPoint(LatLng point)
     {
+        if (map == null)
+        {
+            return;
+        }
+
         await map.PanTo(point);
     }
 
