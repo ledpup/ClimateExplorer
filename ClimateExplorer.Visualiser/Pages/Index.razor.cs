@@ -152,6 +152,12 @@ public partial class Index : IDisposable
 
         bool setupDefaultChartSeries = LocationId == null && ChartSeriesList.Count == 0;
 
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        if (!QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier))
+        {
+            setupDefaultChartSeries = true;
+        }
+
         if (LocationId == null)
         {
             LocationId = (await GetCurrentLocation())?.ToString();
@@ -168,44 +174,7 @@ public partial class Index : IDisposable
 
         if (setupDefaultChartSeries)
         {
-            var location = Locations.Single(x => x.Id == locationId);
-
-            var tempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMax, DataAdjustment.Adjusted);
-            var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.Rainfall, null);
-
-            if (tempMax != null)
-            {
-                ChartSeriesList.Add(
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax),
-                        Aggregation = SeriesAggregationOptions.Mean,
-                        BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                        SmoothingWindow = 20,
-                        Value = SeriesValueOptions.Value,
-                        Year = null
-                    }
-                );
-            }
-
-            if (rainfall != null)
-            {
-                ChartSeriesList.Add(
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, rainfall),
-                        Aggregation = SeriesAggregationOptions.Sum,
-                        BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                        SmoothingWindow = 20,
-                        Value = SeriesValueOptions.Value,
-                        Year = null
-                    }
-                );
-            }
+            SetUpDefaultCharts(locationId);
         }
 
         // Pick up parameters from querystring
@@ -214,6 +183,50 @@ public partial class Index : IDisposable
         await SelectedLocationChangedInternal(locationId);
 
         await base.OnParametersSetAsync();
+    }
+
+    private void SetUpDefaultCharts(Guid? locationId)
+    {
+        var location = Locations.Single(x => x.Id == locationId);
+
+        var tempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMax, DataAdjustment.Adjusted, true);
+        var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.Rainfall, null, true, false);
+
+        ChartSeriesList = new List<ChartSeriesDefinition>();
+
+        if (tempMax != null)
+        {
+            ChartSeriesList.Add(
+                new ChartSeriesDefinition()
+                {
+                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax),
+                    Aggregation = SeriesAggregationOptions.Mean,
+                    BinGranularity = BinGranularities.ByYear,
+                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                    SmoothingWindow = 20,
+                    Value = SeriesValueOptions.Value,
+                    Year = null
+                }
+            );
+        }
+
+        if (rainfall != null)
+        {
+            ChartSeriesList.Add(
+                new ChartSeriesDefinition()
+                {
+                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, rainfall),
+                    Aggregation = SeriesAggregationOptions.Sum,
+                    BinGranularity = BinGranularities.ByYear,
+                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                    SmoothingWindow = 20,
+                    Value = SeriesValueOptions.Value,
+                    Year = null
+                }
+            );
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
