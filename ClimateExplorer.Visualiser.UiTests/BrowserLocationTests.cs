@@ -85,12 +85,15 @@ namespace ClimateExplorer.Visualiser.UiTests
             writer.WriteStartDocument();
             writer.WriteStartElement("sitemapindex", "http://www.sitemaps.org/schemas/sitemap/0.9");
 
+            WriteTag(writer, "https://climateexplorer.net/blog/locations");
             foreach (var location in locations)
             {
                 WriteTag(writer, $"https://climateexplorer.net/location/{location.Name.ToLower().Replace(" ", "-")}");
             }
-
+            
+            writer.WriteEndElement();
             writer.WriteEndDocument();
+            writer.Close();
         }
 
         private void WriteTag(XmlWriter writer, string Navigation)
