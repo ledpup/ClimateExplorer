@@ -39,3 +39,11 @@
     .single-stripe:hover .label {
         display: block;
     }
+
+.info-icon {
+    display: flex;
+    align-items: center;
+    margin-left: 8px;
+    color: #79c6f4;
+    font-size: larger;
+}
