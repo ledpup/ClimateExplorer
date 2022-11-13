@@ -158,6 +158,8 @@ public partial class Index : IDisposable
             setupDefaultChartSeries = true;
         }
 
+        GetLocationIdViaNameFromPath(uri);
+
         if (LocationId == null)
         {
             LocationId = (await GetCurrentLocation())?.ToString();
@@ -183,6 +185,20 @@ public partial class Index : IDisposable
         await SelectedLocationChangedInternal(locationId);
 
         await base.OnParametersSetAsync();
+    }
+
+    private void GetLocationIdViaNameFromPath(Uri uri)
+    {
+        if (uri.Segments.Length > 2 && !Guid.TryParse(uri.Segments[2], out Guid locationGuid))
+        {
+            var locatioName = uri.Segments[2];
+            locatioName = locatioName.Replace("-", " ");
+            var location = Locations.SingleOrDefault(x => String.Equals(x.Name, locatioName, StringComparison.OrdinalIgnoreCase));
+            if (location != null)
+            {
+                LocationId = location.Id.ToString();
+            }
+        }
     }
 
     private void SetUpDefaultCharts(Guid? locationId)
