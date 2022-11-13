@@ -1,4 +1,4 @@
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -24,7 +24,7 @@ namespace ClimateExplorer.Visualiser.UiTests
             var chromium = _playwright.Chromium;
             _browser = await chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true, });
             var context = await _browser.NewContextAsync( new BrowserNewContextOptions { ViewportSize = new ViewportSize { Width = 1440, Height = 845} });
-            _page = await context.NewPageAsync();           
+            _page = await context.NewPageAsync();
         }
 
         [TearDown]
@@ -35,7 +35,7 @@ namespace ClimateExplorer.Visualiser.UiTests
         }
 
         [Test]
-        public async Task GpToAllLocationsAndGetAScreenshot()
+        public async Task GoToAllLocationsAndGetAScreenshot()
         {
             var request = await _playwright.APIRequest.NewContextAsync(new()
             {
