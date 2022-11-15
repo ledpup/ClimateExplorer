@@ -1,10 +1,6 @@
 ﻿using ClimateExplorer.Core.InputOutput;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Core.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using static ClimateExplorer.Core.Enums;
 using ClimateExplorer.Core.InputOutput;
 
@@ -35,10 +31,103 @@ namespace ClimateExplorer.Core.DataPreparation
                 case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
                     return await BuildDifferenceBetweenTwoSeries(seriesSpecifications);
 
+                case SeriesDerivationTypes.AverageOfMultipleSeries:
+                    return await BuildAverageOfMultipleSeries(seriesSpecifications);
+
                 default:
                     throw new NotImplementedException($"SeriesDerivationType {seriesDerivationType}");
 
             }
+        }
+
+        static async Task<Series> BuildAverageOfMultipleSeries(SeriesSpecification[] seriesSpecifications)
+        {
+            if (seriesSpecifications.Length < 2)
+            {
+                throw new Exception($"When SeriesDerivationType is {nameof(seriesSpecifications)}, more than one SeriesSpecifications must be provided.");
+            }
+
+            DateOnly minDate = DateOnly.FromDateTime(DateTime.Today.Date);
+            DateOnly maxDate;
+
+            var dbGroups = new Dictionary<DateOnly, List<TemporalDataPoint>>();
+
+            UnitOfMeasure? uom = null;
+            DataCategory? dc = null;
+            DataResolution? dataResolution = null;
+
+            foreach (var seriesSpec in seriesSpecifications)
+            {
+                var series = await GetSeriesDataPoints(seriesSpec);
+                var dp = series.DataPoints;
+
+                if (uom != null && uom != series.UnitOfMeasure)
+                {
+                    throw new Exception($"Cannot mix the unit of measure when average between series. {uom} != {series.UnitOfMeasure}");
+                }
+
+                if (dc != null && dc != series.DataCategory)
+                {
+                    throw new Exception($"Cannot mix the data category when average between series. {dc} != {series.DataCategory}");
+                }
+
+                if (dataResolution != null && dataResolution != series.DataResolution)
+                {
+                    throw new Exception($"Cannot mix the data resolution when average between series. {dataResolution} != {series.DataResolution}");
+                }
+
+                uom = series.UnitOfMeasure;
+                dc = series.DataCategory;
+                dataResolution= series.DataResolution;
+
+                foreach (var point in dp)
+                {
+                    var date = new DateOnly(point.Year, point.Month ?? 1, point.Day ?? 1);
+                    if (!dbGroups.ContainsKey(date))
+                    {
+                        dbGroups.Add(date, new List<TemporalDataPoint>());
+                    }
+                    dbGroups[date].Add(point);
+                }
+
+                DateOnly minDateDp = dbGroups.Select(x => x.Key).Min();
+                DateOnly maxDateDp = dbGroups.Select(x => x.Key).Max();
+
+                minDate = minDateDp < minDate ? minDateDp : minDate;
+                maxDate = maxDateDp > maxDate ? maxDateDp : maxDate;
+            }
+
+            DateOnly d = minDate;
+
+            var results = new List<TemporalDataPoint>();
+
+            while (d <= maxDate)
+            {
+                var dpsForDateExists = dbGroups.TryGetValue(d, out var dpsForDate);
+
+                float? val = null;
+
+                if (dpsForDateExists && dpsForDate.All(x => x.Value != null))
+                {
+                    val = dpsForDate.Average(x => x.Value);
+                    results.Add(dpsForDate.First().WithValue(val));
+                }
+                else
+                {
+                    results.Add(new TemporalDataPoint { Day = (short)d.Day, Month = (short)d.Month, Year = (short)d.Year, Value = val });
+                }
+
+                d = d.AddDays(1);
+            }
+
+            return
+                new Series
+                {
+                    DataPoints = results.ToArray(),
+                    UnitOfMeasure = uom.Value,
+                    DataCategory = dc.Value,
+                    DataResolution = dataResolution.Value,
+                };
         }
 
         static async Task<Series> BuildDifferenceBetweenTwoSeries(SeriesSpecification[] seriesSpecifications)
