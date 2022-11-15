@@ -1,7 +1,6 @@
 ﻿using ClimateExplorer.Core;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Core.DataPreparation;
-using ClimateExplorer.Core.ViewModel;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using static ClimateExplorer.Core.Enums;
@@ -154,8 +153,45 @@ public class ChartSeriesDefinition
             case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
                 return $"[{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[0], BinGranularity, Aggregation, Year)}] minus [{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[1], BinGranularity, Aggregation, Year)}]";
 
+            case SeriesDerivationTypes.AverageOfMultipleSeries:
+                return BuildAverageMultipleSeriesTitle(SourceSeriesSpecifications);
+
             default: throw new NotImplementedException($"SeriesDerivationType {SeriesDerivationType}");
-        }            
+        }
+    }
+
+    static string BuildAverageMultipleSeriesTitle(SourceSeriesSpecification[] sss)
+    {
+        List<string> segments = new List<string>();
+
+        if (sss.All(o => o.LocationName == sss[0].LocationName))
+        {
+            segments.Add(sss[0].LocationName);
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+
+        if (sss.All(o => o.MeasurementDefinition.DataType == sss[0].MeasurementDefinition.DataType))
+        {
+            throw new NotImplementedException();
+        }
+        else
+        {
+            segments.Add($"Average {string.Join(", ", sss.Select(x => MapDataTypeToFriendlyName(x.MeasurementDefinition.DataType)).ToList())}");
+        }
+
+        if (sss.All(o => o.MeasurementDefinition.DataAdjustment == sss[0].MeasurementDefinition.DataAdjustment))
+        {
+            segments.Add(sss[0].MeasurementDefinition.DataAdjustment.ToString());
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+
+        return String.Join(" | ", segments);
     }
 
     public static string BuildFriendlyTitleShortForSeries(SourceSeriesSpecification sss, BinGranularities binGranularity, SeriesAggregationOptions aggregation, short? year = null)
@@ -272,8 +308,8 @@ public class ChartSeriesDefinition
     {
         return dataType switch
         {
-            DataType.TempMin => "Daily minimum",
-            DataType.TempMax => "Daily maximum",
+            DataType.TempMin => "Temp minimum",
+            DataType.TempMax => "Temp maximum",
             DataType.SolarRadiation => "Solar radiation",
             DataType.Rainfall => "Rainfall",
             DataType.MEIv2 => "MEI v2",

@@ -190,6 +190,7 @@ public partial class Index : IDisposable
         var location = Locations.Single(x => x.Id == locationId);
 
         var tempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMax, DataAdjustment.Adjusted, true);
+        var tempMin = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMin, DataAdjustment.Adjusted, true);
         var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.Rainfall, null, true, false);
 
         ChartSeriesList = new List<ChartSeriesDefinition>();
@@ -199,6 +200,12 @@ public partial class Index : IDisposable
             ChartSeriesList.Add(
                 new ChartSeriesDefinition()
                 {
+                    //SeriesDerivationType = SeriesDerivationTypes.AverageOfMultipleSeries,
+                    //SourceSeriesSpecifications = new SourceSeriesSpecification[]
+                    //{
+                    //    SourceSeriesSpecification.BuildArray(location, tempMax)[0],
+                    //    SourceSeriesSpecification.BuildArray(location, tempMin)[0],
+                    //},
                     SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                     SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax),
                     Aggregation = SeriesAggregationOptions.Mean,

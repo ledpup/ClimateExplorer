@@ -158,6 +158,33 @@
                         SeriesDerivationType = ClimateExplorer.Core.DataPreparation.SeriesDerivationTypes.DifferenceBetweenTwoSeries,
                         Name = "Daily temperature range"
                     });
+
+                currentLocationFolder.DataSets.Add(
+                    new DataSetLibraryEntry()
+                    {
+                        SourceSeriesSpecifications =
+                            new DataSetLibraryEntry.SourceSeriesSpecification[]
+                            {
+                                new DataSetLibraryEntry.SourceSeriesSpecification
+                                {
+                                    DataType = DataType.TempMax,
+                                    DataAdjustment = bestAvailableTempMax.Item2.DataAdjustment,
+                                    SourceDataSetId = bestAvailableTempMax.Item1.Id,
+                                    LocationId = CurrentLocation.Id,
+                                    LocationName = CurrentLocation.Name
+                                },
+                                new DataSetLibraryEntry.SourceSeriesSpecification
+                                {
+                                    DataType = DataType.TempMin,
+                                    DataAdjustment = bestAvailableTempMin.Item2.DataAdjustment,
+                                    SourceDataSetId = bestAvailableTempMin.Item1.Id,
+                                    LocationId = CurrentLocation.Id,
+                                    LocationName = CurrentLocation.Name
+                                }
+                            },
+                        SeriesDerivationType = ClimateExplorer.Core.DataPreparation.SeriesDerivationTypes.AverageOfMultipleSeries,
+                        Name = "Average of maximum and minimum temperatures"
+                    });
             }
 
             RootFolders.Add(currentLocationFolder);

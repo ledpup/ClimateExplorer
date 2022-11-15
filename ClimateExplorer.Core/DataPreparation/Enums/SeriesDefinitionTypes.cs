@@ -3,6 +3,7 @@
     public enum SeriesDerivationTypes
     {
         ReturnSingleSeries,
-        DifferenceBetweenTwoSeries
+        DifferenceBetweenTwoSeries,
+        AverageOfMultipleSeries
     }
 }
