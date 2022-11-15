@@ -193,13 +193,17 @@ public partial class Index : IDisposable
         var tempMin = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMin, DataAdjustment.Adjusted, true);
         var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.Rainfall, null, true, false);
 
-        ChartSeriesList = new List<ChartSeriesDefinition>();
+        if (ChartSeriesList == null)
+        {
+            ChartSeriesList = new List<ChartSeriesDefinition>();
+        }
 
         if (tempMax != null)
         {
             ChartSeriesList.Add(
                 new ChartSeriesDefinition()
                 {
+                    // TODO: remove if we're not going to default to average temperature
                     //SeriesDerivationType = SeriesDerivationTypes.AverageOfMultipleSeries,
                     //SourceSeriesSpecifications = new SourceSeriesSpecification[]
                     //{
@@ -1396,8 +1400,6 @@ public partial class Index : IDisposable
             .First(x => x.SourceSeriesSpecifications.Any(y => 
                (y.MeasurementDefinition.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
                (y.MeasurementDefinition.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null)));
-
-        ChartSeriesList.RemoveAll(x => x != chartSeries && x.Year == null);
 
         ChartSeriesList =
             ChartSeriesList
