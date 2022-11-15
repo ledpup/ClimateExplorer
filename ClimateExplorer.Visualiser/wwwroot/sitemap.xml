@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<?xml version="1.0" encoding="utf-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://climateexplorer.net/</loc>
     <lastmod>16/11/2022</lastmod>
@@ -20,4 +20,4 @@
     <loc>https://climateexplorer.net/location/adelaide</loc>
     <lastmod>15/11/2022</lastmod>
   </url>
-</sitemapindex>
+</urlset>
