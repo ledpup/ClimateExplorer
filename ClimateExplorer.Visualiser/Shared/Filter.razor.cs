@@ -45,7 +45,7 @@ For example, rainfall data starts in 1870 and temperature data starts in 1910. C
 <p><strong>Dynamically set the start year of the chart to be the most recent start year across all the datasets on the chart</strong>: when this is checked, the start year for the chart will be the last start year found across the datasets. For example, Canberra's temperature records start in 1914. Canberra's rainfall records start in 1924. With the option checked, the chart will start in 1924 because that's the latest start year. The start year for the chart will dynamically adjust to whatever datasets are selected for viewing. This option is checked by default.<p>";
 
         private Modal popup;
-        private Task ShowClimateStripeInfo()
+        private Task ShowYearFilteringInfo()
         {
             if (!string.IsNullOrWhiteSpace(PopupText))
             {

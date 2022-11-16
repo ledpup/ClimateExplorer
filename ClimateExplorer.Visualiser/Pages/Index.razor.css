@@ -71,6 +71,12 @@
             transition: 0.25s;
         }
 
+    .chart-controls .info-icon {
+        display: inline-block;
+        color: #79c6f4;
+        font-size: larger;
+    }
+
 @media only screen and (max-width: 1000px) {
     .map-space-reserver {
         margin-bottom: 10px;

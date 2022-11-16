@@ -82,9 +82,13 @@
 
                             <a class="chart-control" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download data</a>
 
-                            <a class="chart-control" @onclick="ShowOptionsModal"><i class="fas fa-cog"></i> Chart options</a>
+                            <a class="chart-control" @onclick="ShowOptionsModal"><i class="fas fa-cog"></i> Aggregation options</a>
 
                             <a class="chart-control" @onclick="ShowAddDataSetModal"><i class="fas fa-plus"></i> Add data set</a>
+
+                            <div class="info-icon">
+                                <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowChartOptionsInfo></i>
+                            </div>
 
                         </div>
 
@@ -136,7 +140,7 @@
 <Modal @ref="optionsModal">
     <ModalContent>
         <ModalHeader Background="Background.Light">
-            <ModalTitle>Options</ModalTitle>
+            <ModalTitle>Aggregation options</ModalTitle>
             <CloseButton />
         </ModalHeader>
         <ModalBody>
@@ -173,3 +177,18 @@
         OnUseMostRecentStartYearChanged="@OnUseMostRecentStartYearChanged"
         ShowRangeSlider=@EnableRangeSlider
         OnShowRangeSliderChanged=@ShowRangeSliderChanged></Filter>
+
+@if (PopupText != null)
+{
+    <Modal @ref="popup">
+        <ModalContent Size="ModalSize.Large">
+            <ModalHeader>
+                <ModalTitle>Chart options information</ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+            <ModalBody>
+                @((MarkupString)PopupText)
+            </ModalBody>
+        </ModalContent>
+    </Modal>
+}
