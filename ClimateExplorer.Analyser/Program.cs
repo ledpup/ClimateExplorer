@@ -2,6 +2,8 @@
 using ClimateExplorer.Analyser.Bom;
 using ClimateExplorer.Analyser.Greenland;
 using ClimateExplorer.Analyser.Niwa;
+using ClimateExplorer.Analyser.StaticContent;
+using System.Xml;
 
 GenerateMapMarkers();
 
@@ -30,7 +32,8 @@ await BomLocationsAndStationsMapper.BuildAcornSatAdjustedDataFileLocationMapping
 
 await BomLocationsAndStationsMapper.BuildRaiaLocationsFromReferenceDataAsync(Guid.Parse("647b6a05-43e4-48e0-a43e-04ae81a74653"), "_Australia_Raia");
 
-
+await BuildStaticContent.GenerateSiteMap();
+await BuildStaticContent.GenerateIndexFiles();
 
 async Task ValidateLocations()
 {

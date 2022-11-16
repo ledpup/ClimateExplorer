@@ -158,6 +158,8 @@ public partial class Index : IDisposable
             setupDefaultChartSeries = true;
         }
 
+        GetLocationIdViaNameFromPath(uri);
+
         if (LocationId == null)
         {
             LocationId = (await GetCurrentLocation())?.ToString();
@@ -185,20 +187,45 @@ public partial class Index : IDisposable
         await base.OnParametersSetAsync();
     }
 
+    private void GetLocationIdViaNameFromPath(Uri uri)
+    {
+        if (uri.Segments.Length > 2 && !Guid.TryParse(uri.Segments[2], out Guid locationGuid))
+        {
+            var locatioName = uri.Segments[2];
+            locatioName = locatioName.Replace("-", " ");
+            var location = Locations.SingleOrDefault(x => String.Equals(x.Name, locatioName, StringComparison.OrdinalIgnoreCase));
+            if (location != null)
+            {
+                LocationId = location.Id.ToString();
+            }
+        }
+    }
+
     private void SetUpDefaultCharts(Guid? locationId)
     {
         var location = Locations.Single(x => x.Id == locationId);
 
         var tempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMax, DataAdjustment.Adjusted, true);
+        var tempMin = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMin, DataAdjustment.Adjusted, true);
         var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.Rainfall, null, true, false);
 
-        ChartSeriesList = new List<ChartSeriesDefinition>();
+        if (ChartSeriesList == null)
+        {
+            ChartSeriesList = new List<ChartSeriesDefinition>();
+        }
 
         if (tempMax != null)
         {
             ChartSeriesList.Add(
                 new ChartSeriesDefinition()
                 {
+                    // TODO: remove if we're not going to default to average temperature
+                    //SeriesDerivationType = SeriesDerivationTypes.AverageOfMultipleSeries,
+                    //SourceSeriesSpecifications = new SourceSeriesSpecification[]
+                    //{
+                    //    SourceSeriesSpecification.BuildArray(location, tempMax)[0],
+                    //    SourceSeriesSpecification.BuildArray(location, tempMin)[0],
+                    //},
                     SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                     SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax),
                     Aggregation = SeriesAggregationOptions.Mean,
@@ -1389,8 +1416,6 @@ public partial class Index : IDisposable
             .First(x => x.SourceSeriesSpecifications.Any(y => 
                (y.MeasurementDefinition.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
                (y.MeasurementDefinition.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null)));
-
-        ChartSeriesList.RemoveAll(x => x != chartSeries && x.Year == null);
 
         ChartSeriesList =
             ChartSeriesList

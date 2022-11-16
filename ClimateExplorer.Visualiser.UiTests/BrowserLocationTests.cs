@@ -1,7 +1,10 @@
 ﻿using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
+using System.IO;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Xml;
+using static ClimateExplorer.Core.DataPreparation.SeriesProvider;
 using static System.Net.WebRequestMethods;
 
 namespace ClimateExplorer.Visualiser.UiTests
@@ -37,28 +40,7 @@ namespace ClimateExplorer.Visualiser.UiTests
         [Test]
         public async Task GoToAllLocationsAndGetAScreenshot()
         {
-            var request = await _playwright.APIRequest.NewContextAsync(new()
-            {
-                BaseURL = _baseApiUrl,
-            });
-
-            var response = await request.GetAsync("location");
-
-
-            Assert.True(response.Ok);
-            var jsonResponse = await response.JsonAsync();
-
-            var options = new JsonSerializerOptions 
-            { 
-                PropertyNameCaseInsensitive = true,
-            };
-
-            var locations = new List<Location>();
-            foreach (var locationObj in jsonResponse?.EnumerateArray())
-            {
-                var location = locationObj.Deserialize<Location>(options);
-                locations.Add(location);
-            }
+            var locations = await GetLocationsFromApi();
 
             var di = new DirectoryInfo("Assets\\Locations");
             if (!di.Exists)
@@ -92,5 +74,32 @@ namespace ClimateExplorer.Visualiser.UiTests
             System.IO.File.WriteAllText("locations.markdown", locationsTemplate);
         }
 
+        private async Task<List<Location>> GetLocationsFromApi()
+        {
+            var request = await _playwright.APIRequest.NewContextAsync(new()
+            {
+                BaseURL = _baseApiUrl,
+            });
+
+            var response = await request.GetAsync("location");
+
+
+            Assert.True(response.Ok);
+            var jsonResponse = await response.JsonAsync();
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+
+            var locations = new List<Location>();
+            foreach (var locationObj in jsonResponse?.EnumerateArray())
+            {
+                var location = locationObj.Deserialize<Location>(options);
+                locations.Add(location);
+            }
+
+            return locations;
+        }
     }
 }
