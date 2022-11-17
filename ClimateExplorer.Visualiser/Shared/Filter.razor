@@ -18,24 +18,6 @@
                 <Check TValue="bool?" Checked="ShowRangeSlider" CheckedChanged="ShowRangeSliderChanged">Show range slider</Check>
             </Field>
 
-            @if (DatasetYears != null)
-            {
-                <Field>
-                    <strong>Selected year(s)</strong>
-                    <Autocomplete TItem="short"
-                              TValue="short"
-                              Data="@DatasetYears"
-                              TextField="@((item) => item.ToString())"
-                              ValueField="@((item) => item)"
-                              Multiple
-                              SelectedValuesChanged="@OnSelectedYearsChangedInternal"
-                              SelectedValues="@SelectedYears"
-                              SelectedTexts="@SelectedYearsText">
-                        <NotFoundContent>@context was not found</NotFoundContent>
-                    </Autocomplete>
-                </Field>
-            }
-
             @if (SelectedBinGranularity == BinGranularities.ByYear || SelectedBinGranularity == BinGranularities.ByYearAndMonth)
             {
                 <Field>
