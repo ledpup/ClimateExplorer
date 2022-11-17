@@ -22,7 +22,7 @@
             {
                 <Field>
                     <strong>
-                        Start Year
+                        Start year
                     </strong>
                     <Tooltip Text="@UseMostRecentStartYearToolTip">
                         <Check TValue="bool" Checked="@UseMostRecentStartYear" CheckedChanged="@UseMostRecentStartYearChanged">@UseMostRecentStartYearLabel</Check>
@@ -53,7 +53,7 @@
                     </Validation>
                 </Field>
                 <Field>
-                    <strong>End Year</strong>
+                    <strong>End year</strong>
                     <Validation Validator="ValidateYear">
                         <TextEdit Text="@SelectedEndYearInternal" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChangedInternal" />
                     </Validation>
