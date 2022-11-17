@@ -8,7 +8,7 @@
         <ModalHeader Background="Background.Light">
             <ModalTitle>Year filtering</ModalTitle>
             <div class="info-icon">
-                <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowClimateStripeInfo></i>
+                <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowYearFilteringInfo></i>
             </div>
             <CloseButton />
         </ModalHeader>
@@ -18,29 +18,11 @@
                 <Check TValue="bool?" Checked="ShowRangeSlider" CheckedChanged="ShowRangeSliderChanged">Show range slider</Check>
             </Field>
 
-            @if (DatasetYears != null)
-            {
-                <Field>
-                    <strong>Selected year(s)</strong>
-                    <Autocomplete TItem="short"
-                              TValue="short"
-                              Data="@DatasetYears"
-                              TextField="@((item) => item.ToString())"
-                              ValueField="@((item) => item)"
-                              Multiple
-                              SelectedValuesChanged="@OnSelectedYearsChangedInternal"
-                              SelectedValues="@SelectedYears"
-                              SelectedTexts="@SelectedYearsText">
-                        <NotFoundContent>@context was not found</NotFoundContent>
-                    </Autocomplete>
-                </Field>
-            }
-
             @if (SelectedBinGranularity == BinGranularities.ByYear || SelectedBinGranularity == BinGranularities.ByYearAndMonth)
             {
                 <Field>
                     <strong>
-                        Start Year
+                        Start year
                     </strong>
                     <Tooltip Text="@UseMostRecentStartYearToolTip">
                         <Check TValue="bool" Checked="@UseMostRecentStartYear" CheckedChanged="@UseMostRecentStartYearChanged">@UseMostRecentStartYearLabel</Check>
@@ -71,7 +53,7 @@
                     </Validation>
                 </Field>
                 <Field>
-                    <strong>End Year</strong>
+                    <strong>End year</strong>
                     <Validation Validator="ValidateYear">
                         <TextEdit Text="@SelectedEndYearInternal" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChangedInternal" />
                     </Validation>
