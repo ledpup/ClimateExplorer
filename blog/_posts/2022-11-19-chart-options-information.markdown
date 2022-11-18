@@ -40,13 +40,13 @@ This dialog allows you to change the start and end years for the chart. For exam
 
 ![Aggregation options information]({{site.url}}/blog/assets/aggregation-options.png)
 
-The aggregation options are an advanced feature that allows you to change the underlying aggregation process. To calculate a single aggregated value for data for a year, from daily or monthly series, data is bundled together. If each bundle of data does not have enough records, the bundle is rejected as being unreliable.
+The aggregation options are advanced features that allows you to change the underlying aggregation process. To calculate a single aggregated value for data for a year, from daily or monthly series, data is bundled together. If each bundle of data does not have enough records, the bundle is rejected as being unreliable.
 
 By default, the bundles are groups of 14 days (fortnights) and each bundle requires 70% (10 days of the 14) of the records to be present for the year to be considered reliable enough for an average mean to be calculated. This means that a number of records can be missing for the year, so long as not too many consecutive days are missing. As temperature (and other climate data) follows cyclic patterns, missing data from a consecutive block is considered to be more untrustworthy than sporadic data missing throughout the year.
 
 Some presets (specifically, the cryosphere reference data – sea ice extent and melt) have a lower threshold applied to them because the data has been curated and considered to be trustworthy enough that more of it can be missing while still not corrupting the results.
 
-If you make changes to these settings and apply them, your settings will take precedence and override any preset specific settings. You can clear this by clicking “Clear override” which will appear after you apply your changes.
+If you make changes to these settings and apply them, your settings will take precedence and override any preset specific settings. You can clear this by clicking “Clear override” which would have appeared after you applied your changes.
 
 **Day grouping**: select groups from weekly, fortnightly, monthly, and half-yearly, amongst other options.
 
@@ -54,4 +54,4 @@ If you make changes to these settings and apply them, your settings will take pr
 
 **Apply**: save your changes and apply them to the chart. These settings will persist as you change locations and datasets within the application.
 
-**Clear overide**: this will reset the settings back to their default (14 days at 70% threshold). Only appears after applying your settings.
+**Clear override**: this will reset the settings back to their default (14 days at 70% threshold). Only appears after applying your settings.
