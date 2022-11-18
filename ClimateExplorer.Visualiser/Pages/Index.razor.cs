@@ -32,8 +32,9 @@ public partial class Index : IDisposable
     List<ChartSeriesDefinition> ChartSeriesList { get; set; } = new List<ChartSeriesDefinition>();
     List<SeriesWithData> ChartSeriesWithData { get; set; }
     BinIdentifier[] ChartBins { get; set; }
-    float SelectedDayGroupThreshold { get; set; } = .7f;
-    string DayGroupThresholdText { get; set; }
+    float InternalGroupingThreshold { get; set; } = .7f;
+    string GroupingThresholdText { get; set; }
+    bool UserOverridePresetAggregationSettings { get; set; }
     short SelectedDayGrouping { get; set; } = 14;
     short SelectingDayGrouping { get; set; }
     Modal addDataSetModal { get; set; }
@@ -99,12 +100,30 @@ public partial class Index : IDisposable
 <p><strong>Aggregation options</strong> (*advanced* feature): the aggregation options allow you to change the underlying grouping parameters for the chart. The default values will group the daily data into 14 day (i.e., fortnightly) sub-bins. If each of those sub-bins has records for 70% of those days (i.e., 10 days of the 14 days will need to have records) then the whole year is considered valid. This means that you can still have substantial data loss for the year (e.g., the meteorologist was unwilling to come in on weekends to record the min and max temperatures)</p>
 <p><strong>Add data set</strong> (*advanced* feature): the suggested charts at the bottom of the screen provide the user with a number of predefined and recommended charts that can be viewed within ClimateExplorer. Other datasets can be added in an ad-hoc manner with the ""Add data set"" button. The list on the ""Add data set"" dialog contains data for your current location, such as solar radiation and the diurnal range for temperature. The list also contains reference data sets that can be added, such as CO₂, ENSO indexes and data from the cryosphere (the cryosphere comprises the parts of the planet that are frozen most of the year).</p>";
 
-    private Modal popup;
+    public string PopupAggregationOptionsInfoText { get; set; } = @"<p>The aggregation options are an advanced feature that allows you to change the underlying aggregation process. To calculate a single aggregated value for data for a year, from daily or monthly series, data is bundled together. If each bundle of data does not have enough records, the bundle is rejected as being unreliable.</p>
+<p>By default, the bundles are groups of 14 days (fortnights) and each bundle requires 70% (10 days of the 14) of the records to be present for the year to be considered reliable enough for an average mean to be calculated. This means that a number of records can be missing for the year, so long as not too many consecutive days are missing. As temperature and other climate data following cyclic patterns, missing data from a consecutive block is considered to be more untrustworthy than sporadic data missing throughout the year.</p>
+<p>Some presets (specifically, the cryosphere reference data – sea ice extent and melt) have a lower threshold applied to them because the data has been curated and considered to be trustworthy enough that more of it can be missing while still not corrupting the results.</p>
+<p>If you make changes to these settings and apply them, your settings will take precedence and override any preset specific settings. You can clear this by clicking “Clear override” which will appear after you apply your changes.</p>
+<p><strong>Day grouping</strong>: select groups from weekly, fortnightly, monthly, and half-yearly, amongst other options.</p>
+<p><strong>Threshold required to form a valid group (% percentage)</strong>: this is a percentage of how many records is considered sufficient to form a valid bundle of data.</p>
+<p><strong>Apply</strong>: save your changes and apply them to the chart. These settings will persist as you change locations and datasets within the application.</p>
+<p><strong>Clear overide</strong>: this will reset the settings back to their default (14 days at 70% threshold). Only appears after applying your settings.</p>";
+
+    private Modal popup, popupAggregationOptionsInfoText;
     private Task ShowChartOptionsInfo()
     {
         if (!string.IsNullOrWhiteSpace(PopupText))
         {
             return popup.Show();
+        }
+        return Task.CompletedTask;
+    }
+
+    private Task ShowAggregationOptionsInfo()
+    {
+        if (!string.IsNullOrWhiteSpace(PopupText))
+        {
+            return popupAggregationOptionsInfoText.Show();
         }
         return Task.CompletedTask;
     }
@@ -211,7 +230,7 @@ public partial class Index : IDisposable
         {
             var locatioName = uri.Segments[2];
             locatioName = locatioName.Replace("-", " ");
-            var location = Locations.SingleOrDefault(x => String.Equals(x.Name, locatioName, StringComparison.OrdinalIgnoreCase));
+            var location = Locations.SingleOrDefault(x => string.Equals(x.Name, locatioName, StringComparison.OrdinalIgnoreCase));
             if (location != null)
             {
                 LocationId = location.Id.ToString();
@@ -331,7 +350,7 @@ public partial class Index : IDisposable
 
         var locationNames = ChartSeriesWithData.SelectMany(x => x.ChartSeries.SourceSeriesSpecifications).Select(x => x.LocationName).Where(x => x != null).Distinct().ToArray();
 
-        var fileName = locationNames.Any() ? String.Join("-", locationNames) + "-" : "";
+        var fileName = locationNames.Any() ? string.Join("-", locationNames) + "-" : "";
 
         fileName = $"Export-{fileName}-{SelectedBinGranularity}-{ChartBins.First().Label}-{ChartBins.Last().Label}.csv";
 
@@ -347,13 +366,20 @@ public partial class Index : IDisposable
 
     async Task OnDayGroupThresholdTextChanged(string value)
     {
-        DayGroupThresholdText = value;
+        GroupingThresholdText = value;
     }
 
     async Task ApplyYearlyAverageParameters()
     {
-        SelectedDayGroupThreshold = float.Parse(DayGroupThresholdText) / 100;
+        UserOverridePresetAggregationSettings = true;
+        InternalGroupingThreshold = float.Parse(GroupingThresholdText) / 100;
         SelectedDayGrouping = SelectingDayGrouping == 0 ? SelectedDayGrouping : SelectingDayGrouping;
+        await BuildDataSets();
+    }
+
+    async Task ClearUserAggregationOverride()
+    {
+        UserOverridePresetAggregationSettings = false;
         await BuildDataSets();
     }
 
@@ -374,7 +400,7 @@ public partial class Index : IDisposable
 
     private Task ShowOptionsModal()
     {
-        DayGroupThresholdText = (SelectedDayGroupThreshold * 100).ToString();
+        GroupingThresholdText = MathF.Round(InternalGroupingThreshold * 100, 0).ToString();
         return optionsModal.Show();
     }
 
@@ -658,6 +684,7 @@ public partial class Index : IDisposable
                         Value = csd.Value,
                         Year = year,
                         SeriesTransformation = csd.SeriesTransformation,
+                        GroupingThreshold = csd.GroupingThreshold,
                     }
                 );
             }
@@ -709,7 +736,7 @@ public partial class Index : IDisposable
                 SelectedBinGranularity.IsModular() && cupAggregationFunction == ContainerAggregationFunctions.Sum
                 ? ContainerAggregationFunctions.Mean
                 : cupAggregationFunction;
-
+            
             DataSet dataSet =
                 await DataService.PostDataSet(
                     SelectedBinGranularity,
@@ -719,12 +746,9 @@ public partial class Index : IDisposable
                     csd.Value,
                     csd.SourceSeriesSpecifications.Select(BuildDataPrepSeriesSpecification).ToArray(),
                     csd.SeriesDerivationType,
-                    // If we're in linear time, all buckets in a bin must have passed the data completeness test. Otherwise we just apply SelectedDayGroupThreshold
-                    csd.BinGranularity.IsLinear() ? 1.0f : SelectedDayGroupThreshold,
-                    // If we're in linear time, all cups in a bucket must have passed the data completeness test. Otherwise we just apply SelectedDayGroupThreshold
-                    csd.BinGranularity.IsLinear() ? 1.0f : SelectedDayGroupThreshold,
-                    // We always require that the cup have at least SelectedDayGroupThreshold of its entries populated
-                    SelectedDayGroupThreshold,
+                    GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
+                    GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
+                    GetGroupingThreshold(csd.GroupingThreshold),
                     SelectedDayGrouping,
                     csd.SeriesTransformation,
                     csd.Year
@@ -738,6 +762,17 @@ public partial class Index : IDisposable
         Logger.LogInformation("RetrieveDataSets: completed enumeration");
 
         return datasetsToReturn;
+    }
+
+    private float GetGroupingThreshold(float? groupingThreshold, bool binGranularityIsLinear = false)
+    {
+        // If we're in linear time, all buckets in a bin must have passed the data completeness test.
+        // Otherwise, we apply GroupingThreshold from either user input or ChartSeriesDefinition
+        return binGranularityIsLinear
+            ? 1.0f 
+            : (UserOverridePresetAggregationSettings || groupingThreshold == null) 
+                ? InternalGroupingThreshold
+                : groupingThreshold.Value;
     }
 
     async Task OnSelectedYearsChanged(ExtentValues extentValues)
@@ -1318,6 +1353,7 @@ public partial class Index : IDisposable
                                 Value = csd.Value,
                                 Year = csd.Year,
                                 SeriesTransformation = csd.SeriesTransformation,
+                                GroupingThreshold = csd.GroupingThreshold,
                             }
                         );
                     }
@@ -1399,7 +1435,7 @@ public partial class Index : IDisposable
         BrowserLocationErrorMessage = null;
         if (getLocationResult.ErrorCode > 0)
         {
-            BrowserLocationErrorMessage = "Unable to determine your location" + (!String.IsNullOrWhiteSpace(getLocationResult.ErrorMessage) ? $" ({getLocationResult.ErrorMessage})" : "");
+            BrowserLocationErrorMessage = "Unable to determine your location" + (!string.IsNullOrWhiteSpace(getLocationResult.ErrorMessage) ? $" ({getLocationResult.ErrorMessage})" : "");
             Logger.LogError(BrowserLocationErrorMessage);
             return null;
         }
