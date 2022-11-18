@@ -136,10 +136,15 @@
     <ModalContent>
         <ModalHeader Background="Background.Light">
             <ModalTitle>Aggregation options</ModalTitle>
+            <div class="info-icon">
+                <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowAggregationOptionsInfo></i>
+            </div>
             <CloseButton />
         </ModalHeader>
         <ModalBody>
-            Day grouping<br />
+            <Field>
+                <strong>Day grouping</strong>
+            
             <Select TValue="short" SelectedValue="@SelectedDayGrouping" SelectedValueChanged="@OnSelectedDayGroupingChanged">
                 <SelectItem Value="5">@DayGroupingText(5)</SelectItem>
                 <SelectItem Value="7">@DayGroupingText(7)</SelectItem>
@@ -151,10 +156,27 @@
                 <SelectItem Value="91">@DayGroupingText(91)</SelectItem>
                 <SelectItem Value="182">@DayGroupingText(182)</SelectItem>
             </Select>
-            Threshold required to form a valid group (% percentage)<br />
-            <TextEdit Text="@DayGroupThresholdText" TextChanged="@OnDayGroupThresholdTextChanged" MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
-            <Button Color="Color.Primary" Clicked="@ApplyYearlyAverageParameters">Apply</Button>
+            </Field>
+            <Field>
+                <strong>Threshold required to form a valid group (% percentage)</strong>
+                <TextEdit Text="@GroupingThresholdText" TextChanged="@OnDayGroupThresholdTextChanged" MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
+            </Field>
+            @if (UserOverridePresetAggregationSettings)
+            {
+                <Field>
+                    <Text TextColor="TextColor.Primary">
+                        User aggregration settings are currently overriding preset settings
+                    </Text>
+                </Field>
+            }
         </ModalBody>
+        <ModalFooter>
+            @if (UserOverridePresetAggregationSettings)
+            {
+                <Button Color="Color.Secondary" Clicked="@ClearUserAggregationOverride">Clear override</Button>
+            }
+            <Button Color="Color.Primary" Clicked="@ApplyYearlyAverageParameters">Apply</Button>
+        </ModalFooter>
     </ModalContent>
 </Modal>
 
@@ -183,6 +205,21 @@
             </ModalHeader>
             <ModalBody>
                 @((MarkupString)PopupText)
+            </ModalBody>
+        </ModalContent>
+    </Modal>
+}
+
+@if (PopupAggregationOptionsInfoText != null)
+{
+    <Modal @ref="popupAggregationOptionsInfoText">
+        <ModalContent Size="ModalSize.Large">
+            <ModalHeader>
+                <ModalTitle>Aggregation options information</ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+            <ModalBody>
+                @((MarkupString)PopupAggregationOptionsInfoText)
             </ModalBody>
         </ModalContent>
     </Modal>

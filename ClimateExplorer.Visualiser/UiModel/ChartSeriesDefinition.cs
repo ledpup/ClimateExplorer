@@ -22,12 +22,15 @@ public class ChartSeriesDefinition
     public short? Year { get; set; }
     public SeriesTransformations SeriesTransformation { get; set; }
 
+    // Data manipulation fields
+    public float? GroupingThreshold { get; set; }
+
     // Data presentation fields
     public SeriesSmoothingOptions Smoothing { get; set; }
     public int SmoothingWindow { get; set; }
     public SeriesAggregationOptions Aggregation { get; set; }
     public SeriesValueOptions Value { get; set; }
-    public string Colour { get; set; } // Always allocated by ColourServer
+    public string? Colour { get; set; } // Always allocated by ColourServer
     public Colours RequestedColour { get; set; }
 
     // Rendering option fields
@@ -347,6 +350,7 @@ public class ChartSeriesDefinition
             if (x.SmoothingWindow != y.SmoothingWindow) return false;
             if (x.Value != y.Value) return false;
             if (x.SeriesTransformation != y.SeriesTransformation) return false;
+            if (x.GroupingThreshold != y.GroupingThreshold) return false;
 
             if (x.SourceSeriesSpecifications.Length != y.SourceSeriesSpecifications.Length) return false;
 
@@ -368,12 +372,14 @@ public class ChartSeriesDefinition
         {
             var hashCode =
                 obj.Aggregation.GetHashCode() ^
+                obj.RequestedColour.GetHashCode() ^
                 obj.BinGranularity.GetHashCode() ^
                 obj.DisplayStyle.GetHashCode() ^
                 obj.ShowTrendline.GetHashCode() ^
                 obj.Smoothing.GetHashCode() ^
                 obj.SmoothingWindow.GetHashCode() ^
-                obj.Value.GetHashCode();
+                obj.Value.GetHashCode() ^
+                (obj.GroupingThreshold == null ? 0 : obj.GroupingThreshold.GetHashCode());
 
             for (int i = 0; i < obj.SourceSeriesSpecifications.Length; i++)
             {
@@ -412,6 +418,7 @@ public class ChartSeriesDefinition
         {
             var hashCode =
                 obj.Aggregation.GetHashCode() ^
+                obj.RequestedColour.GetHashCode() ^
                 obj.BinGranularity.GetHashCode() ^
                 obj.DisplayStyle.GetHashCode() ^
                 obj.IsLocked.GetHashCode() ^
@@ -419,7 +426,8 @@ public class ChartSeriesDefinition
                 obj.Smoothing.GetHashCode() ^
                 obj.SmoothingWindow.GetHashCode() ^
                 obj.Value.GetHashCode() ^
-                obj.Year.GetHashCode();
+                obj.Year.GetHashCode() ^
+                (obj.GroupingThreshold == null ? 0 : obj.GroupingThreshold.GetHashCode());
 
             for (int i = 0; i < obj.SourceSeriesSpecifications.Length; i++)
             {
