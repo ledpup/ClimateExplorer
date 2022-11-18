@@ -42,7 +42,7 @@ namespace ClimateExplorer.Analyser.StaticContent
                                          .Replace("***Url***", $"https://climateexplorer.net/location/{UrlReadyName(location)}");
 
 
-                var path = $@"Output\location\{UrlReadyName(location)}";
+                var path = $@"Output\location\IndexFiles\{UrlReadyName(location)}";
                 Directory.CreateDirectory(path);
                 File.WriteAllText($@"{path}\index.html", index);
             }
