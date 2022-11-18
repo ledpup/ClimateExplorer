@@ -190,7 +190,7 @@ public partial class Index : IDisposable
         bool setupDefaultChartSeries = LocationId == null && ChartSeriesList.Count == 0;
 
         var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
-        if (!QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier))
+        if (LocationId != null && !QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier))
         {
             setupDefaultChartSeries = true;
         }
