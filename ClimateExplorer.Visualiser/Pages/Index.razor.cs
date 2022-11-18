@@ -101,7 +101,7 @@ public partial class Index : IDisposable
 <p><strong>Add data set</strong> (*advanced* feature): the suggested charts at the bottom of the screen provide the user with a number of predefined and recommended charts that can be viewed within ClimateExplorer. Other datasets can be added in an ad-hoc manner with the ""Add data set"" button. The list on the ""Add data set"" dialog contains data for your current location, such as solar radiation and the diurnal range for temperature. The list also contains reference data sets that can be added, such as CO₂, ENSO indexes and data from the cryosphere (the cryosphere comprises the parts of the planet that are frozen most of the year).</p>";
 
     public string PopupAggregationOptionsInfoText { get; set; } = @"<p>The aggregation options are an advanced feature that allows you to change the underlying aggregation process. To calculate a single aggregated value for data for a year, from daily or monthly series, data is bundled together. If each bundle of data does not have enough records, the bundle is rejected as being unreliable.</p>
-<p>By default, the bundles are groups of 14 days (fortnights) and each bundle requires 70% (10 days of the 14) of the records to be present for the year to be considered reliable enough for an average mean to be calculated. This means that a number of records can be missing for the year, so long as not too many consecutive days are missing. As temperature and other climate data following cyclic patterns, missing data from a consecutive block is considered to be more untrustworthy than sporadic data missing throughout the year.</p>
+<p>By default, the bundles are groups of 14 days (fortnights) and each bundle requires 70% (10 days of the 14) of the records to be present for the year to be considered reliable enough for an average mean to be calculated. This means that a number of records can be missing for the year, so long as not too many consecutive days are missing. As temperature (and other climate data) follows cyclic patterns, missing data from a consecutive block is considered to be more untrustworthy than sporadic data missing throughout the year.</p>
 <p>Some presets (specifically, the cryosphere reference data – sea ice extent and melt) have a lower threshold applied to them because the data has been curated and considered to be trustworthy enough that more of it can be missing while still not corrupting the results.</p>
 <p>If you make changes to these settings and apply them, your settings will take precedence and override any preset specific settings. You can clear this by clicking “Clear override” which will appear after you apply your changes.</p>
 <p><strong>Day grouping</strong>: select groups from weekly, fortnightly, monthly, and half-yearly, amongst other options.</p>
@@ -773,6 +773,17 @@ public partial class Index : IDisposable
             : (UserOverridePresetAggregationSettings || groupingThreshold == null) 
                 ? InternalGroupingThreshold
                 : groupingThreshold.Value;
+    }
+
+    private string GetGroupingThresholdText()
+    {
+        var groupingThreshold = ChartSeriesList.FirstOrDefault() == null ? null : ChartSeriesList.First().GroupingThreshold;
+
+        return UserOverridePresetAggregationSettings
+            ? $"{InternalGroupingThreshold * 100}% (user override)"
+            : groupingThreshold == null
+                    ? $"{InternalGroupingThreshold * 100}%"
+                    : $"{groupingThreshold * 100}% (preset defined)";
     }
 
     async Task OnSelectedYearsChanged(ExtentValues extentValues)
