@@ -161,11 +161,16 @@
                 <strong>Threshold required to form a valid group (% percentage)</strong>
                 <TextEdit Text="@GroupingThresholdText" TextChanged="@OnDayGroupThresholdTextChanged" MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
             </Field>
+            <Field>
+                <Text>
+                    Current threshold is @GetGroupingThresholdText()
+                </Text>
+            </Field>
             @if (UserOverridePresetAggregationSettings)
             {
                 <Field>
                     <Text TextColor="TextColor.Primary">
-                        User aggregration settings are currently overriding preset settings
+                        User aggregration settings will now override preset settings
                     </Text>
                 </Field>
             }
