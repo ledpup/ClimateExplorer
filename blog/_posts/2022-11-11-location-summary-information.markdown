@@ -1,10 +1,10 @@
 ---
 layout: single
-title: "Info boxes"
+title: "Location summary information"
 date: 2022-11-11 06:39:00 +1100
 categories: meta
 ---
-When you use the ClimateExplorer application, you may see three info boxes that explain a few of the temperature-related concepts presented in the web application. They are:
+When you use ClimateExplorer, you may see info boxes that explain a few of the climate-related concepts presented in the web application. In the location summary area, they are:
 
 - Warming index
 - Heating score
