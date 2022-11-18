@@ -92,6 +92,8 @@ public partial class Index : IDisposable
 
     [Inject] IBlazorCurrentDeviceService BlazorCurrentDeviceService { get; set; }
 
+    bool setupDefaultChartSeries;
+
     public string PopupText { get; set; } = @"<div style=""padding-bottom: 24px;""><img style=""max-width: 100%;"" src=""images/ChartOptions.png"" alt=""Chart Options image"" /></div>
 <p><strong>Year filtering</strong>: allows you to change the start and end years for the chart. For example, if you want to see the change in temperature for the 20th century, you could set the end year to 2000.</p>
 <p><strong>Clear filter</strong>: the clear filter button is only displayed when there is a start or end year filter applied to the chart. Clicking this button will reset the chart back to the default filter and remove the range slider (if it has been turned on).</p>
@@ -178,6 +180,8 @@ public partial class Index : IDisposable
 
         SliderMax = DateTime.Now.Year;
 
+        setupDefaultChartSeries = true;
+
         await base.OnInitializedAsync();
     }
 
@@ -187,12 +191,10 @@ public partial class Index : IDisposable
 
         Logger.LogInformation("OnParametersSetAsync(): " + LocationId);
 
-        bool setupDefaultChartSeries = LocationId == null && ChartSeriesList.Count == 0;
-
         var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
-        if (LocationId != null && !QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier))
+        if (setupDefaultChartSeries)
         {
-            setupDefaultChartSeries = true;
+            setupDefaultChartSeries = (LocationId == null && ChartSeriesList.Count == 0) || !QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
         }
 
         GetLocationIdViaNameFromPath(uri);
@@ -214,6 +216,7 @@ public partial class Index : IDisposable
         if (setupDefaultChartSeries)
         {
             SetUpDefaultCharts(locationId);
+            setupDefaultChartSeries = false;
         }
 
         // Pick up parameters from querystring
