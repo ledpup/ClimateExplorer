@@ -1,0 +1,20 @@
+---
+layout: single
+title: "ACORN-SAT version 2.3"
+date: 2022-11-19 19:00:00 +1100
+categories: meta
+---
+ACORN-SAT version 2.3 was release 2022-11-18. Version 2.3 has temperatures records from 1910 up until the end of 2021 for 112 locations around Australia.
+
+The map below (from [ClimateExplorer](https://climateexplorer.net/)) shows heating scores calculated from version 2.3 of ACORN-SAT. As expected, Canberra is no longer the only location that has a heating score of 9. There are now 5 sites that share that score. Heating score is a relative metric; it's the result of comparing all warming indexes with all others in the dataset. The four other sites were boosted to a 9 because they had warmer than average temperatures in 2021, whereas Canberra had its first cooler than average temperature since 1996 (25 years). That reduced Canberra's warming index from 1.8°C to 1.7°C.
+
+![Australian heating scores from ACORN-SAT 2.3]({{site.url}}/blog/assets/australia-heating-scores-acorn-sat-2.3.png)
+
+The [Bureau of Meteorology](http://www.bom.gov.au/) released a statement about version 2.3 on their [ACORN-SAT website](http://www.bom.gov.au/climate/data/acorn-sat/), reproduced below.
+
+> ### New and reassessed adjustments as part of ACORN-SAT version 2.3
+> ACORN-SAT 2.3 includes new or reassessed adjustments at 16 of the 112 ACORN-SAT locations. Previously applied adjustments at 7 locations were removed after being found to be no longer significant with the inclusion of additional data.
+
+> Analysis has shown the changed adjustments in ACORN-SAT 2.3 have had a negligible impact on estimated long-term warming trend in Australia.
+
+> Full details of all adjustments, including the time periods and reference periods used, are available in the station catalogue. The Bureau's ACORN-SAT dataset and methods have been thoroughly peer-reviewed and found to be world-leading. Further information on the dataset and the reasons for adjustments can be found in the ACORN-SAT [FAQ section](http://www.bom.gov.au/climate/data/acorn-sat/#tabs=FAQs).
