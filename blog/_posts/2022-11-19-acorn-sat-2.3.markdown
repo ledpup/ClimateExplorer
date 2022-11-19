@@ -4,9 +4,11 @@ title: "ACORN-SAT version 2.3"
 date: 2022-11-19 19:00:00 +1100
 categories: meta
 ---
-ACORN-SAT version 2.3 was release 2022-11-18. Version 2.3 has temperatures records from 1910 up until the end of 2021 for 112 locations around Australia.
+ACORN-SAT version 2.3 was release 2022-11-18. Version 2.3 has temperatures records from 1910 up until the end of 2021, for the 112 locations around Australia included in ACORN-SAT.
 
-The map below (from [ClimateExplorer](https://climateexplorer.net/)) shows heating scores calculated from version 2.3 of ACORN-SAT. As expected, Canberra is no longer the only location that has a heating score of 9. There are now 5 sites that share that score. Heating score is a relative metric; it's the result of comparing all warming indexes with all others in the dataset. The four other sites were boosted to a 9 because they had warmer than average temperatures in 2021, whereas Canberra had its first cooler than average temperature since 1996 (25 years). That reduced Canberra's warming index from 1.8°C to 1.7°C.
+The map below (from [ClimateExplorer](https://climateexplorer.net/)) shows heating scores calculated from version 2.3 of ACORN-SAT. Canberra is no longer the only location that has a heating score of 9. There are now 5 sites that share that score.
+
+Heating score is a relative metric; it's the result of comparing all warming indexes with all others in the dataset. The other sites ([Alice Springs](https://climateexplorer.net/location/alice-springs), [Cunderdin](https://climateexplorer.net/location/cunderdin), [Marree](https://climateexplorer.net/location/marree), [Snowtown](https://climateexplorer.net/location/snowtown)) were boosted to a 9 because they had warmer than average temperatures in 2021. Canberra had its first cooler than average temperature since 1996 (25 years). That reduced Canberra's warming index from 1.8°C to 1.7°C.
 
 ![Australian heating scores from ACORN-SAT 2.3]({{site.url}}/blog/assets/australia-heating-scores-acorn-sat-2.3.png)
 
