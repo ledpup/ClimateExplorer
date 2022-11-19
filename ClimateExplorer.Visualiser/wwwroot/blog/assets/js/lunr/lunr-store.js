@@ -16,4 +16,10 @@ var store = [{
         "tags": [],
         "url": "/blog/meta/2022/11/19/chart-options-information.html",
         "teaser": null
+      },{
+        "title": "ACORN-SAT version 2.3",
+        "excerpt":"ACORN-SAT version 2.3 was release 2022-11-18. Version 2.3 has temperatures records from 1910 up until the end of 2021, for the 112 locations around Australia included in ACORN-SAT. The map below (from ClimateExplorer) shows heating scores calculated from version 2.3 of ACORN-SAT. Canberra is no longer the only location that...","categories": ["meta"],
+        "tags": [],
+        "url": "/blog/meta/2022/11/19/acorn-sat-2.3.html",
+        "teaser": null
       }]
