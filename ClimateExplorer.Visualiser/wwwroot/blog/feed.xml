@@ -1,4 +1,247 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="/blog/" rel="alternate" type="text/html" /><updated>2022-11-13T09:41:25+11:00</updated><id>/blog/feed.xml</id><title type="html">Climate Explorer</title><subtitle>The official blog of www.climateexplorer.net.</subtitle><entry><title type="html">Info boxes</title><link href="/blog/meta/2022/11/11/info-boxes.html" rel="alternate" type="text/html" title="Info boxes" /><published>2022-11-11T06:39:00+11:00</published><updated>2022-11-11T06:39:00+11:00</updated><id>/blog/meta/2022/11/11/info-boxes</id><content type="html" xml:base="/blog/meta/2022/11/11/info-boxes.html">&lt;p&gt;When you use the ClimateExplorer application, you may see three info boxes that explain a few of the temperature-related concepts presented in the web application. They are:&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="/blog/" rel="alternate" type="text/html" /><updated>2022-11-19T18:55:56+11:00</updated><id>/blog/feed.xml</id><title type="html">Climate Explorer</title><subtitle>The official blog of www.climateexplorer.net.</subtitle><entry><title type="html">Methane, Or: Review of Hot Talk, Cold Science, part 1</title><link href="/blog/meta/2022/11/19/methane.html" rel="alternate" type="text/html" title="Methane, Or: Review of Hot Talk, Cold Science, part 1" /><published>2022-11-19T10:20:00+11:00</published><updated>2022-11-19T10:20:00+11:00</updated><id>/blog/meta/2022/11/19/methane</id><content type="html" xml:base="/blog/meta/2022/11/19/methane.html">&lt;p&gt;&lt;img style=&quot;float: right;width: 10rem;&quot; src=&quot;/blog/assets/HotTalkColdScience.jpg&quot; alt=&quot;Cover of boom Hot Talk, Cold Science&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Hot Talk, Cold Science: Global Warming’s Unfinished Debate&lt;/em&gt;, by &lt;a href=&quot;https://en.wikipedia.org/wiki/Fred_Singer&quot;&gt;Fred Singer&lt;/a&gt;, is a climate sceptic book that questions the science of climate change. The first scientific claim in the book is from Seitz’ Forward. It’s not specifically about climate change; it’s about methane in the atmosphere.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;[Singer] predicted that methane, once it reached the stratosphere, would be transformed into water vapor, leading to a possible depletion of stratospheric ozone.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Scientists do not normally say something like “methane (CH₄) transforms into water (H₂O)” because carbon cannot simply disappear from a chemical reaction (nor does oxygen appear from nowhere). What Seitz probably meant is “methane, in the stratosphere, would undergo a chemical reaction that resulted in products that included water vapour.” We’ll go into that below, but first: what is the stratosphere?&lt;/p&gt;
+
+&lt;h2 id=&quot;atmospheric-layers&quot;&gt;Atmospheric layers&lt;/h2&gt;
+
+&lt;p&gt;There are five layers in the atmosphere. Seitz started the Forward by discussing a reaction that occurs in the second layer, the stratosphere. However, methane enters the atmosphere in the troposphere (often originating underground, perhaps during coal or crude oil mining, or by natural processes).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/assets/atmosphere-layers.png&quot; alt=&quot;Atmosphere layers&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Methane leaves the troposphere and stratosphere in similar ways, usually by reacting with an hydroxyl radical that has the formula ·OH. The dot next to the OH signifies that it’s a &lt;a href=&quot;https://en.wikipedia.org/wiki/Radical_(chemistry)&quot;&gt;free radical&lt;/a&gt;. A free radical is a molecule that will easily undergo a chemical reaction.&lt;/p&gt;
+
+&lt;p&gt;The equation for the reaction of methane with hydroxyl is:&lt;/p&gt;
+
+&lt;p style=&quot;text-align: center;&quot;&gt;CH₄ + ·OH → CH₃· + H₂O&lt;/p&gt;
+
+&lt;p&gt;You may notice that water vapour is a product, but so is another free radical, a methyl radical. That means the reactions have not finished; the methyl radical will likely go through subsequent reactions.&lt;/p&gt;
+
+&lt;p&gt;There is another common way that methane can “transform” into water vapour; when it is burnt in oxygen (O₂). People burn methane in oxygen during &lt;a href=&quot;https://www.iea.org/reports/flaring-emissions&quot;&gt;gas flaring&lt;/a&gt; and when using their “natural gas” stoves and heaters (“fossil gas” is a more appropriate term as everything is natural). The reaction for burning methane is:&lt;/p&gt;
+
+&lt;p style=&quot;text-align: center;&quot;&gt;CH₄ + 2O₂ → CO₂ + 2H₂O&lt;/p&gt;
+
+&lt;p&gt;Burning methane in oxygen results in stable products, carbon dioxide (CO₂) and water. The carbon dioxide product is interesting and will play a role later in this article. The products will enter the troposphere and may later reach into the stratosphere and beyond.&lt;/p&gt;
+
+&lt;h2 id=&quot;methane-in-the-stratosphere&quot;&gt;Methane in the stratosphere&lt;/h2&gt;
+
+&lt;p&gt;We’ve read a number of scientific papers of what happens to methane in the atmosphere. They all disagree with Seitz’/Singers’ claim that it decreases stratospheric ozone. They all say the opposite.&lt;/p&gt;
+
+&lt;h3 id=&quot;first&quot;&gt;First&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;[…] induced by CH₄ oxidation, [stratospheric water vapour (SWV)] will increase substantially by up to 50% when CH4 is doubled and more than 250% when CH4 is increased by a factor of five. This leads to a stratospheric cooling of several degrees, which in turn influences stratospheric chemistry and (to a smaller degree) dynamics. In particular &lt;strong&gt;it will lead to an increase in total O3 column (see Fig. S5) over nearly the whole globe. Only in the Antarctic spring does it cause a strengthening of the ozone depletion.&lt;/strong&gt; (emphasis mine)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;F. Winterstein et al. (2019). &lt;a href=&quot;https://acp.copernicus.org/articles/19/7151/2019/acp-19-7151-2019.pdf&quot;&gt;Implication of strongly increased atmospheric methane concentrations&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;second&quot;&gt;Second&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Increases in methane’s abundance in the troposphere will lead to more methane reaching the stratosphere. There, it interacts with compounds that contain active chlorine (which is able to destroy ozone) to produce inactive hydrogen chloride, which does not destroy ozone. Methane levels also influence stratospheric water vapour, which affects both ozone and climate. &lt;strong&gt;The net effects of carbon dioxide and methane are expected to be positive for the recovery of stratospheric ozone levels.&lt;/strong&gt; (emphasis mine)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://soe.environment.gov.au/sites/default/files/soe2011-report-atmosphere.pdf&quot;&gt;SOE 2011 report on atmosphere&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;third&quot;&gt;Third&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;CH₄ is a primary compound, emitted by different natural and anthropogenic sources (wetlands, rice production, livestock, mining, oil and gas production and landfills). The reaction with OH is the key loss reaction for atmospheric methane.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Through the reaction OH methane has a lifetime of the order of 8 years in the lower atmosphere (troposphere and stratosphere). CH₃ is oxidized rapidly in the atmosphere to yield O₃ [ozone] (in the presence of NOₓ) and CO. Since CO is formed in the oxidation chain it will give further loss of OH. A minor fraction of methane will be removed through surface deposition (5% or less). Since the reaction with OH represents a main loss for CH₄ as well as an additional sink for OH, it affects the CH4 lifetime.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;[…]&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Ozone levels are enhanced substantially when methane increases.&lt;/strong&gt; (emphasis mine)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Isaksen et al. (2014). &lt;a href=&quot;https://www.mdpi.com/2073-4433/5/3/518/pdf&quot;&gt;Atmospheric Ozone and Methane in a Changing Climate&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;the-details-of-the-methane-oxidation-chain-in-the-atmosphere&quot;&gt;The details of the methane oxidation chain in the atmosphere&lt;/h2&gt;
+
+&lt;p&gt;The reaction of methane to form water vapour is the start of a very complicated oxidation chain. The reaction chain is:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Chemical equations&lt;/th&gt;
+      &lt;th&gt;Explanation&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1) CH₄ + ·OH → CH₃· + H₂O&lt;/td&gt;
+      &lt;td&gt;CH₄ = methane, ·OH = hydroxyl radical, CH₃· = methyl radical&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2) CH₃· + O₂ + M → CH₃O₂· + M&lt;/td&gt;
+      &lt;td&gt;M = a third body (usually O₂ or N₂) as a catalyst (required for the reaction but doesn’t undergo a change), CH₃O₂· = methyldioxy radical&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;3) CH₃O₂· + NO → NO₂ + CH₃O·&lt;/td&gt;
+      &lt;td&gt;NO = nitric oxide, NO2 = nitrogen dioxide, CH₃O· = methoxide radical&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;4) CH₃O· + O2 → HO₂· + HCHO&lt;/td&gt;
+      &lt;td&gt;HCHO = formaldehyde&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;5) HO₂· + NO → NO₂ + ·OH&lt;/td&gt;
+      &lt;td&gt;HO₂· = hydrogen dioxide radical&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;6) (2x) NO₂ + hν → O(³P) + NO&lt;/td&gt;
+      &lt;td&gt;hν = represents the energy of a solar photon, O(³P) = atomic oxygen; in the ground state with multiplicity of 3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;7) (2x) O(³P) + O₂ + M → O₃ + M&lt;/td&gt;
+      &lt;td&gt;O₃ = ozone&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;NET: CH₄ + 4O₂ → HCHO + 2O₃ + H₂O&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;∴ methane transforms into water vapour, formaldehyde and &lt;strong&gt;ozone&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;To understand these reactions, you need to know at least a little bit of quantum mechanics (&lt;a href=&quot;https://en.wikipedia.org/wiki/Pauli_exclusion_principle&quot;&gt;Pauli exclusion principle&lt;/a&gt; and &lt;a href=&quot;https://en.wikipedia.org/wiki/Hund%27s_rules&quot;&gt;Hund’s rules&lt;/a&gt;). O(³P) is the most complicated part of the sequence. O(³P) is a very stable form of atomic oxygen that has electron multiplicity spin value of 3, calculated from its outer shell electrons (see &lt;a href=&quot;https://three.jsc.nasa.gov/articles/RadChemO2Sidebar.pdf&quot;&gt;Energetic and chemical reactivity of atomic and molecular oxygen&lt;/a&gt; for more information).&lt;/p&gt;
+
+&lt;p&gt;Below is an image of electron spin, showing ³P in comparison with ¹D and ¹S.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/assets/electronic-configurations.png&quot; alt=&quot;Electronic configurations &quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;aside-more-on-atomic-oxygen&quot;&gt;Aside: More on atomic oxygen&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Atomic oxygen has a total of eight electrons. Using the electronic orbitals and the Pauli exclusion principle to fill the orbitals with electrons, the electronic configuration of atomic oxygen is 1s²2s²2p⁴.
+Since the 2p orbitals are partially filled, there are three different ways to arrange the electrons in the
+2px, 2py and 2pz orbitals (Figure 1). According to &lt;em&gt;Hund’s first rule&lt;/em&gt;, the ground state configuration
+corresponds to an orbital occupancy that gives the highest multiplicity¹. The first configuration has a
+multiplicity of 3 (hence termed triplet), and the other configurations have a multiplicity of 1 (hence
+termed singlet). Therefore, the ground state of atomic oxygen has two unpaired electrons (bi‐radical),
+and is designated as ³P (“triplet P”) state. The &lt;em&gt;Hund’s second rule&lt;/em&gt; states that for two configurations with
+the same multiplicity, the configuration with the highest total orbital angular momentum (L) has the
+lowest energy. Since the second configuration has the higher L value, its energy is lower. It is the first
+excited state of atomic oxygen, designated as the ¹D (“singlet D”) state. The configuration ¹S is the
+second excited state.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;¹ The multiplicity is given by 2S+1, where S is the spin. The spin of an electron is (+/‐) 1/2&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://three.jsc.nasa.gov/articles/RadChemO2Sidebar.pdf&quot;&gt;Energetic and chemical reactivity of atomic and molecular oxygen&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;aside-photon-energy&quot;&gt;Aside: Photon energy&lt;/h3&gt;
+
+&lt;p&gt;Reaction 6 in the chain above has hν as a reactant. hν represents a photon.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/assets/photon-energy.png&quot; alt=&quot;Photon energy&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;additional-oxydation-chains&quot;&gt;Additional oxydation chains&lt;/h3&gt;
+
+&lt;p&gt;There are an additional two oxidation chains where the methane reacts with other molecules in the stratosphere (involving chlorine or oxygen). Critically though, neither of these other oxidation chains deplete ozone.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Some of the methane present in the troposphere passes into the stratosphere. Approximately 40 Mt of methane are oxidised in the stratosphere, representing 7% of all methane removal. The chemistry of methane in the lower stratosphere is identical to that in the troposphere, with hydroxyl radicals oxidising methane in the same manner. Indeed, oxidation of methane to carbon dioxide and water is the source of approximately 50% of stratospheric water vapour.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;In the upper stratosphere, methane decomposition can be initiated in two other ways: by reaction with chlorine radicals or oxygen atoms.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;[…]&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;When chlorine or oxygen atoms react with methane, they initiate the same chain reactions that occur in the troposphere, resulting in overall oxidation of methane and removal from the atmosphere.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.eci.ox.ac.uk/research/energy/downloads/methaneuk/chapter02.pdf&quot;&gt;Climate science of methane&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;what-happens-to-the-formaldehyde&quot;&gt;What happens to the formaldehyde?&lt;/h2&gt;
+
+&lt;p&gt;Following the carbon from the methane in the oxidation chain (see above), it’s in one of the three products; formaldehyde. Formaldehyde is not the end state for the carbon, however.&lt;/p&gt;
+
+&lt;p&gt;Below are some quotes from science papers about what happens to formaldehyde in the atmosphere.&lt;/p&gt;
+
+&lt;h3 id=&quot;first-1&quot;&gt;First&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;In ambient air, formaldehyde is quickly photo-oxidized in carbon dioxide. It also reacts very quickly with the hydroxyl radicals to give formic acid. The half-life estimated for these reactions is about one hour depending on the environmental conditions.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.ncbi.nlm.nih.gov/books/NBK138711/&quot;&gt;Formaldehyde&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;second-1&quot;&gt;Second&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Formaldehyde molecules, with the chemical formula HCHO, are formed from the complicated processes that follow from reaction of methane and other organic molecules with OH, and can absorb ultraviolet (UV) radiation from the sun. With the energy it gains from this UV light, formaldehyde can split of [&lt;em&gt;sic&lt;/em&gt;] a hydrogen atom (to form H + HCO) or can break up into a molecule of hydrogen (H₂) and one of carbon monoxide (CO). The second process has very little effect on the chemistry of the atmosphere, but both H atoms and HCO radicals react quickly with oxygen in air to make OH (and another related reactive species denoted as HO₂).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://gtr.ukri.org/projects?ref=NE%2FD001498%2F1&quot;&gt;The tropospheric photochemistry of formaldehyde&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The second quote only states that formaldehyde will react to produce carbon monoxide. However, carbon monoxide will transform into carbon dioxide.&lt;/p&gt;
+
+&lt;h3 id=&quot;third-1&quot;&gt;Third&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Carbon monoxide has a typical “lifespan” of several months in Earth’s atmosphere. The gas eventually reacts with oxygen (O₂) to form carbon dioxide (CO₂).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://scied.ucar.edu/learning-zone/air-quality/carbon-monoxide&quot;&gt;Carbon Monoxide&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;This means that methane will eventually, if released into the atmosphere, through very complex processes, end as carbon dioxide. Methane will eventually form the same product as when it is burnt in oxygen.&lt;/p&gt;
+
+&lt;h2 id=&quot;back-to-seitzsinger&quot;&gt;Back to Seitz/Singer&lt;/h2&gt;
+
+&lt;p&gt;Looping back to the original quote by Seitz, we can compare what he said to what he could have said. The original quote is:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;[Singer] predicted that methane, once it reached the stratosphere, would be transformed into water vapor, leading to a possible &lt;strong&gt;depletion&lt;/strong&gt; of stratospheric ozone.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The climate science suggests he should have said the following:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Fred Singer predicted that methane, once it reached the stratosphere, would be transformed into &lt;strong&gt;carbon dioxide&lt;/strong&gt; (and water vapor), leading to a possible &lt;strong&gt;increase&lt;/strong&gt; of stratospheric ozone.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;Nearly everything that Seitz said in that sentence was incorrect.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;seitz-second-sentence&quot;&gt;Seitz’ second sentence&lt;/h2&gt;
+
+&lt;p&gt;After incorrectly describing what happens to methane in the stratosphere, Seitz concludes:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The fact that methane levels are indeed rising was discovered a few years later; that stratospheric water vapor is also increasing was finally demonstrated in 1995.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;A sceptic will quickly notice the &lt;a href=&quot;https://en.wikipedia.org/wiki/Correlation_does_not_imply_causation&quot;&gt;correlation vs causation error&lt;/a&gt;. Just because methane levels are increasing&lt;/p&gt;
+
+&lt;h2 id=&quot;methane-as-a-greenhouse-gas&quot;&gt;Methane as a greenhouse gas&lt;/h2&gt;
+
+&lt;p&gt;As a greenhouse gas, methane will contribute significantly to global heating, during it’s 10-120 years in the atmosphere.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Methane’s lifetime in the atmosphere is much shorter than carbon dioxide (CO2), but CH4 is more efficient at trapping radiation than CO2. Pound for pound, the comparative impact of CH4 is 25 times greater than CO2 over a 100-year period.1&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.epa.gov/ghgemissions/overview-greenhouse-gases&quot;&gt;Overview of Greenhouse Gases&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;When methane leaves the atomosphere, it transforms into carbon dioxide, the main greenhouse gas that concerns climate scientists.&lt;/p&gt;</content><author><name></name></author><category term="meta" /><summary type="html"></summary></entry><entry><title type="html">Info boxes</title><link href="/blog/meta/2022/11/11/info-boxes.html" rel="alternate" type="text/html" title="Info boxes" /><published>2022-11-11T06:39:00+11:00</published><updated>2022-11-11T06:39:00+11:00</updated><id>/blog/meta/2022/11/11/info-boxes</id><content type="html" xml:base="/blog/meta/2022/11/11/info-boxes.html">&lt;p&gt;When you use the ClimateExplorer application, you may see three info boxes that explain a few of the temperature-related concepts presented in the web application. They are:&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;Warming index&lt;/li&gt;

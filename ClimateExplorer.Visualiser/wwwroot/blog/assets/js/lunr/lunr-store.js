@@ -10,4 +10,10 @@ var store = [{
         "tags": [],
         "url": "/blog/meta/2022/11/11/info-boxes.html",
         "teaser": null
+      },{
+        "title": "Methane, Or: Review of Hot Talk, Cold Science, part 1",
+        "excerpt":"Hot Talk, Cold Science: Global Warming’s Unfinished Debate, by Fred Singer, is a climate sceptic book that questions the science of climate change. The first scientific claim in the book is from Seitz’ Forward. It’s not specifically about climate change; it’s about methane in the atmosphere. [Singer] predicted that methane,...","categories": ["meta"],
+        "tags": [],
+        "url": "/blog/meta/2022/11/19/methane.html",
+        "teaser": null
       }]
