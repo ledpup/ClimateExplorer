@@ -178,3 +178,34 @@ As a greenhouse gas, methane will contribute significantly to global heating, du
 [Overview of Greenhouse Gases](https://www.epa.gov/ghgemissions/overview-greenhouse-gases)
 
 When methane leaves the atomosphere, it transforms into carbon dioxide, the main greenhouse gas that concerns climate scientists.
+
+
+
+
+
+Water vapour convectively injected into the mid-latitude lowermost stratosphere could affect stratospheric ozone. The associated potential ozone loss process requires low temperatures together with elevated water vapour mixing ratios. Since this ozone loss is initiated by heterogeneous chlorine activation on liquid aerosols, an increase in sulfate aerosol surface area due to a volcanic eruption or geoengineering could increase the likelihood of its occurrence. However, the chemical mechanism of this ozone loss process has not yet been analysed in sufficient detail and its sensitivity to various conditions is not yet clear. Under conditions of climate change associated with an increase in greenhouse gases, both a stratospheric cooling and an increase in water vapour convectively injected into the stratosphere are expected. Understanding the influence of low temperatures, elevated water vapour and enhanced sulfate particles on this ozone loss mechanism is a key step in estimating the impact of climate change and potential sulfate geoengineering on mid-latitude ozone.
+
+https://acp.copernicus.org/articles/19/5805/2019/
+
+
+RACT
+Using a detailed, fully coupled chemistry climate model (CCM), the effect of increasing stratospheric
+H2O on ozone and temperature is investigated. Different CCM time-slice runs have been performed to
+investigate the chemical and radiative impacts of an assumed 2 ppmv increase in H2O. The chemical effects
+of this H2O increase lead to an overall decrease of the total column ozone (TCO) by ∼1% in the tropics
+and by a maximum of 12% at southern high latitudes. At northern high latitudes, the TCO is increased
+by only up to 5% due to stronger transport in the Arctic. A 2-ppmv H2O increase in the model’s radiation
+scheme causes a cooling of the tropical stratosphere of no more than 2 K, but a cooling of more than
+4 K at high latitudes. Consequently, the TCO is increased by about 2%–6%. Increasing stratospheric
+H2O, therefore, cools the stratosphere both directly and indirectly, except in the polar regions where the
+temperature responds differently due to feedbacks between ozone and H2O changes. The combined chemical
+and radiative effects of increasing H2O may give rise to more cooling in the tropics and middle latitudes but
+less cooling in the polar stratosphere. The combined effects of H2O increases on ozone tend to offset each
+other, except in the Arctic stratosphere where both the radiative and chemical impacts give rise to increased
+ozone. The chemical and radiative effects of increasing H2O cause dynamical responses in the stratosphere
+with an evident hemispheric asymmetry. In terms of ozone recovery, increasing the stratospheric H2O is
+likely to accelerate the recovery in the northern high latitudes and delay it in the southern high latitudes.
+The modeled ozone recovery is more significant between 2000–2050 than between 2050–2100, driven mainly
+by the larger relative change in chlorine in the earlier period.
+
+https://homepages.see.leeds.ac.uk/~lecmc/papers2/Tian_aas2.pdf
