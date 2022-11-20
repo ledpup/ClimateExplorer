@@ -15,6 +15,8 @@ using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.WebApi.Infrastructure;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
+using ClimateExplorer.Core.DataPreparation.Model;
 
 //ICache _cache = new FileBackedCache("cache");
 ICache _cache = new FileBackedTwoLayerCache("cache");
@@ -226,7 +228,9 @@ async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool in
     return locations;
 }
 
-async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
+
+
+async Task<DataSet> PostDataSets(PostDataSetBody body)
 {
     string cacheKey = $"DataSet_" + JsonSerializer.Serialize(body);
 
@@ -236,10 +240,15 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
 
     var dsb = new DataSetBuilder();
 
-    var series = await dsb.BuildDataSet(body);
+    var series = body.CompoundSeriesTypes switch
+    {
+        CompoundSeriesTypes.None => await dsb.BuildDataSet(body.Body[0]),
+        CompoundSeriesTypes.Difference => await dsb.BuildCompoundDataSet(body.CompoundSeriesTypes, body.Body),
+        _ => throw new NotImplementedException()
+    };
 
     var definitions = await DataSetDefinition.GetDataSetDefinitions();
-    var spec = body.SeriesSpecifications[0];
+    var spec = body.Body[0].SeriesSpecifications[0];
     var dsd = definitions.Single(x => x.Id == spec.DataSetDefinitionId);
 
     Location location =
@@ -273,7 +282,7 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
                 )
                 .ToList(),
             RawDataRecords =
-                body.IncludeRawDataPoints
+                body.Body[0].IncludeRawDataPoints
                 ? series.RawDataPoints
                 : null
         };

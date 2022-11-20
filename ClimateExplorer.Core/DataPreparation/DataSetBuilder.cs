@@ -8,6 +8,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using static ClimateExplorer.Core.Enums;
+using System.Reflection.Metadata.Ecma335;
+using static ClimateExplorer.Core.DataPreparation.SeriesProvider;
 
 namespace ClimateExplorer.Core.DataPreparation
 {
@@ -46,6 +48,60 @@ namespace ClimateExplorer.Core.DataPreparation
                     UnitOfMeasure = series.UnitOfMeasure,
                     DataCategory = series.DataCategory
                 };
+        }
+
+        public async Task<BuildDataSetResult> BuildCompoundDataSet(CompoundSeriesTypes compoundSeriesTypes, PostDataSetsRequestBody[] requests)
+        {
+            var responses = new List<BuildDataSetResult>();
+            foreach (var request in requests)
+            {
+                var response = await BuildDataSet(request);
+                responses.Add(response);
+            }
+
+            var buildDataSetResult = compoundSeriesTypes switch
+            {
+                CompoundSeriesTypes.Difference => CreateDifferenceResult(responses),
+                _ => throw new NotImplementedException(),
+            };
+
+            return buildDataSetResult;
+        }
+
+        private BuildDataSetResult CreateDifferenceResult(List<BuildDataSetResult> responses)
+        {
+
+            var startYear = Math.Max(((YearBinIdentifier)BinIdentifier.Parse(responses[0].DataPoints[0].BinId)).Year, ((YearBinIdentifier)BinIdentifier.Parse(responses[1].DataPoints[0].BinId)).Year);
+            var lastYear = Math.Max(((YearBinIdentifier)BinIdentifier.Parse(responses[0].DataPoints.Last().BinId)).Year, ((YearBinIdentifier)BinIdentifier.Parse(responses[1].DataPoints.Last().BinId)).Year);
+            
+            var dataPoints = new List<ChartableDataPoint>();
+
+            for (var i = 0; i < lastYear - startYear; i ++)
+            {
+                var firstDp = responses[0].DataPoints.SingleOrDefault(x => ((YearBinIdentifier)BinIdentifier.Parse(x.BinId)).Year == i + startYear);
+                var secondDp = responses[1].DataPoints.SingleOrDefault(x => ((YearBinIdentifier)BinIdentifier.Parse(x.BinId)).Year == i + startYear);
+
+                if (firstDp == null || secondDp == null)
+                {
+                    continue;
+                }
+
+                dataPoints.Add(new ChartableDataPoint
+                    {
+                        BinId = firstDp.BinId,
+                        Value = secondDp.Value - firstDp.Value,
+                        Label = firstDp.Label
+                    });
+            }
+
+            var result = new BuildDataSetResult
+            {
+                DataPoints = dataPoints.ToArray(),
+                UnitOfMeasure = responses[0].UnitOfMeasure,
+                DataCategory = responses[0].DataCategory
+            };
+
+            return result;
         }
 
         public ChartableDataPoint[] BuildDataSetFromDataPoints(TemporalDataPoint[] dataPoints, DataResolution dataResolution, PostDataSetsRequestBody request)

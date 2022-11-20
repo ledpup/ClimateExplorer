@@ -11,6 +11,7 @@ public interface IDataService
     Task<IEnumerable<Location>> GetLocations(string? dataSetName = null, bool includeNearbyLocations = false, bool includeWarmingMetrics = false);
     Task<DataSet> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f);
     Task<DataSet> PostDataSet(
+        CompoundSeriesTypes compoundSeriesTypes,
         BinGranularities binGranularity,
         ContainerAggregationFunctions binAggregationFunction,
         ContainerAggregationFunctions bucketAggregationFunction,

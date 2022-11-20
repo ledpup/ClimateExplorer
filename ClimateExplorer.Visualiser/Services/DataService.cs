@@ -68,6 +68,7 @@ public class DataService : IDataService
 
 
     public async Task<DataSet> PostDataSet(
+        CompoundSeriesTypes compoundSeriesTypes,
         BinGranularities binGranularity,
         ContainerAggregationFunctions binAggregationFunction,
         ContainerAggregationFunctions bucketAggregationFunction,
@@ -83,24 +84,32 @@ public class DataService : IDataService
         short? year)
     {
         var response = 
-            await _httpClient.PostAsJsonAsync<PostDataSetsRequestBody>(
+            await _httpClient.PostAsJsonAsync(
                 "dataset",
-                new PostDataSetsRequestBody
+                new
                 {
-                    BinAggregationFunction = binAggregationFunction,
-                    BucketAggregationFunction = bucketAggregationFunction,
-                    CupAggregationFunction = cupAggregationFunction,
-                    BinningRule = binGranularity,
-                    CupSize = cupSize,
-                    RequiredBinDataProportion = requiredBinDataProportion,
-                    RequiredBucketDataProportion = requiredBucketDataProportion,
-                    RequiredCupDataProportion = requiredCupDataProportion,
-                    SeriesDerivationType = seriesDerivationType,
-                    SeriesSpecifications = seriesSpecifications,
-                    SeriesTransformation = seriesTransformation,
-                    Anomaly = seriesValueOption == SeriesValueOptions.Anomaly,
-                    FilterToYear = year,
-                });
+                    CompoundSeriesTypes = compoundSeriesTypes,
+                    Body = new PostDataSetsRequestBody[]
+                    {
+                        new PostDataSetsRequestBody
+                        {
+                            BinAggregationFunction = binAggregationFunction,
+                            BucketAggregationFunction = bucketAggregationFunction,
+                            CupAggregationFunction = cupAggregationFunction,
+                            BinningRule = binGranularity,
+                            CupSize = cupSize,
+                            RequiredBinDataProportion = requiredBinDataProportion,
+                            RequiredBucketDataProportion = requiredBucketDataProportion,
+                            RequiredCupDataProportion = requiredCupDataProportion,
+                            SeriesDerivationType = seriesDerivationType,
+                            SeriesSpecifications = seriesSpecifications,
+                            SeriesTransformation = seriesTransformation,
+                            Anomaly = seriesValueOption == SeriesValueOptions.Anomaly,
+                            FilterToYear = year,
+                        }
+                    }
+                }
+                );
 
         if (!response.IsSuccessStatusCode)
         {
