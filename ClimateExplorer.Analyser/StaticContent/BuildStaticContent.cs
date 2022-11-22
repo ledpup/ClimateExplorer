@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
+﻿using System.Xml;
 
 namespace ClimateExplorer.Analyser.StaticContent
 {
@@ -13,10 +8,16 @@ namespace ClimateExplorer.Analyser.StaticContent
         {
             var locations = await Location.GetLocations(false, @"Output\Location");
 
-            var writer = XmlWriter.Create(@"Output\sitemap.xml");
-            writer.WriteStartDocument();
-            writer.WriteStartElement("sitemapindex", "http://www.sitemaps.org/schemas/sitemap/0.9");
+            var writer = XmlTextWriter.Create(@"Output\sitemap.xml", new XmlWriterSettings { Indent = true, NewLineOnAttributes = true });
 
+            writer.WriteStartDocument();
+            writer.WriteStartElement("urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
+
+            
+            WriteTag(writer, "https://climateexplorer.net/");
+            WriteTag(writer, "https://climateexplorer.net/about");
+            WriteTag(writer, "https://climateexplorer.net/blog");
+            WriteTag(writer, "https://climateexplorer.net/blog/about");
             WriteTag(writer, "https://climateexplorer.net/blog/locations");
             foreach (var location in locations)
             {
@@ -34,7 +35,12 @@ namespace ClimateExplorer.Analyser.StaticContent
 
             var indexTemplate = File.ReadAllText("StaticContent\\index-template.html");
 
-           
+            var rootIndex = indexTemplate.Replace("***Title***", $"Explore long-term climate trends")
+                                         .Replace("***Url***", $"https://climateexplorer.net/");
+
+            var rootIndexPath = $@"Output\IndexFiles";
+            Directory.CreateDirectory(rootIndexPath);
+            File.WriteAllText($@"{rootIndexPath}\index.html", rootIndex);
 
             foreach (var location in locations)
             {
@@ -42,7 +48,7 @@ namespace ClimateExplorer.Analyser.StaticContent
                                          .Replace("***Url***", $"https://climateexplorer.net/location/{UrlReadyName(location)}");
 
 
-                var path = $@"Output\location\IndexFiles\{UrlReadyName(location)}";
+                var path = $@"Output\IndexFiles\Locations\{UrlReadyName(location)}";
                 Directory.CreateDirectory(path);
                 File.WriteAllText($@"{path}\index.html", index);
             }
