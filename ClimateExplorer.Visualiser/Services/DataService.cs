@@ -66,50 +66,17 @@ public class DataService : IDataService
         return result;
     }
 
-
-    public async Task<DataSet> PostDataSet(
-        CompoundSeriesTypes compoundSeriesTypes,
-        BinGranularities binGranularity,
-        ContainerAggregationFunctions binAggregationFunction,
-        ContainerAggregationFunctions bucketAggregationFunction,
-        ContainerAggregationFunctions cupAggregationFunction,
-        SeriesValueOptions seriesValueOption,
-        SeriesSpecification[] seriesSpecifications,
-        SeriesDerivationTypes seriesDerivationType,
-        float requiredBinDataProportion,
-        float requiredBucketDataProportion,
-        float requiredCupDataProportion,
-        int cupSize,
-        SeriesTransformations seriesTransformation,
-        short? year)
+    public async Task<DataSet> PostDataSet(CompoundSeriesTypes compoundSeriesTypes, SimpleRequest[] simpleRequest)
     {
-        var response = 
-            await _httpClient.PostAsJsonAsync(
-                "dataset",
-                new
-                {
-                    CompoundSeriesTypes = compoundSeriesTypes,
-                    Body = new PostDataSetsRequestBody[]
-                    {
-                        new PostDataSetsRequestBody
-                        {
-                            BinAggregationFunction = binAggregationFunction,
-                            BucketAggregationFunction = bucketAggregationFunction,
-                            CupAggregationFunction = cupAggregationFunction,
-                            BinningRule = binGranularity,
-                            CupSize = cupSize,
-                            RequiredBinDataProportion = requiredBinDataProportion,
-                            RequiredBucketDataProportion = requiredBucketDataProportion,
-                            RequiredCupDataProportion = requiredCupDataProportion,
-                            SeriesDerivationType = seriesDerivationType,
-                            SeriesSpecifications = seriesSpecifications,
-                            SeriesTransformation = seriesTransformation,
-                            Anomaly = seriesValueOption == SeriesValueOptions.Anomaly,
-                            FilterToYear = year,
-                        }
-                    }
-                }
-                );
+        var response =
+           await _httpClient.PostAsJsonAsync(
+               "dataset",
+               new
+               {
+                   CompoundSeriesTypes = CompoundSeriesTypes.None,
+                   Body = simpleRequest.Select(x => x.ToPostDataSetsRequestBody()).ToArray(),
+               }
+               );
 
         if (!response.IsSuccessStatusCode)
         {
@@ -119,6 +86,11 @@ public class DataService : IDataService
         var result = await response.Content.ReadFromJsonAsync<DataSet>();
 
         return result;
+    }
+
+    public async Task<DataSet> PostDataSet(SimpleRequest simpleRequest)
+    {
+       return await PostDataSet(CompoundSeriesTypes.None, new SimpleRequest[] { simpleRequest });
     }
 
     public async Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .5f, float locationGroupingThreshold = .5f)

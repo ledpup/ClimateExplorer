@@ -1,5 +1,6 @@
 ﻿@page "/enso"
 @using ClimateExplorer.Core
+@using ClimateExplorer.Visualiser.Services;
 @using ClimateExplorer.Visualiser.UiModel
 @using Blazorise
 @using Blazorise.Components
@@ -248,27 +249,28 @@
     {
         EnsoData = 
             await DataService.PostDataSet(
-                SelectedResolution == DataResolution.Yearly ? BinGranularities.ByYear : BinGranularities.ByYearAndMonth,
-                ContainerAggregationFunctions.Mean,
-                ContainerAggregationFunctions.Mean,
-                ContainerAggregationFunctions.Mean,
-                SeriesValueOptions.Value,
-                new SeriesSpecification[]
-                {
-                    new SeriesSpecification
+                new SimpleRequest(
+                    SelectedResolution == DataResolution.Yearly ? BinGranularities.ByYear : BinGranularities.ByYearAndMonth,
+                    ContainerAggregationFunctions.Mean,
+                    ContainerAggregationFunctions.Mean,
+                    ContainerAggregationFunctions.Mean,
+                    SeriesValueOptions.Value,
+                    new SeriesSpecification[]
                     {
-                        DataAdjustment = null,
-                        DataSetDefinitionId = MapSelectedDataTypeToDataSetDefinitionId(SelectedDataType),
-                        DataType = SelectedDataType
-                    }
-                },
-                SeriesDerivationTypes.ReturnSingleSeries,
-                1.0f,
-                1.0f,
-                0.7f,
-                14,
-                SeriesTransformations.Identity
-            );
+                        new SeriesSpecification
+                        {
+                            DataAdjustment = null,
+                            DataSetDefinitionId = MapSelectedDataTypeToDataSetDefinitionId(SelectedDataType),
+                            DataType = SelectedDataType
+                        }
+                    },
+                    SeriesDerivationTypes.ReturnSingleSeries,
+                    1.0f,
+                    1.0f,
+                    0.7f,
+                    14,
+                    SeriesTransformations.Identity
+                ));
 
         await HandleRedraw();
     }

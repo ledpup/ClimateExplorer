@@ -2,6 +2,7 @@
 @using Blazorise.SpinKit
 @using ClimateExplorer.Core
 @using ClimateExplorer.Core.ViewModel
+@using ClimateExplorer.Visualiser.Services;
 @using ClimateExplorer.Visualiser.UiModel
 @using ClimateExplorer.Core.Calculators
 @using ClimateExplorer.Core.DataPreparation
@@ -132,27 +133,28 @@
             // Retrieve TempMax anomaly
             var series =
                 await DataService.PostDataSet(
-                    BinGranularities.ByYear,
-                    ContainerAggregationFunctions.Mean,
-                    ContainerAggregationFunctions.Mean,
-                    ContainerAggregationFunctions.Mean,
-                    SeriesValueOptions.Anomaly,
-                    new SeriesSpecification[]
-                        {
-                            new SeriesSpecification
+                    new SimpleRequest(
+                        BinGranularities.ByYear,
+                        ContainerAggregationFunctions.Mean,
+                        ContainerAggregationFunctions.Mean,
+                        ContainerAggregationFunctions.Mean,
+                        SeriesValueOptions.Anomaly,
+                        new SeriesSpecification[]
                             {
-                                DataAdjustment = tempMaxMeasurementForLocation.MeasurementDefinition.DataAdjustment,
-                                DataSetDefinitionId = tempMaxMeasurementForLocation.DataSetDefinition.Id,
-                                DataType = tempMaxMeasurementForLocation.MeasurementDefinition.DataType,
-                                LocationId = Location.Id
-                            }
-                        },
-                    SeriesDerivationTypes.ReturnSingleSeries,
-                    1.0f,
-                    1.0f,
-                    0.7f,
-                    14,
-                    SeriesTransformations.Identity);
+                                new SeriesSpecification
+                                {
+                                    DataAdjustment = tempMaxMeasurementForLocation.MeasurementDefinition.DataAdjustment,
+                                    DataSetDefinitionId = tempMaxMeasurementForLocation.DataSetDefinition.Id,
+                                    DataType = tempMaxMeasurementForLocation.MeasurementDefinition.DataType,
+                                    LocationId = Location.Id
+                                }
+                            },
+                        SeriesDerivationTypes.ReturnSingleSeries,
+                        1.0f,
+                        1.0f,
+                        0.7f,
+                        14,
+                        SeriesTransformations.Identity));
 
             // Filter to records that have values
             MaxTempAnomalyRecords =
@@ -164,27 +166,29 @@
             // Retrieve TempMax absolute
             series =
                 await DataService.PostDataSet(
-                    BinGranularities.ByYear,
-                    ContainerAggregationFunctions.Mean,
-                    ContainerAggregationFunctions.Mean,
-                    ContainerAggregationFunctions.Mean,
-                    SeriesValueOptions.Value,
-                    new SeriesSpecification[]
-                        {
-                            new SeriesSpecification
+                    new SimpleRequest(
+                        BinGranularities.ByYear,
+                        ContainerAggregationFunctions.Mean,
+                        ContainerAggregationFunctions.Mean,
+                        ContainerAggregationFunctions.Mean,
+                        SeriesValueOptions.Value,
+                        new SeriesSpecification[]
                             {
-                                DataAdjustment = tempMaxMeasurementForLocation.MeasurementDefinition.DataAdjustment,
-                                DataSetDefinitionId = tempMaxMeasurementForLocation.DataSetDefinition.Id,
-                                DataType = tempMaxMeasurementForLocation.MeasurementDefinition.DataType,
-                                LocationId = Location.Id
-                            }
-                        },
-                    SeriesDerivationTypes.ReturnSingleSeries,
-                    1.0f,
-                    1.0f,
-                    0.7f,
-                    14,
-                    SeriesTransformations.Identity);
+                                new SeriesSpecification
+                                {
+                                    DataAdjustment = tempMaxMeasurementForLocation.MeasurementDefinition.DataAdjustment,
+                                    DataSetDefinitionId = tempMaxMeasurementForLocation.DataSetDefinition.Id,
+                                    DataType = tempMaxMeasurementForLocation.MeasurementDefinition.DataType,
+                                    LocationId = Location.Id
+                                }
+                            },
+                        SeriesDerivationTypes.ReturnSingleSeries,
+                        1.0f,
+                        1.0f,
+                        0.7f,
+                        14,
+                        SeriesTransformations.Identity)
+                        );
 
             var warmingIndex = WarmingIndexCalculator.CalculateWarmingIndex(series.DataRecords);
 

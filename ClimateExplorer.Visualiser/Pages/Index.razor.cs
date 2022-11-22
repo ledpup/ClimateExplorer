@@ -644,7 +644,7 @@ public partial class Index : IDisposable
             l.LogInformation("Not calling NavigationManager.NavigateTo().");
 
             // Fetch the data required to render the selected data series
-            ChartSeriesWithData = await RetrieveDataSets(ChartSeriesList);
+            ChartSeriesWithData = await RetrieveDataSets(CompoundSeriesTypes.None, ChartSeriesList);
 
             l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + ChartSeriesWithData.Count + " entries.");
 
@@ -722,7 +722,7 @@ public partial class Index : IDisposable
             };
     }
 
-    async Task<List<SeriesWithData>> RetrieveDataSets(List<ChartSeriesDefinition> chartSeriesList)
+    async Task<List<SeriesWithData>> RetrieveDataSets(CompoundSeriesTypes compoundSeriesTypes, List<ChartSeriesDefinition> chartSeriesList)
     {
         var datasetsToReturn = new List<SeriesWithData>();
 
@@ -741,21 +741,24 @@ public partial class Index : IDisposable
                 : cupAggregationFunction;
             
             DataSet dataSet =
-                await DataService.PostDataSet(
-                    SelectedBinGranularity,
-                    binAggregationFunction,
-                    bucketAggregationFunction,
-                    cupAggregationFunction,
-                    csd.Value,
-                    csd.SourceSeriesSpecifications.Select(BuildDataPrepSeriesSpecification).ToArray(),
-                    csd.SeriesDerivationType,
-                    GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
-                    GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
-                    GetGroupingThreshold(csd.GroupingThreshold),
-                    SelectedDayGrouping,
-                    csd.SeriesTransformation,
-                    csd.Year
-                );
+                await DataService.PostDataSet(compoundSeriesTypes,
+                    new [] 
+                    { 
+                        new SimpleRequest(
+                            SelectedBinGranularity,
+                            binAggregationFunction,
+                            bucketAggregationFunction,
+                            cupAggregationFunction,
+                            csd.Value,
+                            csd.SourceSeriesSpecifications.Select(BuildDataPrepSeriesSpecification).ToArray(),
+                            csd.SeriesDerivationType,
+                            GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
+                            GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
+                            GetGroupingThreshold(csd.GroupingThreshold),
+                            SelectedDayGrouping,
+                            csd.SeriesTransformation,
+                            csd.Year)
+                    });
 
             datasetsToReturn.Add(
                 new SeriesWithData() { ChartSeries = csd, SourceDataSet = dataSet }
