@@ -23,7 +23,7 @@ public static class BomLocationsAndStationsMapper
         var stationToLocationMapping = new Dictionary<string, Guid>();
 
         // Get the friendly location name and the "primary station", as best we can do.
-        var locationRowData = File.ReadAllLines(@"ReferenceData\ACORN-SAT\acorn_sat_v2.1.0_stations.csv");
+        var locationRowData = File.ReadAllLines(@"ReferenceData\ACORN-SAT\acorn_sat_v2.3.0_stations.csv");
         foreach (var row in locationRowData.Skip(1))
         {
             var splitRow = row.Split(',');
@@ -148,7 +148,7 @@ public static class BomLocationsAndStationsMapper
         var file = await File.ReadAllTextAsync(unadjustedDataFileLocationMappingPath);
         var unadjustedDataFileLocationMapping = JsonSerializer.Deserialize<DataFileLocationMapping>(file);
         var locationIdToDataFileMappings = unadjustedDataFileLocationMapping.LocationIdToDataFileMappings;
-        var stations = await File.ReadAllLinesAsync(@"ReferenceData\ACORN-SAT\acorn_sat_v2.2.0_stations.txt");
+        var stations = await File.ReadAllLinesAsync(@"ReferenceData\ACORN-SAT\acorn_sat_v2.3.0_stations.txt");
 
         var dataFileLocationMapping = new DataFileLocationMapping() { DataSetDefinitionId = dataSetDefinitionId };
         foreach (var station in stations)
@@ -157,8 +157,11 @@ public static class BomLocationsAndStationsMapper
             {
                 if (locationIdToDataFileMapping.Value.Any(x => x.ExternalStationCode == station))
                 {
-                    dataFileLocationMapping.LocationIdToDataFileMappings.Add(locationIdToDataFileMapping.Key, new List<DataFileFilterAndAdjustment>());
-                    dataFileLocationMapping.LocationIdToDataFileMappings[locationIdToDataFileMapping.Key].Add(new DataFileFilterAndAdjustment { ExternalStationCode = station });
+                    if (!dataFileLocationMapping.LocationIdToDataFileMappings.ContainsKey(locationIdToDataFileMapping.Key))
+                    {
+                        dataFileLocationMapping.LocationIdToDataFileMappings.Add(locationIdToDataFileMapping.Key, new List<DataFileFilterAndAdjustment>());
+                        dataFileLocationMapping.LocationIdToDataFileMappings[locationIdToDataFileMapping.Key].Add(new DataFileFilterAndAdjustment { ExternalStationCode = station });
+                    }
                     break;
                 }
             }

@@ -38,7 +38,7 @@ stn_num,stn_name,lat,lon,elevation
 18192,Port Lincoln,-34.6,135.88,8
 21133,Snowtown,-33.77,138.22,109
 22823,Cape Borda,-35.75,136.6,158
-23090,Adelaide,-34.92,138.62,48
+23000,Adelaide,-34.92,138.62,48
 23373,Nuriootpa,-34.48,139.01,275
 26021,Mount Gambier,-37.75,140.77,63
 26026,Robe,-37.16,139.76,3
@@ -84,7 +84,7 @@ stn_num,stn_name,lat,lon,elevation
 61363,Scone,-32.03,150.83,221
 63005,Bathurst,-33.43,149.56,713
 65070,Dubbo,-32.22,148.58,284
-66062,Sydney,-33.86,151.21,39
+66214,Sydney,-33.86,151.21,39
 67105,Richmond (NSW),-33.6,150.78,19
 68072,Nowra,-34.95,150.54,109
 68151,Point Perpendicular,-35.09,150.8,85
