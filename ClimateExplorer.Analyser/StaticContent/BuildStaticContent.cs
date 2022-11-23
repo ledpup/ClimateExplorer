@@ -67,10 +67,6 @@ namespace ClimateExplorer.Analyser.StaticContent
             writer.WriteValue(Navigation);
             writer.WriteEndElement();
 
-            writer.WriteStartElement("lastmod");
-            writer.WriteValue(DateTime.Now.ToShortDateString());
-            writer.WriteEndElement();
-
             writer.WriteEndElement();
         }
     }
