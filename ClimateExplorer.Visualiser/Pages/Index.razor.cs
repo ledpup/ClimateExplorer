@@ -979,7 +979,7 @@ public partial class Index : IDisposable
         var axes = new List<string>();
         foreach (var s in ChartSeriesList)
         {
-            var uom = s.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure;            
+            var uom = s.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure;
             var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, uom);
             if (!axes.Contains(axisId))
             {
