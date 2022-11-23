@@ -894,7 +894,9 @@ public partial class Index : IDisposable
 
         subtitle =
             (ChartStartBin != null & ChartEndBin != null)
-            ? $"({ChartStartBin.Label}-{ChartEndBin.Label})"
+            ? ChartStartBin is YearBinIdentifier
+                ? $"({ChartStartBin.Label}-{ChartEndBin.Label}; {Convert.ToInt16(ChartEndBin.Label) - Convert.ToInt16(ChartStartBin.Label)} years)"
+                : $"({ChartStartBin.Label}-{ChartEndBin.Label})"
             : SelectedBinGranularity.ToFriendlyString();
 
         l.LogInformation("Calling AddDataSetsToGraph");
