@@ -895,8 +895,8 @@ public partial class Index : IDisposable
         subtitle =
             (ChartStartBin != null & ChartEndBin != null)
             ? ChartStartBin is YearBinIdentifier
-                ? $"({ChartStartBin.Label}-{ChartEndBin.Label}; {Convert.ToInt16(ChartEndBin.Label) - Convert.ToInt16(ChartStartBin.Label)} years)"
-                : $"({ChartStartBin.Label}-{ChartEndBin.Label})"
+                ? $"{ChartStartBin.Label}-{ChartEndBin.Label}     {Convert.ToInt16(ChartEndBin.Label) - Convert.ToInt16(ChartStartBin.Label)} years"
+                : $"{ChartStartBin.Label}-{ChartEndBin.Label}"
             : SelectedBinGranularity.ToFriendlyString();
 
         l.LogInformation("Calling AddDataSetsToGraph");
@@ -972,14 +972,14 @@ public partial class Index : IDisposable
             {
                 Text = xLabel,
                 Display = true,
-                Color = "blue",
+                Color = "black",
             },
         };
 
         var axes = new List<string>();
         foreach (var s in ChartSeriesList)
         {
-            var uom = s.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure;
+            var uom = s.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure;            
             var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, uom);
             if (!axes.Contains(axisId))
             {
@@ -995,7 +995,7 @@ public partial class Index : IDisposable
                         {
                             Text = UnitOfMeasureLabel(s.SeriesTransformation, uom),
                             Display = true,
-                            Color = "blue",
+                            Color = s.Colour == "#ffff33" ? "#a0a033" : s.Colour,
                         },
                     });
                 axes.Add(axisId);
