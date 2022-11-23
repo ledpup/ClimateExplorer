@@ -205,7 +205,7 @@
           skipScrollTo = false;
           return;
         }
-        return origScrollTo.apply(this, arguments);
+        return origScrollTo.apply(this, [x, y]);
       };
 
       function willSkipScrollTo(newValue) {
