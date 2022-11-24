@@ -18,47 +18,44 @@
                 <Check TValue="bool?" Checked="ShowRangeSlider" CheckedChanged="ShowRangeSliderChanged">Show range slider</Check>
             </Field>
 
-            @if (SelectedBinGranularity == BinGranularities.ByYear || SelectedBinGranularity == BinGranularities.ByYearAndMonth)
-            {
-                <Field>
-                    <strong>
-                        Start year
-                    </strong>
-                    <Tooltip Text="@UseMostRecentStartYearToolTip">
-                        <Check TValue="bool" Checked="@UseMostRecentStartYear" CheckedChanged="@UseMostRecentStartYearChanged">@UseMostRecentStartYearLabel</Check>
-                    </Tooltip>
+            <Field>
+                <strong>
+                    Start year
+                </strong>
+                <Tooltip Text="@UseMostRecentStartYearToolTip">
+                    <Check TValue="bool" Checked="@UseMostRecentStartYear" CheckedChanged="@UseMostRecentStartYearChanged">@UseMostRecentStartYearLabel</Check>
+                </Tooltip>
 
-                    @if (StartYearOptions != null)
-                    {
-                        <FieldLabel>
-                            Or select a start year:
-                        </FieldLabel>
-
-                        <RadioGroup TValue="int" CheckedValue="@StartYearOption" CheckedValueChanged="@OnStartYearOptionChanged">
-                            @foreach (var option in StartYearOptions)
-                            {
-                                <Radio Value="@option.Key">@option.Value</Radio>
-                            }
-                        </RadioGroup>
-                    }
+                @if (StartYearOptions != null)
+                {
                     <FieldLabel>
-                        Or enter a custom start year:
+                        Or select a start year:
                     </FieldLabel>
-                    <Validation Validator="ValidateYear">
-                        <TextEdit Text="@SelectedStartYearInternal" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnStartYearTextChangedInternal">
-                            <Feedback>
-                                <ValidationError />
-                            </Feedback>
-                        </TextEdit>
-                    </Validation>
-                </Field>
-                <Field>
-                    <strong>End year</strong>
-                    <Validation Validator="ValidateYear">
-                        <TextEdit Text="@SelectedEndYearInternal" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChangedInternal" />
-                    </Validation>
-                </Field>
-            }
+
+                    <RadioGroup TValue="int" CheckedValue="@StartYearOption" CheckedValueChanged="@OnStartYearOptionChanged">
+                        @foreach (var option in StartYearOptions)
+                        {
+                            <Radio Value="@option.Key">@option.Value</Radio>
+                        }
+                    </RadioGroup>
+                }
+                <FieldLabel>
+                    Or enter a custom start year:
+                </FieldLabel>
+                <Validation Validator="ValidateYear">
+                    <TextEdit Text="@SelectedStartYearInternal" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnStartYearTextChangedInternal">
+                        <Feedback>
+                            <ValidationError />
+                        </Feedback>
+                    </TextEdit>
+                </Validation>
+            </Field>
+            <Field>
+                <strong>End year</strong>
+                <Validation Validator="ValidateYear">
+                    <TextEdit Text="@SelectedEndYearInternal" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChangedInternal" />
+                </Validation>
+            </Field>
 
             @if (PopupText != null)
             {
