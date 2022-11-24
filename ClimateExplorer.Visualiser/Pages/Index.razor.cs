@@ -17,6 +17,8 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
 using System.Dynamic;
+using GeoCoordinatePortable;
+using BlazorCurrentDevice;
 
 namespace ClimateExplorer.Visualiser.Pages;
 
@@ -30,12 +32,14 @@ public partial class Index : IDisposable
     List<ChartSeriesDefinition> ChartSeriesList { get; set; } = new List<ChartSeriesDefinition>();
     List<SeriesWithData> ChartSeriesWithData { get; set; }
     BinIdentifier[] ChartBins { get; set; }
-    float SelectedDayGroupThreshold { get; set; } = .7f;
-    string DayGroupThresholdText { get; set; }
+    float InternalGroupingThreshold { get; set; } = .7f;
+    string GroupingThresholdText { get; set; }
+    bool UserOverridePresetAggregationSettings { get; set; }
     short SelectedDayGrouping { get; set; } = 14;
     short SelectingDayGrouping { get; set; }
     Modal addDataSetModal { get; set; }
     Modal optionsModal { get; set; }
+    SelectLocation selectLocationModal { get; set; }
     MapContainer mapContainer { get; set; }
     Filter filter { get; set; }
 
@@ -69,7 +73,6 @@ public partial class Index : IDisposable
     ChartTrendline<float?> chartTrendline;
     BinIdentifier ChartStartBin, ChartEndBin;
     bool _haveCalledResizeAtLeastOnce = false;
-    SelectLocation selectLocationModal;
 
     bool? EnableRangeSlider { get; set; }
     int SliderMin { get; set; }
@@ -77,15 +80,61 @@ public partial class Index : IDisposable
     int? SliderStart { get; set; }
     int? SliderEnd { get; set; }
 
+    string? BrowserLocationErrorMessage { get; set; }
+
+    bool IsMobileDevice { get; set; }
+
     [Inject] IDataService DataService { get; set; }
     [Inject] NavigationManager NavManager { get; set; }
     [Inject] IExporter Exporter { get; set; }
-    [Inject] IJSRuntime JSRuntime { get; set; }
+    [Inject] IJSRuntime JsRuntime { get; set; }
     [Inject] ILogger<Index> Logger { get; set; }
+
+    [Inject] IBlazorCurrentDeviceService BlazorCurrentDeviceService { get; set; }
+
+    bool setupDefaultChartSeries;
+
+    public string PopupText { get; set; } = @"<div style=""padding-bottom: 24px;""><img style=""max-width: 100%;"" src=""images/ChartOptions.png"" alt=""Chart Options image"" /></div>
+<p><strong>Year filtering</strong>: allows you to change the start and end years for the chart. For example, if you want to see the change in temperature for the 20th century, you could set the end year to 2000.</p>
+<p><strong>Clear filter</strong>: the clear filter button is only displayed when there is a start or end year filter applied to the chart. Clicking this button will reset the chart back to the default filter and remove the range slider (if it has been turned on).</p>
+<p><strong>Grouping</strong>: the grouping option allows you to look at the data from another point of view. The default view is ""Yearly""; i.e., each point on the graph represents a single year in the series. To represent daily data at the yearly level, ClimateExplorer applies rules and aggregations to average (or sum) the data together. If you select ""Year + Month"" the data will be re-processed, starting with the daily data for the particular year, to present twelve points on the chart per year. This view works best in combination with the range slider. If you select ""Month"", the data will be sliced, again starting with the lowest level of the data (usually daily), into only twelve points, one point for every month of the year. The value for each point will be an average (or sum) of the data across all years. This will give you a climatic view of the data for the location, it will not be as useful for viewing the change in the climate over time.</p>
+<p><strong>Download data</strong>: the download data button allows you to download, as a csv file, the data for the chart you are currently looking at. The button is context sensitive; it'll download data that applies to the current view. For example, if you are looking at the data as a ""Year + Month"" grouping, you will get twelve records for each year.</p>
+<p><strong>Aggregation options</strong> (*advanced* feature): the aggregation options allow you to change the underlying grouping parameters for the chart. The default values will group the daily data into 14 day (i.e., fortnightly) sub-bins. If each of those sub-bins has records for 70% of those days (i.e., 10 days of the 14 days will need to have records) then the whole year is considered valid. This means that you can still have substantial data loss, while the data remains valid. E.g., a meteorologist unwilling to come in on some weekends to record the min and max temperatures may not invalidate the data for the year. However, going on a 3-week holiday in the middle of winter would invalidate the year as it would distort the average to make the year seem warmer than it was.</p>
+<p><strong>Add data set</strong> (*advanced* feature): the suggested charts at the bottom of the screen provide the user with a number of predefined and recommended charts that can be viewed within ClimateExplorer. Other datasets can be added in an ad-hoc manner with the ""Add data set"" button. The list on the ""Add data set"" dialog contains data for your current location, such as solar radiation and the diurnal range for temperature. The list also contains reference data sets that can be added, such as CO₂, ENSO indexes and data from the cryosphere (the cryosphere comprises the parts of the planet that are frozen most of the year).</p>";
+
+    public string PopupAggregationOptionsInfoText { get; set; } = @"<p>The aggregation options are advanced features that allows you to change the underlying aggregation process. To calculate a single aggregated value for data for a year, from daily or monthly series, data is bundled together. If each bundle of data does not have enough records, the bundle is rejected as being unreliable.</p>
+<p>By default, the bundles are groups of 14 days (fortnights) and each bundle requires 70% (10 days of the 14) of the records to be present for the year to be considered reliable enough for an average mean to be calculated. This means that a number of records can be missing for the year, so long as not too many consecutive days are missing. As temperature (and other climate data) follows cyclic patterns, missing data from a consecutive block is considered to be more untrustworthy than sporadic data missing throughout the year.</p>
+<p>Some presets (specifically, the cryosphere reference data – sea ice extent and melt) have a lower threshold applied to them because the data has been curated and considered to be trustworthy enough that more of it can be missing while still not corrupting the results.</p>
+<p>If you make changes to these settings and apply them, your settings will take precedence and override any preset specific settings. You can clear this by clicking “Clear override” which would have appeared after you applied your changes.</p>
+<p><strong>Day grouping</strong>: select groups from weekly, fortnightly, monthly, and half-yearly, amongst other options.</p>
+<p><strong>Threshold required to form a valid group (% percentage)</strong>: this is a percentage of how many records is considered sufficient to form a valid bundle of data.</p>
+<p><strong>Apply</strong>: save your changes and apply them to the chart. These settings will persist as you change locations and datasets within the application.</p>
+<p><strong>Clear override</strong>: this will reset the settings back to their default (14 days at 70% threshold). Only appears after applying your settings.</p>";
+
+    private Modal popup, popupAggregationOptionsInfoText;
+    private Task ShowChartOptionsInfo()
+    {
+        if (!string.IsNullOrWhiteSpace(PopupText))
+        {
+            return popup.Show();
+        }
+        return Task.CompletedTask;
+    }
+
+    private Task ShowAggregationOptionsInfo()
+    {
+        if (!string.IsNullOrWhiteSpace(PopupText))
+        {
+            return popupAggregationOptionsInfoText.Show();
+        }
+        return Task.CompletedTask;
+    }
 
     protected override async Task OnInitializedAsync()
     {
         Logger.LogInformation("Instance " + _componentInstanceId + " OnInitializedAsync");
+
+        IsMobileDevice = await BlazorCurrentDeviceService.Mobile();
 
         NavManager.LocationChanged += HandleLocationChanged;
 
@@ -131,6 +180,8 @@ public partial class Index : IDisposable
 
         SliderMax = DateTime.Now.Year;
 
+        setupDefaultChartSeries = true;
+
         await base.OnInitializedAsync();
     }
 
@@ -140,57 +191,32 @@ public partial class Index : IDisposable
 
         Logger.LogInformation("OnParametersSetAsync(): " + LocationId);
 
-        bool setupDefaultChartSeries = LocationId == null && ChartSeriesList.Count == 0;
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        if (setupDefaultChartSeries)
+        {
+            setupDefaultChartSeries = (LocationId == null && ChartSeriesList.Count == 0) || !QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
+        }
+
+        GetLocationIdViaNameFromPath(uri);
 
         if (LocationId == null)
         {
-            // Not sure whether we're allowed to set parameters this way, but it's short-lived - we'll immediately navigate away after
-            // preparing querystring
-            LocationId = "aed87aa0-1d0c-44aa-8561-cde0fc936395";
+            LocationId = (await GetCurrentLocation())?.ToString();
+
+            if (LocationId == null)
+            {
+                // Not sure whether we're allowed to set parameters this way, but it's short-lived - we'll immediately navigate away after
+                // preparing querystring
+                LocationId = "aed87aa0-1d0c-44aa-8561-cde0fc936395";
+            }
         }
 
         Guid locationId = Guid.Parse(LocationId);
 
         if (setupDefaultChartSeries)
         {
-            var location = Locations.Single(x => x.Id == locationId);
-
-            var tempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMax, DataAdjustment.Adjusted);
-            var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.Rainfall, null);
-
-            if (tempMax != null)
-            {
-                ChartSeriesList.Add(
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax),
-                        Aggregation = SeriesAggregationOptions.Mean,
-                        BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                        SmoothingWindow = 20,
-                        Value = SeriesValueOptions.Value,
-                        Year = null
-                    }
-                );
-            }
-
-            if (rainfall != null)
-            {
-                ChartSeriesList.Add(
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, rainfall),
-                        Aggregation = SeriesAggregationOptions.Sum,
-                        BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                        SmoothingWindow = 20,
-                        Value = SeriesValueOptions.Value,
-                        Year = null
-                    }
-                );
-            }
+            SetUpDefaultCharts(locationId);
+            setupDefaultChartSeries = false;
         }
 
         // Pick up parameters from querystring
@@ -199,6 +225,75 @@ public partial class Index : IDisposable
         await SelectedLocationChangedInternal(locationId);
 
         await base.OnParametersSetAsync();
+    }
+
+    private void GetLocationIdViaNameFromPath(Uri uri)
+    {
+        if (uri.Segments.Length > 2 && !Guid.TryParse(uri.Segments[2], out Guid locationGuid))
+        {
+            var locatioName = uri.Segments[2];
+            locatioName = locatioName.Replace("-", " ");
+            var location = Locations.SingleOrDefault(x => string.Equals(x.Name, locatioName, StringComparison.OrdinalIgnoreCase));
+            if (location != null)
+            {
+                LocationId = location.Id.ToString();
+            }
+        }
+    }
+
+    private void SetUpDefaultCharts(Guid? locationId)
+    {
+        var location = Locations.Single(x => x.Id == locationId);
+
+        var tempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMax, DataAdjustment.Adjusted, true);
+        var tempMin = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMin, DataAdjustment.Adjusted, true);
+        var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.Rainfall, null, true, false);
+
+        if (ChartSeriesList == null)
+        {
+            ChartSeriesList = new List<ChartSeriesDefinition>();
+        }
+
+        if (tempMax != null)
+        {
+            ChartSeriesList.Add(
+                new ChartSeriesDefinition()
+                {
+                    // TODO: remove if we're not going to default to average temperature
+                    //SeriesDerivationType = SeriesDerivationTypes.AverageOfMultipleSeries,
+                    //SourceSeriesSpecifications = new SourceSeriesSpecification[]
+                    //{
+                    //    SourceSeriesSpecification.BuildArray(location, tempMax)[0],
+                    //    SourceSeriesSpecification.BuildArray(location, tempMin)[0],
+                    //},
+                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax),
+                    Aggregation = SeriesAggregationOptions.Mean,
+                    BinGranularity = BinGranularities.ByYear,
+                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                    SmoothingWindow = 20,
+                    Value = SeriesValueOptions.Value,
+                    Year = null
+                }
+            );
+        }
+
+        if (rainfall != null)
+        {
+            ChartSeriesList.Add(
+                new ChartSeriesDefinition()
+                {
+                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, rainfall),
+                    Aggregation = SeriesAggregationOptions.Sum,
+                    BinGranularity = BinGranularities.ByYear,
+                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                    SmoothingWindow = 20,
+                    Value = SeriesValueOptions.Value,
+                    Year = null
+                }
+            );
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -219,7 +314,7 @@ public partial class Index : IDisposable
     {
         var locationText = SelectedLocation == null ? "" : " - " + SelectedLocation.Name;
 
-        string title = $"Climate explorer{locationText}";
+        string title = $"ClimateExplorer{locationText}";
 
         Logger.LogInformation("GetPageTitle() returning '" + title + "' NavigateTo");
 
@@ -258,13 +353,13 @@ public partial class Index : IDisposable
 
         var locationNames = ChartSeriesWithData.SelectMany(x => x.ChartSeries.SourceSeriesSpecifications).Select(x => x.LocationName).Where(x => x != null).Distinct().ToArray();
 
-        var fileName = locationNames.Any() ? String.Join("-", locationNames) + "-" : "";
+        var fileName = locationNames.Any() ? string.Join("-", locationNames) + "-" : "";
 
         fileName = $"Export-{fileName}-{SelectedBinGranularity}-{ChartBins.First().Label}-{ChartBins.Last().Label}.csv";
 
         using var streamRef = new DotNetStreamReference(stream: fileStream);
 
-        await JSRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+        await JsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 
     async Task OnSelectedDayGroupingChanged(short value)
@@ -274,19 +369,26 @@ public partial class Index : IDisposable
 
     async Task OnDayGroupThresholdTextChanged(string value)
     {
-        DayGroupThresholdText = value;
+        GroupingThresholdText = value;
     }
 
     async Task ApplyYearlyAverageParameters()
     {
-        SelectedDayGroupThreshold = float.Parse(DayGroupThresholdText) / 100;
+        UserOverridePresetAggregationSettings = true;
+        InternalGroupingThreshold = float.Parse(GroupingThresholdText) / 100;
         SelectedDayGrouping = SelectingDayGrouping == 0 ? SelectedDayGrouping : SelectingDayGrouping;
+        await BuildDataSets();
+    }
+
+    async Task ClearUserAggregationOverride()
+    {
+        UserOverridePresetAggregationSettings = false;
         await BuildDataSets();
     }
 
     private async Task OnOverviewShowHide(bool isOverviewVisible)
     {
-        await JSRuntime.InvokeVoidAsync("showOrHideMap", isOverviewVisible);
+        await JsRuntime.InvokeVoidAsync("showOrHideMap", isOverviewVisible);
     }
 
     private Task ShowSelectLocationModal()
@@ -301,7 +403,7 @@ public partial class Index : IDisposable
 
     private Task ShowOptionsModal()
     {
-        DayGroupThresholdText = (SelectedDayGroupThreshold * 100).ToString();
+        GroupingThresholdText = MathF.Round(InternalGroupingThreshold * 100, 0).ToString();
         return optionsModal.Show();
     }
 
@@ -393,7 +495,7 @@ public partial class Index : IDisposable
         await BuildDataSets();
     }
 
-    async Task OnSelectedBinGranularityChanged(BinGranularities value)
+    async Task OnSelectedBinGranularityChanged(BinGranularities value, bool rebuildDataSets = true)
     {
         SelectedBinGranularity = value;
 
@@ -409,7 +511,10 @@ public partial class Index : IDisposable
             await ShowRangeSliderChanged(true);
         }
 
-        await BuildDataSets();
+        if (rebuildDataSets)
+        {
+            await BuildDataSets();
+        }
     }
 
     Location SelectedLocation
@@ -424,9 +529,11 @@ public partial class Index : IDisposable
             {
                 PreviousLocation = _selectedLocation;
                 _selectedLocation = value;
+                LocationCoordinates = _selectedLocation.Coordinates;
             }
         }
     }
+    Coordinates LocationCoordinates;
 
     void HandleLocationChanged(object sender, LocationChangedEventArgs e)
     {
@@ -530,7 +637,7 @@ public partial class Index : IDisposable
             bool shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds = currentUri.IndexOf("csd=") == -1;
 
             // Just let the navigation process trigger the UI updates
-            NavigateTo(url, shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds);
+            await NavigateTo(url, shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds);
         }
         else
         {
@@ -580,6 +687,7 @@ public partial class Index : IDisposable
                         Value = csd.Value,
                         Year = year,
                         SeriesTransformation = csd.SeriesTransformation,
+                        GroupingThreshold = csd.GroupingThreshold,
                     }
                 );
             }
@@ -631,7 +739,7 @@ public partial class Index : IDisposable
                 SelectedBinGranularity.IsModular() && cupAggregationFunction == ContainerAggregationFunctions.Sum
                 ? ContainerAggregationFunctions.Mean
                 : cupAggregationFunction;
-
+            
             DataSet dataSet =
                 await DataService.PostDataSet(
                     SelectedBinGranularity,
@@ -641,14 +749,12 @@ public partial class Index : IDisposable
                     csd.Value,
                     csd.SourceSeriesSpecifications.Select(BuildDataPrepSeriesSpecification).ToArray(),
                     csd.SeriesDerivationType,
-                    // If we're in linear time, all buckets in a bin must have passed the data completeness test. Otherwise we just apply SelectedDayGroupThreshold
-                    csd.BinGranularity.IsLinear() ? 1.0f : SelectedDayGroupThreshold,
-                    // If we're in linear time, all cups in a bucket must have passed the data completeness test. Otherwise we just apply SelectedDayGroupThreshold
-                    csd.BinGranularity.IsLinear() ? 1.0f : SelectedDayGroupThreshold,
-                    // We always require that the cup have at least SelectedDayGroupThreshold of its entries populated
-                    SelectedDayGroupThreshold,
+                    GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
+                    GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
+                    GetGroupingThreshold(csd.GroupingThreshold),
                     SelectedDayGrouping,
-                    csd.SeriesTransformation
+                    csd.SeriesTransformation,
+                    csd.Year
                 );
 
             datasetsToReturn.Add(
@@ -659,6 +765,28 @@ public partial class Index : IDisposable
         Logger.LogInformation("RetrieveDataSets: completed enumeration");
 
         return datasetsToReturn;
+    }
+
+    private float GetGroupingThreshold(float? groupingThreshold, bool binGranularityIsLinear = false)
+    {
+        // If we're in linear time, all buckets in a bin must have passed the data completeness test.
+        // Otherwise, we apply GroupingThreshold from either user input or ChartSeriesDefinition
+        return binGranularityIsLinear
+            ? 1.0f 
+            : (UserOverridePresetAggregationSettings || groupingThreshold == null) 
+                ? InternalGroupingThreshold
+                : groupingThreshold.Value;
+    }
+
+    private string GetGroupingThresholdText()
+    {
+        var groupingThreshold = ChartSeriesList.FirstOrDefault() == null ? null : ChartSeriesList.First().GroupingThreshold;
+
+        return UserOverridePresetAggregationSettings
+            ? $"{InternalGroupingThreshold * 100}% (user override)"
+            : groupingThreshold == null
+                    ? $"{InternalGroupingThreshold * 100}%"
+                    : $"{groupingThreshold * 100}% (preset defined)";
     }
 
     async Task OnSelectedYearsChanged(ExtentValues extentValues)
@@ -766,7 +894,9 @@ public partial class Index : IDisposable
 
         subtitle =
             (ChartStartBin != null & ChartEndBin != null)
-            ? $"({ChartStartBin.Label}-{ChartEndBin.Label})"
+            ? ChartStartBin is YearBinIdentifier
+                ? $"{ChartStartBin.Label}-{ChartEndBin.Label}     {Convert.ToInt16(ChartEndBin.Label) - Convert.ToInt16(ChartStartBin.Label)} years"
+                : $"{ChartStartBin.Label}-{ChartEndBin.Label}"
             : SelectedBinGranularity.ToFriendlyString();
 
         l.LogInformation("Calling AddDataSetsToGraph");
@@ -842,7 +972,7 @@ public partial class Index : IDisposable
             {
                 Text = xLabel,
                 Display = true,
-                Color = "blue",
+                Color = "black",
             },
         };
 
@@ -865,7 +995,7 @@ public partial class Index : IDisposable
                         {
                             Text = UnitOfMeasureLabel(s.SeriesTransformation, uom),
                             Display = true,
-                            Color = "blue",
+                            Color = s.Colour == "#ffff33" ? "#a0a033" : s.Colour,
                         },
                     });
                 axes.Add(axisId);
@@ -891,15 +1021,20 @@ public partial class Index : IDisposable
         foreach (var chartSeries in ChartSeriesWithData)
         {
             var dataSet = chartSeries.ProcessedDataSet;
-
             var htmlColourCode = colours.GetNextColour(chartSeries.ChartSeries.RequestedColour, requestedColours);
+            var renderSmallPoints = IsMobileDevice || dataSet.DataRecords.Count > 400;
+            var defaultLabel = IsMobileDevice 
+                ? chartSeries.ChartSeries.GetFriendlyTitleShort() 
+                : $"{chartSeries.ChartSeries.FriendlyTitle} | {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}";
+            
 
             await ChartLogic.AddDataSetToChart(
                 chart,
                 chartSeries,
                 dataSet,
-                GetChartLabel(chartSeries.ChartSeries.SeriesTransformation, $"{chartSeries.ChartSeries.FriendlyTitle} | {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}", chartSeries.ChartSeries.Aggregation),
-                htmlColourCode);
+                GetChartLabel(chartSeries.ChartSeries.SeriesTransformation, defaultLabel, chartSeries.ChartSeries.Aggregation),
+                htmlColourCode,
+                renderSmallPoints: renderSmallPoints);
 
             if (chartSeries.ChartSeries.ShowTrendline)
             {
@@ -1084,12 +1219,17 @@ public partial class Index : IDisposable
 
     async Task SelectedLocationChanged(Guid locationId)
     {
-        NavigateTo("/location/" + locationId.ToString());
+        await NavigateTo("/location/" + locationId.ToString());
     }
 
-    public void NavigateTo(string uri, bool replace = false)
+    public async Task NavigateTo(string uri, bool replace = false)
     {
         Logger.LogInformation("NavManager.NavigateTo(uri=" + uri + ", replace=" + replace + ")");
+
+        // Below is a JavaScript hack to stop NavigateTo from scrolling to the top of the page.
+        // See: https://github.com/dotnet/aspnetcore/issues/40190 and index.html
+        await JsRuntime.InvokeVoidAsync("willSkipScrollTo", true);
+
         NavManager.NavigateTo(uri, false, replace);
     }
 
@@ -1229,6 +1369,7 @@ public partial class Index : IDisposable
                                 Value = csd.Value,
                                 Year = csd.Year,
                                 SeriesTransformation = csd.SeriesTransformation,
+                                GroupingThreshold = csd.GroupingThreshold,
                             }
                         );
                     }
@@ -1247,16 +1388,24 @@ public partial class Index : IDisposable
 
     async Task OnLineChartClicked(ChartMouseEventArgs e)
     {
-        throw new NotImplementedException();
+        if (SelectedBinGranularity != BinGranularities.ByYear)
+        {
+            // TODO: Add support for SelectedBinGranularity != BinGranularities.ByYear
+            return;
+        }
 
-        //var year = (short)(ChartStartYear + e.Index);
+        var startYear = UseMostRecentStartYear 
+            ? StartYears.Last()
+            : SelectedStartYear != null 
+                ? Convert.ToInt16(SelectedStartYear) 
+                : throw new NotImplementedException();
 
-        //SelectedYears = new List<short> { year };
-        //SelectedResolution = DataResolution.Monthly;
+        var year = (short)(startYear + e.Index);
 
-        //RebuildChartSeriesListToReflectSelectedYears();
+        var dataType = ChartSeriesWithData[e.DatasetIndex].SourceDataSet.DataType;
+        var dataAdjustment = ChartSeriesWithData[e.DatasetIndex].SourceDataSet.DataAdjustment;
 
-        //await BuildDataSets();
+        await HandleOnYearFilterChange(new YearAndDataTypeFilter(year) { DataType = dataType, DataAdjustment = dataAdjustment });
     }
 
     async Task ShowRangeSliderChanged(bool? value)
@@ -1279,5 +1428,85 @@ public partial class Index : IDisposable
         EnableRangeSlider = false;
 
         await HandleRedraw();
+    }
+
+    class GetLocationResult
+    {
+        public float Latitude { get; set; }
+        public float Longitude { get; set; }
+
+        public float ErrorCode { get; set; }
+        public string ErrorMessage { get; set; }
+    }
+
+    async Task<Guid?> GetCurrentLocation()
+    {
+        if (JsRuntime == null)
+        {
+            return null;
+        }
+
+        var getLocationResult = await JsRuntime.InvokeAsync<GetLocationResult>("getLocation");
+
+        BrowserLocationErrorMessage = null;
+        if (getLocationResult.ErrorCode > 0)
+        {
+            BrowserLocationErrorMessage = "Unable to determine your location" + (!string.IsNullOrWhiteSpace(getLocationResult.ErrorMessage) ? $" ({getLocationResult.ErrorMessage})" : "");
+            Logger.LogError(BrowserLocationErrorMessage);
+            return null;
+        }
+
+        var geoCoord = new GeoCoordinate(getLocationResult.Latitude, getLocationResult.Longitude);
+
+        var distances = Location.GetDistances(geoCoord, Locations);
+        var closestLocation = distances.OrderBy(x => x.Distance).First();
+
+        return closestLocation.LocationId;
+    }
+
+    async Task SetCurrentLocation()
+    {
+        var locationId = await GetCurrentLocation();
+        if (locationId != null)
+        {
+            await SelectedLocationChangedInternal(locationId.Value);
+        }
+    }
+
+    async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)
+    {
+        await OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly, false);
+
+        var chartWithData = ChartSeriesWithData
+            .First(x => 
+            (x.SourceDataSet.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
+            (x.SourceDataSet.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null));
+
+        var chartSeries = ChartSeriesList
+            .First(x => x.SourceSeriesSpecifications.Any(y => 
+               (y.MeasurementDefinition.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
+               (y.MeasurementDefinition.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null)));
+
+        ChartSeriesList =
+            ChartSeriesList
+            .Concat(
+                new List<ChartSeriesDefinition>()
+                {
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = chartWithData.ChartSeries.SourceSeriesSpecifications,
+                        Aggregation = chartSeries.Aggregation,
+                        BinGranularity = SelectedBinGranularity,
+                        Smoothing = SeriesSmoothingOptions.None,
+                        SmoothingWindow = 5,
+                        Value = SeriesValueOptions.Value,
+                        Year = yearAndDataTypeFilter.Year,
+                    }
+                }
+            )
+            .ToList();
+
+        await BuildDataSets();
     }
 }

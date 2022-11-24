@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="/blog/" rel="alternate" type="text/html" /><updated>2022-11-24T20:14:39+11:00</updated><id>/blog/feed.xml</id><title type="html">ClimateExplorer</title><subtitle>The official blog of https://climateexplorer.net.</subtitle><entry><title type="html">ACORN-SAT version 2.3</title><link href="/blog/meta/2022/11/19/acorn-sat-2.3.html" rel="alternate" type="text/html" title="ACORN-SAT version 2.3" /><published>2022-11-19T19:00:00+11:00</published><updated>2022-11-19T19:00:00+11:00</updated><id>/blog/meta/2022/11/19/acorn-sat-2.3</id><content type="html" xml:base="/blog/meta/2022/11/19/acorn-sat-2.3.html">&lt;p&gt;ACORN-SAT version 2.3 was release 2022-11-18. Version 2.3 has temperatures records from 1910 up until the end of 2021, for the 112 locations around Australia included in ACORN-SAT.&lt;/p&gt;
+
+&lt;p&gt;The map below (from &lt;a href=&quot;https://climateexplorer.net/&quot;&gt;ClimateExplorer&lt;/a&gt;) shows heating scores calculated from version 2.3 of ACORN-SAT. Canberra is no longer the only location that has a heating score of 9. There are now 5 sites that share that score.&lt;/p&gt;
+
+&lt;p&gt;Heating score is a relative metric; it’s the result of comparing all warming indexes with all others in the dataset. The other sites (&lt;a href=&quot;https://climateexplorer.net/location/alice-springs&quot;&gt;Alice Springs&lt;/a&gt;, &lt;a href=&quot;https://climateexplorer.net/location/cunderdin&quot;&gt;Cunderdin&lt;/a&gt;, &lt;a href=&quot;https://climateexplorer.net/location/marree&quot;&gt;Marree&lt;/a&gt;, &lt;a href=&quot;https://climateexplorer.net/location/snowtown&quot;&gt;Snowtown&lt;/a&gt;) were boosted to a 9 because they had warmer than average temperatures in 2021. Canberra had its first cooler than average temperature since 1996 (25 years). That reduced Canberra’s warming index from 1.8°C to 1.7°C.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/assets/australia-heating-scores-acorn-sat-2.3.png&quot; alt=&quot;Australian heating scores from ACORN-SAT 2.3&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&quot;http://www.bom.gov.au/&quot;&gt;Bureau of Meteorology&lt;/a&gt; released a statement about version 2.3 on their &lt;a href=&quot;http://www.bom.gov.au/climate/data/acorn-sat/&quot;&gt;ACORN-SAT website&lt;/a&gt;, reproduced below.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;h3 id=&quot;new-and-reassessed-adjustments-as-part-of-acorn-sat-version-23&quot;&gt;New and reassessed adjustments as part of ACORN-SAT version 2.3&lt;/h3&gt;
+  &lt;p&gt;ACORN-SAT 2.3 includes new or reassessed adjustments at 16 of the 112 ACORN-SAT locations. Previously applied adjustments at 7 locations were removed after being found to be no longer significant with the inclusion of additional data.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Analysis has shown the changed adjustments in ACORN-SAT 2.3 have had a negligible impact on estimated long-term warming trend in Australia.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Full details of all adjustments, including the time periods and reference periods used, are available in the station catalogue. The Bureau’s ACORN-SAT dataset and methods have been thoroughly peer-reviewed and found to be world-leading. Further information on the dataset and the reasons for adjustments can be found in the ACORN-SAT &lt;a href=&quot;http://www.bom.gov.au/climate/data/acorn-sat/#tabs=FAQs&quot;&gt;FAQ section&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name></name></author><category term="meta" /><summary type="html">ACORN-SAT version 2.3 was release 2022-11-18. Version 2.3 has temperatures records from 1910 up until the end of 2021, for the 112 locations around Australia included in ACORN-SAT.</summary></entry><entry><title type="html">Chart options information</title><link href="/blog/meta/2022/11/19/chart-options-information.html" rel="alternate" type="text/html" title="Chart options information" /><published>2022-11-19T06:16:00+11:00</published><updated>2022-11-19T06:16:00+11:00</updated><id>/blog/meta/2022/11/19/chart-options-information</id><content type="html" xml:base="/blog/meta/2022/11/19/chart-options-information.html">&lt;p&gt;When using &lt;a href=&quot;https://climateexplorer.net&quot;&gt;ClimateExplorer&lt;/a&gt;, you may notice that below the chart there is a cluster of buttons that allow you to customise the data and the chart. This post explains what they are and how to use them. There is a general help (chart options) and detailed information on two of the more complicated areas. The sections are:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Chart options&lt;/li&gt;
+  &lt;li&gt;Year filtering&lt;/li&gt;
+  &lt;li&gt;Aggregation options&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;chart-options-information&quot;&gt;Chart options information&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/assets/chart-options.png&quot; alt=&quot;Chart options information&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Year filtering: allows you to change the start and end years for the chart. For example, if you want to see the change in temperature for the 20th century, you could set the end year to 2000.&lt;/p&gt;
+
+&lt;p&gt;Clear filter: the clear filter button is only displayed when there is a start or end year filter applied to the chart. Clicking this button will reset the chart back to the default filter and remove the range slider (if it has been turned on).&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Grouping&lt;/strong&gt;: the grouping option allows you to look at the data from another point of view. The default view is “Yearly”; i.e., each point on the graph represents a single year in the series. To represent daily data at the yearly level, ClimateExplorer applies rules and aggregations to average (or sum) the data together. If you select “Year + Month” the data will be re-processed, starting with the daily data for the particular year, to present twelve points on the chart per year. This view works best in combination with the range slider. If you select “Month”, the data will be sliced, again starting with the lowest level of the data (usually daily), into only twelve points, one point for every month of the year. The value for each point will be an average (or sum) of the data across all years. This will give you a climatic view of the data for the location, it will not be as useful for viewing the change in the climate over time.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Download data&lt;/strong&gt;: the download data button allows you to download, as a csv file, the data for the chart you are currently looking at. The button is context sensitive; it’ll download data that applies to the current view. For example, if you are looking at the data as a “Year + Month” grouping, you will get twelve records for each year.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Aggregation options&lt;/strong&gt; (&lt;em&gt;advanced&lt;/em&gt; feature): the aggregation options allow you to change the underlying grouping parameters for the chart. The default values will group the daily data into 14 day (i.e., fortnightly) sub-bins. If each of those sub-bins has records for 70% of those days (i.e., 10 days of the 14 days will need to have records) then the whole year is considered valid. This means that you can still have substantial data loss for the year (e.g., the meteorologist was unwilling to come in on weekends to record the min and max temperatures)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Add data set&lt;/strong&gt; (&lt;em&gt;advanced&lt;/em&gt; feature): the suggested charts at the bottom of the screen provide the user with a number of predefined and recommended charts that can be viewed within ClimateExplorer. Other datasets can be added in an ad-hoc manner with the “Add data set” button. The list on the “Add data set” dialog contains data for your current location, such as solar radiation and the diurnal range for temperature. The list also contains reference data sets that can be added, such as CO₂, ENSO indexes and data from the cryosphere (the cryosphere comprises the parts of the planet that are frozen most of the year).&lt;/p&gt;
+
+&lt;h2 id=&quot;year-filtering-information&quot;&gt;Year filtering information&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/assets/year-filtering.png&quot; alt=&quot;Year filtering information&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This dialog allows you to change the start and end years for the chart. For example, if you want to see the change in temperature/rainfall for the 20th century, you could set the end year to 2000.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Range slider&lt;/strong&gt;: if you want to browse the start/end years of the chart, the range slider may be helpful. It allows you to the change the range of years on the chart, using a slider control. The range slider supports increasing and decreasing the start and end year individually. By moving the slider within the extents, it will change both start and end years at the same time. For example, you could filter to only 30 years of data, between 1910 and 1940, then move the slider to another set of 30 years, between 1940 and 1970.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Dynamically set the start year of the chart to be the most recent start year across all the datasets on the chart&lt;/strong&gt;: when this is checked, the start year for the chart will be the last start year found across the datasets. For example, Canberra’s temperature records start in 1914. Canberra’s rainfall records start in 1924. With the option checked, the chart will start in 1924 because that’s the latest start year. The start year for the chart will dynamically adjust to whatever datasets are selected for viewing. This option is checked by default.&lt;/p&gt;
+
+&lt;h2 id=&quot;aggregation-options-information&quot;&gt;Aggregation options information&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/assets/aggregation-options.png&quot; alt=&quot;Aggregation options information&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The aggregation options are advanced features that allows you to change the underlying aggregation process. To calculate a single aggregated value for data for a year, from daily or monthly series, data is bundled together. If each bundle of data does not have enough records, the bundle is rejected as being unreliable.&lt;/p&gt;
+
+&lt;p&gt;By default, the bundles are groups of 14 days (fortnights) and each bundle requires 70% (10 days of the 14) of the records to be present for the year to be considered reliable enough for an average mean to be calculated. This means that a number of records can be missing for the year, so long as not too many consecutive days are missing. As temperature (and other climate data) follows cyclic patterns, missing data from a consecutive block is considered to be more untrustworthy than sporadic data missing throughout the year.&lt;/p&gt;
+
+&lt;p&gt;Some presets (specifically, the cryosphere reference data – sea ice extent and melt) have a lower threshold applied to them because the data has been curated and considered to be trustworthy enough that more of it can be missing while still not corrupting the results.&lt;/p&gt;
+
+&lt;p&gt;If you make changes to these settings and apply them, your settings will take precedence and override any preset specific settings. You can clear this by clicking “Clear override” which would have appeared after you applied your changes.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Day grouping&lt;/strong&gt;: select groups from weekly, fortnightly, monthly, and half-yearly, amongst other options.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Threshold required to form a valid group (% percentage)&lt;/strong&gt;: this is a percentage of how many records is considered sufficient to form a valid bundle of data.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Apply&lt;/strong&gt;: save your changes and apply them to the chart. These settings will persist as you change locations and datasets within the application.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Clear override&lt;/strong&gt;: this will reset the settings back to their default (14 days at 70% threshold). Only appears after applying your settings.&lt;/p&gt;</content><author><name></name></author><category term="meta" /><summary type="html">When using ClimateExplorer, you may notice that below the chart there is a cluster of buttons that allow you to customise the data and the chart. This post explains what they are and how to use them. There is a general help (chart options) and detailed information on two of the more complicated areas. The sections are:</summary></entry><entry><title type="html">Location summary information</title><link href="/blog/meta/2022/11/11/location-summary-information.html" rel="alternate" type="text/html" title="Location summary information" /><published>2022-11-11T06:39:00+11:00</published><updated>2022-11-11T06:39:00+11:00</updated><id>/blog/meta/2022/11/11/location-summary-information</id><content type="html" xml:base="/blog/meta/2022/11/11/location-summary-information.html">&lt;p&gt;When you use ClimateExplorer, you may see info boxes that explain a few of the climate-related concepts presented in the web application. In the location summary area, they are:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Warming index&lt;/li&gt;
+  &lt;li&gt;Heating score&lt;/li&gt;
+  &lt;li&gt;Climate stripe&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;We thought it might be a good idea to present the text on the blog, as a summary of some of the concepts. Below is what you may see as pop-up text if you click on the corresponding area in the application.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/assets/Canberra-location-info.png&quot; alt=&quot;Canberra-location-info&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;warming-index&quot;&gt;Warming index&lt;/h2&gt;
+
+&lt;p&gt;The warming index is the temperature difference between the average of the last 20 years of maximum temperatures compared with the average of the first half (50 years) of the dataset.&lt;/p&gt;
+
+&lt;p&gt;Canberra, between the years 2001-2020, had an average max temp of &lt;strong&gt;21.06°C&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Canberra, between the years 1914-1970, had an average max temp of &lt;strong&gt;19.29°C&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;The difference is &lt;strong&gt;+1.8°C&lt;/strong&gt; (after rounding to 1 decimal place).&lt;/p&gt;
+
+&lt;p&gt;Over the long-term, with no external influences, we’d expect the warming index to trend towards zero. A non-zero warming index may indicate an effect of climate change. A positive warming index may indicate global warming.&lt;/p&gt;
+
+&lt;h2 id=&quot;heating-score&quot;&gt;Heating score&lt;/h2&gt;
+
+&lt;p&gt;The heating score is a number typically between 0 and 9. It is derived from comparing all warming indexes across the locations in the dataset. The highest warming index is used to standardise the values.&lt;/p&gt;
+
+&lt;p&gt;To calculate the heating score:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;For warming indexes that are greater than zero, divide the warming index by the maximum warming index in the set, multiple by 9 and round to zero decimal places.&lt;/li&gt;
+  &lt;li&gt;For warming indexes that are less than zero, the only operation done is to round the number to zero demical places.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The score may be higher if:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The location is inland. The ocean is warming more slowly compared with the land. Coastal locations are therefore likely to have warmed less than inland locations.&lt;/li&gt;
+  &lt;li&gt;The station(s) has been operating for a long time. The effect of global warming is more obvious with a large dataset as temperatures in the past were cooler.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;climate-stripe&quot;&gt;Climate stripe&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Warming_stripes&quot; target=&quot;_blank&quot;&gt;Climate stripes&lt;/a&gt; are a simplified bar chart of average temperatures, ordered by year, from the earliest year in the record until the most recent. Each coloured stripe represents a single year of temperature data. A blue stripe is a year where the temperature is below the average of the whole series. A red stripe represents an above average temperature.&lt;/p&gt;
+
+&lt;p&gt;Climate stripe colours are calculated by the following algorithm.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Calculate the average temperature for the whole series (e.g., Canberra 1914-2020 mean is 19.8°C)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;For each year in the series, subtract the average temperature for the &lt;strong&gt;year&lt;/strong&gt; from the average for the &lt;strong&gt;series&lt;/strong&gt;. Note:&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;This value in step 2 is often called the temperature anomaly&lt;/li&gt;
+      &lt;li&gt;If the anomaly is above 0°C, we consider it a warmer than average year&lt;/li&gt;
+      &lt;li&gt;If the anomaly is below 0°C, we consider it a colder than average year&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Find the coldest anomaly (e.g., Canberra’s is -2°C) and assign it the strongest colour of blue&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Find the warmest anomaly (e.g., Canberra’s is 2.9°C) and assign it the strongest colour of red&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;All anomalies between the extremes are lighter shades of blue or red&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Climate Explorer’s stripe is interactive. Hover over any year in the series then click. The chart will update with a monthly view of the selected year.&lt;/p&gt;</content><author><name></name></author><category term="meta" /><summary type="html">When you use ClimateExplorer, you may see info boxes that explain a few of the climate-related concepts presented in the web application. In the location summary area, they are:</summary></entry><entry><title type="html">Welcome to the Climate Explorer blog</title><link href="/blog/meta/2022/11/04/welcome-to-climate-explorer.html" rel="alternate" type="text/html" title="Welcome to the Climate Explorer blog" /><published>2022-11-04T14:40:17+11:00</published><updated>2022-11-04T14:40:17+11:00</updated><id>/blog/meta/2022/11/04/welcome-to-climate-explorer</id><content type="html" xml:base="/blog/meta/2022/11/04/welcome-to-climate-explorer.html">&lt;p&gt;Hey, welcome to the &lt;a href=&quot;https://climateexplorer.net/&quot;&gt;Climate Explorer&lt;/a&gt; blog! We plan to use this blog to keep you up to date as we add features &amp;amp; data sets to &lt;a href=&quot;https://climateexplorer.net/&quot;&gt;Climate Explorer&lt;/a&gt;, as well as linking to further reading on the source data sets and climate concepts related to the site. We may also talk a little about how the site is implemented behind the scenes.&lt;/p&gt;
+
+&lt;h2 id=&quot;what-is-climate-explorer&quot;&gt;What is Climate Explorer?&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://climateexplorer.net/&quot;&gt;Climate Explorer&lt;/a&gt; was created to help people understand climate change. It’s focussed on trying to provide a simple and approachable interface for people to explore. The types of data include temperature, rainfall and large-scale weather patterns like ENSO (El Niño/La Niña) and the Indian Ocean Dipole (IOD). So far, we’ve focussed on Australia and New Zealand.&lt;/p&gt;
+
+&lt;h2 id=&quot;who-is-the-website-for&quot;&gt;Who is the website for?&lt;/h2&gt;
+
+&lt;p&gt;&lt;img style=&quot;float: right;width: 10rem;&quot; src=&quot;/blog/assets/HotTalkColdScience.jpg&quot; alt=&quot;Cover of boom Hot Talk, Cold Science&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The website was created with climate sceptics in mind. It was created after one of the programmers started a review of &lt;a href=&quot;https://www.goodreads.com/en/book/show/1610224.Hot_Talk_Cold_Science&quot;&gt;Hot Talk, Cold Science: Global Warming’s Unfinished Debate&lt;/a&gt;. We intend to contribute the review of this book, over multiple parts, on this blog.&lt;/p&gt;
+
+&lt;h2 id=&quot;why&quot;&gt;Why?&lt;/h2&gt;
+
+&lt;p&gt;The idea behind Climate Explorer was to provide an accessible website that allows users to explore the temperature data provided by the &lt;a href=&quot;http://www.bom.gov.au/&quot;&gt;Bureau of Meteorology&lt;/a&gt; (BoM). The initial focus was to permit the user to compare the &lt;a href=&quot;http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Methods&quot;&gt;adjusted temperature records&lt;/a&gt; with the unadjusted records. The BoM do a good job of explaining why they adjust the records over the long-term. Their reasoning is:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;ul&gt;
+    &lt;li&gt;a shift in the location of the station (for example, from a post office to an airport);&lt;/li&gt;
+    &lt;li&gt;a change in the environment around the station (for example a tree grows, a structure is built, a lawn is irrigated); or&lt;/li&gt;
+    &lt;li&gt;a change in measurement method (for example, from a manual instrument to a recording electronic instrument).&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;A sceptical response to the BoM may be: “you haven’t provided all of the evidence, so how are we supposed to make up our minds?” Climate Explorer allows the user to look at any location used in &lt;a href=&quot;http://www.bom.gov.au/climate/data/acorn-sat/&quot;&gt;ACORN-SAT&lt;/a&gt; and compare the adjusted with the unadjusted records.&lt;/p&gt;
+
+&lt;h2 id=&quot;contact-us&quot;&gt;Contact us&lt;/h2&gt;
+
+&lt;p&gt;If you have any feedback, suggestions or questions, feel free to let us know at &lt;a href=&quot;mailto:climateexplorerteam@gmail.com&quot;&gt;climateexplorerteam@gmail.com&lt;/a&gt;.&lt;/p&gt;</content><author><name></name></author><category term="meta" /><summary type="html">Hey, welcome to the Climate Explorer blog! We plan to use this blog to keep you up to date as we add features &amp;amp; data sets to Climate Explorer, as well as linking to further reading on the source data sets and climate concepts related to the site. We may also talk a little about how the site is implemented behind the scenes.</summary></entry></feed>

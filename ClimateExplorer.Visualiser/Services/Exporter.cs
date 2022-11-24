@@ -66,6 +66,9 @@ public class Exporter : IExporter
             case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
                 return s + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications.First()) + " minus " + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications.Last());
 
+            case SeriesDerivationTypes.AverageOfMultipleSeries:
+                return s + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications.First()) + " average " + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications.Last());
+
             default:
                 throw new NotImplementedException($"SeriesDerivationType {csd.SeriesDerivationType}");
         }

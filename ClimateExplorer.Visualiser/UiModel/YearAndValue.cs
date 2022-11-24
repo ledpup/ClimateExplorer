@@ -2,10 +2,10 @@
 
 public class YearAndValue
 {
-    public int Year { get; set; }
+    public short Year { get; set; }
     public float Value { get; set; }
 
-    public YearAndValue(int year, float value)
+    public YearAndValue(short year, float value)
     {
         Year = year;
         Value = value;

@@ -2,8 +2,12 @@
 using ClimateExplorer.Analyser.Bom;
 using ClimateExplorer.Analyser.Greenland;
 using ClimateExplorer.Analyser.Niwa;
+using ClimateExplorer.Analyser.StaticContent;
+using System.Xml;
 
 GenerateMapMarkers();
+await BuildStaticContent.GenerateSiteMap();
+await BuildStaticContent.GenerateIndexFiles();
 
 var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
 
@@ -29,8 +33,6 @@ await BomDataDownloader.GetDataForEachStation(stations);
 await BomLocationsAndStationsMapper.BuildAcornSatAdjustedDataFileLocationMappingAsync(Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"), @"Output\DataFileLocationMapping\DataFileLocationMapping_Australia_unadjusted.json", "_Australia_adjusted");
 
 await BomLocationsAndStationsMapper.BuildRaiaLocationsFromReferenceDataAsync(Guid.Parse("647b6a05-43e4-48e0-a43e-04ae81a74653"), "_Australia_Raia");
-
-
 
 async Task ValidateLocations()
 {

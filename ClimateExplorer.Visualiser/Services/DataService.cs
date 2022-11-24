@@ -79,7 +79,8 @@ public class DataService : IDataService
         float requiredBucketDataProportion,
         float requiredCupDataProportion,
         int cupSize,
-        SeriesTransformations seriesTransformation)
+        SeriesTransformations seriesTransformation,
+        short? year)
     {
         var response = 
             await _httpClient.PostAsJsonAsync<PostDataSetsRequestBody>(
@@ -97,7 +98,8 @@ public class DataService : IDataService
                     SeriesDerivationType = seriesDerivationType,
                     SeriesSpecifications = seriesSpecifications,
                     SeriesTransformation = seriesTransformation,
-                    Anomaly = seriesValueOption == SeriesValueOptions.Anomaly
+                    Anomaly = seriesValueOption == SeriesValueOptions.Anomaly,
+                    FilterToYear = year,
                 });
 
         if (!response.IsSuccessStatusCode)

@@ -33,6 +33,18 @@ public static class ChartSeriesListSerializer
         return (T)Enum.Parse(typeof(T), s);
     }
 
+    static float? ParseNullableFloat(string s)
+    {
+        if (String.IsNullOrWhiteSpace(s)) return null;
+
+        if (float.TryParse(s, out float val))
+        {
+            return val;
+        }
+
+        throw new Exception($"Failed to parse '{s}'");
+    }
+
     public static List<ChartSeriesDefinition> ParseChartSeriesDefinitionList(ILogger logger, string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<Location> locations)
     {
         logger.LogInformation("ParseChartSeriesDefinitionList: " + s);
@@ -71,6 +83,7 @@ public static class ChartSeriesListSerializer
                 Year = ParseNullableShort(segments[11]),
                 IsExpanded = bool.Parse(segments[12]),
                 SeriesTransformation = ParseEnum<SeriesTransformations>(segments[13]),
+                GroupingThreshold = ParseNullableFloat(segments[14]),
             };
     }
 
@@ -168,7 +181,8 @@ public static class ChartSeriesListSerializer
                 csd.Value,
                 csd.Year,
                 csd.IsExpanded,
-                csd.SeriesTransformation
+                csd.SeriesTransformation,
+                csd.GroupingThreshold
             );
     }
 

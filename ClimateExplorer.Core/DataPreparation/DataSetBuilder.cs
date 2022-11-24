@@ -60,7 +60,7 @@ namespace ClimateExplorer.Core.DataPreparation
             sw.Restart();
 
             // Filter data at series level
-            var filteredDataPoints = SeriesFilterer.ApplySeriesFilters(transformedDataPoints, request.FilterToSouthernHemisphereTemperateSeason, request.FilterToTropicalSeason, request.FilterToYearsAfterAndIncluding, request.FilterToYearsBefore);
+            var filteredDataPoints = SeriesFilterer.ApplySeriesFilters(transformedDataPoints, request.FilterToSouthernHemisphereTemperateSeason, request.FilterToTropicalSeason, request.FilterToYear, request.FilterToYearsAfterAndIncluding, request.FilterToYearsBefore);
 
             Console.WriteLine("ApplySeriesFilters completed in " + sw.Elapsed);
             sw.Restart();

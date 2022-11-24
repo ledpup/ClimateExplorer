@@ -1,7 +1,6 @@
 ﻿using ClimateExplorer.Core;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Core.DataPreparation;
-using ClimateExplorer.Core.ViewModel;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using static ClimateExplorer.Core.Enums;
@@ -23,12 +22,15 @@ public class ChartSeriesDefinition
     public short? Year { get; set; }
     public SeriesTransformations SeriesTransformation { get; set; }
 
+    // Data manipulation fields
+    public float? GroupingThreshold { get; set; }
+
     // Data presentation fields
     public SeriesSmoothingOptions Smoothing { get; set; }
     public int SmoothingWindow { get; set; }
     public SeriesAggregationOptions Aggregation { get; set; }
     public SeriesValueOptions Value { get; set; }
-    public string Colour { get; set; } // Always allocated by ColourServer
+    public string? Colour { get; set; } // Always allocated by ColourServer
     public Colours RequestedColour { get; set; }
 
     // Rendering option fields
@@ -56,25 +58,19 @@ public class ChartSeriesDefinition
         {
             List<string> segments = new List<string>();
 
-            string s = "";
-
-            if (Year != null) s += Year;
-
             if (SourceSeriesSpecifications.Length == 1)
             {
                 var sss = SourceSeriesSpecifications.Single();
 
                 if (sss.LocationName != null)
                 {
-                    if (s.Length > 0)
-                    {
-                        s += " ";
-                    }
-
-                    s += sss.LocationName;
+                    segments.Add(sss.LocationName);
                 }
 
-                if (s.Length > 0) segments.Add(s);
+                if (Year != null)
+                {
+                    segments.Add(Year.ToString());
+                }
 
                 if (sss.MeasurementDefinition.DataCategory != null)
                 {
@@ -106,7 +102,7 @@ public class ChartSeriesDefinition
                 segments.Add("Transformation: " + GetFriendlySeriesTransformationLabel(SeriesTransformation));
             }
 
-            if (Aggregation != SeriesAggregationOptions.Mean)
+            if (Aggregation != SeriesAggregationOptions.Mean || (Year == null && BinGranularity == BinGranularities.ByMonthOnly))
             {
                 segments.Add("Aggregation: " + Aggregation);
             }
@@ -155,22 +151,64 @@ public class ChartSeriesDefinition
         switch (SeriesDerivationType)
         {
             case SeriesDerivationTypes.ReturnSingleSeries:
-                return BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications.Single());
+                return BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications.Single(), BinGranularity, Aggregation, Year);
 
             case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
-                return $"[{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[0])}] minus [{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[1])}]";
+                return $"[{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[0], BinGranularity, Aggregation, Year)}] minus [{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[1], BinGranularity, Aggregation, Year)}]";
+
+            case SeriesDerivationTypes.AverageOfMultipleSeries:
+                return BuildAverageMultipleSeriesTitle(SourceSeriesSpecifications);
 
             default: throw new NotImplementedException($"SeriesDerivationType {SeriesDerivationType}");
-        }            
+        }
     }
 
-    public static string BuildFriendlyTitleShortForSeries(SourceSeriesSpecification sss)
+    static string BuildAverageMultipleSeriesTitle(SourceSeriesSpecification[] sss)
+    {
+        List<string> segments = new List<string>();
+
+        if (sss.All(o => o.LocationName == sss[0].LocationName))
+        {
+            segments.Add(sss[0].LocationName);
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+
+        if (sss.All(o => o.MeasurementDefinition.DataType == sss[0].MeasurementDefinition.DataType))
+        {
+            throw new NotImplementedException();
+        }
+        else
+        {
+            segments.Add($"Average {string.Join(", ", sss.Select(x => MapDataTypeToFriendlyName(x.MeasurementDefinition.DataType)).ToList())}");
+        }
+
+        if (sss.All(o => o.MeasurementDefinition.DataAdjustment == sss[0].MeasurementDefinition.DataAdjustment))
+        {
+            segments.Add(sss[0].MeasurementDefinition.DataAdjustment.ToString());
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+
+        return String.Join(" | ", segments);
+    }
+
+    public static string BuildFriendlyTitleShortForSeries(SourceSeriesSpecification sss, BinGranularities binGranularity, SeriesAggregationOptions aggregation, short? year = null)
     {
         List<string> segments = new List<string>();
 
         if (sss.LocationName != null)
         {
             segments.Add(sss.LocationName);
+        }
+
+        if (year != null)
+        {
+            segments.Add(year.ToString());
         }
 
         if (sss.MeasurementDefinition != null)
@@ -185,6 +223,11 @@ public class ChartSeriesDefinition
         else
         {
             segments.Add("[Missing MeasurementDefinition]");
+        }
+
+        if (year == null && binGranularity == BinGranularities.ByMonthOnly)
+        {
+            segments.Add(aggregation.ToString());
         }
 
         return String.Join(" | ", segments);
@@ -268,8 +311,8 @@ public class ChartSeriesDefinition
     {
         return dataType switch
         {
-            DataType.TempMin => "Daily minimum",
-            DataType.TempMax => "Daily maximum",
+            DataType.TempMin => "Temp minimum",
+            DataType.TempMax => "Temp maximum",
             DataType.SolarRadiation => "Solar radiation",
             DataType.Rainfall => "Rainfall",
             DataType.MEIv2 => "MEI v2",
@@ -307,6 +350,7 @@ public class ChartSeriesDefinition
             if (x.SmoothingWindow != y.SmoothingWindow) return false;
             if (x.Value != y.Value) return false;
             if (x.SeriesTransformation != y.SeriesTransformation) return false;
+            if (x.GroupingThreshold != y.GroupingThreshold) return false;
 
             if (x.SourceSeriesSpecifications.Length != y.SourceSeriesSpecifications.Length) return false;
 
@@ -328,12 +372,14 @@ public class ChartSeriesDefinition
         {
             var hashCode =
                 obj.Aggregation.GetHashCode() ^
+                obj.RequestedColour.GetHashCode() ^
                 obj.BinGranularity.GetHashCode() ^
                 obj.DisplayStyle.GetHashCode() ^
                 obj.ShowTrendline.GetHashCode() ^
                 obj.Smoothing.GetHashCode() ^
                 obj.SmoothingWindow.GetHashCode() ^
-                obj.Value.GetHashCode();
+                obj.Value.GetHashCode() ^
+                (obj.GroupingThreshold == null ? 0 : obj.GroupingThreshold.GetHashCode());
 
             for (int i = 0; i < obj.SourceSeriesSpecifications.Length; i++)
             {
@@ -372,6 +418,7 @@ public class ChartSeriesDefinition
         {
             var hashCode =
                 obj.Aggregation.GetHashCode() ^
+                obj.RequestedColour.GetHashCode() ^
                 obj.BinGranularity.GetHashCode() ^
                 obj.DisplayStyle.GetHashCode() ^
                 obj.IsLocked.GetHashCode() ^
@@ -379,7 +426,8 @@ public class ChartSeriesDefinition
                 obj.Smoothing.GetHashCode() ^
                 obj.SmoothingWindow.GetHashCode() ^
                 obj.Value.GetHashCode() ^
-                obj.Year.GetHashCode();
+                obj.Year.GetHashCode() ^
+                (obj.GroupingThreshold == null ? 0 : obj.GroupingThreshold.GetHashCode());
 
             for (int i = 0; i < obj.SourceSeriesSpecifications.Length; i++)
             {

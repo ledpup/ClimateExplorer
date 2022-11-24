@@ -39,6 +39,8 @@ public class Location
             SetNearbyLocations(locations);
         }
 
+        locations = locations.OrderBy(x => x.Name).ToList();
+
         return locations;
     }
 
