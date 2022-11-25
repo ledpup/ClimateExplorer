@@ -3,6 +3,7 @@
     public enum BinGranularities
     {
         ByYear,
+        ByYearAndDay,
         ByYearAndMonth,
         ByYearAndDay,
         BySouthernHemisphereTemperateSeasonOnly,
@@ -27,8 +28,8 @@
             return b switch
             {
                 BinGranularities.ByYear => "By year",
-                BinGranularities.ByYearAndMonth => "By year and month",
                 BinGranularities.ByYearAndDay => "By year and day",
+                BinGranularities.ByYearAndMonth => "By year and month",
                 BinGranularities.BySouthernHemisphereTemperateSeasonOnly => "By season",
                 BinGranularities.BySouthernHemisphereTropicalSeasonOnly => "By tropical season",
                 BinGranularities.ByMonthOnly => "By month",

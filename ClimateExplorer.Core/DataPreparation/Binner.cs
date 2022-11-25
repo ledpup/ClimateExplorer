@@ -301,8 +301,8 @@ namespace ClimateExplorer.Core.DataPreparation.Model
             return binningRule switch
             {
                 BinGranularities.ByYear => new YearBinIdentifier(dp.Year),
+                BinGranularities.ByYearAndDay => new YearAndDayBinIdentifier(dp.Year, dp.Month.Value),
                 BinGranularities.ByYearAndMonth => new YearAndMonthBinIdentifier(dp.Year, dp.Month.Value),
-                BinGranularities.ByYearAndDay => new YearAndDayBinIdentifier(dp.Year, dp.Month.Value, dp.Day.Value),
                 BinGranularities.ByMonthOnly => new MonthOnlyBinIdentifier(dp.Month.Value),
                 BinGranularities.BySouthernHemisphereTemperateSeasonOnly => new SouthernHemisphereTemperateSeasonOnlyBinIdentifier(DateHelpers.GetSouthernHemisphereTemperateSeasonForMonth(dp.Month.Value)),
                 BinGranularities.BySouthernHemisphereTropicalSeasonOnly => new SouthernHemisphereTropicalSeasonOnlyBinIdentifier(DateHelpers.GetSouthernHemisphereTropicalSeasonForMonth(dp.Month.Value)),
