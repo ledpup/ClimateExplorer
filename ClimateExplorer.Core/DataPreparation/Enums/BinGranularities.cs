@@ -3,7 +3,6 @@
     public enum BinGranularities
     {
         ByYear,
-        ByYearAndDay,
         ByYearAndMonth,
         ByYearAndDay,
         BySouthernHemisphereTemperateSeasonOnly,
