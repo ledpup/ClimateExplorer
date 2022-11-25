@@ -122,7 +122,7 @@ namespace ClimateExplorer.Core.DataPreparation
                 {
                     BinId = x.Item1.Id,
                     Label = x.Item1.Label,
-                    Value = x.Item2.GetValueOrDefault(),
+                    Value = x.Item2 == null ? null : x.Item2.Value,
                 }
             )
             .ToArray();

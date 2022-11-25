@@ -128,25 +128,16 @@ public static class ChartLogic
 
     public static string GetXAxisLabel(BinGranularities binGranularity)
     {
-        switch (binGranularity)
+        return binGranularity switch
         {
-            case BinGranularities.ByYear:
-                return "Year";
-            case BinGranularities.ByYearAndDay:
-                return "Date";
-            case BinGranularities.ByYearAndMonth:
-                return "Month";
-            case BinGranularities.ByYearAndDay:
-                return "Date";
-            case BinGranularities.ByMonthOnly:
-                return "Month of the year";
-            case BinGranularities.BySouthernHemisphereTemperateSeasonOnly:
-                return "Southern hemisphere temperate season";
-            case BinGranularities.BySouthernHemisphereTropicalSeasonOnly:
-                return "Southern hemisphere tropical season";
-            default:
-                throw new NotImplementedException($"BinGranularity {binGranularity}");
-        }
+            BinGranularities.ByYear => "Year",
+            BinGranularities.ByYearAndMonth => "Month",
+            BinGranularities.ByYearAndDay => "Date",
+            BinGranularities.ByMonthOnly => "Month of the year",
+            BinGranularities.BySouthernHemisphereTemperateSeasonOnly => "Southern hemisphere temperate season",
+            BinGranularities.BySouthernHemisphereTropicalSeasonOnly => "Southern hemisphere tropical season",
+            _ => throw new NotImplementedException($"BinGranularity {binGranularity}"),
+        };
     }
 
     public static async Task AddDataSetToChart(
