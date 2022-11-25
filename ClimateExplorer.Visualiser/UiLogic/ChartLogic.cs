@@ -134,6 +134,8 @@ public static class ChartLogic
                 return "Year";
             case BinGranularities.ByYearAndMonth:
                 return "Month";
+            case BinGranularities.ByYearAndDay:
+                return "Date";
             case BinGranularities.ByMonthOnly:
                 return "Month of the year";
             case BinGranularities.BySouthernHemisphereTemperateSeasonOnly:
@@ -215,6 +217,11 @@ public static class ChartLogic
                 {
                     startBin = new YearAndMonthBinIdentifier(userStartYear.Value, 1);
                 }
+
+                if (startBin is YearAndDayBinIdentifier)
+                {
+                    startBin = new YearAndDayBinIdentifier(userStartYear.Value, 1, 1);
+                }
             }
         }
 
@@ -230,6 +237,11 @@ public static class ChartLogic
                 if (endBin is YearAndMonthBinIdentifier)
                 {
                     endBin = new YearAndMonthBinIdentifier(userEndYear.Value, 1);
+                }
+
+                if (endBin is YearAndDayBinIdentifier)
+                {
+                    endBin = new YearAndDayBinIdentifier(userEndYear.Value, 1, 1);
                 }
             }
         }

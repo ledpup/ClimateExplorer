@@ -20,6 +20,11 @@ namespace ClimateExplorer.Core.DataPreparation
                 return ymbiStart.EnumerateYearAndMonthBinRangeUpTo(ymbiEnd);
             }
 
+            if (start is YearAndDayBinIdentifier ydbiStart && end is YearAndDayBinIdentifier ydbiEnd)
+            {
+                return ydbiStart.EnumerateYearAndDayBinRangeUpTo(ydbiEnd);
+            }
+
             throw new Exception("Only supported for parameter pairs of type YearBinIdentifier or YearAndMonthBinIdentifier");
         }
 

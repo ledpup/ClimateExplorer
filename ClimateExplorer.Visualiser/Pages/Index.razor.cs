@@ -506,7 +506,8 @@ public partial class Index : IDisposable
 
         ChartSeriesList = ChartSeriesList.CreateNewListWithoutDuplicates();
 
-        if (EnableRangeSlider == null && SelectedBinGranularity == BinGranularities.ByYearAndMonth)
+        if (SelectedBinGranularity == BinGranularities.ByYearAndMonth
+            || SelectedBinGranularity == BinGranularities.ByYearAndDay)
         {
             await ShowRangeSliderChanged(true);
         }
@@ -1128,6 +1129,7 @@ public partial class Index : IDisposable
         {
             case BinGranularities.ByYear:
             case BinGranularities.ByYearAndMonth:
+            case BinGranularities.ByYearAndDay:
                 // Calculate first and last year which we have a data record for, across all data sets underpinning all chart series
                 var preProcessedDataSets = chartSeriesWithData.Select(x => x.PreProcessedDataSet);
                 var allDataRecords = preProcessedDataSets.SelectMany(x => x.DataRecords);
@@ -1413,7 +1415,8 @@ public partial class Index : IDisposable
         EnableRangeSlider = value;
         if (EnableRangeSlider.GetValueOrDefault() && SliderStart == null)
         {
-            var rangeStart = (int)((EndYear - StartYears.Max()) * .2);
+            var proportionToShow = SelectedBinGranularity == BinGranularities.ByYearAndDay ? .05 : .2;
+            var rangeStart = (int)((EndYear - StartYears.Max()) * proportionToShow);
             await OnStartYearTextChanged((EndYear - rangeStart).ToString());
         }
     }

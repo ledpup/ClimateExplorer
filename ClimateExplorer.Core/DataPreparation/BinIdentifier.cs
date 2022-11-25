@@ -49,6 +49,13 @@ namespace ClimateExplorer.Core.DataPreparation
                     {
                         short month = (short)int.Parse(id.Substring(6, 2));
 
+                        if (id.Contains("d"))
+                        {
+                            short day = (short)int.Parse(id.Substring(9, 2));
+
+                            return new YearAndDayBinIdentifier(year, month, day);
+                        }
+
                         return new YearAndMonthBinIdentifier(year, month);
                     }
                     else
@@ -157,6 +164,40 @@ namespace ClimateExplorer.Core.DataPreparation
             for (int i = _year * 12 + _month - 1; i <= endOfRange.Year * 12 + endOfRange.Month - 1; i++)
             {
                 yield return new YearAndMonthBinIdentifier((short)(i / 12), (short)((i % 12) + 1));
+            }
+        }
+    }
+
+    public class YearAndDayBinIdentifier : BinIdentifierForGaplessBin
+    {
+        short _year;
+        short _month;
+        short _day;
+
+        public YearAndDayBinIdentifier(short year, short month, short day)
+            : base(
+                  $"y{year}m{month.ToString().PadLeft(2, '0')}d{day.ToString().PadLeft(2, '0')}",
+                  $"{day} {DateHelpers.GetShortMonthName(month)} {year}",
+                  new DateOnly(year, month, day),
+                  new DateOnly(year, month, day))
+        {
+            _year = year;
+            _month = month;
+            _day = day;
+        }
+
+        public short Year => _year;
+        public short Month => _month;
+        public short Day => _day;
+
+        public IEnumerable<YearAndDayBinIdentifier> EnumerateYearAndDayBinRangeUpTo(YearAndDayBinIdentifier endOfRange)
+        {
+            var from = new DateOnly(Year, Month, Day);
+            var to = new DateOnly(endOfRange.Year, endOfRange.Month, endOfRange.Day);
+
+            for (var day = from; day <= to; day = day.AddDays(1))
+            {
+                yield return new YearAndDayBinIdentifier((short)day.Year, (short)day.Month, (short)day.Day);
             }
         }
     }
