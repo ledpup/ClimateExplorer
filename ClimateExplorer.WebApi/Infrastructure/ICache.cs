@@ -27,16 +27,6 @@ public class FileBackedCache : ICache
         return Path.Combine(_cacheFolderName, Convert.ToBase64String(Encoding.UTF8.GetBytes(cacheEntryKey)) + ".json");
     }
 
-    void EnsureCacheDirectoryExists()
-    {
-        var cacheDirectory = new DirectoryInfo(_cacheFolderName);
-
-        if (!cacheDirectory.Exists)
-        {
-            cacheDirectory.Create();
-        }
-    }
-
     public async Task<T> Get<T>(string key)
     {
         var filePath = GenerateCacheFileName(key);
@@ -104,7 +94,7 @@ public class FileBackedTwoLayerCache : ICache
         return Path.Combine(_cacheFolderName, $"hash_{hashCode}.json");
     }
 
-    Dictionary<string, string> ReadKeyToFileMappingForHashcode(int hashCode)
+    async Task<Dictionary<string, string>> ReadKeyToFileMappingForHashcode(int hashCode)
     {
         try
         {
@@ -112,7 +102,7 @@ public class FileBackedTwoLayerCache : ICache
 
             if (File.Exists(filename))
             {
-                var indexJson = File.ReadAllText(filename);
+                var indexJson = await File.ReadAllTextAsync(filename);
 
                 var mapping = JsonSerializer.Deserialize<Dictionary<string, string>>(indexJson);
 
@@ -128,13 +118,13 @@ public class FileBackedTwoLayerCache : ICache
         return new Dictionary<string, string>();
     }
 
-    void WriteKeyToFileMappingForHashcode(int hashCode, Dictionary<string, string> keyToFileMapping)
+    async Task WriteKeyToFileMappingForHashcode(int hashCode, Dictionary<string, string> keyToFileMapping)
     {
         try
         {
             var filename = GetFilenameForKeyToFileMappingForHashcode(hashCode);
 
-            File.WriteAllText(
+            await File.WriteAllTextAsync(
                 filename, 
                 JsonSerializer.Serialize(
                     keyToFileMapping,
@@ -181,11 +171,11 @@ public class FileBackedTwoLayerCache : ICache
             var keyHash = GetDeterministicHashCode(key);
 
             // Check if the cache index contains the key
-            var mapping = ReadKeyToFileMappingForHashcode(keyHash);
+            var mapping = await ReadKeyToFileMappingForHashcode(keyHash);
 
             if (mapping.TryGetValue(key, out var filename))
             {
-                var content = File.ReadAllText(Path.Combine(_cacheFolderName, filename));
+                var content = await File.ReadAllTextAsync(Path.Combine(_cacheFolderName, filename));
 
                 return JsonSerializer.Deserialize<T>(content);
             }
@@ -196,7 +186,7 @@ public class FileBackedTwoLayerCache : ICache
             Console.WriteLine(ex.ToString());
         }
 
-        return default(T);
+        return default;
     }
 
     public async Task Put<T>(string key, T obj)
@@ -208,14 +198,14 @@ public class FileBackedTwoLayerCache : ICache
             var keyHash = GetDeterministicHashCode(key);
 
             // Check if the cache index contains the key
-            var mapping = ReadKeyToFileMappingForHashcode(keyHash);
+            var mapping = await ReadKeyToFileMappingForHashcode(keyHash);
 
             Guid id = Guid.NewGuid();
             string filename = Guid.NewGuid().ToString() + ".json";
 
             mapping[key] = filename;
 
-            File.WriteAllText(
+            await File.WriteAllTextAsync(
                 Path.Combine(_cacheFolderName, filename), 
                 JsonSerializer.Serialize(
                     obj, 
@@ -226,7 +216,7 @@ public class FileBackedTwoLayerCache : ICache
                 )
             );
 
-            WriteKeyToFileMappingForHashcode(keyHash, mapping);
+            await WriteKeyToFileMappingForHashcode(keyHash, mapping);
         }
         catch (Exception ex)
         {

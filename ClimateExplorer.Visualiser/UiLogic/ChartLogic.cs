@@ -131,7 +131,8 @@ public static class ChartLogic
         return binGranularity switch
         {
             BinGranularities.ByYear => "Year",
-            BinGranularities.ByYearAndMonth => "Month",
+            BinGranularities.ByYearAndMonth => "Month and year",
+            BinGranularities.ByYearAndWeek => "Week and year",
             BinGranularities.ByYearAndDay => "Date",
             BinGranularities.ByMonthOnly => "Month of the year",
             BinGranularities.BySouthernHemisphereTemperateSeasonOnly => "Southern hemisphere temperate season",
@@ -211,6 +212,11 @@ public static class ChartLogic
                     startBin = new YearAndMonthBinIdentifier(userStartYear.Value, 1);
                 }
 
+                if (startBin is YearAndWeekBinIdentifier)
+                {
+                    startBin = new YearAndWeekBinIdentifier(userStartYear.Value, 1);
+                }
+
                 if (startBin is YearAndDayBinIdentifier)
                 {
                     startBin = new YearAndDayBinIdentifier(userStartYear.Value, 1, 1);
@@ -230,6 +236,11 @@ public static class ChartLogic
                 if (endBin is YearAndMonthBinIdentifier)
                 {
                     endBin = new YearAndMonthBinIdentifier(userEndYear.Value, 1);
+                }
+
+                if (endBin is YearAndWeekBinIdentifier)
+                {
+                    endBin = new YearAndWeekBinIdentifier(userEndYear.Value, 1);
                 }
 
                 if (endBin is YearAndDayBinIdentifier)

@@ -221,7 +221,7 @@ async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool in
         }
     }
 
-    await _cache.Put<Location[]>(cacheKey, locations.ToArray());
+    await _cache.Put(cacheKey, locations.ToArray());
 
     return locations;
 }
@@ -278,7 +278,12 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
                 : null
         };
 
-    await _cache.Put<DataSet>(cacheKey, returnDataSet);
-
+    // If the BinningRule is ByYearAndDay then there is little to gain by caching the data
+    // because we haven't done any aggregation. Therefore, return early, before the cache step
+    if (body.BinningRule == BinGranularities.ByYearAndDay)
+    {
+        return returnDataSet;
+    }
+    await _cache.Put(cacheKey, returnDataSet);
     return returnDataSet;
 }

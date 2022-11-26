@@ -36,4 +36,17 @@ public class BinIdentifierTests
         Assert.AreEqual("y1920m07d01", range.First().Id);
         Assert.AreEqual("y1921m06d30", range.Last().Id);
     }
+
+    [TestMethod]
+    public void YearAndWeekRange()
+    {
+        var start = new YearAndWeekBinIdentifier(1920, 6);
+        var end = new YearAndWeekBinIdentifier(1921, 12);
+
+        var range = start.EnumerateYearAndWeekBinRangeUpTo(end).ToArray();
+
+        Assert.AreEqual(59, range.Length);
+        Assert.AreEqual("y1920w06", range.First().Id);
+        Assert.AreEqual("y1921w12", range.Last().Id);
+    }
 }

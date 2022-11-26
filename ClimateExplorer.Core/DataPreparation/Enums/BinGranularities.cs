@@ -4,6 +4,7 @@
     {
         ByYear,
         ByYearAndMonth,
+        ByYearAndWeek,
         ByYearAndDay,
         BySouthernHemisphereTemperateSeasonOnly,
         BySouthernHemisphereTropicalSeasonOnly,
@@ -27,8 +28,9 @@
             return b switch
             {
                 BinGranularities.ByYear => "By year",
-                BinGranularities.ByYearAndDay => "By year and day",
                 BinGranularities.ByYearAndMonth => "By year and month",
+                BinGranularities.ByYearAndWeek => "By year and week",
+                BinGranularities.ByYearAndDay => "By year and day",
                 BinGranularities.BySouthernHemisphereTemperateSeasonOnly => "By season",
                 BinGranularities.BySouthernHemisphereTropicalSeasonOnly => "By tropical season",
                 BinGranularities.ByMonthOnly => "By month",

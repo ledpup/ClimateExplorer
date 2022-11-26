@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using static ClimateExplorer.Core.Enums;
 
@@ -36,6 +37,7 @@ namespace ClimateExplorer.Core.DataPreparation.Model
             {
                 case BinGranularities.ByYear:
                 case BinGranularities.ByYearAndMonth:
+                case BinGranularities.ByYearAndWeek:
                     return BuildBucketsForGaplessBin(bin, cupSize, dataResolution);
 
                 case BinGranularities.ByMonthOnly:
@@ -302,12 +304,30 @@ namespace ClimateExplorer.Core.DataPreparation.Model
             {
                 BinGranularities.ByYear => new YearBinIdentifier(dp.Year),
                 BinGranularities.ByYearAndMonth => new YearAndMonthBinIdentifier(dp.Year, dp.Month.Value),
+                BinGranularities.ByYearAndWeek => new YearAndWeekBinIdentifier(dp.Year, (short)GetIso8601WeekOfYear(new DateTime(dp.Year, dp.Month.Value, dp.Day.Value))),
                 BinGranularities.ByYearAndDay => new YearAndDayBinIdentifier(dp.Year, dp.Month.Value, dp.Day.Value),
                 BinGranularities.ByMonthOnly => new MonthOnlyBinIdentifier(dp.Month.Value),
                 BinGranularities.BySouthernHemisphereTemperateSeasonOnly => new SouthernHemisphereTemperateSeasonOnlyBinIdentifier(DateHelpers.GetSouthernHemisphereTemperateSeasonForMonth(dp.Month.Value)),
                 BinGranularities.BySouthernHemisphereTropicalSeasonOnly => new SouthernHemisphereTropicalSeasonOnlyBinIdentifier(DateHelpers.GetSouthernHemisphereTropicalSeasonForMonth(dp.Month.Value)),
                 _ => throw new NotImplementedException($"BinningRule {binningRule}"),
             };
+        }
+
+        // This presumes that weeks start with Monday.
+        // Week 1 is the 1st week of the year with a Thursday in it.
+        public static int GetIso8601WeekOfYear(DateTime time)
+        {
+            // Seriously cheat.  If its Monday, Tuesday or Wednesday, then it'll 
+            // be the same week# as whatever Thursday, Friday or Saturday are,
+            // and we always get those right
+            DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
+            if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
+            {
+                time = time.AddDays(3);
+            }
+
+            // Return the week of our adjusted day
+            return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
         }
     }
 }
