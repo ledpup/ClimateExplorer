@@ -128,21 +128,17 @@ public static class ChartLogic
 
     public static string GetXAxisLabel(BinGranularities binGranularity)
     {
-        switch (binGranularity)
+        return binGranularity switch
         {
-            case BinGranularities.ByYear:
-                return "Year";
-            case BinGranularities.ByYearAndMonth:
-                return "Month";
-            case BinGranularities.ByMonthOnly:
-                return "Month of the year";
-            case BinGranularities.BySouthernHemisphereTemperateSeasonOnly:
-                return "Southern hemisphere temperate season";
-            case BinGranularities.BySouthernHemisphereTropicalSeasonOnly:
-                return "Southern hemisphere tropical season";
-            default:
-                throw new NotImplementedException($"BinGranularity {binGranularity}");
-        }
+            BinGranularities.ByYear => "Year",
+            BinGranularities.ByYearAndMonth => "Month and year",
+            BinGranularities.ByYearAndWeek => "Week and year",
+            BinGranularities.ByYearAndDay => "Date",
+            BinGranularities.ByMonthOnly => "Month of the year",
+            BinGranularities.BySouthernHemisphereTemperateSeasonOnly => "Southern hemisphere temperate season",
+            BinGranularities.BySouthernHemisphereTropicalSeasonOnly => "Southern hemisphere tropical season",
+            _ => throw new NotImplementedException($"BinGranularity {binGranularity}"),
+        };
     }
 
     public static async Task AddDataSetToChart(
@@ -215,6 +211,16 @@ public static class ChartLogic
                 {
                     startBin = new YearAndMonthBinIdentifier(userStartYear.Value, 1);
                 }
+
+                if (startBin is YearAndWeekBinIdentifier)
+                {
+                    startBin = new YearAndWeekBinIdentifier(userStartYear.Value, 1);
+                }
+
+                if (startBin is YearAndDayBinIdentifier)
+                {
+                    startBin = new YearAndDayBinIdentifier(userStartYear.Value, 1, 1);
+                }
             }
         }
 
@@ -230,6 +236,16 @@ public static class ChartLogic
                 if (endBin is YearAndMonthBinIdentifier)
                 {
                     endBin = new YearAndMonthBinIdentifier(userEndYear.Value, 1);
+                }
+
+                if (endBin is YearAndWeekBinIdentifier)
+                {
+                    endBin = new YearAndWeekBinIdentifier(userEndYear.Value, 1);
+                }
+
+                if (endBin is YearAndDayBinIdentifier)
+                {
+                    endBin = new YearAndDayBinIdentifier(userEndYear.Value, 1, 1);
                 }
             }
         }

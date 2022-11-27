@@ -4,6 +4,8 @@
     {
         ByYear,
         ByYearAndMonth,
+        ByYearAndWeek,
+        ByYearAndDay,
         BySouthernHemisphereTemperateSeasonOnly,
         BySouthernHemisphereTropicalSeasonOnly,
         ByMonthOnly
@@ -13,7 +15,10 @@
     {
         public static bool IsLinear(this BinGranularities b)
         {
-            return b == BinGranularities.ByYear || b == BinGranularities.ByYearAndMonth;
+            return b == BinGranularities.ByYear 
+                || b == BinGranularities.ByYearAndMonth
+                || b == BinGranularities.ByYearAndWeek
+                || b == BinGranularities.ByYearAndDay;
         }
 
         public static bool IsModular(this BinGranularities b)
@@ -23,15 +28,17 @@
 
         public static string ToFriendlyString(this BinGranularities b)
         {
-            switch (b)
+            return b switch
             {
-                case BinGranularities.ByYear: return "By year";
-                case BinGranularities.ByYearAndMonth: return "By year and month";
-                case BinGranularities.BySouthernHemisphereTemperateSeasonOnly: return "By season";
-                case BinGranularities.BySouthernHemisphereTropicalSeasonOnly: return "By tropical season";
-                case BinGranularities.ByMonthOnly: return "By month";
-                default: throw new NotImplementedException($"BinGranularities {b}");
-            }
+                BinGranularities.ByYear => "By year",
+                BinGranularities.ByYearAndMonth => "By year and month",
+                BinGranularities.ByYearAndWeek => "By year and week",
+                BinGranularities.ByYearAndDay => "By year and day",
+                BinGranularities.BySouthernHemisphereTemperateSeasonOnly => "By season",
+                BinGranularities.BySouthernHemisphereTropicalSeasonOnly => "By tropical season",
+                BinGranularities.ByMonthOnly => "By month",
+                _ => throw new NotImplementedException($"BinGranularities {b}"),
+            };
         }
     }
 }

@@ -285,12 +285,14 @@ public class ChartSeriesDefinition
                 case SeriesSmoothingOptions.MovingAverage:
                     string unit = null;
 
-                    switch (BinGranularity)
+                    unit = BinGranularity switch
                     {
-                        case BinGranularities.ByYear: unit = "year"; break;
-                        case BinGranularities.ByYearAndMonth: unit = "month"; break;
-                        default: throw new NotImplementedException($"BinGranularity {BinGranularity}");
-                    }
+                        BinGranularities.ByYear => "year",
+                        BinGranularities.ByYearAndDay => "day",
+                        BinGranularities.ByYearAndWeek => "week",
+                        BinGranularities.ByYearAndMonth => "month",
+                        _ => throw new NotImplementedException($"BinGranularity {BinGranularity}"),
+                    };
                     segments.Add($"{SmoothingWindow} {unit} moving average");
                     break;
                 case SeriesSmoothingOptions.Trendline:

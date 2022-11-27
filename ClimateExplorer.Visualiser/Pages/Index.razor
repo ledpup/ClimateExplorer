@@ -34,65 +34,64 @@
     <div class="chart-collapsible-parent">
         <Collapsible Title="Chart" InitiallyShown="true" AllowCollapse="false" ContentLayoutType="Collapsible.CollapserContentLayoutType.FlexboxColumns">
             <Content>
-                @if (ChartSeriesWithData?.Count == 0)
-                {
-                    <SpinKit Type="SpinKitType.Plane" />
-                }
-                else
-                {
-                    <div class="chart-and-controls">
-                        <div class="chart-series-list-wrapper">
-                            <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
-                        </div>
-
-                        <div class="chart-wrapper">
-                            <div class="minimum-height-enforcer-for-chart"></div>
-                            <div class="chart">
-                                <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
-                                    <ChartTrendline @ref="chartTrendline" TItem="float?" />
-                                </Chart>
-                            </div>
-                        </div>
-
-                        <div class="chart-controls">
-                            <a class="chart-control" @onclick="ShowFilterModal"><i class="fas fa-filter"></i> Year filtering</a>
-                        
-                            @if (!string.IsNullOrWhiteSpace(SelectedStartYear) || !string.IsNullOrWhiteSpace(SelectedEndYear))
-                            {
-                                <a class="chart-control" @onclick="OnClearFilter"><i class="fa-solid fa-filter-circle-xmark"></i> Clear filter</a>
-                            }
-
-                            <Dropdown>
-                                <DropdownToggle>
-                                    <i class="fas fa-calendar"></i> Grouping
-                                </DropdownToggle>
-                                <DropdownMenu>
-                                    <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYear)">Yearly</DropdownItem>
-                                    <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYearAndMonth)">Year + Month</DropdownItem>
-                                    <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly)">Month (ignoring year)</DropdownItem>
-                                    <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.BySouthernHemisphereTemperateSeasonOnly)">Southern hemisphere temperate season only (ignoring year)</DropdownItem>
-                                    <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.BySouthernHemisphereTropicalSeasonOnly)">Southern hemisphere tropical season only (ignoring year)</DropdownItem>
-                                </DropdownMenu>
-                            </Dropdown>
-
-                            <a class="chart-control" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download data</a>
-
-                            <a class="chart-control" @onclick="ShowOptionsModal"><i class="fas fa-cog"></i> Aggregation options</a>
-
-                            <a class="chart-control" @onclick="ShowAddDataSetModal"><i class="fas fa-plus"></i> Add data set</a>
-
-                            <div class="info-icon">
-                                <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowChartOptionsInfo></i>
-                            </div>
-
-                        </div>
-
-                        @if (EnableRangeSlider.HasValue && EnableRangeSlider.Value && (SelectedBinGranularity == BinGranularities.ByYear || SelectedBinGranularity == BinGranularities.ByYearAndMonth))
-                        {
-                            <DualRangeSlider Min="SliderMin" Max="SliderMax" FromValue="SliderStart" ToValue="SliderEnd" OnValuesChanged="@OnSelectedYearsChanged" OnShowComponent="@ShowRangeSliderChanged" />
-                        }
+                <div class="chart-and-controls">
+                    <div class="chart-series-list-wrapper">
+                        <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
                     </div>
-                }
+
+                    <div class="chart-wrapper">
+                        <div class="minimum-height-enforcer-for-chart"></div>
+                        <div class="chart">
+                            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
+                                <ChartTrendline @ref="chartTrendline" TItem="float?" />
+                            </Chart>
+                        </div>
+                    </div>
+
+                    <div class="chart-controls">
+                        <a class="chart-control" @onclick="ShowFilterModal"><i class="fas fa-filter"></i> Year filtering</a>
+                        
+                        @if (!string.IsNullOrWhiteSpace(SelectedStartYear) || !string.IsNullOrWhiteSpace(SelectedEndYear))
+                        {
+                            <a class="chart-control" @onclick="OnClearFilter"><i class="fa-solid fa-filter-circle-xmark"></i> Clear filter</a>
+                        }
+
+                        <Dropdown>
+                            <DropdownToggle>
+                                <i class="fas fa-calendar"></i> Grouping
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYear)">Yearly</DropdownItem>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYearAndMonth)">Year + Month</DropdownItem>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYearAndWeek)">Year + Week</DropdownItem>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYearAndDay)">Year + Day</DropdownItem>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly)">Month (ignoring year)</DropdownItem>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.BySouthernHemisphereTemperateSeasonOnly)">Southern hemisphere temperate season only (ignoring year)</DropdownItem>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.BySouthernHemisphereTropicalSeasonOnly)">Southern hemisphere tropical season only (ignoring year)</DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+
+                        <a class="chart-control" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download data</a>
+
+                        <a class="chart-control" @onclick="ShowOptionsModal"><i class="fas fa-cog"></i> Aggregation options</a>
+
+                        <a class="chart-control" @onclick="ShowAddDataSetModal"><i class="fas fa-plus"></i> Add data set</a>
+
+                        <div class="info-icon">
+                            <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowChartOptionsInfo></i>
+                        </div>
+
+                    </div>
+
+                    @if (EnableRangeSlider.HasValue && EnableRangeSlider.Value
+                        && (SelectedBinGranularity == BinGranularities.ByYear 
+                            || SelectedBinGranularity == BinGranularities.ByYearAndMonth
+                            || SelectedBinGranularity == BinGranularities.ByYearAndWeek
+                            || SelectedBinGranularity == BinGranularities.ByYearAndDay))
+                    {
+                        <DualRangeSlider Min="SliderMin" Max="SliderMax" FromValue="SliderStart" ToValue="SliderEnd" OnValuesChanged="@OnSelectedYearsChanged" OnShowComponent="@ShowRangeSliderChanged" />
+                    }
+                </div>
             </Content>
         </Collapsible>
     </div>

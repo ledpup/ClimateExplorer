@@ -506,7 +506,9 @@ public partial class Index : IDisposable
 
         ChartSeriesList = ChartSeriesList.CreateNewListWithoutDuplicates();
 
-        if (EnableRangeSlider == null && SelectedBinGranularity == BinGranularities.ByYearAndMonth)
+        if (SelectedBinGranularity == BinGranularities.ByYearAndMonth
+            || SelectedBinGranularity == BinGranularities.ByYearAndWeek
+            || SelectedBinGranularity == BinGranularities.ByYearAndDay)
         {
             await ShowRangeSliderChanged(true);
         }
@@ -1128,6 +1130,8 @@ public partial class Index : IDisposable
         {
             case BinGranularities.ByYear:
             case BinGranularities.ByYearAndMonth:
+            case BinGranularities.ByYearAndWeek:
+            case BinGranularities.ByYearAndDay:
                 // Calculate first and last year which we have a data record for, across all data sets underpinning all chart series
                 var preProcessedDataSets = chartSeriesWithData.Select(x => x.PreProcessedDataSet);
                 var allDataRecords = preProcessedDataSets.SelectMany(x => x.DataRecords);
@@ -1142,21 +1146,8 @@ public partial class Index : IDisposable
                         SelectedEndYear);
 
                 chartBins = BinHelpers.EnumerateBinsInRange(ChartStartBin, ChartEndBin).ToArray();
-
-                // build a list of all the years in which data sets start, used by the UI to allow the user to conveniently select from them
-                StartYears = preProcessedDataSets.Select(x => x.GetStartYearForDataSet()).Distinct().OrderBy(x => x).ToList();
-                SliderMin = StartYears.Min();
-                if (SliderStart < SliderMin)
-                {
-                    SliderStart = SliderMin;
-                }
-
-                var lastYears = preProcessedDataSets.Select(x => x.GetEndYearForDataSet()).Distinct().OrderBy(x => x).ToList();
-                SliderMax = EndYear = lastYears.Max();
-                if (SliderEnd > SliderMax)
-                {
-                    SliderEnd = SliderMax;
-                }
+                
+                SetStartAndEndYears(chartSeriesWithData);
 
                 break;
 
@@ -1215,6 +1206,27 @@ public partial class Index : IDisposable
         }
 
         l.LogInformation("leaving");
+    }
+
+    private void SetStartAndEndYears(List<SeriesWithData> chartSeriesWithData)
+    {
+        var binGranularity = chartSeriesWithData.Select(x => x.ChartSeries.BinGranularity).Distinct().Single();
+        var dataSet = binGranularity == BinGranularities.ByYear ? chartSeriesWithData.Select(x => x.PreProcessedDataSet) : chartSeriesWithData.Select(x => x.SourceDataSet);
+
+        // build a list of all the years in which data sets start, used by the UI to allow the user to conveniently select from them
+        StartYears = dataSet.Select(x => x.GetStartYearForDataSet()).Distinct().OrderBy(x => x).ToList();
+        SliderMin = StartYears.Min();
+        if (SliderStart < SliderMin)
+        {
+            SliderStart = SliderMin;
+        }
+
+        var lastYears = dataSet.Select(x => x.GetEndYearForDataSet()).Distinct().OrderBy(x => x).ToList();
+        SliderMax = EndYear = lastYears.Max();
+        if (SliderEnd > SliderMax)
+        {
+            SliderEnd = SliderMax;
+        }
     }
 
     async Task SelectedLocationChanged(Guid locationId)
@@ -1413,7 +1425,13 @@ public partial class Index : IDisposable
         EnableRangeSlider = value;
         if (EnableRangeSlider.GetValueOrDefault() && SliderStart == null)
         {
-            var rangeStart = (int)((EndYear - StartYears.Max()) * .2);
+            SetStartAndEndYears(ChartSeriesWithData);
+
+            var proportionToShow = SelectedBinGranularity == BinGranularities.ByYearAndDay   ? 0.05f
+                                 : SelectedBinGranularity == BinGranularities.ByYearAndWeek  ? 0.1f
+                                 : SelectedBinGranularity == BinGranularities.ByYearAndMonth ? 0.15f
+                                 : .3f;
+            var rangeStart = (int)MathF.Ceiling(((EndYear - StartYears.Max()) * proportionToShow));
             await OnStartYearTextChanged((EndYear - rangeStart).ToString());
         }
     }

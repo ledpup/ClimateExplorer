@@ -65,6 +65,13 @@ namespace ClimateExplorer.Core.DataPreparation
             Console.WriteLine("ApplySeriesFilters completed in " + sw.Elapsed);
             sw.Restart();
 
+            // When BinningRule is ByYearAndDay, we can drop-out of the data pipeline process here.
+            // No aggregation is required because we're just returning the data at the original resolution (i.e., daily)
+            if (request.BinningRule == BinGranularities.ByYearAndDay)
+            {
+                return ConvertDataPointsToChartableDataPoints(filteredDataPoints);
+            }
+
             // Assign to Bins, Buckets and Cups
             var rawBins = Binner.ApplyBinningRules(filteredDataPoints, request.BinningRule, request.CupSize, dataResolution);
 
@@ -103,6 +110,22 @@ namespace ClimateExplorer.Core.DataPreparation
                     }
                 )
                 .ToArray();
+        }
+
+        private static ChartableDataPoint[] ConvertDataPointsToChartableDataPoints(TemporalDataPoint[] filteredDataPoints)
+        {
+            return filteredDataPoints
+                .Select(x => (new YearAndDayBinIdentifier(x.Year, x.Month.Value, x.Day.Value), x.Value))
+                .Select(
+                x =>
+                new ChartableDataPoint
+                {
+                    BinId = x.Item1.Id,
+                    Label = x.Item1.Label,
+                    Value = x.Item2 == null ? null : x.Item2.Value,
+                }
+            )
+            .ToArray();
         }
 
         public void ValidateRequest(PostDataSetsRequestBody request)
