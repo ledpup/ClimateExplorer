@@ -288,7 +288,8 @@ public class ChartSeriesDefinition
                     unit = BinGranularity switch
                     {
                         BinGranularities.ByYear => "year",
-                        BinGranularities.ByYearAndDay => "date",
+                        BinGranularities.ByYearAndDay => "day",
+                        BinGranularities.ByYearAndWeek => "week",
                         BinGranularities.ByYearAndMonth => "month",
                         _ => throw new NotImplementedException($"BinGranularity {BinGranularity}"),
                     };
