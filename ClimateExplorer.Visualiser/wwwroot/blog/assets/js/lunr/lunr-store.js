@@ -22,4 +22,10 @@ var store = [{
         "tags": [],
         "url": "/blog/meta/2022/11/19/acorn-sat-2.3.html",
         "teaser": null
+      },{
+        "title": "Climatological normal",
+        "excerpt":"While reading a news article on US climate normals, I decided it might be better to use the most recent 30 years of temperature data to calculate the warming index, rather than 20 years of data. This change will align the warming index with the convention of the climatological normal....","categories": ["meta"],
+        "tags": [],
+        "url": "/blog/meta/2022/12/05/climatological-normals.html",
+        "teaser": null
       }]
