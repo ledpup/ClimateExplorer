@@ -54,12 +54,12 @@ namespace ClimateExplorer.Core.Calculators
             var countOfFirstHalfOfTemperatures = nonNullDataPoints.Length / 2;
             var firstHalfOfTemperatures = nonNullDataPoints.OrderBy(x => x.Year).Take(countOfFirstHalfOfTemperatures).ToArray();
             var averageOfFirstHalfOfTemperatures = firstHalfOfTemperatures.Average(x => x.Value).Value;
-            var lastTwentyYearsOfTemperatures = nonNullDataPoints
+            var lastThirtyYearsOfTemperatures = nonNullDataPoints
                                                             .OrderByDescending(x => x.Year)
-                                                            .Take(20)
+                                                            .Take(30)
                                                             .OrderBy(x => x.Year)
                                                             .ToArray();
-            var averageOfLastTwentyYearsTemperatures = lastTwentyYearsOfTemperatures.Average(x => x.Value).Value;
+            var averageOfLastTwentyYearsTemperatures = lastThirtyYearsOfTemperatures.Average(x => x.Value).Value;
 
             return
                 new CalculatedWarmingIndex
@@ -70,8 +70,8 @@ namespace ClimateExplorer.Core.Calculators
                     CountOfFirstHalfOfTemperatures = countOfFirstHalfOfTemperatures,
                     FirstYearInFirstHalfOfTemperatures = firstHalfOfTemperatures.First().Year,
                     LastYearInFirstHalfOfTemperatures = firstHalfOfTemperatures.Last().Year,
-                    FirstYearInLast20YearsOfTemperatures = lastTwentyYearsOfTemperatures.First().Year,
-                    LastYearInLast20YearsOfTemperatures = lastTwentyYearsOfTemperatures.Last().Year
+                    FirstYearInLast30YearsOfTemperatures = lastThirtyYearsOfTemperatures.First().Year,
+                    LastYearInLast30YearsOfTemperatures = lastThirtyYearsOfTemperatures.Last().Year
                 };                
         }
     }
@@ -84,7 +84,7 @@ namespace ClimateExplorer.Core.Calculators
         public float AverageOfLastTwentyYearsTemperatures { get; set; }
         public int FirstYearInFirstHalfOfTemperatures { get; set; }
         public int LastYearInFirstHalfOfTemperatures { get; set; }
-        public int FirstYearInLast20YearsOfTemperatures { get; set; }
-        public int LastYearInLast20YearsOfTemperatures { get; set; }
+        public int FirstYearInLast30YearsOfTemperatures { get; set; }
+        public int LastYearInLast30YearsOfTemperatures { get; set; }
     }
 }
