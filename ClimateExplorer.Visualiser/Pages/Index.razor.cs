@@ -894,12 +894,6 @@ public partial class Index : IDisposable
 
         BuildProcessedDataSets(ChartSeriesWithData, UseMostRecentStartYear);
 
-        if (ChartBins == null)
-        {
-            l.LogInformation("No data so leaving early");
-            return;
-        }
-
         subtitle =
             (ChartStartBin != null & ChartEndBin != null)
             ? ChartStartBin is YearBinIdentifier
