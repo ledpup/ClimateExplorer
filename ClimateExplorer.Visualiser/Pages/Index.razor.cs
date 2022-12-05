@@ -1078,11 +1078,6 @@ public partial class Index : IDisposable
         // If we're not calculating a moving average, PreProcessedDataSets = SourceDataSets
         foreach (var cs in chartSeriesWithData)
         {
-            if (!cs.SourceDataSet.DataRecords.Any())
-            {
-                continue;
-            }
-
             // We only support moving averages on linear bin granularities (e.g. Year, YearAndMonth) - not modular ones like MonthOnly
             if (SelectedBinGranularity.IsLinear() && cs.ChartSeries.Smoothing == SeriesSmoothingOptions.MovingAverage)
             {
@@ -1166,12 +1161,6 @@ public partial class Index : IDisposable
 
             default:
                 throw new NotImplementedException($"binGranularity {binGranularity}");
-        }
-
-        if (chartBins.Length == 0)
-        {
-            ChartBins = null;
-            return;
         }
 
         foreach (var cs in chartSeriesWithData)
