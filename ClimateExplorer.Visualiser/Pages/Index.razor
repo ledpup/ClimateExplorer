@@ -42,7 +42,7 @@
                 {
                     <div class="chart-and-controls">
                         <div class="chart-series-list-wrapper">
-                            <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
+                            <ChartSeriesListView CompoundSeriesType="CompoundSeriesType" ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets" OnCompoundSeriesTypeChanged="@HandleOnCompoundSeriesTypeChanged"></ChartSeriesListView>
                         </div>
 
                         <div class="chart-wrapper">

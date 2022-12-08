@@ -47,20 +47,18 @@ namespace ClimateExplorer.Core.DataPreparation
 
         static Func<IEnumerable<ContainerAggregate>, float?> GetAggregationFunction(ContainerAggregationFunctions function, SeriesTransformations seriesTransformation)
         {
-            switch (function)
+            return function switch
             {
                 // Weighted mean is mean of value weighted by number of periods covered
-                case ContainerAggregationFunctions.Mean:        return WeightedMean;
-                case ContainerAggregationFunctions.Sum:         return (data) => data.Select(x => x.Value).Sum();
-                case ContainerAggregationFunctions.Min:         return (data) => data
-                                                                                .Where(x => seriesTransformation == SeriesTransformations.DayOfYearIfFrost && x.Value != 0)
-                                                                                .Select(x => x.Value)
-                                                                                .Min();
-                case ContainerAggregationFunctions.Max:         return (data) => data.Select(x => x.Value).Max();
-                case ContainerAggregationFunctions.Median:      return Median;
-                default:
-                    throw new NotImplementedException($"BinAggregationFunction {function}");
-            }
+                ContainerAggregationFunctions.Mean => WeightedMean,
+                ContainerAggregationFunctions.Sum => (data) => data.Select(x => x.Value).Sum(),
+                ContainerAggregationFunctions.Min => (data) => data.Where(x => seriesTransformation != SeriesTransformations.DayOfYearIfFrost || (seriesTransformation == SeriesTransformations.DayOfYearIfFrost && x.Value != 0))
+                                                                   .Select(x => x.Value)
+                                                                   .Min(),
+                ContainerAggregationFunctions.Max => (data) => data.Select(x => x.Value).Max(),
+                ContainerAggregationFunctions.Median => Median,
+                _ => throw new NotImplementedException($"BinAggregationFunction {function}"),
+            };
         }
 
         struct ContainerAggregate

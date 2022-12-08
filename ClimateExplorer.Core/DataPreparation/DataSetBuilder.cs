@@ -50,7 +50,7 @@ namespace ClimateExplorer.Core.DataPreparation
                 };
         }
 
-        public async Task<BuildDataSetResult> BuildCompoundDataSet(CompoundSeriesTypes compoundSeriesTypes, PostDataSetsRequestBody[] requests)
+        public async Task<BuildDataSetResult> BuildCompoundDataSet(CompoundSeriesTypes compoundSeriesType, PostDataSetsRequestBody[] requests)
         {
             var responses = new List<BuildDataSetResult>();
             foreach (var request in requests)
@@ -59,7 +59,7 @@ namespace ClimateExplorer.Core.DataPreparation
                 responses.Add(response);
             }
 
-            var buildDataSetResult = compoundSeriesTypes switch
+            var buildDataSetResult = compoundSeriesType switch
             {
                 CompoundSeriesTypes.Difference => CreateDifferenceResult(responses),
                 _ => throw new NotImplementedException(),
@@ -70,6 +70,10 @@ namespace ClimateExplorer.Core.DataPreparation
 
         private BuildDataSetResult CreateDifferenceResult(List<BuildDataSetResult> responses)
         {
+            if (responses.Count != 2)
+            {
+                throw new ArgumentException("Expecting two items in the list of responses to be able to calculate the difference.");
+            }
 
             var startYear = Math.Max(((YearBinIdentifier)BinIdentifier.Parse(responses[0].DataPoints[0].BinId)).Year, ((YearBinIdentifier)BinIdentifier.Parse(responses[1].DataPoints[0].BinId)).Year);
             var lastYear = Math.Max(((YearBinIdentifier)BinIdentifier.Parse(responses[0].DataPoints.Last().BinId)).Year, ((YearBinIdentifier)BinIdentifier.Parse(responses[1].DataPoints.Last().BinId)).Year);
@@ -89,7 +93,7 @@ namespace ClimateExplorer.Core.DataPreparation
                 dataPoints.Add(new ChartableDataPoint
                     {
                         BinId = firstDp.BinId,
-                        Value = secondDp.Value - firstDp.Value,
+                        Value = firstDp.Value - secondDp.Value,
                         Label = firstDp.Label
                     });
             }

@@ -240,10 +240,10 @@ async Task<DataSet> PostDataSets(PostDataSetBody body)
 
     var dsb = new DataSetBuilder();
 
-    var series = body.CompoundSeriesTypes switch
+    var series = body.CompoundSeriesType switch
     {
         CompoundSeriesTypes.None => await dsb.BuildDataSet(body.Body[0]),
-        CompoundSeriesTypes.Difference => await dsb.BuildCompoundDataSet(body.CompoundSeriesTypes, body.Body),
+        CompoundSeriesTypes.Difference => await dsb.BuildCompoundDataSet(body.CompoundSeriesType, body.Body),
         _ => throw new NotImplementedException()
     };
 

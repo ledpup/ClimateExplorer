@@ -29,6 +29,8 @@ public partial class Index : IDisposable
 
     LocationInfo locationInfoComponent { get; set; }
     BinGranularities SelectedBinGranularity { get; set; } = BinGranularities.ByYear;
+
+    CompoundSeriesTypes CompoundSeriesType { get; set; }
     List<ChartSeriesDefinition> ChartSeriesList { get; set; } = new List<ChartSeriesDefinition>();
     List<SeriesWithData> ChartSeriesWithData { get; set; }
     BinIdentifier[] ChartBins { get; set; }
@@ -412,10 +414,12 @@ public partial class Index : IDisposable
         await filter.Show();
     }
 
-    public async Task OnChartPresetSelected(List<ChartSeriesDefinition> chartSeriesDefinitions)
+    public async Task OnChartPresetSelected(SuggestedChartPresetModel suggestedChartPresetModel)
     {
-        SelectedBinGranularity = chartSeriesDefinitions.First().BinGranularity;
+        var chartSeriesDefinitions = suggestedChartPresetModel.ChartSeriesList;
 
+        CompoundSeriesType = suggestedChartPresetModel.CompoundSeriesType;
+        SelectedBinGranularity = chartSeriesDefinitions.First().BinGranularity;
         ChartSeriesList = chartSeriesDefinitions.ToList();
 
         await BuildDataSets();
@@ -551,7 +555,10 @@ public partial class Index : IDisposable
         {
             try
             {
-                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger, csdSpecifier, DataSetDefinitions, Locations);
+                var tupleResult = ChartSeriesListSerializer.ParseCompoundSeriesType(Logger, csdSpecifier, DataSetDefinitions, Locations);
+                
+                CompoundSeriesType = tupleResult.compoundSeriesType;
+                var csdList = tupleResult.csdList;
 
                 if (csdList.Any())
                 {
@@ -621,7 +628,7 @@ public partial class Index : IDisposable
         LogChartSeriesList();
 
         // Recalculate the URL
-        string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(ChartSeriesList);
+        string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildCompoundSeriesListUrlComponent(CompoundSeriesType, ChartSeriesList);
 
         string url = "/location/" + LocationId;
 
@@ -644,7 +651,7 @@ public partial class Index : IDisposable
             l.LogInformation("Not calling NavigationManager.NavigateTo().");
 
             // Fetch the data required to render the selected data series
-            ChartSeriesWithData = await RetrieveDataSets(CompoundSeriesTypes.None, ChartSeriesList);
+            ChartSeriesWithData = await RetrieveDataSets(CompoundSeriesType, ChartSeriesList);
 
             l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + ChartSeriesWithData.Count + " entries.");
 
@@ -722,52 +729,63 @@ public partial class Index : IDisposable
             };
     }
 
-    async Task<List<SeriesWithData>> RetrieveDataSets(CompoundSeriesTypes compoundSeriesTypes, List<ChartSeriesDefinition> chartSeriesList)
+    async Task<List<SeriesWithData>> RetrieveDataSets(CompoundSeriesTypes compoundSeriesType, List<ChartSeriesDefinition> chartSeriesList)
     {
         var datasetsToReturn = new List<SeriesWithData>();
 
         Logger.LogInformation("RetrieveDataSets: starting enumeration");
 
-        foreach (var csd in chartSeriesList)
+        switch (compoundSeriesType)
         {
-            var cupAggregationFunction = MapSeriesAggregationOptionToBinAggregationFunction(csd.Aggregation);
-            var bucketAggregationFunction = cupAggregationFunction;
-
-            // If we're doing modular binning and the aggregation function is sum, then force mean aggregation at
-            // top level
-            var binAggregationFunction =
-                SelectedBinGranularity.IsModular() && cupAggregationFunction == ContainerAggregationFunctions.Sum
-                ? ContainerAggregationFunctions.Mean
-                : cupAggregationFunction;
-            
-            DataSet dataSet =
-                await DataService.PostDataSet(compoundSeriesTypes,
-                    new [] 
-                    { 
-                        new SimpleRequest(
-                            SelectedBinGranularity,
-                            binAggregationFunction,
-                            bucketAggregationFunction,
-                            cupAggregationFunction,
-                            csd.Value,
-                            csd.SourceSeriesSpecifications.Select(BuildDataPrepSeriesSpecification).ToArray(),
-                            csd.SeriesDerivationType,
-                            GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
-                            GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
-                            GetGroupingThreshold(csd.GroupingThreshold),
-                            SelectedDayGrouping,
-                            csd.SeriesTransformation,
-                            csd.Year)
-                    });
-
-            datasetsToReturn.Add(
-                new SeriesWithData() { ChartSeries = csd, SourceDataSet = dataSet }
-            );
+            case CompoundSeriesTypes.None:
+                foreach (var csd in chartSeriesList)
+                {
+                    var simpleRequest = CreateSimpleRequest(csd);
+                    var dataSet = await DataService.PostDataSet(compoundSeriesType, new[] { simpleRequest });
+                    datasetsToReturn.Add(new SeriesWithData() { ChartSeries = csd, SourceDataSet = dataSet });
+                }
+                break;
+            case CompoundSeriesTypes.Difference:
+                {
+                    var simpleRequests = chartSeriesList.Select(x => CreateSimpleRequest(x)).ToArray();
+                    var dataSet = await DataService.PostDataSet(compoundSeriesType, simpleRequests);
+                    datasetsToReturn.Add(new SeriesWithData() { ChartSeries = chartSeriesList.FirstOrDefault(), SourceDataSet = dataSet });
+                    break;
+                }
         }
 
         Logger.LogInformation("RetrieveDataSets: completed enumeration");
 
         return datasetsToReturn;
+    }
+
+    private SimpleRequest CreateSimpleRequest(ChartSeriesDefinition csd)
+    {
+        var cupAggregationFunction = MapSeriesAggregationOptionToBinAggregationFunction(csd.Aggregation);
+        var bucketAggregationFunction = cupAggregationFunction;
+
+        // If we're doing modular binning and the aggregation function is sum, then force mean aggregation at
+        // top level
+        var binAggregationFunction =
+            SelectedBinGranularity.IsModular() && cupAggregationFunction == ContainerAggregationFunctions.Sum
+            ? ContainerAggregationFunctions.Mean
+            : cupAggregationFunction;
+
+        var simpleRequest = new SimpleRequest(
+                        SelectedBinGranularity,
+                        binAggregationFunction,
+                        bucketAggregationFunction,
+                        cupAggregationFunction,
+                        csd.Value,
+                        csd.SourceSeriesSpecifications.Select(BuildDataPrepSeriesSpecification).ToArray(),
+                        csd.SeriesDerivationType,
+                        GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
+                        GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
+                        GetGroupingThreshold(csd.GroupingThreshold),
+                        SelectedDayGrouping,
+                        csd.SeriesTransformation,
+                        csd.Year);
+        return simpleRequest;
     }
 
     private float GetGroupingThreshold(float? groupingThreshold, bool binGranularityIsLinear = false)
@@ -1508,6 +1526,12 @@ public partial class Index : IDisposable
             )
             .ToList();
 
+        await BuildDataSets();
+    }
+
+    async Task HandleOnCompoundSeriesTypeChanged(CompoundSeriesTypes compoundSeriesType)
+    {
+        CompoundSeriesType = compoundSeriesType;
         await BuildDataSets();
     }
 }

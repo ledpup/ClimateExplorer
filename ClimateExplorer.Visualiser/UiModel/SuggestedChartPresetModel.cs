@@ -1,4 +1,6 @@
-﻿namespace ClimateExplorer.Visualiser.UiModel;
+﻿using ClimateExplorer.Core.DataPreparation;
+
+namespace ClimateExplorer.Visualiser.UiModel;
 
 public class SuggestedChartPresetModel
 {
@@ -7,6 +9,7 @@ public class SuggestedChartPresetModel
     public bool MenuExpanded { get; set; }
     public bool MissingChartSeries { get; set; }
 
+    public CompoundSeriesTypes CompoundSeriesType { get; set; }
     public List<ChartSeriesDefinition> ChartSeriesList { get; set; }
 }
 

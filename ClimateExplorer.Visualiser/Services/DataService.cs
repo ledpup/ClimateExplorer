@@ -66,14 +66,14 @@ public class DataService : IDataService
         return result;
     }
 
-    public async Task<DataSet> PostDataSet(CompoundSeriesTypes compoundSeriesTypes, SimpleRequest[] simpleRequest)
+    public async Task<DataSet> PostDataSet(CompoundSeriesTypes compoundSeriesType, SimpleRequest[] simpleRequest)
     {
         var response =
            await _httpClient.PostAsJsonAsync(
                "dataset",
                new
                {
-                   CompoundSeriesTypes = CompoundSeriesTypes.None,
+                   CompoundSeriesType = compoundSeriesType,
                    Body = simpleRequest.Select(x => x.ToPostDataSetsRequestBody()).ToArray(),
                }
                );

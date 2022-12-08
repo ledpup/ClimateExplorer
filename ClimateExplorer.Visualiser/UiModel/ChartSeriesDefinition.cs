@@ -266,7 +266,7 @@ public class ChartSeriesDefinition
         {
             segments.Add(GetFriendlySeriesTransformationLabel(SeriesTransformation));
         }
-
+        
         if (Aggregation != SeriesAggregationOptions.Mean)
         {
             segments.Add(Aggregation.ToString());

@@ -8,7 +8,7 @@ namespace ClimateExplorer.Core.DataPreparation.Model
 {
     public class PostDataSetBody
     {
-        public CompoundSeriesTypes CompoundSeriesTypes { get; set; }
+        public CompoundSeriesTypes CompoundSeriesType { get; set; }
         public PostDataSetsRequestBody[] Body { get; set; }
     }
 }
