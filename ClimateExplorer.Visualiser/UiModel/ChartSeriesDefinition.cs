@@ -26,6 +26,7 @@ public class ChartSeriesDefinition
     public float? GroupingThreshold { get; set; }
 
     // Data presentation fields
+    public SecondaryCalculationOptions SecondaryCalculation { get; set; }
     public SeriesSmoothingOptions Smoothing { get; set; }
     public int SmoothingWindow { get; set; }
     public SeriesAggregationOptions Aggregation { get; set; }
@@ -105,6 +106,11 @@ public class ChartSeriesDefinition
             if (Aggregation != SeriesAggregationOptions.Mean || (Year == null && BinGranularity == BinGranularities.ByMonthOnly))
             {
                 segments.Add("Aggregation: " + Aggregation);
+            }
+
+            if (SecondaryCalculation == SecondaryCalculationOptions.AnnualChange)
+            {
+                segments.Add("annual change");
             }
 
             if (Value != SeriesValueOptions.Value)
@@ -270,6 +276,11 @@ public class ChartSeriesDefinition
         if (Aggregation != SeriesAggregationOptions.Mean)
         {
             segments.Add(Aggregation.ToString());
+        }
+
+        if (SecondaryCalculation == SecondaryCalculationOptions.AnnualChange)
+        {
+            segments.Add("annual change");
         }
 
         if (Value != SeriesValueOptions.Value)

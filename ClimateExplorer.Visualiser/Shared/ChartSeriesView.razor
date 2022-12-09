@@ -51,6 +51,18 @@
                     </tr>
                     }
                     <tr>
+                        <td>Secondary calcuation</td>
+                        <td>
+                            <Select TValue="SecondaryCalculationOptions"
+                                Size="Size.ExtraSmall"
+                                SelectedValue="@ChartSeries.SecondaryCalculation"
+                                SelectedValueChanged="@OnSecondaryCalculationChanged">
+                                <SelectItem Value="SecondaryCalculationOptions.None">None</SelectItem>
+                                <SelectItem Value="SecondaryCalculationOptions.AnnualChange">Annual change</SelectItem>
+                            </Select>
+                        </td>
+                    </tr>
+                    <tr>
                         <td>Smoothing</td>
                         <td>
                             <Select TValue="SeriesSmoothingOptions" 
@@ -247,6 +259,13 @@
     async Task OnSmoothingChanged(SeriesSmoothingOptions o)
     {
         ChartSeries.Smoothing = o;
+
+        await OnSeriesChanged.InvokeAsync();
+    }
+
+    async Task OnSecondaryCalculationChanged(SecondaryCalculationOptions o)
+    {
+        ChartSeries.SecondaryCalculation = o;
 
         await OnSeriesChanged.InvokeAsync();
     }

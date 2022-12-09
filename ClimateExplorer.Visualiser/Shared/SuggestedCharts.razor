@@ -96,7 +96,7 @@
 
         var nino34 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.Nino34, null, false, throwIfNoMatch: true);
 
-        var c2o = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.CO2, null, false, throwIfNoMatch: true);
+        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.CO2, null, false, throwIfNoMatch: true);
         var ch4 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.CH4, null, false, throwIfNoMatch: true);
         var n2o = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.N2O, null, false, throwIfNoMatch: true);
 
@@ -595,7 +595,7 @@
                                 new ChartSeriesDefinition()
                                 {
                                     SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, c2o),
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, co2),
                                     Aggregation = SeriesAggregationOptions.Mean,
                                     BinGranularity = BinGranularities.ByYearAndMonth,
                                     Smoothing = SeriesSmoothingOptions.None,
@@ -609,6 +609,29 @@
                     Variants =
                             new List<SuggestedChartPresetModel>()
                             {
+                                new SuggestedChartPresetModel()
+                                {
+                                    Title = "CO\u2082 annual change",
+                                    Description = "Smoothed difference between current and previous year CO\u2082 maximums",
+                                    ChartSeriesList =
+                                        new List<ChartSeriesDefinition>()
+                                        {
+                                            new ChartSeriesDefinition()
+                                            {
+                                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, co2),
+                                                Aggregation = SeriesAggregationOptions.Maximum,
+                                                BinGranularity = BinGranularities.ByYear,
+                                                SecondaryCalculation = SecondaryCalculationOptions.AnnualChange,
+                                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                                SmoothingWindow = 5,
+                                                Value = SeriesValueOptions.Value,
+                                                Year = null,
+                                                DisplayStyle = SeriesDisplayStyle.Line,
+                                                RequestedColour = UiLogic.Colours.Brown,
+                                            },
+                                        }
+                                },
                                 new SuggestedChartPresetModel()
                                 {
                                     Title = "Methane (CH\u2084)",
