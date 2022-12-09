@@ -48,7 +48,7 @@ namespace ClimateExplorer.Core.DataPreparation
             }
 
             DateOnly minDate = DateOnly.FromDateTime(DateTime.Today.Date);
-            DateOnly maxDate;
+            DateOnly maxDate = DateOnly.FromDateTime(DateTime.MinValue);
 
             var dbGroups = new Dictionary<DateOnly, List<TemporalDataPoint>>();
 
