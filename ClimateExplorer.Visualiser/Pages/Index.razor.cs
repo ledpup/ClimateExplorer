@@ -684,6 +684,7 @@ public partial class Index : IDisposable
                         DisplayStyle = csd.DisplayStyle,
                         IsLocked = csd.IsLocked,
                         ShowTrendline = csd.ShowTrendline,
+                        SecondaryCalculation = csd.SecondaryCalculation,
                         Smoothing = csd.Smoothing,
                         SmoothingWindow = csd.SmoothingWindow,
                         Value = csd.Value,
@@ -1070,6 +1071,40 @@ public partial class Index : IDisposable
         var l = new LogAugmenter(Logger, "BuildProcessedDataSets");
 
         l.LogInformation("entering");
+
+        foreach (var cs in chartSeriesWithData)
+        {
+            if (cs.ChartSeries.SecondaryCalculation == SecondaryCalculationOptions.AnnualChange)
+            {
+                var yearlyDifferenceValues =
+                    cs.SourceDataSet.DataRecords
+                    .Select(x => x.Value)
+                    .CalculateYearlyDifference();
+
+                // Now, join back to the original DataRecord set
+                var newDataRecords =
+                    yearlyDifferenceValues
+                    .Zip(
+                        cs.SourceDataSet.DataRecords,
+                        (val, dr) => new DataRecord
+                        {
+                            Label = dr.Label,
+                            BinId = dr.BinId,
+                            Value = val
+                        }
+                    )
+                    .ToList();
+
+                cs.SourceDataSet =
+                    new DataSet
+                    {
+                        Location = cs.SourceDataSet.Location,
+                        MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
+                        DataRecords = newDataRecords
+                    };
+            }
+        }
+
 
         // If we're doing smoothing via the moving average, precalculate these data and add them to PreProcessedDataSets.
         // We do this because the SimpleMovingAverage calculate function will remove some years from the start of the data set.
