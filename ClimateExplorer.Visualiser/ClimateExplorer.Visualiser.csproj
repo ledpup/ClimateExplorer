@@ -29,4 +29,8 @@
     <ProjectReference Include="..\ClimateExplorer.Core\ClimateExplorer.Core.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
 </Project>
