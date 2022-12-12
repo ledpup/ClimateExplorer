@@ -456,30 +456,9 @@
                         {
                         new SuggestedChartPresetModelWithVariants()
                         {
-                            Title = "First day of frost",
-                            Description = "First day of the year that has temperature ≤ 2.2°C; 20-year smoothing",
-                            ChartSeriesList =
-                                new List<ChartSeriesDefinition>()
-                                {
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMin),
-                                        Aggregation = SeriesAggregationOptions.Minimum,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 20,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null,
-                                        DisplayStyle = SeriesDisplayStyle.Line,
-                                        SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
-                                    },
-                                }
-                        },
-                        new SuggestedChartPresetModelWithVariants()
-                        {
-                            Title = "Last day of frost",
-                            Description = "Last day of the year that has temperature ≤ 2.2°C; 20-year smoothing",
+                            Title = "Range of frost",
+                            Description = "Smoothed difference between first and last days of frost for the year",
+                            CompoundSeriesType = CompoundSeriesTypes.Difference,
                             ChartSeriesList =
                                 new List<ChartSeriesDefinition>()
                                 {
@@ -495,10 +474,23 @@
                                         Year = null,
                                         DisplayStyle = SeriesDisplayStyle.Line,
                                         SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
+                                    },
+                                    new ChartSeriesDefinition()
+                                    {
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMin),
+                                        Aggregation = SeriesAggregationOptions.Minimum,
+                                        BinGranularity = BinGranularities.ByYear,
+                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                        SmoothingWindow = 20,
+                                        Value = SeriesValueOptions.Value,
+                                        Year = null,
+                                        DisplayStyle = SeriesDisplayStyle.Line,
+                                        SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
                                     }
                                 }
-                        }
-                        }
+                        },    
+                    }
                 }
         );
 
@@ -650,40 +642,6 @@
                                                 DisplayStyle = SeriesDisplayStyle.Line,
                                                 RequestedColour = UiLogic.Colours.Brown,
                                             }
-                                        }
-                                },
-                                new SuggestedChartPresetModel()
-                                {
-                                    Title = "Yearly range in CO\u2082",
-                                    Description = "Yearly maximum of CO\u2082 subtracted from yearly minimum",
-                                    CompoundSeriesType = CompoundSeriesTypes.Difference,
-                                    ChartSeriesList =
-                                        new List<ChartSeriesDefinition>()
-                                        {
-                                            new ChartSeriesDefinition()
-                                            {
-                                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, co2),
-                                                Aggregation = SeriesAggregationOptions.Maximum,
-                                                BinGranularity = BinGranularities.ByYear,
-                                                Smoothing = SeriesSmoothingOptions.None,
-                                                SmoothingWindow = 5,
-                                                Value = SeriesValueOptions.Value,
-                                                Year = null,
-                                                DisplayStyle = SeriesDisplayStyle.Line,
-                                            },
-                                            new ChartSeriesDefinition()
-                                            {
-                                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, co2),
-                                                Aggregation = SeriesAggregationOptions.Minimum,
-                                                BinGranularity = BinGranularities.ByYear,
-                                                Smoothing = SeriesSmoothingOptions.None,
-                                                SmoothingWindow = 5,
-                                                Value = SeriesValueOptions.Value,
-                                                Year = null,
-                                                DisplayStyle = SeriesDisplayStyle.Line,
-                                            },
                                         }
                                 },
                             }
