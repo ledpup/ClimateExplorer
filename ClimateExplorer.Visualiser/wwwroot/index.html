@@ -77,140 +77,151 @@
   </head>
 
   <body>
-    <div id="app">
-      <!-- Loading icon -->
-      <div
-        class="fa-8x"
-        style="
+      <div id="app">
+          <!-- Loading icon -->
+          <div class="fa-8x"
+               style="
           position: fixed;
           width: 100%;
           height: 100%;
           display: flex;
           align-items: center;
           top: 0;
-        "
-      >
-        <i
-          class="fas fa-spinner fa-spin"
-          style="display: flex; margin: 0 auto; color: #aaa"
-        ></i>
+        ">
+              <i class="fas fa-spinner fa-spin"
+                 style="display: flex; margin: 0 auto; color: #aaa"></i>
+          </div>
       </div>
-    </div>
 
-    <div id="blazor-error-ui">
-      An unhandled error has occurred.
-      <a href="" class="reload">Reload</a>
-      <a class="dismiss">🗙</a>
-    </div>
+      <div id="blazor-error-ui">
+          An unhandled error has occurred.
+          <a href="" class="reload">Reload</a>
+          <a class="dismiss">🗙</a>
+      </div>
 
-    <script src="_framework/blazor.webassembly.js"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-trendline"></script>
+      <script src="_framework/blazor.webassembly.js"
+              autostart="false"></script>
+      <script>
+          Blazor.start({
+              loadBootResource: function (type, name, defaultUri, integrity) {
+                  console.info(type, name, defaultUri);
+                  switch (type) {
+                      case "dotnetjs":
+                          return `/${defaultUri}`;
+                      default:
+                          return fetch(`/${defaultUri}`, {
+                              integrity: integrity,
+                              credentials: "omit",
+                              mode: "no-cors",
+                          });
+                  }
+              },
+          });
+      </script>
 
-    <!--For mapping component -->
-    <script
-      src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-      integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-      crossorigin=""
-    ></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+              integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+              crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-trendline"></script>
 
-    <script>
-      async function getLocation() {
-        var getCurrentPositionPromise = new Promise((resolve, reject) => {
-          if (!navigator.geolocation) {
-            reject({
-              errorCode: 255,
-              message: "This device does not support geolocation.",
-            });
-          } else {
-            navigator.geolocation.getCurrentPosition(resolve, reject, null);
+      <!--For mapping component -->
+      <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+              integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+              crossorigin=""></script>
+
+      <script>
+          async function getLocation() {
+              var getCurrentPositionPromise = new Promise((resolve, reject) => {
+                  if (!navigator.geolocation) {
+                      reject({
+                          errorCode: 255,
+                          message: "This device does not support geolocation.",
+                      });
+                  } else {
+                      navigator.geolocation.getCurrentPosition(resolve, reject, null);
+                  }
+              });
+
+              var result = {};
+
+              await getCurrentPositionPromise
+                  .then((position) => {
+                      result.latitude = position.coords.latitude;
+                      result.longitude = position.coords.longitude;
+                  })
+                  .catch(
+                      // Ignored
+                      (error) => {
+                          result.errorCode = error.code;
+                          result.errorMessage = error.message;
+                      }
+                  );
+
+              return result;
           }
-        });
 
-        var result = {};
+          async function downloadFileFromStream(fileName, contentStreamReference) {
+              const arrayBuffer = await contentStreamReference.arrayBuffer();
+              const blob = new Blob([arrayBuffer]);
+              const url = URL.createObjectURL(blob);
 
-        await getCurrentPositionPromise
-          .then((position) => {
-            result.latitude = position.coords.latitude;
-            result.longitude = position.coords.longitude;
-          })
-          .catch(
-            // Ignored
-            (error) => {
-              result.errorCode = error.code;
-              result.errorMessage = error.message;
-            }
-          );
+              triggerFileDownload(fileName, url);
 
-        return result;
-      }
+              URL.revokeObjectURL(url);
+          }
 
-      async function downloadFileFromStream(fileName, contentStreamReference) {
-        const arrayBuffer = await contentStreamReference.arrayBuffer();
-        const blob = new Blob([arrayBuffer]);
-        const url = URL.createObjectURL(blob);
+          function triggerFileDownload(fileName, url) {
+              const anchorElement = document.createElement("a");
+              anchorElement.href = url;
+              anchorElement.download = fileName ?? "";
+              anchorElement.click();
+              anchorElement.remove();
+          }
 
-        triggerFileDownload(fileName, url);
+          function toggleMapExpansion() {
+              var mapElement = document.getElementById("mapContainer");
 
-        URL.revokeObjectURL(url);
-      }
+              var isMapCurrentlyExpanded =
+                  mapElement.className == "mapContainer expanded";
 
-      function triggerFileDownload(fileName, url) {
-        const anchorElement = document.createElement("a");
-        anchorElement.href = url;
-        anchorElement.download = fileName ?? "";
-        anchorElement.click();
-        anchorElement.remove();
-      }
+              mapElement.className = isMapCurrentlyExpanded
+                  ? "mapContainer collapsed"
+                  : "mapContainer expanded";
 
-      function toggleMapExpansion() {
-        var mapElement = document.getElementById("mapContainer");
+              // Fake a window resize so that the leaflet map control realises it has resized.
+              window.dispatchEvent(new Event("resize"));
+          }
 
-        var isMapCurrentlyExpanded =
-          mapElement.className == "mapContainer expanded";
+          function showOrHideMap(show) {
+              var mapElement = document.getElementById("mapContainerContainer");
 
-        mapElement.className = isMapCurrentlyExpanded
-          ? "mapContainer collapsed"
-          : "mapContainer expanded";
+              mapElement.style.display = show ? "block" : "none";
 
-        // Fake a window resize so that the leaflet map control realises it has resized.
-        window.dispatchEvent(new Event("resize"));
-      }
+              // Fake a window resize so that the leaflet map control realises it has resized.
+              if (show) {
+                  window.dispatchEvent(new Event("resize"));
+              }
+          }
+      </script>
 
-      function showOrHideMap(show) {
-        var mapElement = document.getElementById("mapContainerContainer");
+      <script>
+          // Below is a JavaScript hack to stop NavigateTo from scrolling to the top of the page.
+          // See: https://github.com/dotnet/aspnetcore/issues/40190
 
-        mapElement.style.display = show ? "block" : "none";
+          var skipScrollTo = false;
+          const origScrollTo = window.scrollTo;
+          window.scrollTo = (x, y) => {
+              if (x === 0 && y === 0 && skipScrollTo) {
+                  skipScrollTo = false;
+                  return;
+              }
+              return origScrollTo.apply(this, [x, y]);
+          };
 
-        // Fake a window resize so that the leaflet map control realises it has resized.
-        if (show) {
-          window.dispatchEvent(new Event("resize"));
-        }
-      }
-    </script>
-
-    <script>
-      // Below is a JavaScript hack to stop NavigateTo from scrolling to the top of the page.
-      // See: https://github.com/dotnet/aspnetcore/issues/40190
-
-      var skipScrollTo = false;
-      const origScrollTo = window.scrollTo;
-      window.scrollTo = (x, y) => {
-        if (x === 0 && y === 0 && skipScrollTo) {
-          skipScrollTo = false;
-          return;
-        }
-        return origScrollTo.apply(this, [x, y]);
-      };
-
-      function willSkipScrollTo(newValue) {
-        skipScrollTo = newValue;
-      }
-    </script>
+          function willSkipScrollTo(newValue) {
+              skipScrollTo = newValue;
+          }
+      </script>
   </body>
 </html>
