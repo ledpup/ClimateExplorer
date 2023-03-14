@@ -12,7 +12,7 @@
         <span class="chart-controls"><a class="chart-control" @onclick="() => ChangeLocationClicked(null)"><i class="fas fa-map"></i> Change Location</a></span>
     </HeaderContent>
     <Content>
-        @if (Location == null || MaxTempAnomalyRecords == null)
+        @if (Location == null || AnomalyRecords == null)
         {
             <SpinKit Type="SpinKitType.Plane" />
         }
@@ -23,13 +23,13 @@
             -->
             <OverviewField Label="Location"><Value> <span><a href="@LocationMapUrl" target="_blank">@LocationAsString</a></span></Value></OverviewField><!--
          --><OverviewField Label="Elevation"><Value>@ElevationAsString</Value></OverviewField><!--
-         -->@if (WarmingIndexDescription != null)
+         -->@if (IndexDescription != null)
             {
-                <OverviewField Label="Warming index" PopupText="@WarmingIndexDescription"><Value>@WarmingIndexAsString</Value></OverviewField>
+                <OverviewField Label="Warming index" PopupText="@IndexDescription"><Value>@IndexAsString</Value></OverviewField>
             }
             <OverviewField Label="Heating score" PopupText="@HeatingScoreDescription"><Value>@Location.HeatingScore</Value></OverviewField>
-            <WarmingStripe LocationName=@Location.Name LocationTemperatureMean=@LocationTemperatureMean DataRecords="@MaxTempAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange/>
-            <WarmestYears DataRecords="@MaxTempAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
+            <WarmingStripe LocationName=@Location.Name LocationTemperatureMean=@LocationTemperatureMean DataRecords="@AnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
+            <WarmestYears DataRecords="@AnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
         }
     </Content>
 </Collapsible>
@@ -58,6 +58,9 @@
     [Parameter]
     public EventCallback<YearAndDataTypeFilter> OnYearFilterChange { get; set; }
 
+    [Parameter]
+    public DataContexts DataContext { get; set; }
+
     Guid instanceId = Guid.NewGuid();
 
     string LocationMapUrl => $"https://maps.google.com/?q={Location.Coordinates.Latitude},{Location.Coordinates.Longitude}";
@@ -67,10 +70,10 @@
     /// <summary>
     /// Used by the warming stripe
     /// </summary>
-    List<YearAndValue>? MaxTempAnomalyRecords { get; set; }
+    List<YearAndValue>? AnomalyRecords { get; set; }
 
-    string? WarmingIndexDescription;
-    string? WarmingIndexAsString;
+    string? IndexDescription;
+    string? IndexAsString;
 
     Guid? locationIdLastTimeOnParametersSetAsyncWasCalled;
 
@@ -127,7 +130,7 @@
 
         if (tempMaxMeasurementForLocation == null)
         {
-            MaxTempAnomalyRecords = null;
+            AnomalyRecords = null;
         }
         else
         {
@@ -157,7 +160,7 @@
                     SeriesTransformations.Identity);
 
             // Filter to records that have values
-            MaxTempAnomalyRecords =
+            AnomalyRecords =
                 series.DataRecords
                 .Where(x => x.Value != null)
                 .Select(x => new YearAndValue(((YearBinIdentifier)BinIdentifier.Parse(x.BinId)).Year, x.Value.Value))
@@ -188,10 +191,10 @@
                     14,
                     SeriesTransformations.Identity);
 
-            var warmingIndex = WarmingIndexCalculator.CalculateWarmingIndex(series.DataRecords);
+            var warmingIndex = IndexCalculator.CalculateWarmingIndex(series.DataRecords);
 
-            WarmingIndexDescription = GenerateWarmingIndexDescription(warmingIndex);
-            WarmingIndexAsString = GenerateWarmingIndexAsString(warmingIndex);
+            IndexDescription = GenerateWarmingIndexDescription(warmingIndex, tempMaxMeasurementForLocation.MeasurementDefinition.UnitOfMeasure);
+            IndexAsString = GetIndexAsString(warmingIndex, tempMaxMeasurementForLocation.MeasurementDefinition.UnitOfMeasure);
 
             LocationTemperatureMean = series.DataRecords.Average(x => x.Value);
         }
@@ -199,15 +202,14 @@
         await base.OnParametersSetAsync();
     }
 
-
-    string GenerateWarmingIndexDescription(CalculatedWarmingIndex warmingIndex)
+    string GenerateWarmingIndexDescription(CalculatedIndex warmingIndex, UnitOfMeasure unitOfMeasure)
     {
         if (Location == null)
         {
             return "NA";
         }
 
-        string warmingIndexAsString = GenerateWarmingIndexAsString(warmingIndex);
+        string warmingIndexAsString = GetIndexAsString(warmingIndex, unitOfMeasure);
 
         if (warmingIndex == null)
         {
@@ -218,20 +220,20 @@
         return
             String.Join(
                 Environment.NewLine,
-                $"<p>The warming index is the temperature difference between the average of the last 30 years of maximum temperatures compared with the average of the first half ({warmingIndex.CountOfFirstHalfOfTemperatures} years) of the dataset. 30 years was chosen to fit the convention of the <a href=\"https://en.wikipedia.org/wiki/Climatological_normal\" target=\"_blank\">climatological normal</a>. The first half of the datatset is used as a proxy for a natural baseline; it is expected to be less affected by anthropogenic warming.</p>",
-                $"<p>{Location.Name}, between the years {warmingIndex.FirstYearInLast30YearsOfTemperatures}-{warmingIndex.LastYearInLast30YearsOfTemperatures}, had an average max temp of <strong>{string.Format("{0:0.##}", MathF.Round(warmingIndex.AverageOfLastTwentyYearsTemperatures, 2))}°C</strong>.</p>",
-                $"<p>{Location.Name}, between the years {warmingIndex.FirstYearInFirstHalfOfTemperatures}-{warmingIndex.LastYearInFirstHalfOfTemperatures}, had an average max temp of <strong>{string.Format("{0:0.##}", MathF.Round(warmingIndex.AverageOfFirstHalfOfTemperatures, 2))}°C</strong>.</p>",
+                $"<p>The warming index is the temperature difference between the average of the last 30 years of maximum temperatures compared with the average of the first half ({warmingIndex.CountOfFirstHalf} years) of the dataset. 30 years was chosen to fit the convention of the <a href=\"https://en.wikipedia.org/wiki/Climatological_normal\" target=\"_blank\">climatological normal</a>. The first half of the datatset is used as a proxy for a natural baseline; it is expected to be less affected by anthropogenic warming.</p>",
+                $"<p>{Location.Name}, between the years {warmingIndex.FirstYearInLast30Years}-{warmingIndex.LastYearInLast30Years}, had an average max temp of <strong>{string.Format("{0:0.##}", MathF.Round(warmingIndex.AverageOfLastTwentyYears, 2))}°C</strong>.</p>",
+                $"<p>{Location.Name}, between the years {warmingIndex.FirstYearInFirstHalf}-{warmingIndex.LastYearInFirstHalf}, had an average max temp of <strong>{string.Format("{0:0.##}", MathF.Round(warmingIndex.AverageOfFirstHalf, 2))}°C</strong>.</p>",
                 $"<p>The difference is <strong>{warmingIndexAsString}</strong> (after rounding to 1 decimal place).</p>",
                 $"<p>Over the long-term, with no external influences, we'd expect the warming index to trend towards zero. A non-zero warming index may indicate an effect of climate change. A positive warming index may indicate global warming.</p>"
             );
     }
 
-    static string GenerateWarmingIndexAsString(CalculatedWarmingIndex warmingIndex)
+    static string GetIndexAsString(CalculatedIndex warmingIndex, UnitOfMeasure unitOfMeasure)
     {
         if (warmingIndex == null) return "NA";
 
-        return $"{ (warmingIndex.WarmingIndexValue >= 0 ? "+" : "") }{ string.Format("{0:0.#}", MathF.Round(warmingIndex.WarmingIndexValue, 1))}°C";
-    }
+        return $"{(warmingIndex.WarmingIndexValue >= 0 ? "+" : "")}{string.Format("{0:0.#}", MathF.Round(warmingIndex.WarmingIndexValue, 1))}{ (unitOfMeasure == UnitOfMeasure.DegreesCelsius ? "°C" : "mm") }";
+}
 
     async Task HandleOnYearFilterChange(short year)
     {

@@ -1,90 +1,89 @@
 ﻿using ClimateExplorer.Core.DataPreparation;
 
-namespace ClimateExplorer.Core.Calculators
+namespace ClimateExplorer.Core.Calculators;
+
+public static class IndexCalculator
 {
-    public static class WarmingIndexCalculator
+    class YearAndValue
     {
-        class YearAndValue
+        public int Year { get; set; }
+        public float? Value { get; set; }
+    }
+
+    public static CalculatedIndex CalculateWarmingIndex(IEnumerable<DataRecord> dataRecords)
+    {
+        return
+            CalculateWarmingIndex(
+                dataRecords.Select(
+                    x =>
+                    new YearAndValue
+                    {
+                        Year = ((YearBinIdentifier)BinIdentifier.Parse(x.BinId)).Year,
+                        Value = x.Value
+                    }
+                )
+                .ToArray()
+            );
+    }
+
+    public static CalculatedIndex CalculateWarmingIndex(ChartableDataPoint[] dataPoints)
+    {
+        return
+            CalculateWarmingIndex(
+                dataPoints.Select(
+                    x =>
+                    new YearAndValue
+                    {
+                        Year = ((YearBinIdentifier)BinIdentifier.Parse(x.BinId)).Year,
+                        Value = x.Value
+                    }
+                )
+                .ToArray()
+            );
+    }
+
+    static CalculatedIndex CalculateWarmingIndex(YearAndValue[] dataPoints)
+    {
+        var nonNullDataPoints = dataPoints.Where(x => x.Value.HasValue).ToArray();
+
+        if (nonNullDataPoints.Length < 40)
         {
-            public int Year { get; set; }
-            public float? Value { get; set; }
+            return null;
         }
 
-        public static CalculatedWarmingIndex CalculateWarmingIndex(IEnumerable<DataRecord> dataRecords)
-        {
-            return
-                CalculateWarmingIndex(
-                    dataRecords.Select(
-                        x =>
-                        new YearAndValue
-                        {
-                            Year = ((YearBinIdentifier)BinIdentifier.Parse(x.BinId)).Year,
-                            Value = x.Value
-                        }
-                    )
-                    .ToArray()
-                );
-        }
+        var countOfFirstHalf = nonNullDataPoints.Length / 2;
+        var firstHalf = nonNullDataPoints.OrderBy(x => x.Year).Take(countOfFirstHalf).ToArray();
+        var averageOfFirstHalf = firstHalf.Average(x => x.Value).Value;
+        var lastThirtyYears = nonNullDataPoints
+                                                        .OrderByDescending(x => x.Year)
+                                                        .Take(30)
+                                                        .OrderBy(x => x.Year)
+                                                        .ToArray();
+        var averageOfLastTwentyYears = lastThirtyYears.Average(x => x.Value).Value;
 
-        public static CalculatedWarmingIndex CalculateWarmingIndex(ChartableDataPoint[] dataPoints)
-        {
-            return
-                CalculateWarmingIndex(
-                    dataPoints.Select(
-                        x =>
-                        new YearAndValue
-                        {
-                            Year = ((YearBinIdentifier)BinIdentifier.Parse(x.BinId)).Year,
-                            Value = x.Value
-                        }
-                    )
-                    .ToArray()
-                );
-        }
-
-        static CalculatedWarmingIndex CalculateWarmingIndex(YearAndValue[] dataPoints)
-        {
-            var nonNullDataPoints = dataPoints.Where(x => x.Value.HasValue).ToArray();
-
-            if (nonNullDataPoints.Length < 40)
+        return
+            new CalculatedIndex
             {
-                return null;
-            }
-
-            var countOfFirstHalfOfTemperatures = nonNullDataPoints.Length / 2;
-            var firstHalfOfTemperatures = nonNullDataPoints.OrderBy(x => x.Year).Take(countOfFirstHalfOfTemperatures).ToArray();
-            var averageOfFirstHalfOfTemperatures = firstHalfOfTemperatures.Average(x => x.Value).Value;
-            var lastThirtyYearsOfTemperatures = nonNullDataPoints
-                                                            .OrderByDescending(x => x.Year)
-                                                            .Take(30)
-                                                            .OrderBy(x => x.Year)
-                                                            .ToArray();
-            var averageOfLastTwentyYearsTemperatures = lastThirtyYearsOfTemperatures.Average(x => x.Value).Value;
-
-            return
-                new CalculatedWarmingIndex
-                {
-                    WarmingIndexValue = averageOfLastTwentyYearsTemperatures - averageOfFirstHalfOfTemperatures,
-                    AverageOfFirstHalfOfTemperatures = averageOfFirstHalfOfTemperatures,
-                    AverageOfLastTwentyYearsTemperatures = averageOfLastTwentyYearsTemperatures,
-                    CountOfFirstHalfOfTemperatures = countOfFirstHalfOfTemperatures,
-                    FirstYearInFirstHalfOfTemperatures = firstHalfOfTemperatures.First().Year,
-                    LastYearInFirstHalfOfTemperatures = firstHalfOfTemperatures.Last().Year,
-                    FirstYearInLast30YearsOfTemperatures = lastThirtyYearsOfTemperatures.First().Year,
-                    LastYearInLast30YearsOfTemperatures = lastThirtyYearsOfTemperatures.Last().Year
-                };                
-        }
+                WarmingIndexValue = averageOfLastTwentyYears - averageOfFirstHalf,
+                AverageOfFirstHalf = averageOfFirstHalf,
+                AverageOfLastTwentyYears = averageOfLastTwentyYears,
+                CountOfFirstHalf = countOfFirstHalf,
+                FirstYearInFirstHalf = firstHalf.First().Year,
+                LastYearInFirstHalf = firstHalf.Last().Year,
+                FirstYearInLast30Years = lastThirtyYears.First().Year,
+                LastYearInLast30Years = lastThirtyYears.Last().Year
+            };                
     }
+}
 
-    public class CalculatedWarmingIndex
-    {
-        public float WarmingIndexValue { get; set; }
-        public float AverageOfFirstHalfOfTemperatures { get; set; }
-        public int CountOfFirstHalfOfTemperatures { get; set; }
-        public float AverageOfLastTwentyYearsTemperatures { get; set; }
-        public int FirstYearInFirstHalfOfTemperatures { get; set; }
-        public int LastYearInFirstHalfOfTemperatures { get; set; }
-        public int FirstYearInLast30YearsOfTemperatures { get; set; }
-        public int LastYearInLast30YearsOfTemperatures { get; set; }
-    }
+public class CalculatedIndex
+{
+    public float WarmingIndexValue { get; set; }
+    public float AverageOfFirstHalf { get; set; }
+    public int CountOfFirstHalf { get; set; }
+    public float AverageOfLastTwentyYears { get; set; }
+    public int FirstYearInFirstHalf { get; set; }
+    public int LastYearInFirstHalf { get; set; }
+    public int FirstYearInLast30Years { get; set; }
+    public int LastYearInLast30Years { get; set; }
 }
