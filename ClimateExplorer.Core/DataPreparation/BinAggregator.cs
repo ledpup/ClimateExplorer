@@ -53,7 +53,7 @@ namespace ClimateExplorer.Core.DataPreparation
                 case ContainerAggregationFunctions.Mean:        return WeightedMean;
                 case ContainerAggregationFunctions.Sum:         return (data) => data.Select(x => x.Value).Sum();
                 case ContainerAggregationFunctions.Min:         return (data) => data
-                                                                                .Where(x => seriesTransformation == SeriesTransformations.DayOfYearIfFrost && x.Value != 0)
+                                                                                .Where(x => seriesTransformation != SeriesTransformations.DayOfYearIfFrost || x.Value != 0)
                                                                                 .Select(x => x.Value)
                                                                                 .Min();
                 case ContainerAggregationFunctions.Max:         return (data) => data.Select(x => x.Value).Max();
