@@ -587,50 +587,50 @@
         SuggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
                 {
-                    Title = "Carbon dioxide",
-                    Description = "Carbon dioxide (CO\u2082) records from the Mauna Loa Observatory since 1958. AKA The Keeling Curve",
+                    Title = "Carbon dioxide annual change",
+                    Description = "Smoothed difference between current and previous year CO\u2082 maximums",
                     ChartSeriesList =
-                        new List<ChartSeriesDefinition>()
-                        {
-                                new ChartSeriesDefinition()
-                                {
-                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, co2),
-                                    Aggregation = SeriesAggregationOptions.Mean,
-                                    BinGranularity = BinGranularities.ByYearAndMonth,
-                                    Smoothing = SeriesSmoothingOptions.None,
-                                    SmoothingWindow = 5,
-                                    Value = SeriesValueOptions.Value,
-                                    Year = null,
-                                    DisplayStyle = SeriesDisplayStyle.Line,
-                                    RequestedColour = UiLogic.Colours.Brown,
-                                },
-                        },
+                    new List<ChartSeriesDefinition>()
+                    {
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, co2),
+                                Aggregation = SeriesAggregationOptions.Maximum,
+                                BinGranularity = BinGranularities.ByYear,
+                                SecondaryCalculation = SecondaryCalculationOptions.AnnualChange,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 5,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                RequestedColour = UiLogic.Colours.Brown,
+                            },
+                    },
                     Variants =
                             new List<SuggestedChartPresetModel>()
                             {
                                 new SuggestedChartPresetModel()
                                 {
-                                    Title = "CO\u2082 annual change",
-                                    Description = "Smoothed difference between current and previous year CO\u2082 maximums",
+                                    Title = "Carbon dioxide",
+                                    Description = "Carbon dioxide (CO\u2082) records from the Mauna Loa Observatory since 1958. AKA The Keeling Curve",
                                     ChartSeriesList =
-                                        new List<ChartSeriesDefinition>()
-                                        {
+                                    new List<ChartSeriesDefinition>()
+                                    {
                                             new ChartSeriesDefinition()
                                             {
                                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                                                 SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, co2),
-                                                Aggregation = SeriesAggregationOptions.Maximum,
-                                                BinGranularity = BinGranularities.ByYear,
-                                                SecondaryCalculation = SecondaryCalculationOptions.AnnualChange,
-                                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                                Aggregation = SeriesAggregationOptions.Mean,
+                                                BinGranularity = BinGranularities.ByYearAndMonth,
+                                                Smoothing = SeriesSmoothingOptions.None,
                                                 SmoothingWindow = 5,
                                                 Value = SeriesValueOptions.Value,
                                                 Year = null,
                                                 DisplayStyle = SeriesDisplayStyle.Line,
                                                 RequestedColour = UiLogic.Colours.Brown,
                                             },
-                                        }
+                                    },
                                 },
                                 new SuggestedChartPresetModel()
                                 {
