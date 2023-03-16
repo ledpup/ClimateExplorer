@@ -18,7 +18,7 @@
         "DataResolution": "Daily",
         "DataAdjustment": "Adjusted",
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Temperature\\ACORN-SAT\\Daily\\adjusted\\daily_tmax",
+        "FolderName": "Temperature\\ACORN-SAT\\daily_tmax",
         "FileNameFormat": "tmax.[station].daily.csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E-?\\d*\\.?\\d*),*$",
         "NullValue": null
@@ -30,7 +30,7 @@
         "DataResolution": "Daily",
         "DataAdjustment": "Adjusted",
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Temperature\\ACORN-SAT\\Daily\\adjusted\\daily_tmin",
+        "FolderName": "Temperature\\ACORN-SAT\\daily_tmin",
         "FileNameFormat": "tmin.[station].daily.csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E-?\\d*\\.?\\d*),*$",
         "NullValue": null
@@ -57,7 +57,7 @@
         "DataResolution": "Daily",
         "DataAdjustment": "Unadjusted",
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Temperature\\ACORN-SAT\\Daily\\raw-data\\daily_tempmax",
+        "FolderName": "Temperature\\BOM\\daily_tempmax",
         "FileNameFormat": "[station]_daily_tempmax.csv",
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
         "NullValue": null
@@ -69,7 +69,7 @@
         "DataResolution": "Daily",
         "DataAdjustment": "Unadjusted",
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Temperature\\ACORN-SAT\\Daily\\raw-data\\daily_tempmin",
+        "FolderName": "Temperature\\BOM\\daily_tempmin",
         "FileNameFormat": "[station]_daily_tempmin.csv",
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
         "NullValue": null
@@ -81,7 +81,7 @@
         "DataResolution": "Daily",
         "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Rainfall\\ACORN-SAT\\Daily\\raw-data\\daily_rainfall",
+        "FolderName": "Rainfall\\BOM",
         "FileNameFormat": "[station]_daily_rainfall.csv",
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
         "NullValue": null
@@ -93,7 +93,7 @@
         "DataResolution": "Daily",
         "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "SolarRadiation\\ACORN-SAT\\Daily\\daily_solarradiation",
+        "FolderName": "SolarRadiation\\BOM",
         "FileNameFormat": "[station]_daily_solarradiation.csv",
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*)$",
         "NullValue": null
@@ -159,8 +159,8 @@
         "DataResolution": "Daily",
         "DataAdjustment": "Adjusted",
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Temperature\\NIWA\\Daily\\raw-data",
-        "FileNameFormat": "[station].csv",
+        "FolderName": "Temperature\\NIWA",
+        "FileNameFormat": "[station]_temperature.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Ctmin\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
         "NullValue": "-"
       },
@@ -171,8 +171,8 @@
         "DataResolution": "Daily",
         "DataAdjustment": "Adjusted",
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Temperature\\NIWA\\Daily\\raw-data",
-        "FileNameFormat": "[station].csv",
+        "FolderName": "Temperature\\NIWA",
+        "FileNameFormat": "[station]_temperature.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Ctmax\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
         "NullValue": "-"
       }
@@ -198,8 +198,8 @@
         "DataResolution": "Daily",
         "DataAdjustment": "Unadjusted",
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Temperature\\NIWA\\Daily\\raw-data",
-        "FileNameFormat": "[station].csv",
+        "FolderName": "Temperature\\NIWA",
+        "FileNameFormat": "[station]_temperature.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Ctmin\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
         "NullValue": "-"
       },
@@ -210,8 +210,8 @@
         "DataResolution": "Daily",
         "DataAdjustment": "Unadjusted",
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Temperature\\NIWA\\Daily\\raw-data",
-        "FileNameFormat": "[station].csv",
+        "FolderName": "Temperature\\NIWA",
+        "FileNameFormat": "[station]_temperature.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Ctmax\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
         "NullValue": "-"
       },
@@ -222,7 +222,7 @@
         "DataResolution": "Daily",
         "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Rainfall\\NIWA\\Daily",
+        "FolderName": "Rainfall\\NIWA",
         "FileNameFormat": "[station]_rainfall.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),.*,D$",
         "NullValue": "-"
@@ -249,8 +249,8 @@
         "DataResolution": "Daily",
         "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Temperature\\NIWA\\Daily\\raw-data",
-        "FileNameFormat": "[station].csv",
+        "FolderName": "Temperature\\NIWA",
+        "FileNameFormat": "[station]_temperature.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Ctmin\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
         "NullValue": "-"
       },
@@ -261,8 +261,8 @@
         "DataResolution": "Daily",
         "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Temperature\\NIWA\\Daily\\raw-data",
-        "FileNameFormat": "[station].csv",
+        "FolderName": "Temperature\\NIWA",
+        "FileNameFormat": "[station]_temperature.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Ctmax\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
         "NullValue": "-"
       },
@@ -273,7 +273,7 @@
         "DataResolution": "Daily",
         "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Rainfall\\NIWA\\Daily",
+        "FolderName": "Rainfall\\NIWA",
         "FileNameFormat": "[station]_rainfall.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),.*,D$",
         "NullValue": "-"
@@ -345,7 +345,7 @@
     "MoreInformationUrl": "https://www.climate.gov/news-features/understanding-climate/climate-variability-oceanic-ni%C3%B1o-index",
     "StationInfoUrl": null,
     "LocationInfoUrl": null,
-    "DataDownloadUrl": null,
+    "DataDownloadUrl": "https://psl.noaa.gov/data/correlation/oni.data",
     "MeasurementDefinitions": [
       {
         "DataCategory": "Enso",
@@ -372,7 +372,7 @@
     "MoreInformationUrl": "https://climatedataguide.ucar.edu/climate-data/nino-sst-indices-nino-12-3-34-4-oni-and-tni",
     "StationInfoUrl": null,
     "LocationInfoUrl": null,
-    "DataDownloadUrl": null,
+    "DataDownloadUrl": "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/nino34.long.anom.data",
     "MeasurementDefinitions": [
       {
         "DataCategory": "Enso",
@@ -408,7 +408,7 @@
         "DataResolution": "Monthly",
         "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Reference\\CO2\\Monthly",
+        "FolderName": "Reference\\CO2",
         "FileNameFormat": "co2_mm_mlo.txt",
         "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
         "NullValue": null
@@ -435,7 +435,7 @@
         "DataResolution": "Monthly",
         "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Reference\\CH4\\Monthly",
+        "FolderName": "Reference\\CH4",
         "FileNameFormat": "ch4_mm_gl.txt",
         "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
         "NullValue": null
@@ -462,7 +462,7 @@
         "DataResolution": "Monthly",
         "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Reference\\N2O\\Monthly",
+        "FolderName": "Reference\\N2O",
         "FileNameFormat": "n2o_mm_gl.txt",
         "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
         "NullValue": null
@@ -516,7 +516,7 @@
         "DataResolution": "Daily",
         "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Reference\\Ice\\Daily",
+        "FolderName": "Reference\\Ice",
         "FileNameFormat": "N_seaice_extent_daily_v3.0.csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d\u002B),\\s\u002B(?\u003Cmonth\u003E\\d\u002B),\\s\u002B(?\u003Cday\u003E\\d\u002B),\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
         "NullValue": null
@@ -534,7 +534,7 @@
     "MoreInformationUrl": "https://nsidc.org/data/seaice_index/",
     "StationInfoUrl": null,
     "LocationInfoUrl": null,
-    "DataDownloadUrl": "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v3.0.csv",
+    "DataDownloadUrl": "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/south/daily/data/S_seaice_extent_daily_v3.0.csv",
     "MeasurementDefinitions": [
       {
         "DataCategory": null,
@@ -543,7 +543,7 @@
         "DataResolution": "Daily",
         "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Reference\\Ice\\Daily",
+        "FolderName": "Reference\\Ice",
         "FileNameFormat": "S_seaice_extent_daily_v3.0.csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d\u002B),\\s\u002B(?\u003Cmonth\u003E\\d\u002B),\\s\u002B(?\u003Cday\u003E\\d\u002B),\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
         "NullValue": null
@@ -570,7 +570,7 @@
         "DataResolution": "Daily",
         "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Reference\\Ice\\Daily",
+        "FolderName": "Reference\\Ice",
         "FileNameFormat": "greenland-melt-area.csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E\\d*).*$",
         "NullValue": null
@@ -588,7 +588,7 @@
     "MoreInformationUrl": null,
     "StationInfoUrl": "https://www.metoffice.gov.uk/hadobs/",
     "LocationInfoUrl": null,
-    "DataDownloadUrl": null,
+    "DataDownloadUrl": "https://www.metoffice.gov.uk/hadobs/hadcet/data/download.html",
     "MeasurementDefinitions": [
       {
         "DataCategory": "Temperature",
@@ -597,7 +597,7 @@
         "DataResolution": "Daily",
         "DataAdjustment": "Adjusted",
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Temperature\\Met\\Daily\\Adjusted",
+        "FolderName": "Temperature\\Met",
         "FileNameFormat": "maxtemp_daily_totals.txt",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2})\\s\u002B(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*)$",
         "NullValue": null
@@ -609,7 +609,7 @@
         "DataResolution": "Daily",
         "DataAdjustment": "Adjusted",
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Temperature\\Met\\Daily\\Adjusted",
+        "FolderName": "Temperature\\Met",
         "FileNameFormat": "mintemp_daily_totals.txt",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2})\\s\u002B(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*)$",
         "NullValue": null
@@ -621,7 +621,7 @@
         "DataResolution": "Daily",
         "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Rainfall\\Met\\Daily",
+        "FolderName": "Rainfall\\Met",
         "FileNameFormat": "HadCEP_daily_totals.txt",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2})\\s\u002B(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*)$",
         "NullValue": null

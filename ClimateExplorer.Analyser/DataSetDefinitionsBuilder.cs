@@ -37,7 +37,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d*\.?\d*),*$",
-                        FolderName = @"Temperature\ACORN-SAT\Daily\adjusted\daily_tmax",
+                        FolderName = @"Temperature\ACORN-SAT\daily_tmax",
                         FileNameFormat = "tmax.[station].daily.csv",
                     },
                     new MeasurementDefinition
@@ -48,7 +48,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d*\.?\d*),*$",
-                        FolderName = @"Temperature\ACORN-SAT\Daily\adjusted\daily_tmin",
+                        FolderName = @"Temperature\ACORN-SAT\daily_tmin",
                         FileNameFormat = "tmin.[station].daily.csv",
                     },
                 },
@@ -73,7 +73,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
-                        FolderName = @"Temperature\ACORN-SAT\Daily\raw-data\daily_tempmax",
+                        FolderName = @"Temperature\BOM\daily_tempmax",
                         FileNameFormat = "[station]_daily_tempmax.csv",
                     },
                     new MeasurementDefinition
@@ -84,7 +84,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
-                        FolderName = @"Temperature\ACORN-SAT\Daily\raw-data\daily_tempmin",
+                        FolderName = @"Temperature\BOM\daily_tempmin",
                         FileNameFormat = "[station]_daily_tempmin.csv",
                     },
                     new MeasurementDefinition
@@ -93,7 +93,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.Millimetres,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
-                        FolderName = @"Rainfall\ACORN-SAT\Daily\raw-data\daily_rainfall",
+                        FolderName = @"Rainfall\BOM",
                         FileNameFormat = "[station]_daily_rainfall.csv",
                     },
                     new MeasurementDefinition
@@ -102,7 +102,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.MegajoulesPerSquareMetre,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*)$",
-                        FolderName = @"SolarRadiation\ACORN-SAT\Daily\daily_solarradiation",
+                        FolderName = @"SolarRadiation\BOM",
                         FileNameFormat = "[station]_daily_solarradiation.csv",
                     },
                 },
@@ -166,8 +166,8 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$",
-                        FolderName = @"Temperature\NIWA\Daily\raw-data",
-                        FileNameFormat = "[station].csv",
+                        FolderName = @"Temperature\NIWA",
+                        FileNameFormat = "[station]_temperature.csv",
                         NullValue = "-",
                     },
                     new MeasurementDefinition
@@ -178,8 +178,8 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<tmax>-?[\d+\.\d+]*),-?\d*,(?<value>-?[\d+\.\d+]*),-?\d*,.*,D$",
-                        FolderName = @"Temperature\NIWA\Daily\raw-data",
-                        FileNameFormat = "[station].csv",
+                        FolderName = @"Temperature\NIWA",
+                        FileNameFormat = "[station]_temperature.csv",
                         NullValue = "-",
                     },
                 },
@@ -202,8 +202,8 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$",
-                        FolderName = @"Temperature\NIWA\Daily\raw-data",
-                        FileNameFormat = "[station].csv",
+                        FolderName = @"Temperature\NIWA",
+                        FileNameFormat = "[station]_temperature.csv",
                         NullValue = "-",
                     },
                     new MeasurementDefinition
@@ -214,8 +214,8 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<tmax>-?[\d+\.\d+]*),-?\d*,(?<value>-?[\d+\.\d+]*),-?\d*,.*,D$",
-                        FolderName = @"Temperature\NIWA\Daily\raw-data",
-                        FileNameFormat = "[station].csv",
+                        FolderName = @"Temperature\NIWA",
+                        FileNameFormat = "[station]_temperature.csv",
                         NullValue = "-",
                     },
                     new MeasurementDefinition
@@ -224,7 +224,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.Millimetres,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),.*,D$",
-                        FolderName = @"Rainfall\NIWA\Daily",
+                        FolderName = @"Rainfall\NIWA",
                         FileNameFormat = "[station]_rainfall.csv",
                         NullValue = "-",
                     },
@@ -251,8 +251,8 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$",
-                        FolderName = @"Temperature\NIWA\Daily\raw-data",
-                        FileNameFormat = "[station].csv",
+                        FolderName = @"Temperature\NIWA",
+                        FileNameFormat = "[station]_temperature.csv",
                         NullValue = "-",
                     },
                     new MeasurementDefinition
@@ -262,8 +262,8 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<tmax>-?[\d+\.\d+]*),-?\d*,(?<value>-?[\d+\.\d+]*),-?\d*,.*,D$",
-                        FolderName = @"Temperature\NIWA\Daily\raw-data",
-                        FileNameFormat = "[station].csv",
+                        FolderName = @"Temperature\NIWA",
+                        FileNameFormat = "[station]_temperature.csv",
                         NullValue = "-",
                     },
                     new MeasurementDefinition
@@ -272,7 +272,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.Millimetres,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),.*,D$",
-                        FolderName = @"Rainfall\NIWA\Daily",
+                        FolderName = @"Rainfall\NIWA",
                         FileNameFormat = "[station]_rainfall.csv",
                         NullValue = "-",
                     },
@@ -354,6 +354,7 @@ internal class DataSetDefinitionsBuilder
                         NullValue = "-99.9"
                     },
                 },
+                DataDownloadUrl = "https://psl.noaa.gov/data/correlation/oni.data",
             },
             new DataSetDefinition
             {
@@ -377,6 +378,7 @@ internal class DataSetDefinitionsBuilder
                         NullValue = "-99.99"
                     },
                 },
+                DataDownloadUrl = "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/nino34.long.anom.data",
             },
 
 
@@ -399,7 +401,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.PartsPerMillion,
                         DataResolution = DataResolution.Monthly,
                         DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Reference\CO2\Monthly",
+                        FolderName = @"Reference\CO2",
                         FileNameFormat = "co2_mm_mlo.txt",
                     },
                 },
@@ -420,7 +422,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.PartsPerBillion,
                         DataResolution = DataResolution.Monthly,
                         DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Reference\CH4\Monthly",
+                        FolderName = @"Reference\CH4",
                         FileNameFormat = "ch4_mm_gl.txt",
                     },
                 },
@@ -441,7 +443,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.PartsPerBillion,
                         DataResolution = DataResolution.Monthly,
                         DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Reference\N2O\Monthly",
+                        FolderName = @"Reference\N2O",
                         FileNameFormat = "n2o_mm_gl.txt",
                     },
                 },
@@ -497,7 +499,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.MillionSqKm,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<year>\d+),\s+(?<month>\d+),\s+(?<day>\d+),\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Reference\Ice\Daily",
+                        FolderName = @"Reference\Ice",
                         FileNameFormat = "N_seaice_extent_daily_v3.0.csv",
                     },
                 },
@@ -509,7 +511,7 @@ internal class DataSetDefinitionsBuilder
                 ShortName = "Antarctic sea ice extent",
                 Description = "The daily Sea Ice Index provides a quick look at Antarctic-wide changes in sea ice. It provides consistently processed daily ice extent and concentration images and data since 1979.",
                 MoreInformationUrl = "https://nsidc.org/data/seaice_index/",
-                DataDownloadUrl = "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v3.0.csv",
+                DataDownloadUrl = "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/south/daily/data/S_seaice_extent_daily_v3.0.csv",
                 MeasurementDefinitions = new List<MeasurementDefinition>
                 {
                     new MeasurementDefinition
@@ -518,7 +520,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.MillionSqKm,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<year>\d+),\s+(?<month>\d+),\s+(?<day>\d+),\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Reference\Ice\Daily",
+                        FolderName = @"Reference\Ice",
                         FileNameFormat = "S_seaice_extent_daily_v3.0.csv",
                     },
                 },
@@ -539,7 +541,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.SqKm,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>\d*).*$",
-                        FolderName = @"Reference\Ice\Daily",
+                        FolderName = @"Reference\Ice",
                         FileNameFormat = "greenland-melt-area.csv",
                     },
                 },
@@ -555,6 +557,7 @@ internal class DataSetDefinitionsBuilder
                 Publisher = "Met Office",
                 PublisherUrl = "https://www.metoffice.gov.uk/",
                 StationInfoUrl = "https://www.metoffice.gov.uk/hadobs/",
+                DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/download.html",
                 MeasurementDefinitions = new List<MeasurementDefinition>
                 {
                     new MeasurementDefinition
@@ -565,7 +568,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})\s+(?<value>-?[\d+\.\d+]*)$",
-                        FolderName = @"Temperature\Met\Daily\Adjusted",
+                        FolderName = @"Temperature\Met",
                         FileNameFormat = "maxtemp_daily_totals.txt",
                     },
                     new MeasurementDefinition
@@ -576,7 +579,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})\s+(?<value>-?[\d+\.\d+]*)$",
-                        FolderName = @"Temperature\Met\Daily\Adjusted",
+                        FolderName = @"Temperature\Met",
                         FileNameFormat = "mintemp_daily_totals.txt",
                     },
                     new MeasurementDefinition
@@ -585,7 +588,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.Millimetres,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})\s+(?<value>-?[\d+\.\d+]*)$",
-                        FolderName = @"Rainfall\Met\Daily",
+                        FolderName = @"Rainfall\Met",
                         FileNameFormat = "HadCEP_daily_totals.txt",
                     },
                 },
