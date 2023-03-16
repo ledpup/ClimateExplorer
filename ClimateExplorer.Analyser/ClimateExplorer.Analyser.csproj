@@ -15,7 +15,7 @@
     <Content Include="MapMarker.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ReferenceData\RAIA\Locations.json">
+    <Content Include="ReferenceMetaData\RAIA\Locations.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -37,7 +37,7 @@
 
   <ItemGroup>
     
-    <None Update="ReferenceData/**">
+    <None Update="ReferenceMetaData/**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -13,9 +13,9 @@ namespace ClimateExplorer.Analyser.Bom;
 
 public static class BomLocationsAndStationsMapper
 {
-    public static async Task<List<Station>> BuildAcornSatLocationsFromReferenceDataAsync(Guid dataSetDefinitionId, string outputFileSuffix)
+    public static async Task<List<Station>> BuildAcornSatLocationsFromReferenceMetaDataAsync(Guid dataSetDefinitionId, string outputFileSuffix)
     {
-        var oldLocations = await Location.GetLocationsFromFile(@"ReferenceData\ACORN-SAT\Locations.json");
+        var oldLocations = await Location.GetLocationsFromFile(@"ReferenceMetaData\ACORN-SAT\Locations.json");
 
         var locations = new List<Location>();
         var stations = new List<Station>();
@@ -23,7 +23,7 @@ public static class BomLocationsAndStationsMapper
         var stationToLocationMapping = new Dictionary<string, Guid>();
 
         // Get the friendly location name and the "primary station", as best we can do.
-        var locationRowData = File.ReadAllLines(@"ReferenceData\ACORN-SAT\acorn_sat_v2.3.0_stations.csv");
+        var locationRowData = File.ReadAllLines(@"ReferenceMetaData\ACORN-SAT\acorn_sat_v2.3.0_stations.csv");
         foreach (var row in locationRowData.Skip(1))
         {
             var splitRow = row.Split(',');
@@ -48,7 +48,7 @@ public static class BomLocationsAndStationsMapper
         }
 
 
-        var primarySitesFile = File.ReadAllLines(@"ReferenceData\ACORN-SAT\primarysites.txt");
+        var primarySitesFile = File.ReadAllLines(@"ReferenceMetaData\ACORN-SAT\primarysites.txt");
         var stationRegEx = new Regex(@"^(?<id>\d+)\s(?<start>\d+)\s(?<end>\d+)$");
 
         foreach (var row in primarySitesFile)
@@ -148,7 +148,7 @@ public static class BomLocationsAndStationsMapper
         var file = await File.ReadAllTextAsync(unadjustedDataFileLocationMappingPath);
         var unadjustedDataFileLocationMapping = JsonSerializer.Deserialize<DataFileLocationMapping>(file);
         var locationIdToDataFileMappings = unadjustedDataFileLocationMapping.LocationIdToDataFileMappings;
-        var stations = await File.ReadAllLinesAsync(@"ReferenceData\ACORN-SAT\acorn_sat_v2.3.0_stations.txt");
+        var stations = await File.ReadAllLinesAsync(@"ReferenceMetaData\ACORN-SAT\acorn_sat_v2.3.0_stations.txt");
 
         var dataFileLocationMapping = new DataFileLocationMapping() { DataSetDefinitionId = dataSetDefinitionId };
         foreach (var station in stations)
@@ -178,15 +178,15 @@ public static class BomLocationsAndStationsMapper
         File.WriteAllText($@"Output\DataFileLocationMapping\DataFileLocationMapping{outputFileSuffix}.json", JsonSerializer.Serialize(dataFileLocationMapping, options));
     }
 
-    public static async Task BuildRaiaLocationsFromReferenceDataAsync(Guid dataSetDefinitionId, string outputFileSuffix)
+    public static async Task BuildRaiaLocationsFromReferenceMetaDataAsync(Guid dataSetDefinitionId, string outputFileSuffix)
     {
-        var oldLocations = await Location.GetLocationsFromFile(@"ReferenceData\RAIA\Locations.json");
+        var oldLocations = await Location.GetLocationsFromFile(@"ReferenceMetaData\RAIA\Locations.json");
 
         var locations = new List<Location>();
         var stations = new List<Station>();
         var dataFileLocationMapping = new DataFileLocationMapping() { DataSetDefinitionId = dataSetDefinitionId };
 
-        var locationRowData = File.ReadAllLines(@"ReferenceData\RAIA\RAIA.csv");
+        var locationRowData = File.ReadAllLines(@"ReferenceMetaData\RAIA\RAIA.csv");
         foreach (var row in locationRowData)
         {
             var splitRow = row.Split(',');
