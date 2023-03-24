@@ -29,7 +29,6 @@
 
 .collapser {
     color: #aaa;
-    margin-bottom: 0.4rem;
     margin-right: 32px;
     font-weight: bold;
     cursor: pointer;
@@ -61,5 +60,11 @@
 .flexbox-column-layout {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
+    flex-grow: 0;
+}
+
+.flexbox-row-layout {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 0;
 }

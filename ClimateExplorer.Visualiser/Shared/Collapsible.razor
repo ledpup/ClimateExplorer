@@ -1,7 +1,11 @@
-﻿<div class="@("collapsible-panel " + (ContentLayoutType == CollapserContentLayoutType.Block ? "block-layout" : "flexbox-column-layout") + (NoBottomMargin ? " no-bottom-margin" : ""))">
+﻿<div class="@("collapsible-panel " + (ContentLayoutType == CollapserContentLayoutTypes.Block 
+                                                                    ? "block-layout" 
+                                                                    : (ContentLayoutType == CollapserContentLayoutTypes.FlexboxColumns 
+                                                                        ? "flexbox-column-layout" 
+                                                                        : "flexbox-row-layout")) + (NoBottomMargin ? " no-bottom-margin" : ""))">
     @if (AllowCollapse)
     {
-        <div>
+        
             <span @onclick="CollapserOnClick"
                    class="collapser @(CollapserSize.ToString().ToLower()) @(ShowContent ? "content-shown" : "content-hidden" )">
                 @if (ShowContent)
@@ -13,15 +17,17 @@
                     <span class="oi oi-chevron-right" aria-hidden="true"></span>    
                 }
 
-                @Title
+                @if (ShowTitleWhenExpanded || !ShowContent)
+                {
+                    @Title
+                }
             </span>
-            @HeaderContent
-        </div>
+            @HeaderContent        
     }
 
     @if (ShowContent)
     {
-        <div class="@((ShadeBackground ? "collapsible-with-background " : " ") + (ContentLayoutType == CollapserContentLayoutType.Block ? "block-layout" : "flexbox-column-layout"))">
+        <div class="@((ShadeBackground ? "collapsible-with-background " : " ") + (ContentLayoutType == CollapserContentLayoutTypes.Block ? "block-layout" : "flexbox-column-layout"))">
             @Content
         </div>
     }
@@ -36,14 +42,15 @@
         ExtraLarge
     }
 
-    public enum CollapserContentLayoutType
+    public enum CollapserContentLayoutTypes
     {
         Block,
-        FlexboxColumns
+        FlexboxColumns,
+        FlexboxRow
     }
 
     [Parameter]
-    public CollapserContentLayoutType ContentLayoutType { get; set; }
+    public CollapserContentLayoutTypes ContentLayoutType { get; set; }
 
     [Parameter]
     public CollapserSizes CollapserSize { get; set; }
@@ -72,11 +79,15 @@
     [Parameter]
     public bool NoBottomMargin { get; set; }
 
+    [Parameter]
+    public bool ShowTitleWhenExpanded { get; set; }
+
     bool ShowContent = true;
 
     protected override void OnInitialized()
     {
         ShowContent = InitiallyShown;
+        ShowTitleWhenExpanded = true;
 
         base.OnInitialized();
     }
