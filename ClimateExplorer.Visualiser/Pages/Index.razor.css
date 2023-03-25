@@ -100,16 +100,12 @@
         flex-direction: column;
     }
 
-
-    .minimum-height-enforcer-for-chart {
-        height: 400px;
-    }
-
     .chart-wrapper {
         flex-grow: 0;
         flex-shrink: 0;
         position: relative;
         height: 50vh;
+        min-height: 600px;
     }
 
     .location-info-container {

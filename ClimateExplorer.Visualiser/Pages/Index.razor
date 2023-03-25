@@ -63,7 +63,6 @@
                     </div>
 
                     <div class="chart-wrapper">
-                        <div class="minimum-height-enforcer-for-chart"></div>
                         <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
                             <ChartTrendline @ref="chartTrendline" TItem="float?" />
                         </Chart>
