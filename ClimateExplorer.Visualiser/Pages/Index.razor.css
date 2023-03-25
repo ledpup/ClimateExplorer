@@ -84,8 +84,9 @@
     .chart-wrapper {
         flex-grow: 0;
         flex-shrink: 0;
-        position: relative !important;
-        height: 30vh !important;
+        position: relative;
+        height: 30vh;
+        min-height: 300px;
     }
 
     .chart-and-controls {
@@ -105,7 +106,6 @@
         flex-shrink: 0;
         position: relative;
         height: 50vh;
-        min-height: 600px;
     }
 
     .location-info-container {
