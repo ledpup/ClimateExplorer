@@ -4,6 +4,7 @@
 @using Blazorise.Components
 @using Blazorise.Charts
 @using ClimateExplorer.Core.DataPreparation
+@using static ClimateExplorer.Core.Enums;
 
 <div class="chart-series-config">
     <div class="title-bar" @onclick="() => { ChartSeries.IsExpanded = !ChartSeries.IsExpanded; }" style="@GenerateStyleForTitleBar()">

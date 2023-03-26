@@ -201,14 +201,9 @@ public partial class Index : IDisposable
 
         if (LocationId == null)
         {
-            LocationId = (await GetCurrentLocation())?.ToString();
-
-            if (LocationId == null)
-            {
-                // Not sure whether we're allowed to set parameters this way, but it's short-lived - we'll immediately navigate away after
-                // preparing querystring
-                LocationId = "aed87aa0-1d0c-44aa-8561-cde0fc936395";
-            }
+            // Not sure whether we're allowed to set parameters this way, but it's short-lived - we'll immediately navigate away after
+            // preparing querystring
+            LocationId = "aed87aa0-1d0c-44aa-8561-cde0fc936395";
         }
 
         Guid locationId = Guid.Parse(LocationId);
@@ -983,7 +978,7 @@ public partial class Index : IDisposable
         foreach (var s in ChartSeriesList)
         {
             var uom = s.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure;
-            var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, uom);
+            var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, uom, s.Aggregation);
             if (!axes.Contains(axisId))
             {
                 ((IDictionary<string, object>)scales).Add(
@@ -996,7 +991,7 @@ public partial class Index : IDisposable
                         Grid = new { DrawOnChartArea = false },
                         Title = new
                         {
-                            Text = UnitOfMeasureLabel(s.SeriesTransformation, uom),
+                            Text = UnitOfMeasureLabel(s.SeriesTransformation, uom, s.Aggregation),
                             Display = true,
                             Color = s.Colour == "#ffff33" ? "#a0a033" : s.Colour,
                         },

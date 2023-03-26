@@ -9,48 +9,55 @@
 <div class="suggested-data-set-list">
     @foreach (var s in SuggestedPresets)
     {
-        @if (s.MenuExpanded)
+        @if (s.Title == "DIVIDER")
         {
-            <div class="modal-underlay" @onclick="() => s.MenuExpanded = false"></div>
+            <div class="vr divider"></div>
         }
-
-        <div class="@CalculateClassForSuggestedDataSetElement(s)">
-            <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(s.ChartSeriesList)">
-                <div class="title">@s.Title</div>
-                <div class="description">@s.Description</div>
-                @if (s.MissingChartSeries)
-                {
-                    <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available here</div>
-                }
-            </div>
-
-            @if (s.Variants != null && s.Variants.Count > 0)
-            {
-                <div class="expander" @onclick="() => s.MenuExpanded = !s.MenuExpanded">
-                    <span class="oi oi-chevron-bottom" aria-hidden="true"></span>
-                </div>
-            }
-
+        else
+        {
             @if (s.MenuExpanded)
             {
-                <div class="menu">
-                    @if (s.Variants != null)
+                <div class="modal-underlay" @onclick="() => s.MenuExpanded = false"></div>
+            }
+
+            <div class="@CalculateClassForSuggestedDataSetElement(s)">
+                <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(s.ChartSeriesList)">
+                    <div class="title">@s.Title</div>
+                    <div class="description">@s.Description</div>
+                    @if (s.MissingChartSeries)
                     {
-                        foreach (var v in s.Variants)
-                        {
-                            <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(v.ChartSeriesList)">
-                                <div class="title">@v.Title</div>
-                                <div class="description">@v.Description</div>
-                                @if (v.MissingChartSeries)
-                                {
-                                    <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available here</div>
-                                }
-                            </div>
-                        }
+                        <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available here</div>
                     }
                 </div>
-            }
-        </div>
+
+                @if (s.Variants != null && s.Variants.Count > 0)
+                {
+                    <div class="expander" @onclick="() => s.MenuExpanded = !s.MenuExpanded">
+                        <span class="oi oi-chevron-bottom" aria-hidden="true"></span>
+                    </div>
+                }
+
+                @if (s.MenuExpanded)
+                {
+                    <div class="menu">
+                        @if (s.Variants != null)
+                        {
+                            foreach (var v in s.Variants)
+                            {
+                                <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(v.ChartSeriesList)">
+                                    <div class="title">@v.Title</div>
+                                    <div class="description">@v.Description</div>
+                                    @if (v.MissingChartSeries)
+                                    {
+                                        <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available here</div>
+                                    }
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+            </div>
+        }
     }
 </div>
 
@@ -171,7 +178,44 @@
                                 SeriesTransformation = SeriesTransformations.Identity,
                             },
                         },
-                    }
+                    },
+                    new SuggestedChartPresetModelWithVariants()
+                    {
+                        Title = "Days of rain",
+                        Description = "Number of rainy days, ≥ 1mm and ≥ 10mm; 20-year smoothing",
+                        ChartSeriesList =
+                            new List<ChartSeriesDefinition>()
+                            {
+                                    new ChartSeriesDefinition()
+                                    {
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, rainfall),
+                                        Aggregation = SeriesAggregationOptions.Sum,
+                                        BinGranularity = BinGranularities.ByYear,
+                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                        SmoothingWindow = 20,
+                                        Value = SeriesValueOptions.Value,
+                                        Year = null,
+                                        DisplayStyle = SeriesDisplayStyle.Line,
+                                        SeriesTransformation = SeriesTransformations.EqualOrAbove1,
+                                        RequestedColour = UiLogic.Colours.Blue,
+                                    },
+                                    new ChartSeriesDefinition()
+                                    {
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, rainfall),
+                                        Aggregation = SeriesAggregationOptions.Sum,
+                                        BinGranularity = BinGranularities.ByYear,
+                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                        SmoothingWindow = 20,
+                                        Value = SeriesValueOptions.Value,
+                                        Year = null,
+                                        DisplayStyle = SeriesDisplayStyle.Line,
+                                        SeriesTransformation = SeriesTransformations.EqualOrAbove10,
+                                        RequestedColour = UiLogic.Colours.Pink,
+                                    }
+                            },
+                        }
                 }
             }
         );
@@ -179,30 +223,31 @@
         SuggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
-                Title = "Temperature",
-                Description = "Yearly view of average maximum daily temperature",
+                Title = "Temperature anomaly",
+                Description = "Yearly average maximum daily temperatures relative to the average of the whole dataset",
                 ChartSeriesList =
                     new List<ChartSeriesDefinition>()
                     {
-                        new ChartSeriesDefinition()
-                        {
-                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
-                            Aggregation = SeriesAggregationOptions.Mean,
-                            BinGranularity = BinGranularities.ByYear,
-                            Smoothing = SeriesSmoothingOptions.None,
-                            SmoothingWindow = 5,
-                            Value = SeriesValueOptions.Value,
-                            Year = null
-                        }
-                    },
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
+                        Aggregation = SeriesAggregationOptions.Mean,
+                        BinGranularity = BinGranularities.ByYear,
+                        Smoothing = SeriesSmoothingOptions.None,
+                        SmoothingWindow = 5,
+                        Value = SeriesValueOptions.Anomaly,
+                        Year = null,
+                        DisplayStyle = SeriesDisplayStyle.Bar
+                    }
+                },
                 Variants =
                     new List<SuggestedChartPresetModel>()
                     {
                         new SuggestedChartPresetModel()
                         {
-                            Title = "Plus trendline",
-                            Description = "Adds a straight line, fit to the data",
+                            Title = "Temperature with trendline",
+                            Description = "Yearly view of average maximum daily temperature with a straight line, fit to the data",
                             ChartSeriesList =
                                 new List<ChartSeriesDefinition>()
                                 {
@@ -222,24 +267,36 @@
                         },
                         new SuggestedChartPresetModelWithVariants()
                         {
-                            Title = "Temperature anomaly",
-                            Description = "Yearly average maximum daily temperatures relative to the average of the whole dataset",
+                            Title = "Adjusted vs raw temperature",
+                            Description = "Compare maximum temperature values that have been adjusted for abnormalities with raw values",
                             ChartSeriesList =
-                                new List<ChartSeriesDefinition>()
+                            new List<ChartSeriesDefinition>()
+                            {
+                                new ChartSeriesDefinition()
                                 {
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.None,
-                                        SmoothingWindow = 5,
-                                        Value = SeriesValueOptions.Anomaly,
-                                        Year = null,
-                                        DisplayStyle = SeriesDisplayStyle.Bar
-                                    }
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYear,
+                                    ShowTrendline = false,
+                                    Smoothing = SeriesSmoothingOptions.None,
+                                    SmoothingWindow = 5,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null
+                                },
+                                new ChartSeriesDefinition()
+                                {
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMaxUnadjusted),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYear,
+                                    ShowTrendline = false,
+                                    Smoothing = SeriesSmoothingOptions.None,
+                                    SmoothingWindow = 5,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null
                                 }
+                            },
                         },
                         new SuggestedChartPresetModel()
                         {
@@ -272,145 +329,6 @@
                                         Value = SeriesValueOptions.Value,
                                         Year = null,
                                         RequestedColour = UiLogic.Colours.Green,
-                                    }
-                                }
-                        }
-                    }
-            }
-        );
-
-        SuggestedPresets.Add(
-            new SuggestedChartPresetModelWithVariants()
-            {
-                    Title = "Adjusted vs raw temperature",
-                Description = "Compare maximum temperature values that have been adjusted for abnormalities with raw values",
-                ChartSeriesList =
-                    new List<ChartSeriesDefinition>()
-                    {
-                        new ChartSeriesDefinition()
-                        {
-                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
-                            Aggregation = SeriesAggregationOptions.Mean,
-                            BinGranularity = BinGranularities.ByYear,
-                            ShowTrendline = false,
-                            Smoothing = SeriesSmoothingOptions.None,
-                            SmoothingWindow = 5,
-                            Value = SeriesValueOptions.Value,
-                            Year = null
-                        },
-                        new ChartSeriesDefinition()
-                        {
-                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMaxUnadjusted),
-                            Aggregation = SeriesAggregationOptions.Mean,
-                            BinGranularity = BinGranularities.ByYear,
-                            ShowTrendline = false,
-                            Smoothing = SeriesSmoothingOptions.None,
-                            SmoothingWindow = 5,
-                            Value = SeriesValueOptions.Value,
-                            Year = null
-                        }
-                    },
-                Variants =
-                    new List<SuggestedChartPresetModel>()
-                    {
-                        new SuggestedChartPresetModel()
-                        {
-                            Title = "Plus trendline",
-                            Description = "Adds a straight line, fit to the data",
-                            ChartSeriesList =
-                                new List<ChartSeriesDefinition>()
-                                {
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        ShowTrendline = true,
-                                        Smoothing = SeriesSmoothingOptions.None,
-                                        SmoothingWindow = 5,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null
-                                    },
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMaxUnadjusted),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        ShowTrendline = true,
-                                        Smoothing = SeriesSmoothingOptions.None,
-                                        SmoothingWindow = 5,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null
-                                    }
-                                }
-                        },
-                        new SuggestedChartPresetModel()
-                        {
-                            Title = "Moving average only",
-                            Description = "Shows 10 year moving average for each dataset",
-                            ChartSeriesList =
-                                new List<ChartSeriesDefinition>()
-                                {
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        ShowTrendline = false,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 10,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null
-                                    },
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMaxUnadjusted),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        ShowTrendline = false,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 10,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null
-                                    }
-                                }
-                        },
-                        new SuggestedChartPresetModel()
-                        {
-                            Title = "Compare minimums",
-                            Description = "Adjusted vs raw minimum temperatures",
-                            ChartSeriesList =
-                                new List<ChartSeriesDefinition>()
-                                {
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMin),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        ShowTrendline = false,
-                                        Smoothing = SeriesSmoothingOptions.None,
-                                        SmoothingWindow = 5,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null
-                                    },
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMinUnadjusted),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        ShowTrendline = false,
-                                        Smoothing = SeriesSmoothingOptions.None,
-                                        SmoothingWindow = 5,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null
                                     }
                                 }
                         },
@@ -457,8 +375,8 @@
                         {
                         new SuggestedChartPresetModelWithVariants()
                         {
-                            Title = "First day of frost",
-                            Description = "First day of the year that has temperature ≤ 2.2°C; 20-year smoothing",
+                            Title = "First and last day of frost",
+                            Description = "First and last day of the year that has temperature ≤ 2.2°C; 20-year smoothing",
                             ChartSeriesList =
                                 new List<ChartSeriesDefinition>()
                                 {
@@ -475,15 +393,6 @@
                                         DisplayStyle = SeriesDisplayStyle.Line,
                                         SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
                                     },
-                                }
-                        },
-                        new SuggestedChartPresetModelWithVariants()
-                        {
-                            Title = "Last day of frost",
-                            Description = "Last day of the year that has temperature ≤ 2.2°C; 20-year smoothing",
-                            ChartSeriesList =
-                                new List<ChartSeriesDefinition>()
-                                {
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -498,91 +407,12 @@
                                         SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
                                     }
                                 }
-                        }
-                        }
+                        },
+                    }
                 }
         );
 
-        SuggestedPresets.Add(
-        new SuggestedChartPresetModelWithVariants()
-            {
-                Title = "Days of rain",
-                Description = "Number of rainy days, ≥ 1mm and ≥ 10mm; 20-year smoothing",
-                ChartSeriesList =
-                    new List<ChartSeriesDefinition>()
-                    {
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, rainfall),
-                                Aggregation = SeriesAggregationOptions.Sum,
-                                BinGranularity = BinGranularities.ByYear,
-                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                SmoothingWindow = 20,
-                                Value = SeriesValueOptions.Value,
-                                Year = null,
-                                DisplayStyle = SeriesDisplayStyle.Line,
-                                SeriesTransformation = SeriesTransformations.EqualOrAbove1,
-                                RequestedColour = UiLogic.Colours.Blue,
-                            },
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, rainfall),
-                                Aggregation = SeriesAggregationOptions.Sum,
-                                BinGranularity = BinGranularities.ByYear,
-                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                SmoothingWindow = 20,
-                                Value = SeriesValueOptions.Value,
-                                Year = null,
-                                DisplayStyle = SeriesDisplayStyle.Line,
-                                SeriesTransformation = SeriesTransformations.EqualOrAbove10,
-                                RequestedColour = UiLogic.Colours.Pink,
-                            }
-                    },
-                Variants =
-                        new List<SuggestedChartPresetModel>()
-                        {
-                            new SuggestedChartPresetModel()
-                            {
-                                Title = "Heavy rain",
-                                Description = "Number of rainy days, ≥ 10mm and ≥ 25mm; 20-year smoothing",
-                                ChartSeriesList =
-                                    new List<ChartSeriesDefinition>()
-                                    {
-                                        new ChartSeriesDefinition()
-                                        {
-                                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, rainfall),
-                                            Aggregation = SeriesAggregationOptions.Sum,
-                                            BinGranularity = BinGranularities.ByYear,
-                                            Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                            SmoothingWindow = 20,
-                                            Value = SeriesValueOptions.Value,
-                                            Year = null,
-                                            DisplayStyle = SeriesDisplayStyle.Line,
-                                            SeriesTransformation = SeriesTransformations.EqualOrAbove10AndLessThan25,
-                                            RequestedColour = UiLogic.Colours.Blue,
-                                        },
-                                        new ChartSeriesDefinition()
-                                        {
-                                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, rainfall),
-                                            Aggregation = SeriesAggregationOptions.Sum,
-                                            BinGranularity = BinGranularities.ByYear,
-                                            Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                            SmoothingWindow = 20,
-                                            Value = SeriesValueOptions.Value,
-                                            Year = null,
-                                            DisplayStyle = SeriesDisplayStyle.Line,
-                                            SeriesTransformation = SeriesTransformations.EqualOrAbove25,
-                                            RequestedColour = UiLogic.Colours.Pink,
-                                        }
-                                    }
-                            }
-                        }
-            }
-        );
+        SuggestedPresets.Add(new SuggestedChartPresetModelWithVariants() { Title = "DIVIDER" } );
 
         SuggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
@@ -684,7 +514,7 @@
         new SuggestedChartPresetModelWithVariants()
             {
                 Title = "Sea ice extent",
-                Description = "Antarctic and Arctic sea ice, measured in millions of square kilometres since 1979",
+                Description = "Antarctic and Arctic sea ice extent, measured in millions of square kilometres since 1979",
                 ChartSeriesList =
                         new List<ChartSeriesDefinition>()
                         {
@@ -749,7 +579,7 @@
         // Presets may call for data that is not available at all locations. In those
         // cases, remove the ChartSeries entries that aren't available & set a flag
         // on the preset so that an indicator can be shown to the user.
-        foreach (var p in SuggestedPresets)
+        foreach (var p in SuggestedPresets.Where(x => x.ChartSeriesList != null))
         {
             p.MissingChartSeries = false;
 

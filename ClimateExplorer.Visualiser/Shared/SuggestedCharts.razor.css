@@ -1,4 +1,10 @@
-﻿.suggested-data-set-list {
+﻿.divider {
+    width: 3px;
+    margin-right: 24px;
+    margin-bottom: 24px;
+}
+
+.suggested-data-set-list {
     display: flex;
     flex-wrap: wrap;
     user-select: none;
