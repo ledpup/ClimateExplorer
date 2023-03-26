@@ -39,8 +39,6 @@
     align-items: stretch;
 
     position: relative;
-
-    z-index: 4;
 }
 
     .suggested-data-set.menu-expanded {

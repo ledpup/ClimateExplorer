@@ -7,45 +7,65 @@
 @using Blazorise.Charts.Trendline
 @using ClimateExplorer.Core.DataPreparation
 @using Blazorise.SpinKit
+@using static ClimateExplorer.Visualiser.Shared.Collapsible;
 
 <PageTitle>@GetPageTitle()</PageTitle>
 
+<div style="flex-grow: 0">
+    <Collapsible Title="Suggested charts" InitiallyShown="false" ShowTitleWhenExpanded="false" ContentLayoutType="CollapserContentLayoutTypes.FlexboxRow">
+        <Content>
+            @if (DataSetDefinitions == null || SelectedLocation == null)
+            {
+                <SpinKit Type="SpinKitType.Plane" />
+            }
+            else
+            {
+                <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@SelectedLocation" OnChartPresetSelected="@OnChartPresetSelected" ExpandUpwards="false"></SuggestedCharts>
+            }
+        </Content>
+    </Collapsible>
+</div>
+
 <div class="location-and-chart-container">
-    <div>
-        <div class="map-space-reserver" id="mapContainerContainer">
-            <MapContainer @ref="mapContainer"
-                Locations="@Locations"
-                OnLocationChange="@SelectedLocationChanged"
-                LocationCoordinates="@LocationCoordinates"></MapContainer>
-        </div>
+    @if (ShowLocation)
+    {
+        <div>
+            <div class="map-space-reserver" id="mapContainerContainer">
+                <MapContainer @ref="mapContainer"
+                    Locations="@Locations"
+                    OnLocationChange="@SelectedLocationChanged"
+                    LocationCoordinates="@LocationCoordinates"></MapContainer>
+            </div>
 
-        <div class="location-info-container">
-            <LocationInfo @ref="locationInfoComponent"
-                        Location="@SelectedLocation"
-                        DataSetDefinitions="@DataSetDefinitions"
-                        RequestLocationChange="@ShowSelectLocationModal"
-                        OnOverviewShowOrHide="@OnOverviewShowHide"
-                        OnYearFilterChange=HandleOnYearFilterChange />
-        </div>
+            <div class="location-info-container">
+                <LocationInfo @ref="locationInfoComponent"
+                            Location="@SelectedLocation"
+                            DataSetDefinitions="@DataSetDefinitions"
+                            RequestLocationChange="@ShowSelectLocationModal"
+                            OnOverviewShowOrHide="@OnOverviewShowHide"
+                            OnYearFilterChange=HandleOnYearFilterChange />
+            </div>
 
-        <div style="clear: both;"></div>
-    </div>
+            <div style="clear: both;"></div>
+        </div>
+    }
 
     <div class="chart-collapsible-parent">
-        <Collapsible Title="Chart" InitiallyShown="true" AllowCollapse="false" ContentLayoutType="Collapsible.CollapserContentLayoutType.FlexboxColumns">
+        <Collapsible Title="Chart" InitiallyShown="true" AllowCollapse="false" ContentLayoutType="Collapsible.CollapserContentLayoutTypes.FlexboxColumns" NoBottomMargin="true">
             <Content>
                 <div class="chart-and-controls">
                     <div class="chart-series-list-wrapper">
                         <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
+
+                        <a class="add-series-button" @onclick="ShowAddDataSetModal">
+                            <i class="fas fa-plus"></i> Add
+                        </a>
                     </div>
 
                     <div class="chart-wrapper">
-                        <div class="minimum-height-enforcer-for-chart"></div>
-                        <div class="chart">
-                            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
-                                <ChartTrendline @ref="chartTrendline" TItem="float?" />
-                            </Chart>
-                        </div>
+                        <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
+                            <ChartTrendline @ref="chartTrendline" TItem="float?" />
+                        </Chart>
                     </div>
 
                     <div class="chart-controls">
@@ -75,8 +95,6 @@
 
                         <a class="chart-control" @onclick="ShowOptionsModal"><i class="fas fa-cog"></i> Aggregation options</a>
 
-                        <a class="chart-control" @onclick="ShowAddDataSetModal"><i class="fas fa-plus"></i> Add data set</a>
-
                         <div class="info-icon">
                             <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowChartOptionsInfo></i>
                         </div>
@@ -92,21 +110,6 @@
                         <DualRangeSlider Min="SliderMin" Max="SliderMax" FromValue="SliderStart" ToValue="SliderEnd" OnValuesChanged="@OnSelectedYearsChanged" OnShowComponent="@ShowRangeSliderChanged" />
                     }
                 </div>
-            </Content>
-        </Collapsible>
-    </div>
-
-    <div style="flex-grow: 0">
-        <Collapsible Title="Suggested charts" InitiallyShown="true" NoBottomMargin="true">
-            <Content>
-                @if (DataSetDefinitions == null || SelectedLocation == null)
-                {
-                    <SpinKit Type="SpinKitType.Plane" />
-                }
-                else
-                {
-                    <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@SelectedLocation" OnChartPresetSelected="@OnChartPresetSelected" ExpandUpwards="true"></SuggestedCharts>
-                }
             </Content>
         </Collapsible>
     </div>
