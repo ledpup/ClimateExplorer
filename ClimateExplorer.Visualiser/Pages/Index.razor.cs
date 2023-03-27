@@ -92,6 +92,8 @@ public partial class Index : IDisposable
 
     [Inject] IBlazorCurrentDeviceService BlazorCurrentDeviceService { get; set; }
 
+    [Inject] Blazored.LocalStorage.ILocalStorageService? LocalStorage { get; set; }
+
     bool setupDefaultChartSeries;
     bool ShowLocation { get; set; }
     public string PopupText { get; set; } = @"<div style=""padding-bottom: 24px;""><img style=""max-width: 100%;"" src=""images/ChartOptions.png"" alt=""Chart Options image"" /></div>
@@ -202,9 +204,12 @@ public partial class Index : IDisposable
 
         if (LocationId == null)
         {
-            // Not sure whether we're allowed to set parameters this way, but it's short-lived - we'll immediately navigate away after
-            // preparing querystring
-            LocationId = "aed87aa0-1d0c-44aa-8561-cde0fc936395";
+            LocationId = (await LocalStorage.GetItemAsync<string>("lastLocationId"));
+            var validGuid = Guid.TryParse(LocationId, out Guid id);
+            if (!validGuid || id == Guid.Empty)
+            {
+                LocationId = "aed87aa0-1d0c-44aa-8561-cde0fc936395";
+            }
         }
 
         Guid locationId = Guid.Parse(LocationId);
@@ -1284,6 +1289,8 @@ public partial class Index : IDisposable
 
         SelectedLocationId = newValue;
         SelectedLocation = Locations.Single(x => x.Id == SelectedLocationId);
+
+        await LocalStorage.SetItemAsync("lastLocationId", SelectedLocationId.ToString());
 
         List<ChartSeriesDefinition> additionalCsds = new List<ChartSeriesDefinition>();
 
