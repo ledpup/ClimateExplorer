@@ -1,7 +1,18 @@
-﻿.divider {
-    width: 3px;
-    margin-right: 24px;
-    margin-bottom: 24px;
+﻿@media only screen and (max-width: 783px) {
+    .divider {
+        border-top: 3px solid #bbb;
+        min-width: 300px;
+        margin-right: 24px;
+        margin-bottom: 24px;
+    }
+}
+
+@media only screen and (min-width: 783px) {
+    .divider {
+        border-left: 3px solid #bbb;
+        margin-right: 24px;
+        margin-bottom: 24px;
+    }
 }
 
 .suggested-data-set-list {
