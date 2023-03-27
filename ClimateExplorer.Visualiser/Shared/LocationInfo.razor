@@ -9,7 +9,7 @@
 
 <Collapsible Title="@Location?.Name" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
     <HeaderContent>
-        <span class="chart-controls"><a class="chart-control" @onclick="() => ChangeLocationClicked(null)"><i class="fas fa-map"></i> Change Location</a></span>
+        <span class="chart-controls" style="margin-left: 32px;"><a class="chart-control" @onclick="() => ChangeLocationClicked(null)"><i class="fas fa-map"></i> Change Location</a></span>
     </HeaderContent>
     <Content>
         @if (Location == null || MaxTempAnomalyRecords == null)
