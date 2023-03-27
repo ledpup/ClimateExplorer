@@ -92,6 +92,8 @@ public partial class Index : IDisposable
 
     [Inject] IBlazorCurrentDeviceService BlazorCurrentDeviceService { get; set; }
 
+    [Inject] Blazored.LocalStorage.ILocalStorageService? LocalStorage { get; set; }
+
     bool setupDefaultChartSeries;
     bool ShowLocation { get; set; }
     public string PopupText { get; set; } = @"<div style=""padding-bottom: 24px;""><img style=""max-width: 100%;"" src=""images/ChartOptions.png"" alt=""Chart Options image"" /></div>
@@ -202,12 +204,10 @@ public partial class Index : IDisposable
 
         if (LocationId == null)
         {
-            LocationId = (await GetCurrentLocation())?.ToString();
-
-            if (LocationId == null)
+            LocationId = (await LocalStorage.GetItemAsync<string>("lastLocationId"));
+            var validGuid = Guid.TryParse(LocationId, out Guid id);
+            if (!validGuid || id == Guid.Empty)
             {
-                // Not sure whether we're allowed to set parameters this way, but it's short-lived - we'll immediately navigate away after
-                // preparing querystring
                 LocationId = "aed87aa0-1d0c-44aa-8561-cde0fc936395";
             }
         }
@@ -986,7 +986,7 @@ public partial class Index : IDisposable
         foreach (var s in ChartSeriesList)
         {
             var uom = s.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure;
-            var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, uom);
+            var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, uom, s.Aggregation);
             if (!axes.Contains(axisId))
             {
                 ((IDictionary<string, object>)scales).Add(
@@ -999,7 +999,7 @@ public partial class Index : IDisposable
                         Grid = new { DrawOnChartArea = false },
                         Title = new
                         {
-                            Text = UnitOfMeasureLabel(s.SeriesTransformation, uom),
+                            Text = UnitOfMeasureLabel(s.SeriesTransformation, uom, s.Aggregation),
                             Display = true,
                             Color = s.Colour == "#ffff33" ? "#a0a033" : s.Colour,
                         },
@@ -1289,6 +1289,8 @@ public partial class Index : IDisposable
 
         SelectedLocationId = newValue;
         SelectedLocation = Locations.Single(x => x.Id == SelectedLocationId);
+
+        await LocalStorage.SetItemAsync("lastLocationId", SelectedLocationId.ToString());
 
         List<ChartSeriesDefinition> additionalCsds = new List<ChartSeriesDefinition>();
 
