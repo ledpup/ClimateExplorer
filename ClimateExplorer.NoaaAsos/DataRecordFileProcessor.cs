@@ -1,0 +1,124 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+namespace ConsoleApp1;
+
+public class DataRecordFileProcessor
+{
+    public static Dictionary<DateOnly, List<TimedRecord>> Transform(string fileName)
+    {
+        var dataFileLines = File.ReadAllLines(fileName);
+
+        var mandatoryDataRegex = @"^(\d{4})(?<catalogId>\d{6})(?<wbanId>\d{5})
+(?<year>\d{4})(?<month>\d{2})(?<day>\d{2})(?<time>\d{4})
+(?<sourceDataFlag>\d{1})
+(?<latitude>[\-|\+]+\d{5})(?<longitude>[\-|\+]+\d{6})
+(?<reportType>.{5})
+(?<elevation>[\-|\+]+\d{4})(?<callLetterId>\d{5})(?<processName>.{4})
+(?<windDirection>\d{3})(?<windDirectionQuality>\d)(?<windDirectionType>\w)(?<windSpeed>\d{4})(?<windSpeedQuality>.)
+(?<ceilingHeight>\d{5})(?<ceilingQuality>\d)(?<ceilingDeterminationCode>.)(?<cavokCode>.)
+(?<horizontalVisibility>\d{6})(?<horizontalVisibilityQuality>\d)(?<horizontalVisibilityVariability>.)(?<horizontalVisVariabilityQuality>\d)
+(?<temperature>[\-|\+]+\d{4})(?<temperatureQuality>.)
+(?<dewPointTemperature>[\-|\+]+\d{4})(?<dewPointQuality>.)
+(?<airPressure>\d{5})(?<airPressureQuality>\d{1})
+(?<additionalDataId>ADD)?.*$"
+    .Replace("\r\n", string.Empty);
+
+        var regEx = new Regex(mandatoryDataRegex);
+
+        var dailyRecords = new Dictionary<DateOnly, List<TimedRecord>>();
+
+        foreach (var line in dataFileLines)
+        {
+            var match = regEx.Match(line);
+            if (!match.Success)
+            {
+                throw new Exception($"Regular expression does not match with line {line}");
+            }
+            var groups = regEx.Match(line).Groups;
+            var catalogId = groups["catalogId"];
+            var dateOnly = new DateOnly(Convert.ToInt16(groups["year"].Value), Convert.ToInt16(groups["month"].Value), Convert.ToInt16(groups["day"].Value));
+            var timeOnly = new TimeOnly(Convert.ToInt16(groups["time"].Value.Substring(0, 2)), Convert.ToInt16(groups["time"].Value.Substring(2, 2)));
+
+            if (!dailyRecords.ContainsKey(dateOnly))
+            {
+                dailyRecords.Add(dateOnly, new List<TimedRecord>());
+            }
+
+            if (dailyRecords[dateOnly].Any(x => x.Time == timeOnly && x.ReportType == groups["reportType"].Value))
+            { 
+                throw new Exception($"Line {Array.IndexOf(dataFileLines, line) + 1}: Already have TimedRecord on {dateOnly} at the time {timeOnly} with the ReportType {dailyRecords[dateOnly].First().ReportType}. Expecting one report type at a time.");
+            }
+
+            var timedRecord = new TimedRecord(timeOnly)
+            {
+                ReportType = groups["reportType"].Value
+            };
+
+            float? temp = Convert.ToSingle(groups["temperature"].Value) / 10f;
+            if (groups["temperature"].Value == "+9999"
+                || groups["temperatureQuality"].Value == "2"  // Suspect
+                || groups["temperatureQuality"].Value == "3"  // Erroneous
+                || groups["temperatureQuality"].Value == "6"  // Suspect
+                || groups["temperatureQuality"].Value == "7") // Erroneous
+            {
+                temp = null;
+            }
+            timedRecord.DataRecords.Add(new DataRecord() { Type = DataType.Temperature, Value = temp });
+
+            float? dewPointTemperature = Convert.ToSingle(groups["dewPointTemperature"].Value) / 10f;
+            if (groups["dewPointTemperature"].Value == "+9999"
+                || groups["dewPointQuality"].Value == "2"  // Suspect
+                || groups["dewPointQuality"].Value == "3"  // Erroneous
+                || groups["dewPointQuality"].Value == "6"  // Suspect
+                || groups["dewPointQuality"].Value == "7") // Erroneous
+            {
+                dewPointTemperature = null;
+            }
+            timedRecord.DataRecords.Add(new DataRecord() { Type = DataType.DewPointTemperature, Value = dewPointTemperature });
+
+            dailyRecords[dateOnly].Add(timedRecord);
+
+            var mandatoryAdditionalSplit = line.Split("ADD");
+
+            if (mandatoryAdditionalSplit.Length > 2) 
+            {
+                throw new Exception($"Expecting only two parts of the data, mandatory and additional data. There are {mandatoryAdditionalSplit.Length} parts for this line");
+            }
+
+            var additionalData = mandatoryAdditionalSplit[1];
+            // Rainfall example: AA106000091AA224999999AA399004091
+        }
+
+        return dailyRecords;
+    }
+
+    public class TimedRecord
+    {
+        public TimedRecord(TimeOnly time)
+        {
+            Time = time;
+            DataRecords = new List<DataRecord>();
+        }
+        public string? ReportType { get; set; }
+        public TimeOnly Time { get; set; }
+        public List<DataRecord> DataRecords { get; set; }
+    }
+
+    public class DataRecord
+    {
+        public DataType Type { get; set; }
+        public float? Value { get; set; }
+    }
+
+    public enum DataType
+    {
+        Temperature,
+        DewPointTemperature,
+        Rainfall
+    }
+}
