@@ -54,12 +54,21 @@ public static class Enums
         SqKm,
     }
 
-    public static string UnitOfMeasureLabel(SeriesTransformations seriesTransformations, UnitOfMeasure unitOfMeasure)
+    public enum SeriesAggregationOptions
+    {
+        Mean,
+        Maximum,
+        Minimum,
+        Sum,
+        Median
+    }
+
+    public static string UnitOfMeasureLabel(SeriesTransformations seriesTransformations, UnitOfMeasure unitOfMeasure, SeriesAggregationOptions seriesAggregationOptions)
     {
         return seriesTransformations switch
         {
             SeriesTransformations.IsFrosty => "Days of frost",
-            SeriesTransformations.DayOfYearIfFrost => "Day of year",
+            SeriesTransformations.DayOfYearIfFrost => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "Last day of frost" : "First day of frost",
             SeriesTransformations.EqualOrAbove35 => "Days of 35°C or above",
             SeriesTransformations.EqualOrAbove1 => "Days of 1mm of rain or more",
             SeriesTransformations.EqualOrAbove1AndLessThan10 => "Days between 1mm and 10mm of rain",

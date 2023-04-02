@@ -1,4 +1,21 @@
-﻿.suggested-data-set-list {
+﻿@media only screen and (max-width: 751px) {
+    .divider {
+        border-top: 3px solid #bbb;
+        min-width: 300px;
+        margin-right: 24px;
+        margin-bottom: 24px;
+    }
+}
+
+@media only screen and (min-width: 751px) {
+    .divider {
+        border-left: 3px solid #bbb;
+        margin-right: 24px;
+        margin-bottom: 24px;
+    }
+}
+
+.suggested-data-set-list {
     display: flex;
     flex-wrap: wrap;
     user-select: none;
