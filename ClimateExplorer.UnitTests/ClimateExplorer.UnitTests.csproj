@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClimateExplorer.Core\ClimateExplorer.Core.csproj" />
+    <ProjectReference Include="..\ClimateExplorer.NoaaAsos\ClimateExplorer.Data.Isd.csproj" />
   </ItemGroup>
 
 </Project>

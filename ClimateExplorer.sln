@@ -26,7 +26,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.AcornSatTra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Visualiser.UiTests", "ClimateExplorer.Visualiser.UiTests\ClimateExplorer.Visualiser.UiTests.csproj", "{89EC7792-0BEA-43F6-837F-D2F47E9479AE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.NoaaAsos", "ClimateExplorer.NoaaAsos\ClimateExplorer.NoaaAsos.csproj", "{65B1DF67-838A-4A49-BD5E-3665DA6BD08D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Data.Isd", "ClimateExplorer.NoaaAsos\ClimateExplorer.Data.Isd.csproj", "{65B1DF67-838A-4A49-BD5E-3665DA6BD08D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

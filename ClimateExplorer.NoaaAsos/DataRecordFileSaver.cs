@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static ConsoleApp1.DataRecordFileProcessor;
-
-namespace ConsoleApp1;
+﻿namespace ClimateExplorer.Data.Isd;
 
 public class DataRecordFileSaver
 {
@@ -51,4 +44,29 @@ public class DataRecordFileSaver
             File.Delete($@"Output\DewPoint\{station}.csv");
         }
     }
+}
+
+public class TimedRecord
+{
+    public TimedRecord(TimeOnly time)
+    {
+        Time = time;
+        DataRecords = new List<DataRecord>();
+    }
+    public string? ReportType { get; set; }
+    public TimeOnly Time { get; set; }
+    public List<DataRecord> DataRecords { get; set; }
+}
+
+public class DataRecord
+{
+    public DataType Type { get; set; }
+    public float? Value { get; set; }
+}
+
+public enum DataType
+{
+    Temperature,
+    DewPointTemperature,
+    Rainfall
 }

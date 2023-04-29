@@ -1,4 +1,4 @@
-﻿using ConsoleApp1;
+﻿using ClimateExplorer.Data.Isd;
 using System.IO.Compression;
 
 
@@ -10,20 +10,20 @@ httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
 
 var filteredStations = await RetrieveFilteredStations();
 
-
-foreach (var station in filteredStations)
+foreach (var station in filteredStations)//.Where(x => x.Name.Contains("LAUNCESTON")))
 {
     for (var year = station.Begin.Year; year <= station.End.Year; year++)
     {
         var stationName = $"{station.Usaf}-{station.Wban}";
         var fileName = $"{stationName}-{year}";
 
-        if (!File.Exists($@"Output\AsosFormatData\{stationName}\{fileName}"))
+        if (!File.Exists($@"Output\Isd\{stationName}\{fileName}"))
         {
             await DownloadAndExtractFile(httpClient, year, stationName, fileName);
         }
 
-        var dataRecords = DataRecordFileProcessor.Transform($@"Output\AsosFormatData\{stationName}\{fileName}");
+        var records = File.ReadAllLines($@"Output\Isd\{stationName}\{fileName}");
+        var dataRecords = IsdFileProcessor.Transform(records);
         DataRecordFileSaver.Save(fileName.Substring(0, 6), dataRecords);
     }
 }
@@ -93,8 +93,8 @@ static async Task DownloadAndExtractFile(HttpClient httpClient, int year, string
 
     var content = await response.Content.ReadAsStreamAsync();
 
-    Directory.CreateDirectory($@"Output\Data\{stationName}");
-    using (FileStream decompressedFileStream = File.Create($@"Output\Data\{stationName}\{fileName}"))
+    Directory.CreateDirectory($@"Output\Isd\{stationName}");
+    using (FileStream decompressedFileStream = File.Create($@"Output\Isd\{stationName}\{fileName}"))
     {
         using (GZipStream decompressionStream = new GZipStream(content, CompressionMode.Decompress))
         {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp1;
+namespace ClimateExplorer.Data.Isd;
 
 public class StationDistance
 {

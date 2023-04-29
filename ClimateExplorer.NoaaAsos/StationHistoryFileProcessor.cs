@@ -1,4 +1,4 @@
-﻿namespace ConsoleApp1;
+﻿namespace ClimateExplorer.Data.Isd;
 
 public class StationHistoryFileProcessor
 {

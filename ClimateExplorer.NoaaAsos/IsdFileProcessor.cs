@@ -5,20 +5,18 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace ConsoleApp1;
+namespace ClimateExplorer.Data.Isd;
 
-public class DataRecordFileProcessor
+public class IsdFileProcessor
 {
-    public static Dictionary<DateOnly, List<TimedRecord>> Transform(string fileName)
+    public static Dictionary<DateOnly, List<TimedRecord>> Transform(string[] records)
     {
-        var dataFileLines = File.ReadAllLines(fileName);
-
         var mandatoryDataRegex = @"^(\d{4})(?<catalogId>\d{6})(?<wbanId>\d{5})
 (?<year>\d{4})(?<month>\d{2})(?<day>\d{2})(?<time>\d{4})
 (?<sourceDataFlag>\d{1})
 (?<latitude>[\-|\+]+\d{5})(?<longitude>[\-|\+]+\d{6})
 (?<reportType>.{5})
-(?<elevation>[\-|\+]+\d{4})(?<callLetterId>\d{5})(?<processName>.{4})
+(?<elevation>[\-|\+]+\d{4})(?<callLetterId>.{5})(?<processName>.{4})
 (?<windDirection>\d{3})(?<windDirectionQuality>\d)(?<windDirectionType>\w)(?<windSpeed>\d{4})(?<windSpeedQuality>.)
 (?<ceilingHeight>\d{5})(?<ceilingQuality>\d)(?<ceilingDeterminationCode>.)(?<cavokCode>.)
 (?<horizontalVisibility>\d{6})(?<horizontalVisibilityQuality>\d)(?<horizontalVisibilityVariability>.)(?<horizontalVisVariabilityQuality>\d)
@@ -32,7 +30,7 @@ public class DataRecordFileProcessor
 
         var dailyRecords = new Dictionary<DateOnly, List<TimedRecord>>();
 
-        foreach (var line in dataFileLines)
+        foreach (var line in records)
         {
             var match = regEx.Match(line);
             if (!match.Success)
@@ -50,8 +48,8 @@ public class DataRecordFileProcessor
             }
 
             if (dailyRecords[dateOnly].Any(x => x.Time == timeOnly && x.ReportType == groups["reportType"].Value))
-            { 
-                throw new Exception($"Line {Array.IndexOf(dataFileLines, line) + 1}: Already have TimedRecord on {dateOnly} at the time {timeOnly} with the ReportType {dailyRecords[dateOnly].First().ReportType}. Expecting one report type at a time.");
+            {
+                throw new Exception($"Line {Array.IndexOf(records, line) + 1}: Already have TimedRecord on {dateOnly} at the time {timeOnly} with the ReportType {dailyRecords[dateOnly].First().ReportType}. Expecting one report type at a time.");
             }
 
             var timedRecord = new TimedRecord(timeOnly)
@@ -81,44 +79,60 @@ public class DataRecordFileProcessor
             }
             timedRecord.DataRecords.Add(new DataRecord() { Type = DataType.DewPointTemperature, Value = dewPointTemperature });
 
-            dailyRecords[dateOnly].Add(timedRecord);
-
             var mandatoryAdditionalSplit = line.Split("ADD");
 
-            if (mandatoryAdditionalSplit.Length > 2) 
+            if (mandatoryAdditionalSplit.Length > 2)
             {
                 throw new Exception($"Expecting only two parts of the data, mandatory and additional data. There are {mandatoryAdditionalSplit.Length} parts for this line");
             }
 
             var additionalData = mandatoryAdditionalSplit[1];
-            // Rainfall example: AA106000091AA224999999AA399004091
+            var rainfall = RainfallRecords(additionalData);
+            if (rainfall != 0)
+            {
+                timedRecord.DataRecords.Add(new DataRecord() { Type = DataType.Rainfall, Value = rainfall });
+            }
+
+            dailyRecords[dateOnly].Add(timedRecord);
         }
 
         return dailyRecords;
     }
 
-    public class TimedRecord
+    private static float? RainfallRecords(string additionalData)
     {
-        public TimedRecord(TimeOnly time)
+        // Rainfall example: AA106000091AA224999999AA399004091
+        float dailyDepth = 0;
+        for (var i = 1; i <= 4; i++)
         {
-            Time = time;
-            DataRecords = new List<DataRecord>();
+            var expression = "AA" + i + @"(?<period>\d{2})(?<depth>\d{4})(?<condition>\d)(?<quality>\d)";
+
+            var regEx = new Regex(expression);
+
+            if (regEx.IsMatch(additionalData))
+            {
+                var groups = regEx.Match(additionalData).Groups;
+
+                if ((groups["depth"].Value == "9999"
+                        || groups["quality"].Value == "2"  // Suspect
+                        || groups["quality"].Value == "3"  // Erroneous
+                        || groups["quality"].Value == "6"  // Suspect
+                        || groups["quality"].Value == "7") // Erroneous
+                        )
+                {
+                    continue;
+                }
+
+                var depth = Convert.ToSingle(groups["depth"].Value) / 10f;
+                dailyDepth += depth;
+            }
+            else
+            {
+                // If we haven't found rainfall for i, we won't find any others
+                break;
+            }
         }
-        public string? ReportType { get; set; }
-        public TimeOnly Time { get; set; }
-        public List<DataRecord> DataRecords { get; set; }
-    }
 
-    public class DataRecord
-    {
-        public DataType Type { get; set; }
-        public float? Value { get; set; }
-    }
-
-    public enum DataType
-    {
-        Temperature,
-        DewPointTemperature,
-        Rainfall
+        return dailyDepth;
     }
 }
