@@ -9,18 +9,18 @@
   <ItemGroup>
     <PackageReference Include="BlazorCurrentDevice" Version="1.0.7" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
-    <PackageReference Include="Blazorise" Version="1.2.2" />
-    <PackageReference Include="Blazorise.Bootstrap5" Version="1.2.2" />
-    <PackageReference Include="Blazorise.Charts" Version="1.2.2" />
-    <PackageReference Include="Blazorise.Charts.Trendline" Version="1.2.2" />
-    <PackageReference Include="Blazorise.Components" Version="1.2.2" />
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.2.2" />
-    <PackageReference Include="Blazorise.SpinKit" Version="1.2.2" />
+    <PackageReference Include="Blazorise" Version="1.2.3" />
+    <PackageReference Include="Blazorise.Bootstrap5" Version="1.2.3" />
+    <PackageReference Include="Blazorise.Charts" Version="1.2.3" />
+    <PackageReference Include="Blazorise.Charts.Trendline" Version="1.2.3" />
+    <PackageReference Include="Blazorise.Components" Version="1.2.3" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.2.3" />
+    <PackageReference Include="Blazorise.SpinKit" Version="1.2.3" />
     <PackageReference Include="DPBlazorMapLibrary" Version="1.2.0" />
     <PackageReference Include="GeoCoordinate.NetStandard1" Version="1.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
     <PackageReference Include="System.Net.Http.Json" Version="7.0.1" />
