@@ -47,53 +47,59 @@ public class IsdFileProcessor
                 dailyRecords.Add(dateOnly, new List<TimedRecord>());
             }
 
-            if (dailyRecords[dateOnly].Any(x => x.Time == timeOnly && x.ReportType == groups["reportType"].Value))
-            {
-                throw new Exception($"Line {Array.IndexOf(records, line) + 1}: Already have TimedRecord on {dateOnly} at the time {timeOnly} with the ReportType {dailyRecords[dateOnly].First().ReportType}. Expecting one report type at a time.");
-            }
-
             var timedRecord = new TimedRecord(timeOnly)
             {
                 ReportType = groups["reportType"].Value
             };
 
-            float? temp = Convert.ToSingle(groups["temperature"].Value) / 10f;
-            if (groups["temperature"].Value == "+9999"
-                || groups["temperatureQuality"].Value == "2"  // Suspect
-                || groups["temperatureQuality"].Value == "3"  // Erroneous
-                || groups["temperatureQuality"].Value == "6"  // Suspect
-                || groups["temperatureQuality"].Value == "7") // Erroneous
+            if (dailyRecords[dateOnly].Any(x => x.Time == timeOnly && x.ReportType == groups["reportType"].Value))
             {
-                temp = null;
+                Console.WriteLine($"Line {Array.IndexOf(records, line) + 1}: Already have TimedRecord on {dateOnly} at the time {timeOnly} with the ReportType {dailyRecords[dateOnly].First().ReportType}. Will skip mandatory data and only look for ADD records.");
             }
-            timedRecord.DataRecords.Add(new DataRecord() { Type = DataType.Temperature, Value = temp });
+            else
+            {
+                float? temp = Convert.ToSingle(groups["temperature"].Value) / 10f;
+                if (groups["temperature"].Value == "+9999"
+                    || groups["temperatureQuality"].Value == "2"  // Suspect
+                    || groups["temperatureQuality"].Value == "3"  // Erroneous
+                    || groups["temperatureQuality"].Value == "6"  // Suspect
+                    || groups["temperatureQuality"].Value == "7") // Erroneous
+                {
+                    temp = null;
+                }
+                timedRecord.DataRecords.Add(new DataRecord() { Type = DataType.Temperature, Value = temp });
 
-            float? dewPointTemperature = Convert.ToSingle(groups["dewPointTemperature"].Value) / 10f;
-            if (groups["dewPointTemperature"].Value == "+9999"
-                || groups["dewPointQuality"].Value == "2"  // Suspect
-                || groups["dewPointQuality"].Value == "3"  // Erroneous
-                || groups["dewPointQuality"].Value == "6"  // Suspect
-                || groups["dewPointQuality"].Value == "7") // Erroneous
-            {
-                dewPointTemperature = null;
+                float? dewPointTemperature = Convert.ToSingle(groups["dewPointTemperature"].Value) / 10f;
+                if (groups["dewPointTemperature"].Value == "+9999"
+                    || groups["dewPointQuality"].Value == "2"  // Suspect
+                    || groups["dewPointQuality"].Value == "3"  // Erroneous
+                    || groups["dewPointQuality"].Value == "6"  // Suspect
+                    || groups["dewPointQuality"].Value == "7") // Erroneous
+                {
+                    dewPointTemperature = null;
+                }
+                timedRecord.DataRecords.Add(new DataRecord() { Type = DataType.DewPointTemperature, Value = dewPointTemperature });
             }
-            timedRecord.DataRecords.Add(new DataRecord() { Type = DataType.DewPointTemperature, Value = dewPointTemperature });
 
             var mandatoryAdditionalSplit = line.Split("ADD");
-
             if (mandatoryAdditionalSplit.Length > 2)
             {
                 throw new Exception($"Expecting only two parts of the data, mandatory and additional data. There are {mandatoryAdditionalSplit.Length} parts for this line");
             }
-
-            var additionalData = mandatoryAdditionalSplit[1];
-            var rainfall = RainfallRecords(additionalData);
-            if (rainfall != 0)
+            else if (mandatoryAdditionalSplit.Length == 2)
             {
-                timedRecord.DataRecords.Add(new DataRecord() { Type = DataType.Rainfall, Value = rainfall });
+                var additionalData = mandatoryAdditionalSplit[1];
+                var rainfall = RainfallRecords(additionalData);
+                if (rainfall != 0)
+                {
+                    timedRecord.DataRecords.Add(new DataRecord() { Type = DataType.Rainfall, Value = rainfall });
+                }
             }
 
-            dailyRecords[dateOnly].Add(timedRecord);
+            if (timedRecord.DataRecords.Any())
+            {
+                dailyRecords[dateOnly].Add(timedRecord);
+            }
         }
 
         return dailyRecords;

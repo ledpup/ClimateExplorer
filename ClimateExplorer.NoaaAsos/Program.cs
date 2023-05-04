@@ -12,9 +12,11 @@ var filteredStations = await RetrieveFilteredStations();
 
 foreach (var station in filteredStations)//.Where(x => x.Name.Contains("LAUNCESTON")))
 {
+    var dataRecords = new Dictionary<DateOnly, List<TimedRecord>>();
+    var stationName = $"{station.Usaf}-{station.Wban}";
     for (var year = station.Begin.Year; year <= station.End.Year; year++)
     {
-        var stationName = $"{station.Usaf}-{station.Wban}";
+        
         var fileName = $"{stationName}-{year}";
 
         if (!File.Exists($@"Output\Isd\{stationName}\{fileName}"))
@@ -22,10 +24,13 @@ foreach (var station in filteredStations)//.Where(x => x.Name.Contains("LAUNCEST
             await DownloadAndExtractFile(httpClient, year, stationName, fileName);
         }
 
-        var records = File.ReadAllLines($@"Output\Isd\{stationName}\{fileName}");
-        var dataRecords = IsdFileProcessor.Transform(records);
-        DataRecordFileSaver.Save(fileName.Substring(0, 6), dataRecords);
+        var recordsForYear = File.ReadAllLines($@"Output\Isd\{stationName}\{fileName}");
+        var transformedRecordsForYear = IsdFileProcessor.Transform(recordsForYear);
+        transformedRecordsForYear.Keys
+            .ToList()
+            .ForEach(x => dataRecords.Add(x, transformedRecordsForYear[x]));
     }
+    DataRecordFileSaver.Save(stationName, dataRecords);
 }
 
 async Task<List<Station>> RetrieveFilteredStations()
