@@ -1,4 +1,6 @@
-﻿namespace ClimateExplorer.Data.Isd;
+﻿using static System.Collections.Specialized.BitVector32;
+
+namespace ClimateExplorer.Data.IntegratedSurfaceData;
 
 public class StationHistoryFileProcessor
 {
@@ -73,6 +75,13 @@ public class Station
     public IdTypes IdType { get; set; }
     public string Wban { get; set; }
     public string Usaf { get; set; }
+    public string FileName
+    { 
+        get
+        {
+            return $"{Usaf}-{Wban}";
+        } 
+    }
     public string? Name { get; set; }
     public Country? Country { get; set; }
     public DateOnly Begin { get; set; }

@@ -1,15 +1,16 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace ClimateExplorer.Data.Isd;
+namespace ClimateExplorer.Data.IntegratedSurfaceData;
 
-public class IsdFileProcessor
+internal class IsdFileProcessor
 {
-    public static Dictionary<DateOnly, List<TimedRecord>> Transform(string[] records)
+    internal static Dictionary<DateOnly, List<TimedRecord>> Transform(string[] records, ILogger<Program> logger)
     {
         var mandatoryDataRegex = @"^(\d{4})(?<catalogId>\d{6})(?<wbanId>\d{5})
 (?<year>\d{4})(?<month>\d{2})(?<day>\d{2})(?<time>\d{4})
@@ -35,12 +36,25 @@ public class IsdFileProcessor
             var match = regEx.Match(line);
             if (!match.Success)
             {
-                throw new Exception($"Regular expression does not match with line {line}");
+                if (line.StartsWith("Failed"))
+                {
+                    break;
+                }
+                logger.LogError($"Line {Array.IndexOf(records, line) + 1}: regular expression does not match the data in line {line}");
+                logger.LogWarning($"Skipping line {Array.IndexOf(records, line) + 1}");
+                continue;
             }
             var groups = regEx.Match(line).Groups;
             var catalogId = groups["catalogId"];
             var dateOnly = new DateOnly(Convert.ToInt16(groups["year"].Value), Convert.ToInt16(groups["month"].Value), Convert.ToInt16(groups["day"].Value));
-            var timeOnly = new TimeOnly(Convert.ToInt16(groups["time"].Value.Substring(0, 2)), Convert.ToInt16(groups["time"].Value.Substring(2, 2)));
+
+            var timeString = groups["time"].Value;
+            if (timeString == "2400")
+            {
+                logger.LogError($"Line {Array.IndexOf(records, line) + 1}: time is recorded as 2400. 2400 is not a time in .NET. Changing it to 23:59");
+                timeString = "2359";
+            }
+            var timeOnly = new TimeOnly(Convert.ToInt16(timeString.Substring(0, 2)), Convert.ToInt16(timeString.Substring(2, 2)));
 
             if (!dailyRecords.ContainsKey(dateOnly))
             {
@@ -54,7 +68,7 @@ public class IsdFileProcessor
 
             if (dailyRecords[dateOnly].Any(x => x.Time == timeOnly && x.ReportType == groups["reportType"].Value))
             {
-                Console.WriteLine($"Line {Array.IndexOf(records, line) + 1}: Already have TimedRecord on {dateOnly} at the time {timeOnly} with the ReportType {dailyRecords[dateOnly].First().ReportType}. Will skip mandatory data and only look for ADD records.");
+                logger.LogWarning($"Line {Array.IndexOf(records, line) + 1}: Already have TimedRecord on {dateOnly} at the time {timeOnly} with the ReportType {dailyRecords[dateOnly].First().ReportType}. Will skip mandatory data and only look for ADD records.");
             }
             else
             {
@@ -84,9 +98,10 @@ public class IsdFileProcessor
             var mandatoryAdditionalSplit = line.Split("ADD");
             if (mandatoryAdditionalSplit.Length > 2)
             {
-                throw new Exception($"Expecting only two parts of the data, mandatory and additional data. There are {mandatoryAdditionalSplit.Length} parts for this line");
+                logger.LogWarning($"Expecting only two parts of the data, mandatory and additional data. There are {mandatoryAdditionalSplit.Length} parts for this line. Line is: {line}");
             }
-            else if (mandatoryAdditionalSplit.Length == 2)
+            
+            if (mandatoryAdditionalSplit.Length >= 2)
             {
                 var additionalData = mandatoryAdditionalSplit[1];
                 var rainfall = RainfallRecords(additionalData);

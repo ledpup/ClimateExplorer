@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClimateExplorer.Core\ClimateExplorer.Core.csproj" />
-    <ProjectReference Include="..\ClimateExplorer.NoaaAsos\ClimateExplorer.Data.Isd.csproj" />
+    <ProjectReference Include="..\ClimateExplorer.NoaaAsos\ClimateExplorer.Data.IntegratedSurfaceData.csproj" />
   </ItemGroup>
 
 </Project>
