@@ -110,6 +110,11 @@
         }
 
         locationIdLastTimeOnParametersSetAsyncWasCalled = Location?.Id;
+        // Clear the previous values so we don't accidentally end-up reporting them
+        LocationTemperatureMean = null;
+        MaxTempAnomalyRecords = null;
+        WarmingIndexDescription = null;
+        WarmingIndexAsString = null;
 
         // We can't do anything until we're supplied our tasty, tasty DataSetDefinitions
         if (DataSetDefinitions == null)
@@ -125,11 +130,7 @@
                 Enums.DataAdjustment.Adjusted,
                 true);
 
-        if (tempMaxMeasurementForLocation == null)
-        {
-            MaxTempAnomalyRecords = null;
-        }
-        else
+        if (tempMaxMeasurementForLocation != null)
         {
             // Retrieve TempMax anomaly
             var series =
