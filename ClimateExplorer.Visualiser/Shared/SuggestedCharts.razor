@@ -576,6 +576,31 @@
             }
         );
 
+        SuggestedPresets.Add(
+        new SuggestedChartPresetModelWithVariants()
+            {
+                Title = "Australian climate trend",
+                Description = "Annual mean temperature anomalies across Australia, referencing 1961-1990 as the basis for anomalies",
+                ChartSeriesList =
+                            new List<ChartSeriesDefinition>()
+                            {
+                                new ChartSeriesDefinition()
+                                {
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, tempMax),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYear,
+                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                    SmoothingWindow = 10,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null,
+                                    DisplayStyle = SeriesDisplayStyle.Line,
+                                    RequestedColour = UiLogic.Colours.Red,
+                                },
+                            },
+            }
+        );
+
         // Presets may call for data that is not available at all locations. In those
         // cases, remove the ChartSeries entries that aren't available & set a flag
         // on the preset so that an indicator can be shown to the user.

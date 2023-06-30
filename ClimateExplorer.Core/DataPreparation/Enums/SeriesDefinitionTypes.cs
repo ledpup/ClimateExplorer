@@ -4,5 +4,6 @@ public enum SeriesDerivationTypes
 {
     ReturnSingleSeries,
     DifferenceBetweenTwoSeries,
-    AverageOfMultipleSeries
+    AverageOfMultipleSeries,
+    //AverageAnomaliesOfMultipleSeries
 }
