@@ -15,7 +15,7 @@
 
 ## Technical
 - Built in [Visual Studio 2022 Community Edition](https://visualstudio.microsoft.com/vs/community/)
-- C#, .NET 6
+- C#, .NET 7
 - Blazor, using
   - https://github.com/Megabit/Blazorise
   - https://github.com/DP-projects/DPBlazorMap
