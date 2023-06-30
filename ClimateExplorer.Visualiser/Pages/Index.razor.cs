@@ -297,9 +297,16 @@ public partial class Index : IDisposable
         }
     }
 
+    bool chartRenderedFirstTime = false;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (chart == null || chartTrendline == null)
+        {
+            return;
+        }
+
+        if (!chartRenderedFirstTime)
         {
             await HandleRedraw();
         }
@@ -959,6 +966,8 @@ public partial class Index : IDisposable
             await chart.Resize();
             _haveCalledResizeAtLeastOnce = true;
         }
+
+        chartRenderedFirstTime = true;
 
         l.LogInformation("Leaving");
     }
