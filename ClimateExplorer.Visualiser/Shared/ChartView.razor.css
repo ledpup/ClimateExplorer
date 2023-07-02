@@ -1,0 +1,130 @@
+﻿@media only screen and (max-width: 1000px) {
+    .chart-wrapper {
+        flex-grow: 0;
+        flex-shrink: 0;
+        position: relative;
+        height: 30vh;
+        min-height: 300px;
+    }
+
+    .chart-and-controls {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+}
+
+@media only screen and (min-width: 1000px) {
+    .chart-wrapper {
+        flex-grow: 0;
+        flex-shrink: 0;
+        position: relative;
+        height: 50vh;
+    }
+
+    .chart-collapsible-parent {
+        flex-grow: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 600px;
+    }
+
+    .chart-and-controls {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+}
+
+
+.chart-controls {
+    margin: 20px;
+    /* This negative bottom margin is to compensate for the bottom margin on .chart-control, so that there's no
+     * unnecessary large gap below the bottom row of .chart-controls
+    */
+    margin-bottom: -16px;
+    margin-left: 0px;
+    user-select: none;
+}
+
+::deep .chart-controls .dropdown {
+    text-decoration: none;
+    margin-bottom: 16px;
+    margin-right: 16px;
+    display: inline-block;
+    top: -1px;
+}
+
+    ::deep .chart-controls .dropdown .btn {
+        padding: 8px;
+        background: #eee;
+        border-radius: 8px;
+        color: #425f59;
+        border: 0px;
+    }
+
+        ::deep .chart-controls .dropdown .btn i {
+            margin-right: 8px;
+        }
+
+        ::deep .chart-controls .dropdown .btn:hover {
+            background: #cfc !important;
+            transition: 0.25s;
+        }
+
+.chart-controls .chart-control {
+    padding: 8px;
+    background-color: #eee;
+    border-radius: 8px;
+    margin-right: 16px;
+    text-decoration: none;
+    color: #425f59;
+    cursor: pointer;
+    margin-bottom: 16px;
+    display: inline-block;
+}
+
+    .chart-controls .chart-control i {
+        margin-right: 8px;
+    }
+
+    .chart-controls .chart-control:hover {
+        background-color: #cfc;
+        transition: 0.25s;
+    }
+
+    .chart-controls .info-icon {
+        margin-left: 0px;
+        color: #79c6f4;
+        font-size: larger;
+        display: inline-block;
+    }
+
+.add-series-button {
+    box-shadow: rgb(0 0 0 / 20%) 0px 0px 6px;
+    display: inline-block;
+    min-height: 44px;
+    padding: 8px;
+    padding-bottom: 6px;
+    padding-top: 10px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #425f59;
+    cursor: pointer;
+    user-select: none;
+}
+
+    .add-series-button i {
+        margin-right: 8px;
+    }
+
+    .add-series-button:hover {
+        background: #cfc;
+        transition: 0.25s;
+    }
+
+.info-icon {
+    margin-left: 8px;
+    color: #79c6f4;
+    font-size: larger;
+}
