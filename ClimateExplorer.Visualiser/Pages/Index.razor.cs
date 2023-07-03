@@ -16,38 +16,27 @@ using GeoCoordinatePortable;
 
 namespace ClimateExplorer.Visualiser.Pages;
 
-public partial class Index : IDisposable
+public partial class Index : ChartablePage
 {
     [Parameter]
     public string LocationId { get; set; }
 
-    LocationInfo locationInfoComponent { get; set; }
     SelectLocation selectLocationModal { get; set; }
     MapContainer mapContainer { get; set; }
 
     Guid SelectedLocationId { get; set; }
     Location _selectedLocation { get; set; }
     Location PreviousLocation { get; set; }
-    IEnumerable<DataSetDefinitionViewModel> DataSetDefinitions { get; set; }
     IEnumerable<Location> Locations { get; set; }
     Guid _componentInstanceId = Guid.NewGuid();
 
     string? BrowserLocationErrorMessage { get; set; }
 
-    [Inject] IDataService DataService { get; set; }
-    [Inject] NavigationManager NavManager { get; set; }
-    [Inject] IExporter Exporter { get; set; }
-    [Inject] IJSRuntime JsRuntime { get; set; }
-    [Inject] ILogger<Index> Logger { get; set; }
-
     [Inject] Blazored.LocalStorage.ILocalStorageService? LocalStorage { get; set; }
 
     bool setupDefaultChartSeries;
-    bool ShowLocation { get; set; }
 
     Modal addDataSetModal { get; set; }
-
-    ChartView chartView;
     protected override async Task OnInitializedAsync()
     {
         Logger.LogInformation("Instance " + _componentInstanceId + " OnInitializedAsync");
@@ -60,33 +49,9 @@ public partial class Index : IDisposable
         }
         DataSetDefinitions = (await DataService.GetDataSetDefinitions()).ToList();
 
-        // A cheat: register some 'derived' measurement types. Could be done better.
-        var acornSatDsd = DataSetDefinitions.Single(x => x.Id == Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"));
-
-        acornSatDsd.MeasurementDefinitions
-            .Add(
-                new MeasurementDefinitionViewModel
-                {
-                    DataAdjustment = DataAdjustment.Difference,
-                    DataType = DataType.TempMax,
-                    UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
-                }
-            );
-
-        acornSatDsd.MeasurementDefinitions
-            .Add(
-                new MeasurementDefinitionViewModel
-                {
-                    DataAdjustment = DataAdjustment.Difference,
-                    DataType = DataType.TempMin,
-                    UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
-                }
-            );
-
         Locations = (await DataService.GetLocations(includeNearbyLocations: true, includeWarmingMetrics: true)).ToList();
 
         setupDefaultChartSeries = true;
-        ShowLocation = true;
 
         await base.OnInitializedAsync();
     }
@@ -231,29 +196,7 @@ public partial class Index : IDisposable
 
     async Task OnAddDataSet(DataSetLibraryEntry dle)
     {
-        Logger.LogInformation("Adding dle " + dle.Name);
-
-        chartView.ChartSeriesList =
-            chartView.ChartSeriesList
-            .Concat(
-                new List<ChartSeriesDefinition>()
-                {
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = dle.SeriesDerivationType,
-                        SourceSeriesSpecifications = dle.SourceSeriesSpecifications.Select(BuildSourceSeriesSpecification).ToArray(),
-                        Aggregation = dle.SeriesAggregation,
-                        BinGranularity = chartView.SelectedBinGranularity,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 5,
-                        Value = SeriesValueOptions.Value,
-                        Year = null
-                    }
-                }
-            )
-            .ToList();
-
-        await BuildDataSets();
+        await chartView.OnAddDataSet(dle, DataSetDefinitions);
     }
 
     private async Task OnOverviewShowHide(bool isOverviewVisible)
@@ -266,29 +209,9 @@ public partial class Index : IDisposable
         return selectLocationModal.Show();
     }
 
-    public async Task OnChartPresetSelected(List<ChartSeriesDefinition> chartSeriesDefinitions)
+    async Task OnChartPresetSelected(List<ChartSeriesDefinition> chartSeriesDefinitions)
     {
-        chartView.SelectedBinGranularity = chartSeriesDefinitions.First().BinGranularity;
-
-        chartView.ChartSeriesList = chartSeriesDefinitions.ToList();
-
-        await BuildDataSets();
-    }
-
-    SourceSeriesSpecification BuildSourceSeriesSpecification(DataSetLibraryEntry.SourceSeriesSpecification sss)
-    {
-        var dsd = DataSetDefinitions.Single(x => x.Id == sss.SourceDataSetId);
-
-        var md = dsd.MeasurementDefinitions.Single(x => x.DataType == sss.DataType && x.DataAdjustment == sss.DataAdjustment);
-
-        return
-            new SourceSeriesSpecification
-            {
-                LocationId = sss.LocationId,
-                LocationName = sss.LocationName,
-                DataSetDefinition = dsd,
-                MeasurementDefinition = md
-            };
+        await chartView.OnChartPresetSelected(chartSeriesDefinitions);
     }
 
     Location SelectedLocation
@@ -347,171 +270,9 @@ public partial class Index : IDisposable
         }
     }
 
-
-
-    protected async Task BuildDataSets()
-    {
-        // This method is called whenever anything has occurred that may require the chart to
-        // be re-rendered.
-        //
-        // Examples:
-        //     - User navigates to /locations/{anything}?csd={anythingelse} page for the first time
-        //     - User updates URL manually while already at /locations
-        //     - User chooses a preset or otherwise updates ChartSeriesList
-        //     - User changes another setting that influences chart rendering (e.g. year filtering)
-        //
-        // Some, but not all, of those changes/events are reflected directly in the URL (e.g. location is in the
-        // URL, and CSDs are in the URL).
-        //
-        // Others currently are not, but probably should be (e.g. year filtering).
-        //
-        // Our strategy here is:
-        //
-        // This method has been called because something has happened that may require the chart to be
-        // re-rendered. We calculate the URI reflecting the current UI state. If we're already at that
-        // URI, then we conclude that one of the properties has changed that does NOT impact the URI,
-        // so we just immediately re-render the chart. If we are NOT already at that URI, then we just
-        // trigger navigation to that URI, and DO NOT RE-RENDER THE CHART YET. Instead, as part of that
-        // navigation process, methods will trigger that will re render the chart based on what's in the
-        // updated URI.
-        //
-        // This is all to avoid re-rendering the chart more than once (bad for performance) or, even worse,
-        // re-rendering the chart on two different async call chains at the same time (bad for correctness -
-        // this was leading to the same series being rendered more than once, and the year labels on the
-        // X axis being added more than once).
-
-        var l = new LogAugmenter(Logger, "BuildDataSets");
-
-        l.LogInformation("starting");
-
-        chartView.LogChartSeriesList();
-
-        // Recalculate the URL
-        string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(chartView.ChartSeriesList);
-
-        string url = "/location/" + LocationId;
-
-        if (chartSeriesUrlComponent.Length > 0) url += "?csd=" + chartSeriesUrlComponent;
-
-        string currentUri = NavManager.Uri;
-        string newUri = NavManager.ToAbsoluteUri(url).ToString();
-
-        if (currentUri != newUri)
-        {
-            l.LogInformation("Because the URI reflecting current UI state is different to the URI we're currently at, triggering navigation. After navigation occurs, the UI state will update accordingly.");
-
-            bool shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds = currentUri.IndexOf("csd=") == -1;
-
-            // Just let the navigation process trigger the UI updates
-            await NavigateTo(url, shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds);
-        }
-        else
-        {
-            l.LogInformation("Not calling NavigationManager.NavigateTo().");
-
-            // Fetch the data required to render the selected data series
-            chartView.ChartSeriesWithData = await RetrieveDataSets(chartView.ChartSeriesList);
-
-            l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + chartView.ChartSeriesWithData.Count + " entries.");
-
-            ShowLocation = chartView.ChartSeriesWithData != null && chartView.ChartSeriesWithData.Any(x => x.SourceDataSet.DataType == DataType.TempMax || x.SourceDataSet.DataType == DataType.TempMin || x.SourceDataSet.DataType == DataType.Rainfall || x.SourceDataSet.DataType == DataType.SolarRadiation);
-
-            // Render the series
-            await chartView.HandleRedraw();
-
-            if (SelectedLocation != null && mapContainer != null)
-            {
-                await mapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
-            }
-        }
-
-        l.LogInformation("leaving");
-    }
-
-    static ContainerAggregationFunctions MapSeriesAggregationOptionToBinAggregationFunction(SeriesAggregationOptions a)
-    {
-        switch (a)
-        {
-            case SeriesAggregationOptions.Mean: return ContainerAggregationFunctions.Mean;
-            case SeriesAggregationOptions.Minimum: return ContainerAggregationFunctions.Min;
-            case SeriesAggregationOptions.Maximum: return ContainerAggregationFunctions.Max;
-            case SeriesAggregationOptions.Median: return ContainerAggregationFunctions.Median;
-            case SeriesAggregationOptions.Sum: return ContainerAggregationFunctions.Sum;
-            default: throw new NotImplementedException($"SeriesAggregationOptions {a}");
-        }
-    }
-
-    SeriesSpecification BuildDataPrepSeriesSpecification(SourceSeriesSpecification sss)
-    {
-        return
-            new SeriesSpecification
-            {
-                DataSetDefinitionId = sss.DataSetDefinition.Id,
-                DataType = sss.MeasurementDefinition.DataType,
-                DataAdjustment = sss.MeasurementDefinition.DataAdjustment,
-                LocationId = sss.LocationId
-            };
-    }
-
-    async Task<List<SeriesWithData>> RetrieveDataSets(List<ChartSeriesDefinition> chartSeriesList)
-    {
-        var datasetsToReturn = new List<SeriesWithData>();
-
-        Logger.LogInformation("RetrieveDataSets: starting enumeration");
-
-        foreach (var csd in chartSeriesList)
-        {
-            var cupAggregationFunction = MapSeriesAggregationOptionToBinAggregationFunction(csd.Aggregation);
-            var bucketAggregationFunction = cupAggregationFunction;
-
-            // If we're doing modular binning and the aggregation function is sum, then force mean aggregation at
-            // top level
-            var binAggregationFunction =
-                chartView.SelectedBinGranularity.IsModular() && cupAggregationFunction == ContainerAggregationFunctions.Sum
-                ? ContainerAggregationFunctions.Mean
-                : cupAggregationFunction;
-            
-            DataSet dataSet =
-                await DataService.PostDataSet(
-                    chartView.SelectedBinGranularity,
-                    binAggregationFunction,
-                    bucketAggregationFunction,
-                    cupAggregationFunction,
-                    csd.Value,
-                    csd.SourceSeriesSpecifications.Select(BuildDataPrepSeriesSpecification).ToArray(),
-                    csd.SeriesDerivationType,
-                    chartView.GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
-                    chartView.GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
-                    chartView.GetGroupingThreshold(csd.GroupingThreshold),
-                    chartView.SelectedDayGrouping,
-                    csd.SeriesTransformation,
-                    csd.Year
-                );
-
-            datasetsToReturn.Add(
-                new SeriesWithData() { ChartSeries = csd, SourceDataSet = dataSet }
-            );
-        }
-
-        Logger.LogInformation("RetrieveDataSets: completed enumeration");
-
-        return datasetsToReturn;
-    }
-
     async Task SelectedLocationChanged(Guid locationId)
     {
         await NavigateTo("/location/" + locationId.ToString());
-    }
-
-    public async Task NavigateTo(string uri, bool replace = false)
-    {
-        Logger.LogInformation("NavManager.NavigateTo(uri=" + uri + ", replace=" + replace + ")");
-
-        // Below is a JavaScript hack to stop NavigateTo from scrolling to the top of the page.
-        // See: https://github.com/dotnet/aspnetcore/issues/40190 and index.html
-        await JsRuntime.InvokeVoidAsync("willSkipScrollTo", true);
-
-        NavManager.NavigateTo(uri, false, replace);
     }
 
     async Task SelectedLocationChangedInternal(Guid newValue)
@@ -666,12 +427,13 @@ public partial class Index : IDisposable
 
         chartView.ChartSeriesList = draftList.CreateNewListWithoutDuplicates();
 
-        await BuildDataSets();
+        var updateMap = await BuildDataSets();
+
+        if (updateMap && SelectedLocation != null && mapContainer != null)
+        {
+            await mapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
+        }
     }
-
-  
-
-
 
     class GetLocationResult
     {
@@ -724,7 +486,7 @@ public partial class Index : IDisposable
 
         var fileName = locationNames.Any() ? string.Join("-", locationNames) + "-" : "";
 
-        fileName = $"Export-{fileName}-{chartView.SelectedBinGranularity}-{dataDownloadPackage.Bins.First().Label}-{dataDownloadPackage.Bins.Last().Label}.csv";
+        fileName = $"Export-{fileName}-{dataDownloadPackage.BinGranularity}-{dataDownloadPackage.Bins.First().Label}-{dataDownloadPackage.Bins.Last().Label}.csv";
 
         using var streamRef = new DotNetStreamReference(stream: fileStream);
 

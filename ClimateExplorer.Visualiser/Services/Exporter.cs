@@ -15,9 +15,10 @@ public class Exporter : IExporter
     {
         logger.LogInformation("ExportChartData got bin range " + dataDownloadPackage.Bins[0].ToString() + " to " + dataDownloadPackage.Bins.Last().ToString());
 
-        var data = new List<string>();
-
-        data.Add("Exported from," + sourceUri);
+        var data = new List<string>
+        {
+            "Exported from," + sourceUri
+        };
 
         var locationIds = dataDownloadPackage.ChartSeriesWithData.SelectMany(x => x.ChartSeries.SourceSeriesSpecifications).Select(x => x.LocationId).Where(x => x != null).Distinct().ToArray();
 

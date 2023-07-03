@@ -32,7 +32,7 @@ public partial class ChartView
 
     bool UserOverridePresetAggregationSettings { get; set; }
 
-    public short SelectedDayGrouping { get; set; } = 14;
+    short SelectedDayGrouping { get; set; } = 14;
 
     public BinGranularities SelectedBinGranularity { get; set; } = BinGranularities.ByYear;
 
@@ -51,6 +51,7 @@ public partial class ChartView
     [Parameter]
     public EventCallback ShowAddDataSetModalEvent { get; set; }
 
+    [Inject] IDataService DataService { get; set; }
     [Inject] IBlazorCurrentDeviceService BlazorCurrentDeviceService { get; set; }
     [Inject] IJSRuntime JsRuntime { get; set; }
     [Inject] ILogger<Index> Logger { get; set; }
@@ -155,6 +156,128 @@ public partial class ChartView
             return aggregationOptionsModal.Show();
         }
         return Task.CompletedTask;
+    }
+
+    public async Task OnAddDataSet(DataSetLibraryEntry dle, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions)
+    {
+        Logger.LogInformation("Adding dle " + dle.Name);
+
+        ChartSeriesList =
+            ChartSeriesList
+            .Concat(
+                new List<ChartSeriesDefinition>()
+                {
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = dle.SeriesDerivationType,
+                        SourceSeriesSpecifications = dle.SourceSeriesSpecifications.Select(x => BuildSourceSeriesSpecification(x, dataSetDefinitions)).ToArray(),
+                        Aggregation = dle.SeriesAggregation,
+                        BinGranularity = SelectedBinGranularity,
+                        Smoothing = SeriesSmoothingOptions.None,
+                        SmoothingWindow = 5,
+                        Value = SeriesValueOptions.Value,
+                        Year = null
+                    }
+                }
+            )
+            .ToList();
+
+        await BuildDataSets();
+    }
+
+    SourceSeriesSpecification BuildSourceSeriesSpecification(DataSetLibraryEntry.SourceSeriesSpecification sss, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions)
+    {
+        var dsd = dataSetDefinitions.Single(x => x.Id == sss.SourceDataSetId);
+
+        var md = dsd.MeasurementDefinitions.Single(x => x.DataType == sss.DataType && x.DataAdjustment == sss.DataAdjustment);
+
+        return
+            new SourceSeriesSpecification
+            {
+                LocationId = sss.LocationId,
+                LocationName = sss.LocationName,
+                DataSetDefinition = dsd,
+                MeasurementDefinition = md
+            };
+    }
+
+    public async Task OnChartPresetSelected(List<ChartSeriesDefinition> chartSeriesDefinitions)
+    {
+        SelectedBinGranularity = chartSeriesDefinitions.First().BinGranularity;
+
+        ChartSeriesList = chartSeriesDefinitions.ToList();
+
+        await BuildDataSetsEvent.InvokeAsync();
+    }
+
+    public async Task<List<SeriesWithData>> RetrieveDataSets(List<ChartSeriesDefinition> chartSeriesList)
+    {
+        var datasetsToReturn = new List<SeriesWithData>();
+
+        Logger.LogInformation("RetrieveDataSets: starting enumeration");
+
+        foreach (var csd in chartSeriesList)
+        {
+            var cupAggregationFunction = MapSeriesAggregationOptionToBinAggregationFunction(csd.Aggregation);
+            var bucketAggregationFunction = cupAggregationFunction;
+
+            // If we're doing modular binning and the aggregation function is sum, then force mean aggregation at
+            // top level
+            var binAggregationFunction =
+                SelectedBinGranularity.IsModular() && cupAggregationFunction == ContainerAggregationFunctions.Sum
+                ? ContainerAggregationFunctions.Mean
+                : cupAggregationFunction;
+
+            DataSet dataSet =
+                await DataService.PostDataSet(
+                    SelectedBinGranularity,
+                    binAggregationFunction,
+                    bucketAggregationFunction,
+                    cupAggregationFunction,
+                    csd.Value,
+                    csd.SourceSeriesSpecifications.Select(BuildDataPrepSeriesSpecification).ToArray(),
+                    csd.SeriesDerivationType,
+                    GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
+                    GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
+                    GetGroupingThreshold(csd.GroupingThreshold),
+                    SelectedDayGrouping,
+                    csd.SeriesTransformation,
+                    csd.Year
+                );
+
+            datasetsToReturn.Add(
+                new SeriesWithData() { ChartSeries = csd, SourceDataSet = dataSet }
+            );
+        }
+
+        Logger.LogInformation("RetrieveDataSets: completed enumeration");
+
+        return datasetsToReturn;
+    }
+
+    static ContainerAggregationFunctions MapSeriesAggregationOptionToBinAggregationFunction(SeriesAggregationOptions a)
+    {
+        switch (a)
+        {
+            case SeriesAggregationOptions.Mean: return ContainerAggregationFunctions.Mean;
+            case SeriesAggregationOptions.Minimum: return ContainerAggregationFunctions.Min;
+            case SeriesAggregationOptions.Maximum: return ContainerAggregationFunctions.Max;
+            case SeriesAggregationOptions.Median: return ContainerAggregationFunctions.Median;
+            case SeriesAggregationOptions.Sum: return ContainerAggregationFunctions.Sum;
+            default: throw new NotImplementedException($"SeriesAggregationOptions {a}");
+        }
+    }
+
+    SeriesSpecification BuildDataPrepSeriesSpecification(SourceSeriesSpecification sss)
+    {
+        return
+            new SeriesSpecification
+            {
+                DataSetDefinitionId = sss.DataSetDefinition.Id,
+                DataType = sss.MeasurementDefinition.DataType,
+                DataAdjustment = sss.MeasurementDefinition.DataAdjustment,
+                LocationId = sss.LocationId
+            };
     }
 
     public async Task HandleRedraw()
@@ -277,7 +400,7 @@ public partial class ChartView
         l.LogInformation("Leaving");
     }
 
-    public float GetGroupingThreshold(float? groupingThreshold, bool binGranularityIsLinear = false)
+    float GetGroupingThreshold(float? groupingThreshold, bool binGranularityIsLinear = false)
     {
         // If we're in linear time, all buckets in a bin must have passed the data completeness test.
         // Otherwise, we apply GroupingThreshold from either user input or ChartSeriesDefinition
@@ -374,7 +497,7 @@ public partial class ChartView
         await BuildDataSetsEvent.InvokeAsync();
     }
 
-    public void RebuildChartSeriesListToReflectSelectedYears()
+    void RebuildChartSeriesListToReflectSelectedYears()
     {
         var years = SelectedYears.Any() ? SelectedYears.Select(x => (short?)x).ToList() : new List<short?>() { null };
 
@@ -888,8 +1011,7 @@ public partial class ChartView
 
     private async Task OnDownloadDataClicked()
     {
-        //BuildProcessedDataSets(ChartSeriesWithData, UseMostRecentStartYear);
-        await DownloadDataEvent.InvokeAsync(new DataDownloadPackage { ChartSeriesWithData = ChartSeriesWithData, Bins = ChartBins });
+        await DownloadDataEvent.InvokeAsync(new DataDownloadPackage { ChartSeriesWithData = ChartSeriesWithData, Bins = ChartBins, BinGranularity = SelectedBinGranularity });
     }
 
     async Task ShowAddDataSetModal()

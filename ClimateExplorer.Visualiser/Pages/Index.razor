@@ -8,6 +8,8 @@
 @using static ClimateExplorer.Visualiser.UiModel.SuggestedPresetLists;
 @using static ClimateExplorer.Visualiser.Shared.Collapsible;
 
+@inherits ChartablePage
+
 <PageTitle>@GetPageTitle()</PageTitle>
 
 <div style="flex-grow: 0">
@@ -19,29 +21,25 @@
 </div>
 
 <div class="location-and-chart-container">
-    @if (ShowLocation)
-    {
-        <div>
-            <div class="map-space-reserver" id="mapContainerContainer">
-                <MapContainer @ref="mapContainer"
-                    Locations="@Locations"
-                    OnLocationChange="@SelectedLocationChanged"
-                    LocationCoordinates="@LocationCoordinates"></MapContainer>
-            </div>
-
-            <div class="location-info-container">
-                <LocationInfo @ref="locationInfoComponent"
-                            Location="@SelectedLocation"
-                            DataSetDefinitions="@DataSetDefinitions"
-                            RequestLocationChange="@ShowSelectLocationModal"
-                            OnOverviewShowOrHide="@OnOverviewShowHide"
-                            OnYearFilterChange="@HandleOnYearFilterChange" />
-            </div>
-
-            <div style="clear: both;"></div>
+    <div>
+        <div class="map-space-reserver" id="mapContainerContainer">
+            <MapContainer @ref="mapContainer"
+                Locations="@Locations"
+                OnLocationChange="@SelectedLocationChanged"
+                LocationCoordinates="@LocationCoordinates"></MapContainer>
         </div>
-    }
 
+        <div class="location-info-container">
+            <LocationInfo
+                        Location="@SelectedLocation"
+                        DataSetDefinitions="@DataSetDefinitions"
+                        RequestLocationChange="@ShowSelectLocationModal"
+                        OnOverviewShowOrHide="@OnOverviewShowHide"
+                        OnYearFilterChange="@HandleOnYearFilterChange" />
+        </div>
+
+        <div style="clear: both;"></div>
+    </div>
 
     <ChartView @ref="chartView"
                BuildDataSetsEvent="@BuildDataSets"
