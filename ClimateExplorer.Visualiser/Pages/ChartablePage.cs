@@ -1,10 +1,12 @@
-﻿using ClimateExplorer.Core.Infrastructure;
+﻿using Blazorise;
+using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Visualiser.Services;
 using ClimateExplorer.Visualiser.Shared;
 using ClimateExplorer.Visualiser.UiLogic;
 using ClimateExplorer.Visualiser.UiModel;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
@@ -25,16 +27,28 @@ public abstract partial class ChartablePage : ComponentBase
 
     protected string baseUrl = "location";
 
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    if (DataService == null)
-    //    {
-    //        throw new NullReferenceException(nameof(DataService));
-    //    }
-    //    DataSetDefinitions = (await DataService.GetDataSetDefinitions()).ToList();
-    //}
+    Guid _componentInstanceId = Guid.NewGuid();
 
-    protected async Task<bool> BuildDataSets()
+    protected IEnumerable<Location> Locations { get; set; }
+
+    protected Modal addDataSetModal { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Logger.LogInformation("Instance " + _componentInstanceId + " OnInitializedAsync");
+
+        NavManager.LocationChanged += HandleNavigationLocationChanged;
+
+        if (DataService == null)
+        {
+            throw new NullReferenceException(nameof(DataService));
+        }
+        DataSetDefinitions = (await DataService.GetDataSetDefinitions()).ToList();
+
+        Locations = new List<Location>();
+    }
+
+    protected async Task BuildDataSets()
     {
         // This method is called whenever anything has occurred that may require the chart to
         // be re-rendered.
@@ -80,8 +94,6 @@ public abstract partial class ChartablePage : ComponentBase
         string currentUri = NavManager.Uri;
         string newUri = NavManager.ToAbsoluteUri(url).ToString();
 
-        var updateViews = false;
-
         if (currentUri != newUri)
         {
             l.LogInformation("Because the URI reflecting current UI state is different to the URI we're currently at, triggering navigation. After navigation occurs, the UI state will update accordingly.");
@@ -103,13 +115,19 @@ public abstract partial class ChartablePage : ComponentBase
             // Render the series
             await chartView.HandleRedraw();
 
-            updateViews = true;
+            await UpdateOtherViews();
         }
 
         l.LogInformation("leaving");
-
-        return updateViews;
     }
+
+    public void Dispose()
+    {
+        Logger.LogInformation("Instance " + _componentInstanceId + " disposing");
+        NavManager.LocationChanged -= HandleNavigationLocationChanged;
+    }
+
+    protected abstract Task UpdateOtherViews();
 
     protected async Task NavigateTo(string uri, bool replace = false)
     {
@@ -120,5 +138,73 @@ public abstract partial class ChartablePage : ComponentBase
         await JsRuntime.InvokeVoidAsync("willSkipScrollTo", true);
 
         NavManager.NavigateTo(uri, false, replace);
+    }
+
+    void HandleNavigationLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        Logger.LogInformation("Instance " + _componentInstanceId + " HandleLocationChanged: " + NavManager.Uri);
+
+        // The URL changed. Update UI state to reflect what's in the URL.
+        InvokeAsync(UpdateUiStateBasedOnQueryString);
+    }
+
+    async Task UpdateUiStateBasedOnQueryString()
+    {
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier))
+        {
+            try
+            {
+                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger, csdSpecifier, DataSetDefinitions, Locations);
+
+                if (csdList.Any())
+                {
+                    chartView.SelectedBinGranularity = csdList.First().BinGranularity;
+                }
+
+                Logger.LogInformation("Setting ChartSeriesList to list with " + csdList.Count + " items");
+
+                chartView.ChartSeriesList = csdList.ToList();
+
+                await BuildDataSets();
+
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+            }
+        }
+    }
+
+    protected async Task OnDownloadDataClicked(DataDownloadPackage dataDownloadPackage)
+    {
+        var fileStream = Exporter.ExportChartData(Logger, Locations, dataDownloadPackage, NavManager.Uri.ToString());
+
+        var locationNames = dataDownloadPackage.ChartSeriesWithData.SelectMany(x => x.ChartSeries.SourceSeriesSpecifications).Select(x => x.LocationName).Where(x => x != null).Distinct().ToArray();
+
+        var fileName = locationNames.Any() ? string.Join("-", locationNames) + "-" : "";
+
+        fileName = $"Export-{fileName}-{dataDownloadPackage.BinGranularity}-{dataDownloadPackage.Bins.First().Label}-{dataDownloadPackage.Bins.Last().Label}.csv";
+
+        using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+        await JsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+    }
+
+    protected Task ShowAddDataSetModal()
+    {
+        return addDataSetModal.Show();
+    }
+
+    protected async Task OnAddDataSet(DataSetLibraryEntry dle)
+    {
+        await chartView.OnAddDataSet(dle, DataSetDefinitions);
+    }
+
+    protected async Task OnChartPresetSelected(List<ChartSeriesDefinition> chartSeriesDefinitions)
+    {
+        await chartView.OnChartPresetSelected(chartSeriesDefinitions);
     }
 }

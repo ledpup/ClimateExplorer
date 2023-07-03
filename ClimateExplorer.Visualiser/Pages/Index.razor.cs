@@ -27,33 +27,22 @@ public partial class Index : ChartablePage
     Guid SelectedLocationId { get; set; }
     Location _selectedLocation { get; set; }
     Location PreviousLocation { get; set; }
-    IEnumerable<Location> Locations { get; set; }
-    Guid _componentInstanceId = Guid.NewGuid();
+    
 
     string? BrowserLocationErrorMessage { get; set; }
 
     [Inject] Blazored.LocalStorage.ILocalStorageService? LocalStorage { get; set; }
 
     bool setupDefaultChartSeries;
+    Guid oldLocationId = Guid.Empty;
 
-    Modal addDataSetModal { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        Logger.LogInformation("Instance " + _componentInstanceId + " OnInitializedAsync");
-
-        NavManager.LocationChanged += HandleLocationChanged;
-
-        if (DataService == null)
-        {
-            throw new NullReferenceException(nameof(DataService));
-        }
-        DataSetDefinitions = (await DataService.GetDataSetDefinitions()).ToList();
+        await base.OnInitializedAsync();
 
         Locations = (await DataService.GetLocations(includeNearbyLocations: true, includeWarmingMetrics: true)).ToList();
 
         setupDefaultChartSeries = true;
-
-        await base.OnInitializedAsync();
     }
 
     protected override async Task OnParametersSetAsync()
@@ -88,10 +77,10 @@ public partial class Index : ChartablePage
             setupDefaultChartSeries = false;
             await SelectedLocationChanged(Guid.Parse(LocationId));
         }
-        else
+        else if (oldLocationId != locationId)
         {
-
             await SelectedLocationChangedInternal(locationId);
+            oldLocationId = locationId;
         }
         
         await base.OnParametersSetAsync();
@@ -168,11 +157,7 @@ public partial class Index : ChartablePage
 
 
 
-    public void Dispose()
-    {
-        Logger.LogInformation("Instance " + _componentInstanceId + " disposing");
-        NavManager.LocationChanged -= HandleLocationChanged;
-    }
+
 
     string GetPageTitle()
     {
@@ -190,16 +175,6 @@ public partial class Index : ChartablePage
         await chartView.HandleOnYearFilterChange(yearAndDataTypeFilter);
     }
 
-    private Task ShowAddDataSetModal()
-    {
-        return addDataSetModal.Show();
-    }
-
-    async Task OnAddDataSet(DataSetLibraryEntry dle)
-    {
-        await chartView.OnAddDataSet(dle, DataSetDefinitions);
-    }
-
     private async Task OnOverviewShowHide(bool isOverviewVisible)
     {
         await JsRuntime.InvokeVoidAsync("showOrHideMap", isOverviewVisible);
@@ -208,11 +183,6 @@ public partial class Index : ChartablePage
     private Task ShowSelectLocationModal()
     {
         return selectLocationModal.Show();
-    }
-
-    async Task OnChartPresetSelected(List<ChartSeriesDefinition> chartSeriesDefinitions)
-    {
-        await chartView.OnChartPresetSelected(chartSeriesDefinitions);
     }
 
     Location SelectedLocation
@@ -232,44 +202,6 @@ public partial class Index : ChartablePage
         }
     }
     Coordinates LocationCoordinates;
-
-    void HandleLocationChanged(object sender, LocationChangedEventArgs e)
-    {
-        Logger.LogInformation("Instance " + _componentInstanceId + " HandleLocationChanged: " + NavManager.Uri);
-
-        // The URL changed. Update UI state to reflect what's in the URL.
-        InvokeAsync(UpdateUiStateBasedOnQueryString);
-    }
-
-    async Task UpdateUiStateBasedOnQueryString()
-    {
-        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
-
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier))
-        {
-            try
-            {
-                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger, csdSpecifier, DataSetDefinitions, Locations);
-
-                if (csdList.Any())
-                {
-                    chartView.SelectedBinGranularity = csdList.First().BinGranularity;
-                }
-
-                Logger.LogInformation("Setting ChartSeriesList to list with " + csdList.Count + " items");
-
-                chartView.ChartSeriesList = csdList.ToList();
-
-                await BuildDataSets();
-
-                StateHasChanged();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.ToString());
-            }
-        }
-    }
 
     async Task SelectedLocationChanged(Guid locationId)
     {
@@ -428,9 +360,12 @@ public partial class Index : ChartablePage
 
         chartView.ChartSeriesList = draftList.CreateNewListWithoutDuplicates();
 
-        var updateMap = await BuildDataSets();
+        await BuildDataSets();
+    }
 
-        if (updateMap && SelectedLocation != null && mapContainer != null)
+    protected override async Task UpdateOtherViews()
+    {
+        if (SelectedLocation != null && mapContainer != null)
         {
             await mapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
         }
@@ -477,20 +412,5 @@ public partial class Index : ChartablePage
         {
             await SelectedLocationChanged(locationId.Value);
         }
-    }
-
-    private async Task OnDownloadDataClicked(DataDownloadPackage dataDownloadPackage)
-    { 
-        var fileStream = Exporter.ExportChartData(Logger, Locations, dataDownloadPackage, NavManager.Uri.ToString());
-
-        var locationNames = dataDownloadPackage.ChartSeriesWithData.SelectMany(x => x.ChartSeries.SourceSeriesSpecifications).Select(x => x.LocationName).Where(x => x != null).Distinct().ToArray();
-
-        var fileName = locationNames.Any() ? string.Join("-", locationNames) + "-" : "";
-
-        fileName = $"Export-{fileName}-{dataDownloadPackage.BinGranularity}-{dataDownloadPackage.Bins.First().Label}-{dataDownloadPackage.Bins.Last().Label}.csv";
-
-        using var streamRef = new DotNetStreamReference(stream: fileStream);
-
-        await JsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 }
