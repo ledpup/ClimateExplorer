@@ -121,34 +121,4 @@ public abstract partial class ChartablePage : ComponentBase
 
         NavManager.NavigateTo(uri, false, replace);
     }
-
-    //protected async Task UpdateUiStateBasedOnQueryString()
-    //{
-    //    var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
-
-    //    if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier))
-    //    {
-    //        try
-    //        {
-    //            var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger, csdSpecifier, DataSetDefinitions, Locations);
-
-    //            if (csdList.Any())
-    //            {
-    //                chartView.SelectedBinGranularity = csdList.First().BinGranularity;
-    //            }
-
-    //            Logger.LogInformation("Setting ChartSeriesList to list with " + csdList.Count + " items");
-
-    //            chartView.ChartSeriesList = csdList.ToList();
-
-    //            await BuildDataSets();
-
-    //            StateHasChanged();
-    //        }
-    //        catch (Exception ex)
-    //        {
-    //            Logger.LogError(ex.ToString());
-    //        }
-    //    }
-    //}
 }

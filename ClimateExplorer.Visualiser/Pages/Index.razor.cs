@@ -86,13 +86,14 @@ public partial class Index : ChartablePage
         {
             SetUpDefaultCharts(locationId);
             setupDefaultChartSeries = false;
+            await SelectedLocationChanged(Guid.Parse(LocationId));
         }
+        else
+        {
 
-        // Pick up parameters from querystring
-        await UpdateUiStateBasedOnQueryString();
-
-        await SelectedLocationChangedInternal(locationId);
-
+            await SelectedLocationChangedInternal(locationId);
+        }
+        
         await base.OnParametersSetAsync();
     }
 
@@ -474,7 +475,7 @@ public partial class Index : ChartablePage
         var locationId = await GetCurrentLocation();
         if (locationId != null)
         {
-            await SelectedLocationChangedInternal(locationId.Value);
+            await SelectedLocationChanged(locationId.Value);
         }
     }
 
