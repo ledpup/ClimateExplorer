@@ -130,10 +130,10 @@ public partial class ChartView
         SliderMax = DateTime.Now.Year;
     }
 
-    protected override async Task OnParametersSetAsync()
-    {
-        ChartSeriesWithData = ChartSeriesWithData;
-    }
+    //protected override async Task OnParametersSetAsync()
+    //{
+    //    ChartSeriesWithData = ChartSeriesWithData;
+    //}
 
     async Task ShowFilterModal()
     {

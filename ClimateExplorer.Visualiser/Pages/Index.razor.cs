@@ -237,7 +237,7 @@ public partial class Index : ChartablePage
         Logger.LogInformation("Instance " + _componentInstanceId + " HandleLocationChanged: " + NavManager.Uri);
 
         // The URL changed. Update UI state to reflect what's in the URL.
-        base.InvokeAsync(UpdateUiStateBasedOnQueryString);
+        InvokeAsync(UpdateUiStateBasedOnQueryString);
     }
 
     async Task UpdateUiStateBasedOnQueryString()
