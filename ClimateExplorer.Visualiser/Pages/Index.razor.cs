@@ -114,6 +114,8 @@ public partial class Index : IDisposable
 <p><strong>Clear override</strong>: this will reset the settings back to their default (14 days at 70% threshold). Only appears after applying your settings.</p>";
 
     private Modal popup, popupAggregationOptionsInfoText;
+
+    public bool ChartLoadingIndicatorVisible;
     private Task ShowChartOptionsInfo()
     {
         if (!string.IsNullOrWhiteSpace(PopupText))
@@ -135,6 +137,8 @@ public partial class Index : IDisposable
     protected override async Task OnInitializedAsync()
     {
         Logger.LogInformation("Instance " + _componentInstanceId + " OnInitializedAsync");
+
+        ChartLoadingIndicatorVisible = true;
 
         IsMobileDevice = await BlazorCurrentDeviceService.Mobile();
 
@@ -555,6 +559,8 @@ public partial class Index : IDisposable
 
     async Task UpdateUiStateBasedOnQueryString()
     {
+        ChartLoadingIndicatorVisible = true;
+
         var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
 
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier))
@@ -968,6 +974,9 @@ public partial class Index : IDisposable
         }
 
         chartRenderedFirstTime = true;
+
+        // TODO: uncomment when indicator working
+        //ChartLoadingIndicatorVisible = false;
 
         l.LogInformation("Leaving");
     }
