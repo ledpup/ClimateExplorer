@@ -13,7 +13,7 @@ using Microsoft.JSInterop;
 
 namespace ClimateExplorer.Visualiser.Pages;
 
-public abstract partial class ChartablePage : ComponentBase
+public abstract partial class ChartablePage : ComponentBase, IDisposable
 {
     [Inject] protected IDataService DataService { get; set; }
     [Inject] protected NavigationManager NavManager { get; set; }
@@ -25,7 +25,7 @@ public abstract partial class ChartablePage : ComponentBase
 
     protected ChartView chartView;
 
-    protected string baseUrl = "location";
+    protected string pageName;
 
     Guid _componentInstanceId = Guid.NewGuid();
 
@@ -87,7 +87,7 @@ public abstract partial class ChartablePage : ComponentBase
         // Recalculate the URL
         string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(chartView.ChartSeriesList);
 
-        string url = baseUrl;
+        string url = pageName;
 
         if (chartSeriesUrlComponent.Length > 0) url += "?csd=" + chartSeriesUrlComponent;
 
@@ -115,7 +115,7 @@ public abstract partial class ChartablePage : ComponentBase
             // Render the series
             await chartView.HandleRedraw();
 
-            await UpdateOtherViews();
+            await UpdateComponents();
         }
 
         l.LogInformation("leaving");
@@ -127,7 +127,7 @@ public abstract partial class ChartablePage : ComponentBase
         NavManager.LocationChanged -= HandleNavigationLocationChanged;
     }
 
-    protected abstract Task UpdateOtherViews();
+    protected abstract Task UpdateComponents();
 
     protected async Task NavigateTo(string uri, bool replace = false)
     {

@@ -3,7 +3,8 @@ using ClimateExplorer.Analyser.Bom;
 using ClimateExplorer.Analyser.Greenland;
 using ClimateExplorer.Analyser.Niwa;
 using ClimateExplorer.Analyser.StaticContent;
-using System.Xml;
+
+var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
 
 var httpClient = new HttpClient();
 var userAgent = "Mozilla /5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
@@ -17,7 +18,6 @@ await BuildStaticContent.GenerateIndexFiles();
 
 await GreenlandApiClient.GetMeltDataAndSave(httpClient);
 
-var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
 var referenceDataDefintions = dataSetDefinitions
     .Where(x =>
             !string.IsNullOrEmpty(x.DataDownloadUrl)

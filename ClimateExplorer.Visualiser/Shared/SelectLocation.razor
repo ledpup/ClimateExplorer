@@ -5,14 +5,14 @@
 <Modal @ref="modal">
     <ModalContent>
         <ModalHeader Background="Background.Light">
-            <ModalTitle>Select Location</ModalTitle>
+            <ModalTitle>Select location</ModalTitle>
             <CloseButton />
         </ModalHeader>
         <ModalBody>
             @if (SelectedLocation != null)
             {
                 <Field>
-                    Current Location: @SelectedLocation.Name
+                    Current location: <Strong>@SelectedLocation.Name</Strong>
                 </Field>
             }
             <Field>

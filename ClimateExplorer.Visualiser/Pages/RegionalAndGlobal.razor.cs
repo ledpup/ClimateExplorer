@@ -15,18 +15,15 @@ public partial class RegionalAndGlobal : ChartablePage
 {
     public RegionalAndGlobal()
     {
-        baseUrl = "/regionalandglobal";
+        pageName = "regionalandglobal";
     }
     
     Modal addDataSetModal { get; set; }
 
-    public void Dispose()
+    void IDisposable.Dispose()
     {
-        //Logger.LogInformation("Instance " + _componentInstanceId + " disposing");
-        //   NavManager.LocationChanged -= HandleLocationChanged;
+        Dispose();
     }
-
-
 
     string GetPageTitle()
     {
@@ -44,7 +41,7 @@ public partial class RegionalAndGlobal : ChartablePage
         return addDataSetModal.Show();
     }
 
-    protected override async Task UpdateOtherViews()
+    protected override async Task UpdateComponents()
     {
     }
 }

@@ -203,7 +203,7 @@ public partial class ChartView
 
         ChartSeriesList = chartSeriesDefinitions.ToList();
 
-        await BuildDataSetsEvent.InvokeAsync();
+        await BuildDataSets();
     }
 
     public async Task<List<SeriesWithData>> RetrieveDataSets(List<ChartSeriesDefinition> chartSeriesList)
@@ -471,7 +471,7 @@ public partial class ChartView
 
             RebuildChartSeriesListToReflectSelectedYears();
 
-            await BuildDataSetsEvent.InvokeAsync();
+            await BuildDataSets();
             return;
         }
 
@@ -490,7 +490,7 @@ public partial class ChartView
         await InvokeAsync(StateHasChanged);
         RebuildChartSeriesListToReflectSelectedYears();
 
-        await BuildDataSetsEvent.InvokeAsync();
+        await BuildDataSets();
     }
 
     void RebuildChartSeriesListToReflectSelectedYears()
@@ -803,7 +803,7 @@ public partial class ChartView
 
         if (rebuildDataSets)
         {
-            await BuildDataSetsEvent.InvokeAsync();
+            await BuildDataSets();
         }
     }
 
@@ -817,7 +817,7 @@ public partial class ChartView
         UserOverridePresetAggregationSettings = true;
         InternalGroupingThreshold = float.Parse(GroupingThresholdText) / 100;
         SelectedDayGrouping = SelectingDayGrouping == 0 ? SelectedDayGrouping : SelectingDayGrouping;
-        await BuildDataSetsEvent.InvokeAsync();
+        await BuildDataSets();
     }
 
     private string GetGroupingThresholdText()
@@ -887,7 +887,7 @@ public partial class ChartView
             )
             .ToList();
 
-        await BuildDataSetsEvent.InvokeAsync();
+        await BuildDataSets();
     }
 
     async Task ShowRangeSliderChanged(bool? value)
@@ -964,7 +964,7 @@ public partial class ChartView
     async Task ClearUserAggregationOverride()
     {
         UserOverridePresetAggregationSettings = false;
-        await BuildDataSetsEvent.InvokeAsync();
+        await BuildDataSets();
     }
 
     private void SetStartAndEndYears(List<SeriesWithData> chartSeriesWithData)

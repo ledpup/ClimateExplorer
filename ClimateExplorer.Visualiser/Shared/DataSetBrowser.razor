@@ -43,7 +43,7 @@
                 segments.Add("Temperature");
                 segments.Add("Daily maximum");
 
-                if (dsd.MeasurementDefinitions.Count(x => x.DataType == DataType.TempMax) > 1)
+                if (md.DataAdjustment != null)
                 {
                     segments.Add(md.DataAdjustment.ToString());
                 }
@@ -54,7 +54,7 @@
                 segments.Add("Temperature");
                 segments.Add("Daily minimum");
 
-                if (dsd.MeasurementDefinitions.Count(x => x.DataType == DataType.TempMax) > 1)
+                if (md.DataAdjustment != null)
                 {
                     segments.Add(md.DataAdjustment.ToString());
                 }

@@ -1,4 +1,5 @@
 ﻿@page "/regionalandglobal"
+@implements IDisposable
 
 @using Blazorise
 @using static ClimateExplorer.Visualiser.Shared.Collapsible;
@@ -9,7 +10,7 @@
 <PageTitle>@GetPageTitle()</PageTitle>
 
 <div style="flex-grow: 0">
-    <Collapsible Title="Suggested charts" InitiallyShown="false" ShowTitleWhenExpanded="false" ContentLayoutType="CollapserContentLayoutTypes.FlexboxRow">
+    <Collapsible Title="Suggested charts" InitiallyShown="true" ShowTitleWhenExpanded="false" ContentLayoutType="CollapserContentLayoutTypes.FlexboxRow">
         <Content>
             <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" OnChartPresetSelected="@OnChartPresetSelected" ExpandUpwards="false" PresetType="PresetTypes.RegionalAndGlobal"></SuggestedCharts>
         </Content>

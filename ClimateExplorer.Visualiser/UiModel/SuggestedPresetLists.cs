@@ -348,6 +348,12 @@ public static class SuggestedPresetLists
         var southSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.SouthSeaIce, null, false, throwIfNoMatch: true);
         var greenland = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.GreenlandIceMelt, null, false, throwIfNoMatch: true);
 
+        var nino34 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.Nino34, null, false, throwIfNoMatch: true);
+        var oni = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.ONI, null, false, throwIfNoMatch: true);
+        var soi = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.SOI, null, false, throwIfNoMatch: true);
+        var mei = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.MEIv2, null, false, throwIfNoMatch: true);
+        var iod = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.IOD, null, false, throwIfNoMatch: true);
+
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
@@ -463,7 +469,7 @@ public static class SuggestedPresetLists
                                         Value = SeriesValueOptions.Value,
                                         Year = null,
                                         DisplayStyle = SeriesDisplayStyle.Line,
-                                        RequestedColour = UiLogic.Colours.Blue,
+                                        RequestedColour = UiLogic.Colours.Purple,
                                         GroupingThreshold = 0.1f,
                                     },
                                     new ChartSeriesDefinition()
@@ -504,6 +510,112 @@ public static class SuggestedPresetLists
                                                     DisplayStyle = SeriesDisplayStyle.Line,
                                                     RequestedColour = UiLogic.Colours.Blue,
                                                 },
+                                            }
+                                    },
+                                },
+            }
+        );
+
+        suggestedPresets.Add(
+            new SuggestedChartPresetModelWithVariants()
+            {
+                Title = "ENSO + IOD",
+                Description = "The El Niño Southern Oscillation (ENSO) and Indian Ocean Dipole (IOD) are sea surface temperature anomalies.",
+                ChartSeriesList =
+                            new List<ChartSeriesDefinition>()
+                            {
+                                    new ChartSeriesDefinition()
+                                    {
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, nino34),
+                                        Aggregation = SeriesAggregationOptions.Mean,
+                                        BinGranularity = BinGranularities.ByYearAndMonth,
+                                        Smoothing = SeriesSmoothingOptions.None,
+                                        SmoothingWindow = 10,
+                                        Value = SeriesValueOptions.Value,
+                                        Year = null,
+                                        DisplayStyle = SeriesDisplayStyle.Line,
+                                        RequestedColour = UiLogic.Colours.Blue,
+                                        GroupingThreshold = 0.1f,
+                                    },
+                                    new ChartSeriesDefinition()
+                                    {
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, iod),
+                                        Aggregation = SeriesAggregationOptions.Mean,
+                                        BinGranularity = BinGranularities.ByYearAndMonth,
+                                        Smoothing = SeriesSmoothingOptions.None,
+                                        SmoothingWindow = 10,
+                                        Value = SeriesValueOptions.Value,
+                                        Year = null,
+                                        DisplayStyle = SeriesDisplayStyle.Line,
+                                        RequestedColour = UiLogic.Colours.Orange,
+                                        GroupingThreshold = 0.1f,
+                                    },
+                            },
+                Variants = new List<SuggestedChartPresetModel>()
+                                {
+                                    new SuggestedChartPresetModel()
+                                    {
+                                        Title = "All ENSO",
+                                        Description = "Nino 3.4, ONI, an inverted SOI, and MEI v2",
+                                        ChartSeriesList =
+                                            new List<ChartSeriesDefinition>()
+                                            {
+                                                    new ChartSeriesDefinition()
+                                                    {
+                                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, nino34),
+                                                        Aggregation = SeriesAggregationOptions.Mean,
+                                                        BinGranularity = BinGranularities.ByYearAndMonth,
+                                                        Smoothing = SeriesSmoothingOptions.None,
+                                                        SmoothingWindow = 10,
+                                                        Value = SeriesValueOptions.Value,
+                                                        Year = null,
+                                                        DisplayStyle = SeriesDisplayStyle.Line,
+                                                        RequestedColour = UiLogic.Colours.Blue,
+                                                        GroupingThreshold = 0.1f,
+                                                    },
+                                                    new ChartSeriesDefinition()
+                                                    {
+                                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, oni),
+                                                        Aggregation = SeriesAggregationOptions.Mean,
+                                                        BinGranularity = BinGranularities.ByYearAndMonth,
+                                                        Smoothing = SeriesSmoothingOptions.None,
+                                                        SmoothingWindow = 10,
+                                                        Value = SeriesValueOptions.Value,
+                                                        Year = null,
+                                                        DisplayStyle = SeriesDisplayStyle.Line,
+                                                        GroupingThreshold = 0.1f,
+                                                    },
+                                                    new ChartSeriesDefinition()
+                                                    {
+                                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, soi),
+                                                        Aggregation = SeriesAggregationOptions.Mean,
+                                                        BinGranularity = BinGranularities.ByYearAndMonth,
+                                                        Smoothing = SeriesSmoothingOptions.None,
+                                                        SmoothingWindow = 10,
+                                                        Value = SeriesValueOptions.Value,
+                                                        Year = null,
+                                                        DisplayStyle = SeriesDisplayStyle.Line,
+                                                        GroupingThreshold = 0.1f,
+                                                        SeriesTransformation = SeriesTransformations.Negate,
+                                                    },
+                                                    new ChartSeriesDefinition()
+                                                    {
+                                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, mei),
+                                                        Aggregation = SeriesAggregationOptions.Mean,
+                                                        BinGranularity = BinGranularities.ByYearAndMonth,
+                                                        Smoothing = SeriesSmoothingOptions.None,
+                                                        SmoothingWindow = 10,
+                                                        Value = SeriesValueOptions.Value,
+                                                        Year = null,
+                                                        DisplayStyle = SeriesDisplayStyle.Line,
+                                                        GroupingThreshold = 0.1f,
+                                                    },
                                             }
                                     },
                                 },

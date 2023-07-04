@@ -1,14 +1,9 @@
 ﻿using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Visualiser.Shared;
-using ClimateExplorer.Visualiser.UiLogic;
 using ClimateExplorer.Visualiser.UiModel;
-using Blazorise;
 using ClimateExplorer.Core.DataPreparation;
-using ClimateExplorer.Core.Infrastructure;
-using ClimateExplorer.Visualiser.Services;
 using DPBlazorMapLibrary;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
@@ -20,21 +15,23 @@ public partial class Index : ChartablePage
 {
     [Parameter]
     public string LocationId { get; set; }
-
     SelectLocation selectLocationModal { get; set; }
     MapContainer mapContainer { get; set; }
 
     Guid SelectedLocationId { get; set; }
     Location _selectedLocation { get; set; }
     Location PreviousLocation { get; set; }
-    
-
     string? BrowserLocationErrorMessage { get; set; }
 
     [Inject] Blazored.LocalStorage.ILocalStorageService? LocalStorage { get; set; }
 
     bool setupDefaultChartSeries;
     Guid oldLocationId = Guid.Empty;
+
+    public Index()
+    {
+        pageName = "location";
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -155,10 +152,6 @@ public partial class Index : ChartablePage
         }
     }
 
-
-
-
-
     string GetPageTitle()
     {
         var locationText = SelectedLocation == null ? "" : " - " + SelectedLocation.Name;
@@ -205,7 +198,12 @@ public partial class Index : ChartablePage
 
     async Task SelectedLocationChanged(Guid locationId)
     {
-        await NavigateTo("/location/" + locationId.ToString());
+        await NavigateTo($"/{pageName}/" + locationId.ToString());
+    }
+
+    void IDisposable.Dispose()
+    {
+        Dispose();
     }
 
     async Task SelectedLocationChangedInternal(Guid newValue)
@@ -363,7 +361,7 @@ public partial class Index : ChartablePage
         await BuildDataSets();
     }
 
-    protected override async Task UpdateOtherViews()
+    protected override async Task UpdateComponents()
     {
         if (SelectedLocation != null && mapContainer != null)
         {
