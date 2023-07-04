@@ -148,7 +148,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         InvokeAsync(UpdateUiStateBasedOnQueryString);
     }
 
-    async Task UpdateUiStateBasedOnQueryString()
+    protected async Task UpdateUiStateBasedOnQueryString()
     {
         var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
 

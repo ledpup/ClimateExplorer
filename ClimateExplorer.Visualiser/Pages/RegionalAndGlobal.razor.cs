@@ -25,11 +25,14 @@ public partial class RegionalAndGlobal : ChartablePage
         Dispose();
     }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        await UpdateUiStateBasedOnQueryString();
+    }
+    
     string GetPageTitle()
     {
-        //var locationText = SelectedLocation == null ? "" : " - " + SelectedLocation.Name;
-
-        string title = $"ClimateExplorer";// {locationText}";
+        string title = $"ClimateExplorer";
 
         Logger.LogInformation("GetPageTitle() returning '" + title + "' NavigateTo");
 
