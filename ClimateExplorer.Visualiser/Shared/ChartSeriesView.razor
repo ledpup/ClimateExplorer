@@ -208,12 +208,20 @@
 
     string StyleForTitleBar { get; set; }
 
+    bool applyStyle;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        applyStyle = true;
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (applyStyle)
         {
             StyleForTitleBar = GenerateStyleForTitleBar();
             StateHasChanged();
+            applyStyle = false;
         }
     }
 
