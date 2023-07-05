@@ -66,7 +66,7 @@ For example, rainfall data starts in 1870 and temperature data starts in 1910. C
         }
 
 
-        protected override async Task OnParametersSetAsync()
+        protected override void OnParametersSet()
         {
             SelectedStartYearInternal = SelectedStartYear;
             SelectedEndYearInternal = SelectedEndYear;
