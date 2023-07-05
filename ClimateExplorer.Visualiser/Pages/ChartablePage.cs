@@ -150,6 +150,11 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     protected async Task UpdateUiStateBasedOnQueryString()
     {
+        await UpdateUiStateBasedOnQueryString(true);
+    }
+
+    protected async Task UpdateUiStateBasedOnQueryString(bool stateChanged)
+    {
         var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
 
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier))
@@ -169,7 +174,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
                 await BuildDataSets();
 
-                StateHasChanged();
+                if (stateChanged) StateHasChanged();
             }
             catch (Exception ex)
             {
