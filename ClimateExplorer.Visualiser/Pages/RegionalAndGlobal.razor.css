@@ -1,0 +1,5 @@
+﻿@media only screen and (min-width: 1000px) {
+    .chart-container {
+        flex-direction: column;
+    }
+}

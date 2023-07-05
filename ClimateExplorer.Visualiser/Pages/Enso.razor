@@ -300,10 +300,6 @@
         await Rebuild();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-    }
-
     async Task HandleRedraw()
     {
         if (EnsoData == null || chart == null)

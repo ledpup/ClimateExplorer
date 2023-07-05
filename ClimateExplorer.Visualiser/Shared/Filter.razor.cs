@@ -44,12 +44,12 @@ For example, rainfall data starts in 1870 and temperature data starts in 1910. C
 <p><strong>Range slider</strong>: allows you to graphically increase and decrease the start and end year; or, by moving the slider within the extents, it allows you to change both start and end years at the same time, changing the range of years on the chart. For example, you could filter to only 30 years of data, between 1910 and 1940, then move the slider to another set of 30 years, between 1940 and 1970.</p>
 <p><strong>Dynamically set the start year of the chart to be the most recent start year across all the datasets on the chart</strong>: when this is checked, the start year for the chart will be the last start year found across the datasets. For example, Canberra's temperature records start in 1914. Canberra's rainfall records start in 1924. With the option checked, the chart will start in 1924 because that's the latest start year. The start year for the chart will dynamically adjust to whatever datasets are selected for viewing. This option is checked by default.<p>";
 
-        private Modal popup;
+        private Modal InfoModal;
         private Task ShowYearFilteringInfo()
         {
             if (!string.IsNullOrWhiteSpace(PopupText))
             {
-                return popup.Show();
+                return InfoModal.Show();
             }
             return Task.CompletedTask;
         }
@@ -66,7 +66,7 @@ For example, rainfall data starts in 1870 and temperature data starts in 1910. C
         }
 
 
-        protected override async void OnParametersSet()
+        protected override void OnParametersSet()
         {
             SelectedStartYearInternal = SelectedStartYear;
             SelectedEndYearInternal = SelectedEndYear;

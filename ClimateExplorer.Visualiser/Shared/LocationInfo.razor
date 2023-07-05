@@ -9,7 +9,7 @@
 
 <Collapsible Title="@Location?.Name" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
     <HeaderContent>
-        <span class="chart-controls" style="margin-left: 32px;"><a class="chart-control" @onclick="() => ChangeLocationClicked(null)"><i class="fas fa-map"></i> Change Location</a></span>
+        <span class="chart-controls" style="margin-left: 32px;"><a class="chart-control" @onclick="() => ChangeLocationClicked(null)"><i class="fas fa-map"></i> Change location</a></span>
     </HeaderContent>
     <Content>
         @if (Location == null || MaxTempAnomalyRecords == null)
@@ -28,8 +28,8 @@
                 <OverviewField Label="Warming index" PopupText="@WarmingIndexDescription"><Value>@WarmingIndexAsString</Value></OverviewField>
             }
             <OverviewField Label="Heating score" PopupText="@HeatingScoreDescription"><Value>@Location.HeatingScore</Value></OverviewField>
-            <WarmingStripe LocationName=@Location.Name LocationTemperatureMean=@LocationTemperatureMean DataRecords="@MaxTempAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange/>
-            <WarmestYears DataRecords="@MaxTempAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
+            <WarmingStripe LocationName=@Location.Name LocationTemperatureMean=@LocationTemperatureMean DataRecords="@MaxTempAnomalyRecords" OnYearFilterChange="@HandleOnYearFilterChange" />
+            <WarmestYears DataRecords="@MaxTempAnomalyRecords" OnYearFilterChange="@HandleOnYearFilterChange" />
         }
     </Content>
 </Collapsible>

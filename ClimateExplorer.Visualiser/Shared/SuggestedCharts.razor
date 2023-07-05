@@ -1,19 +1,21 @@
-﻿@using ClimateExplorer.Core.ViewModel
+﻿@using Blazorise.SpinKit
+@using ClimateExplorer.Core.ViewModel
 @using ClimateExplorer.Visualiser.UiModel
 @using Blazorise
 @using Blazorise.Components
 @using Blazorise.Charts
 @using ClimateExplorer.Core.DataPreparation
+@using static ClimateExplorer.Visualiser.UiModel.SuggestedPresetLists;
 @using static ClimateExplorer.Core.Enums
 
-<div class="suggested-data-set-list">
-    @foreach (var s in SuggestedPresets)
-    {
-        @if (s.Title == "DIVIDER")
-        {
-            <div class="divider"></div>
-        }
-        else
+@if (DataSetDefinitions == null || (PresetType == PresetTypes.Location && SelectedLocation == null))
+{
+    <SpinKit Type="SpinKitType.Plane" />
+}
+else
+{
+    <div class="suggested-data-set-list">
+        @foreach (var s in SuggestedPresets)
         {
             @if (s.MenuExpanded)
             {
@@ -58,8 +60,8 @@
                 }
             </div>
         }
-    }
-</div>
+    </div>
+}
 
 @code {
     [Parameter]
@@ -73,6 +75,9 @@
 
     [Parameter]
     public bool ExpandUpwards { get; set; }
+
+    [Parameter]
+    public PresetTypes PresetType { get; set; }
 
     List<SuggestedChartPresetModelWithVariants> SuggestedPresets { get; set; }
 
@@ -89,492 +94,20 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        SuggestedPresets = new List<SuggestedChartPresetModelWithVariants>();
+        if (DataSetDefinitions == null)
+        {
+            return;
+        }
 
-        if (SelectedLocation == null) return;
-
-        var tempMax                        = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMax,        DataAdjustment.Adjusted,   true,  throwIfNoMatch: false);
-        var tempMaxUnadjusted              = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMax,        DataAdjustment.Unadjusted, false, throwIfNoMatch: false);
-        var tempMaxUnadjustedOrUnspecified = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMax,        DataAdjustment.Unadjusted, true,  throwIfNoMatch: false);
-        var rainfall                       = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.Rainfall,       null,                             throwIfNoMatch: false);
-        var solarRadiation                 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.SolarRadiation, null,                             throwIfNoMatch: false);
-        var tempMin                        = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMin,        DataAdjustment.Adjusted,   true,  throwIfNoMatch: false);
-        var tempMinUnadjusted              = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, SelectedLocation.Id, DataType.TempMin,        DataAdjustment.Unadjusted, false, throwIfNoMatch: false);
-
-        var nino34 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.Nino34, null, false, throwIfNoMatch: true);
-
-        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.CO2, null, false, throwIfNoMatch: true);
-        var ch4 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.CH4, null, false, throwIfNoMatch: true);
-        var n2o = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.N2O, null, false, throwIfNoMatch: true);
-
-        var northSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.NorthSeaIce, null, false, throwIfNoMatch: true);
-        var southSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.SouthSeaIce, null, false, throwIfNoMatch: true);
-        var greenland = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.GreenlandIceMelt, null, false, throwIfNoMatch: true);
-
-        SuggestedPresets.Add(
-            new SuggestedChartPresetModelWithVariants()
-            {
-                Title = "Temperature + rainfall",
-                Description = "Smoothed maximum daily temperature and rainfall",
-                ChartSeriesList =
-                new List<ChartSeriesDefinition>()
-                {
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
-                        Aggregation = SeriesAggregationOptions.Mean,
-                        BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                        SmoothingWindow = 20,
-                        Value = SeriesValueOptions.Value,
-                        Year = null
-                    },
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, rainfall),
-                        Aggregation = SeriesAggregationOptions.Sum,
-                        BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                        SmoothingWindow = 20,
-                        Value = SeriesValueOptions.Value,
-                        Year = null
-                    }
-                },
-                Variants = new List<SuggestedChartPresetModel> {
-                    new SuggestedChartPresetModelWithVariants()
-                    {
-                        Title = "ENSO + rainfall",
-                        Description = "Monthly chart of the Nino 3.4 index and rainfall",
-                        ChartSeriesList =
-                        new List<ChartSeriesDefinition>()
-                        {
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, rainfall),
-                                Aggregation = SeriesAggregationOptions.Sum,
-                                BinGranularity = BinGranularities.ByYearAndMonth,
-                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                SmoothingWindow = 3,
-                                Value = SeriesValueOptions.Value,
-                                Year = null,
-                                DisplayStyle = SeriesDisplayStyle.Line,
-                                SeriesTransformation = SeriesTransformations.Identity,
-                                RequestedColour = UiLogic.Colours.Green,
-                            },
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, nino34),
-                                Aggregation = SeriesAggregationOptions.Mean,
-                                BinGranularity = BinGranularities.ByYearAndMonth,
-                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                SmoothingWindow = 3,
-                                Value = SeriesValueOptions.Value,
-                                Year = null,
-                                DisplayStyle = SeriesDisplayStyle.Bar,
-                                SeriesTransformation = SeriesTransformations.Identity,
-                            },
-                        },
-                    },
-                    new SuggestedChartPresetModelWithVariants()
-                    {
-                        Title = "Days of rain",
-                        Description = "Number of rainy days, ≥ 1mm and ≥ 10mm; 20-year smoothing",
-                        ChartSeriesList =
-                            new List<ChartSeriesDefinition>()
-                            {
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, rainfall),
-                                        Aggregation = SeriesAggregationOptions.Sum,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 20,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null,
-                                        DisplayStyle = SeriesDisplayStyle.Line,
-                                        SeriesTransformation = SeriesTransformations.EqualOrAbove1,
-                                        RequestedColour = UiLogic.Colours.Blue,
-                                    },
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, rainfall),
-                                        Aggregation = SeriesAggregationOptions.Sum,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 20,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null,
-                                        DisplayStyle = SeriesDisplayStyle.Line,
-                                        SeriesTransformation = SeriesTransformations.EqualOrAbove10,
-                                        RequestedColour = UiLogic.Colours.Pink,
-                                    }
-                            },
-                        }
-                }
-            }
-        );
-
-        SuggestedPresets.Add(
-            new SuggestedChartPresetModelWithVariants()
-            {
-                Title = "Temperature anomaly",
-                Description = "Yearly average maximum daily temperatures relative to the average of the whole dataset",
-                ChartSeriesList =
-                    new List<ChartSeriesDefinition>()
-                    {
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
-                        Aggregation = SeriesAggregationOptions.Mean,
-                        BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 5,
-                        Value = SeriesValueOptions.Anomaly,
-                        Year = null,
-                        DisplayStyle = SeriesDisplayStyle.Bar
-                    }
-                },
-                Variants =
-                    new List<SuggestedChartPresetModel>()
-                    {
-                        new SuggestedChartPresetModel()
-                        {
-                            Title = "Temperature with trendline",
-                            Description = "Yearly view of average maximum daily temperature with a straight line, fit to the data",
-                            ChartSeriesList =
-                                new List<ChartSeriesDefinition>()
-                                {
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        ShowTrendline = true,
-                                        Smoothing = SeriesSmoothingOptions.None,
-                                        SmoothingWindow = 5,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null
-                                    }
-                                }
-                        },
-                        new SuggestedChartPresetModelWithVariants()
-                        {
-                            Title = "Adjusted vs raw temperature",
-                            Description = "Compare maximum temperature values that have been adjusted for abnormalities with raw values",
-                            ChartSeriesList =
-                            new List<ChartSeriesDefinition>()
-                            {
-                                new ChartSeriesDefinition()
-                                {
-                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
-                                    Aggregation = SeriesAggregationOptions.Mean,
-                                    BinGranularity = BinGranularities.ByYear,
-                                    ShowTrendline = false,
-                                    Smoothing = SeriesSmoothingOptions.None,
-                                    SmoothingWindow = 5,
-                                    Value = SeriesValueOptions.Value,
-                                    Year = null
-                                },
-                                new ChartSeriesDefinition()
-                                {
-                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMaxUnadjusted),
-                                    Aggregation = SeriesAggregationOptions.Mean,
-                                    BinGranularity = BinGranularities.ByYear,
-                                    ShowTrendline = false,
-                                    Smoothing = SeriesSmoothingOptions.None,
-                                    SmoothingWindow = 5,
-                                    Value = SeriesValueOptions.Value,
-                                    Year = null
-                                }
-                            },
-                        },
-                        new SuggestedChartPresetModel()
-                        {
-                            Title = "Temperature + solar radiation",
-                            Description = "Shows yearly solar radiation and maximum temperature averages",
-                            ChartSeriesList =
-                                new List<ChartSeriesDefinition>()
-                                {
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMaxUnadjustedOrUnspecified),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYearAndMonth,
-                                        ShowTrendline = false,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 3,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null
-                                    },
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, solarRadiation),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYearAndMonth,
-                                        ShowTrendline = false,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 3,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null,
-                                        RequestedColour = UiLogic.Colours.Green,
-                                    }
-                                }
-                        },
-                    }
-            }
-        );
-
-        SuggestedPresets.Add(
-            new SuggestedChartPresetModelWithVariants()
-                {
-                    Title = "Days of extremes",
-                    Description = "Number of frosty days (≤ 2.2°C) and days 35°C or above; 20-year smoothing",
-                    ChartSeriesList =
-                        new List<ChartSeriesDefinition>()
-                        {
-                        new ChartSeriesDefinition()
-                        {
-                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMax),
-                            Aggregation = SeriesAggregationOptions.Sum,
-                            BinGranularity = BinGranularities.ByYear,
-                            Smoothing = SeriesSmoothingOptions.MovingAverage,
-                            SmoothingWindow = 20,
-                            Value = SeriesValueOptions.Value,
-                            Year = null,
-                            DisplayStyle = SeriesDisplayStyle.Line,
-                            SeriesTransformation = SeriesTransformations.EqualOrAbove35,
-                        },
-                        new ChartSeriesDefinition()
-                        {
-                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMin),
-                            Aggregation = SeriesAggregationOptions.Sum,
-                            BinGranularity = BinGranularities.ByYear,
-                            Smoothing = SeriesSmoothingOptions.MovingAverage,
-                            SmoothingWindow = 20,
-                            Value = SeriesValueOptions.Value,
-                            Year = null,
-                            DisplayStyle = SeriesDisplayStyle.Line,
-                            SeriesTransformation = SeriesTransformations.IsFrosty,
-                        }
-                        },
-                    Variants = new List<SuggestedChartPresetModel>()
-                        {
-                        new SuggestedChartPresetModelWithVariants()
-                        {
-                            Title = "First and last day of frost",
-                            Description = "First and last day of the year that has temperature ≤ 2.2°C; 20-year smoothing",
-                            ChartSeriesList =
-                                new List<ChartSeriesDefinition>()
-                                {
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMin),
-                                        Aggregation = SeriesAggregationOptions.Minimum,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 20,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null,
-                                        DisplayStyle = SeriesDisplayStyle.Line,
-                                        SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
-                                    },
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(SelectedLocation, tempMin),
-                                        Aggregation = SeriesAggregationOptions.Maximum,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 20,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null,
-                                        DisplayStyle = SeriesDisplayStyle.Line,
-                                        SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
-                                    }
-                                }
-                        },
-                    }
-                }
-        );
-
-        SuggestedPresets.Add(new SuggestedChartPresetModelWithVariants() { Title = "DIVIDER" } );
-
-        SuggestedPresets.Add(
-            new SuggestedChartPresetModelWithVariants()
-                {
-                    Title = "Carbon dioxide annual change",
-                    Description = "Smoothed difference between current and previous year CO\u2082 maximums",
-                    ChartSeriesList =
-                    new List<ChartSeriesDefinition>()
-                    {
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, co2),
-                                Aggregation = SeriesAggregationOptions.Maximum,
-                                BinGranularity = BinGranularities.ByYear,
-                                SecondaryCalculation = SecondaryCalculationOptions.AnnualChange,
-                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                SmoothingWindow = 10,
-                                Value = SeriesValueOptions.Value,
-                                Year = null,
-                                DisplayStyle = SeriesDisplayStyle.Line,
-                                RequestedColour = UiLogic.Colours.Brown,
-                            },
-                    },
-                    Variants =
-                            new List<SuggestedChartPresetModel>()
-                            {
-                                new SuggestedChartPresetModel()
-                                {
-                                    Title = "Carbon dioxide (CO\u2082)",
-                                    Description = "Carbon dioxide records from the Mauna Loa Observatory since 1958. AKA The Keeling Curve",
-                                    ChartSeriesList =
-                                    new List<ChartSeriesDefinition>()
-                                    {
-                                            new ChartSeriesDefinition()
-                                            {
-                                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, co2),
-                                                Aggregation = SeriesAggregationOptions.Mean,
-                                                BinGranularity = BinGranularities.ByYearAndMonth,
-                                                Smoothing = SeriesSmoothingOptions.None,
-                                                SmoothingWindow = 5,
-                                                Value = SeriesValueOptions.Value,
-                                                Year = null,
-                                                DisplayStyle = SeriesDisplayStyle.Line,
-                                                RequestedColour = UiLogic.Colours.Brown,
-                                            },
-                                    },
-                                },
-                                new SuggestedChartPresetModel()
-                                {
-                                    Title = "Methane (CH\u2084)",
-                                    Description = "NOAA's Earth System Research Laboratory has measured methane since 1983",
-                                    ChartSeriesList =
-                                        new List<ChartSeriesDefinition>()
-                                        {
-                                            new ChartSeriesDefinition()
-                                            {
-                                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, ch4),
-                                                Aggregation = SeriesAggregationOptions.Mean,
-                                                BinGranularity = BinGranularities.ByYearAndMonth,
-                                                Smoothing = SeriesSmoothingOptions.None,
-                                                SmoothingWindow = 5,
-                                                Value = SeriesValueOptions.Value,
-                                                Year = null,
-                                                DisplayStyle = SeriesDisplayStyle.Line,
-                                                RequestedColour = UiLogic.Colours.Brown,
-                                            },
-                                        }
-                                },
-                                new SuggestedChartPresetModel()
-                                {
-                                    Title = "Nitrous oxide (N\u2082O)",
-                                    Description = "NOAA's Earth System Research Laboratory has measured nitrous oxide since 1997",
-                                    ChartSeriesList =
-                                        new List<ChartSeriesDefinition>()
-                                        {
-                                            new ChartSeriesDefinition()
-                                            {
-                                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, n2o),
-                                                Aggregation = SeriesAggregationOptions.Mean,
-                                                BinGranularity = BinGranularities.ByYearAndMonth,
-                                                Smoothing = SeriesSmoothingOptions.None,
-                                                SmoothingWindow = 5,
-                                                Value = SeriesValueOptions.Value,
-                                                Year = null,
-                                                DisplayStyle = SeriesDisplayStyle.Line,
-                                                RequestedColour = UiLogic.Colours.Brown,
-                                            }
-                                        }
-                                }
-                            }
-                }
-            );
-
-        SuggestedPresets.Add(
-        new SuggestedChartPresetModelWithVariants()
-            {
-                Title = "Sea ice extent",
-                Description = "Antarctic and Arctic sea ice extent, measured in millions of square kilometres since 1979",
-                ChartSeriesList =
-                        new List<ChartSeriesDefinition>()
-                        {
-                                new ChartSeriesDefinition()
-                                {
-                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, southSeaIceExtent),
-                                    Aggregation = SeriesAggregationOptions.Mean,
-                                    BinGranularity = BinGranularities.ByYear,
-                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                    SmoothingWindow = 10,
-                                    Value = SeriesValueOptions.Value,
-                                    Year = null,
-                                    DisplayStyle = SeriesDisplayStyle.Line,
-                                    RequestedColour = UiLogic.Colours.Blue,
-                                    GroupingThreshold = 0.1f,
-                                },
-                                new ChartSeriesDefinition()
-                                {
-                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, northSeaIceExtent),
-                                    Aggregation = SeriesAggregationOptions.Mean,
-                                    BinGranularity = BinGranularities.ByYear,
-                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                    SmoothingWindow = 10,
-                                    Value = SeriesValueOptions.Value,
-                                    Year = null,
-                                    DisplayStyle = SeriesDisplayStyle.Line,
-                                    RequestedColour = UiLogic.Colours.Orange,
-                                    GroupingThreshold = 0.1f,
-                                },
-                        },
-                Variants =
-                            new List<SuggestedChartPresetModel>()
-                            {
-                                new SuggestedChartPresetModel()
-                                {
-                                    Title = "Greenland ice melt area",
-                                    Description = "Smoothed ice melt area, measured in square kilometres since 1979",
-                                    ChartSeriesList =
-                                        new List<ChartSeriesDefinition>()
-                                        {
-                                            new ChartSeriesDefinition()
-                                            {
-                                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, greenland),
-                                                Aggregation = SeriesAggregationOptions.Sum,
-                                                BinGranularity = BinGranularities.ByYear,
-                                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                                SmoothingWindow = 10,
-                                                Value = SeriesValueOptions.Value,
-                                                Year = null,
-                                                DisplayStyle = SeriesDisplayStyle.Line,
-                                                RequestedColour = UiLogic.Colours.Blue,
-                                            },
-                                        }
-                                },
-                            },
-            }
-        );
+        switch (PresetType)
+        {
+            case PresetTypes.Location:
+                SuggestedPresets = SuggestedPresetLists.LocationBasedPresets(DataSetDefinitions, SelectedLocation);
+                break;
+            case PresetTypes.RegionalAndGlobal:
+                SuggestedPresets = SuggestedPresetLists.RegionalAndGlobalPresets(DataSetDefinitions);
+                break;
+        }
 
         // Presets may call for data that is not available at all locations. In those
         // cases, remove the ChartSeries entries that aren't available & set a flag

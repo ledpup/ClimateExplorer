@@ -24,7 +24,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.SourceData"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.AcornSatTransferFunctionAnalysis", "ClimateExplorer.AcornSatTransferFunctionAnalysis\ClimateExplorer.AcornSatTransferFunctionAnalysis.csproj", "{D7A43FF5-A0AF-45D4-BBC3-C67B608A8B02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.Visualiser.UiTests", "ClimateExplorer.Visualiser.UiTests\ClimateExplorer.Visualiser.UiTests.csproj", "{89EC7792-0BEA-43F6-837F-D2F47E9479AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Visualiser.UiTests", "ClimateExplorer.Visualiser.UiTests\ClimateExplorer.Visualiser.UiTests.csproj", "{89EC7792-0BEA-43F6-837F-D2F47E9479AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

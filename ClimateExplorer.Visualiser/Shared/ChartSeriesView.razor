@@ -19,7 +19,7 @@
 
     @if (ChartSeries.IsExpanded)
     {
-        <div class="chart-series-config-content" style="@GenerateStyleForTitleBar()">
+        <div class="chart-series-config-content" style="@StyleForTitleBar">
             <div class="edit-form">
                 <table>
                     @if (ChartSeries.Year.HasValue)
@@ -206,6 +206,17 @@
 
     AboutData _aboutData;
 
+    string StyleForTitleBar { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            StyleForTitleBar = GenerateStyleForTitleBar();
+            StateHasChanged();
+        }
+    }
+
     public enum ChartSeriesTitleStyle
     {
         WholeTitleBarInSeriesColour,
@@ -306,7 +317,7 @@
         await OnSeriesChanged.InvokeAsync();
     }
 
-    async Task OnIsLockedChanged(bool val)
+    void OnIsLockedChanged(bool val)
     {
         ChartSeries.IsLocked = val;
     }

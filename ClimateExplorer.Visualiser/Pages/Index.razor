@@ -1,128 +1,51 @@
 ﻿@page "/"
 @page "/location/"
 @page "/location/{locationId}"
+@implements IDisposable
 
 @using Blazorise
-@using Blazorise.Charts
-@using Blazorise.Charts.Trendline
 @using ClimateExplorer.Core.DataPreparation
 @using Blazorise.SpinKit
+@using static ClimateExplorer.Visualiser.UiModel.SuggestedPresetLists;
 @using static ClimateExplorer.Visualiser.Shared.Collapsible;
+
+@inherits ChartablePage
 
 <PageTitle>@GetPageTitle()</PageTitle>
 
 <div style="flex-grow: 0">
     <Collapsible Title="Suggested charts" InitiallyShown="false" ShowTitleWhenExpanded="false" ContentLayoutType="CollapserContentLayoutTypes.FlexboxRow">
         <Content>
-            @if (DataSetDefinitions == null || SelectedLocation == null)
-            {
-                <SpinKit Type="SpinKitType.Plane" />
-            }
-            else
-            {
-                <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@SelectedLocation" OnChartPresetSelected="@OnChartPresetSelected" ExpandUpwards="false"></SuggestedCharts>
-            }
+            <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@SelectedLocation" OnChartPresetSelected="@OnChartPresetSelected" ExpandUpwards="false" PresetType="PresetTypes.Location"></SuggestedCharts>
         </Content>
     </Collapsible>
 </div>
 
 <div class="location-and-chart-container">
-    @if (ShowLocation)
-    {
-        <div>
-            <div class="map-space-reserver" id="mapContainerContainer">
-                <MapContainer @ref="mapContainer"
-                    Locations="@Locations"
-                    OnLocationChange="@SelectedLocationChanged"
-                    LocationCoordinates="@LocationCoordinates"></MapContainer>
-            </div>
-
-            <div class="location-info-container">
-                <LocationInfo @ref="locationInfoComponent"
-                            Location="@SelectedLocation"
-                            DataSetDefinitions="@DataSetDefinitions"
-                            RequestLocationChange="@ShowSelectLocationModal"
-                            OnOverviewShowOrHide="@OnOverviewShowHide"
-                            OnYearFilterChange=HandleOnYearFilterChange />
-            </div>
-
-            <div style="clear: both;"></div>
+    <div>
+        <div class="map-space-reserver" id="mapContainerContainer">
+            <MapContainer @ref="mapContainer"
+                Locations="@Locations"
+                OnLocationChange="@SelectedLocationChanged"
+                LocationCoordinates="@LocationCoordinates"></MapContainer>
         </div>
-    }
 
-
-    @if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0)
-    {
-        <SpinKit Type="SpinKitType.Plane" />
-    }
-    else
-    {
-        <div class="chart-collapsible-parent">
-            <Collapsible Title="Chart" InitiallyShown="true" AllowCollapse="false" ContentLayoutType="Collapsible.CollapserContentLayoutTypes.FlexboxColumns" NoBottomMargin="true">
-                <Content>
-                    <div class="chart-and-controls">
-                        <div class="chart-series-list-wrapper">
-                            <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
-
-                            <a class="add-series-button" @onclick="ShowAddDataSetModal">
-                                <i class="fas fa-plus"></i> Add
-                            </a>
-                        </div>
-
-                        <div class="chart-wrapper">
-                            <Chart @ref="chart" TItem="float?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
-                                <ChartTrendline @ref="chartTrendline" TItem="float?" />
-                            </Chart>
-                        </div>
-
-                        <div class="chart-controls">
-                            <a class="chart-control" @onclick="ShowFilterModal"><i class="fas fa-filter"></i> Year filtering</a>
-
-                            @if (!string.IsNullOrWhiteSpace(SelectedStartYear) || !string.IsNullOrWhiteSpace(SelectedEndYear))
-                            {
-                                <a class="chart-control" @onclick="OnClearFilter"><i class="fa-solid fa-filter-circle-xmark"></i> Clear filter</a>
-                            }
-
-                            <Dropdown>
-                                <DropdownToggle>
-                                    <i class="fas fa-calendar"></i> Grouping
-                                </DropdownToggle>
-                                <DropdownMenu>
-                                    <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYear)">Yearly</DropdownItem>
-                                    <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYearAndMonth)">Year + Month</DropdownItem>
-                                    <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYearAndWeek)">Year + Week</DropdownItem>
-                                    <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYearAndDay)">Year + Day</DropdownItem>
-                                    <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly)">Month (ignoring year)</DropdownItem>
-                                    <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.BySouthernHemisphereTemperateSeasonOnly)">Southern hemisphere temperate season only (ignoring year)</DropdownItem>
-                                    <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.BySouthernHemisphereTropicalSeasonOnly)">Southern hemisphere tropical season only (ignoring year)</DropdownItem>
-                                </DropdownMenu>
-                            </Dropdown>
-
-                            <a class="chart-control" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download data</a>
-
-                            <a class="chart-control" @onclick="ShowOptionsModal"><i class="fas fa-cog"></i> Aggregation options</a>
-
-                            <div class="info-icon">
-                                <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowChartOptionsInfo></i>
-                            </div>
-
-                        </div>
-
-                        @if (EnableRangeSlider.HasValue && EnableRangeSlider.Value
-                       && (SelectedBinGranularity == BinGranularities.ByYear
-                       || SelectedBinGranularity == BinGranularities.ByYearAndMonth
-                       || SelectedBinGranularity == BinGranularities.ByYearAndWeek
-                       || SelectedBinGranularity == BinGranularities.ByYearAndDay))
-                        {
-                            <DualRangeSlider Min="SliderMin" Max="SliderMax" FromValue="SliderStart" ToValue="SliderEnd" OnValuesChanged="@OnSelectedYearsChanged" OnShowComponent="@ShowRangeSliderChanged" />
-                        }
-                    </div>
-                </Content>
-            </Collapsible>
+        <div class="location-info-container">
+            <LocationInfo
+                        Location="@SelectedLocation"
+                        DataSetDefinitions="@DataSetDefinitions"
+                        RequestLocationChange="@ShowSelectLocationModal"
+                        OnOverviewShowOrHide="@OnOverviewShowHide"
+                        OnYearFilterChange="@HandleOnYearFilterChange" />
         </div>
-    }
 
-    
+        <div style="clear: both;"></div>
+    </div>
+
+    <ChartView @ref="chartView"
+               BuildDataSetsEvent="@BuildDataSets"
+               ShowAddDataSetModalEvent="@ShowAddDataSetModal"
+               DownloadDataEvent="@OnDownloadDataClicked" />
 </div>
 
 <SelectLocation @ref="selectLocationModal"
@@ -143,101 +66,3 @@
         </ModalBody>
     </ModalContent>
 </Modal>
-
-<Modal @ref="optionsModal">
-    <ModalContent>
-        <ModalHeader Background="Background.Light">
-            <ModalTitle>Aggregation options</ModalTitle>
-            <div class="info-icon">
-                <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowAggregationOptionsInfo></i>
-            </div>
-            <CloseButton />
-        </ModalHeader>
-        <ModalBody>
-            <Field>
-                <strong>Day grouping</strong>
-            
-            <Select TValue="short" SelectedValue="@SelectedDayGrouping" SelectedValueChanged="@OnSelectedDayGroupingChanged">
-                <SelectItem Value="5">@DayGroupingText(5)</SelectItem>
-                <SelectItem Value="7">@DayGroupingText(7)</SelectItem>
-                <SelectItem Value="13">@DayGroupingText(13)</SelectItem>
-                <SelectItem Value="14">@DayGroupingText(14)</SelectItem>
-                <SelectItem Value="26">@DayGroupingText(26)</SelectItem>
-                <SelectItem Value="28">@DayGroupingText(28)</SelectItem>
-                <SelectItem Value="73">@DayGroupingText(73)</SelectItem>
-                <SelectItem Value="91">@DayGroupingText(91)</SelectItem>
-                <SelectItem Value="182">@DayGroupingText(182)</SelectItem>
-            </Select>
-            </Field>
-            <Field>
-                <strong>Threshold required to form a valid group (% percentage)</strong>
-                <TextEdit Text="@GroupingThresholdText" TextChanged="@OnDayGroupThresholdTextChanged" MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
-            </Field>
-            <Field>
-                <Text>
-                    Current threshold is @GetGroupingThresholdText()
-                </Text>
-            </Field>
-            @if (UserOverridePresetAggregationSettings)
-            {
-                <Field>
-                    <Text TextColor="TextColor.Primary">
-                        User aggregration settings will now override preset settings
-                    </Text>
-                </Field>
-            }
-        </ModalBody>
-        <ModalFooter>
-            @if (UserOverridePresetAggregationSettings)
-            {
-                <Button Color="Color.Secondary" Clicked="@ClearUserAggregationOverride">Clear override</Button>
-            }
-            <Button Color="Color.Primary" Clicked="@ApplyYearlyAverageParameters">Apply</Button>
-        </ModalFooter>
-    </ModalContent>
-</Modal>
-
-<Filter @ref="filter"
-        DatasetYears="@DatasetYears"
-        SelectedYears="@SelectedYears"
-        SelectedStartYear="@SelectedStartYear"
-        SelectedEndYear="@SelectedEndYear"
-        SelectedBinGranularity="@SelectedBinGranularity"
-        StartYears="@StartYears"
-        UseMostRecentStartYear="@UseMostRecentStartYear"
-        OnSelectedYearsChanged="@OnSelectedYearsChanged"
-        OnStartYearTextChanged="@OnStartYearTextChanged"
-        OnEndYearTextChanged="@OnEndYearTextChanged"
-        OnUseMostRecentStartYearChanged="@OnUseMostRecentStartYearChanged"
-        ShowRangeSlider=@EnableRangeSlider
-        OnShowRangeSliderChanged=@ShowRangeSliderChanged></Filter>
-
-@if (PopupText != null)
-{
-    <Modal @ref="popup">
-        <ModalContent Size="ModalSize.Large">
-            <ModalHeader>
-                <ModalTitle>Chart options information</ModalTitle>
-                <CloseButton />
-            </ModalHeader>
-            <ModalBody>
-                @((MarkupString)PopupText)
-            </ModalBody>
-        </ModalContent>
-    </Modal>
-}
-
-@if (PopupAggregationOptionsInfoText != null)
-{
-    <Modal @ref="popupAggregationOptionsInfoText">
-        <ModalContent Size="ModalSize.Large">
-            <ModalHeader>
-                <ModalTitle>Aggregation options information</ModalTitle>
-                <CloseButton />
-            </ModalHeader>
-            <ModalBody>
-                @((MarkupString)PopupAggregationOptionsInfoText)
-            </ModalBody>
-        </ModalContent>
-    </Modal>
-}

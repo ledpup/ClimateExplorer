@@ -1,0 +1,37 @@
+﻿@page "/regionalandglobal"
+@implements IDisposable
+
+@using Blazorise
+@using static ClimateExplorer.Visualiser.Shared.Collapsible;
+@using static ClimateExplorer.Visualiser.UiModel.SuggestedPresetLists;
+
+@inherits ChartablePage
+
+<PageTitle>@GetPageTitle()</PageTitle>
+
+<div style="flex-grow: 0">
+    <Collapsible Title="Suggested charts" InitiallyShown="true" ShowTitleWhenExpanded="false" ContentLayoutType="CollapserContentLayoutTypes.FlexboxRow">
+        <Content>
+            <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" OnChartPresetSelected="@OnChartPresetSelected" ExpandUpwards="false" PresetType="PresetTypes.RegionalAndGlobal"></SuggestedCharts>
+        </Content>
+    </Collapsible>
+</div>
+
+<div class="chart-container">
+    <ChartView @ref="chartView"
+                  BuildDataSetsEvent="@BuildDataSets"
+                  ShowAddDataSetModalEvent="@ShowAddDataSetModal"
+                  DownloadDataEvent="@OnDownloadDataClicked" />
+</div>
+
+<Modal @ref="addDataSetModal">
+    <ModalContent>
+        <ModalHeader Background="Background.Light">
+            <ModalTitle>Add data set</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet"></DataSetBrowser>
+        </ModalBody>
+    </ModalContent>
+</Modal>
