@@ -7,7 +7,7 @@
 @using static ClimateExplorer.Core.Enums;
 
 <div class="chart-series-config">
-    <div class="title-bar" @onclick="() => { ChartSeries.IsExpanded = !ChartSeries.IsExpanded; }" style="@GenerateStyleForTitleBar()">
+    <div class="title-bar" @onclick="() => { ChartSeries.IsExpanded = !ChartSeries.IsExpanded; }" style="@StyleForTitleBar">
         <div class="main">
             <div class="title">@ChartSeries.GetFriendlyTitleShort()</div>
             <div class="description">@ChartSeries.GetFriendlyDescription()</div>
