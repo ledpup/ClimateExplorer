@@ -330,7 +330,7 @@ public partial class ChartView
         BuildProcessedDataSets(ChartSeriesWithData, UseMostRecentStartYear);
 
         subtitle =
-            (ChartStartBin != null & ChartEndBin != null)
+            (ChartStartBin != null && ChartEndBin != null)
             ? ChartStartBin is YearBinIdentifier
                 ? $"{ChartStartBin.Label}-{ChartEndBin.Label}     {Convert.ToInt16(ChartEndBin.Label) - Convert.ToInt16(ChartStartBin.Label)} years"
                 : $"{ChartStartBin.Label}-{ChartEndBin.Label}"
@@ -807,7 +807,7 @@ public partial class ChartView
         }
     }
 
-    async Task OnDayGroupThresholdTextChanged(string value)
+    void OnDayGroupThresholdTextChanged(string value)
     {
         GroupingThresholdText = value;
     }

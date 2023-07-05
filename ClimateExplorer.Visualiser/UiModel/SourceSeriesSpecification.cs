@@ -1,5 +1,4 @@
 ﻿using ClimateExplorer.Core.ViewModel;
-using ClimateExplorer.Core.ViewModel;
 
 namespace ClimateExplorer.Visualiser.UiModel;
 

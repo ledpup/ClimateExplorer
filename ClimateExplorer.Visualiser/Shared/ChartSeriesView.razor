@@ -306,7 +306,7 @@
         await OnSeriesChanged.InvokeAsync();
     }
 
-    async Task OnIsLockedChanged(bool val)
+    void OnIsLockedChanged(bool val)
     {
         ChartSeries.IsLocked = val;
     }
