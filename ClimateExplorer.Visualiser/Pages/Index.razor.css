@@ -1,4 +1,10 @@
-﻿.chart-series-list-wrapper {
+﻿.map-space-reserver {
+    position: relative;
+    height: 250px;
+    width: 100%;
+}
+
+.chart-series-list-wrapper {
     /* To compensate for the unwanted 10px vertical gutter after the last row of series lozenges */
     margin-bottom: -10px;
 }
@@ -12,9 +18,9 @@
 
 @media only screen and (min-width: 1000px) {
     .map-space-reserver {
-        position: relative;
-        height: 250px;
-        width: 100%;
+        float: right;
+        width: 50%;
+        z-index: 1;
     }
 
     .location-and-chart-container {
@@ -24,12 +30,6 @@
     .location-info-container {
         /* On larger screens, make room for the map to appear to the right of the location info section */
         margin-top: 0px;
-    }
-
-    .map-space-reserver {
-        float: right;
-        width: 50%;
-        z-index: 1;
     }
 }
 
