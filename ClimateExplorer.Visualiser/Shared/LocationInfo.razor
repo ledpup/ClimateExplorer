@@ -1,4 +1,5 @@
 ﻿@using Blazorise
+@using Blazorise.LoadingIndicator
 @using Blazorise.SpinKit
 @using ClimateExplorer.Core
 @using ClimateExplorer.Core.ViewModel
@@ -18,18 +19,20 @@
         }
         else
         {
-            <!-- The awful HTML comments between OverviewField elements below are to avoid generating whitespace between OverviewField elements, which was
-                 causing them to be misaligned. Probably better to use flex layout, but this works for now.
-            -->
-            <OverviewField Label="Location"><Value> <span><a href="@LocationMapUrl" target="_blank">@LocationAsString</a></span></Value></OverviewField><!--
-         --><OverviewField Label="Elevation"><Value>@ElevationAsString</Value></OverviewField><!--
-         -->@if (WarmingIndexDescription != null)
-            {
-                <OverviewField Label="Warming index" PopupText="@WarmingIndexDescription"><Value>@WarmingIndexAsString</Value></OverviewField>
-            }
-            <OverviewField Label="Heating score" PopupText="@HeatingScoreDescription"><Value>@Location.HeatingScore</Value></OverviewField>
-            <WarmingStripe LocationName=@Location.Name LocationTemperatureMean=@LocationTemperatureMean DataRecords="@MaxTempAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange/>
-            <WarmestYears DataRecords="@MaxTempAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
+            <LoadingIndicator @bind-Visible="@LoadingIndicatorVisible">
+                <!-- The awful HTML comments between OverviewField elements below are to avoid generating whitespace between OverviewField elements, which was
+                        causing them to be misaligned. Probably better to use flex layout, but this works for now.
+                -->
+                <OverviewField Label="Location"><Value> <span><a href="@LocationMapUrl" target="_blank">@LocationAsString</a></span></Value></OverviewField><!--
+                --><OverviewField Label="Elevation"><Value>@ElevationAsString</Value></OverviewField><!--
+                -->@if (WarmingIndexDescription != null)
+                {
+                    <OverviewField Label="Warming index" PopupText="@WarmingIndexDescription"><Value>@WarmingIndexAsString</Value></OverviewField>
+                }
+                <OverviewField Label="Heating score" PopupText="@HeatingScoreDescription"><Value>@Location.HeatingScore</Value></OverviewField>
+                <WarmingStripe LocationName=@Location.Name LocationTemperatureMean=@LocationTemperatureMean DataRecords="@MaxTempAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange/>
+                <WarmestYears DataRecords="@MaxTempAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
+            </LoadingIndicator>
         }
     </Content>
 </Collapsible>
@@ -86,6 +89,8 @@
 
     float? LocationTemperatureMean { get; set; }
 
+    bool LoadingIndicatorVisible { get; set; }
+
     public void ChangeLocationClicked(EventArgs args)
     {
         RequestLocationChange.InvokeAsync();
@@ -98,6 +103,8 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        LoadingIndicatorVisible = true;
+
         if (Location == null)
         {
             return;
@@ -200,6 +207,14 @@
         await base.OnParametersSetAsync();
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (LoadingIndicatorVisible)
+        {
+            LoadingIndicatorVisible = false;
+            StateHasChanged();
+        }
+    }
 
     string GenerateWarmingIndexDescription(CalculatedWarmingIndex warmingIndex)
     {
