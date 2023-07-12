@@ -15,6 +15,8 @@ using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.WebApi.Infrastructure;
 using System.Text.Json;
+using ClimateExplorer.Core.Model;
+using static ClimateExplorer.Core.DataPreparation.DataSetBuilder;
 
 //ICache _cache = new FileBackedCache("cache");
 ICache _cache = new FileBackedTwoLayerCache("cache");
@@ -236,8 +238,23 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
 
     var dsb = new DataSetBuilder();
 
-    var series = await dsb.BuildDataSet(body);
+    BuildDataSetResult series = null;
 
+    if (body.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup)
+    {
+        var locationGroupId = body.SeriesSpecifications[0].LocationId.Value;
+        var locationGroup = LocationGroup.GetLocationGroup(locationGroupId);
+
+        foreach (var locationId in locationGroup.LocationIds)
+        {
+            var dataset = await PostDataSets(GetPostRequestBody(body, locationId));
+        }
+    }
+    else
+    {
+        series = await dsb.BuildDataSet(body);
+    }
+    
     var definitions = await DataSetDefinition.GetDataSetDefinitions();
     var spec = body.SeriesSpecifications[0];
     var dsd = definitions.Single(x => x.Id == spec.DataSetDefinitionId);
@@ -286,4 +303,34 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
     }
     await _cache.Put(cacheKey, returnDataSet);
     return returnDataSet;
+}
+
+static PostDataSetsRequestBody GetPostRequestBody(PostDataSetsRequestBody body, Guid locationId)
+{
+    return new PostDataSetsRequestBody
+    {
+
+        BinAggregationFunction = body.BinAggregationFunction,
+        BucketAggregationFunction = body.BucketAggregationFunction,
+        CupAggregationFunction = body.CupAggregationFunction,
+        BinningRule = body.BinningRule,
+        CupSize = body.CupSize,
+        RequiredBinDataProportion = body.RequiredBinDataProportion,
+        RequiredBucketDataProportion = body.RequiredBinDataProportion,
+        RequiredCupDataProportion = body.RequiredCupDataProportion,
+        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+        SeriesSpecifications = new SeriesSpecification[]
+                    {
+                    new SeriesSpecification
+                    {
+                        DataAdjustment = body.SeriesSpecifications[0].DataAdjustment,
+                        DataSetDefinitionId = body.SeriesSpecifications[0].DataSetDefinitionId,
+                        DataType = body.SeriesSpecifications[0].DataType,
+                        LocationId = locationId,
+                    },
+                    },
+        SeriesTransformation = body.SeriesTransformation,
+        Anomaly = body.Anomaly,
+        FilterToYear = body.FilterToYear,
+    };
 }
