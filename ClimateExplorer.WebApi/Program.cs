@@ -51,6 +51,8 @@ builder.Services.AddCors(
                 builder.AllowAnyOrigin();
 
                 builder.AllowAnyHeader();
+
+                builder.AllowAnyMethod();
             }
         );
     }
