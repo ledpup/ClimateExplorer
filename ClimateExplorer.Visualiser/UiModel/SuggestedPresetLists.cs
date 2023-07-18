@@ -427,7 +427,7 @@ public static class SuggestedPresetLists
                                 new SuggestedChartPresetModel()
                                 {
                                     Title = "Nitrous oxide (N\u2082O)",
-                                    Description = "NOAA's Earth System Research Laboratory has measured nitrous oxide since 1997",
+                                    Description = "NOAA's Earth System Research Laboratory has measured nitrous oxide since 2001",
                                     ChartSeriesList =
                                         new List<ChartSeriesDefinition>()
                                         {
