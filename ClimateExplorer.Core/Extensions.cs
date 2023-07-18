@@ -71,7 +71,12 @@ public static class Extensions
             throw new Exception("All data must be for distinct dates");
         }
 
-        return values.Count() != numberOfDaysInYear ? 0 : values.Count();
+        if (values.Count() != numberOfDaysInYear)
+        {
+            throw new Exception($"Only {values.Count()} days of data in a year that has {numberOfDaysInYear} days");
+        }
+
+        return values.Count();
     }
 
     public static void ValidateDaily(this IEnumerable<DataRecord> values)
