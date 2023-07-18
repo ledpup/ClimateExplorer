@@ -1,11 +1,10 @@
 ﻿using ClimateExplorer.Core;
+using ClimateExplorer.Core.Model;
 using GeoCoordinatePortable;
 using System.Text.Json;
 
-public class Location
+public class Location : LocationBase
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; }
     public Coordinates Coordinates { get; set; }
     public float? WarmingIndex { get; set; }
     public short? HeatingScore { get; set; }
@@ -33,7 +32,6 @@ public class Location
             locations.AddRange(locationsInFile);
         }
         
-
         if (setNearbyLocations)
         {
             SetNearbyLocations(locations);

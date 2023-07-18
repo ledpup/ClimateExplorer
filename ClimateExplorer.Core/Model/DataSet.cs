@@ -1,6 +1,7 @@
 ﻿using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Core.DataPreparation;
 using static ClimateExplorer.Core.Enums;
+using ClimateExplorer.Core.Model;
 
 public class DataSet
 {
@@ -13,7 +14,7 @@ public class DataSet
 
     // TODO: This will go (replaced by BinGranularity)
     public DataResolution Resolution { get; set; }
-    public Location Location { get;  set; }
+    public LocationBase Location { get;  set; }
     public MeasurementDefinitionViewModel MeasurementDefinition { get; set; }
     public DataType DataType { get { return MeasurementDefinition.DataType; } }
     public DataAdjustment? DataAdjustment { get { return MeasurementDefinition.DataAdjustment; } }

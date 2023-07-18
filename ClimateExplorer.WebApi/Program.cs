@@ -245,10 +245,53 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
         var locationGroupId = body.SeriesSpecifications[0].LocationId.Value;
         var locationGroup = LocationGroup.GetLocationGroup(locationGroupId);
 
+        var anomalyDatasets = new List<DataSet>();
+
         foreach (var locationId in locationGroup.LocationIds)
         {
             var dataset = await PostDataSets(GetPostRequestBody(body, locationId));
+
+            var referencePeriodCount = dataset.Years.Count(x => x >= 1961 && x <= 1990);
+            if (referencePeriodCount > 15)
+            {
+                var referencePeriodAverage = dataset.DataRecords.Where(x => x.Year >= 1961 && x.Year <= 1990).Average(x => x.Value);
+                var anomalyRecords = new List<DataRecord>();
+                foreach (var record in dataset.DataRecords)
+                {
+                    anomalyRecords.Add(new DataRecord
+                    {
+                        Label = record.Label,
+                        BinId = record.BinId,
+                        Value = record.Value / referencePeriodAverage,
+                    });
+                }
+                anomalyDatasets.Add(
+                    new DataSet
+                    {
+                        DataRecords = anomalyRecords
+                    });
+            }
         }
+
+        var minYear = (short)anomalyDatasets.Min(x => x.StartYear);
+
+        var dataPoints = new List<ChartableDataPoint>();
+        for (var i = minYear; i <= DateTime.Now.Year; i++)
+        {
+            var averageForYear = anomalyDatasets.Average(x => x.DataRecords.SingleOrDefault(y => y.Year == i)?.Value);
+            dataPoints.Add(new ChartableDataPoint 
+            {
+                BinId = i.ToString(),
+                Label = i.ToString(),
+                Value = averageForYear
+            });
+        }
+        series = new BuildDataSetResult
+        {
+            DataPoints = dataPoints.ToArray(),
+            UnitOfMeasure = series.UnitOfMeasure,
+            DataCategory = series.DataCategory
+        };
     }
     else
     {
@@ -259,7 +302,7 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
     var spec = body.SeriesSpecifications[0];
     var dsd = definitions.Single(x => x.Id == spec.DataSetDefinitionId);
 
-    Location location =
+    var location =
         spec.LocationId != null
         ? (await Location.GetLocations(false)).Single(x => x.Id == spec.LocationId)
         : null;
