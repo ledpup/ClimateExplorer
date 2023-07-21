@@ -16,7 +16,6 @@
     <PackageReference Include="Blazorise.Components" Version="1.2.4" />
     <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.2.4" />
     <PackageReference Include="Blazorise.LoadingIndicator" Version="1.2.4" />
-    <PackageReference Include="Blazorise.SpinKit" Version="1.2.4" />
     <PackageReference Include="DPBlazorMapLibrary" Version="1.2.0" />
     <PackageReference Include="GeoCoordinate.NetStandard1" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.8" />
