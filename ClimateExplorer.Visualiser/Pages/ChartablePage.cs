@@ -82,6 +82,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         var l = new LogAugmenter(Logger, "BuildDataSets");
         l.LogInformation("starting");
 
+        chartView.ChartLoadingIndicatorVisible = true;
         chartView.LogChartSeriesList();
 
         // Recalculate the URL
@@ -177,7 +178,6 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
                 if (stateChanged)
                 {
                     StateHasChanged();
-                    chartView.ChartLoadingIndicatorVisible = true;
                 }
             }
             catch (Exception ex)
