@@ -1,15 +1,10 @@
 ﻿@using Blazorise
 @using Blazorise.Charts
 @using Blazorise.Charts.Trendline
-@using Blazorise.SpinKit
+@using Blazorise.LoadingIndicator
 @using ClimateExplorer.Core.DataPreparation;
 
-@if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0)
-{
-    <SpinKit Type="SpinKitType.Plane" />
-}
-else
-{
+<LoadingIndicator @bind-visible="@ChartLoadingIndicatorVisible">
     <div class="chart-collapsible-parent">
         <Collapsible Title="Chart" InitiallyShown="true" AllowCollapse="false" ContentLayoutType="Collapsible.CollapserContentLayoutTypes.FlexboxColumns" NoBottomMargin="true">
             <Content>
@@ -73,7 +68,7 @@ else
             </Content>
         </Collapsible>
     </div>
- }
+</LoadingIndicator>
 
 <Modal @ref="optionsModal">
     <ModalContent>

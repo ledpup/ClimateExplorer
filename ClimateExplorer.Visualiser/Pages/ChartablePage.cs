@@ -174,7 +174,11 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
                 await BuildDataSets();
 
-                if (stateChanged) StateHasChanged();
+                if (stateChanged)
+                {
+                    StateHasChanged();
+                    chartView.ChartLoadingIndicatorVisible = true;
+                }
             }
             catch (Exception ex)
             {

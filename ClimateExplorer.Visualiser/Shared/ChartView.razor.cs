@@ -114,9 +114,13 @@ public partial class ChartView
     /// </summary>
     ChartType InternalChartType { get; set; }
 
+    public bool ChartLoadingIndicatorVisible;
+
     protected override async Task OnInitializedAsync()
     {
         IsMobileDevice = await BlazorCurrentDeviceService.Mobile();
+
+        ChartLoadingIndicatorVisible = false;
 
         SelectedYears = new List<short>();
 
@@ -392,6 +396,7 @@ public partial class ChartView
         }
 
         chartRenderedFirstTime = true;
+        ChartLoadingIndicatorVisible = false;
 
         l.LogInformation("Leaving");
     }
