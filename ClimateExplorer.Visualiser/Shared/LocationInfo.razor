@@ -96,6 +96,11 @@
         OnOverviewShowOrHide.InvokeAsync(showOrHide);
     }
 
+    protected override void OnInitialized()
+    {
+        LocationLoadingIndicatorVisible = true;
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         LocationLoadingIndicatorVisible = true;
