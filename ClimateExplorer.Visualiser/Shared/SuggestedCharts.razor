@@ -146,14 +146,7 @@
                 }
             }
         }
-    }
 
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (LoadingIndicatorVisible)
-        {
-            LoadingIndicatorVisible = false;
-            StateHasChanged();
-        }
+        LoadingIndicatorVisible = false;
     }
 }

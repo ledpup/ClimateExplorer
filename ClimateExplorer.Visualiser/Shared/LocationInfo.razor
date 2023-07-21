@@ -103,8 +103,6 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        LocationLoadingIndicatorVisible = true;
-
         if (Location == null)
         {
             return;
@@ -115,6 +113,7 @@
         {
             return;
         }
+        LocationLoadingIndicatorVisible = true;
         locationIdLastTimeOnParametersSetAsyncWasCalled = Location?.Id;
 
         // Clear the previous values so we don't accidentally end-up reporting them
@@ -204,16 +203,9 @@
             LocationTemperatureMean = series.DataRecords.Average(x => x.Value);
         }
 
-        await base.OnParametersSetAsync();
-    }
+        LocationLoadingIndicatorVisible = false;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (LocationLoadingIndicatorVisible)
-        {
-            LocationLoadingIndicatorVisible = false;
-            StateHasChanged();
-        }
+        await base.OnParametersSetAsync();
     }
 
     string GenerateWarmingIndexDescription(CalculatedWarmingIndex warmingIndex)
