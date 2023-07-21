@@ -21,9 +21,10 @@ namespace ClimateExplorer.Core.DataPreparation
             switch (seriesDerivationType)
             {
                 case SeriesDerivationTypes.ReturnSingleSeries:
+                case SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup:
                     if (seriesSpecifications.Length != 1)
                     {
-                        throw new Exception($"When SeriesDerivationType is {nameof(SeriesDerivationTypes.ReturnSingleSeries)}, exactly one SeriesSpecification must be provided.");
+                        throw new Exception($"When SeriesDerivationType is {nameof(seriesDerivationType)}, exactly one SeriesSpecification must be provided.");
                     }
 
                     return await GetSeriesDataPoints(seriesSpecifications.Single());

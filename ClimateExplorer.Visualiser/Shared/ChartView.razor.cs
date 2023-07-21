@@ -199,6 +199,11 @@ public partial class ChartView
 
     public async Task OnChartPresetSelected(List<ChartSeriesDefinition> chartSeriesDefinitions)
     {
+        if (!chartSeriesDefinitions.Any())
+        {
+            throw new Exception("No chart series definition passed as a parameter when preset was selected");
+        }
+
         SelectedBinGranularity = chartSeriesDefinitions.First().BinGranularity;
 
         ChartSeriesList = chartSeriesDefinitions.ToList();

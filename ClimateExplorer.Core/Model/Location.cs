@@ -37,6 +37,8 @@ public class Location : LocationBase
             SetNearbyLocations(locations);
         }
 
+        locations.Add(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia" });
+
         locations = locations.OrderBy(x => x.Name).ToList();
 
         return locations;

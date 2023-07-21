@@ -340,7 +340,7 @@ public static class SuggestedPresetLists
     {
         var suggestedPresets = new List<SuggestedChartPresetModelWithVariants>();
 
-        var tempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.TempMax, DataAdjustment.Adjusted, true, throwIfNoMatch: false);
+        var tempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), DataType.TempMax, DataAdjustment.Adjusted, true, throwIfNoMatch: false);
 
         var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.CO2, null, false, throwIfNoMatch: true);
         var ch4 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.CH4, null, false, throwIfNoMatch: true);
@@ -360,39 +360,39 @@ public static class SuggestedPresetLists
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
-                Title = "Australian anomalies",
+                Title = "Australian temperature anomaly",
                 Description = "",
                 ChartSeriesList =
-                            new List<ChartSeriesDefinition>()
+                    new List<ChartSeriesDefinition>()
+                    {
+                            new ChartSeriesDefinition()
                             {
-                                            new ChartSeriesDefinition()
-                                            {
-                                                SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
-                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia" }, tempMax),
-                                                Aggregation = SeriesAggregationOptions.Mean,
-                                                BinGranularity = BinGranularities.ByYear,
-                                                Smoothing = SeriesSmoothingOptions.None,
-                                                SmoothingWindow = 10,
-                                                Value = SeriesValueOptions.Value,
-                                                Year = null,
-                                                DisplayStyle = SeriesDisplayStyle.Line,
-                                                //GroupingThreshold = 0.1f,
-                                            },
-                                            //new ChartSeriesDefinition()
-                                            //{
-                                            //    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                            //    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, northSeaIceExtent),
-                                            //    Aggregation = SeriesAggregationOptions.Mean,
-                                            //    BinGranularity = BinGranularities.ByYear,
-                                            //    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                            //    SmoothingWindow = 10,
-                                            //    Value = SeriesValueOptions.Value,
-                                            //    Year = null,
-                                            //    DisplayStyle = SeriesDisplayStyle.Line,
-                                            //    RequestedColour = UiLogic.Colours.Orange,
-                                            //    GroupingThreshold = 0.1f,
-                                            //},
-                            }
+                                SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia" }, tempMax),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.None,
+                                SmoothingWindow = 10,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                //GroupingThreshold = 0.1f,
+                            },
+                            //new ChartSeriesDefinition()
+                            //{
+                            //    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            //    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, northSeaIceExtent),
+                            //    Aggregation = SeriesAggregationOptions.Mean,
+                            //    BinGranularity = BinGranularities.ByYear,
+                            //    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                            //    SmoothingWindow = 10,
+                            //    Value = SeriesValueOptions.Value,
+                            //    Year = null,
+                            //    DisplayStyle = SeriesDisplayStyle.Line,
+                            //    RequestedColour = UiLogic.Colours.Orange,
+                            //    GroupingThreshold = 0.1f,
+                            //},
+                    }
             });
 
 

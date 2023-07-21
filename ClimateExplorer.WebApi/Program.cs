@@ -250,6 +250,7 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
         foreach (var locationId in locationGroup.LocationIds)
         {
             var dataset = await PostDataSets(GetPostRequestBody(body, locationId));
+            dataset.DataRecords.ForEach(x => x.Year = ((YearBinIdentifier)BinIdentifier.Parse(x.BinId)).Year);
 
             var referencePeriodCount = dataset.Years.Count(x => x >= 1961 && x <= 1990);
             if (referencePeriodCount > 15)
@@ -262,7 +263,8 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
                     {
                         Label = record.Label,
                         BinId = record.BinId,
-                        Value = record.Value / referencePeriodAverage,
+                        Value = record.Value - referencePeriodAverage,
+                        Year = record.Year,
                     });
                 }
                 anomalyDatasets.Add(
@@ -281,16 +283,17 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
             var averageForYear = anomalyDatasets.Average(x => x.DataRecords.SingleOrDefault(y => y.Year == i)?.Value);
             dataPoints.Add(new ChartableDataPoint 
             {
-                BinId = i.ToString(),
+                BinId = $"y{i}",
                 Label = i.ToString(),
                 Value = averageForYear
             });
         }
+        var seriesDefinition = await SeriesProvider.GetSeriesDataPointsForRequest(body.SeriesDerivationType, body.SeriesSpecifications);
         series = new BuildDataSetResult
         {
             DataPoints = dataPoints.ToArray(),
-            UnitOfMeasure = series.UnitOfMeasure,
-            DataCategory = series.DataCategory
+            UnitOfMeasure = seriesDefinition.UnitOfMeasure,
+            DataCategory = seriesDefinition.DataCategory
         };
     }
     else

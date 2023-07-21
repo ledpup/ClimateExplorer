@@ -157,6 +157,7 @@ public class ChartSeriesDefinition
         switch (SeriesDerivationType)
         {
             case SeriesDerivationTypes.ReturnSingleSeries:
+            case SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup:
                 return BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications.Single(), BinGranularity, Aggregation, Year);
 
             case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
