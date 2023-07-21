@@ -120,7 +120,7 @@ public partial class ChartView
     {
         IsMobileDevice = await BlazorCurrentDeviceService.Mobile();
 
-        ChartLoadingIndicatorVisible = false;
+        ChartLoadingIndicatorVisible = true;
 
         SelectedYears = new List<short>();
 
