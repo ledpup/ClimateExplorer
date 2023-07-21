@@ -22,7 +22,7 @@
                 <OverviewField Label="Elevation"><Value>@ElevationAsString</Value></OverviewField>
                 <!--
                 -->
-                <OverviewField Label="Warming index" PopupText="@WarmingIndexDescription"><Value>@WarmingIndexAsString</Value></OverviewField>
+                <OverviewField Label="Warming index" PopupText="@WarmingIndexDescription"><Value>@(WarmingIndexAsString == null ? "NA" : WarmingIndexAsString)</Value></OverviewField>
                 <!--
                 -->
                 <OverviewField Label="Heating score" PopupText="@HeatingScoreDescription"><Value>@(Location == null ? "NA" : Location.HeatingScore)</Value></OverviewField>
@@ -120,7 +120,7 @@
         LocationTemperatureMean = null;
         MaxTempAnomalyRecords = null;
         WarmingIndexDescription = null;
-        WarmingIndexAsString = "NA";
+        WarmingIndexAsString = null;
 
         // We can't do anything until we're supplied our tasty, tasty DataSetDefinitions
         if (DataSetDefinitions == null)
