@@ -26,6 +26,13 @@ public partial class RegionalAndGlobal : ChartablePage
         Dispose();
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        Locations = (await DataService.GetLocations()).ToList();
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         await UpdateUiStateBasedOnQueryString(false);
