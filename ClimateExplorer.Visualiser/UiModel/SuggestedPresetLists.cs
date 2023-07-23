@@ -344,6 +344,7 @@ public static class SuggestedPresetLists
         // when we expand to other regions
         var tempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), DataType.TempMax, DataAdjustment.Adjusted, true, throwIfNoMatch: false);
         var tempMaxUnadjusted = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), DataType.TempMax, DataAdjustment.Unadjusted, true, throwIfNoMatch: false);
+        var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), DataType.Rainfall, null, true, throwIfNoMatch: false);
 
         var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.CO2, null, false, throwIfNoMatch: true);
         var ch4 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.CH4, null, false, throwIfNoMatch: true);
@@ -459,18 +460,18 @@ public static class SuggestedPresetLists
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
-                Title = "Australian temperature anomaly",
-                Description = "Average of ACORN-SAT anomalies (excluding urban-influenced locations). Reference period is 1961-1990",
+                Title = "Australian anomaly",
+                Description = "Smoothed average of ACORN-SAT anomalies (excluding urban-influenced locations). Reference period is 1961-1990",
                 ChartSeriesList =
                     new List<ChartSeriesDefinition>()
                     {
                         new ChartSeriesDefinition()
                         {
                             SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia" }, tempMax),
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia anomaly" }, tempMax),
                             Aggregation = SeriesAggregationOptions.Mean,
                             BinGranularity = BinGranularities.ByYear,
-                            Smoothing = SeriesSmoothingOptions.None,
+                            Smoothing = SeriesSmoothingOptions.MovingAverage,
                             SmoothingWindow = 20,
                             Value = SeriesValueOptions.Value,
                             Year = null,
@@ -479,10 +480,10 @@ public static class SuggestedPresetLists
                         new ChartSeriesDefinition()
                         {
                             SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia" }, tempMaxUnadjusted),
-                            Aggregation = SeriesAggregationOptions.Mean,
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia anomaly" }, rainfall),
+                            Aggregation = SeriesAggregationOptions.Sum,
                             BinGranularity = BinGranularities.ByYear,
-                            Smoothing = SeriesSmoothingOptions.None,
+                            Smoothing = SeriesSmoothingOptions.MovingAverage,
                             SmoothingWindow = 20,
                             Value = SeriesValueOptions.Value,
                             Year = null,
@@ -510,6 +511,39 @@ public static class SuggestedPresetLists
                                         Value = SeriesValueOptions.Value,
                                         Year = null,
                                         DisplayStyle = SeriesDisplayStyle.Bar,
+                                    },
+                                }
+                        },
+                        new SuggestedChartPresetModel()
+                        {
+                            Title = "Adjusted vs raw temperature",
+                            Description = "Compare maximum temperature values that have been adjusted for abnormalities with raw values",
+                            ChartSeriesList =
+                                new List<ChartSeriesDefinition>()
+                                {
+                                    new ChartSeriesDefinition()
+                                    {
+                                        SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia anomaly" }, tempMax),
+                                        Aggregation = SeriesAggregationOptions.Mean,
+                                        BinGranularity = BinGranularities.ByYear,
+                                        Smoothing = SeriesSmoothingOptions.None,
+                                        SmoothingWindow = 20,
+                                        Value = SeriesValueOptions.Value,
+                                        Year = null,
+                                        DisplayStyle = SeriesDisplayStyle.Line,
+                                    },
+                                    new ChartSeriesDefinition()
+                                    {
+                                        SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia anomaly" }, tempMaxUnadjusted),
+                                        Aggregation = SeriesAggregationOptions.Mean,
+                                        BinGranularity = BinGranularities.ByYear,
+                                        Smoothing = SeriesSmoothingOptions.None,
+                                        SmoothingWindow = 20,
+                                        Value = SeriesValueOptions.Value,
+                                        Year = null,
+                                        DisplayStyle = SeriesDisplayStyle.Line,
                                     },
                                 }
                         },
