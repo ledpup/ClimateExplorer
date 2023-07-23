@@ -69,6 +69,8 @@ public class DataSetBuilderTests
             {
                 BinningRule = BinGranularities.ByYear,
                 BinAggregationFunction = ContainerAggregationFunctions.Min,
+                BucketAggregationFunction = ContainerAggregationFunctions.Min,
+                CupAggregationFunction = ContainerAggregationFunctions.Min,
                 CupSize = 14,
                 RequiredCupDataProportion = 0.7f,
                 RequiredBucketDataProportion = 1.0f,
@@ -93,6 +95,8 @@ public class DataSetBuilderTests
             {
                 BinningRule = BinGranularities.ByYear,
                 BinAggregationFunction = ContainerAggregationFunctions.Max,
+                BucketAggregationFunction = ContainerAggregationFunctions.Max,
+                CupAggregationFunction = ContainerAggregationFunctions.Max,
                 CupSize = 14,
                 RequiredCupDataProportion = 0.7f,
                 RequiredBucketDataProportion = 1.0f,
@@ -189,6 +193,8 @@ public class DataSetBuilderTests
             {
                 BinningRule = BinGranularities.ByYear,
                 BinAggregationFunction = ContainerAggregationFunctions.Sum,
+                BucketAggregationFunction = ContainerAggregationFunctions.Sum,
+                CupAggregationFunction = ContainerAggregationFunctions.Sum,
                 CupSize = 14,
                 RequiredCupDataProportion = 0.7f,
                 RequiredBucketDataProportion = 1.0f,
@@ -213,6 +219,8 @@ public class DataSetBuilderTests
             {
                 BinningRule = BinGranularities.ByYearAndMonth,
                 BinAggregationFunction = ContainerAggregationFunctions.Sum,
+                BucketAggregationFunction = ContainerAggregationFunctions.Sum,
+                CupAggregationFunction = ContainerAggregationFunctions.Sum,
                 CupSize = 14,
                 RequiredCupDataProportion = 0.7f,
                 RequiredBucketDataProportion = 1.0f,
@@ -338,8 +346,9 @@ public class DataSetBuilderTests
             }
         );
 
-        Assert.AreEqual(11, cdp.Length); // Eleven months because Jan is rejected
-        Assert.AreEqual("Feb 1990", cdp[0].Label);
+        Assert.AreEqual(12, cdp.Length);
+        Assert.AreEqual("Jan 1990", cdp[0].Label);
+        Assert.IsNull(cdp[0].Value);
     }
 
     [TestMethod]
@@ -366,7 +375,7 @@ public class DataSetBuilderTests
             }
         );
 
-        Assert.AreEqual(0, cdp.Length); // Year is rejected
+        Assert.IsNull(cdp[0].Value); // Year is rejected
     }
 
     [TestMethod]
@@ -393,8 +402,10 @@ public class DataSetBuilderTests
             }
         );
 
-        Assert.AreEqual(11, cdp.Length); // Eleven months because Jan is rejected
-        Assert.AreEqual("Feb", cdp[0].Label);
+        Assert.AreEqual(12, cdp.Length);
+        Assert.AreEqual("Jan", cdp[0].Label);
+        Assert.IsNull(cdp[0].Value);
+        Assert.AreEqual(11, cdp.Where(x => x.Value != null).Count());
     }
 
     [TestMethod]
@@ -453,7 +464,7 @@ public class DataSetBuilderTests
         Assert.AreEqual(4, cdp.Length);
         Assert.AreEqual("Summer", cdp[0].Label);
         // This needs manual verification
-        Assert.AreEqual(243.646973f, cdp[0].Value.Value);
+        Assert.AreEqual(243.81953f, actual: cdp[0].Value.Value);
     }
 
 
