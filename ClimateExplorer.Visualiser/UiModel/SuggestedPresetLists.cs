@@ -340,7 +340,10 @@ public static class SuggestedPresetLists
     {
         var suggestedPresets = new List<SuggestedChartPresetModelWithVariants>();
 
+        // This has been hacked in to be able to support a location group as a location ID. This needs to be refactored to support more than one location group
+        // when we expand to other regions
         var tempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), DataType.TempMax, DataAdjustment.Adjusted, true, throwIfNoMatch: false);
+        var tempMaxUnadjusted = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), DataType.TempMax, DataAdjustment.Unadjusted, true, throwIfNoMatch: false);
 
         var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.CO2, null, false, throwIfNoMatch: true);
         var ch4 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.CH4, null, false, throwIfNoMatch: true);
@@ -355,45 +358,6 @@ public static class SuggestedPresetLists
         var soi = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.SOI, null, false, throwIfNoMatch: true);
         var mei = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.MEIv2, null, false, throwIfNoMatch: true);
         var iod = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.IOD, null, false, throwIfNoMatch: true);
-
-
-        suggestedPresets.Add(
-            new SuggestedChartPresetModelWithVariants()
-            {
-                Title = "Australian temperature anomaly",
-                Description = "",
-                ChartSeriesList =
-                    new List<ChartSeriesDefinition>()
-                    {
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia" }, tempMax),
-                                Aggregation = SeriesAggregationOptions.Mean,
-                                BinGranularity = BinGranularities.ByYear,
-                                Smoothing = SeriesSmoothingOptions.None,
-                                SmoothingWindow = 10,
-                                Value = SeriesValueOptions.Value,
-                                Year = null,
-                                DisplayStyle = SeriesDisplayStyle.Line,
-                                //GroupingThreshold = 0.1f,
-                            },
-                            //new ChartSeriesDefinition()
-                            //{
-                            //    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            //    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, northSeaIceExtent),
-                            //    Aggregation = SeriesAggregationOptions.Mean,
-                            //    BinGranularity = BinGranularities.ByYear,
-                            //    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                            //    SmoothingWindow = 10,
-                            //    Value = SeriesValueOptions.Value,
-                            //    Year = null,
-                            //    DisplayStyle = SeriesDisplayStyle.Line,
-                            //    RequestedColour = UiLogic.Colours.Orange,
-                            //    GroupingThreshold = 0.1f,
-                            //},
-                    }
-            });
 
 
         suggestedPresets.Add(
@@ -495,6 +459,66 @@ public static class SuggestedPresetLists
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
+                Title = "Australian temperature anomaly",
+                Description = "Average of ACORN-SAT anomalies (excluding urban-influenced locations). Reference period is 1961-1990",
+                ChartSeriesList =
+                    new List<ChartSeriesDefinition>()
+                    {
+                        new ChartSeriesDefinition()
+                        {
+                            SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia" }, tempMax),
+                            Aggregation = SeriesAggregationOptions.Mean,
+                            BinGranularity = BinGranularities.ByYear,
+                            Smoothing = SeriesSmoothingOptions.None,
+                            SmoothingWindow = 20,
+                            Value = SeriesValueOptions.Value,
+                            Year = null,
+                            DisplayStyle = SeriesDisplayStyle.Line,
+                        },
+                        new ChartSeriesDefinition()
+                        {
+                            SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia" }, tempMaxUnadjusted),
+                            Aggregation = SeriesAggregationOptions.Mean,
+                            BinGranularity = BinGranularities.ByYear,
+                            Smoothing = SeriesSmoothingOptions.None,
+                            SmoothingWindow = 20,
+                            Value = SeriesValueOptions.Value,
+                            Year = null,
+                            DisplayStyle = SeriesDisplayStyle.Line,
+                        },
+                    },
+                Variants =
+                    new List<SuggestedChartPresetModel>()
+                    {
+                        new SuggestedChartPresetModel()
+                        {
+                            Title = "Anomaly bar chart",
+                            Description = "Australian temperature anomalies as a bar chart",
+                            ChartSeriesList =
+                                new List<ChartSeriesDefinition>()
+                                {
+                                    new ChartSeriesDefinition()
+                                    {
+                                        SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a") }, tempMax),
+                                        Aggregation = SeriesAggregationOptions.Mean,
+                                        BinGranularity = BinGranularities.ByYear,
+                                        Smoothing = SeriesSmoothingOptions.None,
+                                        SmoothingWindow = 20,
+                                        Value = SeriesValueOptions.Value,
+                                        Year = null,
+                                        DisplayStyle = SeriesDisplayStyle.Bar,
+                                    },
+                                }
+                        },
+                    },
+            });
+
+        suggestedPresets.Add(
+            new SuggestedChartPresetModelWithVariants()
+            {
                 Title = "Sea ice extent",
                 Description = "Antarctic and Arctic sea ice extent, measured in millions of square kilometres since 1979",
                 ChartSeriesList =
@@ -530,31 +554,31 @@ public static class SuggestedPresetLists
                                     },
                             },
                 Variants =
-                                new List<SuggestedChartPresetModel>()
+                    new List<SuggestedChartPresetModel>()
+                    {
+                        new SuggestedChartPresetModel()
+                        {
+                            Title = "Greenland ice melt area",
+                            Description = "Smoothed ice melt area, measured in square kilometres since 1979",
+                            ChartSeriesList =
+                                new List<ChartSeriesDefinition>()
                                 {
-                                    new SuggestedChartPresetModel()
+                                    new ChartSeriesDefinition()
                                     {
-                                        Title = "Greenland ice melt area",
-                                        Description = "Smoothed ice melt area, measured in square kilometres since 1979",
-                                        ChartSeriesList =
-                                            new List<ChartSeriesDefinition>()
-                                            {
-                                                new ChartSeriesDefinition()
-                                                {
-                                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, greenland),
-                                                    Aggregation = SeriesAggregationOptions.Sum,
-                                                    BinGranularity = BinGranularities.ByYear,
-                                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                                    SmoothingWindow = 10,
-                                                    Value = SeriesValueOptions.Value,
-                                                    Year = null,
-                                                    DisplayStyle = SeriesDisplayStyle.Line,
-                                                    RequestedColour = UiLogic.Colours.Blue,
-                                                },
-                                            }
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, greenland),
+                                        Aggregation = SeriesAggregationOptions.Sum,
+                                        BinGranularity = BinGranularities.ByYear,
+                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                        SmoothingWindow = 10,
+                                        Value = SeriesValueOptions.Value,
+                                        Year = null,
+                                        DisplayStyle = SeriesDisplayStyle.Line,
+                                        RequestedColour = UiLogic.Colours.Blue,
                                     },
-                                },
+                                }
+                        },
+                    },
             }
         );
 
@@ -571,7 +595,7 @@ public static class SuggestedPresetLists
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                                         SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, nino34),
                                         Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYearAndMonth,
+                                        BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.None,
                                         SmoothingWindow = 10,
                                         Value = SeriesValueOptions.Value,
@@ -585,7 +609,7 @@ public static class SuggestedPresetLists
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                                         SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, iod),
                                         Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYearAndMonth,
+                                        BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.None,
                                         SmoothingWindow = 10,
                                         Value = SeriesValueOptions.Value,

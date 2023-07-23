@@ -82,15 +82,7 @@ public class ChartSeriesDefinition
 
                 if (sss.MeasurementDefinition.DataAdjustment != null)
                 {
-                    if (sss.MeasurementDefinition.DataAdjustment != DataAdjustment.Adjusted ||
-                        sss.DataSetDefinition.MeasurementDefinitions.Any(
-                            x =>
-                                x != sss.MeasurementDefinition &&
-                                x.DataType == sss.MeasurementDefinition.DataType &&
-                                x.DataAdjustment != sss.MeasurementDefinition.DataAdjustment))
-                    {
-                        segments.Add(sss.MeasurementDefinition.DataAdjustment.ToString());
-                    }
+                    segments.Add(sss.MeasurementDefinition.DataAdjustment.ToString());
                 }
             }
             else
@@ -252,15 +244,7 @@ public class ChartSeriesDefinition
 
             if (sss.MeasurementDefinition?.DataAdjustment != null)
             {
-                if (sss.MeasurementDefinition.DataAdjustment != DataAdjustment.Adjusted ||
-                    sss.DataSetDefinition.MeasurementDefinitions.Any(
-                        x =>
-                            x != sss.MeasurementDefinition &&
-                            x.DataType == sss.MeasurementDefinition.DataType &&
-                            x.DataAdjustment != sss.MeasurementDefinition.DataAdjustment))
-                {
-                    segments.Add(sss.MeasurementDefinition.DataAdjustment.ToString());
-                }
+                segments.Add(sss.MeasurementDefinition.DataAdjustment.ToString());
             }
 
             if (sss.MeasurementDefinition != null)

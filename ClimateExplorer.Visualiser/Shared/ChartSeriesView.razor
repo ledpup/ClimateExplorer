@@ -35,7 +35,8 @@
                             <Select TValue="SeriesAggregationOptions" 
                                     Size="Size.ExtraSmall"
                                     SelectedValue="@ChartSeries.Aggregation"
-                                    SelectedValueChanged="@OnAggregationChanged">
+                                    SelectedValueChanged="@OnAggregationChanged"
+                                    Disabled="@ShouldDisableAggregationOptions(ChartSeries)">
                                 <SelectItem Value="SeriesAggregationOptions.Mean">Mean</SelectItem>
                                 <SelectItem Value="SeriesAggregationOptions.Minimum">Minimum</SelectItem>
                                 <SelectItem Value="SeriesAggregationOptions.Maximum">Maximum</SelectItem>
@@ -99,7 +100,8 @@
                             <Select TValue="SeriesValueOptions" 
                                     Size="Size.ExtraSmall"
                                     SelectedValue="@ChartSeries.Value"
-                                    SelectedValueChanged="@OnValueChanged">
+                                    SelectedValueChanged="@OnValueChanged"
+                                    Disabled="@ShouldDisableDisplay(ChartSeries)">
                                 <SelectItem Value="SeriesValueOptions.Value">Value</SelectItem>
                                 <SelectItem Value="SeriesValueOptions.Anomaly">Anomaly relative to mean</SelectItem>
                             </Select>
@@ -111,7 +113,8 @@
                             <Select TValue="SeriesTransformations" 
                                     Size="Size.ExtraSmall"
                                     SelectedValue="@ChartSeries.SeriesTransformation"
-                                    SelectedValueChanged="@OnTransformationChanged">
+                                    SelectedValueChanged="@OnTransformationChanged"
+                                    Disabled="@ShouldDisableTransformation(ChartSeries)">
                                 <SelectItem Value="SeriesTransformations.Identity">Identity</SelectItem>
                                 <SelectItem Value="SeriesTransformations.Negate">Negate</SelectItem>
                                 <SelectItem Value="SeriesTransformations.EqualOrAbove35">Days 35°C or above</SelectItem>
@@ -249,9 +252,24 @@
         }
     }
 
+    bool ShouldDisableAggregationOptions(ChartSeriesDefinition csd)
+    {
+        return csd.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup;
+    }
+
     bool ShouldDisableSmoothingWindow(ChartSeriesDefinition csd)
     {
         return csd.Smoothing != SeriesSmoothingOptions.MovingAverage;
+    }
+
+    bool ShouldDisableDisplay(ChartSeriesDefinition csd)
+    {
+        return csd.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup;
+    }
+
+    bool ShouldDisableTransformation(ChartSeriesDefinition csd)
+    {
+        return csd.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup;
     }
 
     async Task OnAboutThisDataClicked()
