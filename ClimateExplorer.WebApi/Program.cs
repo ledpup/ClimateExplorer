@@ -345,7 +345,7 @@ static PostDataSetsRequestBody GetPostRequestBody(PostDataSetsRequestBody body, 
     };
 }
 
-// These are constants for now but it would be great to them into the UI to allow the user to be able to adjust the reference period and the threshold
+// These are constants for now but it would be great to them into the UI to allow the user to be able to adjust the reference period and the threshold.
 // Currently, for Australia, Burketown, Eucla, Learmonth, Morawa, Robe, Snowtown, and Victoria River Downs are excluded from the analysis because they don't have enough records in the reference period.
 const short ReferenceStartYear = 1961;
 const short ReferenceEndYear = 1990;
