@@ -14,17 +14,25 @@ An anomaly is anything that is *not normal*. In climate science, a temperature a
 
 To calculate an anomaly, we need to *decide* what is "normal" and we call that process [normalisation](https://en.wikipedia.org/wiki/Normalization). Normalisation is a common process in [statistics](https://en.wikipedia.org/wiki/Normalization_(statistics)), [audio processing](https://en.wikipedia.org/wiki/Audio_normalization) and has various applications in computing. Whenever we have a set of related numbers, we can normalise them.
 
+### Simple normalisation
+
 For example, given the numbers of 3, 7, 5, 2, and 12, we could normalise them using the following method:
 
 1. Find the highest value (12 in this example)
 2. Divide all values by the highest
 3. The result will be a set of normalised values between 0 and 1 (0.25, 0.58, 0.42, 0.17, and 1 for the numbers above)
 
-We could multiply the normalised set of numbers by a constant, resulting in values that are consistently scaled. In computing, we may want to multiply those numbers by 255 to assign a normalised colour intensity; 12 could be the brightest value (255) while 2 will be the dullest (43). Normalisation can also be useful when we want to compare different sets of numbers, such as temperature records in different years or from different locations.
+We could multiply the normalised set of numbers by a constant, resulting in values that are consistently scaled. In computing, we may want to multiply those numbers by 255 to assign a normalised colour intensity; 12 could be the brightest value (255) while 2 will be the dullest (43).
 
-The distinction with temperature normalisation and anomalies is that instead of taking the highest temperature (also an option but would result in a different type of normalisation), climate scientists will average a significant subset of the dataset (or average the *whole* dataset) and use that as the basis of what is "normal". The subset of data is called the reference period (see below). Furthermore, instead of dividing by the maximum value, scientists subtract the specific value from the normal value. This will yield results that can be above or below the normal value. These are the anomalies.
+Normalisation can also be useful when we want to compare different sets of numbers, such as temperature records in different years or from different locations.
+
+### Climate normalisation
+
+The distinction between climate normalisation and anomalies with the simple approach described above is that instead of taking the highest temperature (also an option but would result in a different type of normalisation), climate scientists will average a significant subset of the dataset (or average the *whole* dataset) and use that as the basis of what is "normal". The subset of data is called the reference period (see below). Furthermore, instead of dividing by the maximum value, scientists subtract the specific value from the normal value. This will yield results that can be above or below the normal value. These are the anomalies.
 
 For example, the average maximum temperature for Hobart (Tasmania, Australia), 1918-2021, is 17.2°C. If today's temperature is 21.3°C, the anomaly is 4.1°C. If tomorrow's maximum temperature will be 15.7°C, the anomaly will be -1.5°C.
+
+### Climate stripes
 
 The method for creating a [climate stripe](https://en.wikipedia.org/wiki/Warming_stripes) is to first normalise the dataset (in this case calculate the average of the whole dataset) and then subtract the average maximum temperature of each year from the (normal) average. That will tell you how much a particular year varies from the normal. The next step is to use the "find the maximum and divide each positive value into the maximum" method to get a value between 0 and 1, then do the same sort of thing for the negative anomalies. Those normalised values can be used to determine how much red or blue is added to a stripe.
 
