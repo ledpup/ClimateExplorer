@@ -8,15 +8,15 @@ Why and how climate scientists use and calculate temperature anomalies
 
 ## Normalisation and anomalies
 
-An anomaly is anything that is *not normal*. In climate science, a temperature anomaly has a specific meaning and method for calculation. The [National Oceanic and Atmospheric Administration](https://www.noaa.gov/) (NOAA) explain it as:
+An anomaly is anything that is *not normal*. To calculate an anomaly, we need to *decide* what is "normal" and we call that process [normalisation](https://en.wikipedia.org/wiki/Normalization). Normalisation is a common process in [statistics](https://en.wikipedia.org/wiki/Normalization_(statistics)), [audio processing](https://en.wikipedia.org/wiki/Audio_normalization) and has various applications in computing. Whenever we have a set of related numbers, we can normalise them.
+
+In climate science, a temperature anomaly has a specific meaning and method for calculation. The [National Oceanic and Atmospheric Administration](https://www.noaa.gov/) (NOAA) explain it as:
 
 > [...] the difference from an average, or *baseline*, temperature. The baseline temperature is typically computed by averaging 30 or more years of temperature data. [Anomalies vs. Temperature](https://www.ncei.noaa.gov/access/monitoring/dyk/anomalies-vs-temperature)
 
-To calculate an anomaly, we need to *decide* what is "normal" and we call that process [normalisation](https://en.wikipedia.org/wiki/Normalization). Normalisation is a common process in [statistics](https://en.wikipedia.org/wiki/Normalization_(statistics)), [audio processing](https://en.wikipedia.org/wiki/Audio_normalization) and has various applications in computing. Whenever we have a set of related numbers, we can normalise them.
-
 ### Simple normalisation
 
-For example, given the numbers of 3, 7, 5, 2, and 12, we could normalise them using the following method:
+A simple normalisation approach could be applied to normalise a series of numbers. For example, given the numbers of 3, 7, 5, 2, and 12, we could normalise them using the following method:
 
 1. Find the highest value (12 in this example)
 2. Divide all values by the highest
@@ -28,7 +28,7 @@ Normalisation can also be useful when we want to compare different sets of numbe
 
 ### Climate normalisation
 
-The distinction between climate normalisation and anomalies with the simple approach described above is that instead of taking the highest temperature (also an option but would result in a different type of normalisation), climate scientists will average a significant subset of the dataset (or average the *whole* dataset) and use that as the basis of what is "normal". The subset of data is called the reference period (see below). Furthermore, instead of dividing by the maximum value, scientists subtract the specific value from the normal value. This will yield results that can be above or below the normal value. These are the anomalies.
+The distinction between climate normalisation and the simple approach described above is that instead of taking the highest temperature (also an option but would result in a different type of normalisation), climate scientists will average a significant subset of the dataset (or average the *whole* dataset) and use that as the basis of what is "normal". The subset of data is called the reference period (see below). Furthermore, instead of dividing by the maximum value, scientists subtract the specific value from the normal value. This will yield results that can be above or below the normal value. These are the anomalies.
 
 For example, the average maximum temperature for Hobart (Tasmania, Australia), 1918-2021, is 17.2°C. If today's temperature is 21.3°C, the anomaly is 4.1°C. If tomorrow's maximum temperature will be 15.7°C, the anomaly will be -1.5°C.
 
@@ -40,7 +40,7 @@ The method for creating a [climate stripe](https://en.wikipedia.org/wiki/Warming
 
 The next question we could answer with anomalies is: **what do we do if we want to compare temperatures from different locations?**
 
-It would be great to *not* use anomalies; why not simply average the raw temperature values (the absolute temperatures)? That would give results that are a lot easier to understand and relate to. If we wanted to compare Hobart with Darwin (Northern Territory, Australia) - two cities at the extremes of Australia - we can do that using absolute values.
+It would be great to **not** use anomalies. Why not simply average the raw temperature values (the absolute temperatures)? That would give results that are a lot easier to understand and relate to. If we wanted to compare Hobart with Darwin (Northern Territory, Australia) - two cities at the extremes of Australia - we can do that using absolute values.
 
 Below is a table with Hobart's and Darwin's yearly average maximum temperature from 2011 until 2020. It also has the combined yearly average (third column) and the total averages (last row).
 
@@ -115,7 +115,9 @@ Below is the table where the same missing years of data exist as Table 2, but av
 | ----- | ------ | ------ | ------- |
 | **Total** | **18.13**  | **32.82**  | **-0.07**   |
 
-With 25% of the records missing it would be difficult to have much confidence in the results no matter what analysis we attempt and yet Table 2 and Table 3 are completely different. If you compare Table 3's 2011 anomaly (-0.61°C) with Table 1's anomaly (24.58°C - 25.39°C = -0.81°C), the difference is only 0.20°C. However, Table 2's 2018 absolute temperature average (32.82°C) compared with the Table 1's temperature average (25.51°C), shows a difference of 7.31°C!
+With 25% of the records missing it would be difficult to have much confidence in the results no matter what analysis we attempt and yet Table 2 and Table 3 are completely different.
+
+If you compare Table 3's 2011 anomaly (-0.61°C) with Table 1's anomaly (24.58°C - 25.39°C = -0.81°C), the difference is only 0.20°C. However, Table 2's 2018 absolute temperature average (32.82°C) compared with the Table 1's temperature average (25.51°C), shows a difference of 7.31°C!
 
 It is clear that an analysis using anomalies is a much more reliable method when the temperature record contains missing data.
 
