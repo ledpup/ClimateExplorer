@@ -770,7 +770,7 @@ public partial class ChartView
                         Grid = new { DrawOnChartArea = false },
                         Title = new
                         {
-                            Text = UnitOfMeasureLabel(s.SeriesTransformation, uom, s.Aggregation),
+                            Text = UnitOfMeasureLabel(s.SeriesTransformation, uom, s.Aggregation, s.Value),
                             Display = true,
                             Color = s.Colour == "#ffff33" ? "#a0a033" : s.Colour,
                         },

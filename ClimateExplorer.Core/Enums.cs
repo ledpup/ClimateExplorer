@@ -63,9 +63,15 @@ public static class Enums
         Median
     }
 
-    public static string UnitOfMeasureLabel(SeriesTransformations seriesTransformations, UnitOfMeasure unitOfMeasure, SeriesAggregationOptions seriesAggregationOptions)
+    public enum SeriesValueOptions
     {
-        return seriesTransformations switch
+        Value,
+        Anomaly
+    }
+
+    public static string UnitOfMeasureLabel(SeriesTransformations seriesTransformations, UnitOfMeasure unitOfMeasure, SeriesAggregationOptions seriesAggregationOptions, SeriesValueOptions seriesValueOptions)
+    {
+        var label = seriesTransformations switch
         {
             SeriesTransformations.IsFrosty => "Days of frost",
             SeriesTransformations.DayOfYearIfFrost => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "Last day of frost" : "First day of frost",
@@ -77,6 +83,13 @@ public static class Enums
             SeriesTransformations.EqualOrAbove25 => "Days of 25mm of rain or more",
             _ => UnitOfMeasureLabel(unitOfMeasure),
         };
+
+        if (seriesValueOptions == SeriesValueOptions.Anomaly)
+        {
+            label += " - Anomaly";
+        }
+
+        return label;
     }
 
     static string UnitOfMeasureLabel(UnitOfMeasure unitOfMeasure)

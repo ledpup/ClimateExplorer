@@ -249,6 +249,8 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
 
         foreach (var locationId in locationGroup.LocationIds)
         {
+            // Initial values will be absolute values
+            body.Anomaly = false;
             var dataset = await PostDataSets(GetPostRequestBody(body, locationId));
             var anomalyDataSet = GenerateAnomalyDataSetForLocation(dataset);
 
@@ -258,6 +260,8 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
             }
         }
 
+        // We want to always return an anomalous result
+        body.Anomaly = true;
         series = await GenerateAverageOfAnomaliesSeries(body, series, anomalyDatasets);
     }
     else
