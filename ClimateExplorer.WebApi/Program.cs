@@ -252,6 +252,8 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
         ParallelOptions parallelOptions = new();
         await Parallel.ForEachAsync(locationGroup.LocationIds, parallelOptions, async (locationId, cancellationToken) =>
         {
+            // Initial values will be absolute values
+            body.Anomaly = false;
             var dataset = await PostDataSets(GetPostRequestBody(body, locationId));
             var anomalyDataSet = GenerateAnomalyDataSetForLocation(dataset);
 
@@ -261,6 +263,8 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
             }
         });
 
+        // We want to always return an anomalous result
+        body.Anomaly = true;
         series = await GenerateAverageOfAnomaliesSeries(body, series, anomalyDatasets);
     }
     else
