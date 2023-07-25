@@ -28,13 +28,13 @@ Normalisation can also be useful when we want to compare different sets of numbe
 
 ### Climate normalisation
 
-The distinction between climate normalisation and the simple approach described above is that instead of taking the highest temperature (also an option but would result in a different type of normalisation), climate scientists will average a significant subset of the dataset (or average the *whole* dataset) and use that as the basis of what is "normal". The subset of data is called the reference period (see below). Furthermore, instead of dividing by the maximum value, scientists subtract the specific value from the normal value. This will yield results that can be above or below the normal value. These are the anomalies.
+The distinction between climate normalisation and the simple approach described above is that instead of taking the highest temperature (also an option but would result in a different type of normalisation), climate scientists will average a significant subset of the dataset (or average the *whole* dataset) and use that as the basis of what is "normal". The subset of data is called the reference period (see below). Furthermore, instead of dividing by the maximum value, scientists subtract the normal value from the specific value. This will yield results that can be above or below the normal value. These are the anomalies.
 
 For example, the average maximum temperature for Hobart (Tasmania, Australia), 1918-2021, is 17.2°C. If today's temperature is 21.3°C, the anomaly is 4.1°C. If tomorrow's maximum temperature will be 15.7°C, the anomaly will be -1.5°C.
 
 ### Climate stripes
 
-The method for creating a [climate stripe](https://en.wikipedia.org/wiki/Warming_stripes) is to first normalise the dataset (in this case calculate the average of the whole dataset) and then subtract the average maximum temperature of each year from the (normal) average. That will tell you how much a particular year varies from the normal. The next step is to use the "find the maximum and divide each positive value into the maximum" method to get a value between 0 and 1, then do the same sort of thing for the negative anomalies. Those normalised values can be used to determine how much red or blue is added to a stripe.
+The method for creating a [climate stripe](https://en.wikipedia.org/wiki/Warming_stripes) is to first normalise the dataset (in this case calculate the average of the whole dataset) and then subtract the normal average from the average maximum temperature for each year. That will tell you how much a particular year varies from the normal. The next step is to use the "find the maximum and divide each positive value into the maximum" method to get a value between 0 and 1, then do the same sort of thing for the negative anomalies. Those normalised values can be used to determine how much red or blue is added to a stripe.
 
 ## Comparing between locations
 
