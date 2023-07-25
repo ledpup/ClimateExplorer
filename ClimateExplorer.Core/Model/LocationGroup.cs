@@ -22,7 +22,7 @@ public class LocationGroup : LocationBase
             new LocationGroup
             {
                 Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"),
-                Name = "112 ACORN-SAT locations, excluding 8 urban heat-influenced locations",
+                Name = "112 ACORN-SAT locations, excluding 8 urban heat-influenced locations", // Excluded are: Sydney, Melbourne, Adelaide and Hobart + Laverton, Richmond (NSW), Townsville and Rockhampton
                 LocationIds = new List<Guid>
                 {
                     new Guid("cbb11150-ec74-4401-8357-fae6fef70768"),
