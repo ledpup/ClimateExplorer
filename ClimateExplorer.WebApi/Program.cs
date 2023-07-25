@@ -247,7 +247,10 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
 
         var anomalyDatasets = new List<DataSet>();
 
-        foreach (var locationId in locationGroup.LocationIds)
+        // The following section is probably the most expensive operation in the whole application
+        // Let's do it all parallel baby, like we did in 2007!
+        ParallelOptions parallelOptions = new();
+        await Parallel.ForEachAsync(locationGroup.LocationIds, parallelOptions, async (locationId, cancellationToken) =>
         {
             var dataset = await PostDataSets(GetPostRequestBody(body, locationId));
             var anomalyDataSet = GenerateAnomalyDataSetForLocation(dataset);
@@ -256,7 +259,7 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
             {
                 anomalyDatasets.Add(anomalyDataSet);
             }
-        }
+        });
 
         series = await GenerateAverageOfAnomaliesSeries(body, series, anomalyDatasets);
     }
