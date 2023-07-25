@@ -150,7 +150,3 @@ However, not only has the information **not** been removed, it has been expanded
 WUWT also state that climate scientists don't adjust for biases of [Urban Heat Island (UHI)](https://www.epa.gov/green-infrastructure/reduce-urban-heat-island-effect). The BoM explain that eight locations in their 112 ACORN-SAT sites are affected by this phenomenon.
 
 > [...] four ACORN-SAT locations (Sydney, Melbourne, Adelaide and Hobart) were defined as urban in the initial classification, and four more (Laverton, Victoria; Richmond, New South Wales; Townsville and Rockhampton, Queensland) as urban-influenced [...] These eight locations remain a part of the ACORN-SAT dataset, as they are important for monitoring changes in the climates in which many Australians live. However, **they are not included in assessments of the warming trend across Australia or the calculation of national and State averages**. ([ACORN-SAT FAQs](http://www.bom.gov.au/climate/data/acorn-sat/#tabs=FAQs) - emphasis mine)
-
-### Critical thinking
-
-A sceptical and critical approach (a *scientific* approach) is better when trying to understand climate science than a conspiratorial approach. These are not trivial and occasional mistakes on the side of the climate science "sceptic", it's a never-ending litany of errors. If all you do is look for conspiracy, you'll find it everywhere.
