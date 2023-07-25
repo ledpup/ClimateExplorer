@@ -28,4 +28,10 @@ var store = [{
         "tags": [],
         "url": "/blog/meta/2022/12/05/climatological-normals.html",
         "teaser": null
+      },{
+        "title": "What's up with temperature anomalies?",
+        "excerpt":"Why and how climate scientists use and calculate temperature anomalies Normalisation and anomalies An anomaly is anything that is not normal. In climate science, a temperature anomaly has a specific meaning and method for calculation. The National Oceanic and Atmospheric Administration (NOAA) explain it as: […] the difference from an...","categories": ["meta"],
+        "tags": [],
+        "url": "/blog/meta/2023/07/25/temperature-anomaly.html",
+        "teaser": null
       }]
