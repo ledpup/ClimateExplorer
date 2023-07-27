@@ -67,7 +67,7 @@ On their [web page about anomalies](https://www.ncei.noaa.gov/access/monitoring/
 
 However, if temperature records were as good as the recent records for Hobart and Darwin, there would be no need to use anomalies. We have shown above that finding the average between wildly different locations is no big deal (it's about 25°C for Darwin and Hobart).
 
-It is in their second paragraph that NOAA raise the best reason to use anomalies. This reason is due to the irregularity of climate data. The data is unreliable because
+NOAA's second paragraph states the best reason to use anomalies; because climate data is irregular. The data is irregular because
 
 * Stations start recording data at different times (some stations started recording more than one hundred years ago while others only started recording this year)
 * There are often breaks in records, sometimes running for multiple consecutive years, sometimes with sporadic missing records
@@ -129,11 +129,11 @@ Once we're happy that this technique works well with some missing data (hopefull
 
 ## Reference period
 
-The reference period is the last aspect of climate anomalies to discuss. The reference period is the time period that is selected to calculate the base average (the "normal"), used to find the anomaly. The Australian Bureau of Meteorology (BoM) selected 30 years (a [climatological normal](https://en.wikipedia.org/wiki/Climatological_normal)), 1961-1990, for their reference period (see [ACORN-SAT](http://www.bom.gov.au/climate/data/acorn-sat/#tabs=ACORN%E2%80%90SAT)). The UK Met Office Hadley Centre generally use the same reference period (see [HadCRUT5](https://www.metoffice.gov.uk/hadobs/hadcrut5/)). [NASA GISS](https://www.giss.nasa.gov/) use [1951-1980](https://data.giss.nasa.gov/gistemp/faq/#q102).
+The reference period is the last aspect of climate anomalies to discuss. The reference period is the time period that is selected to calculate the base average (the "normal"), used to find the anomaly. The [Australian Bureau of Meteorology (BoM)](http://www.bom.gov.au/) selected 30 years (a [climatological normal](https://en.wikipedia.org/wiki/Climatological_normal)), 1961-1990, for their reference period (see [ACORN-SAT](http://www.bom.gov.au/climate/data/acorn-sat/#tabs=ACORN%E2%80%90SAT)). The UK Met Office Hadley Centre generally use the same reference period (see [HadCRUT5](https://www.metoffice.gov.uk/hadobs/hadcrut5/)). [NASA GISS](https://www.giss.nasa.gov/) use [1951-1980](https://data.giss.nasa.gov/gistemp/faq/#q102).
 
 The reference period selected will not change the shape of the resulting data and graphs, only the magnitudes of the anomalies. If the years 1991-2020 were selected, anomalies will rarely be above zero because that period is (currently) one of the hottest periods on record (i.e., most years on the temperature record will be colder than the period 1991-2020).
 
-When compiling data for the Australian anomalies for ClimateExplorer, we used the same reference period of 1961-1990 while also requiring that each station have records for at least half of those years. When doing so we found that Burketown, Eucla, Learmonth, Morawa, Robe, Snowtown, and Victoria River Downs did not have enough records during that period. Those stations have been excluded from our analysis.
+When compiling data for the Australian anomalies for ClimateExplorer, we used the same reference period as the BoM (1961-1990) while also requiring that each station have records for at least half of those years. When doing so we found that Burketown, Eucla, Learmonth, Morawa, Robe, Snowtown, and Victoria River Downs did not have enough records during that period. Those stations have been excluded from our analysis.
 
 ## Another approach
 
