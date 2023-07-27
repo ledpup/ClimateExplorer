@@ -30,7 +30,7 @@ var store = [{
         "teaser": null
       },{
         "title": "What's up with temperature anomalies?",
-        "excerpt":"Why and how climate scientists use and calculate temperature anomalies Normalisation and anomalies An anomaly is anything that is not normal. To calculate an anomaly, we need to decide what is “normal” and we call that process normalisation. Normalisation is a common process in statistics, audio processing and has various...","categories": ["meta"],
+        "excerpt":"Why and how climate scientists use and calculate temperature anomalies Normalisation and anomalies An anomaly is anything that is not normal. In science and mathematics, series of related numbers can be compared to discover anomalies within the series. To calculate a numerical anomaly, we need to decide what is “normal”;...","categories": ["meta"],
         "tags": [],
         "url": "/blog/meta/2023/07/25/temperature-anomaly.html",
         "teaser": null

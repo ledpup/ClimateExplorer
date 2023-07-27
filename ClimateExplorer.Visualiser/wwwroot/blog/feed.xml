@@ -1,14 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="/blog/" rel="alternate" type="text/html" /><updated>2023-07-25T21:36:05+10:00</updated><id>/blog/feed.xml</id><title type="html">ClimateExplorer</title><subtitle>The official blog of https://climateexplorer.net.</subtitle><entry><title type="html">What’s up with temperature anomalies?</title><link href="/blog/meta/2023/07/25/temperature-anomaly.html" rel="alternate" type="text/html" title="What’s up with temperature anomalies?" /><published>2023-07-25T18:00:00+10:00</published><updated>2023-07-25T18:00:00+10:00</updated><id>/blog/meta/2023/07/25/temperature-anomaly</id><content type="html" xml:base="/blog/meta/2023/07/25/temperature-anomaly.html">&lt;p&gt;Why and how climate scientists use and calculate temperature anomalies&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="/blog/" rel="alternate" type="text/html" /><updated>2023-07-27T14:17:37+10:00</updated><id>/blog/feed.xml</id><title type="html">ClimateExplorer</title><subtitle>The official blog of https://climateexplorer.net.</subtitle><entry><title type="html">What’s up with temperature anomalies?</title><link href="/blog/meta/2023/07/25/temperature-anomaly.html" rel="alternate" type="text/html" title="What’s up with temperature anomalies?" /><published>2023-07-25T18:00:00+10:00</published><updated>2023-07-25T18:00:00+10:00</updated><id>/blog/meta/2023/07/25/temperature-anomaly</id><content type="html" xml:base="/blog/meta/2023/07/25/temperature-anomaly.html">&lt;p&gt;Why and how climate scientists use and calculate temperature anomalies&lt;/p&gt;
 
 &lt;h2 id=&quot;normalisation-and-anomalies&quot;&gt;Normalisation and anomalies&lt;/h2&gt;
 
-&lt;p&gt;An anomaly is anything that is &lt;em&gt;not normal&lt;/em&gt;. To calculate an anomaly, we need to &lt;em&gt;decide&lt;/em&gt; what is “normal” and we call that process &lt;a href=&quot;https://en.wikipedia.org/wiki/Normalization&quot;&gt;normalisation&lt;/a&gt;. Normalisation is a common process in &lt;a href=&quot;https://en.wikipedia.org/wiki/Normalization_(statistics)&quot;&gt;statistics&lt;/a&gt;, &lt;a href=&quot;https://en.wikipedia.org/wiki/Audio_normalization&quot;&gt;audio processing&lt;/a&gt; and has various applications in computing. Whenever we have a set of related numbers, we can normalise them.&lt;/p&gt;
-
-&lt;p&gt;In climate science, a temperature anomaly has a specific meaning and method for calculation. The &lt;a href=&quot;https://www.noaa.gov/&quot;&gt;National Oceanic and Atmospheric Administration&lt;/a&gt; (NOAA) explain it as:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;[…] the difference from an average, or &lt;em&gt;baseline&lt;/em&gt;, temperature. The baseline temperature is typically computed by averaging 30 or more years of temperature data. &lt;a href=&quot;https://www.ncei.noaa.gov/access/monitoring/dyk/anomalies-vs-temperature&quot;&gt;Anomalies vs. Temperature&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;An anomaly is anything that is &lt;em&gt;not normal&lt;/em&gt;. In science and mathematics, series of related numbers can be compared to discover anomalies within the series. To calculate a numerical anomaly, we need to &lt;em&gt;decide&lt;/em&gt; what is “normal”; we call that process &lt;a href=&quot;https://en.wikipedia.org/wiki/Normalization&quot;&gt;normalisation&lt;/a&gt;. Normalisation is a common process in &lt;a href=&quot;https://en.wikipedia.org/wiki/Normalization_(statistics)&quot;&gt;statistics&lt;/a&gt;, &lt;a href=&quot;https://en.wikipedia.org/wiki/Audio_normalization&quot;&gt;audio processing&lt;/a&gt; and has various applications in computing.&lt;/p&gt;
 
 &lt;h3 id=&quot;simple-normalisation&quot;&gt;Simple normalisation&lt;/h3&gt;
 
@@ -22,9 +16,15 @@
 
 &lt;p&gt;We could multiply the normalised set of numbers by a constant, resulting in values that are consistently scaled. In computing, we may want to multiply those numbers by 255 to assign a normalised colour intensity; 12 could be the brightest value (255) while 2 will be the dullest (43).&lt;/p&gt;
 
-&lt;p&gt;Normalisation can also be useful when we want to compare different sets of numbers, such as temperature records in different years or from different locations.&lt;/p&gt;
+&lt;p&gt;Normalisation can also be useful when we want to compare different sets of numbers, such as temperature records in different years or from different locations. A simple normalisation approach, however, isn’t very robust when dealing with climate data. A single “highest” as the basis, out of thousands of records, is error prone (what if the meteorologist simply made a mistake on that one recording?) and won’t yield any anomalies. We could find anomalies with the normalisation approach described below. Anomalies such as: are temperatures increasing over time? Or: is rainfall declining over time?&lt;/p&gt;
 
 &lt;h3 id=&quot;climate-normalisation&quot;&gt;Climate normalisation&lt;/h3&gt;
+
+&lt;p&gt;In climate science, a temperature anomaly has a specific meaning and method for calculation. The &lt;a href=&quot;https://www.noaa.gov/&quot;&gt;National Oceanic and Atmospheric Administration&lt;/a&gt; (NOAA) explain it as:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;[…] the difference from an average, or &lt;em&gt;baseline&lt;/em&gt;, temperature. The baseline temperature is typically computed by averaging 30 or more years of temperature data. &lt;a href=&quot;https://www.ncei.noaa.gov/access/monitoring/dyk/anomalies-vs-temperature&quot;&gt;Anomalies vs. Temperature&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
 
 &lt;p&gt;The distinction between climate normalisation and the simple approach described above is that instead of taking the highest temperature (also an option but would result in a different type of normalisation), climate scientists will average a significant subset of the dataset (or average the &lt;em&gt;whole&lt;/em&gt; dataset) and use that as the basis of what is “normal”. The subset of data is called the reference period (see below). Furthermore, instead of dividing by the maximum value, scientists subtract the normal value from the specific value. This will yield results that can be above or below the normal value. These are the anomalies.&lt;/p&gt;
 
@@ -32,7 +32,7 @@
 
 &lt;h3 id=&quot;climate-stripes&quot;&gt;Climate stripes&lt;/h3&gt;
 
-&lt;p&gt;The method for creating a &lt;a href=&quot;https://en.wikipedia.org/wiki/Warming_stripes&quot;&gt;climate stripe&lt;/a&gt; is to first normalise the dataset (in this case calculate the average of the whole dataset) and then subtract the normal average from the average maximum temperature for each year. That will tell you how much a particular year varies from the normal. The next step is to use the “find the maximum and divide each positive value into the maximum” method to get a value between 0 and 1, then do the same sort of thing for the negative anomalies. Those normalised values can be used to determine how much red or blue is added to a stripe.&lt;/p&gt;
+&lt;p&gt;The method for creating a &lt;a href=&quot;https://en.wikipedia.org/wiki/Warming_stripes&quot;&gt;climate stripe&lt;/a&gt; is to first normalise the dataset (in this case calculate the average of the whole dataset) and then subtract the normal average from the average maximum temperature for each year. That will tell you how much a particular year varies from the normal. The next step is to use the simple normalisation method (described above) to get a value between 0 and 1, then do the same sort of thing for the negative anomalies. Those normalised values can be used to determine how much red or blue is added to a stripe.&lt;/p&gt;
 
 &lt;h2 id=&quot;comparing-between-locations&quot;&gt;Comparing between locations&lt;/h2&gt;
 
@@ -125,11 +125,13 @@
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;p&gt;On their &lt;a href=&quot;https://www.ncei.noaa.gov/access/monitoring/dyk/anomalies-vs-temperature&quot;&gt;web page about anomalies&lt;/a&gt;, NOAA’s explanation for their use in climate science does not lead with the best reason for using them. If temperature records were as good as the recent records for Hobart and Darwin, there would be no need to use anomalies. We have shown above that finding the average between wildly different locations is no big deal (it’s about 25°C for Darwin and Hobart).&lt;/p&gt;
+&lt;p&gt;On their &lt;a href=&quot;https://www.ncei.noaa.gov/access/monitoring/dyk/anomalies-vs-temperature&quot;&gt;web page about anomalies&lt;/a&gt;, NOAA’s explanation for their use in climate science does not lead with the best reason for using them. They discuss their use in regards to location.&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;When calculating an average of absolute temperatures, things like station location or elevation will have an effect on the data (ex. higher elevations tend to be cooler than lower elevations and urban areas tend to be warmer than rural areas). However, when looking at anomalies, those factors are less critical. &lt;a href=&quot;https://www.ncei.noaa.gov/access/monitoring/dyk/anomalies-vs-temperature&quot;&gt;Anomalies vs. Temperature&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
+
+&lt;p&gt;However, if temperature records were as good as the recent records for Hobart and Darwin, there would be no need to use anomalies. We have shown above that finding the average between wildly different locations is no big deal (it’s about 25°C for Darwin and Hobart).&lt;/p&gt;
 
 &lt;p&gt;It is in their second paragraph that NOAA raise the best reason to use anomalies. This reason is due to the irregularity of climate data. The data is unreliable because&lt;/p&gt;
 
@@ -226,11 +228,13 @@
 
 &lt;p&gt;Note: we have applied a rule here that if a year is missing an average temperature we nevertheless average what is available. We could have a rule that if any year is missing, we refuse to average, and ignore the whole year. That would invalidate half of the results in this case, even though only one quarter of the initial data is missing. If we wanted to analyse many locations, we would even more frequently have to throw out whole years, or come up with another method for how many missing years are acceptable to still form a valid average. Once we group tens or hundreds of stations together, it’s very likely that some may experience issues in maintaining records on any given year.&lt;/p&gt;
 
-&lt;p&gt;It’s clear that the yearly averages for 2011, 2012, 2015, 2018 and 2020 are wildly inaccurate. There were no &lt;em&gt;real&lt;/em&gt; fluctuations in temperature, but the averages suggest there are. It’s all due to missing data.&lt;/p&gt;
+&lt;h3 id=&quot;why-anomalies-are-required&quot;&gt;Why anomalies are required&lt;/h3&gt;
+
+&lt;p&gt;It’s clear that the yearly averages for 2011, 2012, 2015, 2018 and 2020 in Table 2 are wildly inaccurate. There were no &lt;em&gt;real&lt;/em&gt; fluctuations in temperature, but the averages suggest there are. It’s all due to missing data.&lt;/p&gt;
 
 &lt;p&gt;Instead of using absolute temperature averages, climate scientists are &lt;em&gt;forced&lt;/em&gt; to use anomaly averages because the historical record of temperatures are not standardised, long running, or reliable enough to use absolute temperatures.&lt;/p&gt;
 
-&lt;p&gt;Below is the table where the same missing years of data exist as Table 2, but average anomalies are used instead of absolute temperatures.&lt;/p&gt;
+&lt;p&gt;Below is a table where the same missing years of data exist as Table 2, but average anomalies are used instead of absolute temperatures.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Table 3 (a fictitious variation of Table 1, in anomalous °C)&lt;/strong&gt;&lt;/p&gt;
 
@@ -349,7 +353,7 @@
 
 &lt;h3 id=&quot;climate-conspiracy&quot;&gt;Climate conspiracy&lt;/h3&gt;
 
-&lt;p&gt;Not only is there nothing interesting in the two graphs in the article (“real” vs “anomaly”) - it’s the same graph with different scales on the y-axis - the article claims that &lt;a href=&quot;https://data.giss.nasa.gov/gistemp/&quot;&gt;NASA Goddard Institute of Space Studies&lt;/a&gt; has removed a method for converting from anomalies to absolute values.&lt;/p&gt;
+&lt;p&gt;Not only is there nothing interesting in the two graphs in the &lt;a href=&quot;https://wattsupwiththat.com/2023/03/12/new-wuwt-global-temperature-feature-anomaly-vs-real-world-temperature/&quot;&gt;WUWT&lt;/a&gt; article (“real” vs “anomaly”) - it’s the same graph with different scales on the y-axis - the article claims that &lt;a href=&quot;https://data.giss.nasa.gov/gistemp/&quot;&gt;NASA Goddard Institute of Space Studies&lt;/a&gt; has removed a method for converting from anomalies to absolute values.&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;Of course GISS &lt;em&gt;removed it&lt;/em&gt; from that page as seen today, because they don’t want people doing exactly what I’m doing now […] (WUWT, 2023)&lt;/p&gt;

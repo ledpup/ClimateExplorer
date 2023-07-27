@@ -8,11 +8,7 @@ Why and how climate scientists use and calculate temperature anomalies
 
 ## Normalisation and anomalies
 
-An anomaly is anything that is *not normal*. To calculate an anomaly, we need to *decide* what is "normal" and we call that process [normalisation](https://en.wikipedia.org/wiki/Normalization). Normalisation is a common process in [statistics](https://en.wikipedia.org/wiki/Normalization_(statistics)), [audio processing](https://en.wikipedia.org/wiki/Audio_normalization) and has various applications in computing. Whenever we have a set of related numbers, we can normalise them.
-
-In climate science, a temperature anomaly has a specific meaning and method for calculation. The [National Oceanic and Atmospheric Administration](https://www.noaa.gov/) (NOAA) explain it as:
-
-> [...] the difference from an average, or *baseline*, temperature. The baseline temperature is typically computed by averaging 30 or more years of temperature data. [Anomalies vs. Temperature](https://www.ncei.noaa.gov/access/monitoring/dyk/anomalies-vs-temperature)
+An anomaly is anything that is *not normal*. In science and mathematics, series of related numbers can be compared to discover anomalies within the series. To calculate a numerical anomaly, we need to *decide* what is "normal"; we call that process [normalisation](https://en.wikipedia.org/wiki/Normalization). Normalisation is a common process in [statistics](https://en.wikipedia.org/wiki/Normalization_(statistics)), [audio processing](https://en.wikipedia.org/wiki/Audio_normalization) and has various applications in computing.
 
 ### Simple normalisation
 
@@ -24,9 +20,13 @@ A simple normalisation approach could be applied to normalise a series of number
 
 We could multiply the normalised set of numbers by a constant, resulting in values that are consistently scaled. In computing, we may want to multiply those numbers by 255 to assign a normalised colour intensity; 12 could be the brightest value (255) while 2 will be the dullest (43).
 
-Normalisation can also be useful when we want to compare different sets of numbers, such as temperature records in different years or from different locations.
+Normalisation can also be useful when we want to compare different sets of numbers, such as temperature records in different years or from different locations. A simple normalisation approach, however, isn't very robust when dealing with climate data. A single "highest" as the basis, out of thousands of records, is error prone (what if the meteorologist simply made a mistake on that one recording?) and won't yield any anomalies. We could find anomalies with the normalisation approach described below. Anomalies such as: are temperatures increasing over time? Or: is rainfall declining over time?
 
 ### Climate normalisation
+
+In climate science, a temperature anomaly has a specific meaning and method for calculation. The [National Oceanic and Atmospheric Administration](https://www.noaa.gov/) (NOAA) explain it as:
+
+> [...] the difference from an average, or *baseline*, temperature. The baseline temperature is typically computed by averaging 30 or more years of temperature data. [Anomalies vs. Temperature](https://www.ncei.noaa.gov/access/monitoring/dyk/anomalies-vs-temperature)
 
 The distinction between climate normalisation and the simple approach described above is that instead of taking the highest temperature (also an option but would result in a different type of normalisation), climate scientists will average a significant subset of the dataset (or average the *whole* dataset) and use that as the basis of what is "normal". The subset of data is called the reference period (see below). Furthermore, instead of dividing by the maximum value, scientists subtract the normal value from the specific value. This will yield results that can be above or below the normal value. These are the anomalies.
 
@@ -34,7 +34,7 @@ For example, the average maximum temperature for Hobart (Tasmania, Australia), 1
 
 ### Climate stripes
 
-The method for creating a [climate stripe](https://en.wikipedia.org/wiki/Warming_stripes) is to first normalise the dataset (in this case calculate the average of the whole dataset) and then subtract the normal average from the average maximum temperature for each year. That will tell you how much a particular year varies from the normal. The next step is to use the "find the maximum and divide each positive value into the maximum" method to get a value between 0 and 1, then do the same sort of thing for the negative anomalies. Those normalised values can be used to determine how much red or blue is added to a stripe.
+The method for creating a [climate stripe](https://en.wikipedia.org/wiki/Warming_stripes) is to first normalise the dataset (in this case calculate the average of the whole dataset) and then subtract the normal average from the average maximum temperature for each year. That will tell you how much a particular year varies from the normal. The next step is to use the simple normalisation method (described above) to get a value between 0 and 1, then do the same sort of thing for the negative anomalies. Those normalised values can be used to determine how much red or blue is added to a stripe.
 
 ## Comparing between locations
 
@@ -58,12 +58,14 @@ Below is a table with Hobart's and Darwin's yearly average maximum temperature f
 | 2018  | 18.19  | 32.82  | 25.51   |
 | 2019  | 18.65  | 32.98  | 25.82   |
 | 2020  | 17.70  | 33.10  | 25.40   |
-| ----- | ------ | ------ | ------- |
+| ----- |  ----: |  ----: |  -----: |
 | **Total** | **18.08**  | **32.68**  | **25.39**   |
 
-On their [web page about anomalies](https://www.ncei.noaa.gov/access/monitoring/dyk/anomalies-vs-temperature), NOAA's explanation for their use in climate science does not lead with the best reason for using them. If temperature records were as good as the recent records for Hobart and Darwin, there would be no need to use anomalies. We have shown above that finding the average between wildly different locations is no big deal (it's about 25°C for Darwin and Hobart).
+On their [web page about anomalies](https://www.ncei.noaa.gov/access/monitoring/dyk/anomalies-vs-temperature), NOAA's explanation for their use in climate science does not lead with the best reason for using them. They discuss their use in regards to location.
 
 > When calculating an average of absolute temperatures, things like station location or elevation will have an effect on the data (ex. higher elevations tend to be cooler than lower elevations and urban areas tend to be warmer than rural areas). However, when looking at anomalies, those factors are less critical. [Anomalies vs. Temperature](https://www.ncei.noaa.gov/access/monitoring/dyk/anomalies-vs-temperature)
+
+However, if temperature records were as good as the recent records for Hobart and Darwin, there would be no need to use anomalies. We have shown above that finding the average between wildly different locations is no big deal (it's about 25°C for Darwin and Hobart).
 
 It is in their second paragraph that NOAA raise the best reason to use anomalies. This reason is due to the irregularity of climate data. The data is unreliable because
 
@@ -87,16 +89,18 @@ With all of these conditions applying, it's possible that Table 1 *could* look l
 | 2018  |        | 32.82  | 32.82   |
 | 2019  | 18.65  | 32.98  | 25.82   |
 | 2020  | 17.70  |        | 17.70   |
-| ----- | ------ | ------ | ------- |
+| ----- |  ----: |  ----: |  -----: |
 | **Total** | **18.13**  | **32.82**  | **24.68**   |
 
 Note: we have applied a rule here that if a year is missing an average temperature we nevertheless average what is available. We could have a rule that if any year is missing, we refuse to average, and ignore the whole year. That would invalidate half of the results in this case, even though only one quarter of the initial data is missing. If we wanted to analyse many locations, we would even more frequently have to throw out whole years, or come up with another method for how many missing years are acceptable to still form a valid average. Once we group tens or hundreds of stations together, it's very likely that some may experience issues in maintaining records on any given year.
 
-It's clear that the yearly averages for 2011, 2012, 2015, 2018 and 2020 are wildly inaccurate. There were no *real* fluctuations in temperature, but the averages suggest there are. It's all due to missing data.
+### Why anomalies are required
+
+It's clear that the yearly averages for 2011, 2012, 2015, 2018 and 2020 in Table 2 are wildly inaccurate. There were no *real* fluctuations in temperature, but the averages suggest there are. It's all due to missing data.
 
 Instead of using absolute temperature averages, climate scientists are *forced* to use anomaly averages because the historical record of temperatures are not standardised, long running, or reliable enough to use absolute temperatures.
 
-Below is the table where the same missing years of data exist as Table 2, but average anomalies are used instead of absolute temperatures.
+Below is a table where the same missing years of data exist as Table 2, but average anomalies are used instead of absolute temperatures.
 
 **Table 3 (a fictitious variation of Table 1, in anomalous °C)**
 
@@ -112,7 +116,7 @@ Below is the table where the same missing years of data exist as Table 2, but av
 | 2018  |        |  0.00  |  0.00   |
 | 2019  |  0.52  |  0.16  |  0.34   |
 | 2020  | -0.43  |        | -0.43   |
-| ----- | ------ | ------ | ------- |
+| ----- |  ----: |  ----: |  -----: |
 | **Total** | **18.13**  | **32.82**  | **-0.07**   |
 
 With 25% of the records missing it would be difficult to have much confidence in the results no matter what analysis we attempt and yet Table 2 and Table 3 are completely different.
@@ -147,7 +151,7 @@ The statement from [Watts Up With That?](https://wattsupwiththat.com) (WUWT) isn
 
 ### Climate conspiracy
 
-Not only is there nothing interesting in the two graphs in the article ("real" vs "anomaly") - it's the same graph with different scales on the y-axis - the article claims that [NASA Goddard Institute of Space Studies](https://data.giss.nasa.gov/gistemp/) has removed a method for converting from anomalies to absolute values.
+Not only is there nothing interesting in the two graphs in the [WUWT](https://wattsupwiththat.com/2023/03/12/new-wuwt-global-temperature-feature-anomaly-vs-real-world-temperature/) article ("real" vs "anomaly") - it's the same graph with different scales on the y-axis - the article claims that [NASA Goddard Institute of Space Studies](https://data.giss.nasa.gov/gistemp/) has removed a method for converting from anomalies to absolute values.
 
 > Of course GISS *removed it* from that page as seen today, because they don't want people doing exactly what I'm doing now [...] (WUWT, 2023)
 
