@@ -18,7 +18,7 @@ A simple normalisation approach could be applied to normalise a series of number
 2. Divide all values by the highest
 3. The result will be a set of normalised values between 0 and 1 (0.25, 0.58, 0.42, 0.17, and 1 for the numbers above)
 
-We could multiply the normalised set of numbers by a constant, resulting in values that are consistently scaled. In computing, we may want to multiply those numbers by 255 to assign a normalised colour intensity; 12 could be the brightest value (255) while 2 will be the dullest (43).
+We could multiply the normalised set of numbers by a constant, resulting in values that are consistently scaled. In computing, we may want to multiply those numbers by 255 to assign a normalised colour intensity; 12 could be the brightest value (255) while 2 will be the dullest (0.17 x 255 = 43).
 
 Normalisation can also be useful when we want to compare different sets of numbers, such as temperature records in different years or from different locations. A simple normalisation approach, however, isn't very robust when dealing with climate data. A single "highest" as the basis, out of thousands of records, is error prone (what if the meteorologist simply made a mistake on that one recording?) and won't yield any anomalies. We could find anomalies with the normalisation approach described below. Anomalies such as: are temperatures increasing over time? Or: is rainfall declining over time?
 
