@@ -36,6 +36,8 @@ For example, the average maximum temperature for Hobart (Tasmania, Australia), 1
 
 The method for creating a [climate stripe](https://en.wikipedia.org/wiki/Warming_stripes) is to first normalise the dataset (in this case calculate the average of the whole dataset) and then subtract the normal average from the average maximum temperature for each year. That will tell you how much a particular year varies from the normal. The next step is to use the simple normalisation method (described above) to get a value between 0 and 1, then do the same sort of thing for the negative anomalies. Those normalised values can be used to determine how much red or blue is added to a stripe.
 
+Climate stripes are interesting because, to create them, we use a combination of simple and climate normalisation.
+
 ## Comparing between locations
 
 The next question we could answer with anomalies is: **what do we do if we want to compare temperatures from different locations?**

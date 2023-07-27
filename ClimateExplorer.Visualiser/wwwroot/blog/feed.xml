@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="/blog/" rel="alternate" type="text/html" /><updated>2023-07-27T18:18:38+10:00</updated><id>/blog/feed.xml</id><title type="html">ClimateExplorer</title><subtitle>The official blog of https://climateexplorer.net.</subtitle><entry><title type="html">What’s up with temperature anomalies?</title><link href="/blog/meta/2023/07/25/temperature-anomaly.html" rel="alternate" type="text/html" title="What’s up with temperature anomalies?" /><published>2023-07-25T18:00:00+10:00</published><updated>2023-07-25T18:00:00+10:00</updated><id>/blog/meta/2023/07/25/temperature-anomaly</id><content type="html" xml:base="/blog/meta/2023/07/25/temperature-anomaly.html">&lt;p&gt;Why and how climate scientists use and calculate temperature anomalies&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="/blog/" rel="alternate" type="text/html" /><updated>2023-07-27T18:28:10+10:00</updated><id>/blog/feed.xml</id><title type="html">ClimateExplorer</title><subtitle>The official blog of https://climateexplorer.net.</subtitle><entry><title type="html">What’s up with temperature anomalies?</title><link href="/blog/meta/2023/07/25/temperature-anomaly.html" rel="alternate" type="text/html" title="What’s up with temperature anomalies?" /><published>2023-07-25T18:00:00+10:00</published><updated>2023-07-25T18:00:00+10:00</updated><id>/blog/meta/2023/07/25/temperature-anomaly</id><content type="html" xml:base="/blog/meta/2023/07/25/temperature-anomaly.html">&lt;p&gt;Why and how climate scientists use and calculate temperature anomalies&lt;/p&gt;
 
 &lt;h2 id=&quot;normalisation-and-anomalies&quot;&gt;Normalisation and anomalies&lt;/h2&gt;
 
@@ -33,6 +33,8 @@
 &lt;h3 id=&quot;climate-stripes&quot;&gt;Climate stripes&lt;/h3&gt;
 
 &lt;p&gt;The method for creating a &lt;a href=&quot;https://en.wikipedia.org/wiki/Warming_stripes&quot;&gt;climate stripe&lt;/a&gt; is to first normalise the dataset (in this case calculate the average of the whole dataset) and then subtract the normal average from the average maximum temperature for each year. That will tell you how much a particular year varies from the normal. The next step is to use the simple normalisation method (described above) to get a value between 0 and 1, then do the same sort of thing for the negative anomalies. Those normalised values can be used to determine how much red or blue is added to a stripe.&lt;/p&gt;
+
+&lt;p&gt;Climate stripes are interesting because, to create them, we use a combination of simple and climate normalisation.&lt;/p&gt;
 
 &lt;h2 id=&quot;comparing-between-locations&quot;&gt;Comparing between locations&lt;/h2&gt;
 
@@ -133,7 +135,7 @@
 
 &lt;p&gt;However, if temperature records were as good as the recent records for Hobart and Darwin, there would be no need to use anomalies. We have shown above that finding the average between wildly different locations is no big deal (it’s about 25°C for Darwin and Hobart).&lt;/p&gt;
 
-&lt;p&gt;NOAA’s second paragraph states the best reason to use anomalies; that is: climate data is irregular. The data is irregular because&lt;/p&gt;
+&lt;p&gt;NOAA’s second paragraph states the best reason to use anomalies; because climate data is irregular. The data is irregular because&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;Stations start recording data at different times (some stations started recording more than one hundred years ago while others only started recording this year)&lt;/li&gt;
