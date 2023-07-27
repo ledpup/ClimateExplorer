@@ -1,4 +1,377 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="/blog/" rel="alternate" type="text/html" /><updated>2022-12-05T21:32:48+11:00</updated><id>/blog/feed.xml</id><title type="html">ClimateExplorer</title><subtitle>The official blog of https://climateexplorer.net.</subtitle><entry><title type="html">Climatological normal</title><link href="/blog/meta/2022/12/05/climatological-normals.html" rel="alternate" type="text/html" title="Climatological normal" /><published>2022-12-05T18:40:00+11:00</published><updated>2022-12-05T18:40:00+11:00</updated><id>/blog/meta/2022/12/05/climatological-normals</id><content type="html" xml:base="/blog/meta/2022/12/05/climatological-normals.html">&lt;p&gt;While reading &lt;a href=&quot;https://www.noaa.gov/news/new-us-climate-normals-are-here-what-do-they-tell-us-about-climate-change&quot;&gt;a news article on US climate normals&lt;/a&gt;, I decided it might be better to use the most recent &lt;strong&gt;30 years&lt;/strong&gt; of temperature data to calculate the warming index, rather than &lt;strong&gt;20 years&lt;/strong&gt; of data. This change will align the warming index with the convention of the &lt;a href=&quot;https://en.wikipedia.org/wiki/Climatological_normal&quot;&gt;climatological normal&lt;/a&gt;.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="/blog/" rel="alternate" type="text/html" /><updated>2023-07-27T18:28:10+10:00</updated><id>/blog/feed.xml</id><title type="html">ClimateExplorer</title><subtitle>The official blog of https://climateexplorer.net.</subtitle><entry><title type="html">What’s up with temperature anomalies?</title><link href="/blog/meta/2023/07/25/temperature-anomaly.html" rel="alternate" type="text/html" title="What’s up with temperature anomalies?" /><published>2023-07-25T18:00:00+10:00</published><updated>2023-07-25T18:00:00+10:00</updated><id>/blog/meta/2023/07/25/temperature-anomaly</id><content type="html" xml:base="/blog/meta/2023/07/25/temperature-anomaly.html">&lt;p&gt;Why and how climate scientists use and calculate temperature anomalies&lt;/p&gt;
+
+&lt;h2 id=&quot;normalisation-and-anomalies&quot;&gt;Normalisation and anomalies&lt;/h2&gt;
+
+&lt;p&gt;An anomaly is anything that is &lt;em&gt;not normal&lt;/em&gt;. In science and mathematics, series of related numbers can be compared to discover anomalies within the series. To calculate a numerical anomaly, we need to &lt;em&gt;decide&lt;/em&gt; what is “normal”; we call that process &lt;a href=&quot;https://en.wikipedia.org/wiki/Normalization&quot;&gt;normalisation&lt;/a&gt;. Normalisation is a common process in &lt;a href=&quot;https://en.wikipedia.org/wiki/Normalization_(statistics)&quot;&gt;statistics&lt;/a&gt;, &lt;a href=&quot;https://en.wikipedia.org/wiki/Audio_normalization&quot;&gt;audio processing&lt;/a&gt; and has various applications in computing.&lt;/p&gt;
+
+&lt;h3 id=&quot;simple-normalisation&quot;&gt;Simple normalisation&lt;/h3&gt;
+
+&lt;p&gt;A simple normalisation approach could be applied to normalise a series of numbers. For example, given the numbers of 3, 7, 5, 2, and 12, we could normalise them using the following method:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Find the highest value (12 in this example)&lt;/li&gt;
+  &lt;li&gt;Divide all values by the highest&lt;/li&gt;
+  &lt;li&gt;The result will be a set of normalised values between 0 and 1 (0.25, 0.58, 0.42, 0.17, and 1 for the numbers above)&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;We could multiply the normalised set of numbers by a constant, resulting in values that are consistently scaled. In computing, we may want to multiply those numbers by 255 to assign a normalised colour intensity; 12 could be the brightest value (255) while 2 will be the dullest (0.17 x 255 = 43).&lt;/p&gt;
+
+&lt;p&gt;Normalisation can also be useful when we want to compare different sets of numbers, such as temperature records in different years or from different locations. A simple normalisation approach, however, isn’t very robust when dealing with climate data. A single “highest” as the basis, out of thousands of records, is error prone (what if the meteorologist simply made a mistake on that one recording?) and won’t yield any anomalies. We could find anomalies with the normalisation approach described below. Anomalies such as: are temperatures increasing over time? Or: is rainfall declining over time?&lt;/p&gt;
+
+&lt;h3 id=&quot;climate-normalisation&quot;&gt;Climate normalisation&lt;/h3&gt;
+
+&lt;p&gt;In climate science, a temperature anomaly has a specific meaning and method for calculation. The &lt;a href=&quot;https://www.noaa.gov/&quot;&gt;National Oceanic and Atmospheric Administration&lt;/a&gt; (NOAA) explain it as:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;[…] the difference from an average, or &lt;em&gt;baseline&lt;/em&gt;, temperature. The baseline temperature is typically computed by averaging 30 or more years of temperature data. &lt;a href=&quot;https://www.ncei.noaa.gov/access/monitoring/dyk/anomalies-vs-temperature&quot;&gt;Anomalies vs. Temperature&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The distinction between climate normalisation and the simple approach described above is that instead of taking the highest temperature (also an option but would result in a different type of normalisation), climate scientists will average a significant subset of the dataset (or average the &lt;em&gt;whole&lt;/em&gt; dataset) and use that as the basis of what is “normal”. The subset of data is called the reference period (see below). Furthermore, instead of dividing by the maximum value, scientists subtract the normal value from the specific value. This will yield results that can be above or below the normal value. These are the anomalies.&lt;/p&gt;
+
+&lt;p&gt;For example, the average maximum temperature for Hobart (Tasmania, Australia), 1918-2021, is 17.2°C. If today’s temperature is 21.3°C, the anomaly is 4.1°C. If tomorrow’s maximum temperature will be 15.7°C, the anomaly will be -1.5°C.&lt;/p&gt;
+
+&lt;h3 id=&quot;climate-stripes&quot;&gt;Climate stripes&lt;/h3&gt;
+
+&lt;p&gt;The method for creating a &lt;a href=&quot;https://en.wikipedia.org/wiki/Warming_stripes&quot;&gt;climate stripe&lt;/a&gt; is to first normalise the dataset (in this case calculate the average of the whole dataset) and then subtract the normal average from the average maximum temperature for each year. That will tell you how much a particular year varies from the normal. The next step is to use the simple normalisation method (described above) to get a value between 0 and 1, then do the same sort of thing for the negative anomalies. Those normalised values can be used to determine how much red or blue is added to a stripe.&lt;/p&gt;
+
+&lt;p&gt;Climate stripes are interesting because, to create them, we use a combination of simple and climate normalisation.&lt;/p&gt;
+
+&lt;h2 id=&quot;comparing-between-locations&quot;&gt;Comparing between locations&lt;/h2&gt;
+
+&lt;p&gt;The next question we could answer with anomalies is: &lt;strong&gt;what do we do if we want to compare temperatures from different locations?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;It would be great to &lt;strong&gt;not&lt;/strong&gt; use anomalies. Why not simply average the raw temperature values (the absolute temperatures)? That would give results that are a lot easier to understand and relate to. If we wanted to compare Hobart with Darwin (Northern Territory, Australia) - two cities at the extremes of Australia - we can do that using absolute values.&lt;/p&gt;
+
+&lt;p&gt;Below is a table with Hobart’s and Darwin’s yearly average maximum temperature from 2011 until 2020. It also has the combined yearly average (third column) and the total averages (last row).&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Table 1 (in °C)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Year&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;Hobart&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;Darwin&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;Average&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2011&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;17.52&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;31.63&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;24.58&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2012&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;18.10&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;32.33&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25.22&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2013&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;18.11&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;32.68&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25.40&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2014&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;18.26&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;32.64&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25.45&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2015&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;17.63&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;32.61&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25.12&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2016&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;18.22&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;33.24&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25.73&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2017&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;18.45&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;32.78&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25.62&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;18.19&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;32.82&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25.51&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2019&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;18.65&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;32.98&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25.82&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2020&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;17.70&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;33.10&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25.40&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;Total&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;&lt;strong&gt;18.08&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;&lt;strong&gt;32.68&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;&lt;strong&gt;25.39&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;On their &lt;a href=&quot;https://www.ncei.noaa.gov/access/monitoring/dyk/anomalies-vs-temperature&quot;&gt;web page about anomalies&lt;/a&gt;, NOAA’s explanation for their use in climate science does not lead with the best reason for using them. They discuss their use in regards to location.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;When calculating an average of absolute temperatures, things like station location or elevation will have an effect on the data (ex. higher elevations tend to be cooler than lower elevations and urban areas tend to be warmer than rural areas). However, when looking at anomalies, those factors are less critical. &lt;a href=&quot;https://www.ncei.noaa.gov/access/monitoring/dyk/anomalies-vs-temperature&quot;&gt;Anomalies vs. Temperature&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;However, if temperature records were as good as the recent records for Hobart and Darwin, there would be no need to use anomalies. We have shown above that finding the average between wildly different locations is no big deal (it’s about 25°C for Darwin and Hobart).&lt;/p&gt;
+
+&lt;p&gt;NOAA’s second paragraph states the best reason to use anomalies; because climate data is irregular. The data is irregular because&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Stations start recording data at different times (some stations started recording more than one hundred years ago while others only started recording this year)&lt;/li&gt;
+  &lt;li&gt;There are often breaks in records, sometimes running for multiple consecutive years, sometimes with sporadic missing records&lt;/li&gt;
+  &lt;li&gt;Stations stop recording permanently even though they have long runs of reliable readings&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;With all of these conditions applying, it’s possible that Table 1 &lt;em&gt;could&lt;/em&gt; look like Table 2, below. In Table 2, a fictitious example, Darwin’s station started recording in 2013 and shutdown at the end of 2019, while Hobart’s records are unavailable for the years 2015 and 2018.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Table 2 (a fictitious variation of Table 1, in °C)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Year&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;Hobart&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;Darwin&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;Average&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2011&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;17.52&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;17.52&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2012&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;18.10&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;18.10&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2013&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;18.11&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;32.68&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25.40&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2014&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;18.26&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;32.64&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25.45&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2015&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;32.61&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;32.61&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2016&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;18.22&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;33.24&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25.73&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2017&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;18.45&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;32.78&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25.62&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;32.82&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;32.82&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2019&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;18.65&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;32.98&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25.82&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2020&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;17.70&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;17.70&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;Total&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;&lt;strong&gt;18.13&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;&lt;strong&gt;32.82&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;&lt;strong&gt;24.68&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;Note: we have applied a rule here that if a year is missing an average temperature we nevertheless average what is available. We could have a rule that if any year is missing, we refuse to average, and ignore the whole year. That would invalidate half of the results in this case, even though only one quarter of the initial data is missing. If we wanted to analyse many locations, we would even more frequently have to throw out whole years, or come up with another method for how many missing years are acceptable to still form a valid average. Once we group tens or hundreds of stations together, it’s very likely that some may experience issues in maintaining records on any given year.&lt;/p&gt;
+
+&lt;h3 id=&quot;why-anomalies-are-required&quot;&gt;Why anomalies are required&lt;/h3&gt;
+
+&lt;p&gt;It’s clear that the yearly averages for 2011, 2012, 2015, 2018 and 2020 in Table 2 are wildly inaccurate. There were no &lt;em&gt;real&lt;/em&gt; fluctuations in temperature, but the averages suggest there are. It’s all due to missing data.&lt;/p&gt;
+
+&lt;p&gt;Instead of using absolute temperature averages, climate scientists are &lt;em&gt;forced&lt;/em&gt; to use anomaly averages because the historical record of temperatures are not standardised, long running, or reliable enough to use absolute temperatures.&lt;/p&gt;
+
+&lt;p&gt;Below is a table where the same missing years of data exist as Table 2, but average anomalies are used instead of absolute temperatures.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Table 3 (a fictitious variation of Table 1, in anomalous °C)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Year&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;Hobart&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;Darwin&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;Average anomaly&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2011&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;-0.61&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;-0.61&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2012&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;-0.03&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;-0.03&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2013&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;-0.02&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;-0.14&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;-0.08&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2014&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.13&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;-0.18&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;-0.03&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2015&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;-0.21&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;-0.21&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2016&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.09&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.42&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.26&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2017&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.32&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;-0.04&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.14&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2019&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.52&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.16&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.34&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2020&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;-0.43&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;-0.43&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;Total&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;&lt;strong&gt;18.13&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;&lt;strong&gt;32.82&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;&lt;strong&gt;-0.07&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;With 25% of the records missing it would be difficult to have much confidence in the results no matter what analysis we attempt and yet Table 2 and Table 3 are completely different.&lt;/p&gt;
+
+&lt;p&gt;If you compare Table 3’s 2011 anomaly (-0.61°C) with Table 1’s anomaly (24.58°C - 25.39°C = -0.81°C), the difference is only 0.20°C. However, Table 2’s 2018 absolute temperature average (32.82°C) compared with the Table 1’s temperature average (25.51°C), shows a difference of 7.31°C!&lt;/p&gt;
+
+&lt;p&gt;It is clear that an analysis using anomalies is a much more reliable method when the temperature record contains missing data.&lt;/p&gt;
+
+&lt;p&gt;Once we’re happy that this technique works well with some missing data (hopefully much less than 25%!), we can use it to aggregate not just Darwin and Hobart, but whole regions and ultimately, the world. &lt;a href=&quot;https://climateexplorer.net/&quot;&gt;ClimateExplorer&lt;/a&gt; has recently applied these calculations for &lt;a href=&quot;https://climateexplorer.net/regionalandglobal?csd=AverageOfAnomaliesInLocationGroup,b13afcaf-cdbc-4267-9def-9629c8066321*TempMax*Adjusted*143983a0-240e-447f-8578-8daf2c0a246a,Mean,AutoAssigned,ByYear,Line,False,None,False,MovingAverage,20,Value,,False,Identity,;AverageOfAnomaliesInLocationGroup,e5eea4d6-5fd5-49ab-bf85-144a8921111e*Rainfall**143983a0-240e-447f-8578-8daf2c0a246a,Sum,AutoAssigned,ByYear,Line,False,None,False,MovingAverage,20,Value,,False,Identity,&quot;&gt;all of Australia&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;reference-period&quot;&gt;Reference period&lt;/h2&gt;
+
+&lt;p&gt;The reference period is the last aspect of climate anomalies to discuss. The reference period is the time period that is selected to calculate the base average (the “normal”), used to find the anomaly. The &lt;a href=&quot;http://www.bom.gov.au/&quot;&gt;Australian Bureau of Meteorology (BoM)&lt;/a&gt; selected 30 years (a &lt;a href=&quot;https://en.wikipedia.org/wiki/Climatological_normal&quot;&gt;climatological normal&lt;/a&gt;), 1961-1990, for their reference period (see &lt;a href=&quot;http://www.bom.gov.au/climate/data/acorn-sat/#tabs=ACORN%E2%80%90SAT&quot;&gt;ACORN-SAT&lt;/a&gt;). The UK Met Office Hadley Centre generally use the same reference period (see &lt;a href=&quot;https://www.metoffice.gov.uk/hadobs/hadcrut5/&quot;&gt;HadCRUT5&lt;/a&gt;). &lt;a href=&quot;https://www.giss.nasa.gov/&quot;&gt;NASA GISS&lt;/a&gt; use &lt;a href=&quot;https://data.giss.nasa.gov/gistemp/faq/#q102&quot;&gt;1951-1980&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The reference period selected will not change the shape of the resulting data and graphs, only the magnitudes of the anomalies. If the years 1991-2020 were selected, anomalies will rarely be above zero because that period is (currently) one of the hottest periods on record (i.e., most years on the temperature record will be colder than the period 1991-2020).&lt;/p&gt;
+
+&lt;p&gt;When compiling data for the Australian anomalies for ClimateExplorer, we used the same reference period as the BoM (1961-1990) while also requiring that each station have records for at least half of those years. When doing so we found that Burketown, Eucla, Learmonth, Morawa, Robe, Snowtown, and Victoria River Downs did not have enough records during that period. Those stations have been excluded from our analysis.&lt;/p&gt;
+
+&lt;h2 id=&quot;another-approach&quot;&gt;Another approach&lt;/h2&gt;
+
+&lt;p&gt;There are other ways we could cope with missing data and still use absolute temperatures. One of those methods is  &lt;a href=&quot;https://en.wikipedia.org/wiki/Interpolation&quot;&gt;interpolation&lt;/a&gt;. The drawback of interpolation is that it’s more complicated to implement and - &lt;em&gt;more importantly&lt;/em&gt; - more difficult for people to understand. If we want to be able to convey how we can determine that global warming is happening, the simplest valid explanation is what we should lead with.&lt;/p&gt;
+
+&lt;h2 id=&quot;climate-sceptics-and-anomalies&quot;&gt;Climate sceptics and anomalies&lt;/h2&gt;
+
+&lt;p&gt;We have explained why climate scientists present their large aggregation results (e.g., the global average temperature) as temperature anomalies. There is sufficient information to show that &lt;a href=&quot;https://wattsupwiththat.com/2023/03/12/new-wuwt-global-temperature-feature-anomaly-vs-real-world-temperature/&quot;&gt;sceptics’ complaints are unfounded&lt;/a&gt;. Nevertheless, what follows is a short discussion of some of their grievances.&lt;/p&gt;
+
+&lt;h3 id=&quot;weather-vs-climate&quot;&gt;Weather vs climate&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;[…] in the real-world, people don’t experience climate as yearly or monthly temperature anomalies, they experience &lt;em&gt;weather&lt;/em&gt; on a day to day basis, where one day may be abnormally warm, and another might be abnormally cold. (&lt;a href=&quot;https://wattsupwiththat.com/2023/03/12/new-wuwt-global-temperature-feature-anomaly-vs-real-world-temperature/&quot;&gt;WUWT&lt;/a&gt;, 2023)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The statement from &lt;a href=&quot;https://wattsupwiththat.com&quot;&gt;Watts Up With That?&lt;/a&gt; (WUWT) isn’t false, it’s merely anti-scientific. Science is about trying to go beyond personal experience and common sense; it’s about analysis to justify hypothesis. Climate science has nothing to do with anyone’s experience of weather, it’s an analysis of long-term trends; for instance, trying to see if there is evidence of global warming from observed heating caused by greenhouse gases under controlled conditions (see &lt;a href=&quot;https://en.wikipedia.org/wiki/Eunice_Newton_Foote#%22Circumstances_Affecting_the_Heat_of_the_Sun&apos;s_Rays%22&quot;&gt;Eunice Foote&lt;/a&gt;, 1856). In this situation, a human’s sense of temperature is totally inadequate.&lt;/p&gt;
+
+&lt;h3 id=&quot;climate-conspiracy&quot;&gt;Climate conspiracy&lt;/h3&gt;
+
+&lt;p&gt;Not only is there nothing interesting in the two graphs in the &lt;a href=&quot;https://wattsupwiththat.com/2023/03/12/new-wuwt-global-temperature-feature-anomaly-vs-real-world-temperature/&quot;&gt;WUWT&lt;/a&gt; article (“real” vs “anomaly”) - it’s the same graph with different scales on the y-axis - the article claims that &lt;a href=&quot;https://data.giss.nasa.gov/gistemp/&quot;&gt;NASA Goddard Institute of Space Studies&lt;/a&gt; has removed a method for converting from anomalies to absolute values.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Of course GISS &lt;em&gt;removed it&lt;/em&gt; from that page as seen today, because they don’t want people doing exactly what I’m doing now […] (WUWT, 2023)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;However, not only has the information &lt;strong&gt;not&lt;/strong&gt; been removed, it has been expanded to explain why the approach is fraught with errors, and why anomalies should be used rather than absolute temperatures when analysing global averages. (GISS FAQ was last updated Mar. 18, 2022. The &lt;em&gt;Watts Up With That?&lt;/em&gt; article was written Mar. 12, 2023 - there is no excuse for missing this information).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/assets/giss-absolute-temperature-14C.png&quot; alt=&quot;GISS FAQ that explains how conversions from anomaly to absolute temperature is done&quot; /&gt; From: &lt;a href=&quot;https://data.giss.nasa.gov/gistemp/faq/abs_temp.html&quot;&gt;The Elusive Absolute Surface Air Temperature&lt;/a&gt;, 2022&lt;/p&gt;
+
+&lt;h3 id=&quot;urban-heat-island&quot;&gt;Urban Heat Island&lt;/h3&gt;
+
+&lt;p&gt;WUWT also state that climate scientists don’t adjust for biases of &lt;a href=&quot;https://www.epa.gov/green-infrastructure/reduce-urban-heat-island-effect&quot;&gt;Urban Heat Island (UHI)&lt;/a&gt;. The BoM explain that eight locations in their 112 ACORN-SAT sites are affected by this phenomenon.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;[…] four ACORN-SAT locations (Sydney, Melbourne, Adelaide and Hobart) were defined as urban in the initial classification, and four more (Laverton, Victoria; Richmond, New South Wales; Townsville and Rockhampton, Queensland) as urban-influenced […] These eight locations remain a part of the ACORN-SAT dataset, as they are important for monitoring changes in the climates in which many Australians live. However, &lt;strong&gt;they are not included in assessments of the warming trend across Australia or the calculation of national and State averages&lt;/strong&gt;. (&lt;a href=&quot;http://www.bom.gov.au/climate/data/acorn-sat/#tabs=FAQs&quot;&gt;ACORN-SAT FAQs&lt;/a&gt; - emphasis mine)&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name></name></author><category term="meta" /><summary type="html">Why and how climate scientists use and calculate temperature anomalies</summary></entry><entry><title type="html">Climatological normal</title><link href="/blog/meta/2022/12/05/climatological-normals.html" rel="alternate" type="text/html" title="Climatological normal" /><published>2022-12-05T18:40:00+11:00</published><updated>2022-12-05T18:40:00+11:00</updated><id>/blog/meta/2022/12/05/climatological-normals</id><content type="html" xml:base="/blog/meta/2022/12/05/climatological-normals.html">&lt;p&gt;While reading &lt;a href=&quot;https://www.noaa.gov/news/new-us-climate-normals-are-here-what-do-they-tell-us-about-climate-change&quot;&gt;a news article on US climate normals&lt;/a&gt;, I decided it might be better to use the most recent &lt;strong&gt;30 years&lt;/strong&gt; of temperature data to calculate the warming index, rather than &lt;strong&gt;20 years&lt;/strong&gt; of data. This change will align the warming index with the convention of the &lt;a href=&quot;https://en.wikipedia.org/wiki/Climatological_normal&quot;&gt;climatological normal&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;Changing the period that calculates the warming index will affect the heating score also because it’s calculated by finding the highest warming index across all locations and using that as the highest heating score. This results in a different distribution of scores over the map of Australia, with &lt;a href=&quot;https://climateexplorer.net/location/darwin&quot;&gt;Darwin&lt;/a&gt; and &lt;a href=&quot;https://climateexplorer.net/location/alice-springs&quot;&gt;Alice Springs&lt;/a&gt; coming out on the top of locations that have recorded the highest increases in temperature in Australia. They both record a 1.5°C increase in maximum temperature in the most recent 30 years, when compared with the first half of their dataset.&lt;/p&gt;
 
