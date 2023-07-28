@@ -88,8 +88,14 @@ public partial class Index : ChartablePage
         if (uri.Segments.Length > 2 && !Guid.TryParse(uri.Segments[2], out Guid locationGuid))
         {
             var locatioName = uri.Segments[2];
+            var originalName = locatioName;
             locatioName = locatioName.Replace("-", " ");
             var location = Locations.SingleOrDefault(x => string.Equals(x.Name, locatioName, StringComparison.OrdinalIgnoreCase));
+            // Will match for Kalgoorlie-Boulder
+            if (location == null)
+            {
+                location = Locations.SingleOrDefault(x => string.Equals(x.Name, originalName, StringComparison.OrdinalIgnoreCase));
+            }
             if (location != null)
             {
                 LocationId = location.Id.ToString();

@@ -19,6 +19,7 @@ namespace ClimateExplorer.Visualiser.UiTests
 
         string _baseApiUrl = "http://localhost:54836";
         string _baseSiteUrl = "http://localhost:5298";
+        string _publicSiteUrl = "http://climateexplorer.net";
 
         [SetUp]
         public async Task Setup()
@@ -26,7 +27,7 @@ namespace ClimateExplorer.Visualiser.UiTests
             _playwright = await Playwright.CreateAsync();
             var chromium = _playwright.Chromium;
             _browser = await chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true, });
-            var context = await _browser.NewContextAsync( new BrowserNewContextOptions { ViewportSize = new ViewportSize { Width = 1440, Height = 845} });
+            var context = await _browser.NewContextAsync( new BrowserNewContextOptions { ViewportSize = new ViewportSize { Width = 1440, Height = 1000} });
             _page = await context.NewPageAsync();
         }
 
@@ -41,6 +42,9 @@ namespace ClimateExplorer.Visualiser.UiTests
         public async Task GoToAllLocationsAndGetAScreenshot()
         {
             var locations = await GetLocationsFromApi();
+
+            var australiaAnomaly = locations.Single(x => x.Id == new Guid("143983a0-240e-447f-8578-8daf2c0a246a"));
+            locations.Remove(australiaAnomaly);
 
             var di = new DirectoryInfo("Assets\\Locations");
             if (!di.Exists)
@@ -58,14 +62,15 @@ namespace ClimateExplorer.Visualiser.UiTests
 
             foreach (var location in locations)
             {
-                await _page.GotoAsync($"{_baseSiteUrl}/location/{location.Id}");
+                var urlName = location.Name.Replace(" ", "-");
+                await _page.GotoAsync($"{_baseSiteUrl}/location/{urlName}");
                 Thread.Sleep(firstLocation ? 5000 : 3000);
                 await _page.ScreenshotAsync(new()
                 {
                     Path = $"Assets\\Locations\\{location.Name}.png",
                 });
 
-                markdown.Add($"| [{location.Name}]({_baseSiteUrl}/location/{location.Id}) | ![{location.Name}]({{{{site.url}}}}/blog/assets/locations/{location.Name}.png){{: width=\"400\" }} | \r\n");
+                markdown.Add($"| [{location.Name}]({_publicSiteUrl}/location/{urlName}) | ![{location.Name}]({{{{site.url}}}}/blog/assets/locations/{location.Name}.png){{: width=\"400\" }} | \r\n");
                 firstLocation = false;
             }
 
