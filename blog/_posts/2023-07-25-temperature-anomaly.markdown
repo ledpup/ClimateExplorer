@@ -1,7 +1,7 @@
 ---
 layout: single
 title: "What's up with temperature anomalies?"
-date: 2023-07-28 20:00:00 +1000
+date: 2023-07-25 18:00:00 +1000
 categories: meta
 ---
 Why and how climate scientists use and calculate temperature anomalies
