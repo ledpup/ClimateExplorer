@@ -4,43 +4,20 @@ title: "What's up with temperature anomalies?"
 date: 2023-07-25 18:00:00 +1000
 categories: meta
 ---
-Why and how climate scientists use and calculate temperature anomalies
 
-## Normalisation and anomalies
+An anomaly is anything that is *not normal*. In science and mathematics, series of related numbers can be compared to discover anomalies within the series. To calculate a climate anomaly, we need to first *decide* what is "normal". Climate scientists have decided that any 30-year average of weather (i.e., average temperatures, rainfall or other phenomena) to be a sufficiently long enough period of time to use as a basis for a [climatological normal](https://en.wikipedia.org/wiki/Climatological_normal) (see [previous blog entry for more](https://climateexplorer.net/blog/meta/2022/12/05/climatological-normals.html)). Below we'll discuss why and how climate anomalies are used in conjunction with a climate normal.
 
-An anomaly is anything that is *not normal*. In science and mathematics, series of related numbers can be compared to discover anomalies within the series. To calculate a numerical anomaly, we need to *decide* what is "normal"; we call that process [normalisation](https://en.wikipedia.org/wiki/Normalization). Normalisation is a common process in [statistics](https://en.wikipedia.org/wiki/Normalization_(statistics)), [audio processing](https://en.wikipedia.org/wiki/Audio_normalization) and has various applications in computing.
-
-### Simple normalisation
-
-A simple normalisation approach could be applied to normalise a series of numbers. For example, given the numbers of 3, 7, 5, 2, and 12, we could normalise them using the following method:
-
-1. Find the highest value (12 in this example)
-2. Divide all values by the highest
-3. The result will be a set of normalised values between 0 and 1 (0.25, 0.58, 0.42, 0.17, and 1 for the numbers above)
-
-We could multiply the normalised set of numbers by a constant, resulting in values that are consistently scaled. In computing, we may want to multiply those numbers by 255 to assign a normalised colour intensity; 12 could be the brightest value (255) while 2 will be the dullest (0.17 x 255 = 43).
-
-Normalisation can also be useful when we want to compare different sets of numbers, such as temperature records in different years or from different locations. A simple normalisation approach, however, isn't very robust when dealing with climate data. A single "highest" as the basis, out of thousands of records, is error prone (what if the meteorologist simply made a mistake on that one recording?) and won't yield any anomalies. However, we *can* find anomalies with the normalisation approach described below. Anomalies such as: are temperatures increasing over time? Or: is rainfall declining over time?
-
-### Climate normalisation
+## Temperature anomaly
 
 In climate science, a temperature anomaly has a specific meaning and method for calculation. The [National Oceanic and Atmospheric Administration](https://www.noaa.gov/) (NOAA) explain it as:
 
 > [...] the difference from an average, or *baseline*, temperature. The baseline temperature is typically computed by averaging 30 or more years of temperature data. [Anomalies vs. Temperature](https://www.ncei.noaa.gov/access/monitoring/dyk/anomalies-vs-temperature)
 
-The distinction between climate normalisation and the simple approach described above is that instead of taking the highest temperature (also an option but would result in a different type of normalisation), climate scientists will average a significant subset of the dataset (or average the *whole* dataset) and use that as the basis of what is "normal". The subset of data is called the reference period (see below). Furthermore, instead of dividing by the maximum value, scientists subtract the normal value from the specific value. This will yield results that can be above or below the normal value. These are the anomalies.
-
-For example, the average maximum temperature for Hobart (Tasmania, Australia), 1918-2021, is 17.2°C. If today's temperature is 21.3°C, the anomaly is 4.1°C. If tomorrow's maximum temperature will be 15.7°C, the anomaly will be -1.5°C.
-
-### Climate stripes
-
-The method for creating a [climate stripe](https://en.wikipedia.org/wiki/Warming_stripes) is to first normalise the dataset (in this case calculate the average of the whole dataset) and then subtract the normal average from the average maximum temperature for each year. That will tell you how much a particular year varies from the normal. The next step is to use the simple normalisation method (described above) to get a value between 0 and 1, then do the same sort of thing for the negative anomalies. Those normalised values can be used to determine how much red or blue is added to a stripe.
-
-Climate stripes are interesting because, to create them, we use a combination of simple and climate normalisation.
+Anomalies can be used to determine how much a location has increased or decreased in temperature compared with the climate normal for that location. For example, the average maximum temperature for Hobart (Tasmania, Australia), 1961-1990, is 17.2°C. If the 2022 average temperature is 18.5°C, the anomaly is 1.3°C. If the 2023 maximum temperature is 15.7°C, the anomaly is -1.5°C.
 
 ## Comparing between locations
 
-The next question we could answer with anomalies is: **what do we do if we want to compare temperatures from different locations?**
+Another question we may want answer to is: **how do we compare temperatures from different locations to see if there is a general trend?**
 
 It would be great to **not** use anomalies. Why not simply average the raw temperature values (the absolute temperatures)? That would give results that are a lot easier to understand and relate to. If we wanted to compare Hobart with Darwin (Northern Territory, Australia) - two cities at the extremes of Australia - we can do that using absolute values.
 
@@ -131,7 +108,9 @@ Once we're happy that this technique works well with some missing data (hopefull
 
 ## Reference period
 
-The reference period is the last aspect of climate anomalies to discuss. The reference period is the time period that is selected to calculate the base average (the "normal"), used to find the anomaly. The [Australian Bureau of Meteorology (BoM)](http://www.bom.gov.au/) selected 30 years (a [climatological normal](https://en.wikipedia.org/wiki/Climatological_normal)), 1961-1990, for their reference period (see [ACORN-SAT](http://www.bom.gov.au/climate/data/acorn-sat/#tabs=ACORN%E2%80%90SAT)). The UK Met Office Hadley Centre generally use the same reference period (see [HadCRUT5](https://www.metoffice.gov.uk/hadobs/hadcrut5/)). [NASA GISS](https://www.giss.nasa.gov/) use [1951-1980](https://data.giss.nasa.gov/gistemp/faq/#q102).
+The reference period is the last aspect of climate anomalies to discuss. The reference period is the time period that is selected to calculate the base average (the "climate normal"). The most important part of this process is to select a reference period that is representational for all of the locations in the collection. For instance, there is no point choosing 1901-1930 if most of the locations weren't operating during that period.
+
+The [Australian Bureau of Meteorology (BoM)](http://www.bom.gov.au/) have selected 1961-1990 for their reference period (see [ACORN-SAT](http://www.bom.gov.au/climate/data/acorn-sat/#tabs=ACORN%E2%80%90SAT)). The UK Met Office Hadley Centre generally use the same reference period (see [HadCRUT5](https://www.metoffice.gov.uk/hadobs/hadcrut5/)). [NASA GISS](https://www.giss.nasa.gov/) use [1951-1980](https://data.giss.nasa.gov/gistemp/faq/#q102).
 
 The reference period selected will not change the shape of the resulting data and graphs, only the magnitudes of the anomalies. If the years 1991-2020 were selected, anomalies will rarely be above zero because that period is (currently) one of the hottest periods on record (i.e., most years on the temperature record will be colder than the period 1991-2020).
 
