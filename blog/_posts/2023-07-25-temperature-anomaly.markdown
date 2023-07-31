@@ -5,7 +5,7 @@ date: 2023-07-25 18:00:00 +1000
 categories: meta
 ---
 
-An anomaly is anything that is *not normal*. In science and mathematics, series of related numbers can be compared to discover anomalies within the series. To calculate a climate anomaly, we need to first *decide* what is "normal". Climate scientists have decided that any 30-year average of weather (i.e., average temperatures, rainfall or other phenomena) to be a sufficiently long enough period of time to use as a basis for a [climatological normal](https://en.wikipedia.org/wiki/Climatological_normal) (see [previous blog entry for more](https://climateexplorer.net/blog/meta/2022/12/05/climatological-normals.html)). Below we'll discuss why and how climate anomalies are used in conjunction with a climate normal.
+An anomaly is anything that is *not normal*. In science and mathematics, series of related numbers can be compared to discover anomalies within the series. To calculate a climate anomaly, we need to first *decide* what is "normal". Climate scientists have decided that any 30-year average of weather (i.e., average temperatures, rainfall or other phenomena) to be a sufficiently long enough period of time to use as a basis for a [climatological normal](https://en.wikipedia.org/wiki/Climatological_normal) (see [previous blog entry](https://climateexplorer.net/blog/meta/2022/12/05/climatological-normals.html) for more). Below we'll discuss why and how climate anomalies are used in conjunction with a climate normal.
 
 ## Temperature anomaly
 
@@ -13,11 +13,13 @@ In climate science, a temperature anomaly has a specific meaning and method for 
 
 > [...] the difference from an average, or *baseline*, temperature. The baseline temperature is typically computed by averaging 30 or more years of temperature data. [Anomalies vs. Temperature](https://www.ncei.noaa.gov/access/monitoring/dyk/anomalies-vs-temperature)
 
-Anomalies can be used to determine how much a location has increased or decreased in temperature compared with the climate normal for that location. For example, the average maximum temperature for Hobart (Tasmania, Australia), 1961-1990, is 17.2°C. If the 2022 average temperature is 18.5°C, the anomaly is 1.3°C. If the 2023 maximum temperature is 15.7°C, the anomaly is -1.5°C.
+Anomalies can be used to determine how much a location has increased or decreased in temperature compared with the climate normal for that location.
+
+For example, the average maximum temperature for Hobart (Tasmania, Australia), 1961-1990, is 17.2°C. If a yearly average max temperature is 18.5°C, the anomaly is 1.3°C. If a yearly average max temperature is 15.7°C, the anomaly is -1.5°C.
 
 ## Comparing between locations
 
-Another question we may want answer to is: **how do we compare temperatures from different locations to see if there is a general trend?**
+Another question we may want an answer to is: **how do we compare temperatures from different locations to see if there is a general trend?**
 
 It would be great to **not** use anomalies. Why not simply average the raw temperature values (the absolute temperatures)? That would give results that are a lot easier to understand and relate to. If we wanted to compare Hobart with Darwin (Northern Territory, Australia) - two cities at the extremes of Australia - we can do that using absolute values.
 
@@ -108,7 +110,7 @@ Once we're happy that this technique works well with some missing data (hopefull
 
 ## Reference period
 
-The reference period is the last aspect of climate anomalies to discuss. The reference period is the time period that is selected to calculate the base average (the "climate normal"). The most important part of this process is to select a reference period that is representational for all of the locations in the collection. For instance, there is no point choosing 1901-1930 if most of the locations weren't operating during that period.
+The reference period is the last aspect of climate anomalies to discuss. The reference period is the time period that is selected to calculate the base average (the "climate normal"). The most important part of this process is to select a reference period that is representational for all of the locations in the collection. For instance, there is no point choosing 1901-1930 if most of the stations in the group weren't operating during that period.
 
 The [Australian Bureau of Meteorology (BoM)](http://www.bom.gov.au/) have selected 1961-1990 for their reference period (see [ACORN-SAT](http://www.bom.gov.au/climate/data/acorn-sat/#tabs=ACORN%E2%80%90SAT)). The UK Met Office Hadley Centre generally use the same reference period (see [HadCRUT5](https://www.metoffice.gov.uk/hadobs/hadcrut5/)). [NASA GISS](https://www.giss.nasa.gov/) use [1951-1980](https://data.giss.nasa.gov/gistemp/faq/#q102).
 
