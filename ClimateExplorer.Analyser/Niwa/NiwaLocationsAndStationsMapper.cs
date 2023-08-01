@@ -14,14 +14,14 @@ public static class NiwaLocationsAndStationsMapper
 {
     public static async Task BuildNiwaLocationsAsync(Guid dataSetDefinitionId, string sourceLocationsFileName, string oldLocationsFileName, string outputFileSuffix)
     {
-        var oldLocations = await Location.GetLocationsFromFile($@"ReferenceData\NIWA\{oldLocationsFileName}");
+        var oldLocations = await Location.GetLocationsFromFile($@"ReferenceMetaData\NIWA\{oldLocationsFileName}");
 
         var locations = new List<Location>();
         var stations = new List<Station>();
         var dataFileLocationMapping = new DataFileLocationMapping() { DataSetDefinitionId = dataSetDefinitionId };
 
         var regEx = new Regex(@"^(?<name>[\w|\s]*),(?<station>\d+),\w\d+\w?,(?<lat>-?\d+\.\d+),(?<lng>-?\d+\.\d+),(?<alt>-?\d+),.*,.*,(?<startdate>null|\d{4}\/\d{2}\/\d{2})\s*,(?<enddate>null|\d{4}\/\d{2}\/\d{2})\s*,(?<adjustment>0|-?\d*\.\d*)\s*,(?<seriesName>[\w|'|\s|-]*),(?<stationName>[\w|\s|,]*)$");
-        var locationRowData = File.ReadAllLines(@$"ReferenceData\NIWA\{sourceLocationsFileName}");
+        var locationRowData = File.ReadAllLines(@$"ReferenceMetaData\NIWA\{sourceLocationsFileName}");
 
         // Create the initial list of locations
         foreach (var row in locationRowData)

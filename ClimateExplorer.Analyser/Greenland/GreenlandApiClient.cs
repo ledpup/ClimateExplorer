@@ -14,13 +14,13 @@ namespace ClimateExplorer.Analyser.Greenland;
 
 public class GreenlandApiClient
 {
-    public static async Task GetMeltDataAndSave()
+    public static async Task GetMeltDataAndSave(HttpClient httpClient)
     {
         var sourcePath = @$"Output\Data\Greenland\Years";
 
         for (var year = 1979; year <= DateTime.Now.Year; year++)
         {
-            await DownloadAndExtractDailyBomData(year, sourcePath);
+            await DownloadAndExtractData(httpClient, year, sourcePath);
         }
 
         var meltRecords = new List<string>();
@@ -57,7 +57,7 @@ public class GreenlandApiClient
     }
 
 
-    async static Task DownloadAndExtractDailyBomData(int year, string filePath)
+    async static Task DownloadAndExtractData(HttpClient httpClient, int year, string filePath)
     {
         var dataFile = $"{year}_greenland.json";
 
@@ -74,12 +74,6 @@ public class GreenlandApiClient
         {
             return;
         }
-
-        using var httpClient = new HttpClient();
-        var userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
-        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
-        var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
-        httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
 
         var url = $"https://nsidc.org/api/greenland/melt_area/{year}";
         var response = await httpClient.GetAsync(url);

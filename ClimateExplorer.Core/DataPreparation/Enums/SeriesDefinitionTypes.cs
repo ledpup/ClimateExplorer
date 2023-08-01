@@ -4,6 +4,7 @@
     {
         ReturnSingleSeries,
         DifferenceBetweenTwoSeries,
-        AverageOfMultipleSeries
+        AverageOfMultipleSeries,
+        AverageOfAnomaliesInLocationGroup
     }
 }

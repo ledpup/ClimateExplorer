@@ -16,23 +16,23 @@ public class NiwaCliFloClient
         var dataTypes = new List<(string Name, string ObsCode, string Columns)>
         {
             ("rainfall", "181", "ls_ra,1,2,3,4"), // 181 is rainfall. dt1 describes the columns that are returned
-            //("temperature", "201", "ls_mxmn,1,2,3,4,5,6") // 201 is temperature.
+            ("temperature", "201", "ls_mxmn,1,2,3,4,5,6") // 201 is temperature.
         };
 
         foreach (var station in stations)
         {
             foreach (var dataType in dataTypes)
             {
-                await DownloadAndExtractDailyBomData(station.ExternalStationCode, dataType.Name, dataType.ObsCode, dataType.Columns);
+                await DownloadAndExtractNiwaData(station.ExternalStationCode, dataType.Name, dataType.ObsCode, dataType.Columns);
             }
         }
     }
 
 
-    async static Task DownloadAndExtractDailyBomData(string station, string dataTypeName, string obsCode, string columns)
+    async static Task DownloadAndExtractNiwaData(string station, string dataTypeName, string obsCode, string columns)
     {
         var dataFile = $"{station}_{dataTypeName.ToString().ToLower()}";
-        var filePath = @$"Output\Data\{dataTypeName}";
+        var filePath = @$"Output\Data\Niwa\{dataTypeName}";
 
         var dir = new DirectoryInfo(filePath);
         if (!dir.Exists)

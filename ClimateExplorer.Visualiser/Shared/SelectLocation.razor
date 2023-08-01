@@ -5,18 +5,18 @@
 <Modal @ref="modal">
     <ModalContent>
         <ModalHeader Background="Background.Light">
-            <ModalTitle>Select Location</ModalTitle>
+            <ModalTitle>Select location</ModalTitle>
             <CloseButton />
         </ModalHeader>
         <ModalBody>
             @if (SelectedLocation != null)
             {
                 <Field>
-                    Current Location: @SelectedLocation.Name
+                    Current location: <Strong>@SelectedLocation.Name</Strong>
                 </Field>
             }
             <Field>
-                <Button Clicked="@FireUseCurrentLocation" Color="Color.Primary">Use Your Location</Button>
+                <Button Clicked="@FireUseCurrentLocation" Color="Color.Primary">Near me</Button>
 
                 @if (BrowserLocationErrorMessage != null)
                 {
@@ -36,7 +36,7 @@
                     TextField="@((item)=>item.Name)"
                     ValueField="@((item)=>item.Id)"
                     SelectedValueChanged="@OnLocationChange"
-                    DefaultItemText="Select Location"
+                    DefaultItemText="Select location"
                     Style="width: 100%"
                     />
            </Field>

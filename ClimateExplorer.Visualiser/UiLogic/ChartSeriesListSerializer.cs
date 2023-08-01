@@ -122,7 +122,13 @@ public static class ChartSeriesListSerializer
 
         if (segments[3].Length > 0)
         {
-            l = locations.Single(x => x.Id == Guid.Parse(segments[3]));
+            var locationId = Guid.Parse(segments[3]);
+            l = locations.SingleOrDefault(x => x.Id == locationId);
+
+            if (l == null)
+            {
+                throw new Exception($"A location (ID = {locationId}) has been specified in the source series specification that has not been found in the list of locations.");
+            }
         }
 
         return

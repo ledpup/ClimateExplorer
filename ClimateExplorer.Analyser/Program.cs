@@ -3,21 +3,39 @@ using ClimateExplorer.Analyser.Bom;
 using ClimateExplorer.Analyser.Greenland;
 using ClimateExplorer.Analyser.Niwa;
 using ClimateExplorer.Analyser.StaticContent;
-using System.Xml;
+
+var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
+
+var httpClient = new HttpClient();
+var userAgent = "Mozilla /5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
+var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
+httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
+httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
 
 GenerateMapMarkers();
 await BuildStaticContent.GenerateSiteMap();
 await BuildStaticContent.GenerateIndexFiles();
 
-var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
+await GreenlandApiClient.GetMeltDataAndSave(httpClient);
 
-await GreenlandApiClient.GetMeltDataAndSave();
+var referenceDataDefintions = dataSetDefinitions
+    .Where(x =>
+            !string.IsNullOrEmpty(x.DataDownloadUrl)
+            && x.MeasurementDefinitions.Count == 1
+            && x.Id != Guid.Parse("6484A7F8-43BC-4B16-8C4D-9168F8D6699C") // Greenland is dealt with as a special case, see GreenlandApiClient
+            )
+    .ToList();
+
+foreach ( var dataSetDefinition in referenceDataDefintions)
+{
+    await DownloadDataSetData(dataSetDefinition);
+}
 
 var niwaStations = await Station.GetStationsFromFiles(
     new List<string> 
     { 
-        $@"ReferenceData\NIWA\Stations_NewZealand_7stations_unadjusted.json",
-        $@"ReferenceData\NIWA\Stations_NewZealand_11stations.json",
+        $@"ReferenceMetaData\NIWA\Stations_NewZealand_7stations_unadjusted.json",
+        $@"ReferenceMetaData\NIWA\Stations_NewZealand_11stations.json",
     });
 
 await NiwaCliFloClient.GetDataForEachStation(niwaStations);
@@ -28,11 +46,11 @@ await NiwaLocationsAndStationsMapper.BuildNiwaLocationsAsync(Guid.Parse("7522E8E
 await NiwaLocationsAndStationsMapper.BuildNiwaLocationsAsync(Guid.Parse("534950DC-EDA4-4DB5-8816-3705358F1797"), "7-stations_locations_unadjusted.csv", "7-stations_Locations.json", "_NewZealand_7stations_unadjusted");
 await NiwaLocationsAndStationsMapper.BuildNiwaLocationsAsync(Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"), "11-stations_locations.csv", "11-stations_Locations.json", "_NewZealand_11stations");
 
-var stations = await BomLocationsAndStationsMapper.BuildAcornSatLocationsFromReferenceDataAsync(Guid.Parse("E5EEA4D6-5FD5-49AB-BF85-144A8921111E"), "_Australia_unadjusted");
-await BomDataDownloader.GetDataForEachStation(stations);
+var stations = await BomLocationsAndStationsMapper.BuildAcornSatLocationsFromReferenceMetaDataAsync(Guid.Parse("E5EEA4D6-5FD5-49AB-BF85-144A8921111E"), "_Australia_unadjusted");
+await BomDataDownloader.GetDataForEachStation(httpClient, stations);
 await BomLocationsAndStationsMapper.BuildAcornSatAdjustedDataFileLocationMappingAsync(Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"), @"Output\DataFileLocationMapping\DataFileLocationMapping_Australia_unadjusted.json", "_Australia_adjusted");
 
-await BomLocationsAndStationsMapper.BuildRaiaLocationsFromReferenceDataAsync(Guid.Parse("647b6a05-43e4-48e0-a43e-04ae81a74653"), "_Australia_Raia");
+await BomLocationsAndStationsMapper.BuildRaiaLocationsFromReferenceMetaDataAsync(Guid.Parse("647b6a05-43e4-48e0-a43e-04ae81a74653"), "_Australia_Raia");
 
 async Task ValidateLocations()
 {
@@ -50,17 +68,24 @@ async Task ValidateLocations()
 
 async Task DownloadDataSetData(DataSetDefinition dataSetDefinition)
 {
-    var userAgent = "Mozilla /5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
-    var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
-    using (var httpClient = new HttpClient())
+    var md = dataSetDefinition.MeasurementDefinitions.Single();
+    var outputPath = $@"Output\Data\{md.FolderName}";
+
+    Directory.CreateDirectory(outputPath);
+
+    var filePathAndName = $@"{outputPath}\{md.FileNameFormat}";
+    var fi = new FileInfo(filePathAndName);
+    if (fi.Exists)
     {
-        var fileUrl = dataSetDefinition.DataDownloadUrl;
-        var response = await httpClient.GetAsync(fileUrl);
-        using (var fs = new FileStream(dataSetDefinition.MeasurementDefinitions.First().FileNameFormat, FileMode.OpenOrCreate))
-        {
-            await response.Content.CopyToAsync(fs);
-        }
+        return;
     }
+
+    var fileUrl = dataSetDefinition.DataDownloadUrl;
+    var response = await httpClient.GetAsync(fileUrl);
+    
+    var content = await response.Content.ReadAsStringAsync();
+
+    await File.WriteAllTextAsync(filePathAndName, content);
 }
 
 
@@ -121,6 +146,3 @@ static void GenerateMapMarkers()
         File.WriteAllText($"{fileName}.svg", svg);
     }
 }
-
-
-

@@ -6,6 +6,8 @@ namespace ClimateExplorer.Analyser.StaticContent
     {
         public static async Task GenerateSiteMap()
         {
+            Directory.CreateDirectory(@"Output\Location");
+
             var locations = await Location.GetLocations(false, @"Output\Location");
 
             var writer = XmlTextWriter.Create(@"Output\sitemap.xml", new XmlWriterSettings { Indent = true, NewLineOnAttributes = true });

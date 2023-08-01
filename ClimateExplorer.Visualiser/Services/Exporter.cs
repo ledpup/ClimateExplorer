@@ -6,20 +6,21 @@ namespace ClimateExplorer.Visualiser.Services;
 
 public interface IExporter
 {
-    Stream ExportChartData(ILogger logger, List<SeriesWithData> chartSeriesWithData, IEnumerable<Location> locations, BinIdentifier[] bins, string sourceUri);
+    Stream ExportChartData(ILogger logger, IEnumerable<Location> locations, DataDownloadPackage dataDownloadPackage, string sourceUri);
 }
 
 public class Exporter : IExporter
 {
-    public Stream ExportChartData(ILogger logger, List<SeriesWithData> chartSeriesWithData, IEnumerable<Location> locations, BinIdentifier[] bins, string sourceUri)
+    public Stream ExportChartData(ILogger logger, IEnumerable<Location> locations, DataDownloadPackage dataDownloadPackage, string sourceUri)
     {
-        logger.LogInformation("ExportChartData got bin range " + bins[0].ToString() + " to " + bins.Last().ToString());
+        logger.LogInformation("ExportChartData got bin range " + dataDownloadPackage.Bins[0].ToString() + " to " + dataDownloadPackage.Bins.Last().ToString());
 
-        var data = new List<string>();
+        var data = new List<string>
+        {
+            "Exported from," + sourceUri
+        };
 
-        data.Add("Exported from," + sourceUri);
-
-        var locationIds = chartSeriesWithData.SelectMany(x => x.ChartSeries.SourceSeriesSpecifications).Select(x => x.LocationId).Where(x => x != null).Distinct().ToArray();
+        var locationIds = dataDownloadPackage.ChartSeriesWithData.SelectMany(x => x.ChartSeries.SourceSeriesSpecifications).Select(x => x.LocationId).Where(x => x != null).Distinct().ToArray();
 
         var relevantLocations = locationIds.Select(x => locations.Single(y => y.Id == x)).ToArray();
 
@@ -30,13 +31,13 @@ public class Exporter : IExporter
 
         data.Add(string.Empty);
 
-        var header = "Year," + string.Join(",", chartSeriesWithData.Select(x => BuildColumnHeader(relevantLocations, x.ChartSeries)));
+        var header = "Year," + string.Join(",", dataDownloadPackage.ChartSeriesWithData.Select(x => BuildColumnHeader(relevantLocations, x.ChartSeries)));
         data.Add(header);
 
-        foreach (var bin in bins)
+        foreach (var bin in dataDownloadPackage.Bins)
         {
             var dataRow = bin.Label + ",";
-            foreach (var cswd in chartSeriesWithData)
+            foreach (var cswd in dataDownloadPackage.ChartSeriesWithData)
             {
                 var val = cswd.ProcessedDataSet.DataRecords.SingleOrDefault(x => x.BinId == bin.Id)?.Value;
                 dataRow += (val == null ? string.Empty : MathF.Round((float)val, 2).ToString("0.00")) + ",";

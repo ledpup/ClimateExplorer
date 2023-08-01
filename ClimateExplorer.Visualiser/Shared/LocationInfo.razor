@@ -1,5 +1,5 @@
 ﻿@using Blazorise
-@using Blazorise.SpinKit
+@using Blazorise.LoadingIndicator
 @using ClimateExplorer.Core
 @using ClimateExplorer.Core.ViewModel
 @using ClimateExplorer.Visualiser.UiModel
@@ -7,32 +7,30 @@
 @using ClimateExplorer.Core.DataPreparation
 @using static ClimateExplorer.Core.Enums
 
-<Collapsible Title="@Location?.Name" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
-    <HeaderContent>
-        <span class="chart-controls"><a class="chart-control" @onclick="() => ChangeLocationClicked(null)"><i class="fas fa-map"></i> Change Location</a></span>
-    </HeaderContent>
-    <Content>
-        @if (Location == null || AnomalyRecords == null)
-        {
-            <SpinKit Type="SpinKitType.Plane" />
-        }
-        else
-        {
-            <!-- The awful HTML comments between OverviewField elements below are to avoid generating whitespace between OverviewField elements, which was
-                 causing them to be misaligned. Probably better to use flex layout, but this works for now.
-            -->
-            <OverviewField Label="Location"><Value> <span><a href="@LocationMapUrl" target="_blank">@LocationAsString</a></span></Value></OverviewField><!--
-         --><OverviewField Label="Elevation"><Value>@ElevationAsString</Value></OverviewField><!--
-         -->@if (IndexDescription != null)
-            {
-                <OverviewField Label="Warming index" PopupText="@IndexDescription"><Value>@IndexAsString</Value></OverviewField>
-            }
-            <OverviewField Label="Heating score" PopupText="@HeatingScoreDescription"><Value>@Location.HeatingScore</Value></OverviewField>
-            <WarmingStripe LocationName=@Location.Name LocationTemperatureMean=@LocationTemperatureMean DataRecords="@AnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
-            <WarmestYears DataRecords="@AnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
-        }
-    </Content>
-</Collapsible>
+<LoadingIndicator @bind-Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
+    <Collapsible Title="@Location?.Name" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
+        <HeaderContent>
+            <span class="chart-controls" style="margin-left: 32px;"><a class="chart-control" @onclick="() => ChangeLocationClicked(null)"><i class="fas fa-map"></i> Change location</a></span>
+        </HeaderContent>
+        <Content>
+                <!-- The awful HTML comments between OverviewField elements below are to avoid generating whitespace between OverviewField elements, which was
+                        causing them to be misaligned. Probably better to use flex layout, but this works for now.
+                -->
+                <OverviewField Label="Location"><Value> <span><a href="@LocationMapUrl" target="_blank">@LocationAsString</a></span></Value></OverviewField>
+                <!--
+                -->
+                <OverviewField Label="Elevation"><Value>@ElevationAsString</Value></OverviewField>
+                <!--
+                -->
+                <OverviewField Label="Warming index" PopupText="@WarmingIndexDescription"><Value>@(WarmingIndexAsString == null ? "NA" : WarmingIndexAsString)</Value></OverviewField>
+                <!--
+                -->
+                <OverviewField Label="Heating score" PopupText="@HeatingScoreDescription"><Value>@(Location == null ? "NA" : Location.HeatingScore)</Value></OverviewField>
+                <WarmingStripe LocationName=@Location?.Name LocationTemperatureMean=@LocationTemperatureMean DataRecords="@MaxTempAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
+                <WarmestYears DataRecords="@MaxTempAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
+        </Content>
+    </Collapsible>
+</LoadingIndicator>
 
 
 
@@ -63,9 +61,9 @@
 
     Guid instanceId = Guid.NewGuid();
 
-    string LocationMapUrl => $"https://maps.google.com/?q={Location.Coordinates.Latitude},{Location.Coordinates.Longitude}";
-    string LocationAsString => $"{Math.Round(Location.Coordinates.Latitude, 1)}°, {Math.Round(Location.Coordinates.Longitude, 1)}°";
-    string ElevationAsString => $"{Math.Round(Location.Coordinates.Elevation, 1)}m";
+    string LocationMapUrl => Location == null ? "https://maps.google.com/" : $"https://maps.google.com/?q={Location.Coordinates.Latitude},{Location.Coordinates.Longitude}";
+    string LocationAsString => Location == null ? "Nowhere" : $"{Math.Round(Location.Coordinates.Latitude, 1)}°, {Math.Round(Location.Coordinates.Longitude, 1)}°";
+    string ElevationAsString => Location == null ? "NA" : $"{(Math.Round(Location.Coordinates.Elevation, 1))}m";
 
     /// <summary>
     /// Used by the warming stripe
@@ -89,6 +87,8 @@
 
     float? LocationTemperatureMean { get; set; }
 
+    public bool LocationLoadingIndicatorVisible { get; set; }
+
     public void ChangeLocationClicked(EventArgs args)
     {
         RequestLocationChange.InvokeAsync();
@@ -97,6 +97,11 @@
     void OverviewShowOrHideHandler(bool showOrHide)
     {
         OnOverviewShowOrHide.InvokeAsync(showOrHide);
+    }
+
+    protected override void OnInitialized()
+    {
+        LocationLoadingIndicatorVisible = true;
     }
 
     protected override async Task OnParametersSetAsync()
@@ -111,8 +116,14 @@
         {
             return;
         }
-
+        LocationLoadingIndicatorVisible = true;
         locationIdLastTimeOnParametersSetAsyncWasCalled = Location?.Id;
+
+        // Clear the previous values so we don't accidentally end-up reporting them
+        LocationTemperatureMean = null;
+        MaxTempAnomalyRecords = null;
+        WarmingIndexDescription = null;
+        WarmingIndexAsString = null;
 
         // We can't do anything until we're supplied our tasty, tasty DataSetDefinitions
         if (DataSetDefinitions == null)
@@ -120,7 +131,7 @@
             return;
         }
 
-        var tempMaxMeasurementForLocation = 
+        var tempMaxMeasurementForLocation =
             DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
                 DataSetDefinitions,
                 Location.Id,
@@ -128,11 +139,7 @@
                 Enums.DataAdjustment.Adjusted,
                 true);
 
-        if (tempMaxMeasurementForLocation == null)
-        {
-            AnomalyRecords = null;
-        }
-        else
+        if (tempMaxMeasurementForLocation != null)
         {
             // Retrieve TempMax anomaly
             var series =
@@ -198,6 +205,8 @@
 
             LocationTemperatureMean = series.DataRecords.Average(x => x.Value);
         }
+
+        LocationLoadingIndicatorVisible = false;
 
         await base.OnParametersSetAsync();
     }
