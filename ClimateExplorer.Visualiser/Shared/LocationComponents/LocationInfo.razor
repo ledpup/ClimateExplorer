@@ -1,0 +1,109 @@
+﻿@using Blazorise
+@using Blazorise.LoadingIndicator
+@using ClimateExplorer.Core
+@using ClimateExplorer.Core.ViewModel
+@using ClimateExplorer.Visualiser.UiModel
+@using ClimateExplorer.Core.Calculators
+@using ClimateExplorer.Core.DataPreparation
+@using static ClimateExplorer.Core.Enums
+
+<LoadingIndicator @bind-Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
+    <Collapsible Title="@Location?.Name" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
+        <HeaderContent>
+            <span class="chart-controls" style="margin-left: 32px;"><a class="chart-control" @onclick="() => ChangeLocationClicked(null)"><i class="fas fa-map"></i> Change location</a> </span>
+            <input type="checkbox" class="chart-control" style="margin-left: 16px;" @bind-value="@rainfall"></input> Rainfall
+        </HeaderContent>
+        <Content>
+            <!-- The awful HTML comments between OverviewField elements below are to avoid generating whitespace between OverviewField elements, which was
+                    causing them to be misaligned. Probably better to use flex layout, but this works for now.
+            -->
+            <OverviewField Label="Location"><Value> <span><a href="@LocationMapUrl" target="_blank">@LocationAsString</a></span></Value></OverviewField>
+            <!--
+            -->
+            <OverviewField Label="Elevation"><Value>@ElevationAsString</Value></OverviewField><!--
+
+            -->
+            <TemperatureInfo @ref="TemperatureInfo" Location="Location" DataSetDefinitions="DataSetDefinitions" OnYearFilterChange="HandleOnYearFilterChange" />
+            @if (rainfall)
+            {
+                <PrecipitationInfo @ref="PrecipitationInfo" Location="Location" DataSetDefinitions="DataSetDefinitions" OnYearFilterChange="HandleOnYearFilterChange" />
+            }
+        </Content>
+    </Collapsible>
+</LoadingIndicator>
+
+@code {
+    [Inject]
+    ILogger<LocationInfo> Logger { get; set; }
+
+    [Parameter]
+    public Location? Location { get; set; }
+
+    [Parameter]
+    public EventCallback RequestLocationChange { get; set; }
+
+    [Parameter]
+    public IEnumerable<DataSetDefinitionViewModel> DataSetDefinitions { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnOverviewShowOrHide { get; set; }
+
+    [Parameter]
+    public EventCallback<YearAndDataTypeFilter> OnYearFilterChange { get; set; }
+
+
+    Guid instanceId = Guid.NewGuid();
+
+    string LocationMapUrl => Location == null ? "https://maps.google.com/" : $"https://maps.google.com/?q={Location.Coordinates.Latitude},{Location.Coordinates.Longitude}";
+    string LocationAsString => Location == null ? "Nowhere" : $"{Math.Round(Location.Coordinates.Latitude, 1)}°, {Math.Round(Location.Coordinates.Longitude, 1)}°";
+    string ElevationAsString => Location == null ? "NA" : $"{(Math.Round(Location.Coordinates.Elevation, 1))}m";
+
+    public bool LocationLoadingIndicatorVisible { get; set; }
+    bool rainfall { get; set; }
+
+    TemperatureInfo TemperatureInfo;
+    PrecipitationInfo PrecipitationInfo;
+
+    public void ChangeLocationClicked(EventArgs args)
+    {
+        RequestLocationChange.InvokeAsync();
+    }
+
+    void OverviewShowOrHideHandler(bool showOrHide)
+    {
+        OnOverviewShowOrHide.InvokeAsync(showOrHide);
+    }
+
+    protected override void OnInitialized()
+    {
+        LocationLoadingIndicatorVisible = true;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Location == null)
+        {
+            return;
+        }
+
+
+        await base.OnParametersSetAsync();
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        var currentIndicator = LocationLoadingIndicatorVisible;
+        LocationLoadingIndicatorVisible = TemperatureInfo.LocationLoadingIndicatorVisible && (PrecipitationInfo != null && PrecipitationInfo.LocationLoadingIndicatorVisible);
+        if (currentIndicator != LocationLoadingIndicatorVisible)
+        {
+            StateHasChanged();
+        }
+
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    public async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)
+    {
+        await OnYearFilterChange.InvokeAsync(yearAndDataTypeFilter);
+    }
+}

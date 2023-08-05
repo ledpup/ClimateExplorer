@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
 using GeoCoordinatePortable;
+using ClimateExplorer.Visualiser.Shared.LocationComponents;
 
 namespace ClimateExplorer.Visualiser.Pages;
 

@@ -10,10 +10,10 @@ public static class IndexCalculator
         public float? Value { get; set; }
     }
 
-    public static CalculatedIndex CalculateWarmingIndex(IEnumerable<DataRecord> dataRecords)
+    public static CalculatedIndex CalculateIndex(IEnumerable<DataRecord> dataRecords)
     {
         return
-            CalculateWarmingIndex(
+            CalculateIndex(
                 dataRecords.Select(
                     x =>
                     new YearAndValue
@@ -26,10 +26,10 @@ public static class IndexCalculator
             );
     }
 
-    public static CalculatedIndex CalculateWarmingIndex(ChartableDataPoint[] dataPoints)
+    public static CalculatedIndex CalculateIndex(ChartableDataPoint[] dataPoints)
     {
         return
-            CalculateWarmingIndex(
+            CalculateIndex(
                 dataPoints.Select(
                     x =>
                     new YearAndValue
@@ -42,7 +42,7 @@ public static class IndexCalculator
             );
     }
 
-    static CalculatedIndex CalculateWarmingIndex(YearAndValue[] dataPoints)
+    static CalculatedIndex CalculateIndex(YearAndValue[] dataPoints)
     {
         var nonNullDataPoints = dataPoints.Where(x => x.Value.HasValue).ToArray();
 
@@ -64,7 +64,7 @@ public static class IndexCalculator
         return
             new CalculatedIndex
             {
-                WarmingIndexValue = averageOfLastTwentyYears - averageOfFirstHalf,
+                IndexValue = averageOfLastTwentyYears - averageOfFirstHalf,
                 AverageOfFirstHalf = averageOfFirstHalf,
                 AverageOfLastTwentyYears = averageOfLastTwentyYears,
                 CountOfFirstHalf = countOfFirstHalf,
@@ -78,7 +78,7 @@ public static class IndexCalculator
 
 public class CalculatedIndex
 {
-    public float WarmingIndexValue { get; set; }
+    public float IndexValue { get; set; }
     public float AverageOfFirstHalf { get; set; }
     public int CountOfFirstHalf { get; set; }
     public float AverageOfLastTwentyYears { get; set; }

@@ -7,17 +7,16 @@ using System.Threading.Tasks;
 using static ClimateExplorer.Core.Enums;
 using DataType = ClimateExplorer.Core.Enums.DataType;
 
-namespace ClimateExplorer.Core.ViewModel
-{
-    public class YearAndDataTypeFilter
-    {
-        public YearAndDataTypeFilter (short year)
-        {
-            Year = year;
-        }
+namespace ClimateExplorer.Core.ViewModel;
 
-        public short Year { get; set; }
-        public DataType? DataType { get; set; }
-        public DataAdjustment? DataAdjustment { get; set; }
+public class YearAndDataTypeFilter
+{
+    public YearAndDataTypeFilter (short year)
+    {
+        Year = year;
     }
+
+    public short Year { get; set; }
+    public DataType? DataType { get; set; }
+    public DataAdjustment? DataAdjustment { get; set; }
 }
