@@ -59,14 +59,14 @@ public static class IndexCalculator
                                                         .Take(30)
                                                         .OrderBy(x => x.Year)
                                                         .ToArray();
-        var averageOfLastTwentyYears = lastThirtyYears.Average(x => x.Value).Value;
+        var averageOfLast30Years = lastThirtyYears.Average(x => x.Value).Value;
 
         return
             new CalculatedIndex
             {
-                IndexValue = averageOfLastTwentyYears - averageOfFirstHalf,
+                IndexValue = averageOfLast30Years - averageOfFirstHalf,
                 AverageOfFirstHalf = averageOfFirstHalf,
-                AverageOfLastTwentyYears = averageOfLastTwentyYears,
+                AverageOfLast30Years = averageOfLast30Years,
                 CountOfFirstHalf = countOfFirstHalf,
                 FirstYearInFirstHalf = firstHalf.First().Year,
                 LastYearInFirstHalf = firstHalf.Last().Year,
@@ -81,7 +81,7 @@ public class CalculatedIndex
     public float IndexValue { get; set; }
     public float AverageOfFirstHalf { get; set; }
     public int CountOfFirstHalf { get; set; }
-    public float AverageOfLastTwentyYears { get; set; }
+    public float AverageOfLast30Years { get; set; }
     public int FirstYearInFirstHalf { get; set; }
     public int LastYearInFirstHalf { get; set; }
     public int FirstYearInLast30Years { get; set; }
