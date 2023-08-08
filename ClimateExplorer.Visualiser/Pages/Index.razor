@@ -7,6 +7,7 @@
 @using ClimateExplorer.Core.DataPreparation
 @using static ClimateExplorer.Visualiser.UiModel.SuggestedPresetLists;
 @using static ClimateExplorer.Visualiser.Shared.Collapsible;
+@using ClimateExplorer.Visualiser.Shared.LocationComponents
 
 @inherits ChartablePage
 
@@ -21,7 +22,7 @@
 </div>
 
 <div class="location-and-chart-container">
-    <div>
+    <div style="position: relative;">
         <div class="map-space-reserver" id="mapContainerContainer">
             <MapContainer @ref="mapContainer"
                 Locations="@Locations"
