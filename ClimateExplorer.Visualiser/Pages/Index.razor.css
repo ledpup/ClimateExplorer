@@ -1,7 +1,5 @@
 ﻿.map-space-reserver {
     position: relative;
-    height: 250px;
-    width: 100%;
 }
 
 .chart-series-list-wrapper {
@@ -13,14 +11,19 @@
     .map-space-reserver {
         margin-bottom: 10px;
         z-index: 1;
+        height: 250px;
+        width: 100%;
     }
 }
 
 @media only screen and (min-width: 1000px) {
     .map-space-reserver {
-        float: right;
-        width: 50%;
         z-index: 1;
+        position: absolute;
+        bottom: 0;
+        top: 0;
+        right: 0;
+        left: 800px;
     }
 
     .location-and-chart-container {
