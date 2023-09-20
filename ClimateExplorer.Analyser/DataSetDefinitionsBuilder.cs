@@ -121,7 +121,6 @@ internal class DataSetDefinitionsBuilder
                     new MeasurementDefinition
                     {
                         DataCategory = DataCategory.Temperature,
-                        DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Monthly,
@@ -133,7 +132,6 @@ internal class DataSetDefinitionsBuilder
                     new MeasurementDefinition
                     {
                         DataCategory = DataCategory.Temperature,
-                        DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Monthly,
@@ -313,7 +311,9 @@ internal class DataSetDefinitionsBuilder
                 Id = Guid.Parse("c31270fa-b207-4d8f-b68e-4995698f1a4d"),
                 Name = "Southern Oscillation Index (SOI)",
                 ShortName = "SOI",
-                Description = "TBC",
+                Description = @"The Southern Oscillation Index is calculated based on atmospheric pressure difference between Tahiti and Darwin. Higher values of the SOI indicate that Tahiti has higher atmospheric pressure, relative to its typical value, than Darwin does relative to its typical value.
+
+                    High values of the SOI correlate with cold waters in the eastern tropical Pacific.",
                 MoreInformationUrl = "https://www.ncdc.noaa.gov/teleconnections/enso/soi",
                 MeasurementDefinitions = new List<MeasurementDefinition>
                 {
@@ -337,7 +337,9 @@ internal class DataSetDefinitionsBuilder
                 Id = Guid.Parse("1042147a-8625-4ee7-bb5a-f0f17795c393"),
                 Name = "Oceanic Niño Index (ONI)",
                 ShortName = "ONI",
-                Description = "TBC",
+                Description = @"The Oceanic Niño Index (ONI) is calculated from 3-month running averages of sea surface temperature measurements from the same area as Niño 3.4 (around the equator in the East Pacific, 5 deg N to 5 deg C, 170 deg W to 120 deg W), and then expressed as an anomaly (i.e. difference from a 30 year rolling average).
+
+                    ONI conditions of +0.5 deg C or higher are considered El Niño, and -0.5 deg C or lower are considered La Niña. El Niño or La Niña conditions must prevail for at least five consecutive months to be considered an El Niño or La Niña event.",
                 MoreInformationUrl = "https://www.climate.gov/news-features/understanding-climate/climate-variability-oceanic-ni%C3%B1o-index",
                 MeasurementDefinitions = new List<MeasurementDefinition>
                 {
@@ -345,7 +347,7 @@ internal class DataSetDefinitionsBuilder
                     {
                         DataCategory = DataCategory.Enso,
                         DataType = DataType.ONI,
-                        UnitOfMeasure = UnitOfMeasure.EnsoIndex,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsiusAnomaly,
                         DataResolution = DataResolution.Monthly,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
                         FolderName = @"Reference\ENSO",
@@ -361,7 +363,9 @@ internal class DataSetDefinitionsBuilder
                 Id = Guid.Parse("bfbaa69b-c10d-4de3-a78c-1ed6ff307327"),
                 Name = "Niño 3.4",
                 ShortName = "Niño 3.4",
-                Description = "TBC",
+                Description = @"The Niño 3.4 index is calculated as a 3-month running average of sea surface temperature measurements around the equator in the East Pacific (5 deg N to 5 deg C, 170 deg W to 120 deg W), and then expressed as an anomaly (i.e. difference from the average).
+
+                    Niño 3.4 conditions of +0.4 deg C or higher are considered El Niño, and -0.4 deg C or lower are considered La Niña.",
                 MoreInformationUrl = "https://climatedataguide.ucar.edu/climate-data/nino-sst-indices-nino-12-3-34-4-oni-and-tni",
                 MeasurementDefinitions = new List<MeasurementDefinition>
                 {
@@ -369,7 +373,7 @@ internal class DataSetDefinitionsBuilder
                     {
                         DataCategory = DataCategory.Enso,
                         DataType = DataType.Nino34,
-                        UnitOfMeasure = UnitOfMeasure.EnsoIndex,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsiusAnomaly,
                         DataResolution = DataResolution.Monthly,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
                         FolderName = @"Reference\ENSO",
@@ -390,7 +394,7 @@ internal class DataSetDefinitionsBuilder
                 Id = Guid.Parse("42c9195e-edc0-4894-97dc-923f9d5e72f0"),
                 Name = "Carbon dioxide (CO₂) from the Mauna Loa Observatory",
                 ShortName = "Carbon Dioxide (CO₂)",
-                Description = "The carbon dioxide data on Mauna Loa constitute the longest record of direct measurements of CO2 in the atmosphere. They were started by C. David Keeling of the Scripps Institution of Oceanography in March of 1958 at a facility of the National Oceanic and Atmospheric Administration [Keeling, 1976]. NOAA started its own CO2 measurements in May of 1974, and they have run in parallel with those made by Scripps since then [Thoning, 1989].",
+                Description = "The carbon dioxide data on Mauna Loa constitute the longest record of direct measurements of CO2 in the atmosphere. They were started by C. David Keeling of the Scripps Institution of Oceanography in March of 1958 at a facility of the National Oceanic and Atmospheric Administration. NOAA started its own CO2 measurements in May of 1974, and they have run in parallel with those made by Scripps since then.",
                 MoreInformationUrl = "https://gml.noaa.gov/ccgg/trends/mlo.html",
                 DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt",
                 MeasurementDefinitions = new List<MeasurementDefinition>
@@ -411,7 +415,7 @@ internal class DataSetDefinitionsBuilder
                 Id = Guid.Parse("2debe203-cbaa-4015-977c-2f40e2782547"),
                 Name = "Methane (CH₄) from a globally distributed network",
                 ShortName = "Methane (CH₄)",
-                Description = "The Global Monitoring Division of NOAA's Earth System Research Laboratory has measured methane since 1983 at a globally distributed network of air sampling sites (Dlugokencky et al., 1994). A global average is constructed by first smoothing the data for each site as a function of time, and then smoothed values for each site are plotted as a function of latitude for 48 equal time steps per year. Global means are calculated from the latitude plot at each time step (Masarie and Tans, 1995).",
+                Description = "The Global Monitoring Division of NOAA's Earth System Research Laboratory has measured methane since 1983 at a globally distributed network of air sampling sites. A global average is constructed by first smoothing the data for each site as a function of time, and then smoothed values for each site are plotted as a function of latitude for 48 equal time steps per year. Global means are calculated from the latitude plot at each time step.",
                 MoreInformationUrl = "https://gml.noaa.gov/ccgg/trends_ch4/",
                 DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/ch4/ch4_mm_gl.txt",
                 MeasurementDefinitions = new List<MeasurementDefinition>
@@ -432,7 +436,7 @@ internal class DataSetDefinitionsBuilder
                 Id = Guid.Parse("6e84e743-3c77-488f-8a1c-152306c3d6f0"),
                 Name = "Nitrous oxide (N₂O) from a globally distributed network",
                 ShortName = "N₂O",
-                Description = "The Global Monitoring Division of NOAA's Earth System Research Laboratory has measured nitrous oxide since 1997 at a globally distributed network of air sampling sites (Dlugokencky et al., 1994). A global average is constructed by first smoothing the data for each site as a function of time, and then smoothed values for each site are fitted as a function of latitude at 48 equally-spaced time steps per year. Global means are calculated from the latitude fits at each time step (Masarie and Tans, 1995).",
+                Description = "The Global Monitoring Division of NOAA's Earth System Research Laboratory has measured nitrous oxide since 2001 at a globally distributed network of air sampling sites. A global average is constructed by first smoothing the data for each site as a function of time, and then smoothed values for each site are fitted as a function of latitude at 48 equally-spaced time steps per year. Global means are calculated from the latitude fits at each time step.",
                 MoreInformationUrl = "https://gml.noaa.gov/ccgg/trends_n2o/",
                 DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/n2o/n2o_mm_gl.txt",
                 MeasurementDefinitions = new List<MeasurementDefinition>
@@ -459,10 +463,14 @@ internal class DataSetDefinitionsBuilder
                 Name = "Indian Ocean Dipole",
                 ShortName = "IOD",
                 Description = @"Indian Ocean Dipole (IOD) events are driven by changes in the tropical Indian Ocean. Sustained changes in the difference between normal sea surface temperatures in the tropical western and eastern Indian Ocean are what characterise IOD events.
+
         The IOD is commonly measured by an index (sometimes referred to as the Dipole Mode Index, or DMI) that is the difference between sea surface temperature (SST) anomalies in two regions of the tropical Indian Ocean (see map above):
+
         IOD west: 50°E to 70°E and 10°S to 10°N
         IOD east: 90°E to 110°E and 10°S to 0°S
+
         A positive IOD period is characterised by cooler than average water in the tropical eastern Indian Ocean and warmer than average water in the tropical western Indian Ocean. Conversely, a negative IOD period is characterised by warmer than average water in the tropical eastern Indian Ocean and cooler than average water in the tropical western Indian Ocean.
+
         For monitoring the IOD, Australian climatologists consider sustained values above +0.4 °C as typical of a positive IOD, and values below −0.4 °C as typical of a negative IOD.",
                 MoreInformationUrl = "http://www.bom.gov.au/climate/enso/indices/about.shtml",
                 DataDownloadUrl = "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/dmi.had.long.data",
@@ -563,7 +571,6 @@ internal class DataSetDefinitionsBuilder
                     new MeasurementDefinition
                     {
                         DataCategory = DataCategory.Temperature,
-                        DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
@@ -574,7 +581,6 @@ internal class DataSetDefinitionsBuilder
                     new MeasurementDefinition
                     {
                         DataCategory = DataCategory.Temperature,
-                        DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,

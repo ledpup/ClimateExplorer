@@ -3,7 +3,7 @@
 @using ClimateExplorer.Core.DataPreparation
 @using static ClimateExplorer.Core.Enums
 
-<div class="warming-stripe">
+<div class="climate-stripe">
     @if (DataRecords != null)
     {
         foreach (var record in DataRecords)
@@ -15,10 +15,13 @@
                 </div>
             </div>
         }
+        @if (ShowInfo)
+        {
+            <div class="info-icon">
+                <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowClimateStripeInfo></i>
+            </div>
+        }
     }
-    <div class="info-icon">
-        <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowClimateStripeInfo></i>
-    </div>
 
     @if (PopupText != null)
     {

@@ -45,7 +45,7 @@
                 {
                     <div class="entry">
                         <div class="title">Dataset description</div>
-                        <div class="value">@sss.DataSetDefinition.Description</div>
+                        <div class="value">@((MarkupString)sss.DataSetDefinition.Description.Replace("\r\n", "<br>"))</div>
                     </div>
                 }
 
