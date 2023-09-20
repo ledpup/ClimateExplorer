@@ -88,15 +88,15 @@ public static class BomLocationsAndStationsMapper
 
                 var dataFileFilterAndAdjustment = new DataFileFilterAndAdjustment()
                 {
-                    ExternalStationCode = externalStationCode,
+                    Id = externalStationCode,
                     StartDate = startDate,
                     EndDate = endDate,
                 };
                 locationDataFileFilterAndAdjustments.Add(dataFileFilterAndAdjustment);
 
-                if (!stations.Any(x => x.ExternalStationCode == externalStationCode))
+                if (!stations.Any(x => x.Id == externalStationCode))
                 {
-                    stations.Add(new Station { ExternalStationCode = externalStationCode });
+                    stations.Add(new Station { Id = externalStationCode });
                 }
             }
 
@@ -107,7 +107,7 @@ public static class BomLocationsAndStationsMapper
                 {
                     if (!locationId.HasValue)
                     {
-                        locationId = stationToLocationMapping.ContainsKey(x.ExternalStationCode) ? stationToLocationMapping[primarySite] : null;
+                        locationId = stationToLocationMapping.ContainsKey(x.Id) ? stationToLocationMapping[primarySite] : null;
                     }
                 });
             }
@@ -155,12 +155,12 @@ public static class BomLocationsAndStationsMapper
         {
             foreach (var locationIdToDataFileMapping in locationIdToDataFileMappings)
             {
-                if (locationIdToDataFileMapping.Value.Any(x => x.ExternalStationCode == station))
+                if (locationIdToDataFileMapping.Value.Any(x => x.Id == station))
                 {
                     if (!dataFileLocationMapping.LocationIdToDataFileMappings.ContainsKey(locationIdToDataFileMapping.Key))
                     {
                         dataFileLocationMapping.LocationIdToDataFileMappings.Add(locationIdToDataFileMapping.Key, new List<DataFileFilterAndAdjustment>());
-                        dataFileLocationMapping.LocationIdToDataFileMappings[locationIdToDataFileMapping.Key].Add(new DataFileFilterAndAdjustment { ExternalStationCode = station });
+                        dataFileLocationMapping.LocationIdToDataFileMappings[locationIdToDataFileMapping.Key].Add(new DataFileFilterAndAdjustment { Id = station });
                     }
                     break;
                 }
@@ -210,9 +210,9 @@ public static class BomLocationsAndStationsMapper
             locations.Add(location);
 
             dataFileLocationMapping.LocationIdToDataFileMappings.Add(location.Id, new List<DataFileFilterAndAdjustment>());
-            dataFileLocationMapping.LocationIdToDataFileMappings[location.Id].Add(new DataFileFilterAndAdjustment { ExternalStationCode = stationCode });
+            dataFileLocationMapping.LocationIdToDataFileMappings[location.Id].Add(new DataFileFilterAndAdjustment { Id = stationCode });
 
-            stations.Add(new Station { ExternalStationCode = stationCode, Coordinates = coordinates });
+            stations.Add(new Station { Id = stationCode, Coordinates = coordinates });
         }
 
         WriteFiles(outputFileSuffix, locations, stations, dataFileLocationMapping);

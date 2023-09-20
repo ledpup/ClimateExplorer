@@ -39,3 +39,15 @@ public class GeoListSpatialIndex<T> : ISpatialIndex<T> where T : IPointData
         return l;
     }
 }
+
+public class GeoPoint : IPointData
+{
+    public GeoPoint(string id, double x, double y)
+    {
+        Id = id;
+        Point = new Point(x, y);
+    }
+
+    public string Id { get; }
+    public Point Point { get; }
+}

@@ -62,7 +62,7 @@
 
     string LocationMapUrl => $"https://maps.google.com/?q={Location.Coordinates.Latitude},{Location.Coordinates.Longitude}";
     string LocationAsString => $"{Math.Round(Location.Coordinates.Latitude, 1)}°, {Math.Round(Location.Coordinates.Longitude, 1)}°";
-    string ElevationAsString => $"{Math.Round(Location.Coordinates.Elevation, 1)}m";
+    string ElevationAsString => $"{Math.Round(Location.Coordinates.Elevation ?? 0, 1)}m";
 
     /// <summary>
     /// Used by the warming stripe

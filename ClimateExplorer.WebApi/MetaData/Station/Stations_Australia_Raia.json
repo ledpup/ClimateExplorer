@@ -1,6 +1,6 @@
 [
   {
-    "ExternalStationCode": "300017",
+    "Id": "300017",
     "Name": null,
     "Coordinates": {
       "Latitude": 66.28,
@@ -11,7 +11,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "200284",
+    "Id": "200284",
     "Name": null,
     "Coordinates": {
       "Latitude": 12.19,
@@ -22,7 +22,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "300000",
+    "Id": "300000",
     "Name": null,
     "Coordinates": {
       "Latitude": 68.57,
@@ -33,7 +33,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "200839",
+    "Id": "200839",
     "Name": null,
     "Coordinates": {
       "Latitude": 31.54,
@@ -44,7 +44,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "300004",
+    "Id": "300004",
     "Name": null,
     "Coordinates": {
       "Latitude": 54.5,
@@ -55,7 +55,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "300001",
+    "Id": "300001",
     "Name": null,
     "Coordinates": {
       "Latitude": 67.6,
@@ -66,7 +66,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "200288",
+    "Id": "200288",
     "Name": null,
     "Coordinates": {
       "Latitude": 29.04,
@@ -77,7 +77,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "200283",
+    "Id": "200283",
     "Name": null,
     "Coordinates": {
       "Latitude": 16.29,

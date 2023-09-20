@@ -4,16 +4,12 @@ using System.Text.Json;
 
 public class Location
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; }
+    public required Guid Id { get; set; }
+    public required string Name { get; set; }
     public Coordinates Coordinates { get; set; }
     public float? WarmingIndex { get; set; }
     public short? HeatingScore { get; set; }
-    public List<LocationDistance> NearbyLocations { get; set; }
-    public Location()
-    {
-
-    }
+    public List<LocationDistance>? NearbyLocations { get; set; }
 
     public static async Task<List<Location>> GetLocationsFromFile(string pathAndFileName)
     {
@@ -56,7 +52,7 @@ public class Location
 
     public static List<LocationDistance> GetDistances(Location location, List<Location> locations)
     {
-        var originCoord = new GeoCoordinate(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation);
+        var originCoord = new GeoCoordinate(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation ?? 0);
         return GetDistances(originCoord, locations.Where(x => x != location));
     }
 
@@ -66,7 +62,7 @@ public class Location
 
         locations.ToList().ForEach(x =>
         {
-            var destCoord = new GeoCoordinate(x.Coordinates.Latitude, x.Coordinates.Longitude, x.Coordinates.Elevation);
+            var destCoord = new GeoCoordinate(x.Coordinates.Latitude, x.Coordinates.Longitude, x.Coordinates.Elevation ?? 0);
             var distance = Math.Round(geoCoordinate.GetDistanceTo(destCoord) / 1000, 1); // GetDistanceTo is in metres. Convert to km
             var bearing = GeometryHelpers.GetRhumbBearingFromPointToPoint(geoCoordinate, destCoord);
 

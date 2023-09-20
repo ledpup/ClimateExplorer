@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace ClimateExplorer.Data.IntegratedSurfaceData;
 
-internal class IsdFileProcessor
+public class IsdFileProcessor
 {
-    internal static Dictionary<DateOnly, List<TimedRecord>> Transform(string[] records, ILogger<Program> logger)
+    public static Dictionary<DateOnly, List<TimedRecord>> Transform(string[] records, ILogger<IsdFileProcessor> logger)
     {
         var mandatoryDataRegex = @"^(\d{4})(?<catalogId>\d{6})(?<wbanId>\d{5})
 (?<year>\d{4})(?<month>\d{2})(?<day>\d{2})(?<time>\d{4})

@@ -40,15 +40,15 @@ public class StationFileProcessor
                 logger.LogError($"Station {id} that is in the station file '{stationFileName}' is not found in the data file. There is no point keeping it in the list.");
                 continue;
             }
-            if (!(station.Begin.Year <= beginBeforeOrEqualTo &&
-                    station.End.Year > endNoLaterThan))
+            if (!(station.Opened.Value.Year <= beginBeforeOrEqualTo &&
+                    station.Closed.Value.Year > endNoLaterThan))
             {
-                logger.LogInformation($"Station is being filtered out because it isn't old enough. Begins: {station.Begin.Year} Ends: {station.End.Year}");
+                logger.LogInformation($"Station is being filtered out because it isn't old enough. Begins: {station.Opened.Value.Year} Ends: {station.Closed.Value.Year}");
                 continue;
             }
-            if (station.YearsOfMissingData / (float)station.Age > missingYearsThreshold)
+            if (station.YearsOfMissingData / (float)station.Age.Value > missingYearsThreshold)
             {
-                logger.LogInformation($"Station is being filtered out because it has too much missing data. Begins: {station.Begin.Year} Ends: {station.End.Year} Years of missing data: {station.YearsOfMissingData}");
+                logger.LogInformation($"Station is being filtered out because it has too much missing data. Begins: {station.Opened.Value.Year} Ends: {station.Closed.Value.Year} Years of missing data: {station.YearsOfMissingData}");
                 continue;
             }
             logger.LogInformation($"Station {id} has been accepted");
@@ -78,49 +78,4 @@ public class StationFileProcessor
 
         return stationResults;
     }
-
-    static DateOnly ConvertFieldToDate(string field)
-    {
-        return new DateOnly(Convert.ToInt16(field.Substring(0, 4)),
-                            Convert.ToInt16(field.Substring(4, 2)),
-                            Convert.ToInt16(field.Substring(6, 2)));
-    }
-}
-
-public class Station
-{
-    public string? Id { get; set; }
-    public string? Name { get; set; }
-    public string? CountryCode { get; set; }
-    public DateOnly Begin { get; set; }
-    public DateOnly End { get; set; }
-    public int YearsOfMissingData { get; set; }
-    public int Age
-    { 
-        get
-        {
-            return End.Year - Begin.Year;
-        } 
-    }
-    public Coordinates Coordinates { get; set; }
-
-    [JsonIgnore]
-    public List<StationDistance> StationDistances { get; set; }
-
-    [JsonIgnore]
-    public double AverageDistance { get; set; }
-    
-    [JsonIgnore]
-    public double Score { get; set; }
-    public override string ToString()
-    {
-        return $"{Name}, {CountryCode}, {Coordinates.Latitude}, {Coordinates.Longitude}";
-    }
-}
-
-public struct Coordinates
-{
-    public float Latitude { get; set; }
-    public float Longitude { get; set; }
-    public float? Elevation { get; set; }
 }

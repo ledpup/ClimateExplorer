@@ -1,13 +1,34 @@
 ﻿using ClimateExplorer.Core.Model;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 public class Station
 {
-    public string ExternalStationCode { get; set; }
-    public string Name { get; set; }
+    public required string Id { get; set; }
+    public string? Name { get; set; }
+    public string? CountryCode { get; set; }
     public Coordinates? Coordinates { get; set; }
-    public DateTime? Opened { get; set; }
-    public DateTime? Closed { get; set; }
+    public DateOnly? Opened { get; set; }
+    public DateOnly? Closed { get; set; }
+    public int? YearsOfMissingData { get; set; }
+
+    [JsonIgnore]
+    public int? Age => Closed?.Year - Opened?.Year;
+
+    [JsonIgnore]
+    public List<StationDistance>? StationDistances { get; set; }
+
+    [JsonIgnore]
+    public double? AverageDistance { get; set; }
+
+    [JsonIgnore]
+    public int? Score
+    {
+        get
+        {
+            return Age - YearsOfMissingData;
+        }
+    }
 
     public static async Task<List<Station>?> GetStationsFromFiles(List<string> pathAndFileNames)
     {

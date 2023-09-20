@@ -19,7 +19,7 @@ public class BomDataDownloader
         {
             foreach (var obsCode in obsCodes)
             {
-                await DownloadAndExtractDailyBomData(httpClient, station.ExternalStationCode, obsCode);
+                await DownloadAndExtractDailyBomData(httpClient, station.Id, obsCode);
             }
         }
 

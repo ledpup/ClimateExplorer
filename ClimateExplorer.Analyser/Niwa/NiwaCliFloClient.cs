@@ -23,7 +23,7 @@ public class NiwaCliFloClient
         {
             foreach (var dataType in dataTypes)
             {
-                await DownloadAndExtractNiwaData(station.ExternalStationCode, dataType.Name, dataType.ObsCode, dataType.Columns);
+                await DownloadAndExtractNiwaData(station.Id, dataType.Name, dataType.ObsCode, dataType.Columns);
             }
         }
     }

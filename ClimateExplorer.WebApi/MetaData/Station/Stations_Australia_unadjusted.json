@@ -1,1427 +1,1427 @@
 [
   {
-    "ExternalStationCode": "001021",
+    "Id": "001021",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "001019",
+    "Id": "001019",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "002011",
+    "Id": "002011",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "002012",
+    "Id": "002012",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "002079",
+    "Id": "002079",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "003002",
+    "Id": "003002",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "003003",
+    "Id": "003003",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "004002",
+    "Id": "004002",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "004032",
+    "Id": "004032",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "004020",
+    "Id": "004020",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "004106",
+    "Id": "004106",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "005007",
+    "Id": "005007",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "005026",
+    "Id": "005026",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "005098",
+    "Id": "005098",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "006062",
+    "Id": "006062",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "006011",
+    "Id": "006011",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "007046",
+    "Id": "007046",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "007045",
+    "Id": "007045",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "008093",
+    "Id": "008093",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "008296",
+    "Id": "008296",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "008039",
+    "Id": "008039",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "008297",
+    "Id": "008297",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "008050",
+    "Id": "008050",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "008051",
+    "Id": "008051",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "008315",
+    "Id": "008315",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "009034",
+    "Id": "009034",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "009021",
+    "Id": "009021",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "009518",
+    "Id": "009518",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "009510",
+    "Id": "009510",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "009617",
+    "Id": "009617",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "009541",
+    "Id": "009541",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "009789",
+    "Id": "009789",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "009500",
+    "Id": "009500",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "009741",
+    "Id": "009741",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "009999",
+    "Id": "009999",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "010093",
+    "Id": "010093",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "010092",
+    "Id": "010092",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "010035",
+    "Id": "010035",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "010286",
+    "Id": "010286",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "010579",
+    "Id": "010579",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "010916",
+    "Id": "010916",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "010648",
+    "Id": "010648",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "010917",
+    "Id": "010917",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "011003",
+    "Id": "011003",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "011004",
+    "Id": "011004",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "011052",
+    "Id": "011052",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "012039",
+    "Id": "012039",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "012038",
+    "Id": "012038",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "013017",
+    "Id": "013017",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "014016",
+    "Id": "014016",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "014015",
+    "Id": "014015",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "014825",
+    "Id": "014825",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "015087",
+    "Id": "015087",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "015135",
+    "Id": "015135",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "015540",
+    "Id": "015540",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "015590",
+    "Id": "015590",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "015548",
+    "Id": "015548",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "015666",
+    "Id": "015666",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "016001",
+    "Id": "016001",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "016044",
+    "Id": "016044",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "016098",
+    "Id": "016098",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "017043",
+    "Id": "017043",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "017114",
+    "Id": "017114",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "017024",
+    "Id": "017024",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "017031",
+    "Id": "017031",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "017126",
+    "Id": "017126",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "018012",
+    "Id": "018012",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "018044",
+    "Id": "018044",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "018070",
+    "Id": "018070",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "018192",
+    "Id": "018192",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "021046",
+    "Id": "021046",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "021133",
+    "Id": "021133",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "022801",
+    "Id": "022801",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "022823",
+    "Id": "022823",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "023000",
+    "Id": "023000",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "023090",
+    "Id": "023090",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "023321",
+    "Id": "023321",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "023373",
+    "Id": "023373",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "026020",
+    "Id": "026020",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "026021",
+    "Id": "026021",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "026026",
+    "Id": "026026",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "027042",
+    "Id": "027042",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "027045",
+    "Id": "027045",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "027022",
+    "Id": "027022",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "027021",
+    "Id": "027021",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "027058",
+    "Id": "027058",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "028004",
+    "Id": "028004",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "029041",
+    "Id": "029041",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "029063",
+    "Id": "029063",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "029004",
+    "Id": "029004",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "029077",
+    "Id": "029077",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "030045",
+    "Id": "030045",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "030161",
+    "Id": "030161",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "030018",
+    "Id": "030018",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "030124",
+    "Id": "030124",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "031010",
+    "Id": "031010",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "031011",
+    "Id": "031011",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "032040",
+    "Id": "032040",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "033046",
+    "Id": "033046",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "033047",
+    "Id": "033047",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "033119",
+    "Id": "033119",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "034002",
+    "Id": "034002",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "034084",
+    "Id": "034084",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "036007",
+    "Id": "036007",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "036030",
+    "Id": "036030",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "036031",
+    "Id": "036031",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "037010",
+    "Id": "037010",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "038003",
+    "Id": "038003",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "038002",
+    "Id": "038002",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "038026",
+    "Id": "038026",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "039039",
+    "Id": "039039",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "039066",
+    "Id": "039066",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "039083",
+    "Id": "039083",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "039015",
+    "Id": "039015",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "039128",
+    "Id": "039128",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "040004",
+    "Id": "040004",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "040043",
+    "Id": "040043",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "040223",
+    "Id": "040223",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "040842",
+    "Id": "040842",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "042023",
+    "Id": "042023",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "042112",
+    "Id": "042112",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "043034",
+    "Id": "043034",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "043109",
+    "Id": "043109",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "044022",
+    "Id": "044022",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "044021",
+    "Id": "044021",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "045017",
+    "Id": "045017",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "045025",
+    "Id": "045025",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "046043",
+    "Id": "046043",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "046012",
+    "Id": "046012",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "046037",
+    "Id": "046037",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "046126",
+    "Id": "046126",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "048030",
+    "Id": "048030",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "048027",
+    "Id": "048027",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "048013",
+    "Id": "048013",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "048239",
+    "Id": "048239",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "048245",
+    "Id": "048245",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "073054",
+    "Id": "073054",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "050017",
+    "Id": "050017",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "052026",
+    "Id": "052026",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "052088",
+    "Id": "052088",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "053027",
+    "Id": "053027",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "053048",
+    "Id": "053048",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "053115",
+    "Id": "053115",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "055024",
+    "Id": "055024",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "056017",
+    "Id": "056017",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "056242",
+    "Id": "056242",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "058012",
+    "Id": "058012",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "059040",
+    "Id": "059040",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "059151",
+    "Id": "059151",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "060026",
+    "Id": "060026",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "060139",
+    "Id": "060139",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "061078",
+    "Id": "061078",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "061089",
+    "Id": "061089",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "061363",
+    "Id": "061363",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "063005",
+    "Id": "063005",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "065012",
+    "Id": "065012",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "065070",
+    "Id": "065070",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "066062",
+    "Id": "066062",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "066214",
+    "Id": "066214",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "067033",
+    "Id": "067033",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "067105",
+    "Id": "067105",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "068076",
+    "Id": "068076",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "068072",
+    "Id": "068072",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "068034",
+    "Id": "068034",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "068151",
+    "Id": "068151",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "069018",
+    "Id": "069018",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "070099",
+    "Id": "070099",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "070014",
+    "Id": "070014",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "070351",
+    "Id": "070351",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "072151",
+    "Id": "072151",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "072150",
+    "Id": "072150",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "072091",
+    "Id": "072091",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "072161",
+    "Id": "072161",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "074128",
+    "Id": "074128",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "074258",
+    "Id": "074258",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "076077",
+    "Id": "076077",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "076031",
+    "Id": "076031",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "078031",
+    "Id": "078031",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "078015",
+    "Id": "078015",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "080023",
+    "Id": "080023",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "082039",
+    "Id": "082039",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "084016",
+    "Id": "084016",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "084030",
+    "Id": "084030",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "084145",
+    "Id": "084145",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "085133",
+    "Id": "085133",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "085072",
+    "Id": "085072",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "085096",
+    "Id": "085096",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "086071",
+    "Id": "086071",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "086338",
+    "Id": "086338",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "087031",
+    "Id": "087031",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "090015",
+    "Id": "090015",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "091057",
+    "Id": "091057",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "091293",
+    "Id": "091293",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "091049",
+    "Id": "091049",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "091104",
+    "Id": "091104",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "091311",
+    "Id": "091311",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "092045",
+    "Id": "092045",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "094010",
+    "Id": "094010",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "094198",
+    "Id": "094198",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "094029",
+    "Id": "094029",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "094069",
+    "Id": "094069",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "094220",
+    "Id": "094220",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "096003",
+    "Id": "096003",
     "Name": null,
     "Coordinates": null,
     "Opened": null,
     "Closed": null
   },
   {
-    "ExternalStationCode": "096071",
+    "Id": "096071",
     "Name": null,
     "Coordinates": null,
     "Opened": null,

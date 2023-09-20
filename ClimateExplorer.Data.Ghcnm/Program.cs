@@ -2,8 +2,8 @@
 using Dbscan;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Security.Cryptography;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 var serviceProvider = new ServiceCollection()
     .AddLogging((loggingBuilder) => loggingBuilder
@@ -18,27 +18,34 @@ var stations = await GetStationMetaData();
 
 var processedStations = await RetrieveDataProcessedStations(stations);
 
-//var selectedStations = SelectStationsSinglePerCountry(processedStations);
-
-//CalculateDistances(processedStations);
-
-//var farStations = SelectStationsMinimumDistanceFromNeighbour(processedStations, 100);
-
-//foreach (var farStation in farStations)
-//{
-//    if (!selectedStations.Any(x => x.Id == farStation.Id))
-//    {
-//        selectedStations.Add(farStation);
-//    }
-//}
-
-var selectedStations = SelectStationsByClusteringAndTakingBest(processedStations, 100, 2);
+var selectedStations = SelectStationsByDbscanClusteringAndTakingHighestScore(processedStations, 100, 2);
 
 SaveStations(selectedStations, @"Output\SiteMetaData\selected-stations.json");
 
+var options = new JsonSerializerOptions
+{
+    WriteIndented = true,
+    Converters =
+        {
+            new JsonStringEnumConverter()
+        }
+};
+Directory.CreateDirectory(@"Output\Location");
+Directory.CreateDirectory(@"Output\Station");
+Directory.CreateDirectory(@"Output\DataFileLocationMapping");
+
+var outputFileSuffix = "_ghcnm_adjusted";
+
+//File.WriteAllText($@"Output\Location\Locations{outputFileSuffix}.json", JsonSerializer.Serialize(locations, options));
+File.WriteAllText($@"Output\Station\Stations{outputFileSuffix}.json", JsonSerializer.Serialize(selectedStations, options));
+//File.WriteAllText($@"Output\DataFileLocationMapping\DataFileLocationMapping{outputFileSuffix}.json", JsonSerializer.Serialize(dataFileLocationMapping, options));
+
+
+
+
 await CreateStationDataFiles(selectedStations);
 
-List<Station> SelectStationsByClusteringAndTakingBest(List<Station> processedStations, double distance, int minimumPointsPerCluster)
+List<Station> SelectStationsByDbscanClusteringAndTakingHighestScore(List<Station> processedStations, double distance, int minimumPointsPerCluster)
 {
     var stationsGroupedByCountry = processedStations.GroupBy(x => x.CountryCode);
 
@@ -47,27 +54,25 @@ List<Station> SelectStationsByClusteringAndTakingBest(List<Station> processedSta
     {
         var stationsInCountry = groupedCountry.ToList();
 
-        var index = new GeoListSpatialIndex<PointInfo<GeoPoint>>(stationsInCountry.Select(x => new PointInfo<GeoPoint>(new GeoPoint(x.Id, x.Coordinates.Latitude, x.Coordinates.Longitude))));
+        var index = new GeoListSpatialIndex<PointInfo<GeoPoint>>(stationsInCountry.Select(x => new PointInfo<GeoPoint>(new GeoPoint(x.Id, x.Coordinates.Value.Latitude, x.Coordinates.Value.Longitude))));
 
-        var result = Dbscan.Dbscan.CalculateClusters(
+        var dbscanResult = Dbscan.Dbscan.CalculateClusters(
                 index,
                 epsilon: distance,
                 minimumPointsPerCluster: minimumPointsPerCluster);
 
-        foreach (var cluster in result.Clusters)
+        foreach (var cluster in dbscanResult.Clusters)
         {
-            int bestScore = 0;
+            int highestScore = 0;
             var selectedStationId = cluster.Objects.First().Id;
             foreach (var geoPoint in cluster.Objects)
             {
                 var geoPointStation = stationsInCountry.Single(x => x.Id == geoPoint.Id);
 
-                var score = geoPointStation.Age - geoPointStation.YearsOfMissingData;
-
-                if (score > bestScore)
+                if (geoPointStation.Score > highestScore)
                 {
-                    logger.LogInformation($"Station {geoPointStation.Id} has a score of {score}, beating the current best of {bestScore}");
-                    bestScore = score;
+                    logger.LogInformation($"Station {geoPointStation.Id} has a score of {geoPointStation.Score}, beating the current best of {highestScore}");
+                    highestScore = geoPointStation.Score.Value;
                     selectedStationId = geoPointStation.Id;
                 }
             }
@@ -76,7 +81,7 @@ List<Station> SelectStationsByClusteringAndTakingBest(List<Station> processedSta
             selectedStations.Add(selectedStation);
         }
 
-        foreach (var unclusteredStation in result.UnclusteredObjects)
+        foreach (var unclusteredStation in dbscanResult.UnclusteredObjects)
         {
             var station = stationsInCountry.Single(x => x.Id == unclusteredStation.Id);
             selectedStations.Add(station);
@@ -88,7 +93,7 @@ List<Station> SelectStationsByClusteringAndTakingBest(List<Station> processedSta
 
 void SaveStationMetaData(List<Station> stations)
 {
-    var contents = stations.Select(x => $"{x.Id},{x.Begin.Year},{x.End.Year},{x.YearsOfMissingData}");
+    var contents = stations.Select(x => $"{x.Id},{x.Opened.Value.Year},{x.Closed.Value.Year},{x.YearsOfMissingData}");
 
     File.WriteAllLines(@"SiteMetaData\stations.csv", contents);
 }
@@ -130,8 +135,8 @@ async Task<List<Station>> GetStationMetaData()
             station = new Station
             {
                 Id = id,
-                Begin = new DateOnly(year, 1, 1),
-                End = new DateOnly(year, 12, 31),
+                Opened = new DateOnly(year, 1, 1),
+                Closed = new DateOnly(year, 12, 31),
             };
             stations.Add(station);
         }
@@ -140,13 +145,13 @@ async Task<List<Station>> GetStationMetaData()
         {
             continue;
         }
-        else if (year < station.End.Year)
+        else if (year < station.Closed.Value.Year)
         {
             throw new Exception($"Record year ({year}) is less than the end year for the station {station.Id}");
         }
         else
         {
-            var yearsOfMissingData = year - station.End.Year - 1;
+            var yearsOfMissingData = year - station.Closed.Value.Year - 1;
             if (yearsOfMissingData < -1)
             {
                 throw new Exception("Invalid data record ordering");
@@ -155,7 +160,7 @@ async Task<List<Station>> GetStationMetaData()
             {
                 station.YearsOfMissingData += yearsOfMissingData;
             }
-            station.End = new DateOnly(year, 12, 31);
+            station.Closed = new DateOnly(year, 12, 31);
         }
     }
 
@@ -181,7 +186,7 @@ static bool IsValidYear(string record)
     return validYear;
 }
 
-const string dataFilteredStations = @"Output\SiteMetaData\data-filtered-stations.json";
+const string dataFilteredStations = @"Output\SiteMetaData\data-quality-filtered-stations.json";
 
 async Task<List<Station>> RetrieveDataProcessedStations(List<Station> inputStations)
 {
@@ -231,11 +236,11 @@ static List<Station> GetPreProcessedStations()
     foreach (var line in contents)
     {
         var columns = line.Split(',');
-        var station = new Station()
+        var station = new Station
         {
-            Id = columns[0],
-            Begin = new DateOnly(int.Parse(columns[1]), 1, 1),
-            End = new DateOnly(int.Parse(columns[2]), 12, 31),
+            Id = columns[0], 
+            Opened = new DateOnly(int.Parse(columns[1]), 1, 1),
+            Closed = new DateOnly(int.Parse(columns[2]), 12, 31),
             YearsOfMissingData = int.Parse(columns[3]),
         };
         stations.Add(station);
@@ -305,16 +310,4 @@ static int[] GetValues(string record)
         values[i] = int.Parse(value);
     }
     return values;
-}
-
-public class GeoPoint : IPointData
-{
-    public GeoPoint(string id, double x, double y)
-    {
-        Id = id;
-        Point = new Point(x, y);
-    }
-
-    public string Id { get; }
-    public Point Point { get; }
 }

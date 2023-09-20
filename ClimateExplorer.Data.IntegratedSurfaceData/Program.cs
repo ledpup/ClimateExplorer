@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO.Compression;
-using System.Linq;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ClimateExplorer.Data.IntegratedSurfaceData;
 
@@ -13,6 +10,7 @@ var serviceProvider = new ServiceCollection()
     .BuildServiceProvider();
 
 var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Program>();
+var isdFileProcessorLogger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<IsdFileProcessor>();
 
 var httpClient = new HttpClient();
 var userAgent = "Mozilla /5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
@@ -32,7 +30,7 @@ foreach (var station in filteredStations)//.Where(x => x.Name.Contains("LAUNCEST
         continue;
     }
 
-    var results = await GetStationRecords(httpClient, station, logger);
+    var results = await GetStationRecords(httpClient, station, logger, isdFileProcessorLogger);
     if (results.MissingYears.Any())
     {
         logger.LogWarning($"There are {results.MissingYears.Count} missing years for {station.FileName} where data is expected from {station.Begin.Year} to {station.End.Year}. They are: { string.Join(',', results.MissingYears) }");
@@ -98,7 +96,7 @@ async Task<List<Station>> RetrieveFilteredStations()
     return filteredStations.Values.ToList();
 }
 
-static async Task<(Dictionary<DateOnly, List<TimedRecord>> Records, List<int> MissingYears)> GetStationRecords(HttpClient httpClient, Station station, ILogger<Program> logger)
+static async Task<(Dictionary<DateOnly, List<TimedRecord>> Records, List<int> MissingYears)> GetStationRecords(HttpClient httpClient, Station station, ILogger<Program> logger, ILogger<IsdFileProcessor> isdFileProcessorLogger)
 {
     var dataRecords = new Dictionary<DateOnly, List<TimedRecord>>();
     var stationName = station.FileName;
@@ -130,7 +128,7 @@ static async Task<(Dictionary<DateOnly, List<TimedRecord>> Records, List<int> Mi
             missingYears.Add(year);
         }
 
-        var transformedRecordsForYear = IsdFileProcessor.Transform(recordsForYear, logger);
+        var transformedRecordsForYear = IsdFileProcessor.Transform(recordsForYear, isdFileProcessorLogger);
         transformedRecordsForYear.Keys
             .ToList()
             .ForEach(x => dataRecords.Add(x, transformedRecordsForYear[x]));

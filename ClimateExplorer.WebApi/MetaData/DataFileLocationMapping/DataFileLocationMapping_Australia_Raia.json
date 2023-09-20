@@ -4,7 +4,7 @@
   "LocationIdToDataFileMappings": {
     "e0ddbbca-2d03-4ad3-b901-bacf5fff19c0": [
       {
-        "ExternalStationCode": "300017",
+        "Id": "300017",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -12,7 +12,7 @@
     ],
     "fe4f7ca3-f92c-459b-a85b-e37be4871fda": [
       {
-        "ExternalStationCode": "200284",
+        "Id": "200284",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -20,7 +20,7 @@
     ],
     "4fec65a7-6c18-4a3e-bbd0-ec80a0baaa59": [
       {
-        "ExternalStationCode": "300000",
+        "Id": "300000",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -28,7 +28,7 @@
     ],
     "8eb51f35-e4ff-4686-ad76-306778fcc706": [
       {
-        "ExternalStationCode": "200839",
+        "Id": "200839",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -36,7 +36,7 @@
     ],
     "07987b31-4934-47f7-b62c-5c5f39e49935": [
       {
-        "ExternalStationCode": "300004",
+        "Id": "300004",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -44,7 +44,7 @@
     ],
     "484e686d-c55e-420c-aa53-71293e73dafe": [
       {
-        "ExternalStationCode": "300001",
+        "Id": "300001",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -52,7 +52,7 @@
     ],
     "bf97eea8-252d-4f89-9ba8-924341973039": [
       {
-        "ExternalStationCode": "200288",
+        "Id": "200288",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -60,7 +60,7 @@
     ],
     "9433c91f-acd9-4a8f-9bbd-31f0af2e8e42": [
       {
-        "ExternalStationCode": "200283",
+        "Id": "200283",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null

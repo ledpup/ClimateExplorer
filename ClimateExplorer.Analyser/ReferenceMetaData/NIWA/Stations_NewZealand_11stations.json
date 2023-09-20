@@ -1,6 +1,6 @@
 [
   {
-    "ExternalStationCode": "6172",
+    "Id": "6172",
     "Name": "Campbell Is",
     "Coordinates": {
       "Latitude": -52.55,
@@ -11,7 +11,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "6174",
+    "Id": "6174",
     "Name": "Campbell Island Aws",
     "Coordinates": {
       "Latitude": -52.55059,
@@ -22,7 +22,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "2807",
+    "Id": "2807",
     "Name": "Gisborne Aero",
     "Coordinates": {
       "Latitude": -38.661,
@@ -33,7 +33,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "2810",
+    "Id": "2810",
     "Name": "Gisborne Aws",
     "Coordinates": {
       "Latitude": -38.6586,
@@ -44,7 +44,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "2101",
+    "Id": "2101",
     "Name": "Hamilton, Ruakura",
     "Coordinates": {
       "Latitude": -37.78,
@@ -55,7 +55,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "12616",
+    "Id": "12616",
     "Name": "Hamilton, Ruakura Ews",
     "Coordinates": {
       "Latitude": -37.77879,
@@ -66,7 +66,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "26117",
+    "Id": "26117",
     "Name": "Hamilton, Ruakura 2 Ews",
     "Coordinates": {
       "Latitude": -37.77389,
@@ -77,7 +77,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "5814",
+    "Id": "5814",
     "Name": "Invercargill Aero",
     "Coordinates": {
       "Latitude": -46.41741,
@@ -88,7 +88,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "4461",
+    "Id": "4461",
     "Name": "Molesworth",
     "Coordinates": {
       "Latitude": -42.088,
@@ -99,7 +99,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "7427",
+    "Id": "7427",
     "Name": "Molesworth Aws",
     "Coordinates": {
       "Latitude": -42.087,
@@ -110,7 +110,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "2363",
+    "Id": "2363",
     "Name": "Mt Ruapehu, Chateau 1",
     "Coordinates": {
       "Latitude": -39.202,
@@ -121,7 +121,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "2357",
+    "Id": "2357",
     "Name": "Mt Ruapehu, Chateau 2",
     "Coordinates": {
       "Latitude": -39.198,
@@ -132,7 +132,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "18464",
+    "Id": "18464",
     "Name": "Mt Ruapehu, Chateau Ews",
     "Coordinates": {
       "Latitude": -39.19589,
@@ -143,7 +143,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "3238",
+    "Id": "3238",
     "Name": "Palmerston North Aws",
     "Coordinates": {
       "Latitude": -40.382,
@@ -154,7 +154,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "21963",
+    "Id": "21963",
     "Name": "Palmerston North Ews",
     "Coordinates": {
       "Latitude": -40.38195,
@@ -165,7 +165,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "5446",
+    "Id": "5446",
     "Name": "Queenstown",
     "Coordinates": {
       "Latitude": -45.03476,
@@ -176,7 +176,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "6169",
+    "Id": "6169",
     "Name": "Raoul Is",
     "Coordinates": {
       "Latitude": -29.25,
@@ -187,7 +187,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "6170",
+    "Id": "6170",
     "Name": "Raoul Island Aws",
     "Coordinates": {
       "Latitude": -29.24488,
@@ -198,7 +198,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "1612",
+    "Id": "1612",
     "Name": "Tauranga Aero",
     "Coordinates": {
       "Latitude": -37.67242,
@@ -209,7 +209,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "1615",
+    "Id": "1615",
     "Name": "Tauranga Aero Aws",
     "Coordinates": {
       "Latitude": -37.67068,
@@ -220,7 +220,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "3810",
+    "Id": "3810",
     "Name": "Westport Aero",
     "Coordinates": {
       "Latitude": -41.74,
@@ -231,7 +231,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "7342",
+    "Id": "7342",
     "Name": "Westport Aero Aws",
     "Coordinates": {
       "Latitude": -41.74075,

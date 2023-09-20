@@ -64,18 +64,18 @@ public static class NiwaLocationsAndStationsMapper
             var externalStationCode = match.Groups["station"].Value;
             var dataFileFilterAndAdjustment = new DataFileFilterAndAdjustment
             {
-                ExternalStationCode = externalStationCode,
+                Id = externalStationCode,
                 StartDate = match.Groups["startdate"].Value == "null" ? null : DateTime.Parse(match.Groups["startdate"].Value),
                 EndDate = match.Groups["enddate"].Value == "null" ? null : DateTime.Parse(match.Groups["enddate"].Value),
                 ValueAdjustment = float.Parse(match.Groups["adjustment"].Value)
             };
 
-            if (!stations.Any(x => x.ExternalStationCode == externalStationCode))
+            if (!stations.Any(x => x.Id == externalStationCode))
             {
                 stations.Add(new Station
                 {
                     Name = match.Groups["stationName"].Value,
-                    ExternalStationCode = externalStationCode,
+                    Id = externalStationCode,
                     Coordinates = coordinates,
                 });
             }

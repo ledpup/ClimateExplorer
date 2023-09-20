@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ClimateExplorer.Core\ClimateExplorer.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Data\ghcnm.tavg.v4.0.1.20230817.qcf.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

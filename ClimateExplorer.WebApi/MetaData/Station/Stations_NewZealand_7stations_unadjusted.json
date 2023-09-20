@@ -1,6 +1,6 @@
 [
   {
-    "ExternalStationCode": "1427",
+    "Id": "1427",
     "Name": "Albert Park",
     "Coordinates": {
       "Latitude": -36.853,
@@ -11,7 +11,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "1945",
+    "Id": "1945",
     "Name": "Mangere",
     "Coordinates": {
       "Latitude": -36.97,
@@ -22,7 +22,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "1962",
+    "Id": "1962",
     "Name": "Auckland Aero",
     "Coordinates": {
       "Latitude": -37.00813,
@@ -33,7 +33,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "5380",
+    "Id": "5380",
     "Name": "Leith Valley",
     "Coordinates": {
       "Latitude": -45.85,
@@ -44,7 +44,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "5375",
+    "Id": "5375",
     "Name": "Btl Gardens",
     "Coordinates": {
       "Latitude": -45.86,
@@ -55,7 +55,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "5379",
+    "Id": "5379",
     "Name": "Beta St",
     "Coordinates": {
       "Latitude": -45.867,
@@ -66,7 +66,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "5402",
+    "Id": "5402",
     "Name": "Musselburgh",
     "Coordinates": {
       "Latitude": -45.904,
@@ -77,7 +77,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "15752",
+    "Id": "15752",
     "Name": "Musselburgh Ews",
     "Coordinates": {
       "Latitude": -45.90129,
@@ -88,7 +88,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "2473",
+    "Id": "2473",
     "Name": "Waingawa",
     "Coordinates": {
       "Latitude": -40.98,
@@ -99,7 +99,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "2612",
+    "Id": "2612",
     "Name": "East Taratahi AWS",
     "Coordinates": {
       "Latitude": -41.016,
@@ -110,7 +110,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "21938",
+    "Id": "21938",
     "Name": "Martinborough Ews",
     "Coordinates": {
       "Latitude": -41.25231,
@@ -121,7 +121,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "3907",
+    "Id": "3907",
     "Name": "Hokitika Town",
     "Coordinates": {
       "Latitude": -42.722,
@@ -132,7 +132,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "37939",
+    "Id": "37939",
     "Name": "Hokitika Southside",
     "Coordinates": {
       "Latitude": -42.729,
@@ -143,7 +143,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "3909",
+    "Id": "3909",
     "Name": "Hokitika Aero",
     "Coordinates": {
       "Latitude": -42.712,
@@ -154,7 +154,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "4881",
+    "Id": "4881",
     "Name": "Lincoln",
     "Coordinates": {
       "Latitude": -43.648,
@@ -165,7 +165,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "4882",
+    "Id": "4882",
     "Name": "Lincoln Broadfield EDL",
     "Coordinates": {
       "Latitude": -43.628,
@@ -176,7 +176,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "17603",
+    "Id": "17603",
     "Name": "Lincoln Broadfield EWS",
     "Coordinates": {
       "Latitude": -43.62622,
@@ -187,7 +187,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "4244",
+    "Id": "4244",
     "Name": "Nelson",
     "Coordinates": {
       "Latitude": -41.275,
@@ -198,7 +198,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "4239",
+    "Id": "4239",
     "Name": "Appleby",
     "Coordinates": {
       "Latitude": -41.293,
@@ -209,7 +209,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "4241",
+    "Id": "4241",
     "Name": "Nelson Aero",
     "Coordinates": {
       "Latitude": -41.299,
@@ -220,7 +220,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "3431",
+    "Id": "3431",
     "Name": "Buckle St",
     "Coordinates": {
       "Latitude": -41.3,
@@ -231,7 +231,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "3391",
+    "Id": "3391",
     "Name": "Thorndon",
     "Coordinates": {
       "Latitude": -41.283,
@@ -242,7 +242,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "3385",
+    "Id": "3385",
     "Name": "Kelburn",
     "Coordinates": {
       "Latitude": -41.286,
@@ -253,7 +253,7 @@
     "Closed": null
   },
   {
-    "ExternalStationCode": "25354",
+    "Id": "25354",
     "Name": "Kelburn Aws",
     "Coordinates": {
       "Latitude": -41.28445,
