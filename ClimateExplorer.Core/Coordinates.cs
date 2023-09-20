@@ -13,20 +13,20 @@ public struct Coordinates
     public float Longitude { get; set; }
     public float? Elevation { get; set; }
 
-    public bool Equals(Coordinates obj) => Latitude == obj.Latitude && Longitude == obj.Longitude && Elevation == obj.Elevation;
+    public readonly bool Equals(Coordinates obj) => Latitude == obj.Latitude && Longitude == obj.Longitude && Elevation == obj.Elevation;
     public static bool operator ==(Coordinates lhs, Coordinates rhs) => lhs.Equals(rhs);
     public static bool operator !=(Coordinates lhs, Coordinates rhs) => !(lhs == rhs);
 
-    public override string ToString()
+    public override readonly string ToString()
     {
         if (Elevation == null)
         {
-            return $"{Math.Round(Latitude, 1)}°, {Math.Round(Longitude, 1)}°";
+            return $"{Math.Round(Latitude, 1)}° {Math.Round(Longitude, 1)}°";
         }
-        return $"{Math.Round(Latitude, 1)}°, {Math.Round(Longitude, 1)}°, {Math.Round(Elevation.Value, 1)}m";
+        return $"{Math.Round(Latitude, 1)}° {Math.Round(Longitude, 1)}° {Math.Round(Elevation.Value, 1)}m";
     }
 
-    public string ToString(bool prefix = false)
+    public string ToFriendlyString(bool prefix = false)
     {
         if (prefix)
         {
@@ -36,6 +36,6 @@ public struct Coordinates
             }
             return $"Lat {Math.Round(Latitude, 1)}° Long {Math.Round(Longitude, 1)}° Ele {Math.Round(Elevation.Value, 1)}m";
         }
-        return this.ToString();
+        return ToString();
     }
 }

@@ -26,7 +26,7 @@ public class Exporter : IExporter
 
         foreach (var location in relevantLocations)
         {
-            data.Add($"{location.Name},{location.Coordinates.ToString(true)}");
+            data.Add($"{location.Name},{location.Coordinates.ToFriendlyString(true)}");
         }
 
         data.Add(string.Empty);

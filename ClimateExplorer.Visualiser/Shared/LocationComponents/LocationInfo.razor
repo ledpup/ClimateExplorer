@@ -70,7 +70,7 @@
     Guid instanceId = Guid.NewGuid();
 
     string LocationMapUrl => Location == null ? "https://maps.google.com/" : $"https://maps.google.com/?q={Location.Coordinates.Latitude},{Location.Coordinates.Longitude}";
-    string GeoLocationAsString => Location == null ? "Nowhere" : $"{Math.Round(Location.Coordinates.Latitude, 0)}° {Math.Round(Location.Coordinates.Longitude, 0)}° {(Math.Round(Location.Coordinates.Elevation, 0))}m";
+    string GeoLocationAsString => Location == null ? "Nowhere" : Location.Coordinates.ToString();
 
     public bool LocationLoadingIndicatorVisible { get; set; }
     bool rainfall { get; set; }

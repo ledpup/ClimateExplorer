@@ -503,7 +503,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a") }, tempMax),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia anomaly" }, tempMax),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.None,
