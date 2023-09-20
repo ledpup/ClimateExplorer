@@ -1,0 +1,47 @@
+# The rest of the world
+
+We've wanted to add temperture records from around the world for some time. Finding a dataset has taken a while. There are a few criteria to meet to be selected; they are:
+
+1. a dataset that has unadjusted (what was recorded) and adjusted records (adjusting for changes to the site and errors)
+2. select only the best stations from tens of thousands around the world, to be representative of the region
+3. a fine-grain resolution to support the different graphs in ClimateExplorer (daily records are ideal)
+4. we don't have unlimited storage space to store the base data, so find ways to reduce the storage load (this criterion is in direct conflict with criterion 3)
+
+The advantage of starting with ACORN-SAT was that these criteria were easy to meet; 1) ACORN-SAT is an adjusted data-set and the BoM make the unadjusted data publically available via their website. 2) ACORN-SAT is a 112 station subset of Australia's stations, already selected for quality and longevity. 3) ACORN-SAT is a daily dataset.
+
+NCEI/NOAA have a few products that looked suitable. They are:
+
+1. [Global Hourly - Integrated Surface Database (ISD)](https://www.ncei.noaa.gov/products/land-based-station/integrated-surface-database) - this seemed ideal at first because it has hourly data as well as a daily summary of temperature with many other data types
+1. [Global Historical Climatology Network daily (GHCNd)](https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily)
+2. [Global Historical Climatology Network monthly (GHCNm)](https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-monthly)
+
+## Criteria 1
+
+We started looking at ISD. The ISD doesn't have an adjusted dataset; but maybe that was okay if the other criteria were met? The nice thing about ISD is that it records, as meta-data, when the station started operating and when it closed (if it has). The downside, however, is that it wasn't until we started downloading all of the climate data (many gigabytes) that we saw how much of it was missing for some stations. It's a challenge to describe a station as "good" when, although it's been running for one hundred years, it's missing decades of data during that time. Frustrated, we put on hold integrating ISD into ClimateExplorer and further explored what datasets were available.
+
+GHCNd was looked at next. It is also solely an unadjusted dataset. From the [Methods](https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily#tab-298):
+
+> Unlike GHCNm , GHCNd does not contain adjustments for biases resulting from historical changes in instrumentation and observing practices. It should be noted that historically (and in general), the deployed stations providing daily summaries for the dataset were not designed to meet all of the desired standards for climate monitoring. Rather, the deployment of the stations was to meet the demands of agriculture, hydrology, weather forecasting, aviation, etc. Because GHCNd has not been homogenized to account for artifacts associated with the various eras in reporting practice at any particular station (i.e., for changes in systematic bias), users should consider whether or not the potential for changes in systematic bias might be important to their application. In addition, GHCNd and GHCNm are not internally consistent (i.e., GHCNm is not necessarily derived from the data in GHCNd) until the release of GHCNm version 4.
+
+Out of the three NOAA products, GHCNm is the only one that meets criteria 1. NOAA explain the issue and the adjustment process as well as publishing the unadjusted data along with the adjusted data.
+
+> Nearly all weather stations undergo changes to data measurement processes and infrastructure at some point in their history. Thermometers, for example, require periodic replacement or recalibration, and measurement technology has evolved over time. Temperature recording protocols have also changed at many locations from recording temperatures at fixed hours during the day to once-per-day readings of the 24-hour maximum and minimum. “Fixed” land stations are sometimes relocated, and even minor temperature equipment moves can change the microclimate exposure of the instruments. In other cases, the land use or land cover in the vicinity of an observing site can change over time, which can impact the local environment that instruments are sampling even when measurement practice is stable. 
+
+> All of these modifications can cause systematic shifts in temperature readings that are unrelated to any real variation in local weather and climate. These shifts (or “inhomogeneities”) can be large relative to true climate variability, and can cause large systematic errors when calculating climate trends and variability for a single station as well as for the average of multiple stations. 
+
+> For this reason, detecting and accounting for artifacts associated with changes in observing practice is an important and necessary part of building climate datasets. In GHCNm v4, shifts in monthly temperature series are detected through automated pairwise comparisons of the station series using the algorithm described in [Menne and Williams (2009)](https://journals.ametsoc.org/view/journals/clim/22/7/2008jcli2263.1.xml). This procedure, known as the Pairwise Homogenization Algorithm (PHA), systematically evaluates each time series of monthly average surface air temperature to identify cases with abrupt shifts in one station’s temperature series (the “target” series) relative to many other correlated series from other stations in the region (the “reference” series). The algorithm seeks to resolve the timing of shifts for all station series before computing an adjustment factor to compensate for any one particular shift. These adjustment factors are based on the average change in the magnitude of monthly temperature differences between the target station series with the apparent shift and the reference series with no apparent concurrent shifts.
+
+## Criteria 2
+
+The three NOAA products have a different set stations; GHCNm has about 28,000, GHCNd has about 120,000 and ISD has about 30,000 stations.
+
+### K-Means Clustering algorithm
+
+A concern with [K-Means Clustering](https://en.wikipedia.org/wiki/K-means_clustering) was: could it deal with [geodetic coordinates](https://en.wikipedia.org/wiki/Geodetic_coordinates) (i.e., longitude and latitude). A [stack-overflow question](https://stackoverflow.com/questions/24762435/clustering-geo-location-coordinates-lat-long-pairs-using-kmeans-algorithm-with) queried the issue; i.e., since K-Means only uses [Euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance), would it work because we should use the [haversine formula](https://en.wikipedia.org/wiki/Haversine_formula) to resolve the distances between locations with coordinates in latitude and longitude? The answer is: don't use K-Means, use [Density-based spatial clustering of applications with noise (DBSCAN)](https://en.wikipedia.org/wiki/DBSCAN) with the Haversine formula to calculate distance.
+
+### DBSCAN
+
+
+
+[Clustering with DBSCAN, Clearly Explained!!!](https://www.youtube.com/watch?v=RDZUdRSDOok)
+[Clustering to Reduce Spatial Data Set Size](https://geoffboeing.com/2014/08/clustering-to-reduce-spatial-data-set-size/)

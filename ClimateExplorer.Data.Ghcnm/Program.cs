@@ -1,7 +1,9 @@
 ﻿using ClimateExplorer.Data.Ghcnm;
+using Dbscan;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Text.RegularExpressions;
+using System.Security.Cryptography;
+using System.Text.Json;
 
 var serviceProvider = new ServiceCollection()
     .AddLogging((loggingBuilder) => loggingBuilder
@@ -14,24 +16,74 @@ var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Program>(
 
 var stations = await GetStationMetaData();
 
-var filteredStations = await RetrieveFilteredStations(stations);
+var processedStations = await RetrieveDataProcessedStations(stations);
 
-foreach (var station in filteredStations)//.Where(x => x.Name.Contains("LAUNCESTON")))
+//var selectedStations = SelectStationsSinglePerCountry(processedStations);
+
+//CalculateDistances(processedStations);
+
+//var farStations = SelectStationsMinimumDistanceFromNeighbour(processedStations, 100);
+
+//foreach (var farStation in farStations)
+//{
+//    if (!selectedStations.Any(x => x.Id == farStation.Id))
+//    {
+//        selectedStations.Add(farStation);
+//    }
+//}
+
+var selectedStations = SelectStationsByClusteringAndTakingBest(processedStations, 100, 2);
+
+SaveStations(selectedStations, @"Output\SiteMetaData\selected-stations.json");
+
+await CreateStationDataFiles(selectedStations);
+
+List<Station> SelectStationsByClusteringAndTakingBest(List<Station> processedStations, double distance, int minimumPointsPerCluster)
 {
-    //logger.BeginScope(station.Name);
+    var stationsGroupedByCountry = processedStations.GroupBy(x => x.CountryCode);
 
-    //if (File.Exists($@"Output\ProcessedRecords\{station.FileName}.csv"))
-    //{
-    //    logger.LogInformation($"Station file {station.FileName}.csv already exists. Download and processing of ISD file will not be done.");
-    //    continue;
-    //}
+    var selectedStations = new List<Station>();
+    foreach (var groupedCountry in stationsGroupedByCountry)
+    {
+        var stationsInCountry = groupedCountry.ToList();
 
-    //var results = await GetStationRecords(httpClient, station, logger);
-    //if (results.MissingYears.Any())
-    //{
-    //    logger.LogWarning($"There are {results.MissingYears.Count} missing years for {station.FileName} where data is expected from {station.Begin.Year} to {station.End.Year}. They are: { string.Join(',', results.MissingYears) }");
-    //}
-    //DataRecordFileSaver.Save(station.FileName, results.Records, logger);
+        var index = new GeoListSpatialIndex<PointInfo<GeoPoint>>(stationsInCountry.Select(x => new PointInfo<GeoPoint>(new GeoPoint(x.Id, x.Coordinates.Latitude, x.Coordinates.Longitude))));
+
+        var result = Dbscan.Dbscan.CalculateClusters(
+                index,
+                epsilon: distance,
+                minimumPointsPerCluster: minimumPointsPerCluster);
+
+        foreach (var cluster in result.Clusters)
+        {
+            int bestScore = 0;
+            var selectedStationId = cluster.Objects.First().Id;
+            foreach (var geoPoint in cluster.Objects)
+            {
+                var geoPointStation = stationsInCountry.Single(x => x.Id == geoPoint.Id);
+
+                var score = geoPointStation.Age - geoPointStation.YearsOfMissingData;
+
+                if (score > bestScore)
+                {
+                    logger.LogInformation($"Station {geoPointStation.Id} has a score of {score}, beating the current best of {bestScore}");
+                    bestScore = score;
+                    selectedStationId = geoPointStation.Id;
+                }
+            }
+            logger.LogInformation($"Station {selectedStationId} has been selected");
+            var selectedStation = stationsInCountry.Single(x => x.Id == selectedStationId);
+            selectedStations.Add(selectedStation);
+        }
+
+        foreach (var unclusteredStation in result.UnclusteredObjects)
+        {
+            var station = stationsInCountry.Single(x => x.Id == unclusteredStation.Id);
+            selectedStations.Add(station);
+        }
+    }
+
+    return selectedStations;
 }
 
 void SaveStationMetaData(List<Station> stations)
@@ -60,17 +112,10 @@ async Task<List<Station>> GetStationMetaData()
         var id = record.Substring(0, 11);
         var year = int.Parse(record.Substring(11, 4));
 
-        var validYear = true;
-
-        for (var i = 0; i < 12; i++)
+        var validYear = IsValidYear(record);
+        if (!validYear)
         {
-            var value = record.Substring(19 + (i * 8), 5);
-            if (value == "-9999")
-            {
-                validYear = false;
-                logger.LogInformation($"{year} for station {id} has a month ({GetFullMonthName(i + 1)}) without data. {year} is not considered to be a valid year");
-                break;
-            }
+            logger.LogInformation($"{year} for station {id} has a month without data. {year} is not considered to be a valid year");
         }
 
         var station = stations.SingleOrDefault(s => s.Id == id);
@@ -90,7 +135,7 @@ async Task<List<Station>> GetStationMetaData()
             };
             stations.Add(station);
         }
-        
+
         if (!validYear)
         {
             continue;
@@ -119,69 +164,63 @@ async Task<List<Station>> GetStationMetaData()
     return stations;
 }
 
-static string GetFullMonthName(int month)
+static bool IsValidYear(string record)
 {
-    DateTime date = new DateTime(2020, month, 1);
+    var validYear = true;
 
-    return date.ToString("MMMM");
+    for (var i = 0; i < 12; i++)
+    {
+        var value = record.Substring(19 + (i * 8), 5);
+        if (value == "-9999")
+        {
+            validYear = false;
+            break;
+        }
+    }
+
+    return validYear;
 }
 
-async Task<List<Station>> RetrieveFilteredStations(List<Station> inputStations)
+const string dataFilteredStations = @"Output\SiteMetaData\data-filtered-stations.json";
+
+async Task<List<Station>> RetrieveDataProcessedStations(List<Station> inputStations)
 {
+    if (File.Exists(dataFilteredStations))
+    {
+        return GetProcessedStations();
+    }
+    
     var countries = await CountryFileProcessor.Transform();
+    var stations = await StationFileProcessor.Transform(inputStations, countries, 1970, (short)(DateTime.Now.Year - 10), .5f, logger);
 
-    var stations = await StationFileProcessor.Transform(inputStations, countries, 1950, (short)(DateTime.Now.Year - 10), .5f, logger);
-    var stationsGroupedByCountry = stations.Values.GroupBy(x => x.Country);
+    SaveStations(stations, dataFilteredStations);
 
-    var messages = new List<string>();
+    return GetProcessedStations();
+}
 
-    foreach (var groupedStation in stationsGroupedByCountry.OrderByDescending(x => x.ToList().Count))
+List<Station> GetProcessedStations()
+{
+    if (!File.Exists(dataFilteredStations))
     {
-        var stationList = groupedStation.ToList();
-
-        messages.Add($"{(groupedStation.Key == null ? "No country" : groupedStation.Key.Name)} {stationList.Count} average age {Math.Round(groupedStation.Average(x => x.Age), 0)} years");
-
-        if (stationList.Count > 1)
-        {
-            foreach (var station in stationList)
-            {
-                station.StationDistances = StationDistance.GetDistances(station, stationList);
-                station.AverageDistance = station.StationDistances.Average(x => x.Distance);
-            }
-        }
-        else
-        {
-            stationList.ForEach(x => x.AverageDistance = 1000 * 1000);
-        }
-
-        stationList.ForEach(x => x.Score = (x.Age / 10) * (x.AverageDistance / 1000D) * (1D / stationList.Count));
-        stationList = stationList.OrderByDescending(x => x.Score).ToList();
-
-        stationList.ForEach(x => messages.Add($"    {x.Id} score {x.Score}"));
+        throw new FileNotFoundException($"File {dataFilteredStations} does not exist");
     }
 
+    var contents = File.ReadAllText(dataFilteredStations);
+    var stations = JsonSerializer.Deserialize<List<Station>>(contents);
 
-    messages.Add($"{stations.Count} stations from {stationsGroupedByCountry.Count()} countries");
+    return stations;
+}
 
-    Directory.CreateDirectory("Output");
-    File.WriteAllLines(@"Output\stations - unfiltered.txt", messages);
+void SaveStations(List<Station> stations, string path)
+{
+    Directory.CreateDirectory(Path.GetDirectoryName(path));
 
-    var filteredStations = stations.Where(x => x.Value.Score >= 70).ToDictionary(x => x.Key, x => x.Value);
-
-    messages = new List<string>();
-
-    stationsGroupedByCountry = filteredStations.Values.GroupBy(x => x.Country);
-    foreach (var groupedStation in stationsGroupedByCountry.OrderByDescending(x => x.ToList().Count))
+    var options = new JsonSerializerOptions
     {
-        var stationList = groupedStation.ToList();
-        messages.Add($"{(groupedStation.Key == null ? "No country" : groupedStation.Key.Name)} {stationList.Count} average age {Math.Round(groupedStation.Average(x => x.Age), 0)} years");
-    }
-
-    messages.Add($"{filteredStations.Count} stations from {stationsGroupedByCountry.Count()} countries");
-
-    File.WriteAllLines(@"Output\stations - filtered.txt", messages);
-
-    return filteredStations.Values.ToList();
+        WriteIndented = true,
+    };
+    var contents = JsonSerializer.Serialize(stations, options);
+    File.WriteAllText(path, contents);
 }
 
 static List<Station> GetPreProcessedStations()
@@ -204,50 +243,78 @@ static List<Station> GetPreProcessedStations()
     return stations;
 }
 
-//static async Task<(Dictionary<DateOnly, List<TimedRecord>> Records, List<int> MissingYears)> GetStationRecords(HttpClient httpClient, Station station, ILogger<Program> logger)
-//{
-//    var dataRecords = new Dictionary<DateOnly, List<TimedRecord>>();
-//    var stationName = station.FileName;
+static async Task CreateStationDataFiles(List<Station> stations)
+{
+    var dir = new DirectoryInfo(@"Output\Data\");
+    if (dir.Exists)
+    {
+        dir.Delete(true);
+    }
+    dir.Create();
 
-//    logger.LogInformation($"About to being processing {stationName} from {station.Country}.");
+    var records = await File.ReadAllLinesAsync(@"data\ghcnm.tavg.v4.0.1.20230817.qcf.dat");
 
-//    var missingYears = new List<int>();
-//    for (var year = station.Begin.Year; year <= station.End.Year; year++)
-//    {
-//        logger.LogInformation($"Checking year {year} of {stationName}");
+    string? currentStation = null;
+    StreamWriter? writer = null;
 
-//        var fileName = $"{stationName}-{year}";
-//        var extractedFile = $@"Output\Isd\{stationName}\{fileName}.txt";
+    foreach (var record in records)
+    {
+        var id = record.Substring(0, 11);
 
-//        if (!File.Exists(extractedFile))
-//        {
-//            var success = await IsdDownloadAndExtract.DownloadAndExtractFile(httpClient, year, stationName, fileName, logger);
-//            if (!success)
-//            {
-//                logger.LogWarning($"Failed to download or extract ISD file for {year} of {stationName}. No data will be available for this year.");
-//            }
-//        }
+        var station = stations.SingleOrDefault(s => s.Id == id);
+        if (station == null)
+        {
+            continue;
+        }
 
-//        var recordsForYear = File.ReadAllLines(extractedFile);
-//        var failedYear = false;
-//        if (recordsForYear[0].StartsWith("Failed"))
-//        {
-//            failedYear = true;
-//            missingYears.Add(year);
-//        }
+        var year = int.Parse(record.Substring(11, 4));
+        var validYear = IsValidYear(record);
 
-//        var transformedRecordsForYear = IsdFileProcessor.Transform(recordsForYear, logger);
-//        transformedRecordsForYear.Keys
-//            .ToList()
-//            .ForEach(x => dataRecords.Add(x, transformedRecordsForYear[x]));
+        if (validYear)
+        {
+            if (currentStation != id)
+            {
+                if (writer != null)
+                {
+                    writer.Close();
+                }
+                currentStation = id;
+                var fileName = $@"Output\Data\{id}.csv";
+                if (File.Exists(fileName))
+                {
+                    throw new Exception($"File {fileName} exists already");
+                }
+                writer = File.CreateText(fileName);
+            }
 
-//        // Will only delete the extracted gz file from NOAA for files that have downloaded and extracted successfully
-//        // This will prevent us from pestering NOAA to try again to download the file because we have stub file saying "Failed"
-//        if (File.Exists(extractedFile) && !failedYear)
-//        {
-//            logger.LogInformation($"Deleting file {fileName}.txt");
-//            File.Delete(extractedFile);
-//        }
-//    }
-//    return (dataRecords, missingYears);
-//}
+            var values = GetValues(record);
+
+            writer.WriteLine($"{year},{string.Join(',', values)}");
+        }
+    }
+
+    writer.Close();
+}
+
+static int[] GetValues(string record)
+{
+    var values = new int[12];
+    for (var i = 0; i < 12; i++)
+    {
+        var value = record.Substring(19 + (i * 8), 5).Trim();
+        values[i] = int.Parse(value);
+    }
+    return values;
+}
+
+public class GeoPoint : IPointData
+{
+    public GeoPoint(string id, double x, double y)
+    {
+        Id = id;
+        Point = new Point(x, y);
+    }
+
+    public string Id { get; }
+    public Point Point { get; }
+}

@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 namespace ClimateExplorer.Data.Ghcnm;
 
@@ -30,7 +31,7 @@ public class CountryFileProcessor
                 new Country
                 { 
                     Code = groups["id"].Value,
-                    Name = groups["name"].Value,
+                    Name = groups["name"].Value.Trim(),
                 });
         }
 

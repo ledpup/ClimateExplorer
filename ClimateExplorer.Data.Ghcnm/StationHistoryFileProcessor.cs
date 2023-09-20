@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using static System.Collections.Specialized.BitVector32;
 
@@ -6,12 +7,12 @@ namespace ClimateExplorer.Data.Ghcnm;
 
 public class StationFileProcessor
 {
-    internal static async Task<Dictionary<string, Station>> Transform(List<Station> stations, Dictionary<string, Country> countries, short beginBeforeOrEqualTo, short endNoLaterThan, float missingYearsThreshold, ILogger<Program> logger)
+    internal static async Task<List<Station>> Transform(List<Station> stations, Dictionary<string, Country> countries, short beginBeforeOrEqualTo, short endNoLaterThan, float missingYearsThreshold, ILogger<Program> logger)
     {
         var stationFileName = "ghcnm.tavg.v4.0.1.20230817.qcf.inv";
         var stationFile = (await File.ReadAllLinesAsync(@$"SiteMetaData\{stationFileName}"));
 
-        var stationResults = new Dictionary<string, Station>();
+        var stationResults = new List<Station>();
 
         var regEx = new Regex(@"^(?<id>[\w|-]{11})\s+(?<lat>-?\d*\.\d*)\s*(?<lng>-?\d*\.\d*)\s*(?<ele>-?\d*\.\d*)\s*(?<name>[\w|\'|\/]*)\s*\*?$");
 
@@ -54,7 +55,12 @@ public class StationFileProcessor
 
             countries.TryGetValue(countryCode, out Country? country);
 
-            station.Country = country;
+            if (country == null)
+            {
+                logger.LogError($"Station {id} has a country code of {countryCode}. This code is not found in the country list file.");
+            }
+
+            station.CountryCode = country.Code;
             station.Name = stationName;
 
             if (!string.IsNullOrWhiteSpace(lat) && !string.IsNullOrWhiteSpace(lng))
@@ -67,7 +73,7 @@ public class StationFileProcessor
                 };
             }
 
-            stationResults.Add(id, station);
+            stationResults.Add(station);
         }
 
         return stationResults;
@@ -85,7 +91,7 @@ public class Station
 {
     public string? Id { get; set; }
     public string? Name { get; set; }
-    public Country? Country { get; set; }
+    public string? CountryCode { get; set; }
     public DateOnly Begin { get; set; }
     public DateOnly End { get; set; }
     public int YearsOfMissingData { get; set; }
@@ -98,14 +104,17 @@ public class Station
     }
     public Coordinates Coordinates { get; set; }
 
+    [JsonIgnore]
     public List<StationDistance> StationDistances { get; set; }
 
+    [JsonIgnore]
     public double AverageDistance { get; set; }
-
+    
+    [JsonIgnore]
     public double Score { get; set; }
     public override string ToString()
     {
-        return $"{Name}, {Country}, {Coordinates.Latitude}, {Coordinates.Longitude}";
+        return $"{Name}, {CountryCode}, {Coordinates.Latitude}, {Coordinates.Longitude}";
     }
 }
 

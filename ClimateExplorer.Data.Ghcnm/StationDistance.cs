@@ -1,9 +1,4 @@
 ﻿using GeoCoordinatePortable;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClimateExplorer.Data.Ghcnm;
 
@@ -25,7 +20,7 @@ public class StationDistance
         stations.ToList().ForEach(x =>
         {
             var destCoord = new GeoCoordinate(x.Coordinates.Latitude, x.Coordinates.Longitude, x.Coordinates.Elevation.HasValue ? x.Coordinates.Elevation.Value : 0);
-            var distance = geoCoordinate.GetDistanceTo(destCoord);
+            var distance = geoCoordinate.GetDistanceTo(destCoord) / 1000; // GetDistanceTo is in metres. Convert to km
 
             distances.Add(
                 new StationDistance
