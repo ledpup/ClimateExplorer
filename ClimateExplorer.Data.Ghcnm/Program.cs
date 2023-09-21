@@ -1,7 +1,9 @@
-﻿using ClimateExplorer.Data.Ghcnm;
+﻿using ClimateExplorer.Core.Model;
+using ClimateExplorer.Data.Ghcnm;
 using Dbscan;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -16,11 +18,40 @@ var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Program>(
 
 var stations = await GetStationMetaData();
 
-var processedStations = await RetrieveDataProcessedStations(stations);
+var dataQualityFilteredStations = await RetrieveDataQualityFilteredStations(stations);
 
-var selectedStations = SelectStationsByDbscanClusteringAndTakingHighestScore(processedStations, 100, 2);
+var selectedStations = SelectStationsByDbscanClusteringAndTakingHighestScore(dataQualityFilteredStations, 50, 2);
 
-SaveStations(selectedStations, @"Output\SiteMetaData\selected-stations.json");
+var locations = new List<Location>();
+var dataFileLocationMapping = new DataFileLocationMapping
+{
+    DataSetDefinitionId = Guid.Parse("1DC38F20-3606-4D90-A2A0-84F93E75C964"),
+    LocationIdToDataFileMappings = new Dictionary<Guid, List<DataFileFilterAndAdjustment>>()
+};
+
+var textinfo = CultureInfo.CurrentCulture.TextInfo;
+
+selectedStations.ForEach(x => 
+    {
+        var location = new Location
+        {
+            Id = Guid.NewGuid(),
+            Name = textinfo.ToTitleCase(x.Name.Replace('_', ' ').ToLower()),
+            Coordinates = x.Coordinates.Value,
+            CountryCode = x.CountryCode,
+        };
+        locations.Add(location);
+
+        dataFileLocationMapping.LocationIdToDataFileMappings.Add(
+            location.Id, 
+            new List<DataFileFilterAndAdjustment>
+            {
+                new DataFileFilterAndAdjustment
+                {
+                    Id = x.Id
+                }
+            });
+    });
 
 var options = new JsonSerializerOptions
 {
@@ -36,9 +67,9 @@ Directory.CreateDirectory(@"Output\DataFileLocationMapping");
 
 var outputFileSuffix = "_ghcnm_adjusted";
 
-//File.WriteAllText($@"Output\Location\Locations{outputFileSuffix}.json", JsonSerializer.Serialize(locations, options));
+File.WriteAllText($@"Output\Location\Locations{outputFileSuffix}.json", JsonSerializer.Serialize(locations, options));
 File.WriteAllText($@"Output\Station\Stations{outputFileSuffix}.json", JsonSerializer.Serialize(selectedStations, options));
-//File.WriteAllText($@"Output\DataFileLocationMapping\DataFileLocationMapping{outputFileSuffix}.json", JsonSerializer.Serialize(dataFileLocationMapping, options));
+File.WriteAllText($@"Output\DataFileLocationMapping\DataFileLocationMapping{outputFileSuffix}.json", JsonSerializer.Serialize(dataFileLocationMapping, options));
 
 
 
@@ -71,9 +102,13 @@ List<Station> SelectStationsByDbscanClusteringAndTakingHighestScore(List<Station
 
                 if (geoPointStation.Score > highestScore)
                 {
-                    logger.LogInformation($"Station {geoPointStation.Id} has a score of {geoPointStation.Score}, beating the current best of {highestScore}");
+                    logger.LogInformation($"Station {geoPointStation.Id} has a score of {geoPointStation.Score}, beating the current highest of {highestScore}");
                     highestScore = geoPointStation.Score.Value;
                     selectedStationId = geoPointStation.Id;
+                }
+                else
+                {
+                    logger.LogInformation($"Station {geoPointStation.Id} has a score of {geoPointStation.Score}. That is not higher than {highestScore}");
                 }
             }
             logger.LogInformation($"Station {selectedStationId} has been selected");
@@ -84,6 +119,7 @@ List<Station> SelectStationsByDbscanClusteringAndTakingHighestScore(List<Station
         foreach (var unclusteredStation in dbscanResult.UnclusteredObjects)
         {
             var station = stationsInCountry.Single(x => x.Id == unclusteredStation.Id);
+            logger.LogInformation($"Unclustered station {unclusteredStation.Id} has been selected");
             selectedStations.Add(station);
         }
     }
@@ -188,22 +224,22 @@ static bool IsValidYear(string record)
 
 const string dataFilteredStations = @"Output\SiteMetaData\data-quality-filtered-stations.json";
 
-async Task<List<Station>> RetrieveDataProcessedStations(List<Station> inputStations)
+async Task<List<Station>> RetrieveDataQualityFilteredStations(List<Station> inputStations)
 {
     if (File.Exists(dataFilteredStations))
     {
-        return GetProcessedStations();
+        return GetDataQualityFilteredStationsFromFile();
     }
     
     var countries = await CountryFileProcessor.Transform();
-    var stations = await StationFileProcessor.Transform(inputStations, countries, 1970, (short)(DateTime.Now.Year - 10), .5f, logger);
+    var stations = await StationFileProcessor.Transform(inputStations, countries, 1980, (short)(DateTime.Now.Year - 10), .5f, logger);
 
     SaveStations(stations, dataFilteredStations);
 
-    return GetProcessedStations();
+    return GetDataQualityFilteredStationsFromFile();
 }
 
-List<Station> GetProcessedStations()
+List<Station> GetDataQualityFilteredStationsFromFile()
 {
     if (!File.Exists(dataFilteredStations))
     {

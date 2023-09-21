@@ -8,6 +8,7 @@ public static class Enums
     {
         TempMax,
         TempMin,
+        TempMean,
         Rainfall,
         SolarRadiation,
 

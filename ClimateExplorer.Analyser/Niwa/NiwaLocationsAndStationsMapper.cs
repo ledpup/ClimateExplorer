@@ -37,6 +37,7 @@ public static class NiwaLocationsAndStationsMapper
                 {
                     Id = Guid.NewGuid(),
                     Name = locationName,
+                    CountryCode = "NZ",
                 };
                 locations.Add(location);
             }

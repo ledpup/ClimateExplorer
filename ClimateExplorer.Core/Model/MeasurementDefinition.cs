@@ -13,6 +13,7 @@ public class MeasurementDefinition
     public string? FileNameFormat { get; set; }
     public string? DataRowRegEx { get; set; }
     public string? NullValue { get; set; }
+    public float? ValueAdjustment { get; set; }
 
     public MeasurementDefinitionViewModel ToViewModel()
     {

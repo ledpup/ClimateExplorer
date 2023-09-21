@@ -35,6 +35,7 @@ public static class BomLocationsAndStationsMapper
             {
                 Id = oldLocation.Id,
                 Name = name,
+                CountryCode = "AS",
                 Coordinates = new Coordinates
                 {
                     Latitude = float.Parse(splitRow[2]),
@@ -205,6 +206,7 @@ public static class BomLocationsAndStationsMapper
             {
                 Id = oldLocation.Id,
                 Name = name,
+                CountryCode = "AS",
                 Coordinates = coordinates,
             };
             locations.Add(location);

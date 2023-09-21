@@ -457,6 +457,8 @@ public static class SuggestedPresetLists
             }
             );
 
+        var australiaAnomaly = new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia anomaly", CountryCode = "AS" };
+
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
@@ -468,7 +470,7 @@ public static class SuggestedPresetLists
                         new ChartSeriesDefinition()
                         {
                             SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia anomaly" }, tempMax),
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(australiaAnomaly, tempMax),
                             Aggregation = SeriesAggregationOptions.Mean,
                             BinGranularity = BinGranularities.ByYear,
                             Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -480,7 +482,7 @@ public static class SuggestedPresetLists
                         new ChartSeriesDefinition()
                         {
                             SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia anomaly" }, rainfall),
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(australiaAnomaly, rainfall),
                             Aggregation = SeriesAggregationOptions.Sum,
                             BinGranularity = BinGranularities.ByYear,
                             Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -503,7 +505,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia anomaly" }, tempMax),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(australiaAnomaly, tempMax),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.None,
@@ -524,7 +526,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia anomaly" }, tempMax),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(australiaAnomaly, tempMax),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.None,
@@ -536,7 +538,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia anomaly" }, tempMaxUnadjusted),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(australiaAnomaly, tempMaxUnadjusted),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.None,

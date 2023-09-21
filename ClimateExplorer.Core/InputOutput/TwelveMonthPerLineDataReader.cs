@@ -21,7 +21,7 @@ namespace ClimateExplorer.Core.InputOutput
 
             if (records == null)
             {
-                throw new Exception("Unable to read ENSO data " + dataPath);
+                throw new Exception("Unable to read data " + dataPath);
             }
 
             var regEx = new Regex(measurementDefinition.DataRowRegEx);
@@ -52,6 +52,11 @@ namespace ClimateExplorer.Core.InputOutput
                     if (!groups[i].Value.StartsWith(measurementDefinition.NullValue))
                     {
                         var value = float.Parse(groups[i].Value);
+
+                        if (measurementDefinition.ValueAdjustment != null)
+                        {
+                            value = value / measurementDefinition.ValueAdjustment.Value;
+                        }
 
                         list.Add(new DataRecord(short.Parse(groups[1].Value), (short)(i - 1), null, value));
                     }
