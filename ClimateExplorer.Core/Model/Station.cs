@@ -8,12 +8,12 @@ public class Station
     public string? Name { get; set; }
     public string? CountryCode { get; set; }
     public Coordinates? Coordinates { get; set; }
-    public DateOnly? Opened { get; set; }
-    public DateOnly? Closed { get; set; }
+    public DateOnly? FirstYear { get; set; }
+    public DateOnly? LastYear { get; set; }
     public int? YearsOfMissingData { get; set; }
 
     [JsonIgnore]
-    public int? Age => Closed?.Year - Opened?.Year;
+    public int? Age => LastYear?.Year - FirstYear?.Year;
 
     [JsonIgnore]
     public List<StationDistance>? StationDistances { get; set; }

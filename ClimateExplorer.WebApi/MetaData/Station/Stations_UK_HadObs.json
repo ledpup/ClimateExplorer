@@ -2,8 +2,9 @@
   {
     "Id": "HadCE",
     "Name": null,
+    "CountryCode": "UK",
     "Coordinates": null,
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   }
 ]

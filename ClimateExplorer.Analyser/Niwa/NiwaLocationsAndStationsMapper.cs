@@ -73,12 +73,14 @@ public static class NiwaLocationsAndStationsMapper
 
             if (!stations.Any(x => x.Id == externalStationCode))
             {
-                stations.Add(new Station
-                {
-                    Name = match.Groups["stationName"].Value,
-                    Id = externalStationCode,
-                    Coordinates = coordinates,
-                });
+                stations.Add(
+                    new Station
+                    {
+                        Id = externalStationCode,
+                        Name = match.Groups["stationName"].Value,
+                        CountryCode = "NZ",
+                        Coordinates = coordinates,
+                    });
             }
 
             if (!dataFileLocationMapping.LocationIdToDataFileMappings.ContainsKey(location.Id))

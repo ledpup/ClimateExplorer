@@ -2,6 +2,7 @@
   {
     "Id": "A5A179B5-5394-44D1-B653-BBF6B052279C",
     "Name": "Central England",
+    "CountryCode": "UK",
     "Coordinates": {
       "Latitude": 52.25240733,
       "Longitude": -1.770277667,

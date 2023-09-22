@@ -97,7 +97,12 @@ public static class BomLocationsAndStationsMapper
 
                 if (!stations.Any(x => x.Id == externalStationCode))
                 {
-                    stations.Add(new Station { Id = externalStationCode });
+                    stations.Add(
+                        new Station 
+                        {
+                            Id = externalStationCode,
+                            CountryCode = "AS"
+                        });
                 }
             }
 
@@ -214,7 +219,13 @@ public static class BomLocationsAndStationsMapper
             dataFileLocationMapping.LocationIdToDataFileMappings.Add(location.Id, new List<DataFileFilterAndAdjustment>());
             dataFileLocationMapping.LocationIdToDataFileMappings[location.Id].Add(new DataFileFilterAndAdjustment { Id = stationCode });
 
-            stations.Add(new Station { Id = stationCode, Coordinates = coordinates });
+            stations.Add(
+                new Station
+                { 
+                    Id = stationCode,
+                    CountryCode = "AS",
+                    Coordinates = coordinates
+                });
         }
 
         WriteFiles(outputFileSuffix, locations, stations, dataFileLocationMapping);

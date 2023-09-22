@@ -2,265 +2,313 @@
   {
     "Id": "1427",
     "Name": "Albert Park",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -36.853,
       "Longitude": 174.767,
       "Elevation": 49
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "1945",
     "Name": "Mangere",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -36.97,
       "Longitude": 174.776,
       "Elevation": 2
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "1962",
     "Name": "Auckland Aero",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -37.00813,
       "Longitude": 174.78873,
       "Elevation": 7
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "5380",
     "Name": "Leith Valley",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -45.85,
       "Longitude": 170.5,
       "Elevation": 94
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "5375",
     "Name": "Btl Gardens",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -45.86,
       "Longitude": 170.522,
       "Elevation": 73
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "5379",
     "Name": "Beta St",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -45.867,
       "Longitude": 170.5,
       "Elevation": 210
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "5402",
     "Name": "Musselburgh",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -45.904,
       "Longitude": 170.513,
       "Elevation": 2
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "15752",
     "Name": "Musselburgh Ews",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -45.90129,
       "Longitude": 170.5147,
       "Elevation": 4
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "2473",
     "Name": "Waingawa",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -40.98,
       "Longitude": 175.611,
       "Elevation": 114
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "2612",
     "Name": "East Taratahi AWS",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -41.016,
       "Longitude": 175.622,
       "Elevation": 91
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "21938",
     "Name": "Martinborough Ews",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -41.25231,
       "Longitude": 175.38985,
       "Elevation": 20
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "3907",
     "Name": "Hokitika Town",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -42.722,
       "Longitude": 170.963,
       "Elevation": 2
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "37939",
     "Name": "Hokitika Southside",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -42.729,
       "Longitude": 170.96,
       "Elevation": 4
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "3909",
     "Name": "Hokitika Aero",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -42.712,
       "Longitude": 170.984,
       "Elevation": 39
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "4881",
     "Name": "Lincoln",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -43.648,
       "Longitude": 172.463,
       "Elevation": 11
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "4882",
     "Name": "Lincoln Broadfield EDL",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -43.628,
       "Longitude": 172.468,
       "Elevation": 12
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "17603",
     "Name": "Lincoln Broadfield EWS",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -43.62622,
       "Longitude": 172.4704,
       "Elevation": 18
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "4244",
     "Name": "Nelson",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -41.275,
       "Longitude": 173.295,
       "Elevation": 10
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "4239",
     "Name": "Appleby",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -41.293,
       "Longitude": 173.099,
       "Elevation": 17
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "4241",
     "Name": "Nelson Aero",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -41.299,
       "Longitude": 173.226,
       "Elevation": 2
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "3431",
     "Name": "Buckle St",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -41.3,
       "Longitude": 174.783,
       "Elevation": 34
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "3391",
     "Name": "Thorndon",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -41.283,
       "Longitude": 174.783,
       "Elevation": 3
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "3385",
     "Name": "Kelburn",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -41.286,
       "Longitude": 174.767,
       "Elevation": 125
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "25354",
     "Name": "Kelburn Aws",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -41.28445,
       "Longitude": 174.76794,
       "Elevation": 125
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   }
 ]

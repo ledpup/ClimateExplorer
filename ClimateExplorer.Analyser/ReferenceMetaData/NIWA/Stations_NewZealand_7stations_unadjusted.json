@@ -7,8 +7,8 @@
       "Longitude": 174.767,
       "Elevation": 49
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "1945",
@@ -18,8 +18,8 @@
       "Longitude": 174.776,
       "Elevation": 2
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "1962",
@@ -29,8 +29,8 @@
       "Longitude": 174.78873,
       "Elevation": 7
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "5380",
@@ -40,8 +40,8 @@
       "Longitude": 170.5,
       "Elevation": 94
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "5375",
@@ -51,8 +51,8 @@
       "Longitude": 170.522,
       "Elevation": 73
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "5379",
@@ -62,8 +62,8 @@
       "Longitude": 170.5,
       "Elevation": 210
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "5402",
@@ -73,8 +73,8 @@
       "Longitude": 170.513,
       "Elevation": 2
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "15752",
@@ -84,8 +84,8 @@
       "Longitude": 170.5147,
       "Elevation": 4
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "2473",
@@ -95,8 +95,8 @@
       "Longitude": 175.611,
       "Elevation": 114
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "2612",
@@ -106,8 +106,8 @@
       "Longitude": 175.622,
       "Elevation": 91
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "21938",
@@ -117,8 +117,8 @@
       "Longitude": 175.38985,
       "Elevation": 20
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "3907",
@@ -128,8 +128,8 @@
       "Longitude": 170.963,
       "Elevation": 2
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "37939",
@@ -139,8 +139,8 @@
       "Longitude": 170.96,
       "Elevation": 4
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "3909",
@@ -150,8 +150,8 @@
       "Longitude": 170.984,
       "Elevation": 39
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "4881",
@@ -161,8 +161,8 @@
       "Longitude": 172.463,
       "Elevation": 11
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "4882",
@@ -172,8 +172,8 @@
       "Longitude": 172.468,
       "Elevation": 12
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "17603",
@@ -183,8 +183,8 @@
       "Longitude": 172.4704,
       "Elevation": 18
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "4244",
@@ -194,8 +194,8 @@
       "Longitude": 173.295,
       "Elevation": 10
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "4239",
@@ -205,8 +205,8 @@
       "Longitude": 173.099,
       "Elevation": 17
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "4241",
@@ -216,8 +216,8 @@
       "Longitude": 173.226,
       "Elevation": 2
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "3431",
@@ -227,8 +227,8 @@
       "Longitude": 174.783,
       "Elevation": 34
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "3391",
@@ -238,8 +238,8 @@
       "Longitude": 174.783,
       "Elevation": 3
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "3385",
@@ -249,8 +249,8 @@
       "Longitude": 174.767,
       "Elevation": 125
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   },
   {
     "Id": "25354",
@@ -260,7 +260,7 @@
       "Longitude": 174.76794,
       "Elevation": 125
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null
   }
 ]

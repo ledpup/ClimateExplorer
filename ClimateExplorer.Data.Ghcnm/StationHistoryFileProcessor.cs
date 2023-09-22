@@ -40,15 +40,15 @@ public class StationFileProcessor
                 logger.LogError($"Station {id} that is in the station file '{stationFileName}' is not found in the data file. There is no point keeping it in the list.");
                 continue;
             }
-            if (!(station.Opened.Value.Year <= beginBeforeOrEqualTo &&
-                    station.Closed.Value.Year > endNoLaterThan))
+            if (!(station.FirstYear.Value.Year <= beginBeforeOrEqualTo &&
+                    station.LastYear.Value.Year > endNoLaterThan))
             {
-                logger.LogInformation($"Station is being filtered out because it isn't old enough. Begins: {station.Opened.Value.Year} Ends: {station.Closed.Value.Year}");
+                logger.LogInformation($"Station is being filtered out because it isn't old enough. Begins: {station.FirstYear.Value.Year} Ends: {station.LastYear.Value.Year}");
                 continue;
             }
             if (station.YearsOfMissingData / (float)station.Age.Value > missingYearsThreshold)
             {
-                logger.LogInformation($"Station is being filtered out because it has too much missing data. Begins: {station.Opened.Value.Year} Ends: {station.Closed.Value.Year} Years of missing data: {station.YearsOfMissingData}");
+                logger.LogInformation($"Station is being filtered out because it has too much missing data. Begins: {station.FirstYear.Value.Year} Ends: {station.LastYear.Value.Year} Years of missing data: {station.YearsOfMissingData}");
                 continue;
             }
             logger.LogInformation($"Station {id} has been accepted");

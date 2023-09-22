@@ -129,7 +129,7 @@ List<Station> SelectStationsByDbscanClusteringAndTakingHighestScore(List<Station
 
 void SaveStationMetaData(List<Station> stations)
 {
-    var contents = stations.Select(x => $"{x.Id},{x.Opened.Value.Year},{x.Closed.Value.Year},{x.YearsOfMissingData}");
+    var contents = stations.Select(x => $"{x.Id},{x.FirstYear.Value.Year},{x.LastYear.Value.Year},{x.YearsOfMissingData}");
 
     File.WriteAllLines(@"SiteMetaData\stations.csv", contents);
 }
@@ -171,8 +171,8 @@ async Task<List<Station>> GetStationMetaData()
             station = new Station
             {
                 Id = id,
-                Opened = new DateOnly(year, 1, 1),
-                Closed = new DateOnly(year, 12, 31),
+                FirstYear = new DateOnly(year, 1, 1),
+                LastYear = new DateOnly(year, 12, 31),
             };
             stations.Add(station);
         }
@@ -181,13 +181,13 @@ async Task<List<Station>> GetStationMetaData()
         {
             continue;
         }
-        else if (year < station.Closed.Value.Year)
+        else if (year < station.LastYear.Value.Year)
         {
             throw new Exception($"Record year ({year}) is less than the end year for the station {station.Id}");
         }
         else
         {
-            var yearsOfMissingData = year - station.Closed.Value.Year - 1;
+            var yearsOfMissingData = year - station.LastYear.Value.Year - 1;
             if (yearsOfMissingData < -1)
             {
                 throw new Exception("Invalid data record ordering");
@@ -196,7 +196,7 @@ async Task<List<Station>> GetStationMetaData()
             {
                 station.YearsOfMissingData += yearsOfMissingData;
             }
-            station.Closed = new DateOnly(year, 12, 31);
+            station.LastYear = new DateOnly(year, 12, 31);
         }
     }
 
@@ -275,8 +275,8 @@ static List<Station> GetPreProcessedStations()
         var station = new Station
         {
             Id = columns[0], 
-            Opened = new DateOnly(int.Parse(columns[1]), 1, 1),
-            Closed = new DateOnly(int.Parse(columns[2]), 12, 31),
+            FirstYear = new DateOnly(int.Parse(columns[1]), 1, 1),
+            LastYear = new DateOnly(int.Parse(columns[2]), 12, 31),
             YearsOfMissingData = int.Parse(columns[3]),
         };
         stations.Add(station);

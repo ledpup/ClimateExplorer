@@ -2,243 +2,287 @@
   {
     "Id": "6172",
     "Name": "Campbell Is",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -52.55,
       "Longitude": 169.15,
       "Elevation": 15
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "6174",
     "Name": "Campbell Island Aws",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -52.55059,
       "Longitude": 169.14978,
       "Elevation": 16
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "2807",
     "Name": "Gisborne Aero",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -38.661,
       "Longitude": 177.986,
       "Elevation": 4
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "2810",
     "Name": "Gisborne Aws",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -38.6586,
       "Longitude": 177.98512,
       "Elevation": 5
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "2101",
     "Name": "Hamilton, Ruakura",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -37.78,
       "Longitude": 175.313,
       "Elevation": 40
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "12616",
     "Name": "Hamilton, Ruakura Ews",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -37.77879,
       "Longitude": 175.31271,
       "Elevation": 40
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "26117",
     "Name": "Hamilton, Ruakura 2 Ews",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -37.77389,
       "Longitude": 175.30518,
       "Elevation": 45
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "5814",
     "Name": "Invercargill Aero",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -46.41741,
       "Longitude": 168.33052,
       "Elevation": 1
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "4461",
     "Name": "Molesworth",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -42.088,
       "Longitude": 173.258,
       "Elevation": 890
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "7427",
     "Name": "Molesworth Aws",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -42.087,
       "Longitude": 173.26,
       "Elevation": 883
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "2363",
     "Name": "Mt Ruapehu, Chateau 1",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -39.202,
       "Longitude": 175.54,
       "Elevation": 1119
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "2357",
     "Name": "Mt Ruapehu, Chateau 2",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -39.198,
       "Longitude": 175.544,
       "Elevation": 1097
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "18464",
     "Name": "Mt Ruapehu, Chateau Ews",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -39.19589,
       "Longitude": 175.54504,
       "Elevation": 1097
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "3238",
     "Name": "Palmerston North Aws",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -40.382,
       "Longitude": 175.609,
       "Elevation": 34
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "21963",
     "Name": "Palmerston North Ews",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -40.38195,
       "Longitude": 175.60915,
       "Elevation": 21
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "5446",
     "Name": "Queenstown",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -45.03476,
       "Longitude": 168.66364,
       "Elevation": 322
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "6169",
     "Name": "Raoul Is",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -29.25,
       "Longitude": -177.917,
       "Elevation": 38
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "6170",
     "Name": "Raoul Island Aws",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -29.24488,
       "Longitude": -177.92912,
       "Elevation": 50
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "1612",
     "Name": "Tauranga Aero",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -37.67242,
       "Longitude": 176.19635,
       "Elevation": 0
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "1615",
     "Name": "Tauranga Aero Aws",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -37.67068,
       "Longitude": 176.1966,
       "Elevation": 5
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "3810",
     "Name": "Westport Aero",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -41.74,
       "Longitude": 171.578,
       "Elevation": 2
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "7342",
     "Name": "Westport Aero Aws",
+    "CountryCode": "NZ",
     "Coordinates": {
       "Latitude": -41.74075,
       "Longitude": 171.57985,
       "Elevation": 5
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   }
 ]

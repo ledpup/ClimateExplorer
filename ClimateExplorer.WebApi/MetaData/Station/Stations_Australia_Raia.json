@@ -2,89 +2,105 @@
   {
     "Id": "300017",
     "Name": null,
+    "CountryCode": "AS",
     "Coordinates": {
-      "Latitude": 66.28,
+      "Latitude": -66.28,
       "Longitude": 110.52,
       "Elevation": 40
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "200284",
     "Name": null,
+    "CountryCode": "AS",
     "Coordinates": {
-      "Latitude": 12.19,
+      "Latitude": -12.19,
       "Longitude": 96.83,
       "Elevation": 3
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "300000",
     "Name": null,
+    "CountryCode": "AS",
     "Coordinates": {
-      "Latitude": 68.57,
+      "Latitude": -68.57,
       "Longitude": 77.97,
       "Elevation": 18
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "200839",
     "Name": null,
+    "CountryCode": "AS",
     "Coordinates": {
-      "Latitude": 31.54,
+      "Latitude": -31.54,
       "Longitude": 159.08,
       "Elevation": 5
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "300004",
     "Name": null,
+    "CountryCode": "AS",
     "Coordinates": {
-      "Latitude": 54.5,
+      "Latitude": -54.5,
       "Longitude": 158.94,
       "Elevation": 6
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "300001",
     "Name": null,
+    "CountryCode": "AS",
     "Coordinates": {
-      "Latitude": 67.6,
+      "Latitude": -67.6,
       "Longitude": 62.88,
       "Elevation": 10
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "200288",
     "Name": null,
+    "CountryCode": "AS",
     "Coordinates": {
-      "Latitude": 29.04,
+      "Latitude": -29.04,
       "Longitude": 167.94,
       "Elevation": 112
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   },
   {
     "Id": "200283",
     "Name": null,
+    "CountryCode": "AS",
     "Coordinates": {
-      "Latitude": 16.29,
+      "Latitude": -16.29,
       "Longitude": 149.97,
       "Elevation": 8
     },
-    "Opened": null,
-    "Closed": null
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
   }
 ]
