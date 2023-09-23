@@ -292,7 +292,6 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
                     DataAdjustment = spec.DataAdjustment, 
                     DataType = spec.DataType.Value,
                     UnitOfMeasure = series.UnitOfMeasure,
-                    DataCategory = series.DataCategory
                 },
             DataRecords = 
                 series.DataPoints
@@ -410,7 +409,6 @@ static async Task<BuildDataSetResult> GenerateAverageOfAnomaliesSeries(PostDataS
     {
         DataPoints = dataPoints.ToArray(),
         UnitOfMeasure = seriesDefinition.UnitOfMeasure,
-        DataCategory = seriesDefinition.DataCategory
     };
     return series;
 }
