@@ -1,14 +1,4 @@
-﻿using ClimateExplorer.Core;
-using ClimateExplorer.Core.Model;
-using ClimateExplorer.Core.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using static ClimateExplorer.Core.Enums;
+﻿using static ClimateExplorer.Core.Enums;
 
 namespace ClimateExplorer.Core.ViewModel;
 
@@ -48,6 +38,7 @@ public class DataSetDefinitionViewModel
         DataType dataType, 
         DataAdjustment? dataAdjustment, 
         bool allowNullDataAdjustment = false,
+        DataType? alternativeDataType = null,
         bool throwIfNoMatch = true)
     {
         var dsds = new List<DataSetDefinitionViewModel>();
@@ -66,6 +57,22 @@ public class DataSetDefinitionViewModel
                                                  && x.LocationIds.Any(y => y == locationId)
                                                  && x.MeasurementDefinitions.Any(y => y.DataType == dataType && y.DataAdjustment == dataAdjustment))
                                          .ToList();
+        }
+
+        // If no exact match, try again, looking for the alternative data type
+        if (!dsds.Any() && alternativeDataType != null)
+        { 
+            dsds = dataSetDefinitions.Where(x => x.LocationIds != null
+                                     && x.LocationIds.Any(y => y == locationId)
+                                     && x.MeasurementDefinitions.Any(y => y.DataType == alternativeDataType && y.DataAdjustment == dataAdjustment)
+                                     )
+                             .ToList();
+
+            // Found via alternative data type, so use that instead
+            if (dsds.Any())
+            {
+                dataType = alternativeDataType.Value;
+            }
         }
 
         // If no exact match

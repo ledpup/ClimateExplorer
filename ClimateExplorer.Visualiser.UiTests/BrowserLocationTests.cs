@@ -1,4 +1,5 @@
-﻿using Microsoft.Playwright;
+﻿using ClimateExplorer.Core.Model;
+using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 using System.IO;
 using System.Text.Json;

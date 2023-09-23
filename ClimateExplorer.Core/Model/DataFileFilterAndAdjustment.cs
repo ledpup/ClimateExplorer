@@ -1,5 +1,4 @@
 ﻿namespace ClimateExplorer.Core.Model;
-
 public class DataFileFilterAndAdjustment
 {
     public required string Id { get; set; }

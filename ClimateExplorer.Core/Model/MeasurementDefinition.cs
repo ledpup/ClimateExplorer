@@ -1,6 +1,7 @@
 ﻿using ClimateExplorer.Core.ViewModel;
 using static ClimateExplorer.Core.Enums;
 
+namespace ClimateExplorer.Core.Model;
 public class MeasurementDefinition
 {
     public DataCategory? DataCategory { get; set; }

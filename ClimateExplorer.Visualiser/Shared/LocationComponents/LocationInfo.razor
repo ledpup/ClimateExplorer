@@ -1,6 +1,7 @@
 ﻿@using Blazorise
 @using Blazorise.LoadingIndicator
 @using ClimateExplorer.Core
+@using ClimateExplorer.Core.Model
 @using ClimateExplorer.Core.ViewModel
 @using ClimateExplorer.Visualiser.UiModel
 @using ClimateExplorer.Core.Calculators
@@ -140,14 +141,14 @@
         }
 
         await GetData(DataType.Rainfall, null, ContainerAggregationFunctions.Sum);
-        await GetData(DataType.TempMax, DataAdjustment.Adjusted, ContainerAggregationFunctions.Mean);
+        await GetData(DataType.TempMax, DataAdjustment.Adjusted, ContainerAggregationFunctions.Mean, DataType.TempMean);
 
         LocationLoadingIndicatorVisible = false;
 
         await base.OnParametersSetAsync();
     }
 
-    protected async Task GetData(DataType dataType, DataAdjustment? dataAdjustment, ContainerAggregationFunctions function)
+    protected async Task GetData(DataType dataType, DataAdjustment? dataAdjustment, ContainerAggregationFunctions function, DataType? alternativeDataType = null)
     {
         var measurementForLocation =
             DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
@@ -155,7 +156,9 @@
                 Location.Id,
                 dataType,
                 dataAdjustment,
-                true);
+                allowNullDataAdjustment: false,
+                alternativeDataType: alternativeDataType,
+                throwIfNoMatch: false);
 
         if (measurementForLocation != null)
         {
@@ -223,7 +226,7 @@
                 RainfallLocationMean = series.DataRecords.Average(x => x.Value);
                 RainfallAnomalyRecords = anomalyRecords;
             }
-            else if (dataType == DataType.TempMax)
+            else if (dataType == DataType.TempMax || alternativeDataType == DataType.TempMean)
             {
                 WarmingIndexAsString = GetWarmingIndexAsString(index, measurementForLocation.MeasurementDefinition.UnitOfMeasure);
                 WarmingIndexDescription = GenerateWarmingIndexDescription(index, measurementForLocation.MeasurementDefinition.UnitOfMeasure);

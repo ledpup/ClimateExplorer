@@ -1,5 +1,6 @@
 ﻿using GeoCoordinatePortable;
 
+namespace ClimateExplorer.Core.Model;
 public class StationDistance
 {
     public required string? Id { get; set; }

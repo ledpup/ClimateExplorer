@@ -1,6 +1,5 @@
 ﻿using ClimateExplorer.Visualiser.UiModel;
 using Microsoft.AspNetCore.Components;
-using System.Linq;
 
 namespace ClimateExplorer.Visualiser.Shared.LocationComponents;
 

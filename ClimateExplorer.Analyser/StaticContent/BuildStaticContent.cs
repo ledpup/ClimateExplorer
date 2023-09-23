@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using ClimateExplorer.Core.Model;
+using System.Xml;
 
 namespace ClimateExplorer.Analyser.StaticContent
 {

@@ -278,7 +278,7 @@ internal class DataSetDefinitionsBuilder
             },
 
 
-                        new DataSetDefinition
+            new DataSetDefinition
             {
                 Id = Guid.Parse("1DC38F20-3606-4D90-A2A0-84F93E75C964"),
                 Name = "Global Historical Climatology Network monthly (GHCNm)",
@@ -297,9 +297,9 @@ internal class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Monthly,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
                         DataRowRegEx = @"^(?<year>\d{4}),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+)$",
-                        FolderName = @"Temperature\GHCNm",
+                        FolderName = @"Temperature\GHCNm\Adjusted",
                         FileNameFormat = "[station].csv",
-                        NullValue = null,
+                        NullValue = "-9999",
                         ValueAdjustment = 100.0f,
                     },
                     //new MeasurementDefinition
@@ -348,7 +348,7 @@ internal class DataSetDefinitionsBuilder
                         RowDataType = RowDataType.TwelveMonthsPerRow,
                         FolderName = @"Reference\ENSO",
                         FileNameFormat = "meiv2.data.txt",
-                        DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
+                        DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                         NullValue = "-999.00"
                     },
                 },
@@ -374,7 +374,7 @@ internal class DataSetDefinitionsBuilder
                         RowDataType = RowDataType.TwelveMonthsPerRow,
                         FolderName = @"Reference\ENSO",
                         FileNameFormat = "soi.long.data.txt",
-                        DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
+                        DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                         NullValue = "-99.99"
                     },
                 },
@@ -400,7 +400,7 @@ internal class DataSetDefinitionsBuilder
                         RowDataType = RowDataType.TwelveMonthsPerRow,
                         FolderName = @"Reference\ENSO",
                         FileNameFormat = "oni.data.txt",
-                        DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
+                        DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                         NullValue = "-99.9"
                     },
                 },
@@ -426,7 +426,7 @@ internal class DataSetDefinitionsBuilder
                         RowDataType = RowDataType.TwelveMonthsPerRow,
                         FolderName = @"Reference\ENSO",
                         FileNameFormat = "nino34.long.anom.data.txt",
-                        DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
+                        DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                         NullValue = "-99.99"
                     },
                 },
@@ -530,7 +530,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsiusAnomaly,
                         DataResolution = DataResolution.Monthly,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
-                        DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
+                        DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                         FolderName = @"Reference\IOD",
                         FileNameFormat = "dmi.had.long.data.txt",
                         NullValue = "-9999"

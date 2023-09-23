@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-public struct Coordinates
+﻿public struct Coordinates
 {
     public Coordinates(float lat, float lng)
     {
@@ -37,5 +35,12 @@ public struct Coordinates
             return $"Lat {Math.Round(Latitude, 1)}° Long {Math.Round(Longitude, 1)}° Ele {Math.Round(Elevation.Value, 1)}m";
         }
         return ToString();
+    }
+
+    public override readonly bool Equals(object obj) => Equals((Coordinates)obj);
+
+    public override int GetHashCode()
+    {
+        throw new NotImplementedException();
     }
 }

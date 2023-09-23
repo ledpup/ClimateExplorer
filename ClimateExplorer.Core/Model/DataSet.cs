@@ -1,8 +1,8 @@
 ﻿using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Core.DataPreparation;
 using static ClimateExplorer.Core.Enums;
-using ClimateExplorer.Core.Model;
 
+namespace ClimateExplorer.Core.Model;
 public class DataSet
 {
     public DataSet()

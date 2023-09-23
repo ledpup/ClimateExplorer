@@ -309,8 +309,9 @@ public class ChartSeriesDefinition
     {
         return dataType switch
         {
-            DataType.TempMin => "Temp minimum",
-            DataType.TempMax => "Temp maximum",
+            DataType.TempMin => "Minimum temperature",
+            DataType.TempMax => "Maximum temperature",
+            DataType.TempMean => "Mean temperature",
             DataType.SolarRadiation => "Solar radiation",
             DataType.Rainfall => "Rainfall",
             DataType.MEIv2 => "MEI v2",

@@ -235,7 +235,7 @@ namespace ClimateExplorer.Core.DataPreparation
                     break;
 
                 case RowDataType.TwelveMonthsPerRow:
-                    var dataSet = await TwelveMonthPerLineDataReader.GetTwelveMonthsPerRowData(measurementDefinition);
+                    var dataSet = await TwelveMonthPerLineDataReader.GetTwelveMonthsPerRowData(measurementDefinition, dataFileFilterAndAdjustments);
                     dataRecords = dataSet.DataRecords;
                     break;
 

@@ -3,6 +3,7 @@ using ClimateExplorer.Analyser.Bom;
 using ClimateExplorer.Analyser.Greenland;
 using ClimateExplorer.Analyser.Niwa;
 using ClimateExplorer.Analyser.StaticContent;
+using ClimateExplorer.Core.Model;
 
 var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
 

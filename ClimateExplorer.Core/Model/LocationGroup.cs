@@ -8,7 +8,7 @@ namespace ClimateExplorer.Core.Model;
 
 public class LocationGroup : LocationBase
 {
-    public List<Guid> LocationIds { get; set; }
+    public required List<Guid> LocationIds { get; set; }
 
     public static LocationGroup GetLocationGroup(Guid id)
     {

@@ -167,7 +167,9 @@ async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool in
                         location.Id,
                         DataType.TempMax,
                         Enums.DataAdjustment.Adjusted,
-                        true);
+                        allowNullDataAdjustment: true,
+                        DataType.TempMean,
+                        throwIfNoMatch: true);
 
                 // Next, request that dataset
                 var dsb = new DataSetBuilder();

@@ -1,4 +1,5 @@
-﻿using ClimateExplorer.Core.Model;
+﻿using ClimateExplorer.Core.Calculators;
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Data.Ghcnm;
 using Dbscan;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +21,7 @@ var stations = await GetStationMetaData();
 
 var dataQualityFilteredStations = await RetrieveDataQualityFilteredStations(stations);
 
-var selectedStations = SelectStationsByDbscanClusteringAndTakingHighestScore(dataQualityFilteredStations, 50, 2);
+var selectedStations = SelectStationsByDbscanClusteringAndTakingHighestScore(dataQualityFilteredStations, 75, 2);
 
 var locations = new List<Location>();
 var dataFileLocationMapping = new DataFileLocationMapping
@@ -74,7 +75,7 @@ File.WriteAllText($@"Output\DataFileLocationMapping\DataFileLocationMapping{outp
 
 
 
-await CreateStationDataFiles(selectedStations);
+await CreateStationDataFiles(selectedStations, logger);
 
 List<Station> SelectStationsByDbscanClusteringAndTakingHighestScore(List<Station> processedStations, double distance, int minimumPointsPerCluster)
 {
@@ -129,7 +130,7 @@ List<Station> SelectStationsByDbscanClusteringAndTakingHighestScore(List<Station
 
 void SaveStationMetaData(List<Station> stations)
 {
-    var contents = stations.Select(x => $"{x.Id},{x.FirstYear.Value.Year},{x.LastYear.Value.Year},{x.YearsOfMissingData}");
+    var contents = stations.Select(x => $"{x.Id},{x.FirstYear.Value},{x.LastYear.Value},{x.YearsOfMissingData}");
 
     File.WriteAllLines(@"SiteMetaData\stations.csv", contents);
 }
@@ -171,8 +172,8 @@ async Task<List<Station>> GetStationMetaData()
             station = new Station
             {
                 Id = id,
-                FirstYear = new DateOnly(year, 1, 1),
-                LastYear = new DateOnly(year, 12, 31),
+                FirstYear = year,
+                LastYear = year,
             };
             stations.Add(station);
         }
@@ -181,13 +182,13 @@ async Task<List<Station>> GetStationMetaData()
         {
             continue;
         }
-        else if (year < station.LastYear.Value.Year)
+        else if (year < station.LastYear.Value)
         {
             throw new Exception($"Record year ({year}) is less than the end year for the station {station.Id}");
         }
         else
         {
-            var yearsOfMissingData = year - station.LastYear.Value.Year - 1;
+            var yearsOfMissingData = year - station.LastYear.Value - 1;
             if (yearsOfMissingData < -1)
             {
                 throw new Exception("Invalid data record ordering");
@@ -196,7 +197,7 @@ async Task<List<Station>> GetStationMetaData()
             {
                 station.YearsOfMissingData += yearsOfMissingData;
             }
-            station.LastYear = new DateOnly(year, 12, 31);
+            station.LastYear = year;
         }
     }
 
@@ -232,7 +233,7 @@ async Task<List<Station>> RetrieveDataQualityFilteredStations(List<Station> inpu
     }
     
     var countries = await CountryFileProcessor.Transform();
-    var stations = await StationFileProcessor.Transform(inputStations, countries, 1980, (short)(DateTime.Now.Year - 10), .5f, logger);
+    var stations = await StationFileProcessor.Transform(inputStations, countries, (short)(DateTime.Now.Year - 10), IndexCalculator.MinimumNumberOfYearsToCalculateIndex, logger);
 
     SaveStations(stations, dataFilteredStations);
 
@@ -275,8 +276,8 @@ static List<Station> GetPreProcessedStations()
         var station = new Station
         {
             Id = columns[0], 
-            FirstYear = new DateOnly(int.Parse(columns[1]), 1, 1),
-            LastYear = new DateOnly(int.Parse(columns[2]), 12, 31),
+            FirstYear = int.Parse(columns[1]),
+            LastYear = int.Parse(columns[2]),
             YearsOfMissingData = int.Parse(columns[3]),
         };
         stations.Add(station);
@@ -284,7 +285,7 @@ static List<Station> GetPreProcessedStations()
     return stations;
 }
 
-static async Task CreateStationDataFiles(List<Station> stations)
+static async Task CreateStationDataFiles(List<Station> stations, ILogger<Program> logger)
 {
     var dir = new DirectoryInfo(@"Output\Data\");
     if (dir.Exists)
@@ -325,6 +326,7 @@ static async Task CreateStationDataFiles(List<Station> stations)
                 {
                     throw new Exception($"File {fileName} exists already");
                 }
+                logger.LogInformation($"Creating data file for station {id}");
                 writer = File.CreateText(fileName);
             }
 

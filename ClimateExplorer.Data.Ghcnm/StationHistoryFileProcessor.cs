@@ -7,7 +7,7 @@ namespace ClimateExplorer.Data.Ghcnm;
 
 public class StationFileProcessor
 {
-    internal static async Task<List<Station>> Transform(List<Station> stations, Dictionary<string, Country> countries, short beginBeforeOrEqualTo, short endNoLaterThan, float missingYearsThreshold, ILogger<Program> logger)
+    internal static async Task<List<Station>> Transform(List<Station> stations, Dictionary<string, Country> countries, short lastYearOfDataNoLaterThan, short minimumScore, ILogger<Program> logger)
     {
         var stationFileName = "ghcnm.tavg.v4.0.1.20230817.qcf.inv";
         var stationFile = (await File.ReadAllLinesAsync(@$"SiteMetaData\{stationFileName}"));
@@ -40,18 +40,17 @@ public class StationFileProcessor
                 logger.LogError($"Station {id} that is in the station file '{stationFileName}' is not found in the data file. There is no point keeping it in the list.");
                 continue;
             }
-            if (!(station.FirstYear.Value.Year <= beginBeforeOrEqualTo &&
-                    station.LastYear.Value.Year > endNoLaterThan))
+            if (station.LastYear < lastYearOfDataNoLaterThan)
             {
-                logger.LogInformation($"Station is being filtered out because it isn't old enough. Begins: {station.FirstYear.Value.Year} Ends: {station.LastYear.Value.Year}");
+                logger.LogInformation($"Station {id} is being filtered out because it isn't contemporary. Last record was in {station.LastYear.Value}");
                 continue;
             }
-            if (station.YearsOfMissingData / (float)station.Age.Value > missingYearsThreshold)
+            if (station.Score < minimumScore)
             {
-                logger.LogInformation($"Station is being filtered out because it has too much missing data. Begins: {station.FirstYear.Value.Year} Ends: {station.LastYear.Value.Year} Years of missing data: {station.YearsOfMissingData}");
+                logger.LogInformation($"Station {id} is being filtered out because it has too much missing data. It's score ({station.Score}) (i.e., age ({station.Age}) - number of years of missing data ({station.YearsOfMissingData})) is less than the minimum score ({minimumScore})");
                 continue;
             }
-            logger.LogInformation($"Station {id} has been accepted");
+            logger.LogInformation($"Station {id} has been accepted. Its last year of records was {station.LastYear.Value} and it's age is {station.Age} and its score is {station.Score}");
 
             countries.TryGetValue(countryCode, out Country? country);
 

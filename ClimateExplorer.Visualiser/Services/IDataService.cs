@@ -1,7 +1,5 @@
-﻿using ClimateExplorer.Core;
-using ClimateExplorer.Core.Model;
+﻿using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
-using ClimateExplorer.Visualiser.UiModel;
 using ClimateExplorer.Core.DataPreparation;
 using static ClimateExplorer.Core.Enums;
 public interface IDataService
