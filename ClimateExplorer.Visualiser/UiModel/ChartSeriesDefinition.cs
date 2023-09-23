@@ -73,11 +73,6 @@ public class ChartSeriesDefinition
                     segments.Add(Year.ToString());
                 }
 
-                if (sss.MeasurementDefinition.DataCategory != null)
-                {
-                    segments.Add(sss.MeasurementDefinition.DataCategory.Value.ToString());
-                }
-
                 segments.Add(MapDataTypeToFriendlyName(sss.MeasurementDefinition.DataType));
 
                 if (sss.MeasurementDefinition.DataAdjustment != null)
@@ -212,11 +207,6 @@ public class ChartSeriesDefinition
 
         if (sss.MeasurementDefinition != null)
         {
-            if (sss.MeasurementDefinition.DataCategory != null)
-            {
-                segments.Add(sss.MeasurementDefinition.DataCategory.Value.ToString());
-            }
-
             segments.Add(MapDataTypeToFriendlyName(sss.MeasurementDefinition.DataType));
         }
         else

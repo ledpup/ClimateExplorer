@@ -12,7 +12,6 @@ namespace ClimateExplorer.Core.DataPreparation
         {
             public TemporalDataPoint[] DataPoints { get; set; }
             public UnitOfMeasure UnitOfMeasure { get; set; }
-            public DataCategory? DataCategory { get; set; }
             public DataResolution DataResolution { get; set; }
         }
 
@@ -54,7 +53,6 @@ namespace ClimateExplorer.Core.DataPreparation
             var dbGroups = new Dictionary<DateOnly, List<TemporalDataPoint>>();
 
             UnitOfMeasure? uom = null;
-            DataCategory? dc = null;
             DataResolution? dataResolution = null;
 
             foreach (var seriesSpec in seriesSpecifications)
@@ -67,18 +65,12 @@ namespace ClimateExplorer.Core.DataPreparation
                     throw new Exception($"Cannot mix the unit of measure when average between series. {uom} != {series.UnitOfMeasure}");
                 }
 
-                if (dc != null && dc != series.DataCategory)
-                {
-                    throw new Exception($"Cannot mix the data category when average between series. {dc} != {series.DataCategory}");
-                }
-
                 if (dataResolution != null && dataResolution != series.DataResolution)
                 {
                     throw new Exception($"Cannot mix the data resolution when average between series. {dataResolution} != {series.DataResolution}");
                 }
 
                 uom = series.UnitOfMeasure;
-                dc = series.DataCategory;
                 dataResolution= series.DataResolution;
 
                 foreach (var point in dp)
@@ -126,7 +118,6 @@ namespace ClimateExplorer.Core.DataPreparation
                 {
                     DataPoints = results.ToArray(),
                     UnitOfMeasure = uom.Value,
-                    DataCategory = dc.Value,
                     DataResolution = dataResolution.Value,
                 };
         }
@@ -189,7 +180,6 @@ namespace ClimateExplorer.Core.DataPreparation
                 {
                     DataPoints = results.ToArray(),
                     UnitOfMeasure = series1.UnitOfMeasure,
-                    DataCategory = series1.DataCategory,
                     DataResolution = series1.DataResolution
                 };
         }
@@ -248,7 +238,6 @@ namespace ClimateExplorer.Core.DataPreparation
                 {
                     DataPoints = dataRecords.Select(x => new TemporalDataPoint { Year = x.Year, Month = x.Month, Day = x.Day, Value = x.Value }).ToArray(),
                     UnitOfMeasure = measurementDefinition.UnitOfMeasure,
-                    DataCategory = measurementDefinition.DataCategory,
                     DataResolution = measurementDefinition.DataResolution
                 };
         }
