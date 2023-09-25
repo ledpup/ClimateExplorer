@@ -16,10 +16,7 @@ namespace ClimateExplorer.Core.DataPreparation
         public class BuildDataSetResult
         {
             public UnitOfMeasure UnitOfMeasure { get; set; }
-            public DataCategory? DataCategory { get; set; }
-
             public ChartableDataPoint[] DataPoints { get; set; }
-
             public TemporalDataPoint[] RawDataPoints { get; set; }
         }
 
@@ -44,7 +41,6 @@ namespace ClimateExplorer.Core.DataPreparation
                     DataPoints = dataPoints,
                     RawDataPoints = request.IncludeRawDataPoints ? series.DataPoints : null,
                     UnitOfMeasure = series.UnitOfMeasure,
-                    DataCategory = series.DataCategory
                 };
         }
 

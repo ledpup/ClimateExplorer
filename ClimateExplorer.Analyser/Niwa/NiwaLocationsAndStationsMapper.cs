@@ -31,15 +31,6 @@ public static class NiwaLocationsAndStationsMapper
             var locationName = match.Groups["name"].Value;
 
             var location = locations.SingleOrDefault(x => x.Name == locationName);
-            if (location == null)
-            {
-                location = new Location
-                {
-                    Id = Guid.NewGuid(),
-                    Name = locationName,
-                };
-                locations.Add(location);
-            }
 
             var coordinates = new Coordinates
             {
@@ -47,6 +38,17 @@ public static class NiwaLocationsAndStationsMapper
                 Longitude = float.Parse(match.Groups["lng"].Value),
                 Elevation = float.Parse(match.Groups["alt"].Value),
             };
+
+            if (location == null)
+            {
+                location = new Location
+                {
+                    Id = Guid.NewGuid(),
+                    Name = locationName,
+                    Coordinates = coordinates,
+                };
+                locations.Add(location);
+            }
 
             // The last entry will have the coordinates we'll use for this location. Just update them everytime.
             location.Coordinates = coordinates;
