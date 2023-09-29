@@ -40,6 +40,8 @@ internal class DownloadAndExtract
 
             using var fs = new FileStream(zipFile, FileMode.OpenOrCreate);
             await response.Content.CopyToAsync(fs);
+
+            logger.LogInformation($"Download of file at {url} was successful");
         }
         
         try
