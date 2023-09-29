@@ -25,13 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Data\ghcnm.tavg.v4.0.1.20230817.qcf.dat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="SiteMetaData\ghcnm-countries.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SiteMetaData\ghcnm.tavg.v4.0.1.20230817.qcf.inv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

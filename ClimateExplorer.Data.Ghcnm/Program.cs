@@ -14,12 +14,21 @@ var serviceProvider = new ServiceCollection()
         .AddSimpleConsole(x => { x.SingleLine = true; x.IncludeScopes = false; })
         )
     .BuildServiceProvider();
-
 var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Program>();
 
-var stations = await GetStationMetaData();
 
-var dataQualityFilteredStations = await RetrieveDataQualityFilteredStations(stations);
+var httpClient = new HttpClient();
+var userAgent = "Mozilla /5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
+var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
+httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
+httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
+
+await DownloadAndExtract.DownloadAndExtractFile(httpClient, "https://www.ncei.noaa.gov/pub/data/ghcn/v4/", "qcf", "ghcnm.tavg.latest.qcf.tar.gz", logger);
+await DownloadAndExtract.DownloadAndExtractFile(httpClient, "https://www.ncei.noaa.gov/pub/data/ghcn/v4/", "qcu", "ghcnm.tavg.latest.qcu.tar.gz", logger);
+
+var stations = await GetStationMetaData("qcf");
+
+var dataQualityFilteredStations = await RetrieveDataQualityFilteredStations("qcf", stations);
 
 var selectedStations = SelectStationsByDbscanClusteringAndTakingHighestScore(dataQualityFilteredStations, 75, 2);
 
@@ -75,7 +84,8 @@ File.WriteAllText($@"Output\DataFileLocationMapping\DataFileLocationMapping{outp
 
 
 
-await CreateStationDataFiles(selectedStations, logger);
+await CreateStationDataFiles("qcf", selectedStations, logger);
+await CreateStationDataFiles("qcu", selectedStations, logger);
 
 List<Station> SelectStationsByDbscanClusteringAndTakingHighestScore(List<Station> processedStations, double distance, int minimumPointsPerCluster)
 {
@@ -135,7 +145,7 @@ void SaveStationMetaData(List<Station> stations)
     File.WriteAllLines(@"SiteMetaData\stations.csv", contents);
 }
 
-async Task<List<Station>> GetStationMetaData()
+async Task<List<Station>> GetStationMetaData(string version)
 {
     if (File.Exists(@"SiteMetaData\stations.csv"))
     {
@@ -143,7 +153,10 @@ async Task<List<Station>> GetStationMetaData()
         return stations;
     }
 
-    var records = File.ReadAllLines(@"data\ghcnm.tavg.v4.0.1.20230817.qcf.dat");
+    var dir = new DirectoryInfo(@$"SourceData\{version}\");
+    var dataFileName = dir.GetFiles("*.dat").Single().FullName;
+
+    var records = File.ReadAllLines(dataFileName);
     stations = new List<Station>();
 
     foreach (var record in records)
@@ -225,7 +238,7 @@ static bool IsValidYear(string record)
 
 const string dataFilteredStations = @"Output\SiteMetaData\data-quality-filtered-stations.json";
 
-async Task<List<Station>> RetrieveDataQualityFilteredStations(List<Station> inputStations)
+async Task<List<Station>> RetrieveDataQualityFilteredStations(string version, List<Station> inputStations)
 {
     if (File.Exists(dataFilteredStations))
     {
@@ -233,7 +246,7 @@ async Task<List<Station>> RetrieveDataQualityFilteredStations(List<Station> inpu
     }
     
     var countries = await CountryFileProcessor.Transform();
-    var stations = await StationFileProcessor.Transform(inputStations, countries, (short)(DateTime.Now.Year - 10), IndexCalculator.MinimumNumberOfYearsToCalculateIndex, logger);
+    var stations = await StationFileProcessor.Transform(version, inputStations, countries, (short)(DateTime.Now.Year - 10), IndexCalculator.MinimumNumberOfYearsToCalculateIndex, logger);
 
     SaveStations(stations, dataFilteredStations);
 
@@ -285,16 +298,20 @@ static List<Station> GetPreProcessedStations()
     return stations;
 }
 
-static async Task CreateStationDataFiles(List<Station> stations, ILogger<Program> logger)
+static async Task CreateStationDataFiles(string version, List<Station> stations, ILogger<Program> logger)
 {
-    var dir = new DirectoryInfo(@"Output\Data\");
+    var outputFolder = @$"Output\Data\{version}\";
+    var dir = new DirectoryInfo(outputFolder);
     if (dir.Exists)
     {
         dir.Delete(true);
     }
     dir.Create();
 
-    var records = await File.ReadAllLinesAsync(@"data\ghcnm.tavg.v4.0.1.20230817.qcf.dat");
+    var sourceDir = new DirectoryInfo(@$"SourceData\{version}\");
+    var dataFileName = sourceDir.GetFiles("*.dat").Single().FullName;
+
+    var records = await File.ReadAllLinesAsync(dataFileName);
 
     string? currentStation = null;
     StreamWriter? writer = null;
@@ -321,7 +338,7 @@ static async Task CreateStationDataFiles(List<Station> stations, ILogger<Program
                     writer.Close();
                 }
                 currentStation = id;
-                var fileName = $@"Output\Data\{id}.csv";
+                var fileName = $@"{outputFolder}{id}.csv";
                 if (File.Exists(fileName))
                 {
                     throw new Exception($"File {fileName} exists already");

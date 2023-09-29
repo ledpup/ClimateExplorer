@@ -7,10 +7,12 @@ namespace ClimateExplorer.Data.Ghcnm;
 
 public class StationFileProcessor
 {
-    internal static async Task<List<Station>> Transform(List<Station> stations, Dictionary<string, Country> countries, short lastYearOfDataNoLaterThan, short minimumScore, ILogger<Program> logger)
+    internal static async Task<List<Station>> Transform(string version, List<Station> stations, Dictionary<string, Country> countries, short lastYearOfDataNoLaterThan, short minimumScore, ILogger<Program> logger)
     {
-        var stationFileName = "ghcnm.tavg.v4.0.1.20230817.qcf.inv";
-        var stationFile = (await File.ReadAllLinesAsync(@$"SiteMetaData\{stationFileName}"));
+        var dir = new DirectoryInfo(@$"SourceData\{version}\");
+        var stationFileName = dir.GetFiles("*.inv").Single().FullName;
+
+        var stationFile = await File.ReadAllLinesAsync(stationFileName);
 
         var stationResults = new List<Station>();
 
