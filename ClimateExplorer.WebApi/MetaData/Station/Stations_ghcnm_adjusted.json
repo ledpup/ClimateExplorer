@@ -36,7 +36,7 @@
     },
     "FirstYear": 1959,
     "LastYear": 2022,
-    "YearsOfMissingData": 2
+    "YearsOfMissingData": 3
   },
   {
     "Id": "AG000060680",
@@ -153,7 +153,7 @@
     },
     "FirstYear": 1901,
     "LastYear": 2022,
-    "YearsOfMissingData": 40
+    "YearsOfMissingData": 44
   },
   {
     "Id": "ARM00087166",
@@ -166,7 +166,7 @@
     },
     "FirstYear": 1930,
     "LastYear": 2022,
-    "YearsOfMissingData": 23
+    "YearsOfMissingData": 20
   },
   {
     "Id": "ARM00087420",
@@ -205,7 +205,7 @@
     },
     "FirstYear": 1873,
     "LastYear": 2022,
-    "YearsOfMissingData": 33
+    "YearsOfMissingData": 31
   },
   {
     "Id": "AR000087007",
@@ -270,7 +270,7 @@
     },
     "FirstYear": 1932,
     "LastYear": 2022,
-    "YearsOfMissingData": 15
+    "YearsOfMissingData": 12
   },
   {
     "Id": "AR000087534",
@@ -299,6 +299,19 @@
     "YearsOfMissingData": 13
   },
   {
+    "Id": "AR000087715",
+    "Name": "NEUQUEN_AERO",
+    "CountryCode": "AR",
+    "Coordinates": {
+      "Latitude": -38.95,
+      "Longitude": -68.133,
+      "Elevation": 273
+    },
+    "FirstYear": 1958,
+    "LastYear": 2022,
+    "YearsOfMissingData": 4
+  },
+  {
     "Id": "AR000087803",
     "Name": "ESQUEL_AERO",
     "CountryCode": "AR",
@@ -309,7 +322,7 @@
     },
     "FirstYear": 1932,
     "LastYear": 2022,
-    "YearsOfMissingData": 17
+    "YearsOfMissingData": 19
   },
   {
     "Id": "AR000087828",
@@ -361,7 +374,7 @@
     },
     "FirstYear": 1856,
     "LastYear": 2022,
-    "YearsOfMissingData": 9
+    "YearsOfMissingData": 13
   },
   {
     "Id": "AR000877500",
@@ -426,7 +439,7 @@
     },
     "FirstYear": 1931,
     "LastYear": 2022,
-    "YearsOfMissingData": 12
+    "YearsOfMissingData": 11
   },
   {
     "Id": "ARM00087453",
@@ -452,7 +465,7 @@
     },
     "FirstYear": 1941,
     "LastYear": 2022,
-    "YearsOfMissingData": 4
+    "YearsOfMissingData": 6
   },
   {
     "Id": "ARM00087548",
@@ -504,7 +517,7 @@
     },
     "FirstYear": 1933,
     "LastYear": 2022,
-    "YearsOfMissingData": 30
+    "YearsOfMissingData": 29
   },
   {
     "Id": "ARM00087938",
@@ -517,7 +530,7 @@
     },
     "FirstYear": 1931,
     "LastYear": 2022,
-    "YearsOfMissingData": 20
+    "YearsOfMissingData": 19
   },
   {
     "Id": "ASN00010111",
@@ -533,84 +546,6 @@
     "YearsOfMissingData": 27
   },
   {
-    "Id": "ASN00009500",
-    "Name": "ALBANY",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -35.0289,
-      "Longitude": 117.8808,
-      "Elevation": 3
-    },
-    "FirstYear": 1880,
-    "LastYear": 2019,
-    "YearsOfMissingData": 54
-  },
-  {
-    "Id": "ASN00010917",
-    "Name": "WANDERING",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -32.6722,
-      "Longitude": 116.6706,
-      "Elevation": 275
-    },
-    "FirstYear": 1902,
-    "LastYear": 2022,
-    "YearsOfMissingData": 20
-  },
-  {
-    "Id": "ASN00009617",
-    "Name": "BRIDGETOWN",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -33.9486,
-      "Longitude": 116.1311,
-      "Elevation": 178.7
-    },
-    "FirstYear": 1908,
-    "LastYear": 2022,
-    "YearsOfMissingData": 29
-  },
-  {
-    "Id": "ASN00014015",
-    "Name": "DARWIN_AIRPORT",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -12.4239,
-      "Longitude": 130.8925,
-      "Elevation": 30.4
-    },
-    "FirstYear": 1882,
-    "LastYear": 2022,
-    "YearsOfMissingData": 7
-  },
-  {
-    "Id": "ASN00017126",
-    "Name": "MARREE_AERO",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -29.6587,
-      "Longitude": 138.0684,
-      "Elevation": 50
-    },
-    "FirstYear": 1940,
-    "LastYear": 2022,
-    "YearsOfMissingData": 14
-  },
-  {
-    "Id": "ASN00018011",
-    "Name": "CEDUNA_POST_OFFICE",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -32.1267,
-      "Longitude": 133.6725,
-      "Elevation": 10
-    },
-    "FirstYear": 1940,
-    "LastYear": 2022,
-    "YearsOfMissingData": 6
-  },
-  {
     "Id": "ASN00023034",
     "Name": "ADELAIDE_AIRPORT",
     "CountryCode": "AS",
@@ -622,45 +557,6 @@
     "FirstYear": 1887,
     "LastYear": 2022,
     "YearsOfMissingData": 3
-  },
-  {
-    "Id": "ASN00026020",
-    "Name": "MOUNT_GAMBIER_POST_OFFICE",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -37.8333,
-      "Longitude": 140.7833,
-      "Elevation": 65
-    },
-    "FirstYear": 1861,
-    "LastYear": 2022,
-    "YearsOfMissingData": 7
-  },
-  {
-    "Id": "ASN00031010",
-    "Name": "CAIRNS_POST_OFFICE",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -16.9333,
-      "Longitude": 145.7833,
-      "Elevation": 2
-    },
-    "FirstYear": 1890,
-    "LastYear": 2022,
-    "YearsOfMissingData": 32
-  },
-  {
-    "Id": "ASN00040043",
-    "Name": "CAPE_MORETON_LIGHTHOUSE",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -27.0314,
-      "Longitude": 153.4661,
-      "Elevation": 99.9
-    },
-    "FirstYear": 1913,
-    "LastYear": 2022,
-    "YearsOfMissingData": 28
   },
   {
     "Id": "ASN00040126",
@@ -689,19 +585,6 @@
     "YearsOfMissingData": 38
   },
   {
-    "Id": "ASN00046126",
-    "Name": "TIBOOBURRA_AIRPORT",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -29.4448,
-      "Longitude": 142.0567,
-      "Elevation": 176.4
-    },
-    "FirstYear": 1910,
-    "LastYear": 2022,
-    "YearsOfMissingData": 22
-  },
-  {
     "Id": "ASN00061051",
     "Name": "MURRURUNDI_POST_OFFICE",
     "CountryCode": "AS",
@@ -728,19 +611,6 @@
     "YearsOfMissingData": 22
   },
   {
-    "Id": "ASN00066062",
-    "Name": "SYDNEY_OBSERVATORY_HILL",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -33.8607,
-      "Longitude": 151.205,
-      "Elevation": 39
-    },
-    "FirstYear": 1859,
-    "LastYear": 2019,
-    "YearsOfMissingData": 17
-  },
-  {
     "Id": "ASN00070015",
     "Name": "CANBERRA_FORESTRY",
     "CountryCode": "AS",
@@ -752,19 +622,6 @@
     "FirstYear": 1928,
     "LastYear": 2022,
     "YearsOfMissingData": 1
-  },
-  {
-    "Id": "ASN00082039",
-    "Name": "RUTHERGLEN_RESEARCH",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -36.1047,
-      "Longitude": 146.5094,
-      "Elevation": 175
-    },
-    "FirstYear": 1903,
-    "LastYear": 2022,
-    "YearsOfMissingData": 18
   },
   {
     "Id": "ASN00076047",
@@ -780,32 +637,6 @@
     "YearsOfMissingData": 10
   },
   {
-    "Id": "ASN00085072",
-    "Name": "EAST_SALE_AIRPORT",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -38.1156,
-      "Longitude": 147.1322,
-      "Elevation": 4.6
-    },
-    "FirstYear": 1946,
-    "LastYear": 2022,
-    "YearsOfMissingData": 1
-  },
-  {
-    "Id": "ASN00086071",
-    "Name": "MELBOURNE_REGIONAL_OFFICE",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -37.8075,
-      "Longitude": 144.97,
-      "Elevation": 31.2
-    },
-    "FirstYear": 1856,
-    "LastYear": 2014,
-    "YearsOfMissingData": 2
-  },
-  {
     "Id": "ASN00089002",
     "Name": "BALLARAT_AERODROME",
     "CountryCode": "AS",
@@ -816,85 +647,7 @@
     },
     "FirstYear": 1908,
     "LastYear": 2022,
-    "YearsOfMissingData": 6
-  },
-  {
-    "Id": "ASN00091293",
-    "Name": "LOW_HEAD",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -41.0556,
-      "Longitude": 146.7856,
-      "Elevation": 3
-    },
-    "FirstYear": 1895,
-    "LastYear": 2022,
     "YearsOfMissingData": 9
-  },
-  {
-    "Id": "ASN00094029",
-    "Name": "HOBART_ELLERSLIE_ROAD",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -42.8897,
-      "Longitude": 147.3278,
-      "Elevation": 50.5
-    },
-    "FirstYear": 1883,
-    "LastYear": 2022,
-    "YearsOfMissingData": 9
-  },
-  {
-    "Id": "ASM00094299",
-    "Name": "WILLIS_ISLAND",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -16.288,
-      "Longitude": 149.965,
-      "Elevation": 9
-    },
-    "FirstYear": 1939,
-    "LastYear": 2022,
-    "YearsOfMissingData": 12
-  },
-  {
-    "Id": "ASM00094995",
-    "Name": "LORD_HOWE_ISLAND_AERO",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -31.542,
-      "Longitude": 159.079,
-      "Elevation": 7
-    },
-    "FirstYear": 1912,
-    "LastYear": 2022,
-    "YearsOfMissingData": 20
-  },
-  {
-    "Id": "ASM00094998",
-    "Name": "MACQUARIE_ISLAND",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -54.499,
-      "Longitude": 158.937,
-      "Elevation": 8.3
-    },
-    "FirstYear": 1951,
-    "LastYear": 2022,
-    "YearsOfMissingData": 5
-  },
-  {
-    "Id": "ASN00002012",
-    "Name": "HALLS_CREEK_AIRPORT",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -18.2292,
-      "Longitude": 127.6636,
-      "Elevation": 422
-    },
-    "FirstYear": 1947,
-    "LastYear": 2022,
-    "YearsOfMissingData": 6
   },
   {
     "Id": "ASN00003003",
@@ -906,19 +659,6 @@
       "Elevation": 7.4
     },
     "FirstYear": 1941,
-    "LastYear": 2022,
-    "YearsOfMissingData": 1
-  },
-  {
-    "Id": "ASN00004032",
-    "Name": "PORT_HEDLAND_AIRPORT",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -20.3725,
-      "Longitude": 118.6317,
-      "Elevation": 6.4
-    },
-    "FirstYear": 1945,
     "LastYear": 2022,
     "YearsOfMissingData": 1
   },
@@ -936,71 +676,6 @@
     "YearsOfMissingData": 17
   },
   {
-    "Id": "ASN00004106",
-    "Name": "MARBLE_BAR",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -21.1756,
-      "Longitude": 119.7497,
-      "Elevation": 182.3
-    },
-    "FirstYear": 1902,
-    "LastYear": 2022,
-    "YearsOfMissingData": 36
-  },
-  {
-    "Id": "ASN00006011",
-    "Name": "CARNARVON_AIRPORT",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -24.8878,
-      "Longitude": 113.67,
-      "Elevation": 4
-    },
-    "FirstYear": 1948,
-    "LastYear": 2022,
-    "YearsOfMissingData": 1
-  },
-  {
-    "Id": "ASN00007045",
-    "Name": "MEEKATHARRA_AIRPORT",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -26.6136,
-      "Longitude": 118.5372,
-      "Elevation": 517
-    },
-    "FirstYear": 1950,
-    "LastYear": 2022,
-    "YearsOfMissingData": 5
-  },
-  {
-    "Id": "ASN00008051",
-    "Name": "GERALDTON_AIRPORT",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -28.7953,
-      "Longitude": 114.6975,
-      "Elevation": 33
-    },
-    "FirstYear": 1944,
-    "LastYear": 2022,
-    "YearsOfMissingData": 3
-  },
-  {
-    "Id": "ASN00009518",
-    "Name": "CAPE_LEEUWIN",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -34.3728,
-      "Longitude": 115.1358,
-      "Elevation": 13
-    },
-    "FirstYear": 1897,
-    "LastYear": 2022,
-    "YearsOfMissingData": 16
-  },
-  {
     "Id": "ASN00009519",
     "Name": "CAPE_NATURALISTE",
     "CountryCode": "AS",
@@ -1012,32 +687,6 @@
     "FirstYear": 1904,
     "LastYear": 2022,
     "YearsOfMissingData": 13
-  },
-  {
-    "Id": "ASN00010916",
-    "Name": "KATANNING",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -33.6856,
-      "Longitude": 117.6064,
-      "Elevation": 320
-    },
-    "FirstYear": 1907,
-    "LastYear": 2022,
-    "YearsOfMissingData": 10
-  },
-  {
-    "Id": "ASN00011052",
-    "Name": "FORREST",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -30.8453,
-      "Longitude": 128.1092,
-      "Elevation": 159
-    },
-    "FirstYear": 1951,
-    "LastYear": 2022,
-    "YearsOfMissingData": 7
   },
   {
     "Id": "ASN00012038",
@@ -1063,59 +712,7 @@
     },
     "FirstYear": 1895,
     "LastYear": 2013,
-    "YearsOfMissingData": 19
-  },
-  {
-    "Id": "ASN00013017",
-    "Name": "GILES_METEOROLOGICAL_OFFICE",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -25.0341,
-      "Longitude": 128.301,
-      "Elevation": 598
-    },
-    "FirstYear": 1957,
-    "LastYear": 2022,
-    "YearsOfMissingData": 2
-  },
-  {
-    "Id": "ASN00015590",
-    "Name": "ALICE_SPRINGS_AIRPORT",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -23.7951,
-      "Longitude": 133.889,
-      "Elevation": 546
-    },
-    "FirstYear": 1942,
-    "LastYear": 2022,
-    "YearsOfMissingData": 4
-  },
-  {
-    "Id": "ASN00016001",
-    "Name": "WOOMERA_AERODROME",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -31.1558,
-      "Longitude": 136.8054,
-      "Elevation": 166.6
-    },
-    "FirstYear": 1951,
-    "LastYear": 2022,
-    "YearsOfMissingData": 2
-  },
-  {
-    "Id": "ASN00017043",
-    "Name": "OODNADATTA_AIRPORT",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -27.5553,
-      "Longitude": 135.4456,
-      "Elevation": 116.5
-    },
-    "FirstYear": 1943,
-    "LastYear": 2021,
-    "YearsOfMissingData": 14
+    "YearsOfMissingData": 21
   },
   {
     "Id": "ASN00018014",
@@ -1131,19 +728,6 @@
     "YearsOfMissingData": 21
   },
   {
-    "Id": "ASN00018044",
-    "Name": "KYANCUTTA",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -33.1332,
-      "Longitude": 135.5552,
-      "Elevation": 57
-    },
-    "FirstYear": 1931,
-    "LastYear": 2019,
-    "YearsOfMissingData": 7
-  },
-  {
     "Id": "ASN00025509",
     "Name": "LAMEROO_COMPARISON",
     "CountryCode": "AS",
@@ -1155,45 +739,6 @@
     "FirstYear": 1915,
     "LastYear": 2013,
     "YearsOfMissingData": 15
-  },
-  {
-    "Id": "ASN00026026",
-    "Name": "ROBE_COMPARISON",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -37.1628,
-      "Longitude": 139.756,
-      "Elevation": 3.3
-    },
-    "FirstYear": 1886,
-    "LastYear": 2022,
-    "YearsOfMissingData": 21
-  },
-  {
-    "Id": "ASN00028004",
-    "Name": "PALMERVILLE",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -16.0008,
-      "Longitude": 144.0758,
-      "Elevation": 203.8
-    },
-    "FirstYear": 1896,
-    "LastYear": 2022,
-    "YearsOfMissingData": 51
-  },
-  {
-    "Id": "ASN00030045",
-    "Name": "RICHMOND_POST_OFFICE",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -20.7289,
-      "Longitude": 143.1425,
-      "Elevation": 211.1
-    },
-    "FirstYear": 1893,
-    "LastYear": 2019,
-    "YearsOfMissingData": 40
   },
   {
     "Id": "ASN00032004",
@@ -1209,45 +754,6 @@
     "YearsOfMissingData": 28
   },
   {
-    "Id": "ASN00032040",
-    "Name": "TOWNSVILLE_AERO",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -19.2483,
-      "Longitude": 146.7661,
-      "Elevation": 4.3
-    },
-    "FirstYear": 1943,
-    "LastYear": 2022,
-    "YearsOfMissingData": 5
-  },
-  {
-    "Id": "ASN00033119",
-    "Name": "MACKAY_MO",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -21.1172,
-      "Longitude": 149.2169,
-      "Elevation": 30.3
-    },
-    "FirstYear": 1952,
-    "LastYear": 2022,
-    "YearsOfMissingData": 2
-  },
-  {
-    "Id": "ASN00034084",
-    "Name": "CHARTERS_TOWERS_AIRPORT",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -20.0464,
-      "Longitude": 146.2708,
-      "Elevation": 289.8
-    },
-    "FirstYear": 1909,
-    "LastYear": 2021,
-    "YearsOfMissingData": 25
-  },
-  {
     "Id": "ASN00035069",
     "Name": "TAMBO_POST_OFFICE",
     "CountryCode": "AS",
@@ -1258,32 +764,6 @@
     },
     "FirstYear": 1931,
     "LastYear": 2020,
-    "YearsOfMissingData": 25
-  },
-  {
-    "Id": "ASN00036007",
-    "Name": "BARCALDINE_POST_OFFICE",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -23.5544,
-      "Longitude": 145.2883,
-      "Elevation": 266.9
-    },
-    "FirstYear": 1913,
-    "LastYear": 2022,
-    "YearsOfMissingData": 27
-  },
-  {
-    "Id": "ASN00037010",
-    "Name": "CAMOOWEAL_TOWNSHIP",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -19.9225,
-      "Longitude": 138.1214,
-      "Elevation": 231.2
-    },
-    "FirstYear": 1907,
-    "LastYear": 2022,
     "YearsOfMissingData": 25
   },
   {
@@ -1298,32 +778,6 @@
     "FirstYear": 1931,
     "LastYear": 2013,
     "YearsOfMissingData": 18
-  },
-  {
-    "Id": "ASN00039083",
-    "Name": "ROCKHAMPTON_AERO",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -23.3753,
-      "Longitude": 150.4775,
-      "Elevation": 10.4
-    },
-    "FirstYear": 1941,
-    "LastYear": 2022,
-    "YearsOfMissingData": 3
-  },
-  {
-    "Id": "ASN00039123",
-    "Name": "GLADSTONE_RADAR",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -23.8553,
-      "Longitude": 151.2628,
-      "Elevation": 74.5
-    },
-    "FirstYear": 1951,
-    "LastYear": 2022,
-    "YearsOfMissingData": 11
   },
   {
     "Id": "ASN00043020",
@@ -1352,19 +806,6 @@
     "YearsOfMissingData": 28
   },
   {
-    "Id": "ASN00044021",
-    "Name": "CHARLEVILLE_AERO",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -26.4139,
-      "Longitude": 146.2558,
-      "Elevation": 301.6
-    },
-    "FirstYear": 1943,
-    "LastYear": 2022,
-    "YearsOfMissingData": 6
-  },
-  {
     "Id": "ASN00044026",
     "Name": "CUNNAMULLA_POST_OFFICE",
     "CountryCode": "AS",
@@ -1388,7 +829,7 @@
     },
     "FirstYear": 1881,
     "LastYear": 2014,
-    "YearsOfMissingData": 43
+    "YearsOfMissingData": 41
   },
   {
     "Id": "ASN00047007",
@@ -1401,7 +842,7 @@
     },
     "FirstYear": 1892,
     "LastYear": 2014,
-    "YearsOfMissingData": 19
+    "YearsOfMissingData": 23
   },
   {
     "Id": "ASN00048015",
@@ -1430,19 +871,6 @@
     "YearsOfMissingData": 36
   },
   {
-    "Id": "ASN00058012",
-    "Name": "YAMBA_PILOT_STATION",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -29.4333,
-      "Longitude": 153.3633,
-      "Elevation": 27.4
-    },
-    "FirstYear": 1879,
-    "LastYear": 2022,
-    "YearsOfMissingData": 14
-  },
-  {
     "Id": "ASN00059017",
     "Name": "KEMPSEY_WIDE_STREET",
     "CountryCode": "AS",
@@ -1456,32 +884,6 @@
     "YearsOfMissingData": 38
   },
   {
-    "Id": "ASN00059040",
-    "Name": "COFFS_HARBOUR_MO",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -30.3107,
-      "Longitude": 153.1187,
-      "Elevation": 5
-    },
-    "FirstYear": 1944,
-    "LastYear": 2022,
-    "YearsOfMissingData": 7
-  },
-  {
-    "Id": "ASN00063005",
-    "Name": "BATHURST_AGRICULTURAL_STATION",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -33.4289,
-      "Longitude": 149.5559,
-      "Elevation": 713
-    },
-    "FirstYear": 1910,
-    "LastYear": 2021,
-    "YearsOfMissingData": 21
-  },
-  {
     "Id": "ASN00064008",
     "Name": "COONABARABRAN_NAMOI_STREET",
     "CountryCode": "AS",
@@ -1492,7 +894,7 @@
     },
     "FirstYear": 1880,
     "LastYear": 2022,
-    "YearsOfMissingData": 24
+    "YearsOfMissingData": 22
   },
   {
     "Id": "ASN00065034",
@@ -1508,19 +910,6 @@
     "YearsOfMissingData": 34
   },
   {
-    "Id": "ASN00069018",
-    "Name": "MORUYA_HEADS_PILOT_STATION",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -35.9093,
-      "Longitude": 150.1532,
-      "Elevation": 17
-    },
-    "FirstYear": 1877,
-    "LastYear": 2022,
-    "YearsOfMissingData": 13
-  },
-  {
     "Id": "ASN00070005",
     "Name": "BOMBALA_THERRY_STREET",
     "CountryCode": "AS",
@@ -1532,19 +921,6 @@
     "FirstYear": 1914,
     "LastYear": 2022,
     "YearsOfMissingData": 34
-  },
-  {
-    "Id": "ASN00072150",
-    "Name": "WAGGA_WAGGA_AMO",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -35.1583,
-      "Longitude": 147.4573,
-      "Elevation": 212
-    },
-    "FirstYear": 1944,
-    "LastYear": 2022,
-    "YearsOfMissingData": 3
   },
   {
     "Id": "ASN00073014",
@@ -1573,19 +949,6 @@
     "YearsOfMissingData": 19
   },
   {
-    "Id": "ASN00076031",
-    "Name": "MILDURA_AIRPORT",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -34.2358,
-      "Longitude": 142.0867,
-      "Elevation": 50
-    },
-    "FirstYear": 1948,
-    "LastYear": 2022,
-    "YearsOfMissingData": 0
-  },
-  {
     "Id": "ASN00080015",
     "Name": "ECHUCAAERODROME",
     "CountryCode": "AS",
@@ -1599,19 +962,6 @@
     "YearsOfMissingData": 21
   },
   {
-    "Id": "ASN00080023",
-    "Name": "KERANG",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -35.7236,
-      "Longitude": 143.9197,
-      "Elevation": 77.7
-    },
-    "FirstYear": 1903,
-    "LastYear": 2022,
-    "YearsOfMissingData": 23
-  },
-  {
     "Id": "ASN00083090",
     "Name": "OMEO",
     "CountryCode": "AS",
@@ -1623,45 +973,6 @@
     "FirstYear": 1944,
     "LastYear": 2022,
     "YearsOfMissingData": 19
-  },
-  {
-    "Id": "ASN00084016",
-    "Name": "GABO_ISLAND_LIGHTHOUSE",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -37.5679,
-      "Longitude": 149.9158,
-      "Elevation": 15.2
-    },
-    "FirstYear": 1878,
-    "LastYear": 2021,
-    "YearsOfMissingData": 39
-  },
-  {
-    "Id": "ASN00085096",
-    "Name": "WILSONS_PROMONTORY_LIGHTHOUSE",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -39.1297,
-      "Longitude": 146.4244,
-      "Elevation": 95
-    },
-    "FirstYear": 1878,
-    "LastYear": 2022,
-    "YearsOfMissingData": 20
-  },
-  {
-    "Id": "ASN00090015",
-    "Name": "CAPE_OTWAY_LIGHTHOUSE",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -38.8556,
-      "Longitude": 143.5128,
-      "Elevation": 82
-    },
-    "FirstYear": 1870,
-    "LastYear": 2022,
-    "YearsOfMissingData": 37
   },
   {
     "Id": "ASN00097000",
@@ -1729,19 +1040,6 @@
     "YearsOfMissingData": 5
   },
   {
-    "Id": "AYM00089564",
-    "Name": "MAWSON",
-    "CountryCode": "AY",
-    "Coordinates": {
-      "Latitude": -67.6,
-      "Longitude": 62.867,
-      "Elevation": 16
-    },
-    "FirstYear": 1955,
-    "LastYear": 2022,
-    "YearsOfMissingData": 8
-  },
-  {
     "Id": "AYM00089592",
     "Name": "MIRNYJ",
     "CountryCode": "AY",
@@ -1751,19 +1049,6 @@
       "Elevation": 40
     },
     "FirstYear": 1957,
-    "LastYear": 2022,
-    "YearsOfMissingData": 4
-  },
-  {
-    "Id": "AYM00089611",
-    "Name": "CASEY",
-    "CountryCode": "AY",
-    "Coordinates": {
-      "Latitude": -66.283,
-      "Longitude": 110.517,
-      "Elevation": 41
-    },
-    "FirstYear": 1958,
     "LastYear": 2022,
     "YearsOfMissingData": 4
   },
@@ -1843,7 +1128,7 @@
     },
     "FirstYear": 1903,
     "LastYear": 2022,
-    "YearsOfMissingData": 26
+    "YearsOfMissingData": 27
   },
   {
     "Id": "BGM00041950",
@@ -1908,7 +1193,7 @@
     },
     "FirstYear": 1946,
     "LastYear": 2021,
-    "YearsOfMissingData": 15
+    "YearsOfMissingData": 16
   },
   {
     "Id": "BN000005344",
@@ -1973,7 +1258,7 @@
     },
     "FirstYear": 1901,
     "LastYear": 2022,
-    "YearsOfMissingData": 25
+    "YearsOfMissingData": 20
   },
   {
     "Id": "BR002549075",
@@ -2015,6 +1300,19 @@
     "YearsOfMissingData": 5
   },
   {
+    "Id": "BR038014410",
+    "Name": "QUIXERAMOBIM",
+    "CountryCode": "BR",
+    "Coordinates": {
+      "Latitude": -5.2,
+      "Longitude": -39.3,
+      "Elevation": 212
+    },
+    "FirstYear": 1896,
+    "LastYear": 2019,
+    "YearsOfMissingData": 41
+  },
+  {
     "Id": "BR048620980",
     "Name": "SALVADOR",
     "CountryCode": "BR",
@@ -2025,7 +1323,7 @@
     },
     "FirstYear": 1913,
     "LastYear": 2017,
-    "YearsOfMissingData": 35
+    "YearsOfMissingData": 34
   },
   {
     "Id": "BRM00082331",
@@ -2037,8 +1335,8 @@
       "Elevation": 72
     },
     "FirstYear": 1910,
-    "LastYear": 2017,
-    "YearsOfMissingData": 22
+    "LastYear": 2019,
+    "YearsOfMissingData": 23
   },
   {
     "Id": "BUM00015552",
@@ -2349,7 +1647,7 @@
       "Elevation": 278
     },
     "FirstYear": 1883,
-    "LastYear": 2021,
+    "LastYear": 2022,
     "YearsOfMissingData": 23
   },
   {
@@ -2439,7 +1737,7 @@
       "Longitude": -124.9,
       "Elevation": 26
     },
-    "FirstYear": 1948,
+    "FirstYear": 1947,
     "LastYear": 2022,
     "YearsOfMissingData": 4
   },
@@ -2493,7 +1791,7 @@
     },
     "FirstYear": 1898,
     "LastYear": 2015,
-    "YearsOfMissingData": 40
+    "YearsOfMissingData": 37
   },
   {
     "Id": "CA001066482",
@@ -2622,7 +1920,7 @@
       "Elevation": 445
     },
     "FirstYear": 1914,
-    "LastYear": 2021,
+    "LastYear": 2022,
     "YearsOfMissingData": 12
   },
   {
@@ -3338,7 +2636,7 @@
     },
     "FirstYear": 1909,
     "LastYear": 2022,
-    "YearsOfMissingData": 20
+    "YearsOfMissingData": 18
   },
   {
     "Id": "CHM00050557",
@@ -3442,7 +2740,7 @@
     },
     "FirstYear": 1938,
     "LastYear": 2022,
-    "YearsOfMissingData": 14
+    "YearsOfMissingData": 11
   },
   {
     "Id": "CHM00050854",
@@ -3637,7 +2935,7 @@
     },
     "FirstYear": 1952,
     "LastYear": 2022,
-    "YearsOfMissingData": 9
+    "YearsOfMissingData": 8
   },
   {
     "Id": "CHM00051644",
@@ -3728,7 +3026,7 @@
     },
     "FirstYear": 1942,
     "LastYear": 2022,
-    "YearsOfMissingData": 8
+    "YearsOfMissingData": 6
   },
   {
     "Id": "CHM00052203",
@@ -3780,7 +3078,7 @@
     },
     "FirstYear": 1938,
     "LastYear": 2022,
-    "YearsOfMissingData": 4
+    "YearsOfMissingData": 5
   },
   {
     "Id": "CHM00052436",
@@ -3988,7 +3286,7 @@
     },
     "FirstYear": 1939,
     "LastYear": 2022,
-    "YearsOfMissingData": 14
+    "YearsOfMissingData": 12
   },
   {
     "Id": "CHM00053391",
@@ -4001,7 +3299,7 @@
     },
     "FirstYear": 1953,
     "LastYear": 2021,
-    "YearsOfMissingData": 3
+    "YearsOfMissingData": 0
   },
   {
     "Id": "CHM00053463",
@@ -4131,7 +3429,7 @@
     },
     "FirstYear": 1917,
     "LastYear": 2022,
-    "YearsOfMissingData": 10
+    "YearsOfMissingData": 12
   },
   {
     "Id": "CHM00053845",
@@ -4313,7 +3611,7 @@
     },
     "FirstYear": 1934,
     "LastYear": 2022,
-    "YearsOfMissingData": 12
+    "YearsOfMissingData": 9
   },
   {
     "Id": "CHM00054161",
@@ -4352,7 +3650,7 @@
     },
     "FirstYear": 1938,
     "LastYear": 2022,
-    "YearsOfMissingData": 15
+    "YearsOfMissingData": 17
   },
   {
     "Id": "CHM00054236",
@@ -4534,7 +3832,7 @@
     },
     "FirstYear": 1919,
     "LastYear": 2022,
-    "YearsOfMissingData": 10
+    "YearsOfMissingData": 13
   },
   {
     "Id": "CHM00054843",
@@ -4612,7 +3910,7 @@
     },
     "FirstYear": 1936,
     "LastYear": 2022,
-    "YearsOfMissingData": 18
+    "YearsOfMissingData": 17
   },
   {
     "Id": "CHM00056021",
@@ -4677,7 +3975,7 @@
     },
     "FirstYear": 1957,
     "LastYear": 2022,
-    "YearsOfMissingData": 1
+    "YearsOfMissingData": 5
   },
   {
     "Id": "CHM00056080",
@@ -4781,7 +4079,7 @@
     },
     "FirstYear": 1933,
     "LastYear": 2022,
-    "YearsOfMissingData": 5
+    "YearsOfMissingData": 6
   },
   {
     "Id": "CHM00056444",
@@ -4859,7 +4157,7 @@
     },
     "FirstYear": 1916,
     "LastYear": 2022,
-    "YearsOfMissingData": 14
+    "YearsOfMissingData": 12
   },
   {
     "Id": "CHM00056778",
@@ -4872,7 +4170,7 @@
     },
     "FirstYear": 1924,
     "LastYear": 2022,
-    "YearsOfMissingData": 13
+    "YearsOfMissingData": 11
   },
   {
     "Id": "CHM00056951",
@@ -5249,7 +4547,7 @@
     },
     "FirstYear": 1928,
     "LastYear": 2022,
-    "YearsOfMissingData": 15
+    "YearsOfMissingData": 12
   },
   {
     "Id": "CHM00058040",
@@ -5273,7 +4571,7 @@
       "Longitude": 115.767,
       "Elevation": 42
     },
-    "FirstYear": 1954,
+    "FirstYear": 1953,
     "LastYear": 2022,
     "YearsOfMissingData": 3
   },
@@ -5587,7 +4885,7 @@
     },
     "FirstYear": 1913,
     "LastYear": 2022,
-    "YearsOfMissingData": 17
+    "YearsOfMissingData": 15
   },
   {
     "Id": "CHM00059293",
@@ -5613,7 +4911,7 @@
     },
     "FirstYear": 1924,
     "LastYear": 2022,
-    "YearsOfMissingData": 12
+    "YearsOfMissingData": 14
   },
   {
     "Id": "CHM00059417",
@@ -5639,7 +4937,7 @@
     },
     "FirstYear": 1922,
     "LastYear": 2022,
-    "YearsOfMissingData": 14
+    "YearsOfMissingData": 12
   },
   {
     "Id": "CHM00059501",
@@ -5912,7 +5210,7 @@
     },
     "FirstYear": 1925,
     "LastYear": 2022,
-    "YearsOfMissingData": 32
+    "YearsOfMissingData": 31
   },
   {
     "Id": "CI000085934",
@@ -5925,20 +5223,7 @@
     },
     "FirstYear": 1888,
     "LastYear": 2022,
-    "YearsOfMissingData": 16
-  },
-  {
-    "Id": "CK000096996",
-    "Name": "COCOS_ISLAND_AERO",
-    "CountryCode": "CK",
-    "Coordinates": {
-      "Latitude": -12.183,
-      "Longitude": 96.833,
-      "Elevation": 4
-    },
-    "FirstYear": 1911,
-    "LastYear": 2022,
-    "YearsOfMissingData": 21
+    "YearsOfMissingData": 18
   },
   {
     "Id": "CUM00078325",
@@ -5964,7 +5249,7 @@
     },
     "FirstYear": 1946,
     "LastYear": 2021,
-    "YearsOfMissingData": 12
+    "YearsOfMissingData": 13
   },
   {
     "Id": "CWM00091843",
@@ -5975,7 +5260,7 @@
       "Longitude": -159.806,
       "Elevation": 5.8
     },
-    "FirstYear": 1900,
+    "FirstYear": 1899,
     "LastYear": 2022,
     "YearsOfMissingData": 22
   },
@@ -6393,7 +5678,7 @@
     },
     "FirstYear": 1846,
     "LastYear": 2014,
-    "YearsOfMissingData": 98
+    "YearsOfMissingData": 97
   },
   {
     "Id": "FIE00142080",
@@ -6679,7 +5964,7 @@
     },
     "FirstYear": 1836,
     "LastYear": 2022,
-    "YearsOfMissingData": 18
+    "YearsOfMissingData": 16
   },
   {
     "Id": "FRE00104904",
@@ -6929,19 +6214,6 @@
     "YearsOfMissingData": 6
   },
   {
-    "Id": "FRM00007471",
-    "Name": "LOUDES",
-    "CountryCode": "FR",
-    "Coordinates": {
-      "Latitude": 45.081,
-      "Longitude": 3.763,
-      "Elevation": 832.4
-    },
-    "FirstYear": 1956,
-    "LastYear": 2022,
-    "YearsOfMissingData": 7
-  },
-  {
     "Id": "FRM00007535",
     "Name": "GOURDON",
     "CountryCode": "FR",
@@ -7134,7 +6406,7 @@
     },
     "FirstYear": 1951,
     "LastYear": 2022,
-    "YearsOfMissingData": 6
+    "YearsOfMissingData": 8
   },
   {
     "Id": "GQW00041415",
@@ -7145,9 +6417,9 @@
       "Longitude": 144.7961,
       "Elevation": 77.4
     },
-    "FirstYear": 1951,
+    "FirstYear": 1921,
     "LastYear": 2022,
-    "YearsOfMissingData": 12
+    "YearsOfMissingData": 23
   },
   {
     "Id": "GRXLT559558",
@@ -7226,19 +6498,6 @@
     "FirstYear": 1892,
     "LastYear": 2022,
     "YearsOfMissingData": 13
-  },
-  {
-    "Id": "GYM00081001",
-    "Name": "GEORGETOWN",
-    "CountryCode": "GY",
-    "Coordinates": {
-      "Latitude": 6.8,
-      "Longitude": -58.15,
-      "Elevation": 2
-    },
-    "FirstYear": 1846,
-    "LastYear": 2022,
-    "YearsOfMissingData": 87
   },
   {
     "Id": "HRE00105182",
@@ -7615,7 +6874,7 @@
     },
     "FirstYear": 1942,
     "LastYear": 2022,
-    "YearsOfMissingData": 17
+    "YearsOfMissingData": 16
   },
   {
     "Id": "IN005090100",
@@ -7641,7 +6900,7 @@
     },
     "FirstYear": 1893,
     "LastYear": 2022,
-    "YearsOfMissingData": 14
+    "YearsOfMissingData": 16
   },
   {
     "Id": "IN008010200",
@@ -7758,7 +7017,7 @@
     },
     "FirstYear": 1879,
     "LastYear": 2022,
-    "YearsOfMissingData": 27
+    "YearsOfMissingData": 31
   },
   {
     "Id": "IN019070100",
@@ -7810,7 +7069,7 @@
     },
     "FirstYear": 1891,
     "LastYear": 2021,
-    "YearsOfMissingData": 23
+    "YearsOfMissingData": 24
   },
   {
     "Id": "IN022021900",
@@ -7862,7 +7121,7 @@
     },
     "FirstYear": 1898,
     "LastYear": 2022,
-    "YearsOfMissingData": 30
+    "YearsOfMissingData": 33
   },
   {
     "Id": "IN099999901",
@@ -7930,6 +7189,19 @@
     "YearsOfMissingData": 2
   },
   {
+    "Id": "IR000040848",
+    "Name": "SHIRAZ",
+    "CountryCode": "IR",
+    "Coordinates": {
+      "Latitude": 29.533,
+      "Longitude": 52.533,
+      "Elevation": 1481
+    },
+    "FirstYear": 1951,
+    "LastYear": 2022,
+    "YearsOfMissingData": 9
+  },
+  {
     "Id": "IR000407540",
     "Name": "TEHRAN_MEHRABAD",
     "CountryCode": "IR",
@@ -7978,8 +7250,8 @@
       "Elevation": 8
     },
     "FirstYear": 1878,
-    "LastYear": 2017,
-    "YearsOfMissingData": 59
+    "LastYear": 2015,
+    "YearsOfMissingData": 58
   },
   {
     "Id": "IRM00040712",
@@ -7993,19 +7265,6 @@
     "FirstYear": 1951,
     "LastYear": 2022,
     "YearsOfMissingData": 6
-  },
-  {
-    "Id": "IRM00040769",
-    "Name": "ARAK",
-    "CountryCode": "IR",
-    "Coordinates": {
-      "Latitude": 34.138,
-      "Longitude": 49.847,
-      "Elevation": 1661.8
-    },
-    "FirstYear": 1944,
-    "LastYear": 2022,
-    "YearsOfMissingData": 19
   },
   {
     "Id": "IRM00040893",
@@ -8084,19 +7343,6 @@
     "FirstYear": 1951,
     "LastYear": 2021,
     "YearsOfMissingData": 8
-  },
-  {
-    "Id": "IT000016239",
-    "Name": "ROMA_CIAMPINO",
-    "CountryCode": "IT",
-    "Coordinates": {
-      "Latitude": 41.7831,
-      "Longitude": 12.5831,
-      "Elevation": 105
-    },
-    "FirstYear": 1951,
-    "LastYear": 2022,
-    "YearsOfMissingData": 11
   },
   {
     "Id": "IT000016320",
@@ -8265,7 +7511,7 @@
     },
     "FirstYear": 1954,
     "LastYear": 2022,
-    "YearsOfMissingData": 5
+    "YearsOfMissingData": 8
   },
   {
     "Id": "ITM00016420",
@@ -8538,7 +7784,7 @@
     },
     "FirstYear": 1907,
     "LastYear": 2022,
-    "YearsOfMissingData": 1
+    "YearsOfMissingData": 2
   },
   {
     "Id": "JA000047778",
@@ -8564,7 +7810,7 @@
     },
     "FirstYear": 1888,
     "LastYear": 2022,
-    "YearsOfMissingData": 1
+    "YearsOfMissingData": 3
   },
   {
     "Id": "JA000047843",
@@ -8694,7 +7940,7 @@
     },
     "FirstYear": 1947,
     "LastYear": 2022,
-    "YearsOfMissingData": 14
+    "YearsOfMissingData": 12
   },
   {
     "Id": "JN000099950",
@@ -8731,9 +7977,9 @@
       "Longitude": 39.617,
       "Elevation": 55
     },
-    "FirstYear": 1936,
+    "FirstYear": 1927,
     "LastYear": 2022,
-    "YearsOfMissingData": 27
+    "YearsOfMissingData": 36
   },
   {
     "Id": "KEM00063741",
@@ -8746,7 +7992,7 @@
     },
     "FirstYear": 1904,
     "LastYear": 2020,
-    "YearsOfMissingData": 54
+    "YearsOfMissingData": 51
   },
   {
     "Id": "KG000036974",
@@ -8785,7 +8031,7 @@
     },
     "FirstYear": 1930,
     "LastYear": 2018,
-    "YearsOfMissingData": 23
+    "YearsOfMissingData": 25
   },
   {
     "Id": "KG000038353",
@@ -8824,7 +8070,7 @@
     },
     "FirstYear": 1906,
     "LastYear": 2022,
-    "YearsOfMissingData": 7
+    "YearsOfMissingData": 9
   },
   {
     "Id": "KSM00047159",
@@ -8837,7 +8083,7 @@
     },
     "FirstYear": 1907,
     "LastYear": 2022,
-    "YearsOfMissingData": 3
+    "YearsOfMissingData": 6
   },
   {
     "Id": "KS000047115",
@@ -8876,7 +8122,7 @@
     },
     "FirstYear": 1943,
     "LastYear": 2022,
-    "YearsOfMissingData": 4
+    "YearsOfMissingData": 1
   },
   {
     "Id": "KSM00047184",
@@ -9188,7 +8434,7 @@
     },
     "FirstYear": 1936,
     "LastYear": 2022,
-    "YearsOfMissingData": 21
+    "YearsOfMissingData": 19
   },
   {
     "Id": "KZ000036859",
@@ -9318,7 +8564,7 @@
     },
     "FirstYear": 1948,
     "LastYear": 2022,
-    "YearsOfMissingData": 4
+    "YearsOfMissingData": 6
   },
   {
     "Id": "LH000026509",
@@ -9526,7 +8772,7 @@
     },
     "FirstYear": 1907,
     "LastYear": 2022,
-    "YearsOfMissingData": 48
+    "YearsOfMissingData": 45
   },
   {
     "Id": "MG000044288",
@@ -9630,7 +8876,7 @@
     },
     "FirstYear": 1945,
     "LastYear": 2021,
-    "YearsOfMissingData": 10
+    "YearsOfMissingData": 7
   },
   {
     "Id": "MG000044373",
@@ -9734,7 +8980,7 @@
     },
     "FirstYear": 1954,
     "LastYear": 2021,
-    "YearsOfMissingData": 6
+    "YearsOfMissingData": 7
   },
   {
     "Id": "MP000061990",
@@ -9825,7 +9071,7 @@
     },
     "FirstYear": 1922,
     "LastYear": 2019,
-    "YearsOfMissingData": 30
+    "YearsOfMissingData": 28
   },
   {
     "Id": "MX000005048",
@@ -9878,6 +9124,19 @@
     "FirstYear": 1921,
     "LastYear": 2022,
     "YearsOfMissingData": 27
+  },
+  {
+    "Id": "MXM00076225",
+    "Name": "CHIHUAHUACHIH",
+    "CountryCode": "MX",
+    "Coordinates": {
+      "Latitude": 28.633,
+      "Longitude": -106.083,
+      "Elevation": 1433
+    },
+    "FirstYear": 1942,
+    "LastYear": 2022,
+    "YearsOfMissingData": 19
   },
   {
     "Id": "MXM00076593",
@@ -9945,17 +9204,17 @@
     "YearsOfMissingData": 13
   },
   {
-    "Id": "MY000048657",
-    "Name": "KUANTAN",
+    "Id": "MY000096465",
+    "Name": "LABUAN",
     "CountryCode": "MY",
     "Coordinates": {
-      "Latitude": 3.62,
-      "Longitude": 103.22,
-      "Elevation": 16
+      "Latitude": 5.3,
+      "Longitude": 115.25,
+      "Elevation": 30
     },
-    "FirstYear": 1949,
+    "FirstYear": 1892,
     "LastYear": 2022,
-    "YearsOfMissingData": 12
+    "YearsOfMissingData": 62
   },
   {
     "Id": "MY000096491",
@@ -9968,7 +9227,7 @@
     },
     "FirstYear": 1886,
     "LastYear": 2021,
-    "YearsOfMissingData": 45
+    "YearsOfMissingData": 51
   },
   {
     "Id": "MYM00048601",
@@ -9981,7 +9240,7 @@
     },
     "FirstYear": 1934,
     "LastYear": 2022,
-    "YearsOfMissingData": 20
+    "YearsOfMissingData": 14
   },
   {
     "Id": "MYM00048615",
@@ -10046,7 +9305,7 @@
     },
     "FirstYear": 1916,
     "LastYear": 2022,
-    "YearsOfMissingData": 36
+    "YearsOfMissingData": 37
   },
   {
     "Id": "MZ000067297",
@@ -10099,32 +9358,6 @@
     "FirstYear": 1902,
     "LastYear": 2022,
     "YearsOfMissingData": 36
-  },
-  {
-    "Id": "NFM00094996",
-    "Name": "NORFOLK_ISLAND_INTL",
-    "CountryCode": "NF",
-    "Coordinates": {
-      "Latitude": -29.042,
-      "Longitude": 167.939,
-      "Elevation": 113.1
-    },
-    "FirstYear": 1915,
-    "LastYear": 2022,
-    "YearsOfMissingData": 21
-  },
-  {
-    "Id": "NG000001036",
-    "Name": "TILLABERY",
-    "CountryCode": "NG",
-    "Coordinates": {
-      "Latitude": 14.22,
-      "Longitude": 1.45,
-      "Elevation": 209
-    },
-    "FirstYear": 1937,
-    "LastYear": 2022,
-    "YearsOfMissingData": 26
   },
   {
     "Id": "NG000001052",
@@ -10530,45 +9763,6 @@
     "YearsOfMissingData": 31
   },
   {
-    "Id": "NZ000093434",
-    "Name": "KELBURN_AWS",
-    "CountryCode": "NZ",
-    "Coordinates": {
-      "Latitude": -41.2833,
-      "Longitude": 174.7667,
-      "Elevation": 127
-    },
-    "FirstYear": 1863,
-    "LastYear": 2013,
-    "YearsOfMissingData": 33
-  },
-  {
-    "Id": "NZ000093844",
-    "Name": "INVERCARGILL_AIRPOR",
-    "CountryCode": "NZ",
-    "Coordinates": {
-      "Latitude": -46.417,
-      "Longitude": 168.333,
-      "Elevation": 2
-    },
-    "FirstYear": 1866,
-    "LastYear": 2022,
-    "YearsOfMissingData": 35
-  },
-  {
-    "Id": "NZ000093994",
-    "Name": "RAOUL_ISL_KERMADEC",
-    "CountryCode": "NZ",
-    "Coordinates": {
-      "Latitude": -29.25,
-      "Longitude": -177.917,
-      "Elevation": 49
-    },
-    "FirstYear": 1941,
-    "LastYear": 2020,
-    "YearsOfMissingData": 7
-  },
-  {
     "Id": "NZ000933090",
     "Name": "NEW_PLYMOUTH_AWS",
     "CountryCode": "NZ",
@@ -10582,19 +9776,6 @@
     "YearsOfMissingData": 4
   },
   {
-    "Id": "NZ000936150",
-    "Name": "HOKITIKA_AERODROME",
-    "CountryCode": "NZ",
-    "Coordinates": {
-      "Latitude": -42.717,
-      "Longitude": 170.983,
-      "Elevation": 40
-    },
-    "FirstYear": 1867,
-    "LastYear": 2022,
-    "YearsOfMissingData": 22
-  },
-  {
     "Id": "NZ000939450",
     "Name": "CAMPBELL_ISLAND_AWS",
     "CountryCode": "NZ",
@@ -10605,20 +9786,7 @@
     },
     "FirstYear": 1944,
     "LastYear": 2022,
-    "YearsOfMissingData": 2
-  },
-  {
-    "Id": "NZM00093110",
-    "Name": "AUCKLAND_AERO_AWS",
-    "CountryCode": "NZ",
-    "Coordinates": {
-      "Latitude": -37,
-      "Longitude": 174.8,
-      "Elevation": 7
-    },
-    "FirstYear": 1865,
-    "LastYear": 2022,
-    "YearsOfMissingData": 23
+    "YearsOfMissingData": 4
   },
   {
     "Id": "NZM00093780",
@@ -10632,6 +9800,19 @@
     "FirstYear": 1864,
     "LastYear": 2022,
     "YearsOfMissingData": 32
+  },
+  {
+    "Id": "PA000086297",
+    "Name": "ENCARNACION",
+    "CountryCode": "PA",
+    "Coordinates": {
+      "Latitude": -27.3,
+      "Longitude": -55.9,
+      "Elevation": 91
+    },
+    "FirstYear": 1942,
+    "LastYear": 2022,
+    "YearsOfMissingData": 21
   },
   {
     "Id": "PAM00086218",
@@ -10956,7 +10137,7 @@
     },
     "FirstYear": 1867,
     "LastYear": 2022,
-    "YearsOfMissingData": 20
+    "YearsOfMissingData": 17
   },
   {
     "Id": "PO000008535",
@@ -11022,6 +10203,19 @@
     "FirstYear": 1868,
     "LastYear": 2022,
     "YearsOfMissingData": 22
+  },
+  {
+    "Id": "POM00008554",
+    "Name": "FARO",
+    "CountryCode": "PO",
+    "Coordinates": {
+      "Latitude": 37.014,
+      "Longitude": -7.966,
+      "Elevation": 7.3
+    },
+    "FirstYear": 1961,
+    "LastYear": 2022,
+    "YearsOfMissingData": 1
   },
   {
     "Id": "POW00013201",
@@ -11136,7 +10330,7 @@
       "Longitude": 167.7333,
       "Elevation": 2.1
     },
-    "FirstYear": 1955,
+    "FirstYear": 1953,
     "LastYear": 2022,
     "YearsOfMissingData": 2
   },
@@ -11359,7 +10553,7 @@
     },
     "FirstYear": 1920,
     "LastYear": 2022,
-    "YearsOfMissingData": 18
+    "YearsOfMissingData": 17
   },
   {
     "Id": "RPM00098325",
@@ -11385,7 +10579,7 @@
     },
     "FirstYear": 1887,
     "LastYear": 2022,
-    "YearsOfMissingData": 45
+    "YearsOfMissingData": 47
   },
   {
     "Id": "RP000098429",
@@ -11944,7 +11138,7 @@
     },
     "FirstYear": 1946,
     "LastYear": 2021,
-    "YearsOfMissingData": 5
+    "YearsOfMissingData": 4
   },
   {
     "Id": "RSM00020087",
@@ -12034,8 +11228,8 @@
       "Elevation": 18
     },
     "FirstYear": 1897,
-    "LastYear": 2022,
-    "YearsOfMissingData": 24
+    "LastYear": 2020,
+    "YearsOfMissingData": 23
   },
   {
     "Id": "RSM00020891",
@@ -13647,7 +12841,7 @@
     },
     "FirstYear": 1881,
     "LastYear": 2022,
-    "YearsOfMissingData": 25
+    "YearsOfMissingData": 24
   },
   {
     "Id": "RSM00026702",
@@ -15454,7 +14648,7 @@
     },
     "FirstYear": 1891,
     "LastYear": 2022,
-    "YearsOfMissingData": 30
+    "YearsOfMissingData": 33
   },
   {
     "Id": "RSM00031735",
@@ -15467,7 +14661,7 @@
     },
     "FirstYear": 1891,
     "LastYear": 2022,
-    "YearsOfMissingData": 18
+    "YearsOfMissingData": 20
   },
   {
     "Id": "RSM00031770",
@@ -15493,7 +14687,7 @@
     },
     "FirstYear": 1940,
     "LastYear": 2022,
-    "YearsOfMissingData": 5
+    "YearsOfMissingData": 7
   },
   {
     "Id": "RSM00031873",
@@ -16325,7 +15519,7 @@
     },
     "FirstYear": 1949,
     "LastYear": 2022,
-    "YearsOfMissingData": 8
+    "YearsOfMissingData": 9
   },
   {
     "Id": "SF003174470",
@@ -16377,7 +15571,7 @@
     },
     "FirstYear": 1885,
     "LastYear": 2018,
-    "YearsOfMissingData": 23
+    "YearsOfMissingData": 25
   },
   {
     "Id": "SG000061641",
@@ -16391,19 +15585,6 @@
     "FirstYear": 1900,
     "LastYear": 2022,
     "YearsOfMissingData": 23
-  },
-  {
-    "Id": "SG000061687",
-    "Name": "TAMBACOUNDA",
-    "CountryCode": "SG",
-    "Coordinates": {
-      "Latitude": 13.767,
-      "Longitude": -13.683,
-      "Elevation": 50
-    },
-    "FirstYear": 1941,
-    "LastYear": 2021,
-    "YearsOfMissingData": 19
   },
   {
     "Id": "SGM00061600",
@@ -16468,20 +15649,20 @@
     },
     "FirstYear": 1840,
     "LastYear": 2022,
-    "YearsOfMissingData": 18
+    "YearsOfMissingData": 17
   },
   {
-    "Id": "SPE00120323",
-    "Name": "MURCIA",
+    "Id": "SPE00120332",
+    "Name": "MURCIA_ALCANTARILLA",
     "CountryCode": "SP",
     "Coordinates": {
-      "Latitude": 38.0028,
-      "Longitude": -1.1692,
-      "Elevation": 61
+      "Latitude": 37.9578,
+      "Longitude": -1.2294,
+      "Elevation": 85
     },
     "FirstYear": 1863,
     "LastYear": 2022,
-    "YearsOfMissingData": 21
+    "YearsOfMissingData": 23
   },
   {
     "Id": "SP000008027",
@@ -16754,7 +15935,7 @@
     },
     "FirstYear": 1866,
     "LastYear": 2022,
-    "YearsOfMissingData": 59
+    "YearsOfMissingData": 57
   },
   {
     "Id": "SU000062600",
@@ -16820,6 +16001,19 @@
     "FirstYear": 1909,
     "LastYear": 2019,
     "YearsOfMissingData": 30
+  },
+  {
+    "Id": "SUM00062772",
+    "Name": "KOSTI_RABAK",
+    "CountryCode": "SU",
+    "Coordinates": {
+      "Latitude": 13.167,
+      "Longitude": 32.667,
+      "Elevation": 381
+    },
+    "FirstYear": 1943,
+    "LastYear": 2019,
+    "YearsOfMissingData": 17
   },
   {
     "Id": "SV000020107",
@@ -17131,7 +16325,7 @@
     },
     "FirstYear": 1952,
     "LastYear": 2022,
-    "YearsOfMissingData": 11
+    "YearsOfMissingData": 8
   },
   {
     "Id": "SYM00040080",
@@ -17235,7 +16429,7 @@
     },
     "FirstYear": 1939,
     "LastYear": 2022,
-    "YearsOfMissingData": 19
+    "YearsOfMissingData": 17
   },
   {
     "Id": "TH000048328",
@@ -17248,7 +16442,7 @@
     },
     "FirstYear": 1954,
     "LastYear": 2022,
-    "YearsOfMissingData": 5
+    "YearsOfMissingData": 7
   },
   {
     "Id": "TH000048351",
@@ -17272,7 +16466,7 @@
       "Longitude": 101.733,
       "Elevation": 254
     },
-    "FirstYear": 1960,
+    "FirstYear": 1959,
     "LastYear": 2022,
     "YearsOfMissingData": 0
   },
@@ -17300,7 +16494,7 @@
     },
     "FirstYear": 1941,
     "LastYear": 2022,
-    "YearsOfMissingData": 13
+    "YearsOfMissingData": 15
   },
   {
     "Id": "TH000048378",
@@ -17326,7 +16520,7 @@
     },
     "FirstYear": 1954,
     "LastYear": 2022,
-    "YearsOfMissingData": 9
+    "YearsOfMissingData": 6
   },
   {
     "Id": "TH000048383",
@@ -17339,7 +16533,7 @@
     },
     "FirstYear": 1955,
     "LastYear": 2022,
-    "YearsOfMissingData": 6
+    "YearsOfMissingData": 5
   },
   {
     "Id": "TH000048400",
@@ -17379,19 +16573,6 @@
     "FirstYear": 1951,
     "LastYear": 2022,
     "YearsOfMissingData": 12
-  },
-  {
-    "Id": "TH000048425",
-    "Name": "SUPHAN_BURI",
-    "CountryCode": "TH",
-    "Coordinates": {
-      "Latitude": 14.467,
-      "Longitude": 100.133,
-      "Elevation": 8
-    },
-    "FirstYear": 1953,
-    "LastYear": 2022,
-    "YearsOfMissingData": 10
   },
   {
     "Id": "TH000048431",
@@ -17443,7 +16624,7 @@
     },
     "FirstYear": 1939,
     "LastYear": 2022,
-    "YearsOfMissingData": 23
+    "YearsOfMissingData": 22
   },
   {
     "Id": "TH000048480",
@@ -17456,7 +16637,7 @@
     },
     "FirstYear": 1938,
     "LastYear": 2022,
-    "YearsOfMissingData": 15
+    "YearsOfMissingData": 17
   },
   {
     "Id": "TH000048500",
@@ -17469,7 +16650,7 @@
     },
     "FirstYear": 1940,
     "LastYear": 2022,
-    "YearsOfMissingData": 20
+    "YearsOfMissingData": 21
   },
   {
     "Id": "TH000048517",
@@ -17498,6 +16679,19 @@
     "YearsOfMissingData": 5
   },
   {
+    "Id": "TH000048567",
+    "Name": "TRANG",
+    "CountryCode": "TH",
+    "Coordinates": {
+      "Latitude": 7.517,
+      "Longitude": 99.617,
+      "Elevation": 16
+    },
+    "FirstYear": 1952,
+    "LastYear": 2022,
+    "YearsOfMissingData": 10
+  },
+  {
     "Id": "TH000048568",
     "Name": "SONGKHLA",
     "CountryCode": "TH",
@@ -17521,7 +16715,7 @@
     },
     "FirstYear": 1937,
     "LastYear": 2022,
-    "YearsOfMissingData": 9
+    "YearsOfMissingData": 6
   },
   {
     "Id": "TI000038599",
@@ -17600,19 +16794,6 @@
     "FirstYear": 1926,
     "LastYear": 2022,
     "YearsOfMissingData": 29
-  },
-  {
-    "Id": "TSE00147773",
-    "Name": "KAIROUAN",
-    "CountryCode": "TS",
-    "Coordinates": {
-      "Latitude": 35.67,
-      "Longitude": 10.1,
-      "Elevation": 60
-    },
-    "FirstYear": 1903,
-    "LastYear": 2022,
-    "YearsOfMissingData": 56
   },
   {
     "Id": "TSM00060715",
@@ -17807,7 +16988,7 @@
     },
     "FirstYear": 1926,
     "LastYear": 2022,
-    "YearsOfMissingData": 10
+    "YearsOfMissingData": 9
   },
   {
     "Id": "TUM00017155",
@@ -17846,7 +17027,7 @@
     },
     "FirstYear": 1931,
     "LastYear": 2022,
-    "YearsOfMissingData": 11
+    "YearsOfMissingData": 10
   },
   {
     "Id": "TUM00017202",
@@ -17963,7 +17144,7 @@
     },
     "FirstYear": 1933,
     "LastYear": 2022,
-    "YearsOfMissingData": 19
+    "YearsOfMissingData": 20
   },
   {
     "Id": "TWM00058968",
@@ -18081,19 +17262,6 @@
     "FirstYear": 1905,
     "LastYear": 2022,
     "YearsOfMissingData": 21
-  },
-  {
-    "Id": "UK000000000",
-    "Name": "CET_CENTRAL_ENGLAND",
-    "CountryCode": "UK",
-    "Coordinates": {
-      "Latitude": 52.42,
-      "Longitude": -1.83,
-      "Elevation": 78
-    },
-    "FirstYear": 1772,
-    "LastYear": 2022,
-    "YearsOfMissingData": 1
   },
   {
     "Id": "UK000003026",
@@ -18551,6 +17719,19 @@
     "YearsOfMissingData": 9
   },
   {
+    "Id": "USW00013882",
+    "Name": "CHATTANOOGA_LOVELL_AP",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 35.0311,
+      "Longitude": -85.2014,
+      "Elevation": 204.5
+    },
+    "FirstYear": 1879,
+    "LastYear": 2022,
+    "YearsOfMissingData": 9
+  },
+  {
     "Id": "USC00221880",
     "Name": "COLUMBUS",
     "CountryCode": "US",
@@ -18564,30 +17745,30 @@
     "YearsOfMissingData": 44
   },
   {
-    "Id": "USW00013882",
-    "Name": "CHATTANOOGA_LOVELL_AP",
+    "Id": "USW00003103",
+    "Name": "FLAGSTAFF_PULLIAM_AP",
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 35.0311,
-      "Longitude": -85.2014,
-      "Elevation": 204.5
+      "Latitude": 35.1442,
+      "Longitude": -111.6664,
+      "Elevation": 2134.5
     },
-    "FirstYear": 1879,
+    "FirstYear": 1899,
     "LastYear": 2022,
-    "YearsOfMissingData": 11
+    "YearsOfMissingData": 26
   },
   {
-    "Id": "USC00026796",
-    "Name": "PRESCOTT",
+    "Id": "USC00022659",
+    "Name": "DOUGLAS",
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 34.5706,
-      "Longitude": -112.4322,
-      "Elevation": 1586.5
+      "Latitude": 31.345,
+      "Longitude": -109.5394,
+      "Elevation": 1231.4
     },
-    "FirstYear": 1870,
-    "LastYear": 2022,
-    "YearsOfMissingData": 56
+    "FirstYear": 1904,
+    "LastYear": 2015,
+    "YearsOfMissingData": 36
   },
   {
     "Id": "USC00028012",
@@ -18665,7 +17846,7 @@
     },
     "FirstYear": 1891,
     "LastYear": 2022,
-    "YearsOfMissingData": 14
+    "YearsOfMissingData": 16
   },
   {
     "Id": "USW00023271",
@@ -18730,7 +17911,7 @@
     },
     "FirstYear": 1878,
     "LastYear": 2022,
-    "YearsOfMissingData": 17
+    "YearsOfMissingData": 19
   },
   {
     "Id": "USC00049035",
@@ -18743,7 +17924,7 @@
     },
     "FirstYear": 1922,
     "LastYear": 2022,
-    "YearsOfMissingData": 33
+    "YearsOfMissingData": 31
   },
   {
     "Id": "USC00047851",
@@ -18821,7 +18002,7 @@
     },
     "FirstYear": 1908,
     "LastYear": 2020,
-    "YearsOfMissingData": 20
+    "YearsOfMissingData": 22
   },
   {
     "Id": "USW00024015",
@@ -18847,20 +18028,20 @@
     },
     "FirstYear": 1900,
     "LastYear": 2022,
-    "YearsOfMissingData": 39
+    "YearsOfMissingData": 38
   },
   {
-    "Id": "USW00014758",
-    "Name": "NEW_HAVEN_TWEED_AP",
+    "Id": "USC00190736",
+    "Name": "BLUE_HILL",
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 41.2639,
-      "Longitude": -72.8872,
-      "Elevation": 0.9
+      "Latitude": 42.2122,
+      "Longitude": -71.1136,
+      "Elevation": 190.5
     },
-    "FirstYear": 1781,
-    "LastYear": 2020,
-    "YearsOfMissingData": 34
+    "FirstYear": 1811,
+    "LastYear": 2022,
+    "YearsOfMissingData": 11
   },
   {
     "Id": "USC00088824",
@@ -18873,7 +18054,7 @@
     },
     "FirstYear": 1892,
     "LastYear": 2022,
-    "YearsOfMissingData": 21
+    "YearsOfMissingData": 23
   },
   {
     "Id": "USW00013889",
@@ -18886,7 +18067,7 @@
     },
     "FirstYear": 1873,
     "LastYear": 2022,
-    "YearsOfMissingData": 10
+    "YearsOfMissingData": 8
   },
   {
     "Id": "USW00012839",
@@ -18912,7 +18093,7 @@
     },
     "FirstYear": 1890,
     "LastYear": 2016,
-    "YearsOfMissingData": 16
+    "YearsOfMissingData": 17
   },
   {
     "Id": "USC00090140",
@@ -18938,7 +18119,7 @@
     },
     "FirstYear": 1876,
     "LastYear": 2022,
-    "YearsOfMissingData": 7
+    "YearsOfMissingData": 6
   },
   {
     "Id": "USC00095874",
@@ -18952,6 +18133,19 @@
     "FirstYear": 1885,
     "LastYear": 2015,
     "YearsOfMissingData": 49
+  },
+  {
+    "Id": "USC00095314",
+    "Name": "LOUISVILLE_1_E",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 33.0125,
+      "Longitude": -82.3914,
+      "Elevation": 98.1
+    },
+    "FirstYear": 1895,
+    "LastYear": 2022,
+    "YearsOfMissingData": 51
   },
   {
     "Id": "USC00486440",
@@ -19019,30 +18213,17 @@
     "YearsOfMissingData": 5
   },
   {
-    "Id": "USC00160098",
-    "Name": "ALEXANDRIA",
+    "Id": "USW00013976",
+    "Name": "LAFAYETTE_RGNL_AP",
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 31.3206,
-      "Longitude": -92.4611,
-      "Elevation": 26.5
+      "Latitude": 30.205,
+      "Longitude": -91.9875,
+      "Elevation": 11.6
     },
-    "FirstYear": 1895,
+    "FirstYear": 1892,
     "LastYear": 2022,
-    "YearsOfMissingData": 26
-  },
-  {
-    "Id": "USW00013970",
-    "Name": "BATON_ROUGE_RYAN_AP",
-    "CountryCode": "US",
-    "Coordinates": {
-      "Latitude": 30.5372,
-      "Longitude": -91.1469,
-      "Elevation": 19.5
-    },
-    "FirstYear": 1890,
-    "LastYear": 2022,
-    "YearsOfMissingData": 24
+    "YearsOfMissingData": 23
   },
   {
     "Id": "USW00013957",
@@ -19097,17 +18278,17 @@
     "YearsOfMissingData": 11
   },
   {
-    "Id": "USC00207812",
-    "Name": "STAMBAUGH_2SSE",
+    "Id": "USC00204104",
+    "Name": "IRONWOOD",
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 46.0556,
-      "Longitude": -88.6275,
-      "Elevation": 442
+      "Latitude": 46.4656,
+      "Longitude": -90.1892,
+      "Elevation": 435.9
     },
-    "FirstYear": 1897,
+    "FirstYear": 1903,
     "LastYear": 2022,
-    "YearsOfMissingData": 25
+    "YearsOfMissingData": 16
   },
   {
     "Id": "USC00207364",
@@ -19224,7 +18405,7 @@
     },
     "FirstYear": 1898,
     "LastYear": 2022,
-    "YearsOfMissingData": 23
+    "YearsOfMissingData": 26
   },
   {
     "Id": "USW00094008",
@@ -19279,19 +18460,6 @@
     "YearsOfMissingData": 0
   },
   {
-    "Id": "USW00023009",
-    "Name": "ROSWELL_IND_AIR_PK",
-    "CountryCode": "US",
-    "Coordinates": {
-      "Latitude": 33.3075,
-      "Longitude": -104.5083,
-      "Elevation": 1112.2
-    },
-    "FirstYear": 1896,
-    "LastYear": 2022,
-    "YearsOfMissingData": 22
-  },
-  {
     "Id": "USC00299820",
     "Name": "WOLF_CANYON",
     "CountryCode": "US",
@@ -19318,6 +18486,19 @@
     "YearsOfMissingData": 21
   },
   {
+    "Id": "USC00299156",
+    "Name": "TUCUMCARI_4_NE",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 35.2006,
+      "Longitude": -103.6867,
+      "Elevation": 1245.4
+    },
+    "FirstYear": 1908,
+    "LastYear": 2022,
+    "YearsOfMissingData": 20
+  },
+  {
     "Id": "USC00295150",
     "Name": "LOS_LUNAS_3_SSW",
     "CountryCode": "US",
@@ -19328,7 +18509,7 @@
     },
     "FirstYear": 1894,
     "LastYear": 2022,
-    "YearsOfMissingData": 47
+    "YearsOfMissingData": 46
   },
   {
     "Id": "USC00417079",
@@ -19354,7 +18535,7 @@
     },
     "FirstYear": 1852,
     "LastYear": 2022,
-    "YearsOfMissingData": 44
+    "YearsOfMissingData": 41
   },
   {
     "Id": "USC00319467",
@@ -19471,7 +18652,7 @@
     },
     "FirstYear": 1889,
     "LastYear": 2019,
-    "YearsOfMissingData": 32
+    "YearsOfMissingData": 27
   },
   {
     "Id": "USC00414382",
@@ -19510,7 +18691,7 @@
     },
     "FirstYear": 1897,
     "LastYear": 2022,
-    "YearsOfMissingData": 39
+    "YearsOfMissingData": 41
   },
   {
     "Id": "USW00012919",
@@ -19666,7 +18847,7 @@
     },
     "FirstYear": 1917,
     "LastYear": 2022,
-    "YearsOfMissingData": 9
+    "YearsOfMissingData": 6
   },
   {
     "Id": "USC00509015",
@@ -19692,7 +18873,7 @@
     },
     "FirstYear": 1931,
     "LastYear": 2022,
-    "YearsOfMissingData": 12
+    "YearsOfMissingData": 15
   },
   {
     "Id": "USW00013782",
@@ -19745,19 +18926,6 @@
     "FirstYear": 1914,
     "LastYear": 2022,
     "YearsOfMissingData": 28
-  },
-  {
-    "Id": "USC00022659",
-    "Name": "DOUGLAS",
-    "CountryCode": "US",
-    "Coordinates": {
-      "Latitude": 31.345,
-      "Longitude": -109.5394,
-      "Elevation": 1231.4
-    },
-    "FirstYear": 1904,
-    "LastYear": 2015,
-    "YearsOfMissingData": 38
   },
   {
     "Id": "USC00027390",
@@ -19822,7 +18990,7 @@
     },
     "FirstYear": 1905,
     "LastYear": 2022,
-    "YearsOfMissingData": 53
+    "YearsOfMissingData": 44
   },
   {
     "Id": "USC00046508",
@@ -19861,7 +19029,7 @@
     },
     "FirstYear": 1904,
     "LastYear": 2022,
-    "YearsOfMissingData": 37
+    "YearsOfMissingData": 39
   },
   {
     "Id": "USC00083207",
@@ -19963,9 +19131,9 @@
       "Longitude": -93.2397,
       "Elevation": 8.5
     },
-    "FirstYear": 1904,
+    "FirstYear": 1921,
     "LastYear": 2022,
-    "YearsOfMissingData": 44
+    "YearsOfMissingData": 30
   },
   {
     "Id": "USC00205816",
@@ -20056,7 +19224,7 @@
     },
     "FirstYear": 1914,
     "LastYear": 2021,
-    "YearsOfMissingData": 40
+    "YearsOfMissingData": 38
   },
   {
     "Id": "USC00321871",
@@ -20147,7 +19315,20 @@
     },
     "FirstYear": 1942,
     "LastYear": 2018,
-    "YearsOfMissingData": 12
+    "YearsOfMissingData": 10
+  },
+  {
+    "Id": "USC00412019",
+    "Name": "CORSICANA",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 32.1225,
+      "Longitude": -96.4867,
+      "Elevation": 136.9
+    },
+    "FirstYear": 1875,
+    "LastYear": 2022,
+    "YearsOfMissingData": 45
   },
   {
     "Id": "USC00413280",
@@ -20160,20 +19341,7 @@
     },
     "FirstYear": 1860,
     "LastYear": 2022,
-    "YearsOfMissingData": 68
-  },
-  {
-    "Id": "USC00417743",
-    "Name": "ROSCOE",
-    "CountryCode": "US",
-    "Coordinates": {
-      "Latitude": 32.4481,
-      "Longitude": -100.5264,
-      "Elevation": 725.4
-    },
-    "FirstYear": 1938,
-    "LastYear": 2022,
-    "YearsOfMissingData": 24
+    "YearsOfMissingData": 67
   },
   {
     "Id": "USC00422592",
@@ -20199,7 +19367,7 @@
     },
     "FirstYear": 1899,
     "LastYear": 2021,
-    "YearsOfMissingData": 46
+    "YearsOfMissingData": 47
   },
   {
     "Id": "USC00426708",
@@ -20316,7 +19484,7 @@
     },
     "FirstYear": 1830,
     "LastYear": 2022,
-    "YearsOfMissingData": 34
+    "YearsOfMissingData": 32
   },
   {
     "Id": "USW00012917",
@@ -20345,19 +19513,6 @@
     "YearsOfMissingData": 11
   },
   {
-    "Id": "USW00013896",
-    "Name": "MUSCLE_SHOALS_RGNL_AP",
-    "CountryCode": "US",
-    "Coordinates": {
-      "Latitude": 34.7442,
-      "Longitude": -87.5997,
-      "Elevation": 164.6
-    },
-    "FirstYear": 1941,
-    "LastYear": 2022,
-    "YearsOfMissingData": 8
-  },
-  {
     "Id": "USW00013959",
     "Name": "WACO_RGNL_AP",
     "CountryCode": "US",
@@ -20381,7 +19536,7 @@
     },
     "FirstYear": 1947,
     "LastYear": 2022,
-    "YearsOfMissingData": 2
+    "YearsOfMissingData": 4
   },
   {
     "Id": "USW00013966",
@@ -20433,7 +19588,7 @@
     },
     "FirstYear": 1949,
     "LastYear": 2022,
-    "YearsOfMissingData": 11
+    "YearsOfMissingData": 9
   },
   {
     "Id": "USW00022521",
@@ -20446,7 +19601,7 @@
     },
     "FirstYear": 1948,
     "LastYear": 2022,
-    "YearsOfMissingData": 11
+    "YearsOfMissingData": 8
   },
   {
     "Id": "USW00022536",
@@ -20459,7 +19614,7 @@
     },
     "FirstYear": 1951,
     "LastYear": 2022,
-    "YearsOfMissingData": 8
+    "YearsOfMissingData": 11
   },
   {
     "Id": "USW00023007",
@@ -20473,6 +19628,19 @@
     "FirstYear": 1949,
     "LastYear": 2022,
     "YearsOfMissingData": 7
+  },
+  {
+    "Id": "USW00023009",
+    "Name": "ROSWELL_IND_AIR_PK",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 33.3075,
+      "Longitude": -104.5083,
+      "Elevation": 1112.2
+    },
+    "FirstYear": 1896,
+    "LastYear": 2022,
+    "YearsOfMissingData": 24
   },
   {
     "Id": "USW00023023",
@@ -20522,9 +19690,9 @@
       "Longitude": -105.1419,
       "Elevation": 2095.2
     },
-    "FirstYear": 1941,
+    "FirstYear": 1948,
     "LastYear": 2021,
-    "YearsOfMissingData": 8
+    "YearsOfMissingData": 5
   },
   {
     "Id": "USW00023153",
@@ -20576,7 +19744,7 @@
     },
     "FirstYear": 1911,
     "LastYear": 2021,
-    "YearsOfMissingData": 30
+    "YearsOfMissingData": 29
   },
   {
     "Id": "USW00023179",
@@ -20706,7 +19874,7 @@
     },
     "FirstYear": 1919,
     "LastYear": 2022,
-    "YearsOfMissingData": 21
+    "YearsOfMissingData": 20
   },
   {
     "Id": "USW00025501",
@@ -20719,7 +19887,7 @@
     },
     "FirstYear": 1869,
     "LastYear": 2022,
-    "YearsOfMissingData": 48
+    "YearsOfMissingData": 50
   },
   {
     "Id": "USW00025503",
@@ -20849,7 +20017,7 @@
     },
     "FirstYear": 1910,
     "LastYear": 2022,
-    "YearsOfMissingData": 37
+    "YearsOfMissingData": 38
   },
   {
     "Id": "USW00026442",
@@ -20982,6 +20150,19 @@
     "YearsOfMissingData": 12
   },
   {
+    "Id": "USW00093033",
+    "Name": "CARLSBAD_CAVERN_CITY_AP",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 32.3336,
+      "Longitude": -104.2581,
+      "Elevation": 985.1
+    },
+    "FirstYear": 1949,
+    "LastYear": 2022,
+    "YearsOfMissingData": 14
+  },
+  {
     "Id": "USW00093729",
     "Name": "CAPE_HATTERAS_AP",
     "CountryCode": "US",
@@ -21018,7 +20199,7 @@
     },
     "FirstYear": 1949,
     "LastYear": 2022,
-    "YearsOfMissingData": 4
+    "YearsOfMissingData": 7
   },
   {
     "Id": "USW00093987",
@@ -21031,7 +20212,7 @@
     },
     "FirstYear": 1907,
     "LastYear": 2022,
-    "YearsOfMissingData": 24
+    "YearsOfMissingData": 23
   },
   {
     "Id": "UVM00065503",
@@ -21083,7 +20264,7 @@
     },
     "FirstYear": 1942,
     "LastYear": 2022,
-    "YearsOfMissingData": 7
+    "YearsOfMissingData": 5
   },
   {
     "Id": "UY000086430",
@@ -21226,7 +20407,7 @@
     },
     "FirstYear": 1933,
     "LastYear": 2022,
-    "YearsOfMissingData": 8
+    "YearsOfMissingData": 6
   },
   {
     "Id": "UZM00038696",
@@ -21278,7 +20459,7 @@
     },
     "FirstYear": 1907,
     "LastYear": 2022,
-    "YearsOfMissingData": 44
+    "YearsOfMissingData": 46
   },
   {
     "Id": "VMM00048855",
@@ -21302,9 +20483,9 @@
       "Longitude": 109.2,
       "Elevation": 9.1
     },
-    "FirstYear": 1901,
+    "FirstYear": 1902,
     "LastYear": 2022,
-    "YearsOfMissingData": 33
+    "YearsOfMissingData": 32
   },
   {
     "Id": "WA007401540",
@@ -21330,7 +20511,7 @@
     },
     "FirstYear": 1898,
     "LastYear": 2016,
-    "YearsOfMissingData": 24
+    "YearsOfMissingData": 25
   },
   {
     "Id": "ZI000067964",

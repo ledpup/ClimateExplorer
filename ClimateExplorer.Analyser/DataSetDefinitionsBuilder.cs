@@ -31,7 +31,6 @@ internal class DataSetDefinitionsBuilder
                 {
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Temperature,
                         DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -42,7 +41,6 @@ internal class DataSetDefinitionsBuilder
                     },
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Temperature,
                         DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -67,7 +65,6 @@ internal class DataSetDefinitionsBuilder
                 {
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Temperature,
                         DataAdjustment = DataAdjustment.Unadjusted,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -78,7 +75,6 @@ internal class DataSetDefinitionsBuilder
                     },
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Temperature,
                         DataAdjustment = DataAdjustment.Unadjusted,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -120,7 +116,6 @@ internal class DataSetDefinitionsBuilder
                 {
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Temperature,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Monthly,
@@ -131,7 +126,6 @@ internal class DataSetDefinitionsBuilder
                     },
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Temperature,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Monthly,
@@ -159,7 +153,6 @@ internal class DataSetDefinitionsBuilder
                     new MeasurementDefinition
                     {
                         DataAdjustment = DataAdjustment.Adjusted,
-                        DataCategory = DataCategory.Temperature,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
@@ -171,7 +164,6 @@ internal class DataSetDefinitionsBuilder
                     new MeasurementDefinition
                     {
                         DataAdjustment = DataAdjustment.Adjusted,
-                        DataCategory = DataCategory.Temperature,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
@@ -195,7 +187,6 @@ internal class DataSetDefinitionsBuilder
                     new MeasurementDefinition
                     {
                         DataAdjustment = DataAdjustment.Unadjusted,
-                        DataCategory = DataCategory.Temperature,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
@@ -207,7 +198,6 @@ internal class DataSetDefinitionsBuilder
                     new MeasurementDefinition
                     {
                         DataAdjustment = DataAdjustment.Unadjusted,
-                        DataCategory = DataCategory.Temperature,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
@@ -244,7 +234,6 @@ internal class DataSetDefinitionsBuilder
                 {
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Temperature,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
@@ -255,7 +244,6 @@ internal class DataSetDefinitionsBuilder
                     },
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Temperature,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
@@ -291,7 +279,6 @@ internal class DataSetDefinitionsBuilder
                     new MeasurementDefinition
                     {
                         DataAdjustment = DataAdjustment.Adjusted,
-                        DataCategory = DataCategory.Temperature,
                         DataType = DataType.TempMean,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Monthly,
@@ -302,17 +289,19 @@ internal class DataSetDefinitionsBuilder
                         NullValue = "-9999",
                         ValueAdjustment = 100.0f,
                     },
-                    //new MeasurementDefinition
-                    //{
-                    //    DataCategory = DataCategory.Temperature,
-                    //    DataType = DataType.TempMin,
-                    //    UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
-                    //    DataResolution = DataResolution.Daily,
-                    //    DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<tmax>-?[\d+\.\d+]*),-?\d*,(?<value>-?[\d+\.\d+]*),-?\d*,.*,D$",
-                    //    FolderName = @"Temperature\NIWA",
-                    //    FileNameFormat = "[station]_temperature.csv",
-                    //    NullValue = "-",
-                    //},
+                    new MeasurementDefinition
+                    {
+                        DataAdjustment = DataAdjustment.Unadjusted,
+                        DataType = DataType.TempMean,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                        DataResolution = DataResolution.Monthly,
+                        RowDataType = RowDataType.TwelveMonthsPerRow,
+                        DataRowRegEx = @"^(?<year>\d{4}),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+)$",
+                        FolderName = @"Temperature\GHCNm\Unadjusted",
+                        FileNameFormat = "[station].csv",
+                        NullValue = "-9999",
+                        ValueAdjustment = 100.0f,
+                    },
                     //new MeasurementDefinition
                     //{
                     //    DataType = DataType.Rainfall,
@@ -341,7 +330,6 @@ internal class DataSetDefinitionsBuilder
                 {
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Enso,
                         DataType = DataType.MEIv2,
                         UnitOfMeasure = UnitOfMeasure.EnsoIndex,
                         DataResolution = DataResolution.Monthly,
@@ -367,7 +355,6 @@ internal class DataSetDefinitionsBuilder
                 {
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Enso,
                         DataType = DataType.SOI,
                         UnitOfMeasure = UnitOfMeasure.EnsoIndex,
                         DataResolution = DataResolution.Monthly,
@@ -393,7 +380,6 @@ internal class DataSetDefinitionsBuilder
                 {
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Enso,
                         DataType = DataType.ONI,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsiusAnomaly,
                         DataResolution = DataResolution.Monthly,
@@ -419,7 +405,6 @@ internal class DataSetDefinitionsBuilder
                 {
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Enso,
                         DataType = DataType.Nino34,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsiusAnomaly,
                         DataResolution = DataResolution.Monthly,
@@ -618,7 +603,6 @@ internal class DataSetDefinitionsBuilder
                 {
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Temperature,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
@@ -628,7 +612,6 @@ internal class DataSetDefinitionsBuilder
                     },
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Temperature,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,

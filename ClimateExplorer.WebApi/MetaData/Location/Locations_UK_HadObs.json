@@ -4,9 +4,9 @@
     "Name": "Central England",
     "CountryCode": "UK",
     "Coordinates": {
-      "Latitude": 52.25240733,
-      "Longitude": -1.770277667,
-      "Elevation": 50
+      "Latitude": 52.42,
+      "Longitude": -1.83,
+      "Elevation": 78
     },
     "WarmingIndex": null,
     "HeatingScore": null,

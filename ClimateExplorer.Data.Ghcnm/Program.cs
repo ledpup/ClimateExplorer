@@ -14,7 +14,7 @@ var serviceProvider = new ServiceCollection()
         .AddSimpleConsole(x => { x.SingleLine = true; x.IncludeScopes = false; })
         )
     .BuildServiceProvider();
-var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Program>();
+var logger = serviceProvider.GetService<ILoggerFactory>()!.CreateLogger<Program>();
 
 
 var httpClient = new HttpClient();
@@ -26,11 +26,15 @@ httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
 await DownloadAndExtract.DownloadAndExtractFile(httpClient, "https://www.ncei.noaa.gov/pub/data/ghcn/v4/", "qcf", "ghcnm.tavg.latest.qcf.tar.gz", logger);
 await DownloadAndExtract.DownloadAndExtractFile(httpClient, "https://www.ncei.noaa.gov/pub/data/ghcn/v4/", "qcu", "ghcnm.tavg.latest.qcu.tar.gz", logger);
 
+const string stationsFile = @"SiteMetaData\stations.csv";
+const string preExistingLocationsFile = @"SiteMetaData\pre-existing-locations.json";
+
 var stations = await GetStationMetaData("qcf");
 
+var ghcnIdToLocationIds = await GetGhcnIdToLocationIds(stations);
 var dataQualityFilteredStations = await RetrieveDataQualityFilteredStations("qcf", stations);
-
-var selectedStations = SelectStationsByDbscanClusteringAndTakingHighestScore(dataQualityFilteredStations, 75, 2);
+var selectedStationsPostClustering = SelectStationsByDbscanClusteringAndTakingHighestScore(dataQualityFilteredStations, 75, 2);
+var selectedStations = await RemoveDuplicateLocations(selectedStationsPostClustering);
 
 var locations = new List<Location>();
 var dataFileLocationMapping = new DataFileLocationMapping
@@ -45,9 +49,9 @@ selectedStations.ForEach(x =>
     {
         var location = new Location
         {
-            Id = Guid.NewGuid(),
-            Name = textinfo.ToTitleCase(x.Name.Replace('_', ' ').ToLower()),
-            Coordinates = x.Coordinates.Value,
+            Id = ghcnIdToLocationIds[x.Id],
+            Name = textinfo.ToTitleCase(x.Name!.Replace('_', ' ').ToLower()),
+            Coordinates = x.Coordinates!.Value,
             CountryCode = x.CountryCode,
         };
         locations.Add(location);
@@ -138,18 +142,17 @@ List<Station> SelectStationsByDbscanClusteringAndTakingHighestScore(List<Station
     return selectedStations;
 }
 
-void SaveStationMetaData(List<Station> stations)
+async Task SaveStationMetaData(List<Station> stations)
 {
-    var contents = stations.Select(x => $"{x.Id},{x.FirstYear.Value},{x.LastYear.Value},{x.YearsOfMissingData}");
-
-    File.WriteAllLines(@"SiteMetaData\stations.csv", contents);
+    var contents = stations.Select(x => $"{x.Id},{x.FirstYear!.Value},{x.LastYear!.Value},{x.YearsOfMissingData ?? 0}");
+    await File.WriteAllLinesAsync(stationsFile, contents);
 }
 
 async Task<List<Station>> GetStationMetaData(string version)
 {
-    if (File.Exists(@"SiteMetaData\stations.csv"))
+    if (File.Exists(stationsFile))
     {
-        var stations = GetPreProcessedStations();
+        var stations = await GetPreProcessedStations();
         return stations;
     }
 
@@ -164,7 +167,7 @@ async Task<List<Station>> GetStationMetaData(string version)
         // Sample line of data
         // ACW000116041993TAVG-9999     127  }-9999   -9999   -9999   -9999   -9999   -9999    1067  }  757  }  267  }  167  }
 
-        var id = record.Substring(0, 11);
+        var id = record[..11];
         var year = int.Parse(record.Substring(11, 4));
 
         var validYear = IsValidYear(record);
@@ -195,7 +198,7 @@ async Task<List<Station>> GetStationMetaData(string version)
         {
             continue;
         }
-        else if (year < station.LastYear.Value)
+        else if (year < station.LastYear!.Value)
         {
             throw new Exception($"Record year ({year}) is less than the end year for the station {station.Id}");
         }
@@ -208,15 +211,15 @@ async Task<List<Station>> GetStationMetaData(string version)
             }
             if (yearsOfMissingData > 0)
             {
-                station.YearsOfMissingData += yearsOfMissingData;
+                station.YearsOfMissingData = station.YearsOfMissingData == null ? yearsOfMissingData : station.YearsOfMissingData + yearsOfMissingData;
             }
             station.LastYear = year;
         }
     }
 
-    SaveStationMetaData(stations);
+    await SaveStationMetaData(stations);
 
-    return stations;
+    return await GetStationMetaData(version);
 }
 
 static bool IsValidYear(string record)
@@ -268,7 +271,7 @@ List<Station> GetDataQualityFilteredStationsFromFile()
 
 void SaveStations(List<Station> stations, string path)
 {
-    Directory.CreateDirectory(Path.GetDirectoryName(path));
+    Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 
     var options = new JsonSerializerOptions
     {
@@ -278,10 +281,10 @@ void SaveStations(List<Station> stations, string path)
     File.WriteAllText(path, contents);
 }
 
-static List<Station> GetPreProcessedStations()
+async static Task<List<Station>> GetPreProcessedStations()
 {
     var stations = new List<Station>();
-    var contents = File.ReadAllLines(@"SiteMetaData\stations.csv");
+    var contents = await File.ReadAllLinesAsync(stationsFile);
 
     foreach (var line in contents)
     {
@@ -349,11 +352,11 @@ static async Task CreateStationDataFiles(string version, List<Station> stations,
 
             var values = GetValues(record);
 
-            writer.WriteLine($"{year},{string.Join(',', values)}");
+            writer!.WriteLine($"{year},{string.Join(',', values)}");
         }
     }
 
-    writer.Close();
+    writer!.Close();
 }
 
 static int[] GetValues(string record)
@@ -365,4 +368,60 @@ static int[] GetValues(string record)
         values[i] = int.Parse(value);
     }
     return values;
+}
+
+static async Task<Dictionary<string, Guid>> GetGhcnIdToLocationIds(List<Station> stations)
+{
+    const string ghcnIdToLocationIdsFile = @"SiteMetaData\GhcnIdToLocationIds.json";
+    Dictionary<string, Guid>? ghcnIdToLocationIds = null;
+    if (File.Exists(ghcnIdToLocationIdsFile))
+    {
+        var contents = await File.ReadAllTextAsync(ghcnIdToLocationIdsFile);
+        ghcnIdToLocationIds = JsonSerializer.Deserialize<Dictionary<string, Guid>>(contents);
+    }
+    else
+    {
+        ghcnIdToLocationIds = stations.ToDictionary<Station, string, Guid>(x => x.Id, x => Guid.NewGuid());
+        var jsonOptions = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+        };
+        var contents = JsonSerializer.Serialize(ghcnIdToLocationIds, jsonOptions);
+        await File.WriteAllTextAsync(ghcnIdToLocationIdsFile, contents);
+        return await GetGhcnIdToLocationIds(stations);
+    }
+
+    return ghcnIdToLocationIds!;
+}
+
+async Task<List<Station>> RemoveDuplicateLocations(List<Station> dataQualityFilteredStations)
+{
+    var contents = await File.ReadAllTextAsync(preExistingLocationsFile);
+    var preExistingLocations = JsonSerializer.Deserialize<List<Location>>(contents)!;
+    var stationsRemoved = 0;
+    foreach (var preExistingLocation in preExistingLocations)
+    {
+        var stationMatchedOnName = dataQualityFilteredStations.SingleOrDefault(x => x.Name!.Replace('_', ' ').Equals(preExistingLocation.Name, StringComparison.OrdinalIgnoreCase));
+        if (stationMatchedOnName != null)
+        {
+            logger.LogInformation($"Found match of station based on name ({stationMatchedOnName!.Name}). Will remove this station from the set");
+            dataQualityFilteredStations.Remove(stationMatchedOnName);
+            stationsRemoved++;
+        }
+        else
+        {
+            stationMatchedOnName = dataQualityFilteredStations.SingleOrDefault(x => MathF.Round(x.Coordinates!.Value.Latitude, 1) == MathF.Round(preExistingLocation.Coordinates.Latitude, 1)
+                                                                                 && MathF.Round(x.Coordinates.Value.Longitude, 1) == MathF.Round(preExistingLocation.Coordinates.Longitude, 1));
+            if (stationMatchedOnName != null)
+            {
+                logger.LogInformation($"Found match of station based on geo-coordinates (their names are '{stationMatchedOnName!.Name}' and '{preExistingLocation.Name}'). Will remove this station from the set");
+                dataQualityFilteredStations.Remove(stationMatchedOnName);
+                stationsRemoved++;
+            }
+        }
+    }
+
+    logger.LogInformation($"{stationsRemoved} duplicate stations removed");
+
+    return dataQualityFilteredStations;
 }

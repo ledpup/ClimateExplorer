@@ -12,7 +12,6 @@
     "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMax",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -25,7 +24,6 @@
         "ValueAdjustment": null
       },
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMin",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -53,7 +51,6 @@
     "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMax",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -66,7 +63,6 @@
         "ValueAdjustment": null
       },
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMin",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -79,7 +75,6 @@
         "ValueAdjustment": null
       },
       {
-        "DataCategory": null,
         "DataType": "Rainfall",
         "UnitOfMeasure": "Millimetres",
         "DataResolution": "Daily",
@@ -92,7 +87,6 @@
         "ValueAdjustment": null
       },
       {
-        "DataCategory": null,
         "DataType": "SolarRadiation",
         "UnitOfMeasure": "MegajoulesPerSquareMetre",
         "DataResolution": "Daily",
@@ -120,7 +114,6 @@
     "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMax",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Monthly",
@@ -133,7 +126,6 @@
         "ValueAdjustment": null
       },
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMin",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Monthly",
@@ -161,7 +153,6 @@
     "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMax",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -174,7 +165,6 @@
         "ValueAdjustment": null
       },
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMin",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -202,7 +192,6 @@
     "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMax",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -215,7 +204,6 @@
         "ValueAdjustment": null
       },
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMin",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -228,7 +216,6 @@
         "ValueAdjustment": null
       },
       {
-        "DataCategory": null,
         "DataType": "Rainfall",
         "UnitOfMeasure": "Millimetres",
         "DataResolution": "Daily",
@@ -256,7 +243,6 @@
     "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMax",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -269,7 +255,6 @@
         "ValueAdjustment": null
       },
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMin",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -282,7 +267,6 @@
         "ValueAdjustment": null
       },
       {
-        "DataCategory": null,
         "DataType": "Rainfall",
         "UnitOfMeasure": "Millimetres",
         "DataResolution": "Daily",
@@ -310,13 +294,24 @@
     "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMean",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Monthly",
         "DataAdjustment": "Adjusted",
         "RowDataType": "TwelveMonthsPerRow",
         "FolderName": "Temperature\\GHCNm\\Adjusted",
+        "FileNameFormat": "[station].csv",
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4}),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B)$",
+        "NullValue": "-9999",
+        "ValueAdjustment": 100
+      },
+      {
+        "DataType": "TempMean",
+        "UnitOfMeasure": "DegreesCelsius",
+        "DataResolution": "Monthly",
+        "DataAdjustment": "Unadjusted",
+        "RowDataType": "TwelveMonthsPerRow",
+        "FolderName": "Temperature\\GHCNm\\Unadjusted",
         "FileNameFormat": "[station].csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4}),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B)$",
         "NullValue": "-9999",
@@ -338,7 +333,6 @@
     "DataDownloadUrl": "https://psl.noaa.gov/enso/mei/data/meiv2.data",
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Enso",
         "DataType": "MEIv2",
         "UnitOfMeasure": "EnsoIndex",
         "DataResolution": "Monthly",
@@ -366,7 +360,6 @@
     "DataDownloadUrl": "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/soi.long.data",
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Enso",
         "DataType": "SOI",
         "UnitOfMeasure": "EnsoIndex",
         "DataResolution": "Monthly",
@@ -394,7 +387,6 @@
     "DataDownloadUrl": "https://psl.noaa.gov/data/correlation/oni.data",
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Enso",
         "DataType": "ONI",
         "UnitOfMeasure": "DegreesCelsiusAnomaly",
         "DataResolution": "Monthly",
@@ -422,7 +414,6 @@
     "DataDownloadUrl": "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/nino34.long.anom.data",
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Enso",
         "DataType": "Nino34",
         "UnitOfMeasure": "DegreesCelsiusAnomaly",
         "DataResolution": "Monthly",
@@ -450,7 +441,6 @@
     "DataDownloadUrl": "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt",
     "MeasurementDefinitions": [
       {
-        "DataCategory": null,
         "DataType": "CO2",
         "UnitOfMeasure": "PartsPerMillion",
         "DataResolution": "Monthly",
@@ -478,7 +468,6 @@
     "DataDownloadUrl": "https://gml.noaa.gov/webdata/ccgg/trends/ch4/ch4_mm_gl.txt",
     "MeasurementDefinitions": [
       {
-        "DataCategory": null,
         "DataType": "CH4",
         "UnitOfMeasure": "PartsPerBillion",
         "DataResolution": "Monthly",
@@ -506,7 +495,6 @@
     "DataDownloadUrl": "https://gml.noaa.gov/webdata/ccgg/trends/n2o/n2o_mm_gl.txt",
     "MeasurementDefinitions": [
       {
-        "DataCategory": null,
         "DataType": "N2O",
         "UnitOfMeasure": "PartsPerBillion",
         "DataResolution": "Monthly",
@@ -534,7 +522,6 @@
     "DataDownloadUrl": "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/dmi.had.long.data",
     "MeasurementDefinitions": [
       {
-        "DataCategory": null,
         "DataType": "IOD",
         "UnitOfMeasure": "DegreesCelsiusAnomaly",
         "DataResolution": "Monthly",
@@ -562,7 +549,6 @@
     "DataDownloadUrl": "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v3.0.csv",
     "MeasurementDefinitions": [
       {
-        "DataCategory": null,
         "DataType": "NorthSeaIce",
         "UnitOfMeasure": "MillionSqKm",
         "DataResolution": "Daily",
@@ -590,7 +576,6 @@
     "DataDownloadUrl": "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/south/daily/data/S_seaice_extent_daily_v3.0.csv",
     "MeasurementDefinitions": [
       {
-        "DataCategory": null,
         "DataType": "SouthSeaIce",
         "UnitOfMeasure": "MillionSqKm",
         "DataResolution": "Daily",
@@ -618,7 +603,6 @@
     "DataDownloadUrl": "https://nsidc.org/api/greenland/melt_area/{year}",
     "MeasurementDefinitions": [
       {
-        "DataCategory": null,
         "DataType": "GreenlandIceMelt",
         "UnitOfMeasure": "SqKm",
         "DataResolution": "Daily",
@@ -646,7 +630,6 @@
     "DataDownloadUrl": "https://www.metoffice.gov.uk/hadobs/hadcet/data/download.html",
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMax",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -659,7 +642,6 @@
         "ValueAdjustment": null
       },
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMin",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -672,7 +654,6 @@
         "ValueAdjustment": null
       },
       {
-        "DataCategory": null,
         "DataType": "Rainfall",
         "UnitOfMeasure": "Millimetres",
         "DataResolution": "Daily",
