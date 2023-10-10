@@ -21,7 +21,8 @@ public class MeasurementDefinition
         {
             DataAdjustment = DataAdjustment,
             DataType = DataType,
-            UnitOfMeasure = UnitOfMeasure
+            UnitOfMeasure = UnitOfMeasure,
+            DataResolution = DataResolution,
         };
 
         return viewModel;

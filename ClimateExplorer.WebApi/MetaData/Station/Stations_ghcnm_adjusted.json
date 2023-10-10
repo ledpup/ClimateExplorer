@@ -533,32 +533,6 @@
     "YearsOfMissingData": 19
   },
   {
-    "Id": "ASN00010111",
-    "Name": "NORTHAM",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -31.6508,
-      "Longitude": 116.6586,
-      "Elevation": 170
-    },
-    "FirstYear": 1902,
-    "LastYear": 2020,
-    "YearsOfMissingData": 27
-  },
-  {
-    "Id": "ASN00023034",
-    "Name": "ADELAIDE_AIRPORT",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -34.9524,
-      "Longitude": 138.5204,
-      "Elevation": 2
-    },
-    "FirstYear": 1887,
-    "LastYear": 2022,
-    "YearsOfMissingData": 3
-  },
-  {
     "Id": "ASN00040126",
     "Name": "MARYBOROUGH",
     "CountryCode": "AS",
@@ -583,45 +557,6 @@
     "FirstYear": 1910,
     "LastYear": 2018,
     "YearsOfMissingData": 38
-  },
-  {
-    "Id": "ASN00061051",
-    "Name": "MURRURUNDI_POST_OFFICE",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -31.7651,
-      "Longitude": 150.8363,
-      "Elevation": 466
-    },
-    "FirstYear": 1916,
-    "LastYear": 2015,
-    "YearsOfMissingData": 25
-  },
-  {
-    "Id": "ASN00061055",
-    "Name": "NEWCASTLE_NOBBYS_SIGNAL_STATIO",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -32.9185,
-      "Longitude": 151.7985,
-      "Elevation": 33
-    },
-    "FirstYear": 1863,
-    "LastYear": 2022,
-    "YearsOfMissingData": 22
-  },
-  {
-    "Id": "ASN00070015",
-    "Name": "CANBERRA_FORESTRY",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -35.3,
-      "Longitude": 149.1,
-      "Elevation": 581
-    },
-    "FirstYear": 1928,
-    "LastYear": 2022,
-    "YearsOfMissingData": 1
   },
   {
     "Id": "ASN00076047",
@@ -650,19 +585,6 @@
     "YearsOfMissingData": 9
   },
   {
-    "Id": "ASN00003003",
-    "Name": "BROOME_AIRPORT",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -17.9475,
-      "Longitude": 122.2353,
-      "Elevation": 7.4
-    },
-    "FirstYear": 1941,
-    "LastYear": 2022,
-    "YearsOfMissingData": 1
-  },
-  {
     "Id": "ASN00004035",
     "Name": "ROEBOURNE",
     "CountryCode": "AS",
@@ -687,19 +609,6 @@
     "FirstYear": 1904,
     "LastYear": 2022,
     "YearsOfMissingData": 13
-  },
-  {
-    "Id": "ASN00012038",
-    "Name": "KALGOORLIE_BOULDER_AIRPORT",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -30.7847,
-      "Longitude": 121.4533,
-      "Elevation": 365.3
-    },
-    "FirstYear": 1942,
-    "LastYear": 2022,
-    "YearsOfMissingData": 3
   },
   {
     "Id": "ASN00012074",
@@ -767,6 +676,19 @@
     "YearsOfMissingData": 25
   },
   {
+    "Id": "ASN00036007",
+    "Name": "BARCALDINE_POST_OFFICE",
+    "CountryCode": "AS",
+    "Coordinates": {
+      "Latitude": -23.5544,
+      "Longitude": 145.2883,
+      "Elevation": 266.9
+    },
+    "FirstYear": 1913,
+    "LastYear": 2022,
+    "YearsOfMissingData": 27
+  },
+  {
     "Id": "ASN00038024",
     "Name": "WINDORAH_POST_OFFICE",
     "CountryCode": "AS",
@@ -819,19 +741,6 @@
     "YearsOfMissingData": 15
   },
   {
-    "Id": "ASN00046043",
-    "Name": "WILCANNIAREID_ST",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -31.5631,
-      "Longitude": 143.3747,
-      "Elevation": 75
-    },
-    "FirstYear": 1881,
-    "LastYear": 2014,
-    "YearsOfMissingData": 41
-  },
-  {
     "Id": "ASN00047007",
     "Name": "BROKEN_HILL_PATTON_STREET",
     "CountryCode": "AS",
@@ -858,32 +767,6 @@
     "YearsOfMissingData": 48
   },
   {
-    "Id": "ASN00051049",
-    "Name": "TRANGIE_RESEARCH_STATION_AWS",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -31.9861,
-      "Longitude": 147.9489,
-      "Elevation": 215
-    },
-    "FirstYear": 1923,
-    "LastYear": 2022,
-    "YearsOfMissingData": 36
-  },
-  {
-    "Id": "ASN00059017",
-    "Name": "KEMPSEY_WIDE_STREET",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -31.077,
-      "Longitude": 152.8235,
-      "Elevation": 10
-    },
-    "FirstYear": 1907,
-    "LastYear": 2013,
-    "YearsOfMissingData": 38
-  },
-  {
     "Id": "ASN00064008",
     "Name": "COONABARABRAN_NAMOI_STREET",
     "CountryCode": "AS",
@@ -895,19 +778,6 @@
     "FirstYear": 1880,
     "LastYear": 2022,
     "YearsOfMissingData": 22
-  },
-  {
-    "Id": "ASN00065034",
-    "Name": "WELLINGTON_AGROWPLOW",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -32.5635,
-      "Longitude": 148.9503,
-      "Elevation": 305
-    },
-    "FirstYear": 1909,
-    "LastYear": 2020,
-    "YearsOfMissingData": 34
   },
   {
     "Id": "ASN00070005",
@@ -947,19 +817,6 @@
     "FirstYear": 1881,
     "LastYear": 2014,
     "YearsOfMissingData": 19
-  },
-  {
-    "Id": "ASN00080015",
-    "Name": "ECHUCAAERODROME",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -36.1647,
-      "Longitude": 144.7642,
-      "Elevation": 96
-    },
-    "FirstYear": 1883,
-    "LastYear": 2022,
-    "YearsOfMissingData": 21
   },
   {
     "Id": "ASN00083090",
@@ -1049,6 +906,19 @@
       "Elevation": 40
     },
     "FirstYear": 1957,
+    "LastYear": 2022,
+    "YearsOfMissingData": 4
+  },
+  {
+    "Id": "AYM00089611",
+    "Name": "CASEY",
+    "CountryCode": "AY",
+    "Coordinates": {
+      "Latitude": -66.283,
+      "Longitude": 110.517,
+      "Elevation": 41
+    },
+    "FirstYear": 1958,
     "LastYear": 2022,
     "YearsOfMissingData": 4
   },
@@ -6383,6 +6253,45 @@
     "YearsOfMissingData": 7
   },
   {
+    "Id": "GM000001474",
+    "Name": "BREMEN",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 53.0464,
+      "Longitude": 8.7992,
+      "Elevation": 4
+    },
+    "FirstYear": 1829,
+    "LastYear": 2022,
+    "YearsOfMissingData": 12
+  },
+  {
+    "Id": "GME00115771",
+    "Name": "STUTTGART_SCHNARRENBERG",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 48.8292,
+      "Longitude": 9.2008,
+      "Elevation": 314
+    },
+    "FirstYear": 1792,
+    "LastYear": 2022,
+    "YearsOfMissingData": 8
+  },
+  {
+    "Id": "GMM00010488",
+    "Name": "DRESDEN",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 51.133,
+      "Longitude": 13.767,
+      "Elevation": 230.1
+    },
+    "FirstYear": 1851,
+    "LastYear": 2022,
+    "YearsOfMissingData": 31
+  },
+  {
     "Id": "GM000003319",
     "Name": "BERLIN_DAHLEM",
     "CountryCode": "GM",
@@ -6394,6 +6303,344 @@
     "FirstYear": 1769,
     "LastYear": 2022,
     "YearsOfMissingData": 6
+  },
+  {
+    "Id": "GME00121138",
+    "Name": "REGENSBURG",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 49.0433,
+      "Longitude": 12.1031,
+      "Elevation": 365
+    },
+    "FirstYear": 1773,
+    "LastYear": 2022,
+    "YearsOfMissingData": 5
+  },
+  {
+    "Id": "GM000010962",
+    "Name": "HOHENPEISSENBERG",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 47.8017,
+      "Longitude": 11.0117,
+      "Elevation": 977
+    },
+    "FirstYear": 1781,
+    "LastYear": 2022,
+    "YearsOfMissingData": 1
+  },
+  {
+    "Id": "GM000004199",
+    "Name": "MUENCHEN",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 48.1642,
+      "Longitude": 11.5442,
+      "Elevation": 515
+    },
+    "FirstYear": 1781,
+    "LastYear": 2022,
+    "YearsOfMissingData": 5
+  },
+  {
+    "Id": "GM000010203",
+    "Name": "EMDEN_HAFEN",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 53.333,
+      "Longitude": 7.2,
+      "Elevation": 6
+    },
+    "FirstYear": 1844,
+    "LastYear": 2013,
+    "YearsOfMissingData": 15
+  },
+  {
+    "Id": "GME00004174",
+    "Name": "GUTERSLOH",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 51.8889,
+      "Longitude": 8.3553,
+      "Elevation": 72
+    },
+    "FirstYear": 1835,
+    "LastYear": 2013,
+    "YearsOfMissingData": 26
+  },
+  {
+    "Id": "GME00004293",
+    "Name": "KLEVE",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 51.7625,
+      "Longitude": 6.0956,
+      "Elevation": 46
+    },
+    "FirstYear": 1950,
+    "LastYear": 2013,
+    "YearsOfMissingData": 2
+  },
+  {
+    "Id": "GME00102308",
+    "Name": "GORLITZ",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 51.1631,
+      "Longitude": 14.9531,
+      "Elevation": 238
+    },
+    "FirstYear": 1837,
+    "LastYear": 2022,
+    "YearsOfMissingData": 5
+  },
+  {
+    "Id": "GME00102244",
+    "Name": "HANNOVER",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 52.4656,
+      "Longitude": 9.6794,
+      "Elevation": 55
+    },
+    "FirstYear": 1856,
+    "LastYear": 2022,
+    "YearsOfMissingData": 0
+  },
+  {
+    "Id": "GME00004699",
+    "Name": "TROSTBERG",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 48.0317,
+      "Longitude": 12.5408,
+      "Elevation": 559
+    },
+    "FirstYear": 1945,
+    "LastYear": 2013,
+    "YearsOfMissingData": 0
+  },
+  {
+    "Id": "GME00121090",
+    "Name": "MARNITZ",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 53.3242,
+      "Longitude": 11.9333,
+      "Elevation": 81
+    },
+    "FirstYear": 1881,
+    "LastYear": 2022,
+    "YearsOfMissingData": 11
+  },
+  {
+    "Id": "GMM00010235",
+    "Name": "SOLTAU",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 53,
+      "Longitude": 9.833,
+      "Elevation": 77
+    },
+    "FirstYear": 1948,
+    "LastYear": 2022,
+    "YearsOfMissingData": 1
+  },
+  {
+    "Id": "GME00004796",
+    "Name": "ZEHDENICK",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 52.9681,
+      "Longitude": 13.3281,
+      "Elevation": 51
+    },
+    "FirstYear": 1949,
+    "LastYear": 2013,
+    "YearsOfMissingData": 1
+  },
+  {
+    "Id": "GMM00010093",
+    "Name": "PUTBUS",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 54.367,
+      "Longitude": 13.483,
+      "Elevation": 34
+    },
+    "FirstYear": 1854,
+    "LastYear": 2021,
+    "YearsOfMissingData": 15
+  },
+  {
+    "Id": "GME00102348",
+    "Name": "FICHTELBERG",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 50.4292,
+      "Longitude": 12.9553,
+      "Elevation": 1213
+    },
+    "FirstYear": 1891,
+    "LastYear": 2022,
+    "YearsOfMissingData": 0
+  },
+  {
+    "Id": "GME00102372",
+    "Name": "SAARBRUCKEN_ENSHEIM",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 49.2142,
+      "Longitude": 7.1081,
+      "Elevation": 320
+    },
+    "FirstYear": 1948,
+    "LastYear": 2022,
+    "YearsOfMissingData": 1
+  },
+  {
+    "Id": "GME00121114",
+    "Name": "OBERSTDORF",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 47.3989,
+      "Longitude": 10.2767,
+      "Elevation": 806
+    },
+    "FirstYear": 1886,
+    "LastYear": 2022,
+    "YearsOfMissingData": 1
+  },
+  {
+    "Id": "GME00102177",
+    "Name": "HELGOLAND",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 54.1764,
+      "Longitude": 7.8931,
+      "Elevation": 4
+    },
+    "FirstYear": 1882,
+    "LastYear": 2022,
+    "YearsOfMissingData": 17
+  },
+  {
+    "Id": "GME00102201",
+    "Name": "WESTERMARKELSDORF_FEHMARN",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 54.5294,
+      "Longitude": 11.0617,
+      "Elevation": 3
+    },
+    "FirstYear": 1948,
+    "LastYear": 2022,
+    "YearsOfMissingData": 10
+  },
+  {
+    "Id": "GME00102212",
+    "Name": "ROSTOCK_WARNEMUNDE",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 54.1817,
+      "Longitude": 12.0819,
+      "Elevation": 4
+    },
+    "FirstYear": 1934,
+    "LastYear": 2022,
+    "YearsOfMissingData": 3
+  },
+  {
+    "Id": "GME00120994",
+    "Name": "ANGERMUNDE",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 53.0331,
+      "Longitude": 13.9931,
+      "Elevation": 54
+    },
+    "FirstYear": 1909,
+    "LastYear": 2022,
+    "YearsOfMissingData": 3
+  },
+  {
+    "Id": "GME00121258",
+    "Name": "COTTBUS",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 51.7775,
+      "Longitude": 14.3183,
+      "Elevation": 69
+    },
+    "FirstYear": 1889,
+    "LastYear": 2022,
+    "YearsOfMissingData": 8
+  },
+  {
+    "Id": "GMM00010193",
+    "Name": "UECKERMUENDE_AUT",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 53.75,
+      "Longitude": 14.067,
+      "Elevation": 7
+    },
+    "FirstYear": 1942,
+    "LastYear": 2022,
+    "YearsOfMissingData": 9
+  },
+  {
+    "Id": "GMM00010305",
+    "Name": "LINGEN",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 52.517,
+      "Longitude": 7.317,
+      "Elevation": 21
+    },
+    "FirstYear": 1951,
+    "LastYear": 2019,
+    "YearsOfMissingData": 4
+  },
+  {
+    "Id": "GMM00010359",
+    "Name": "GARDELEGEN_AUT",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 52.517,
+      "Longitude": 11.4,
+      "Elevation": 48
+    },
+    "FirstYear": 1947,
+    "LastYear": 2022,
+    "YearsOfMissingData": 2
+  },
+  {
+    "Id": "GMM00010474",
+    "Name": "WITTENBERG",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 51.883,
+      "Longitude": 12.65,
+      "Elevation": 106
+    },
+    "FirstYear": 1947,
+    "LastYear": 2022,
+    "YearsOfMissingData": 0
+  },
+  {
+    "Id": "GMM00010490",
+    "Name": "DOBERLUG_KIRCHHAIN",
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 51.65,
+      "Longitude": 13.583,
+      "Elevation": 100
+    },
+    "FirstYear": 1942,
+    "LastYear": 2022,
+    "YearsOfMissingData": 7
   },
   {
     "Id": "GP000078897",
@@ -9750,19 +9997,6 @@
     "YearsOfMissingData": 12
   },
   {
-    "Id": "NZ000093292",
-    "Name": "GISBORNE_AERODROME",
-    "CountryCode": "NZ",
-    "Coordinates": {
-      "Latitude": -38.65,
-      "Longitude": 177.983,
-      "Elevation": 5
-    },
-    "FirstYear": 1906,
-    "LastYear": 2022,
-    "YearsOfMissingData": 31
-  },
-  {
     "Id": "NZ000933090",
     "Name": "NEW_PLYMOUTH_AWS",
     "CountryCode": "NZ",
@@ -9774,32 +10008,6 @@
     "FirstYear": 1944,
     "LastYear": 2022,
     "YearsOfMissingData": 4
-  },
-  {
-    "Id": "NZ000939450",
-    "Name": "CAMPBELL_ISLAND_AWS",
-    "CountryCode": "NZ",
-    "Coordinates": {
-      "Latitude": -52.55,
-      "Longitude": 169.167,
-      "Elevation": 19
-    },
-    "FirstYear": 1944,
-    "LastYear": 2022,
-    "YearsOfMissingData": 4
-  },
-  {
-    "Id": "NZM00093780",
-    "Name": "CHRISTCHURCH_INTL",
-    "CountryCode": "NZ",
-    "Coordinates": {
-      "Latitude": -43.489,
-      "Longitude": 172.532,
-      "Elevation": 37.5
-    },
-    "FirstYear": 1864,
-    "LastYear": 2022,
-    "YearsOfMissingData": 32
   },
   {
     "Id": "PA000086297",
@@ -17732,17 +17940,17 @@
     "YearsOfMissingData": 9
   },
   {
-    "Id": "USC00221880",
-    "Name": "COLUMBUS",
+    "Id": "USC00011694",
+    "Name": "CLANTON",
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 33.4678,
-      "Longitude": -88.3847,
-      "Elevation": 44.2
+      "Latitude": 32.8203,
+      "Longitude": -86.6522,
+      "Elevation": 185.9
     },
-    "FirstYear": 1855,
-    "LastYear": 2017,
-    "YearsOfMissingData": 44
+    "FirstYear": 1896,
+    "LastYear": 2020,
+    "YearsOfMissingData": 29
   },
   {
     "Id": "USW00003103",
@@ -17797,17 +18005,17 @@
     "YearsOfMissingData": 26
   },
   {
-    "Id": "USW00094908",
-    "Name": "DUBUQUE_RGNL_AP",
+    "Id": "USW00003952",
+    "Name": "LITTLE_ROCK",
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 42.3978,
-      "Longitude": -90.7036,
-      "Elevation": 321.9
+      "Latitude": 34.8364,
+      "Longitude": -92.2619,
+      "Elevation": 173.1
     },
-    "FirstYear": 1851,
+    "FirstYear": 1880,
     "LastYear": 2022,
-    "YearsOfMissingData": 6
+    "YearsOfMissingData": 1
   },
   {
     "Id": "USC00035908",
@@ -17821,6 +18029,19 @@
     "FirstYear": 1899,
     "LastYear": 2020,
     "YearsOfMissingData": 26
+  },
+  {
+    "Id": "USW00094908",
+    "Name": "DUBUQUE_RGNL_AP",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 42.3978,
+      "Longitude": -90.7036,
+      "Elevation": 321.9
+    },
+    "FirstYear": 1851,
+    "LastYear": 2022,
+    "YearsOfMissingData": 6
   },
   {
     "Id": "USC00034106",
@@ -17860,6 +18081,19 @@
     "FirstYear": 1854,
     "LastYear": 2022,
     "YearsOfMissingData": 14
+  },
+  {
+    "Id": "USW00024131",
+    "Name": "BOISE_AIR_TERMINAL",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 43.5667,
+      "Longitude": -116.2406,
+      "Elevation": 857.7
+    },
+    "FirstYear": 1865,
+    "LastYear": 2022,
+    "YearsOfMissingData": 9
   },
   {
     "Id": "USC00043157",
@@ -17992,17 +18226,17 @@
     "YearsOfMissingData": 20
   },
   {
-    "Id": "USC00055722",
-    "Name": "MONTROSE_2",
+    "Id": "USW00023061",
+    "Name": "ALAMOSA_SAN_LUIS_AP",
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 38.4858,
-      "Longitude": -107.8792,
-      "Elevation": 1764.5
+      "Latitude": 37.4389,
+      "Longitude": -105.8614,
+      "Elevation": 2296.1
     },
-    "FirstYear": 1908,
-    "LastYear": 2020,
-    "YearsOfMissingData": 22
+    "FirstYear": 1948,
+    "LastYear": 2022,
+    "YearsOfMissingData": 3
   },
   {
     "Id": "USW00024015",
@@ -18016,6 +18250,19 @@
     "FirstYear": 1939,
     "LastYear": 2022,
     "YearsOfMissingData": 8
+  },
+  {
+    "Id": "USC00055722",
+    "Name": "MONTROSE_2",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 38.4858,
+      "Longitude": -107.8792,
+      "Elevation": 1764.5
+    },
+    "FirstYear": 1908,
+    "LastYear": 2020,
+    "YearsOfMissingData": 22
   },
   {
     "Id": "USC00058429",
@@ -18148,6 +18395,19 @@
     "YearsOfMissingData": 51
   },
   {
+    "Id": "USW00013870",
+    "Name": "ALMA_BACON_CO_AP",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 31.5358,
+      "Longitude": -82.5067,
+      "Elevation": 58.8
+    },
+    "FirstYear": 1939,
+    "LastYear": 2022,
+    "YearsOfMissingData": 1
+  },
+  {
     "Id": "USC00486440",
     "Name": "MORAN_5WNW",
     "CountryCode": "US",
@@ -18159,19 +18419,6 @@
     "FirstYear": 1912,
     "LastYear": 2022,
     "YearsOfMissingData": 18
-  },
-  {
-    "Id": "USC00106542",
-    "Name": "OAKLEY",
-    "CountryCode": "US",
-    "Coordinates": {
-      "Latitude": 42.2342,
-      "Longitude": -113.8981,
-      "Elevation": 1389.6
-    },
-    "FirstYear": 1894,
-    "LastYear": 2021,
-    "YearsOfMissingData": 22
   },
   {
     "Id": "USC00422101",
@@ -18187,17 +18434,30 @@
     "YearsOfMissingData": 21
   },
   {
-    "Id": "USW00023047",
-    "Name": "AMARILLO",
+    "Id": "USC00106542",
+    "Name": "OAKLEY",
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 35.2333,
-      "Longitude": -101.7089,
-      "Elevation": 1093.3
+      "Latitude": 42.2342,
+      "Longitude": -113.8981,
+      "Elevation": 1389.6
     },
-    "FirstYear": 1892,
+    "FirstYear": 1894,
+    "LastYear": 2021,
+    "YearsOfMissingData": 22
+  },
+  {
+    "Id": "USW00023051",
+    "Name": "CLAYTON_MUNI_AIR_PK",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 36.4486,
+      "Longitude": -103.1539,
+      "Elevation": 1511.8
+    },
+    "FirstYear": 1897,
     "LastYear": 2022,
-    "YearsOfMissingData": 6
+    "YearsOfMissingData": 41
   },
   {
     "Id": "USW00013897",
@@ -18265,6 +18525,19 @@
     "YearsOfMissingData": 73
   },
   {
+    "Id": "USC00188380",
+    "Name": "SNOW_HILL_4_N",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 38.2364,
+      "Longitude": -75.3789,
+      "Elevation": 9.1
+    },
+    "FirstYear": 1919,
+    "LastYear": 2022,
+    "YearsOfMissingData": 21
+  },
+  {
     "Id": "USW00014838",
     "Name": "MARQUETTE",
     "CountryCode": "US",
@@ -18278,17 +18551,17 @@
     "YearsOfMissingData": 11
   },
   {
-    "Id": "USC00204104",
-    "Name": "IRONWOOD",
+    "Id": "USC00207812",
+    "Name": "STAMBAUGH_2SSE",
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 46.4656,
-      "Longitude": -90.1892,
-      "Elevation": 435.9
+      "Latitude": 46.0556,
+      "Longitude": -88.6275,
+      "Elevation": 442
     },
-    "FirstYear": 1903,
+    "FirstYear": 1897,
     "LastYear": 2022,
-    "YearsOfMissingData": 16
+    "YearsOfMissingData": 25
   },
   {
     "Id": "USC00207364",
@@ -18330,17 +18603,30 @@
     "YearsOfMissingData": 63
   },
   {
-    "Id": "USW00024143",
-    "Name": "GREAT_FALLS_INTL_AP",
+    "Id": "USC00221880",
+    "Name": "COLUMBUS",
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 47.4733,
-      "Longitude": -111.3822,
-      "Elevation": 1116.8
+      "Latitude": 33.4678,
+      "Longitude": -88.3847,
+      "Elevation": 44.2
     },
-    "FirstYear": 1893,
+    "FirstYear": 1855,
+    "LastYear": 2017,
+    "YearsOfMissingData": 44
+  },
+  {
+    "Id": "USW00024153",
+    "Name": "MISSOULA_INTL_AP",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 46.9208,
+      "Longitude": -114.0925,
+      "Elevation": 972.9
+    },
+    "FirstYear": 1886,
     "LastYear": 2022,
-    "YearsOfMissingData": 4
+    "YearsOfMissingData": 20
   },
   {
     "Id": "USC00241044",
@@ -18369,6 +18655,19 @@
     "YearsOfMissingData": 21
   },
   {
+    "Id": "USW00024143",
+    "Name": "GREAT_FALLS_INTL_AP",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 47.4733,
+      "Longitude": -111.3822,
+      "Elevation": 1116.8
+    },
+    "FirstYear": 1893,
+    "LastYear": 2022,
+    "YearsOfMissingData": 4
+  },
+  {
     "Id": "USW00094012",
     "Name": "HAVRE_CITY_CO_AP",
     "CountryCode": "US",
@@ -18380,6 +18679,19 @@
     "FirstYear": 1880,
     "LastYear": 2022,
     "YearsOfMissingData": 6
+  },
+  {
+    "Id": "USC00244558",
+    "Name": "KALISPELL_GLACIER_AP",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 48.3042,
+      "Longitude": -114.2636,
+      "Elevation": 901.3
+    },
+    "FirstYear": 1898,
+    "LastYear": 2022,
+    "YearsOfMissingData": 5
   },
   {
     "Id": "USW00024011",
@@ -18434,17 +18746,17 @@
     "YearsOfMissingData": 15
   },
   {
-    "Id": "USC00262780",
-    "Name": "FALLON_EXP_STN",
+    "Id": "USC00264698",
+    "Name": "LOVELOCK",
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 39.4572,
-      "Longitude": -118.7811,
-      "Elevation": 1208.5
+      "Latitude": 40.1906,
+      "Longitude": -118.4767,
+      "Elevation": 1211.6
     },
     "FirstYear": 1892,
     "LastYear": 2022,
-    "YearsOfMissingData": 34
+    "YearsOfMissingData": 64
   },
   {
     "Id": "USW00023154",
@@ -18460,17 +18772,17 @@
     "YearsOfMissingData": 0
   },
   {
-    "Id": "USC00299820",
-    "Name": "WOLF_CANYON",
+    "Id": "USC00291664",
+    "Name": "CHAMA",
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 35.9478,
-      "Longitude": -106.7469,
-      "Elevation": 2505.5
+      "Latitude": 36.9178,
+      "Longitude": -106.5781,
+      "Elevation": 2392.7
     },
-    "FirstYear": 1912,
-    "LastYear": 2022,
-    "YearsOfMissingData": 16
+    "FirstYear": 1890,
+    "LastYear": 2018,
+    "YearsOfMissingData": 49
   },
   {
     "Id": "USC00291813",
@@ -18499,6 +18811,19 @@
     "YearsOfMissingData": 20
   },
   {
+    "Id": "USC00299820",
+    "Name": "WOLF_CANYON",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 35.9478,
+      "Longitude": -106.7469,
+      "Elevation": 2505.5
+    },
+    "FirstYear": 1912,
+    "LastYear": 2022,
+    "YearsOfMissingData": 16
+  },
+  {
     "Id": "USC00295150",
     "Name": "LOS_LUNAS_3_SSW",
     "CountryCode": "US",
@@ -18512,17 +18837,17 @@
     "YearsOfMissingData": 46
   },
   {
-    "Id": "USC00417079",
-    "Name": "PLAINVIEW",
+    "Id": "USC00416135",
+    "Name": "MULESHOE_1",
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 34.1892,
-      "Longitude": -101.7022,
-      "Elevation": 1027.2
+      "Latitude": 34.2192,
+      "Longitude": -102.7328,
+      "Elevation": 1167.4
     },
-    "FirstYear": 1895,
+    "FirstYear": 1928,
     "LastYear": 2022,
-    "YearsOfMissingData": 20
+    "YearsOfMissingData": 19
   },
   {
     "Id": "USC00298535",
@@ -18562,6 +18887,19 @@
     "FirstYear": 1906,
     "LastYear": 2022,
     "YearsOfMissingData": 22
+  },
+  {
+    "Id": "USC00325730",
+    "Name": "MC_HENRY_3W",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 47.5808,
+      "Longitude": -98.6422,
+      "Elevation": 474
+    },
+    "FirstYear": 1910,
+    "LastYear": 2022,
+    "YearsOfMissingData": 32
   },
   {
     "Id": "USC00325710",
@@ -18642,6 +18980,19 @@
     "YearsOfMissingData": 14
   },
   {
+    "Id": "USW00023047",
+    "Name": "AMARILLO",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 35.2333,
+      "Longitude": -101.7089,
+      "Elevation": 1093.3
+    },
+    "FirstYear": 1892,
+    "LastYear": 2022,
+    "YearsOfMissingData": 6
+  },
+  {
     "Id": "USC00411048",
     "Name": "BRENHAM",
     "CountryCode": "US",
@@ -18655,17 +19006,17 @@
     "YearsOfMissingData": 27
   },
   {
-    "Id": "USC00414382",
-    "Name": "HUNTSVILLE",
+    "Id": "USC00411596",
+    "Name": "CENTERVILLE",
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 30.7064,
-      "Longitude": -95.5422,
-      "Elevation": 150.6
+      "Latitude": 31.2581,
+      "Longitude": -95.9744,
+      "Elevation": 97.5
     },
-    "FirstYear": 1905,
-    "LastYear": 2022,
-    "YearsOfMissingData": 28
+    "FirstYear": 1942,
+    "LastYear": 2021,
+    "YearsOfMissingData": 14
   },
   {
     "Id": "USC00412011",
@@ -18679,6 +19030,19 @@
     "FirstYear": 1888,
     "LastYear": 2022,
     "YearsOfMissingData": 10
+  },
+  {
+    "Id": "USC00417079",
+    "Name": "PLAINVIEW",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 34.1892,
+      "Longitude": -101.7022,
+      "Elevation": 1027.2
+    },
+    "FirstYear": 1895,
+    "LastYear": 2022,
+    "YearsOfMissingData": 20
   },
   {
     "Id": "USC00412266",
@@ -18757,6 +19121,19 @@
     "FirstYear": 1899,
     "LastYear": 2022,
     "YearsOfMissingData": 52
+  },
+  {
+    "Id": "USC00450587",
+    "Name": "BELLINGHAM_3_SSW",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 48.7178,
+      "Longitude": -122.5114,
+      "Elevation": 4.6
+    },
+    "FirstYear": 1858,
+    "LastYear": 2022,
+    "YearsOfMissingData": 51
   },
   {
     "Id": "USW00024021",
@@ -18900,19 +19277,6 @@
     "FirstYear": 1942,
     "LastYear": 2022,
     "YearsOfMissingData": 7
-  },
-  {
-    "Id": "USW00024145",
-    "Name": "IDAHO_FALLS_FANNING_FLD",
-    "CountryCode": "US",
-    "Coordinates": {
-      "Latitude": 43.5164,
-      "Longitude": -112.0672,
-      "Elevation": 1441.4
-    },
-    "FirstYear": 1949,
-    "LastYear": 2022,
-    "YearsOfMissingData": 6
   },
   {
     "Id": "USW00025325",
@@ -19084,6 +19448,19 @@
     "YearsOfMissingData": 11
   },
   {
+    "Id": "USC00104845",
+    "Name": "KETCHUM_RS",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 43.6842,
+      "Longitude": -114.3603,
+      "Elevation": 1795.3
+    },
+    "FirstYear": 1909,
+    "LastYear": 2021,
+    "YearsOfMissingData": 38
+  },
+  {
     "Id": "USC00107264",
     "Name": "PORTHILL",
     "CountryCode": "US",
@@ -19136,6 +19513,19 @@
     "YearsOfMissingData": 30
   },
   {
+    "Id": "USC00204104",
+    "Name": "IRONWOOD",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 46.4656,
+      "Longitude": -90.1892,
+      "Elevation": 435.9
+    },
+    "FirstYear": 1903,
+    "LastYear": 2022,
+    "YearsOfMissingData": 16
+  },
+  {
     "Id": "USC00205816",
     "Name": "NEWBERRY_CORRECTIONAL_FACILITY",
     "CountryCode": "US",
@@ -19160,6 +19550,19 @@
     "FirstYear": 1913,
     "LastYear": 2017,
     "YearsOfMissingData": 40
+  },
+  {
+    "Id": "USC00212645",
+    "Name": "EVELETH_WWTP",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 47.4581,
+      "Longitude": -92.5303,
+      "Elevation": 440.4
+    },
+    "FirstYear": 1894,
+    "LastYear": 2021,
+    "YearsOfMissingData": 19
   },
   {
     "Id": "USC00213282",
@@ -19201,6 +19604,19 @@
     "YearsOfMissingData": 20
   },
   {
+    "Id": "USC00262780",
+    "Name": "FALLON_EXP_STN",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 39.4572,
+      "Longitude": -118.7811,
+      "Elevation": 1208.5
+    },
+    "FirstYear": 1892,
+    "LastYear": 2022,
+    "YearsOfMissingData": 34
+  },
+  {
     "Id": "USC00265168",
     "Name": "MINA",
     "CountryCode": "US",
@@ -19212,6 +19628,19 @@
     "FirstYear": 1898,
     "LastYear": 2021,
     "YearsOfMissingData": 63
+  },
+  {
+    "Id": "USC00272999",
+    "Name": "FIRST_CONNECTICUT_LAKE",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 45.09,
+      "Longitude": -71.2906,
+      "Elevation": 502.9
+    },
+    "FirstYear": 1921,
+    "LastYear": 2022,
+    "YearsOfMissingData": 15
   },
   {
     "Id": "USC00292848",
@@ -19266,6 +19695,19 @@
     "YearsOfMissingData": 10
   },
   {
+    "Id": "USC00389469",
+    "Name": "YEMASSEE",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 32.6803,
+      "Longitude": -80.8419,
+      "Elevation": 7.6
+    },
+    "FirstYear": 1896,
+    "LastYear": 2022,
+    "YearsOfMissingData": 44
+  },
+  {
     "Id": "USC00391972",
     "Name": "COTTONWOOD_2_E",
     "CountryCode": "US",
@@ -19318,6 +19760,19 @@
     "YearsOfMissingData": 10
   },
   {
+    "Id": "USC00411800",
+    "Name": "CLEBURNE",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 32.3139,
+      "Longitude": -97.4061,
+      "Elevation": 238.7
+    },
+    "FirstYear": 1915,
+    "LastYear": 2017,
+    "YearsOfMissingData": 13
+  },
+  {
     "Id": "USC00412019",
     "Name": "CORSICANA",
     "CountryCode": "US",
@@ -19342,6 +19797,19 @@
     "FirstYear": 1860,
     "LastYear": 2022,
     "YearsOfMissingData": 67
+  },
+  {
+    "Id": "USC00414382",
+    "Name": "HUNTSVILLE",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 30.7064,
+      "Longitude": -95.5422,
+      "Elevation": 150.6
+    },
+    "FirstYear": 1905,
+    "LastYear": 2022,
+    "YearsOfMissingData": 28
   },
   {
     "Id": "USC00422592",
@@ -19474,6 +19942,19 @@
     "YearsOfMissingData": 4
   },
   {
+    "Id": "USW00012835",
+    "Name": "FT_MYERS_PAGE_FLD_AP",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 26.585,
+      "Longitude": -81.8614,
+      "Elevation": 4.6
+    },
+    "FirstYear": 1892,
+    "LastYear": 2022,
+    "YearsOfMissingData": 46
+  },
+  {
     "Id": "USW00012836",
     "Name": "KEY_WEST_INTL_AP",
     "CountryCode": "US",
@@ -19498,6 +19979,19 @@
     "FirstYear": 1949,
     "LastYear": 2022,
     "YearsOfMissingData": 4
+  },
+  {
+    "Id": "USW00013865",
+    "Name": "MERIDIAN_KEY_FLD",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 32.3347,
+      "Longitude": -88.7442,
+      "Elevation": 89.6
+    },
+    "FirstYear": 1890,
+    "LastYear": 2022,
+    "YearsOfMissingData": 5
   },
   {
     "Id": "USW00013874",
@@ -19721,6 +20215,19 @@
     "YearsOfMissingData": 7
   },
   {
+    "Id": "USW00023158",
+    "Name": "BLYTHE_AP",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 33.6186,
+      "Longitude": -114.7142,
+      "Elevation": 120.4
+    },
+    "FirstYear": 1949,
+    "LastYear": 2022,
+    "YearsOfMissingData": 12
+  },
+  {
     "Id": "USW00023169",
     "Name": "LAS_VEGAS_MCCARRAN_AP",
     "CountryCode": "US",
@@ -19782,6 +20289,19 @@
       "Elevation": 1489.3
     },
     "FirstYear": 1899,
+    "LastYear": 2022,
+    "YearsOfMissingData": 21
+  },
+  {
+    "Id": "USW00024022",
+    "Name": "LARAMIE_RGNL_AP",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 41.3119,
+      "Longitude": -105.6747,
+      "Elevation": 2214.7
+    },
+    "FirstYear": 1870,
     "LastYear": 2022,
     "YearsOfMissingData": 21
   },
@@ -19849,6 +20369,45 @@
     "FirstYear": 1950,
     "LastYear": 2022,
     "YearsOfMissingData": 5
+  },
+  {
+    "Id": "USW00024145",
+    "Name": "IDAHO_FALLS_FANNING_FLD",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 43.5164,
+      "Longitude": -112.0672,
+      "Elevation": 1441.4
+    },
+    "FirstYear": 1949,
+    "LastYear": 2022,
+    "YearsOfMissingData": 6
+  },
+  {
+    "Id": "USW00024156",
+    "Name": "POCATELLO_RGNL_AP",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 42.9203,
+      "Longitude": -112.5711,
+      "Elevation": 1364.9
+    },
+    "FirstYear": 1950,
+    "LastYear": 2022,
+    "YearsOfMissingData": 6
+  },
+  {
+    "Id": "USW00024284",
+    "Name": "NORTH_BEND_RGNL_AP",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 43.4133,
+      "Longitude": -124.2436,
+      "Elevation": 5.2
+    },
+    "FirstYear": 1902,
+    "LastYear": 2022,
+    "YearsOfMissingData": 13
   },
   {
     "Id": "USW00025333",
@@ -20213,6 +20772,19 @@
     "FirstYear": 1907,
     "LastYear": 2022,
     "YearsOfMissingData": 23
+  },
+  {
+    "Id": "USW00094143",
+    "Name": "IDAHO_FALLS_46_W",
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 43.5317,
+      "Longitude": -112.9422,
+      "Elevation": 1505.1
+    },
+    "FirstYear": 1955,
+    "LastYear": 2021,
+    "YearsOfMissingData": 4
   },
   {
     "Id": "UVM00065503",

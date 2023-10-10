@@ -30,6 +30,8 @@ public class Station
         }
     }
 
+    [JsonIgnore]
+    public string? Source { get; set; }
     public static async Task<List<Station>?> GetStationsFromFiles(List<string> pathAndFileNames)
     {
         var stations = new List<Station>();

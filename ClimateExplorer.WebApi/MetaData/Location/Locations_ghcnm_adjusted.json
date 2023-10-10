@@ -535,32 +535,6 @@
   {
     "CountryCode": "AS",
     "Coordinates": {
-      "Latitude": -31.6508,
-      "Longitude": 116.6586,
-      "Elevation": 170
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "5f56ab2f-1c8c-4e57-86d1-a6ab71471973",
-    "Name": "Northam"
-  },
-  {
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -34.9524,
-      "Longitude": 138.5204,
-      "Elevation": 2
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "7013b99d-d113-498d-9a43-8bc54c6b59a6",
-    "Name": "Adelaide Airport"
-  },
-  {
-    "CountryCode": "AS",
-    "Coordinates": {
       "Latitude": -25.5161,
       "Longitude": 152.7156,
       "Elevation": 10.3
@@ -583,45 +557,6 @@
     "NearbyLocations": null,
     "Id": "32e452bd-f872-4822-b9df-7476b26ce130",
     "Name": "Tenterfield Federation Park"
-  },
-  {
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -31.7651,
-      "Longitude": 150.8363,
-      "Elevation": 466
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "b050744e-f5c2-45ab-b287-49a663c41646",
-    "Name": "Murrurundi Post Office"
-  },
-  {
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -32.9185,
-      "Longitude": 151.7985,
-      "Elevation": 33
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "e4442140-ecdb-45e1-8733-efd7192ec52c",
-    "Name": "Newcastle Nobbys Signal Statio"
-  },
-  {
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -35.3,
-      "Longitude": 149.1,
-      "Elevation": 581
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "3308b4e9-7846-45af-84f2-7d2dd1e8d8af",
-    "Name": "Canberra Forestry"
   },
   {
     "CountryCode": "AS",
@@ -652,19 +587,6 @@
   {
     "CountryCode": "AS",
     "Coordinates": {
-      "Latitude": -17.9475,
-      "Longitude": 122.2353,
-      "Elevation": 7.4
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "e3318fbd-f1a6-4e06-9c10-84f15901b410",
-    "Name": "Broome Airport"
-  },
-  {
-    "CountryCode": "AS",
-    "Coordinates": {
       "Latitude": -20.7767,
       "Longitude": 117.1456,
       "Elevation": 12
@@ -687,19 +609,6 @@
     "NearbyLocations": null,
     "Id": "4af87fab-cf88-42f0-ac40-71d23e65413e",
     "Name": "Cape Naturaliste"
-  },
-  {
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -30.7847,
-      "Longitude": 121.4533,
-      "Elevation": 365.3
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "ca535735-be2c-4136-abb7-1786162df15e",
-    "Name": "Kalgoorlie Boulder Airport"
   },
   {
     "CountryCode": "AS",
@@ -769,6 +678,19 @@
   {
     "CountryCode": "AS",
     "Coordinates": {
+      "Latitude": -23.5544,
+      "Longitude": 145.2883,
+      "Elevation": 266.9
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "145c59d2-2af0-4636-a495-7714817d0f10",
+    "Name": "Barcaldine Post Office"
+  },
+  {
+    "CountryCode": "AS",
+    "Coordinates": {
       "Latitude": -25.4228,
       "Longitude": 142.6564,
       "Elevation": 126.3
@@ -821,19 +743,6 @@
   {
     "CountryCode": "AS",
     "Coordinates": {
-      "Latitude": -31.5631,
-      "Longitude": 143.3747,
-      "Elevation": 75
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "c9eaf51e-e367-4ae0-9aa7-eadf75156c1f",
-    "Name": "Wilcanniareid St"
-  },
-  {
-    "CountryCode": "AS",
-    "Coordinates": {
       "Latitude": -31.9759,
       "Longitude": 141.4676,
       "Elevation": 315
@@ -860,32 +769,6 @@
   {
     "CountryCode": "AS",
     "Coordinates": {
-      "Latitude": -31.9861,
-      "Longitude": 147.9489,
-      "Elevation": 215
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "e6812a46-d874-4c84-9dc2-96e13aa30dae",
-    "Name": "Trangie Research Station Aws"
-  },
-  {
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -31.077,
-      "Longitude": 152.8235,
-      "Elevation": 10
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "497fa57e-02f8-4c44-86ff-bb9d7ed4cae8",
-    "Name": "Kempsey Wide Street"
-  },
-  {
-    "CountryCode": "AS",
-    "Coordinates": {
       "Latitude": -31.2712,
       "Longitude": 149.2714,
       "Elevation": 505
@@ -895,19 +778,6 @@
     "NearbyLocations": null,
     "Id": "b56e8371-7c5d-4447-9dc0-f44369396c90",
     "Name": "Coonabarabran Namoi Street"
-  },
-  {
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -32.5635,
-      "Longitude": 148.9503,
-      "Elevation": 305
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "122aa49e-1283-4d2e-9b08-9515dd7d1b0c",
-    "Name": "Wellington Agrowplow"
   },
   {
     "CountryCode": "AS",
@@ -947,19 +817,6 @@
     "NearbyLocations": null,
     "Id": "2bd8278d-d167-454b-a30c-2fbb2be82484",
     "Name": "Hay Miller Street"
-  },
-  {
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -36.1647,
-      "Longitude": 144.7642,
-      "Elevation": 96
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "e409cf58-1229-4209-baf4-6ac8392436aa",
-    "Name": "Echucaaerodrome"
   },
   {
     "CountryCode": "AS",
@@ -1051,6 +908,19 @@
     "NearbyLocations": null,
     "Id": "c8bf18e2-a228-4c1c-add9-ae72a55caed3",
     "Name": "Mirnyj"
+  },
+  {
+    "CountryCode": "AY",
+    "Coordinates": {
+      "Latitude": -66.283,
+      "Longitude": 110.517,
+      "Elevation": 41
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "5fd8efb6-c019-4ab1-8471-0fb223c4b88b",
+    "Name": "Casey"
   },
   {
     "CountryCode": "AY",
@@ -6385,6 +6255,45 @@
   {
     "CountryCode": "GM",
     "Coordinates": {
+      "Latitude": 53.0464,
+      "Longitude": 8.7992,
+      "Elevation": 4
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "fedde825-4561-4b8a-8ea3-3f9686f49710",
+    "Name": "Bremen"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 48.8292,
+      "Longitude": 9.2008,
+      "Elevation": 314
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "dc8a5970-0bb6-4fb6-be9a-d00556caf10d",
+    "Name": "Stuttgart Schnarrenberg"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 51.133,
+      "Longitude": 13.767,
+      "Elevation": 230.1
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "bef4c83f-b603-4095-9a63-523996f46a79",
+    "Name": "Dresden"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
       "Latitude": 52.4639,
       "Longitude": 13.3017,
       "Elevation": 51
@@ -6394,6 +6303,344 @@
     "NearbyLocations": null,
     "Id": "f63801a6-b540-41b5-9566-6069ff1ea04e",
     "Name": "Berlin Dahlem"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 49.0433,
+      "Longitude": 12.1031,
+      "Elevation": 365
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "2bd67ef2-865b-4392-b9b3-c712fb2cb7bb",
+    "Name": "Regensburg"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 47.8017,
+      "Longitude": 11.0117,
+      "Elevation": 977
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "f4881846-ade2-4f3a-9615-05c6bddf4c95",
+    "Name": "Hohenpeissenberg"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 48.1642,
+      "Longitude": 11.5442,
+      "Elevation": 515
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "b237e498-f431-4e81-be19-7ee00ac92500",
+    "Name": "Muenchen"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 53.333,
+      "Longitude": 7.2,
+      "Elevation": 6
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "fd6f1235-5c7e-4aea-ac23-425feb52d9d9",
+    "Name": "Emden Hafen"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 51.8889,
+      "Longitude": 8.3553,
+      "Elevation": 72
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "b15b1564-87c9-4fde-a2fb-e948c751e244",
+    "Name": "Gutersloh"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 51.7625,
+      "Longitude": 6.0956,
+      "Elevation": 46
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "c7095211-dd1c-4e0b-9b1a-ca97a0434561",
+    "Name": "Kleve"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 51.1631,
+      "Longitude": 14.9531,
+      "Elevation": 238
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "2949b99e-64e3-43c6-b684-7b04945c1dbe",
+    "Name": "Gorlitz"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 52.4656,
+      "Longitude": 9.6794,
+      "Elevation": 55
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "decdafb4-23c7-45de-b75f-196fbb811376",
+    "Name": "Hannover"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 48.0317,
+      "Longitude": 12.5408,
+      "Elevation": 559
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "e37aaa42-b4ac-4825-8d4b-84af1d5da494",
+    "Name": "Trostberg"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 53.3242,
+      "Longitude": 11.9333,
+      "Elevation": 81
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "754c3bef-864e-4f93-8cd4-eea2ada0147d",
+    "Name": "Marnitz"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 53,
+      "Longitude": 9.833,
+      "Elevation": 77
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "44ecc05d-6115-4eb2-86ba-8ab6ccd0a782",
+    "Name": "Soltau"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 52.9681,
+      "Longitude": 13.3281,
+      "Elevation": 51
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "69cd8cdb-9219-4418-a697-f600aea47df1",
+    "Name": "Zehdenick"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 54.367,
+      "Longitude": 13.483,
+      "Elevation": 34
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "cf729713-50f7-4be7-b96a-a9687824e5b0",
+    "Name": "Putbus"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 50.4292,
+      "Longitude": 12.9553,
+      "Elevation": 1213
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "970c1e2a-9a0c-412e-82a9-aa93fe6b380d",
+    "Name": "Fichtelberg"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 49.2142,
+      "Longitude": 7.1081,
+      "Elevation": 320
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "797a2d1d-4a7e-435a-8d5c-39733ca51618",
+    "Name": "Saarbrucken Ensheim"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 47.3989,
+      "Longitude": 10.2767,
+      "Elevation": 806
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "0fd28d01-3a01-4f19-a7ba-6d8c8c4ee96e",
+    "Name": "Oberstdorf"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 54.1764,
+      "Longitude": 7.8931,
+      "Elevation": 4
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "af78e14d-eeee-4627-9a4b-080b01d1f904",
+    "Name": "Helgoland"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 54.5294,
+      "Longitude": 11.0617,
+      "Elevation": 3
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "f7af5f79-2408-4524-bf1a-24fe3e2e037b",
+    "Name": "Westermarkelsdorf Fehmarn"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 54.1817,
+      "Longitude": 12.0819,
+      "Elevation": 4
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "3a9b7db0-a32b-4a51-9d1d-dd2e30b4f6f9",
+    "Name": "Rostock Warnemunde"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 53.0331,
+      "Longitude": 13.9931,
+      "Elevation": 54
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "86e6c1d3-abee-4da8-b545-f5d8e48d5aef",
+    "Name": "Angermunde"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 51.7775,
+      "Longitude": 14.3183,
+      "Elevation": 69
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "2cc19331-50b4-4c51-b736-9e401077ae91",
+    "Name": "Cottbus"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 53.75,
+      "Longitude": 14.067,
+      "Elevation": 7
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "feced0f4-496e-4348-842a-1286a9aff03b",
+    "Name": "Ueckermuende Aut"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 52.517,
+      "Longitude": 7.317,
+      "Elevation": 21
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "9698eed3-2db9-4219-a37c-4239fc2317ab",
+    "Name": "Lingen"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 52.517,
+      "Longitude": 11.4,
+      "Elevation": 48
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "23311e18-e628-4f6b-815e-b0d57ade61c5",
+    "Name": "Gardelegen Aut"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 51.883,
+      "Longitude": 12.65,
+      "Elevation": 106
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "37211d31-d2e4-4b4a-8c4e-4884540568f5",
+    "Name": "Wittenberg"
+  },
+  {
+    "CountryCode": "GM",
+    "Coordinates": {
+      "Latitude": 51.65,
+      "Longitude": 13.583,
+      "Elevation": 100
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "91988c0c-273e-4d2b-9365-7dce31c635b4",
+    "Name": "Doberlug Kirchhain"
   },
   {
     "CountryCode": "GP",
@@ -9752,19 +9999,6 @@
   {
     "CountryCode": "NZ",
     "Coordinates": {
-      "Latitude": -38.65,
-      "Longitude": 177.983,
-      "Elevation": 5
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "3b71f6ac-8298-407f-9d0b-20c3ed640e0d",
-    "Name": "Gisborne Aerodrome"
-  },
-  {
-    "CountryCode": "NZ",
-    "Coordinates": {
       "Latitude": -39.017,
       "Longitude": 174.183,
       "Elevation": 32
@@ -9774,32 +10008,6 @@
     "NearbyLocations": null,
     "Id": "1126ebd7-79c2-4fe3-80b2-f425d2d92952",
     "Name": "New Plymouth Aws"
-  },
-  {
-    "CountryCode": "NZ",
-    "Coordinates": {
-      "Latitude": -52.55,
-      "Longitude": 169.167,
-      "Elevation": 19
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "448febb4-7259-454b-89e5-655971d57d91",
-    "Name": "Campbell Island Aws"
-  },
-  {
-    "CountryCode": "NZ",
-    "Coordinates": {
-      "Latitude": -43.489,
-      "Longitude": 172.532,
-      "Elevation": 37.5
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "07f03e68-0cbc-4f7e-a83f-b7f945083bad",
-    "Name": "Christchurch Intl"
   },
   {
     "CountryCode": "PA",
@@ -17734,15 +17942,15 @@
   {
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 33.4678,
-      "Longitude": -88.3847,
-      "Elevation": 44.2
+      "Latitude": 32.8203,
+      "Longitude": -86.6522,
+      "Elevation": 185.9
     },
     "WarmingIndex": null,
     "HeatingScore": null,
     "NearbyLocations": null,
-    "Id": "807d92fb-89a0-4540-a720-085cdc3d713c",
-    "Name": "Columbus"
+    "Id": "aacb992e-8cbb-4a5e-beb5-34bf276ae6ec",
+    "Name": "Clanton"
   },
   {
     "CountryCode": "US",
@@ -17799,15 +18007,15 @@
   {
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 42.3978,
-      "Longitude": -90.7036,
-      "Elevation": 321.9
+      "Latitude": 34.8364,
+      "Longitude": -92.2619,
+      "Elevation": 173.1
     },
     "WarmingIndex": null,
     "HeatingScore": null,
     "NearbyLocations": null,
-    "Id": "1f301743-e86e-4c3d-8642-bfff829ef3ed",
-    "Name": "Dubuque Rgnl Ap"
+    "Id": "2c45e859-47d0-4309-9ad1-0c8ba73cc13b",
+    "Name": "Little Rock"
   },
   {
     "CountryCode": "US",
@@ -17821,6 +18029,19 @@
     "NearbyLocations": null,
     "Id": "1e9e66f9-8117-409d-a91b-28258e6cbce5",
     "Name": "Prescott 2 Nnw"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 42.3978,
+      "Longitude": -90.7036,
+      "Elevation": 321.9
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "1f301743-e86e-4c3d-8642-bfff829ef3ed",
+    "Name": "Dubuque Rgnl Ap"
   },
   {
     "CountryCode": "US",
@@ -17860,6 +18081,19 @@
     "NearbyLocations": null,
     "Id": "fb7e97f7-5938-4f39-83e5-a0d52dd39805",
     "Name": "Sacramento 5 Ese"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 43.5667,
+      "Longitude": -116.2406,
+      "Elevation": 857.7
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "95293777-b4d1-4059-9d79-bf61d151793a",
+    "Name": "Boise Air Terminal"
   },
   {
     "CountryCode": "US",
@@ -17994,15 +18228,15 @@
   {
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 38.4858,
-      "Longitude": -107.8792,
-      "Elevation": 1764.5
+      "Latitude": 37.4389,
+      "Longitude": -105.8614,
+      "Elevation": 2296.1
     },
     "WarmingIndex": null,
     "HeatingScore": null,
     "NearbyLocations": null,
-    "Id": "3dc73939-04c1-4010-9ec4-7e944e63d926",
-    "Name": "Montrose 2"
+    "Id": "bfe35014-a706-461b-a00c-b191f0a4cd1e",
+    "Name": "Alamosa San Luis Ap"
   },
   {
     "CountryCode": "US",
@@ -18016,6 +18250,19 @@
     "NearbyLocations": null,
     "Id": "77ffb49f-35c2-4acd-976b-eb25c337fb52",
     "Name": "Akron Washington Co Ap"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 38.4858,
+      "Longitude": -107.8792,
+      "Elevation": 1764.5
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "3dc73939-04c1-4010-9ec4-7e944e63d926",
+    "Name": "Montrose 2"
   },
   {
     "CountryCode": "US",
@@ -18150,6 +18397,19 @@
   {
     "CountryCode": "US",
     "Coordinates": {
+      "Latitude": 31.5358,
+      "Longitude": -82.5067,
+      "Elevation": 58.8
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "440f7bff-57db-420e-9031-4d35554afc10",
+    "Name": "Alma Bacon Co Ap"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
       "Latitude": 43.8567,
       "Longitude": -110.5889,
       "Elevation": 2072
@@ -18159,19 +18419,6 @@
     "NearbyLocations": null,
     "Id": "3a68be73-4f12-4f0b-8efd-f038455272e6",
     "Name": "Moran 5Wnw"
-  },
-  {
-    "CountryCode": "US",
-    "Coordinates": {
-      "Latitude": 42.2342,
-      "Longitude": -113.8981,
-      "Elevation": 1389.6
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "ad5f41f1-cc56-4d53-b7eb-12e241e6478a",
-    "Name": "Oakley"
   },
   {
     "CountryCode": "US",
@@ -18189,15 +18436,28 @@
   {
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 35.2333,
-      "Longitude": -101.7089,
-      "Elevation": 1093.3
+      "Latitude": 42.2342,
+      "Longitude": -113.8981,
+      "Elevation": 1389.6
     },
     "WarmingIndex": null,
     "HeatingScore": null,
     "NearbyLocations": null,
-    "Id": "443b8b41-cbcc-4a1e-a784-9c5653dbb9dc",
-    "Name": "Amarillo"
+    "Id": "ad5f41f1-cc56-4d53-b7eb-12e241e6478a",
+    "Name": "Oakley"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 36.4486,
+      "Longitude": -103.1539,
+      "Elevation": 1511.8
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "67d80e1c-cc4e-4b53-812e-6c9a269e6dc5",
+    "Name": "Clayton Muni Air Pk"
   },
   {
     "CountryCode": "US",
@@ -18267,6 +18527,19 @@
   {
     "CountryCode": "US",
     "Coordinates": {
+      "Latitude": 38.2364,
+      "Longitude": -75.3789,
+      "Elevation": 9.1
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "15a61a5d-ee50-490f-9866-f4766c54a2b8",
+    "Name": "Snow Hill 4 N"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
       "Latitude": 46.5458,
       "Longitude": -87.3794,
       "Elevation": 202.7
@@ -18280,15 +18553,15 @@
   {
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 46.4656,
-      "Longitude": -90.1892,
-      "Elevation": 435.9
+      "Latitude": 46.0556,
+      "Longitude": -88.6275,
+      "Elevation": 442
     },
     "WarmingIndex": null,
     "HeatingScore": null,
     "NearbyLocations": null,
-    "Id": "7bf0c5d8-ef9a-4c9f-9a02-f069b5f03dd2",
-    "Name": "Ironwood"
+    "Id": "41132f4c-d0d7-4af7-8c00-286f9233c0f7",
+    "Name": "Stambaugh 2Sse"
   },
   {
     "CountryCode": "US",
@@ -18332,15 +18605,28 @@
   {
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 47.4733,
-      "Longitude": -111.3822,
-      "Elevation": 1116.8
+      "Latitude": 33.4678,
+      "Longitude": -88.3847,
+      "Elevation": 44.2
     },
     "WarmingIndex": null,
     "HeatingScore": null,
     "NearbyLocations": null,
-    "Id": "36991710-4fbc-4044-b505-b204b8d3516c",
-    "Name": "Great Falls Intl Ap"
+    "Id": "807d92fb-89a0-4540-a720-085cdc3d713c",
+    "Name": "Columbus"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 46.9208,
+      "Longitude": -114.0925,
+      "Elevation": 972.9
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "1f349a7a-d916-4c62-8636-f636e0aa0830",
+    "Name": "Missoula Intl Ap"
   },
   {
     "CountryCode": "US",
@@ -18371,6 +18657,19 @@
   {
     "CountryCode": "US",
     "Coordinates": {
+      "Latitude": 47.4733,
+      "Longitude": -111.3822,
+      "Elevation": 1116.8
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "36991710-4fbc-4044-b505-b204b8d3516c",
+    "Name": "Great Falls Intl Ap"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
       "Latitude": 48.5428,
       "Longitude": -109.7633,
       "Elevation": 787.9
@@ -18380,6 +18679,19 @@
     "NearbyLocations": null,
     "Id": "a02e57e8-5d29-417c-9d6f-212c6478bfd9",
     "Name": "Havre City Co Ap"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 48.3042,
+      "Longitude": -114.2636,
+      "Elevation": 901.3
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "1c76b9ce-aba5-40ec-93ce-c211ab97ee9f",
+    "Name": "Kalispell Glacier Ap"
   },
   {
     "CountryCode": "US",
@@ -18436,15 +18748,15 @@
   {
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 39.4572,
-      "Longitude": -118.7811,
-      "Elevation": 1208.5
+      "Latitude": 40.1906,
+      "Longitude": -118.4767,
+      "Elevation": 1211.6
     },
     "WarmingIndex": null,
     "HeatingScore": null,
     "NearbyLocations": null,
-    "Id": "05819091-a22e-4e05-859a-cf0e53b4f133",
-    "Name": "Fallon Exp Stn"
+    "Id": "eaa9e821-8861-4acd-bd38-310012ea2b61",
+    "Name": "Lovelock"
   },
   {
     "CountryCode": "US",
@@ -18462,15 +18774,15 @@
   {
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 35.9478,
-      "Longitude": -106.7469,
-      "Elevation": 2505.5
+      "Latitude": 36.9178,
+      "Longitude": -106.5781,
+      "Elevation": 2392.7
     },
     "WarmingIndex": null,
     "HeatingScore": null,
     "NearbyLocations": null,
-    "Id": "d925d842-6d54-4eff-ba23-04ba46d75c14",
-    "Name": "Wolf Canyon"
+    "Id": "c1437d5d-6364-4606-99e1-99166d3f19d2",
+    "Name": "Chama"
   },
   {
     "CountryCode": "US",
@@ -18501,6 +18813,19 @@
   {
     "CountryCode": "US",
     "Coordinates": {
+      "Latitude": 35.9478,
+      "Longitude": -106.7469,
+      "Elevation": 2505.5
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "d925d842-6d54-4eff-ba23-04ba46d75c14",
+    "Name": "Wolf Canyon"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
       "Latitude": 34.7675,
       "Longitude": -106.7611,
       "Elevation": 1475.2
@@ -18514,15 +18839,15 @@
   {
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 34.1892,
-      "Longitude": -101.7022,
-      "Elevation": 1027.2
+      "Latitude": 34.2192,
+      "Longitude": -102.7328,
+      "Elevation": 1167.4
     },
     "WarmingIndex": null,
     "HeatingScore": null,
     "NearbyLocations": null,
-    "Id": "9ae2689f-9dfe-4271-9b45-7823cefbd724",
-    "Name": "Plainview"
+    "Id": "829b5b5d-fae8-4d61-9e83-712b996d361a",
+    "Name": "Muleshoe 1"
   },
   {
     "CountryCode": "US",
@@ -18562,6 +18887,19 @@
     "NearbyLocations": null,
     "Id": "b92d58e5-0250-4570-b3d3-f73a6157c811",
     "Name": "Bottineau"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 47.5808,
+      "Longitude": -98.6422,
+      "Elevation": 474
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "21e775aa-800c-488e-9b46-01d9f898f75f",
+    "Name": "Mc Henry 3W"
   },
   {
     "CountryCode": "US",
@@ -18644,6 +18982,19 @@
   {
     "CountryCode": "US",
     "Coordinates": {
+      "Latitude": 35.2333,
+      "Longitude": -101.7089,
+      "Elevation": 1093.3
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "443b8b41-cbcc-4a1e-a784-9c5653dbb9dc",
+    "Name": "Amarillo"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
       "Latitude": 30.1592,
       "Longitude": -96.3972,
       "Elevation": 95.4
@@ -18657,15 +19008,15 @@
   {
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 30.7064,
-      "Longitude": -95.5422,
-      "Elevation": 150.6
+      "Latitude": 31.2581,
+      "Longitude": -95.9744,
+      "Elevation": 97.5
     },
     "WarmingIndex": null,
     "HeatingScore": null,
     "NearbyLocations": null,
-    "Id": "6507b068-862d-4baa-9c35-f38b6970309f",
-    "Name": "Huntsville"
+    "Id": "2630bb2b-e59f-4c0f-8d05-1addedb22693",
+    "Name": "Centerville"
   },
   {
     "CountryCode": "US",
@@ -18679,6 +19030,19 @@
     "NearbyLocations": null,
     "Id": "5bfb382d-2a31-40c8-a605-6b0222dbcd66",
     "Name": "Corpus Christi Nws"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 34.1892,
+      "Longitude": -101.7022,
+      "Elevation": 1027.2
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "9ae2689f-9dfe-4271-9b45-7823cefbd724",
+    "Name": "Plainview"
   },
   {
     "CountryCode": "US",
@@ -18757,6 +19121,19 @@
     "NearbyLocations": null,
     "Id": "ba52be29-c234-49c7-a86f-a74c093c8cb6",
     "Name": "Vernal 1S"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 48.7178,
+      "Longitude": -122.5114,
+      "Elevation": 4.6
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "08b602a4-c610-44fd-8f35-ff1ae6ff6ddc",
+    "Name": "Bellingham 3 Ssw"
   },
   {
     "CountryCode": "US",
@@ -18900,19 +19277,6 @@
     "NearbyLocations": null,
     "Id": "7cc8af62-d2a2-43c9-ba52-6429613ad83a",
     "Name": "Ft Benning Lawson Fld"
-  },
-  {
-    "CountryCode": "US",
-    "Coordinates": {
-      "Latitude": 43.5164,
-      "Longitude": -112.0672,
-      "Elevation": 1441.4
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "eb55e684-023c-4e5c-a493-bc2065ec773e",
-    "Name": "Idaho Falls Fanning Fld"
   },
   {
     "CountryCode": "US",
@@ -19086,6 +19450,19 @@
   {
     "CountryCode": "US",
     "Coordinates": {
+      "Latitude": 43.6842,
+      "Longitude": -114.3603,
+      "Elevation": 1795.3
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "f2c98d56-7b11-455f-9166-78aef02a9afa",
+    "Name": "Ketchum Rs"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
       "Latitude": 48.9994,
       "Longitude": -116.4992,
       "Elevation": 548.3
@@ -19138,6 +19515,19 @@
   {
     "CountryCode": "US",
     "Coordinates": {
+      "Latitude": 46.4656,
+      "Longitude": -90.1892,
+      "Elevation": 435.9
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "7bf0c5d8-ef9a-4c9f-9a02-f069b5f03dd2",
+    "Name": "Ironwood"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
       "Latitude": 46.3286,
       "Longitude": -85.5033,
       "Elevation": 270.1
@@ -19160,6 +19550,19 @@
     "NearbyLocations": null,
     "Id": "311a51dc-84e1-43da-9e75-ef48462280e5",
     "Name": "Baudette"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 47.4581,
+      "Longitude": -92.5303,
+      "Elevation": 440.4
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "70e8674b-0551-4498-8ce1-f797e421a125",
+    "Name": "Eveleth Wwtp"
   },
   {
     "CountryCode": "US",
@@ -19203,6 +19606,19 @@
   {
     "CountryCode": "US",
     "Coordinates": {
+      "Latitude": 39.4572,
+      "Longitude": -118.7811,
+      "Elevation": 1208.5
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "05819091-a22e-4e05-859a-cf0e53b4f133",
+    "Name": "Fallon Exp Stn"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
       "Latitude": 38.3844,
       "Longitude": -118.1056,
       "Elevation": 1391.7
@@ -19212,6 +19628,19 @@
     "NearbyLocations": null,
     "Id": "0c085e46-bc93-4509-9a33-336cc127a728",
     "Name": "Mina"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 45.09,
+      "Longitude": -71.2906,
+      "Elevation": 502.9
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "a634605e-f1c4-4980-92e8-4f1969f210a5",
+    "Name": "First Connecticut Lake"
   },
   {
     "CountryCode": "US",
@@ -19268,6 +19697,19 @@
   {
     "CountryCode": "US",
     "Coordinates": {
+      "Latitude": 32.6803,
+      "Longitude": -80.8419,
+      "Elevation": 7.6
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "e17b2a16-21af-44d6-a1ed-3640ad74ab1a",
+    "Name": "Yemassee"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
       "Latitude": 43.9611,
       "Longitude": -101.8606,
       "Elevation": 735.8
@@ -19320,6 +19762,19 @@
   {
     "CountryCode": "US",
     "Coordinates": {
+      "Latitude": 32.3139,
+      "Longitude": -97.4061,
+      "Elevation": 238.7
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "510d5bf6-722a-4015-afb1-a6163be893ba",
+    "Name": "Cleburne"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
       "Latitude": 32.1225,
       "Longitude": -96.4867,
       "Elevation": 136.9
@@ -19342,6 +19797,19 @@
     "NearbyLocations": null,
     "Id": "8e55b693-801e-4438-9970-0a356af4233d",
     "Name": "Ft Stockton"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 30.7064,
+      "Longitude": -95.5422,
+      "Elevation": 150.6
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "6507b068-862d-4baa-9c35-f38b6970309f",
+    "Name": "Huntsville"
   },
   {
     "CountryCode": "US",
@@ -19476,6 +19944,19 @@
   {
     "CountryCode": "US",
     "Coordinates": {
+      "Latitude": 26.585,
+      "Longitude": -81.8614,
+      "Elevation": 4.6
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "66a28142-332e-4ff6-bef3-e441821cbbf2",
+    "Name": "Ft Myers Page Fld Ap"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
       "Latitude": 24.555,
       "Longitude": -81.7522,
       "Elevation": 1.2
@@ -19498,6 +19979,19 @@
     "NearbyLocations": null,
     "Id": "5d96e932-1818-4ec8-8c90-e0b5040fad3f",
     "Name": "Port Arthur Se Tx Ap"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 32.3347,
+      "Longitude": -88.7442,
+      "Elevation": 89.6
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "16eca294-6c23-4aae-ab20-b94ddeba0d75",
+    "Name": "Meridian Key Fld"
   },
   {
     "CountryCode": "US",
@@ -19723,6 +20217,19 @@
   {
     "CountryCode": "US",
     "Coordinates": {
+      "Latitude": 33.6186,
+      "Longitude": -114.7142,
+      "Elevation": 120.4
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "393e8522-0ec9-48cd-9743-e314442f139a",
+    "Name": "Blythe Ap"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
       "Latitude": 36.0719,
       "Longitude": -115.1633,
       "Elevation": 649.5
@@ -19788,6 +20295,19 @@
   {
     "CountryCode": "US",
     "Coordinates": {
+      "Latitude": 41.3119,
+      "Longitude": -105.6747,
+      "Elevation": 2214.7
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "ce02f43e-56ac-462e-a4fa-0e69b7cc3ef2",
+    "Name": "Laramie Rgnl Ap"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
       "Latitude": 46.4267,
       "Longitude": -105.8825,
       "Elevation": 799.8
@@ -19849,6 +20369,45 @@
     "NearbyLocations": null,
     "Id": "709b835a-c516-44d3-96ec-074a3ec8eea0",
     "Name": "Winnemucca Muni Ap"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 43.5164,
+      "Longitude": -112.0672,
+      "Elevation": 1441.4
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "eb55e684-023c-4e5c-a493-bc2065ec773e",
+    "Name": "Idaho Falls Fanning Fld"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 42.9203,
+      "Longitude": -112.5711,
+      "Elevation": 1364.9
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "13067897-bbd2-42e9-ae77-9f2ae0c55745",
+    "Name": "Pocatello Rgnl Ap"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 43.4133,
+      "Longitude": -124.2436,
+      "Elevation": 5.2
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "97b898de-4be7-4c60-af68-dfbb843e2500",
+    "Name": "North Bend Rgnl Ap"
   },
   {
     "CountryCode": "US",
@@ -20213,6 +20772,19 @@
     "NearbyLocations": null,
     "Id": "e281803f-2683-44de-b945-1d0bf4bd568e",
     "Name": "Lufkin Angelina Co Ap"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 43.5317,
+      "Longitude": -112.9422,
+      "Elevation": 1505.1
+    },
+    "WarmingIndex": null,
+    "HeatingScore": null,
+    "NearbyLocations": null,
+    "Id": "9843744c-21dc-467b-94e1-009ca115aea1",
+    "Name": "Idaho Falls 46 W"
   },
   {
     "CountryCode": "UV",

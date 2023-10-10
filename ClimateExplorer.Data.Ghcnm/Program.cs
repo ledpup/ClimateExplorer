@@ -33,8 +33,33 @@ var stations = await GetStationMetaData("qcf");
 
 var ghcnIdToLocationIds = await GetGhcnIdToLocationIds(stations);
 var dataQualityFilteredStations = await RetrieveDataQualityFilteredStations("qcf", stations);
-var selectedStationsPostClustering = SelectStationsByDbscanClusteringAndTakingHighestScore(dataQualityFilteredStations, 75, 2);
+
+var countryDistanceOverride = new Dictionary<string, int>
+{
+    { "GM", 45 },
+    { "US", 70 },
+};
+var preExistingLocations = await GetPreExistingLocations();
+var preExistingStations = preExistingLocations.Select(x => new Station
+{
+    Id = x.Id.ToString(),
+    Name = x.Name,
+    CountryCode = x.CountryCode,
+    Coordinates = x.Coordinates,
+    FirstYear = 1500,               // Fudge the first year so pre-existing location will always be the one chosen in the cluster
+    LastYear = DateTime.Today.Year,
+    YearsOfMissingData = 0,
+    Source = "Pre-Existing"
+}).ToList();
+var totalStationSet = new List<Station>();
+totalStationSet.AddRange(dataQualityFilteredStations);
+totalStationSet.AddRange(preExistingStations);
+
+var selectedStationsPostClustering = SelectStationsByDbscanClusteringAndTakingHighestScore(totalStationSet, 75, countryDistanceOverride, 2);
+selectedStationsPostClustering = selectedStationsPostClustering.Where(x => x.Source == null).ToList();
 var selectedStations = await RemoveDuplicateLocations(selectedStationsPostClustering);
+
+logger.LogInformation($"{selectedStations.Count} stations have been selected after adjusting for data quality, cluster using DBSCAN and removing of duplicates due to pre-existing locations");
 
 var locations = new List<Location>();
 var dataFileLocationMapping = new DataFileLocationMapping
@@ -91,7 +116,7 @@ File.WriteAllText($@"Output\DataFileLocationMapping\DataFileLocationMapping{outp
 await CreateStationDataFiles("qcf", selectedStations, logger);
 await CreateStationDataFiles("qcu", selectedStations, logger);
 
-List<Station> SelectStationsByDbscanClusteringAndTakingHighestScore(List<Station> processedStations, double distance, int minimumPointsPerCluster)
+List<Station> SelectStationsByDbscanClusteringAndTakingHighestScore(List<Station> processedStations, double distance, Dictionary<string, int> countryDistanceOverride, int minimumPointsPerCluster)
 {
     var stationsGroupedByCountry = processedStations.GroupBy(x => x.CountryCode);
 
@@ -102,9 +127,10 @@ List<Station> SelectStationsByDbscanClusteringAndTakingHighestScore(List<Station
 
         var index = new GeoListSpatialIndex<PointInfo<GeoPoint>>(stationsInCountry.Select(x => new PointInfo<GeoPoint>(new GeoPoint(x.Id, x.Coordinates.Value.Latitude, x.Coordinates.Value.Longitude))));
 
+        var distanceForClustering = countryDistanceOverride.ContainsKey(groupedCountry.Key!) ? countryDistanceOverride[groupedCountry.Key!] : distance;
         var dbscanResult = Dbscan.Dbscan.CalculateClusters(
                 index,
-                epsilon: distance,
+                epsilon: distanceForClustering,
                 minimumPointsPerCluster: minimumPointsPerCluster);
 
         foreach (var cluster in dbscanResult.Clusters)
@@ -396,8 +422,7 @@ static async Task<Dictionary<string, Guid>> GetGhcnIdToLocationIds(List<Station>
 
 async Task<List<Station>> RemoveDuplicateLocations(List<Station> dataQualityFilteredStations)
 {
-    var contents = await File.ReadAllTextAsync(preExistingLocationsFile);
-    var preExistingLocations = JsonSerializer.Deserialize<List<Location>>(contents)!;
+    var preExistingLocations = await GetPreExistingLocations();
     var stationsRemoved = 0;
     foreach (var preExistingLocation in preExistingLocations)
     {
@@ -424,4 +449,11 @@ async Task<List<Station>> RemoveDuplicateLocations(List<Station> dataQualityFilt
     logger.LogInformation($"{stationsRemoved} duplicate stations removed");
 
     return dataQualityFilteredStations;
+}
+
+async Task<List<Location>> GetPreExistingLocations()
+{
+    var contents = await File.ReadAllTextAsync(preExistingLocationsFile);
+    var preExistingLocations = JsonSerializer.Deserialize<List<Location>>(contents)!;
+    return preExistingLocations;
 }
