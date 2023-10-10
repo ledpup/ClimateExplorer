@@ -116,6 +116,7 @@ internal class DataSetDefinitionsBuilder
                 {
                     new MeasurementDefinition
                     {
+                        DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Monthly,
@@ -126,6 +127,7 @@ internal class DataSetDefinitionsBuilder
                     },
                     new MeasurementDefinition
                     {
+                        DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Monthly,
