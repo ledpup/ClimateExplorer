@@ -595,8 +595,10 @@ internal class DataSetDefinitionsBuilder
             new DataSetDefinition
             {
                 Id = Guid.Parse("0561CF7E-83F2-4617-AC61-4962A0E95093"),
-                Name = "Hadley Centre observations",
-                Description = null,
+                Name = "Hadley Centre",
+                Description = @"The Met Office Hadley Centre is one of the UK's foremost climate change research centres.
+
+Our aim is to provide climate science and services to people and organisations, so they can make better decisions to stay safe and thrive. We do this by working with partners around the globe, carrying out world leading research.",
                 Publisher = "Met Office",
                 PublisherUrl = "https://www.metoffice.gov.uk/",
                 StationInfoUrl = "https://www.metoffice.gov.uk/hadobs/",
@@ -605,6 +607,7 @@ internal class DataSetDefinitionsBuilder
                 {
                     new MeasurementDefinition
                     {
+                        DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
@@ -614,6 +617,7 @@ internal class DataSetDefinitionsBuilder
                     },
                     new MeasurementDefinition
                     {
+                        DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
