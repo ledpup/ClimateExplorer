@@ -39,7 +39,7 @@ public partial class Index : ChartablePage
     {
         await base.OnInitializedAsync();
 
-        Locations = (await DataService.GetLocations(includeNearbyLocations: true, includeWarmingIndex: true)).ToList();
+        Locations = (await DataService.GetLocations(includeNearbyLocations: true, includeWarmingIndex: true, excludeLocationsWithNullWarmingIndex: true)).ToList();
 
         setupDefaultChartSeries = true;
     }

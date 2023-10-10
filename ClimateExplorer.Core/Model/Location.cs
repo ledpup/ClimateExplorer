@@ -18,7 +18,7 @@ public class Location : LocationBase
         return locations;
     }
 
-    public static async Task<List<Location>> GetLocations(bool setNearbyLocations, string? folderName = null)
+    public static async Task<List<Location>> GetLocations(string? folderName = null)
     {
         folderName = folderName ?? @"MetaData\Location";
         var locations = new List<Location>();
@@ -29,11 +29,6 @@ public class Location : LocationBase
             locations.AddRange(locationsInFile);
         }
         
-        if (setNearbyLocations)
-        {
-            SetNearbyLocations(locations);
-        }
-
         locations.Add(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia anomaly", CountryCode = "AS", Coordinates = new Coordinates() });
 
         locations = locations.OrderBy(x => x.Name).ToList();
@@ -43,9 +38,9 @@ public class Location : LocationBase
 
     public static void SetNearbyLocations(List<Location>? locations)
     {
-        Parallel.ForEach(locations, location =>
+        Parallel.ForEach(locations!, location =>
         {
-            var distances = GetDistances(location, locations);
+            var distances = GetDistances(location, locations!);
 
             location.NearbyLocations = distances.OrderBy(x => x.Distance).Take(10).ToList();
         });

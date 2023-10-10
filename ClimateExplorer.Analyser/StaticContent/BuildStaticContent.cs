@@ -9,7 +9,7 @@ namespace ClimateExplorer.Analyser.StaticContent
         {
             Directory.CreateDirectory(@"Output\Location");
 
-            var locations = await Location.GetLocations(false, @"Output\Location");
+            var locations = await Location.GetLocations(@"Output\Location");
 
             var writer = XmlTextWriter.Create(@"Output\sitemap.xml", new XmlWriterSettings { Indent = true, NewLineOnAttributes = true });
 
@@ -34,7 +34,7 @@ namespace ClimateExplorer.Analyser.StaticContent
 
         public static async Task GenerateIndexFiles()
         {
-            var locations = await Location.GetLocations(false, @"Output\Location");
+            var locations = await Location.GetLocations(@"Output\Location");
 
             var indexTemplate = File.ReadAllText("StaticContent\\index-template.html");
 

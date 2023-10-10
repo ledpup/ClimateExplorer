@@ -141,7 +141,7 @@ async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool in
 
     if (result != null) return result;
 
-    IEnumerable<Location> locations = (await Location.GetLocations(includeNearbyLocations)).OrderBy(x => x.Name);
+    IEnumerable<Location> locations = (await Location.GetLocations()).OrderBy(x => x.Name);
     
     if (locationId != null)
     {
@@ -230,6 +230,11 @@ async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool in
         locations = locations.Where(x => x.WarmingIndex != null);
     }
 
+    if (includeNearbyLocations)
+    {
+        Location.SetNearbyLocations(locations.ToList());
+    }
+
     await _cache.Put(cacheKey, locations.ToArray());
 
     return locations;
@@ -285,7 +290,7 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
 
     var location =
         spec.LocationId != null
-        ? (await Location.GetLocations(false)).Single(x => x.Id == spec.LocationId)
+        ? (await Location.GetLocations()).Single(x => x.Id == spec.LocationId)
         : null;
 
     var returnDataSet =

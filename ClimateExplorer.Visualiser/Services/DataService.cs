@@ -135,7 +135,7 @@ public class DataService : IDataService
         return await _httpClient.GetFromJsonAsync<DataSetDefinitionViewModel[]>(url, _jsonSerializerOptions);
     }
 
-    public async Task<IEnumerable<Location>> GetLocations(string dataSetName = null, bool includeNearbyLocations = false, bool includeWarmingIndex = false)
+    public async Task<IEnumerable<Location>> GetLocations(string dataSetName = null, bool includeNearbyLocations = false, bool includeWarmingIndex = false, bool excludeLocationsWithNullWarmingIndex = true)
     {
         var url = $"/location";
         if (dataSetName != null)
@@ -144,7 +144,8 @@ public class DataService : IDataService
         }
         url = QueryHelpers.AddQueryString(url, "includeNearbyLocations", includeNearbyLocations.ToString());
         url = QueryHelpers.AddQueryString(url, "includeWarmingIndex", includeWarmingIndex.ToString());
-        
+        url = QueryHelpers.AddQueryString(url, "excludeLocationsWithNullWarmingIndex", excludeLocationsWithNullWarmingIndex.ToString());
+
         return await _httpClient.GetFromJsonAsync<Location[]>(url);
     }
 }
