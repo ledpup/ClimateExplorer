@@ -62,7 +62,7 @@ public partial class Index : ChartablePage
         {
             LocationId = (await LocalStorage.GetItemAsync<string>("lastLocationId"));
             var validGuid = Guid.TryParse(LocationId, out Guid id);
-            if (!validGuid || id == Guid.Empty)
+            if (!validGuid || id == Guid.Empty || !Locations.Any(x => x.Id == id))
             {
                 LocationId = "aed87aa0-1d0c-44aa-8561-cde0fc936395";
             }
