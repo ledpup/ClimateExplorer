@@ -3,6 +3,7 @@
     "Id": "70a07bb0-2220-402b-be83-f2c35edfdd12",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Adelaide",
+    "CountryCode": "AS",
     "PrimaryStation": "023090",
     "Sites": [
       "023090",
@@ -18,6 +19,7 @@
     "Id": "e491279a-781c-4eb0-8ccf-d49f3d9e2d5a",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Albany",
+    "CountryCode": "AS",
     "PrimaryStation": "009999",
     "Sites": [
       "009999",
@@ -34,6 +36,7 @@
     "Id": "fbb67194-9253-4ed2-bd20-f4a0211b264b",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Alice Springs",
+    "CountryCode": "AS",
     "PrimaryStation": "015590",
     "Sites": [
       "015590",
@@ -49,6 +52,7 @@
     "Id": "0cfb93a1-e0b6-4b87-87a6-90c0e01ca9ca",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Amberley",
+    "CountryCode": "AS",
     "PrimaryStation": "040004",
     "Sites": [
       "040004"
@@ -63,6 +67,7 @@
     "Id": "176e8056-e246-4566-b307-3c0b1ca8fde4",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Barcaldine",
+    "CountryCode": "AS",
     "PrimaryStation": "036007",
     "Sites": [
       "036007"
@@ -77,6 +82,7 @@
     "Id": "0b927604-fbaa-4930-bb5c-cf4b0f8b8914",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Bathurst",
+    "CountryCode": "AS",
     "PrimaryStation": "063005",
     "Sites": [
       "063005"
@@ -91,6 +97,7 @@
     "Id": "65aea1bb-5395-4b14-bf6f-8ca1559099cd",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Birdsville",
+    "CountryCode": "AS",
     "PrimaryStation": "038026",
     "Sites": [
       "038026",
@@ -106,6 +113,7 @@
     "Id": "f285ba2b-d6d6-4390-a80f-803522668bde",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Boulia",
+    "CountryCode": "AS",
     "PrimaryStation": "038003",
     "Sites": [
       "038003"
@@ -120,6 +128,7 @@
     "Id": "bab198bd-3940-4f13-a4f7-68af10735039",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Bourke",
+    "CountryCode": "AS",
     "PrimaryStation": "048245",
     "Sites": [
       "048245",
@@ -136,6 +145,7 @@
     "Id": "9ea5be14-0e54-4453-8e8b-4c11e075cb42",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Bridgetown",
+    "CountryCode": "AS",
     "PrimaryStation": "009617",
     "Sites": [
       "009617",
@@ -151,6 +161,7 @@
     "Id": "b7e0c061-e71c-4fc4-8068-c0432398c24f",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Brisbane Airport",
+    "CountryCode": "AS",
     "PrimaryStation": "040842",
     "Sites": [
       "040842",
@@ -166,6 +177,7 @@
     "Id": "05daa0ea-6227-4225-bf52-8204808709b5",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Broome",
+    "CountryCode": "AS",
     "PrimaryStation": "003003",
     "Sites": [
       "003003",
@@ -181,6 +193,7 @@
     "Id": "b2c819cd-b20b-48b0-8148-eef2f8fd88b7",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Bundaberg",
+    "CountryCode": "AS",
     "PrimaryStation": "039128",
     "Sites": [
       "039128",
@@ -196,6 +209,7 @@
     "Id": "fba7ed39-c752-460d-aa2e-342da7b55817",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Burketown",
+    "CountryCode": "AS",
     "PrimaryStation": "029077",
     "Sites": [
       "029077",
@@ -211,6 +225,7 @@
     "Id": "5f6f3d62-4c80-441d-b30f-104d2f5d2e96",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Butlers Gorge",
+    "CountryCode": "AS",
     "PrimaryStation": "096003",
     "Sites": [
       "096003",
@@ -226,6 +241,7 @@
     "Id": "f7a20e98-23e9-4920-be3c-b72f8a22754d",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Cabramurra",
+    "CountryCode": "AS",
     "PrimaryStation": "072161",
     "Sites": [
       "072161",
@@ -241,6 +257,7 @@
     "Id": "8fe98f5f-c239-4f2f-961a-5686147e53f7",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Cairns",
+    "CountryCode": "AS",
     "PrimaryStation": "031011",
     "Sites": [
       "031011",
@@ -256,6 +273,7 @@
     "Id": "09a5ba01-f523-4be3-ae7b-7a29a0da581c",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Camooweal",
+    "CountryCode": "AS",
     "PrimaryStation": "037010",
     "Sites": [
       "037010"
@@ -270,6 +288,7 @@
     "Id": "c0f2743b-fb00-4128-9024-bafa4e1c85ed",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Canberra",
+    "CountryCode": "AS",
     "PrimaryStation": "070351",
     "Sites": [
       "070351",
@@ -286,6 +305,7 @@
     "Id": "f1be5e90-f9fd-40f4-9db8-2c5564a7e908",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Cape Borda",
+    "CountryCode": "AS",
     "PrimaryStation": "022823",
     "Sites": [
       "022823",
@@ -301,6 +321,7 @@
     "Id": "eb75b5eb-8feb-4118-b6ab-bbe9b4fbc334",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Cape Bruny",
+    "CountryCode": "AS",
     "PrimaryStation": "094198",
     "Sites": [
       "094198",
@@ -316,6 +337,7 @@
     "Id": "f8dfe45b-d49c-4c0f-8d69-27d2d92cdb4b",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Cape Leeuwin",
+    "CountryCode": "AS",
     "PrimaryStation": "009518",
     "Sites": [
       "009518"
@@ -330,6 +352,7 @@
     "Id": "33d2cd26-bded-4abc-8e03-2f3266e3923f",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Cape Moreton",
+    "CountryCode": "AS",
     "PrimaryStation": "040043",
     "Sites": [
       "040043"
@@ -344,6 +367,7 @@
     "Id": "592c8e33-cc36-4cce-9af1-82bb3f26a5af",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Cape Otway",
+    "CountryCode": "AS",
     "PrimaryStation": "090015",
     "Sites": [
       "090015"
@@ -358,6 +382,7 @@
     "Id": "1c72f3e1-7d98-4ac5-8b64-1b5b2a4d599e",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Carnarvon",
+    "CountryCode": "AS",
     "PrimaryStation": "006011",
     "Sites": [
       "006011",
@@ -373,6 +398,7 @@
     "Id": "4397371d-a43b-4925-af58-bec79e6ca802",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Ceduna",
+    "CountryCode": "AS",
     "PrimaryStation": "018012",
     "Sites": [
       "018012"
@@ -387,6 +413,7 @@
     "Id": "0bc92500-5977-4aa2-81ae-a57ff8eabed3",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Charleville",
+    "CountryCode": "AS",
     "PrimaryStation": "044021",
     "Sites": [
       "044021",
@@ -402,6 +429,7 @@
     "Id": "80a5afb6-f043-4e61-b1e3-b60029b9c559",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Charters Towers",
+    "CountryCode": "AS",
     "PrimaryStation": "034084",
     "Sites": [
       "034084",
@@ -417,6 +445,7 @@
     "Id": "6f523c50-bf77-44d1-8418-57ea555855a3",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Cobar",
+    "CountryCode": "AS",
     "PrimaryStation": "048027",
     "Sites": [
       "048027",
@@ -432,6 +461,7 @@
     "Id": "8a63813f-8544-46b6-806e-6bc32dfc1b0d",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Coffs Harbour",
+    "CountryCode": "AS",
     "PrimaryStation": "059151",
     "Sites": [
       "059151",
@@ -447,6 +477,7 @@
     "Id": "d7307020-9788-4269-ae25-19926ca9e198",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Cunderdin",
+    "CountryCode": "AS",
     "PrimaryStation": "010286",
     "Sites": [
       "010286",
@@ -462,6 +493,7 @@
     "Id": "fc5ff168-2c7a-4913-bac7-957d7efa065b",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Dalwallinu",
+    "CountryCode": "AS",
     "PrimaryStation": "008297",
     "Sites": [
       "008297",
@@ -477,6 +509,7 @@
     "Id": "00147d6f-1569-422f-8322-a42b98e25071",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Darwin",
+    "CountryCode": "AS",
     "PrimaryStation": "014015",
     "Sites": [
       "014015",
@@ -492,6 +525,7 @@
     "Id": "2e2acf0b-592b-4ba4-adc9-b6f08546b92a",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Deniliquin",
+    "CountryCode": "AS",
     "PrimaryStation": "074258",
     "Sites": [
       "074258",
@@ -507,6 +541,7 @@
     "Id": "5e5c8eee-e28d-4651-bb04-24d08e89c254",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Dubbo",
+    "CountryCode": "AS",
     "PrimaryStation": "065070",
     "Sites": [
       "065070",
@@ -522,6 +557,7 @@
     "Id": "7c7d3560-0741-4966-a878-b2749afc7737",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Esperance",
+    "CountryCode": "AS",
     "PrimaryStation": "009789",
     "Sites": [
       "009789",
@@ -537,6 +573,7 @@
     "Id": "663a6037-a8de-462a-9d74-396ec881ffeb",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Eucla",
+    "CountryCode": "AS",
     "PrimaryStation": "011003",
     "Sites": [
       "011003"
@@ -551,6 +588,7 @@
     "Id": "a7a48420-7677-444a-a6aa-e8d6eb195729",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Forrest",
+    "CountryCode": "AS",
     "PrimaryStation": "011052",
     "Sites": [
       "011052",
@@ -566,6 +604,7 @@
     "Id": "714a7fe5-cea8-4e9b-bac0-cb01f8d0fff3",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Gabo Island",
+    "CountryCode": "AS",
     "PrimaryStation": "084016",
     "Sites": [
       "084016"
@@ -580,6 +619,7 @@
     "Id": "64004954-c0c6-4de3-9ac1-3f50bada1ec9",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Gayndah",
+    "CountryCode": "AS",
     "PrimaryStation": "039066",
     "Sites": [
       "039066",
@@ -595,6 +635,7 @@
     "Id": "2bf20585-6b1a-4e3c-a8ed-1d87e67789a6",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Georgetown",
+    "CountryCode": "AS",
     "PrimaryStation": "030124",
     "Sites": [
       "030124",
@@ -610,6 +651,7 @@
     "Id": "c6ba58ea-6142-4954-afac-256ca81c67bc",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Geraldton",
+    "CountryCode": "AS",
     "PrimaryStation": "008315",
     "Sites": [
       "008315",
@@ -626,6 +668,7 @@
     "Id": "e61fd5fb-f6a0-41b0-99bf-bc2eddb1a90c",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Giles",
+    "CountryCode": "AS",
     "PrimaryStation": "013017",
     "Sites": [
       "013017"
@@ -640,6 +683,7 @@
     "Id": "db8309f6-72b8-49e2-89b3-69a13989a392",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Grove",
+    "CountryCode": "AS",
     "PrimaryStation": "094220",
     "Sites": [
       "094220",
@@ -655,6 +699,7 @@
     "Id": "b8a3092a-041f-478d-951f-5ee4dda0a410",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Gunnedah",
+    "CountryCode": "AS",
     "PrimaryStation": "055024",
     "Sites": [
       "055024"
@@ -669,6 +714,7 @@
     "Id": "ba6fb433-bc80-4890-8c8b-16830b95f633",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Halls Creek",
+    "CountryCode": "AS",
     "PrimaryStation": "002079",
     "Sites": [
       "002079",
@@ -685,6 +731,7 @@
     "Id": "aed87aa0-1d0c-44aa-8561-cde0fc936395",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Hobart",
+    "CountryCode": "AS",
     "PrimaryStation": "094029",
     "Sites": [
       "094029"
@@ -699,6 +746,7 @@
     "Id": "1d06ff8a-82ba-4613-875f-1b4893536c42",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Horn Island",
+    "CountryCode": "AS",
     "PrimaryStation": "027058",
     "Sites": [
       "027058",
@@ -715,6 +763,7 @@
     "Id": "c5094f09-3fb3-4455-bf7b-b835928ad5f3",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Inverell",
+    "CountryCode": "AS",
     "PrimaryStation": "056242",
     "Sites": [
       "056242",
@@ -730,6 +779,7 @@
     "Id": "6e8b7fce-49bf-41d2-959d-62130a40fb22",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Kalgoorlie-Boulder",
+    "CountryCode": "AS",
     "PrimaryStation": "012038",
     "Sites": [
       "012038",
@@ -745,6 +795,7 @@
     "Id": "cbb11150-ec74-4401-8357-fae6fef70768",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Kalumburu",
+    "CountryCode": "AS",
     "PrimaryStation": "001019",
     "Sites": [
       "001019",
@@ -760,6 +811,7 @@
     "Id": "aa0021dd-8c27-4101-96b7-5e6b60c0c70a",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Katanning",
+    "CountryCode": "AS",
     "PrimaryStation": "010916",
     "Sites": [
       "010916",
@@ -775,6 +827,7 @@
     "Id": "23701518-8a46-4b7e-b9ef-da570d77b7cb",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Kerang",
+    "CountryCode": "AS",
     "PrimaryStation": "080023",
     "Sites": [
       "080023"
@@ -789,6 +842,7 @@
     "Id": "6b771c0b-97d3-45c7-9cd1-72fdee232e7c",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Kyancutta",
+    "CountryCode": "AS",
     "PrimaryStation": "018044",
     "Sites": [
       "018044"
@@ -803,6 +857,7 @@
     "Id": "20ab0202-8038-4275-aad2-70788ec68d6e",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Larapuna (Eddystone Point)",
+    "CountryCode": "AS",
     "PrimaryStation": "092045",
     "Sites": [
       "092045"
@@ -817,6 +872,7 @@
     "Id": "b483cb66-25cc-45ee-b1c8-8db405f0415a",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Launceston Airport",
+    "CountryCode": "AS",
     "PrimaryStation": "091311",
     "Sites": [
       "091311",
@@ -833,6 +889,7 @@
     "Id": "ddbdddc8-8f95-4a44-b55b-f52378460640",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Laverton",
+    "CountryCode": "AS",
     "PrimaryStation": "087031",
     "Sites": [
       "087031"
@@ -847,6 +904,7 @@
     "Id": "2119d5bf-94b0-4724-b2b8-bcd5f787877b",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Learmonth",
+    "CountryCode": "AS",
     "PrimaryStation": "005007",
     "Sites": [
       "005007"
@@ -861,6 +919,7 @@
     "Id": "9fff8b80-9230-4161-a626-c0f6e8c3b3e7",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Longreach",
+    "CountryCode": "AS",
     "PrimaryStation": "036031",
     "Sites": [
       "036031",
@@ -876,6 +935,7 @@
     "Id": "1b4b65dc-5742-432d-a4ae-d83069397723",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Low Head",
+    "CountryCode": "AS",
     "PrimaryStation": "091293",
     "Sites": [
       "091293",
@@ -891,6 +951,7 @@
     "Id": "a5bff3b7-d9dc-40cb-bdb0-f2f07af2e2b7",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Mackay",
+    "CountryCode": "AS",
     "PrimaryStation": "033119",
     "Sites": [
       "033119",
@@ -907,6 +968,7 @@
     "Id": "909dadb1-c33b-412b-97e0-42f5704f4090",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Marble Bar",
+    "CountryCode": "AS",
     "PrimaryStation": "004106",
     "Sites": [
       "004106",
@@ -922,6 +984,7 @@
     "Id": "516cbbab-1226-4caa-b18d-e5b2aeeff7d6",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Marree",
+    "CountryCode": "AS",
     "PrimaryStation": "017126",
     "Sites": [
       "017126",
@@ -938,6 +1001,7 @@
     "Id": "9ce454b6-7e6c-4516-88a7-6504444a4754",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Meekatharra",
+    "CountryCode": "AS",
     "PrimaryStation": "007045",
     "Sites": [
       "007045",
@@ -953,6 +1017,7 @@
     "Id": "1e743b5c-f9bf-477c-8b16-7d45c67909a7",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Melbourne",
+    "CountryCode": "AS",
     "PrimaryStation": "086338",
     "Sites": [
       "086338",
@@ -968,6 +1033,7 @@
     "Id": "fdd46b2e-4da4-4426-a17d-034ee9752ef6",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Merredin",
+    "CountryCode": "AS",
     "PrimaryStation": "010092",
     "Sites": [
       "010092",
@@ -983,6 +1049,7 @@
     "Id": "f6093d63-0476-4bd4-bb88-6322cf04dfaa",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Mildura",
+    "CountryCode": "AS",
     "PrimaryStation": "076031",
     "Sites": [
       "076031",
@@ -998,6 +1065,7 @@
     "Id": "a14c760f-4858-4f36-8d0a-7f219dc9b303",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Miles",
+    "CountryCode": "AS",
     "PrimaryStation": "042112",
     "Sites": [
       "042112",
@@ -1013,6 +1081,7 @@
     "Id": "503be743-9f46-4f6f-8b3e-8ce830e12fe7",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Morawa",
+    "CountryCode": "AS",
     "PrimaryStation": "008296",
     "Sites": [
       "008296",
@@ -1028,6 +1097,7 @@
     "Id": "8867cc4a-6da5-41e6-a4f7-e02dd9460cdd",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Moree",
+    "CountryCode": "AS",
     "PrimaryStation": "053115",
     "Sites": [
       "053115",
@@ -1044,6 +1114,7 @@
     "Id": "59803ca9-d81b-4888-bd08-473f659e1fc0",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Moruya Heads",
+    "CountryCode": "AS",
     "PrimaryStation": "069018",
     "Sites": [
       "069018"
@@ -1058,6 +1129,7 @@
     "Id": "4865e9b4-d86a-4961-b65c-cc33f969ff04",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Mount Gambier",
+    "CountryCode": "AS",
     "PrimaryStation": "026021",
     "Sites": [
       "026021",
@@ -1073,6 +1145,7 @@
     "Id": "4006f876-24bb-4b31-9318-72fcf44f47b0",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Nhill",
+    "CountryCode": "AS",
     "PrimaryStation": "078015",
     "Sites": [
       "078015",
@@ -1088,6 +1161,7 @@
     "Id": "f0991551-814d-4323-9c0b-c8f12b887985",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Normanton",
+    "CountryCode": "AS",
     "PrimaryStation": "029063",
     "Sites": [
       "029063",
@@ -1103,6 +1177,7 @@
     "Id": "6c8d1781-f74b-45b8-bfe2-8a952b278011",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Nowra",
+    "CountryCode": "AS",
     "PrimaryStation": "068072",
     "Sites": [
       "068072",
@@ -1118,6 +1193,7 @@
     "Id": "b13e3137-51c7-432a-9194-2c3f42f0e438",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Nuriootpa",
+    "CountryCode": "AS",
     "PrimaryStation": "023373",
     "Sites": [
       "023373",
@@ -1133,6 +1209,7 @@
     "Id": "69e0e687-7e35-466a-b518-ee4c76af5cf6",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Oodnadatta",
+    "CountryCode": "AS",
     "PrimaryStation": "017043",
     "Sites": [
       "017043",
@@ -1148,6 +1225,7 @@
     "Id": "32ecbe0c-95a6-4d39-b8f4-c7ac859c8122",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Orbost",
+    "CountryCode": "AS",
     "PrimaryStation": "084145",
     "Sites": [
       "084145",
@@ -1163,6 +1241,7 @@
     "Id": "944b1732-d083-40b8-b865-fbf63941414c",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Palmerville",
+    "CountryCode": "AS",
     "PrimaryStation": "028004",
     "Sites": [
       "028004"
@@ -1177,6 +1256,7 @@
     "Id": "02619137-0d4d-4bcf-8ae3-f87697cd178d",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Perth Airport",
+    "CountryCode": "AS",
     "PrimaryStation": "009021",
     "Sites": [
       "009021",
@@ -1192,6 +1272,7 @@
     "Id": "1130dd09-dd90-4a8f-8a65-31f14dd449e3",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Point Perpendicular",
+    "CountryCode": "AS",
     "PrimaryStation": "068151",
     "Sites": [
       "068151",
@@ -1207,6 +1288,7 @@
     "Id": "04d33b2f-2a8a-4cf0-b281-68b74475d2b4",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Port Hedland",
+    "CountryCode": "AS",
     "PrimaryStation": "004032",
     "Sites": [
       "004032",
@@ -1222,6 +1304,7 @@
     "Id": "b4e10e95-ce0f-4ae6-85cf-bc611c8164e8",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Port Lincoln",
+    "CountryCode": "AS",
     "PrimaryStation": "018192",
     "Sites": [
       "018192",
@@ -1237,6 +1320,7 @@
     "Id": "5d20e960-257d-4bc2-8d06-162c19fa86a2",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Port Macquarie",
+    "CountryCode": "AS",
     "PrimaryStation": "060139",
     "Sites": [
       "060139",
@@ -1252,6 +1336,7 @@
     "Id": "916c204a-0847-4fd3-9ad0-0ccc5ae9c601",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Rabbit Flat",
+    "CountryCode": "AS",
     "PrimaryStation": "015666",
     "Sites": [
       "015666",
@@ -1267,6 +1352,7 @@
     "Id": "6c834afc-799c-473e-9d59-91a7ec7974a2",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Richmond (NSW)",
+    "CountryCode": "AS",
     "PrimaryStation": "067105",
     "Sites": [
       "067105",
@@ -1282,6 +1368,7 @@
     "Id": "53ea40d9-d6fb-4ffe-9bde-e4188698f2de",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Richmond (Qld)",
+    "CountryCode": "AS",
     "PrimaryStation": "030161",
     "Sites": [
       "030161",
@@ -1297,6 +1384,7 @@
     "Id": "5885b48d-d66d-4e89-a30e-ff40a0c7d153",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Robe",
+    "CountryCode": "AS",
     "PrimaryStation": "026026",
     "Sites": [
       "026026"
@@ -1311,6 +1399,7 @@
     "Id": "e51c740e-2666-4f56-b397-0a68b26a6c3c",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Rockhampton",
+    "CountryCode": "AS",
     "PrimaryStation": "039083",
     "Sites": [
       "039083"
@@ -1325,6 +1414,7 @@
     "Id": "9498f548-f000-4ff2-9c5d-fb7d3037493c",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Rutherglen",
+    "CountryCode": "AS",
     "PrimaryStation": "082039",
     "Sites": [
       "082039"
@@ -1339,6 +1429,7 @@
     "Id": "7703f086-589e-406d-b152-dde26cbe6418",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Sale",
+    "CountryCode": "AS",
     "PrimaryStation": "085072",
     "Sites": [
       "085072",
@@ -1354,6 +1445,7 @@
     "Id": "5a927fc5-5f9d-46a0-af66-3023610337d8",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Scone",
+    "CountryCode": "AS",
     "PrimaryStation": "061363",
     "Sites": [
       "061363",
@@ -1369,6 +1461,7 @@
     "Id": "55f5699c-7d1f-4952-8bf1-4b924d7461d1",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Snowtown",
+    "CountryCode": "AS",
     "PrimaryStation": "021133",
     "Sites": [
       "021133",
@@ -1384,6 +1477,7 @@
     "Id": "e9581d86-1e15-42aa-ad4b-b3960a119b10",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "St George",
+    "CountryCode": "AS",
     "PrimaryStation": "043109",
     "Sites": [
       "043109",
@@ -1399,6 +1493,7 @@
     "Id": "0788f2da-2034-40e2-badc-b77fc7d4bbd3",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Sydney",
+    "CountryCode": "AS",
     "PrimaryStation": "066062",
     "Sites": [
       "066062",
@@ -1414,6 +1509,7 @@
     "Id": "9882e6ca-a0aa-479c-b1a6-169e94481afd",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Tarcoola",
+    "CountryCode": "AS",
     "PrimaryStation": "016098",
     "Sites": [
       "016098",
@@ -1429,6 +1525,7 @@
     "Id": "5cfaf343-06a2-4bc6-a451-b8f2d3751da9",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Tennant Creek",
+    "CountryCode": "AS",
     "PrimaryStation": "015135",
     "Sites": [
       "015135",
@@ -1444,6 +1541,7 @@
     "Id": "a205d717-c18b-4082-9822-d3309f2637f7",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Thargomindah",
+    "CountryCode": "AS",
     "PrimaryStation": "045025",
     "Sites": [
       "045025",
@@ -1459,6 +1557,7 @@
     "Id": "04f7dd04-7bc2-4c4f-ae1e-2ee7180d8649",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Tibooburra",
+    "CountryCode": "AS",
     "PrimaryStation": "046126",
     "Sites": [
       "046126",
@@ -1474,6 +1573,7 @@
     "Id": "b0783cae-1c6f-4570-8ab3-19df57ee1820",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Townsville",
+    "CountryCode": "AS",
     "PrimaryStation": "032040",
     "Sites": [
       "032040"
@@ -1488,6 +1588,7 @@
     "Id": "be54baa5-c044-41c3-affa-50884f7c9735",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Victoria River Downs",
+    "CountryCode": "AS",
     "PrimaryStation": "014825",
     "Sites": [
       "014825"
@@ -1502,6 +1603,7 @@
     "Id": "d209e7e6-d3da-40d4-b377-61cf7056d376",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Wagga Wagga",
+    "CountryCode": "AS",
     "PrimaryStation": "072150",
     "Sites": [
       "072150",
@@ -1517,6 +1619,7 @@
     "Id": "82fbe1bf-5c58-4f9b-8f5d-71fdd060d2e9",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Walgett",
+    "CountryCode": "AS",
     "PrimaryStation": "052088",
     "Sites": [
       "052088",
@@ -1532,6 +1635,7 @@
     "Id": "81644c2e-0ddc-472f-bae6-d976e6d623bc",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Wandering",
+    "CountryCode": "AS",
     "PrimaryStation": "010917",
     "Sites": [
       "010917",
@@ -1547,6 +1651,7 @@
     "Id": "bc211d96-5bf6-4427-acac-81b40e17a4ce",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Weipa",
+    "CountryCode": "AS",
     "PrimaryStation": "027045",
     "Sites": [
       "027045",
@@ -1562,6 +1667,7 @@
     "Id": "bd628d1f-9c2d-403c-abb5-e2e440fd3a02",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Wilcannia",
+    "CountryCode": "AS",
     "PrimaryStation": "046012",
     "Sites": [
       "046012",
@@ -1577,6 +1683,7 @@
     "Id": "f0f62231-f0d3-4ded-a945-133d4ecc4255",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Williamtown",
+    "CountryCode": "AS",
     "PrimaryStation": "061078",
     "Sites": [
       "061078"
@@ -1591,6 +1698,7 @@
     "Id": "45feed6f-2821-43de-99ec-e605e3f36f75",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Wilsons Promontory",
+    "CountryCode": "AS",
     "PrimaryStation": "085096",
     "Sites": [
       "085096"
@@ -1605,6 +1713,7 @@
     "Id": "48c35ccf-3ff8-4448-90de-1e491c500887",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Karijini North (Wittenoom)",
+    "CountryCode": "AS",
     "PrimaryStation": "005098",
     "Sites": [
       "005098",
@@ -1620,6 +1729,7 @@
     "Id": "b41a2fa1-ce5c-473e-b2d7-17d43e9dbc8b",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Woomera",
+    "CountryCode": "AS",
     "PrimaryStation": "016001",
     "Sites": [
       "016001"
@@ -1634,6 +1744,7 @@
     "Id": "141b8a24-fc66-4ec5-a71c-2c779d802ca2",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "West Wyalong",
+    "CountryCode": "AS",
     "PrimaryStation": "050017",
     "Sites": [
       "050017",
@@ -1649,6 +1760,7 @@
     "Id": "54e1d0a7-54be-4fb9-b88e-d6a4b8a1b595",
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Yamba",
+    "CountryCode": "AS",
     "PrimaryStation": "058012",
     "Sites": [
       "058012"

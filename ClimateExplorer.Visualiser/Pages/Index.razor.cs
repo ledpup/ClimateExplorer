@@ -9,6 +9,7 @@ using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
 using GeoCoordinatePortable;
 using ClimateExplorer.Visualiser.Shared.LocationComponents;
+using ClimateExplorer.Core.Model;
 
 namespace ClimateExplorer.Visualiser.Pages;
 
@@ -38,7 +39,7 @@ public partial class Index : ChartablePage
     {
         await base.OnInitializedAsync();
 
-        Locations = (await DataService.GetLocations(includeNearbyLocations: true, includeWarmingMetrics: true)).ToList();
+        Locations = (await DataService.GetLocations(includeNearbyLocations: true, includeWarmingIndex: true, excludeLocationsWithNullWarmingIndex: true)).ToList();
 
         setupDefaultChartSeries = true;
     }
@@ -108,16 +109,15 @@ public partial class Index : ChartablePage
     {
         var location = Locations.Single(x => x.Id == locationId);
 
-        var tempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMax, DataAdjustment.Adjusted, true);
-        var tempMin = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMin, DataAdjustment.Adjusted, true);
-        var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.Rainfall, null, true, false);
+        var tempMaxOrMean = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMax, DataAdjustment.Adjusted, allowNullDataAdjustment: true, DataType.TempMean, throwIfNoMatch: true);
+        var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.Rainfall, null, allowNullDataAdjustment: true, throwIfNoMatch: false);
 
         if (chartView.ChartSeriesList == null)
         {
             chartView.ChartSeriesList = new List<ChartSeriesDefinition>();
         }
 
-        if (tempMax != null)
+        if (tempMaxOrMean != null)
         {
             chartView.ChartSeriesList.Add(
                 new ChartSeriesDefinition()
@@ -130,7 +130,7 @@ public partial class Index : ChartablePage
                     //    SourceSeriesSpecification.BuildArray(location, tempMin)[0],
                     //},
                     SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax),
+                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMaxOrMean),
                     Aggregation = SeriesAggregationOptions.Mean,
                     BinGranularity = BinGranularities.ByYear,
                     Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -250,6 +250,7 @@ public partial class Index : ChartablePage
                                 sss.MeasurementDefinition.DataType,
                                 sss.MeasurementDefinition.DataAdjustment,
                                 allowNullDataAdjustment: true,
+                                alternativeDataType: AlternateTempDataTypes(sss.MeasurementDefinition.DataType),
                                 throwIfNoMatch: false);
 
                         if (dsd == null)
@@ -366,6 +367,19 @@ public partial class Index : ChartablePage
         chartView.ChartSeriesList = draftList.CreateNewListWithoutDuplicates();
 
         await BuildDataSets();
+    }
+
+    public static DataType? AlternateTempDataTypes(DataType? dataType)
+    {
+        switch (dataType)
+        {
+            case DataType.TempMax:
+                return DataType.TempMean;
+            case DataType.TempMean:
+                return DataType.TempMax;
+            default:
+                return null;
+        }
     }
 
     protected override async Task UpdateComponents()

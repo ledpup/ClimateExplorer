@@ -1,7 +1,5 @@
-﻿using ClimateExplorer.Core;
-using ClimateExplorer.Core.Model;
+﻿using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
-using ClimateExplorer.Visualiser.UiModel;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Visualiser.Services;
 using Microsoft.AspNetCore.WebUtilities;
@@ -137,7 +135,7 @@ public class DataService : IDataService
         return await _httpClient.GetFromJsonAsync<DataSetDefinitionViewModel[]>(url, _jsonSerializerOptions);
     }
 
-    public async Task<IEnumerable<Location>> GetLocations(string dataSetName = null, bool includeNearbyLocations = false, bool includeWarmingMetrics = false)
+    public async Task<IEnumerable<Location>> GetLocations(string dataSetName = null, bool includeNearbyLocations = false, bool includeWarmingIndex = false, bool excludeLocationsWithNullWarmingIndex = true)
     {
         var url = $"/location";
         if (dataSetName != null)
@@ -145,8 +143,9 @@ public class DataService : IDataService
             url = QueryHelpers.AddQueryString(url, "dataSetName", dataSetName);
         }
         url = QueryHelpers.AddQueryString(url, "includeNearbyLocations", includeNearbyLocations.ToString());
-        url = QueryHelpers.AddQueryString(url, "includeWarmingMetrics", includeWarmingMetrics.ToString());
-        
+        url = QueryHelpers.AddQueryString(url, "includeWarmingIndex", includeWarmingIndex.ToString());
+        url = QueryHelpers.AddQueryString(url, "excludeLocationsWithNullWarmingIndex", excludeLocationsWithNullWarmingIndex.ToString());
+
         return await _httpClient.GetFromJsonAsync<Location[]>(url);
     }
 }

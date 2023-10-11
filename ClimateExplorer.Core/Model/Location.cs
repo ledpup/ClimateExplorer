@@ -1,18 +1,15 @@
 ﻿using ClimateExplorer.Core;
-using ClimateExplorer.Core.Model;
 using GeoCoordinatePortable;
 using System.Text.Json;
 
+namespace ClimateExplorer.Core.Model;
 public class Location : LocationBase
 {
-    public Coordinates Coordinates { get; set; }
+    public required string? CountryCode { get; set; }
+    public required Coordinates Coordinates { get; set; }
     public float? WarmingIndex { get; set; }
     public short? HeatingScore { get; set; }
-    public List<LocationDistance> NearbyLocations { get; set; }
-    public Location()
-    {
-
-    }
+    public List<LocationDistance>? NearbyLocations { get; set; }
 
     public static async Task<List<Location>> GetLocationsFromFile(string pathAndFileName)
     {
@@ -21,7 +18,7 @@ public class Location : LocationBase
         return locations;
     }
 
-    public static async Task<List<Location>> GetLocations(bool setNearbyLocations, string? folderName = null)
+    public static async Task<List<Location>> GetLocations(string? folderName = null)
     {
         folderName = folderName ?? @"MetaData\Location";
         var locations = new List<Location>();
@@ -32,12 +29,7 @@ public class Location : LocationBase
             locations.AddRange(locationsInFile);
         }
         
-        if (setNearbyLocations)
-        {
-            SetNearbyLocations(locations);
-        }
-
-        locations.Add(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia anomaly" });
+        locations.Add(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia anomaly", CountryCode = "AS", Coordinates = new Coordinates() });
 
         locations = locations.OrderBy(x => x.Name).ToList();
 
@@ -46,9 +38,9 @@ public class Location : LocationBase
 
     public static void SetNearbyLocations(List<Location>? locations)
     {
-        Parallel.ForEach(locations, location =>
+        Parallel.ForEach(locations!, location =>
         {
-            var distances = GetDistances(location, locations);
+            var distances = GetDistances(location, locations!);
 
             location.NearbyLocations = distances.OrderBy(x => x.Distance).Take(10).ToList();
         });
@@ -56,7 +48,7 @@ public class Location : LocationBase
 
     public static List<LocationDistance> GetDistances(Location location, List<Location> locations)
     {
-        var originCoord = new GeoCoordinate(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation);
+        var originCoord = new GeoCoordinate(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation ?? 0);
         return GetDistances(originCoord, locations.Where(x => x != location));
     }
 
@@ -66,7 +58,7 @@ public class Location : LocationBase
 
         locations.ToList().ForEach(x =>
         {
-            var destCoord = new GeoCoordinate(x.Coordinates.Latitude, x.Coordinates.Longitude, x.Coordinates.Elevation);
+            var destCoord = new GeoCoordinate(x.Coordinates.Latitude, x.Coordinates.Longitude, x.Coordinates.Elevation ?? 0);
             var distance = Math.Round(geoCoordinate.GetDistanceTo(destCoord) / 1000, 1); // GetDistanceTo is in metres. Convert to km
             var bearing = GeometryHelpers.GetRhumbBearingFromPointToPoint(geoCoordinate, destCoord);
 

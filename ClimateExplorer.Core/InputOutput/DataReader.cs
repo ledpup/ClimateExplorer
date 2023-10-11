@@ -1,14 +1,7 @@
 ﻿using ClimateExplorer.Core.Model;
-using ClimateExplorer.Core.ViewModel;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO.Compression;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using static ClimateExplorer.Core.Enums;
 
 namespace ClimateExplorer.Core.InputOutput;
@@ -47,7 +40,7 @@ public static class DataReader
             {
                 new DataFileFilterAndAdjustment
                 {
-                    ExternalStationCode = string.Empty
+                    Id = string.Empty
                 }
             };
         }
@@ -57,7 +50,7 @@ public static class DataReader
         var records = new Dictionary<string, DataRecord>();
         foreach (var dataFileDefinition in dataFileFilterAndAdjustments)
         {
-            var filePath = measurementDefinition.FolderName + @"\" + measurementDefinition.FileNameFormat.Replace("[station]", dataFileDefinition.ExternalStationCode);
+            var filePath = measurementDefinition.FolderName + @"\" + measurementDefinition.FileNameFormat.Replace("[station]", dataFileDefinition.Id);
             var fileRecords = await ReadDataFile(filePath, regEx, measurementDefinition.NullValue, measurementDefinition.DataResolution, dataFileDefinition.StartDate, dataFileDefinition.EndDate);
 
             // Apply any adjustment

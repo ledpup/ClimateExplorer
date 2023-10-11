@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static ClimateExplorer.Core.Enums;
-using DataType = ClimateExplorer.Core.Enums.DataType;
+﻿using static ClimateExplorer.Core.Enums;
 
 namespace ClimateExplorer.Core.ViewModel;
 

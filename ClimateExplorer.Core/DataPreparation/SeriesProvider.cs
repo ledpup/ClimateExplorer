@@ -198,7 +198,7 @@ namespace ClimateExplorer.Core.DataPreparation
                     x.DataAdjustment == seriesSpecification.DataAdjustment);
 
 
-            var location = seriesSpecification.LocationId == null ? null : (await Location.GetLocations(false)).Single(x => x.Id == seriesSpecification.LocationId);
+            var location = seriesSpecification.LocationId == null ? null : (await Location.GetLocations()).Single(x => x.Id == seriesSpecification.LocationId);
 
             List<DataFileFilterAndAdjustment> dataFileFilterAndAdjustments = null;
 
@@ -225,7 +225,7 @@ namespace ClimateExplorer.Core.DataPreparation
                     break;
 
                 case RowDataType.TwelveMonthsPerRow:
-                    var dataSet = await TwelveMonthPerLineDataReader.GetTwelveMonthsPerRowData(measurementDefinition);
+                    var dataSet = await TwelveMonthPerLineDataReader.GetTwelveMonthsPerRowData(measurementDefinition, dataFileFilterAndAdjustments);
                     dataRecords = dataSet.DataRecords;
                     break;
 

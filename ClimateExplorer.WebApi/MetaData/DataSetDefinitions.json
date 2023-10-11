@@ -12,7 +12,6 @@
     "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMax",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -21,10 +20,10 @@
         "FolderName": "Temperature\\ACORN-SAT\\daily_tmax",
         "FileNameFormat": "tmax.[station].daily.csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E-?\\d*\\.?\\d*),*$",
-        "NullValue": null
+        "NullValue": null,
+        "ValueAdjustment": null
       },
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMin",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -33,7 +32,8 @@
         "FolderName": "Temperature\\ACORN-SAT\\daily_tmin",
         "FileNameFormat": "tmin.[station].daily.csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E-?\\d*\\.?\\d*),*$",
-        "NullValue": null
+        "NullValue": null,
+        "ValueAdjustment": null
       }
     ],
     "DataLocationMapping": null
@@ -51,7 +51,6 @@
     "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMax",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -60,10 +59,10 @@
         "FolderName": "Temperature\\BOM\\daily_tempmax",
         "FileNameFormat": "[station]_daily_tempmax.csv",
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
-        "NullValue": null
+        "NullValue": null,
+        "ValueAdjustment": null
       },
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMin",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -72,10 +71,10 @@
         "FolderName": "Temperature\\BOM\\daily_tempmin",
         "FileNameFormat": "[station]_daily_tempmin.csv",
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
-        "NullValue": null
+        "NullValue": null,
+        "ValueAdjustment": null
       },
       {
-        "DataCategory": null,
         "DataType": "Rainfall",
         "UnitOfMeasure": "Millimetres",
         "DataResolution": "Daily",
@@ -84,10 +83,10 @@
         "FolderName": "Rainfall\\BOM",
         "FileNameFormat": "[station]_daily_rainfall.csv",
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
-        "NullValue": null
+        "NullValue": null,
+        "ValueAdjustment": null
       },
       {
-        "DataCategory": null,
         "DataType": "SolarRadiation",
         "UnitOfMeasure": "MegajoulesPerSquareMetre",
         "DataResolution": "Daily",
@@ -96,7 +95,8 @@
         "FolderName": "SolarRadiation\\BOM",
         "FileNameFormat": "[station]_daily_solarradiation.csv",
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*)$",
-        "NullValue": null
+        "NullValue": null,
+        "ValueAdjustment": null
       }
     ],
     "DataLocationMapping": null
@@ -114,28 +114,28 @@
     "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMax",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Monthly",
-        "DataAdjustment": null,
+        "DataAdjustment": "Adjusted",
         "RowDataType": "OneValuePerRow",
         "FolderName": "Temperature\\RAIA\\Monthly\\adjusted\\maxT",
         "FileNameFormat": "acorn.ria.maxT.[station].monthly.txt",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})\\d{2}\\s\\d\u002B\\s\u002B(?\u003Cvalue\u003E-?\\d\u002B\\.\\d\u002B)$",
-        "NullValue": "99999.9"
+        "NullValue": "99999.9",
+        "ValueAdjustment": null
       },
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMin",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Monthly",
-        "DataAdjustment": null,
+        "DataAdjustment": "Adjusted",
         "RowDataType": "OneValuePerRow",
         "FolderName": "Temperature\\RAIA\\Monthly\\adjusted\\minT",
         "FileNameFormat": "acorn.ria.minT.[station].monthly.txt",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})\\d{2}\\s\\d\u002B\\s\u002B(?\u003Cvalue\u003E-?\\d\u002B\\.\\d\u002B)$",
-        "NullValue": "99999.9"
+        "NullValue": "99999.9",
+        "ValueAdjustment": null
       }
     ],
     "DataLocationMapping": null
@@ -153,7 +153,6 @@
     "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMax",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -162,10 +161,10 @@
         "FolderName": "Temperature\\NIWA",
         "FileNameFormat": "[station]_temperature.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Ctmin\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-        "NullValue": "-"
+        "NullValue": "-",
+        "ValueAdjustment": null
       },
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMin",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -174,7 +173,8 @@
         "FolderName": "Temperature\\NIWA",
         "FileNameFormat": "[station]_temperature.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Ctmax\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-        "NullValue": "-"
+        "NullValue": "-",
+        "ValueAdjustment": null
       }
     ],
     "DataLocationMapping": null
@@ -192,7 +192,6 @@
     "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMax",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -201,10 +200,10 @@
         "FolderName": "Temperature\\NIWA",
         "FileNameFormat": "[station]_temperature.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Ctmin\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-        "NullValue": "-"
+        "NullValue": "-",
+        "ValueAdjustment": null
       },
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMin",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -213,10 +212,10 @@
         "FolderName": "Temperature\\NIWA",
         "FileNameFormat": "[station]_temperature.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Ctmax\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-        "NullValue": "-"
+        "NullValue": "-",
+        "ValueAdjustment": null
       },
       {
-        "DataCategory": null,
         "DataType": "Rainfall",
         "UnitOfMeasure": "Millimetres",
         "DataResolution": "Daily",
@@ -225,7 +224,8 @@
         "FolderName": "Rainfall\\NIWA",
         "FileNameFormat": "[station]_rainfall.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),.*,D$",
-        "NullValue": "-"
+        "NullValue": "-",
+        "ValueAdjustment": null
       }
     ],
     "DataLocationMapping": null
@@ -243,7 +243,6 @@
     "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMax",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -252,10 +251,10 @@
         "FolderName": "Temperature\\NIWA",
         "FileNameFormat": "[station]_temperature.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Ctmin\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-        "NullValue": "-"
+        "NullValue": "-",
+        "ValueAdjustment": null
       },
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMin",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
@@ -264,10 +263,10 @@
         "FolderName": "Temperature\\NIWA",
         "FileNameFormat": "[station]_temperature.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Ctmax\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-        "NullValue": "-"
+        "NullValue": "-",
+        "ValueAdjustment": null
       },
       {
-        "DataCategory": null,
         "DataType": "Rainfall",
         "UnitOfMeasure": "Millimetres",
         "DataResolution": "Daily",
@@ -276,7 +275,47 @@
         "FolderName": "Rainfall\\NIWA",
         "FileNameFormat": "[station]_rainfall.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),.*,D$",
-        "NullValue": "-"
+        "NullValue": "-",
+        "ValueAdjustment": null
+      }
+    ],
+    "DataLocationMapping": null
+  },
+  {
+    "Id": "1dc38f20-3606-4d90-a2a0-84f93e75c964",
+    "Name": "Global Historical Climatology Network monthly (GHCNm)",
+    "ShortName": null,
+    "Description": "The Global Historical Climatology Network monthly (GHCNm) dataset provides monthly climate summaries from thousands of weather stations around the world. The initial version was developed in the early 1990s, and subsequent iterations were released in 1997, 2011, and most recently in 2018. The period of record for each summary varies by station, with the earliest observations dating to the 18th century. Some station records are purely historical and are no longer updated, but many others are still operational and provide short time delay updates that are useful for climate monitoring.",
+    "Publisher": "National Oceanic and Atmospheric Administration (NOAA)",
+    "PublisherUrl": "https://www.noaa.gov/",
+    "MoreInformationUrl": "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-monthly",
+    "StationInfoUrl": null,
+    "LocationInfoUrl": null,
+    "DataDownloadUrl": null,
+    "MeasurementDefinitions": [
+      {
+        "DataType": "TempMean",
+        "UnitOfMeasure": "DegreesCelsius",
+        "DataResolution": "Monthly",
+        "DataAdjustment": "Adjusted",
+        "RowDataType": "TwelveMonthsPerRow",
+        "FolderName": "Temperature\\GHCNm\\Adjusted",
+        "FileNameFormat": "[station].csv",
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4}),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B)$",
+        "NullValue": "-9999",
+        "ValueAdjustment": 100
+      },
+      {
+        "DataType": "TempMean",
+        "UnitOfMeasure": "DegreesCelsius",
+        "DataResolution": "Monthly",
+        "DataAdjustment": "Unadjusted",
+        "RowDataType": "TwelveMonthsPerRow",
+        "FolderName": "Temperature\\GHCNm\\Unadjusted",
+        "FileNameFormat": "[station].csv",
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4}),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B)$",
+        "NullValue": "-9999",
+        "ValueAdjustment": 100
       }
     ],
     "DataLocationMapping": null
@@ -294,7 +333,6 @@
     "DataDownloadUrl": "https://psl.noaa.gov/enso/mei/data/meiv2.data",
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Enso",
         "DataType": "MEIv2",
         "UnitOfMeasure": "EnsoIndex",
         "DataResolution": "Monthly",
@@ -302,8 +340,9 @@
         "RowDataType": "TwelveMonthsPerRow",
         "FolderName": "Reference\\ENSO",
         "FileNameFormat": "meiv2.data.txt",
-        "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
-        "NullValue": "-999.00"
+        "DataRowRegEx": "^\\s*(?\u003Cyear\u003E\\d{4})\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
+        "NullValue": "-999.00",
+        "ValueAdjustment": null
       }
     ],
     "DataLocationMapping": null
@@ -321,7 +360,6 @@
     "DataDownloadUrl": "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/soi.long.data",
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Enso",
         "DataType": "SOI",
         "UnitOfMeasure": "EnsoIndex",
         "DataResolution": "Monthly",
@@ -329,8 +367,9 @@
         "RowDataType": "TwelveMonthsPerRow",
         "FolderName": "Reference\\ENSO",
         "FileNameFormat": "soi.long.data.txt",
-        "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
-        "NullValue": "-99.99"
+        "DataRowRegEx": "^\\s*(?\u003Cyear\u003E\\d{4})\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
+        "NullValue": "-99.99",
+        "ValueAdjustment": null
       }
     ],
     "DataLocationMapping": null
@@ -348,7 +387,6 @@
     "DataDownloadUrl": "https://psl.noaa.gov/data/correlation/oni.data",
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Enso",
         "DataType": "ONI",
         "UnitOfMeasure": "DegreesCelsiusAnomaly",
         "DataResolution": "Monthly",
@@ -356,8 +394,9 @@
         "RowDataType": "TwelveMonthsPerRow",
         "FolderName": "Reference\\ENSO",
         "FileNameFormat": "oni.data.txt",
-        "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
-        "NullValue": "-99.9"
+        "DataRowRegEx": "^\\s*(?\u003Cyear\u003E\\d{4})\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
+        "NullValue": "-99.9",
+        "ValueAdjustment": null
       }
     ],
     "DataLocationMapping": null
@@ -375,7 +414,6 @@
     "DataDownloadUrl": "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/nino34.long.anom.data",
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Enso",
         "DataType": "Nino34",
         "UnitOfMeasure": "DegreesCelsiusAnomaly",
         "DataResolution": "Monthly",
@@ -383,8 +421,9 @@
         "RowDataType": "TwelveMonthsPerRow",
         "FolderName": "Reference\\ENSO",
         "FileNameFormat": "nino34.long.anom.data.txt",
-        "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
-        "NullValue": "-99.99"
+        "DataRowRegEx": "^\\s*(?\u003Cyear\u003E\\d{4})\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
+        "NullValue": "-99.99",
+        "ValueAdjustment": null
       }
     ],
     "DataLocationMapping": null
@@ -402,7 +441,6 @@
     "DataDownloadUrl": "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt",
     "MeasurementDefinitions": [
       {
-        "DataCategory": null,
         "DataType": "CO2",
         "UnitOfMeasure": "PartsPerMillion",
         "DataResolution": "Monthly",
@@ -411,7 +449,8 @@
         "FolderName": "Reference\\CO2",
         "FileNameFormat": "co2_mm_mlo.txt",
         "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
-        "NullValue": null
+        "NullValue": null,
+        "ValueAdjustment": null
       }
     ],
     "DataLocationMapping": null
@@ -429,7 +468,6 @@
     "DataDownloadUrl": "https://gml.noaa.gov/webdata/ccgg/trends/ch4/ch4_mm_gl.txt",
     "MeasurementDefinitions": [
       {
-        "DataCategory": null,
         "DataType": "CH4",
         "UnitOfMeasure": "PartsPerBillion",
         "DataResolution": "Monthly",
@@ -438,7 +476,8 @@
         "FolderName": "Reference\\CH4",
         "FileNameFormat": "ch4_mm_gl.txt",
         "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
-        "NullValue": null
+        "NullValue": null,
+        "ValueAdjustment": null
       }
     ],
     "DataLocationMapping": null
@@ -456,7 +495,6 @@
     "DataDownloadUrl": "https://gml.noaa.gov/webdata/ccgg/trends/n2o/n2o_mm_gl.txt",
     "MeasurementDefinitions": [
       {
-        "DataCategory": null,
         "DataType": "N2O",
         "UnitOfMeasure": "PartsPerBillion",
         "DataResolution": "Monthly",
@@ -465,7 +503,8 @@
         "FolderName": "Reference\\N2O",
         "FileNameFormat": "n2o_mm_gl.txt",
         "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
-        "NullValue": null
+        "NullValue": null,
+        "ValueAdjustment": null
       }
     ],
     "DataLocationMapping": null
@@ -483,7 +522,6 @@
     "DataDownloadUrl": "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/dmi.had.long.data",
     "MeasurementDefinitions": [
       {
-        "DataCategory": null,
         "DataType": "IOD",
         "UnitOfMeasure": "DegreesCelsiusAnomaly",
         "DataResolution": "Monthly",
@@ -491,8 +529,9 @@
         "RowDataType": "TwelveMonthsPerRow",
         "FolderName": "Reference\\IOD",
         "FileNameFormat": "dmi.had.long.data.txt",
-        "DataRowRegEx": "^\\s*(\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
-        "NullValue": "-9999"
+        "DataRowRegEx": "^\\s*(?\u003Cyear\u003E\\d{4})\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
+        "NullValue": "-9999",
+        "ValueAdjustment": null
       }
     ],
     "DataLocationMapping": null
@@ -510,7 +549,6 @@
     "DataDownloadUrl": "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v3.0.csv",
     "MeasurementDefinitions": [
       {
-        "DataCategory": null,
         "DataType": "NorthSeaIce",
         "UnitOfMeasure": "MillionSqKm",
         "DataResolution": "Daily",
@@ -519,7 +557,8 @@
         "FolderName": "Reference\\Ice",
         "FileNameFormat": "N_seaice_extent_daily_v3.0.csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d\u002B),\\s\u002B(?\u003Cmonth\u003E\\d\u002B),\\s\u002B(?\u003Cday\u003E\\d\u002B),\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
-        "NullValue": null
+        "NullValue": null,
+        "ValueAdjustment": null
       }
     ],
     "DataLocationMapping": null
@@ -537,7 +576,6 @@
     "DataDownloadUrl": "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/south/daily/data/S_seaice_extent_daily_v3.0.csv",
     "MeasurementDefinitions": [
       {
-        "DataCategory": null,
         "DataType": "SouthSeaIce",
         "UnitOfMeasure": "MillionSqKm",
         "DataResolution": "Daily",
@@ -546,7 +584,8 @@
         "FolderName": "Reference\\Ice",
         "FileNameFormat": "S_seaice_extent_daily_v3.0.csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d\u002B),\\s\u002B(?\u003Cmonth\u003E\\d\u002B),\\s\u002B(?\u003Cday\u003E\\d\u002B),\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
-        "NullValue": null
+        "NullValue": null,
+        "ValueAdjustment": null
       }
     ],
     "DataLocationMapping": null
@@ -564,7 +603,6 @@
     "DataDownloadUrl": "https://nsidc.org/api/greenland/melt_area/{year}",
     "MeasurementDefinitions": [
       {
-        "DataCategory": null,
         "DataType": "GreenlandIceMelt",
         "UnitOfMeasure": "SqKm",
         "DataResolution": "Daily",
@@ -573,16 +611,17 @@
         "FolderName": "Reference\\Ice",
         "FileNameFormat": "greenland-melt-area.csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E\\d*).*$",
-        "NullValue": null
+        "NullValue": null,
+        "ValueAdjustment": null
       }
     ],
     "DataLocationMapping": null
   },
   {
     "Id": "0561cf7e-83f2-4617-ac61-4962a0e95093",
-    "Name": "Hadley Centre observations",
+    "Name": "Hadley Centre",
     "ShortName": null,
-    "Description": null,
+    "Description": "The Met Office Hadley Centre is one of the UK\u0027s foremost climate change research centres.\r\n\r\nOur aim is to provide climate science and services to people and organisations, so they can make better decisions to stay safe and thrive. We do this by working with partners around the globe, carrying out world leading research.",
     "Publisher": "Met Office",
     "PublisherUrl": "https://www.metoffice.gov.uk/",
     "MoreInformationUrl": null,
@@ -591,31 +630,30 @@
     "DataDownloadUrl": "https://www.metoffice.gov.uk/hadobs/hadcet/data/download.html",
     "MeasurementDefinitions": [
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMax",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
-        "DataAdjustment": null,
+        "DataAdjustment": "Adjusted",
         "RowDataType": "OneValuePerRow",
         "FolderName": "Temperature\\Met",
         "FileNameFormat": "maxtemp_daily_totals.txt",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2})\\s\u002B(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*)$",
-        "NullValue": null
+        "NullValue": null,
+        "ValueAdjustment": null
       },
       {
-        "DataCategory": "Temperature",
         "DataType": "TempMin",
         "UnitOfMeasure": "DegreesCelsius",
         "DataResolution": "Daily",
-        "DataAdjustment": null,
+        "DataAdjustment": "Adjusted",
         "RowDataType": "OneValuePerRow",
         "FolderName": "Temperature\\Met",
         "FileNameFormat": "mintemp_daily_totals.txt",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2})\\s\u002B(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*)$",
-        "NullValue": null
+        "NullValue": null,
+        "ValueAdjustment": null
       },
       {
-        "DataCategory": null,
         "DataType": "Rainfall",
         "UnitOfMeasure": "Millimetres",
         "DataResolution": "Daily",
@@ -624,7 +662,8 @@
         "FolderName": "Rainfall\\Met",
         "FileNameFormat": "HadCEP_daily_totals.txt",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2})\\s\u002B(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*)$",
-        "NullValue": null
+        "NullValue": null,
+        "ValueAdjustment": null
       }
     ],
     "DataLocationMapping": null

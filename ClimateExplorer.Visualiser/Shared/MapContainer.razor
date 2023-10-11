@@ -1,4 +1,5 @@
 ﻿@using Blazorise
+@using ClimateExplorer.Core.Model;
 @using DPBlazorMapLibrary;
 
 <div class="mapContainer collapsed" id="mapContainer">
@@ -143,7 +144,7 @@
 
 
             var markerOption = markerOptions.Single(x => x.Alt == label);
-            var marker = await this.LayerFactory.CreateMarkerAndAddToMap(new LatLng(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation), map, markerOption);
+            var marker = await this.LayerFactory.CreateMarkerAndAddToMap(new LatLng(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation ?? 0), map, markerOption);
 
             await marker.BindTooltip(location.Name);
             await marker.OnClick(async (MouseEvent mouseEvent) => await HandleMapMouseEvent(mouseEvent));

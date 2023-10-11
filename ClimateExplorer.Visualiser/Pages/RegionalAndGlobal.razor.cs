@@ -1,16 +1,6 @@
-using Blazorise;
 using ClimateExplorer.Core.DataPreparation;
-using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.ViewModel;
-using ClimateExplorer.Visualiser.Services;
-using ClimateExplorer.Visualiser.Shared;
-using ClimateExplorer.Visualiser.UiLogic;
 using ClimateExplorer.Visualiser.UiModel;
-using DPBlazorMapLibrary;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
-using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
 
 namespace ClimateExplorer.Visualiser.Pages;
@@ -47,7 +37,7 @@ public partial class RegionalAndGlobal : ChartablePage
             return;
         }
 
-        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.CO2, null, false, throwIfNoMatch: true);
+        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.CO2, null, allowNullDataAdjustment: false, throwIfNoMatch: true);
 
         chartView.ChartSeriesList.Add(
             new ChartSeriesDefinition()

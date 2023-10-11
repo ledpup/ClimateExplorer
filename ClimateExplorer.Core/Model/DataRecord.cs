@@ -1,6 +1,7 @@
 ﻿using ClimateExplorer.Core.DataPreparation;
 using System.Text.Json.Serialization;
 
+namespace ClimateExplorer.Core.Model;
 public class DataRecord
 {
     public DataRecord()

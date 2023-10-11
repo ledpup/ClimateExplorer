@@ -31,7 +31,6 @@ internal class DataSetDefinitionsBuilder
                 {
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Temperature,
                         DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -42,7 +41,6 @@ internal class DataSetDefinitionsBuilder
                     },
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Temperature,
                         DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -67,7 +65,6 @@ internal class DataSetDefinitionsBuilder
                 {
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Temperature,
                         DataAdjustment = DataAdjustment.Unadjusted,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -78,7 +75,6 @@ internal class DataSetDefinitionsBuilder
                     },
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Temperature,
                         DataAdjustment = DataAdjustment.Unadjusted,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -120,7 +116,7 @@ internal class DataSetDefinitionsBuilder
                 {
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Temperature,
+                        DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Monthly,
@@ -131,7 +127,7 @@ internal class DataSetDefinitionsBuilder
                     },
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Temperature,
+                        DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Monthly,
@@ -159,7 +155,6 @@ internal class DataSetDefinitionsBuilder
                     new MeasurementDefinition
                     {
                         DataAdjustment = DataAdjustment.Adjusted,
-                        DataCategory = DataCategory.Temperature,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
@@ -171,7 +166,6 @@ internal class DataSetDefinitionsBuilder
                     new MeasurementDefinition
                     {
                         DataAdjustment = DataAdjustment.Adjusted,
-                        DataCategory = DataCategory.Temperature,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
@@ -195,7 +189,6 @@ internal class DataSetDefinitionsBuilder
                     new MeasurementDefinition
                     {
                         DataAdjustment = DataAdjustment.Unadjusted,
-                        DataCategory = DataCategory.Temperature,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
@@ -207,7 +200,6 @@ internal class DataSetDefinitionsBuilder
                     new MeasurementDefinition
                     {
                         DataAdjustment = DataAdjustment.Unadjusted,
-                        DataCategory = DataCategory.Temperature,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
@@ -244,7 +236,6 @@ internal class DataSetDefinitionsBuilder
                 {
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Temperature,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
@@ -255,7 +246,6 @@ internal class DataSetDefinitionsBuilder
                     },
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Temperature,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
@@ -278,6 +268,55 @@ internal class DataSetDefinitionsBuilder
             },
 
 
+            new DataSetDefinition
+            {
+                Id = Guid.Parse("1DC38F20-3606-4D90-A2A0-84F93E75C964"),
+                Name = "Global Historical Climatology Network monthly (GHCNm)",
+                Description = "The Global Historical Climatology Network monthly (GHCNm) dataset provides monthly climate summaries from thousands of weather stations around the world. The initial version was developed in the early 1990s, and subsequent iterations were released in 1997, 2011, and most recently in 2018. The period of record for each summary varies by station, with the earliest observations dating to the 18th century. Some station records are purely historical and are no longer updated, but many others are still operational and provide short time delay updates that are useful for climate monitoring.",
+                Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
+                PublisherUrl = "https://www.noaa.gov/",
+                MoreInformationUrl = "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-monthly",
+                MeasurementDefinitions = new List<MeasurementDefinition>
+                {
+                    new MeasurementDefinition
+                    {
+                        DataAdjustment = DataAdjustment.Adjusted,
+                        DataType = DataType.TempMean,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                        DataResolution = DataResolution.Monthly,
+                        RowDataType = RowDataType.TwelveMonthsPerRow,
+                        DataRowRegEx = @"^(?<year>\d{4}),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+)$",
+                        FolderName = @"Temperature\GHCNm\Adjusted",
+                        FileNameFormat = "[station].csv",
+                        NullValue = "-9999",
+                        ValueAdjustment = 100.0f,
+                    },
+                    new MeasurementDefinition
+                    {
+                        DataAdjustment = DataAdjustment.Unadjusted,
+                        DataType = DataType.TempMean,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                        DataResolution = DataResolution.Monthly,
+                        RowDataType = RowDataType.TwelveMonthsPerRow,
+                        DataRowRegEx = @"^(?<year>\d{4}),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+)$",
+                        FolderName = @"Temperature\GHCNm\Unadjusted",
+                        FileNameFormat = "[station].csv",
+                        NullValue = "-9999",
+                        ValueAdjustment = 100.0f,
+                    },
+                    //new MeasurementDefinition
+                    //{
+                    //    DataType = DataType.Rainfall,
+                    //    UnitOfMeasure = UnitOfMeasure.Millimetres,
+                    //    DataResolution = DataResolution.Daily,
+                    //    DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),.*,D$",
+                    //    FolderName = @"Rainfall\NIWA",
+                    //    FileNameFormat = "[station]_rainfall.csv",
+                    //    NullValue = "-",
+                    //},
+                },
+            },
+
 
 
             new DataSetDefinition
@@ -293,14 +332,13 @@ internal class DataSetDefinitionsBuilder
                 {
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Enso,
                         DataType = DataType.MEIv2,
                         UnitOfMeasure = UnitOfMeasure.EnsoIndex,
                         DataResolution = DataResolution.Monthly,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
                         FolderName = @"Reference\ENSO",
                         FileNameFormat = "meiv2.data.txt",
-                        DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
+                        DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                         NullValue = "-999.00"
                     },
                 },
@@ -319,14 +357,13 @@ internal class DataSetDefinitionsBuilder
                 {
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Enso,
                         DataType = DataType.SOI,
                         UnitOfMeasure = UnitOfMeasure.EnsoIndex,
                         DataResolution = DataResolution.Monthly,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
                         FolderName = @"Reference\ENSO",
                         FileNameFormat = "soi.long.data.txt",
-                        DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
+                        DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                         NullValue = "-99.99"
                     },
                 },
@@ -345,14 +382,13 @@ internal class DataSetDefinitionsBuilder
                 {
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Enso,
                         DataType = DataType.ONI,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsiusAnomaly,
                         DataResolution = DataResolution.Monthly,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
                         FolderName = @"Reference\ENSO",
                         FileNameFormat = "oni.data.txt",
-                        DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
+                        DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                         NullValue = "-99.9"
                     },
                 },
@@ -371,14 +407,13 @@ internal class DataSetDefinitionsBuilder
                 {
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Enso,
                         DataType = DataType.Nino34,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsiusAnomaly,
                         DataResolution = DataResolution.Monthly,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
                         FolderName = @"Reference\ENSO",
                         FileNameFormat = "nino34.long.anom.data.txt",
-                        DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
+                        DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                         NullValue = "-99.99"
                     },
                 },
@@ -482,7 +517,7 @@ internal class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsiusAnomaly,
                         DataResolution = DataResolution.Monthly,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
-                        DataRowRegEx = @"^\s*(\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
+                        DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                         FolderName = @"Reference\IOD",
                         FileNameFormat = "dmi.had.long.data.txt",
                         NullValue = "-9999"
@@ -560,8 +595,10 @@ internal class DataSetDefinitionsBuilder
             new DataSetDefinition
             {
                 Id = Guid.Parse("0561CF7E-83F2-4617-AC61-4962A0E95093"),
-                Name = "Hadley Centre observations",
-                Description = null,
+                Name = "Hadley Centre",
+                Description = @"The Met Office Hadley Centre is one of the UK's foremost climate change research centres.
+
+Our aim is to provide climate science and services to people and organisations, so they can make better decisions to stay safe and thrive. We do this by working with partners around the globe, carrying out world leading research.",
                 Publisher = "Met Office",
                 PublisherUrl = "https://www.metoffice.gov.uk/",
                 StationInfoUrl = "https://www.metoffice.gov.uk/hadobs/",
@@ -570,7 +607,7 @@ internal class DataSetDefinitionsBuilder
                 {
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Temperature,
+                        DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
@@ -580,7 +617,7 @@ internal class DataSetDefinitionsBuilder
                     },
                     new MeasurementDefinition
                     {
-                        DataCategory = DataCategory.Temperature,
+                        DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,

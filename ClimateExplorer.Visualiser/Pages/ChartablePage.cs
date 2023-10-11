@@ -1,5 +1,6 @@
 ﻿using Blazorise;
 using ClimateExplorer.Core.Infrastructure;
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Visualiser.Services;
 using ClimateExplorer.Visualiser.Shared;
@@ -8,7 +9,6 @@ using ClimateExplorer.Visualiser.UiModel;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 
 namespace ClimateExplorer.Visualiser.Pages;

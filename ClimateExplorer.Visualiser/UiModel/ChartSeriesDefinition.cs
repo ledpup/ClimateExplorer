@@ -301,6 +301,7 @@ public class ChartSeriesDefinition
         {
             DataType.TempMin => "Minimum temperature",
             DataType.TempMax => "Maximum temperature",
+            DataType.TempMean => "Mean temperature",
             DataType.SolarRadiation => "Solar radiation",
             DataType.Rainfall => "Rainfall",
             DataType.MEIv2 => "MEI v2",

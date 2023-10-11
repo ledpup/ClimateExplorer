@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-public struct Coordinates
+﻿public struct Coordinates
 {
     public Coordinates(float lat, float lng)
     {
@@ -11,22 +9,38 @@ public struct Coordinates
 
     public float Latitude { get; set; }
     public float Longitude { get; set; }
-    public float Elevation { get; set; }
+    public float? Elevation { get; set; }
 
-    public bool Equals(Coordinates obj) => Latitude == obj.Latitude && Longitude == obj.Longitude && Elevation == obj.Elevation;
+    public readonly bool Equals(Coordinates obj) => Latitude == obj.Latitude && Longitude == obj.Longitude && Elevation == obj.Elevation;
     public static bool operator ==(Coordinates lhs, Coordinates rhs) => lhs.Equals(rhs);
     public static bool operator !=(Coordinates lhs, Coordinates rhs) => !(lhs == rhs);
 
-    public override string ToString()
+    public override readonly string ToString()
     {
-        return $"{Math.Round(Latitude, 1)}°, {Math.Round(Longitude, 1)}°, {Math.Round(Elevation, 1)}m";
+        if (Elevation == null)
+        {
+            return $"{Math.Round(Latitude, 1)}° {Math.Round(Longitude, 1)}°";
+        }
+        return $"{Math.Round(Latitude, 1)}° {Math.Round(Longitude, 1)}° {Math.Round(Elevation.Value, 1)}m";
     }
-    public string ToString(bool prefix = false)
+
+    public string ToFriendlyString(bool prefix = false)
     {
         if (prefix)
         {
-            return $"Lat {Math.Round(Latitude, 1)}° Long {Math.Round(Longitude, 1)}° Ele {Math.Round(Elevation, 1)}m";
+            if (Elevation == null)
+            {
+                return $"Lat {Math.Round(Latitude, 1)}° Long {Math.Round(Longitude, 1)}°";
+            }
+            return $"Lat {Math.Round(Latitude, 1)}° Long {Math.Round(Longitude, 1)}° Ele {Math.Round(Elevation.Value, 1)}m";
         }
-        return this.ToString();
+        return ToString();
+    }
+
+    public override readonly bool Equals(object obj) => Equals((Coordinates)obj);
+
+    public override int GetHashCode()
+    {
+        throw new NotImplementedException();
     }
 }

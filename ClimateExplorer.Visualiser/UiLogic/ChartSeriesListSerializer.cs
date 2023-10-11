@@ -111,7 +111,7 @@ public static class ChartSeriesListSerializer
             .SingleOrDefault(
                 x =>
                     x.DataAdjustment == da &&
-                    x.DataType == dt);
+                    (x.DataType == dt || x.DataType == Pages.Index.AlternateTempDataTypes(dt)));
 
         if (md == null)
         {

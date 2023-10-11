@@ -1,4 +1,5 @@
-﻿using ClimateExplorer.Core.ViewModel;
+﻿using ClimateExplorer.Core.Model;
+using ClimateExplorer.Core.ViewModel;
 
 namespace ClimateExplorer.Visualiser.UiModel;
 
@@ -9,7 +10,7 @@ public class SourceSeriesSpecification
     public Guid? LocationId { get; set; }
     public string? LocationName { get; set; }
 
-    public static SourceSeriesSpecification[] BuildArray(Location? location, DataSetAndMeasurementDefinition dsdmd)
+    public static SourceSeriesSpecification[] BuildArray(LocationBase? location, DataSetAndMeasurementDefinition dsdmd)
     {
         if (dsdmd == null) return new SourceSeriesSpecification[0];
 

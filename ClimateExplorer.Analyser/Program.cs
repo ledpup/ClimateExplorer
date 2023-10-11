@@ -3,6 +3,7 @@ using ClimateExplorer.Analyser.Bom;
 using ClimateExplorer.Analyser.Greenland;
 using ClimateExplorer.Analyser.Niwa;
 using ClimateExplorer.Analyser.StaticContent;
+using ClimateExplorer.Core.Model;
 
 var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
 
@@ -54,7 +55,7 @@ await BomLocationsAndStationsMapper.BuildRaiaLocationsFromReferenceMetaDataAsync
 
 async Task ValidateLocations()
 {
-    var locations = await Location.GetLocations(false, @"Output\Location");
+    var locations = await Location.GetLocations(@"Output\Location");
 
     if (locations.GroupBy(x => x.Id).Any(x => x.Count() > 1))
     {

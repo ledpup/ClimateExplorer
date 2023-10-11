@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace ClimateExplorer.Visualiser.Services;
+﻿namespace ClimateExplorer.Visualiser.Services;
 
 public interface IDataServiceCache
 {

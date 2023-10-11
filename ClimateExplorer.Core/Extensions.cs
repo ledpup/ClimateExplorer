@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using ClimateExplorer.Core.Model;
+using System.Globalization;
 
 namespace ClimateExplorer.Core;
 

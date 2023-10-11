@@ -1,6 +1,7 @@
 ﻿using ClimateExplorer.Core.ViewModel;
 using static ClimateExplorer.Core.Enums;
 
+namespace ClimateExplorer.Core.Model;
 public class MeasurementDefinition
 {
     public DataType DataType { get; set; }
@@ -12,6 +13,7 @@ public class MeasurementDefinition
     public string? FileNameFormat { get; set; }
     public string? DataRowRegEx { get; set; }
     public string? NullValue { get; set; }
+    public float? ValueAdjustment { get; set; }
 
     public MeasurementDefinitionViewModel ToViewModel()
     {
@@ -19,7 +21,8 @@ public class MeasurementDefinition
         {
             DataAdjustment = DataAdjustment,
             DataType = DataType,
-            UnitOfMeasure = UnitOfMeasure
+            UnitOfMeasure = UnitOfMeasure,
+            DataResolution = DataResolution,
         };
 
         return viewModel;

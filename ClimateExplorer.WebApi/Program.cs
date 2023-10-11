@@ -133,15 +133,15 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
     return dtos;
 }
 
-async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool includeNearbyLocations = false, bool includeWarmingMetrics = false)
+async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool includeNearbyLocations = false, bool includeWarmingIndex = false, bool excludeLocationsWithNullWarmingIndex = true)
 {
-    string cacheKey = $"Locations_{locationId}_{includeNearbyLocations}_{includeWarmingMetrics}";
+    string cacheKey = $"Locations_{locationId}_{includeNearbyLocations}_{includeWarmingIndex}";
 
     var result = await _cache.Get<Location[]>(cacheKey);
 
     if (result != null) return result;
 
-    IEnumerable<Location> locations = (await Location.GetLocations(includeNearbyLocations)).OrderBy(x => x.Name);
+    IEnumerable<Location> locations = (await Location.GetLocations()).OrderBy(x => x.Name);
     
     if (locationId != null)
     {
@@ -150,7 +150,7 @@ async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool in
 
     locations = locations.ToList();
 
-    if (includeWarmingMetrics)
+    if (includeWarmingIndex)
     {
         var definitions = await GetDataSetDefinitions();
 
@@ -167,7 +167,9 @@ async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool in
                         location.Id,
                         DataType.TempMax,
                         Enums.DataAdjustment.Adjusted,
-                        true);
+                        allowNullDataAdjustment: true,
+                        DataType.TempMean,
+                        throwIfNoMatch: true);
 
                 // Next, request that dataset
                 var dsb = new DataSetBuilder();
@@ -221,6 +223,16 @@ async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool in
                                                             ? Convert.ToInt16(MathF.Round(x.WarmingIndex.Value / maxWarmingIndex * 9, 0))
                                                             : Convert.ToInt16(MathF.Round(x.WarmingIndex.Value, 0)));
         }
+    }
+
+    if (includeWarmingIndex && excludeLocationsWithNullWarmingIndex)
+    {
+        locations = locations.Where(x => x.WarmingIndex != null);
+    }
+
+    if (includeNearbyLocations)
+    {
+        Location.SetNearbyLocations(locations.ToList());
     }
 
     await _cache.Put(cacheKey, locations.ToArray());
@@ -278,7 +290,7 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
 
     var location =
         spec.LocationId != null
-        ? (await Location.GetLocations(false)).Single(x => x.Id == spec.LocationId)
+        ? (await Location.GetLocations()).Single(x => x.Id == spec.LocationId)
         : null;
 
     var returnDataSet =
