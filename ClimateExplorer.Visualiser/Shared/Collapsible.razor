@@ -1,4 +1,5 @@
-﻿<div class="@("collapsible-panel " + (ContentLayoutType == CollapserContentLayoutTypes.Block 
+﻿@using Blazorise
+<div class="@("collapsible-panel " + (ContentLayoutType == CollapserContentLayoutTypes.Block 
                                                                     ? "block-layout" 
                                                                     : (ContentLayoutType == CollapserContentLayoutTypes.FlexboxColumns 
                                                                         ? "flexbox-column-layout" 
@@ -19,7 +20,19 @@
 
                 @if (ShowTitleWhenExpanded || !ShowContent)
                 {
-                    @Title
+                    if (FullTitle?.Length > 20)
+                    {
+                        <span class="tooltip-wrap">
+                            @Title
+                            <span class="tooltip-content">
+                                @FullTitle
+                            </span>
+                        </span>
+                    }
+                    else
+                    {
+                        @Title
+                    }
                 }
             </span>
             @HeaderContent        
@@ -56,13 +69,16 @@
     public CollapserSizes CollapserSize { get; set; }
 
     [Parameter]
-    public string Title { get; set; }
+    public string? Title { get; set; }
 
     [Parameter]
-    public RenderFragment HeaderContent { get; set; }
+    public string? FullTitle { get; set; }
 
     [Parameter]
-    public RenderFragment Content { get; set; }
+    public RenderFragment? HeaderContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? Content { get; set; }
 
     [Parameter]
     public bool AllowCollapse { get; set; } = true;

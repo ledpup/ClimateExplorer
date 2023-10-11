@@ -1,21 +1,72 @@
-﻿using ClimateExplorer.Core;
-using GeoCoordinatePortable;
+﻿using GeoCoordinatePortable;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace ClimateExplorer.Core.Model;
 public class Location : LocationBase
 {
     public required string? CountryCode { get; set; }
+    public string? Country { get; set; }
     public required Coordinates Coordinates { get; set; }
     public float? WarmingIndex { get; set; }
     public short? HeatingScore { get; set; }
     public List<LocationDistance>? NearbyLocations { get; set; }
 
+    public string? FullTitle
+    {
+        get
+        {
+            if (fullTitle != null)
+                return fullTitle;
+
+            fullTitle = Country == null ? Name : $"{Name}, {Country}";
+
+            return fullTitle;
+        }
+    }
+    string? fullTitle;
+
+    public string? Title
+    {
+        get
+        {
+            if (title != null)
+                return title;
+
+            if (Name.Length > 15 && Name.Length <= 20)
+            {
+                title = Name;
+            }
+            else if (Name.Length > 20)
+            {
+                title = Name.Truncate(17);
+            }
+            else
+            {
+                title = Country == null ? Name : $"{Name}, {Country}";
+                if (Country != null && title.Length > 20)
+                {
+                    var regex = new Regex(@"(?<country>.*)\s(?<owner>\[.*\])");
+                    var match = regex.Match(Country);
+                    if (match.Success)
+                    {
+                        var country = match.Groups["country"];
+                        title = $"{Name}, {country}";
+                    }
+                }
+                title = title.Truncate(17);
+            }
+            return title;
+        }
+    }
+    string? title;
+
     public static async Task<List<Location>> GetLocationsFromFile(string pathAndFileName)
     {
         var locationText = await File.ReadAllTextAsync(pathAndFileName);
         var locations = JsonSerializer.Deserialize<List<Location>>(locationText);
-        return locations;
+        await SetCountries(locations!);
+        return locations!;
     }
 
     public static async Task<List<Location>> GetLocations(string? folderName = null)
@@ -28,12 +79,18 @@ public class Location : LocationBase
             var locationsInFile = await GetLocationsFromFile(file);
             locations.AddRange(locationsInFile);
         }
-        
+
         locations.Add(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia anomaly", CountryCode = "AS", Coordinates = new Coordinates() });
 
         locations = locations.OrderBy(x => x.Name).ToList();
 
         return locations;
+    }
+
+    private static async Task SetCountries(List<Location> locations)
+    {
+        var countries = await Model.Country.GetCountries(@"MetaData\countries.txt");
+        locations.ForEach(x => x.Country = countries[x.CountryCode!].Name);
     }
 
     public static void SetNearbyLocations(List<Location>? locations)
@@ -79,9 +136,9 @@ public class Location : LocationBase
 
 public class LocationDistance
 {
-    public Guid LocationId { get; set; }
-    public string LocationName { get; set; }
-    public double Distance { get; set; }
-    public double BearingDegrees { get; set; }
-    public string CompassRoseDirection { get; set; }
+    public required Guid LocationId { get; set; }
+    public required string LocationName { get; set; }
+    public required double Distance { get; set; }
+    public required double BearingDegrees { get; set; }
+    public required string CompassRoseDirection { get; set; }
 }

@@ -1,13 +1,20 @@
-﻿using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
-namespace ClimateExplorer.Data.Ghcnm;
+namespace ClimateExplorer.Core.Model;
 
-public class CountryFileProcessor
+public class Country
 {
-    public static async Task<Dictionary<string, Country>> Transform()
+    public required string Name { get; set; }
+    public required string Code { get; set; }
+
+    public override string ToString()
     {
-        var countryFile = await File.ReadAllLinesAsync(@"SiteMetaData\ghcnm-countries.txt");
+        return Name;
+    }
+
+    public static async Task<Dictionary<string, Country>> GetCountries(string location)
+    {
+        var countryFile = await File.ReadAllLinesAsync(location);
 
         var countries = new Dictionary<string, Country>();
 
@@ -29,23 +36,12 @@ public class CountryFileProcessor
 
             countries.Add(groups["id"].Value,
                 new Country
-                { 
+                {
                     Code = groups["id"].Value,
                     Name = groups["name"].Value.Trim(),
                 });
         }
 
         return countries;
-    }
-}
-
-public class Country
-{
-    public string Name { get; set; }
-    public string Code { get; set; }
-
-    public override string ToString()
-    {
-        return Name;
     }
 }

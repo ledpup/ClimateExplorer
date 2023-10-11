@@ -125,7 +125,7 @@ List<Station> SelectStationsByDbscanClusteringAndTakingHighestScore(List<Station
     {
         var stationsInCountry = groupedCountry.ToList();
 
-        var index = new GeoListSpatialIndex<PointInfo<GeoPoint>>(stationsInCountry.Select(x => new PointInfo<GeoPoint>(new GeoPoint(x.Id, x.Coordinates.Value.Latitude, x.Coordinates.Value.Longitude))));
+        var index = new GeoListSpatialIndex<PointInfo<GeoPoint>>(stationsInCountry.Select(x => new PointInfo<GeoPoint>(new GeoPoint(x.Id, x.Coordinates!.Value.Latitude, x.Coordinates.Value.Longitude))));
 
         var distanceForClustering = countryDistanceOverride.ContainsKey(groupedCountry.Key!) ? countryDistanceOverride[groupedCountry.Key!] : distance;
         var dbscanResult = Dbscan.Dbscan.CalculateClusters(
@@ -274,7 +274,7 @@ async Task<List<Station>> RetrieveDataQualityFilteredStations(string version, Li
         return GetDataQualityFilteredStationsFromFile();
     }
     
-    var countries = await CountryFileProcessor.Transform();
+    var countries = await Country.GetCountries(@"SiteMetaData\ghcnm-countries.txt");
     var stations = await StationFileProcessor.Transform(version, inputStations, countries, (short)(DateTime.Now.Year - 10), IndexCalculator.MinimumNumberOfYearsToCalculateIndex, logger);
 
     SaveStations(stations, dataFilteredStations);
@@ -292,7 +292,7 @@ List<Station> GetDataQualityFilteredStationsFromFile()
     var contents = File.ReadAllText(dataFilteredStations);
     var stations = JsonSerializer.Deserialize<List<Station>>(contents);
 
-    return stations;
+    return stations!;
 }
 
 void SaveStations(List<Station> stations, string path)

@@ -12,7 +12,7 @@ public static class Extensions
         var remainder = numberOfDaysInYear % numberOfDaysInGroup;
 
         var grouping = temperatureRecords.GroupBy(x => 
-                x.Date.Value.DayOfYear > numberOfDaysInYear - remainder
+                x.Date!.Value.DayOfYear > numberOfDaysInYear - remainder
                             ? (short?)(numberOfDaysInYear / numberOfDaysInGroup - 1)
                             : (short)((x.Date.Value.DayOfYear - 1) / numberOfDaysInGroup)
                             );
@@ -94,7 +94,7 @@ public static class Extensions
                                           .ToList();
         if (duplicateDates.Any())
         {
-            throw new Exception($"There are duplicate dates ({string.Join(", ", duplicateDates.Select(x => x.Value.ToShortDateString()))}. The file is corrupt.");
+            throw new Exception($"There are duplicate dates ({string.Join(", ", duplicateDates.Select(x => x!.Value.ToShortDateString()))}. The file is corrupt.");
         }
     }
 
@@ -130,5 +130,10 @@ public static class Extensions
             return input;
 
         return char.ToLower(input[0]) + input.Substring(1);
+    }
+
+    public static string Truncate(this string value, int maxChars)
+    {
+        return value.Length <= maxChars ? value : value.Substring(0, maxChars) + "...";
     }
 }
