@@ -84,12 +84,15 @@ app.MapGet(
         "       Returns a list of locations.\n" +
         "           Parameters:\n" +
         "               locationId: filter to a particular location by id (still returns an array of location, but max one entry)\n" +
+        "   Get /country\n" +
+        "       Returns a list of countries.\n" +
         "   POST /dataset\n" +
         "       Returns the specified data set, transformed as requested");
 
 app.MapGet("/about",                                                GetAbout);
 app.MapGet("/datasetdefinition",                                    GetDataSetDefinitions);
 app.MapGet("/location",                                             GetLocations);
+app.MapGet("/country",                                              GetCountries);
 app.MapPost("/dataset",                                             PostDataSets);
 
 app.Run();
@@ -113,7 +116,7 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
     var dtos =
         definitions
         .Select(
-            async x =>
+            x =>
             new DataSetDefinitionViewModel
             {
                 Id = x.Id,
@@ -127,7 +130,6 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
                 LocationIds = x.DataLocationMapping?.LocationIdToDataFileMappings.Keys.ToList(),
                 MeasurementDefinitions = x.MeasurementDefinitions.Select(x => x.ToViewModel()).ToList(),
             })
-        .Select(x => x.Result)
         .ToList();
 
     return dtos;
@@ -423,4 +425,9 @@ static async Task<BuildDataSetResult> GenerateAverageOfAnomaliesSeries(PostDataS
         UnitOfMeasure = seriesDefinition.UnitOfMeasure,
     };
     return series;
+}
+
+async Task<Dictionary<string, string>> GetCountries()
+{
+    return (await Country.GetCountries(@"MetaData\countries.txt")).ToDictionary(x => x.Key, x => x.Value.Name);
 }

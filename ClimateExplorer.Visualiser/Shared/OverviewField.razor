@@ -1,7 +1,7 @@
 ﻿@using Blazorise
 @using System.Text.RegularExpressions
 
-<div class="overview-field" title="@title" onclick="@ShowPopup" style="@(string.IsNullOrWhiteSpace(PopupText) ? string.Empty : pointer )">
+<div class="overview-field" title="@title" onclick="@ShowPopup()" style="@(string.IsNullOrWhiteSpace(PopupText) ? string.Empty : pointer)">
     <div class="label">@Label</div>
     <div class="value">
         @Value
@@ -40,23 +40,23 @@
     const string pointer = "cursor: pointer;";
 
     [Parameter]
-    public string Label { get; set; }
+    public string? Label { get; set; }
 
     [Parameter]
-    public string AdditionalInfo { get; set; }
+    public string? AdditionalInfo { get; set; }
 
     [Parameter]
-    public RenderFragment Value { get; set; }
+    public RenderFragment? Value { get; set; }
 
     [Parameter]
-    public string PopupText { get; set; }
+    public string? PopupText { get; set; }
 
-    private Modal popup;
+    private Modal? popup;
     private Task ShowPopup()
     {
         if (!string.IsNullOrWhiteSpace(PopupText))
         {
-            return popup.Show();
+            return popup!.Show();
         }
         return Task.CompletedTask;
     }

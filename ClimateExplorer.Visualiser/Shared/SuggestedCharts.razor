@@ -64,10 +64,10 @@
 
 @code {
     [Parameter]
-    public IEnumerable<DataSetDefinitionViewModel> DataSetDefinitions { get; set; }
+    public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     [Parameter]
-    public Location SelectedLocation { get; set; }
+    public Location? SelectedLocation { get; set; }
 
     [Parameter]
     public EventCallback<List<ChartSeriesDefinition>> OnChartPresetSelected { get; set; }
@@ -78,7 +78,7 @@
     [Parameter]
     public PresetTypes PresetType { get; set; }
 
-    List<SuggestedChartPresetModelWithVariants> SuggestedPresets { get; set; }
+    List<SuggestedChartPresetModelWithVariants>? SuggestedPresets { get; set; }
 
     bool LoadingIndicatorVisible { get; set; }
 
@@ -93,7 +93,7 @@
         return c;
     }
 
-    protected override async Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
         LoadingIndicatorVisible = true;
 
@@ -105,7 +105,7 @@
         switch (PresetType)
         {
             case PresetTypes.Location:
-                SuggestedPresets = SuggestedPresetLists.LocationBasedPresets(DataSetDefinitions, SelectedLocation);
+                SuggestedPresets = SuggestedPresetLists.LocationBasedPresets(DataSetDefinitions, SelectedLocation!);
                 break;
             case PresetTypes.RegionalAndGlobal:
                 SuggestedPresets = SuggestedPresetLists.RegionalAndGlobalPresets(DataSetDefinitions);
@@ -115,13 +115,13 @@
         // Presets may call for data that is not available at all locations. In those
         // cases, remove the ChartSeries entries that aren't available & set a flag
         // on the preset so that an indicator can be shown to the user.
-        foreach (var p in SuggestedPresets.Where(x => x.ChartSeriesList != null))
+        foreach (var p in SuggestedPresets!.Where(x => x.ChartSeriesList != null))
         {
             p.MissingChartSeries = false;
 
             foreach (var csd in p.ChartSeriesList.ToArray())
             {
-                if (!csd.SourceSeriesSpecifications.Any() || csd.SourceSeriesSpecifications.Any(x => x.MeasurementDefinition == null))
+                if (!csd.SourceSeriesSpecifications!.Any() || csd.SourceSeriesSpecifications!.Any(x => x.MeasurementDefinition == null))
                 {
                     p.ChartSeriesList.Remove(csd);
 
@@ -137,7 +137,7 @@
 
                     foreach (var csd in v.ChartSeriesList.ToArray())
                     {
-                        if (!csd.SourceSeriesSpecifications.Any() || csd.SourceSeriesSpecifications.Any(x => x.MeasurementDefinition == null))
+                        if (!csd.SourceSeriesSpecifications!.Any() || csd.SourceSeriesSpecifications!.Any(x => x.MeasurementDefinition == null))
                         {
                             v.ChartSeriesList.Remove(csd);
 

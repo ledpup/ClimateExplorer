@@ -2,6 +2,6 @@
 
 public class ApiMetadataModel
 {
-    public string Version { get; set; }
+    public required string Version { get; set; }
     public DateTime BuildTimeUtc { get; set; }
 }

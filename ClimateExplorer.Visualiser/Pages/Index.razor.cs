@@ -16,13 +16,13 @@ namespace ClimateExplorer.Visualiser.Pages;
 public partial class Index : ChartablePage
 {
     [Parameter]
-    public string LocationId { get; set; }
-    SelectLocation selectLocationModal { get; set; }
-    MapContainer mapContainer { get; set; }
+    public string? LocationId { get; set; }
+    SelectLocation? selectLocationModal { get; set; }
+    MapContainer? mapContainer { get; set; }
 
     Guid SelectedLocationId { get; set; }
-    Location _selectedLocation { get; set; }
-    Location PreviousLocation { get; set; }
+    Location? _selectedLocation { get; set; }
+    Location? PreviousLocation { get; set; }
     string? BrowserLocationErrorMessage { get; set; }
 
     [Inject] Blazored.LocalStorage.ILocalStorageService? LocalStorage { get; set; }
@@ -53,14 +53,14 @@ public partial class Index : ChartablePage
         var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
         if (setupDefaultChartSeries)
         {
-            setupDefaultChartSeries = (LocationId == null && chartView.ChartSeriesList.Count == 0) || !QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
+            setupDefaultChartSeries = (LocationId == null && chartView.ChartSeriesList!.Count == 0) || !QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
         }
 
         GetLocationIdViaNameFromPath(uri);
 
         if (LocationId == null)
         {
-            LocationId = (await LocalStorage.GetItemAsync<string>("lastLocationId"));
+            LocationId = (await LocalStorage!.GetItemAsync<string>("lastLocationId"));
             var validGuid = Guid.TryParse(LocationId, out Guid id);
             if (!validGuid || id == Guid.Empty || !Locations.Any(x => x.Id == id))
             {
@@ -182,14 +182,14 @@ public partial class Index : ChartablePage
 
     private Task ShowSelectLocationModal()
     {
-        return selectLocationModal.Show();
+        return selectLocationModal!.Show();
     }
 
     Location SelectedLocation
     {
         get
         {
-            return _selectedLocation;
+            return _selectedLocation!;
         }
         set
         {
@@ -220,14 +220,14 @@ public partial class Index : ChartablePage
         SelectedLocationId = newValue;
         SelectedLocation = Locations.Single(x => x.Id == SelectedLocationId);
 
-        await LocalStorage.SetItemAsync("lastLocationId", SelectedLocationId.ToString());
+        await LocalStorage!.SetItemAsync("lastLocationId", SelectedLocationId.ToString());
 
-        List<ChartSeriesDefinition> additionalCsds = new List<ChartSeriesDefinition>();
+        var additionalCsds = new List<ChartSeriesDefinition>();
 
         // Update data series to reflect new location
-        foreach (var csd in chartView.ChartSeriesList.ToArray())
+        foreach (var csd in chartView.ChartSeriesList!.ToArray())
         {
-            foreach (var sss in csd.SourceSeriesSpecifications)
+            foreach (var sss in csd.SourceSeriesSpecifications!)
             {
                 if (!csd.IsLocked)
                 {
@@ -243,7 +243,7 @@ public partial class Index : ChartablePage
                         sss.LocationName = SelectedLocation.Name;
 
                         // But: the new location may not have data of the requested type. Let's see if there is any.
-                        DataSetAndMeasurementDefinition dsd =
+                        var dsd =
                             DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
                                 DataSetDefinitions,
                                 SelectedLocationId,
@@ -270,7 +270,7 @@ public partial class Index : ChartablePage
                             var oldMd = sss.MeasurementDefinition;
 
                             var candidateMds =
-                                sss.DataSetDefinition.MeasurementDefinitions
+                                sss.DataSetDefinition.MeasurementDefinitions!
                                 .Where(x => x.DataType == oldMd.DataType && x.DataAdjustment == oldMd.DataAdjustment)
                                 .ToArray();
 
@@ -279,7 +279,7 @@ public partial class Index : ChartablePage
                                 case 0:
                                     // There was no exact match. It's possible that the new location has data of the requested type, but not the specified adjustment type.
                                     // If so, try defaulting.
-                                    candidateMds = sss.DataSetDefinition.MeasurementDefinitions.Where(x => x.DataType == oldMd.DataType).ToArray();
+                                    candidateMds = sss.DataSetDefinition.MeasurementDefinitions!.Where(x => x.DataType == oldMd.DataType).ToArray();
 
                                     if (candidateMds.Length == 1)
                                     {
@@ -315,13 +315,13 @@ public partial class Index : ChartablePage
                     // It's locked, so duplicate it & set the location on the duplicate to the new location
                     var newDsd = DataSetDefinitions.Single(x => x.Id == sss.DataSetDefinition.Id);
                     var newMd =
-                        newDsd.MeasurementDefinitions
+                        newDsd.MeasurementDefinitions!
                         .SingleOrDefault(x => x.DataType == sss.MeasurementDefinition.DataType && x.DataAdjustment == sss.MeasurementDefinition.DataAdjustment);
 
                     if (newMd == null)
                     {
                         newMd =
-                            newDsd.MeasurementDefinitions
+                            newDsd.MeasurementDefinitions!
                             .SingleOrDefault(x => x.DataType == sss.MeasurementDefinition.DataType && x.DataAdjustment == null);
                     }
 
@@ -396,7 +396,7 @@ public partial class Index : ChartablePage
         public float Longitude { get; set; }
 
         public float ErrorCode { get; set; }
-        public string ErrorMessage { get; set; }
+        public required string ErrorMessage { get; set; }
     }
 
     async Task<Guid?> GetCurrentLocation()

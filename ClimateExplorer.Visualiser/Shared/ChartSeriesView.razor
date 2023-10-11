@@ -9,8 +9,8 @@
 <div class="chart-series-config">
     <div class="title-bar" @onclick="() => { ChartSeries.IsExpanded = !ChartSeries.IsExpanded; }" style="@StyleForTitleBar">
         <div class="main">
-            <div class="title">@ChartSeries.GetFriendlyTitleShort()</div>
-            <div class="description">@ChartSeries.GetFriendlyDescription()</div>
+            <div class="title">@ChartSeries!.GetFriendlyTitleShort()</div>
+            <div class="description">@ChartSeries!.GetFriendlyDescription()</div>
         </div>
         <div class="expander">
             <span class="oi oi-chevron-bottom" aria-hidden="true"></span>
@@ -193,7 +193,7 @@
 
 @code {
     [Parameter]
-    public ChartSeriesDefinition ChartSeries { get; set; }
+    public ChartSeriesDefinition? ChartSeries { get; set; }
 
     [Parameter]
     public EventCallback OnSeriesChanged { get; set; }
@@ -207,18 +207,18 @@
     [Parameter]
     public ChartSeriesTitleStyle TitleStyle { get; set; }
 
-    AboutData _aboutData;
+    AboutData? _aboutData;
 
-    string StyleForTitleBar { get; set; }
+    string? StyleForTitleBar { get; set; }
 
     bool applyStyle;
 
-    protected override async Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
         applyStyle = true;
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override void OnAfterRender(bool firstRender)
     {
         if (applyStyle)
         {
@@ -236,7 +236,7 @@
 
     public string GenerateStyleForColourIndicator()
     {
-        return "background-color: " + ChartSeries.Colour;
+        return "background-color: " + ChartSeries!.Colour;
     }
 
     public string GenerateStyleForTitleBar()
@@ -244,9 +244,9 @@
         switch (TitleStyle)
         {
             case ChartSeriesTitleStyle.WholeTitleBarInSeriesColour:
-                return "color: #425f59; border-left: solid 12px " + ChartSeries.Colour + ";";
+                return "color: #425f59; border-left: solid 12px " + ChartSeries!.Colour + ";";
             case ChartSeriesTitleStyle.OnlyIndicatorAndTextInSeriesColour:
-                return "color: " + ChartSeries.Colour;
+                return "color: " + ChartSeries!.Colour;
             default:
                 throw new NotImplementedException($"TitleStyle {TitleStyle}");
         }
@@ -274,7 +274,7 @@
 
     async Task OnAboutThisDataClicked()
     {
-        await _aboutData.Show();
+        await _aboutData!.Show();
     }
 
     async Task OnDuplicateSeriesClicked()
@@ -289,68 +289,68 @@
 
     async Task OnAggregationChanged(SeriesAggregationOptions o)
     {
-        ChartSeries.Aggregation = o;
+        ChartSeries!.Aggregation = o;
 
         await OnSeriesChanged.InvokeAsync();
     }
 
     async Task OnSmoothingChanged(SeriesSmoothingOptions o)
     {
-        ChartSeries.Smoothing = o;
+        ChartSeries!.Smoothing = o;
 
         await OnSeriesChanged.InvokeAsync();
     }
 
     async Task OnSecondaryCalculationChanged(SecondaryCalculationOptions o)
     {
-        ChartSeries.SecondaryCalculation = o;
+        ChartSeries!.SecondaryCalculation = o;
 
         await OnSeriesChanged.InvokeAsync();
     }
 
     async Task OnSmoothingWindowChanged(int w)
     {
-        ChartSeries.SmoothingWindow = w;
+        ChartSeries!.SmoothingWindow = w;
 
         await OnSeriesChanged.InvokeAsync();
     }
 
     async Task OnValueChanged(SeriesValueOptions o)
     {
-        ChartSeries.Value = o;
+        ChartSeries!.Value = o;
 
         await OnSeriesChanged.InvokeAsync();
     }
 
     async Task OnDisplayStyleChanged(SeriesDisplayStyle s)
     {
-        ChartSeries.DisplayStyle = s;
+        ChartSeries!.DisplayStyle = s;
 
         await OnSeriesChanged.InvokeAsync();
     }
 
     async Task OnColourChanged(Colours c)
     {
-        ChartSeries.RequestedColour = c;
+        ChartSeries!.RequestedColour = c;
 
         await OnSeriesChanged.InvokeAsync();
     }
 
     async Task OnTransformationChanged(SeriesTransformations s)
     {
-        ChartSeries.SeriesTransformation = s;
+        ChartSeries!.SeriesTransformation = s;
 
         await OnSeriesChanged.InvokeAsync();
     }
 
     void OnIsLockedChanged(bool val)
     {
-        ChartSeries.IsLocked = val;
+        ChartSeries!.IsLocked = val;
     }
 
     async Task OnShowTrendlineChanged(bool val)
     {
-        ChartSeries.ShowTrendline = val;
+        ChartSeries!.ShowTrendline = val;
 
         await OnSeriesChanged.InvokeAsync();
     }

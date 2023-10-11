@@ -27,6 +27,7 @@
         max-width: 600px;
         font-size: 1.2rem;
         color: #425f59;
+        z-index: 1500;
     }
 
     .tooltip-wrap:hover .tooltip-content {

@@ -23,15 +23,15 @@
 </div>
 
 @code {
-    [Parameter] public IEnumerable<Location> Locations { get; set; }
+    [Parameter] public IEnumerable<Location>? Locations { get; set; }
     [Parameter] public EventCallback<Guid> OnLocationChange { get; set; }
     [Parameter] public Coordinates LocationCoordinates { get; set; }
 
-    [Inject] public LayerFactory LayerFactory { get; init; }
-    [Inject] IIconFactory IconFactory { get; init; }
-    [Inject] IJSRuntime JsRuntime { get; init; }
-    [Inject] ILogger<MapContainer> Logger { get; init; }
-    [Inject] IBlazorCurrentDeviceService BlazorCurrentDeviceService { get; set; }
+    [Inject] public LayerFactory? LayerFactory { get; init; }
+    [Inject] IIconFactory? IconFactory { get; init; }
+    [Inject] IJSRuntime? JsRuntime { get; init; }
+    [Inject] ILogger<MapContainer>? Logger { get; init; }
+    [Inject] IBlazorCurrentDeviceService? BlazorCurrentDeviceService { get; set; }
 
     Map? map;
     MapOptions? mapOptions;
@@ -46,7 +46,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        IsMobileDevice = await BlazorCurrentDeviceService.Mobile();
+        IsMobileDevice = await BlazorCurrentDeviceService!.Mobile();
 
         await base.OnInitializedAsync();
     }
@@ -82,7 +82,7 @@
                 Attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"
             };
 
-        var mainTileLayer = await LayerFactory.CreateTileLayerAndAddToMap("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", map, tileLayerOptions);
+        var mainTileLayer = await LayerFactory!.CreateTileLayerAndAddToMap("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", map!, tileLayerOptions);
     }
 
     public async Task ScrollToPoint(LatLng point)
@@ -107,7 +107,7 @@
             return;
         }
 
-        Logger.LogInformation("Creating map markers");
+        Logger!.LogInformation("Creating map markers");
 
         var markerOptions = new List<MarkerOptions>();
         for (var i = -1; i < 11; i++)
@@ -152,16 +152,16 @@
 
         _mapMarkersCreated = true;
 
-        Logger.LogInformation("Created map markers");
+        Logger!.LogInformation("Created map markers");
     }
 
     async Task HandleMapMouseEvent(MouseEvent mouseEvent)
     {
-        Logger.LogInformation("HandleMapMouseEvent()");
+        Logger!.LogInformation("HandleMapMouseEvent()");
 
         var lat = Math.Round(mouseEvent.LatLng.Lat, 1);
         var lng = Math.Round(mouseEvent.LatLng.Lng, 1);
-        var newLocation = Locations.Single(x => Math.Round(x.Coordinates.Latitude, 1) == lat && Math.Round(x.Coordinates.Longitude, 1) == lng);
+        var newLocation = Locations!.Single(x => Math.Round(x.Coordinates.Latitude, 1) == lat && Math.Round(x.Coordinates.Longitude, 1) == lng);
         await OnLocationChange.InvokeAsync(newLocation.Id);
     }
 
@@ -170,7 +170,7 @@
         _mapMarkersCreated = false;
         mapOptions = null;
 
-        await JsRuntime.InvokeVoidAsync("toggleMapExpansion", null);
+        await JsRuntime!.InvokeVoidAsync("toggleMapExpansion", null);
         IsMapExpanded = !IsMapExpanded;
 
         InitialiseMapOptions();
@@ -178,7 +178,7 @@
 
     void InitialiseMapOptions()
     {
-        Logger.LogDebug($"IsMapExpanded = {IsMapExpanded}");
+        Logger!.LogDebug($"IsMapExpanded = {IsMapExpanded}");
 
         if (mapOptions == null)
         {

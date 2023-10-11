@@ -16,7 +16,7 @@ public class ChartSeriesDefinition
     public Guid Id { get; set; } = Guid.NewGuid();
 
     // Source data fields
-    public SourceSeriesSpecification[] SourceSeriesSpecifications { get; set; }
+    public SourceSeriesSpecification[]? SourceSeriesSpecifications { get; set; }
     public SeriesDerivationTypes SeriesDerivationType { get; set; }
     public BinGranularities BinGranularity { get; set; }
     public short? Year { get; set; }
@@ -57,9 +57,9 @@ public class ChartSeriesDefinition
     {
         get
         {
-            List<string> segments = new List<string>();
+            var segments = new List<string>();
 
-            if (SourceSeriesSpecifications.Length == 1)
+            if (SourceSeriesSpecifications!.Length == 1)
             {
                 var sss = SourceSeriesSpecifications.Single();
 
@@ -70,14 +70,14 @@ public class ChartSeriesDefinition
 
                 if (Year != null)
                 {
-                    segments.Add(Year.ToString());
+                    segments.Add(Year.ToString()!);
                 }
 
                 segments.Add(MapDataTypeToFriendlyName(sss.MeasurementDefinition.DataType));
 
                 if (sss.MeasurementDefinition.DataAdjustment != null)
                 {
-                    segments.Add(sss.MeasurementDefinition.DataAdjustment.ToString());
+                    segments.Add(sss.MeasurementDefinition.DataAdjustment.ToString()!);
                 }
             }
             else
@@ -145,13 +145,13 @@ public class ChartSeriesDefinition
         {
             case SeriesDerivationTypes.ReturnSingleSeries:
             case SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup:
-                return BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications.Single(), BinGranularity, Aggregation, Year);
+                return BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications!.Single(), BinGranularity, Aggregation, Year);
 
             case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
-                return $"[{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[0], BinGranularity, Aggregation, Year)}] minus [{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[1], BinGranularity, Aggregation, Year)}]";
+                return $"[{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications![0], BinGranularity, Aggregation, Year)}] minus [{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[1], BinGranularity, Aggregation, Year)}]";
 
             case SeriesDerivationTypes.AverageOfMultipleSeries:
-                return BuildAverageMultipleSeriesTitle(SourceSeriesSpecifications);
+                return BuildAverageMultipleSeriesTitle(SourceSeriesSpecifications!);
 
             default: throw new NotImplementedException($"SeriesDerivationType {SeriesDerivationType}");
         }
@@ -163,7 +163,7 @@ public class ChartSeriesDefinition
 
         if (sss.All(o => o.LocationName == sss[0].LocationName))
         {
-            segments.Add(sss[0].LocationName);
+            segments.Add(sss[0].LocationName!);
         }
         else
         {
@@ -181,7 +181,7 @@ public class ChartSeriesDefinition
 
         if (sss.All(o => o.MeasurementDefinition.DataAdjustment == sss[0].MeasurementDefinition.DataAdjustment))
         {
-            segments.Add(sss[0].MeasurementDefinition.DataAdjustment.ToString());
+            segments.Add(sss[0].MeasurementDefinition.DataAdjustment.ToString()!);
         }
         else
         {
@@ -202,7 +202,7 @@ public class ChartSeriesDefinition
 
         if (year != null)
         {
-            segments.Add(year.ToString());
+            segments.Add(year.ToString()!);
         }
 
         if (sss.MeasurementDefinition != null)
@@ -224,17 +224,17 @@ public class ChartSeriesDefinition
 
     public string GetFriendlyDescription()
     {
-        List<string> segments = new List<string>();
+        var segments = new List<string>();
 
-        string uomLabel = null;
+        string? uomLabel = null;
 
-        if (SourceSeriesSpecifications.Length == 1)
+        if (SourceSeriesSpecifications!.Length == 1)
         {
             var sss = SourceSeriesSpecifications.Single();
 
             if (sss.MeasurementDefinition?.DataAdjustment != null)
             {
-                segments.Add(sss.MeasurementDefinition.DataAdjustment.ToString());
+                segments.Add(sss.MeasurementDefinition.DataAdjustment.ToString()!);
             }
 
             if (sss.MeasurementDefinition != null)
@@ -269,7 +269,7 @@ public class ChartSeriesDefinition
             switch (Smoothing)
             {
                 case SeriesSmoothingOptions.MovingAverage:
-                    string unit = null;
+                    string? unit = null;
 
                     unit = BinGranularity switch
                     {
@@ -341,7 +341,7 @@ public class ChartSeriesDefinition
             if (x.SeriesTransformation != y.SeriesTransformation) return false;
             if (x.GroupingThreshold != y.GroupingThreshold) return false;
 
-            if (x.SourceSeriesSpecifications.Length != y.SourceSeriesSpecifications.Length) return false;
+            if (x.SourceSeriesSpecifications!.Length != y.SourceSeriesSpecifications!.Length) return false;
 
             for (int i = 0; i < x.SourceSeriesSpecifications.Length; i++)
             {
@@ -370,7 +370,7 @@ public class ChartSeriesDefinition
                 obj.Value.GetHashCode() ^
                 (obj.GroupingThreshold == null ? 0 : obj.GroupingThreshold.GetHashCode());
 
-            for (int i = 0; i < obj.SourceSeriesSpecifications.Length; i++)
+            for (int i = 0; i < obj.SourceSeriesSpecifications!.Length; i++)
             {
                 var sss = obj.SourceSeriesSpecifications[i];
 
@@ -397,7 +397,7 @@ public class ChartSeriesDefinition
                 return false;
             }
 
-            if (x.IsLocked != y.IsLocked) return false;
+            if (x!.IsLocked != y!.IsLocked) return false;
             if (x.Year != y.Year) return false;
 
             return true;
@@ -418,7 +418,7 @@ public class ChartSeriesDefinition
                 obj.Year.GetHashCode() ^
                 (obj.GroupingThreshold == null ? 0 : obj.GroupingThreshold.GetHashCode());
 
-            for (int i = 0; i < obj.SourceSeriesSpecifications.Length; i++)
+            for (int i = 0; i < obj.SourceSeriesSpecifications!.Length; i++)
             {
                 var sss = obj.SourceSeriesSpecifications[i];
 

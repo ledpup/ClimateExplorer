@@ -24,7 +24,7 @@ public static class DataReader
             Resolution = measurementDefinition.DataResolution,
             MeasurementDefinition = measurementDefinition.ToViewModel(),
             Year = year,
-            DataRecords = records,
+            DataRecords = records!,
         };
 
         return dataSet;
@@ -45,13 +45,13 @@ public static class DataReader
             };
         }
 
-        var regEx = new Regex(measurementDefinition.DataRowRegEx);
+        var regEx = new Regex(measurementDefinition.DataRowRegEx!);
 
         var records = new Dictionary<string, DataRecord>();
         foreach (var dataFileDefinition in dataFileFilterAndAdjustments)
         {
-            var filePath = measurementDefinition.FolderName + @"\" + measurementDefinition.FileNameFormat.Replace("[station]", dataFileDefinition.Id);
-            var fileRecords = await ReadDataFile(filePath, regEx, measurementDefinition.NullValue, measurementDefinition.DataResolution, dataFileDefinition.StartDate, dataFileDefinition.EndDate);
+            var filePath = measurementDefinition.FolderName + @"\" + measurementDefinition.FileNameFormat!.Replace("[station]", dataFileDefinition.Id);
+            var fileRecords = await ReadDataFile(filePath, regEx, measurementDefinition.NullValue!, measurementDefinition.DataResolution, dataFileDefinition.StartDate, dataFileDefinition.EndDate);
 
             // Apply any adjustment
             var values = fileRecords.Values.ToList();
@@ -231,7 +231,7 @@ public static class DataReader
             lines = await TryGetDataFromUncompressedSingleFile(dataFilePath);
         }
 
-        return lines;
+        return lines!;
     }
 
     static async Task<string[]?> TryGetDataFromUncompressedSingleFile(string siteFilePath)

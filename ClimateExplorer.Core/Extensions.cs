@@ -62,7 +62,7 @@ public static class Extensions
         var calendar = new GregorianCalendar();
         var numberOfDaysInYear = calendar.GetDaysInYear(year);
 
-        if (!values.GroupBy(x => x.Date.Value.DayOfYear).All(x => x.Count() == 1))
+        if (!values.GroupBy(x => x.Date!.Value.DayOfYear).All(x => x.Count() == 1))
         {
             throw new Exception("All data must be for distinct dates");
         }

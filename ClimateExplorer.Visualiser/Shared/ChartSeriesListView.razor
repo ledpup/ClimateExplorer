@@ -3,25 +3,27 @@
 @using Blazorise.Components
 @using Blazorise.Charts
 
-@if (ChartSeriesList.Count == 0)
+@if (ChartSeriesList == null || ChartSeriesList.Count == 0)
 {
     <div class="no-datasets-active-message">No datasets active. Choose a chart preset or add a dataset.</div>
 }
-
-@foreach (var cs in ChartSeriesList)
+else
 {
-    <ChartSeriesView 
-        @key="@cs.Id"
-        ChartSeries="@cs" 
-        OnSeriesChanged="@OnSeriesChangedInternal"
-        OnDuplicateSeries="@OnDuplicateSeries"
-        OnRemoveSeries="@OnRemoveSeries"
-        ></ChartSeriesView>
+    @foreach (var cs in ChartSeriesList)
+    {
+        <ChartSeriesView 
+            @key="@cs.Id"
+            ChartSeries="@cs" 
+            OnSeriesChanged="@OnSeriesChangedInternal"
+            OnDuplicateSeries="@OnDuplicateSeries"
+            OnRemoveSeries="@OnRemoveSeries"
+            ></ChartSeriesView>
+    }
 }
 
 @code {
     [Parameter]
-    public List<ChartSeriesDefinition> ChartSeriesList { get; set; }
+    public List<ChartSeriesDefinition>? ChartSeriesList { get; set; }
 
     [Parameter]
     public EventCallback OnSeriesChanged { get; set; }
@@ -33,21 +35,21 @@
 
     async Task OnRemoveSeries(ChartSeriesDefinition csd)
     {
-        ChartSeriesList.Remove(csd);
+        ChartSeriesList!.Remove(csd);
 
-        OnSeriesChangedInternal();
+        await OnSeriesChangedInternal();
     }
 
     async Task OnDuplicateSeries(ChartSeriesDefinition csd)
     {
-        ChartSeriesList.Add(
+        ChartSeriesList!.Add(
             new ChartSeriesDefinition()
             {
                 Aggregation = csd.Aggregation,
                 BinGranularity = csd.BinGranularity,
                 SeriesDerivationType = csd.SeriesDerivationType,
                 SourceSeriesSpecifications =
-                    csd.SourceSeriesSpecifications
+                    csd.SourceSeriesSpecifications!
                     .Select(
                         x =>
                         new SourceSeriesSpecification

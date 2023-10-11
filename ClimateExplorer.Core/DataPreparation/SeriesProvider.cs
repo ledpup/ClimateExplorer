@@ -1,8 +1,6 @@
 ﻿using ClimateExplorer.Core.InputOutput;
-using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Core.Model;
 using static ClimateExplorer.Core.Enums;
-using ClimateExplorer.Core.InputOutput;
 
 namespace ClimateExplorer.Core.DataPreparation
 {
@@ -10,7 +8,7 @@ namespace ClimateExplorer.Core.DataPreparation
     {
         public class Series
         {
-            public TemporalDataPoint[] DataPoints { get; set; }
+            public TemporalDataPoint[]? DataPoints { get; set; }
             public UnitOfMeasure UnitOfMeasure { get; set; }
             public DataResolution DataResolution { get; set; }
         }
@@ -73,7 +71,7 @@ namespace ClimateExplorer.Core.DataPreparation
                 uom = series.UnitOfMeasure;
                 dataResolution= series.DataResolution;
 
-                foreach (var point in dp)
+                foreach (var point in dp!)
                 {
                     var date = new DateOnly(point.Year, point.Month ?? 1, point.Day ?? 1);
                     if (!dbGroups.ContainsKey(date))
@@ -100,10 +98,10 @@ namespace ClimateExplorer.Core.DataPreparation
 
                 float? val = null;
 
-                if (dpsForDateExists && dpsForDate.All(x => x.Value != null))
+                if (dpsForDateExists && dpsForDate!.All(x => x.Value != null))
                 {
-                    val = dpsForDate.Average(x => x.Value);
-                    results.Add(dpsForDate.First().WithValue(val));
+                    val = dpsForDate!.Average(x => x.Value);
+                    results.Add(dpsForDate!.First().WithValue(val));
                 }
                 else
                 {
@@ -117,8 +115,8 @@ namespace ClimateExplorer.Core.DataPreparation
                 new Series
                 {
                     DataPoints = results.ToArray(),
-                    UnitOfMeasure = uom.Value,
-                    DataResolution = dataResolution.Value,
+                    UnitOfMeasure = uom!.Value,
+                    DataResolution = dataResolution!.Value,
                 };
         }
 
@@ -135,9 +133,9 @@ namespace ClimateExplorer.Core.DataPreparation
             var dp1 = series1.DataPoints;
             var dp2 = series2.DataPoints;
 
-            if (dp1.Length == 0 || dp2.Length == 0)
+            if (dp1!.Length == 0 || dp2!.Length == 0)
             {
-                return new Series { DataPoints = new TemporalDataPoint[0], UnitOfMeasure = series1.UnitOfMeasure };
+                return new Series { DataPoints = Array.Empty<TemporalDataPoint>(), UnitOfMeasure = series1.UnitOfMeasure };
             }
 
             var dp1Grouped = dp1.ToDictionary(x => new DateOnly(x.Year, x.Month ?? 1, x.Day ?? 1));
@@ -154,7 +152,7 @@ namespace ClimateExplorer.Core.DataPreparation
 
             DateOnly d = minDate;
 
-            List<TemporalDataPoint> results = new List<TemporalDataPoint>();
+            var results = new List<TemporalDataPoint>();
 
             while (d <= maxDate)
             {
@@ -191,7 +189,7 @@ namespace ClimateExplorer.Core.DataPreparation
             var dsd = definitions.Single(x => x.Id == seriesSpecification.DataSetDefinitionId);
 
             var measurementDefinition =
-                dsd.MeasurementDefinitions
+                dsd.MeasurementDefinitions!
                 .Single(
                     x =>
                     x.DataType == seriesSpecification.DataType &&
@@ -200,11 +198,11 @@ namespace ClimateExplorer.Core.DataPreparation
 
             var location = seriesSpecification.LocationId == null ? null : (await Location.GetLocations()).Single(x => x.Id == seriesSpecification.LocationId);
 
-            List<DataFileFilterAndAdjustment> dataFileFilterAndAdjustments = null;
+            List<DataFileFilterAndAdjustment>? dataFileFilterAndAdjustments = null;
 
             if (location != null)
             {
-                if (!dsd.DataLocationMapping.LocationIdToDataFileMappings.TryGetValue(location.Id, out dataFileFilterAndAdjustments))
+                if (!dsd.DataLocationMapping!.LocationIdToDataFileMappings.TryGetValue(location.Id, out dataFileFilterAndAdjustments))
                 {
                     throw new Exception($"DataSetDefinition {dsd.Id} does not have a LocationIdToDataFileMapping entry for location {location.Id}");
                 }
@@ -221,11 +219,11 @@ namespace ClimateExplorer.Core.DataPreparation
             switch (measurementDefinition.RowDataType)
             {
                 case RowDataType.OneValuePerRow:
-                    dataRecords = await DataReader.GetDataRecords(measurementDefinition, dataFileFilterAndAdjustments);
+                    dataRecords = await DataReader.GetDataRecords(measurementDefinition, dataFileFilterAndAdjustments!);
                     break;
 
                 case RowDataType.TwelveMonthsPerRow:
-                    var dataSet = await TwelveMonthPerLineDataReader.GetTwelveMonthsPerRowData(measurementDefinition, dataFileFilterAndAdjustments);
+                    var dataSet = await TwelveMonthPerLineDataReader.GetTwelveMonthsPerRowData(measurementDefinition, dataFileFilterAndAdjustments!);
                     dataRecords = dataSet.DataRecords;
                     break;
 

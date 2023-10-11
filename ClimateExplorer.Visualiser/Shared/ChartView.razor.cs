@@ -18,10 +18,10 @@ namespace ClimateExplorer.Visualiser.Shared;
 
 public partial class ChartView
 {
-    Chart<float?> chart;
-    ChartTrendline<float?> chartTrendline;
+    Chart<float?>? chart;
+    ChartTrendline<float?>? chartTrendline;
     
-    BinIdentifier ChartStartBin, ChartEndBin;
+    BinIdentifier? ChartStartBin, ChartEndBin;
 
     short SelectingDayGrouping { get; set; }
 
@@ -48,10 +48,10 @@ public partial class ChartView
     [Parameter]
     public EventCallback ShowAddDataSetModalEvent { get; set; }
 
-    [Inject] IDataService DataService { get; set; }
-    [Inject] IBlazorCurrentDeviceService BlazorCurrentDeviceService { get; set; }
-    [Inject] IJSRuntime JsRuntime { get; set; }
-    [Inject] ILogger<Index> Logger { get; set; }
+    [Inject] IDataService? DataService { get; set; }
+    [Inject] IBlazorCurrentDeviceService? BlazorCurrentDeviceService { get; set; }
+    [Inject] IJSRuntime? JsRuntime { get; set; }
+    [Inject] ILogger<Index>? Logger { get; set; }
 
     string? SelectedStartYear { get; set; }
     string? SelectedEndYear { get; set; }
@@ -72,17 +72,17 @@ public partial class ChartView
     ChartType SelectedChartType { get; set; }
     List<short>? DatasetYears { get; set; }
     List<short>? SelectedYears { get; set; }
-    List<short> StartYears { get; set; }
+    List<short>? StartYears { get; set; }
     short EndYear { get; set; }
     bool UseMostRecentStartYear { get; set; } = true;
 
     ColourServer colours { get; set; } = new ColourServer();
 
-    string GroupingThresholdText { get; set; }
+    string? GroupingThresholdText { get; set; }
 
-    Filter filter { get; set; }
+    Filter? filter { get; set; }
 
-    Modal optionsModal { get; set; }
+    Modal? optionsModal { get; set; }
 
     public string ChartOptionsText { get; set; } = @"<div style=""padding-bottom: 24px;""><img style=""max-width: 100%;"" src=""images/ChartOptions.png"" alt=""Chart Options image"" /></div>
 <p><strong>Year filtering</strong>: allows you to change the start and end years for the chart. For example, if you want to see the change in temperature for the 20th century, you could set the end year to 2000.</p>
@@ -101,7 +101,7 @@ public partial class ChartView
 <p><strong>Apply</strong>: save your changes and apply them to the chart. These settings will persist as you change locations and datasets within the application.</p>
 <p><strong>Clear override</strong>: this will reset the settings back to their default (14 days at 70% threshold). Only appears after applying your settings.</p>";
 
-    private Modal chartOptionsModal, aggregationOptionsModal;
+    private Modal? chartOptionsModal, aggregationOptionsModal;
 
     /// <summary>
     /// The chart type applied to the chart control. If any series is in "Bar" mode, we switch
@@ -115,7 +115,7 @@ public partial class ChartView
 
     protected override async Task OnInitializedAsync()
     {
-        IsMobileDevice = await BlazorCurrentDeviceService.Mobile();
+        IsMobileDevice = await BlazorCurrentDeviceService!.Mobile();
 
         ChartLoadingIndicatorVisible = true;
 
@@ -134,14 +134,14 @@ public partial class ChartView
 
     async Task ShowFilterModal()
     {
-        await filter.Show();
+        await filter!.Show();
     }
 
     private Task ShowChartOptionsInfo()
     {
         if (!string.IsNullOrWhiteSpace(ChartOptionsText))
         {
-            return chartOptionsModal.Show();
+            return chartOptionsModal!.Show();
         }
         return Task.CompletedTask;
     }
@@ -150,17 +150,17 @@ public partial class ChartView
     {
         if (!string.IsNullOrWhiteSpace(AggregationOptionsInfoText))
         {
-            return aggregationOptionsModal.Show();
+            return aggregationOptionsModal!.Show();
         }
         return Task.CompletedTask;
     }
 
     public async Task OnAddDataSet(DataSetLibraryEntry dle, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions)
     {
-        Logger.LogInformation("Adding dle " + dle.Name);
+        Logger!.LogInformation("Adding dle " + dle.Name);
 
         ChartSeriesList =
-            ChartSeriesList
+            ChartSeriesList!
             .Concat(
                 new List<ChartSeriesDefinition>()
                 {
@@ -186,7 +186,7 @@ public partial class ChartView
     {
         var dsd = dataSetDefinitions.Single(x => x.Id == sss.SourceDataSetId);
 
-        var md = dsd.MeasurementDefinitions.Single(x => x.DataType == sss.DataType && x.DataAdjustment == sss.DataAdjustment);
+        var md = dsd.MeasurementDefinitions!.Single(x => x.DataType == sss.DataType && x.DataAdjustment == sss.DataAdjustment);
 
         return
             new SourceSeriesSpecification
@@ -216,7 +216,7 @@ public partial class ChartView
     {
         var datasetsToReturn = new List<SeriesWithData>();
 
-        Logger.LogInformation("RetrieveDataSets: starting enumeration");
+        Logger!.LogInformation("RetrieveDataSets: starting enumeration");
 
         foreach (var csd in chartSeriesList)
         {
@@ -231,13 +231,13 @@ public partial class ChartView
                 : cupAggregationFunction;
 
             DataSet dataSet =
-                await DataService.PostDataSet(
+                await DataService!.PostDataSet(
                     SelectedBinGranularity,
                     binAggregationFunction,
                     bucketAggregationFunction,
                     cupAggregationFunction,
                     csd.Value,
-                    csd.SourceSeriesSpecifications.Select(BuildDataPrepSeriesSpecification).ToArray(),
+                    csd.SourceSeriesSpecifications!.Select(BuildDataPrepSeriesSpecification).ToArray(),
                     csd.SeriesDerivationType,
                     GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
                     GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
@@ -252,7 +252,7 @@ public partial class ChartView
             );
         }
 
-        Logger.LogInformation("RetrieveDataSets: completed enumeration");
+        Logger!.LogInformation("RetrieveDataSets: completed enumeration");
 
         return datasetsToReturn;
     }
@@ -284,7 +284,7 @@ public partial class ChartView
 
     public async Task HandleRedraw()
     {
-        var l = new LogAugmenter(Logger, "HandleRedraw");
+        var l = new LogAugmenter(Logger!, "HandleRedraw");
 
         l.LogInformation("Entering");
 
@@ -320,7 +320,7 @@ public partial class ChartView
 
         var subtitle = string.Empty;
 
-        List<ChartTrendlineData> trendlines = null;
+        List<ChartTrendlineData>? trendlines = null;
 
         var title = ChartLogic.BuildChartTitle(ChartSeriesWithData);
 
@@ -350,7 +350,7 @@ public partial class ChartView
 
         l.LogInformation("Calling AddLabels");
 
-        var labels = ChartBins.Select(x => x.Label).ToArray();
+        var labels = ChartBins!.Select(x => x.Label).ToArray();
         await chart.AddLabels(labels);
 
         dynamic scales = BuildChartScales();
@@ -435,12 +435,12 @@ public partial class ChartView
 
         var trendlines = new List<ChartTrendlineData>();
 
-        var requestedColours = ChartSeriesWithData
+        var requestedColours = ChartSeriesWithData!
             .Where(x => x.ChartSeries.RequestedColour != Colours.AutoAssigned)
             .Select(x => x.ChartSeries.RequestedColour)
             .ToList();
 
-        foreach (var chartSeries in ChartSeriesWithData)
+        foreach (var chartSeries in ChartSeriesWithData!)
         {
             var dataSet = chartSeries.ProcessedDataSet;
             var htmlColourCode = colours.GetNextColour(chartSeries.ChartSeries.RequestedColour, requestedColours);
@@ -451,7 +451,7 @@ public partial class ChartView
 
 
             await ChartLogic.AddDataSetToChart(
-                chart,
+                chart!,
                 chartSeries,
                 dataSet,
                 GetChartLabel(chartSeries.ChartSeries.SeriesTransformation, defaultLabel, chartSeries.ChartSeries.Aggregation),
@@ -471,7 +471,7 @@ public partial class ChartView
 
     async Task OnSelectedYearsChanged(List<short> values)
     {
-        if (!SelectedYears.Any() && values.Count == 0)
+        if (!SelectedYears!.Any() && values.Count == 0)
         {
             SelectedBinGranularity = BinGranularities.ByYear;
             await InvokeAsync(StateHasChanged);
@@ -485,7 +485,7 @@ public partial class ChartView
         var validValues = new List<short>();
         foreach (var value in values)
         {
-            if (DatasetYears.Any(x => x == value))
+            if (DatasetYears!.Any(x => x == value))
             {
                 validValues.Add(value);
             }
@@ -502,11 +502,11 @@ public partial class ChartView
 
     void RebuildChartSeriesListToReflectSelectedYears()
     {
-        var years = SelectedYears.Any() ? SelectedYears.Select(x => (short?)x).ToList() : new List<short?>() { null };
+        var years = SelectedYears!.Any() ? SelectedYears!.Select(x => (short?)x).ToList() : new List<short?>() { null };
 
         List<ChartSeriesDefinition> newCsds = new List<ChartSeriesDefinition>();
 
-        var uniqueChartSeriesList = ChartSeriesList.Distinct(new ChartSeriesDefinition.ChartSeriesDefinitionComparerWhichIgnoresYearAndIsLocked()).ToArray();
+        var uniqueChartSeriesList = ChartSeriesList!.Distinct(new ChartSeriesDefinition.ChartSeriesDefinitionComparerWhichIgnoresYearAndIsLocked()).ToArray();
 
         foreach (var csd in uniqueChartSeriesList)
         {
@@ -534,13 +534,13 @@ public partial class ChartView
             }
         }
 
-        Logger.LogInformation("RebuildChartSeriesListToReflectSelectedYears() setting ChartSeriesList");
+        Logger!.LogInformation("RebuildChartSeriesListToReflectSelectedYears() setting ChartSeriesList");
         ChartSeriesList = newCsds;
     }
 
     void BuildProcessedDataSets(List<SeriesWithData> chartSeriesWithData, bool useMostRecentStartYear = true)
     {
-        var l = new LogAugmenter(Logger, "BuildProcessedDataSets");
+        var l = new LogAugmenter(Logger!, "BuildProcessedDataSets");
 
         l.LogInformation("entering");
 
@@ -631,7 +631,7 @@ public partial class ChartView
             throw new Exception($"BinGranularity selected for series ({binGranularity}) doesn't match overall selected granularity {SelectedBinGranularity}");
         }
 
-        BinIdentifier[] chartBins = null;
+        BinIdentifier[]? chartBins = null;
 
         switch (binGranularity)
         {
@@ -649,8 +649,8 @@ public partial class ChartView
                         preProcessedDataSets,
                         // and the user's preferences about what x axis range they'd like plotted
                         useMostRecentStartYear,
-                        SelectedStartYear,
-                        SelectedEndYear);
+                        SelectedStartYear!,
+                        SelectedEndYear!);
 
                 chartBins = BinHelpers.EnumerateBinsInRange(ChartStartBin, ChartEndBin).ToArray();
 
@@ -703,8 +703,8 @@ public partial class ChartView
         // This should only affect linear (gapless) BinGranularities, but executes either way, in case we
         // later allow users to say "just give me month-ignoring-year, but only for months after 4 and before 7",
         // for example.
-        HashSet<string> binIdsToPlot = new HashSet<string>(ChartBins.Select(x => x.Id));
-        foreach (var cswd in ChartSeriesWithData)
+        var binIdsToPlot = new HashSet<string>(ChartBins.Select(x => x.Id));
+        foreach (var cswd in ChartSeriesWithData!)
         {
             cswd.ProcessedDataSet.DataRecords =
                 cswd.ProcessedDataSet.DataRecords
@@ -751,9 +751,9 @@ public partial class ChartView
         };
 
         var axes = new List<string>();
-        foreach (var s in ChartSeriesList)
+        foreach (var s in ChartSeriesList!)
         {
-            var uom = s.SourceSeriesSpecifications.First().MeasurementDefinition.UnitOfMeasure;
+            var uom = s.SourceSeriesSpecifications!.First().MeasurementDefinition.UnitOfMeasure;
             var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, uom, s.Aggregation);
             if (!axes.Contains(axisId))
             {
@@ -781,11 +781,11 @@ public partial class ChartView
 
     public void LogChartSeriesList()
     {
-        Logger.LogInformation("ChartSeriesList: (SelectedBinGranularity is " + SelectedBinGranularity + ")");
+        Logger!.LogInformation("ChartSeriesList: (SelectedBinGranularity is " + SelectedBinGranularity + ")");
 
-        foreach (var csd in ChartSeriesList)
+        foreach (var csd in ChartSeriesList!)
         {
-            Logger.LogInformation("    " + csd.ToString());
+            Logger!.LogInformation("    " + csd.ToString());
         }
     }
 
@@ -794,7 +794,7 @@ public partial class ChartView
     {
         SelectedBinGranularity = value;
 
-        foreach (var csd in ChartSeriesList)
+        foreach (var csd in ChartSeriesList!)
         {
             csd.BinGranularity = value;
         }
@@ -822,14 +822,14 @@ public partial class ChartView
     async Task ApplyYearlyAverageParameters()
     {
         UserOverridePresetAggregationSettings = true;
-        InternalGroupingThreshold = float.Parse(GroupingThresholdText) / 100;
+        InternalGroupingThreshold = float.Parse(GroupingThresholdText!) / 100;
         SelectedDayGrouping = SelectingDayGrouping == 0 ? SelectedDayGrouping : SelectingDayGrouping;
         await BuildDataSets();
     }
 
     private string GetGroupingThresholdText()
     {
-        var groupingThreshold = ChartSeriesList.FirstOrDefault() == null ? null : ChartSeriesList.First().GroupingThreshold;
+        var groupingThreshold = ChartSeriesList!.FirstOrDefault() == null ? null : ChartSeriesList!.First().GroupingThreshold;
 
         return UserOverridePresetAggregationSettings
             ? $"{InternalGroupingThreshold * 100}% (user override)"
@@ -847,14 +847,14 @@ public partial class ChartView
         }
 
         var startYear = UseMostRecentStartYear
-            ? StartYears.Last()
+            ? StartYears!.Last()
             : SelectedStartYear != null
                 ? Convert.ToInt16(SelectedStartYear)
                 : throw new NotImplementedException();
 
         var year = (short)(startYear + e.Index);
 
-        var dataType = ChartSeriesWithData[e.DatasetIndex].SourceDataSet.DataType;
+        var dataType = ChartSeriesWithData![e.DatasetIndex].SourceDataSet.DataType;
         var dataAdjustment = ChartSeriesWithData[e.DatasetIndex].SourceDataSet.DataAdjustment;
 
         await HandleOnYearFilterChange(new YearAndDataTypeFilter(year) { DataType = dataType, DataAdjustment = dataAdjustment });
@@ -864,18 +864,18 @@ public partial class ChartView
     {
         await OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly, false);
 
-        var chartWithData = ChartSeriesWithData
+        var chartWithData = ChartSeriesWithData!
             .First(x =>
             (x.SourceDataSet.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
             (x.SourceDataSet.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null));
 
-        var chartSeries = ChartSeriesList
-            .First(x => x.SourceSeriesSpecifications.Any(y =>
+        var chartSeries = ChartSeriesList!
+            .First(x => x.SourceSeriesSpecifications!.Any(y =>
                (y.MeasurementDefinition.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
                (y.MeasurementDefinition.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null)));
 
         ChartSeriesList =
-            ChartSeriesList
+            ChartSeriesList!
             .Concat(
                 new List<ChartSeriesDefinition>()
                 {
@@ -902,13 +902,13 @@ public partial class ChartView
         EnableRangeSlider = value;
         if (EnableRangeSlider.GetValueOrDefault() && SliderStart == null)
         {
-            SetStartAndEndYears(ChartSeriesWithData);
+            SetStartAndEndYears(ChartSeriesWithData!);
 
             var proportionToShow = SelectedBinGranularity == BinGranularities.ByYearAndDay ? 0.05f
                                  : SelectedBinGranularity == BinGranularities.ByYearAndWeek ? 0.1f
                                  : SelectedBinGranularity == BinGranularities.ByYearAndMonth ? 0.15f
                                  : .3f;
-            var rangeStart = (int)MathF.Ceiling(((EndYear - StartYears.Max()) * proportionToShow));
+            var rangeStart = (int)MathF.Ceiling(((EndYear - StartYears!.Max()) * proportionToShow));
             await OnStartYearTextChanged((EndYear - rangeStart).ToString());
         }
     }
@@ -963,7 +963,7 @@ public partial class ChartView
         await HandleRedraw();
     }
 
-    async Task OnSelectedDayGroupingChanged(short value)
+    void OnSelectedDayGroupingChanged(short value)
     {
         SelectingDayGrouping = value;
     }
@@ -1014,7 +1014,7 @@ public partial class ChartView
 
     private async Task OnDownloadDataClicked()
     {
-        await DownloadDataEvent.InvokeAsync(new DataDownloadPackage { ChartSeriesWithData = ChartSeriesWithData, Bins = ChartBins, BinGranularity = SelectedBinGranularity });
+        await DownloadDataEvent.InvokeAsync(new DataDownloadPackage { ChartSeriesWithData = ChartSeriesWithData!, Bins = ChartBins!, BinGranularity = SelectedBinGranularity });
     }
 
     async Task ShowAddDataSetModal()
@@ -1025,7 +1025,7 @@ public partial class ChartView
     private Task ShowOptionsModal()
     {
         GroupingThresholdText = MathF.Round(InternalGroupingThreshold * 100, 0).ToString();
-        return optionsModal.Show();
+        return optionsModal!.Show();
     }
 
     string DayGroupingText(int dayGrouping)

@@ -16,11 +16,11 @@ namespace ClimateExplorer.Core.DataPreparation
 
         public override bool Equals(object obj)
         {
-            BinIdentifier other = obj as BinIdentifier;
+            var other = obj as BinIdentifier;
 
             if (other == null) return false;
 
-            return other.Id == this.Id;
+            return other.Id == Id;
         }
 
         public override int GetHashCode()
