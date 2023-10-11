@@ -96,10 +96,10 @@ public static class DataReader
     {
         string[]? lines = await GetLinesInDataFileWithCascade(pathAndFile);
 
-        return await ProcessDataFile(lines, regEx, nullValue, dataResolution, startDate, endDate);
+        return ProcessDataFile(lines, regEx, nullValue, dataResolution, startDate, endDate);
     }
 
-    public static async Task<Dictionary<string, DataRecord>> ProcessDataFile(
+    public static Dictionary<string, DataRecord> ProcessDataFile(
     string[]? linesOfFile,
     Regex regEx,
     string nullValue,

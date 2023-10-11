@@ -85,9 +85,9 @@
         var mainTileLayer = await LayerFactory!.CreateTileLayerAndAddToMap("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", map!, tileLayerOptions);
     }
 
-    public async Task ScrollToPoint(LatLng point)
+    public async Task ScrollToPoint(LatLng? point)
     {
-        if (map == null)
+        if (map == null || point == null)
         {
             return;
         }

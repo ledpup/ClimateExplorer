@@ -396,7 +396,7 @@ public partial class Index : ChartablePage
         public float Longitude { get; set; }
 
         public float ErrorCode { get; set; }
-        public required string ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; }
     }
 
     async Task<Guid?> GetCurrentLocation()

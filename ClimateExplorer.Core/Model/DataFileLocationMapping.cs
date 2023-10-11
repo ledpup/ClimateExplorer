@@ -17,7 +17,7 @@ public class DataFileLocationMapping
     {
         var text = await File.ReadAllTextAsync(pathAndFileName);
         var dataFileLocationMapping = JsonSerializer.Deserialize<DataFileLocationMapping>(text);
-        return dataFileLocationMapping;
+        return dataFileLocationMapping!;
     }
 
     public static async Task<List<DataFileLocationMapping>> GetDataFileLocationMappings(string? dataFileLocationMappingFolder = null)

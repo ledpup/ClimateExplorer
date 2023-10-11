@@ -1,5 +1,6 @@
 ﻿using GeoCoordinatePortable;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace ClimateExplorer.Core.Model;
@@ -12,6 +13,7 @@ public class Location : LocationBase
     public short? HeatingScore { get; set; }
     public List<LocationDistance>? NearbyLocations { get; set; }
 
+    [JsonIgnore]
     public string? FullTitle
     {
         get
@@ -26,6 +28,7 @@ public class Location : LocationBase
     }
     string? fullTitle;
 
+    [JsonIgnore]
     public string? Title
     {
         get
@@ -33,7 +36,7 @@ public class Location : LocationBase
             if (title != null)
                 return title;
 
-            if (Name.Length > 15 && Name.Length <= 20)
+            if (Name.Length >= 10 && Name.Length <= 20)
             {
                 title = Name;
             }

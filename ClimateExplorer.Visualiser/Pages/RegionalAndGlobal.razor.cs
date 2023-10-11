@@ -70,6 +70,6 @@ public partial class RegionalAndGlobal : ChartablePage
 
     protected override async Task UpdateComponents()
     {
-
+        await Task.CompletedTask;
     }
 }
