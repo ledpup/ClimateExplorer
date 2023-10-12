@@ -33,6 +33,7 @@
     <None Remove="Datasets\Reference.zip" />
     <None Remove="Datasets\SolarRadiation.zip" />
     <None Remove="Datasets\Temperature.zip" />
+    <None Remove="MetaData\countries.txt" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Datasets\Rainfall.zip">
@@ -45,6 +46,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Datasets\Temperature.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MetaData\countries.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
