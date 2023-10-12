@@ -15,7 +15,7 @@ public class SimpleMovingAverageTests
         var ma = new SimpleMovingAverageCalculator(5);
         Assert.IsNull(ma.AddSample(3));
         Assert.AreEqual(2, ma.AddSample(1));
-        Assert.AreEqual(2.667D, Math.Round(ma.AddSample(4).Value, 3));
+        Assert.AreEqual(2.667D, Math.Round(ma.AddSample(4)!.Value, 3));
     }
 
     [TestMethod]

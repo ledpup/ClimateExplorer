@@ -23,7 +23,7 @@ public static class ChartSeriesListSerializer
 
     static object ParseNullableEnum<T>(string s) 
     {
-        if (String.IsNullOrWhiteSpace(s)) return null;
+        if (string.IsNullOrWhiteSpace(s)) return null!;
 
         return (T)Enum.Parse(typeof(T), s);
     }
@@ -107,7 +107,7 @@ public static class ChartSeriesListSerializer
         var da = (DataAdjustment?)ParseNullableEnum<DataAdjustment>(segments[2]);
 
         var md =
-            dsd.MeasurementDefinitions
+            dsd.MeasurementDefinitions!
             .SingleOrDefault(
                 x =>
                     x.DataAdjustment == da &&
@@ -176,7 +176,7 @@ public static class ChartSeriesListSerializer
             string.Join(
                 SeparatorsByLevel[1],
                 csd.SeriesDerivationType,
-                BuildSourceSeriesSpecificationsUrlComponent(csd.SourceSeriesSpecifications),
+                BuildSourceSeriesSpecificationsUrlComponent(csd.SourceSeriesSpecifications!),
                 csd.Aggregation,
                 csd.RequestedColour,
                 csd.BinGranularity,

@@ -20,7 +20,7 @@ public partial class RegionalAndGlobal : ChartablePage
     {
         await base.OnInitializedAsync();
 
-        Locations = (await DataService.GetLocations()).ToList();
+        Locations = (await DataService!.GetLocations()).ToList();
     }
 
     protected override async Task OnParametersSetAsync()
@@ -37,7 +37,7 @@ public partial class RegionalAndGlobal : ChartablePage
             return;
         }
 
-        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.CO2, null, allowNullDataAdjustment: false, throwIfNoMatch: true);
+        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, null, DataType.CO2, null, allowNullDataAdjustment: false, throwIfNoMatch: true);
 
         chartView!.ChartSeriesList!.Add(
             new ChartSeriesDefinition()
@@ -63,7 +63,7 @@ public partial class RegionalAndGlobal : ChartablePage
     {
         string title = $"ClimateExplorer";
 
-        Logger.LogInformation("GetPageTitle() returning '" + title + "' NavigateTo");
+        Logger!.LogInformation("GetPageTitle() returning '" + title + "' NavigateTo");
 
         return title;
     }

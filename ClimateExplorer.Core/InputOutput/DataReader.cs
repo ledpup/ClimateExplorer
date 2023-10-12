@@ -185,13 +185,13 @@ public static class DataReader
                 if (dataResolution == DataResolution.Daily)
                 {
                     var record = new DataRecord(date, null);
-                    dataRecords.Add(record.Key, record);
+                    dataRecords.Add(record.Key!, record);
                     date = date.AddDays(1);
                 }
                 else if (dataResolution == DataResolution.Monthly)
                 {
                     var record = new DataRecord((short)date.Year, (short)date.Month, null, null);
-                    dataRecords.Add(record.Key, record);
+                    dataRecords.Add(record.Key!, record);
                     date = date.AddMonths(1);
                 }
             }
@@ -203,13 +203,13 @@ public static class DataReader
             if (dataResolution == DataResolution.Daily)
             {
                 var record = new DataRecord(year, month, day, value);
-                dataRecords.Add(record.Key, record);
+                dataRecords.Add(record.Key!, record);
                 date = date.AddDays(1);
             }
             else if (dataResolution == DataResolution.Monthly)
             {
                 var record = new DataRecord(year, month, null, value);
-                dataRecords.Add(record.Key, record);
+                dataRecords.Add(record.Key!, record);
                 date = date.AddMonths(1);
             }
         }

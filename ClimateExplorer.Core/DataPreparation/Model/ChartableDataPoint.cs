@@ -1,9 +1,8 @@
-﻿namespace ClimateExplorer.Core.DataPreparation
+﻿namespace ClimateExplorer.Core.DataPreparation;
+
+public class ChartableDataPoint
 {
-    public class ChartableDataPoint
-    {
-        public string Label { get; set; }
-        public float? Value { get; set; }
-        public string BinId { get; set; }
-    }
+    public string? Label { get; set; }
+    public float? Value { get; set; }
+    public string? BinId { get; set; }
 }

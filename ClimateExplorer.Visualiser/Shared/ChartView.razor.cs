@@ -167,11 +167,11 @@ public partial class ChartView
                     new ChartSeriesDefinition()
                     {
                         SeriesDerivationType = dle.SeriesDerivationType,
-                        SourceSeriesSpecifications = dle.SourceSeriesSpecifications.Select(x => BuildSourceSeriesSpecification(x, dataSetDefinitions)).ToArray(),
+                        SourceSeriesSpecifications = dle.SourceSeriesSpecifications!.Select(x => BuildSourceSeriesSpecification(x, dataSetDefinitions)).ToArray(),
                         Aggregation = dle.SeriesAggregation,
                         BinGranularity = SelectedBinGranularity,
                         Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 5,
+                        SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
                         Year = null
                     }
@@ -275,8 +275,8 @@ public partial class ChartView
         return
             new SeriesSpecification
             {
-                DataSetDefinitionId = sss.DataSetDefinition.Id,
-                DataType = sss.MeasurementDefinition.DataType,
+                DataSetDefinitionId = sss.DataSetDefinition!.Id,
+                DataType = sss.MeasurementDefinition!.DataType,
                 DataAdjustment = sss.MeasurementDefinition.DataAdjustment,
                 LocationId = sss.LocationId
             };
@@ -305,7 +305,7 @@ public partial class ChartView
         //
         // Since v2, we now set ChartType to Bar if any series is of type Bar, and Line otherwise.
         var newInternalChartType =
-            ChartSeriesWithData.Any(x => x.ChartSeries.DisplayStyle == SeriesDisplayStyle.Bar)
+            ChartSeriesWithData.Any(x => x.ChartSeries!.DisplayStyle == SeriesDisplayStyle.Bar)
             ? ChartType.Bar
             : ChartType.Line;
 
@@ -436,18 +436,18 @@ public partial class ChartView
         var trendlines = new List<ChartTrendlineData>();
 
         var requestedColours = ChartSeriesWithData!
-            .Where(x => x.ChartSeries.RequestedColour != Colours.AutoAssigned)
-            .Select(x => x.ChartSeries.RequestedColour)
+            .Where(x => x.ChartSeries!.RequestedColour != Colours.AutoAssigned)
+            .Select(x => x.ChartSeries!.RequestedColour)
             .ToList();
 
         foreach (var chartSeries in ChartSeriesWithData!)
         {
-            var dataSet = chartSeries.ProcessedDataSet;
-            var htmlColourCode = colours.GetNextColour(chartSeries.ChartSeries.RequestedColour, requestedColours);
+            var dataSet = chartSeries.ProcessedDataSet!;
+            var htmlColourCode = colours.GetNextColour(chartSeries.ChartSeries!.RequestedColour, requestedColours);
             var renderSmallPoints = IsMobileDevice || dataSet.DataRecords.Count > 400;
             var defaultLabel = IsMobileDevice
                 ? chartSeries.ChartSeries.GetFriendlyTitleShort()
-                : $"{chartSeries.ChartSeries.FriendlyTitle} | {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition.UnitOfMeasure)}";
+                : $"{chartSeries.ChartSeries.FriendlyTitle} | {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition!.UnitOfMeasure)}";
 
 
             await ChartLogic.AddDataSetToChart(
@@ -546,10 +546,10 @@ public partial class ChartView
 
         foreach (var cs in chartSeriesWithData)
         {
-            if (cs.ChartSeries.SecondaryCalculation == SecondaryCalculationOptions.AnnualChange)
+            if (cs.ChartSeries!.SecondaryCalculation == SecondaryCalculationOptions.AnnualChange)
             {
                 var yearlyDifferenceValues =
-                    cs.SourceDataSet.DataRecords
+                    cs.SourceDataSet!.DataRecords
                     .Select(x => x.Value)
                     .CalculateYearlyDifference();
 
@@ -586,10 +586,10 @@ public partial class ChartView
         foreach (var cs in chartSeriesWithData)
         {
             // We only support moving averages on linear bin granularities (e.g. Year, YearAndMonth) - not modular ones like MonthOnly
-            if (SelectedBinGranularity.IsLinear() && cs.ChartSeries.Smoothing == SeriesSmoothingOptions.MovingAverage)
+            if (SelectedBinGranularity.IsLinear() && cs.ChartSeries!.Smoothing == SeriesSmoothingOptions.MovingAverage)
             {
                 var movingAverageValues =
-                    cs.SourceDataSet.DataRecords
+                    cs.SourceDataSet!.DataRecords
                     .Select(x => x.Value)
                     .CalculateCentredMovingAverage(cs.ChartSeries.SmoothingWindow, 0.75f);
 
@@ -624,7 +624,7 @@ public partial class ChartView
         l.LogInformation("done with moving average calculation");
 
         // There must be exactly one bin granularity or else something odd's going on.
-        var binGranularity = chartSeriesWithData.Select(x => x.ChartSeries.BinGranularity).Distinct().Single();
+        var binGranularity = chartSeriesWithData.Select(x => x.ChartSeries!.BinGranularity).Distinct().Single();
 
         if (binGranularity != SelectedBinGranularity)
         {
@@ -641,12 +641,12 @@ public partial class ChartView
             case BinGranularities.ByYearAndDay:
                 // Calculate first and last year which we have a data record for, across all data sets underpinning all chart series
                 var preProcessedDataSets = chartSeriesWithData.Select(x => x.PreProcessedDataSet);
-                var allDataRecords = preProcessedDataSets.SelectMany(x => x.DataRecords);
+                var allDataRecords = preProcessedDataSets.SelectMany(x => x!.DataRecords);
 
                 (ChartStartBin, ChartEndBin) =
                     ChartLogic.GetBinRangeToPlotForGaplessRange(
                         // Pass in the data available for plotting
-                        preProcessedDataSets,
+                        preProcessedDataSets!,
                         // and the user's preferences about what x axis range they'd like plotted
                         useMostRecentStartYear,
                         SelectedStartYear!,
@@ -674,7 +674,7 @@ public partial class ChartView
         {
             l.LogInformation("constructing ProcessedDataSet");
 
-            var recordsByBinId = cs.PreProcessedDataSet.DataRecords.ToLookup(x => x.BinId);
+            var recordsByBinId = cs.PreProcessedDataSet!.DataRecords.ToLookup(x => x.BinId);
 
             l.LogInformation("First chart bin: " + chartBins.First() + ", last chart: " + chartBins.Last());
 
@@ -706,9 +706,9 @@ public partial class ChartView
         var binIdsToPlot = new HashSet<string>(ChartBins.Select(x => x.Id));
         foreach (var cswd in ChartSeriesWithData!)
         {
-            cswd.ProcessedDataSet.DataRecords =
+            cswd.ProcessedDataSet!.DataRecords =
                 cswd.ProcessedDataSet.DataRecords
-                .Where(x => binIdsToPlot.Contains(x.BinId))
+                .Where(x => binIdsToPlot.Contains(x.BinId!))
                 .ToList();
         }
 
@@ -753,7 +753,7 @@ public partial class ChartView
         var axes = new List<string>();
         foreach (var s in ChartSeriesList!)
         {
-            var uom = s.SourceSeriesSpecifications!.First().MeasurementDefinition.UnitOfMeasure;
+            var uom = s.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
             var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, uom, s.Aggregation);
             if (!axes.Contains(axisId))
             {
@@ -854,8 +854,8 @@ public partial class ChartView
 
         var year = (short)(startYear + e.Index);
 
-        var dataType = ChartSeriesWithData![e.DatasetIndex].SourceDataSet.DataType;
-        var dataAdjustment = ChartSeriesWithData[e.DatasetIndex].SourceDataSet.DataAdjustment;
+        var dataType = ChartSeriesWithData![e.DatasetIndex].SourceDataSet!.DataType;
+        var dataAdjustment = ChartSeriesWithData[e.DatasetIndex].SourceDataSet!.DataAdjustment;
 
         await HandleOnYearFilterChange(new YearAndDataTypeFilter(year) { DataType = dataType, DataAdjustment = dataAdjustment });
     }
@@ -866,12 +866,12 @@ public partial class ChartView
 
         var chartWithData = ChartSeriesWithData!
             .First(x =>
-            (x.SourceDataSet.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
+            (x.SourceDataSet!.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
             (x.SourceDataSet.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null));
 
         var chartSeries = ChartSeriesList!
             .First(x => x.SourceSeriesSpecifications!.Any(y =>
-               (y.MeasurementDefinition.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
+               (y.MeasurementDefinition!.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
                (y.MeasurementDefinition.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null)));
 
         ChartSeriesList =
@@ -882,7 +882,7 @@ public partial class ChartView
                     new ChartSeriesDefinition()
                     {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = chartWithData.ChartSeries.SourceSeriesSpecifications,
+                        SourceSeriesSpecifications = chartWithData.ChartSeries!.SourceSeriesSpecifications,
                         Aggregation = chartSeries.Aggregation,
                         BinGranularity = SelectedBinGranularity,
                         Smoothing = SeriesSmoothingOptions.None,
@@ -915,8 +915,8 @@ public partial class ChartView
 
     async Task OnSelectedYearsChanged(ExtentValues extentValues)
     {
-        await ChangeStartYear(extentValues.FromValue, false);
-        await ChangeEndYear(extentValues.ToValue, false);
+        await ChangeStartYear(extentValues.FromValue!, false);
+        await ChangeEndYear(extentValues.ToValue!, false);
         await HandleRedraw();
     }
 
@@ -976,18 +976,18 @@ public partial class ChartView
 
     private void SetStartAndEndYears(List<SeriesWithData> chartSeriesWithData)
     {
-        var binGranularity = chartSeriesWithData.Select(x => x.ChartSeries.BinGranularity).Distinct().Single();
+        var binGranularity = chartSeriesWithData.Select(x => x.ChartSeries!.BinGranularity).Distinct().Single();
         var dataSet = binGranularity == BinGranularities.ByYear ? chartSeriesWithData.Select(x => x.PreProcessedDataSet) : chartSeriesWithData.Select(x => x.SourceDataSet);
 
         // build a list of all the years in which data sets start, used by the UI to allow the user to conveniently select from them
-        StartYears = dataSet.Select(x => x.GetStartYearForDataSet()).Distinct().OrderBy(x => x).ToList();
+        StartYears = dataSet.Select(x => x!.GetStartYearForDataSet()).Distinct().OrderBy(x => x).ToList();
         SliderMin = StartYears.Min();
         if (SliderStart < SliderMin)
         {
             SliderStart = SliderMin;
         }
 
-        var lastYears = dataSet.Select(x => x.GetEndYearForDataSet()).Distinct().OrderBy(x => x).ToList();
+        var lastYears = dataSet.Select(x => x!.GetEndYearForDataSet()).Distinct().OrderBy(x => x).ToList();
         SliderMax = EndYear = lastYears.Max();
         if (SliderEnd > SliderMax)
         {

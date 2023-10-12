@@ -14,7 +14,7 @@ namespace ClimateExplorer.UnitTests;
 public class DataReaderTests
 {
     [TestMethod]
-    public async Task ProcessDataTest()
+    public void ProcessDataTest()
     {
         string[]? lines = new[]
         {
@@ -28,7 +28,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$");
 
-        var records = await DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily);
+        var records = DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily);
         var recordsList = records.Values.ToList();
 
         Assert.AreEqual(4, records.Count);
@@ -43,7 +43,7 @@ public class DataReaderTests
     }
 
     [TestMethod]
-    public async Task ProcessDataWithNullRecordsTest()
+    public void ProcessDataWithNullRecordsTest()
     {
         string[]? lines = new[]
         {
@@ -57,7 +57,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$");
 
-        var records = await DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily);
+        var records = DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily);
 
         Assert.AreEqual(4, records.Count);
 
@@ -68,7 +68,7 @@ public class DataReaderTests
     }
 
     [TestMethod]
-    public async Task ProcessDataWithMissingRecordsTest()
+    public void ProcessDataWithMissingRecordsTest()
     {
         string[]? lines = new[]
         {
@@ -82,7 +82,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$");
 
-        var records = await DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily);
+        var records = DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily);
 
         Assert.AreEqual(4, records.Count);
 
@@ -93,7 +93,7 @@ public class DataReaderTests
     }
 
     [TestMethod]
-    public async Task ProcessDataFileWithDateFilterTest()
+    public void ProcessDataFileWithDateFilterTest()
     {
         string[]? lines = new[]
         {
@@ -110,7 +110,7 @@ public class DataReaderTests
         var start = DateTime.Parse("1950/12/31");
         var end = DateTime.Parse("1951/1/1");
 
-        var records = await DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, start, end);
+        var records = DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, start, end);
 
         Assert.AreEqual(2, records.Count);
 
@@ -119,7 +119,7 @@ public class DataReaderTests
     }
 
     [TestMethod]
-    public async Task ProcessMonthlyDataTest()
+    public void ProcessMonthlyDataTest()
     {
         string[]? lines = new[]
         {
@@ -133,7 +133,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$");
 
-        var records = await DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly);
+        var records = DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly);
         var recordsList = records.Values.ToList();
 
         Assert.AreEqual(4, records.Count);
@@ -148,7 +148,7 @@ public class DataReaderTests
     }
 
     [TestMethod]
-    public async Task ProcessMonthlyDataWithMissingRecordsTest()
+    public void ProcessMonthlyDataWithMissingRecordsTest()
     {
         string[]? lines = new[]
         {
@@ -162,7 +162,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$");
 
-        var records = await DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly);
+        var records = DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly);
         var recordsList = records.Values.ToList();
 
         Assert.AreEqual(4, records.Count);
@@ -176,7 +176,7 @@ public class DataReaderTests
     }
 
     [TestMethod]
-    public async Task ProcessMonthlyDataWithDuplicateRecordsTest()
+    public void ProcessMonthlyDataWithDuplicateRecordsTest()
     {
         string[]? lines = new[]
         {
@@ -190,7 +190,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$");
 
-        var records = await DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly);
+        var records = DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly);
         var recordsList = records.Values.ToList();
 
         Assert.AreEqual(3, records.Count);
@@ -203,7 +203,7 @@ public class DataReaderTests
     }
 
     [TestMethod]
-    public async Task ProcessMonthlyDataWithRecordsOutOfOrderTest()
+    public void ProcessMonthlyDataWithRecordsOutOfOrderTest()
     {
         string[]? lines = new[]
         {
@@ -217,7 +217,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$");
 
-        var records = await DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly);
+        var records = DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly);
         var recordsList = records.Values.ToList();
 
         Assert.AreEqual(3, records.Count);

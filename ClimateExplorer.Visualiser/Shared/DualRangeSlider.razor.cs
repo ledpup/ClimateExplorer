@@ -159,6 +159,6 @@ public partial class DualRangeSlider
 
 public class ExtentValues
 {
-    public string FromValue { get; set; }
-    public string ToValue { get; set; }
+    public string? FromValue { get; set; }
+    public string? ToValue { get; set; }
 }

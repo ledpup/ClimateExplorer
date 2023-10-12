@@ -1,12 +1,5 @@
-﻿using ClimateExplorer.Core.InputOutput;
-using ClimateExplorer.Core.ViewModel;
-using ClimateExplorer.Core.DataPreparation;
-using ClimateExplorer.Core.DataPreparation.Model;
-using System;
-using System.Collections.Generic;
+﻿using ClimateExplorer.Core.DataPreparation.Model;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using static ClimateExplorer.Core.Enums;
 
 namespace ClimateExplorer.Core.DataPreparation
@@ -16,8 +9,8 @@ namespace ClimateExplorer.Core.DataPreparation
         public class BuildDataSetResult
         {
             public UnitOfMeasure UnitOfMeasure { get; set; }
-            public ChartableDataPoint[] DataPoints { get; set; }
-            public TemporalDataPoint[] RawDataPoints { get; set; }
+            public ChartableDataPoint[]? DataPoints { get; set; }
+            public TemporalDataPoint[]? RawDataPoints { get; set; }
         }
 
         public async Task<BuildDataSetResult> BuildDataSet(PostDataSetsRequestBody request)
@@ -28,12 +21,12 @@ namespace ClimateExplorer.Core.DataPreparation
             sw.Start();
 
             // Reads raw data (from one or multiple sources) & derive a series from it as per the request
-            var series = await SeriesProvider.GetSeriesDataPointsForRequest(request.SeriesDerivationType, request.SeriesSpecifications);
+            var series = await SeriesProvider.GetSeriesDataPointsForRequest(request.SeriesDerivationType, request.SeriesSpecifications!);
 
             Console.WriteLine("GetSeriesDataPointsForRequest completed in " + sw.Elapsed);
 
             // Run the rest of the pipeline (this is a separate method for testability)
-            var dataPoints = BuildDataSetFromDataPoints(series.DataPoints, series.DataResolution, request);
+            var dataPoints = BuildDataSetFromDataPoints(series.DataPoints!, series.DataResolution, request);
 
             return
                 new BuildDataSetResult
@@ -100,7 +93,7 @@ namespace ClimateExplorer.Core.DataPreparation
                     x => 
                     new ChartableDataPoint 
                     {
-                        BinId = x.Identifier.Id,
+                        BinId = x.Identifier!.Id,
                         Label = x.Identifier.Label, 
                         Value = x.Value
                     }
@@ -111,7 +104,7 @@ namespace ClimateExplorer.Core.DataPreparation
         private static ChartableDataPoint[] ConvertDataPointsToChartableDataPoints(TemporalDataPoint[] filteredDataPoints)
         {
             return filteredDataPoints
-                .Select(x => (new YearAndDayBinIdentifier(x.Year, x.Month.Value, x.Day.Value), x.Value))
+                .Select(x => (new YearAndDayBinIdentifier(x.Year, x.Month!.Value, x.Day!.Value), x.Value))
                 .Select(
                 x =>
                 new ChartableDataPoint

@@ -39,21 +39,21 @@ public partial class Index : ChartablePage
     {
         await base.OnInitializedAsync();
 
-        Locations = (await DataService.GetLocations(includeNearbyLocations: true, includeWarmingIndex: true, excludeLocationsWithNullWarmingIndex: true)).ToList();
+        Locations = (await DataService!.GetLocations(includeNearbyLocations: true, includeWarmingIndex: true, excludeLocationsWithNullWarmingIndex: true)).ToList();
 
         setupDefaultChartSeries = true;
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        Logger.LogInformation("OnParametersSetAsync() " + NavManager.Uri + " (NavigateTo)");
+        Logger!.LogInformation("OnParametersSetAsync() " + NavManager!.Uri + " (NavigateTo)");
 
-        Logger.LogInformation("OnParametersSetAsync(): " + LocationId);
+        Logger!.LogInformation("OnParametersSetAsync(): " + LocationId);
 
         var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
         if (setupDefaultChartSeries)
         {
-            setupDefaultChartSeries = (LocationId == null && chartView.ChartSeriesList!.Count == 0) || !QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
+            setupDefaultChartSeries = (LocationId == null && chartView!.ChartSeriesList!.Count == 0) || !QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
         }
 
         GetLocationIdViaNameFromPath(uri);
@@ -62,7 +62,7 @@ public partial class Index : ChartablePage
         {
             LocationId = (await LocalStorage!.GetItemAsync<string>("lastLocationId"));
             var validGuid = Guid.TryParse(LocationId, out Guid id);
-            if (!validGuid || id == Guid.Empty || !Locations.Any(x => x.Id == id))
+            if (!validGuid || id == Guid.Empty || !Locations!.Any(x => x.Id == id))
             {
                 LocationId = "aed87aa0-1d0c-44aa-8561-cde0fc936395";
             }
@@ -92,11 +92,11 @@ public partial class Index : ChartablePage
             var locatioName = uri.Segments[2];
             var originalName = locatioName;
             locatioName = locatioName.Replace("-", " ");
-            var location = Locations.SingleOrDefault(x => string.Equals(x.Name, locatioName, StringComparison.OrdinalIgnoreCase));
+            var location = Locations!.SingleOrDefault(x => string.Equals(x.Name, locatioName, StringComparison.OrdinalIgnoreCase));
             // Will match for Kalgoorlie-Boulder
             if (location == null)
             {
-                location = Locations.SingleOrDefault(x => string.Equals(x.Name, originalName, StringComparison.OrdinalIgnoreCase));
+                location = Locations!.SingleOrDefault(x => string.Equals(x.Name, originalName, StringComparison.OrdinalIgnoreCase));
             }
             if (location != null)
             {
@@ -107,12 +107,12 @@ public partial class Index : ChartablePage
 
     private void SetUpDefaultCharts(Guid? locationId)
     {
-        var location = Locations.Single(x => x.Id == locationId);
+        var location = Locations!.Single(x => x.Id == locationId);
 
-        var tempMaxOrMean = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.TempMax, DataAdjustment.Adjusted, allowNullDataAdjustment: true, DataType.TempMean, throwIfNoMatch: true);
-        var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, location.Id, DataType.Rainfall, null, allowNullDataAdjustment: true, throwIfNoMatch: false);
+        var tempMaxOrMean = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.TempMax, DataAdjustment.Adjusted, allowNullDataAdjustment: true, DataType.TempMean, throwIfNoMatch: true);
+        var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.Rainfall, null, allowNullDataAdjustment: true, throwIfNoMatch: false);
 
-        if (chartView.ChartSeriesList == null)
+        if (chartView!.ChartSeriesList == null)
         {
             chartView.ChartSeriesList = new List<ChartSeriesDefinition>();
         }
@@ -165,19 +165,19 @@ public partial class Index : ChartablePage
 
         string title = $"ClimateExplorer{locationText}";
 
-        Logger.LogInformation("GetPageTitle() returning '" + title + "' NavigateTo");
+        Logger!.LogInformation("GetPageTitle() returning '" + title + "' NavigateTo");
 
         return title;
     }
 
     async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)
     {
-        await chartView.HandleOnYearFilterChange(yearAndDataTypeFilter);
+        await chartView!.HandleOnYearFilterChange(yearAndDataTypeFilter);
     }
 
     private async Task OnOverviewShowHide(bool isOverviewVisible)
     {
-        await JsRuntime.InvokeVoidAsync("showOrHideMap", isOverviewVisible);
+        await JsRuntime!.InvokeVoidAsync("showOrHideMap", isOverviewVisible);
     }
 
     private Task ShowSelectLocationModal()
@@ -215,17 +215,17 @@ public partial class Index : ChartablePage
 
     async Task SelectedLocationChangedInternal(Guid newValue)
     {
-        Logger.LogInformation("SelectedLocationChangedInternal(): " + newValue);
+        Logger!.LogInformation("SelectedLocationChangedInternal(): " + newValue);
 
         SelectedLocationId = newValue;
-        SelectedLocation = Locations.Single(x => x.Id == SelectedLocationId);
+        SelectedLocation = Locations!.Single(x => x.Id == SelectedLocationId);
 
         await LocalStorage!.SetItemAsync("lastLocationId", SelectedLocationId.ToString());
 
         var additionalCsds = new List<ChartSeriesDefinition>();
 
         // Update data series to reflect new location
-        foreach (var csd in chartView.ChartSeriesList!.ToArray())
+        foreach (var csd in chartView!.ChartSeriesList!.ToArray())
         {
             foreach (var sss in csd.SourceSeriesSpecifications!)
             {
@@ -245,9 +245,9 @@ public partial class Index : ChartablePage
                         // But: the new location may not have data of the requested type. Let's see if there is any.
                         var dsd =
                             DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
-                                DataSetDefinitions,
+                                DataSetDefinitions!,
                                 SelectedLocationId,
-                                sss.MeasurementDefinition.DataType,
+                                sss.MeasurementDefinition!.DataType,
                                 sss.MeasurementDefinition.DataAdjustment,
                                 allowNullDataAdjustment: true,
                                 alternativeDataType: AlternateTempDataTypes(sss.MeasurementDefinition.DataType),
@@ -264,13 +264,13 @@ public partial class Index : ChartablePage
                         else
                         {
                             // This data IS available at the new location. Now, update the series accordingly.
-                            sss.DataSetDefinition = dsd.DataSetDefinition;
+                            sss.DataSetDefinition = dsd.DataSetDefinition!;
 
                             // Next, update the MeasurementDefinition. Look for a match on DataType and DataAdjustment
                             var oldMd = sss.MeasurementDefinition;
 
                             var candidateMds =
-                                sss.DataSetDefinition.MeasurementDefinitions!
+                                sss.DataSetDefinition!.MeasurementDefinitions!
                                 .Where(x => x.DataType == oldMd.DataType && x.DataAdjustment == oldMd.DataAdjustment)
                                 .ToArray();
 
@@ -313,16 +313,16 @@ public partial class Index : ChartablePage
                 else
                 {
                     // It's locked, so duplicate it & set the location on the duplicate to the new location
-                    var newDsd = DataSetDefinitions.Single(x => x.Id == sss.DataSetDefinition.Id);
+                    var newDsd = DataSetDefinitions!.Single(x => x.Id == sss.DataSetDefinition!.Id);
                     var newMd =
                         newDsd.MeasurementDefinitions!
-                        .SingleOrDefault(x => x.DataType == sss.MeasurementDefinition.DataType && x.DataAdjustment == sss.MeasurementDefinition.DataAdjustment);
+                        .SingleOrDefault(x => x.DataType == sss.MeasurementDefinition!.DataType && x.DataAdjustment == sss.MeasurementDefinition.DataAdjustment);
 
                     if (newMd == null)
                     {
                         newMd =
                             newDsd.MeasurementDefinitions!
-                            .SingleOrDefault(x => x.DataType == sss.MeasurementDefinition.DataType && x.DataAdjustment == null);
+                            .SingleOrDefault(x => x.DataType == sss.MeasurementDefinition!.DataType && x.DataAdjustment == null);
                     }
 
                     if (newMd != null)
@@ -336,7 +336,7 @@ public partial class Index : ChartablePage
                                     {
                                     new SourceSeriesSpecification
                                     {
-                                        DataSetDefinition = DataSetDefinitions.Single(x => x.Id == sss.DataSetDefinition.Id),
+                                        DataSetDefinition = DataSetDefinitions!.Single(x => x.Id == sss.DataSetDefinition!.Id),
                                         LocationId = newValue,
                                         LocationName = SelectedLocation.Name,
                                         MeasurementDefinition = newMd,
@@ -360,7 +360,7 @@ public partial class Index : ChartablePage
             }
         }
 
-        Logger.LogInformation("Adding items to list inside SelectedLocationChangedInternal()");
+        Logger!.LogInformation("Adding items to list inside SelectedLocationChangedInternal()");
 
         var draftList = chartView.ChartSeriesList.Concat(additionalCsds).ToList();
 
@@ -412,13 +412,13 @@ public partial class Index : ChartablePage
         if (getLocationResult.ErrorCode > 0)
         {
             BrowserLocationErrorMessage = "Unable to determine your location" + (!string.IsNullOrWhiteSpace(getLocationResult.ErrorMessage) ? $" ({getLocationResult.ErrorMessage})" : "");
-            Logger.LogError(BrowserLocationErrorMessage);
+            Logger!.LogError(BrowserLocationErrorMessage);
             return null;
         }
 
         var geoCoord = new GeoCoordinate(getLocationResult.Latitude, getLocationResult.Longitude);
 
-        var distances = Location.GetDistances(geoCoord, Locations);
+        var distances = Location.GetDistances(geoCoord, Locations!);
         var closestLocation = distances.OrderBy(x => x.Distance).First();
 
         return closestLocation.LocationId;

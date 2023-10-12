@@ -5,10 +5,10 @@ namespace ClimateExplorer.Visualiser.UiModel;
 
 public class DataSetLibraryEntry
 {
-    public string Name { get; set; }
+    public string? Name { get; set; }
     public SeriesDerivationTypes SeriesDerivationType { get; set; }
     public SeriesAggregationOptions SeriesAggregation { get; set; }
-    public SourceSeriesSpecification[] SourceSeriesSpecifications { get; set; }
+    public SourceSeriesSpecification[]? SourceSeriesSpecifications { get; set; }
 
     public class SourceSeriesSpecification
     {

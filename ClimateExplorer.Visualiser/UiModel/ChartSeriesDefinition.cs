@@ -73,7 +73,7 @@ public class ChartSeriesDefinition
                     segments.Add(Year.ToString()!);
                 }
 
-                segments.Add(MapDataTypeToFriendlyName(sss.MeasurementDefinition.DataType));
+                segments.Add(MapDataTypeToFriendlyName(sss.MeasurementDefinition!.DataType));
 
                 if (sss.MeasurementDefinition.DataAdjustment != null)
                 {
@@ -159,7 +159,7 @@ public class ChartSeriesDefinition
 
     static string BuildAverageMultipleSeriesTitle(SourceSeriesSpecification[] sss)
     {
-        List<string> segments = new List<string>();
+        var segments = new List<string>();
 
         if (sss.All(o => o.LocationName == sss[0].LocationName))
         {
@@ -170,18 +170,18 @@ public class ChartSeriesDefinition
             throw new NotImplementedException();
         }
 
-        if (sss.All(o => o.MeasurementDefinition.DataType == sss[0].MeasurementDefinition.DataType))
+        if (sss.All(o => o.MeasurementDefinition!.DataType == sss[0].MeasurementDefinition!.DataType))
         {
             throw new NotImplementedException();
         }
         else
         {
-            segments.Add($"Average {string.Join(", ", sss.Select(x => MapDataTypeToFriendlyName(x.MeasurementDefinition.DataType)).ToList())}");
+            segments.Add($"Average {string.Join(", ", sss.Select(x => MapDataTypeToFriendlyName(x.MeasurementDefinition!.DataType)).ToList())}");
         }
 
-        if (sss.All(o => o.MeasurementDefinition.DataAdjustment == sss[0].MeasurementDefinition.DataAdjustment))
+        if (sss.All(o => o.MeasurementDefinition!.DataAdjustment == sss[0].MeasurementDefinition!.DataAdjustment))
         {
-            segments.Add(sss[0].MeasurementDefinition.DataAdjustment.ToString()!);
+            segments.Add(sss[0].MeasurementDefinition!.DataAdjustment.ToString()!);
         }
         else
         {
@@ -193,7 +193,7 @@ public class ChartSeriesDefinition
 
     public static string BuildFriendlyTitleShortForSeries(SourceSeriesSpecification sss, BinGranularities binGranularity, SeriesAggregationOptions aggregation, short? year = null)
     {
-        List<string> segments = new List<string>();
+        var segments = new List<string>();
 
         if (sss.LocationName != null)
         {
@@ -376,9 +376,9 @@ public class ChartSeriesDefinition
 
                 hashCode =
                     hashCode ^
-                    sss.DataSetDefinition.Id.GetHashCode() ^
+                    sss.DataSetDefinition!.Id.GetHashCode() ^
                     sss.LocationId.GetHashCode() ^
-                    sss.MeasurementDefinition.DataType.GetHashCode() ^
+                    sss.MeasurementDefinition!.DataType.GetHashCode() ^
                     sss.MeasurementDefinition.DataAdjustment.GetHashCode();
             }
 
@@ -424,9 +424,9 @@ public class ChartSeriesDefinition
 
                 hashCode =
                     hashCode ^
-                    sss.DataSetDefinition.Id.GetHashCode() ^
+                    sss.DataSetDefinition!.Id.GetHashCode() ^
                     sss.LocationId.GetHashCode() ^
-                    sss.MeasurementDefinition.DataType.GetHashCode() ^
+                    sss.MeasurementDefinition!.DataType.GetHashCode() ^
                     sss.MeasurementDefinition.DataAdjustment.GetHashCode();
             }
 

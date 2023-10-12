@@ -289,7 +289,7 @@ public class DataSetBuilderTests
         );
 
         Assert.AreEqual(12, cdp.Length); // Twelve months
-        Assert.AreEqual(6.469893f, cdp[0].Value.Value, 0.00001f);
+        Assert.AreEqual(6.469893f, cdp[0].Value!.Value, 0.00001f);
         Assert.AreEqual("Jan 1990", cdp[0].Label);
     }
 
@@ -434,7 +434,7 @@ public class DataSetBuilderTests
 
         Assert.AreEqual(12, cdp.Length);
         Assert.AreEqual("Jan", cdp[0].Label);
-        Assert.AreEqual(24.75, cdp[0].Value.Value);
+        Assert.AreEqual(24.75, cdp[0].Value!.Value);
     }
 
     [TestMethod]
@@ -464,7 +464,7 @@ public class DataSetBuilderTests
         Assert.AreEqual(4, cdp.Length);
         Assert.AreEqual("Summer", cdp[0].Label);
         // This needs manual verification
-        Assert.AreEqual(243.81953f, actual: cdp[0].Value.Value);
+        Assert.AreEqual(243.81953f, actual: cdp[0].Value!.Value);
     }
 
 

@@ -14,7 +14,7 @@ namespace ClimateExplorer.Core.InputOutput
     {
         public static async Task<DataSet> GetTwelveMonthsPerRowData(MeasurementDefinition measurementDefinition, List<DataFileFilterAndAdjustment> dataFileFilterAndAdjustments)
         {
-            string dataPath = $@"{measurementDefinition.FolderName}\{measurementDefinition.FileNameFormat.Replace("[station]", dataFileFilterAndAdjustments.Single().Id)}";
+            string dataPath = $@"{measurementDefinition.FolderName}\{measurementDefinition!.FileNameFormat!.Replace("[station]", dataFileFilterAndAdjustments.Single().Id)}";
 
             var records = await DataReader.GetLinesInDataFileWithCascade(dataPath);
             if (records == null)
@@ -22,7 +22,7 @@ namespace ClimateExplorer.Core.InputOutput
                 throw new Exception("Unable to read data " + dataPath);
             }
 
-            var regEx = new Regex(measurementDefinition.DataRowRegEx);
+            var regEx = new Regex(measurementDefinition.DataRowRegEx!);
 
             var list = new List<DataRecord>();
             var dataRowFound = false;
@@ -48,7 +48,7 @@ namespace ClimateExplorer.Core.InputOutput
                 var values = new List<float>();
                 for (var i = 1; i < groups.Count - 1; i++)
                 {
-                    if (!groups[i].Value.StartsWith(measurementDefinition.NullValue))
+                    if (!groups[i].Value.StartsWith(measurementDefinition.NullValue!))
                     {
                         var value = float.Parse(groups[i].Value);
 

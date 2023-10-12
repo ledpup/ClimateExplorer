@@ -119,7 +119,7 @@
         {
             p.MissingChartSeries = false;
 
-            foreach (var csd in p.ChartSeriesList.ToArray())
+            foreach (var csd in p.ChartSeriesList!.ToArray())
             {
                 if (!csd.SourceSeriesSpecifications!.Any() || csd.SourceSeriesSpecifications!.Any(x => x.MeasurementDefinition == null))
                 {
@@ -135,7 +135,7 @@
                 {
                     v.MissingChartSeries = false;
 
-                    foreach (var csd in v.ChartSeriesList.ToArray())
+                    foreach (var csd in v.ChartSeriesList!.ToArray())
                     {
                         if (!csd.SourceSeriesSpecifications!.Any() || csd.SourceSeriesSpecifications!.Any(x => x.MeasurementDefinition == null))
                         {

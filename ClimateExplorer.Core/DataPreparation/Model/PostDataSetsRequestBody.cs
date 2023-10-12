@@ -3,7 +3,7 @@
     public class PostDataSetsRequestBody
     {
         public SeriesDerivationTypes SeriesDerivationType { get; set; }
-        public SeriesSpecification[] SeriesSpecifications { get; set; }
+        public SeriesSpecification[]? SeriesSpecifications { get; set; }
         public SeriesTransformations SeriesTransformation { get; set; }
 
         public SouthernHemisphereTemperateSeasons? FilterToSouthernHemisphereTemperateSeason { get; set; }

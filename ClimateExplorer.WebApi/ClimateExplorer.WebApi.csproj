@@ -2,6 +2,12 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+  </PropertyGroup>
   <!-- This ItemGroup added 2022-05-28 by Andrew to ensure that the files under the Temperature folder are included in the deployment when publishing -->
   <ItemGroup>
     <Content Include="Temperature\**">

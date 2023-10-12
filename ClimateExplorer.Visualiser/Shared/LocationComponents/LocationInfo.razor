@@ -83,7 +83,6 @@
 
     List<YearAndValue>? RainfallAnomalyRecords { get; set; }
     float? RainfallLocationMean { get; set; }
-    string? RainfallIndexDescription;
     string? RainfallIndexAsString;
 
     Guid? locationIdLastTimeOnParametersSetAsyncWasCalled;
@@ -131,7 +130,6 @@
         // Clear the previous values so we don't accidentally end-up reporting them
         RainfallLocationMean = null;
         RainfallAnomalyRecords = null;
-        RainfallIndexDescription = null;
         RainfallIndexAsString = null;
 
         // We can't do anything until we're supplied our tasty, tasty DataSetDefinitions
@@ -174,8 +172,8 @@
                         {
                             new SeriesSpecification
                             {
-                                DataAdjustment = measurementForLocation.MeasurementDefinition.DataAdjustment,
-                                DataSetDefinitionId = measurementForLocation.DataSetDefinition.Id,
+                                DataAdjustment = measurementForLocation.MeasurementDefinition!.DataAdjustment,
+                                DataSetDefinitionId = measurementForLocation.DataSetDefinition!.Id,
                                 DataType = measurementForLocation.MeasurementDefinition.DataType,
                                 LocationId = Location.Id
                             }
@@ -191,7 +189,7 @@
             var anomalyRecords =
                 series.DataRecords
                 .Where(x => x.Value != null)
-                .Select(x => new YearAndValue(((YearBinIdentifier)BinIdentifier.Parse(x.BinId)).Year, x.Value!.Value))
+                .Select(x => new YearAndValue(((YearBinIdentifier)BinIdentifier.Parse(x.BinId!)).Year, x.Value!.Value))
                 .ToList();
 
             series =

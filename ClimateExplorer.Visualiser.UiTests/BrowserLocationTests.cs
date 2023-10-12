@@ -99,10 +99,10 @@ namespace ClimateExplorer.Visualiser.UiTests
             };
 
             var locations = new List<Location>();
-            foreach (var locationObj in jsonResponse?.EnumerateArray())
+            foreach (var locationObj in jsonResponse?.EnumerateArray()!)
             {
                 var location = locationObj.Deserialize<Location>(options);
-                locations.Add(location);
+                locations.Add(location!);
             }
 
             return locations;

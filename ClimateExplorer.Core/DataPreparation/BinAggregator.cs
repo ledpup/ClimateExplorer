@@ -29,7 +29,7 @@ namespace ClimateExplorer.Core.DataPreparation
 
             if (!containersWithData.Any()) return null;
 
-            float[] sortedValues = containersWithData.Select(x => x.Value.Value).OrderBy(x => x).ToArray();
+            float[] sortedValues = containersWithData.Select(x => x.Value!.Value).OrderBy(x => x).ToArray();
 
             int indexOfMidpoint = sortedValues.Length / 2;
 
@@ -85,13 +85,13 @@ namespace ClimateExplorer.Core.DataPreparation
                     NumberOfPeriodsCoveredByAggregate = cup.ExpectedDataPointsInCup,
                     Value = 
                         aggregationFunction(
-                            cup.DataPoints
+                            cup.DataPoints!
                             .Where(x => x.Value.HasValue)
                             .Select(
                                 x => 
                                 new ContainerAggregate 
                                 { 
-                                    Value = x.Value.Value, 
+                                    Value = x.Value!.Value, 
                                     NumberOfPeriodsCoveredByAggregate = 1 
                                 }
                             )
@@ -114,9 +114,9 @@ namespace ClimateExplorer.Core.DataPreparation
 
             foreach (var bin in rawBins)
             {
-                foreach (var bucket in bin.Buckets)
+                foreach (var bucket in bin.Buckets!)
                 {
-                    foreach (var cup in bucket.Cups)
+                    foreach (var cup in bucket.Cups!)
                     {
                         cupLevelIntermediates.Add(
                             new AggregationIntermediate
@@ -184,11 +184,11 @@ namespace ClimateExplorer.Core.DataPreparation
                         Value = 
                             x.MeetsDataRequirements
                             ? aggregationFunction(
-                                x.Buckets
-                                .SelectMany(y => y.Cups)
-                                .SelectMany(y => y.DataPoints)
+                                x.Buckets!
+                                .SelectMany(y => y.Cups!)
+                                .SelectMany(y => y.DataPoints!)
                                 .Where(y => y.Value.HasValue)
-                                .Select(y => new ContainerAggregate() { Value = y.Value.Value, NumberOfPeriodsCoveredByAggregate = 1 })
+                                .Select(y => new ContainerAggregate() { Value = y.Value!.Value, NumberOfPeriodsCoveredByAggregate = 1 })
                             )
                             : null
                     }

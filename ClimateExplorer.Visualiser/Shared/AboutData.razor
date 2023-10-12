@@ -35,7 +35,7 @@
                     <div class="entry">
                         <div class="title">Dataset</div>
                         <div class="value">
-                            <a href="@sss.DataSetDefinition.MoreInformationUrl" target="_blank">@sss.DataSetDefinition.Name</a>
+                            <a href="@sss.DataSetDefinition!.MoreInformationUrl" target="_blank">@sss.DataSetDefinition.Name</a>
                     
                             @if (sss.DataSetDefinition.Publisher != null)
                             {
@@ -51,7 +51,7 @@
                         </div>
                     }
 
-                    @switch (sss.MeasurementDefinition.DataType)
+                    @switch (sss.MeasurementDefinition!.DataType)
                     {
                         case DataType.SolarRadiation:
                             <div class="entry">

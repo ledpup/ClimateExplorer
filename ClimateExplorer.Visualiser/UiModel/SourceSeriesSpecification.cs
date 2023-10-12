@@ -5,8 +5,8 @@ namespace ClimateExplorer.Visualiser.UiModel;
 
 public class SourceSeriesSpecification
 {
-    public DataSetDefinitionViewModel DataSetDefinition { get; set; }
-    public MeasurementDefinitionViewModel MeasurementDefinition { get; set; }
+    public DataSetDefinitionViewModel? DataSetDefinition { get; set; }
+    public MeasurementDefinitionViewModel? MeasurementDefinition { get; set; }
     public Guid? LocationId { get; set; }
     public string? LocationName { get; set; }
 
@@ -21,8 +21,8 @@ public class SourceSeriesSpecification
                     {
                         LocationId = location == null ? null : location.Id,
                         LocationName = location == null ? null : location.Name,
-                        DataSetDefinition = dsdmd.DataSetDefinition,
-                        MeasurementDefinition = dsdmd.MeasurementDefinition,
+                        DataSetDefinition = dsdmd.DataSetDefinition!,
+                        MeasurementDefinition = dsdmd.MeasurementDefinition!,
                     }
             };
     }

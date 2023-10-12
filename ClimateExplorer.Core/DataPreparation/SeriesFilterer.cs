@@ -17,12 +17,12 @@ namespace ClimateExplorer.Core.DataPreparation
 
             if (filterToSouthernHemisphereTemperateSeason != null)
             {
-                query = query.Where(x => DateHelpers.GetSouthernHemisphereTemperateSeasonForMonth(x.Month.Value) == filterToSouthernHemisphereTemperateSeason.Value);
+                query = query.Where(x => DateHelpers.GetSouthernHemisphereTemperateSeasonForMonth(x.Month!.Value) == filterToSouthernHemisphereTemperateSeason.Value);
             }
 
             if (filterToTropicalSeason != null)
             {
-                query = query.Where(x => DateHelpers.GetSouthernHemisphereTropicalSeasonForMonth(x.Month.Value) == filterToTropicalSeason.Value);
+                query = query.Where(x => DateHelpers.GetSouthernHemisphereTropicalSeasonForMonth(x.Month!.Value) == filterToTropicalSeason.Value);
             }
 
             if (filterToYearsAfterAndIncluding != null)

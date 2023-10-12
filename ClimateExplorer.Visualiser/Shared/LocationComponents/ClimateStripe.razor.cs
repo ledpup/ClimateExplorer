@@ -15,7 +15,7 @@ public partial class ClimateStripe
     public float? LocationMean { get; set; }
 
     [Parameter]
-    public List<YearAndValue> DataRecords { get; set; }
+    public List<YearAndValue>? DataRecords { get; set; }
 
     [Parameter]
     public UnitOfMeasure UnitOfMeasure { get; set; }
@@ -23,10 +23,10 @@ public partial class ClimateStripe
     [Parameter]
     public bool ShowInfo { get; set; }
 
-    List<YearAndValue> PreviouslySeenDataRecords { get; set; }
+    List<YearAndValue>? PreviouslySeenDataRecords { get; set; }
 
     [Inject]
-    public ILogger<ClimateStripe> Logger { get; set; }
+    public ILogger<ClimateStripe>? Logger { get; set; }
 
     [Parameter]
     public EventCallback<short> OnYearFilterChange { get; set; }
@@ -34,17 +34,17 @@ public partial class ClimateStripe
     float Min;
     float Max;
 
-    string UomString;
+    string? UomString;
     int UomRounding;
 
-    public string PopupText { get; set; }
+    public string? PopupText { get; set; }
 
-    private Modal popup;
+    private Modal? popup;
     private Task ShowClimateStripeInfo()
     {
         if (!string.IsNullOrWhiteSpace(PopupText))
         {
-            return popup.Show();
+            return popup!.Show();
         }
         return Task.CompletedTask;
     }
@@ -61,7 +61,7 @@ public partial class ClimateStripe
             return;
         }
 
-        if (YearAndValueListsAreEqual(PreviouslySeenDataRecords, DataRecords))
+        if (YearAndValueListsAreEqual(PreviouslySeenDataRecords!, DataRecords!))
         {
             return;
         }
@@ -79,7 +79,7 @@ public partial class ClimateStripe
         PopupText = $@"<p><a href={url} target=""_blank"">Climate stripes</a> are a simplified bar chart of average weather phenomena, ordered by year, from the earliest year in the record until the most recent. Each coloured stripe represents a single year of data. A blue stripe is a year where the value is below the average of the whole series. A red stripe represents an above average value.</p>
 <p>Climate stripe colours are calculated by the following algorithm.</p>
 <ol>
-<li>Calculate the average for the whole series (e.g., {LocationName} {DataRecords.First().Year}-{DataRecords.Last().Year} mean is {Math.Round(LocationMean.Value, UomRounding)}{UomString})</li>
+<li>Calculate the average for the whole series (e.g., {LocationName} {DataRecords!.First().Year}-{DataRecords!.Last().Year} mean is {Math.Round(LocationMean.Value, UomRounding)}{UomString})</li>
 <li>For each year in the series, subtract the average for the <strong>series</strong> from the average for the <strong>year</strong> (e.g., if series average is 15{UomString} and the year average is 14{UomString}, the result is -1{UomString}). Note:</li>
     <ul>
         <li>This value in step 2 is often called the anomaly</li>

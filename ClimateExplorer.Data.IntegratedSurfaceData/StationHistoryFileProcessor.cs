@@ -73,8 +73,8 @@ public class Station
 {
     public string? Id { get; set; }
     public IdTypes IdType { get; set; }
-    public string Wban { get; set; }
-    public string Usaf { get; set; }
+    public string? Wban { get; set; }
+    public string? Usaf { get; set; }
     public string FileName
     { 
         get
@@ -95,7 +95,7 @@ public class Station
     }
     public Coordinates Coordinates { get; set; }
 
-    public List<StationDistance> StationDistances { get; set; }
+    public List<StationDistance>? StationDistances { get; set; }
 
     public double AverageDistance { get; set; }
 

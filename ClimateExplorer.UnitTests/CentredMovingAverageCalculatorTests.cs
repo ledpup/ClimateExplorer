@@ -1,7 +1,5 @@
 using ClimateExplorer.Core;
-using ClimateExplorer.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Linq;
 
 namespace ClimateExplorer.UnitTests;

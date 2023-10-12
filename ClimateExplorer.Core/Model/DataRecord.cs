@@ -38,23 +38,23 @@ public class DataRecord
         CreateKey();
     }
 
-    public string Key { get; set; }
+    public string? Key { get; set; }
     public short? Day { get; set; }
     public short? Month { get; set; }
     public short Year { get; set; }
     public short? Week { get; set; }
     public float? Value { get; set; }
 
-    public string Label { get; set; }
-    public string BinId { get; set; }
+    public string? Label { get; set; }
+    public string? BinId { get; set; }
 
-    BinIdentifier _cachedParsedBinId;
+    BinIdentifier? _cachedParsedBinId;
 
-    public BinIdentifier GetBinIdentifier()
+    public BinIdentifier? GetBinIdentifier()
     {
         if (_cachedParsedBinId == null)
         {
-            _cachedParsedBinId = BinIdentifier.Parse(BinId);
+            _cachedParsedBinId = BinIdentifier.Parse(BinId!);
         }
 
         return _cachedParsedBinId;
