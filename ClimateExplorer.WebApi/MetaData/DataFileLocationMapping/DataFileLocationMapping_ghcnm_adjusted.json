@@ -66,6 +66,14 @@
         "ValueAdjustment": null
       }
     ],
+    "a6ef90de-ec32-43b3-b8bd-dfe0db098753": [
+      {
+        "Id": "AJ000037985",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
     "9c01b09a-ddf0-4c32-bf85-7d654f772109": [
       {
         "Id": "AJ000037735",
@@ -74,9 +82,17 @@
         "ValueAdjustment": null
       }
     ],
-    "a6ef90de-ec32-43b3-b8bd-dfe0db098753": [
+    "caae74e2-c747-4770-bb43-4c562860e0a0": [
       {
-        "Id": "AJ000037985",
+        "Id": "AJ000037575",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "fc939622-766e-4031-9e27-c1f2e0be719f": [
+      {
+        "Id": "AJ000037756",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -594,6 +610,22 @@
         "ValueAdjustment": null
       }
     ],
+    "0321fc46-e9f2-4d1f-a696-e5930d9212f8": [
+      {
+        "Id": "BC008948490",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "acad0cd5-3772-42f1-b60d-8c8e3703b9c2": [
+      {
+        "Id": "BC012192590",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
     "82a3dceb-0c48-4db4-9399-64e0f307568e": [
       {
         "Id": "BDM00078016",
@@ -626,6 +658,38 @@
         "ValueAdjustment": null
       }
     ],
+    "109027a9-455c-4329-a775-aa7c30daa3e4": [
+      {
+        "Id": "BGM00041936",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "8ba1a24b-f664-4990-af8e-190cb4e743f9": [
+      {
+        "Id": "BGM00041992",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "f601f230-81e6-4eb9-a498-f250927c0d67": [
+      {
+        "Id": "BGM00041978",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "92367f1c-feff-4b34-be5b-89f2a441b51a": [
+      {
+        "Id": "BGM00041883",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
     "096fcf6b-f744-4018-8b65-9369be7e99dc": [
       {
         "Id": "BKM00014648",
@@ -634,17 +698,41 @@
         "ValueAdjustment": null
       }
     ],
-    "e761fee9-a285-4b9c-8869-b8b5714fc6cc": [
+    "e8e61e98-28ab-4cc4-9940-5bfed6ba78a3": [
       {
-        "Id": "BKM00014557",
+        "Id": "BMM00048042",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
       }
     ],
-    "e8e61e98-28ab-4cc4-9940-5bfed6ba78a3": [
+    "bbf25f08-eefc-461f-af7a-272c445a5326": [
       {
-        "Id": "BMM00048042",
+        "Id": "BMM00048097",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "b8ca587a-7b3f-4434-9617-fd2525d69dd6": [
+      {
+        "Id": "BMM00048112",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "05dce13f-ad54-4ac0-b90d-962f2006f33f": [
+      {
+        "Id": "BMM00048008",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "f38b2988-e3b6-4fb5-982c-814741e34abb": [
+      {
+        "Id": "BMM00048062",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -661,6 +749,30 @@
     "c43c4b19-f097-4739-8b68-0b8c52d1d39b": [
       {
         "Id": "BN000005344",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "b2d33977-c4a0-4ac1-942d-8cc6696c168c": [
+      {
+        "Id": "BN000065306",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "47345a37-e5f5-4082-9790-b6eba433a2cf": [
+      {
+        "Id": "BNM00065330",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "e5889083-6002-4499-992f-d66ea2c09ec2": [
+      {
+        "Id": "BN000065335",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -685,6 +797,22 @@
     "49d3e65c-0982-4df9-b172-a045426dc2d9": [
       {
         "Id": "BOM00033038",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "c7ee01ac-8817-4bd9-95de-054fa8b470c6": [
+      {
+        "Id": "BOM00026941",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "937a632e-5730-4675-a1c1-1ff5fa89bd62": [
+      {
+        "Id": "BOM00026825",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -765,6 +893,22 @@
     "02e793e1-84c9-47f1-bddf-ce87eb4cb861": [
       {
         "Id": "BUM00015730",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "5e1fb564-534b-41bd-9ec0-9dc822bd1066": [
+      {
+        "Id": "BUE00002067",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "32a15853-2178-4066-8d69-bfd96366e046": [
+      {
+        "Id": "BUE00002068",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -1490,9 +1634,49 @@
         "ValueAdjustment": null
       }
     ],
+    "3997e66b-c1b1-4a12-ac74-d6209ec69f6e": [
+      {
+        "Id": "CEM00043418",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
     "8144d824-5928-442d-9693-10e0c559b419": [
       {
         "Id": "CF000004450",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "ee49db18-d088-4199-a914-bbe4e8ecb60c": [
+      {
+        "Id": "CF000004400",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "376e7f5f-0102-44e6-962e-b03e213fcbdd": [
+      {
+        "Id": "CF000004401",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "f6441562-b65c-41ba-b9c4-8c3acc7ad167": [
+      {
+        "Id": "CF000004458",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "efd1b28e-f1f4-40d0-9cba-0444e6ce95aa": [
+      {
+        "Id": "CF000004453",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -3138,6 +3322,14 @@
         "ValueAdjustment": null
       }
     ],
+    "19b1df9c-0e5f-47d6-80b0-cf06a78aca37": [
+      {
+        "Id": "CI000085799",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
     "7e07991e-805a-4a11-9896-26538ba1925e": [
       {
         "Id": "CUM00078325",
@@ -3149,6 +3341,14 @@
     "cc674fae-fbd6-40e1-a264-806f508d9343": [
       {
         "Id": "CUW00011706",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "29425d0e-9673-481e-9f82-2495ad079063": [
+      {
+        "Id": "CUM00078310",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -3418,6 +3618,30 @@
         "ValueAdjustment": null
       }
     ],
+    "0020128d-99f2-4946-bd1d-001f6b5b010e": [
+      {
+        "Id": "FGM00081408",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "df34744b-4193-4602-a3f2-3ffb597d62ef": [
+      {
+        "Id": "FGM00081415",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "928c95e1-5638-4fbe-a67c-3f1c9f19b5a3": [
+      {
+        "Id": "FGM00081401",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
     "37885090-dc9e-4c99-895d-9b9355f8c5c9": [
       {
         "Id": "FIE00142080",
@@ -3565,6 +3789,14 @@
     "11ad4112-6b1d-4693-b396-8f12b54453c1": [
       {
         "Id": "FP000091958",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "6372dbd7-b5eb-4a00-b7f5-58e8f7e30639": [
+      {
+        "Id": "FP000091925",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -3789,6 +4021,38 @@
     "6a2eddd0-d3ae-40cf-92bc-717f9c254069": [
       {
         "Id": "GG000037545",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "f4080151-d89a-4f82-aaf9-210921a87fd6": [
+      {
+        "Id": "GGM00037196",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "f4c034be-a578-4b46-be97-680fff0ed99a": [
+      {
+        "Id": "GG000037395",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "e232425b-38b2-42d6-a883-a3ff59753232": [
+      {
+        "Id": "GG000037484",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "a021d6e2-248a-4dc6-9a88-7730214c7e32": [
+      {
+        "Id": "GG000037432",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -4298,6 +4562,38 @@
         "ValueAdjustment": null
       }
     ],
+    "06403d95-8857-491a-84ba-cde68cf41649": [
+      {
+        "Id": "IDM00096035",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "bf66c4dd-b04b-444f-91e4-ef75a1101085": [
+      {
+        "Id": "IDM00097230",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "bf6ed4a2-d29d-4b96-8351-78f8203ace49": [
+      {
+        "Id": "ID000096073",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "0a760aaa-2a1d-4a58-a7c7-2393db6e5a17": [
+      {
+        "Id": "ID000097014",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
     "e023c79f-aabd-49b5-99e0-e9f86b1fa19c": [
       {
         "Id": "IN012020100",
@@ -4634,6 +4930,14 @@
         "ValueAdjustment": null
       }
     ],
+    "d1a6f484-c91b-4c77-8280-939a66e10b09": [
+      {
+        "Id": "ISM00040180",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
     "31fa8e7a-ed60-4972-8168-42509190ce1e": [
       {
         "Id": "IS000004640",
@@ -4650,9 +4954,9 @@
         "ValueAdjustment": null
       }
     ],
-    "d1a6f484-c91b-4c77-8280-939a66e10b09": [
+    "962d136f-a4a2-4cc9-8eb8-b67f012fd486": [
       {
-        "Id": "ISM00040180",
+        "Id": "IS000051690",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -5042,6 +5346,14 @@
         "ValueAdjustment": null
       }
     ],
+    "a6167a51-d3f6-4480-afc9-25aa18f3a924": [
+      {
+        "Id": "JM000078388",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
     "691196b7-6adb-48fa-ab70-3a0ce816140e": [
       {
         "Id": "JN000099950",
@@ -5058,6 +5370,30 @@
         "ValueAdjustment": null
       }
     ],
+    "81472ce4-c2fd-4c06-b058-41ee511d24aa": [
+      {
+        "Id": "JOM00040310",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "1d8ca5f6-4008-46bf-81db-d8119f68a374": [
+      {
+        "Id": "JOM00040250",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "6da8e68d-b400-4020-a0be-b8ca202792e3": [
+      {
+        "Id": "JOM00040260",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
     "c0f31795-1ab9-4c4d-8f23-bce3d6089467": [
       {
         "Id": "KE000063820",
@@ -5069,6 +5405,30 @@
     "eee0d5b0-5c18-46a8-b76c-9bac6caac9fc": [
       {
         "Id": "KEM00063741",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "72f6a115-4811-44cb-b8f2-c6a2b75dc319": [
+      {
+        "Id": "KE000063723",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "ec67ed79-1028-4e0d-b0a2-0f7f950fdb05": [
+      {
+        "Id": "KEM00063799",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "9b72c63c-73d3-4e7e-98a9-30eda0327741": [
+      {
+        "Id": "KE000063619",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -5101,6 +5461,14 @@
     "16907087-5a45-40df-aa6c-a31b0d904a95": [
       {
         "Id": "KG000038353",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "81e832cf-7a1a-4e3b-8a48-5103cc5d6017": [
+      {
+        "Id": "KG000038613",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -5546,6 +5914,14 @@
         "ValueAdjustment": null
       }
     ],
+    "971a7ffa-8271-47cc-8b2a-a02770d5f267": [
+      {
+        "Id": "MD000033883",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
     "38b4e2b0-517b-48d7-848f-990e3767f5b3": [
       {
         "Id": "MFM00067005",
@@ -5674,9 +6050,25 @@
         "ValueAdjustment": null
       }
     ],
-    "b280496d-0204-43b5-94f8-2f3e7fcad9bc": [
+    "cc79b410-4137-4af6-8de4-5190fc0f75f9": [
       {
-        "Id": "MP000061988",
+        "Id": "MOM00060150",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "6514d99f-4a9a-42b1-bd2a-ad3313ae7286": [
+      {
+        "Id": "MOE00147752",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "744d0b3d-6d0b-4f86-ae9d-90b9777aa66d": [
+      {
+        "Id": "MOE00147755",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -5685,6 +6077,30 @@
     "6123a1fa-98fb-41a8-8ca1-a5c6b423dae5": [
       {
         "Id": "MP000061990",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "b280496d-0204-43b5-94f8-2f3e7fcad9bc": [
+      {
+        "Id": "MP000061988",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "ac472bf2-fb33-4251-a95d-93f1934b41f0": [
+      {
+        "Id": "MP000061974",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "f6755772-5035-4346-903e-ce773f75c8d7": [
+      {
+        "Id": "MP000061986",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -5706,6 +6122,22 @@
         "ValueAdjustment": null
       }
     ],
+    "4254773b-8151-470d-b8ff-77cc555f931a": [
+      {
+        "Id": "MR000001437",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "239d7f5c-9a3f-42c8-9850-37395acb690a": [
+      {
+        "Id": "MR000001498",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
     "a74391ee-0c54-4b3b-bc11-c8435969673a": [
       {
         "Id": "MT000016597",
@@ -5717,6 +6149,30 @@
     "77e506ac-814f-4f4a-ad92-8babd9a85cb5": [
       {
         "Id": "MUM00041316",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "28a229ed-8c39-47cc-98a2-dd59bba9d0dd": [
+      {
+        "Id": "MU000041288",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "50b29e21-2eb4-4faa-a4ff-7bce2154df25": [
+      {
+        "Id": "MUM00041256",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "3bd16d07-3580-4b21-85ce-5fec023be7c3": [
+      {
+        "Id": "MUM00041268",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -5898,9 +6354,17 @@
         "ValueAdjustment": null
       }
     ],
-    "2fd04ffd-cd93-4ad4-bdd8-11fa12dae932": [
+    "ca148c8a-b159-4d1d-9d64-7c98e00f608b": [
       {
-        "Id": "NC000091577",
+        "Id": "MZ000067335",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "f769d7e1-d5af-48b9-89dd-6d280bc6fa22": [
+      {
+        "Id": "MZ000067261",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -5909,6 +6373,22 @@
     "d30ffcae-a2d6-4cfe-9cb1-240404fe9ddd": [
       {
         "Id": "NC000915920",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "2fd04ffd-cd93-4ad4-bdd8-11fa12dae932": [
+      {
+        "Id": "NC000091577",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "92b00cf1-3ee8-4f4c-ba03-e1d4571fdea5": [
+      {
+        "Id": "NCM00091582",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -5933,6 +6413,22 @@
     "3f301a39-8131-4de7-b9ca-9eecb26cdd5b": [
       {
         "Id": "NG000001090",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "482a2994-8d1e-45fb-94ba-9c0c5b4f6f08": [
+      {
+        "Id": "NG000001036",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "4c708531-e692-4e39-a507-433c22e658a7": [
+      {
+        "Id": "NG000001075",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -6178,6 +6674,30 @@
         "ValueAdjustment": null
       }
     ],
+    "fa11b75b-3cdf-48d6-b3d9-f0a306c527eb": [
+      {
+        "Id": "PAM00086255",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "3f5e2c83-bc8a-4774-8f17-91b5fb89181e": [
+      {
+        "Id": "PA000086068",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "57c8a806-62ee-496f-a978-7c564bbd4dcf": [
+      {
+        "Id": "PA000086134",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
     "300b9a74-ad45-4334-a444-5a9ad8d57975": [
       {
         "Id": "PK000041640",
@@ -6205,6 +6725,14 @@
     "060153a1-b8c2-46de-ae41-669178a63b21": [
       {
         "Id": "PKM00041764",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "c92262d5-ffe1-4448-94a7-cde5dd80ec53": [
+      {
+        "Id": "PK000041712",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -6685,6 +7213,14 @@
     "84d1b3bb-4a9c-4a24-abf6-f343b32e7d62": [
       {
         "Id": "RQW00011641",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "fb0c10d3-ce4e-483a-a772-f9da5e6e2f3f": [
+      {
+        "Id": "RQC00662801",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -9666,6 +10202,38 @@
         "ValueAdjustment": null
       }
     ],
+    "3f29b6fe-9bdc-485a-869f-69a33fa6bf29": [
+      {
+        "Id": "SA000040430",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "188bde56-2ae7-4dfa-a395-c378c0b31cb4": [
+      {
+        "Id": "SA000403940",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "75056c81-fbb0-41fd-b2de-eec302f4fc2b": [
+      {
+        "Id": "SAM00040375",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "d33a8a75-0126-4653-94d7-e642f4e1fc1c": [
+      {
+        "Id": "SAM00040357",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
     "8a6cf961-3a70-4c60-a094-cdacd5c4f9d9": [
       {
         "Id": "SF000068438",
@@ -9730,6 +10298,30 @@
         "ValueAdjustment": null
       }
     ],
+    "c3c1cae1-446b-4bb0-9862-c5b436acea05": [
+      {
+        "Id": "SG000061612",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "84569ecf-d7f0-4718-b5d0-2e5b1e77e153": [
+      {
+        "Id": "SG000061687",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "66926156-9005-4cd1-bad8-e88f535b375d": [
+      {
+        "Id": "SG000001627",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
     "73c8a0ec-1186-4695-9021-5e69bb5d0093": [
       {
         "Id": "SHM00061901",
@@ -9741,6 +10333,14 @@
     "eb79dfa3-70e6-4f43-87f2-329b75aad00c": [
       {
         "Id": "SHM00068906",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "50a54ddc-a008-492b-92a9-abe005c4045a": [
+      {
+        "Id": "SHM00061902",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -10170,6 +10770,14 @@
         "ValueAdjustment": null
       }
     ],
+    "8cff2fed-3722-4895-8e03-90d7b494b229": [
+      {
+        "Id": "SXM00088900",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
     "83d42e69-b076-4be6-adcc-03ad698b9fab": [
       {
         "Id": "SY000040001",
@@ -10181,6 +10789,30 @@
     "d082aaaf-8331-47fb-ba08-f5d926a114ce": [
       {
         "Id": "SYM00040080",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "3bdca1e4-3c71-41a7-a42b-aef19173aeba": [
+      {
+        "Id": "SY000040061",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "1451719e-ae43-4d14-bea2-17e43de77f75": [
+      {
+        "Id": "SY000040022",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "6e5bef00-f19b-4f7d-94b5-f7948ba7269f": [
+      {
+        "Id": "SYE00147760",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -10474,6 +11106,30 @@
         "ValueAdjustment": null
       }
     ],
+    "09527289-66b8-488c-bd1b-06a9b5a5124b": [
+      {
+        "Id": "TSE00147773",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "a67cb3b6-2268-46f9-b0d9-f4ea41b7c2a4": [
+      {
+        "Id": "TS000060725",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "e34ad425-b79b-41af-9e0d-9aca6fa7c7ef": [
+      {
+        "Id": "TSM00060745",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
     "1f74e9ee-2184-44ba-91b7-1ff8312a6fbd": [
       {
         "Id": "TU000017040",
@@ -10685,6 +11341,14 @@
     "d5a18c34-0247-436d-b221-66e06c13aab6": [
       {
         "Id": "TWM00058968",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "142fbd41-7f4b-452e-988f-c3815fe268db": [
+      {
+        "Id": "TWM00059567",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -12810,6 +13474,30 @@
         "ValueAdjustment": null
       }
     ],
+    "df554fbe-1c92-42d2-94d0-432129c66541": [
+      {
+        "Id": "UV000005502",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "d52a0c4e-c324-4c02-b093-92360b80fc74": [
+      {
+        "Id": "UV000005507",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "43a0e1ec-a479-4f89-a989-6edf1f0e236f": [
+      {
+        "Id": "UV000065516",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
     "2d7592e7-087b-4863-b563-834d6d92bf90": [
       {
         "Id": "UY000001915",
@@ -12930,9 +13618,33 @@
         "ValueAdjustment": null
       }
     ],
+    "7eb391cc-3b15-415a-9e84-bd8f03dadd3e": [
+      {
+        "Id": "VE000080413",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
     "6bd519bc-9df3-4d1c-b789-242b1c2df127": [
       {
         "Id": "VE000080438",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "f2a44440-cb98-49e8-943b-6aa12444733e": [
+      {
+        "Id": "VEM00080415",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "fc9b45bc-5675-4a4b-a6cd-2cf8fda29de1": [
+      {
+        "Id": "VEM00080410",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -12962,9 +13674,49 @@
         "ValueAdjustment": null
       }
     ],
+    "8226d8a3-1d06-44aa-8096-0697fa0ed79e": [
+      {
+        "Id": "VMW00041011",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "e01069f2-575c-439a-ac77-33e3f9949327": [
+      {
+        "Id": "VM000048900",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
     "366d4b06-a954-466c-a26d-e342b2169e85": [
       {
         "Id": "WA007401540",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "7491d16e-f86a-4854-9a80-ecda371494ef": [
+      {
+        "Id": "WA004191820",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "bc96975c-641a-4f12-bce3-9c1426534256": [
+      {
+        "Id": "WA010101860",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "71a765ee-f521-45d1-9514-caed70609a79": [
+      {
+        "Id": "WA012084750",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -12989,6 +13741,1302 @@
     "f0ab5ead-4d15-4f86-8af5-fe513ccb268f": [
       {
         "Id": "ZI000067975",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "5b9fb708-5c5a-4b7d-8715-fc5cbc1b66ae": [
+      {
+        "Id": "ZI000067983",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "67f08df4-76e9-4087-8687-25ee09cbedc5": [
+      {
+        "Id": "AE000041196",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "b6b60769-823d-468a-9490-2aff520c4589": [
+      {
+        "Id": "AEM00041217",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "a8cf5f60-679b-4ab9-9421-e2ef416a01a3": [
+      {
+        "Id": "AEM00041218",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "bd9aafc4-5ee9-4408-b6da-36492bc735b4": [
+      {
+        "Id": "AFM00040948",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "e2eb0565-6319-40e1-b26a-c621a781b148": [
+      {
+        "Id": "AFM00040938",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "bae9f103-faf2-453a-897a-cc573bf55e74": [
+      {
+        "Id": "AFM00040990",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "4ba6173d-65a6-4c64-b6dc-556b0c7ff9dc": [
+      {
+        "Id": "ALE00100939",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "0b6f825c-782e-4cd8-a91e-80b032fc2485": [
+      {
+        "Id": "AQW00061705",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "ea6a1924-5501-472a-8b21-03b2410d4dfd": [
+      {
+        "Id": "BB000078954",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "3453c6e4-d302-49b9-a415-e371a7b0efe6": [
+      {
+        "Id": "BHM00078583",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "2f3622a6-bae2-404d-b91e-96457ba1e34c": [
+      {
+        "Id": "BL000085365",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "31c2a151-2e15-4083-9cc5-3a42df5c0a14": [
+      {
+        "Id": "BLM00085154",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "d5ab0d52-f374-4239-8e6e-ffd507d711a9": [
+      {
+        "Id": "BLM00085201",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "f4997ec4-eaa1-4d6a-958d-95f9c75c5260": [
+      {
+        "Id": "BL000085223",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "1cddc72e-1b2c-403e-9e20-3363c954d894": [
+      {
+        "Id": "BLM00085268",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "b732eb16-0de8-4f4e-b75c-1c7fa30b8cf1": [
+      {
+        "Id": "BP000091517",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "0fb8a3d0-8eaa-474a-9eb4-8a608610c6c2": [
+      {
+        "Id": "BXM00096315",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "ffcd9b6b-a699-456f-b4a7-eb98f41dcacc": [
+      {
+        "Id": "CBM00048991",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "b0066c11-674d-44cb-9f6a-14fe49065757": [
+      {
+        "Id": "CD000004700",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "738754b4-dd10-4c24-a448-340907eba566": [
+      {
+        "Id": "CD000004750",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "0faa1021-15ad-44be-91d8-7dbdd0a1bd7a": [
+      {
+        "Id": "CGM00064210",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "1eca3886-7646-4bc8-baf9-2d32c357410d": [
+      {
+        "Id": "CJW00011813",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "6a7a040d-9e07-4ed3-b6bb-f01b379c7a09": [
+      {
+        "Id": "CMM00064860",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "d5f9360f-d703-4c88-99f3-ed42ae8f374d": [
+      {
+        "Id": "CM000004910",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "2aa59d32-26cc-44f6-b9fd-f54279e8872d": [
+      {
+        "Id": "CM000064870",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "13908644-7d62-427d-9426-e2286a56ff02": [
+      {
+        "Id": "CO000080259",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "8da094e2-6098-407c-9f32-36803bad0a7f": [
+      {
+        "Id": "COM00080028",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "d5366940-0b5a-460c-8ca0-1649d48e17fa": [
+      {
+        "Id": "COXLT869749",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "808fd92c-d681-4e61-9016-72d87537568b": [
+      {
+        "Id": "COM00080210",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "686a8c18-e474-42bb-9653-3f2bf3b8126f": [
+      {
+        "Id": "CO000080001",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "5c5066bc-3aae-471c-94ac-f66b859758bc": [
+      {
+        "Id": "CS000081003",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "9b4d29db-8896-4cfc-a781-908380f79cf5": [
+      {
+        "Id": "CSM00078762",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "fe46a238-fdb1-4207-8714-f3f67c9240b6": [
+      {
+        "Id": "CS000078774",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "ad629cc9-82fd-45d0-b19c-ffce7ef36bbc": [
+      {
+        "Id": "CT000004600",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "6e5f3434-ef9b-4b38-9f0a-f6207db2637e": [
+      {
+        "Id": "CTM00064601",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "d74310d3-e319-4e66-b336-9e7a2bb79c62": [
+      {
+        "Id": "CTM00064650",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "6af9e807-9e4e-41c1-9433-f479568db609": [
+      {
+        "Id": "CVM00008594",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "d8313018-d2a4-4d68-9c40-fe11d41f3c96": [
+      {
+        "Id": "DRM00078458",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "c6fa03e1-eaaa-4280-b1da-18b625f4882b": [
+      {
+        "Id": "DRM00078482",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "51ef0f86-4b14-417b-adbc-e3316cb26f0a": [
+      {
+        "Id": "DRM00078479",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "d03f4251-ae45-4041-823c-43f812ec0917": [
+      {
+        "Id": "DRM00078485",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "0c876884-43b3-4374-898f-32be6da7ece8": [
+      {
+        "Id": "ECM00084179",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "e44dcedf-937f-4665-b627-58a587ae2c43": [
+      {
+        "Id": "EC000000006",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "07f3f8b5-ffd2-433c-b090-ef16c63bef90": [
+      {
+        "Id": "ECM00084135",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "ee1ceaf1-dca0-49c3-8a01-5c3431751d09": [
+      {
+        "Id": "ECM00084088",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "610d29d3-11ac-49f6-87d7-7a5bd21a1273": [
+      {
+        "Id": "EKM00064810",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "858fb830-e932-43b7-9e30-58c95401151e": [
+      {
+        "Id": "ES000078650",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "253c6b49-49a4-41c7-be89-d7fe4291dbe8": [
+      {
+        "Id": "ES003800510",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "fbd56343-deba-408e-94e6-bbfd0ca1fc52": [
+      {
+        "Id": "ET000063450",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "9d32042f-5751-42c0-85fe-663204702f4c": [
+      {
+        "Id": "ET000063471",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "049e08ab-6590-4add-812b-e1b618cb83ab": [
+      {
+        "Id": "ET000063331",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "6b216033-8455-4a00-8223-0b150916469c": [
+      {
+        "Id": "ET000063402",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "59109eeb-dbb0-4902-999c-605a65c1ec3a": [
+      {
+        "Id": "ET000063333",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "59969584-05e2-4531-be2e-586a573f9ad8": [
+      {
+        "Id": "EUM00061972",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "007f5266-13c2-4eb6-8046-a432d849f599": [
+      {
+        "Id": "FJ000091680",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "65ece561-50b7-4a3d-8464-e0cca341613f": [
+      {
+        "Id": "FJM00091683",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "fbf7e5d2-aadb-4e95-9a8b-e3d1da4cdc3e": [
+      {
+        "Id": "FJM00091699",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "69e6b2d7-a9d9-4abf-ba18-117fe76ad274": [
+      {
+        "Id": "FJ000091652",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "ac099ec9-fdb5-4617-85a7-3548f6b9acf1": [
+      {
+        "Id": "FKM00088889",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "ef395600-50a4-4bb5-b207-3f994a5edc4d": [
+      {
+        "Id": "FMW00040504",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "c03fbdff-4229-4c14-9120-f30d26bc24dd": [
+      {
+        "Id": "FMW00040308",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "110c03c7-a305-4bbd-add4-bc35eadc8d57": [
+      {
+        "Id": "FMW00040505",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "170c106d-d2af-47b6-af54-641308d51d7b": [
+      {
+        "Id": "FSM00061996",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "2a16ac07-2a3e-41b1-961f-a9da076d6092": [
+      {
+        "Id": "FSM00061997",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "0fe4dd6d-0c45-4ff0-9a59-5e14cbb3cdd6": [
+      {
+        "Id": "FSM00061968",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "da0a1353-4b79-41ce-a9ce-7c54d2130eec": [
+      {
+        "Id": "GAM00061701",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "5de64f6c-d69e-45a1-8df1-257f7d952252": [
+      {
+        "Id": "GB000004500",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "5b7efe11-3543-41e7-b73b-e520b811a2a0": [
+      {
+        "Id": "GB000004501",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "15af3f44-f039-4b67-a05f-d920244f82be": [
+      {
+        "Id": "GBM00064551",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "153af5e1-b661-4a65-aff8-b9683234586a": [
+      {
+        "Id": "GBM00064550",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "735553ad-5db1-4af1-9a6f-9981f192c2ef": [
+      {
+        "Id": "GHM00065442",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "d5047dd4-74ee-4ebf-82c7-0e1149d81c6e": [
+      {
+        "Id": "GHM00065467",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "ccd5fff4-4a38-44d7-b05d-541902974c21": [
+      {
+        "Id": "GHM00065404",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "e12cc6b1-7e71-49fb-8bbb-58f4f98b9a32": [
+      {
+        "Id": "GHM00065472",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "766155b9-8606-4e86-9511-5eaab4977711": [
+      {
+        "Id": "GKE00001823",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "8fdb86e1-c33c-4b26-b894-1f7b95149c0e": [
+      {
+        "Id": "GV000001832",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "4c4e0159-7003-4983-9276-a13a5ac8f0d5": [
+      {
+        "Id": "HO000078720",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "d55f0c70-dcab-491d-8ba4-b368dfe9d6d4": [
+      {
+        "Id": "HOM00078708",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "af1154f1-4bab-4b2c-bdd3-105e66244055": [
+      {
+        "Id": "HOM00078705",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "cfaf035d-cb2f-4677-8b6e-2c1cf5b99931": [
+      {
+        "Id": "HO000078711",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "3b2a7ffc-87ff-43bb-b139-5360a27e991a": [
+      {
+        "Id": "IME00001803",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "9625ce08-c030-446c-83a1-a7193653ead1": [
+      {
+        "Id": "IV000005555",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "2136325e-0888-4896-8491-dc7ab2740e33": [
+      {
+        "Id": "IV000005592",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "963f7fb3-4902-456e-a33e-af6061e1d01a": [
+      {
+        "Id": "IV000005578",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "060ed636-4d5e-4b9e-a193-329ddaed77f7": [
+      {
+        "Id": "IV000005557",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "5a19acb6-28ca-4c2c-9175-48b0146310ca": [
+      {
+        "Id": "IV000005562",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "54a6db13-0d97-4e44-b0b9-ed989a7d5745": [
+      {
+        "Id": "IZ000040665",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "6676d84a-7a74-4e74-b262-b8b1a89b5aa1": [
+      {
+        "Id": "JUM00061970",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "b3b04843-7500-4603-8fe1-00280e107d53": [
+      {
+        "Id": "KNM00047016",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "73d33554-45da-4d73-961b-ebdd61bb8b00": [
+      {
+        "Id": "KNM00047058",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "e90b0720-79ca-475a-8538-c286354f1d32": [
+      {
+        "Id": "KNM00047055",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "dc2e4320-a59e-4eb4-ad94-27c42f50b974": [
+      {
+        "Id": "KNM00047069",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "565ec2de-8178-49a9-aae6-4a2850dc98bd": [
+      {
+        "Id": "KNM00047035",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "3722645a-3f2e-4a04-a849-cf69efcd92e0": [
+      {
+        "Id": "KR000091610",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "d91f94fb-a33e-4a90-b4e2-05e508b8407a": [
+      {
+        "Id": "KT000096995",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "f46d337f-8f26-45ef-b158-55bb279b4081": [
+      {
+        "Id": "KU000405820",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "9f81cc78-fc6e-432a-a6b8-4d7c7a2099b9": [
+      {
+        "Id": "LAM00048940",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "6dbaa0f3-42ca-43c0-92a8-286d718f2394": [
+      {
+        "Id": "LAM00048948",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "185493f6-8369-4b2f-a395-b5b15fbb8ece": [
+      {
+        "Id": "LAM00048930",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "60848b03-5e54-44c3-8efd-c8ffaca347ea": [
+      {
+        "Id": "LAM00048955",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "59776b4d-40c3-47ae-ba0a-bc8dc809a1ca": [
+      {
+        "Id": "LEM00040100",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "ebad2f93-5c01-4b39-980d-fb37eb005fd8": [
+      {
+        "Id": "LIM00065660",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "00fde2fe-17f1-4474-9d4a-5452e545ad5a": [
+      {
+        "Id": "LSE00002182",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "09a137af-6b1e-41f7-9e05-6e13c065dd40": [
+      {
+        "Id": "LYE00147747",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "068412a1-48bd-4abf-a9dd-469775da8b88": [
+      {
+        "Id": "LYE00147744",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "108c860c-f013-4393-ba94-06d2838261d0": [
+      {
+        "Id": "LYE00147745",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "313e7d9e-ee47-470c-bb2d-fa2bf0688724": [
+      {
+        "Id": "LY000062124",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "41f5d5ea-58db-448c-ab34-8a0612c8072d": [
+      {
+        "Id": "LYE00147740",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "d2cd004e-d1b0-4ccc-9fd8-a001db4c0317": [
+      {
+        "Id": "MA000067095",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "0bd22509-38f0-4cd0-9540-7b3dbf273725": [
+      {
+        "Id": "MA000067197",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "eec4d6b2-1123-4893-9fd4-3d18fb8e6a3f": [
+      {
+        "Id": "MA000067083",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "59965a46-c827-408e-93ee-dfb754b50ed7": [
+      {
+        "Id": "MAM00067073",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "97156f4a-4b1a-4efe-959e-ca0351c19cc8": [
+      {
+        "Id": "MAM00067027",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "024e99d2-c71c-4a90-be1c-0ef6956a0ce7": [
+      {
+        "Id": "MCM00045011",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "2f5610b9-fa0d-4ad2-805d-fb389270cfff": [
+      {
+        "Id": "MJM00013463",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "a2758ec6-240e-4137-bc81-9f03a36e0375": [
+      {
+        "Id": "MKE00100915",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "6de7417a-8e4e-4f2c-b48b-55c57ac26ae8": [
+      {
+        "Id": "MLM00061257",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "7334d960-6f56-4853-8e6e-e6af4657b484": [
+      {
+        "Id": "MLM00061293",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "1c25df6a-6532-4bc3-af16-0d9d88178d4c": [
+      {
+        "Id": "ML000061297",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "abb7ff7a-d124-4d27-94eb-483269192259": [
+      {
+        "Id": "MLM00061291",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "6266ef67-6b3e-491c-8c0c-3e580055ad83": [
+      {
+        "Id": "MLM00061230",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "e7cddf6d-b3ae-43a3-af39-ed24dbfe03e2": [
+      {
+        "Id": "MV000043555",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "7da1fe23-af9d-463a-8b68-84bf1555ed62": [
+      {
+        "Id": "NH000091568",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "60136234-cd6a-412e-a856-0dd37865ed28": [
+      {
+        "Id": "NHM00091551",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "433906a8-43e2-4a1a-8e8f-eba9ae5c4372": [
+      {
+        "Id": "NH000091554",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "9a73b7ee-65e2-4ee7-b62a-13ad7a9f4ca3": [
+      {
+        "Id": "NHM00091565",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "e3f18b31-fd1d-4cf1-b2a5-b1959e71f79a": [
+      {
+        "Id": "NHM00091557",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "3b39b89c-6a07-4394-9499-745cb307d930": [
+      {
+        "Id": "NIM00065101",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "1fe5afed-52ea-43de-8067-7e4cba35832e": [
+      {
+        "Id": "NIM00065123",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "40a29384-c023-40fa-9925-72b3c0f0f8ec": [
+      {
+        "Id": "NSM00081225",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "ffcb17aa-a8b0-40e7-83c4-3ed0fba13920": [
+      {
+        "Id": "NTM00078988",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "332f2ee9-dad0-4759-b0c8-8801ce30d9d8": [
+      {
+        "Id": "NTM00078866",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "95f5c3fc-a710-4dd1-bd28-cfcf5982ba86": [
+      {
+        "Id": "NU000069034",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "48e15e9b-24eb-415f-bb2b-833eb219b2e3": [
+      {
+        "Id": "NUM00078741",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "852aff89-3c4e-445a-acee-e3e68c199f2e": [
+      {
+        "Id": "PEM00084691",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "9add7987-c395-43f3-8d28-53e35f0d8990": [
+      {
+        "Id": "PE000084377",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "39791ac5-ae10-494c-8aaf-bb0e27f7a30f": [
+      {
+        "Id": "PEM00084628",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "cd06b4b4-237d-4b08-b38f-ff5a267da623": [
+      {
+        "Id": "PEM00084686",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "11276ed1-cc5c-44fc-935b-28d41952b6fb": [
+      {
+        "Id": "PE000084752",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "2a2db9a7-1a9c-48e5-b89a-86979a246753": [
+      {
+        "Id": "PUM00061766",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "28c4a29f-ee4a-4477-a2e1-218e37b97865": [
+      {
+        "Id": "QAM00041170",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "7d2b565e-beec-4bca-bf6a-730ee2480f00": [
+      {
+        "Id": "RWM00064387",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "46e4ffff-5581-4c3e-8a38-fb49bd532f1c": [
+      {
+        "Id": "SBM00071805",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "eaf59bbf-9e90-4347-83a6-8ec79e4716c6": [
+      {
+        "Id": "SE000063980",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "68d19a46-f139-4e83-a1db-8d126e063596": [
+      {
+        "Id": "SNM00048698",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "7ee43cd0-f2d7-4923-b042-ad3dca7c1754": [
+      {
+        "Id": "TDM00078970",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "1d8e3318-fdc8-4109-a6e0-1962e2e14ba7": [
+      {
+        "Id": "TEM00061976",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "1f2da918-d0d1-4299-a264-6b21f8134296": [
+      {
+        "Id": "TO000005387",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "6f7d7e18-d72f-4107-a449-627a98e66375": [
+      {
+        "Id": "TO000005376",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "a0258872-0aac-442b-884f-77da1a86ef7e": [
+      {
+        "Id": "TO000005361",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "a95750c3-fe44-42a2-8a59-73c0fb8a9b59": [
+      {
+        "Id": "TOM00065352",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "0cd1602e-acd6-4e45-9e36-53ea579d116c": [
+      {
+        "Id": "TZ000063832",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "c6a7d6e0-1956-4fc4-9ee3-edc12d858ee2": [
+      {
+        "Id": "TZ000063862",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "bfda3b5e-16e7-4326-b496-20e7363e83a8": [
+      {
+        "Id": "TZ000063756",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "36fe8a12-8033-4cb9-befb-dcc6b41d93fe": [
+      {
+        "Id": "TZM00063870",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "8663db88-eeb1-45ab-bd44-7fc1004cb961": [
+      {
+        "Id": "TZ000063971",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "cac43997-6a2c-4ab6-bbfa-4df3e4425c3e": [
+      {
+        "Id": "VQW00011640",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "85592206-0ac1-4671-b2c7-29e486fbe7c5": [
+      {
+        "Id": "WF000917530",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "1d8ce0b0-e48d-4832-a103-8dac92a064dd": [
+      {
+        "Id": "WFM00091754",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "d10efdd2-fd06-4847-9b26-93fe9ded9cfb": [
+      {
+        "Id": "WQW00041606",
+        "StartDate": null,
+        "EndDate": null,
+        "ValueAdjustment": null
+      }
+    ],
+    "d98f4a23-6a91-4b9d-a887-e39e0ce137e8": [
+      {
+        "Id": "WZ004455110",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null

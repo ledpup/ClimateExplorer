@@ -110,7 +110,7 @@ public class DataService : IDataService
         return result!;
     }
 
-    public async Task<IEnumerable<DataSet>?> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .5f, float locationGroupingThreshold = .5f)
+    public async Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .5f, float locationGroupingThreshold = .5f)
     {
         var url = $"dataSet/{dataType}/{resolution}/{dataAdjustment}?dayGrouping={dayGrouping}&dayGroupingThreshold={dayGroupingThreshold}&locationGroupingThreshold={locationGroupingThreshold}";
         if (minLatitude != null)
@@ -121,7 +121,8 @@ public class DataService : IDataService
         {
             url += $"&maxLatitude={maxLatitude}";
         }
-        return await _httpClient.GetFromJsonAsync<DataSet[]?>(url);
+        var dataset = await _httpClient.GetFromJsonAsync<DataSet[]>(url);
+        return dataset!;
     }
 
     public async Task<ApiMetadataModel> GetAbout()
