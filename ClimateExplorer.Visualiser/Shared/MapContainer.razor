@@ -92,7 +92,16 @@
             return;
         }
 
-        await map.PanTo(point);
+        try
+        {
+            await map.PanTo(point);
+        }
+        catch (Exception ex)
+        {
+            Logger!.LogError(ex, "Error with PanTo on map");
+            await Task.Delay(500);
+            await ScrollToPoint(point);
+        }
     }
 
     public async Task EnsureMapMarkers()
