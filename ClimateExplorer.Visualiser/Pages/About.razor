@@ -79,9 +79,9 @@
 
 @code {
     [Inject]
-    public IDataService DataService { get; set; }
+    public IDataService? DataService { get; set; }
 
-    ApiMetadataModel _apiMetadata;
+    ApiMetadataModel? _apiMetadata;
 
     protected override async Task OnInitializedAsync()
     {

@@ -39,7 +39,7 @@ public class Station
         {
             var text = await File.ReadAllTextAsync(pathAndFileName);
             var list = JsonSerializer.Deserialize<List<Station>>(text);
-            stations.AddRange(list);
+            stations.AddRange(list!);
         }
         return stations;
     }

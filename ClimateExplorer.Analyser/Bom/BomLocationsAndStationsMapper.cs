@@ -153,7 +153,7 @@ public static class BomLocationsAndStationsMapper
     {
         var file = await File.ReadAllTextAsync(unadjustedDataFileLocationMappingPath);
         var unadjustedDataFileLocationMapping = JsonSerializer.Deserialize<DataFileLocationMapping>(file);
-        var locationIdToDataFileMappings = unadjustedDataFileLocationMapping.LocationIdToDataFileMappings;
+        var locationIdToDataFileMappings = unadjustedDataFileLocationMapping!.LocationIdToDataFileMappings;
         var stations = await File.ReadAllLinesAsync(@"ReferenceMetaData\ACORN-SAT\acorn_sat_v2.3.0_stations.txt");
 
         var dataFileLocationMapping = new DataFileLocationMapping() { DataSetDefinitionId = dataSetDefinitionId };

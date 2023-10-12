@@ -9,11 +9,11 @@
 @using static ClimateExplorer.Core.Enums
 
 <LoadingIndicator @bind-Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
-    <Collapsible @ref="LocationCollapsible" Title="@Location?.Name" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
+    <Collapsible @ref="LocationCollapsible" Title="@Location?.Title" FullTitle="@Location?.FullTitle" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
         <HeaderContent>
             <span class="chart-controls" style="margin-left: 32px;">
-                <a class="chart-control" @onclick="() => ChangeLocationClicked(null)"><i class="fas fa-map"></i> Change location</a>
-                @if (LocationCollapsible.ShowContent)
+                <a class="chart-control" @onclick="() => ChangeLocationClicked(new EventArgs())"><i class="fas fa-map"></i> Change location</a>
+                @if (LocationCollapsible!.ShowContent)
                 {
                     <a class="chart-control" @onclick="() => ToggleRainfall()"><i class="@( rainfall ? "fas fa-check-square" : "fas fa-square" )"></i> Rainfall</a>
                 }
@@ -21,7 +21,7 @@
         </HeaderContent>
         <Content>
             <!-- The awful HTML comments between OverviewField elements below are to avoid generating whitespace between OverviewField elements, which was
-                    causing them to be misaligned. Probably better to use flex layout, but this works for now.
+            causing them to be misaligned. Probably better to use flex layout, but this works for now.
             -->
             <OverviewField Label="Location"><Value> <span><a href="@LocationMapUrl" target="_blank">@GeoLocationAsString</a></span></Value></OverviewField>
             <!--
@@ -46,10 +46,10 @@
 
 @code {
     [Inject]
-    public IDataService DataService { get; set; }
+    public IDataService? DataService { get; set; }
 
     [Inject]
-    ILogger<LocationInfo> Logger { get; set; }
+    ILogger<LocationInfo>? Logger { get; set; }
 
     [Parameter]
     public Location? Location { get; set; }
@@ -58,7 +58,7 @@
     public EventCallback RequestLocationChange { get; set; }
 
     [Parameter]
-    public IEnumerable<DataSetDefinitionViewModel> DataSetDefinitions { get; set; }
+    public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     [Parameter]
     public EventCallback<bool> OnOverviewShowOrHide { get; set; }
@@ -66,7 +66,7 @@
     [Parameter]
     public EventCallback<YearAndDataTypeFilter> OnYearFilterChange { get; set; }
 
-    Collapsible LocationCollapsible;
+    Collapsible? LocationCollapsible;
 
     Guid instanceId = Guid.NewGuid();
 
@@ -83,7 +83,6 @@
 
     List<YearAndValue>? RainfallAnomalyRecords { get; set; }
     float? RainfallLocationMean { get; set; }
-    string? RainfallIndexDescription;
     string? RainfallIndexAsString;
 
     Guid? locationIdLastTimeOnParametersSetAsyncWasCalled;
@@ -131,7 +130,6 @@
         // Clear the previous values so we don't accidentally end-up reporting them
         RainfallLocationMean = null;
         RainfallAnomalyRecords = null;
-        RainfallIndexDescription = null;
         RainfallIndexAsString = null;
 
         // We can't do anything until we're supplied our tasty, tasty DataSetDefinitions
@@ -152,8 +150,8 @@
     {
         var measurementForLocation =
             DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
-                DataSetDefinitions,
-                Location.Id,
+                DataSetDefinitions!,
+                Location!.Id,
                 dataType,
                 dataAdjustment,
                 allowNullDataAdjustment: false,
@@ -164,7 +162,7 @@
         {
             // Retrieve TempMax anomaly
             var series =
-                await DataService.PostDataSet(
+                await DataService!.PostDataSet(
                     BinGranularities.ByYear,
                     function,
                     function,
@@ -174,8 +172,8 @@
                         {
                             new SeriesSpecification
                             {
-                                DataAdjustment = measurementForLocation.MeasurementDefinition.DataAdjustment,
-                                DataSetDefinitionId = measurementForLocation.DataSetDefinition.Id,
+                                DataAdjustment = measurementForLocation.MeasurementDefinition!.DataAdjustment,
+                                DataSetDefinitionId = measurementForLocation.DataSetDefinition!.Id,
                                 DataType = measurementForLocation.MeasurementDefinition.DataType,
                                 LocationId = Location.Id
                             }
@@ -191,7 +189,7 @@
             var anomalyRecords =
                 series.DataRecords
                 .Where(x => x.Value != null)
-                .Select(x => new YearAndValue(((YearBinIdentifier)BinIdentifier.Parse(x.BinId)).Year, x.Value.Value))
+                .Select(x => new YearAndValue(((YearBinIdentifier)BinIdentifier.Parse(x.BinId!)).Year, x.Value!.Value))
                 .ToList();
 
             series =

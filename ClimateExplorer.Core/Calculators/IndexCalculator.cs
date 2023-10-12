@@ -21,7 +21,7 @@ public static class IndexCalculator
                     x =>
                     new YearAndValue
                     {
-                        Year = ((YearBinIdentifier)BinIdentifier.Parse(x.BinId)).Year,
+                        Year = ((YearBinIdentifier)BinIdentifier.Parse(x.BinId!)).Year,
                         Value = x.Value
                     }
                 )
@@ -37,7 +37,7 @@ public static class IndexCalculator
                     x =>
                     new YearAndValue
                     {
-                        Year = ((YearBinIdentifier)BinIdentifier.Parse(x.BinId)).Year,
+                        Year = ((YearBinIdentifier)BinIdentifier.Parse(x.BinId!)).Year,
                         Value = x.Value
                     }
                 )
@@ -51,18 +51,18 @@ public static class IndexCalculator
 
         if (nonNullDataPoints.Length < MinimumNumberOfYearsToCalculateIndex)
         {
-            return null;
+            return null!;
         }
 
         var countOfFirstHalf = nonNullDataPoints.Length / 2;
         var firstHalf = nonNullDataPoints.OrderBy(x => x.Year).Take(countOfFirstHalf).ToArray();
-        var averageOfFirstHalf = firstHalf.Average(x => x.Value).Value;
+        var averageOfFirstHalf = firstHalf.Average(x => x.Value)!.Value;
         var lastThirtyYears = nonNullDataPoints
                                                         .OrderByDescending(x => x.Year)
                                                         .Take(30)
                                                         .OrderBy(x => x.Year)
                                                         .ToArray();
-        var averageOfLast30Years = lastThirtyYears.Average(x => x.Value).Value;
+        var averageOfLast30Years = lastThirtyYears.Average(x => x.Value)!.Value;
 
         return
             new CalculatedIndex

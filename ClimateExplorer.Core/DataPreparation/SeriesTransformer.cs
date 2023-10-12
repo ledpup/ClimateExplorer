@@ -92,7 +92,7 @@ namespace ClimateExplorer.Core.DataPreparation
                 case SeriesTransformations.DayOfYearIfFrost:
                     return
                         dataPoints
-                        .Select(x => x.WithValue(x.Value == null ? null : (x.Value <= 2.2 ? new DateTime(x.Year, x.Month.Value, x.Day.Value).DayOfYear : 0)))
+                        .Select(x => x.WithValue(x.Value == null ? null : (x.Value <= 2.2 ? new DateTime(x.Year, x.Month!.Value, x.Day!.Value).DayOfYear : 0)))
                         .ToArray();
 
                 default:

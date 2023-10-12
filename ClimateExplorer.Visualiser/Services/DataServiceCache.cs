@@ -11,7 +11,7 @@ public class DataServiceCache : IDataServiceCache
     private class CacheEntry
     {
         public DateTime LastHitUtc { get; set; }
-        public object Value { get; set; }
+        public object? Value { get; set; }
     }
 
     readonly Dictionary<string, CacheEntry> entries = new Dictionary<string, CacheEntry>();

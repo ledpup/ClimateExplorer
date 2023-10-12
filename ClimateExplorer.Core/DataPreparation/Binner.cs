@@ -70,7 +70,7 @@ namespace ClimateExplorer.Core.DataPreparation.Model
 
             foreach (var group in dataPointsByMonth)
             {
-                var firstDayInMonth = new DateOnly(group.Key.Year, group.Key.Month.Value, 1);
+                var firstDayInMonth = new DateOnly(group.Key.Year, group.Key.Month!.Value, 1);
                 var lastDayInMonth = DateHelpers.GetLastDayInMonth(group.Key.Year, group.Key.Month.Value);
 
                 switch (dataResolution)
@@ -127,7 +127,7 @@ namespace ClimateExplorer.Core.DataPreparation.Model
 
             List<Bucket> buckets = new List<Bucket>();
 
-            var dataPointsBySeasonOccurrence = bin.GroupBy(x => DateHelpers.GetSouthernHemisphereTemperateSeasonAndYear(x.Year, x.Month.Value));
+            var dataPointsBySeasonOccurrence = bin.GroupBy(x => DateHelpers.GetSouthernHemisphereTemperateSeasonAndYear(x.Year, x.Month!.Value));
 
             foreach (var seasonOccurrence in dataPointsBySeasonOccurrence)
             {
@@ -160,7 +160,7 @@ namespace ClimateExplorer.Core.DataPreparation.Model
 
             List<Bucket> buckets = new List<Bucket>();
 
-            var dataPointsBySeasonOccurrence = bin.GroupBy(x => DateHelpers.GetSouthernHemisphereTropicalSeasonAndYear(x.Year, x.Month.Value));
+            var dataPointsBySeasonOccurrence = bin.GroupBy(x => DateHelpers.GetSouthernHemisphereTropicalSeasonAndYear(x.Year, x.Month!.Value));
 
             foreach (var seasonOccurrence in dataPointsBySeasonOccurrence)
             {
@@ -303,12 +303,12 @@ namespace ClimateExplorer.Core.DataPreparation.Model
             return binningRule switch
             {
                 BinGranularities.ByYear => new YearBinIdentifier(dp.Year),
-                BinGranularities.ByYearAndMonth => new YearAndMonthBinIdentifier(dp.Year, dp.Month.Value),
-                BinGranularities.ByYearAndWeek => new YearAndWeekBinIdentifier(dp.Year, (short)GetIso8601WeekOfYear(new DateTime(dp.Year, dp.Month.Value, dp.Day.Value))),
-                BinGranularities.ByYearAndDay => new YearAndDayBinIdentifier(dp.Year, dp.Month.Value, dp.Day.Value),
-                BinGranularities.ByMonthOnly => new MonthOnlyBinIdentifier(dp.Month.Value),
-                BinGranularities.BySouthernHemisphereTemperateSeasonOnly => new SouthernHemisphereTemperateSeasonOnlyBinIdentifier(DateHelpers.GetSouthernHemisphereTemperateSeasonForMonth(dp.Month.Value)),
-                BinGranularities.BySouthernHemisphereTropicalSeasonOnly => new SouthernHemisphereTropicalSeasonOnlyBinIdentifier(DateHelpers.GetSouthernHemisphereTropicalSeasonForMonth(dp.Month.Value)),
+                BinGranularities.ByYearAndMonth => new YearAndMonthBinIdentifier(dp.Year, dp.Month!.Value),
+                BinGranularities.ByYearAndWeek => new YearAndWeekBinIdentifier(dp.Year, (short)GetIso8601WeekOfYear(new DateTime(dp.Year, dp.Month!.Value, dp.Day!.Value))),
+                BinGranularities.ByYearAndDay => new YearAndDayBinIdentifier(dp.Year, dp.Month!.Value, dp.Day!.Value),
+                BinGranularities.ByMonthOnly => new MonthOnlyBinIdentifier(dp.Month!.Value),
+                BinGranularities.BySouthernHemisphereTemperateSeasonOnly => new SouthernHemisphereTemperateSeasonOnlyBinIdentifier(DateHelpers.GetSouthernHemisphereTemperateSeasonForMonth(dp.Month!.Value)),
+                BinGranularities.BySouthernHemisphereTropicalSeasonOnly => new SouthernHemisphereTropicalSeasonOnlyBinIdentifier(DateHelpers.GetSouthernHemisphereTropicalSeasonForMonth(dp.Month!.Value)),
                 _ => throw new NotImplementedException($"BinningRule {binningRule}"),
             };
         }

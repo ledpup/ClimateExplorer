@@ -33,7 +33,7 @@ public static class DataSetExtensionMethods
 
     static short GetYearForDataRecord(DataRecord dr)
     {
-        BinIdentifier parsedId = dr.GetBinIdentifier();
+        BinIdentifier parsedId = dr.GetBinIdentifier()!;
 
         if (parsedId is BinIdentifierForGaplessBin id)
         {

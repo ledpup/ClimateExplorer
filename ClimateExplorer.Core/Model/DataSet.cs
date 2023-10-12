@@ -14,18 +14,18 @@ public class DataSet
 
     // TODO: This will go (replaced by BinGranularity)
     public DataResolution Resolution { get; set; }
-    public LocationBase Location { get;  set; }
-    public MeasurementDefinitionViewModel MeasurementDefinition { get; set; }
-    public DataType DataType { get { return MeasurementDefinition.DataType; } }
-    public DataAdjustment? DataAdjustment { get { return MeasurementDefinition.DataAdjustment; } }
+    public LocationBase? Location { get;  set; }
+    public MeasurementDefinitionViewModel? MeasurementDefinition { get; set; }
+    public DataType DataType { get { return MeasurementDefinition!.DataType; } }
+    public DataAdjustment? DataAdjustment { get { return MeasurementDefinition!.DataAdjustment; } }
 
     /// <summary>
     /// Used when doing multi-location series like "Temperature by latitude"
     /// </summary>
-    public List<Location> Locations { get; set; }
+    public List<Location>? Locations { get; set; }
 
     public List<DataRecord> DataRecords { get; set; }
-    public TemporalDataPoint[] RawDataRecords { get; set; }
+    public TemporalDataPoint[]? RawDataRecords { get; set; }
 
     // TODO: This will go (replaced by code that is bin-oriented)
     public short? StartYear 

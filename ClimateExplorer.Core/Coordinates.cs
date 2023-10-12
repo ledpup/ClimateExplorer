@@ -37,7 +37,7 @@
         return ToString();
     }
 
-    public override readonly bool Equals(object obj) => Equals((Coordinates)obj);
+    public override readonly bool Equals(object? obj) => Equals((Coordinates)obj!);
 
     public override int GetHashCode()
     {

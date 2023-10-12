@@ -1,7 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Text.Json.Serialization;
+﻿using ClimateExplorer.Core.Model;
+using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
-using static System.Collections.Specialized.BitVector32;
 
 namespace ClimateExplorer.Data.Ghcnm;
 
@@ -52,7 +51,7 @@ public class StationFileProcessor
                 logger.LogInformation($"Station {id} is being filtered out because it has too much missing data. It's score ({station.Score}) (i.e., age ({station.Age}) - number of years of missing data ({station.YearsOfMissingData})) is less than the minimum score ({minimumScore})");
                 continue;
             }
-            logger.LogInformation($"Station {id} has been accepted. Its last year of records was {station.LastYear.Value} and it's age is {station.Age} and its score is {station.Score}");
+            logger.LogInformation($"Station {id} has been accepted. Its last year of records was {station.LastYear!.Value} and it's age is {station.Age} and its score is {station.Score}");
 
             countries.TryGetValue(countryCode, out Country? country);
 
@@ -61,7 +60,7 @@ public class StationFileProcessor
                 logger.LogError($"Station {id} has a country code of {countryCode}. This code is not found in the country list file.");
             }
 
-            station.CountryCode = country.Code;
+            station.CountryCode = country!.Code;
             station.Name = stationName;
 
             if (!string.IsNullOrWhiteSpace(lat) && !string.IsNullOrWhiteSpace(lng))

@@ -20,7 +20,7 @@ public partial class RegionalAndGlobal : ChartablePage
     {
         await base.OnInitializedAsync();
 
-        Locations = (await DataService.GetLocations()).ToList();
+        Locations = (await DataService!.GetLocations()).ToList();
     }
 
     protected override async Task OnParametersSetAsync()
@@ -32,18 +32,18 @@ public partial class RegionalAndGlobal : ChartablePage
 
     private async Task AddDefaultChart()
     {
-        if (chartView.ChartSeriesList.Any())
+        if (chartView == null || chartView.ChartSeriesList == null || chartView.ChartSeriesList.Any())
         {
             return;
         }
 
-        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions, null, DataType.CO2, null, allowNullDataAdjustment: false, throwIfNoMatch: true);
+        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, null, DataType.CO2, null, allowNullDataAdjustment: false, throwIfNoMatch: true);
 
-        chartView.ChartSeriesList.Add(
+        chartView!.ChartSeriesList!.Add(
             new ChartSeriesDefinition()
             {
                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, co2),
+                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, co2!),
                 Aggregation = SeriesAggregationOptions.Maximum,
                 BinGranularity = BinGranularities.ByYear,
                 SecondaryCalculation = SecondaryCalculationOptions.AnnualChange,
@@ -63,12 +63,13 @@ public partial class RegionalAndGlobal : ChartablePage
     {
         string title = $"ClimateExplorer";
 
-        Logger.LogInformation("GetPageTitle() returning '" + title + "' NavigateTo");
+        Logger!.LogInformation("GetPageTitle() returning '" + title + "' NavigateTo");
 
         return title;
     }
 
     protected override async Task UpdateComponents()
     {
+        await Task.CompletedTask;
     }
 }

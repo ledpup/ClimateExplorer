@@ -2,9 +2,12 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
   </PropertyGroup>
-  <ItemGroup>
-    <Content Remove="locations.json" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+  </PropertyGroup>
   <!-- This ItemGroup added 2022-05-28 by Andrew to ensure that the files under the Temperature folder are included in the deployment when publishing -->
   <ItemGroup>
     <Content Include="Temperature\**">
@@ -47,12 +50,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ClimateExplorer.Core\ClimateExplorer.Core.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Update="MetaData\Location\Locations_Australia_Raia.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
   </ItemGroup>
 </Project>

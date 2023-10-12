@@ -25,13 +25,13 @@ namespace ClimateExplorer.Core.DataPreparation
         {
             int fullEnoughBuckets = 0;
 
-            foreach (var bucket in bin.Buckets)
+            foreach (var bucket in bin.Buckets!)
             {
                 int fullEnoughCups = 0;
 
-                foreach (var cup in bucket.Cups)
+                foreach (var cup in bucket.Cups!)
                 {
-                    var dataPointsInCup = cup.DataPoints.Count(x => x.Value.HasValue);
+                    var dataPointsInCup = cup.DataPoints!.Count(x => x.Value.HasValue);
 
                     var proportionOfPointsInCup = (float)dataPointsInCup / cup.ExpectedDataPointsInCup;
 

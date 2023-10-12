@@ -15,29 +15,29 @@ namespace ClimateExplorer.Visualiser.Pages;
 
 public abstract partial class ChartablePage : ComponentBase, IDisposable
 {
-    [Inject] protected IDataService DataService { get; set; }
-    [Inject] protected NavigationManager NavManager { get; set; }
-    [Inject] protected IExporter Exporter { get; set; }
-    [Inject] protected IJSRuntime JsRuntime { get; set; }
-    [Inject] protected ILogger<ChartablePage> Logger { get; set; }
+    [Inject] protected IDataService? DataService { get; set; }
+    [Inject] protected NavigationManager? NavManager { get; set; }
+    [Inject] protected IExporter? Exporter { get; set; }
+    [Inject] protected IJSRuntime? JsRuntime { get; set; }
+    [Inject] protected ILogger<ChartablePage>? Logger { get; set; }
 
-    protected IEnumerable<DataSetDefinitionViewModel> DataSetDefinitions { get; set; }
+    protected IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
-    protected ChartView chartView;
+    protected ChartView? chartView;
 
-    protected string pageName;
+    protected string? pageName;
 
     Guid _componentInstanceId = Guid.NewGuid();
 
-    protected IEnumerable<Location> Locations { get; set; }
+    protected IEnumerable<Location>? Locations { get; set; }
 
-    protected Modal addDataSetModal { get; set; }
+    protected Modal? addDataSetModal { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        Logger.LogInformation("Instance " + _componentInstanceId + " OnInitializedAsync");
+        Logger!.LogInformation("Instance " + _componentInstanceId + " OnInitializedAsync");
 
-        NavManager.LocationChanged += HandleNavigationLocationChanged;
+        NavManager!.LocationChanged += HandleNavigationLocationChanged!;
 
         if (DataService == null)
         {
@@ -79,20 +79,20 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         // this was leading to the same series being rendered more than once, and the year labels on the
         // X axis being added more than once).
 
-        var l = new LogAugmenter(Logger, "BuildDataSets");
+        var l = new LogAugmenter(Logger!, "BuildDataSets");
         l.LogInformation("starting");
 
-        chartView.ChartLoadingIndicatorVisible = true;
+        chartView!.ChartLoadingIndicatorVisible = true;
         chartView.LogChartSeriesList();
 
         // Recalculate the URL
-        string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(chartView.ChartSeriesList);
+        string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(chartView.ChartSeriesList!);
 
-        string url = pageName;
+        string url = pageName!;
 
         if (chartSeriesUrlComponent.Length > 0) url += "?csd=" + chartSeriesUrlComponent;
 
-        string currentUri = NavManager.Uri;
+        string currentUri = NavManager!.Uri;
         string newUri = NavManager.ToAbsoluteUri(url).ToString();
 
         if (currentUri != newUri)
@@ -109,7 +109,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
             l.LogInformation("Not calling NavigationManager.NavigateTo().");
 
             // Fetch the data required to render the selected data series
-            chartView.ChartSeriesWithData = await chartView.RetrieveDataSets(chartView.ChartSeriesList);
+            chartView.ChartSeriesWithData = await chartView.RetrieveDataSets(chartView.ChartSeriesList!);
 
             l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + chartView.ChartSeriesWithData.Count + " entries.");
 
@@ -124,26 +124,26 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     public void Dispose()
     {
-        Logger.LogInformation("Instance " + _componentInstanceId + " disposing");
-        NavManager.LocationChanged -= HandleNavigationLocationChanged;
+        Logger!.LogInformation("Instance " + _componentInstanceId + " disposing");
+        NavManager!.LocationChanged -= HandleNavigationLocationChanged!;
     }
 
     protected abstract Task UpdateComponents();
 
     protected async Task NavigateTo(string uri, bool replace = false)
     {
-        Logger.LogInformation("NavManager.NavigateTo(uri=" + uri + ", replace=" + replace + ")");
+        Logger!.LogInformation("NavManager.NavigateTo(uri=" + uri + ", replace=" + replace + ")");
 
         // Below is a JavaScript hack to stop NavigateTo from scrolling to the top of the page.
         // See: https://github.com/dotnet/aspnetcore/issues/40190 and index.html
-        await JsRuntime.InvokeVoidAsync("willSkipScrollTo", true);
+        await JsRuntime!.InvokeVoidAsync("willSkipScrollTo", true);
 
-        NavManager.NavigateTo(uri, false, replace);
+        NavManager!.NavigateTo(uri, false, replace);
     }
 
     void HandleNavigationLocationChanged(object sender, LocationChangedEventArgs e)
     {
-        Logger.LogInformation("Instance " + _componentInstanceId + " HandleLocationChanged: " + NavManager.Uri);
+        Logger!.LogInformation("Instance " + _componentInstanceId + " HandleLocationChanged: " + NavManager!.Uri);
 
         // The URL changed. Update UI state to reflect what's in the URL.
         InvokeAsync(UpdateUiStateBasedOnQueryString);
@@ -156,22 +156,22 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     protected async Task UpdateUiStateBasedOnQueryString(bool stateChanged)
     {
-        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
 
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier))
         {
             try
             {
-                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger, csdSpecifier, DataSetDefinitions, Locations);
+                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions!, Locations!);
 
                 if (csdList.Any())
                 {
-                    chartView.SelectedBinGranularity = csdList.First().BinGranularity;
+                    chartView!.SelectedBinGranularity = csdList.First().BinGranularity;
                 }
 
-                Logger.LogInformation("Setting ChartSeriesList to list with " + csdList.Count + " items");
+                Logger!.LogInformation("Setting ChartSeriesList to list with " + csdList.Count + " items");
 
-                chartView.ChartSeriesList = csdList.ToList();
+                chartView!.ChartSeriesList = csdList.ToList();
 
                 await BuildDataSets();
 
@@ -182,38 +182,38 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex.ToString());
+                Logger!.LogError(ex.ToString());
             }
         }
     }
 
     protected async Task OnDownloadDataClicked(DataDownloadPackage dataDownloadPackage)
     {
-        var fileStream = Exporter.ExportChartData(Logger, Locations, dataDownloadPackage, NavManager.Uri.ToString());
+        var fileStream = Exporter!.ExportChartData(Logger!, Locations!, dataDownloadPackage, NavManager!.Uri.ToString());
 
-        var locationNames = dataDownloadPackage.ChartSeriesWithData.SelectMany(x => x.ChartSeries.SourceSeriesSpecifications).Select(x => x.LocationName).Where(x => x != null).Distinct().ToArray();
+        var locationNames = dataDownloadPackage.ChartSeriesWithData!.SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!).Select(x => x.LocationName).Where(x => x != null).Distinct().ToArray();
 
         var fileName = locationNames.Any() ? string.Join("-", locationNames) + "-" : "";
 
-        fileName = $"Export-{fileName}-{dataDownloadPackage.BinGranularity}-{dataDownloadPackage.Bins.First().Label}-{dataDownloadPackage.Bins.Last().Label}.csv";
+        fileName = $"Export-{fileName}-{dataDownloadPackage.BinGranularity}-{dataDownloadPackage.Bins!.First().Label}-{dataDownloadPackage.Bins!.Last().Label}.csv";
 
         using var streamRef = new DotNetStreamReference(stream: fileStream);
 
-        await JsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+        await JsRuntime!.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 
     protected Task ShowAddDataSetModal()
     {
-        return addDataSetModal.Show();
+        return addDataSetModal!.Show();
     }
 
     protected async Task OnAddDataSet(DataSetLibraryEntry dle)
     {
-        await chartView.OnAddDataSet(dle, DataSetDefinitions);
+        await chartView!.OnAddDataSet(dle, DataSetDefinitions!);
     }
 
     protected async Task OnChartPresetSelected(List<ChartSeriesDefinition> chartSeriesDefinitions)
     {
-        await chartView.OnChartPresetSelected(chartSeriesDefinitions);
+        await chartView!.OnChartPresetSelected(chartSeriesDefinitions);
     }
 }

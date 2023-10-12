@@ -13,14 +13,14 @@ public class Exporter : IExporter
 {
     public Stream ExportChartData(ILogger logger, IEnumerable<Location> locations, DataDownloadPackage dataDownloadPackage, string sourceUri)
     {
-        logger.LogInformation("ExportChartData got bin range " + dataDownloadPackage.Bins[0].ToString() + " to " + dataDownloadPackage.Bins.Last().ToString());
+        logger.LogInformation("ExportChartData got bin range " + dataDownloadPackage.Bins![0].ToString() + " to " + dataDownloadPackage.Bins.Last().ToString());
 
         var data = new List<string>
         {
             "Exported from," + sourceUri
         };
 
-        var locationIds = dataDownloadPackage.ChartSeriesWithData.SelectMany(x => x.ChartSeries.SourceSeriesSpecifications).Select(x => x.LocationId).Where(x => x != null).Distinct().ToArray();
+        var locationIds = dataDownloadPackage.ChartSeriesWithData!.SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!).Select(x => x.LocationId).Where(x => x != null).Distinct().ToArray();
 
         var relevantLocations = locationIds.Select(x => locations.Single(y => y.Id == x)).ToArray();
 
@@ -31,15 +31,15 @@ public class Exporter : IExporter
 
         data.Add(string.Empty);
 
-        var header = "Year," + string.Join(",", dataDownloadPackage.ChartSeriesWithData.Select(x => BuildColumnHeader(relevantLocations, x.ChartSeries)));
+        var header = "Year," + string.Join(",", dataDownloadPackage.ChartSeriesWithData!.Select(x => BuildColumnHeader(relevantLocations, x.ChartSeries!)));
         data.Add(header);
 
         foreach (var bin in dataDownloadPackage.Bins)
         {
             var dataRow = bin.Label + ",";
-            foreach (var cswd in dataDownloadPackage.ChartSeriesWithData)
+            foreach (var cswd in dataDownloadPackage.ChartSeriesWithData!)
             {
-                var val = cswd.ProcessedDataSet.DataRecords.SingleOrDefault(x => x.BinId == bin.Id)?.Value;
+                var val = cswd.ProcessedDataSet!.DataRecords.SingleOrDefault(x => x.BinId == bin.Id)?.Value;
                 dataRow += (val == null ? string.Empty : MathF.Round((float)val, 2).ToString("0.00")) + ",";
             }
             dataRow = dataRow.TrimEnd(',');
@@ -62,13 +62,13 @@ public class Exporter : IExporter
         switch (csd.SeriesDerivationType)
         {
             case SeriesDerivationTypes.ReturnSingleSeries:
-                return s + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications.Single());
+                return s + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications!.Single());
 
             case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
-                return s + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications.First()) + " minus " + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications.Last());
+                return s + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications!.First()) + " minus " + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications!.Last());
 
             case SeriesDerivationTypes.AverageOfMultipleSeries:
-                return s + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications.First()) + " average " + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications.Last());
+                return s + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications!.First()) + " average " + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications!.Last());
 
             default:
                 throw new NotImplementedException($"SeriesDerivationType {csd.SeriesDerivationType}");
@@ -84,7 +84,7 @@ public class Exporter : IExporter
             s += sss.LocationName + " ";
         }
 
-        s += $"{sss.MeasurementDefinition.DataType} {sss.MeasurementDefinition.DataAdjustment}";
+        s += $"{sss.MeasurementDefinition!.DataType} {sss.MeasurementDefinition.DataAdjustment}";
 
         return s;
     }

@@ -15,12 +15,12 @@ public static class ChartLogic
     {
         if (chartSeriesWithData.Count == 1)
         {
-            return chartSeriesWithData.Single().ChartSeries.FriendlyTitle;
+            return chartSeriesWithData.Single().ChartSeries!.FriendlyTitle;
         }
 
         var locationNames =
             chartSeriesWithData
-            .SelectMany(x => x.ChartSeries.SourceSeriesSpecifications)
+            .SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!)
             .Select(x => x.LocationName)
             .Where(x => x != null)
             .Distinct()
@@ -160,14 +160,14 @@ public static class ChartLogic
 
         var colour = ChartColor.FromHtmlColorCode(htmlColourCode);
 
-        chartSeries.ChartSeries.Colour = htmlColourCode;
+        chartSeries.ChartSeries!.Colour = htmlColourCode;
 
         var chartType =
             chartSeries.ChartSeries.DisplayStyle == SeriesDisplayStyle.Line
             ? ChartType.Line
             : ChartType.Bar;
 
-        var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition.UnitOfMeasure, chartType, colour, absoluteValues, redPositive, chartSeries.ChartSeries.SeriesTransformation, chartSeries.ChartSeries.Aggregation, renderSmallPoints);
+        var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition!.UnitOfMeasure, chartType, colour, absoluteValues, redPositive, chartSeries.ChartSeries.SeriesTransformation, chartSeries.ChartSeries.Aggregation, renderSmallPoints);
 
         await chart.AddDataSet(chartDataset);
     }
@@ -186,12 +186,12 @@ public static class ChartLogic
         var firstBinInEachDataSet =
             preProcessedDataSets
             .Select(x => x.GetFirstDataRecordWithValueInDataSet())
-            .Select(x => (BinIdentifierForGaplessBin)x.GetBinIdentifier());
+            .Select(x => (BinIdentifierForGaplessBin)x.GetBinIdentifier()!);
 
         var lastBinInEachDataSet =
             preProcessedDataSets
             .Select(x => x.GetLastDataRecordWithValueInDataSet())
-            .Select(x => (BinIdentifierForGaplessBin)x.GetBinIdentifier());
+            .Select(x => (BinIdentifierForGaplessBin)x.GetBinIdentifier()!);
 
         var firstBinAcrossAllDataSets = firstBinInEachDataSet.Min();
         var lastFirstBinAcrossAllDataSets = firstBinInEachDataSet.Max();
@@ -202,7 +202,7 @@ public static class ChartLogic
 
         if (userStartYear != null)
         {
-            if (userStartYear.Value > startBin.FirstDayInBin.Year)
+            if (userStartYear.Value > startBin!.FirstDayInBin.Year)
             {
                 if (startBin is YearBinIdentifier)
                 {
@@ -228,7 +228,7 @@ public static class ChartLogic
 
         if (userEndYear != null)
         {
-            if (userEndYear.Value < endBin.FirstDayInBin.Year)
+            if (userEndYear.Value < endBin!.FirstDayInBin.Year)
             {
                 if (endBin is YearBinIdentifier)
                 {
@@ -252,7 +252,7 @@ public static class ChartLogic
             }
         }
 
-        return new Tuple<BinIdentifier, BinIdentifier>(startBin, endBin);
+        return new Tuple<BinIdentifier, BinIdentifier>(startBin!, endBin!);
     }
 
     public static string GetYAxisId(SeriesTransformations seriesTransformations, UnitOfMeasure unitOfMeasure, SeriesAggregationOptions seriesAggregationOptions)

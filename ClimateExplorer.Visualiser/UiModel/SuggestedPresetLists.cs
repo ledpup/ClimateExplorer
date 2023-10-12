@@ -45,7 +45,7 @@ public static class SuggestedPresetLists
                     new ChartSeriesDefinition()
                     {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax),
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax!),
                         Aggregation = SeriesAggregationOptions.Mean,
                         BinGranularity = BinGranularities.ByYear,
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -56,7 +56,7 @@ public static class SuggestedPresetLists
                     new ChartSeriesDefinition()
                     {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, rainfall),
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, rainfall!),
                         Aggregation = SeriesAggregationOptions.Sum,
                         BinGranularity = BinGranularities.ByYear,
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -76,7 +76,7 @@ public static class SuggestedPresetLists
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, rainfall),
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, rainfall!),
                                 Aggregation = SeriesAggregationOptions.Sum,
                                 BinGranularity = BinGranularities.ByYearAndMonth,
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -90,7 +90,7 @@ public static class SuggestedPresetLists
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, nino34),
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, nino34!),
                                 Aggregation = SeriesAggregationOptions.Mean,
                                 BinGranularity = BinGranularities.ByYearAndMonth,
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -112,7 +112,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, rainfall),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, rainfall!),
                                         Aggregation = SeriesAggregationOptions.Sum,
                                         BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -126,7 +126,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, rainfall),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, rainfall!),
                                         Aggregation = SeriesAggregationOptions.Sum,
                                         BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -154,7 +154,7 @@ public static class SuggestedPresetLists
                         new ChartSeriesDefinition()
                         {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax),
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax!),
                         Aggregation = SeriesAggregationOptions.Mean,
                         BinGranularity = BinGranularities.ByYear,
                         Smoothing = SeriesSmoothingOptions.None,
@@ -177,7 +177,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax!),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
                                         ShowTrendline = true,
@@ -198,7 +198,7 @@ public static class SuggestedPresetLists
                                 new ChartSeriesDefinition()
                                 {
                                     SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax),
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax!),
                                     Aggregation = SeriesAggregationOptions.Mean,
                                     BinGranularity = BinGranularities.ByYear,
                                     ShowTrendline = false,
@@ -210,7 +210,7 @@ public static class SuggestedPresetLists
                                 new ChartSeriesDefinition()
                                 {
                                     SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMaxUnadjusted),
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMaxUnadjusted!),
                                     Aggregation = SeriesAggregationOptions.Mean,
                                     BinGranularity = BinGranularities.ByYear,
                                     ShowTrendline = false,
@@ -231,7 +231,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMaxUnadjustedOrUnspecified),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMaxUnadjustedOrUnspecified!),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYearAndMonth,
                                         ShowTrendline = false,
@@ -243,7 +243,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, solarRadiation),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, solarRadiation!),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYearAndMonth,
                                         ShowTrendline = false,
@@ -270,7 +270,7 @@ public static class SuggestedPresetLists
                             new ChartSeriesDefinition()
                             {
                             SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax),
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax!),
                             Aggregation = SeriesAggregationOptions.Sum,
                             BinGranularity = BinGranularities.ByYear,
                             Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -283,7 +283,7 @@ public static class SuggestedPresetLists
                             new ChartSeriesDefinition()
                             {
                             SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMin),
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMin!),
                             Aggregation = SeriesAggregationOptions.Sum,
                             BinGranularity = BinGranularities.ByYear,
                             Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -306,7 +306,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMin),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMin!),
                                         Aggregation = SeriesAggregationOptions.Minimum,
                                         BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -319,7 +319,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMin),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMin!),
                                         Aggregation = SeriesAggregationOptions.Maximum,
                                         BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -374,7 +374,7 @@ public static class SuggestedPresetLists
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, co2),
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, co2!),
                                 Aggregation = SeriesAggregationOptions.Maximum,
                                 BinGranularity = BinGranularities.ByYear,
                                 SecondaryCalculation = SecondaryCalculationOptions.AnnualChange,
@@ -399,7 +399,7 @@ public static class SuggestedPresetLists
                                             new ChartSeriesDefinition()
                                             {
                                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, co2),
+                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, co2!),
                                                 Aggregation = SeriesAggregationOptions.Mean,
                                                 BinGranularity = BinGranularities.ByYearAndMonth,
                                                 Smoothing = SeriesSmoothingOptions.None,
@@ -421,7 +421,7 @@ public static class SuggestedPresetLists
                                             new ChartSeriesDefinition()
                                             {
                                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, ch4),
+                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, ch4!),
                                                 Aggregation = SeriesAggregationOptions.Mean,
                                                 BinGranularity = BinGranularities.ByYearAndMonth,
                                                 Smoothing = SeriesSmoothingOptions.None,
@@ -443,7 +443,7 @@ public static class SuggestedPresetLists
                                             new ChartSeriesDefinition()
                                             {
                                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, n2o),
+                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, n2o!),
                                                 Aggregation = SeriesAggregationOptions.Mean,
                                                 BinGranularity = BinGranularities.ByYearAndMonth,
                                                 Smoothing = SeriesSmoothingOptions.None,
@@ -472,7 +472,7 @@ public static class SuggestedPresetLists
                         new ChartSeriesDefinition()
                         {
                             SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(australiaAnomaly, tempMax),
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(australiaAnomaly, tempMax!),
                             Aggregation = SeriesAggregationOptions.Mean,
                             BinGranularity = BinGranularities.ByYear,
                             Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -484,7 +484,7 @@ public static class SuggestedPresetLists
                         new ChartSeriesDefinition()
                         {
                             SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(australiaAnomaly, rainfall),
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(australiaAnomaly, rainfall!),
                             Aggregation = SeriesAggregationOptions.Sum,
                             BinGranularity = BinGranularities.ByYear,
                             Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -507,7 +507,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(australiaAnomaly, tempMax),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(australiaAnomaly, tempMax!),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.None,
@@ -528,7 +528,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(australiaAnomaly, tempMax),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(australiaAnomaly, tempMax!),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.None,
@@ -540,7 +540,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(australiaAnomaly, tempMaxUnadjusted),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(australiaAnomaly, tempMaxUnadjusted!),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.None,
@@ -565,7 +565,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, southSeaIceExtent),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, southSeaIceExtent!),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -579,7 +579,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, northSeaIceExtent),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, northSeaIceExtent!),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -604,7 +604,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, greenland),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, greenland!),
                                         Aggregation = SeriesAggregationOptions.Sum,
                                         BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -631,7 +631,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, nino34),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, nino34!),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.None,
@@ -645,7 +645,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, iod),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, iod!),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.None,
@@ -669,7 +669,7 @@ public static class SuggestedPresetLists
                                                     new ChartSeriesDefinition()
                                                     {
                                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, nino34),
+                                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, nino34!),
                                                         Aggregation = SeriesAggregationOptions.Mean,
                                                         BinGranularity = BinGranularities.ByYearAndMonth,
                                                         Smoothing = SeriesSmoothingOptions.None,
@@ -683,7 +683,7 @@ public static class SuggestedPresetLists
                                                     new ChartSeriesDefinition()
                                                     {
                                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, oni),
+                                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, oni!),
                                                         Aggregation = SeriesAggregationOptions.Mean,
                                                         BinGranularity = BinGranularities.ByYearAndMonth,
                                                         Smoothing = SeriesSmoothingOptions.None,
@@ -696,7 +696,7 @@ public static class SuggestedPresetLists
                                                     new ChartSeriesDefinition()
                                                     {
                                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, soi),
+                                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, soi!),
                                                         Aggregation = SeriesAggregationOptions.Mean,
                                                         BinGranularity = BinGranularities.ByYearAndMonth,
                                                         Smoothing = SeriesSmoothingOptions.None,
@@ -710,7 +710,7 @@ public static class SuggestedPresetLists
                                                     new ChartSeriesDefinition()
                                                     {
                                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, mei),
+                                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, mei!),
                                                         Aggregation = SeriesAggregationOptions.Mean,
                                                         BinGranularity = BinGranularities.ByYearAndMonth,
                                                         Smoothing = SeriesSmoothingOptions.None,

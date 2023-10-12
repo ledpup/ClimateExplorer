@@ -6,22 +6,25 @@
 @using Blazorise.Charts
 @using static ClimateExplorer.Core.Enums
 
-@foreach (var f in RootFolders)
+@if (RootFolders != null)
 {
-    <div class="dataset-folder">
-        <div class="dataset-folder-name">@f.Name</div>
-        @foreach (var ds in f.DataSets)
-        {
-            <div class="entry-list">
-                <a class="add-dataset" @onclick="() => AddDataSet(ds)"><span class="oi oi-plus" aria-hidden="true"></span></a> <span class="dataset-name">@ds.Name</span>
-            </div>
-        }
-    </div>
+    foreach (var f in RootFolders)
+    {
+        <div class="dataset-folder">
+            <div class="dataset-folder-name">@f.Name</div>
+            @foreach (var ds in f.DataSets)
+            {
+                <div class="entry-list">
+                    <a class="add-dataset" @onclick="() => AddDataSet(ds)"><span class="oi oi-plus" aria-hidden="true"></span></a> <span class="dataset-name">@ds.Name</span>
+                </div>
+            }
+        </div>
+    }
 }
 
 @code {
     [Parameter]
-    public IEnumerable<DataSetDefinitionViewModel> DataSetDefinitions { get; set; }
+    public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     [Parameter]
     public EventCallback<DataSetLibraryEntry> OnAddDataSet { get; set; }
@@ -32,7 +35,7 @@
     [Parameter]
     public Location? PreviousLocation { get; set; }
 
-    List<DataSetLibraryFolder> RootFolders { get; set; }
+    List<DataSetLibraryFolder>? RootFolders { get; set; }
 
     string BuildDataSetName(MeasurementDefinitionViewModel md, DataSetDefinitionViewModel dsd)
     {
@@ -46,7 +49,7 @@
 
                 if (md.DataAdjustment != null)
                 {
-                    segments.Add(md.DataAdjustment.ToString());
+                    segments.Add(md.DataAdjustment.ToString()!);
                 }
 
                 break;
@@ -57,7 +60,7 @@
 
                 if (md.DataAdjustment != null)
                 {
-                    segments.Add(md.DataAdjustment.ToString());
+                    segments.Add(md.DataAdjustment.ToString()!);
                 }
 
                 break;
@@ -68,7 +71,7 @@
 
                 if (md.DataAdjustment != null)
                 {
-                    segments.Add(md.DataAdjustment.ToString());
+                    segments.Add(md.DataAdjustment.ToString()!);
                 }
 
                 break;
@@ -93,7 +96,7 @@
         return String.Join(" | ", segments);
     }
 
-    protected override async Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
         RootFolders = new List<DataSetLibraryFolder>();
 
@@ -106,7 +109,7 @@
                         DataSets = new List<DataSetLibraryEntry>()
                     };
 
-            var measurements = DataSetDefinitionViewModel.GetMeasurementsForLocation(DataSetDefinitions, CurrentLocation.Id);
+            var measurements = DataSetDefinitionViewModel.GetMeasurementsForLocation(DataSetDefinitions!, CurrentLocation.Id);
 
             foreach (var measurement in measurements)
             {
@@ -203,7 +206,7 @@
 
             if (PreviousLocation != null)
             {
-                var measurementsForPreviousLocation = DataSetDefinitionViewModel.GetMeasurementsForLocation(DataSetDefinitions, PreviousLocation.Id);
+                var measurementsForPreviousLocation = DataSetDefinitionViewModel.GetMeasurementsForLocation(DataSetDefinitions!, PreviousLocation.Id);
 
                 var comparisonFolder =
                     new DataSetLibraryFolder()

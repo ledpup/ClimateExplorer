@@ -41,7 +41,7 @@ public class GreenlandApiClient
             {
                 var key = date.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'");
                 var outputDate = date.ToString("yyyy'-'MM'-'dd");
-                if (records.ContainsKey(key))
+                if (records!.ContainsKey(key))
                 {
                     meltRecords.Add($"{outputDate},{records[key]}");
                 }

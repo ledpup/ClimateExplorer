@@ -248,7 +248,7 @@
     async Task Rebuild()
     {
         EnsoData = 
-            await DataService.PostDataSet(
+            await DataService!.PostDataSet(
                 SelectedResolution == DataResolution.Yearly ? BinGranularities.ByYear : BinGranularities.ByYearAndMonth,
                 ContainerAggregationFunctions.Mean,
                 ContainerAggregationFunctions.Mean,
@@ -286,12 +286,12 @@
         }
     }
 
-    Chart<float?> chart;
+    Chart<float?>? chart;
 
     [Inject]
-    public IDataService DataService { get; set; }
+    public IDataService? DataService { get; set; }
 
-    DataSet EnsoData { get; set; }
+    DataSet? EnsoData { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -346,12 +346,12 @@
             }
         };
 
-        string[] labels = null;
+        string[] labels = null!;
         if (SelectedResolution == DataResolution.Yearly)
         {
             labels = 
                 enso
-                .Select(x => (YearBinIdentifier)BinIdentifier.Parse(x.BinId))
+                .Select(x => (YearBinIdentifier)BinIdentifier.Parse(x.BinId!))
                 .Select(x => x.Label)
                 .ToArray();
         }
@@ -359,7 +359,7 @@
         {
             labels = 
                 enso
-                .Select(x => (YearAndMonthBinIdentifier)BinIdentifier.Parse(x.BinId))
+                .Select(x => (YearAndMonthBinIdentifier)BinIdentifier.Parse(x.BinId!))
                 .Select(x => x.Label)
                 .ToArray();
         }
@@ -388,8 +388,8 @@
     {
         var count = values.Count;
 
-        var min = (redPositive ? values.Min() : values.Max()).Value;
-        var max = (redPositive ? values.Max() : values.Min()).Value;
+        var min = (redPositive ? values.Min()! : values.Max()!).Value;
+        var max = (redPositive ? values.Max()! : values.Min()!).Value;
 
         var colour = new List<string>();
         for (var i = 0; i < count; i++)
@@ -397,7 +397,7 @@
             ChartColor chartColor;
             if (values[i].HasValue)
             {
-                var adjustedValue = values[i].Value * (redPositive ? 1f : -1f);
+                var adjustedValue = values![i]!.Value * (redPositive ? 1f : -1f);
                 if (Math.Abs(adjustedValue) < .5)
                 {
                     chartColor = ChartColor.FromHtmlColorCode("#000000");
@@ -414,7 +414,7 @@
             }
             else
             {
-                colour.Add(null);
+                colour.Add(null!);
             }
         }
 

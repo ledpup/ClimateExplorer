@@ -10,6 +10,30 @@
     flex-shrink: 0;
 }
 
+.tooltip-wrap {
+    position: relative;
+}
+
+    .tooltip-wrap .tooltip-content {
+        display: none;
+        position: absolute;
+        box-shadow: rgb(0 0 0 / 15%) 1px 1px 12px;
+        border-radius: 12px;
+        top: -54px;
+        left: 0px;
+        padding: 8px;
+        background-color: #fff;
+        width: max-content;
+        max-width: 600px;
+        font-size: 1.2rem;
+        color: #425f59;
+        z-index: 1500;
+    }
+
+    .tooltip-wrap:hover .tooltip-content {
+        display: block;
+    }
+
 @media (min-width: 641px) {
     .collapsible-panel {
         border-radius: 12px;

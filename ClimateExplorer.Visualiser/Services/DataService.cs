@@ -58,10 +58,10 @@ public class DataService : IDataService
         {
             result = await _httpClient.GetFromJsonAsync<DataSet>(url, _jsonSerializerOptions);
 
-            _dataServiceCache.Put(url, result);
+            _dataServiceCache.Put(url, result!);
         }
 
-        return result;
+        return result!;
     }
 
 
@@ -107,10 +107,10 @@ public class DataService : IDataService
 
         var result = await response.Content.ReadFromJsonAsync<DataSet>();
 
-        return result;
+        return result!;
     }
 
-    public async Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .5f, float locationGroupingThreshold = .5f)
+    public async Task<IEnumerable<DataSet>?> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .5f, float locationGroupingThreshold = .5f)
     {
         var url = $"dataSet/{dataType}/{resolution}/{dataAdjustment}?dayGrouping={dayGrouping}&dayGroupingThreshold={dayGroupingThreshold}&locationGroupingThreshold={locationGroupingThreshold}";
         if (minLatitude != null)
@@ -121,21 +121,23 @@ public class DataService : IDataService
         {
             url += $"&maxLatitude={maxLatitude}";
         }
-        return await _httpClient.GetFromJsonAsync<DataSet[]>(url);
+        return await _httpClient.GetFromJsonAsync<DataSet[]?>(url);
     }
 
     public async Task<ApiMetadataModel> GetAbout()
     {
-        return await _httpClient.GetFromJsonAsync<ApiMetadataModel>("/about");
+        var about = await _httpClient.GetFromJsonAsync<ApiMetadataModel>("/about");
+        return about!;
     }
 
     public async Task<IEnumerable<DataSetDefinitionViewModel>> GetDataSetDefinitions()
     {
         var url = "/datasetdefinition";
-        return await _httpClient.GetFromJsonAsync<DataSetDefinitionViewModel[]>(url, _jsonSerializerOptions);
+        var dataSetDefinitions = await _httpClient.GetFromJsonAsync<DataSetDefinitionViewModel[]>(url, _jsonSerializerOptions);
+        return dataSetDefinitions!;
     }
 
-    public async Task<IEnumerable<Location>> GetLocations(string dataSetName = null, bool includeNearbyLocations = false, bool includeWarmingIndex = false, bool excludeLocationsWithNullWarmingIndex = true)
+    public async Task<IEnumerable<Location>> GetLocations(string? dataSetName = null, bool includeNearbyLocations = false, bool includeWarmingIndex = false, bool excludeLocationsWithNullWarmingIndex = true)
     {
         var url = $"/location";
         if (dataSetName != null)
@@ -146,6 +148,14 @@ public class DataService : IDataService
         url = QueryHelpers.AddQueryString(url, "includeWarmingIndex", includeWarmingIndex.ToString());
         url = QueryHelpers.AddQueryString(url, "excludeLocationsWithNullWarmingIndex", excludeLocationsWithNullWarmingIndex.ToString());
 
-        return await _httpClient.GetFromJsonAsync<Location[]>(url);
+        var locations = await _httpClient.GetFromJsonAsync<Location[]>(url);
+        return locations!;
+    }
+
+    public async Task<Dictionary<string, string>> GetCountries()
+    {
+        var url = $"/country";
+        var countries = await _httpClient.GetFromJsonAsync<Dictionary<string, string>>(url);
+        return countries!;
     }
 }

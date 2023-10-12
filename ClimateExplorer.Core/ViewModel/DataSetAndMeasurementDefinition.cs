@@ -2,6 +2,6 @@
 
 public class DataSetAndMeasurementDefinition
 {
-    public DataSetDefinitionViewModel DataSetDefinition { get; set; }
-    public MeasurementDefinitionViewModel MeasurementDefinition { get; set; }
+    public DataSetDefinitionViewModel? DataSetDefinition { get; set; }
+    public MeasurementDefinitionViewModel? MeasurementDefinition { get; set; }
 }
