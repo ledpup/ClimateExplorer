@@ -137,7 +137,7 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
 
 async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool includeNearbyLocations = false, bool includeWarmingIndex = false, bool excludeLocationsWithNullWarmingIndex = true)
 {
-    string cacheKey = $"Locations_{locationId}_{includeNearbyLocations}_{includeWarmingIndex}";
+    string cacheKey = $"Locations_{locationId}_{includeNearbyLocations}_{includeWarmingIndex}_{excludeLocationsWithNullWarmingIndex}";
 
     var result = await _cache.Get<Location[]>(cacheKey);
 
@@ -235,6 +235,12 @@ async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool in
     if (includeNearbyLocations)
     {
         Location.SetNearbyLocations(locations.ToList());
+
+        var overlappingLocations = locations.Where(x => x.WarmingIndex == null && x.NearbyLocations.OrderBy(x => x.Distance).First().Distance < 25).ToList();
+        Console.WriteLine($"The following locations will be removed because they don't have a warming index and there is a nearby location that can be used instead: {string.Join(',', overlappingLocations.Select(x => x.Name))}");
+        var ll = locations.ToList();
+        overlappingLocations.ForEach(x => ll.Remove(x));
+        locations = ll;
     }
 
     await _cache.Put(cacheKey, locations.ToArray());

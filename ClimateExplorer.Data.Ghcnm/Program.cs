@@ -16,6 +16,7 @@ var serviceProvider = new ServiceCollection()
     .BuildServiceProvider();
 var logger = serviceProvider.GetService<ILoggerFactory>()!.CreateLogger<Program>();
 
+const int minimumStationsInCountry = 5;
 
 var httpClient = new HttpClient();
 var userAgent = "Mozilla /5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
@@ -26,13 +27,26 @@ httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
 await DownloadAndExtract.DownloadAndExtractFile(httpClient, "https://www.ncei.noaa.gov/pub/data/ghcn/v4/", "qcf", "ghcnm.tavg.latest.qcf.tar.gz", logger);
 await DownloadAndExtract.DownloadAndExtractFile(httpClient, "https://www.ncei.noaa.gov/pub/data/ghcn/v4/", "qcu", "ghcnm.tavg.latest.qcu.tar.gz", logger);
 
-const string stationsFile = @"SiteMetaData\stations.csv";
+const string stationsFileCsv = @"SiteMetaData\stations.csv";
 const string preExistingLocationsFile = @"SiteMetaData\pre-existing-locations.json";
+const string stationsFileJson = @"Output\SiteMetaData\stations.json";
 
-var stations = await GetStationMetaData("qcf");
+var dataStations = await GetStationFromData("qcf");
 
-var ghcnIdToLocationIds = await GetGhcnIdToLocationIds(stations);
-var dataQualityFilteredStations = await RetrieveDataQualityFilteredStations("qcf", stations);
+logger.LogInformation($"{dataStations.Count} stations found by reading the data files");
+
+var ghcnIdToLocationIds = await GetGhcnIdToLocationIds(dataStations);
+var fullStations = await GetStations("qcf", dataStations);
+
+logger.LogInformation($"{fullStations.Count} stations found by reading the meta-data file and combining with country and stations found via the data files");
+
+var filteredStations = FilterStationsByRecencyAndMinimumScore(fullStations, (short)(DateTime.Now.Year - 10), IndexCalculator.MinimumNumberOfYearsToCalculateIndex);
+
+logger.LogInformation($"{filteredStations.Count} stations remaining after filtering based on recency and longevity of the data (records no longer than {DateTime.Now.Year - 10}) and at least {IndexCalculator.MinimumNumberOfYearsToCalculateIndex} years of data");
+
+var combinedStations = await EnsureCountryRepresentation(fullStations, filteredStations, (short)(DateTime.Now.Year - 10));
+
+logger.LogInformation($"{combinedStations.Count} stations after adjusting for country representation (trying to having at least 5 stations per country, even if the data is poor)");
 
 var countryDistanceOverride = new Dictionary<string, int>
 {
@@ -52,7 +66,7 @@ var preExistingStations = preExistingLocations.Select(x => new Station
     Source = "Pre-Existing"
 }).ToList();
 var totalStationSet = new List<Station>();
-totalStationSet.AddRange(dataQualityFilteredStations);
+totalStationSet.AddRange(combinedStations);
 totalStationSet.AddRange(preExistingStations);
 
 var selectedStationsPostClustering = SelectStationsByDbscanClusteringAndTakingHighestScore(totalStationSet, 75, countryDistanceOverride, 2);
@@ -171,14 +185,15 @@ List<Station> SelectStationsByDbscanClusteringAndTakingHighestScore(List<Station
 async Task SaveStationMetaData(List<Station> stations)
 {
     var contents = stations.Select(x => $"{x.Id},{x.FirstYear!.Value},{x.LastYear!.Value},{x.YearsOfMissingData ?? 0}");
-    await File.WriteAllLinesAsync(stationsFile, contents);
+    await File.WriteAllLinesAsync(stationsFileCsv, contents);
 }
 
-async Task<List<Station>> GetStationMetaData(string version)
+async Task<List<Station>> GetStationFromData(string version)
 {
-    if (File.Exists(stationsFile))
+    List<Station> stations;
+    if (File.Exists(stationsFileCsv))
     {
-        var stations = await GetPreProcessedStations();
+        stations = await GetPreProcessedStations();
         return stations;
     }
 
@@ -245,7 +260,7 @@ async Task<List<Station>> GetStationMetaData(string version)
 
     await SaveStationMetaData(stations);
 
-    return await GetStationMetaData(version);
+    return await GetStationFromData(version);
 }
 
 static bool IsValidYear(string record)
@@ -265,31 +280,50 @@ static bool IsValidYear(string record)
     return validYear;
 }
 
-const string dataFilteredStations = @"Output\SiteMetaData\data-quality-filtered-stations.json";
-
-async Task<List<Station>> RetrieveDataQualityFilteredStations(string version, List<Station> inputStations)
+async Task<List<Station>> GetStations(string version, List<Station> inputStations)
 {
-    if (File.Exists(dataFilteredStations))
+    if (File.Exists(stationsFileJson))
     {
         return GetDataQualityFilteredStationsFromFile();
     }
     
     var countries = await Country.GetCountries(@"SiteMetaData\ghcnm-countries.txt");
-    var stations = await StationFileProcessor.Transform(version, inputStations, countries, (short)(DateTime.Now.Year - 10), IndexCalculator.MinimumNumberOfYearsToCalculateIndex, logger);
+    var stations = await StationFile.Load(version, inputStations, countries, logger);
 
-    SaveStations(stations, dataFilteredStations);
+    SaveStations(stations, stationsFileJson);
 
     return GetDataQualityFilteredStationsFromFile();
 }
 
+List<Station> FilterStationsByRecencyAndMinimumScore(List<Station> stations, short lastYearOfDataNoLaterThan, short minimumScore)
+{
+    var selectedStations = new List<Station>();
+    foreach (var station in stations)
+    {
+        if (station.LastYear < lastYearOfDataNoLaterThan)
+        {
+            logger!.LogInformation($"Station {station.Id} is being filtered out because it isn't contemporary. Last record was in {station.LastYear.Value}");
+            continue;
+        }
+        if (station.Score < minimumScore)
+        {
+            logger!.LogInformation($"Station {station.Id} is being filtered out because it has too much missing data. It's score ({station.Score}) (i.e., age ({station.Age}) - number of years of missing data ({station.YearsOfMissingData})) is less than the minimum score ({minimumScore})");
+            continue;
+        }
+        logger!.LogInformation($"Station {station.Id} has been accepted. Its last year of records was {station.LastYear!.Value} and it's age is {station.Age} and its score is {station.Score}");
+        selectedStations.Add(station);
+    }
+    return selectedStations;
+}
+
 List<Station> GetDataQualityFilteredStationsFromFile()
 {
-    if (!File.Exists(dataFilteredStations))
+    if (!File.Exists(stationsFileJson))
     {
-        throw new FileNotFoundException($"File {dataFilteredStations} does not exist");
+        throw new FileNotFoundException($"File {stationsFileJson} does not exist");
     }
 
-    var contents = File.ReadAllText(dataFilteredStations);
+    var contents = File.ReadAllText(stationsFileJson);
     var stations = JsonSerializer.Deserialize<List<Station>>(contents);
 
     return stations!;
@@ -310,14 +344,14 @@ void SaveStations(List<Station> stations, string path)
 async static Task<List<Station>> GetPreProcessedStations()
 {
     var stations = new List<Station>();
-    var contents = await File.ReadAllLinesAsync(stationsFile);
+    var contents = await File.ReadAllLinesAsync(stationsFileCsv);
 
     foreach (var line in contents)
     {
         var columns = line.Split(',');
         var station = new Station
         {
-            Id = columns[0], 
+            Id = columns[0],
             FirstYear = int.Parse(columns[1]),
             LastYear = int.Parse(columns[2]),
             YearsOfMissingData = int.Parse(columns[3]),
@@ -456,4 +490,44 @@ async Task<List<Location>> GetPreExistingLocations()
     var contents = await File.ReadAllTextAsync(preExistingLocationsFile);
     var preExistingLocations = JsonSerializer.Deserialize<List<Location>>(contents)!;
     return preExistingLocations;
+}
+
+async Task<List<Station>> EnsureCountryRepresentation(List<Station> stations, List<Station> selectedStations, short lastYearOfDataNoLaterThan)
+{
+    var countries = await Country.GetCountries(@"SiteMetaData\ghcnm-countries.txt");
+    var combinedStations = new List<Station>();
+    combinedStations.AddRange(selectedStations);
+    foreach (var country in countries)
+    {
+        var stationCount = selectedStations
+            .Count(x => x.CountryCode == country.Key);
+
+        if (stationCount < minimumStationsInCountry)
+        {
+            var countryCount = stations
+                .Count(x => x.CountryCode == country.Key);
+
+            if (countryCount == 0)
+            {
+                logger.LogInformation($"{country.Value} has {stationCount} selected stations out of {countryCount} in GHCNm. Will skip this country");
+                continue;
+            }
+
+            logger.LogInformation($"{country.Value} has {stationCount} selected stations out of {countryCount} in GHCNm. Will try to add more stations to bring the number to a minimum of {minimumStationsInCountry}");
+            var bestStations = stations
+                .Where(x => x.CountryCode == country.Key 
+                            && x.Score >= 10
+                            && x.LastYear >= lastYearOfDataNoLaterThan)
+                .OrderByDescending(x => x.Score).Take(minimumStationsInCountry);
+            foreach (var goodStation in bestStations)
+            {
+                if (!selectedStations.Any(x => x.Id == goodStation.Id))
+                {
+                    logger.LogInformation($"Adding station {goodStation.Id} to the collection increase representation");
+                    combinedStations.Add(goodStation);
+                }
+            }
+        }
+    }
+    return combinedStations;
 }

@@ -12,6 +12,11 @@ public class Station
     public int? LastYear { get; set; }
     public int? YearsOfMissingData { get; set; }
 
+    public override string ToString()
+    {
+        return Id;
+    }
+
     [JsonIgnore]
     public int? Age => LastYear - FirstYear + 1;
 

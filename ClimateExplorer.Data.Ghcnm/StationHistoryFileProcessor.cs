@@ -4,9 +4,9 @@ using System.Text.RegularExpressions;
 
 namespace ClimateExplorer.Data.Ghcnm;
 
-public class StationFileProcessor
+public class StationFile
 {
-    internal static async Task<List<Station>> Transform(string version, List<Station> stations, Dictionary<string, Country> countries, short lastYearOfDataNoLaterThan, short minimumScore, ILogger<Program> logger)
+    internal static async Task<List<Station>> Load(string version, List<Station> stations, Dictionary<string, Country> countries, ILogger<Program> logger)
     {
         var dir = new DirectoryInfo(@$"SourceData\{version}\");
         var stationFileName = dir.GetFiles("*.inv").Single().FullName;
@@ -35,29 +35,19 @@ public class StationFileProcessor
             var elevation = groups["ele"].Value;
 
             var station = stations.SingleOrDefault(x => x.Id == id);
-            // Below is an inital filter on the station.
+
             if (station == null)
             {
                 logger.LogError($"Station {id} that is in the station file '{stationFileName}' is not found in the data file. There is no point keeping it in the list.");
                 continue;
             }
-            if (station.LastYear < lastYearOfDataNoLaterThan)
-            {
-                logger.LogInformation($"Station {id} is being filtered out because it isn't contemporary. Last record was in {station.LastYear.Value}");
-                continue;
-            }
-            if (station.Score < minimumScore)
-            {
-                logger.LogInformation($"Station {id} is being filtered out because it has too much missing data. It's score ({station.Score}) (i.e., age ({station.Age}) - number of years of missing data ({station.YearsOfMissingData})) is less than the minimum score ({minimumScore})");
-                continue;
-            }
-            logger.LogInformation($"Station {id} has been accepted. Its last year of records was {station.LastYear!.Value} and it's age is {station.Age} and its score is {station.Score}");
 
             countries.TryGetValue(countryCode, out Country? country);
 
             if (country == null)
             {
-                logger.LogError($"Station {id} has a country code of {countryCode}. This code is not found in the country list file.");
+                logger.LogError($"Station {id} has a country code of {countryCode}. This code is not found in the country list file. Will skip this station.");
+                continue;
             }
 
             station.CountryCode = country!.Code;
