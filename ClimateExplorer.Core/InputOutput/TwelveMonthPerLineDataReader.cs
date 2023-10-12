@@ -12,9 +12,13 @@ namespace ClimateExplorer.Core.InputOutput
 {
     public static class TwelveMonthPerLineDataReader
     {
-        public static async Task<DataSet> GetTwelveMonthsPerRowData(MeasurementDefinition measurementDefinition, List<DataFileFilterAndAdjustment> dataFileFilterAndAdjustments)
+        public static async Task<DataSet> GetTwelveMonthsPerRowData(MeasurementDefinition measurementDefinition, List<DataFileFilterAndAdjustment>? dataFileFilterAndAdjustments)
         {
-            string dataPath = $@"{measurementDefinition.FolderName}\{measurementDefinition!.FileNameFormat!.Replace("[station]", dataFileFilterAndAdjustments.Single().Id)}";
+            var dataPath = $@"{measurementDefinition.FolderName}\{measurementDefinition!.FileNameFormat!}";
+            if (dataFileFilterAndAdjustments != null)
+            {
+                dataPath = dataPath.Replace("[station]", dataFileFilterAndAdjustments!.Single().Id);
+            }
 
             var records = await DataReader.GetLinesInDataFileWithCascade(dataPath);
             if (records == null)
