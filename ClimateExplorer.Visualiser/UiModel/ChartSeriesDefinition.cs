@@ -303,7 +303,7 @@ public class ChartSeriesDefinition
             DataType.TempMax => "Maximum temperature",
             DataType.TempMean => "Mean temperature",
             DataType.SolarRadiation => "Solar radiation",
-            DataType.Rainfall => "Rainfall",
+            DataType.Rainfall => "Precipitation",
             DataType.MEIv2 => "MEI v2",
             DataType.SOI => "SOI",
             DataType.Nino34 => "Nino 3.4",

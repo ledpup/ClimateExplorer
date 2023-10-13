@@ -54,7 +54,7 @@ public partial class ClimateStripe
         UomString = UnitOfMeasureLabelShort(UnitOfMeasure);
         UomRounding = UnitOfMeasureRounding(UnitOfMeasure);
 
-        var weatherPhenomenon = UnitOfMeasure == UnitOfMeasure.Millimetres ? "rainfall" : "temperature";
+        var weatherPhenomenon = UnitOfMeasure == UnitOfMeasure.Millimetres ? "precipitation" : "temperature";
 
         if (LocationMean == null)
         {
