@@ -63,20 +63,34 @@
                 <Field>
                     <FieldLabel>Select a nearby location</FieldLabel>
                     <Alert Color="Color.Secondary" Visible="true">
-                        <Repeater Items="@SelectedLocation.NearbyLocations" >
-                            <div>
-                                <Blazorise.Link 
-                                    Title="@context.LocationName" 
-                                    To="#" 
-                                    Clicked="@(()=>FireOnLocationChange(context.LocationId))">@context.LocationName</Blazorise.Link>
-
-                                <span style="color: #888">
-                                    @context.Distance km
-                                    @context.CompassRoseDirection 
-                                    <span style="display: inline-block; transform: rotate(@($"{context.BearingDegrees}deg"))">⭡</span>
-                                </span>
-                            </div>
-                        </Repeater>
+                        <Table Borderless Narrow>
+                            <TableBody>
+                                @foreach (var row in SelectedLocation.NearbyLocations!)
+                                {
+                                    <TableRow>
+                                        <TableRowCell>
+                                            <Blazorise.Link Title="@row.Title"
+                                                                    To="#"
+                                                                    Clicked="@(()=>FireOnLocationChange(row.LocationId))">
+                                                        @row.Title
+                                            </Blazorise.Link>
+                                        </TableRowCell>
+                                            <TableRowCell>@row.SubTitle</TableRowCell>
+                                        <TableRowCell>
+                                            <span style="color: #888">
+                                                @(row.Distance) km
+                                            </span>
+                                        </TableRowCell>
+                                        <TableRowCell>
+                                            <span style="color: #888">
+                                                @row.CompassRoseDirection
+                                                <span style="display: inline-block; transform: rotate(@($"{row.BearingDegrees}deg"))">⭡</span>
+                                            </span>
+                                        </TableRowCell>
+                                    </TableRow>
+                                }
+                            </TableBody>
+                        </Table>
                     </Alert>
                 </Field>
             }
