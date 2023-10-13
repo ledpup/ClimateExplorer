@@ -36,7 +36,7 @@ public class Location : LocationBase
             if (title != null)
                 return title;
 
-            if (Name.Length >= 10 && Name.Length <= 20)
+            if (Name.Length > 10 && Name.Length <= 20)
             {
                 title = Name;
             }
