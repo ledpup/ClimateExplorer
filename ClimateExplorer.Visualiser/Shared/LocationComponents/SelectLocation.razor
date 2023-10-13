@@ -13,7 +13,7 @@
             @if (SelectedLocation != null)
             {
                 <Field>
-                    Current location: <Strong>@SelectedLocation.Name</Strong>
+                    Current location: <Strong>@SelectedLocation.FullTitle</Strong>
                 </Field>
             }
             <Field>
@@ -34,7 +34,7 @@
                     TItem="Location"
                     TValue="Guid"
                     Data="@Locations"
-                    TextField="@((item)=>item.Name)"
+                    TextField="@((item)=>item.FullTitle)"
                     ValueField="@((item)=>item.Id)"
                     SelectedValueChanged="@OnLocationChange"
                     DefaultItemText="Select location"

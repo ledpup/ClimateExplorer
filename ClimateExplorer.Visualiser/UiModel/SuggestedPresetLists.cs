@@ -37,8 +37,8 @@ public static class SuggestedPresetLists
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
-                Title = "Temperature + rainfall",
-                Description = "Smoothed maximum daily temperature and rainfall",
+                Title = "Temperature + precipitation",
+                Description = "Smoothed yearly average temperature and precipitation",
                 ChartSeriesList =
                 new List<ChartSeriesDefinition>()
                 {
@@ -147,7 +147,7 @@ public static class SuggestedPresetLists
             new SuggestedChartPresetModelWithVariants()
             {
                 Title = "Temperature anomaly",
-                Description = "Yearly average maximum daily temperatures relative to the average of the whole dataset",
+                Description = "Yearly average temperatures relative to the average of the whole dataset",
                 ChartSeriesList =
                     new List<ChartSeriesDefinition>()
                     {
@@ -170,7 +170,7 @@ public static class SuggestedPresetLists
                         new SuggestedChartPresetModel()
                         {
                             Title = "Temperature with trendline",
-                            Description = "Yearly view of average maximum daily temperature with a straight line, fit to the data",
+                            Description = "Yearly view of average temperature with a straight line fit to the data (the trendline)",
                             ChartSeriesList =
                                 new List<ChartSeriesDefinition>()
                                 {
@@ -191,7 +191,7 @@ public static class SuggestedPresetLists
                         new SuggestedChartPresetModelWithVariants()
                         {
                             Title = "Adjusted vs raw temperature",
-                            Description = "Compare maximum temperature values that have been adjusted for abnormalities with raw values",
+                            Description = "Compare temperature values that have been adjusted for abnormalities with raw values",
                             ChartSeriesList =
                             new List<ChartSeriesDefinition>()
                             {
@@ -224,7 +224,7 @@ public static class SuggestedPresetLists
                         new SuggestedChartPresetModel()
                         {
                             Title = "Temperature + solar radiation",
-                            Description = "Shows yearly solar radiation and maximum temperature averages",
+                            Description = "Shows yearly solar radiation and temperature averages",
                             ChartSeriesList =
                                 new List<ChartSeriesDefinition>()
                                 {
@@ -521,7 +521,7 @@ public static class SuggestedPresetLists
                         new SuggestedChartPresetModel()
                         {
                             Title = "Adjusted vs raw temperature",
-                            Description = "Compare maximum temperature values that have been adjusted for abnormalities with raw values",
+                            Description = "Compare temperature values that have been adjusted for abnormalities with raw values",
                             ChartSeriesList =
                                 new List<ChartSeriesDefinition>()
                                 {
