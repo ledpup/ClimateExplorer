@@ -45,20 +45,7 @@
                      <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
                  </Autocomplete>
             </Field>
-            <Field>
-                <FieldLabel>Select a location from the list</FieldLabel>
-                <SelectList
-                    TItem="Location"
-                    TValue="Guid"
-                    Data="@Locations"
-                    TextField="@((item)=>item.FullTitle)"
-                    ValueField="@((item)=>item.Id)"
-                    SelectedValueChanged="@OnLocationChange"
-                    DefaultItemText="Select location"
-                    Style="width: 100%"
-                    />
-           </Field>
-            @if (SelectedLocation != null)
+             @if (SelectedLocation != null && nearbyLocationCache != null && nearbyLocationCache!.ContainsKey(SelectedLocation.Id))
             {
                 <Field>
                     <FieldLabel>Select a nearby location</FieldLabel>
@@ -67,15 +54,16 @@
                             <TableBody>
                                 @foreach (var row in SelectedLocation.NearbyLocations!)
                                 {
+                                    var location = nearbyLocationCache![SelectedLocation.Id]!.Single(x => x.Id == row.LocationId);
                                     <TableRow>
                                         <TableRowCell>
-                                            <Blazorise.Link Title="@row.Title"
-                                                                    To="#"
-                                                                    Clicked="@(()=>FireOnLocationChange(row.LocationId))">
-                                                        @row.Title
+                                            <Blazorise.Link Title="@location.Name"
+                                                            To="#"
+                                                            Clicked="@(()=>FireOnLocationChange(row.LocationId))">
+                                                @location.Name
                                             </Blazorise.Link>
                                         </TableRowCell>
-                                            <TableRowCell>@row.SubTitle</TableRowCell>
+                                            <TableRowCell>@location.Country</TableRowCell>
                                         <TableRowCell>
                                             <span style="color: #888">
                                                 @(row.Distance) km
@@ -116,11 +104,27 @@
     [Parameter]
     public EventCallback SetCurrentLocation { get; set; }
 
+    Dictionary<Guid, List<Location>>? nearbyLocationCache;
+
+    protected override void OnInitialized()
+    {
+        nearbyLocationCache = new Dictionary<Guid, List<Location>>();
+    }
+
     protected override void OnParametersSet()
     {
         if (Locations != null)
         {
-            Locations = Locations.OrderBy(x => x.Name);    
+            Locations = Locations.OrderBy(x => x.Name);
+            if (SelectedLocation?.NearbyLocations != null)
+            {
+                if (!nearbyLocationCache!.ContainsKey(SelectedLocation.Id))
+                {
+                    var locations = new List<Location>();
+                    SelectedLocation!.NearbyLocations!.ForEach(x => locations.Add(Locations.Single(y => y.Id == x.LocationId)));
+                    nearbyLocationCache.Add(SelectedLocation.Id, locations);
+                }
+            }
         }
     }
 

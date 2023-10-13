@@ -126,8 +126,6 @@ public class Location : LocationBase
                 new LocationDistance
                 {
                     LocationId = x.Id,
-                    Title = x.Name,
-                    SubTitle = x.Country!,
                     Distance = distance,
                     BearingDegrees = bearing,
                     CompassRoseDirection = GeometryHelpers.GetCompassRoseDirectionName(bearing)
@@ -141,8 +139,6 @@ public class Location : LocationBase
 public class LocationDistance
 {
     public required Guid LocationId { get; set; }
-    public required string Title { get; set; }
-    public string? SubTitle { get; set; } // For some reason SubTitle as required is resulting in an error
     public required double Distance { get; set; }
     public required double BearingDegrees { get; set; }
     public required string CompassRoseDirection { get; set; }
