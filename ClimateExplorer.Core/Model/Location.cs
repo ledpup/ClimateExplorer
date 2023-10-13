@@ -119,14 +119,13 @@ public class Location : LocationBase
         locations.ToList().ForEach(x =>
         {
             var destCoord = new GeoCoordinate(x.Coordinates.Latitude, x.Coordinates.Longitude, x.Coordinates.Elevation ?? 0);
-            var distance = Math.Round(geoCoordinate.GetDistanceTo(destCoord) / 1000, 1); // GetDistanceTo is in metres. Convert to km
+            var distance = Math.Round(geoCoordinate.GetDistanceTo(destCoord) / 1000, 0); // GetDistanceTo is in metres. Convert to km
             var bearing = GeometryHelpers.GetRhumbBearingFromPointToPoint(geoCoordinate, destCoord);
 
             distances.Add(
                 new LocationDistance
                 {
                     LocationId = x.Id,
-                    LocationName = x.Name,
                     Distance = distance,
                     BearingDegrees = bearing,
                     CompassRoseDirection = GeometryHelpers.GetCompassRoseDirectionName(bearing)
@@ -140,7 +139,6 @@ public class Location : LocationBase
 public class LocationDistance
 {
     public required Guid LocationId { get; set; }
-    public required string LocationName { get; set; }
     public required double Distance { get; set; }
     public required double BearingDegrees { get; set; }
     public required string CompassRoseDirection { get; set; }
