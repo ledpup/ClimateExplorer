@@ -217,6 +217,12 @@ public partial class Index : ChartablePage
     {
         Logger!.LogInformation("SelectedLocationChangedInternal(): " + newValue);
 
+        if (!Locations!.Any(x => x.Id == newValue))
+        {
+            Logger!.LogError($"{newValue} doesn't exist in the list of locations. Exiting SelectedLocationChangedInternal()");
+            return;
+        }
+
         SelectedLocationId = newValue;
         SelectedLocation = Locations!.Single(x => x.Id == SelectedLocationId);
 
