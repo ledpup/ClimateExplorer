@@ -17,7 +17,7 @@ public partial class Index : ChartablePage
 {
     [Parameter]
     public string? LocationId { get; set; }
-    SelectLocation? selectLocationModal { get; set; }
+    ChangeLocation? changeLocationModal { get; set; }
     MapContainer? mapContainer { get; set; }
 
     Guid SelectedLocationId { get; set; }
@@ -180,9 +180,9 @@ public partial class Index : ChartablePage
         await JsRuntime!.InvokeVoidAsync("showOrHideMap", isOverviewVisible);
     }
 
-    private Task ShowSelectLocationModal()
+    private Task ShowChangeLocationModal()
     {
-        return selectLocationModal!.Show();
+        return changeLocationModal!.Show();
     }
 
     Location SelectedLocation
@@ -205,6 +205,10 @@ public partial class Index : ChartablePage
 
     async Task SelectedLocationChanged(Guid locationId)
     {
+        if (locationId == Guid.Empty)
+        {
+            return;
+        }
         await NavigateTo($"/{pageName}/" + locationId.ToString());
     }
 
@@ -216,6 +220,12 @@ public partial class Index : ChartablePage
     async Task SelectedLocationChangedInternal(Guid newValue)
     {
         Logger!.LogInformation("SelectedLocationChangedInternal(): " + newValue);
+
+        if (!Locations!.Any(x => x.Id == newValue))
+        {
+            Logger!.LogError($"{newValue} doesn't exist in the list of locations. Exiting SelectedLocationChangedInternal()");
+            return;
+        }
 
         SelectedLocationId = newValue;
         SelectedLocation = Locations!.Single(x => x.Id == SelectedLocationId);

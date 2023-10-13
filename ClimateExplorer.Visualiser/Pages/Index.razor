@@ -34,7 +34,7 @@
             <LocationInfo
                         Location="@SelectedLocation"
                         DataSetDefinitions="@DataSetDefinitions"
-                        RequestLocationChange="@ShowSelectLocationModal"
+                        RequestLocationChange="@ShowChangeLocationModal"
                         OnOverviewShowOrHide="@OnOverviewShowHide"
                         OnYearFilterChange="@HandleOnYearFilterChange" />
         </div>
@@ -48,7 +48,7 @@
                DownloadDataEvent="@OnDownloadDataClicked" />
 </div>
 
-<SelectLocation @ref="selectLocationModal"
+<ChangeLocation @ref="changeLocationModal"
                 Locations="@Locations"
                 SelectedLocation="@SelectedLocation"
                 OnLocationChange="@SelectedLocationChanged"
