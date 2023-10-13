@@ -20,7 +20,7 @@
 
                 @if (ShowTitleWhenExpanded || !ShowContent)
                 {
-                    if (FullTitle?.Length > 17)
+                    if (Title?.Length > 17 || FullTitle?.Length > 17)
                     {
                         <span class="tooltip-wrap">
                             @Title

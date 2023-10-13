@@ -14,7 +14,7 @@ public class Location : LocationBase
     public List<LocationDistance>? NearbyLocations { get; set; }
 
     [JsonIgnore]
-    public string? FullTitle
+    public string FullTitle
     {
         get
         {
@@ -29,14 +29,14 @@ public class Location : LocationBase
     string? fullTitle;
 
     [JsonIgnore]
-    public string? Title
+    public string Title
     {
         get
         {
             if (title != null)
                 return title;
 
-            if (Name.Length >= 10 && Name.Length <= 20)
+            if (Name.Length > 10 && Name.Length <= 20)
             {
                 title = Name;
             }
