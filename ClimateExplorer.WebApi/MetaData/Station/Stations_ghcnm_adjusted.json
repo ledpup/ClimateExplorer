@@ -702,19 +702,6 @@
     "YearsOfMissingData": 25
   },
   {
-    "Id": "ASN00036007",
-    "Name": "BARCALDINE_POST_OFFICE",
-    "CountryCode": "AS",
-    "Coordinates": {
-      "Latitude": -23.5544,
-      "Longitude": 145.2883,
-      "Elevation": 266.9
-    },
-    "FirstYear": 1913,
-    "LastYear": 2022,
-    "YearsOfMissingData": 27
-  },
-  {
     "Id": "ASN00038024",
     "Name": "WINDORAH_POST_OFFICE",
     "CountryCode": "AS",
@@ -932,19 +919,6 @@
       "Elevation": 40
     },
     "FirstYear": 1957,
-    "LastYear": 2022,
-    "YearsOfMissingData": 4
-  },
-  {
-    "Id": "AYM00089611",
-    "Name": "CASEY",
-    "CountryCode": "AY",
-    "Coordinates": {
-      "Latitude": -66.283,
-      "Longitude": 110.517,
-      "Elevation": 41
-    },
-    "FirstYear": 1958,
     "LastYear": 2022,
     "YearsOfMissingData": 4
   },

@@ -434,14 +434,6 @@
         "ValueAdjustment": null
       }
     ],
-    "145c59d2-2af0-4636-a495-7714817d0f10": [
-      {
-        "Id": "ASN00036007",
-        "StartDate": null,
-        "EndDate": null,
-        "ValueAdjustment": null
-      }
-    ],
     "c87a5531-220b-43ff-ae38-17324196e13c": [
       {
         "Id": "ASN00038024",
@@ -573,14 +565,6 @@
     "c8bf18e2-a228-4c1c-add9-ae72a55caed3": [
       {
         "Id": "AYM00089592",
-        "StartDate": null,
-        "EndDate": null,
-        "ValueAdjustment": null
-      }
-    ],
-    "5fd8efb6-c019-4ab1-8471-0fb223c4b88b": [
-      {
-        "Id": "AYM00089611",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null

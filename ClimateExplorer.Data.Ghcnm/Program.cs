@@ -70,9 +70,10 @@ totalStationSet.AddRange(combinedStations);
 totalStationSet.AddRange(preExistingStations);
 
 var selectedStationsPostClustering = SelectStationsByDbscanClusteringAndTakingHighestScore(totalStationSet, 75, countryDistanceOverride, 2);
+
+logger.LogInformation($"{selectedStationsPostClustering.Count(x => x.Source != null)} stations selected by DBSCAN were already pre-existing locations. These will now be removed from final set (they were only used to prevent station overlap).");
 selectedStationsPostClustering = selectedStationsPostClustering.Where(x => x.Source == null).ToList();
 var selectedStations = await RemoveDuplicateLocations(selectedStationsPostClustering);
-
 logger.LogInformation($"{selectedStations.Count} stations have been selected after adjusting for data quality, cluster using DBSCAN and removing of duplicates due to pre-existing locations");
 
 var locations = new List<Location>();
@@ -284,7 +285,7 @@ async Task<List<Station>> GetStations(string version, List<Station> inputStation
 {
     if (File.Exists(stationsFileJson))
     {
-        return GetDataQualityFilteredStationsFromFile();
+        return GetStationsFromFile();
     }
     
     var countries = await Country.GetCountries(@"SiteMetaData\ghcnm-countries.txt");
@@ -292,7 +293,7 @@ async Task<List<Station>> GetStations(string version, List<Station> inputStation
 
     SaveStations(stations, stationsFileJson);
 
-    return GetDataQualityFilteredStationsFromFile();
+    return GetStationsFromFile();
 }
 
 List<Station> FilterStationsByRecencyAndMinimumScore(List<Station> stations, short lastYearOfDataNoLaterThan, short minimumScore)
@@ -316,7 +317,7 @@ List<Station> FilterStationsByRecencyAndMinimumScore(List<Station> stations, sho
     return selectedStations;
 }
 
-List<Station> GetDataQualityFilteredStationsFromFile()
+List<Station> GetStationsFromFile()
 {
     if (!File.Exists(stationsFileJson))
     {

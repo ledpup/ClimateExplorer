@@ -759,20 +759,6 @@
     "CountryCode": "AS",
     "Country": null,
     "Coordinates": {
-      "Latitude": -23.5544,
-      "Longitude": 145.2883,
-      "Elevation": 266.9
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "145c59d2-2af0-4636-a495-7714817d0f10",
-    "Name": "Barcaldine Post Office"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": null,
-    "Coordinates": {
       "Latitude": -25.4228,
       "Longitude": 142.6564,
       "Elevation": 126.3
@@ -1006,20 +992,6 @@
     "NearbyLocations": null,
     "Id": "c8bf18e2-a228-4c1c-add9-ae72a55caed3",
     "Name": "Mirnyj"
-  },
-  {
-    "CountryCode": "AY",
-    "Country": null,
-    "Coordinates": {
-      "Latitude": -66.283,
-      "Longitude": 110.517,
-      "Elevation": 41
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "5fd8efb6-c019-4ab1-8471-0fb223c4b88b",
-    "Name": "Casey"
   },
   {
     "CountryCode": "AY",
