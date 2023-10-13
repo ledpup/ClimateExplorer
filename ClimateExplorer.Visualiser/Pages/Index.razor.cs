@@ -205,6 +205,10 @@ public partial class Index : ChartablePage
 
     async Task SelectedLocationChanged(Guid locationId)
     {
+        if (locationId == Guid.Empty)
+        {
+            return;
+        }
         await NavigateTo($"/{pageName}/" + locationId.ToString());
     }
 
