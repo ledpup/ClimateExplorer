@@ -17,7 +17,7 @@ public partial class Index : ChartablePage
 {
     [Parameter]
     public string? LocationId { get; set; }
-    SelectLocation? selectLocationModal { get; set; }
+    ChangeLocation? changeLocationModal { get; set; }
     MapContainer? mapContainer { get; set; }
 
     Guid SelectedLocationId { get; set; }
@@ -180,9 +180,9 @@ public partial class Index : ChartablePage
         await JsRuntime!.InvokeVoidAsync("showOrHideMap", isOverviewVisible);
     }
 
-    private Task ShowSelectLocationModal()
+    private Task ShowChangeLocationModal()
     {
-        return selectLocationModal!.Show();
+        return changeLocationModal!.Show();
     }
 
     Location SelectedLocation

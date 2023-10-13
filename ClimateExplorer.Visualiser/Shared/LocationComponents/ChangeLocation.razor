@@ -4,9 +4,9 @@
 @using GeoCoordinatePortable
 
 <Modal @ref="modal">
-    <ModalContent>
+    <ModalContent Size="ModalSize.Large">
         <ModalHeader Background="Background.Light">
-            <ModalTitle>Select location</ModalTitle>
+            <ModalTitle>Change location</ModalTitle>
             <CloseButton />
         </ModalHeader>
         <ModalBody>
@@ -17,6 +17,7 @@
                 </Field>
             }
             <Field>
+                <FieldLabel>Click the "near me" button to find the station closest to you (the browser will ask to "know your location")</FieldLabel>
                 <Button Clicked="@FireUseCurrentLocation" Color="Color.Primary">Near me</Button>
 
                 @if (BrowserLocationErrorMessage != null)
@@ -27,6 +28,21 @@
                 }
             </Field>
             <Field> 
+            </Field>
+            <Field>
+                <FieldLabel>Free text search for a location</FieldLabel>
+                <Autocomplete TItem="Location"
+                              TValue="Guid"
+                              Data="@Locations"
+                              TextField="@((item) => item.FullTitle)"
+                              ValueField="@((item) => item.Id)"
+                              Placeholder="Search..."
+                              Filter="AutocompleteFilter.Contains"
+                              FreeTyping
+                              SelectedValueChanged="@OnLocationChange"
+                              >
+                     <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
+                 </Autocomplete>
             </Field>
             <Field>
                 <FieldLabel>Select a location from the list</FieldLabel>
