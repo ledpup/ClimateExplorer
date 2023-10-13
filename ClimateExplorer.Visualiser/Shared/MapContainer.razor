@@ -155,7 +155,7 @@
             var markerOption = markerOptions.Single(x => x.Alt == label);
             var marker = await this.LayerFactory.CreateMarkerAndAddToMap(new LatLng(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation ?? 0), map, markerOption);
 
-            await marker.BindTooltip(location.Name);
+            await marker.BindTooltip(location.FullTitle!);
             await marker.OnClick(async (MouseEvent mouseEvent) => await HandleMapMouseEvent(mouseEvent));
         }
 
