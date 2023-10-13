@@ -94,10 +94,10 @@ static void GenerateMapMarkers()
 {
     var fillColours = new List<string>
     {
-        "#053061",
-        "#2166AC",
+        "#053061", // negative
+        "#2166AC", // zero
 
-        "#ffffff",
+        "#ffffff", // 1
         "#ffffff",
         "#ffffd0",
         "#ffffd0",
@@ -105,9 +105,9 @@ static void GenerateMapMarkers()
         "#e4bd7d",
         "#ce7642",
         "#b2182b",
-        "#67001f",
+        "#67001f", // 9
 
-        "#007FFF",
+        "#D0D0D0", // ?
     };
 
     var textColours = new List<string>
