@@ -1,4 +1,5 @@
 ﻿using ClimateExplorer.Core.Model;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -37,15 +38,21 @@ public class Station
 
     [JsonIgnore]
     public string? Source { get; set; }
-    public static async Task<List<Station>?> GetStationsFromFiles(List<string> pathAndFileNames)
+    public static async Task<List<Station>> GetStationsFromFiles(List<string> pathAndFileNames)
     {
         var stations = new List<Station>();
         foreach (var pathAndFileName in pathAndFileNames)
         {
-            var text = await File.ReadAllTextAsync(pathAndFileName);
-            var list = JsonSerializer.Deserialize<List<Station>>(text);
+            var list = await GetStationsFromFile(pathAndFileName);
             stations.AddRange(list!);
         }
         return stations;
+    }
+
+    public static async Task<List<Station>> GetStationsFromFile(string pathAndFileName)
+    {
+        var text = await File.ReadAllTextAsync(pathAndFileName);
+        var list = JsonSerializer.Deserialize<List<Station>>(text)!;
+        return list;
     }
 }
