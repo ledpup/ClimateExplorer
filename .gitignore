@@ -364,3 +364,5 @@ FodyWeavers.xsd
 
 # Ignore the WebApi cache
 /ClimateExplorer.WebApi/cache
+!/ClimateExplorer.WebApi/cache/hash_1846914863.json
+!/ClimateExplorer.WebApi/cache/7e62d107-461a-4ef4-98db-9066f155938b.json
