@@ -32,7 +32,7 @@ public static class DataReader
 
     public static async Task<List<DataRecord>> GetDataRecords(
         MeasurementDefinition measurementDefinition, 
-        List<DataFileFilterAndAdjustment> dataFileFilterAndAdjustments)
+        List<DataFileFilterAndAdjustment>? dataFileFilterAndAdjustments)
     {
         if (dataFileFilterAndAdjustments == null)
         {
@@ -321,7 +321,7 @@ public static class DataReader
             index++;
             if (index >= dataRows.Length)
             {
-                throw new Exception("None of the data in the input file fits the regular expression.");
+                throw new FileLoadException("None of the data in the input file fits the regular expression.");
             }
         }
         return index;
