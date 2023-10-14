@@ -778,14 +778,6 @@
         "ValueAdjustment": null
       }
     ],
-    "6d89ebc4-042e-4c1d-8530-106e1eb54b2e": [
-      {
-        "Id": "CA006075420",
-        "StartDate": null,
-        "EndDate": null,
-        "ValueAdjustment": null
-      }
-    ],
     "8fb45806-96d4-4954-8c7b-3aa5cbcf1364": [
       {
         "Id": "CA006085700",
@@ -901,14 +893,6 @@
     "48e92d57-3b0b-46fd-ac71-467619cb27c3": [
       {
         "Id": "CA001060841",
-        "StartDate": null,
-        "EndDate": null,
-        "ValueAdjustment": null
-      }
-    ],
-    "6accb058-51e2-46c7-9238-b47070933fb0": [
-      {
-        "Id": "CA001066482",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -1162,14 +1146,6 @@
         "ValueAdjustment": null
       }
     ],
-    "2996f037-9df2-4a10-9260-9bbbf16d20b4": [
-      {
-        "Id": "CA005010481",
-        "StartDate": null,
-        "EndDate": null,
-        "ValueAdjustment": null
-      }
-    ],
     "1d5b5798-68b2-4001-89b7-017150aa158c": [
       {
         "Id": "CA005023261",
@@ -1197,14 +1173,6 @@
     "a00c4cb8-2bd9-4d79-b5cb-cfdf4eb736ec": [
       {
         "Id": "CA005052880",
-        "StartDate": null,
-        "EndDate": null,
-        "ValueAdjustment": null
-      }
-    ],
-    "77ec3347-1dd7-4f3d-8001-29759790b6e3": [
-      {
-        "Id": "CA005060595",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -1258,14 +1226,6 @@
         "ValueAdjustment": null
       }
     ],
-    "69517645-4b32-49f1-b895-2b1468acd347": [
-      {
-        "Id": "CA007103280",
-        "StartDate": null,
-        "EndDate": null,
-        "ValueAdjustment": null
-      }
-    ],
     "9105b94a-5478-4aba-80e4-2d4fb7576c33": [
       {
         "Id": "CA007103536",
@@ -1301,14 +1261,6 @@
     "05954e5d-2822-4b60-afbd-f4f13382d02f": [
       {
         "Id": "CA008206500",
-        "StartDate": null,
-        "EndDate": null,
-        "ValueAdjustment": null
-      }
-    ],
-    "43c67cd9-5b10-4819-943a-03b470b89a07": [
-      {
-        "Id": "CA008401705",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -3234,14 +3186,6 @@
         "ValueAdjustment": null
       }
     ],
-    "844f3e5f-f8af-4a18-b1be-570e868cdc37": [
-      {
-        "Id": "FIE00146062",
-        "StartDate": null,
-        "EndDate": null,
-        "ValueAdjustment": null
-      }
-    ],
     "fb991011-d13d-4f68-966a-6a982ace9fd7": [
       {
         "Id": "FIE00146698",
@@ -4405,14 +4349,6 @@
     "81472ce4-c2fd-4c06-b058-41ee511d24aa": [
       {
         "Id": "JOM00040310",
-        "StartDate": null,
-        "EndDate": null,
-        "ValueAdjustment": null
-      }
-    ],
-    "6da8e68d-b400-4020-a0be-b8ca202792e3": [
-      {
-        "Id": "JOM00040260",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -5741,14 +5677,6 @@
     "60da5648-a5e8-4460-9c17-52272410bc42": [
       {
         "Id": "RP000098232",
-        "StartDate": null,
-        "EndDate": null,
-        "ValueAdjustment": null
-      }
-    ],
-    "591a2058-7ab4-497a-a738-0900b0b71e06": [
-      {
-        "Id": "RP000098429",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -10802,14 +10730,6 @@
         "ValueAdjustment": null
       }
     ],
-    "184bbeee-186e-4fca-8979-28fe9eedbb3b": [
-      {
-        "Id": "USC00509015",
-        "StartDate": null,
-        "EndDate": null,
-        "ValueAdjustment": null
-      }
-    ],
     "fd8d52cc-156e-4dd1-864b-dc041110ff39": [
       {
         "Id": "USW00012918",
@@ -12250,14 +12170,6 @@
         "ValueAdjustment": null
       }
     ],
-    "51ef0f86-4b14-417b-adbc-e3316cb26f0a": [
-      {
-        "Id": "DRM00078479",
-        "StartDate": null,
-        "EndDate": null,
-        "ValueAdjustment": null
-      }
-    ],
     "0c876884-43b3-4374-898f-32be6da7ece8": [
       {
         "Id": "ECM00084179",
@@ -12285,14 +12197,6 @@
     "ee1ceaf1-dca0-49c3-8a01-5c3431751d09": [
       {
         "Id": "ECM00084088",
-        "StartDate": null,
-        "EndDate": null,
-        "ValueAdjustment": null
-      }
-    ],
-    "610d29d3-11ac-49f6-87d7-7a5bd21a1273": [
-      {
-        "Id": "EKM00064810",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
@@ -12709,14 +12613,6 @@
     "60136234-cd6a-412e-a856-0dd37865ed28": [
       {
         "Id": "NHM00091551",
-        "StartDate": null,
-        "EndDate": null,
-        "ValueAdjustment": null
-      }
-    ],
-    "9a73b7ee-65e2-4ee7-b62a-13ad7a9f4ca3": [
-      {
-        "Id": "NHM00091565",
         "StartDate": null,
         "EndDate": null,
         "ValueAdjustment": null
