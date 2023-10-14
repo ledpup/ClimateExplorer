@@ -4,9 +4,10 @@
 
 The data is sourced from:
 
+- [NOAA](https://www.noaa.gov/) United States of America's **National Oceanic and Atmospheric Administration**, a scientific and regulatory agency within the United States Department of Commerce
+- [NCEI](https://www.ncei.noaa.gov/) United States of America's **National Centers for Environmental Information** (NCEI), is a U.S. government agency that manages one of the world's largest archives of atmospheric, coastal, geophysical, and oceanic data. It is an office of NOAA, which operates under the U.S. Department of Commerce
 - [BOM](http://www.bom.gov.au/) Australia's **Bureau of Meteorology**
 - [NIWA](https://niwa.co.nz/) New Zealand's **National Institute of Water and Atmospheric Research** (maintains the [7-stations](https://niwa.co.nz/seven-stations) and [11-station](https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data) series)
-- [NOAA](https://www.noaa.gov/) United States of America's **National Oceanic and Atmospheric Administration**
 - [NSIDC](https://nsidc.org/home) United States of America's **National Snow & Ice Data Center**
 - [Met Office](https://www.metoffice.gov.uk/) United Kingdom's national weather service
 
