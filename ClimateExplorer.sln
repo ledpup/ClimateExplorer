@@ -30,6 +30,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Data.Ghcnm"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Data.IntegratedSurfaceData", "ClimateExplorer.Data.IntegratedSurfaceData\ClimateExplorer.Data.IntegratedSurfaceData.csproj", "{11D3C64B-C3DD-41F6-9CE9-D97C5FB72F51}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.Data.Ghcnm.Precipitation", "ClimateExplorer.Data.Ghcnm.Precipitation\ClimateExplorer.Data.Ghcnm.Precipitation.csproj", "{2F77C0C5-AB5E-4C04-9722-A5089C1CF23C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,6 +82,10 @@ Global
 		{11D3C64B-C3DD-41F6-9CE9-D97C5FB72F51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11D3C64B-C3DD-41F6-9CE9-D97C5FB72F51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11D3C64B-C3DD-41F6-9CE9-D97C5FB72F51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F77C0C5-AB5E-4C04-9722-A5089C1CF23C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F77C0C5-AB5E-4C04-9722-A5089C1CF23C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F77C0C5-AB5E-4C04-9722-A5089C1CF23C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F77C0C5-AB5E-4C04-9722-A5089C1CF23C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

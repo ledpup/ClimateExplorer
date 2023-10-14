@@ -321,6 +321,33 @@
     "DataLocationMapping": null
   },
   {
+    "Id": "6abb028a-29f6-481c-837e-1fc9c8e989af",
+    "Name": "Global Historical Climatology Network (GHCN) Monthly Precipitation",
+    "ShortName": null,
+    "Description": "The Global Historical Climatology Network (GHCN) Monthly Precipitation, Version 4 is a collection of worldwide monthly precipitation values offering significant enhancement over the previous version 2.  It contains more values both historically and for the most recent months.  Its methods for merging records and quality control have been modernized.",
+    "Publisher": "National Oceanic and Atmospheric Administration (NOAA)",
+    "PublisherUrl": "https://www.noaa.gov/",
+    "MoreInformationUrl": "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-monthly#tab-800",
+    "StationInfoUrl": null,
+    "LocationInfoUrl": null,
+    "DataDownloadUrl": null,
+    "MeasurementDefinitions": [
+      {
+        "DataType": "Rainfall",
+        "UnitOfMeasure": "Millimetres",
+        "DataResolution": "Monthly",
+        "DataAdjustment": null,
+        "RowDataType": "TwelveMonthsPerRow",
+        "FolderName": "Rainfall\\GHCNm",
+        "FileNameFormat": "[station].csv",
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4}),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B)$",
+        "NullValue": "-9999",
+        "ValueAdjustment": 10
+      }
+    ],
+    "DataLocationMapping": null
+  },
+  {
     "Id": "ffd5f5e2-d8df-4779-a7f4-f5d148505033",
     "Name": "Multivariate ENSO index (MEI)",
     "ShortName": "MEI.v2",

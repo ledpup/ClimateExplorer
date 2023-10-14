@@ -30,6 +30,7 @@ await DownloadAndExtract.DownloadAndExtractFile(httpClient, "https://www.ncei.no
 const string stationsFileCsv = @"SiteMetaData\stations.csv";
 const string preExistingLocationsFile = @"SiteMetaData\pre-existing-locations.json";
 const string stationsFileJson = @"Output\SiteMetaData\stations.json";
+const string selectedStationsFileJson = @"Output\SiteMetaData\selected-stations.json";
 
 var dataStations = await GetStationFromData("qcf");
 
@@ -107,7 +108,7 @@ selectedStations.ForEach(x =>
             });
     });
 
-var options = new JsonSerializerOptions
+var jsonSerializerOptions = new JsonSerializerOptions
 {
     WriteIndented = true,
     Converters =
@@ -115,15 +116,18 @@ var options = new JsonSerializerOptions
             new JsonStringEnumConverter()
         }
 };
+
+SaveStations(selectedStations, selectedStationsFileJson);
+
 Directory.CreateDirectory(@"Output\Location");
 Directory.CreateDirectory(@"Output\Station");
 Directory.CreateDirectory(@"Output\DataFileLocationMapping");
 
 var outputFileSuffix = "_ghcnm_adjusted";
 
-File.WriteAllText($@"Output\Location\Locations{outputFileSuffix}.json", JsonSerializer.Serialize(locations, options));
-File.WriteAllText($@"Output\Station\Stations{outputFileSuffix}.json", JsonSerializer.Serialize(selectedStations, options));
-File.WriteAllText($@"Output\DataFileLocationMapping\DataFileLocationMapping{outputFileSuffix}.json", JsonSerializer.Serialize(dataFileLocationMapping, options));
+File.WriteAllText($@"Output\Location\Locations{outputFileSuffix}.json", JsonSerializer.Serialize(locations, jsonSerializerOptions));
+File.WriteAllText($@"Output\Station\Stations{outputFileSuffix}.json", JsonSerializer.Serialize(selectedStations, jsonSerializerOptions));
+File.WriteAllText($@"Output\DataFileLocationMapping\DataFileLocationMapping{outputFileSuffix}.json", JsonSerializer.Serialize(dataFileLocationMapping, jsonSerializerOptions));
 
 
 

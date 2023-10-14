@@ -304,20 +304,34 @@ internal class DataSetDefinitionsBuilder
                         NullValue = "-9999",
                         ValueAdjustment = 100.0f,
                     },
-                    //new MeasurementDefinition
-                    //{
-                    //    DataType = DataType.Rainfall,
-                    //    UnitOfMeasure = UnitOfMeasure.Millimetres,
-                    //    DataResolution = DataResolution.Daily,
-                    //    DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),.*,D$",
-                    //    FolderName = @"Rainfall\NIWA",
-                    //    FileNameFormat = "[station]_rainfall.csv",
-                    //    NullValue = "-",
-                    //},
                 },
             },
 
-
+            new DataSetDefinition
+            {
+                Id = Guid.Parse("6ABB028A-29F6-481C-837E-1FC9C8E989AF"),
+                Name = "Global Historical Climatology Network (GHCN) Monthly Precipitation",
+                Description = "The Global Historical Climatology Network (GHCN) Monthly Precipitation, Version 4 is a collection of worldwide monthly precipitation values offering significant enhancement over the previous version 2.  It contains more values both historically and for the most recent months.  Its methods for merging records and quality control have been modernized.",
+                Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
+                PublisherUrl = "https://www.noaa.gov/",
+                MoreInformationUrl = "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-monthly#tab-800",
+                MeasurementDefinitions = new List<MeasurementDefinition>
+                {
+                    new MeasurementDefinition
+                    {
+                        DataAdjustment = null,
+                        DataType = DataType.Rainfall,
+                        UnitOfMeasure = UnitOfMeasure.Millimetres,
+                        DataResolution = DataResolution.Monthly,
+                        RowDataType = RowDataType.TwelveMonthsPerRow,
+                        DataRowRegEx = @"^(?<year>\d{4}),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+)$",
+                        FolderName = @"Rainfall\GHCNm",
+                        FileNameFormat = "[station].csv",
+                        NullValue = "-9999",
+                        ValueAdjustment = 10.0f,
+                    },
+                }
+            },
 
             new DataSetDefinition
             {
