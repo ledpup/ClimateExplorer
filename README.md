@@ -30,13 +30,13 @@ The data is sourced from:
   - Core: shared files between Visualiser, Analyser and WebApi
   - UnitTests: tests for various sub-systems
   - Analyser: console app for manipulating datasets... not used much
-- additional libraries used
+- Additional libraries used
   - https://github.com/Megabit/Blazorise
   - https://github.com/DP-projects/DPBlazorMap
   - https://github.com/AeonLucid/GeoCoordinate.NetStandard1
   - https://github.com/arivera12/BlazorCurrentDevice
   - https://www.nuget.org/packages/DBSCAN/ ([source](https://github.com/viceroypenguin/Dbscan))
-  - https://www.nuget.org/packages/Blazored.LocalStorage/ ([source]([https://github.com/viceroypenguin/Dbscan](https://github.com/Blazored/LocalStorage)))
+  - https://www.nuget.org/packages/Blazored.LocalStorage/ ([source](https://github.com/Blazored/LocalStorage))
 
 ## How to use
 
