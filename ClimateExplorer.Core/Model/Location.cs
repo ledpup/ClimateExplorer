@@ -120,7 +120,7 @@ public class Location : LocationBase
         {
             var destCoord = new GeoCoordinate(x.Coordinates.Latitude, x.Coordinates.Longitude, x.Coordinates.Elevation ?? 0);
             var distance = Math.Round(geoCoordinate.GetDistanceTo(destCoord) / 1000, 0); // GetDistanceTo is in metres. Convert to km
-            var bearing = GeometryHelpers.GetRhumbBearingFromPointToPoint(geoCoordinate, destCoord);
+            var bearing = Math.Round(GeometryHelpers.GetRhumbBearingFromPointToPoint(geoCoordinate, destCoord), 0);
 
             distances.Add(
                 new LocationDistance
