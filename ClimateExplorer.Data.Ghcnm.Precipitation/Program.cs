@@ -65,6 +65,8 @@ Directory.CreateDirectory(outputFolder);
 
 StreamWriter? writer = null;
 
+const int minimumYearsOfData = 10;
+
 foreach (var station in stations)
 {
     var dataFileFilterAndAdjustments = new List<DataFileFilterAndAdjustment>
@@ -88,8 +90,7 @@ foreach (var station in stations)
     
     if (dataRecords!.Any())
     {
-        stationsWithData.Add(station);
-        logger.LogInformation($"Precipitation data has been processed for {station.Id}. There are {dataRecords.Count} records. Will now save to a simplified file format into the output folder.");
+        logger.LogInformation($"Precipitation data has been loaded for {station.Id}. There are {dataRecords.Count} records. Will now save to a simplified file format into the output folder.");
 
         var fileName = $@"{outputFolder}{station.Id}.csv";
         if (File.Exists(fileName))
@@ -102,6 +103,7 @@ foreach (var station in stations)
         var year = dataRecords[0].Year;
         var month = 1;
         var values = new float[12];
+        var yearsOfData = 0;
 
         foreach (var record in dataRecords)
         {
@@ -129,6 +131,8 @@ foreach (var station in stations)
                     year++;
                     month = 1;
                     values = new float[12];
+
+                    yearsOfData++;
                 }
                 else
                 {
@@ -138,6 +142,16 @@ foreach (var station in stations)
         }
 
         writer!.Close();
+
+        if (yearsOfData < minimumYearsOfData)
+        {
+            logger.LogWarning($"{station.Id}: station only has {yearsOfData} years of data. We require at least {minimumYearsOfData} years of data. Station will be excluded from the dataset.");
+            File.Delete(fileName);
+        }
+        else
+        {
+            stationsWithData.Add(station);
+        }
     }
     else
     {
