@@ -1,6 +1,6 @@
 # Climate Explorer
 
-[Climate Explorer](https://www.climateexplorer.net/) is a website to help people understand climate change. It's focussed on trying to provide a simple and approachable interface for people to explore. It's available for Australian and New Zealand locations. The data is sourced from:
+[Climate Explorer](https://www.climateexplorer.net/) is a website to help people understand climate change. It's focussed on trying to provide a simple and approachable interface for people to explore the changes to climate in their region. The data is sourced from:
 
 - [BOM](http://www.bom.gov.au/) Australia's **Bureau of Meteorology**
 - [NIWA](https://niwa.co.nz/) New Zealand's **National Institute of Water and Atmospheric Research** (maintains the [7-stations](https://niwa.co.nz/seven-stations) and [11-station](https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data) series)
