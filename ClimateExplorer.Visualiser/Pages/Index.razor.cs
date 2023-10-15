@@ -10,6 +10,7 @@ using static ClimateExplorer.Core.Enums;
 using GeoCoordinatePortable;
 using ClimateExplorer.Visualiser.Shared.LocationComponents;
 using ClimateExplorer.Core.Model;
+using Blazorise.Snackbar;
 
 namespace ClimateExplorer.Visualiser.Pages;
 
@@ -29,6 +30,9 @@ public partial class Index : ChartablePage
 
     bool setupDefaultChartSeries;
     Guid oldLocationId = Guid.Empty;
+
+    Snackbar? snackbar;
+    string? snackbarContent;
 
     public Index()
     {
@@ -266,7 +270,8 @@ public partial class Index : ChartablePage
                         if (dsd == null)
                         {
                             // This data is not available for the new location. For now, just leave this series as is.
-                            // Probably kinder to the user if we show a warning of some kind.
+                            snackbarContent = $"The chart '{csd.GetFriendlyTitleShort()}' is not available at this location.";
+                            await snackbar!.Show();
                             chartView.ChartSeriesList.Remove(csd);
 
                             break;
