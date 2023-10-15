@@ -36,6 +36,12 @@
     <None Remove="MetaData\countries.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="cache\70a9af82-dd6f-41f4-af5f-b9701014bfeb.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cache\hash_1846914863.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Datasets\Rainfall.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
