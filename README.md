@@ -19,20 +19,24 @@ The data is sourced from:
 - [7-stations](https://niwa.co.nz/seven-stations) and [11-station](https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data) series are [NIWA](https://niwa.co.nz/)'s selection of stations for climate research 
 
 ## Technical
-- Built in [Visual Studio 2022 Community Edition](https://visualstudio.microsoft.com/vs/community/)
-- C#, .NET 7, Blazor
-- using
-  - https://github.com/Megabit/Blazorise
-  - https://github.com/DP-projects/DPBlazorMap
-  - https://github.com/AeonLucid/GeoCoordinate.NetStandard1
-  - https://github.com/arivera12/BlazorCurrentDevice
-  - https://www.nuget.org/packages/DBSCAN/ ([source](https://github.com/viceroypenguin/Dbscan))
+- Built in [Visual Studio 2022 Community Edition](https://visualstudio.microsoft.com/vs/community/) using
+  - .NET 7
+  - C#
+  - Blazor
+  - Minimal Web API
 - There are five projects:
   - Visualiser: Blazor website that displays the data to the user
   - WebApi: Web API that gets and processes the data that Visualiser uses
   - Core: shared files between Visualiser, Analyser and WebApi
   - UnitTests: tests for various sub-systems
   - Analyser: console app for manipulating datasets... not used much
+- Additional libraries used
+  - https://github.com/Megabit/Blazorise
+  - https://github.com/DP-projects/DPBlazorMap
+  - https://github.com/AeonLucid/GeoCoordinate.NetStandard1
+  - https://github.com/arivera12/BlazorCurrentDevice
+  - https://www.nuget.org/packages/DBSCAN/ ([source](https://github.com/viceroypenguin/Dbscan))
+  - https://www.nuget.org/packages/Blazored.LocalStorage/ ([source](https://github.com/Blazored/LocalStorage))
 
 ## How to use
 

@@ -28,6 +28,8 @@ public class Location : LocationBase
     }
     string? fullTitle;
 
+    public const int TitleMaximumLength = 17;
+
     [JsonIgnore]
     public string Title
     {
@@ -36,18 +38,18 @@ public class Location : LocationBase
             if (title != null)
                 return title;
 
-            if (Name.Length > 10 && Name.Length <= 20)
+            if (Name.Length > TitleMaximumLength - 10 && Name.Length <= TitleMaximumLength + 3)
             {
                 title = Name;
             }
-            else if (Name.Length > 20)
+            else if (Name.Length > TitleMaximumLength + 3)
             {
-                title = Name.Truncate(17);
+                title = Name.Truncate(TitleMaximumLength);
             }
             else
             {
                 title = Country == null ? Name : $"{Name}, {Country}";
-                if (Country != null && title.Length > 20)
+                if (Country != null && title.Length > TitleMaximumLength + 3)
                 {
                     var regex = new Regex(@"(?<country>.*)\s(?<owner>\[.*\])");
                     var match = regex.Match(Country);
@@ -57,7 +59,7 @@ public class Location : LocationBase
                         title = $"{Name}, {country}";
                     }
                 }
-                title = title.Truncate(17);
+                title = title.Truncate(TitleMaximumLength);
             }
             return title;
         }

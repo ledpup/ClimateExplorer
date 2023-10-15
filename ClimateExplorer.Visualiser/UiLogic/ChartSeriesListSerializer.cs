@@ -57,7 +57,7 @@ public static class ChartSeriesListSerializer
             .Where(x => x != null)
             .ToList();
 
-        logger.LogInformation("returning seriesList with " + seriesList.Count + "elements");
+        logger.LogInformation($"returning seriesList with {seriesList.Count} elements");
 
         return seriesList;
     }

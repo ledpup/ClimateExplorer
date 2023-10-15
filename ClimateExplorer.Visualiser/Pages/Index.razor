@@ -4,14 +4,21 @@
 @implements IDisposable
 
 @using Blazorise
+@using Blazorise.Snackbar
 @using ClimateExplorer.Core.DataPreparation
 @using static ClimateExplorer.Visualiser.UiModel.SuggestedPresetLists;
 @using static ClimateExplorer.Visualiser.Shared.Collapsible;
-@using ClimateExplorer.Visualiser.Shared.LocationComponents
+@using ClimateExplorer.Visualiser.Shared.LocationComponents;
 
 @inherits ChartablePage
 
 <PageTitle>@GetPageTitle()</PageTitle>
+
+<Snackbar @ref="snackbar" Color="SnackbarColor.Danger" Location="SnackbarLocation.Top" Interval="10000" Multiline="true">
+    <SnackbarBody>
+        @snackbarContent
+    </SnackbarBody>
+</Snackbar>
 
 <div style="flex-grow: 0">
     <Collapsible Title="Suggested charts" InitiallyShown="false" ShowTitleWhenExpanded="false" ContentLayoutType="CollapserContentLayoutTypes.FlexboxRow">

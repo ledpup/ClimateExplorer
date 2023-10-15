@@ -1,4 +1,6 @@
 ﻿@using Blazorise
+@using ClimateExplorer.Core.Model
+
 <div class="@("collapsible-panel " + (ContentLayoutType == CollapserContentLayoutTypes.Block 
                                                                     ? "block-layout" 
                                                                     : (ContentLayoutType == CollapserContentLayoutTypes.FlexboxColumns 
@@ -20,7 +22,7 @@
 
                 @if (ShowTitleWhenExpanded || !ShowContent)
                 {
-                    if (Title?.Length > 17 || FullTitle?.Length > 17)
+                if (Title?.Length > Location.TitleMaximumLength || FullTitle?.Length > Location.TitleMaximumLength)
                     {
                         <span class="tooltip-wrap">
                             @Title
