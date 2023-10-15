@@ -26,16 +26,22 @@
             <OverviewField Label="Location"><Value> <span><a href="@LocationMapUrl" target="_blank">@GeoLocationAsString</a></span></Value></OverviewField>
             <!--
             -->
-            <OverviewField Label="Warming index" PopupText="@WarmingIndexDescription"><Value>@(WarmingIndexAsString == null ? "NA" : WarmingIndexAsString)</Value></OverviewField>
+            @if (WarmingIndexAsString != null && WarmingIndexAsString != "NA")
+            {
+                <OverviewField Label="Warming index" PopupText="@WarmingIndexDescription"><Value>@(WarmingIndexAsString == null ? "NA" : WarmingIndexAsString)</Value></OverviewField>
+                <!--
+                -->
+                <OverviewField Label="Heating score" PopupText="@HeatingScoreDescription"><Value>@(Location!.HeatingScore == null ? "NA" : Location.HeatingScore)</Value></OverviewField>
+            }
             <!--
             -->
-            <OverviewField Label="Heating score" PopupText="@HeatingScoreDescription"><Value>@(Location == null ? "NA" : Location.HeatingScore)</Value></OverviewField>
-            <!--
-            -->
-            <OverviewField Label="Drying index"><Value>@(RainfallIndexAsString == null ? "NA" : RainfallIndexAsString)</Value></OverviewField>
+            @if (RainfallIndexAsString != null && RainfallIndexAsString != "NA")
+            {
+                <OverviewField Label="Drying index"><Value>@(RainfallIndexAsString == null ? "NA" : RainfallIndexAsString)</Value></OverviewField>
+            }
             <ClimateStripe UnitOfMeasure="UnitOfMeasure.DegreesCelsius" LocationName=@Location?.Name LocationMean=@TemperatureLocationMean DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange ShowInfo="true" />
             <WarmestYears DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
-            @if (rainfall)
+            @if (rainfall && RainfallLocationMean != null)
             {
                 <ClimateStripe UnitOfMeasure="UnitOfMeasure.Millimetres" LocationName=@Location?.Name LocationMean=@RainfallLocationMean DataRecords="@RainfallAnomalyRecords" OnYearFilterChange=HandleOnRainfallYearFilterChange ShowInfo="false" />
                 <DriestYears DataRecords="@RainfallAnomalyRecords" OnYearFilterChange=HandleOnRainfallYearFilterChange />
