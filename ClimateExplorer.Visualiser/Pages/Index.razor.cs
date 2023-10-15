@@ -46,6 +46,12 @@ public partial class Index : ChartablePage
 
     protected override async Task OnParametersSetAsync()
     {
+        if (Locations == null)
+        {
+            Logger!.LogError("OnParametersSetAsync(): Locations is null");
+            return;
+        }    
+
         Logger!.LogInformation("OnParametersSetAsync() " + NavManager!.Uri + " (NavigateTo)");
 
         Logger!.LogInformation("OnParametersSetAsync(): " + LocationId);
