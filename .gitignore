@@ -363,4 +363,8 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Ignore the WebApi cache
-/ClimateExplorer.WebApi/cache
+/ClimateExplorer.WebApi/cache/*
+
+# Include the locations cache because it takes some time to generate
+!/ClimateExplorer.WebApi/cache/hash_1846914863.json
+!/ClimateExplorer.WebApi/cache/70a9af82-dd6f-41f4-af5f-b9701014bfeb.json
