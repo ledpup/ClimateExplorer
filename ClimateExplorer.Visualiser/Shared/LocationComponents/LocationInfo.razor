@@ -9,7 +9,7 @@
 @using static ClimateExplorer.Core.Enums
 
 <LoadingIndicator @bind-Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
-    <Collapsible @ref="LocationCollapsible" Title="@Location?.Title" FullTitle="@Location?.FullTitle" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
+    <Collapsible @ref="LocationCollapsible" Title="@Location?.Title" FullTitle="@Location?.FullTitle" IsLongTitle="@Location?.IsLongTitle" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
         <HeaderContent>
             <span class="chart-controls" style="margin-left: 32px;">
                 <a class="chart-control" @onclick="() => ChangeLocationClicked(new EventArgs())"><i class="fas fa-map"></i> Change location</a>
