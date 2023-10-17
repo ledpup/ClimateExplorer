@@ -69,16 +69,6 @@ public class Location : LocationBase
             {
                 title = ShorterTitle;
             }
-            else if (Name.Length < 8)
-            {
-                elipsisApplied = true;
-                title = ShorterTitle.Truncate(TitleMaximumLength - 3);
-            }
-            else if (Name.Length > TitleMaximumLength)
-            {
-                elipsisApplied = true;
-                title = Name.Truncate(TitleMaximumLength - 3);
-            }
             else
             {
                 title = Name;
@@ -88,15 +78,6 @@ public class Location : LocationBase
         }
     }
     string? title;
-    bool elipsisApplied;
-
-    public bool IsLongTitle
-    {
-        get 
-        {
-            return elipsisApplied || Title.Length > TitleMaximumLength || FullTitle.Length > TitleMaximumLength;
-        }
-    }
 
     public static async Task<List<Location>> GetLocationsFromFile(string pathAndFileName)
     {
