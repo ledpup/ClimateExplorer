@@ -1,5 +1,4 @@
 ﻿using ClimateExplorer.Core;
-using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Core.DataPreparation;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
@@ -47,6 +46,7 @@ public class ChartSeriesDefinition
 
     // Transient view state
     public bool IsExpanded { get; set; }
+    public bool DataAvailable { get; internal set; } = true;
 
     public override string ToString()
     {
@@ -295,7 +295,7 @@ public class ChartSeriesDefinition
         return String.Join(" | ", segments);
     }
 
-    static string MapDataTypeToFriendlyName(DataType dataType)
+    public static string MapDataTypeToFriendlyName(DataType dataType)
     {
         return dataType switch
         {

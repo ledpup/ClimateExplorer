@@ -31,8 +31,7 @@ public partial class Index : ChartablePage
     bool setupDefaultChartSeries;
     Guid oldLocationId = Guid.Empty;
 
-    Snackbar? snackbar;
-    string? snackbarContent;
+    SnackbarStack? snackbar;
 
     public Index()
     {
@@ -169,7 +168,7 @@ public partial class Index : ChartablePage
         }
     }
 
-    string GetPageTitle()
+        string GetPageTitle()
     {
         var locationText = SelectedLocation == null ? "" : " - " + SelectedLocation.Name;
 
@@ -275,16 +274,17 @@ public partial class Index : ChartablePage
 
                         if (dsd == null)
                         {
-                            // This data is not available for the new location. For now, just leave this series as is.
-                            snackbarContent = $"The chart '{csd.GetFriendlyTitleShort()}' is not available at this location.";
-                            await snackbar!.Show();
-                            chartView.ChartSeriesList.Remove(csd);
+                            var dataType = ChartSeriesDefinition.MapDataTypeToFriendlyName(sss.MeasurementDefinition.DataType);
+                            await snackbar!.PushAsync($"{dataType} data is not available at {SelectedLocation.Name}", SnackbarColor.Warning);
+                            csd.DataAvailable = false;
 
                             break;
                         }
                         else
                         {
                             // This data IS available at the new location. Now, update the series accordingly.
+                            csd.DataAvailable = true;
+
                             sss.DataSetDefinition = dsd.DataSetDefinition!;
 
                             // Next, update the MeasurementDefinition. Look for a match on DataType and DataAdjustment

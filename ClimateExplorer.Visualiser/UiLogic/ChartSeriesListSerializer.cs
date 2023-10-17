@@ -85,6 +85,7 @@ public static class ChartSeriesListSerializer
                 IsExpanded = bool.Parse(segments[13]),
                 SeriesTransformation = ParseEnum<SeriesTransformations>(segments[14]),
                 GroupingThreshold = ParseNullableFloat(segments[15]),
+                DataAvailable = bool.Parse(segments[16]),
             };
     }
 
@@ -190,7 +191,8 @@ public static class ChartSeriesListSerializer
                 csd.Year,
                 csd.IsExpanded,
                 csd.SeriesTransformation,
-                csd.GroupingThreshold
+                csd.GroupingThreshold,
+                csd.DataAvailable
             );
     }
 

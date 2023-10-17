@@ -108,10 +108,12 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         {
             l.LogInformation("Not calling NavigationManager.NavigateTo().");
 
-            // Fetch the data required to render the selected data series
-            chartView.ChartSeriesWithData = await chartView.RetrieveDataSets(chartView.ChartSeriesList!);
+            var usableChartSeries = chartView.ChartSeriesList!.Where(x => x.DataAvailable);
 
-            l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + chartView.ChartSeriesWithData.Count + " entries.");
+            // Fetch the data required to render the selected data series
+            chartView.ChartSeriesWithData = await chartView.RetrieveDataSets(usableChartSeries);
+
+            l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + usableChartSeries.Count() + " entries.");
 
             // Render the series
             await chartView.HandleRedraw();
