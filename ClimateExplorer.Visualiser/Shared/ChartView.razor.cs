@@ -74,13 +74,13 @@ public partial class ChartView
     List<short>? SelectedYears { get; set; }
     List<short>? StartYears { get; set; }
     short EndYear { get; set; }
-    bool UseMostRecentStartYear { get; set; } = true;
+    ChartStartYears? ChartStartYear { get; set; } = ChartStartYears.FirstYear;
 
     ColourServer colours { get; set; } = new ColourServer();
 
     string? GroupingThresholdText { get; set; }
 
-    Filter? filter { get; set; }
+    YearFilter? yearFilter { get; set; }
 
     Modal? optionsModal { get; set; }
 
@@ -134,7 +134,7 @@ public partial class ChartView
 
     async Task ShowFilterModal()
     {
-        await filter!.Show();
+        await yearFilter!.Show();
     }
 
     private Task ShowChartOptionsInfo()
@@ -259,15 +259,15 @@ public partial class ChartView
 
     static ContainerAggregationFunctions MapSeriesAggregationOptionToBinAggregationFunction(SeriesAggregationOptions a)
     {
-        switch (a)
+        return a switch
         {
-            case SeriesAggregationOptions.Mean: return ContainerAggregationFunctions.Mean;
-            case SeriesAggregationOptions.Minimum: return ContainerAggregationFunctions.Min;
-            case SeriesAggregationOptions.Maximum: return ContainerAggregationFunctions.Max;
-            case SeriesAggregationOptions.Median: return ContainerAggregationFunctions.Median;
-            case SeriesAggregationOptions.Sum: return ContainerAggregationFunctions.Sum;
-            default: throw new NotImplementedException($"SeriesAggregationOptions {a}");
-        }
+            SeriesAggregationOptions.Mean => ContainerAggregationFunctions.Mean,
+            SeriesAggregationOptions.Minimum => ContainerAggregationFunctions.Min,
+            SeriesAggregationOptions.Maximum => ContainerAggregationFunctions.Max,
+            SeriesAggregationOptions.Median => ContainerAggregationFunctions.Median,
+            SeriesAggregationOptions.Sum => ContainerAggregationFunctions.Sum,
+            _ => throw new NotImplementedException($"SeriesAggregationOptions {a}"),
+        };
     }
 
     SeriesSpecification BuildDataPrepSeriesSpecification(SourceSeriesSpecification sss)
@@ -333,7 +333,7 @@ public partial class ChartView
 
         l.LogInformation("Calling BuildProcessedDataSets");
 
-        BuildProcessedDataSets(ChartSeriesWithData, UseMostRecentStartYear);
+        BuildProcessedDataSets(ChartSeriesWithData, ChartStartYear);
 
         subtitle =
             (ChartStartBin != null && ChartEndBin != null)
@@ -469,37 +469,6 @@ public partial class ChartView
         return trendlines;
     }
 
-    async Task OnSelectedYearsChanged(List<short> values)
-    {
-        if (!SelectedYears!.Any() && values.Count == 0)
-        {
-            SelectedBinGranularity = BinGranularities.ByYear;
-            await InvokeAsync(StateHasChanged);
-
-            RebuildChartSeriesListToReflectSelectedYears();
-
-            await BuildDataSets();
-            return;
-        }
-
-        var validValues = new List<short>();
-        foreach (var value in values)
-        {
-            if (DatasetYears!.Any(x => x == value))
-            {
-                validValues.Add(value);
-            }
-        }
-        SelectedYears = validValues;
-
-        SelectedBinGranularity = BinGranularities.ByMonthOnly;
-
-        await InvokeAsync(StateHasChanged);
-        RebuildChartSeriesListToReflectSelectedYears();
-
-        await BuildDataSets();
-    }
-
     void RebuildChartSeriesListToReflectSelectedYears()
     {
         var years = SelectedYears!.Any() ? SelectedYears!.Select(x => (short?)x).ToList() : new List<short?>() { null };
@@ -538,7 +507,7 @@ public partial class ChartView
         ChartSeriesList = newCsds;
     }
 
-    void BuildProcessedDataSets(List<SeriesWithData> chartSeriesWithData, bool useMostRecentStartYear = true)
+    void BuildProcessedDataSets(List<SeriesWithData> chartSeriesWithData, ChartStartYears? chartStartYear)
     {
         var l = new LogAugmenter(Logger!, "BuildProcessedDataSets");
 
@@ -648,7 +617,7 @@ public partial class ChartView
                         // Pass in the data available for plotting
                         preProcessedDataSets!,
                         // and the user's preferences about what x axis range they'd like plotted
-                        useMostRecentStartYear,
+                        chartStartYear,
                         SelectedStartYear!,
                         SelectedEndYear!);
 
@@ -846,11 +815,14 @@ public partial class ChartView
             return;
         }
 
-        var startYear = UseMostRecentStartYear
-            ? StartYears!.Last()
-            : SelectedStartYear != null
+        int startYear = ChartStartYear switch
+        {
+            ChartStartYears.LastYear => StartYears!.Last(),
+            ChartStartYears.FirstYear => StartYears!.First(),
+            _ => SelectedStartYear != null
                 ? Convert.ToInt16(SelectedStartYear)
-                : throw new NotImplementedException();
+                : throw new NotImplementedException(),
+        };
 
         var year = (short)(startYear + e.Index);
 
@@ -920,19 +892,22 @@ public partial class ChartView
         await HandleRedraw();
     }
 
-    async Task OnStartYearTextChanged(string text)
+    async Task OnStartYearTextChanged(string? text)
     {
         await ChangeStartYear(text, true);
     }
 
-    private async Task ChangeStartYear(string text, bool redraw)
+    private async Task ChangeStartYear(string? text, bool redraw)
     {
         SelectedStartYear = text;
-        UseMostRecentStartYear = false;
-        SliderStart = Convert.ToInt32(SelectedStartYear);
-        if (redraw)
+        ChartStartYear = null;
+        if (SelectedStartYear != null)
         {
-            await HandleRedraw();
+            SliderStart = Convert.ToInt32(SelectedStartYear);
+            if (redraw)
+            {
+                await HandleRedraw();
+            }
         }
     }
 
@@ -943,24 +918,31 @@ public partial class ChartView
 
     private async Task ChangeEndYear(string text, bool redraw)
     {
-        SelectedEndYear = text;
-        SliderEnd = Convert.ToInt32(SelectedEndYear);
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            SelectedEndYear = null;
+            SliderEnd = null;
+        }
+        else
+        {
+            SelectedEndYear = text;
+            SliderEnd = Convert.ToInt32(SelectedEndYear);
+        }
         if (redraw)
         {
             await HandleRedraw();
         }
     }
 
-    async Task OnUseMostRecentStartYearChanged(bool value)
+    async Task OnDynamicStartYearChanged(ChartStartYears? value)
     {
-        UseMostRecentStartYear = value;
-        if (value)
+        ChartStartYear = value;
+        if (value != null)
         {
             SliderStart = null;
             SelectedStartYear = null;
+            await HandleRedraw();
         }
-
-        await HandleRedraw();
     }
 
     void OnSelectedDayGroupingChanged(short value)
@@ -997,7 +979,7 @@ public partial class ChartView
 
     async Task OnClearFilter()
     {
-        UseMostRecentStartYear = true;
+        ChartStartYear = ChartStartYears.FirstYear;
         SelectedStartYear = null;
         SelectedEndYear = null;
         SliderStart = null;
@@ -1030,27 +1012,18 @@ public partial class ChartView
 
     string DayGroupingText(int dayGrouping)
     {
-        switch (dayGrouping)
+        return dayGrouping switch
         {
-            case 5:
-                return "Groups of 5 days (73 groups)";
-            case 7:
-                return "Groups of 7 days (52 groups)";
-            case 13:
-                return "Groups of 13 days (28 groups)";
-            case 14:
-                return "Groups of 14 days (26 groups)";
-            case 26:
-                return "Groups of 26 days (14 groups)";
-            case 28:
-                return "Groups of 28 days (13 groups)";
-            case 73:
-                return "Groups of 73 days (5 groups)";
-            case 91:
-                return "Groups of 91 days (4 groups)";
-            case 182:
-                return "Groups of 182 days (2 groups)";
-        }
-        throw new NotImplementedException(dayGrouping.ToString());
+            5 => "Groups of 5 days (73 groups)",
+            7 => "Groups of 7 days (52 groups)",
+            13 => "Groups of 13 days (28 groups)",
+            14 => "Groups of 14 days (26 groups)",
+            26 => "Groups of 26 days (14 groups)",
+            28 => "Groups of 28 days (13 groups)",
+            73 => "Groups of 73 days (5 groups)",
+            91 => "Groups of 91 days (4 groups)",
+            182 => "Groups of 182 days (2 groups)",
+            _ => throw new NotImplementedException(dayGrouping.ToString()),
+        };
     }
 }
