@@ -116,61 +116,58 @@ public partial class Index : ChartablePage
 
     private void SetUpDefaultCharts(Guid? locationId)
     {
-        var location = Locations!.Single(x => x.Id == locationId);
+        // Use Hobart as the basis for building the default chart. We want temperature and precipitation on the default chart, whether it's the first time the user has arrived
+        // at the website or when they return. Some locations won't have precipitation but we use the DataAvailable field to cope with that situation.
+        // Doing it this way, when the user navigates to another location that *does* have precipitation (without making any other changes to the selected data), we will detect it and put it on the chart.
+        var location = Locations!.Single(x => x.Id == Guid.Parse("aed87aa0-1d0c-44aa-8561-cde0fc936395"));
 
-        var tempMaxOrMean = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.TempMax, DataAdjustment.Adjusted, allowNullDataAdjustment: true, DataType.TempMean, throwIfNoMatch: true);
-        var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.Rainfall, null, allowNullDataAdjustment: true, throwIfNoMatch: false);
+        var tempMaxOrMean = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.TempMax, DataAdjustment.Adjusted, allowNullDataAdjustment: true, DataType.TempMean, throwIfNoMatch: true)!;
+        var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.Rainfall, null, allowNullDataAdjustment: true, throwIfNoMatch: true)!;
 
         if (chartView!.ChartSeriesList == null)
         {
             chartView.ChartSeriesList = new List<ChartSeriesDefinition>();
         }
 
-        if (tempMaxOrMean != null)
-        {
-            chartView.ChartSeriesList.Add(
-                new ChartSeriesDefinition()
-                {
-                    // TODO: remove if we're not going to default to average temperature
-                    //SeriesDerivationType = SeriesDerivationTypes.AverageOfMultipleSeries,
-                    //SourceSeriesSpecifications = new SourceSeriesSpecification[]
-                    //{
-                    //    SourceSeriesSpecification.BuildArray(location, tempMax)[0],
-                    //    SourceSeriesSpecification.BuildArray(location, tempMin)[0],
-                    //},
-                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMaxOrMean),
-                    Aggregation = SeriesAggregationOptions.Mean,
-                    BinGranularity = BinGranularities.ByYear,
-                    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                    SmoothingWindow = 20,
-                    Value = SeriesValueOptions.Value,
-                    Year = null
-                }
-            );
-        }
+        chartView.ChartSeriesList.Add(
+            new ChartSeriesDefinition()
+            {
+                // TODO: remove if we're not going to default to average temperature
+                //SeriesDerivationType = SeriesDerivationTypes.AverageOfMultipleSeries,
+                //SourceSeriesSpecifications = new SourceSeriesSpecification[]
+                //{
+                //    SourceSeriesSpecification.BuildArray(location, tempMax)[0],
+                //    SourceSeriesSpecification.BuildArray(location, tempMin)[0],
+                //},
+                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMaxOrMean),
+                Aggregation = SeriesAggregationOptions.Mean,
+                BinGranularity = BinGranularities.ByYear,
+                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                SmoothingWindow = 20,
+                Value = SeriesValueOptions.Value,
+                Year = null
+            }
+        );
 
-        if (rainfall != null)
-        {
-            chartView.ChartSeriesList.Add(
-                new ChartSeriesDefinition()
-                {
-                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, rainfall),
-                    Aggregation = SeriesAggregationOptions.Sum,
-                    BinGranularity = BinGranularities.ByYear,
-                    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                    SmoothingWindow = 20,
-                    Value = SeriesValueOptions.Value,
-                    Year = null
-                }
-            );
-        }
+        chartView.ChartSeriesList.Add(
+            new ChartSeriesDefinition()
+            {
+                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, rainfall),
+                Aggregation = SeriesAggregationOptions.Sum,
+                BinGranularity = BinGranularities.ByYear,
+                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                SmoothingWindow = 20,
+                Value = SeriesValueOptions.Value,
+                Year = null
+            }
+        );
     }
 
-        string GetPageTitle()
+    string GetPageTitle()
     {
-        var locationText = SelectedLocation == null ? "" : " - " + SelectedLocation.Name;
+        var locationText = SelectedLocation == null ? "" : " - " + SelectedLocation.FullTitle;
 
         string title = $"ClimateExplorer{locationText}";
 
