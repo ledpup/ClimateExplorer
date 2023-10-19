@@ -10,7 +10,7 @@
             <Content>
                 <div class="chart-and-controls">
                     <div class="chart-series-list-wrapper">
-                        <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
+                        <ChartSeriesListView ChartSeriesList="ChartSeriesList?.Where(x => x.DataAvailable).ToList()" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
 
                         <a class="add-series-button" @onclick="ShowAddDataSetModal">
                             <i class="fas fa-plus"></i> Add
@@ -123,20 +123,18 @@
     </ModalContent>
 </Modal>
 
-<Filter @ref="filter"
-        DatasetYears="@DatasetYears"
-        SelectedYears="@SelectedYears"
-        SelectedStartYear="@SelectedStartYear"
-        SelectedEndYear="@SelectedEndYear"
-        SelectedBinGranularity="@SelectedBinGranularity"
-        StartYears="@StartYears"
-        UseMostRecentStartYear="@UseMostRecentStartYear"
-        OnSelectedYearsChanged="@OnSelectedYearsChanged"
-        OnStartYearTextChanged="@OnStartYearTextChanged"
-        OnEndYearTextChanged="@OnEndYearTextChanged"
-        OnUseMostRecentStartYearChanged="@OnUseMostRecentStartYearChanged"
-        ShowRangeSlider=@EnableRangeSlider
-        OnShowRangeSliderChanged=@ShowRangeSliderChanged></Filter>
+<YearFilter @ref="yearFilter"
+            DatasetYears="@DatasetYears"
+            SelectedYears="@SelectedYears"
+            SelectedStartYear="@SelectedStartYear"
+            SelectedEndYear="@SelectedEndYear"
+            SelectedBinGranularity="@SelectedBinGranularity"
+            ChartStartYear="@ChartStartYear"
+            OnStartYearTextChanged="@OnStartYearTextChanged"
+            OnEndYearTextChanged="@OnEndYearTextChanged"
+            OnDynamicStartYearChanged="@OnDynamicStartYearChanged"
+            ShowRangeSlider=@EnableRangeSlider
+            OnShowRangeSliderChanged=@ShowRangeSliderChanged />
 
 @if (ChartOptionsText != null)
 {

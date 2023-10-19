@@ -70,6 +70,12 @@ public static class Enums
         Anomaly
     }
 
+    public enum ChartStartYears
+    {
+        FirstYear,
+        LastYear
+    }
+
     public static string UnitOfMeasureLabel(SeriesTransformations seriesTransformations, UnitOfMeasure unitOfMeasure, SeriesAggregationOptions seriesAggregationOptions, SeriesValueOptions seriesValueOptions)
     {
         var label = seriesTransformations switch

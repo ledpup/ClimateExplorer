@@ -19,26 +19,19 @@
             </Field>
 
             <Field>
-                <strong>
+                <FieldLabel>
                     Start year
-                </strong>
-                <Tooltip Text="@UseMostRecentStartYearToolTip">
-                    <Check TValue="bool" Checked="@UseMostRecentStartYear" CheckedChanged="@UseMostRecentStartYearChanged">@UseMostRecentStartYearLabel</Check>
-                </Tooltip>
-
-                @if (StartYearOptions != null)
-                {
-                    <FieldLabel>
-                        Or select a start year:
-                    </FieldLabel>
-
-                    <RadioGroup TValue="int" CheckedValue="@StartYearOption" CheckedValueChanged="@OnStartYearOptionChanged">
-                        @foreach (var option in StartYearOptions)
-                        {
-                            <Radio Value="@option.Key">@option.Value</Radio>
-                        }
-                    </RadioGroup>
-                }
+                </FieldLabel>
+                <RadioGroup TValue="ChartStartYears?" CheckedValue="@ChartStartYear" CheckedValueChanged="@DynamicStartYearChanged">
+                    <Tooltip Text="@FirstStartYearToolTip">
+                        <Radio TValue="ChartStartYears?" Value="@(ChartStartYears.FirstYear)">First start year in the data</Radio>
+                    </Tooltip>
+                    <Tooltip Text="@LastStartYearToolTip">
+                        <Radio TValue="ChartStartYears?" Value="@(ChartStartYears.LastYear)">Last start year in the data</Radio>
+                    </Tooltip>
+                </RadioGroup>
+            </Field>
+            <Field>
                 <FieldLabel>
                     Or enter a custom start year:
                 </FieldLabel>
@@ -51,7 +44,9 @@
                 </Validation>
             </Field>
             <Field>
-                <strong>End year</strong>
+                <FieldLabel>
+                    End year
+                </FieldLabel>
                 <Validation Validator="ValidateYear">
                     <TextEdit Text="@SelectedEndYearInternal" MaskType="MaskType.RegEx" EditMask="^[\d]*$" MaxLength="4" TextChanged="OnEndYearTextChangedInternal" />
                 </Validation>

@@ -174,7 +174,7 @@ public static class ChartLogic
 
     public static Tuple<BinIdentifier, BinIdentifier> GetBinRangeToPlotForGaplessRange(
         IEnumerable<DataSet> preProcessedDataSets,
-        bool useMostRecentStartYear,
+        ChartStartYears? chartStartYear,
         string selectedStartYear,
         string selectedEndYear)
     {
@@ -197,7 +197,13 @@ public static class ChartLogic
         var lastFirstBinAcrossAllDataSets = firstBinInEachDataSet.Max();
         var lastBinAcrossAllDataSets = lastBinInEachDataSet.Max();
 
-        var startBin = useMostRecentStartYear ? lastFirstBinAcrossAllDataSets : firstBinAcrossAllDataSets;
+        var startBin = chartStartYear switch
+        {
+            ChartStartYears.FirstYear => firstBinAcrossAllDataSets!,
+            ChartStartYears.LastYear => lastFirstBinAcrossAllDataSets!,
+            _ => firstBinAcrossAllDataSets!,
+        };
+
         var endBin = lastBinAcrossAllDataSets;
 
         if (userStartYear != null)
