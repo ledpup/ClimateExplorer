@@ -3,13 +3,13 @@
 @using Blazorise.Components
 @using Blazorise.Charts
 
-@if (ChartSeriesList == null || ChartSeriesList.Count == 0)
+@if (ChartSeriesListInternal == null || ChartSeriesListInternal.Count == 0)
 {
     <div class="no-datasets-active-message">No datasets active. Choose a chart preset or add a dataset.</div>
 }
 else
 {
-    @foreach (var cs in ChartSeriesList)
+    @foreach (var cs in ChartSeriesListInternal)
     {
         <ChartSeriesView 
             @key="@cs.Id"
@@ -27,6 +27,13 @@ else
 
     [Parameter]
     public EventCallback OnSeriesChanged { get; set; }
+
+    List<ChartSeriesDefinition>? ChartSeriesListInternal { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        ChartSeriesListInternal = ChartSeriesList?.Where(x => x.DataAvailable).ToList();
+    }
 
     async Task OnSeriesChangedInternal()
     {
