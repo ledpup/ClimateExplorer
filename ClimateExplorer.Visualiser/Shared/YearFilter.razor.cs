@@ -27,11 +27,6 @@ namespace ClimateExplorer.Visualiser.Shared
 
         public List<string> SelectedYearsText = new();
 
-        string FirstStartYearToolTip = @"If there is more than one dataset selected for the chart, we will ensure that the chart will begin with the earliest start year across the dataset.<br/>
-For example, rainfall data starts in 1870 and temperature data starts in 1910. With this selected, the chart will begin in 1870.";
-        string LastStartYearToolTip = @"If there is more than one dataset selected for the chart, we will ensure that the chart start year will be the most recent start year in the data.<br/>
-For example, rainfall data starts in 1870 and temperature data starts in 1910. With this selected, the chart will begin in 1910.";
-
         public string PopupText { get; set; } = @"<p>This dialog allows you to change the start and end years for the chart. For example, if you want to see the change in temperature/rainfall for the 20th century, you could set the end year to 2000.</p>
 <p><strong>Range slider</strong>: allows you to graphically increase and decrease the start and end year; or, by moving the slider within the extents, it allows you to change both start and end years at the same time, changing the range of years on the chart. For example, you could filter to only 30 years of data, between 1910 and 1940, then move the slider to another set of 30 years, between 1940 and 1970.</p>
 <p><strong>Dynamically set the start year of the chart to be the most recent start year across all the datasets on the chart</strong>: when this is checked, the start year for the chart will be the last start year found across the datasets. For example, Canberra's temperature records start in 1914. Canberra's rainfall records start in 1924. With the option checked, the chart will start in 1924 because that's the latest start year. The start year for the chart will dynamically adjust to whatever datasets are selected for viewing. This option is checked by default.<p>";
