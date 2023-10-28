@@ -37,7 +37,7 @@ public partial class RegionalAndGlobal : ChartablePage
             return;
         }
 
-        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, null, DataType.CO2, null, allowNullDataAdjustment: false, throwIfNoMatch: true);
+        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, null, DataType.CO2, null, throwIfNoMatch: true);
 
         chartView!.ChartSeriesList!.Add(
             new ChartSeriesDefinition()

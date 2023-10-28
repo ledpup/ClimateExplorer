@@ -4,6 +4,7 @@ using ClimateExplorer.Visualiser.UiModel;
 using ClimateExplorer.Core.DataPreparation;
 using System.Web;
 using static ClimateExplorer.Core.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClimateExplorer.Visualiser.UiLogic;
 
@@ -104,15 +105,37 @@ public static class ChartSeriesListSerializer
         string[] segments = s.Split(SeparatorsByLevel[3]);
 
         var dsd = dataSetDefinitions.Single(x => x.Id == Guid.Parse(segments[0]));
-        var dt = (DataType?)ParseNullableEnum<DataType>(segments[1]);
+        var dt = (Core.Enums.DataType?)ParseNullableEnum<Core.Enums.DataType>(segments[1]);
         var da = (DataAdjustment?)ParseNullableEnum<DataAdjustment>(segments[2]);
 
-        var md =
-            dsd.MeasurementDefinitions!
-            .SingleOrDefault(
-                x =>
-                    x.DataAdjustment == da &&
-                    (x.DataType == dt || x.DataType == Pages.Index.AlternateTempDataTypes(dt)));
+
+        var dataMatches = new List<DataSubstitute>
+        {
+            new DataSubstitute
+            {
+                DataType = (Core.Enums.DataType)dt,
+                DataAdjustment = da,
+            }
+        };
+        if (dt == Core.Enums.DataType.TempMax || dt == Core.Enums.DataType.TempMean)
+        {
+            dataMatches = DataSubstitute.StandardTemperatureDataMatches();
+        }
+
+        MeasurementDefinitionViewModel? md = null;
+        foreach (var match in dataMatches)
+        {
+            md = dsd.MeasurementDefinitions!
+                    .SingleOrDefault(
+                        x =>
+                            x.DataAdjustment == match.DataAdjustment &&
+                            x.DataType == match.DataType);
+
+            if (md != null)
+            {
+                break;
+            }
+        }
 
         if (md == null)
         {
