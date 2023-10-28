@@ -121,8 +121,8 @@ public partial class Index : ChartablePage
         // Doing it this way, when the user navigates to another location that *does* have precipitation (without making any other changes to the selected data), we will detect it and put it on the chart.
         var location = Locations!.Single(x => x.Id == Guid.Parse("aed87aa0-1d0c-44aa-8561-cde0fc936395"));
 
-        var tempMaxOrMean = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.TempMax, DataAdjustment.Adjusted, allowNullDataAdjustment: true, DataType.TempMean, throwIfNoMatch: true)!;
-        var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.Rainfall, null, allowNullDataAdjustment: true, throwIfNoMatch: true)!;
+        var tempMaxOrMean = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataSubstitute.StandardTemperatureDataMatches(), throwIfNoMatch: true)!;
+        var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.Rainfall, null, throwIfNoMatch: true)!;
 
         if (chartView!.ChartSeriesList == null)
         {
@@ -258,15 +258,27 @@ public partial class Index : ChartablePage
                         sss.LocationId = newValue;
                         sss.LocationName = SelectedLocation.Name;
 
+                        var dataMatches = new List<DataSubstitute>
+                        {
+                            new DataSubstitute
+                            {
+                                DataType = sss.MeasurementDefinition!.DataType,
+                                DataAdjustment = sss.MeasurementDefinition.DataAdjustment,
+                            }
+                        };
+
+                        // If the data type is max or mean temperature, pass through an accepted list of near matching data
+                        if (sss.MeasurementDefinition!.DataType == DataType.TempMax || sss.MeasurementDefinition!.DataType == DataType.TempMean)
+                        {
+                            dataMatches = DataSubstitute.StandardTemperatureDataMatches();
+                        }
+
                         // But: the new location may not have data of the requested type. Let's see if there is any.
                         var dsd =
                             DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
                                 DataSetDefinitions!,
                                 SelectedLocationId,
-                                sss.MeasurementDefinition!.DataType,
-                                sss.MeasurementDefinition.DataAdjustment,
-                                allowNullDataAdjustment: true,
-                                alternativeDataType: AlternateTempDataTypes(sss.MeasurementDefinition.DataType),
+                                dataMatches,
                                 throwIfNoMatch: false);
 
                         if (dsd == null)
@@ -385,19 +397,6 @@ public partial class Index : ChartablePage
         chartView.ChartSeriesList = draftList.CreateNewListWithoutDuplicates();
 
         await BuildDataSets();
-    }
-
-    public static DataType? AlternateTempDataTypes(DataType? dataType)
-    {
-        switch (dataType)
-        {
-            case DataType.TempMax:
-                return DataType.TempMean;
-            case DataType.TempMean:
-                return DataType.TempMax;
-            default:
-                return null;
-        }
     }
 
     protected override async Task UpdateComponents()

@@ -141,24 +141,21 @@
             return;
         }
 
-        await GetData(DataType.Rainfall, null, ContainerAggregationFunctions.Sum);
-        await GetData(DataType.TempMax, DataAdjustment.Adjusted, ContainerAggregationFunctions.Mean, DataType.TempMean);
+        await GetData(new List<DataSubstitute> { new DataSubstitute { DataType = DataType.Rainfall } }, ContainerAggregationFunctions.Sum);
+        await GetData(DataSubstitute.StandardTemperatureDataMatches(), ContainerAggregationFunctions.Mean);
 
         LocationLoadingIndicatorVisible = false;
 
         await base.OnParametersSetAsync();
     }
 
-    protected async Task GetData(DataType dataType, DataAdjustment? dataAdjustment, ContainerAggregationFunctions function, DataType? alternativeDataType = null)
+    protected async Task GetData(List<DataSubstitute> dataSubstitutes, ContainerAggregationFunctions function)
     {
         var measurementForLocation =
             DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
                 DataSetDefinitions!,
                 Location!.Id,
-                dataType,
-                dataAdjustment,
-                allowNullDataAdjustment: false,
-                alternativeDataType: alternativeDataType,
+                dataSubstitutes,
                 throwIfNoMatch: false);
 
         if (measurementForLocation != null)
@@ -221,13 +218,13 @@
 
             var index = IndexCalculator.CalculateIndex(series.DataRecords);
 
-            if (dataType == DataType.Rainfall)
+            if (dataSubstitutes.Any(x => x.DataType == DataType.Rainfall))
             {
                 RainfallIndexAsString = GetRainfallIndexAsString(index, measurementForLocation.MeasurementDefinition.UnitOfMeasure);
                 RainfallLocationMean = series.DataRecords.Average(x => x.Value);
                 RainfallAnomalyRecords = anomalyRecords;
             }
-            else if (dataType == DataType.TempMax || alternativeDataType == DataType.TempMean)
+            else if (dataSubstitutes.Any(x => x.DataType == DataType.TempMax))
             {
                 WarmingIndexAsString = GetWarmingIndexAsString(index, measurementForLocation.MeasurementDefinition.UnitOfMeasure);
                 WarmingIndexDescription = GenerateWarmingIndexDescription(index, measurementForLocation.MeasurementDefinition.UnitOfMeasure);
