@@ -62,11 +62,10 @@ public class DataSetDefinitionViewModel
         // If no exact match, try again, looking for the alternative data type
         if (!dsds.Any() && alternativeDataType != null)
         { 
-            dsds = dataSetDefinitions.Where(x => x.LocationIds != null
-                                     && x.LocationIds.Any(y => y == locationId)
-                                     && x.MeasurementDefinitions!.Any(y => y.DataType == alternativeDataType && y.DataAdjustment == dataAdjustment)
-                                     )
-                             .ToList();
+            dsds = dataSetDefinitions.Where(x =>    x.LocationIds != null
+                                                 && x.LocationIds.Any(y => y == locationId)
+                                                 && x.MeasurementDefinitions!.Any(y => y.DataType == alternativeDataType && y.DataAdjustment == dataAdjustment))
+                                        .ToList();
 
             // Found via alternative data type, so use that instead
             if (dsds.Any())
