@@ -28,6 +28,7 @@
     display: inline-block;
     position: relative;
     top: -5px;
+    user-select: none;
 }
 
     .chart-controls .chart-control i {
