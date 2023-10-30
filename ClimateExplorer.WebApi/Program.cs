@@ -169,8 +169,6 @@ async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool in
                         location.Id,
                         DataType.TempMax,
                         Enums.DataAdjustment.Adjusted,
-                        allowNullDataAdjustment: true,
-                        DataType.TempMean,
                         throwIfNoMatch: true);
 
                 // Next, request that dataset
@@ -215,15 +213,7 @@ async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool in
         // heatingScore is calculated across the full set of locations. If we've been asked for details on just one location, we don't calculate it.
         if (locationId == null)
         {
-            var maxWarmingIndex = locations.Max(x => x.WarmingIndex).Value;
-
-            locations
-                .ToList()
-                .ForEach(x => x.HeatingScore = x.WarmingIndex == null
-                                                    ? null
-                                                    : x.WarmingIndex > 0
-                                                            ? Convert.ToInt16(MathF.Round(x.WarmingIndex.Value / maxWarmingIndex * 9, 0))
-                                                            : Convert.ToInt16(MathF.Round(x.WarmingIndex.Value, 0)));
+            Location.SetHeatingScores(locations);
         }
     }
 

@@ -10,7 +10,7 @@
             <Content>
                 <div class="chart-and-controls">
                     <div class="chart-series-list-wrapper">
-                        <ChartSeriesListView ChartSeriesList="ChartSeriesList?.Where(x => x.DataAvailable).ToList()" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
+                        <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
 
                         <a class="add-series-button" @onclick="ShowAddDataSetModal">
                             <i class="fas fa-plus"></i> Add

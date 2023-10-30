@@ -22,13 +22,9 @@
                 <FieldLabel>
                     Start year
                 </FieldLabel>
-                <RadioGroup TValue="ChartStartYears?" CheckedValue="@ChartStartYear" CheckedValueChanged="@DynamicStartYearChanged">
-                    <Tooltip Text="@FirstStartYearToolTip">
-                        <Radio TValue="ChartStartYears?" Value="@(ChartStartYears.FirstYear)">First start year in the data</Radio>
-                    </Tooltip>
-                    <Tooltip Text="@LastStartYearToolTip">
-                        <Radio TValue="ChartStartYears?" Value="@(ChartStartYears.LastYear)">Last start year in the data</Radio>
-                    </Tooltip>
+                <RadioGroup TValue="ChartStartYears?" CheckedValue="@ChartStartYear" CheckedValueChanged="@DynamicStartYearChanged" Orientation="Orientation.Vertical">
+                    <Radio TValue="ChartStartYears?" Value="@(ChartStartYears.FirstYear)">First start year in the data</Radio>
+                    <Radio TValue="ChartStartYears?" Value="@(ChartStartYears.LastYear)">Last start year in the data</Radio>
                 </RadioGroup>
             </Field>
             <Field>
