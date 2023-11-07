@@ -112,12 +112,14 @@ public partial class ChartView
     ChartType InternalChartType { get; set; }
 
     public bool ChartLoadingIndicatorVisible;
+    public bool ChartLoadingErrored;
 
     protected override async Task OnInitializedAsync()
     {
         IsMobileDevice = await BlazorCurrentDeviceService!.Mobile();
 
         ChartLoadingIndicatorVisible = true;
+        ChartLoadingErrored = false;
 
         SelectedYears = new List<short>();
 
@@ -131,6 +133,10 @@ public partial class ChartView
         SliderMax = DateTime.Now.Year;
     }
 
+    protected override void OnParametersSet()
+    {
+        ChartLoadingErrored = false;
+    }
 
     async Task ShowFilterModal()
     {
@@ -292,68 +298,77 @@ public partial class ChartView
         if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0 || chart == null || chartTrendline == null)
         {
             l.LogInformation("Bailing early as no chart data available");
-
             return;
         }
 
-        LogChartSeriesList();
-
         await chart.Clear();
 
-        // We used to choose set ChartType to Bar if the user's selected chart type was bar or difference or rainfall,
-        // and line otherwise.
-        //
-        // Since v2, we now set ChartType to Bar if any series is of type Bar, and Line otherwise.
-        var newInternalChartType =
-            ChartSeriesWithData.Any(x => x.ChartSeries!.DisplayStyle == SeriesDisplayStyle.Bar)
-            ? ChartType.Bar
-            : ChartType.Line;
-
-        if (newInternalChartType != InternalChartType)
-        {
-            InternalChartType = newInternalChartType;
-
-            await chart.ChangeType(newInternalChartType);
-        }
-
-        colours = new ColourServer();
-
+        var title = string.Empty;
         var subtitle = string.Empty;
-
         List<ChartTrendlineData>? trendlines = null;
+        dynamic scales = new ExpandoObject();
 
-        var title = ChartLogic.BuildChartTitle(ChartSeriesWithData);
+        if (ChartLoadingErrored)
+        {
+            l.LogInformation("We have identified an error. Will not try to render the chart normally");
+            ChartLoadingIndicatorVisible = false;
+        }
+        else
+        {
 
-        // Data sets sometimes have internal gaps in data (i.e. years which have no data even though earlier
-        // and later years have data). Additionally, they may have external gaps in data if the overall period
-        // to be charted goes beyond the range of the available data in one particular data set.
-        //
-        // To ensure these gaps are handled correctly in the plotted chart, we build a new dataset that includes
-        // records for each missing year. Value is set to null for those records.
+            LogChartSeriesList();
 
-        l.LogInformation("Calling BuildProcessedDataSets");
+            // We used to choose set ChartType to Bar if the user's selected chart type was bar or difference or rainfall,
+            // and line otherwise.
+            //
+            // Since v2, we now set ChartType to Bar if any series is of type Bar, and Line otherwise.
+            var newInternalChartType =
+                ChartSeriesWithData.Any(x => x.ChartSeries!.DisplayStyle == SeriesDisplayStyle.Bar)
+                ? ChartType.Bar
+                : ChartType.Line;
 
-        BuildProcessedDataSets(ChartSeriesWithData, ChartStartYear);
+            if (newInternalChartType != InternalChartType)
+            {
+                InternalChartType = newInternalChartType;
 
-        subtitle =
-            (ChartStartBin != null && ChartEndBin != null)
-            ? ChartStartBin is YearBinIdentifier
-                ? $"{ChartStartBin.Label}-{ChartEndBin.Label}     {Convert.ToInt16(ChartEndBin.Label) - Convert.ToInt16(ChartStartBin.Label)} years"
-                : $"{ChartStartBin.Label}-{ChartEndBin.Label}"
-            : SelectedBinGranularity.ToFriendlyString();
+                await chart.ChangeType(newInternalChartType);
+            }
 
-        l.LogInformation("Calling AddDataSetsToGraph");
+            colours = new ColourServer();
 
-        trendlines = await AddDataSetsToChart();
+            title = ChartLogic.BuildChartTitle(ChartSeriesWithData);
 
-        l.LogInformation("Trendlines count: " + trendlines.Count);
+            // Data sets sometimes have internal gaps in data (i.e. years which have no data even though earlier
+            // and later years have data). Additionally, they may have external gaps in data if the overall period
+            // to be charted goes beyond the range of the available data in one particular data set.
+            //
+            // To ensure these gaps are handled correctly in the plotted chart, we build a new dataset that includes
+            // records for each missing year. Value is set to null for those records.
 
-        l.LogInformation("Calling AddLabels");
+            l.LogInformation("Calling BuildProcessedDataSets");
 
-        var labels = ChartBins!.Select(x => x.Label).ToArray();
-        await chart.AddLabels(labels);
+            BuildProcessedDataSets(ChartSeriesWithData, ChartStartYear);
 
-        dynamic scales = BuildChartScales();
+            subtitle =
+                (ChartStartBin != null && ChartEndBin != null)
+                ? ChartStartBin is YearBinIdentifier
+                    ? $"{ChartStartBin.Label}-{ChartEndBin.Label}     {Convert.ToInt16(ChartEndBin.Label) - Convert.ToInt16(ChartStartBin.Label)} years"
+                    : $"{ChartStartBin.Label}-{ChartEndBin.Label}"
+                : SelectedBinGranularity.ToFriendlyString();
+
+            l.LogInformation("Calling AddDataSetsToGraph");
+
+            trendlines = await AddDataSetsToChart();
+
+            l.LogInformation("Trendlines count: " + trendlines.Count);
+
+            l.LogInformation("Calling AddLabels");
+
+            var labels = ChartBins!.Select(x => x.Label).ToArray();
+            await chart.AddLabels(labels);
+
+            scales = BuildChartScales();
+        }
 
         object chartOptions = new
         {
