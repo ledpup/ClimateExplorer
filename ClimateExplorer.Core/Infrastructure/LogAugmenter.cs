@@ -1,10 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClimateExplorer.Core.Infrastructure
 {
@@ -25,7 +20,12 @@ namespace ClimateExplorer.Core.Infrastructure
 
         public void LogInformation(string s)
         {
-            _logger.LogInformation(_name + " " + _g + " " + s + " (" + _sw.Elapsed + ")");
+            _logger.LogInformation($"{_name} {_g} {s} ({_sw.Elapsed})", _name, _g, s, _sw.Elapsed);
+        }
+
+        public void LogError(string s)
+        {
+            _logger.LogError($"{_name} {_g} {s} ({_sw.Elapsed})", _name, _g, s, _sw.Elapsed);
         }
     }
 }

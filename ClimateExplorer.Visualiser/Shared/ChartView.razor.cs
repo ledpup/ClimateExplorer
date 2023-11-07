@@ -562,6 +562,11 @@ public partial class ChartView
                     .Select(x => x.Value)
                     .CalculateCentredMovingAverage(cs.ChartSeries.SmoothingWindow, 0.75f);
 
+                if (movingAverageValues.All(y => y == null))
+                {
+                    l.LogError("The moving average calculation has resulted in no data records with any values.");
+                }
+
                 // Now, join back to the original DataRecord set
                 var newDataRecords =
                     movingAverageValues
@@ -590,7 +595,7 @@ public partial class ChartView
             }
         }
 
-        l.LogInformation("done with moving average calculation");
+        l.LogInformation("done with moving average calculation");    
 
         // There must be exactly one bin granularity or else something odd's going on.
         var binGranularity = chartSeriesWithData.Select(x => x.ChartSeries!.BinGranularity).Distinct().Single();
@@ -720,7 +725,7 @@ public partial class ChartView
         };
 
         var axes = new List<string>();
-        foreach (var s in ChartSeriesList!)
+        foreach (var s in ChartSeriesList!.Where(x => x.DataAvailable))
         {
             var uom = s.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
             var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, uom, s.Aggregation);
