@@ -1,4 +1,5 @@
 ﻿using Blazorise;
+using Blazorise.Snackbar;
 using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
@@ -32,6 +33,8 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     protected IEnumerable<Location>? Locations { get; set; }
 
     protected Modal? addDataSetModal { get; set; }
+
+    protected SnackbarStack? snackbar;
 
     protected override async Task OnInitializedAsync()
     {
@@ -80,9 +83,10 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         // X axis being added more than once).
 
         var l = new LogAugmenter(Logger!, "BuildDataSets");
-        l.LogInformation("starting");
+        l.LogInformation("Starting");
 
         chartView!.ChartLoadingIndicatorVisible = true;
+        chartView!.ChartLoadingErrored = false;
         chartView.LogChartSeriesList();
 
         // Recalculate the URL
@@ -121,7 +125,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
             await UpdateComponents();
         }
 
-        l.LogInformation("leaving");
+        l.LogInformation("Leaving");
     }
 
     public void Dispose()
@@ -175,7 +179,16 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
                 chartView!.ChartSeriesList = csdList.ToList();
 
-                await BuildDataSets();
+                try
+                {
+                    await BuildDataSets();
+                }
+                catch (Exception)
+                {
+                    await snackbar!.PushAsync($"Failed to create the chart with the current settings", SnackbarColor.Danger);
+                    chartView!.ChartLoadingErrored = true;
+                    await chartView!.HandleRedraw();
+                }
 
                 if (stateChanged)
                 {

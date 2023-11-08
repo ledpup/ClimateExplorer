@@ -31,8 +31,6 @@ public partial class Index : ChartablePage
     bool setupDefaultChartSeries;
     Guid oldLocationId = Guid.Empty;
 
-    SnackbarStack? snackbar;
-
     public Index()
     {
         pageName = "location";

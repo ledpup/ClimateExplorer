@@ -93,6 +93,8 @@
 
     Guid? locationIdLastTimeOnParametersSetAsyncWasCalled;
 
+    DataType? TemperatureDataType { get; set; }
+
     const string HeatingScoreDescription = @"<p>The heating score is a number between 0 and 9. It is calculated by ordering all warming indexes across the locations in the dataset and scoring in sets of 10 <a href=""https://en.wikipedia.org/wiki/Percentile"" target=""_blank"">percentiles</a>.</p>
 <p>For example, the top ten 10% of warming indexes are scored as a 9, the bottom 10% are scored as 0.</p>
 <p>Negative warming indexes are scored differently; they use the warming index, rounded to zero decimal places as the score. This is to highlight any location that has not warmed.</p>
@@ -226,6 +228,7 @@
             }
             else if (dataSubstitutes.Any(x => x.DataType == DataType.TempMax))
             {
+                TemperatureDataType = series.DataType;
                 WarmingIndexAsString = GetWarmingIndexAsString(index, measurementForLocation.MeasurementDefinition.UnitOfMeasure);
                 WarmingIndexDescription = GenerateWarmingIndexDescription(index, measurementForLocation.MeasurementDefinition.UnitOfMeasure);
                 TemperatureLocationMean = series.DataRecords.Average(x => x.Value);
@@ -241,7 +244,7 @@
 
     public async Task HandleOnYearFilterChange(short year)
     {
-        var yearAndFilter = new YearAndDataTypeFilter(year) { DataType = DataType.TempMax };
+        var yearAndFilter = new YearAndDataTypeFilter(year) { DataType = TemperatureDataType };
         await OnYearFilterChange.InvokeAsync(yearAndFilter);
     }
 
