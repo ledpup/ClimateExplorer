@@ -27,8 +27,6 @@
                     </div>
                 }
             </Field>
-            <Field> 
-            </Field>
             <Field>
                 <FieldLabel>Free text search for a location</FieldLabel>
                 <Autocomplete TItem="Location"
@@ -40,10 +38,8 @@
                               Filter="AutocompleteFilter.Contains"
                               FreeTyping
                               SelectedValueChanged="@OnLocationChange"
-                              
-                              >
-                     <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
-                 </Autocomplete>
+                              MaxMenuHeight="400px"
+                              />
             </Field>
              @if (SelectedLocation != null && nearbyLocationCache != null && nearbyLocationCache!.ContainsKey(SelectedLocation.Id))
             {

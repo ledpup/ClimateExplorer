@@ -1,4 +1,6 @@
-﻿using static ClimateExplorer.Core.Enums;
+﻿using ClimateExplorer.Core.Model;
+using System.ComponentModel.DataAnnotations;
+using static ClimateExplorer.Core.Enums;
 
 namespace ClimateExplorer.Core.ViewModel;
 
@@ -33,67 +35,54 @@ public class DataSetDefinitionViewModel
     }
 
     public static DataSetAndMeasurementDefinition? GetDataSetDefinitionAndMeasurement(
-        IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, 
-        Guid? locationId, 
-        DataType dataType, 
-        DataAdjustment? dataAdjustment, 
-        bool allowNullDataAdjustment = false,
-        DataType? alternativeDataType = null,
-        bool throwIfNoMatch = true)
+            IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions,
+            Guid? locationId,
+            List<DataSubstitute> dataSubstitutes,
+            bool throwIfNoMatch = true)
     {
         var dsds = new List<DataSetDefinitionViewModel>();
+
+        Enums.DataType? dataType = null;
+        DataAdjustment? dataAdjustment = null;
 
         if (locationId == null)
         {
             // Reference data
-            dsds = dataSetDefinitions.Where(x =>    x.LocationIds == null
+            var dataMatch = dataSubstitutes.Single();
+            dataType = dataMatch.DataType;
+            dataAdjustment = dataMatch.DataAdjustment;
+            dsds = dataSetDefinitions.Where(x => x.LocationIds == null
                                                  && x.MeasurementDefinitions!.Any(y => y.DataType == dataType && y.DataAdjustment == dataAdjustment))
                                          .ToList();
         }
         else
         {
-            // Exact match first.
-            dsds = dataSetDefinitions.Where(x =>    x.LocationIds != null
-                                                 && x.LocationIds.Any(y => y == locationId)
-                                                 && x.MeasurementDefinitions!.Any(y => y.DataType == dataType && y.DataAdjustment == dataAdjustment))
-                                         .ToList();
-        }
-
-        // If no exact match, try again, looking for the alternative data type
-        if (!dsds.Any() && alternativeDataType != null)
-        { 
-            dsds = dataSetDefinitions.Where(x => x.LocationIds != null
-                                     && x.LocationIds.Any(y => y == locationId)
-                                     && x.MeasurementDefinitions!.Any(y => y.DataType == alternativeDataType && y.DataAdjustment == dataAdjustment)
-                                     )
-                             .ToList();
-
-            // Found via alternative data type, so use that instead
-            if (dsds.Any())
+            foreach (var dataMatch in dataSubstitutes)
             {
-                dataType = alternativeDataType.Value;
+                dataType = dataMatch.DataType;
+                dataAdjustment = dataMatch.DataAdjustment;
+                dsds = dataSetDefinitions.Where(x => x.LocationIds != null
+                                                  && x.LocationIds.Any(y => y == locationId)
+                                                  && x.MeasurementDefinitions!.Any(y => y.DataType == dataType && y.DataAdjustment == dataAdjustment))
+                                         .ToList();
+
+                // If we find a match, break out of the search (we need to order the matches on preference
+                if (dsds.Any())
+                {
+                    break;
+                }
             }
         }
 
-        // If no exact match
-        if (!dsds.Any() && allowNullDataAdjustment)
+        if (dataType == null && dataAdjustment == null)
         {
-            // If they did not specify a value for adjustment, try again, looking for "Adjusted". If they did specify
-            // a value, try again, looking for null.
-            dataAdjustment = (dataAdjustment == null) ? DataAdjustment.Adjusted : null;
-
-            dsds = dataSetDefinitions.Where(x =>   x.LocationIds != null
-                                                && x.LocationIds.Any(y => y == locationId)
-                                                && x.MeasurementDefinitions!.Any(y => y.DataType == dataType && y.DataAdjustment == dataAdjustment))
-                                     .ToList();
-            
+            throw new NullReferenceException("No dataType or dataAdjustment");
         }
-
-        if (!dsds.Any())
+        else if (!dsds.Any())
         {
             if (throwIfNoMatch)
             {
-                throw new Exception($"No matching dataset definition found with parameters: location ID = {locationId}, data type = {dataType} data adjustment {dataAdjustment}");
+                throw new Exception($"No matching dataset definition found with parameters: location ID = {locationId}, data type = {dataType}, data adjustment = {dataAdjustment}");
             }
             else
             {
@@ -106,11 +95,30 @@ public class DataSetDefinitionViewModel
 
         var md = dsd!.MeasurementDefinitions!.Single(x => x.DataType == dataType && x.DataAdjustment == dataAdjustment);
 
-        return 
+        return
             new DataSetAndMeasurementDefinition
             {
                 DataSetDefinition = dsd,
                 MeasurementDefinition = md
             };
+    }
+
+    public static DataSetAndMeasurementDefinition? GetDataSetDefinitionAndMeasurement(
+        IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions,
+        Guid? locationId,
+        Enums.DataType dataType,
+        DataAdjustment? dataAdjustment,
+        bool throwIfNoMatch = true)
+    {
+        var dataMatches = new List<DataSubstitute>
+        {
+            new DataSubstitute
+            {
+                DataType = dataType,
+                DataAdjustment = dataAdjustment,
+            }
+        };
+
+        return GetDataSetDefinitionAndMeasurement(dataSetDefinitions, locationId, dataMatches, throwIfNoMatch);
     }
 }

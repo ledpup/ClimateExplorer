@@ -31,9 +31,6 @@ public partial class Index : ChartablePage
     bool setupDefaultChartSeries;
     Guid oldLocationId = Guid.Empty;
 
-    Snackbar? snackbar;
-    string? snackbarContent;
-
     public Index()
     {
         pageName = "location";
@@ -117,61 +114,58 @@ public partial class Index : ChartablePage
 
     private void SetUpDefaultCharts(Guid? locationId)
     {
-        var location = Locations!.Single(x => x.Id == locationId);
+        // Use Hobart as the basis for building the default chart. We want temperature and precipitation on the default chart, whether it's the first time the user has arrived
+        // at the website or when they return. Some locations won't have precipitation but we use the DataAvailable field to cope with that situation.
+        // Doing it this way, when the user navigates to another location that *does* have precipitation (without making any other changes to the selected data), we will detect it and put it on the chart.
+        var location = Locations!.Single(x => x.Id == Guid.Parse("aed87aa0-1d0c-44aa-8561-cde0fc936395"));
 
-        var tempMaxOrMean = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.TempMax, DataAdjustment.Adjusted, allowNullDataAdjustment: true, DataType.TempMean, throwIfNoMatch: true);
-        var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.Rainfall, null, allowNullDataAdjustment: true, throwIfNoMatch: false);
+        var tempMaxOrMean = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataSubstitute.StandardTemperatureDataMatches(), throwIfNoMatch: true)!;
+        var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.Rainfall, null, throwIfNoMatch: true)!;
 
         if (chartView!.ChartSeriesList == null)
         {
             chartView.ChartSeriesList = new List<ChartSeriesDefinition>();
         }
 
-        if (tempMaxOrMean != null)
-        {
-            chartView.ChartSeriesList.Add(
-                new ChartSeriesDefinition()
-                {
-                    // TODO: remove if we're not going to default to average temperature
-                    //SeriesDerivationType = SeriesDerivationTypes.AverageOfMultipleSeries,
-                    //SourceSeriesSpecifications = new SourceSeriesSpecification[]
-                    //{
-                    //    SourceSeriesSpecification.BuildArray(location, tempMax)[0],
-                    //    SourceSeriesSpecification.BuildArray(location, tempMin)[0],
-                    //},
-                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMaxOrMean),
-                    Aggregation = SeriesAggregationOptions.Mean,
-                    BinGranularity = BinGranularities.ByYear,
-                    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                    SmoothingWindow = 20,
-                    Value = SeriesValueOptions.Value,
-                    Year = null
-                }
-            );
-        }
+        chartView.ChartSeriesList.Add(
+            new ChartSeriesDefinition()
+            {
+                // TODO: remove if we're not going to default to average temperature
+                //SeriesDerivationType = SeriesDerivationTypes.AverageOfMultipleSeries,
+                //SourceSeriesSpecifications = new SourceSeriesSpecification[]
+                //{
+                //    SourceSeriesSpecification.BuildArray(location, tempMax)[0],
+                //    SourceSeriesSpecification.BuildArray(location, tempMin)[0],
+                //},
+                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMaxOrMean),
+                Aggregation = SeriesAggregationOptions.Mean,
+                BinGranularity = BinGranularities.ByYear,
+                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                SmoothingWindow = 20,
+                Value = SeriesValueOptions.Value,
+                Year = null
+            }
+        );
 
-        if (rainfall != null)
-        {
-            chartView.ChartSeriesList.Add(
-                new ChartSeriesDefinition()
-                {
-                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, rainfall),
-                    Aggregation = SeriesAggregationOptions.Sum,
-                    BinGranularity = BinGranularities.ByYear,
-                    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                    SmoothingWindow = 20,
-                    Value = SeriesValueOptions.Value,
-                    Year = null
-                }
-            );
-        }
+        chartView.ChartSeriesList.Add(
+            new ChartSeriesDefinition()
+            {
+                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, rainfall),
+                Aggregation = SeriesAggregationOptions.Sum,
+                BinGranularity = BinGranularities.ByYear,
+                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                SmoothingWindow = 20,
+                Value = SeriesValueOptions.Value,
+                Year = null
+            }
+        );
     }
 
     string GetPageTitle()
     {
-        var locationText = SelectedLocation == null ? "" : " - " + SelectedLocation.Name;
+        var locationText = SelectedLocation == null ? "" : " - " + SelectedLocation.FullTitle;
 
         string title = $"ClimateExplorer{locationText}";
 
@@ -262,29 +256,42 @@ public partial class Index : ChartablePage
                         sss.LocationId = newValue;
                         sss.LocationName = SelectedLocation.Name;
 
+                        var dataMatches = new List<DataSubstitute>
+                        {
+                            new DataSubstitute
+                            {
+                                DataType = sss.MeasurementDefinition!.DataType,
+                                DataAdjustment = sss.MeasurementDefinition.DataAdjustment,
+                            }
+                        };
+
+                        // If the data type is max or mean temperature, pass through an accepted list of near matching data
+                        if (sss.MeasurementDefinition!.DataType == DataType.TempMax || sss.MeasurementDefinition!.DataType == DataType.TempMean)
+                        {
+                            dataMatches = DataSubstitute.StandardTemperatureDataMatches();
+                        }
+
                         // But: the new location may not have data of the requested type. Let's see if there is any.
                         var dsd =
                             DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
                                 DataSetDefinitions!,
                                 SelectedLocationId,
-                                sss.MeasurementDefinition!.DataType,
-                                sss.MeasurementDefinition.DataAdjustment,
-                                allowNullDataAdjustment: true,
-                                alternativeDataType: AlternateTempDataTypes(sss.MeasurementDefinition.DataType),
+                                dataMatches,
                                 throwIfNoMatch: false);
 
                         if (dsd == null)
                         {
-                            // This data is not available for the new location. For now, just leave this series as is.
-                            snackbarContent = $"The chart '{csd.GetFriendlyTitleShort()}' is not available at this location.";
-                            await snackbar!.Show();
-                            chartView.ChartSeriesList.Remove(csd);
+                            var dataType = ChartSeriesDefinition.MapDataTypeToFriendlyName(sss.MeasurementDefinition.DataType);
+                            await snackbar!.PushAsync($"{dataType} data is not available at {SelectedLocation.Name}", SnackbarColor.Warning);
+                            csd.DataAvailable = false;
 
                             break;
                         }
                         else
                         {
                             // This data IS available at the new location. Now, update the series accordingly.
+                            csd.DataAvailable = true;
+
                             sss.DataSetDefinition = dsd.DataSetDefinition!;
 
                             // Next, update the MeasurementDefinition. Look for a match on DataType and DataAdjustment
@@ -388,19 +395,6 @@ public partial class Index : ChartablePage
         chartView.ChartSeriesList = draftList.CreateNewListWithoutDuplicates();
 
         await BuildDataSets();
-    }
-
-    public static DataType? AlternateTempDataTypes(DataType? dataType)
-    {
-        switch (dataType)
-        {
-            case DataType.TempMax:
-                return DataType.TempMean;
-            case DataType.TempMean:
-                return DataType.TempMax;
-            default:
-                return null;
-        }
     }
 
     protected override async Task UpdateComponents()

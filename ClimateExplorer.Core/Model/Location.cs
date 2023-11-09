@@ -149,6 +149,37 @@ public class Location : LocationBase
 
         return distances;
     }
+
+    public static void SetHeatingScores(IEnumerable<Location> locations)
+    {
+        var locationsWithWarming = locations.Where(x => x?.WarmingIndex >= 0);
+        var numberOfLocations = locationsWithWarming.Count();
+        var locationsOrderedByWarming = locationsWithWarming.OrderByDescending(x => x.WarmingIndex);
+        var tenPercent = (int)MathF.Round(numberOfLocations * .1f, 0);
+        for (short i = 9; i >= 0; i--)
+        {
+            var nextTenPercent = locationsOrderedByWarming
+                .Where(x => x.HeatingScore == null)
+                .Take(tenPercent)
+                .ToList();
+
+            // In case there is a rounding error and slightly more than 10% left over, assign all the remaining to a score of zero
+            if (i == 0)
+            {
+                nextTenPercent = locationsOrderedByWarming
+                    .Where(x => x.HeatingScore == null)
+                    .ToList();
+            }
+
+            nextTenPercent.ForEach(x => x.HeatingScore = i);
+        }
+
+        // If the WarmingIndex is negative, use that as the HeatingScore, rounded to 0 decimal places
+        locations
+            .Where(x => x?.WarmingIndex < 0)
+            .ToList()
+            .ForEach(x => x.HeatingScore = (short)MathF.Round((float)x.WarmingIndex!, 0));
+    }
 }
 
 public class LocationDistance

@@ -1,23 +1,21 @@
 ﻿using Blazorise;
 using ClimateExplorer.Core.DataPreparation;
 using Microsoft.AspNetCore.Components;
+using static ClimateExplorer.Core.Enums;
 
 namespace ClimateExplorer.Visualiser.Shared
 {
-    public partial class Filter
+    public partial class YearFilter
     {
-        [Parameter] public bool UseMostRecentStartYear { get; set; }
-        [Parameter] public List<short>? StartYears { get; set; }
-
+        [Parameter] public ChartStartYears? ChartStartYear { get; set; }
         [Parameter] public List<short>? DatasetYears { get; set; }
         [Parameter] public List<short>? SelectedYears { get; set; }
         [Parameter] public string? SelectedStartYear { get; set; }
         [Parameter] public string? SelectedEndYear { get; set; }
         [Parameter] public BinGranularities SelectedBinGranularity { get; set; }
 
-        [Parameter] public EventCallback<bool> OnUseMostRecentStartYearChanged { get; set; }
-        [Parameter] public EventCallback<List<short>> OnSelectedYearsChanged { get; set; }
-        [Parameter] public EventCallback<string> OnStartYearTextChanged { get; set; }
+        [Parameter] public EventCallback<ChartStartYears?> OnDynamicStartYearChanged { get; set; }
+        [Parameter] public EventCallback<string?> OnStartYearTextChanged { get; set; }
         [Parameter] public EventCallback<string> OnEndYearTextChanged { get; set; }
         [Parameter] public EventCallback<bool?> OnShowRangeSliderChanged { get; set; }
         [Parameter] public bool? ShowRangeSlider { get; set; }
@@ -25,20 +23,9 @@ namespace ClimateExplorer.Visualiser.Shared
         public string? SelectedStartYearInternal { get; set; }
         public string? SelectedEndYearInternal { get; set; }
 
-
-        int StartYearOption = -1;
-
-        Dictionary<int, string>? StartYearOptions { get; set; }
-
         Modal? filterModal;
 
         public List<string> SelectedYearsText = new();
-
-        string UseMostRecentStartYearToolTip = @"If there is more than one dataset selected for the chart, and this is checked, we will ensure that the chart start year will be the most recent start year of the datasets.<br/>
-If unchecked, the chart start year will appear on the chart from the oldest start year.<br/>
-For example, rainfall data starts in 1870 and temperature data starts in 1910. Checked, the chart will begin in 1910. Unchecked, the chart will begin in 1870.";
-        
-        string UseMostRecentStartYearLabel = "Dynamically set the start year of the chart to be the most recent start year across all the datasets on the chart";
 
         public string PopupText { get; set; } = @"<p>This dialog allows you to change the start and end years for the chart. For example, if you want to see the change in temperature/rainfall for the 20th century, you could set the end year to 2000.</p>
 <p><strong>Range slider</strong>: allows you to graphically increase and decrease the start and end year; or, by moving the slider within the extents, it allows you to change both start and end years at the same time, changing the range of years on the chart. For example, you could filter to only 30 years of data, between 1910 and 1940, then move the slider to another set of 30 years, between 1940 and 1970.</p>
@@ -73,25 +60,7 @@ For example, rainfall data starts in 1870 and temperature data starts in 1910. C
 
             SelectedYearsText = new();
 
-            if (StartYears != null)
-            {
-                if (StartYearOptions == null || string.Join(',', StartYears) != string.Join(',', StartYearOptions.Values))
-                {
-                    StartYearOptions = new Dictionary<int, string>();
-                    for (var i = 0; i < StartYears.Count; i++)
-                    {
-                        StartYearOptions.Add(i, StartYears[i].ToString());
-                    }
-                    StartYearOption = -1;
-                }
-            }
-
             base.OnParametersSet();
-        }
-
-        async Task OnSelectedYearsChangedInternal(List<short> values)
-        {
-            await OnSelectedYearsChanged.InvokeAsync(values);
         }
 
         void ValidateYear(ValidatorEventArgs e)
@@ -107,7 +76,7 @@ For example, rainfall data starts in 1870 and temperature data starts in 1910. C
                     : ValidationStatus.Error;
         }
 
-        async Task OnStartYearTextChangedInternal(string text)
+        async Task OnStartYearTextChangedInternal(string? text)
         {
             if (SelectedStartYearInternal == text)
             {
@@ -115,10 +84,9 @@ For example, rainfall data starts in 1870 and temperature data starts in 1910. C
             }
 
             SelectedStartYearInternal = text;
-            if (text.Length == 0 || text.Length == 4)
+            if (text?.Length == 0 || text?.Length == 4)
             {
-                await UseMostRecentStartYearChanged(false);
-                StartYearOption = -1;
+                await DynamicStartYearChanged(null);
                 await OnStartYearTextChanged.InvokeAsync(text);
             }
         }
@@ -133,27 +101,15 @@ For example, rainfall data starts in 1870 and temperature data starts in 1910. C
             }
         }
 
-        async Task OnStartYearOptionChanged(int value)
+        async Task DynamicStartYearChanged(ChartStartYears? value)
         {
-            StartYearOption = value;
-            if (StartYearOption != -1)
-            {
-                await UseMostRecentStartYearChanged(false);
-                SelectedStartYearInternal = StartYearOptions![value];
-                await OnStartYearTextChanged.InvokeAsync(StartYearOptions[value]);
-            }
-        }
-
-        async Task UseMostRecentStartYearChanged(bool value)
-        {
-            UseMostRecentStartYear = value;
-            if (UseMostRecentStartYear)
+            ChartStartYear = value;
+            if (ChartStartYear != null)
             {
                 SelectedStartYearInternal = null;
                 await OnStartYearTextChanged.InvokeAsync(SelectedStartYearInternal);
-                StartYearOption = -1;
             }
-            await OnUseMostRecentStartYearChanged.InvokeAsync(value);
+            await OnDynamicStartYearChanged.InvokeAsync(value);
         }
 
         async Task ShowRangeSliderChanged(bool? value)

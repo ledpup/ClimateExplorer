@@ -1,7 +1,6 @@
 ﻿using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
-using ClimateExplorer.Visualiser.Shared;
 using static ClimateExplorer.Core.Enums;
 
 namespace ClimateExplorer.Visualiser.UiModel;
@@ -23,16 +22,16 @@ public static class SuggestedPresetLists
             throw new Exception();
         }
 
-        var tempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataType.TempMax, DataAdjustment.Adjusted, allowNullDataAdjustment: true, DataType.TempMean, throwIfNoMatch: false);
-        var tempMaxUnadjusted = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataType.TempMax, DataAdjustment.Unadjusted, allowNullDataAdjustment: false, DataType.TempMean, throwIfNoMatch: false);
-        var tempMaxUnadjustedOrUnspecified = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataType.TempMax, DataAdjustment.Unadjusted, allowNullDataAdjustment: true, DataType.TempMean, throwIfNoMatch: false);
+        var temperature = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataSubstitute.StandardTemperatureDataMatches(), throwIfNoMatch: false);
+        var tempAdjusted = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataSubstitute.AdjustedTemperatureDataMatches(), throwIfNoMatch: false);
+        var tempUnadjusted = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataSubstitute.UnadjustedTemperatureDataMatches(), throwIfNoMatch: false);
 
         var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataType.Rainfall, null, throwIfNoMatch: false);
         var solarRadiation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataType.SolarRadiation, null, throwIfNoMatch: false);
-        var tempMin = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataType.TempMin, DataAdjustment.Adjusted, allowNullDataAdjustment: true, throwIfNoMatch: false);
-        var tempMinUnadjusted = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataType.TempMin, DataAdjustment.Unadjusted, allowNullDataAdjustment: false, throwIfNoMatch: false);
+        var tempMin = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataType.TempMin, DataAdjustment.Adjusted, throwIfNoMatch: false);
+        var tempMinUnadjusted = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataType.TempMin, DataAdjustment.Unadjusted, throwIfNoMatch: false);
 
-        var nino34 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.Nino34, null, allowNullDataAdjustment: true, throwIfNoMatch: true);
+        var nino34 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.Nino34, null, throwIfNoMatch: true);
 
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
@@ -45,7 +44,7 @@ public static class SuggestedPresetLists
                     new ChartSeriesDefinition()
                     {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax!),
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
                         Aggregation = SeriesAggregationOptions.Mean,
                         BinGranularity = BinGranularities.ByYear,
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -154,7 +153,7 @@ public static class SuggestedPresetLists
                         new ChartSeriesDefinition()
                         {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax!),
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
                         Aggregation = SeriesAggregationOptions.Mean,
                         BinGranularity = BinGranularities.ByYear,
                         Smoothing = SeriesSmoothingOptions.None,
@@ -177,7 +176,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax!),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
                                         ShowTrendline = true,
@@ -198,7 +197,7 @@ public static class SuggestedPresetLists
                                 new ChartSeriesDefinition()
                                 {
                                     SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax!),
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempAdjusted!),
                                     Aggregation = SeriesAggregationOptions.Mean,
                                     BinGranularity = BinGranularities.ByYear,
                                     ShowTrendline = false,
@@ -210,7 +209,7 @@ public static class SuggestedPresetLists
                                 new ChartSeriesDefinition()
                                 {
                                     SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMaxUnadjusted!),
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempUnadjusted!),
                                     Aggregation = SeriesAggregationOptions.Mean,
                                     BinGranularity = BinGranularities.ByYear,
                                     ShowTrendline = false,
@@ -231,7 +230,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMaxUnadjustedOrUnspecified!),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYearAndMonth,
                                         ShowTrendline = false,
@@ -269,30 +268,30 @@ public static class SuggestedPresetLists
                         {
                             new ChartSeriesDefinition()
                             {
-                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMax!),
-                            Aggregation = SeriesAggregationOptions.Sum,
-                            BinGranularity = BinGranularities.ByYear,
-                            Smoothing = SeriesSmoothingOptions.MovingAverage,
-                            SmoothingWindow = 20,
-                            Value = SeriesValueOptions.Value,
-                            Year = null,
-                            DisplayStyle = SeriesDisplayStyle.Line,
-                            SeriesTransformation = SeriesTransformations.EqualOrAbove35,
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
+                                Aggregation = SeriesAggregationOptions.Sum,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 20,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                SeriesTransformation = SeriesTransformations.EqualOrAbove35,
                             },
                             new ChartSeriesDefinition()
                             {
-                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMin!),
-                            Aggregation = SeriesAggregationOptions.Sum,
-                            BinGranularity = BinGranularities.ByYear,
-                            Smoothing = SeriesSmoothingOptions.MovingAverage,
-                            SmoothingWindow = 20,
-                            Value = SeriesValueOptions.Value,
-                            Year = null,
-                            DisplayStyle = SeriesDisplayStyle.Line,
-                            SeriesTransformation = SeriesTransformations.IsFrosty,
-                        }
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMin!),
+                                Aggregation = SeriesAggregationOptions.Sum,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 20,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                SeriesTransformation = SeriesTransformations.IsFrosty,
+                            }
                         },
                 Variants = new List<SuggestedChartPresetModel>()
                         {
@@ -344,23 +343,23 @@ public static class SuggestedPresetLists
 
         // This has been hacked in to be able to support a location group as a location ID. This needs to be refactored to support more than one location group
         // when we expand to other regions
-        var tempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), DataType.TempMax, DataAdjustment.Adjusted, true, throwIfNoMatch: false);
-        var tempMaxUnadjusted = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), DataType.TempMax, DataAdjustment.Unadjusted, true, throwIfNoMatch: false);
-        var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), DataType.Rainfall, null, true, throwIfNoMatch: false);
+        var tempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), DataType.TempMax, DataAdjustment.Adjusted, throwIfNoMatch: false);
+        var tempMaxUnadjusted = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), DataType.TempMax, DataAdjustment.Unadjusted, throwIfNoMatch: false);
+        var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), DataType.Rainfall, null, throwIfNoMatch: false);
 
-        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.CO2, null, false, throwIfNoMatch: true);
-        var ch4 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.CH4, null, false, throwIfNoMatch: true);
-        var n2o = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.N2O, null, false, throwIfNoMatch: true);
+        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.CO2, null, throwIfNoMatch: true);
+        var ch4 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.CH4, null, throwIfNoMatch: true);
+        var n2o = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.N2O, null, throwIfNoMatch: true);
 
-        var northSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.NorthSeaIce, null, false, throwIfNoMatch: true);
-        var southSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.SouthSeaIce, null, false, throwIfNoMatch: true);
-        var greenland = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.GreenlandIceMelt, null, false, throwIfNoMatch: true);
+        var northSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.NorthSeaIce, null, throwIfNoMatch: true);
+        var southSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.SouthSeaIce, null, throwIfNoMatch: true);
+        var greenland = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.GreenlandIceMelt, null, throwIfNoMatch: true);
 
-        var nino34 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.Nino34, null, false, throwIfNoMatch: true);
-        var oni = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.ONI, null, false, throwIfNoMatch: true);
-        var soi = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.SOI, null, false, throwIfNoMatch: true);
-        var mei = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.MEIv2, null, false, throwIfNoMatch: true);
-        var iod = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.IOD, null, false, throwIfNoMatch: true);
+        var nino34 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.Nino34, null, throwIfNoMatch: true);
+        var oni = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.ONI, null, throwIfNoMatch: true);
+        var soi = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.SOI, null, throwIfNoMatch: true);
+        var mei = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.MEIv2, null, throwIfNoMatch: true);
+        var iod = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.IOD, null, throwIfNoMatch: true);
 
 
         suggestedPresets.Add(

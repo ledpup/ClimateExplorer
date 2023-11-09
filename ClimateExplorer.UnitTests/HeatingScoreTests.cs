@@ -1,0 +1,78 @@
+﻿using ClimateExplorer.Core.Model;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ClimateExplorer.UnitTests;
+
+[TestClass]
+public class HeatingScoreTests
+{
+    [TestMethod]
+    public void CategoriseStandardScores()
+    {
+        var locations = new List<Location>();
+        for (int i = 0; i < 20; i++) {
+            locations.Add(new Location
+            {
+                Id = Guid.Empty,
+                Name = "Unknown",
+                Coordinates = new Coordinates(),
+                CountryCode = "UU",
+                WarmingIndex = .1f * i,
+            });
+        }
+
+        Location.SetHeatingScores(locations);
+
+        for (short i = 0; i < 10; i++)
+        {
+            Assert.AreEqual(2, locations.Count(x => x.HeatingScore == i));
+        }
+        Assert.IsTrue(!locations.Any(x => x.HeatingScore > 9));
+        Assert.IsTrue(!locations.Any(x => x.HeatingScore < 0));
+    }
+
+    [TestMethod]
+    public void NullWarmingIndex()
+    {
+        var locations = new List<Location>
+        {
+            new Location
+            {
+                Id = Guid.Empty,
+                Name = "Unknown",
+                Coordinates = new Coordinates(),
+                CountryCode = "UU",
+                WarmingIndex = null,
+            }
+        };
+
+        Location.SetHeatingScores(locations);
+
+        Assert.IsTrue(locations.All(x => x.HeatingScore == null));
+    }
+
+    [TestMethod]
+    public void NegativeWarmingIndex()
+    {
+        var locations = new List<Location>
+        {
+            new Location
+            {
+                Id = Guid.Empty,
+                Name = "Unknown",
+                Coordinates = new Coordinates(),
+                CountryCode = "UU",
+                WarmingIndex = -.6f,
+            }
+        };
+
+        Location.SetHeatingScores(locations);
+
+        Assert.IsTrue(locations.All(x => x.HeatingScore == -1));
+    }
+}

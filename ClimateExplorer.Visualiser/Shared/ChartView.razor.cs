@@ -74,13 +74,13 @@ public partial class ChartView
     List<short>? SelectedYears { get; set; }
     List<short>? StartYears { get; set; }
     short EndYear { get; set; }
-    bool UseMostRecentStartYear { get; set; } = true;
+    ChartStartYears? ChartStartYear { get; set; } = ChartStartYears.FirstYear;
 
     ColourServer colours { get; set; } = new ColourServer();
 
     string? GroupingThresholdText { get; set; }
 
-    Filter? filter { get; set; }
+    YearFilter? yearFilter { get; set; }
 
     Modal? optionsModal { get; set; }
 
@@ -112,12 +112,14 @@ public partial class ChartView
     ChartType InternalChartType { get; set; }
 
     public bool ChartLoadingIndicatorVisible;
+    public bool ChartLoadingErrored;
 
     protected override async Task OnInitializedAsync()
     {
         IsMobileDevice = await BlazorCurrentDeviceService!.Mobile();
 
         ChartLoadingIndicatorVisible = true;
+        ChartLoadingErrored = false;
 
         SelectedYears = new List<short>();
 
@@ -131,10 +133,14 @@ public partial class ChartView
         SliderMax = DateTime.Now.Year;
     }
 
+    protected override void OnParametersSet()
+    {
+        ChartLoadingErrored = false;
+    }
 
     async Task ShowFilterModal()
     {
-        await filter!.Show();
+        await yearFilter!.Show();
     }
 
     private Task ShowChartOptionsInfo()
@@ -212,7 +218,7 @@ public partial class ChartView
         await BuildDataSets();
     }
 
-    public async Task<List<SeriesWithData>> RetrieveDataSets(List<ChartSeriesDefinition> chartSeriesList)
+    public async Task<List<SeriesWithData>> RetrieveDataSets(IEnumerable<ChartSeriesDefinition> chartSeriesList)
     {
         var datasetsToReturn = new List<SeriesWithData>();
 
@@ -259,15 +265,15 @@ public partial class ChartView
 
     static ContainerAggregationFunctions MapSeriesAggregationOptionToBinAggregationFunction(SeriesAggregationOptions a)
     {
-        switch (a)
+        return a switch
         {
-            case SeriesAggregationOptions.Mean: return ContainerAggregationFunctions.Mean;
-            case SeriesAggregationOptions.Minimum: return ContainerAggregationFunctions.Min;
-            case SeriesAggregationOptions.Maximum: return ContainerAggregationFunctions.Max;
-            case SeriesAggregationOptions.Median: return ContainerAggregationFunctions.Median;
-            case SeriesAggregationOptions.Sum: return ContainerAggregationFunctions.Sum;
-            default: throw new NotImplementedException($"SeriesAggregationOptions {a}");
-        }
+            SeriesAggregationOptions.Mean => ContainerAggregationFunctions.Mean,
+            SeriesAggregationOptions.Minimum => ContainerAggregationFunctions.Min,
+            SeriesAggregationOptions.Maximum => ContainerAggregationFunctions.Max,
+            SeriesAggregationOptions.Median => ContainerAggregationFunctions.Median,
+            SeriesAggregationOptions.Sum => ContainerAggregationFunctions.Sum,
+            _ => throw new NotImplementedException($"SeriesAggregationOptions {a}"),
+        };
     }
 
     SeriesSpecification BuildDataPrepSeriesSpecification(SourceSeriesSpecification sss)
@@ -292,68 +298,77 @@ public partial class ChartView
         if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0 || chart == null || chartTrendline == null)
         {
             l.LogInformation("Bailing early as no chart data available");
-
             return;
         }
 
-        LogChartSeriesList();
-
         await chart.Clear();
 
-        // We used to choose set ChartType to Bar if the user's selected chart type was bar or difference or rainfall,
-        // and line otherwise.
-        //
-        // Since v2, we now set ChartType to Bar if any series is of type Bar, and Line otherwise.
-        var newInternalChartType =
-            ChartSeriesWithData.Any(x => x.ChartSeries!.DisplayStyle == SeriesDisplayStyle.Bar)
-            ? ChartType.Bar
-            : ChartType.Line;
-
-        if (newInternalChartType != InternalChartType)
-        {
-            InternalChartType = newInternalChartType;
-
-            await chart.ChangeType(newInternalChartType);
-        }
-
-        colours = new ColourServer();
-
+        var title = string.Empty;
         var subtitle = string.Empty;
-
         List<ChartTrendlineData>? trendlines = null;
+        dynamic scales = new ExpandoObject();
 
-        var title = ChartLogic.BuildChartTitle(ChartSeriesWithData);
+        if (ChartLoadingErrored)
+        {
+            l.LogInformation("We have identified an error. Will not try to render the chart normally");
+            ChartLoadingIndicatorVisible = false;
+        }
+        else
+        {
 
-        // Data sets sometimes have internal gaps in data (i.e. years which have no data even though earlier
-        // and later years have data). Additionally, they may have external gaps in data if the overall period
-        // to be charted goes beyond the range of the available data in one particular data set.
-        //
-        // To ensure these gaps are handled correctly in the plotted chart, we build a new dataset that includes
-        // records for each missing year. Value is set to null for those records.
+            LogChartSeriesList();
 
-        l.LogInformation("Calling BuildProcessedDataSets");
+            // We used to choose set ChartType to Bar if the user's selected chart type was bar or difference or rainfall,
+            // and line otherwise.
+            //
+            // Since v2, we now set ChartType to Bar if any series is of type Bar, and Line otherwise.
+            var newInternalChartType =
+                ChartSeriesWithData.Any(x => x.ChartSeries!.DisplayStyle == SeriesDisplayStyle.Bar)
+                ? ChartType.Bar
+                : ChartType.Line;
 
-        BuildProcessedDataSets(ChartSeriesWithData, UseMostRecentStartYear);
+            if (newInternalChartType != InternalChartType)
+            {
+                InternalChartType = newInternalChartType;
 
-        subtitle =
-            (ChartStartBin != null && ChartEndBin != null)
-            ? ChartStartBin is YearBinIdentifier
-                ? $"{ChartStartBin.Label}-{ChartEndBin.Label}     {Convert.ToInt16(ChartEndBin.Label) - Convert.ToInt16(ChartStartBin.Label)} years"
-                : $"{ChartStartBin.Label}-{ChartEndBin.Label}"
-            : SelectedBinGranularity.ToFriendlyString();
+                await chart.ChangeType(newInternalChartType);
+            }
 
-        l.LogInformation("Calling AddDataSetsToGraph");
+            colours = new ColourServer();
 
-        trendlines = await AddDataSetsToChart();
+            title = ChartLogic.BuildChartTitle(ChartSeriesWithData);
 
-        l.LogInformation("Trendlines count: " + trendlines.Count);
+            // Data sets sometimes have internal gaps in data (i.e. years which have no data even though earlier
+            // and later years have data). Additionally, they may have external gaps in data if the overall period
+            // to be charted goes beyond the range of the available data in one particular data set.
+            //
+            // To ensure these gaps are handled correctly in the plotted chart, we build a new dataset that includes
+            // records for each missing year. Value is set to null for those records.
 
-        l.LogInformation("Calling AddLabels");
+            l.LogInformation("Calling BuildProcessedDataSets");
 
-        var labels = ChartBins!.Select(x => x.Label).ToArray();
-        await chart.AddLabels(labels);
+            BuildProcessedDataSets(ChartSeriesWithData, ChartStartYear);
 
-        dynamic scales = BuildChartScales();
+            subtitle =
+                (ChartStartBin != null && ChartEndBin != null)
+                ? ChartStartBin is YearBinIdentifier
+                    ? $"{ChartStartBin.Label}-{ChartEndBin.Label}     {Convert.ToInt16(ChartEndBin.Label) - Convert.ToInt16(ChartStartBin.Label)} years"
+                    : $"{ChartStartBin.Label}-{ChartEndBin.Label}"
+                : SelectedBinGranularity.ToFriendlyString();
+
+            l.LogInformation("Calling AddDataSetsToGraph");
+
+            trendlines = await AddDataSetsToChart();
+
+            l.LogInformation("Trendlines count: " + trendlines.Count);
+
+            l.LogInformation("Calling AddLabels");
+
+            var labels = ChartBins!.Select(x => x.Label).ToArray();
+            await chart.AddLabels(labels);
+
+            scales = BuildChartScales();
+        }
 
         object chartOptions = new
         {
@@ -469,37 +484,6 @@ public partial class ChartView
         return trendlines;
     }
 
-    async Task OnSelectedYearsChanged(List<short> values)
-    {
-        if (!SelectedYears!.Any() && values.Count == 0)
-        {
-            SelectedBinGranularity = BinGranularities.ByYear;
-            await InvokeAsync(StateHasChanged);
-
-            RebuildChartSeriesListToReflectSelectedYears();
-
-            await BuildDataSets();
-            return;
-        }
-
-        var validValues = new List<short>();
-        foreach (var value in values)
-        {
-            if (DatasetYears!.Any(x => x == value))
-            {
-                validValues.Add(value);
-            }
-        }
-        SelectedYears = validValues;
-
-        SelectedBinGranularity = BinGranularities.ByMonthOnly;
-
-        await InvokeAsync(StateHasChanged);
-        RebuildChartSeriesListToReflectSelectedYears();
-
-        await BuildDataSets();
-    }
-
     void RebuildChartSeriesListToReflectSelectedYears()
     {
         var years = SelectedYears!.Any() ? SelectedYears!.Select(x => (short?)x).ToList() : new List<short?>() { null };
@@ -538,7 +522,7 @@ public partial class ChartView
         ChartSeriesList = newCsds;
     }
 
-    void BuildProcessedDataSets(List<SeriesWithData> chartSeriesWithData, bool useMostRecentStartYear = true)
+    void BuildProcessedDataSets(List<SeriesWithData> chartSeriesWithData, ChartStartYears? chartStartYear)
     {
         var l = new LogAugmenter(Logger!, "BuildProcessedDataSets");
 
@@ -593,6 +577,11 @@ public partial class ChartView
                     .Select(x => x.Value)
                     .CalculateCentredMovingAverage(cs.ChartSeries.SmoothingWindow, 0.75f);
 
+                if (movingAverageValues.All(y => y == null))
+                {
+                    l.LogError("The moving average calculation has resulted in no data records with any values.");
+                }
+
                 // Now, join back to the original DataRecord set
                 var newDataRecords =
                     movingAverageValues
@@ -621,7 +610,7 @@ public partial class ChartView
             }
         }
 
-        l.LogInformation("done with moving average calculation");
+        l.LogInformation("done with moving average calculation");    
 
         // There must be exactly one bin granularity or else something odd's going on.
         var binGranularity = chartSeriesWithData.Select(x => x.ChartSeries!.BinGranularity).Distinct().Single();
@@ -648,7 +637,7 @@ public partial class ChartView
                         // Pass in the data available for plotting
                         preProcessedDataSets!,
                         // and the user's preferences about what x axis range they'd like plotted
-                        useMostRecentStartYear,
+                        chartStartYear,
                         SelectedStartYear!,
                         SelectedEndYear!);
 
@@ -751,7 +740,7 @@ public partial class ChartView
         };
 
         var axes = new List<string>();
-        foreach (var s in ChartSeriesList!)
+        foreach (var s in ChartSeriesList!.Where(x => x.DataAvailable))
         {
             var uom = s.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
             var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, uom, s.Aggregation);
@@ -846,11 +835,14 @@ public partial class ChartView
             return;
         }
 
-        var startYear = UseMostRecentStartYear
-            ? StartYears!.Last()
-            : SelectedStartYear != null
+        int startYear = ChartStartYear switch
+        {
+            ChartStartYears.LastYear => StartYears!.Last(),
+            ChartStartYears.FirstYear => StartYears!.First(),
+            _ => SelectedStartYear != null
                 ? Convert.ToInt16(SelectedStartYear)
-                : throw new NotImplementedException();
+                : throw new NotImplementedException(),
+        };
 
         var year = (short)(startYear + e.Index);
 
@@ -920,19 +912,22 @@ public partial class ChartView
         await HandleRedraw();
     }
 
-    async Task OnStartYearTextChanged(string text)
+    async Task OnStartYearTextChanged(string? text)
     {
         await ChangeStartYear(text, true);
     }
 
-    private async Task ChangeStartYear(string text, bool redraw)
+    private async Task ChangeStartYear(string? text, bool redraw)
     {
         SelectedStartYear = text;
-        UseMostRecentStartYear = false;
-        SliderStart = Convert.ToInt32(SelectedStartYear);
-        if (redraw)
+        ChartStartYear = null;
+        if (SelectedStartYear != null)
         {
-            await HandleRedraw();
+            SliderStart = Convert.ToInt32(SelectedStartYear);
+            if (redraw)
+            {
+                await HandleRedraw();
+            }
         }
     }
 
@@ -943,24 +938,31 @@ public partial class ChartView
 
     private async Task ChangeEndYear(string text, bool redraw)
     {
-        SelectedEndYear = text;
-        SliderEnd = Convert.ToInt32(SelectedEndYear);
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            SelectedEndYear = null;
+            SliderEnd = null;
+        }
+        else
+        {
+            SelectedEndYear = text;
+            SliderEnd = Convert.ToInt32(SelectedEndYear);
+        }
         if (redraw)
         {
             await HandleRedraw();
         }
     }
 
-    async Task OnUseMostRecentStartYearChanged(bool value)
+    async Task OnDynamicStartYearChanged(ChartStartYears? value)
     {
-        UseMostRecentStartYear = value;
-        if (value)
+        ChartStartYear = value;
+        if (value != null)
         {
             SliderStart = null;
             SelectedStartYear = null;
+            await HandleRedraw();
         }
-
-        await HandleRedraw();
     }
 
     void OnSelectedDayGroupingChanged(short value)
@@ -997,7 +999,7 @@ public partial class ChartView
 
     async Task OnClearFilter()
     {
-        UseMostRecentStartYear = true;
+        ChartStartYear = ChartStartYears.FirstYear;
         SelectedStartYear = null;
         SelectedEndYear = null;
         SliderStart = null;
@@ -1030,27 +1032,18 @@ public partial class ChartView
 
     string DayGroupingText(int dayGrouping)
     {
-        switch (dayGrouping)
+        return dayGrouping switch
         {
-            case 5:
-                return "Groups of 5 days (73 groups)";
-            case 7:
-                return "Groups of 7 days (52 groups)";
-            case 13:
-                return "Groups of 13 days (28 groups)";
-            case 14:
-                return "Groups of 14 days (26 groups)";
-            case 26:
-                return "Groups of 26 days (14 groups)";
-            case 28:
-                return "Groups of 28 days (13 groups)";
-            case 73:
-                return "Groups of 73 days (5 groups)";
-            case 91:
-                return "Groups of 91 days (4 groups)";
-            case 182:
-                return "Groups of 182 days (2 groups)";
-        }
-        throw new NotImplementedException(dayGrouping.ToString());
+            5 => "Groups of 5 days (73 groups)",
+            7 => "Groups of 7 days (52 groups)",
+            13 => "Groups of 13 days (28 groups)",
+            14 => "Groups of 14 days (26 groups)",
+            26 => "Groups of 26 days (14 groups)",
+            28 => "Groups of 28 days (13 groups)",
+            73 => "Groups of 73 days (5 groups)",
+            91 => "Groups of 91 days (4 groups)",
+            182 => "Groups of 182 days (2 groups)",
+            _ => throw new NotImplementedException(dayGrouping.ToString()),
+        };
     }
 }
