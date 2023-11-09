@@ -16,16 +16,15 @@ public class LocationTests
     [DataRow("Canberra", "Australia", "Canberra, Australia", "Canberra, Australia", "Canberra, Australia")]
     [DataRow("Cali Alfonso Bonill", "Colombia", "Cali Alfonso Bonill", "Cali Alfonso Bonill, Colombia", "Cali Alfonso Bonill, Colombia")]
 
-    //"Westermarkelsdorf Fehmarn, Germany"
-    [DataRow("Akron Washington Co Ap", "United States of America", "Akron Washington ...", "Akron Washington Co Ap, United States of America", "Akron Washington Co Ap, United States of America")]
+    [DataRow("Westermarkelsdorf Fehmarn", "Germany", "Westermarkelsdorf Fehmarn", "Westermarkelsdorf Fehmarn, Germany", "Westermarkelsdorf Fehmarn, Germany")]
+    [DataRow("Akron Washington Co Ap", "United States of America", "Akron Washington Co Ap", "Akron Washington Co Ap, United States of America", "Akron Washington Co Ap, United States of America")]
+
+    [DataRow("Hato", "Netherlands Antilles [Netherlands]", "Hato", "Hato, Netherlands Antilles", "Hato, Netherlands Antilles [Netherlands]")]
 
     [DataRow("Le Lamentin", "Martinique [France]", "Le Lamentin", "Le Lamentin, Martinique", "Le Lamentin, Martinique [France]")]
     [DataRow("Coloso", "Puerto Rico [United States of America]", "Coloso, Puerto Rico", "Coloso, Puerto Rico", "Coloso, Puerto Rico [United States of America]")]
-    [DataRow("Hato", "Netherlands Antilles [Netherlands]", "Hato, Netherlands...", "Hato, Netherlands Antilles", "Hato, Netherlands Antilles [Netherlands]")]
     [DataRow("Bird Island", "South Georgia and the South Sandwich Islands [United Kingdom]", "Bird Island", "Bird Island, South Georgia and the South Sandwich Islands", "Bird Island, South Georgia and the South Sandwich Islands [United Kingdom]")]
     [DataRow("Gibraltar", "Gibraltar [United Kingdom]", "Gibraltar, Gibraltar", "Gibraltar, Gibraltar", "Gibraltar, Gibraltar [United Kingdom]")]
-
-    // Angermunde, Germany
 
     public void LocationName(string name, string country, string title, string shorterTitle, string fullTitle)
     {
