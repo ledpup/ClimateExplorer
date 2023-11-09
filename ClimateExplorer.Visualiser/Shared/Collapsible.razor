@@ -8,36 +8,33 @@
                                                                         : "flexbox-row-layout")) + (NoBottomMargin ? " no-bottom-margin" : ""))">
     @if (AllowCollapse)
     {
-        
-            <span @onclick="CollapserOnClick"
-                   class="collapser @(CollapserSize.ToString().ToLower()) @(ShowContent ? "content-shown" : "content-hidden" )">
-                @if (ShowContent)
-                {
-                    <span class="oi oi-chevron-bottom" aria-hidden="true"></span>
-                }
-                else
-                {
-                    <span class="oi oi-chevron-right" aria-hidden="true"></span>    
-                }
+        <span class="collapser @(CollapserSize.ToString().ToLower()) @(ShowContent ? "content-shown" : "content-hidden" )">
+            <span style="collapser click-area" @onclick="CollapserOnClick">
+            @if (ShowContent)
+            {
+                <span class="oi oi-chevron-bottom @(CollapserSize.ToString().ToLower())" aria-hidden="true"></span>
+            }
+            else
+            {
+                <span class="oi oi-chevron-right @(CollapserSize.ToString().ToLower())" aria-hidden="true"></span>
+            }
 
-                @if (ShowTitleWhenExpanded || !ShowContent)
-                {
-                if (Title?.Length > Location.TitleMaximumLength || FullTitle?.Length > Location.TitleMaximumLength)
+            @if (ShowTitleWhenExpanded || !ShowContent)
+            {
+                <span class="title">
+                    @Title
+                    @if (FullTitle != null && Title != FullTitle)
                     {
-                        <span class="tooltip-wrap">
-                            @Title
-                            <span class="tooltip-content">
-                                @FullTitle
-                            </span>
-                        </span>
+                        <span class="tooltip-content">
+                            @FullTitle
+                        </span>   
                     }
-                    else
-                    {
-                        @Title
-                    }
-                }
+                </span>
+            }
             </span>
-            @HeaderContent        
+            @HeaderContent
+        </span>
+        
     }
 
     @if (ShowContent)

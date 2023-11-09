@@ -28,7 +28,30 @@ public class Location : LocationBase
     }
     string? fullTitle;
 
-    public const int TitleMaximumLength = 17;
+    [JsonIgnore]
+    public string ShorterTitle
+    {
+        get
+        {
+            if (shorterTitle != null)
+                return shorterTitle;
+
+            shorterTitle = $"{Name}, {Country}";
+
+            var regex = new Regex(@"(?<country>.*)\s(?<owner>\[.*\])");
+            var match = regex.Match(Country!);
+            if (match.Success)
+            {
+                var country = match.Groups["country"];
+                shorterTitle = $"{Name}, {country}";
+            }
+
+            return shorterTitle;
+        }
+    }
+    string? shorterTitle;
+
+    public const int TitleMaximumLength = 20;
 
     [JsonIgnore]
     public string Title
@@ -38,29 +61,19 @@ public class Location : LocationBase
             if (title != null)
                 return title;
 
-            if (Name.Length > TitleMaximumLength - 10 && Name.Length <= TitleMaximumLength + 3)
+            if (FullTitle.Length <= TitleMaximumLength)
             {
-                title = Name;
+                title = FullTitle;
             }
-            else if (Name.Length > TitleMaximumLength + 3)
+            else if (ShorterTitle.Length <= TitleMaximumLength)
             {
-                title = Name.Truncate(TitleMaximumLength);
+                title = ShorterTitle;
             }
             else
             {
-                title = Country == null ? Name : $"{Name}, {Country}";
-                if (Country != null && title.Length > TitleMaximumLength + 3)
-                {
-                    var regex = new Regex(@"(?<country>.*)\s(?<owner>\[.*\])");
-                    var match = regex.Match(Country);
-                    if (match.Success)
-                    {
-                        var country = match.Groups["country"];
-                        title = $"{Name}, {country}";
-                    }
-                }
-                title = title.Truncate(TitleMaximumLength);
+                title = Name;
             }
+            
             return title;
         }
     }

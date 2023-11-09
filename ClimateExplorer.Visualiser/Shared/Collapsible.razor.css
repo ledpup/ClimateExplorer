@@ -10,11 +10,15 @@
     flex-shrink: 0;
 }
 
-.tooltip-wrap {
-    position: relative;
+.title {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 320px;
 }
 
-    .tooltip-wrap .tooltip-content {
+    .title .tooltip-content {
         display: none;
         position: absolute;
         box-shadow: rgb(0 0 0 / 15%) 1px 1px 12px;
@@ -30,7 +34,7 @@
         z-index: 1500;
     }
 
-    .tooltip-wrap:hover .tooltip-content {
+    .title:hover .tooltip-content {
         display: block;
     }
 
@@ -52,10 +56,12 @@
 }
 
 .collapser {
+    position: relative;
     color: #aaa;
     font-weight: bold;
     cursor: pointer;
     user-select: none;
+    display: flex;
 }
 
     .collapser.content-shown {
@@ -68,6 +74,7 @@
 
     .collapser.extralarge {
         font-size: 2em;
+        height: 48px;
     }
 
     .collapser:hover {
@@ -75,10 +82,20 @@
         text-decoration: underline;
     }
 
-.collapser .oi {
-    margin-right: 0.6em;
-    font-size: 1.2rem;
-}
+    .collapser .click-area {
+        display: flex;
+    }
+
+    .collapser .oi {
+        margin-right: 0.6em;
+        font-size: 1.2rem;
+        top: -4px;
+        width: 16px;
+    }
+
+    .collapser .oi.extralarge{
+        top: -14px;
+    }
 
 .flexbox-column-layout {
     display: flex;

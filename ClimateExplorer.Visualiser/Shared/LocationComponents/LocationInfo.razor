@@ -11,7 +11,7 @@
 <LoadingIndicator @bind-Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
     <Collapsible @ref="LocationCollapsible" Title="@Location?.Title" FullTitle="@Location?.FullTitle" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
         <HeaderContent>
-            <span class="chart-controls" style="margin-left: 32px;">
+            <span class="chart-controls">
                 <a class="chart-control" @onclick="() => ChangeLocationClicked(new EventArgs())"><i class="fas fa-map"></i> Change location</a>
                 @if (LocationCollapsible!.ShowContent)
                 {
