@@ -15,7 +15,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 340px;
+    width: 320px;
 }
 
     .title .tooltip-content {
@@ -74,6 +74,7 @@
 
     .collapser.extralarge {
         font-size: 2em;
+        height: 48px;
     }
 
     .collapser:hover {
@@ -81,10 +82,19 @@
         text-decoration: underline;
     }
 
-.collapser .oi {
-    margin-right: 0.6em;
-    font-size: 1.2rem;
-}
+    .collapser .click-area {
+        display: flex;
+    }
+
+    .collapser .oi {
+        margin-right: 0.6em;
+        font-size: 1.2rem;
+        top: -4px;
+    }
+
+    .collapser .oi.extralarge{
+        top: -14px;
+    }
 
 .flexbox-column-layout {
     display: flex;

@@ -9,14 +9,14 @@
     @if (AllowCollapse)
     {
         <span class="collapser @(CollapserSize.ToString().ToLower()) @(ShowContent ? "content-shown" : "content-hidden" )">
-            <span @onclick="CollapserOnClick">
+            <span style="collapser click-area" @onclick="CollapserOnClick">
             @if (ShowContent)
             {
-                <span class="oi oi-chevron-bottom" aria-hidden="true"></span>
+                <span class="oi oi-chevron-bottom @(CollapserSize.ToString().ToLower())" aria-hidden="true"></span>
             }
             else
             {
-                <span class="oi oi-chevron-right" aria-hidden="true"></span>    
+                <span class="oi oi-chevron-right @(CollapserSize.ToString().ToLower())" aria-hidden="true"></span>
             }
 
             @if (ShowTitleWhenExpanded || !ShowContent)
