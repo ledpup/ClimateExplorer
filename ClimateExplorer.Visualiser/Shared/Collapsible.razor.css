@@ -34,6 +34,10 @@
         z-index: 1500;
     }
 
+    .title:hover {
+        text-decoration: underline;
+    }
+
     .title:hover .tooltip-content {
         display: block;
     }
@@ -61,7 +65,7 @@
     font-weight: bold;
     cursor: pointer;
     user-select: none;
-    display: flex;
+    display: inline-block;
 }
 
     .collapser.content-shown {
@@ -79,11 +83,6 @@
 
     .collapser:hover {
         color: #0071c1;
-        text-decoration: underline;
-    }
-
-    .collapser .click-area {
-        display: flex;
     }
 
     .collapser .oi {
@@ -93,9 +92,10 @@
         width: 16px;
     }
 
-    .collapser .oi.extralarge{
-        top: -14px;
-    }
+        .collapser .oi.extralarge {
+            top: -14px;
+            width: 16px;
+        }
 
 .flexbox-column-layout {
     display: flex;
