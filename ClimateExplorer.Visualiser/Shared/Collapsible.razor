@@ -9,7 +9,7 @@
     @if (AllowCollapse)
     {
         <span class="collapser @(CollapserSize.ToString().ToLower()) @(ShowContent ? "content-shown" : "content-hidden" )">
-            <span style="collapser click-area" @onclick="CollapserOnClick">
+            <span @onclick="CollapserOnClick">
             @if (ShowContent)
             {
                 <span class="oi oi-chevron-bottom @(CollapserSize.ToString().ToLower())" aria-hidden="true"></span>
