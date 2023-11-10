@@ -1,5 +1,4 @@
-﻿
-.collapsible-panel {
+﻿.collapsible-panel {
     position: relative;
     box-shadow: rgb(0 0 0 / 15%) 1px 1px 12px;
     margin-left: -18px;
@@ -66,6 +65,7 @@
     cursor: pointer;
     user-select: none;
     display: inline-block;
+    height: 20px;
 }
 
     .collapser.content-shown {

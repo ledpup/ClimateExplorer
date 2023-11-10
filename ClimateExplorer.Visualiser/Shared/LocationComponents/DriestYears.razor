@@ -11,9 +11,13 @@
         {
             foreach (var year in DriestYearsList)
             {
-                <span @onclick="() => FilterToYear(year)" style="cursor: pointer;">
-                    @(DriestYearsList.IndexOf(year) < DriestYearsList.Count - 1 ? @year + ", " : year)
+                <span @onclick="() => FilterToYear(year)">
+                    <a>@year</a>
                 </span>
+                if (DriestYearsList.IndexOf(year) < DriestYearsList.Count - 1)
+                {
+                    <span>, </span>
+                }
             }
         }
     </Value>
@@ -28,8 +32,8 @@
         {
             foreach (var year in WettestYears)
             {
-                <span @onclick="() => FilterToYear(year)" style="cursor: pointer;">
-                    @year
+                <span @onclick="() => FilterToYear(year)">
+                    <a>@year</a>
                 </span>
                 if (WettestYears.IndexOf(year) < WettestYears.Count - 1)
                 {
