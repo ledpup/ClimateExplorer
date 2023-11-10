@@ -1,10 +1,17 @@
 ﻿@using Blazorise
 @using System.Text.RegularExpressions
 
-<div class="overview-field" title="@title" @onclick="ShowPopup" style="@OverviewFieldStyle">
+<div class="overview-field" title="@title" @onclick="ShowPopup">
     <div class="label">@Label</div>
     <div class="value">
-        @Value
+        @if (PopupText != null)
+        {
+            <a>@Value</a>
+        }
+        else
+        {
+            @Value
+        }
     </div>
     <div class="additional-info">@AdditionalInfo</div>
 </div>
@@ -35,11 +42,6 @@
             }
             return Regex.Replace(PopupText, "<.*?>", String.Empty);
         }
-    }
-
-    string OverviewFieldStyle
-    {
-        get { return string.IsNullOrWhiteSpace(PopupText) ? string.Empty : "cursor: pointer;"; }
     }
 
     [Parameter]

@@ -19,9 +19,9 @@
     {
         if (Elevation == null)
         {
-            return $"{Math.Round(Latitude, 1)}° {Math.Round(Longitude, 1)}°";
+            return $"{Math.Round(Latitude, 0)}° {Math.Round(Longitude, 0)}°";
         }
-        return $"{Math.Round(Latitude, 1)}° {Math.Round(Longitude, 1)}° {Math.Round(Elevation.Value, 1)}m";
+        return $"{Math.Round(Latitude, 0)}° {Math.Round(Longitude, 0)}° {Math.Round(Elevation.Value, 0)}m";
     }
 
     public string ToFriendlyString(bool prefix = false)

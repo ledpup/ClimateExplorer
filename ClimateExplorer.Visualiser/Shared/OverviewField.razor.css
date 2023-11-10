@@ -22,11 +22,14 @@
 }
 
     ::deep .value a {
-        color: #7DB0DF;
+        color: #666666;
+        text-decoration: none;
     }
 
         ::deep .value a:hover {
             color: #0a58ca;
+            text-decoration: underline;
+            cursor: pointer;
         }
 
 .additional-info {
