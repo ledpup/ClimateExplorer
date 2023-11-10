@@ -284,18 +284,18 @@
         {
             return $@"<p>The warming index is the temperature difference between the average of the last 30 years of temperatures compared with the average of the first half of the dataset. 30 years was chosen to fit the convention of the <a href=""https://en.wikipedia.org/wiki/Climatological_normal"" target=""_blank"">climatological normal</a>. The first half of the datatset is used as a proxy for a natural baseline; it is expected to be less affected by anthropogenic warming.</p>
 <p>Over the long-term, with no external influences, we'd expect the warming index to trend towards zero. A non-zero warming index may indicate an effect of climate change. A positive warming index may indicate global warming.</p>
-<p>Note: The type of temperature measurement used as the basis for averages is the maximum temperature (usually a daily maximum). If the maximum temperature is not available, the mean temperature is used.</p>";
+<p>Note: The mean temperature is used for most of the world (i.e., when using the GHCNm dataset). We use the maximum temperatures (usually a daily maximum) for this calculation in Australia and New Zealand.</p>";
         }
 
         return
             String.Join(
                 Environment.NewLine,
                 $"<p>The warming index is the temperature difference between the average of the last 30 years of temperatures compared with the average of the first half ({warmingIndex.CountOfFirstHalf} years) of the dataset. 30 years was chosen to fit the convention of the <a href=\"https://en.wikipedia.org/wiki/Climatological_normal\" target=\"_blank\">climatological normal</a>. The first half of the datatset is used as a proxy for a natural baseline; it is expected to be less affected by anthropogenic warming.</p>",
-                $"<p>{Location.Name}, between the years {warmingIndex.FirstYearInLast30Years}-{warmingIndex.LastYearInLast30Years}, had an average max temp of <strong>{string.Format("{0:0.##}", MathF.Round(warmingIndex.AverageOfLast30Years, 2))}°C</strong>.</p>",
-                $"<p>{Location.Name}, between the years {warmingIndex.FirstYearInFirstHalf}-{warmingIndex.LastYearInFirstHalf}, had an average max temp of <strong>{string.Format("{0:0.##}", MathF.Round(warmingIndex.AverageOfFirstHalf, 2))}°C</strong>.</p>",
-                $"<p>The difference is <strong>{warmingIndexAsString}</strong> (after rounding to 1 decimal place).</p>",
+                $"<div>{Location.Name}, between the years {warmingIndex.FirstYearInLast30Years}-{warmingIndex.LastYearInLast30Years}, had an average temperature of <strong>{string.Format("{0:0.##}", MathF.Round(warmingIndex.AverageOfLast30Years, 2))}°C</strong>.</div>",
+                $"<div>{Location.Name}, between the years {warmingIndex.FirstYearInFirstHalf}-{warmingIndex.LastYearInFirstHalf}, had an average temperature of <strong>{string.Format("{0:0.##}", MathF.Round(warmingIndex.AverageOfFirstHalf, 2))}°C</strong>.</div>",
+                $"<div>The difference is <strong>{warmingIndexAsString}</strong> (after rounding to 1 decimal place).</div><br/>",
                 $"<p>Over the long-term, with no external influences, we'd expect the warming index to trend towards zero. A non-zero warming index may indicate an effect of climate change. A positive warming index may indicate global warming.</p>",
-                $"<p>Note: The type of temperature measurement used as the basis for averages is the maximum temperature (usually a daily maximum). If the maximum temperature is not available, the mean temperature is used.</p>"
+                $"<p>Note: The mean temperature is used for most of the world (i.e., when using the GHCNm dataset). We use the maximum temperatures (usually a daily maximum) for this calculation in Australia and New Zealand.</p>"
             );
     }
 
