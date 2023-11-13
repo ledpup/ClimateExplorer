@@ -352,9 +352,11 @@ public partial class ChartView
             subtitle =
                 (ChartStartBin != null && ChartEndBin != null)
                 ? ChartStartBin is YearBinIdentifier
-                    ? $"{ChartStartBin.Label}-{ChartEndBin.Label}     {Convert.ToInt16(ChartEndBin.Label) - Convert.ToInt16(ChartStartBin.Label)} years"
+                    ? $"{ChartStartBin.Label}-{ChartEndBin.Label}, {Convert.ToInt16(ChartEndBin.Label) - Convert.ToInt16(ChartStartBin.Label)} years"
                     : $"{ChartStartBin.Label}-{ChartEndBin.Label}"
                 : SelectedBinGranularity.ToFriendlyString();
+
+            subtitle += $" | Aggregation: {SelectedDayGrouping} day groups, {GetGroupingThresholdText()} threshold";
 
             l.LogInformation("Calling AddDataSetsToGraph");
 
@@ -821,10 +823,10 @@ public partial class ChartView
         var groupingThreshold = ChartSeriesList!.FirstOrDefault() == null ? null : ChartSeriesList!.First().GroupingThreshold;
 
         return UserOverridePresetAggregationSettings
-            ? $"{InternalGroupingThreshold * 100}% (user override)"
+            ? $"{MathF.Round(InternalGroupingThreshold * 100, 0)}% (user override)"
             : groupingThreshold == null
-                    ? $"{InternalGroupingThreshold * 100}%"
-                    : $"{groupingThreshold * 100}% (preset defined)";
+                    ? $"{MathF.Round(InternalGroupingThreshold * 100, 0)}%"
+                    : $"{MathF.Round((float)groupingThreshold * 100, 0)}% (preset defined)";
     }
 
     async Task OnLineChartClicked(ChartMouseEventArgs e)
