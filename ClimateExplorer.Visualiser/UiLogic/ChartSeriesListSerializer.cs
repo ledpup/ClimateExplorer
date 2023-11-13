@@ -119,9 +119,16 @@ public static class ChartSeriesListSerializer
         };
         if (dt == Core.Enums.DataType.TempMax || dt == Core.Enums.DataType.TempMean)
         {
-            dataMatches = DataSubstitute.StandardTemperatureDataMatches();
+            if (da == DataAdjustment.Unadjusted)
+            {
+                dataMatches = DataSubstitute.UnadjustedTemperatureDataMatches();
+            }
+            else
+            {
+                dataMatches = DataSubstitute.AdjustedTemperatureDataMatches();
+            }
         }
-
+        
         MeasurementDefinitionViewModel? md = null;
         foreach (var match in dataMatches)
         {
@@ -133,6 +140,10 @@ public static class ChartSeriesListSerializer
 
             if (md != null)
             {
+                if (md.DataType != dt && md.DataAdjustment != da)
+                {
+                    continue;
+                }
                 break;
             }
         }

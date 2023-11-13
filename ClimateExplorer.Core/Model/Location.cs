@@ -51,7 +51,7 @@ public class Location : LocationBase
     }
     string? shorterTitle;
 
-    public const int TitleMaximumLength = 20;
+    public const int TitleMaximumLength = 18;
 
     [JsonIgnore]
     public string Title
