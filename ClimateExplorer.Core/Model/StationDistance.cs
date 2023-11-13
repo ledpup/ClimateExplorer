@@ -3,7 +3,7 @@
 namespace ClimateExplorer.Core.Model;
 public class StationDistance
 {
-    public required string? Id { get; set; }
+    public required string Id { get; set; }
     public double Distance { get; set; }
 
     public static List<StationDistance>? GetDistances(Station station, List<Station> stations)

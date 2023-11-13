@@ -93,7 +93,7 @@ selectedStations.ForEach(x =>
             Id = ghcnIdToLocationIds[x.Id],
             Name = textinfo.ToTitleCase(x.Name!.Replace('_', ' ').ToLower()),
             Coordinates = x.Coordinates!.Value,
-            CountryCode = x.CountryCode,
+            CountryCode = x.CountryCode!,
         };
         locations.Add(location);
 

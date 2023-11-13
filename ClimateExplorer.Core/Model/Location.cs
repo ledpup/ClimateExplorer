@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 namespace ClimateExplorer.Core.Model;
 public class Location : LocationBase
 {
-    public required string? CountryCode { get; set; }
+    public required string CountryCode { get; set; }
     public string? Country { get; set; }
     public required Coordinates Coordinates { get; set; }
     public float? WarmingIndex { get; set; }
