@@ -20,9 +20,9 @@ The data is sourced from:
 
 ## Technical
 - Built in [Visual Studio 2022 Community Edition](https://visualstudio.microsoft.com/vs/community/) using
-  - .NET 7
+  - .NET 8
   - C#
-  - Blazor
+  - Blazor Web Assembly (WASM)
   - Minimal Web API
 - There are five projects:
   - Visualiser: Blazor website that displays the data to the user
