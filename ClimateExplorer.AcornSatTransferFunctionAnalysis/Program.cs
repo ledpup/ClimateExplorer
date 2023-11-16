@@ -32,7 +32,7 @@ public class Program
 
             c.Connect();
 
-            if (!c.Download(out byte[] outBytes, file))
+            if (!c.DownloadBytes(out byte[] outBytes, file))
             {
                 throw new Exception("Download failed.");
             }
@@ -154,8 +154,8 @@ public class Program
                     new string[]
                     {
                         x.Date.ToString("yyyy-MM-dd"),
-                        x.UnadjustedTempMax.ToString(),
-                        x.AdjustedTempMax.ToString()
+                        x.UnadjustedTempMax.ToString()!,
+                        x.AdjustedTempMax.ToString()!
                     }
                 )
             ));
