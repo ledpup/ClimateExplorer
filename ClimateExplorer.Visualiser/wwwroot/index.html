@@ -17,14 +17,14 @@
     <meta charset="utf-8" />
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta description="ClimateExplorer helps you understand climate change trends. It is simple to use and easy to understand. It is currently for Australia and New Zealand locations." />
+    <meta description="ClimateExplorer helps you understand climate change trends. It is simple to use and easy to understand." />
 
     <meta property="og:site_name" content="ClimateExplorer" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Explore long-term climate trends" />
     <meta property="og:url" content="https://climateexplorer.net/" />
     <meta property="og:description"
-          content="ClimateExplorer helps you understand climate change trends. It is simple to use and easy to understand. It is currently for Australia and New Zealand locations." />
+          content="ClimateExplorer helps you understand climate change trends. It is simple to use and easy to understand." />
     <meta property="og:image" content="/images/ClimateExplorerLogo.png" />
 
     <title>ClimateExplorer</title>
@@ -83,25 +83,7 @@
           <a class="dismiss">🗙</a>
       </div>
 
-      <script src="_framework/blazor.webassembly.js"
-              autostart="false"></script>
-      <script>
-          Blazor.start({
-              loadBootResource: function (type, name, defaultUri, integrity) {
-                  console.info(type, name, defaultUri);
-                  switch (type) {
-                      case "dotnetjs":
-                          return `/${defaultUri}`;
-                      default:
-                          return fetch(`/${defaultUri}`, {
-                              integrity: integrity,
-                              credentials: "omit",
-                              mode: "no-cors",
-                          });
-                  }
-              },
-          });
-      </script>
+      <script src="_framework/blazor.webassembly.js"></script>
 
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
               integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
