@@ -2,10 +2,7 @@
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Visualiser.UiModel;
 using ClimateExplorer.Core.DataPreparation;
-using System.Web;
 using static ClimateExplorer.Core.Enums;
-using System.ComponentModel.DataAnnotations;
-using System.Security.Cryptography;
 
 namespace ClimateExplorer.Visualiser.UiLogic;
 
