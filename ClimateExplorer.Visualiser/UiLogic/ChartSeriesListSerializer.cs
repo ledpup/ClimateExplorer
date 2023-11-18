@@ -56,7 +56,7 @@ public static class ChartSeriesListSerializer
             .Where(x => x != null)
             .ToList();
 
-        logger.LogInformation($"returning seriesList with {seriesList.Count} elements");
+        logger.LogInformation($"Returning seriesList with {seriesList.Count} elements");
 
         return seriesList;
     }
@@ -162,7 +162,17 @@ public static class ChartSeriesListSerializer
 
         if (md == null)
         {
-            throw new NullReferenceException($"Cannot find measurement definition in dataset {dsd.Id} with data type {dt} and data adjustment {da}.");
+            // We didn't find anything using the data substitute method, so drop back to the original method.
+            // We may not end up with any data this way but we can detect that with DataAvailable
+            md = dsd.MeasurementDefinitions!
+                    .SingleOrDefault(x => x.DataAdjustment == da && x.DataType == dt);
+
+            if (md == null)
+            {
+                // This can be triggered when changing to a location where the type of data or substitute
+                // was never defined (e.g., unadjusted temperature)
+                throw new NullReferenceException($"Cannot find measurement definition in dataset {dsd.Id} with data type {dt} and data adjustment {da}.");
+            }
         }
 
         return
