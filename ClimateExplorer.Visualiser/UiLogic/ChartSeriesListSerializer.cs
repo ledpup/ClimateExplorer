@@ -102,11 +102,9 @@ public static class ChartSeriesListSerializer
     {
         string[] segments = s.Split(SeparatorsByLevel[3]);
 
-        // Any of these values can be substituded if there is a match
         var dsd = dataSetDefinitions.Single(x => x.Id == Guid.Parse(segments[0]));
         var dt = (Core.Enums.DataType?)ParseNullableEnum<Core.Enums.DataType>(segments[1]);
         var da = (DataAdjustment?)ParseNullableEnum<DataAdjustment>(segments[2]);
-
 
         var dataMatches = new List<DataSubstitute>
         {
@@ -142,37 +140,32 @@ public static class ChartSeriesListSerializer
             }
         }
 
-        MeasurementDefinitionViewModel? md = null;
-        foreach (var match in dataMatches)
+        var md = dsd.MeasurementDefinitions!
+                .SingleOrDefault(x => x.DataAdjustment == da && x.DataType == dt);
+
+        if (md == null)
         {
-            var dsds = dataSetDefinitions.Where(x => (locationId == null 
-                                                        || (x.LocationIds != null && x.LocationIds.Any(y => y == locationId))
-                                                     )
-                                             && x.MeasurementDefinitions!.Any(y => y.DataType == match.DataType && y.DataAdjustment == match.DataAdjustment))
-                                     .ToList();
-
-            if (dsds.Any())
+            foreach (var match in dataMatches)
             {
-                dsd = dsds.SingleOrDefault()!;
-                md = dsd.MeasurementDefinitions!.Single(x => x.DataType == match.DataType && x.DataAdjustment == match.DataAdjustment);
+                var dsds = dataSetDefinitions.Where(x => (locationId == null
+                                                            || (x.LocationIds != null && x.LocationIds.Any(y => y == locationId))
+                                                         )
+                                                 && x.MeasurementDefinitions!.Any(y => y.DataType == match.DataType && y.DataAdjustment == match.DataAdjustment))
+                                         .ToList();
 
-                break;
+                if (dsds.Any())
+                {
+                    dsd = dsds.SingleOrDefault()!;
+                    md = dsd.MeasurementDefinitions!.Single(x => x.DataType == match.DataType && x.DataAdjustment == match.DataAdjustment);
+
+                    break;
+                }
             }
         }
 
         if (md == null)
         {
-            // We didn't find anything using the data substitute method, so drop back to the original method.
-            // We may not end up with any data this way but we can detect that with DataAvailable
-            md = dsd.MeasurementDefinitions!
-                    .SingleOrDefault(x => x.DataAdjustment == da && x.DataType == dt);
-
-            if (md == null)
-            {
-                // This can be triggered when changing to a location where the type of data or substitute
-                // was never defined (e.g., unadjusted temperature)
-                throw new NullReferenceException($"Cannot find measurement definition in dataset {dsd.Id} with data type {dt} and data adjustment {da}.");
-            }
+            throw new NullReferenceException($"Cannot find measurement definition in dataset {dsd.Id} with data type {dt} and data adjustment {da}.");
         }
 
         return

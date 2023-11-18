@@ -60,7 +60,14 @@ public partial class Index : ChartablePage
         var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
         if (setupDefaultChartSeries)
         {
-            setupDefaultChartSeries = (LocationId == null && chartView!.ChartSeriesList!.Count == 0) || !QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
+            var csd = QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
+            if (csd)
+            {
+                setupDefaultChartSeries = false;
+                await UpdateUiStateBasedOnQueryString();
+                // Going to assume that the first chart is the primary location
+                LocationId = chartView!.ChartSeriesList!.First().SourceSeriesSpecifications!.First().LocationId.ToString();
+            }
         }
 
         GetLocationIdViaNameFromPath(uri);
@@ -81,7 +88,7 @@ public partial class Index : ChartablePage
         {
             SetUpDefaultCharts(locationId);
             setupDefaultChartSeries = false;
-            await SelectedLocationChanged(Guid.Parse(LocationId));
+            await SelectedLocationChanged(locationId);
         }
         else if (oldLocationId != locationId)
         {
@@ -268,7 +275,14 @@ public partial class Index : ChartablePage
                         // If the data type is max or mean temperature, pass through an accepted list of near matching data
                         if (sss.MeasurementDefinition!.DataType == DataType.TempMax || sss.MeasurementDefinition!.DataType == DataType.TempMean)
                         {
-                            dataMatches = DataSubstitute.StandardTemperatureDataMatches();
+                            if (sss.MeasurementDefinition!.DataAdjustment == DataAdjustment.Unadjusted)
+                            {
+                                dataMatches = DataSubstitute.UnadjustedTemperatureDataMatches();
+                            }
+                            else
+                            {
+                                dataMatches = DataSubstitute.StandardTemperatureDataMatches();
+                            }
                         }
 
                         // But: the new location may not have data of the requested type. Let's see if there is any.
