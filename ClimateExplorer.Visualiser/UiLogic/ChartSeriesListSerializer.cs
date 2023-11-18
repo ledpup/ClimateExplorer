@@ -2,9 +2,7 @@
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Visualiser.UiModel;
 using ClimateExplorer.Core.DataPreparation;
-using System.Web;
 using static ClimateExplorer.Core.Enums;
-using System.ComponentModel.DataAnnotations;
 
 namespace ClimateExplorer.Visualiser.UiLogic;
 
@@ -58,7 +56,7 @@ public static class ChartSeriesListSerializer
             .Where(x => x != null)
             .ToList();
 
-        logger.LogInformation($"returning seriesList with {seriesList.Count} elements");
+        logger.LogInformation($"Returning seriesList with {seriesList.Count} elements");
 
         return seriesList;
     }
@@ -104,6 +102,7 @@ public static class ChartSeriesListSerializer
     {
         string[] segments = s.Split(SeparatorsByLevel[3]);
 
+        // Any of these values can be substituded if there is a match
         var dsd = dataSetDefinitions.Single(x => x.Id == Guid.Parse(segments[0]));
         var dt = (Core.Enums.DataType?)ParseNullableEnum<Core.Enums.DataType>(segments[1]);
         var da = (DataAdjustment?)ParseNullableEnum<DataAdjustment>(segments[2]);
@@ -128,41 +127,51 @@ public static class ChartSeriesListSerializer
                 dataMatches = DataSubstitute.AdjustedTemperatureDataMatches();
             }
         }
-        
+
+        Location? l = null;
+        Guid? locationId = null;
+
+        if (segments[3].Length > 0)
+        {
+            locationId = Guid.Parse(segments[3]);
+            l = locations.SingleOrDefault(x => x.Id == locationId);
+
+            if (l == null)
+            {
+                throw new Exception($"A location (ID = {locationId}) has been specified in the source series specification that has not been found in the list of locations.");
+            }
+        }
+
         MeasurementDefinitionViewModel? md = null;
         foreach (var match in dataMatches)
         {
-            md = dsd.MeasurementDefinitions!
-                    .SingleOrDefault(
-                        x =>
-                            x.DataAdjustment == match.DataAdjustment &&
-                            x.DataType == match.DataType);
+            var dsds = dataSetDefinitions.Where(x => (locationId == null 
+                                                        || (x.LocationIds != null && x.LocationIds.Any(y => y == locationId))
+                                                     )
+                                             && x.MeasurementDefinitions!.Any(y => y.DataType == match.DataType && y.DataAdjustment == match.DataAdjustment))
+                                     .ToList();
 
-            if (md != null)
+            if (dsds.Any())
             {
-                if (md.DataType != dt && md.DataAdjustment != da)
-                {
-                    continue;
-                }
+                dsd = dsds.SingleOrDefault()!;
+                md = dsd.MeasurementDefinitions!.Single(x => x.DataType == match.DataType && x.DataAdjustment == match.DataAdjustment);
+
                 break;
             }
         }
 
         if (md == null)
         {
-            throw new NullReferenceException($"Cannot find measurement definition in dataset {dsd.Id} with data type {dt} and data adjustment {da}.");
-        }
+            // We didn't find anything using the data substitute method, so drop back to the original method.
+            // We may not end up with any data this way but we can detect that with DataAvailable
+            md = dsd.MeasurementDefinitions!
+                    .SingleOrDefault(x => x.DataAdjustment == da && x.DataType == dt);
 
-        Location? l = null;
-
-        if (segments[3].Length > 0)
-        {
-            var locationId = Guid.Parse(segments[3]);
-            l = locations.SingleOrDefault(x => x.Id == locationId);
-
-            if (l == null)
+            if (md == null)
             {
-                throw new Exception($"A location (ID = {locationId}) has been specified in the source series specification that has not been found in the list of locations.");
+                // This can be triggered when changing to a location where the type of data or substitute
+                // was never defined (e.g., unadjusted temperature)
+                throw new NullReferenceException($"Cannot find measurement definition in dataset {dsd.Id} with data type {dt} and data adjustment {da}.");
             }
         }
 
