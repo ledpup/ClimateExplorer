@@ -30,7 +30,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Data.Ghcnm"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Data.IntegratedSurfaceData", "ClimateExplorer.Data.IntegratedSurfaceData\ClimateExplorer.Data.IntegratedSurfaceData.csproj", "{11D3C64B-C3DD-41F6-9CE9-D97C5FB72F51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.Data.Ghcnm.Precipitation", "ClimateExplorer.Data.Ghcnm.Precipitation\ClimateExplorer.Data.Ghcnm.Precipitation.csproj", "{2F77C0C5-AB5E-4C04-9722-A5089C1CF23C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Data.Ghcnm.Precipitation", "ClimateExplorer.Data.Ghcnm.Precipitation\ClimateExplorer.Data.Ghcnm.Precipitation.csproj", "{2F77C0C5-AB5E-4C04-9722-A5089C1CF23C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DPBlazorMapLibrary", "DPBlazorMapLibrary\DPBlazorMapLibrary.csproj", "{35CBA7BA-5535-408B-A584-CB5466B48C71}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -86,6 +88,10 @@ Global
 		{2F77C0C5-AB5E-4C04-9722-A5089C1CF23C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F77C0C5-AB5E-4C04-9722-A5089C1CF23C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F77C0C5-AB5E-4C04-9722-A5089C1CF23C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35CBA7BA-5535-408B-A584-CB5466B48C71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35CBA7BA-5535-408B-A584-CB5466B48C71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35CBA7BA-5535-408B-A584-CB5466B48C71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35CBA7BA-5535-408B-A584-CB5466B48C71}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

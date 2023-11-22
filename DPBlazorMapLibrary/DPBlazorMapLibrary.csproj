@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <SignAssembly>False</SignAssembly>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageTags>blazor;map;leaflet;</PackageTags>
+    <RepositoryUrl>https://github.com/DP-projects/DPBlazorMap</RepositoryUrl>
+    <Authors>polagaev.denis;</Authors>
+    <Description>DP Blaser Map is a library for Blazer, which is a wrapper on top of the Leaflet js library.
+</Description>
+    <PackageProjectUrl>https://github.com/DP-projects/DPBlazorMap</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Version>1.2.0</Version>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Layers\RasterLayers\TileLayersWms\" />
+    <Folder Include="Models\Layers\VectorLayers\SVGs\" />
+    <Folder Include="Models\Layers\VectorLayers\SVGOverlays\" />
+    <Folder Include="Models\Layers\VectorLayers\Canvases\" />
+  </ItemGroup>
+
+</Project>
