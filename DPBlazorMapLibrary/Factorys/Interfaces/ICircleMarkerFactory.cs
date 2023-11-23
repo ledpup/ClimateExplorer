@@ -1,8 +1,7 @@
-﻿namespace DPBlazorMapLibrary
+﻿namespace DPBlazorMapLibrary;
+
+public interface ICircleMarkerFactory
 {
-    public interface ICircleMarkerFactory
-    {
-        Task<CircleMarker> CreateCircleMarker(LatLng latLng, CircleMarkerOptions? options);
-        Task<CircleMarker> CreateCircleMarkerAndAddToMap(LatLng latLng, Map map, CircleMarkerOptions? options);
-    }
+    Task<CircleMarker> CreateCircleMarker(LatLng latLng, CircleMarkerOptions? options);
+    Task<CircleMarker> CreateCircleMarkerAndAddToMap(LatLng latLng, Map map, CircleMarkerOptions? options);
 }

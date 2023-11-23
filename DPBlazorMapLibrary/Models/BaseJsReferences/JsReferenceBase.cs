@@ -1,17 +1,16 @@
 ﻿using Microsoft.JSInterop;
 
-namespace DPBlazorMapLibrary
+namespace DPBlazorMapLibrary;
+
+/// <summary>
+/// Base class for a reference to a js object
+/// </summary>
+public class JsReferenceBase
 {
+    #pragma warning disable CS8618
     /// <summary>
-    /// Base class for a reference to a js object
+    /// Js References
     /// </summary>
-    public class JsReferenceBase
-    {
-        #pragma warning disable CS8618
-        /// <summary>
-        /// Js References
-        /// </summary>
-        public IJSObjectReference JsReference;
-        #pragma warning restore CS8618 
-    }
+    public IJSObjectReference JsReference;
+    #pragma warning restore CS8618 
 }

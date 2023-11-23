@@ -1,12 +1,11 @@
 ﻿using Microsoft.JSInterop;
 
-namespace DPBlazorMapLibrary
+namespace DPBlazorMapLibrary;
+
+public class Icon : JsReferenceBase
 {
-    public class Icon : JsReferenceBase
+    public Icon(IJSObjectReference jsReference)
     {
-        public Icon(IJSObjectReference jsReference)
-        {
-            JsReference = jsReference;
-        }
+        JsReference = jsReference;
     }
 }

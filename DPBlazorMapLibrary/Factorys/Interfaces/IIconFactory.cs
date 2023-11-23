@@ -1,8 +1,7 @@
-﻿namespace DPBlazorMapLibrary
+﻿namespace DPBlazorMapLibrary;
+
+public interface IIconFactory
 {
-    public interface IIconFactory
-    {
-        Task<Icon> Create(IconOptions options);
-        Task<Icon> CreateDefault();
-    }
+    Task<Icon> Create(IconOptions options);
+    Task<Icon> CreateDefault();
 }

@@ -1,14 +1,7 @@
-﻿namespace DPBlazorMapLibrary
-{
-    public class Point
-    {
-        public Point(int x, int y)
-        {
-            X = x;
-            Y = y;
-        }
+﻿namespace DPBlazorMapLibrary;
 
-        public int X { get; }
-        public int Y { get; }
-    }
+public class Point(int x, int y)
+{
+    public int X { get; } = x;
+    public int Y { get; } = y;
 }

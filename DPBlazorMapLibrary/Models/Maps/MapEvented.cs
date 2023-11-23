@@ -1,14 +1,13 @@
 ﻿using DPBlazorMapLibrary.JsInterops.Events;
 using Microsoft.JSInterop;
 
-namespace DPBlazorMapLibrary
+namespace DPBlazorMapLibrary;
+
+public class MapEvented : Evented
 {
-    public class MapEvented : Evented
+    public MapEvented(IJSObjectReference jsReference, IEventedJsInterop eventedJsInterop)
     {
-        public MapEvented(IJSObjectReference jsReference, IEventedJsInterop eventedJsInterop)
-        {
-            JsReference = jsReference;
-            EventedJsInterop = eventedJsInterop;
-        }
+        JsReference = jsReference;
+        EventedJsInterop = eventedJsInterop;
     }
 }

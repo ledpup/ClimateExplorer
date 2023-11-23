@@ -1,7 +1,6 @@
-﻿namespace DPBlazorMapLibrary.JsInterops.Base
+﻿namespace DPBlazorMapLibrary.JsInterops.Base;
+
+public interface IBaseJsInterop
 {
-    public interface IBaseJsInterop
-    {
-        ValueTask DisposeAsync();
-    }
+    ValueTask DisposeAsync();
 }

@@ -1,9 +1,8 @@
 ﻿using Microsoft.JSInterop;
 
-namespace DPBlazorMapLibrary.JsInterops.LeftletDefaultIconFactories
+namespace DPBlazorMapLibrary.JsInterops.LeftletDefaultIconFactories;
+
+public interface IIconFactoryJsInterop
 {
-    public interface IIconFactoryJsInterop
-    {
-        ValueTask<IJSObjectReference> CreateDefaultIcon();
-    }
+    ValueTask<IJSObjectReference> CreateDefaultIcon();
 }

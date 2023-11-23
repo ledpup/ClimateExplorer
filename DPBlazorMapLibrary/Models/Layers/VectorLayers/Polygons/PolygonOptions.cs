@@ -1,7 +1,6 @@
-﻿namespace DPBlazorMapLibrary
-{
-    public class PolygonOptions : PolylineOptions
-    {
+﻿namespace DPBlazorMapLibrary;
 
-    }
+public class PolygonOptions : PolylineOptions
+{
+
 }

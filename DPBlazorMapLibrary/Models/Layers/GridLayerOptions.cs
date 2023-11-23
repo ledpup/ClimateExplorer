@@ -32,6 +32,6 @@ public class GridLayerOptions : LayerOptions
     /// <summary>
     /// If set, tiles will only be loaded inside the set.
     /// </summary>
-    public (LatLng TopLeft, LatLng BottomRight)? Bounds { get; set; }
+    public Tuple<LatLng, LatLng>? Bounds { get; set; }
 
 }

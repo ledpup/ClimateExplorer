@@ -1,23 +1,22 @@
-﻿namespace DPBlazorMapLibrary
+﻿namespace DPBlazorMapLibrary;
+
+public class LatLngBounds
 {
-    public class LatLngBounds
+    public LatLngBounds()
     {
-        public LatLngBounds()
-        {
-        }
+    }
 
-        public LatLngBounds(LatLng southwest, LatLng northeast)
-        {
-            SouthWest = southwest;
-            NorthEast = northeast;
-        }
+    public LatLngBounds(LatLng southwest, LatLng northeast)
+    {
+        SouthWest = southwest;
+        NorthEast = northeast;
+    }
 
-        public LatLng? SouthWest { get; set; }
-        public LatLng? NorthEast { get; set; }
+    public LatLng? SouthWest { get; set; }
+    public LatLng? NorthEast { get; set; }
 
-        public IEnumerable<LatLng> ToLatLng()
-        {
-            return new List<LatLng>() { SouthWest!, NorthEast! };
-        }
+    public IEnumerable<LatLng> ToLatLng()
+    {
+        return new List<LatLng>() { SouthWest!, NorthEast! };
     }
 }
