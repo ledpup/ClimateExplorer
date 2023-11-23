@@ -25,6 +25,8 @@ public static class Enums
         NorthSeaIce,
         SouthSeaIce,
         GreenlandIceMelt,
+
+        SunspotNumber,
     }
 
     public enum DataResolution
@@ -53,6 +55,7 @@ public static class Enums
         MegajoulesPerSquareMetre,
         MillionSqKm,
         SqKm,
+        Sn,
     }
 
     public enum SeriesAggregationOptions
@@ -112,6 +115,7 @@ public static class Enums
             UnitOfMeasure.MegajoulesPerSquareMetre => "Megajoules per square metre (MJ/m²)",
             UnitOfMeasure.MillionSqKm => "Million square kilometres",
             UnitOfMeasure.SqKm => "Square kilometres (km²)",
+            UnitOfMeasure.Sn => "Sunsport number (Sn)",
             _ => throw new NotImplementedException(),
         };
     }
@@ -129,6 +133,7 @@ public static class Enums
             UnitOfMeasure.MegajoulesPerSquareMetre => "MJ/m²",
             UnitOfMeasure.MillionSqKm => "million km²",
             UnitOfMeasure.SqKm => "km²",
+            UnitOfMeasure.Sn => "Sn",
             _ => throw new NotImplementedException(),
         };
     }

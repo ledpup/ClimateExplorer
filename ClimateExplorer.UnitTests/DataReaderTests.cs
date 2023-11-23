@@ -269,6 +269,7 @@ public class DataReaderTests
         {
             DataAdjustment = Core.Enums.DataAdjustment.Adjusted,
             DataType = Core.Enums.DataType.TempMax,
+            UnitOfMeasure = Core.Enums.UnitOfMeasure.DegreesCelsius,
             DataResolution = Core.Enums.DataResolution.Daily,
             NullValue = "-",
             DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$",

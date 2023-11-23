@@ -694,5 +694,32 @@
       }
     ],
     "DataLocationMapping": null
+  },
+  {
+    "Id": "e2d9a74b-3c30-4332-8b22-26bb14a0bdc7",
+    "Name": "Sunspot number",
+    "ShortName": "Sunspot number",
+    "Description": "Sunspot number since 1818. On July 1st, 2015, the sunspot number series has been replaced by a new improved version (version 2.0) that includes several corrections of past inhomogeneities in the time series.",
+    "Publisher": "WDC-SILSO, Royal Observatory of Belgium, Brussels",
+    "PublisherUrl": null,
+    "MoreInformationUrl": "https://sidc.be/SILSO/newdataset",
+    "StationInfoUrl": null,
+    "LocationInfoUrl": null,
+    "DataDownloadUrl": "https://sidc.be/SILSO/DATA/SN_d_tot_V2.0.txt",
+    "MeasurementDefinitions": [
+      {
+        "DataType": "SunspotNumber",
+        "UnitOfMeasure": "Sn",
+        "DataResolution": "Daily",
+        "DataAdjustment": null,
+        "RowDataType": "OneValuePerRow",
+        "FolderName": "Reference\\Sunspot",
+        "FileNameFormat": "SN_d_tot_V2.0.txt",
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s(?\u003Cday\u003E\\d{2})\\s\\d{4}\\.\\d{3}\\s\u002B(?\u003Cvalue\u003E-?\\d\u002B).*$",
+        "NullValue": "-1",
+        "ValueAdjustment": null
+      }
+    ],
+    "DataLocationMapping": null
   }
 ]

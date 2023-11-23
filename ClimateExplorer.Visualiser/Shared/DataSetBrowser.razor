@@ -436,6 +436,27 @@
                             },
                         }
                 },
+                new DataSetLibraryFolder
+                {
+                    Name = "Sun",
+                    DataSets =
+                        new List<DataSetLibraryEntry>()
+                        {
+                            new DataSetLibraryEntry()
+                            {
+                                Name = "Sunspot number",
+                                SourceSeriesSpecifications =
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            SourceDataSetId = Guid.Parse("E2D9A74B-3C30-4332-8B22-26BB14A0BDC7"),
+                                            DataType = DataType.SunspotNumber
+                                        }
+                                    }
+                            },
+                        }
+                },
             }
         );
     }

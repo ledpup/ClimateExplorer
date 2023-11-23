@@ -33,6 +33,7 @@ public static class SuggestedPresetLists
 
         var nino34 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.Nino34, null, throwIfNoMatch: true);
         var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.CO2, null, throwIfNoMatch: true);
+        var sunspot = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.SunspotNumber, null, throwIfNoMatch: true);
 
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
@@ -40,8 +41,7 @@ public static class SuggestedPresetLists
                 Title = "Temperature + precipitation",
                 Description = "Smoothed yearly average temperature and precipitation",
                 ChartSeriesList =
-                new List<ChartSeriesDefinition>()
-                {
+                [
                     new ChartSeriesDefinition()
                     {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -64,15 +64,14 @@ public static class SuggestedPresetLists
                         Value = SeriesValueOptions.Value,
                         Year = null
                     }
-                },
-                Variants = new List<SuggestedChartPresetModel> {
+                ],
+                Variants = [
                     new SuggestedChartPresetModelWithVariants()
                     {
                         Title = "ENSO + rainfall",
                         Description = "Monthly chart of the Nino 3.4 index and rainfall",
                         ChartSeriesList =
-                        new List<ChartSeriesDefinition>()
-                        {
+                        [
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -100,15 +99,14 @@ public static class SuggestedPresetLists
                                 DisplayStyle = SeriesDisplayStyle.Bar,
                                 SeriesTransformation = SeriesTransformations.Identity,
                             },
-                        },
+                        ],
                     },
                     new SuggestedChartPresetModelWithVariants()
                     {
                         Title = "Days of rain",
                         Description = "Number of rainy days, ≥ 1mm and ≥ 10mm; 20-year smoothing",
                         ChartSeriesList =
-                            new List<ChartSeriesDefinition>()
-                            {
+                            [
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -137,9 +135,9 @@ public static class SuggestedPresetLists
                                         SeriesTransformation = SeriesTransformations.EqualOrAbove10,
                                         RequestedColour = UiLogic.Colours.Pink,
                                     }
-                            },
+                            ],
                         }
-                }
+                ]
             }
         );
 
@@ -149,8 +147,39 @@ public static class SuggestedPresetLists
                 Title = "Temperature + CO₂",
                 Description = "Smoothed yearly average temperature and carbon dioxide",
                 ChartSeriesList =
-                new List<ChartSeriesDefinition>()
-                {
+                [
+                        new ChartSeriesDefinition()
+                        {
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
+                            Aggregation = SeriesAggregationOptions.Mean,
+                            BinGranularity = BinGranularities.ByYear,
+                            Smoothing = SeriesSmoothingOptions.MovingAverage,
+                            SmoothingWindow = 10,
+                            Value = SeriesValueOptions.Value,
+                            Year = null
+                        },
+                        new ChartSeriesDefinition()
+                        {
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, co2!),
+                            Aggregation = SeriesAggregationOptions.Mean,
+                            BinGranularity = BinGranularities.ByYear,
+                            Smoothing = SeriesSmoothingOptions.None,
+                            SmoothingWindow = 5,
+                            Value = SeriesValueOptions.Value,
+                            Year = null,
+                            RequestedColour = UiLogic.Colours.Black,
+                        }
+                ],
+                Variants =
+                [
+                    new SuggestedChartPresetModel()
+                    {
+                        Title = "Temperature + sunspots",
+                        Description = "Smoothed yearly average temperature and sunpot number",
+                        ChartSeriesList =
+                        [
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -165,7 +194,7 @@ public static class SuggestedPresetLists
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, co2!),
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, sunspot!),
                                 Aggregation = SeriesAggregationOptions.Mean,
                                 BinGranularity = BinGranularities.ByYear,
                                 Smoothing = SeriesSmoothingOptions.None,
@@ -173,8 +202,11 @@ public static class SuggestedPresetLists
                                 Value = SeriesValueOptions.Value,
                                 Year = null,
                                 RequestedColour = UiLogic.Colours.Black,
+                                GroupingThreshold = 0.1f,
                             }
-                },
+                        ],
+                    }
+                ],
             });
 
         suggestedPresets.Add(
@@ -183,8 +215,7 @@ public static class SuggestedPresetLists
                 Title = "Temperature anomaly",
                 Description = "Yearly average temperatures relative to the average of the whole dataset",
                 ChartSeriesList =
-                    new List<ChartSeriesDefinition>()
-                    {
+                    [
                         new ChartSeriesDefinition()
                         {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -197,17 +228,15 @@ public static class SuggestedPresetLists
                         Year = null,
                         DisplayStyle = SeriesDisplayStyle.Bar
                     }
-                },
+                ],
                 Variants =
-                    new List<SuggestedChartPresetModel>()
-                    {
+                    [
                         new SuggestedChartPresetModel()
                         {
                             Title = "Temperature with trendline",
                             Description = "Yearly view of average temperature with a straight line fit to the data (the trendline)",
                             ChartSeriesList =
-                                new List<ChartSeriesDefinition>()
-                                {
+                                [
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -220,15 +249,14 @@ public static class SuggestedPresetLists
                                         Value = SeriesValueOptions.Value,
                                         Year = null
                                     }
-                                }
+                                ]
                         },
                         new SuggestedChartPresetModelWithVariants()
                         {
                             Title = "Adjusted vs raw temperature",
                             Description = "Compare temperature values that have been adjusted for abnormalities with raw values",
                             ChartSeriesList =
-                            new List<ChartSeriesDefinition>()
-                            {
+                            [
                                 new ChartSeriesDefinition()
                                 {
                                     SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -253,15 +281,14 @@ public static class SuggestedPresetLists
                                     Value = SeriesValueOptions.Value,
                                     Year = null
                                 }
-                            },
+                            ],
                         },
                         new SuggestedChartPresetModel()
                         {
                             Title = "Temperature + solar radiation",
                             Description = "Shows yearly solar radiation and temperature averages",
                             ChartSeriesList =
-                                new List<ChartSeriesDefinition>()
-                                {
+                                [
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -287,9 +314,9 @@ public static class SuggestedPresetLists
                                         Year = null,
                                         RequestedColour = UiLogic.Colours.Green,
                                     }
-                                }
+                                ]
                         },
-                    }
+                    ]
             }
         );
 
@@ -299,8 +326,7 @@ public static class SuggestedPresetLists
                 Title = "Days of extremes",
                 Description = "Number of frosty days (≤ 2.2°C) and days 35°C or above; 20-year smoothing",
                 ChartSeriesList =
-                        new List<ChartSeriesDefinition>()
-                        {
+                        [
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -327,16 +353,15 @@ public static class SuggestedPresetLists
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 SeriesTransformation = SeriesTransformations.IsFrosty,
                             }
-                        },
-                Variants = new List<SuggestedChartPresetModel>()
-                        {
+                        ],
+                Variants =
+                        [
                         new SuggestedChartPresetModelWithVariants()
                         {
                             Title = "First and last day of frost",
                             Description = "First and last day of the year that has temperature ≤ 2.2°C; 20-year smoothing",
                             ChartSeriesList =
-                                new List<ChartSeriesDefinition>()
-                                {
+                                [
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -363,9 +388,9 @@ public static class SuggestedPresetLists
                                         DisplayStyle = SeriesDisplayStyle.Line,
                                         SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
                                     }
-                                }
+                                ]
                         },
-                    }
+                    ]
             }
         );
 
@@ -403,8 +428,7 @@ public static class SuggestedPresetLists
                 Title = "Carbon dioxide annual change",
                 Description = "Smoothed difference between current and previous year CO\u2082 maximums",
                 ChartSeriesList =
-                    new List<ChartSeriesDefinition>()
-                    {
+                    [
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -419,17 +443,15 @@ public static class SuggestedPresetLists
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Brown,
                             },
-                    },
+                    ],
                 Variants =
-                            new List<SuggestedChartPresetModel>()
-                            {
+                            [
                                 new SuggestedChartPresetModel()
                                 {
                                     Title = "Carbon dioxide (CO\u2082)",
                                     Description = "Carbon dioxide records from the Mauna Loa Observatory since 1958. AKA The Keeling Curve",
                                     ChartSeriesList =
-                                    new List<ChartSeriesDefinition>()
-                                    {
+                                    [
                                             new ChartSeriesDefinition()
                                             {
                                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -443,15 +465,14 @@ public static class SuggestedPresetLists
                                                 DisplayStyle = SeriesDisplayStyle.Line,
                                                 RequestedColour = UiLogic.Colours.Brown,
                                             },
-                                    },
+                                    ],
                                 },
                                 new SuggestedChartPresetModel()
                                 {
                                     Title = "Methane (CH\u2084)",
                                     Description = "NOAA's Earth System Research Laboratory has measured methane since 1983",
                                     ChartSeriesList =
-                                        new List<ChartSeriesDefinition>()
-                                        {
+                                        [
                                             new ChartSeriesDefinition()
                                             {
                                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -465,15 +486,14 @@ public static class SuggestedPresetLists
                                                 DisplayStyle = SeriesDisplayStyle.Line,
                                                 RequestedColour = UiLogic.Colours.Brown,
                                             },
-                                        }
+                                        ]
                                 },
                                 new SuggestedChartPresetModel()
                                 {
                                     Title = "Nitrous oxide (N\u2082O)",
                                     Description = "NOAA's Earth System Research Laboratory has measured nitrous oxide since 2001",
                                     ChartSeriesList =
-                                        new List<ChartSeriesDefinition>()
-                                        {
+                                        [
                                             new ChartSeriesDefinition()
                                             {
                                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -487,9 +507,9 @@ public static class SuggestedPresetLists
                                                 DisplayStyle = SeriesDisplayStyle.Line,
                                                 RequestedColour = UiLogic.Colours.Brown,
                                             }
-                                        }
+                                        ]
                                 }
-                            }
+                            ]
             }
             );
 
@@ -501,8 +521,7 @@ public static class SuggestedPresetLists
                 Title = "Australian anomaly",
                 Description = "Smoothed average of ACORN-SAT anomalies (excluding urban-influenced locations). Reference period is 1961-1990",
                 ChartSeriesList =
-                    new List<ChartSeriesDefinition>()
-                    {
+                    [
                         new ChartSeriesDefinition()
                         {
                             SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
@@ -527,17 +546,15 @@ public static class SuggestedPresetLists
                             Year = null,
                             DisplayStyle = SeriesDisplayStyle.Line,
                         },
-                    },
+                    ],
                 Variants =
-                    new List<SuggestedChartPresetModel>()
-                    {
+                    [
                         new SuggestedChartPresetModel()
                         {
                             Title = "Anomaly bar chart",
                             Description = "Australian temperature anomalies as a bar chart",
                             ChartSeriesList =
-                                new List<ChartSeriesDefinition>()
-                                {
+                                [
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
@@ -550,15 +567,14 @@ public static class SuggestedPresetLists
                                         Year = null,
                                         DisplayStyle = SeriesDisplayStyle.Bar,
                                     },
-                                }
+                                ]
                         },
                         new SuggestedChartPresetModel()
                         {
                             Title = "Adjusted vs raw temperature",
                             Description = "Compare temperature values that have been adjusted for abnormalities with raw values",
                             ChartSeriesList =
-                                new List<ChartSeriesDefinition>()
-                                {
+                                [
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup,
@@ -583,9 +599,9 @@ public static class SuggestedPresetLists
                                         Year = null,
                                         DisplayStyle = SeriesDisplayStyle.Line,
                                     },
-                                }
+                                ]
                         },
-                    },
+                    ],
             });
 
         suggestedPresets.Add(
@@ -594,8 +610,7 @@ public static class SuggestedPresetLists
                 Title = "Sea ice extent",
                 Description = "Antarctic and Arctic sea ice extent, measured in millions of square kilometres since 1979",
                 ChartSeriesList =
-                            new List<ChartSeriesDefinition>()
-                            {
+                            [
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -624,17 +639,15 @@ public static class SuggestedPresetLists
                                         RequestedColour = UiLogic.Colours.Orange,
                                         GroupingThreshold = 0.1f,
                                     },
-                            },
+                            ],
                 Variants =
-                    new List<SuggestedChartPresetModel>()
-                    {
+                    [
                         new SuggestedChartPresetModel()
                         {
                             Title = "Greenland ice melt area",
                             Description = "Smoothed ice melt area, measured in square kilometres since 1979",
                             ChartSeriesList =
-                                new List<ChartSeriesDefinition>()
-                                {
+                                [
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -648,9 +661,9 @@ public static class SuggestedPresetLists
                                         DisplayStyle = SeriesDisplayStyle.Line,
                                         RequestedColour = UiLogic.Colours.Blue,
                                     },
-                                }
+                                ]
                         },
-                    },
+                    ],
             }
         );
 
@@ -660,8 +673,7 @@ public static class SuggestedPresetLists
                 Title = "ENSO + IOD",
                 Description = "The El Niño Southern Oscillation (ENSO) and Indian Ocean Dipole (IOD) are sea surface temperature anomalies.",
                 ChartSeriesList =
-                            new List<ChartSeriesDefinition>()
-                            {
+                            [
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -690,16 +702,15 @@ public static class SuggestedPresetLists
                                         RequestedColour = UiLogic.Colours.Orange,
                                         GroupingThreshold = 0.1f,
                                     },
-                            },
-                Variants = new List<SuggestedChartPresetModel>()
-                                {
+                            ],
+                Variants =
+                                [
                                     new SuggestedChartPresetModel()
                                     {
                                         Title = "All ENSO",
                                         Description = "Nino 3.4, ONI, an inverted SOI, and MEI v2",
                                         ChartSeriesList =
-                                            new List<ChartSeriesDefinition>()
-                                            {
+                                            [
                                                     new ChartSeriesDefinition()
                                                     {
                                                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -754,9 +765,9 @@ public static class SuggestedPresetLists
                                                         DisplayStyle = SeriesDisplayStyle.Line,
                                                         GroupingThreshold = 0.1f,
                                                     },
-                                            }
+                                            ]
                                     },
-                                },
+                                ],
             }
         );
 
