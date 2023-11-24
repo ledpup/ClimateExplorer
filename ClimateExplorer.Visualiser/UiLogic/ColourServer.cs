@@ -61,7 +61,7 @@ public class ColourServer
         { Colours.Purple, "#984ea3" },
         { Colours.Black, "#000000" },
         { Colours.Orange, "#ff7f00" },
-        { Colours.Yellow, "#ffff33" },
+        { Colours.Yellow, "#e3bd0d" },
         { Colours.Brown, "#a65628" },
         { Colours.Pink, "#f781bf" },
         { Colours.Grey, "#999999" },

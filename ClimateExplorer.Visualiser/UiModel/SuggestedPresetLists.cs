@@ -201,7 +201,7 @@ public static class SuggestedPresetLists
                                 SmoothingWindow = 5,
                                 Value = SeriesValueOptions.Value,
                                 Year = null,
-                                RequestedColour = UiLogic.Colours.Black,
+                                RequestedColour = UiLogic.Colours.Yellow,
                                 GroupingThreshold = 0.1f,
                             }
                         ],
