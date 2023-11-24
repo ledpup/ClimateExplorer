@@ -10,6 +10,7 @@ The data is sourced from:
 - [NIWA](https://niwa.co.nz/) New Zealand's **National Institute of Water and Atmospheric Research** (maintains the [7-stations](https://niwa.co.nz/seven-stations) and [11-station](https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data) series)
 - [NSIDC](https://nsidc.org/home) United States of America's **National Snow & Ice Data Center**
 - [Met Office](https://www.metoffice.gov.uk/) United Kingdom's national weather service
+- [Royal Observatory of Belgium](https://www.astro.oma.be/en/) The Royal Observatory of Belgium (ROB) is a scientific research institution. The main activities are Reference Systems and Planetology, Seismology and Gravimetry, Astronomy and Astrophysics and Solar Physics and Space Weather.
 
 ## Glossary
 - [GHCNm](https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-monthly) Global Historical Climatology Network monthly provides monthly climate summaries from thousands of weather stations around the world

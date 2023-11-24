@@ -15,8 +15,7 @@ public class SourceSeriesSpecification
         if (dsdmd == null) return new SourceSeriesSpecification[0];
 
         return
-            new SourceSeriesSpecification[]
-            {
+            [
                     new SourceSeriesSpecification
                     {
                         LocationId = location == null ? null : location.Id,
@@ -24,6 +23,6 @@ public class SourceSeriesSpecification
                         DataSetDefinition = dsdmd.DataSetDefinition!,
                         MeasurementDefinition = dsdmd.MeasurementDefinition!,
                     }
-            };
+            ];
     }
 }

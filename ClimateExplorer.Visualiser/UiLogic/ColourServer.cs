@@ -1,7 +1,4 @@
-﻿using Blazorise;
-using Microsoft.VisualBasic;
-
-namespace ClimateExplorer.Visualiser.UiLogic;
+﻿namespace ClimateExplorer.Visualiser.UiLogic;
 
 public class ColourServer
 {
@@ -61,17 +58,17 @@ public class ColourServer
         { Colours.Purple, "#984ea3" },
         { Colours.Black, "#000000" },
         { Colours.Orange, "#ff7f00" },
-        { Colours.Yellow, "#ffff33" },
+        { Colours.Yellow, "#e3bd0d" },
         { Colours.Brown, "#a65628" },
         { Colours.Pink, "#f781bf" },
         { Colours.Grey, "#999999" },
     };
 
     // https://observablehq.com/@d3/color-schemes
-    string[] category10 = new[] { "#4e79a7", "#f28e2c", "#e15759", "#76b7b2", "#59a14f", "#edc949", "#af7aa1", "#ff9da7", "#9c755f", "#bab0ab" };
-    string[] tableau10 = new[] { "#4e79a7", "#f28e2c", "#e15759", "#76b7b2", "#59a14f", "#edc949", "#af7aa1", "#ff9da7", "#9c755f", "#bab0ab" };
-    string[] set1 = new[] { "#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#ffff33", "#a65628", "#f781bf", "#999999" };
-    string[] paired = new[] { "#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6", "#6a3d9a", "#ffff99", "#b15928" };
+    string[] category10 = ["#4e79a7", "#f28e2c", "#e15759", "#76b7b2", "#59a14f", "#edc949", "#af7aa1", "#ff9da7", "#9c755f", "#bab0ab"];
+    string[] tableau10 = ["#4e79a7", "#f28e2c", "#e15759", "#76b7b2", "#59a14f", "#edc949", "#af7aa1", "#ff9da7", "#9c755f", "#bab0ab"];
+    string[] set1 = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#ffff33", "#a65628", "#f781bf", "#999999"];
+    string[] paired = ["#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6", "#6a3d9a", "#ffff99", "#b15928"];
 }
 
 public enum Colours

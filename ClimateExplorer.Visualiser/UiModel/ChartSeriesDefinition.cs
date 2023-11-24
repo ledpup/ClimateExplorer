@@ -315,6 +315,7 @@ public class ChartSeriesDefinition
             DataType.NorthSeaIce => "Arctic sea ice",
             DataType.SouthSeaIce => "Antarctic sea ice",
             DataType.GreenlandIceMelt => "Greenland ice melt",
+            DataType.SunspotNumber => "Sunspot number",
             _ => throw new NotImplementedException(),
         };
     }

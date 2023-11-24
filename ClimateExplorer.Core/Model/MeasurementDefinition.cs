@@ -4,10 +4,10 @@ using static ClimateExplorer.Core.Enums;
 namespace ClimateExplorer.Core.Model;
 public class MeasurementDefinition
 {
-    public DataType DataType { get; set; }
-    public UnitOfMeasure UnitOfMeasure { get; set; }
-    public DataResolution DataResolution { get; set; }
-    public DataAdjustment? DataAdjustment { get; set; }
+    public required DataType DataType { get; set; }
+    public required UnitOfMeasure UnitOfMeasure { get; set; }
+    public required DataResolution DataResolution { get; set; }
+    public required DataAdjustment? DataAdjustment { get; set; }
     public RowDataType RowDataType { get; set; }
     public string? FolderName { get; set; }
     public string? FileNameFormat { get; set; }

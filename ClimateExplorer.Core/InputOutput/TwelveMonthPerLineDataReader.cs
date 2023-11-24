@@ -1,12 +1,5 @@
-﻿using ClimateExplorer.Core.InputOutput;
-using ClimateExplorer.Core.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using ClimateExplorer.Core.Model;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using static ClimateExplorer.Core.Enums;
 
 namespace ClimateExplorer.Core.InputOutput
 {

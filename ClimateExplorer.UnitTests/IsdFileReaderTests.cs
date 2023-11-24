@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Threading.Tasks;
 
 namespace ClimateExplorer.UnitTests;
 
@@ -15,7 +14,7 @@ public class IsdFileReaderTests
     [DataRow("0185010590999991993070506004+70067+024983SY-MT+0008ENNA V0203601N00261024001CN0500001N1+01301+00621100311ADDAA106000091AA299003091AG13000GA1021+007509999GA2071+024009999GF107991011051001501071999KA1120N+01111MA1100311999999MD1710041+9999MW1001REMSYN010 333 20111MET003NEWEQDQ01+000000PRSWM2")]
     public void ReadDataFromDataRows(string row)
     {
-        var records = IsdFileProcessor.Transform(new string[] { row }, new Mock<ILogger<IsdFileProcessor>>().Object);
+        var records = IsdFileProcessor.Transform([row], new Mock<ILogger<IsdFileProcessor>>().Object);
         Assert.IsNotNull(records);
     }
 }

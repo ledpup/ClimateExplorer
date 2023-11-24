@@ -1,6 +1,4 @@
-﻿using static System.Collections.Specialized.BitVector32;
-
-namespace ClimateExplorer.Data.IntegratedSurfaceData;
+﻿namespace ClimateExplorer.Data.IntegratedSurfaceData;
 
 public class StationHistoryFileProcessor
 {

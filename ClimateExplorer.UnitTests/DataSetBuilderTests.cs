@@ -1,10 +1,7 @@
 ﻿using ClimateExplorer.Core.DataPreparation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClimateExplorer.UnitTests;
 
@@ -17,7 +14,7 @@ public class DataSetBuilderTests
         var dsb = new DataSetBuilder();
 
         var cdp = dsb.BuildDataSetFromDataPoints(
-            new TemporalDataPoint[] { },
+            [],
             Core.Enums.DataResolution.Daily,
             new PostDataSetsRequestBody
             {

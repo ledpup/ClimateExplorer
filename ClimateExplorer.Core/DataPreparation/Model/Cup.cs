@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ClimateExplorer.Core.DataPreparation
+﻿namespace ClimateExplorer.Core.DataPreparation
 {
     public class Cup
     {

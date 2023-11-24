@@ -694,5 +694,59 @@
       }
     ],
     "DataLocationMapping": null
+  },
+  {
+    "Id": "e2d9a74b-3c30-4332-8b22-26bb14a0bdc7",
+    "Name": "Sunspot number",
+    "ShortName": "Sunspot number",
+    "Description": "Sunspot number since 1818. On July 1st, 2015, the sunspot number series has been replaced by a new improved version (version 2.0) that includes several corrections of past inhomogeneities in the time series.",
+    "Publisher": "WDC-SILSO, Royal Observatory of Belgium, Brussels",
+    "PublisherUrl": null,
+    "MoreInformationUrl": "https://sidc.be/SILSO/newdataset",
+    "StationInfoUrl": null,
+    "LocationInfoUrl": null,
+    "DataDownloadUrl": "https://sidc.be/SILSO/DATA/SN_d_tot_V2.0.txt",
+    "MeasurementDefinitions": [
+      {
+        "DataType": "SunspotNumber",
+        "UnitOfMeasure": "Sn",
+        "DataResolution": "Daily",
+        "DataAdjustment": null,
+        "RowDataType": "OneValuePerRow",
+        "FolderName": "Reference\\Solar",
+        "FileNameFormat": "SN_d_tot_V2.0.txt",
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s(?\u003Cday\u003E\\d{2})\\s\\d{4}\\.\\d{3}\\s\u002B(?\u003Cvalue\u003E-?\\d\u002B).*$",
+        "NullValue": "-1",
+        "ValueAdjustment": null
+      }
+    ],
+    "DataLocationMapping": null
+  },
+  {
+    "Id": "e45293f9-b7ac-4874-9544-25e006b6b998",
+    "Name": "Total solar irradiance",
+    "ShortName": "TSI",
+    "Description": "The Solar Irradiance Climate Data Record (CDR) includes a composite observational record of total solar irradiance (TSI) constructed from space-based radiometer composite records between 1978 and 2014 and Total Irradiance Monitor (TIM) observations after the launch of the SOlar Radiation and Climate  Experiment (SORCE). The SORCE TIM record ended Feb 25, 2020. The TSIS-1 TIM record began Jan 11, 2018.",
+    "Publisher": "National Oceanic and Atmospheric Administration (NOAA)",
+    "PublisherUrl": null,
+    "MoreInformationUrl": "https://sidc.be/SILSO/newdataset",
+    "StationInfoUrl": null,
+    "LocationInfoUrl": null,
+    "DataDownloadUrl": "https://www.ncei.noaa.gov/data/total-solar-irradiance/access/ancillary-data/tsi-ssi_v02r01_observed-tsi-composite_s19780101_e20230930_c20231010.txt",
+    "MeasurementDefinitions": [
+      {
+        "DataType": "SolarRadiation",
+        "UnitOfMeasure": "WattsPerSquareMetre",
+        "DataResolution": "Daily",
+        "DataAdjustment": null,
+        "RowDataType": "OneValuePerRow",
+        "FolderName": "Reference\\Solar",
+        "FileNameFormat": "tsi-ssi_v02r01_observed-tsi-composite.txt",
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),\u002B(?\u003Cvalue\u003E-?\\d\u002B\\.*\\d*),.*$$",
+        "NullValue": "-99.0",
+        "ValueAdjustment": null
+      }
+    ],
+    "DataLocationMapping": null
   }
 ]

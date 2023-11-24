@@ -436,6 +436,40 @@
                             },
                         }
                 },
+                new DataSetLibraryFolder
+                {
+                    Name = "Solar",
+                    DataSets =
+                        new List<DataSetLibraryEntry>()
+                        {
+                            new DataSetLibraryEntry()
+                            {
+                                Name = "Sunspot number",
+                                SourceSeriesSpecifications =
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            SourceDataSetId = Guid.Parse("E2D9A74B-3C30-4332-8B22-26BB14A0BDC7"),
+                                            DataType = DataType.SunspotNumber
+                                        }
+                                    }
+                            },
+                            new DataSetLibraryEntry()
+                            {
+                                Name = "Total solar irradiance",
+                                SourceSeriesSpecifications =
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            SourceDataSetId = Guid.Parse("E45293F9-B7AC-4874-9544-25E006B6B998"),
+                                            DataType = DataType.SolarRadiation
+                                        }
+                                    }
+                            },
+                        }
+                },
             }
         );
     }

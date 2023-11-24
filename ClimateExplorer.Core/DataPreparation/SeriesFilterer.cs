@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace ClimateExplorer.Core.DataPreparation
+﻿namespace ClimateExplorer.Core.DataPreparation
 {
     public static class SeriesFilterer
     {
