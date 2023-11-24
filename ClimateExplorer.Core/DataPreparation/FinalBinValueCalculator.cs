@@ -1,7 +1,4 @@
 ﻿using ClimateExplorer.Core.DataPreparation.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ClimateExplorer.Core.DataPreparation
 {

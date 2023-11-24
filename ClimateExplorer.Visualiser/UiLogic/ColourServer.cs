@@ -1,7 +1,4 @@
-﻿using Blazorise;
-using Microsoft.VisualBasic;
-
-namespace ClimateExplorer.Visualiser.UiLogic;
+﻿namespace ClimateExplorer.Visualiser.UiLogic;
 
 public class ColourServer
 {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO.Compression;
+﻿using System.IO.Compression;
 using System.Text;
 using FluentFTP;
 using SharpCompress.Common;

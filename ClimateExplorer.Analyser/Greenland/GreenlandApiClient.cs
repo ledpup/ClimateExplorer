@@ -1,14 +1,4 @@
-﻿using ClimateExplorer.Core.DataPreparation.Model;
-using System;
-using System.Collections.Generic;
-using System.IO.Compression;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using System.Text.Json;
 
 namespace ClimateExplorer.Analyser.Greenland;
 

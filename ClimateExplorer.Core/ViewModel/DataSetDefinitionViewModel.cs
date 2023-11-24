@@ -1,5 +1,4 @@
 ﻿using ClimateExplorer.Core.Model;
-using System.ComponentModel.DataAnnotations;
 using static ClimateExplorer.Core.Enums;
 
 namespace ClimateExplorer.Core.ViewModel;

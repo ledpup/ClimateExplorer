@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Formats.Tar;
 using System.IO.Compression;
-using System.Runtime.CompilerServices;
 
 namespace ClimateExplorer.Data.Ghcnm;
 
