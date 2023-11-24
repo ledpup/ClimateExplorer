@@ -34,6 +34,7 @@ public static class SuggestedPresetLists
         var nino34 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.Nino34, null, throwIfNoMatch: true);
         var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.CO2, null, throwIfNoMatch: true);
         var sunspot = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.SunspotNumber, null, throwIfNoMatch: true);
+        var tsi = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.SolarRadiation, null, throwIfNoMatch: true);
 
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
@@ -205,7 +206,72 @@ public static class SuggestedPresetLists
                                 GroupingThreshold = 0.1f,
                             }
                         ],
-                    }
+                    },
+                    new SuggestedChartPresetModel()
+                    {
+                        Title = "Temperature + solar irradiance",
+                        Description = "Smoothed yearly average temperature and total solar irradiance (from satelite)",
+                        ChartSeriesList =
+                        [
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 10,
+                                Value = SeriesValueOptions.Value,
+                                Year = null
+                            },
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, tsi!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.None,
+                                SmoothingWindow = 5,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                RequestedColour = UiLogic.Colours.Yellow,
+                                GroupingThreshold = 0.1f,
+                            }
+                        ],
+                    },
+                    new SuggestedChartPresetModel()
+                    {
+                        Title = "Temperature + solar radiation",
+                        Description = "Smoothed yearly average temperature and local yearly solar radiation (where available)",
+                        ChartSeriesList =
+                        [
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYearAndMonth,
+                                ShowTrendline = false,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 3,
+                                Value = SeriesValueOptions.Value,
+                                Year = null
+                            },
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, solarRadiation!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYearAndMonth,
+                                ShowTrendline = false,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 3,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                RequestedColour = UiLogic.Colours.Yellow,
+                            }
+                        ]
+                    },
                 ],
             });
 
@@ -282,39 +348,6 @@ public static class SuggestedPresetLists
                                     Year = null
                                 }
                             ],
-                        },
-                        new SuggestedChartPresetModel()
-                        {
-                            Title = "Temperature + solar radiation",
-                            Description = "Shows yearly solar radiation and temperature averages",
-                            ChartSeriesList =
-                                [
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYearAndMonth,
-                                        ShowTrendline = false,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 3,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null
-                                    },
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, solarRadiation!),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYearAndMonth,
-                                        ShowTrendline = false,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 3,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null,
-                                        RequestedColour = UiLogic.Colours.Green,
-                                    }
-                                ]
                         },
                     ]
             }
@@ -421,6 +454,8 @@ public static class SuggestedPresetLists
         var mei = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.MEIv2, null, throwIfNoMatch: true);
         var iod = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.IOD, null, throwIfNoMatch: true);
 
+        var sunspots = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.SunspotNumber, null, throwIfNoMatch: true);
+        var tsi = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, null, DataType.SolarRadiation, null, throwIfNoMatch: true);
 
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
@@ -513,6 +548,108 @@ public static class SuggestedPresetLists
             }
             );
 
+        suggestedPresets.Add(
+            new SuggestedChartPresetModelWithVariants()
+            {
+                Title = "Sea ice extent",
+                Description = "Antarctic and Arctic sea ice extent, measured in millions of square kilometres since 1979",
+                ChartSeriesList =
+                            [
+                                new ChartSeriesDefinition()
+                                {
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, southSeaIceExtent!),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYear,
+                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                    SmoothingWindow = 10,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null,
+                                    DisplayStyle = SeriesDisplayStyle.Line,
+                                    RequestedColour = UiLogic.Colours.Purple,
+                                    GroupingThreshold = 0.1f,
+                                },
+                                new ChartSeriesDefinition()
+                                {
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, northSeaIceExtent!),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYear,
+                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                    SmoothingWindow = 10,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null,
+                                    DisplayStyle = SeriesDisplayStyle.Line,
+                                    RequestedColour = UiLogic.Colours.Orange,
+                                    GroupingThreshold = 0.1f,
+                                },
+                            ],
+                Variants =
+                    [
+                        new SuggestedChartPresetModel()
+                        {
+                            Title = "Greenland ice melt area",
+                            Description = "Smoothed ice melt area, measured in square kilometres since 1979",
+                            ChartSeriesList =
+                                [
+                                    new ChartSeriesDefinition()
+                                    {
+                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, greenland!),
+                                        Aggregation = SeriesAggregationOptions.Sum,
+                                        BinGranularity = BinGranularities.ByYear,
+                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                        SmoothingWindow = 10,
+                                        Value = SeriesValueOptions.Value,
+                                        Year = null,
+                                        DisplayStyle = SeriesDisplayStyle.Line,
+                                        RequestedColour = UiLogic.Colours.Blue,
+                                    },
+                                ]
+                        },
+                    ],
+            }
+        );
+
+        suggestedPresets.Add(
+            new SuggestedChartPresetModelWithVariants()
+            {
+                Title = "Solar irradiation + sunspots",
+                Description = "Total solar irradiance (from satelite data) compared with the number of sunspots on the sun",
+                ChartSeriesList =
+                [
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, tsi!),
+                        Aggregation = SeriesAggregationOptions.Mean,
+                        BinGranularity = BinGranularities.ByYear,
+                        Smoothing = SeriesSmoothingOptions.None,
+                        SmoothingWindow = 10,
+                        Value = SeriesValueOptions.Value,
+                        Year = null,
+                        DisplayStyle = SeriesDisplayStyle.Line,
+                        RequestedColour = UiLogic.Colours.Green,
+                        GroupingThreshold = 0.1f,
+                    },
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, sunspots!),
+                        Aggregation = SeriesAggregationOptions.Mean,
+                        BinGranularity = BinGranularities.ByYear,
+                        Smoothing = SeriesSmoothingOptions.None,
+                        SmoothingWindow = 10,
+                        Value = SeriesValueOptions.Value,
+                        Year = null,
+                        DisplayStyle = SeriesDisplayStyle.Line,
+                        RequestedColour = UiLogic.Colours.Yellow,
+                        GroupingThreshold = 0.1f,
+                    },
+                ],
+            }
+        );
+
         var australiaAnomaly = new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia anomaly", CountryCode = "AS", Coordinates = new Coordinates() };
 
         suggestedPresets.Add(
@@ -603,69 +740,6 @@ public static class SuggestedPresetLists
                         },
                     ],
             });
-
-        suggestedPresets.Add(
-            new SuggestedChartPresetModelWithVariants()
-            {
-                Title = "Sea ice extent",
-                Description = "Antarctic and Arctic sea ice extent, measured in millions of square kilometres since 1979",
-                ChartSeriesList =
-                            [
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, southSeaIceExtent!),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 10,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null,
-                                        DisplayStyle = SeriesDisplayStyle.Line,
-                                        RequestedColour = UiLogic.Colours.Purple,
-                                        GroupingThreshold = 0.1f,
-                                    },
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, northSeaIceExtent!),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 10,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null,
-                                        DisplayStyle = SeriesDisplayStyle.Line,
-                                        RequestedColour = UiLogic.Colours.Orange,
-                                        GroupingThreshold = 0.1f,
-                                    },
-                            ],
-                Variants =
-                    [
-                        new SuggestedChartPresetModel()
-                        {
-                            Title = "Greenland ice melt area",
-                            Description = "Smoothed ice melt area, measured in square kilometres since 1979",
-                            ChartSeriesList =
-                                [
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, greenland!),
-                                        Aggregation = SeriesAggregationOptions.Sum,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 10,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null,
-                                        DisplayStyle = SeriesDisplayStyle.Line,
-                                        RequestedColour = UiLogic.Colours.Blue,
-                                    },
-                                ]
-                        },
-                    ],
-            }
-        );
 
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()

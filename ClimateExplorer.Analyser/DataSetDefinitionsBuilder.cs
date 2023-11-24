@@ -628,13 +628,35 @@ Our aim is to provide climate science and services to people and organisations, 
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d{4})\s+(?<month>\d+)\s(?<day>\d{2})\s\d{4}\.\d{3}\s+(?<value>-?\d+).*$",
-                        FolderName = @"Reference\Sunspot",
+                        FolderName = @"Reference\Solar",
                         FileNameFormat = "SN_d_tot_V2.0.txt",
                         NullValue = "-1",
                     },
                 ],
             },
-
+            new() {
+                Id = Guid.Parse("E45293F9-B7AC-4874-9544-25E006B6B998"),
+                Name = "Total solar irradiance",
+                ShortName = "TSI",
+                Description = "The Solar Irradiance Climate Data Record (CDR) includes a composite observational record of total solar irradiance (TSI) constructed from space-based radiometer composite records between 1978 and 2014 and Total Irradiance Monitor (TIM) observations after the launch of the SOlar Radiation and Climate  Experiment (SORCE). The SORCE TIM record ended Feb 25, 2020. The TSIS-1 TIM record began Jan 11, 2018.",
+                Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
+                MoreInformationUrl = "https://sidc.be/SILSO/newdataset",
+                DataDownloadUrl = "https://www.ncei.noaa.gov/data/total-solar-irradiance/access/ancillary-data/tsi-ssi_v02r01_observed-tsi-composite_s19780101_e20230930_c20231010.txt",
+                MeasurementDefinitions =
+                [
+                    new MeasurementDefinition
+                    {
+                        DataType = DataType.SolarRadiation,
+                        UnitOfMeasure = UnitOfMeasure.WattsPerSquareMetre,
+                        DataResolution = DataResolution.Daily,
+                        DataAdjustment = null,
+                        DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),+(?<value>-?\d+\.*\d*),.*$$",
+                        FolderName = @"Reference\Solar",
+                        FileNameFormat = "tsi-ssi_v02r01_observed-tsi-composite.txt",
+                        NullValue = "-99.0",
+                    },
+                ],
+            },
 
 
         };
