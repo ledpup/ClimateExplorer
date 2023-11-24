@@ -209,40 +209,8 @@ public static class SuggestedPresetLists
                     },
                     new SuggestedChartPresetModel()
                     {
-                        Title = "Temperature + solar irradiance",
-                        Description = "Smoothed yearly average temperature and total solar irradiance (from satelite)",
-                        ChartSeriesList =
-                        [
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
-                                Aggregation = SeriesAggregationOptions.Mean,
-                                BinGranularity = BinGranularities.ByYear,
-                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                SmoothingWindow = 10,
-                                Value = SeriesValueOptions.Value,
-                                Year = null
-                            },
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, tsi!),
-                                Aggregation = SeriesAggregationOptions.Mean,
-                                BinGranularity = BinGranularities.ByYear,
-                                Smoothing = SeriesSmoothingOptions.None,
-                                SmoothingWindow = 5,
-                                Value = SeriesValueOptions.Value,
-                                Year = null,
-                                RequestedColour = UiLogic.Colours.Yellow,
-                                GroupingThreshold = 0.1f,
-                            }
-                        ],
-                    },
-                    new SuggestedChartPresetModel()
-                    {
                         Title = "Temperature + solar radiation",
-                        Description = "Smoothed yearly average temperature and local yearly solar radiation (where available)",
+                        Description = "Smoothed yearly average temperature and solar radiation (where available)",
                         ChartSeriesList =
                         [
                             new ChartSeriesDefinition()
