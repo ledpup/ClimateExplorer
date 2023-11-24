@@ -17,7 +17,7 @@ public class DataSetBuilderTests
         var dsb = new DataSetBuilder();
 
         var cdp = dsb.BuildDataSetFromDataPoints(
-            new TemporalDataPoint[] { },
+            [],
             Core.Enums.DataResolution.Daily,
             new PostDataSetsRequestBody
             {

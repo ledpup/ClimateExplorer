@@ -374,8 +374,7 @@ public partial class Index : ChartablePage
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                                 SourceSeriesSpecifications =
-                                    new SourceSeriesSpecification[]
-                                    {
+                                    [
                                     new SourceSeriesSpecification
                                     {
                                         DataSetDefinition = DataSetDefinitions!.Single(x => x.Id == sss.DataSetDefinition!.Id),
@@ -383,7 +382,7 @@ public partial class Index : ChartablePage
                                         LocationName = SelectedLocation.Name,
                                         MeasurementDefinition = newMd,
                                     }
-                                    },
+                                    ],
                                 Aggregation = csd.Aggregation,
                                 BinGranularity = csd.BinGranularity,
                                 DisplayStyle = csd.DisplayStyle,

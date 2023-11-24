@@ -16,15 +16,15 @@ public class DataReaderTests
     [TestMethod]
     public void ProcessDataTest()
     {
-        string[]? lines = new[]
-        {
+        string[]? lines =
+        [
             "Header",
             "1427,19501230:2100,21.8,24,15.6,24,-,-,-,-,-,D",
             "1427,19501231:2100,24.2,24,18.4,24,-,-,-,-,-,D",
             "1427,19510101:2100,26.4,24,16.2,24,-,-,-,-,-,D",
             "1427,19510102:2100,19.0,24,12.6,24,-,-,-,-,-,D",
             "EOF",
-        };
+        ];
 
         var regEx = new Regex(@"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$");
 
@@ -45,15 +45,15 @@ public class DataReaderTests
     [TestMethod]
     public void ProcessDataWithNullRecordsTest()
     {
-        string[]? lines = new[]
-        {
+        string[]? lines =
+        [
             "Header",
             "1427,19501230:2100,21.8,24,15.6,24,-,-,-,-,-,D",
             "1427,19501231:2100,-,24,18.4,24,-,-,-,-,-,D",
             "1427,19510101:2100,-,24,16.2,24,-,-,-,-,-,D",
             "1427,19510102:2100,19.0,24,12.6,24,-,-,-,-,-,D",
             "EOF",
-        };
+        ];
 
         var regEx = new Regex(@"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$");
 
@@ -70,15 +70,15 @@ public class DataReaderTests
     [TestMethod]
     public void ProcessDataWithMissingRecordsTest()
     {
-        string[]? lines = new[]
-        {
+        string[]? lines =
+        [
             "Header",
             "1427,19501230:2100,21.8,24,15.6,24,-,-,-,-,-,D",
             "MISSING",
             "MISSING",
             "1427,19510102:2100,19.0,24,12.6,24,-,-,-,-,-,D",
             "EOF",
-        };
+        ];
 
         var regEx = new Regex(@"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$");
 
@@ -95,15 +95,15 @@ public class DataReaderTests
     [TestMethod]
     public void ProcessDataFileWithDateFilterTest()
     {
-        string[]? lines = new[]
-        {
+        string[]? lines =
+        [
             "Header",
             "1427,19501230:2100,21.8,24,15.6,24,-,-,-,-,-,D",
             "1427,19501231:2100,24.2,24,18.4,24,-,-,-,-,-,D",
             "1427,19510101:2100,26.4,24,16.2,24,-,-,-,-,-,D",
             "1427,19510102:2100,19.0,24,12.6,24,-,-,-,-,-,D",
             "EOF",
-        };
+        ];
 
         var regEx = new Regex(@"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$");
 
@@ -121,15 +121,15 @@ public class DataReaderTests
     [TestMethod]
     public void ProcessMonthlyDataTest()
     {
-        string[]? lines = new[]
-        {
+        string[]? lines =
+        [
             "Header",
             "19400801 19400831    18.7",
             "19400901 19400930    19.5",
             "19401001 19401031    19.7",
             "19401101 19401130    21.1",
             "EOF",
-        };
+        ];
 
         var regEx = new Regex(@"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$");
 
@@ -150,15 +150,15 @@ public class DataReaderTests
     [TestMethod]
     public void ProcessMonthlyDataWithMissingRecordsTest()
     {
-        string[]? lines = new[]
-        {
+        string[]? lines =
+        [
             "Header",
             "19400801 19400831    18.7",
             "MISSING",
             "19401001 19401031    19.7",
             "19401101 19401130    21.1",
             "EOF",
-        };
+        ];
 
         var regEx = new Regex(@"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$");
 
@@ -178,15 +178,15 @@ public class DataReaderTests
     [TestMethod]
     public void ProcessMonthlyDataWithDuplicateRecordsTest()
     {
-        string[]? lines = new[]
-        {
+        string[]? lines =
+        [
             "Header",
             "19400801 19400831    18.7",
             "19400801 19400831    18.7", // Duplicate
             "19400901 19400930    19.5",
             "19401001 19401031    19.7",
             "EOF",
-        };
+        ];
 
         var regEx = new Regex(@"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$");
 
@@ -205,15 +205,15 @@ public class DataReaderTests
     [TestMethod]
     public void ProcessMonthlyDataWithRecordsOutOfOrderTest()
     {
-        string[]? lines = new[]
-        {
+        string[]? lines =
+        [
             "Header",
             "19400901 19400930    19.5",
             "19400801 19400831    18.7", // Will be skipped
             "19401001 19401031    19.7",
             "19401101 19401130    21.1",
             "EOF",
-        };
+        ];
 
         var regEx = new Regex(@"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$");
 

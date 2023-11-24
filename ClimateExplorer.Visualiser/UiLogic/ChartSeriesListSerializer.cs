@@ -178,7 +178,7 @@ public static class ChartSeriesListSerializer
             };
     }
 
-    static readonly char[] SeparatorsByLevel = { ';', ',', '|', '*' };
+    static readonly char[] SeparatorsByLevel = [';', ',', '|', '*'];
 
     static string BuildSourceSeriesSpecificationsUrlComponent(SourceSeriesSpecification sss)
     {
