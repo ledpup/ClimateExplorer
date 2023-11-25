@@ -51,7 +51,7 @@ builder.Services.AddCors(
                 //       do anything using their credentials against our API site because they don't have
                 //       credentials, and can't modify any data via the API. The exposure is minimal.
                 builder.AllowAnyOrigin();
-                builder.AllowAnyMethod();
+
                 builder.AllowAnyHeader();
             }
         );
