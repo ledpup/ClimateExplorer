@@ -210,7 +210,7 @@ public static class SuggestedPresetLists
                     new SuggestedChartPresetModel()
                     {
                         Title = "Temperature + solar radiation",
-                        Description = "Smoothed yearly average temperature and solar radiation (where available)",
+                        Description = "Smoothed yearly average temperature and solar radiation",
                         ChartSeriesList =
                         [
                             new ChartSeriesDefinition()
@@ -583,7 +583,7 @@ public static class SuggestedPresetLists
             new SuggestedChartPresetModelWithVariants()
             {
                 Title = "Solar irradiation + sunspots",
-                Description = "Total solar irradiance (from satelite data) compared with the number of sunspots on the sun",
+                Description = "Total solar irradiance (from satelite data) compared with the number of sunspots",
                 ChartSeriesList =
                 [
                     new ChartSeriesDefinition()
@@ -713,7 +713,7 @@ public static class SuggestedPresetLists
             new SuggestedChartPresetModelWithVariants()
             {
                 Title = "ENSO + IOD",
-                Description = "The El Niño Southern Oscillation (ENSO) and Indian Ocean Dipole (IOD) are sea surface temperature anomalies.",
+                Description = "The El Niño Southern Oscillation (ENSO) and Indian Ocean Dipole (IOD) are sea surface temperature anomalies",
                 ChartSeriesList =
                             [
                                     new ChartSeriesDefinition()
