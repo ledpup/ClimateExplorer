@@ -209,40 +209,8 @@ public static class SuggestedPresetLists
                     },
                     new SuggestedChartPresetModel()
                     {
-                        Title = "Temperature + solar irradiance",
-                        Description = "Smoothed yearly average temperature and total solar irradiance (from satelite)",
-                        ChartSeriesList =
-                        [
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
-                                Aggregation = SeriesAggregationOptions.Mean,
-                                BinGranularity = BinGranularities.ByYear,
-                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                SmoothingWindow = 10,
-                                Value = SeriesValueOptions.Value,
-                                Year = null
-                            },
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, tsi!),
-                                Aggregation = SeriesAggregationOptions.Mean,
-                                BinGranularity = BinGranularities.ByYear,
-                                Smoothing = SeriesSmoothingOptions.None,
-                                SmoothingWindow = 5,
-                                Value = SeriesValueOptions.Value,
-                                Year = null,
-                                RequestedColour = UiLogic.Colours.Yellow,
-                                GroupingThreshold = 0.1f,
-                            }
-                        ],
-                    },
-                    new SuggestedChartPresetModel()
-                    {
                         Title = "Temperature + solar radiation",
-                        Description = "Smoothed yearly average temperature and local yearly solar radiation (where available)",
+                        Description = "Smoothed yearly average temperature and solar radiation",
                         ChartSeriesList =
                         [
                             new ChartSeriesDefinition()
@@ -615,7 +583,7 @@ public static class SuggestedPresetLists
             new SuggestedChartPresetModelWithVariants()
             {
                 Title = "Solar irradiation + sunspots",
-                Description = "Total solar irradiance (from satelite data) compared with the number of sunspots on the sun",
+                Description = "Total solar irradiance (from satelite data) compared with the number of sunspots",
                 ChartSeriesList =
                 [
                     new ChartSeriesDefinition()
@@ -745,7 +713,7 @@ public static class SuggestedPresetLists
             new SuggestedChartPresetModelWithVariants()
             {
                 Title = "ENSO + IOD",
-                Description = "The El Niño Southern Oscillation (ENSO) and Indian Ocean Dipole (IOD) are sea surface temperature anomalies.",
+                Description = "The El Niño Southern Oscillation (ENSO) and Indian Ocean Dipole (IOD) are sea surface temperature anomalies",
                 ChartSeriesList =
                             [
                                     new ChartSeriesDefinition()
