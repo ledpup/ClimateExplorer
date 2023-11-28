@@ -31,7 +31,7 @@
     [Inject] IIconFactory? IconFactory { get; init; }
     [Inject] IJSRuntime? JsRuntime { get; init; }
     [Inject] ILogger<MapContainer>? Logger { get; init; }
-    [Inject] IBlazorCurrentDeviceService? BlazorCurrentDeviceService { get; set; }
+    // [Inject] IBlazorCurrentDeviceService? BlazorCurrentDeviceService { get; set; }
 
     Map? map;
     MapOptions? mapOptions;
@@ -46,7 +46,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        IsMobileDevice = await BlazorCurrentDeviceService!.Mobile();
+        IsMobileDevice = false;// await BlazorCurrentDeviceService!.Mobile();
 
         await base.OnInitializedAsync();
     }

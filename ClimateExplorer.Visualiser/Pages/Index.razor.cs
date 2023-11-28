@@ -71,32 +71,38 @@ public partial class Index : ChartablePage
         }
 
         GetLocationIdViaNameFromPath(uri);
-
-        if (LocationId == null)
-        {
-            LocationId = (await LocalStorage!.GetItemAsync<string>("lastLocationId"));
-            var validGuid = Guid.TryParse(LocationId, out Guid id);
-            if (!validGuid || id == Guid.Empty || !Locations!.Any(x => x.Id == id))
-            {
-                LocationId = "aed87aa0-1d0c-44aa-8561-cde0fc936395";
-            }
-        }
-
-        Guid locationId = Guid.Parse(LocationId);
-
-        if (setupDefaultChartSeries)
-        {
-            SetUpDefaultCharts(locationId);
-            setupDefaultChartSeries = false;
-            await SelectedLocationChanged(locationId);
-        }
-        else if (oldLocationId != locationId)
-        {
-            await SelectedLocationChangedInternal(locationId);
-            oldLocationId = locationId;
-        }
         
         await base.OnParametersSetAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (LocationId == null)
+            {
+                LocationId = (await LocalStorage!.GetItemAsync<string>("lastLocationId"));
+                var validGuid = Guid.TryParse(LocationId, out Guid id);
+                if (!validGuid || id == Guid.Empty || !Locations!.Any(x => x.Id == id))
+                {
+                    LocationId = "aed87aa0-1d0c-44aa-8561-cde0fc936395";
+                }
+            }
+
+            Guid locationId = Guid.Parse(LocationId);
+
+            if (setupDefaultChartSeries)
+            {
+                SetUpDefaultCharts(locationId);
+                setupDefaultChartSeries = false;
+                await SelectedLocationChanged(locationId);
+            }
+            else if (oldLocationId != locationId)
+            {
+                await SelectedLocationChangedInternal(locationId);
+                oldLocationId = locationId;
+            }
+        }
     }
 
     private void GetLocationIdViaNameFromPath(Uri uri)

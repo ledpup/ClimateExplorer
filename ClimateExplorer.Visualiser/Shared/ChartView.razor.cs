@@ -8,7 +8,7 @@ using ClimateExplorer.Visualiser.UiModel;
 using Microsoft.AspNetCore.Components;
 using System.Dynamic;
 using static ClimateExplorer.Core.Enums;
-using BlazorCurrentDevice;
+// using BlazorCurrentDevice;
 using Microsoft.JSInterop;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Core;
@@ -49,7 +49,7 @@ public partial class ChartView
     public EventCallback ShowAddDataSetModalEvent { get; set; }
 
     [Inject] IDataService? DataService { get; set; }
-    [Inject] IBlazorCurrentDeviceService? BlazorCurrentDeviceService { get; set; }
+    //[Inject] IBlazorCurrentDeviceService? BlazorCurrentDeviceService { get; set; }
     [Inject] IJSRuntime? JsRuntime { get; set; }
     [Inject] ILogger<Index>? Logger { get; set; }
 
@@ -114,9 +114,9 @@ public partial class ChartView
     public bool ChartLoadingIndicatorVisible;
     public bool ChartLoadingErrored;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        IsMobileDevice = await BlazorCurrentDeviceService!.Mobile();
+        IsMobileDevice = false;// await BlazorCurrentDeviceService!.Mobile();
 
         ChartLoadingIndicatorVisible = true;
         ChartLoadingErrored = false;

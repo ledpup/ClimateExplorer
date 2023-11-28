@@ -34,6 +34,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Data.Ghcnm.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DPBlazorMapLibrary", "DPBlazorMapLibrary\DPBlazorMapLibrary.csproj", "{35CBA7BA-5535-408B-A584-CB5466B48C71}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.Visualiser.Client", "ClimateExplorer.Visualiser.Client\ClimateExplorer.Visualiser.Client.csproj", "{0C963208-7674-4804-84B4-73ECC29049A1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +94,10 @@ Global
 		{35CBA7BA-5535-408B-A584-CB5466B48C71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35CBA7BA-5535-408B-A584-CB5466B48C71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35CBA7BA-5535-408B-A584-CB5466B48C71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C963208-7674-4804-84B4-73ECC29049A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C963208-7674-4804-84B4-73ECC29049A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C963208-7674-4804-84B4-73ECC29049A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C963208-7674-4804-84B4-73ECC29049A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
