@@ -30,6 +30,10 @@
     <ProjectReference Include="..\DPBlazorMapLibrary\DPBlazorMapLibrary.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>

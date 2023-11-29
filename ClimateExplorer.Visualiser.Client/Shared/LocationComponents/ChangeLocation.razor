@@ -11,21 +11,21 @@
         </ModalHeader>
         <ModalBody>
             @if (SelectedLocation != null)
-            {
-                <Field>
+        {
+            <Field>
                     Current location: <Strong>@SelectedLocation.FullTitle</Strong>
                 </Field>
-            }
+        }
             <Field>
                 <FieldLabel>Click the "near me" button to find the station closest to you (the browser will ask to "know your location")</FieldLabel>
                 <Button Clicked="@FireUseCurrentLocation" Color="Color.Primary">Near me</Button>
 
                 @if (BrowserLocationErrorMessage != null)
-                {
-                    <div class="error-message">
+            {
+                <div class="error-message">
                         @BrowserLocationErrorMessage
                     </div>
-                }
+            }
             </Field>
             <Field>
                 <FieldLabel>Free text search for a location</FieldLabel>
@@ -42,16 +42,16 @@
                               />
             </Field>
              @if (SelectedLocation != null && nearbyLocationCache != null && nearbyLocationCache!.ContainsKey(SelectedLocation.Id))
-            {
-                <Field>
+        {
+            <Field>
                     <FieldLabel>Select a nearby location</FieldLabel>
                     <Alert Color="Color.Secondary" Visible="true">
                         <Table Borderless Narrow>
                             <TableBody>
                                 @foreach (var row in SelectedLocation.NearbyLocations!)
-                                {
-                                    var location = nearbyLocationCache![SelectedLocation.Id]!.Single(x => x.Id == row.LocationId);
-                                    <TableRow>
+                            {
+                                var location = nearbyLocationCache![SelectedLocation.Id]!.Single(x => x.Id == row.LocationId);
+                                <TableRow>
                                         <TableRowCell>
                                             <Blazorise.Link Title="@location.Name"
                                                             To="#"
@@ -72,74 +72,74 @@
                                             </span>
                                         </TableRowCell>
                                     </TableRow>
-                                }
+                            }
                             </TableBody>
                         </Table>
                     </Alert>
                 </Field>
-            }
+        }
         </ModalBody>
     </ModalContent>
 </Modal>
 
 @code {
-    Modal? modal;
+Modal? modal;
 
-    [Parameter]
-    public IEnumerable<Location>? Locations { get; set; }
+[Parameter]
+public IEnumerable<Location>? Locations { get; set; }
 
-    [Parameter]
-    public Location? SelectedLocation { get; set; }
+[Parameter]
+public Location? SelectedLocation { get; set; }
 
-    [Parameter]
-    public string? BrowserLocationErrorMessage { get; set; }
+[Parameter]
+public string? BrowserLocationErrorMessage { get; set; }
 
-    [Parameter]
-    public EventCallback<Guid> OnLocationChange { get; set; }
+[Parameter]
+public EventCallback<Guid> OnLocationChange { get; set; }
 
-    [Parameter]
-    public EventCallback SetCurrentLocation { get; set; }
+[Parameter]
+public EventCallback SetCurrentLocation { get; set; }
 
-    Dictionary<Guid, List<Location>>? nearbyLocationCache;
+Dictionary<Guid, List<Location>>? nearbyLocationCache;
 
-    protected override void OnInitialized()
+protected override void OnInitialized()
+{
+    nearbyLocationCache = new Dictionary<Guid, List<Location>>();
+}
+
+protected override void OnParametersSet()
+{
+    if (Locations != null)
     {
-        nearbyLocationCache = new Dictionary<Guid, List<Location>>();
-    }
-
-    protected override void OnParametersSet()
-    {
-        if (Locations != null)
+        Locations = Locations.OrderBy(x => x.Name);
+        if (SelectedLocation?.NearbyLocations != null)
         {
-            Locations = Locations.OrderBy(x => x.Name);
-            if (SelectedLocation?.NearbyLocations != null)
+            if (!nearbyLocationCache!.ContainsKey(SelectedLocation.Id))
             {
-                if (!nearbyLocationCache!.ContainsKey(SelectedLocation.Id))
-                {
-                    var locations = new List<Location>();
-                    SelectedLocation!.NearbyLocations!.ForEach(x => locations.Add(Locations.Single(y => y.Id == x.LocationId)));
-                    nearbyLocationCache.Add(SelectedLocation.Id, locations);
-                }
+                var locations = new List<Location>();
+                SelectedLocation!.NearbyLocations!.ForEach(x => locations.Add(Locations.Single(y => y.Id == x.LocationId)));
+                nearbyLocationCache.Add(SelectedLocation.Id, locations);
             }
         }
     }
+}
 
-    public Task Show()
-    {
-        return modal!.Show();
-    }
-    public Task Hide()
-    {
-        return modal!.Hide();
-    }
+public Task Show()
+{
+    return modal!.Show();
+}
+public Task Hide()
+{
+    return modal!.Hide();
+}
 
-    async Task FireUseCurrentLocation()
-    {
-        await SetCurrentLocation.InvokeAsync();
-    }
+async Task FireUseCurrentLocation()
+{
+    await SetCurrentLocation.InvokeAsync();
+}
 
-    async Task FireOnLocationChange(Guid locationId)
-    {
-        await OnLocationChange.InvokeAsync(locationId);
-    }
+async Task FireOnLocationChange(Guid locationId)
+{
+    await OnLocationChange.InvokeAsync(locationId);
+}
 }

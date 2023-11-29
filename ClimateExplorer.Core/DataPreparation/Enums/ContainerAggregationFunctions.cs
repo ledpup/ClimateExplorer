@@ -1,11 +1,10 @@
-﻿namespace ClimateExplorer.Core.DataPreparation
+﻿namespace ClimateExplorer.Core.DataPreparation;
+
+public enum ContainerAggregationFunctions
 {
-    public enum ContainerAggregationFunctions
-    {
-        Mean,
-        Sum,
-        Min,
-        Max,
-        Median
-    }
+    Mean,
+    Sum,
+    Min,
+    Max,
+    Median
 }

@@ -78,20 +78,20 @@
 }
 
 @code {
-    [Inject]
-    public IDataService? DataService { get; set; }
+[Inject]
+public IDataService? DataService { get; set; }
 
-    ApiMetadataModel? _apiMetadata;
+ApiMetadataModel? _apiMetadata;
 
-    protected override async Task OnInitializedAsync()
+protected override async Task OnInitializedAsync()
+{
+    if (DataService == null)
     {
-        if (DataService == null)
-        {
-            throw new NullReferenceException(nameof(DataService));
-        }
-
-        _apiMetadata = await DataService.GetAbout();
-
-        await base.OnInitializedAsync();
+        throw new NullReferenceException(nameof(DataService));
     }
+
+    _apiMetadata = await DataService.GetAbout();
+
+    await base.OnInitializedAsync();
+}
 }

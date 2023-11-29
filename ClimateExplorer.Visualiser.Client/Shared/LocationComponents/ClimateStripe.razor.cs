@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 using static ClimateExplorer.Core.Enums;
 using ClimateExplorer.Core;
 
-namespace ClimateExplorer.Visualiser.Shared.LocationComponents;
+namespace ClimateExplorer.Visualiser.Client.Shared.LocationComponents;
 
 public partial class ClimateStripe
 {

@@ -3,17 +3,12 @@ using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Visualiser.UiModel;
 using static ClimateExplorer.Core.Enums;
 
-namespace ClimateExplorer.Visualiser.Pages;
+namespace ClimateExplorer.Visualiser.Client.Pages;
 public partial class RegionalAndGlobal : ChartablePage
 {
     public RegionalAndGlobal()
     {
         pageName = "regionalandglobal";
-    }
-
-    void IDisposable.Dispose()
-    {
-        Dispose();
     }
 
     protected override async Task OnInitializedAsync()

@@ -1,5 +1,4 @@
 ﻿using ClimateExplorer.Core;
-using ClimateExplorer.Visualiser.Pages;
 using ClimateExplorer.Visualiser.UiModel;
 using Blazorise.Charts;
 using Blazorise.Charts.Trendline;
@@ -77,7 +76,7 @@ public static class ChartLogic
         SeriesTransformations seriesTransformations,
         SeriesAggregationOptions seriesAggregationOptions)
     {
-        var colour = Enso.GetBarChartColourSet(values, seriesTransformations == SeriesTransformations.IsFrosty ? false : redPositive);
+        var colour = GetBarChartColourSet(values, seriesTransformations == SeriesTransformations.IsFrosty ? false : redPositive);
 
         return 
             new BarChartDataset<float?>
@@ -275,5 +274,42 @@ public static class ChartLogic
             SeriesTransformations.EqualOrAbove25 => "daysEqualOrAbove25",
             _ => unitOfMeasure.ToString().ToLowerFirstChar()
         };
+    }
+
+    public static List<string> GetBarChartColourSet(List<float?> values, bool redPositive = true)
+    {
+        var count = values.Count;
+
+        var min = (redPositive ? values.Min()! : values.Max()!).Value;
+        var max = (redPositive ? values.Max()! : values.Min()!).Value;
+
+        var colour = new List<string>();
+        for (var i = 0; i < count; i++)
+        {
+            ChartColor chartColor;
+            if (values[i].HasValue)
+            {
+                var adjustedValue = values![i]!.Value * (redPositive ? 1f : -1f);
+                if (Math.Abs(adjustedValue) < .5)
+                {
+                    chartColor = ChartColor.FromHtmlColorCode("#000000");
+                }
+                else if (adjustedValue > 0)
+                {
+                    chartColor = ChartColor.FromRgba((byte)(63 + (Math.Abs(adjustedValue / max)) * 192), 0, 0, 1f);
+                }
+                else
+                {
+                    chartColor = ChartColor.FromRgba(0, 0, (byte)(63 + (Math.Abs(adjustedValue / min)) * 192), 1f);
+                }
+                colour.Add(chartColor);
+            }
+            else
+            {
+                colour.Add(null!);
+            }
+        }
+
+        return colour;
     }
 }

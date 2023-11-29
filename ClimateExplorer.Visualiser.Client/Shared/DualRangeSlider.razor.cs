@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace ClimateExplorer.Visualiser.Shared;
+namespace ClimateExplorer.Visualiser.Client;
 
 public partial class DualRangeSlider
 {

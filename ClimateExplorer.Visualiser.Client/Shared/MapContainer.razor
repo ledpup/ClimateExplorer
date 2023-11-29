@@ -1,0 +1,168 @@
+﻿@using BlazorCurrentDevice;
+@using Blazorise
+@using ClimateExplorer.Core.Model;
+@using DPBlazorMapLibrary;
+
+<div class="mapContainer collapsed" id="mapContainer">
+    @if (mapOptions != null)
+{
+    <DPBlazorMapLibrary.Map @ref="map" MapOptions="@mapOptions" AfterRender="@AfterMapRender"></DPBlazorMapLibrary.Map>
+    }
+
+    <div class="@(IsMapExpanded ? "mapToggleExpanded" : "mapToggleCollapsed")">
+        <Button Color="Color.Primary" Clicked="@ToggleMapExpansion" Class="map-toggle-button">
+            @if (IsMapExpanded)
+            {
+                <span><i class="fas fa-compress"></i> Collapse</span>
+        }
+            else
+            {
+                <span><i class="fas fa-expand"></i> Expand</span>
+            }
+        </Button>
+    </div>
+</div>
+
+@code {
+                                            cations { get; set; }
+    [Parameter] public EventCallback<Guid> OnLocationChange { get; set; }
+    [Parameter] public Coordinates LocationCoordinates { get; set; }
+
+    [Inject] public LayerFactory? LayerFactory { get; init; }
+         IIconFactory? IconFactory { get; init; }
+         IJSRuntime? JsRuntime { get; init; }
+         ILogger<MapContainer>? Logger { get; init; }
+    [Inject] IBlazorCurrentDeviceService? BlazorCurrentDeviceService { get; set; }
+
+         
+        ns? mapOptions;
+            panded { get; set; } = false;
+    bool IsMobileDevice { get; set; }
+
+    bool _mapMarkersCreated = false;
+
+    int lastZoom = 8;
+
+                                                                                 rride async Task OnInitializedAsync()
+                    Device = await BlazorCurrentDeviceService!.Mobile();
+
+        await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+                                                             s)
+                   return;
+        }
+
+        PreviousSeenLocationCoordinates = LocationCoordinates;
+                ialiseMapOptions();
+        t EnsureMapMarkers();
+         (IsMapExpanded)
+        {
+            t ToggleMapExpansion();
+        }
+
+        await base.OnParametersSetAsync();
+    }
+                 async Task AfterMapRender()
+    {
+        await EnsureMapMarkers();
+                                    var tileLayerOptions =
+            new TileLayerOptions()
+            {
+            Attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"
+        };
+
+        var mainTileLayer = await LayerFactory!.CreateTileLayerAndAddToMap("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", map!, tileLayerOptions);
+                                                                        if (map == null || point == null)
+                 return;
+        }
+
+        try
+        {
+            await map.PanTo(point);
+        }
+        catch (Exception ex)
+    {
+        Logger!.LogError(ex, "Error with PanTo on map");
+            await Task.Delay(500);
+            await ScrollToPoint(point);
+    }
+}
+public async Task EnsureMapMarkers()
+    {
+    if (Locations == null || mapOptions == null || map == null || this.IconFactory == null || this.LayerFactory == null || JsRuntime == null)
+    {
+        return;
+    }
+      if (_mapMarkersCreated)
+    {
+        return;
+    }
+      Logger!.LogInformation("Creating map markers");
+      var markerOptions = new List<MarkerOptions>();
+    for (var i = -1; i < 11; i++)
+        {
+        var label = i == -1 
+                                ? "negative"
+                            : i == 10 
+                                ? "null" 
+                                : i.ToString();
+            var iconOptions = new IconOptions
+            {
+                IconUrl = $"/images/map-markers/{ label }.png",
+                    IconSize = new Point(48, 48),
+                IconAnchor = new Point(23, 47),
+            };
+            markerOptions.Add(
+            new MarkerOptions
+            {
+                    Alt = label,
+                Opacity = 0.75,
+                    Draggable = false,
+                IconRef = await this.IconFactory.Create(iconOptions),
+            });
+        }
+        foreach (var location in Locations)
+                var label = location.HeatingScore == null 
+                    ? "null"
+                : location.HeatingScore.Value < 0
+                    ? "negative" 
+                        : location.HeatingScore.Value.ToString();
+        var markerOption = markerOptions.Single(x => x.Alt == label);
+            var marker = await this.LayerFactory.CreateMarkerAndAddToMap(new LatLng(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation ?? 0), map, markerOption);
+            await marker.BindTooltip(location.FullTitle!);
+        await marker.OnClick(async (MouseEvent mouseEvent) => await HandleMapMouseEvent(mouseEvent));
+                            rkersCreated = true;
+
+    Logger!.LogInformation("Created map markers");
+}
+
+async Task HandleMapMouseEvent(MouseEvent mouseEvent)
+{
+    Logger!.LogInformation("HandleMapMouseEvent()");
+            lat = Math.Round(mouseEvent.LatLng!.Lat, 1);
+    var lng = Math.Round(mouseEvent.LatLng.Lng, 1);
+        var newLocation = Locations!.Single(x => Math.Round(x.Coordinates.Latitude, 1) == lat && Math.Round(x.Coordinates.Longitude, 1) == lng);
+    await OnLocationChange.InvokeAsync(newLocation.Id);
+                Task ToggleMapExpansion()
+        _mapMarkersCreated = false;
+        ptions = null;
+                t JsRuntime!.InvokeVoidAsync("toggleMapExpansion", null);
+    IsMapExpanded = !IsMapExpanded;
+      InitialiseMapOptions();
+}
+     InitialiseMapOptions()
+            er!.LogDebug($"IsMapExpanded = {IsMapExpanded}");
+      if (mapOptions == null)
+    {
+        mapOptions = new MapOptions()
+            {
+                Center = new LatLng(LocationCoordinates.Latitude, LocationCoordinates.Longitude),
+                    Zoom = lastZoom,
+                Dragging = !IsMobileDevice || IsMapExpanded
+                };
+    }
+    }
+}

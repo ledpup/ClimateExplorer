@@ -10,51 +10,51 @@
             <ModalHeader Background="Background.Light">
                 <ModalTitle>
                     @if (ChartSeries.SourceSeriesSpecifications!.Length == 1)
-                    {
-                        @ChartSeriesDefinition.BuildFriendlyTitleShortForSeries(ChartSeries.SourceSeriesSpecifications[0], ChartSeries.BinGranularity, ChartSeries.Aggregation)
-                    }
-                    else
-                    {
-                        <span>About this data</span>
-                    }
+                {
+                    @ChartSeriesDefinition.BuildFriendlyTitleShortForSeries(ChartSeries.SourceSeriesSpecifications[0], ChartSeries.BinGranularity, ChartSeries.Aggregation)
+                }
+                else
+                {
+                    <span>About this data</span>
+                }
                 </ModalTitle>
                 <CloseButton />
             </ModalHeader>
             <ModalBody>
                 @if (ChartSeries.SourceSeriesSpecifications!.Length > 1)
-                {
-                    <div class="derived-series-note">This is a derived series, calculated by subtracting one series from another to show the difference between the two.</div>
-                }
+            {
+                <div class="derived-series-note">This is a derived series, calculated by subtracting one series from another to show the difference between the two.</div>
+            }
 
                 @foreach (var sss in ChartSeries.SourceSeriesSpecifications)
+            {
+                @if (ChartSeries.SourceSeriesSpecifications.Length > 1)
                 {
-                    @if (ChartSeries.SourceSeriesSpecifications.Length > 1)
-                    {
-                        <h4>@ChartSeriesDefinition.BuildFriendlyTitleShortForSeries(sss, ChartSeries.BinGranularity, ChartSeries.Aggregation)</h4>
-                    }
+                    <h4>@ChartSeriesDefinition.BuildFriendlyTitleShortForSeries(sss, ChartSeries.BinGranularity, ChartSeries.Aggregation)</h4>
+                }
                     <div class="entry">
                         <div class="title">Dataset</div>
                         <div class="value">
                             <a href="@sss.DataSetDefinition!.MoreInformationUrl" target="_blank">@sss.DataSetDefinition.Name</a>
                     
                             @if (sss.DataSetDefinition.Publisher != null)
-                            {
-                                <span> published by </span><a href="@sss.DataSetDefinition.PublisherUrl" target="_blank">@sss.DataSetDefinition.Publisher</a>
-                            }
+                        {
+                            <span> published by </span><a href="@sss.DataSetDefinition.PublisherUrl" target="_blank">@sss.DataSetDefinition.Publisher</a>
+                        }
                         </div>
                     </div>
-                    @if (sss.DataSetDefinition.Description != null)
-                    {
-                        <div class="entry">
+                @if (sss.DataSetDefinition.Description != null)
+                {
+                    <div class="entry">
                             <div class="title">Dataset description</div>
                             <div class="value">@((MarkupString)sss.DataSetDefinition.Description.Replace("\r\n", "<br>"))</div>
                         </div>
-                    }
+                }
 
-                    @switch (sss.MeasurementDefinition!.DataType)
-                    {
-                        case DataType.SolarRadiation:
-                            <div class="entry">
+                @switch (sss.MeasurementDefinition!.DataType)
+                {
+                    case DataType.SolarRadiation:
+                        <div class="entry">
                                 <div class="title">Solar radiation</div>
                                 <div class="value">
                                     <a href="http://www.bom.gov.au/climate/austmaps/solar-radiation-glossary.shtml#globalexposure" target="_blank">Global exposure at BoM</a>
@@ -66,23 +66,23 @@
                                 </div>
                             </div>
 
-                            break;
-                    }
+                        break;
                 }
+            }
             </ModalBody>
         </ModalContent>
     </Modal>
 }
 
 @code {
-    [Parameter]
-    public ChartSeriesDefinition? ChartSeries { get; set; }
+[Parameter]
+public ChartSeriesDefinition? ChartSeries { get; set; }
 
-    Modal? modal;
+Modal? modal;
 
-    public Task Show()
-    {
-        return modal!.Show();
-    }
+public Task Show()
+{
+    return modal!.Show();
+}
 
 }

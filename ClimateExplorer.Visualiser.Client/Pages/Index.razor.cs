@@ -1,5 +1,4 @@
 ﻿using ClimateExplorer.Core.ViewModel;
-using ClimateExplorer.Visualiser.Shared;
 using ClimateExplorer.Visualiser.UiModel;
 using ClimateExplorer.Core.DataPreparation;
 using DPBlazorMapLibrary;
@@ -8,11 +7,12 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
 using GeoCoordinatePortable;
-using ClimateExplorer.Visualiser.Shared.LocationComponents;
 using ClimateExplorer.Core.Model;
 using Blazorise.Snackbar;
+using ClimateExplorer.Visualiser.Client.Shared.LocationComponents;
+using ClimateExplorer.Visualiser.Client.Shared;
 
-namespace ClimateExplorer.Visualiser.Pages;
+namespace ClimateExplorer.Visualiser.Client.Pages;
 
 public partial class Index : ChartablePage
 {

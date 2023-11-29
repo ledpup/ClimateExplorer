@@ -1,10 +1,9 @@
-﻿namespace ClimateExplorer.Core.DataPreparation
+﻿namespace ClimateExplorer.Core.DataPreparation;
+
+public enum SeriesDerivationTypes
 {
-    public enum SeriesDerivationTypes
-    {
-        ReturnSingleSeries,
-        DifferenceBetweenTwoSeries,
-        AverageOfMultipleSeries,
-        AverageOfAnomaliesInLocationGroup
-    }
+    ReturnSingleSeries,
+    DifferenceBetweenTwoSeries,
+    AverageOfMultipleSeries,
+    AverageOfAnomaliesInLocationGroup
 }

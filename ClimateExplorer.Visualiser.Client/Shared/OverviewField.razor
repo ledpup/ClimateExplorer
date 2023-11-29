@@ -1,0 +1,72 @@
+﻿@using Blazorise
+@using System.Text.RegularExpressions
+
+<div class="overview-field" title="@title" @onclick="ShowPopup">
+    <div class="label">@Label</div>
+    <div class="value">
+        @if (PopupText != null)
+    {
+        <a>@Value</a>
+    }
+    else
+    {
+        @Value
+    }
+    </div>
+    <div class="additional-info">@AdditionalInfo</div>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(PopupText))
+{
+    <Modal @ref="popup">
+        <ModalContent Size="ModalSize.Large">
+            <ModalHeader>
+                <ModalTitle>@Label</ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+            <ModalBody>
+                @((MarkupString)PopupText)
+            </ModalBody>
+        </ModalContent>
+    </Modal>
+}
+
+@code {
+string title
+{
+    get
+    {
+        if (string.IsNullOrWhiteSpace(PopupText))
+        {
+            return string.Empty;
+        }
+        return Regex.Replace(PopupText, "<.*?>", String.Empty);
+    }
+}
+
+[Parameter]
+public string? Label { get; set; }
+
+[Parameter]
+public string? AdditionalInfo { get; set; }
+
+[Parameter]
+public RenderFragment? Value { get; set; }
+
+[Parameter]
+public string? PopupText { get; set; }
+
+private Modal? popup;
+private async Task ShowPopup()
+{
+    if (popup == null)
+    {
+        return;
+    }
+
+    if (!string.IsNullOrWhiteSpace(PopupText))
+    {
+        await popup.Show();
+    }
+}
+}

@@ -5,27 +5,27 @@
 
 <div class="climate-stripe">
     @if (DataRecords != null)
+{
+    foreach (var record in DataRecords)
     {
-        foreach (var record in DataRecords)
-        {
-            <div title="@GetTitle(record.Value)" class="single-stripe" style="background-color: @GetColour(record.Value); cursor: pointer;" @onclick="() => FilterToYear(record.Year)">
+        <div title="@GetTitle(record.Value)" class="single-stripe" style="background-color: @GetColour(record.Value); cursor: pointer;" @onclick="() => FilterToYear(record.Year)">
                 <div class="label">
                     <div class="year" style="color: @GetTextColour(record.Value, "#ccc", "#333")">@record.Year</div>
                     <div class="amt" style="color: @GetTextColour(record.Value, "#eee", "#555")">@GetRelativeTemp(record.Value)</div>
                 </div>
             </div>
-        }
-        @if (ShowInfo)
-        {
-            <div class="info-icon">
+    }
+    @if (ShowInfo)
+    {
+        <div class="info-icon">
                 <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowClimateStripeInfo></i>
             </div>
-        }
     }
+}
 
     @if (PopupText != null)
-    {
-        <Modal @ref="popup">
+{
+    <Modal @ref="popup">
             <ModalContent Size="ModalSize.Large">
                 <ModalHeader>
                     <ModalTitle>Climate stripe</ModalTitle>
@@ -36,6 +36,6 @@
                 </ModalBody>
             </ModalContent>
         </Modal>
-    }
+}
 </div>
 

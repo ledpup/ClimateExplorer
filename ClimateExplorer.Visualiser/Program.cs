@@ -4,8 +4,6 @@ using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
 using DPBlazorMapLibrary;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 //using BlazorCurrentDevice;
 using Blazored.LocalStorage;
