@@ -1,4 +1,4 @@
-﻿@using Blazorise
+﻿﻿@using Blazorise
 @using Blazorise.Components
 @using static ClimateExplorer.Core.Enums
 @using ClimateExplorer.Core.DataPreparation
@@ -49,7 +49,8 @@
             </Field>
 
             @if (PopupText != null)
-                           <Modal @ref="InfoModal">
+            {
+                <Modal @ref="InfoModal">
                     <ModalContent Size="ModalSize.Large">
                         <ModalHeader>
                             <ModalTitle>Year filtering information</ModalTitle>

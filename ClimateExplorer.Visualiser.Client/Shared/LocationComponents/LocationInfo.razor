@@ -1,4 +1,4 @@
-﻿@using Blazorise
+﻿﻿@using Blazorise
 @using Blazorise.LoadingIndicator
 @using ClimateExplorer.Core
 @using ClimateExplorer.Core.Model
@@ -14,8 +14,9 @@
             <span class="chart-controls">
                 <a class="chart-control" @onclick="() => ChangeLocationClicked(new EventArgs())"><i class="fas fa-map"></i> Change location</a>
                 @if (LocationCollapsible!.ShowContent)
-                                   <a class="chart-control" @onclick="() => ToggleRainfall()"><i class="@( rainfall ? "fas fa-check-square" : "fas fa-square" )"></i> Precipitation</a>
-            }
+                {
+                    <a class="chart-control" @onclick="() => ToggleRainfall()"><i class="@( rainfall ? "fas fa-check-square" : "fas fa-square" )"></i> Precipitation</a>
+                }
             </span>
         </HeaderContent>
         <Content>
@@ -35,7 +36,8 @@
             <!--
             -->
             @if (RainfallIndexAsString != null && RainfallIndexAsString != "NA")
-                           <OverviewField Label="Drying index"><Value>@(RainfallIndexAsString == null ? "NA" : RainfallIndexAsString)</Value></OverviewField>
+            {
+                <OverviewField Label="Drying index"><Value>@(RainfallIndexAsString == null ? "NA" : RainfallIndexAsString)</Value></OverviewField>
             }
             <ClimateStripe UnitOfMeasure="UnitOfMeasure.DegreesCelsius" LocationName=@Location?.Name LocationMean=@TemperatureLocationMean DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange ShowInfo="true" />
             <WarmestYears DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
@@ -53,29 +55,35 @@
     public IDataService? DataService { get; set; }
 
     [Inject]
-         ocationInfo>? Logger { get; set; }
-                    
+    ILogger<LocationInfo>? Logger { get; set; }
+
+    [Parameter]
     public Location? Location { get; set; }
 
     [Parameter]
     public EventCallback RequestLocationChange { get; set; }
-                                 public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
-                                                   iewShowOrHide { get; set; }
+    [Parameter]
+    public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnOverviewShowOrHide { get; set; }
 
     [Parameter]
     public EventCallback<YearAndDataTypeFilter> OnYearFilterChange { get; set; }
-                                ationCollapsible;
-                                = Guid.NewGuid();
+
+    Collapsible? LocationCollapsible;
+
+    Guid instanceId = Guid.NewGuid();
 
     string LocationMapUrl => Location == null ? "https://maps.google.com/" : $"https://maps.google.com/?q={Location.Coordinates.Latitude},{Location.Coordinates.Longitude}";
-                           => Location == null ? "Nowhere" : Location.Coordinates.ToString();
+    string GeoLocationAsString => Location == null ? "Nowhere" : Location.Coordinates.ToString();
 
     public bool LocationLoadingIndicatorVisible { get; set; }
     bool rainfall { get; set; }
 
-                 >? TemperatureAnomalyRecords { get; set; }
-                reLocationMean { get; set; }
+    List<YearAndValue>? TemperatureAnomalyRecords { get; set; }
+    float? TemperatureLocationMean { get; set; }
     string? WarmingIndexDescription;
     string? WarmingIndexAsString;
 
@@ -85,85 +93,125 @@
 
     Guid? locationIdLastTimeOnParametersSetAsyncWasCalled;
 
-                                                                                                                                                      It is calculated by ordering all warming indexes across the locations in the dataset and scoring in sets of 10 <a href=""https://en.wikipedia.org/wiki/Percentile"" target=""_blank"">percentiles</a>.</p>
-    <p>For example, the top ten 10% of warming indexes are scored as a 9, the bottom 10% are scored as 0.</p>
-    <p>Negative warming indexes are scored differently; they use the warming index, rounded to zero decimal places as the score. This is to highlight any location that has not warmed.</p>
-    <p>The score may be higher if:</p>
-                tion is inland. The ocean is warming more slowly compared with the land. Coastal locations are therefore likely to have warmed less than inland locations.</li>
-    <li>The station(s) has been operating for a long time. The effect of global warming is more obvious with a large dataset as temperatures in the past were cooler.</li></ul>";
+    DataType? TemperatureDataType { get; set; }
 
-                                      tArgs args)
+    const string HeatingScoreDescription = @"<p>The heating score is a number between 0 and 9. It is calculated by ordering all warming indexes across the locations in the dataset and scoring in sets of 10 <a href=""https://en.wikipedia.org/wiki/Percentile"" target=""_blank"">percentiles</a>.</p>
+<p>For example, the top ten 10% of warming indexes are scored as a 9, the bottom 10% are scored as 0.</p>
+<p>Negative warming indexes are scored differently; they use the warming index, rounded to zero decimal places as the score. This is to highlight any location that has not warmed.</p>
+<p>The score may be higher if:</p>
+<ul><li>The location is inland. The ocean is warming more slowly compared with the land. Coastal locations are therefore likely to have warmed less than inland locations.</li>
+<li>The station(s) has been operating for a long time. The effect of global warming is more obvious with a large dataset as temperatures in the past were cooler.</li></ul>";
+
+    public void ChangeLocationClicked(EventArgs args)
     {
         RequestLocationChange.InvokeAsync();
     }
 
-                wOrHideHandler(bool showOrHide)
-                rviewShowOrHide.InvokeAsync(showOrHide);
+    void OverviewShowOrHideHandler(bool showOrHide)
+    {
+        OnOverviewShowOrHide.InvokeAsync(showOrHide);
     }
-                                                                                  Visible = true;
+
+    protected override void OnInitialized()
+    {
+        LocationLoadingIndicatorVisible = true;
     }
-                                de async Task OnParametersSetAsync()
+
+    protected override async Task OnParametersSetAsync()
     {
         if (Location == null)
-                                                                                                               arametersSetAsync() repeatedly with the same input values.
-                IdLastTimeOnParametersSetAsyncWasCalled == Location?.Id)
-                   return;
+        {
+            return;
         }
-                                                                                                                                                      values so we don't accidentally end-up reporting them
+
+        // We do manual change detection here because Blazor calls OnParametersSetAsync() repeatedly with the same input values.
+        if (locationIdLastTimeOnParametersSetAsyncWasCalled == Location?.Id)
+        {
+            return;
+        }
+        LocationLoadingIndicatorVisible = true;
+        locationIdLastTimeOnParametersSetAsyncWasCalled = Location?.Id;
+
+        // Clear the previous values so we don't accidentally end-up reporting them
         RainfallLocationMean = null;
-                alyRecords = null;
-                xAsString = null;
+        RainfallAnomalyRecords = null;
+        RainfallIndexAsString = null;
 
         // We can't do anything until we're supplied our tasty, tasty DataSetDefinitions
-                                                                                                                                                                                                                   AggregationFunctions.Sum);
-                a(DataSubstitute.StandardTemperatureDataMatches(), ContainerAggregationFunctions.Mean);
+        if (DataSetDefinitions == null)
+        {
+            return;
+        }
+
+        await GetData(new List<DataSubstitute> { new DataSubstitute { DataType = DataType.Rainfall } }, ContainerAggregationFunctions.Sum);
+        await GetData(DataSubstitute.StandardTemperatureDataMatches(), ContainerAggregationFunctions.Mean);
 
         LocationLoadingIndicatorVisible = false;
-                                                                                                                                                                                                                                                                                      initionViewModel.GetDataSetDefinitionAndMeasurement(
-                SetDefinitions!,
-                tion!.Id,
-                Substitutes,
+
+        await base.OnParametersSetAsync();
+    }
+
+    protected async Task GetData(List<DataSubstitute> dataSubstitutes, ContainerAggregationFunctions function)
+    {
+        var measurementForLocation =
+            DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
+                DataSetDefinitions!,
+                Location!.Id,
+                dataSubstitutes,
                 throwIfNoMatch: false);
 
-                       ocation != null)
+        if (measurementForLocation != null)
         {
             // Retrieve TempMax anomaly
             var series =
                 await DataService!.PostDataSet(
-                 inGranularities.ByYear,
-                function,
+                    BinGranularities.ByYear,
                     function,
                     function,
-                                                                     SeriesSpecification[]
+                    function,
+                    SeriesValueOptions.Anomaly,
+                    new SeriesSpecification[]
                         {
                             new SeriesSpecification
                             {
-                            DataAdjustment = measurementForLocation.MeasurementDefinition!.DataAdjustment,
-                            DataSetDefinitionId = measurementForLocation.DataSetDefinition!.Id,
+                                DataAdjustment = measurementForLocation.MeasurementDefinition!.DataAdjustment,
+                                DataSetDefinitionId = measurementForLocation.DataSetDefinition!.Id,
                                 DataType = measurementForLocation.MeasurementDefinition.DataType,
                                 LocationId = Location.Id
-                                                                                                 ReturnSingleSeries,
+                            }
+                        },
+                    SeriesDerivationTypes.ReturnSingleSeries,
                     1.0f,
                     1.0f,
-                 .7f,
-                14,
+                    0.7f,
+                    14,
                     SeriesTransformations.Identity);
 
-                                                                                                                                       here(x => x.Value != null)
+            // Filter to records that have values
+            var anomalyRecords =
+                series.DataRecords
+                .Where(x => x.Value != null)
                 .Select(x => new YearAndValue(((YearBinIdentifier)BinIdentifier.Parse(x.BinId!)).Year, x.Value!.Value))
-                 st();
-                 =
+                .ToList();
+
+            series =
                 await DataService.PostDataSet(
-                                                                                                                                                                                lue,
-                 ew SeriesSpecification[]
-                    {
+                    BinGranularities.ByYear,
+                    function,
+                    function,
+                    function,
+                    SeriesValueOptions.Value,
+                    new SeriesSpecification[]
+                        {
                             new SeriesSpecification
                             {
-                                                                                                                                                                                                                                               DataType = measurementForLocation.MeasurementDefinition.DataType,
+                                DataAdjustment = measurementForLocation.MeasurementDefinition.DataAdjustment,
+                                DataSetDefinitionId = measurementForLocation.DataSetDefinition.Id,
+                                DataType = measurementForLocation.MeasurementDefinition.DataType,
                                 LocationId = Location.Id
                             }
-                    },
-                SeriesDerivationTypes.ReturnSingleSeries,
+                        },
+                    SeriesDerivationTypes.ReturnSingleSeries,
                     1.0f,
                     1.0f,
                     0.7f,
@@ -171,37 +219,47 @@
                     SeriesTransformations.Identity);
 
             var index = IndexCalculator.CalculateIndex(series.DataRecords);
-                taSubstitutes.Any(x => x.DataType == DataType.Rainfall))
+
+            if (dataSubstitutes.Any(x => x.DataType == DataType.Rainfall))
             {
-                                    GetRainfallIndexAsString(index, measurementForLocation.MeasurementDefinition.UnitOfMeasure);
+                RainfallIndexAsString = GetRainfallIndexAsString(index, measurementForLocation.MeasurementDefinition.UnitOfMeasure);
                 RainfallLocationMean = series.DataRecords.Average(x => x.Value);
                 RainfallAnomalyRecords = anomalyRecords;
             }
             else if (dataSubstitutes.Any(x => x.DataType == DataType.TempMax))
-                                eratureDataType = series.DataType;
+            {
+                TemperatureDataType = series.DataType;
                 WarmingIndexAsString = GetWarmingIndexAsString(index, measurementForLocation.MeasurementDefinition.UnitOfMeasure);
                 WarmingIndexDescription = GenerateWarmingIndexDescription(index, measurementForLocation.MeasurementDefinition.UnitOfMeasure);
-                                                                                                 TemperatureAnomalyRecords = anomalyRecords;
+                TemperatureLocationMean = series.DataRecords.Average(x => x.Value);
+                TemperatureAnomalyRecords = anomalyRecords;
             }
             else
             {
-                w new NotImplementedException();
-                                                                                ask HandleOnYearFilterChange(short year)
+                throw new NotImplementedException();
+            }
+        }
+
+    }
+
+    public async Task HandleOnYearFilterChange(short year)
     {
-                      = new YearAndDataTypeFilter(year) { DataType = TemperatureDataType };
+        var yearAndFilter = new YearAndDataTypeFilter(year) { DataType = TemperatureDataType };
         await OnYearFilterChange.InvokeAsync(yearAndFilter);
     }
 
     public async Task HandleOnRainfallYearFilterChange(short year)
-                                 ilter = new YearAndDataTypeFilter(year) { DataType = DataType.Rainfall };
+    {
+        var yearAndFilter = new YearAndDataTypeFilter(year) { DataType = DataType.Rainfall };
         await OnYearFilterChange.InvokeAsync(yearAndFilter);
     }
-                                                                UnitOfMeasure unitOfMeasure)
+
+    static string GetRainfallIndexAsString(CalculatedIndex index, UnitOfMeasure unitOfMeasure)
     {
         if (index == null) return "NA";
 
-                 uch drying, not how much rain
-                index.IndexValue * -1;
+        // it's how much drying, not how much rain
+        var value = index.IndexValue * -1;
 
         return $"{(value >= 0 ? "+" : "")}{string.Format("{0:0.#}", MathF.Round(value, 0))}mm";
     }
@@ -211,22 +269,32 @@
         if (warmingIndex == null) return "NA";
 
         return $"{(warmingIndex.IndexValue >= 0 ? "+" : "")}{string.Format("{0:0.#}", MathF.Round(warmingIndex.IndexValue, 1))}{(unitOfMeasure == UnitOfMeasure.DegreesCelsius ? "°C" : "mm")}";
-                             ateWarmingIndexDescription(CalculatedIndex warmingIndex, UnitOfMeasure unitOfMeasure)
+    }
+
+    string GenerateWarmingIndexDescription(CalculatedIndex warmingIndex, UnitOfMeasure unitOfMeasure)
     {
         if (Location == null)
         {
             return "NA";
-                 string warmingIndexAsString = GetWarmingIndexAsString(warmingIndex, unitOfMeasure);
-                                          
+        }
+
+        string warmingIndexAsString = GetWarmingIndexAsString(warmingIndex, unitOfMeasure);
+
+        if (warmingIndex == null)
+        {
             return $@"<p>The warming index is the temperature difference between the average of the last 30 years of temperatures compared with the average of the first half of the dataset. 30 years was chosen to fit the convention of the <a href=""https://en.wikipedia.org/wiki/Climatological_normal"" target=""_blank"">climatological normal</a>. The first half of the datatset is used as a proxy for a natural baseline; it is expected to be less affected by anthropogenic warming.</p>
-    <p>Over the long-term, with no external influences, we'd expect the warming index to trend towards zero. A non-zero warming index may indicate an effect of climate change. A positive warming index may indicate global warming.</p>
-                n temperature is used for most of the world (i.e., when using the GHCNm dataset). We use the maximum temperatures (usually a daily maximum) for this calculation in Australia and New Zealand.</p>";
-                 return
-                                                                                   e warming index is the temperature difference between the average of the last 30 years of temperatures compared with the average of the first half ({warmingIndex.CountOfFirstHalf} years) of the dataset. 30 years was chosen to fit the convention of the <a href=\"https://en.wikipedia.org/wiki/Climatological_normal\" target=\"_blank\">climatological normal</a>. The first half of the datatset is used as a proxy for a natural baseline; it is expected to be less affected by anthropogenic warming.</p>",
+<p>Over the long-term, with no external influences, we'd expect the warming index to trend towards zero. A non-zero warming index may indicate an effect of climate change. A positive warming index may indicate global warming.</p>
+<p>Note: The mean temperature is used for most of the world (i.e., when using the GHCNm dataset). We use the maximum temperatures (usually a daily maximum) for this calculation in Australia and New Zealand.</p>";
+        }
+
+        return
+            String.Join(
+                Environment.NewLine,
+                $"<p>The warming index is the temperature difference between the average of the last 30 years of temperatures compared with the average of the first half ({warmingIndex.CountOfFirstHalf} years) of the dataset. 30 years was chosen to fit the convention of the <a href=\"https://en.wikipedia.org/wiki/Climatological_normal\" target=\"_blank\">climatological normal</a>. The first half of the datatset is used as a proxy for a natural baseline; it is expected to be less affected by anthropogenic warming.</p>",
                 $"<div>{Location.Name}, between the years {warmingIndex.FirstYearInLast30Years}-{warmingIndex.LastYearInLast30Years}, had an average temperature of <strong>{string.Format("{0:0.##}", MathF.Round(warmingIndex.AverageOfLast30Years, 2))}°C</strong>.</div>",
                 $"<div>{Location.Name}, between the years {warmingIndex.FirstYearInFirstHalf}-{warmingIndex.LastYearInFirstHalf}, had an average temperature of <strong>{string.Format("{0:0.##}", MathF.Round(warmingIndex.AverageOfFirstHalf, 2))}°C</strong>.</div>",
-                iv>The difference is <strong>{warmingIndexAsString}</strong> (after rounding to 1 decimal place).</div><br/>",
-                >Over the long-term, with no external influences, we'd expect the warming index to trend towards zero. A non-zero warming index may indicate an effect of climate change. A positive warming index may indicate global warming.</p>",
+                $"<div>The difference is <strong>{warmingIndexAsString}</strong> (after rounding to 1 decimal place).</div><br/>",
+                $"<p>Over the long-term, with no external influences, we'd expect the warming index to trend towards zero. A non-zero warming index may indicate an effect of climate change. A positive warming index may indicate global warming.</p>",
                 $"<p>Note: The mean temperature is used for most of the world (i.e., when using the GHCNm dataset). We use the maximum temperatures (usually a daily maximum) for this calculation in Australia and New Zealand.</p>"
             );
     }

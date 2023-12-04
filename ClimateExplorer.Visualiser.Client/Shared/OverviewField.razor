@@ -32,41 +32,41 @@
 }
 
 @code {
-string title
-{
-    get
+    string title
     {
-        if (string.IsNullOrWhiteSpace(PopupText))
+        get
         {
-            return string.Empty;
+            if (string.IsNullOrWhiteSpace(PopupText))
+            {
+                return string.Empty;
+            }
+            return Regex.Replace(PopupText, "<.*?>", String.Empty);
         }
-        return Regex.Replace(PopupText, "<.*?>", String.Empty);
     }
-}
 
-[Parameter]
-public string? Label { get; set; }
+    [Parameter]
+    public string? Label { get; set; }
 
-[Parameter]
-public string? AdditionalInfo { get; set; }
+    [Parameter]
+    public string? AdditionalInfo { get; set; }
 
-[Parameter]
-public RenderFragment? Value { get; set; }
+    [Parameter]
+    public RenderFragment? Value { get; set; }
 
-[Parameter]
-public string? PopupText { get; set; }
+    [Parameter]
+    public string? PopupText { get; set; }
 
-private Modal? popup;
-private async Task ShowPopup()
-{
-    if (popup == null)
+    private Modal? popup;
+    private async Task ShowPopup()
     {
-        return;
-    }
+        if (popup == null)
+        {
+            return;
+        }
 
-    if (!string.IsNullOrWhiteSpace(PopupText))
-    {
-        await popup.Show();
+        if (!string.IsNullOrWhiteSpace(PopupText))
+        {
+            await popup.Show();
+        }
     }
-}
 }

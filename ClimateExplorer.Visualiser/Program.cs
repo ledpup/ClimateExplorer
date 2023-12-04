@@ -5,7 +5,7 @@ using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
 using DPBlazorMapLibrary;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-//using BlazorCurrentDevice;
+using BlazorCurrentDevice;
 using Blazored.LocalStorage;
 using ClimateExplorer.Visualiser.Client.Pages;
 
@@ -19,14 +19,14 @@ builder.Services
     .AddInteractiveWebAssemblyComponents();
 
 builder.Services
-    .AddBlazorise(options =>{})
+    .AddBlazorise()
     .AddBootstrap5Providers()
     .AddFontAwesomeIcons()
     .AddMapService()
     .AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:54836/") })
     .AddSingleton<IDataServiceCache, DataServiceCache>()
     .AddTransient<IExporter, Exporter>()
-    //.AddBlazorCurrentDevice()
+    .AddBlazorCurrentDevice()
     .AddBlazoredLocalStorage()
     .AddHttpClient<IDataService, DataService>(client =>
     {

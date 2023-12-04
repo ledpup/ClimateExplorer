@@ -58,7 +58,7 @@ public partial class ChartView
 
     bool _haveCalledResizeAtLeastOnce = false;
     bool chartRenderedFirstTime = false;
-    bool IsMobileDevice { get; set; }
+    bool? IsMobileDevice { get; set; }
 
     bool? EnableRangeSlider { get; set; }
     int SliderMin { get; set; }
@@ -114,14 +114,12 @@ public partial class ChartView
     public bool ChartLoadingIndicatorVisible;
     public bool ChartLoadingErrored;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        IsMobileDevice = await BlazorCurrentDeviceService!.Mobile();
-
         ChartLoadingIndicatorVisible = true;
         ChartLoadingErrored = false;
 
-        SelectedYears = new List<short>();
+        SelectedYears = [];
 
         var datasetYears = new List<short>();
         for (short i = 1800; i <= (short)DateTime.Now.Year; i++)
@@ -438,6 +436,11 @@ public partial class ChartView
             return;
         }
 
+        if (firstRender)
+        {
+            IsMobileDevice = await BlazorCurrentDeviceService!.Mobile();
+        }
+
         if (!chartRenderedFirstTime)
         {
             await HandleRedraw();
@@ -461,8 +464,8 @@ public partial class ChartView
         {
             var dataSet = chartSeries.ProcessedDataSet!;
             var htmlColourCode = colours.GetNextColour(chartSeries.ChartSeries!.RequestedColour, requestedColours);
-            var renderSmallPoints = IsMobileDevice || dataSet.DataRecords.Count > 400;
-            var defaultLabel = IsMobileDevice
+            var renderSmallPoints = (bool)IsMobileDevice! || dataSet.DataRecords.Count > 400;
+            var defaultLabel = (bool)IsMobileDevice!
                 ? chartSeries.ChartSeries.GetFriendlyTitleShort()
                 : $"{chartSeries.ChartSeries.FriendlyTitle} | {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition!.UnitOfMeasure)}";
 

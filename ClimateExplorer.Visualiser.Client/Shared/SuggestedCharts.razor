@@ -63,91 +63,91 @@
 </LoadingIndicator>
 
 @code {
-[Parameter]
-public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
+    [Parameter]
+    public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
-[Parameter]
-public Location? SelectedLocation { get; set; }
+    [Parameter]
+    public Location? SelectedLocation { get; set; }
 
-[Parameter]
-public EventCallback<List<ChartSeriesDefinition>> OnChartPresetSelected { get; set; }
+    [Parameter]
+    public EventCallback<List<ChartSeriesDefinition>> OnChartPresetSelected { get; set; }
 
-[Parameter]
-public bool ExpandUpwards { get; set; }
+    [Parameter]
+    public bool ExpandUpwards { get; set; }
 
-[Parameter]
-public PresetTypes PresetType { get; set; }
+    [Parameter]
+    public PresetTypes PresetType { get; set; }
 
-List<SuggestedChartPresetModelWithVariants>? SuggestedPresets { get; set; }
+    List<SuggestedChartPresetModelWithVariants>? SuggestedPresets { get; set; }
 
-bool LoadingIndicatorVisible { get; set; }
+    bool LoadingIndicatorVisible { get; set; }
 
-string CalculateClassForSuggestedDataSetElement(SuggestedChartPresetModel s)
-{
-    string c = "suggested-data-set";
-
-    if (s.MenuExpanded) c += " menu-expanded";
-
-    if (ExpandUpwards) c += " expand-upwards";
-
-    return c;
-}
-
-protected override void OnParametersSet()
-{
-    LoadingIndicatorVisible = true;
-
-    if (DataSetDefinitions == null)
+    string CalculateClassForSuggestedDataSetElement(SuggestedChartPresetModel s)
     {
-        return;
+        string c = "suggested-data-set";
+
+        if (s.MenuExpanded) c += " menu-expanded";
+
+        if (ExpandUpwards) c += " expand-upwards";
+
+        return c;
     }
 
-    switch (PresetType)
+    protected override void OnParametersSet()
     {
-        case PresetTypes.Location:
-            SuggestedPresets = SuggestedPresetLists.LocationBasedPresets(DataSetDefinitions, SelectedLocation!);
-            break;
-        case PresetTypes.RegionalAndGlobal:
-            SuggestedPresets = SuggestedPresetLists.RegionalAndGlobalPresets(DataSetDefinitions);
-            break;
-    }
+        LoadingIndicatorVisible = true;
 
-    // Presets may call for data that is not available at all locations. In those
-    // cases, remove the ChartSeries entries that aren't available & set a flag
-    // on the preset so that an indicator can be shown to the user.
-    foreach (var p in SuggestedPresets!.Where(x => x.ChartSeriesList != null))
-    {
-        p.MissingChartSeries = false;
-
-        foreach (var csd in p.ChartSeriesList!.ToArray())
+        if (DataSetDefinitions == null)
         {
-            if (!csd.SourceSeriesSpecifications!.Any() || csd.SourceSeriesSpecifications!.Any(x => x.MeasurementDefinition == null))
-            {
-                p.ChartSeriesList.Remove(csd);
-
-                p.MissingChartSeries = true;
-            }
+            return;
         }
 
-        if (p.Variants != null)
+        switch (PresetType)
         {
-            foreach (var v in p.Variants)
+            case PresetTypes.Location:
+                SuggestedPresets = SuggestedPresetLists.LocationBasedPresets(DataSetDefinitions, SelectedLocation!);
+                break;
+            case PresetTypes.RegionalAndGlobal:
+                SuggestedPresets = SuggestedPresetLists.RegionalAndGlobalPresets(DataSetDefinitions);
+                break;
+        }
+
+        // Presets may call for data that is not available at all locations. In those
+        // cases, remove the ChartSeries entries that aren't available & set a flag
+        // on the preset so that an indicator can be shown to the user.
+        foreach (var p in SuggestedPresets!.Where(x => x.ChartSeriesList != null))
+        {
+            p.MissingChartSeries = false;
+
+            foreach (var csd in p.ChartSeriesList!.ToArray())
             {
-                v.MissingChartSeries = false;
-
-                foreach (var csd in v.ChartSeriesList!.ToArray())
+                if (!csd.SourceSeriesSpecifications!.Any() || csd.SourceSeriesSpecifications!.Any(x => x.MeasurementDefinition == null))
                 {
-                    if (!csd.SourceSeriesSpecifications!.Any() || csd.SourceSeriesSpecifications!.Any(x => x.MeasurementDefinition == null))
-                    {
-                        v.ChartSeriesList.Remove(csd);
+                    p.ChartSeriesList.Remove(csd);
 
-                        v.MissingChartSeries = true;
+                    p.MissingChartSeries = true;
+                }
+            }
+
+            if (p.Variants != null)
+            {
+                foreach (var v in p.Variants)
+                {
+                    v.MissingChartSeries = false;
+
+                    foreach (var csd in v.ChartSeriesList!.ToArray())
+                    {
+                        if (!csd.SourceSeriesSpecifications!.Any() || csd.SourceSeriesSpecifications!.Any(x => x.MeasurementDefinition == null))
+                        {
+                            v.ChartSeriesList.Remove(csd);
+
+                            v.MissingChartSeries = true;
+                        }
                     }
                 }
             }
         }
-    }
 
-    LoadingIndicatorVisible = false;
-}
+        LoadingIndicatorVisible = false;
+    }
 }
