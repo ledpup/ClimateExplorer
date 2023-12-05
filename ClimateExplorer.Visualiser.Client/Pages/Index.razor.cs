@@ -29,6 +29,7 @@ public partial class Index : ChartablePage
     [Inject] Blazored.LocalStorage.ILocalStorageService? LocalStorage { get; set; }
 
     bool setupDefaultChartSeries;
+    bool finishedInitialSetup;
     Guid oldLocationId = Guid.Empty;
 
     public Index()
@@ -43,6 +44,7 @@ public partial class Index : ChartablePage
         Locations = (await DataService!.GetLocations(includeNearbyLocations: true, includeWarmingIndex: true, excludeLocationsWithNullWarmingIndex: false)).ToList();
 
         setupDefaultChartSeries = true;
+        finishedInitialSetup = false;
     }
 
     protected override async Task OnParametersSetAsync()
@@ -77,7 +79,7 @@ public partial class Index : ChartablePage
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (Locations != null && !finishedInitialSetup)
         {
             if (LocationId == null)
             {
@@ -101,6 +103,7 @@ public partial class Index : ChartablePage
             {
                 await SelectedLocationChangedInternal(locationId);
                 oldLocationId = locationId;
+                finishedInitialSetup = true;
             }
         }
     }
@@ -226,6 +229,7 @@ public partial class Index : ChartablePage
         {
             return;
         }
+        finishedInitialSetup = false;
         await NavigateTo($"/{pageName}/" + locationId.ToString());
     }
 
