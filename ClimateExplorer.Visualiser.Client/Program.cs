@@ -16,14 +16,14 @@ builder.Services
     .AddBootstrap5Providers()
     .AddFontAwesomeIcons()
     .AddMapService()
-    .AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:54836/") })
+    .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
     .AddSingleton<IDataServiceCache, DataServiceCache>()
     .AddTransient<IExporter, Exporter>()
     .AddBlazorCurrentDevice()
     .AddBlazoredLocalStorage()
     .AddHttpClient<IDataService, DataService>(client =>
     {
-        client.BaseAddress = new Uri("http://localhost:54836/");// builder.Configuration["dataServiceBaseUri"]!);
+        client.BaseAddress = new Uri(builder.Configuration["dataServiceBaseUri"]!);
     });
 
 await builder.Build().RunAsync();

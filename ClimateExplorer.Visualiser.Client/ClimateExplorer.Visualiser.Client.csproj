@@ -26,10 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\BlazorCurrentDevice\BlazorCurrentDevice.csproj" />
     <ProjectReference Include="..\ClimateExplorer.Core\ClimateExplorer.Core.csproj" />
     <ProjectReference Include="..\DPBlazorMapLibrary\DPBlazorMapLibrary.csproj" />
