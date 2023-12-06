@@ -10,8 +10,6 @@ using Blazored.LocalStorage;
 using ClimateExplorer.Web.Client.Pages;
 
 var builder = WebApplication.CreateBuilder(args);
-//builder.RootComponents.Add<App>("#app");
-//builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services
     .AddRazorComponents()
@@ -23,14 +21,14 @@ builder.Services
     .AddBootstrap5Providers()
     .AddFontAwesomeIcons()
     .AddMapService()
-    .AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:54836/") })
+    .AddScoped(sp => new HttpClient())
     .AddSingleton<IDataServiceCache, DataServiceCache>()
     .AddTransient<IExporter, Exporter>()
     .AddBlazorCurrentDevice()
     .AddBlazoredLocalStorage()
     .AddHttpClient<IDataService, DataService>(client =>
     {
-        client.BaseAddress = new Uri("http://localhost:54836/");// builder.Configuration["dataServiceBaseUri"]!);
+    client.BaseAddress = new Uri(builder.Configuration["DataServiceBaseUri"]!);
     });
 
 var app = builder.Build();
@@ -55,6 +53,6 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(Counter).Assembly);
+    .AddAdditionalAssemblies(typeof(About).Assembly);
 
 await app.RunAsync();
