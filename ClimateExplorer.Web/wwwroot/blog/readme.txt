@@ -1,0 +1,1 @@
+bundle exec jekyll build --destination "C:\Users\Patrick\Source\Repos\ClimateExplorer\ClimateExplorer.Web\wwwroot\blog"

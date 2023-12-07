@@ -1,55 +1,54 @@
-﻿namespace ClimateExplorer.Core.DataPreparation
+﻿namespace ClimateExplorer.Core.DataPreparation;
+
+public static class BinRejector
 {
-    public static class BinRejector
+    public static RawBinWithDataAdequacyFlag[] ApplyBinRejectionRules(RawBin[] bins, float requiredCupDataProportion, float requiredBucketDataProportion, float requiredBinDataProportion)
     {
-        public static RawBinWithDataAdequacyFlag[] ApplyBinRejectionRules(RawBin[] bins, float requiredCupDataProportion, float requiredBucketDataProportion, float requiredBinDataProportion)
-        {
-            return
-                bins
-                .Select(
-                    x =>
-                    new RawBinWithDataAdequacyFlag
-                    {
-                        Identifier = x.Identifier,
-                        Buckets = x.Buckets,
-                        MeetsDataRequirements = BinMeetsDataRequirements(x, requiredCupDataProportion, requiredBucketDataProportion, requiredBinDataProportion)
-                    }
-                )
-                .ToArray();
-        }
-
-        static bool BinMeetsDataRequirements(RawBin bin, float requiredCupDataProportion, float requiredBucketDataProportion, float requiredBinDataProportion)
-        {
-            int fullEnoughBuckets = 0;
-
-            foreach (var bucket in bin.Buckets!)
-            {
-                int fullEnoughCups = 0;
-
-                foreach (var cup in bucket.Cups!)
+        return
+            bins
+            .Select(
+                x =>
+                new RawBinWithDataAdequacyFlag
                 {
-                    var dataPointsInCup = cup.DataPoints!.Count(x => x.Value.HasValue);
-
-                    var proportionOfPointsInCup = (float)dataPointsInCup / cup.ExpectedDataPointsInCup;
-
-                    if (proportionOfPointsInCup >= requiredCupDataProportion)
-                    {
-                        fullEnoughCups++;
-                    }
+                    Identifier = x.Identifier,
+                    Buckets = x.Buckets,
+                    MeetsDataRequirements = BinMeetsDataRequirements(x, requiredCupDataProportion, requiredBucketDataProportion, requiredBinDataProportion)
                 }
+            )
+            .ToArray();
+    }
 
-                if ((float)fullEnoughCups / bucket.Cups.Length >= requiredBucketDataProportion)
+    static bool BinMeetsDataRequirements(RawBin bin, float requiredCupDataProportion, float requiredBucketDataProportion, float requiredBinDataProportion)
+    {
+        int fullEnoughBuckets = 0;
+
+        foreach (var bucket in bin.Buckets!)
+        {
+            int fullEnoughCups = 0;
+
+            foreach (var cup in bucket.Cups!)
+            {
+                var dataPointsInCup = cup.DataPoints!.Count(x => x.Value.HasValue);
+
+                var proportionOfPointsInCup = (float)dataPointsInCup / cup.ExpectedDataPointsInCup;
+
+                if (proportionOfPointsInCup >= requiredCupDataProportion)
                 {
-                    fullEnoughBuckets++;
+                    fullEnoughCups++;
                 }
             }
 
-            if ((float)fullEnoughBuckets / bin.Buckets.Length >= requiredBinDataProportion)
+            if ((float)fullEnoughCups / bucket.Cups.Length >= requiredBucketDataProportion)
             {
-                return true;
+                fullEnoughBuckets++;
             }
-
-            return false;
         }
+
+        if ((float)fullEnoughBuckets / bin.Buckets.Length >= requiredBinDataProportion)
+        {
+            return true;
+        }
+
+        return false;
     }
 }

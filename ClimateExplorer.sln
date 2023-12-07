@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.WebApi", "C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Core", "ClimateExplorer.Core\ClimateExplorer.Core.csproj", "{8A1367EB-B947-4A4D-8E35-B7832551846B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Visualiser", "ClimateExplorer.Visualiser\ClimateExplorer.Visualiser.csproj", "{C7817987-8CB5-48E7-8914-AEEDB97F7A34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Web", "ClimateExplorer.Web\ClimateExplorer.Web.csproj", "{C7817987-8CB5-48E7-8914-AEEDB97F7A34}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.UnitTests", "ClimateExplorer.UnitTests\ClimateExplorer.UnitTests.csproj", "{2BC0FB94-966B-436B-A656-4D76FDD5BA47}"
 EndProject
@@ -24,7 +24,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.SourceData"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.AcornSatTransferFunctionAnalysis", "ClimateExplorer.AcornSatTransferFunctionAnalysis\ClimateExplorer.AcornSatTransferFunctionAnalysis.csproj", "{D7A43FF5-A0AF-45D4-BBC3-C67B608A8B02}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Visualiser.UiTests", "ClimateExplorer.Visualiser.UiTests\ClimateExplorer.Visualiser.UiTests.csproj", "{89EC7792-0BEA-43F6-837F-D2F47E9479AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Web.UiTests", "ClimateExplorer.Web.UiTests\ClimateExplorer.Web.UiTests.csproj", "{89EC7792-0BEA-43F6-837F-D2F47E9479AE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Data.Ghcnm", "ClimateExplorer.Data.Ghcnm\ClimateExplorer.Data.Ghcnm.csproj", "{AD4D1DF4-C395-45EE-963B-DBF549E2370B}"
 EndProject
@@ -33,6 +33,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Data.Ghcnm.Precipitation", "ClimateExplorer.Data.Ghcnm.Precipitation\ClimateExplorer.Data.Ghcnm.Precipitation.csproj", "{2F77C0C5-AB5E-4C04-9722-A5089C1CF23C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DPBlazorMapLibrary", "DPBlazorMapLibrary\DPBlazorMapLibrary.csproj", "{35CBA7BA-5535-408B-A584-CB5466B48C71}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Web.Client", "ClimateExplorer.Web.Client\ClimateExplorer.Web.Client.csproj", "{0C963208-7674-4804-84B4-73ECC29049A1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorCurrentDevice", "BlazorCurrentDevice\BlazorCurrentDevice.csproj", "{769941C2-931A-42A7-98FB-C4C60B27D7BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -92,6 +96,14 @@ Global
 		{35CBA7BA-5535-408B-A584-CB5466B48C71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35CBA7BA-5535-408B-A584-CB5466B48C71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35CBA7BA-5535-408B-A584-CB5466B48C71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C963208-7674-4804-84B4-73ECC29049A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C963208-7674-4804-84B4-73ECC29049A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C963208-7674-4804-84B4-73ECC29049A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C963208-7674-4804-84B4-73ECC29049A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{769941C2-931A-42A7-98FB-C4C60B27D7BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{769941C2-931A-42A7-98FB-C4C60B27D7BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{769941C2-931A-42A7-98FB-C4C60B27D7BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{769941C2-931A-42A7-98FB-C4C60B27D7BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
