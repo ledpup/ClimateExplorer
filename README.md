@@ -28,8 +28,8 @@ The data is sourced from:
 - Below are descriptions of the main projects:
   - **Web**: Blazor server-side website that displays the data to the user. This is a wrapper project, most of the Blazor files are in Web.Client.
   - **Web.Client**: Blazor Web Assembly version of the website. This will download to the browser and the browser will switch to using this after its downloaded.
-  - **WebApi**: Web API that gets and processes the data that Visualiser uses
-  - **Core**: shared files between Visualiser, Analyser and WebApi
+  - **WebApi**: Web API that gets and processes the data that the website uses
+  - **Core**: shared files between Web, Analyser and WebApi
   - **UnitTests**: tests for various sub-systems
 - Additional libraries used
   - https://github.com/Megabit/Blazorise
