@@ -1,6 +1,7 @@
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.UiModel;
+using Microsoft.AspNetCore.WebUtilities;
 using static ClimateExplorer.Core.Enums;
 
 namespace ClimateExplorer.Web.Client.Pages;
@@ -11,18 +12,32 @@ public partial class RegionalAndGlobal : ChartablePage
         pageName = "regionalandglobal";
     }
 
-    protected override async Task OnInitializedAsync()
+    bool finishedSetup;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await base.OnInitializedAsync();
+        await base.OnAfterRenderAsync(firstRender);
 
-        Locations = (await DataService!.GetLocations()).ToList();
-    }
+        if (firstRender)
+        {
+            Locations = (await DataService!.GetLocations()).ToList();   
+        }
 
-    protected override async Task OnParametersSetAsync()
-    {
-        await UpdateUiStateBasedOnQueryString(false);
-
-        await AddDefaultChart();
+        if (!finishedSetup)
+        {
+            finishedSetup = true;
+            var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+            var csd = QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
+            if (csd)
+            {
+                await UpdateUiStateBasedOnQueryString(false);
+            }
+            else
+            {
+                await AddDefaultChart();
+            }
+            StateHasChanged();
+        }
     }
 
     private async Task AddDefaultChart()
