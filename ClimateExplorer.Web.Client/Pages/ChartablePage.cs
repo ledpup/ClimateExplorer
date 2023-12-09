@@ -36,19 +36,20 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     protected SnackbarStack? snackbar;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        Logger!.LogInformation("Instance " + _componentInstanceId + " OnInitializedAsync");
-
-        NavManager!.LocationChanged += HandleNavigationLocationChanged!;
-
-        if (DataService == null)
+        if (firstRender)
         {
-            throw new NullReferenceException(nameof(DataService));
-        }
-        DataSetDefinitions = (await DataService.GetDataSetDefinitions()).ToList();
+            NavManager!.LocationChanged += HandleNavigationLocationChanged!;
 
-        Locations = new List<Location>();
+            if (DataService == null)
+            {
+                throw new NullReferenceException(nameof(DataService));
+            }
+            DataSetDefinitions = (await DataService.GetDataSetDefinitions()).ToList();
+
+            Locations = new List<Location>();
+        }
     }
 
     protected async Task BuildDataSets()

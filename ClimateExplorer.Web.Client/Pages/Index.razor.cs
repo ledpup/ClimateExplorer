@@ -28,8 +28,7 @@ public partial class Index : ChartablePage
 
     [Inject] Blazored.LocalStorage.ILocalStorageService? LocalStorage { get; set; }
 
-    bool setupDefaultChartSeries;
-    bool finishedInitialSetup;
+    bool finishedSetup;
     Guid oldLocationId = Guid.Empty;
 
     public Index()
@@ -37,50 +36,16 @@ public partial class Index : ChartablePage
         pageName = "location";
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-
-        Locations = (await DataService!.GetLocations(includeNearbyLocations: true, includeWarmingIndex: true, excludeLocationsWithNullWarmingIndex: false)).ToList();
-
-        setupDefaultChartSeries = true;
-        finishedInitialSetup = false;
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        if (Locations == null)
-        {
-            Logger!.LogError("OnParametersSetAsync(): Locations is null");
-            return;
-        }    
-
-        Logger!.LogInformation("OnParametersSetAsync() " + NavManager!.Uri + " (NavigateTo)");
-
-        Logger!.LogInformation("OnParametersSetAsync(): " + LocationId);
-
-        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
-        if (setupDefaultChartSeries)
-        {
-            var csd = QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
-            if (csd)
-            {
-                setupDefaultChartSeries = false;
-                await UpdateUiStateBasedOnQueryString();
-                // Going to assume that the first chart is the primary location
-                LocationId = chartView!.ChartSeriesList!.First().SourceSeriesSpecifications!.First().LocationId.ToString();
-            }
-        }
-
-        GetLocationIdViaNameFromPath(uri);
-        
-        await base.OnParametersSetAsync();
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (Locations != null && !finishedInitialSetup)
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
         {
+            Locations = (await DataService!.GetLocations(includeNearbyLocations: true, includeWarmingIndex: true, excludeLocationsWithNullWarmingIndex: false)).ToList();
+
+            var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+            GetLocationIdViaNameFromPath(uri);
             if (LocationId == null)
             {
                 LocationId = (await LocalStorage!.GetItemAsync<string>("lastLocationId"));
@@ -91,19 +56,34 @@ public partial class Index : ChartablePage
                 }
             }
 
-            Guid locationId = Guid.Parse(LocationId);
-
-            if (setupDefaultChartSeries)
+            var csd = QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
+            if (csd)
             {
-                SetUpDefaultCharts(locationId);
-                setupDefaultChartSeries = false;
-                await SelectedLocationChanged(locationId);
+                await UpdateUiStateBasedOnQueryString();
+                // Going to assume that the first chart is the primary location
+                LocationId = chartView!.ChartSeriesList!.First().SourceSeriesSpecifications!.First().LocationId.ToString();
             }
-            else if (oldLocationId != locationId)
+            else
             {
-                await SelectedLocationChangedInternal(locationId);
-                oldLocationId = locationId;
-                finishedInitialSetup = true;
+                var locationId = Guid.Parse(LocationId);
+                SetUpDefaultCharts(locationId);
+                await SelectedLocationChanged(locationId);
+                StateHasChanged();
+            }
+        }
+
+        if (LocationId != null)
+        {
+            var locationId = Guid.Parse(LocationId);
+            if (!firstRender && !finishedSetup && locationId != Guid.Empty)
+            {
+                if (oldLocationId != locationId)
+                {
+                    oldLocationId = locationId;
+                    finishedSetup = true;
+                    await SelectedLocationChangedInternal(locationId);
+                    StateHasChanged();
+                }
             }
         }
     }
@@ -229,7 +209,7 @@ public partial class Index : ChartablePage
         {
             return;
         }
-        finishedInitialSetup = false;
+        finishedSetup = false;
         await NavigateTo($"/{pageName}/" + locationId.ToString());
     }
 
