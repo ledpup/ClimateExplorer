@@ -19,14 +19,14 @@
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="description" content="ClimateExplorer helps you understand climate change trends. It focuses on climate change's impact on you. It is intended to be easy to use and understand.">
+    <meta name="description" content="ClimateExplorer helps you understand climate change trends. It focuses on climate change's impact on where you live. It is intended to be easy to use and understand.">
 
     <meta property="og:site_name" content="ClimateExplorer" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Explore long-term climate trends" />
     <meta property="og:url" content="https://climateexplorer.net/" />
     <meta property="og:description"
-          content="ClimateExplorer helps you understand climate change trends. It is simple to use and easy to understand." />
+          content="ClimateExplorer helps you understand climate change trends. It focuses on climate change's impact on where you live. It is intended to be easy to use and understand." />
     <meta property="og:image" content="/images/ClimateExplorerLogo.png" />
 
     <base href="/" />
@@ -54,7 +54,7 @@
     <meta name="msapplication-TileColor" content="#5bbad5" />
     <meta name="theme-color" content="#ffffff" />
 
-    <HeadOutlet @rendermode="@InteractiveServer" />
+    <HeadOutlet @rendermode="@InteractiveAuto" />
 </head>
 
 <body>
@@ -164,7 +164,7 @@
     </script>
 
 
-    <Routes @rendermode="@InteractiveServer" />
+    <Routes @rendermode="@InteractiveAuto" />
     <script src="_framework/blazor.web.js"></script>
 </body>
 
