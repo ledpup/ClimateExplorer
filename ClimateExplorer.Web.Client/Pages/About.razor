@@ -1,0 +1,123 @@
+﻿@page "/about"
+@using ClimateExplorer.Core.Model
+
+<PageTitle>ClimateExplorer - About</PageTitle>
+
+<h1>About this site</h1>
+
+<div>
+    This site provides a simple interface to view climate observations covering Australia (including remote islands), New Zealand, and Antarctica.
+</div>
+
+<h1>Data pipeline</h1>
+
+<div>
+    <img src="/images/pipeline.png" style="width: 100%"/>
+</div>
+
+<h1>Data sources</h1>
+
+<h2>GHCNm</h2>
+
+<p>
+    <a href="https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-monthly" target="_blank">Global Historical Climatology Network monthly</a> (GHCNm) provides monthly climate summaries from thousands of weather stations around the world
+</p>
+
+<h2>ACORN-SAT</h2>
+
+<p>
+    The <a target="_blank" href="http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks">ACORN-SAT</a> dataset includes ground-based temperature records
+    for 112 stations in Australia. It is published by Australia's <a target="_blank" href="http://www.bom.gov.au/">Bureau of Meteorology</a>.
+</p>
+
+<h2>RAIA</h2>
+
+<p>
+    The <a target="_blank" href="http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks">RAIA</a> dataset includes ground-based temperature records
+    for 8 stations in the Remote Australian Islands and Antarctica. It is published by Australia's <a target="_blank" href="http://www.bom.gov.au/">Bureau of Meteorology</a> as an extension to ACORN-SAT.
+</p>
+<p>
+    It includes records for the following stations: Casey, Cosos Island, Davis, Lord Howe Island, Macquarie Island, Mawson, Norfolk Island and Willis Island.
+</p>
+
+<h2>NIWA 7-station series</h2>
+
+<p>
+    The <a target="_blank" href="https://niwa.co.nz/seven-stations">NIWA 7-station series</a> is New Zealand's primary selection of stations for climate research. It is published by New Zealand's
+    <a href="http://niwa.co.nz/">National Institute of Water and Atmospheric Research</a> (NIWA).
+</p>
+<p>
+    The series has been derived from seven locations: Auckland, Masterton, Wellington, Hokitika, Nelson, Lincoln, Dunedin.
+</p>
+
+<h2>NIWA 11-station series</h2>
+
+<p>
+    The <a target="_blank" href="https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data">NIWA 11-station series</a>
+    dataset includes temperature records for eleven stations in New Zealand and outlying islands (Raoul and Campbell Islands). It is published by New Zealand's 
+    <a href="http://niwa.co.nz/">National Institute of Water and Atmospheric Research</a> (NIWA).
+</p>
+
+<h2>HadCET</h2>
+
+<p>
+    <a href="https://www.metoffice.gov.uk/hadobs/hadcet/index.html" target="_blank">The Hadley Centre Central England Temperature</a> (HadCET) dataset is the longest instrumental record of temperature in the world
+</p>
+
+<h1>Glossary</h1>
+
+<div>
+    <ul>
+        <li>
+            <a href="https://en.wikipedia.org/wiki/El_Ni%C3%B1o%E2%80%93Southern_Oscillation" target="_blank">ENSO</a>: El Niño–Southern Oscillation
+        </li>
+    </ul>
+</div>
+
+<h1>References/further reading</h1>
+
+<div>
+    <ul>
+        <li>
+            ENSO
+
+            <ul>
+                <li>
+                    <a href="https://en.wikipedia.org/wiki/El_Ni%C3%B1o%E2%80%93Southern_Oscillation" target="_blank">El Niño–Southern Oscillation - Wikipedia</a>
+                </li>
+            </ul>
+        </li>
+
+    </ul>
+</div>
+
+<h1>Diagnostics</h1>
+
+@if (_apiMetadata != null)
+{
+    <div>
+        API Version: @_apiMetadata.Version
+    </div>
+    <div>
+        API Build Time (UTC): @_apiMetadata.BuildTimeUtc
+    </div>
+}
+
+@code {
+[Inject]
+public IDataService? DataService { get; set; }
+
+ApiMetadataModel? _apiMetadata;
+
+protected override async Task OnInitializedAsync()
+{
+    if (DataService == null)
+    {
+        throw new NullReferenceException(nameof(DataService));
+    }
+
+    _apiMetadata = await DataService.GetAbout();
+
+    await base.OnInitializedAsync();
+}
+}

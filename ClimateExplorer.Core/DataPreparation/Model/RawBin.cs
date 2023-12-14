@@ -1,18 +1,17 @@
-﻿namespace ClimateExplorer.Core.DataPreparation
+﻿namespace ClimateExplorer.Core.DataPreparation;
+
+public class RawBin
 {
-    public class RawBin
-    {
-        public BinIdentifier? Identifier { get; set; }
-        public Bucket[]? Buckets { get; set; }
+    public BinIdentifier? Identifier { get; set; }
+    public Bucket[]? Buckets { get; set; }
 
-        public override string ToString()
-        {
-            return Identifier!.ToString();
-        }
-    }
-
-    public class RawBinWithDataAdequacyFlag : RawBin
+    public override string ToString()
     {
-        public bool MeetsDataRequirements { get; set; }
+        return Identifier!.ToString();
     }
+}
+
+public class RawBinWithDataAdequacyFlag : RawBin
+{
+    public bool MeetsDataRequirements { get; set; }
 }

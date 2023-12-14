@@ -50,6 +50,7 @@ var measurementDefinition = new MeasurementDefinition
     DataAdjustment = null,
     DataType = DataType.Rainfall,
     DataResolution = DataResolution.Monthly,
+    UnitOfMeasure = UnitOfMeasure.Millimetres,
     NullValue = "99999",
     DataRowRegEx = @"^(?<station>\w+),.*,.*,.*,.*,(?<year>\d{4})(?<month>\d{2}),\s*(?<value>-?[\d+]*),.*,.*,\w,\d+$",
     FolderName = @"Download",

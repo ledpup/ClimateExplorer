@@ -1,0 +1,45 @@
+﻿@using ClimateExplorer.Web.UiModel
+@using static ClimateExplorer.Core.Enums
+
+<OverviewField Label="Driest years">
+    <Value>
+        @if (DataRecords == null)
+    {
+        <span>NA</span>
+    }
+    else
+    {
+        foreach (var year in DriestYearsList)
+        {
+            <span @onclick="() => FilterToYear(year)">
+                    <a>@year</a>
+                </span>
+            if (DriestYearsList.IndexOf(year) < DriestYearsList.Count - 1)
+            {
+                <span>, </span>
+            }
+        }
+    }
+    </Value>
+</OverviewField>
+<OverviewField Label="Wettest years">
+    <Value>
+        @if (DataRecords == null)
+    {
+        <span>NA</span>
+    }
+    else
+    {
+        foreach (var year in WettestYears)
+        {
+            <span @onclick="() => FilterToYear(year)">
+                    <a>@year</a>
+                </span>
+            if (WettestYears.IndexOf(year) < WettestYears.Count - 1)
+            {
+                <span>, </span>
+            }
+        }
+    }
+    </Value>
+</OverviewField>

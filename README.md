@@ -23,7 +23,7 @@ The data is sourced from:
 - Built in [Visual Studio 2022 Community Edition](https://visualstudio.microsoft.com/vs/community/) using
   - .NET 8
   - C#
-  - Blazor Web Assembly (WASM)
+  - Blazor
   - Minimal Web API
 - The main projects in the solution are:
   - **Web**: Blazor server-side website that displays the data to the user. This is a wrapper project, most of the Blazor files are in Web.Client.
@@ -43,4 +43,4 @@ The data is sourced from:
 
 - Download the github repo. 
 - Open in Visual Studio 2022. 
-- Set your start-up projects to be Visualiser and WebApi and run. Two websites should start-up; the user interface and the web API.
+- Set your start-up projects to be Web and WebApi and run. Two websites should start-up; the user interface and the web API.
