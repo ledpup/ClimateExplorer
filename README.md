@@ -25,12 +25,12 @@ The data is sourced from:
   - C#
   - Blazor Web Assembly (WASM)
   - Minimal Web API
-- There are five projects:
-  - Visualiser: Blazor website that displays the data to the user
-  - WebApi: Web API that gets and processes the data that Visualiser uses
-  - Core: shared files between Visualiser, Analyser and WebApi
-  - UnitTests: tests for various sub-systems
-  - Analyser: console app for manipulating datasets... not used much
+- The main projects in the solution are:
+  - **Web**: Blazor server-side website that displays the data to the user. This is a wrapper project, most of the Blazor files are in Web.Client.
+  - **Web.Client**: Blazor Web Assembly version of the website. This will download to the browser and the browser will switch to using this after its downloaded.
+  - **WebApi**: Web API that gets and processes the data that the website uses
+  - **Core**: shared files between Web, Analyser and WebApi
+  - **UnitTests**: tests for various sub-systems
 - Additional libraries used
   - https://github.com/Megabit/Blazorise
   - https://github.com/DP-projects/DPBlazorMap
