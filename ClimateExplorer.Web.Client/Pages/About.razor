@@ -6,13 +6,7 @@
 <h1>About this site</h1>
 
 <div>
-    This site provides a simple interface to view climate observations covering Australia (including remote islands), New Zealand, and Antarctica.
-</div>
-
-<h1>Data pipeline</h1>
-
-<div>
-    <img src="/images/pipeline.png" style="width: 100%"/>
+    This site provides a simple interface to view climate observations from around the world. The site was originally designed with data for Australia (including remote islands), New Zealand and HadCET and they still have daily temperature and precipitation datsets. The rest of the world has values coming from monthly datasets (from GHCNm).
 </div>
 
 <h1>Data sources</h1>
@@ -24,12 +18,26 @@
     for 112 stations in Australia. It is published by Australia's <a target="_blank" href="http://www.bom.gov.au/">Bureau of Meteorology</a>.
 </p>
 
-<h2>RAIA</h2>
+<h2>GHCNm</h2>
 
 <p>
-    The <a target="_blank" href="http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks">RAIA</a> dataset includes ground-based temperature records
-    for 8 stations in the Remote Australian Islands and Antarctica. It is published by Australia's <a target="_blank" href="http://www.bom.gov.au/">Bureau of Meteorology</a>.
-    It includes records for the following stations: Casey, Cosos Island, Davis, Lord Howe Island, Macquarie Island, Mawson, Norfolk Island and Willis Island.
+    <a href="https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-monthly" target="_blank">Global Historical Climatology Network monthly</a> (GHCNm) provides monthly climate summaries from thousands of weather stations around the world
+</p>
+
+<h2>HadCET</h2>
+
+<p>
+    <a href="https://www.metoffice.gov.uk/hadobs/hadcet/index.html" target="_blank">The Hadley Centre Central England Temperature</a> (HadCET) dataset is the longest instrumental record of temperature in the world
+</p>
+
+<h2>NIWA 7-station series</h2>
+
+<p>
+    The <a target="_blank" href="https://niwa.co.nz/seven-stations">NIWA 7-station series</a> is New Zealand's primary selection of stations for climate research. It is published by New Zealand's
+    <a href="http://niwa.co.nz/">National Institute of Water and Atmospheric Research</a> (NIWA).
+</p>
+<p>
+    The series has been derived from seven locations: Auckland, Masterton, Wellington, Hokitika, Nelson, Lincoln, Dunedin.
 </p>
 
 <h2>NIWA 11-station series</h2>
@@ -37,14 +45,61 @@
 <p>
     The <a target="_blank" href="https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data">NIWA 11-station series</a>
     dataset includes temperature records for eleven stations in New Zealand and outlying islands (Raoul and Campbell Islands). It is published by New Zealand's 
-    <a href="http://niwa.co.nz/">National Institute of Water and Atmospheric Research</a>.
+    <a href="http://niwa.co.nz/">National Institute of Water and Atmospheric Research</a> (NIWA).
 </p>
+
+<h2>RAIA</h2>
+
+<p>
+    The <a target="_blank" href="http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks">RAIA</a> dataset includes ground-based temperature records
+    for 8 stations in the Remote Australian Islands and Antarctica. It is published by Australia's <a target="_blank" href="http://www.bom.gov.au/">Bureau of Meteorology</a> as an extension to ACORN-SAT.
+</p>
+<p>
+    It includes records for the following stations: Casey, Cosos Island, Davis, Lord Howe Island, Macquarie Island, Mawson, Norfolk Island and Willis Island.
+</p>
+
+<h1>Reference data sources</h1>
+
+<h2>Greenhouse gases</h2>
+
+<p>The <a href="https://gml.noaa.gov/" target="_blank">Global Monitoring Laboratory</a> (GML) of the National Oceanic and Atmospheric Administration conducts research that addresses three major challenges: greenhouse gas and carbon cycle feedbacks, changes in clouds, aerosols, and surface radiation, and recovery of stratospheric ozone.</p>
+    
+<p>The CO2, methane and nitrous oxide data in ClimateExplorer are sourced from GML.</p>
+
+<h1>Data pipeline</h1>
+
+<div>
+    <img src="/images/pipeline.png" style="width: 100%" />
+</div>
 
 <h1>Glossary</h1>
 
 <div>
     <ul>
-        <li><b>ENSO</b>: <a href="https://en.wikipedia.org/wiki/El_Ni%C3%B1o%E2%80%93Southern_Oscillation" target="_blank">El Niño–Southern Oscillation</a></li>
+        <li>
+            <a href="http://www.bom.gov.au/" target="_blank">BOM</a>: Australia's <strong>Bureau of Meteorology</strong>
+        </li>
+        <li>
+            <a href="https://en.wikipedia.org/wiki/El_Ni%C3%B1o%E2%80%93Southern_Oscillation" target="_blank">ENSO</a>: El Niño–Southern Oscillation
+        </li>
+        <li>
+            <a href="https://www.metoffice.gov.uk/" target="_blank">Met Office</a>: United Kingdom's national weather service
+        </li>
+        <li>
+            <a href="https://www.ncei.noaa.gov/" target="_blank">NCEI</a>: United States of America's <strong>National Centers for Environmental Information</strong> (NCEI), is a U.S. government agency that manages one of the world's largest archives of atmospheric, coastal, geophysical, and oceanic data. It is an office of NOAA, which operates under the U.S. Department of Commerce
+        </li>
+        <li>
+            <a href="https://niwa.co.nz/" target="_blank">NIWA</a>: New Zealand's <strong>National Institute of Water and Atmospheric Research</strong> (maintains the <a href="https://niwa.co.nz/seven-stations" target="_blank">7-station</a> and <a href="https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data" target="_blank">11-station</a> series)
+        </li>
+        <li>
+            <a href="https://www.noaa.gov/" target="_blank">NOAA</a>: United States of America's <strong>National Oceanic and Atmospheric Administration</strong>, a scientific and regulatory agency within the United States Department of Commerce
+        </li>
+        <li>
+            <a href="https://nsidc.org/home" target="_blank">NSIDC</a>: United States of America's <strong>National Snow & Ice Data Center</strong>
+        </li>
+        <li>
+            <a href="https://www.astro.oma.be/en/" target="_blank">ROB</a>: The <strong>Royal Observatory of Belgium</strong> (ROB) is a scientific research institution. The main activities are Reference Systems and Planetology, Seismology and Gravimetry, Astronomy and Astrophysics and Solar Physics and Space Weather.
+        </li>
     </ul>
 </div>
 
