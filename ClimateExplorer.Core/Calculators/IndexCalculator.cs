@@ -13,7 +13,7 @@ public static class IndexCalculator
         public float? Value { get; set; }
     }
 
-    public static CalculatedIndex CalculateIndex(IEnumerable<DataRecord> dataRecords)
+    public static CalculatedAnomaly CalculateIndex(IEnumerable<DataRecord> dataRecords)
     {
         return
             CalculateIndex(
@@ -29,7 +29,7 @@ public static class IndexCalculator
             );
     }
 
-    public static CalculatedIndex CalculateIndex(ChartableDataPoint[] dataPoints)
+    public static CalculatedAnomaly CalculateIndex(ChartableDataPoint[] dataPoints)
     {
         return
             CalculateIndex(
@@ -45,7 +45,7 @@ public static class IndexCalculator
             );
     }
 
-    static CalculatedIndex CalculateIndex(YearAndValue[] dataPoints)
+    static CalculatedAnomaly CalculateIndex(YearAndValue[] dataPoints)
     {
         var nonNullDataPoints = dataPoints.Where(x => x.Value.HasValue).ToArray();
 
@@ -65,9 +65,9 @@ public static class IndexCalculator
         var averageOfLast30Years = lastThirtyYears.Average(x => x.Value)!.Value;
 
         return
-            new CalculatedIndex
+            new CalculatedAnomaly
             {
-                IndexValue = averageOfLast30Years - averageOfFirstHalf,
+                AnomalyValue = averageOfLast30Years - averageOfFirstHalf,
                 AverageOfFirstHalf = averageOfFirstHalf,
                 AverageOfLast30Years = averageOfLast30Years,
                 CountOfFirstHalf = countOfFirstHalf,
@@ -79,9 +79,9 @@ public static class IndexCalculator
     }
 }
 
-public class CalculatedIndex
+public class CalculatedAnomaly
 {
-    public float IndexValue { get; set; }
+    public float AnomalyValue { get; set; }
     public float AverageOfFirstHalf { get; set; }
     public int CountOfFirstHalf { get; set; }
     public float AverageOfLast30Years { get; set; }

@@ -201,7 +201,7 @@ async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool in
                         }
                     );
 
-                location.WarmingIndex = IndexCalculator.CalculateIndex(series.DataPoints)?.IndexValue;
+                location.WarmingIndex = IndexCalculator.CalculateIndex(series.DataPoints)?.AnomalyValue;
             }
             catch (Exception ex)
             {
