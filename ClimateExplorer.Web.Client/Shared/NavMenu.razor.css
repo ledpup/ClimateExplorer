@@ -11,10 +11,21 @@
 ::deep .nav-item {
     display: inline;
     margin-right: 8px;
+    color: white;
 }
+
 ::deep .nav-link {
     display: inline;
+    color: white;
 }
+
+::deep a.nav-link {
+    color: white !important;
+}
+
+    ::deep a.nav-link:hover {
+        color: #aaa !important;
+    }
 
 ::deep .bg-dark {
     background-color: #425f59 !important;
