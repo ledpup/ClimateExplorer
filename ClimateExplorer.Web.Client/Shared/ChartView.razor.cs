@@ -74,7 +74,7 @@ public partial class ChartView
     List<short>? SelectedYears { get; set; }
     List<short>? StartYears { get; set; }
     short EndYear { get; set; }
-    ChartStartYears? ChartStartYear { get; set; } = ChartStartYears.FirstYear;
+    ChartStartYears? ChartStartYear { get; set; } = ChartStartYears.LastYear;
 
     ColourServer colours { get; set; } = new ColourServer();
 
