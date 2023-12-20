@@ -381,12 +381,14 @@ public partial class ChartView
                 Title = new
                 {
                     Text = title,
-                    Display = true
+                    Display = true,
+                    Color = "black"
                 },
                 Subtitle = new
                 {
                     Text = subtitle,
-                    Display = true
+                    Display = true,
+                    Color = "black"
                 },
             },
             Scales = scales,
@@ -763,7 +765,7 @@ public partial class ChartView
                         {
                             Text = UnitOfMeasureLabel(s.SeriesTransformation, uom, s.Aggregation, s.Value),
                             Display = true,
-                            Color = s.Colour == "#ffff33" ? "#a0a033" : s.Colour,
+                            Color = s.Colour,
                         },
                     });
                 axes.Add(axisId);

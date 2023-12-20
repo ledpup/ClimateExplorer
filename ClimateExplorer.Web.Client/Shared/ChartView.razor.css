@@ -5,6 +5,7 @@
         position: relative;
         height: 30vh;
         min-height: 300px;
+        color: black;
     }
 
     .chart-and-controls {
@@ -20,6 +21,7 @@
         flex-shrink: 0;
         position: relative;
         height: 50vh;
+        color: black;
     }
 
     .chart-collapsible-parent {

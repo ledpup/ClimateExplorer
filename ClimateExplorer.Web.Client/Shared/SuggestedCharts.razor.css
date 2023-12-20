@@ -64,7 +64,7 @@
     }
 
     .suggested-data-set .description {
-        color: #666;
+        color: #595959;
         font-size: 0.85rem;
     }
 
@@ -75,7 +75,7 @@
 
     .suggested-data-set .expander {
         padding: 12px;
-        color: #888;
+        color: #595959;
         border-radius: 12px;
         transition: 0.25s;
     }
