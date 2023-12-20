@@ -168,8 +168,8 @@ public partial class ClimateStripe
 
         if (UnitOfMeasure == UnitOfMeasure.Millimetres)
         {
-            return value > 0 ? MathF.Round(value, UomRounding) > Max / 2 ? lightTextColour : darkTextColour
-                : MathF.Round(value, UomRounding) < Min / 2 ? lightTextColour : darkTextColour;
+            return value > 0 ? MathF.Round(value, UomRounding) > Max / 1.4 ? lightTextColour : darkTextColour
+                             : MathF.Round(value, UomRounding) < Min / 1.4 ? lightTextColour : darkTextColour;
         }
 
         throw new NotImplementedException();

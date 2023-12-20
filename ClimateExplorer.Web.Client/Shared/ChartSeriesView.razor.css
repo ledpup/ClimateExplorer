@@ -7,13 +7,12 @@
     min-width: 350px;
     font-size: 0.75rem;
     display: inline-block;
-    color: #666;
+    color: #595959;
     user-select: none;
     vertical-align: top;
     overflow: hidden;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 6px;
 }
-
 
     .chart-series-config .title-bar {
         background-color: white;
@@ -25,7 +24,6 @@
         justify-content: space-between;
     }
 
-
         .chart-series-config .title-bar:hover {
             background-color: #cfc;
             transition: 0.25s;
@@ -34,7 +32,7 @@
         .chart-series-config .title-bar .expander {
             padding: 8px;
             padding-top: 12px;
-            color: #888;
+            color: #595959;
         }
 
         .chart-series-config .title-bar:hover .expander {
@@ -64,7 +62,7 @@
     .chart-series-config .description {
         padding-left: 8px;
         padding-right: 16px;
-        color: #555;
+        color: #595959;
     }
 
     .chart-series-config-content {
@@ -81,7 +79,7 @@
         }
 
             .chart-series-config-content .series-controls .series-control {
-                color: #444;
+                color: #333;
                 display: inline-block;
                 padding: 8px;
                 font-size: 18px;
@@ -147,14 +145,12 @@
 @media only screen and (max-width: 1000px) {
     .chart-series-config {
         min-width: auto;
-
     }
-
 }
 
 .info-message {
     color: darkorange;
-    font-weight:bold;
+    font-weight: bold;
 }
 
 .about-this-data-button {

@@ -1,5 +1,5 @@
 ﻿h1 {
-    color: #444;
+    color: #333;
     font-weight: bold;
 }
 
@@ -8,11 +8,11 @@
     }
 
 h2 {
-    color: #666;
+    color: #444;
     font-size: 1.5em;
 }
 
 h3 {
-    color: #888;
+    color: #595959;
     font-size: 1.2em;
 }

@@ -9,20 +9,19 @@
 
 .label {
     font-size: 0.8rem;
-    color: #888888;
+    color: #595959;
     margin-bottom: -6px;
-    color: #99a;
 }
 
 .value {
     font-size: 1.25rem;
-    color: #666666;
+    color: #494949;
     font-weight: bold;
     margin-bottom: -6px;
 }
 
     ::deep .value a {
-        color: #666666;
+        color: #494949;
         text-decoration: none;
     }
 
