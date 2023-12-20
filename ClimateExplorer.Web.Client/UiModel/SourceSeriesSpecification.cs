@@ -12,17 +12,17 @@ public class SourceSeriesSpecification
 
     public static SourceSeriesSpecification[] BuildArray(LocationBase? location, DataSetAndMeasurementDefinition dsdmd)
     {
-        if (dsdmd == null) return new SourceSeriesSpecification[0];
+        if (dsdmd == null) return [];
 
         return
             [
-                    new SourceSeriesSpecification
-                    {
-                        LocationId = location == null ? null : location.Id,
-                        LocationName = location == null ? null : location.Name,
-                        DataSetDefinition = dsdmd.DataSetDefinition!,
-                        MeasurementDefinition = dsdmd.MeasurementDefinition!,
-                    }
+                new SourceSeriesSpecification
+                {
+                    LocationId = location?.Id,
+                    LocationName = location?.Name,
+                    DataSetDefinition = dsdmd.DataSetDefinition!,
+                    MeasurementDefinition = dsdmd.MeasurementDefinition!,
+                }
             ];
     }
 }
