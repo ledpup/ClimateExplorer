@@ -12,6 +12,7 @@
     flex-grow: 1;
     flex-basis: 0;
     transition: min-width 0.5s ease-in-out;
+    user-select: none;
 }
 
     .single-stripe .label {
