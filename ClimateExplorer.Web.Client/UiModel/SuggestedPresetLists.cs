@@ -142,7 +142,7 @@ public static class SuggestedPresetLists
             }
         );
 
-        // If we have a location-based solar radiation, use that. Otherwise, use the total solar irradiance
+        // If we have local solar radiation, use that. Otherwise, use the total solar irradiance
         var solarDefinition = solarRadiation == null 
             ? new ChartSeriesDefinition()
                 {
