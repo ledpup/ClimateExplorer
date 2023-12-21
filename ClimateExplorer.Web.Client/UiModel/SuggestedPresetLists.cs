@@ -142,37 +142,6 @@ public static class SuggestedPresetLists
             }
         );
 
-        // If we have local solar radiation, use that. Otherwise, use the total solar irradiance
-        var solarDefinition = solarRadiation == null 
-            ? new ChartSeriesDefinition()
-                {
-                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, tsi!),
-                    Aggregation = SeriesAggregationOptions.Mean,
-                    BinGranularity = BinGranularities.ByYear,
-                    ShowTrendline = false,
-                    Smoothing = SeriesSmoothingOptions.None,
-                    SmoothingWindow = 5,
-                    Value = SeriesValueOptions.Value,
-                    Year = null,
-                    RequestedColour = UiLogic.Colours.Yellow,
-                    GroupingThreshold = 0.1f,
-                }
-            : new ChartSeriesDefinition()
-                {
-                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, solarRadiation!),
-                    Aggregation = SeriesAggregationOptions.Mean,
-                    BinGranularity = BinGranularities.ByYear,
-                    ShowTrendline = false,
-                    Smoothing = SeriesSmoothingOptions.None,
-                    SmoothingWindow = 5,
-                    Value = SeriesValueOptions.Value,
-                    Year = null,
-                    RequestedColour = UiLogic.Colours.Yellow,
-                    GroupingThreshold = 0.1f,
-                };
-
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
@@ -209,7 +178,7 @@ public static class SuggestedPresetLists
                     new SuggestedChartPresetModel()
                     {
                         Title = "Temperature + sunspots",
-                        Description = "Smoothed yearly average temperature and sunpot number",
+                        Description = "Smoothed yearly average temperature and sunpot number (a proxy for solar radiation)",
                         ChartSeriesList =
                         [
                             new ChartSeriesDefinition()
@@ -241,7 +210,7 @@ public static class SuggestedPresetLists
                     new SuggestedChartPresetModel()
                     {
                         Title = "Temperature + solar radiation",
-                        Description = "Smoothed yearly average temperature and solar radiation",
+                        Description = "Smoothed yearly average temperature and total solar irradiance",
                         ChartSeriesList =
                         [
                             new ChartSeriesDefinition()
@@ -256,7 +225,20 @@ public static class SuggestedPresetLists
                                 Value = SeriesValueOptions.Value,
                                 Year = null
                             },
-                            solarDefinition
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, tsi!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                ShowTrendline = false,
+                                Smoothing = SeriesSmoothingOptions.None,
+                                SmoothingWindow = 5,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                RequestedColour = UiLogic.Colours.Yellow,
+                                GroupingThreshold = 0.1f,
+                            }
                         ]
                     },
                 ],
