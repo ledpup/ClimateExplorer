@@ -206,41 +206,7 @@ public static class SuggestedPresetLists
                                 GroupingThreshold = 0.1f,
                             }
                         ],
-                    },
-                    new SuggestedChartPresetModel()
-                    {
-                        Title = "Temperature + solar radiation",
-                        Description = "Smoothed yearly average temperature and total solar irradiance",
-                        ChartSeriesList =
-                        [
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
-                                Aggregation = SeriesAggregationOptions.Mean,
-                                BinGranularity = BinGranularities.ByYear,
-                                ShowTrendline = false,
-                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                SmoothingWindow = 3,
-                                Value = SeriesValueOptions.Value,
-                                Year = null
-                            },
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, tsi!),
-                                Aggregation = SeriesAggregationOptions.Mean,
-                                BinGranularity = BinGranularities.ByYear,
-                                ShowTrendline = false,
-                                Smoothing = SeriesSmoothingOptions.None,
-                                SmoothingWindow = 5,
-                                Value = SeriesValueOptions.Value,
-                                Year = null,
-                                RequestedColour = UiLogic.Colours.Yellow,
-                                GroupingThreshold = 0.1f,
-                            }
-                        ]
-                    },
+                    }
                 ],
             });
 
