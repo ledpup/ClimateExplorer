@@ -173,8 +173,8 @@ public static class ChartSeriesListSerializer
             {
                 DataSetDefinition = dsd,
                 MeasurementDefinition = md,
-                LocationId = l?.Id,
-                LocationName = l?.Name,
+                LocationId = l!.Id,
+                LocationName = l.Name,
             };
     }
 

@@ -9,7 +9,7 @@ public static class Enums
         TempMax,
         TempMin,
         TempMean,
-        Rainfall,
+        Precipitation,
         SolarRadiation,
 
         MEIv2,

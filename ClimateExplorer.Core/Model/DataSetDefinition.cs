@@ -17,7 +17,7 @@ public class DataSetDefinition
 
     public List<MeasurementDefinition>? MeasurementDefinitions { get; set; }
 
-    public DataFileLocationMapping? DataLocationMapping { get; set; }
+    public DataFileMapping? DataLocationMapping { get; set; }
 
     public static async Task<List<DataSetDefinition>> GetDataSetDefinitions(string filePath = @"MetaData\DataSetDefinitions.json")
     {
@@ -25,11 +25,11 @@ public class DataSetDefinition
         var options = new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() } };
         var ddds = JsonSerializer.Deserialize<List<DataSetDefinition>>(text, options);
 
-        var dataFileLocationMappings = await DataFileLocationMapping.GetDataFileLocationMappings();
+        var dataFileMappings = await DataFileMapping.GetDataFileMappings();
         foreach (var ddd in ddds!)
         {
-            var dataFileLocationMapping = dataFileLocationMappings.SingleOrDefault(x => x.DataSetDefinitionId == ddd.Id);
-            ddd.DataLocationMapping = dataFileLocationMapping;
+            var dataFileMapping = dataFileMappings.SingleOrDefault(x => x.DataSetDefinitionId == ddd.Id);
+            ddd.DataLocationMapping = dataFileMapping;
         }
 
         return ddds;

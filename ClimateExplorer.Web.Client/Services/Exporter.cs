@@ -20,7 +20,7 @@ public class Exporter : IExporter
             "Exported from," + sourceUri
         };
 
-        var locationIds = dataDownloadPackage.ChartSeriesWithData!.SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!).Select(x => x.LocationId).Where(x => x != null).Distinct().ToArray();
+        var locationIds = dataDownloadPackage.ChartSeriesWithData!.SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!).Select(x => x.LocationId).Distinct().ToArray();
 
         var relevantLocations = locationIds.Select(x => locations.Single(y => y.Id == x)).ToArray();
 

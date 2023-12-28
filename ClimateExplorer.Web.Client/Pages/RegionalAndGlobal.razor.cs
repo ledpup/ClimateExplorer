@@ -1,4 +1,5 @@
 using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.WebUtilities;
@@ -47,13 +48,13 @@ public partial class RegionalAndGlobal : ChartablePage
             return;
         }
 
-        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, null, DataType.CO2, null, throwIfNoMatch: true);
+        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, Region.RegionId("Earth"), DataType.CO2, null, throwIfNoMatch: true);
 
         chartView!.ChartSeriesList!.Add(
             new ChartSeriesDefinition()
             {
                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(null, co2!),
+                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Earth"), co2!),
                 Aggregation = SeriesAggregationOptions.Maximum,
                 BinGranularity = BinGranularities.ByYear,
                 SecondaryCalculation = SecondaryCalculationOptions.AnnualChange,

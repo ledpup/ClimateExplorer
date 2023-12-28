@@ -195,8 +195,8 @@ public partial class ChartView
         return
             new SourceSeriesSpecification
             {
-                LocationId = sss.LocationId,
-                LocationName = sss.LocationName,
+                LocationId = sss.LocationId!.Value,
+                LocationName = sss.LocationName!,
                 DataSetDefinition = dsd,
                 MeasurementDefinition = md
             };
@@ -316,10 +316,7 @@ public partial class ChartView
 
             LogChartSeriesList();
 
-            // We used to choose set ChartType to Bar if the user's selected chart type was bar or difference or rainfall,
-            // and line otherwise.
-            //
-            // Since v2, we now set ChartType to Bar if any series is of type Bar, and Line otherwise.
+            // We now set ChartType to Bar if any series is of type Bar, and Line otherwise.
             var newInternalChartType =
                 ChartSeriesWithData.Any(x => x.ChartSeries!.DisplayStyle == SeriesDisplayStyle.Bar)
                 ? ChartType.Bar

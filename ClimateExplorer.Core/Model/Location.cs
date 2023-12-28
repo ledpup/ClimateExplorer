@@ -89,7 +89,7 @@ public class Location : LocationBase
 
     public static async Task<List<Location>> GetLocations(string? folderName = null)
     {
-        folderName = folderName ?? @"MetaData\Location";
+        folderName ??= @"MetaData\Location";
         var locations = new List<Location>();
         var locationFiles = Directory.GetFiles(folderName).ToList();
         foreach (var file in locationFiles)
@@ -98,9 +98,7 @@ public class Location : LocationBase
             locations.AddRange(locationsInFile);
         }
 
-        locations.Add(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia anomaly", CountryCode = "AS", Coordinates = new Coordinates() });
-
-        locations = locations.OrderBy(x => x.Name).ToList();
+        locations = [.. locations.OrderBy(x => x.Name)];
 
         return locations;
     }

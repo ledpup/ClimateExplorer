@@ -17,18 +17,12 @@ using ClimateExplorer.WebApi.Infrastructure;
 using System.Text.Json;
 using ClimateExplorer.Core.Model;
 using static ClimateExplorer.Core.DataPreparation.DataSetBuilder;
+using System.Text.Json.Serialization;
 
 //ICache _cache = new FileBackedCache("cache");
 ICache _cache = new FileBackedTwoLayerCache("cache");
 
-
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.Configure<JsonOptions>(
-    opt =>
-    {
-//        opt.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
 
 builder.Services.AddCors(
     options =>
@@ -62,7 +56,7 @@ builder.Services.Configure<JsonOptions>(
     options =>
     {
         // This causes the JSON returned from API calls to omit properties if their value is null anyway
-        options.SerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+        options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     }
 );
 
@@ -86,6 +80,8 @@ app.MapGet(
         "               locationId: filter to a particular location by id (still returns an array of location, but max one entry)\n" +
         "   GET /country\n" +
         "       Returns a list of countries.\n" +
+        "   GET /region\n" +
+        "       Returns a list of regions.\n" +
         "   POST /dataset\n" +
         "       Returns the specified data set, transformed as requested");
 
@@ -93,6 +89,7 @@ app.MapGet("/about",                                                GetAbout);
 app.MapGet("/datasetdefinition",                                    GetDataSetDefinitions);
 app.MapGet("/location",                                             GetLocations);
 app.MapGet("/country",                                              GetCountries);
+app.MapGet("/region",                                               GetRegions);
 app.MapPost("/dataset",                                             PostDataSets);
 
 app.Run();
@@ -190,8 +187,7 @@ async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool in
                             SeriesSpecifications =
                                 new SeriesSpecification[]
                                 {
-                                    new SeriesSpecification
-                                    {
+                                    new() {
                                         DataAdjustment = dsdmd.MeasurementDefinition.DataAdjustment,
                                         DataSetDefinitionId = dsdmd.DataSetDefinition.Id,
                                         DataType = dsdmd.MeasurementDefinition.DataType,
@@ -244,17 +240,17 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
 
     BuildDataSetResult series = null;
 
-    if (body.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup)
+    if (body.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInRegion)
     {
-        var locationGroupId = body.SeriesSpecifications[0].LocationId.Value;
-        var locationGroup = LocationGroup.GetLocationGroup(locationGroupId);
+        var regionId = body.SeriesSpecifications[0].LocationId;
+        var region = Region.GetRegion(regionId);
 
         var anomalyDatasets = new List<DataSet>();
 
         // The following section is probably the most expensive operation in the whole application
         // Let's do it all parallel baby, like we did in 2007!
         ParallelOptions parallelOptions = new();
-        await Parallel.ForEachAsync(locationGroup.LocationIds, parallelOptions, async (locationId, cancellationToken) =>
+        await Parallel.ForEachAsync(region.LocationIds, parallelOptions, async (locationId, cancellationToken) =>
         {
             // Initial values will be absolute values
             body.Anomaly = false;
@@ -280,10 +276,7 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
     var spec = body.SeriesSpecifications[0];
     var dsd = definitions.Single(x => x.Id == spec.DataSetDefinitionId);
 
-    var location =
-        spec.LocationId != null
-        ? (await Location.GetLocations()).Single(x => x.Id == spec.LocationId)
-        : null;
+    var location = (await Location.GetLocations()).Single(x => x.Id == spec.LocationId);
 
     var returnDataSet =
         new DataSet
@@ -294,7 +287,7 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
                 new MeasurementDefinitionViewModel 
                 { 
                     DataAdjustment = spec.DataAdjustment, 
-                    DataType = spec.DataType.Value,
+                    DataType = spec.DataType,
                     UnitOfMeasure = series.UnitOfMeasure,
                 },
             DataRecords = 
@@ -420,4 +413,9 @@ static async Task<BuildDataSetResult> GenerateAverageOfAnomaliesSeries(PostDataS
 async Task<Dictionary<string, string>> GetCountries()
 {
     return (await Country.GetCountries(@"MetaData\countries.txt")).ToDictionary(x => x.Key, x => x.Value.Name);
+}
+
+List<Region> GetRegions()
+{
+    return Region.GetRegions();
 }

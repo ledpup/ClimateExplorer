@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ClimateExplorer.WebApi.Infrastructure;
@@ -130,7 +131,8 @@ public class FileBackedTwoLayerCache : ICache
                     keyToFileMapping,
                     new JsonSerializerOptions()
                     {
-                        WriteIndented = true
+                        WriteIndented = true,
+                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                     }
                 )
             );
@@ -211,7 +213,8 @@ public class FileBackedTwoLayerCache : ICache
                     obj, 
                     new JsonSerializerOptions()
                     {
-                        WriteIndented = true
+                        WriteIndented = true,
+                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                     }
                 )
             );

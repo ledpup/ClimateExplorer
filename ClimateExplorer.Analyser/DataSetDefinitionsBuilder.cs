@@ -72,7 +72,7 @@ internal class DataSetDefinitionsBuilder
                         FileNameFormat = "[station]_daily_tempmin.csv",
                     },
                     new() {
-                        DataType = DataType.Rainfall,
+                        DataType = DataType.Precipitation,
                         UnitOfMeasure = UnitOfMeasure.Millimetres,
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
@@ -86,7 +86,7 @@ internal class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*)$",
-                        FolderName = @"SolarRadiation\BOM",
+                        FolderName = @"Solar\BOM",
                         FileNameFormat = "[station]_daily_solarradiation.csv",
                     },
                 ],
@@ -188,7 +188,7 @@ internal class DataSetDefinitionsBuilder
                         NullValue = "-",
                     },
                     new() {
-                        DataType = DataType.Rainfall,
+                        DataType = DataType.Precipitation,
                         UnitOfMeasure = UnitOfMeasure.Millimetres,
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
@@ -233,7 +233,7 @@ internal class DataSetDefinitionsBuilder
                         NullValue = "-",
                     },
                     new() {
-                        DataType = DataType.Rainfall,
+                        DataType = DataType.Precipitation,
                         UnitOfMeasure = UnitOfMeasure.Millimetres,
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
@@ -293,7 +293,7 @@ internal class DataSetDefinitionsBuilder
                 [
                     new() {
                         DataAdjustment = null,
-                        DataType = DataType.Rainfall,
+                        DataType = DataType.Precipitation,
                         UnitOfMeasure = UnitOfMeasure.Millimetres,
                         DataResolution = DataResolution.Monthly,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
@@ -322,7 +322,7 @@ internal class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Monthly,
                         DataAdjustment = null,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
-                        FolderName = @"Reference\ENSO",
+                        FolderName = @"Ocean\ENSO",
                         FileNameFormat = "meiv2.data.txt",
                         DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                         NullValue = "-999.00"
@@ -346,7 +346,7 @@ internal class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Monthly,
                         DataAdjustment = null,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
-                        FolderName = @"Reference\ENSO",
+                        FolderName = @"Ocean\ENSO",
                         FileNameFormat = "soi.long.data.txt",
                         DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                         NullValue = "-99.99"
@@ -370,7 +370,7 @@ internal class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Monthly,
                         DataAdjustment = null,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
-                        FolderName = @"Reference\ENSO",
+                        FolderName = @"Ocean\ENSO",
                         FileNameFormat = "oni.data.txt",
                         DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                         NullValue = "-99.9"
@@ -394,7 +394,7 @@ internal class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Monthly,
                         DataAdjustment = null,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
-                        FolderName = @"Reference\ENSO",
+                        FolderName = @"Ocean\ENSO",
                         FileNameFormat = "nino34.long.anom.data.txt",
                         DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                         NullValue = "-99.99"
@@ -422,7 +422,7 @@ internal class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Monthly,
                         DataAdjustment = null,
                         DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Reference\CO2",
+                        FolderName = @"Atmosphere",
                         FileNameFormat = "co2_mm_mlo.txt",
                     },
                 ],
@@ -442,7 +442,7 @@ internal class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Monthly,
                         DataAdjustment = null,
                         DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Reference\CH4",
+                        FolderName = @"Atmosphere",
                         FileNameFormat = "ch4_mm_gl.txt",
                     },
                 ],
@@ -462,7 +462,7 @@ internal class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Monthly,
                         DataAdjustment = null,
                         DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Reference\N2O",
+                        FolderName = @"Atmosphere",
                         FileNameFormat = "n2o_mm_gl.txt",
                     },
                 ],
@@ -497,7 +497,7 @@ internal class DataSetDefinitionsBuilder
                         DataAdjustment = null,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
                         DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
-                        FolderName = @"Reference\IOD",
+                        FolderName = @"Ocean\IOD",
                         FileNameFormat = "dmi.had.long.data.txt",
                         NullValue = "-9999"
                     },
@@ -520,7 +520,7 @@ internal class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d+),\s+(?<month>\d+),\s+(?<day>\d+),\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Reference\Ice",
+                        FolderName = @"Ice",
                         FileNameFormat = "N_seaice_extent_daily_v3.0.csv",
                     },
                 ],
@@ -540,7 +540,7 @@ internal class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d+),\s+(?<month>\d+),\s+(?<day>\d+),\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Reference\Ice",
+                        FolderName = @"Ice",
                         FileNameFormat = "S_seaice_extent_daily_v3.0.csv",
                     },
                 ],
@@ -560,7 +560,7 @@ internal class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>\d*).*$",
-                        FolderName = @"Reference\Ice",
+                        FolderName = @"Ice",
                         FileNameFormat = "greenland-melt-area.csv",
                     },
                 ],
@@ -599,7 +599,7 @@ Our aim is to provide climate science and services to people and organisations, 
                         FileNameFormat = "mintemp_daily_totals.txt",
                     },
                     new() {
-                        DataType = DataType.Rainfall,
+                        DataType = DataType.Precipitation,
                         UnitOfMeasure = UnitOfMeasure.Millimetres,
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
@@ -628,7 +628,7 @@ Our aim is to provide climate science and services to people and organisations, 
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d{4})\s+(?<month>\d+)\s(?<day>\d{2})\s\d{4}\.\d{3}\s+(?<value>-?\d+).*$",
-                        FolderName = @"Reference\Solar",
+                        FolderName = @"Solar",
                         FileNameFormat = "SN_d_tot_V2.0.txt",
                         NullValue = "-1",
                     },
@@ -651,7 +651,7 @@ Our aim is to provide climate science and services to people and organisations, 
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),+(?<value>-?\d+\.*\d*),.*$$",
-                        FolderName = @"Reference\Solar",
+                        FolderName = @"Solar",
                         FileNameFormat = "tsi-ssi_v02r01_observed-tsi-composite.txt",
                         NullValue = "-99.0",
                     },
@@ -659,15 +659,38 @@ Our aim is to provide climate science and services to people and organisations, 
             },
 
 
+
+            new() {
+                Id = Guid.Parse("E61C6279-EDF4-461B-BDD1-0724D21F42F3"),
+                Name = "Global temperature anomaly",
+                ShortName = "Global temp",
+                Description = "The NOAA Merged Land Ocean Global Surface Temperature Analysis (NOAAGlobalTemp, formerly known as MLOST) combines long-term sea surface (water) temperature (SST) and land surface (air) temperature datasets to create a complete, accurate depiction of global temperature trends. The dataset is used to support climate monitoring activities such as the Monthly Global Climate Assessment, and also provides input data for a number of climate models.",
+                Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
+                MoreInformationUrl = "https://www.ncei.noaa.gov/products/land-based-station/noaa-global-temp",
+                DataDownloadUrl = "aravg.mon.land.90S.90N.v5.1.0.[year][month].asc",
+                MeasurementDefinitions =
+                [
+                    new MeasurementDefinition
+                    {
+                        DataType = DataType.TempMean,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsiusAnomaly,
+                        DataResolution = DataResolution.Monthly,
+                        DataAdjustment = null,
+                        DataRowRegEx = @"^(?<year>\d{4})\s+(?<month>\d+)\s+(?<value>-?\d+\.\d+).*$",
+                        FolderName = @"Temperature\NOAAGlobalTemp",
+                        FileNameFormat = "aravg.mon.[station].v5.1.0.202311.asc",
+                        NullValue = null,
+                    },
+                ],
+            },
+
         };
 
         var options = new JsonSerializerOptions
         { 
             WriteIndented = true,
-            Converters =
-            {
-                new JsonStringEnumConverter()
-            }
+            Converters = { new JsonStringEnumConverter() },
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         };
 
         Directory.CreateDirectory("Output");

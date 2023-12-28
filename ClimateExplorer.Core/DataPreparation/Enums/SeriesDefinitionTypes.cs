@@ -5,5 +5,5 @@ public enum SeriesDerivationTypes
     ReturnSingleSeries,
     DifferenceBetweenTwoSeries,
     AverageOfMultipleSeries,
-    AverageOfAnomaliesInLocationGroup
+    AverageOfAnomaliesInRegion
 }

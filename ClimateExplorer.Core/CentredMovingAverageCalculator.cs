@@ -6,7 +6,7 @@ public static class CentredMovingAverageCalculator
     {
         float?[] valuesArray = values as float?[] ?? values.ToArray();
 
-        List<float?> result = new List<float?>();
+        List<float?> result = [];
 
         int startIndex = 0 - windowSize / 2;
         int endIndex = windowSize / 2;

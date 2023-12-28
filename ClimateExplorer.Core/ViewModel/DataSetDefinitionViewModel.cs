@@ -104,7 +104,7 @@ public class DataSetDefinitionViewModel
 
     public static DataSetAndMeasurementDefinition? GetDataSetDefinitionAndMeasurement(
         IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions,
-        Guid? locationId,
+        Guid locationId,
         Enums.DataType dataType,
         DataAdjustment? dataAdjustment,
         bool throwIfNoMatch = true)

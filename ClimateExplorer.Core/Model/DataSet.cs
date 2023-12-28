@@ -7,7 +7,7 @@ public class DataSet
 {
     public DataSet()
     {
-        DataRecords = new List<DataRecord>();
+        DataRecords = [];
     }
 
     public BinGranularities BinGranularity { get; set; }
@@ -68,7 +68,7 @@ public class DataSet
         {
             if (Year != null)
             {
-                return new List<short> { Year.Value };
+                return [Year.Value];
             }
 
             return 

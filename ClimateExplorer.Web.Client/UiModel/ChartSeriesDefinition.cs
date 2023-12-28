@@ -144,7 +144,7 @@ public class ChartSeriesDefinition
         switch (SeriesDerivationType)
         {
             case SeriesDerivationTypes.ReturnSingleSeries:
-            case SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup:
+            case SeriesDerivationTypes.AverageOfAnomaliesInRegion:
                 return BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications!.Single(), BinGranularity, Aggregation, Year);
 
             case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
@@ -303,7 +303,7 @@ public class ChartSeriesDefinition
             DataType.TempMax => "Maximum temperature",
             DataType.TempMean => "Mean temperature",
             DataType.SolarRadiation => "Solar radiation",
-            DataType.Rainfall => "Precipitation",
+            DataType.Precipitation => "Precipitation",
             DataType.MEIv2 => "MEI v2",
             DataType.SOI => "SOI",
             DataType.Nino34 => "Nino 3.4",

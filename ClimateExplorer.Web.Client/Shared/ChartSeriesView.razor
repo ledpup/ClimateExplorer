@@ -254,7 +254,7 @@
 
     bool ShouldDisableAggregationOptions(ChartSeriesDefinition csd)
     {
-        return csd.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup;
+        return csd.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInRegion;
     }
 
     bool ShouldDisableSmoothingWindow(ChartSeriesDefinition csd)
@@ -264,12 +264,12 @@
 
     bool ShouldDisableDisplay(ChartSeriesDefinition csd)
     {
-        return csd.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup;
+        return csd.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInRegion;
     }
 
     bool ShouldDisableTransformation(ChartSeriesDefinition csd)
     {
-        return csd.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup;
+        return csd.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInRegion;
     }
 
     async Task OnAboutThisDataClicked()
