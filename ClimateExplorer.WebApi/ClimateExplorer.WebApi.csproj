@@ -8,9 +8,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
   </PropertyGroup>
-  <!-- This ItemGroup added 2022-05-28 by Andrew to ensure that the files under the Temperature folder are included in the deployment when publishing -->
   <ItemGroup>
     <Content Include="Datasets\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MetaData\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
