@@ -64,7 +64,7 @@
         "UnitOfMeasure": "Millimetres",
         "DataResolution": "Daily",
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Rainfall\\BOM",
+        "FolderName": "Precipitation\\BOM",
         "FileNameFormat": "[station]_daily_rainfall.csv",
         "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$"
       },
@@ -179,7 +179,7 @@
         "UnitOfMeasure": "Millimetres",
         "DataResolution": "Daily",
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Rainfall\\NIWA",
+        "FolderName": "Precipitation\\NIWA",
         "FileNameFormat": "[station]_rainfall.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),.*,D$",
         "NullValue": "-"
@@ -221,7 +221,7 @@
         "UnitOfMeasure": "Millimetres",
         "DataResolution": "Daily",
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Rainfall\\NIWA",
+        "FolderName": "Precipitation\\NIWA",
         "FileNameFormat": "[station]_rainfall.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),.*,D$",
         "NullValue": "-"
@@ -275,7 +275,7 @@
         "UnitOfMeasure": "Millimetres",
         "DataResolution": "Monthly",
         "RowDataType": "TwelveMonthsPerRow",
-        "FolderName": "Rainfall\\GHCNm",
+        "FolderName": "Precipitation\\GHCNm",
         "FileNameFormat": "[station].csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4}),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B)$",
         "NullValue": "-9999",
@@ -533,7 +533,7 @@
         "UnitOfMeasure": "Millimetres",
         "DataResolution": "Daily",
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Rainfall\\Met",
+        "FolderName": "Precipitation\\Met",
         "FileNameFormat": "HadCEP_daily_totals.txt",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2})\\s\u002B(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*)$"
       }
