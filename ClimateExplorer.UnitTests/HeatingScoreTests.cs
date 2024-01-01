@@ -20,7 +20,7 @@ public class HeatingScoreTests
                 Name = "Unknown",
                 Coordinates = new Coordinates(),
                 CountryCode = "UU",
-                WarmingIndex = .1f * i,
+                WarmingAnomaly = .1f * i,
             });
         }
 
@@ -35,7 +35,7 @@ public class HeatingScoreTests
     }
 
     [TestMethod]
-    public void NullWarmingIndex()
+    public void NullWarmingAnomaly()
     {
         var locations = new List<Location>
         {
@@ -45,7 +45,7 @@ public class HeatingScoreTests
                 Name = "Unknown",
                 Coordinates = new Coordinates(),
                 CountryCode = "UU",
-                WarmingIndex = null,
+                WarmingAnomaly = null,
             }
         };
 
@@ -55,7 +55,7 @@ public class HeatingScoreTests
     }
 
     [TestMethod]
-    public void NegativeWarmingIndex()
+    public void NegativeWarmingAnomaly()
     {
         var locations = new List<Location>
         {
@@ -65,7 +65,7 @@ public class HeatingScoreTests
                 Name = "Unknown",
                 Coordinates = new Coordinates(),
                 CountryCode = "UU",
-                WarmingIndex = -.6f,
+                WarmingAnomaly = -.6f,
             }
         };
 

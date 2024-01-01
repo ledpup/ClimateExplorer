@@ -132,9 +132,9 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
     return dtos;
 }
 
-async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool includeNearbyLocations = false, bool includeWarmingIndex = false, bool excludeLocationsWithNullWarmingIndex = false)
+async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool includeNearbyLocations = false, bool includeWarmingAnomaly = false, bool excludeLocationsWithNullWarmingAnomaly = false)
 {
-    string cacheKey = $"Locations_{locationId}_{includeNearbyLocations}_{includeWarmingIndex}_{excludeLocationsWithNullWarmingIndex}";
+    string cacheKey = $"Locations_{locationId}_{includeNearbyLocations}_{includeWarmingAnomaly}_{excludeLocationsWithNullWarmingAnomaly}";
 
     var result = await _cache.Get<Location[]>(cacheKey);
 
@@ -149,11 +149,11 @@ async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool in
 
     locations = locations.ToList();
 
-    if (includeWarmingIndex)
+    if (includeWarmingAnomaly)
     {
         var definitions = await GetDataSetDefinitions();
 
-        // For each location, retrieve the TempMax dataset (Adjusted if available, Adjustment null otherwise), and copy its WarmingIndex
+        // For each location, retrieve the TempMax dataset (Adjusted if available, Adjustment null otherwise), and copy its WarmingAnomaly
         // to the location we're about to return.
         foreach (var location in locations)
         {
@@ -164,8 +164,7 @@ async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool in
                     DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
                         definitions,
                         location.Id,
-                        DataType.TempMax,
-                        Enums.DataAdjustment.Adjusted,
+                        DataSubstitute.StandardTemperatureDataMatches(),
                         throwIfNoMatch: true);
 
                 // Next, request that dataset
@@ -197,7 +196,7 @@ async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool in
                         }
                     );
 
-                location.WarmingIndex = IndexCalculator.CalculateIndex(series.DataPoints)?.AnomalyValue;
+                location.WarmingAnomaly = AnomalyCalculator.CalculateAnomaly(series.DataPoints)?.AnomalyValue;
             }
             catch (Exception ex)
             {
@@ -213,9 +212,9 @@ async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool in
         }
     }
 
-    if (includeWarmingIndex && excludeLocationsWithNullWarmingIndex)
+    if (includeWarmingAnomaly && excludeLocationsWithNullWarmingAnomaly)
     {
-        locations = locations.Where(x => x.WarmingIndex != null);
+        locations = locations.Where(x => x.WarmingAnomaly != null);
     }
 
     if (includeNearbyLocations)
@@ -276,12 +275,12 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
     var spec = body.SeriesSpecifications[0];
     var dsd = definitions.Single(x => x.Id == spec.DataSetDefinitionId);
 
-    var location = (await Location.GetLocations()).Single(x => x.Id == spec.LocationId);
+    var geoEntity = await GeographicalEntity.GetGeographicalEntity(spec.LocationId);
 
     var returnDataSet =
         new DataSet
         {
-            Location = location,
+            GeographicalEntity = geoEntity,
             Resolution = DataResolution.Yearly,
             MeasurementDefinition = 
                 new MeasurementDefinitionViewModel 
@@ -382,7 +381,7 @@ static DataSet GenerateAnomalyDataSetForLocation(DataSet dataset)
             };
     }
 
-    Console.WriteLine($"There are only {referencePeriodCount} records for this dataset ({dataset.Location.Name}) in the reference period ({ReferenceStartYear}-{ReferenceEndYear}). A minimum of {ReferencePeriodThreshold * referencePeriod} records ({Math.Round(ReferencePeriodThreshold * 100, 0)}%) for the reference period are required. {dataset.Location.Name} will be excluded from the analysis.");
+    Console.WriteLine($"There are only {referencePeriodCount} records for this dataset ({dataset.GeographicalEntity.Name}) in the reference period ({ReferenceStartYear}-{ReferenceEndYear}). A minimum of {ReferencePeriodThreshold * referencePeriod} records ({Math.Round(ReferencePeriodThreshold * 100, 0)}%) for the reference period are required. {dataset.GeographicalEntity.Name} will be excluded from the analysis.");
     return null;
 }
 

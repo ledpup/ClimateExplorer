@@ -7,7 +7,7 @@ public class MeasurementDefinition
     public required DataType DataType { get; set; }
     public required UnitOfMeasure UnitOfMeasure { get; set; }
     public required DataResolution DataResolution { get; set; }
-    public required DataAdjustment? DataAdjustment { get; set; }
+    public DataAdjustment? DataAdjustment { get; set; }
     public RowDataType RowDataType { get; set; }
     public string? FolderName { get; set; }
     public string? FileNameFormat { get; set; }

@@ -558,7 +558,7 @@ public partial class ChartView
                 cs.SourceDataSet =
                     new DataSet
                     {
-                        Location = cs.SourceDataSet.Location,
+                        GeographicalEntity = cs.SourceDataSet.GeographicalEntity,
                         MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
                         DataRecords = newDataRecords
                     };
@@ -603,7 +603,7 @@ public partial class ChartView
                 cs.PreProcessedDataSet =
                     new DataSet
                     {
-                        Location = cs.SourceDataSet.Location,
+                        GeographicalEntity = cs.SourceDataSet.GeographicalEntity,
                         MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
                         DataRecords = newDataRecords
                     };
@@ -675,7 +675,7 @@ public partial class ChartView
             cs.ProcessedDataSet =
                 new DataSet
                 {
-                    Location = cs.PreProcessedDataSet.Location,
+                    GeographicalEntity = cs.PreProcessedDataSet.GeographicalEntity,
                     MeasurementDefinition = cs.PreProcessedDataSet.MeasurementDefinition,
                     DataRecords =
                         chartBins

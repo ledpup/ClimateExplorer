@@ -48,13 +48,13 @@ public partial class RegionalAndGlobal : ChartablePage
             return;
         }
 
-        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, Region.RegionId("Earth"), DataType.CO2, null, throwIfNoMatch: true);
+        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, Region.RegionId("Atmosphere"), DataType.CO2, null, throwIfNoMatch: true);
 
         chartView!.ChartSeriesList!.Add(
             new ChartSeriesDefinition()
             {
                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Earth"), co2!),
+                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Atmosphere"), co2!),
                 Aggregation = SeriesAggregationOptions.Maximum,
                 BinGranularity = BinGranularities.ByYear,
                 SecondaryCalculation = SecondaryCalculationOptions.AnnualChange,

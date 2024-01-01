@@ -8,7 +8,7 @@
       "Longitude": 110.52,
       "Elevation": 40
     },
-    "WarmingIndex": null,
+    "WarmingAnomaly": null,
     "HeatingScore": null,
     "NearbyLocations": null
   },
@@ -21,7 +21,7 @@
       "Longitude": 96.83,
       "Elevation": 3
     },
-    "WarmingIndex": null,
+    "WarmingAnomaly": null,
     "HeatingScore": null,
     "NearbyLocations": null
   },
@@ -34,7 +34,7 @@
       "Longitude": 77.97,
       "Elevation": 18
     },
-    "WarmingIndex": null,
+    "WarmingAnomaly": null,
     "HeatingScore": null,
     "NearbyLocations": null
   },
@@ -47,7 +47,7 @@
       "Longitude": 159.08,
       "Elevation": 5
     },
-    "WarmingIndex": null,
+    "WarmingAnomaly": null,
     "HeatingScore": null,
     "NearbyLocations": null
   },
@@ -60,7 +60,7 @@
       "Longitude": 158.94,
       "Elevation": 6
     },
-    "WarmingIndex": null,
+    "WarmingAnomaly": null,
     "HeatingScore": null,
     "NearbyLocations": null
   },
@@ -73,7 +73,7 @@
       "Longitude": 62.88,
       "Elevation": 10
     },
-    "WarmingIndex": null,
+    "WarmingAnomaly": null,
     "HeatingScore": null,
     "NearbyLocations": null
   },
@@ -86,7 +86,7 @@
       "Longitude": 167.94,
       "Elevation": 112
     },
-    "WarmingIndex": null,
+    "WarmingAnomaly": null,
     "HeatingScore": null,
     "NearbyLocations": null
   },
@@ -99,7 +99,7 @@
       "Longitude": 149.97,
       "Elevation": 8
     },
-    "WarmingIndex": null,
+    "WarmingAnomaly": null,
     "HeatingScore": null,
     "NearbyLocations": null
   }

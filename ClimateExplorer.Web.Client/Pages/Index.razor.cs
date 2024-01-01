@@ -42,7 +42,7 @@ public partial class Index : ChartablePage
 
         if (firstRender)
         {
-            Locations = (await DataService!.GetLocations(includeNearbyLocations: true, includeWarmingIndex: true, excludeLocationsWithNullWarmingIndex: false)).ToList();
+            Locations = (await DataService!.GetLocations(includeNearbyLocations: true, includeWarmingAnomaly: true, excludeLocationsWithNullWarmingAnomaly: false)).ToList();
 
             var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
             GetLocationIdViaNameFromPath(uri);
@@ -448,4 +448,6 @@ public partial class Index : ChartablePage
             await SelectedLocationChanged(locationId.Value);
         }
     }
+
+
 }

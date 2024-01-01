@@ -11,7 +11,7 @@ public class SourceSeriesSpecification
     public DataSetDefinitionViewModel? DataSetDefinition { get; set; }
     public MeasurementDefinitionViewModel? MeasurementDefinition { get; set; }
 
-    public static SourceSeriesSpecification[] BuildArray(LocationBase location, DataSetAndMeasurementDefinition dsdmd)
+    public static SourceSeriesSpecification[] BuildArray(GeographicalEntity location, DataSetAndMeasurementDefinition dsdmd)
     {
         if (dsdmd == null) return [];
 

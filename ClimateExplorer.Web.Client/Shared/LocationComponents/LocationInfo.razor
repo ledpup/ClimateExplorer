@@ -209,7 +209,7 @@
                     14,
                     SeriesTransformations.Identity);
 
-            var index = IndexCalculator.CalculateIndex(series.DataRecords);
+            var index = AnomalyCalculator.CalculateAnomaly(series.DataRecords);
 
             if (dataSubstitutes.Any(x => x.DataType == DataType.Precipitation))
             {

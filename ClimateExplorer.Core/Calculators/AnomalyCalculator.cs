@@ -3,9 +3,9 @@ using ClimateExplorer.Core.Model;
 
 namespace ClimateExplorer.Core.Calculators;
 
-public static class IndexCalculator
+public static class AnomalyCalculator
 {
-    public const int MinimumNumberOfYearsToCalculateIndex = 60;
+    public const int MinimumNumberOfYearsToCalculateAnomaly = 60;
 
     class YearAndValue
     {
@@ -13,10 +13,10 @@ public static class IndexCalculator
         public float? Value { get; set; }
     }
 
-    public static CalculatedAnomaly CalculateIndex(IEnumerable<DataRecord> dataRecords)
+    public static CalculatedAnomaly CalculateAnomaly(IEnumerable<DataRecord> dataRecords)
     {
         return
-            CalculateIndex(
+            CalculateAnomaly(
                 dataRecords.Select(
                     x =>
                     new YearAndValue
@@ -29,10 +29,10 @@ public static class IndexCalculator
             );
     }
 
-    public static CalculatedAnomaly CalculateIndex(ChartableDataPoint[] dataPoints)
+    public static CalculatedAnomaly CalculateAnomaly(ChartableDataPoint[] dataPoints)
     {
         return
-            CalculateIndex(
+            CalculateAnomaly(
                 dataPoints.Select(
                     x =>
                     new YearAndValue
@@ -45,11 +45,11 @@ public static class IndexCalculator
             );
     }
 
-    static CalculatedAnomaly CalculateIndex(YearAndValue[] dataPoints)
+    static CalculatedAnomaly CalculateAnomaly(YearAndValue[] dataPoints)
     {
         var nonNullDataPoints = dataPoints.Where(x => x.Value.HasValue).ToArray();
 
-        if (nonNullDataPoints.Length < MinimumNumberOfYearsToCalculateIndex)
+        if (nonNullDataPoints.Length < MinimumNumberOfYearsToCalculateAnomaly)
         {
             return null!;
         }

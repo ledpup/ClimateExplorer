@@ -10,7 +10,7 @@
       "Longitude": 169.14989,
       "Elevation": 15.5
     },
-    "WarmingIndex": null,
+    "WarmingAnomaly": null,
     "HeatingScore": null,
     "Stations": [
       {
@@ -37,7 +37,7 @@
       "Longitude": 177.98557,
       "Elevation": 4.5
     },
-    "WarmingIndex": null,
+    "WarmingAnomaly": null,
     "HeatingScore": null,
     "Stations": [
       {
@@ -64,7 +64,7 @@
       "Longitude": 175.3103,
       "Elevation": 41.666668
     },
-    "WarmingIndex": null,
+    "WarmingAnomaly": null,
     "HeatingScore": null,
     "Stations": [
       {
@@ -96,7 +96,7 @@
       "Longitude": 168.33052,
       "Elevation": 1
     },
-    "WarmingIndex": null,
+    "WarmingAnomaly": null,
     "HeatingScore": null,
     "Stations": [
       {
@@ -118,7 +118,7 @@
       "Longitude": 173.259,
       "Elevation": 886.5
     },
-    "WarmingIndex": null,
+    "WarmingAnomaly": null,
     "HeatingScore": null,
     "Stations": [
       {
@@ -145,7 +145,7 @@
       "Longitude": 175.54301,
       "Elevation": 1104.3334
     },
-    "WarmingIndex": null,
+    "WarmingAnomaly": null,
     "HeatingScore": null,
     "Stations": [
       {
@@ -177,7 +177,7 @@
       "Longitude": 175.60907,
       "Elevation": 27.5
     },
-    "WarmingIndex": null,
+    "WarmingAnomaly": null,
     "HeatingScore": null,
     "Stations": [
       {
@@ -204,7 +204,7 @@
       "Longitude": 168.66364,
       "Elevation": 322
     },
-    "WarmingIndex": null,
+    "WarmingAnomaly": null,
     "HeatingScore": null,
     "Stations": [
       {
@@ -226,7 +226,7 @@
       "Longitude": -177.92307,
       "Elevation": 44
     },
-    "WarmingIndex": null,
+    "WarmingAnomaly": null,
     "HeatingScore": null,
     "Stations": [
       {
@@ -253,7 +253,7 @@
       "Longitude": 176.19647,
       "Elevation": 2.5
     },
-    "WarmingIndex": null,
+    "WarmingAnomaly": null,
     "HeatingScore": null,
     "Stations": [
       {
@@ -280,7 +280,7 @@
       "Longitude": 171.57892,
       "Elevation": 3.5
     },
-    "WarmingIndex": null,
+    "WarmingAnomaly": null,
     "HeatingScore": null,
     "Stations": [
       {

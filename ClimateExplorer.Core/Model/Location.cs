@@ -4,12 +4,12 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace ClimateExplorer.Core.Model;
-public class Location : LocationBase
+public class Location : GeographicalEntity
 {
     public required string CountryCode { get; set; }
     public string? Country { get; set; }
     public required Coordinates Coordinates { get; set; }
-    public float? WarmingIndex { get; set; }
+    public float? WarmingAnomaly { get; set; }
     public short? HeatingScore { get; set; }
     public List<LocationDistance>? NearbyLocations { get; set; }
 
@@ -78,6 +78,11 @@ public class Location : LocationBase
         }
     }
     string? title;
+
+    public override string ToString()
+    {
+        return FullTitle;
+    }
 
     public static async Task<List<Location>> GetLocationsFromFile(string pathAndFileName)
     {
@@ -150,9 +155,9 @@ public class Location : LocationBase
 
     public static void SetHeatingScores(IEnumerable<Location> locations)
     {
-        var locationsWithWarming = locations.Where(x => x?.WarmingIndex >= 0);
+        var locationsWithWarming = locations.Where(x => x?.WarmingAnomaly >= 0);
         var numberOfLocations = locationsWithWarming.Count();
-        var locationsOrderedByWarming = locationsWithWarming.OrderByDescending(x => x.WarmingIndex);
+        var locationsOrderedByWarming = locationsWithWarming.OrderByDescending(x => x.WarmingAnomaly);
         var tenPercent = (int)MathF.Round(numberOfLocations * .1f, 0);
         for (short i = 9; i >= 0; i--)
         {
@@ -172,11 +177,11 @@ public class Location : LocationBase
             nextTenPercent.ForEach(x => x.HeatingScore = i);
         }
 
-        // If the WarmingIndex is negative, use that as the HeatingScore, rounded to 0 decimal places
+        // If the WarmingAnomaly is negative, use that as the HeatingScore, rounded to 0 decimal places
         locations
-            .Where(x => x?.WarmingIndex < 0)
+            .Where(x => x?.WarmingAnomaly < 0)
             .ToList()
-            .ForEach(x => x.HeatingScore = (short)MathF.Round((float)x.WarmingIndex!, 0));
+            .ForEach(x => x.HeatingScore = (short)MathF.Round((float)x.WarmingAnomaly!, 0));
     }
 }
 

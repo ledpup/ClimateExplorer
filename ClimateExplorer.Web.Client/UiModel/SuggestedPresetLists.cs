@@ -32,7 +32,7 @@ public static class SuggestedPresetLists
         var tempMinUnadjusted = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataType.TempMin, DataAdjustment.Unadjusted, throwIfNoMatch: false);
 
         var nino34 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Earth"), DataType.Nino34, null, throwIfNoMatch: true);
-        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Earth"), DataType.CO2, null, throwIfNoMatch: true);
+        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Atmosphere"), DataType.CO2, null, throwIfNoMatch: true);
         var sunspot = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Sun"), DataType.SunspotNumber, null, throwIfNoMatch: true);
 
         suggestedPresets.Add(
@@ -162,7 +162,7 @@ public static class SuggestedPresetLists
                         new ChartSeriesDefinition()
                         {
                             SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Earth"), co2!),
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Atmosphere"), co2!),
                             Aggregation = SeriesAggregationOptions.Mean,
                             BinGranularity = BinGranularities.ByYear,
                             Smoothing = SeriesSmoothingOptions.None,
@@ -374,9 +374,9 @@ public static class SuggestedPresetLists
         var tempMaxUnadjusted = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Australia"), DataType.TempMax, DataAdjustment.Unadjusted, throwIfNoMatch: false);
         var precipitation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Australia"), DataType.Precipitation, null, throwIfNoMatch: false);
 
-        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Earth"), DataType.CO2, null, throwIfNoMatch: true);
-        var ch4 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Earth"), DataType.CH4, null, throwIfNoMatch: true);
-        var n2o = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Earth"), DataType.N2O, null, throwIfNoMatch: true);
+        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Atmosphere"), DataType.CO2, null, throwIfNoMatch: true);
+        var ch4 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Atmosphere"), DataType.CH4, null, throwIfNoMatch: true);
+        var n2o = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Atmosphere"), DataType.N2O, null, throwIfNoMatch: true);
 
         var northSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Arctic"), DataType.NorthSeaIce, null, throwIfNoMatch: true);
         var southSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Antarctica"), DataType.SouthSeaIce, null, throwIfNoMatch: true);
@@ -392,8 +392,8 @@ public static class SuggestedPresetLists
         var tsi = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Sun"), DataType.SolarRadiation, null, throwIfNoMatch: true);
 
         var globalTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Earth"), DataType.TempMean, null, throwIfNoMatch: true);
-        var globalLandTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Earth - land"), DataType.TempMean, null, throwIfNoMatch: true);
-        var globalOceanTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Earth - ocean"), DataType.TempMean, null, throwIfNoMatch: true);
+        var globalLandTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Land"), DataType.TempMean, null, throwIfNoMatch: true);
+        var globalOceanTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Ocean"), DataType.TempMean, null, throwIfNoMatch: true);
 
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
@@ -405,7 +405,7 @@ public static class SuggestedPresetLists
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Earth"), co2!),
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Atmosphere"), co2!),
                                 Aggregation = SeriesAggregationOptions.Maximum,
                                 BinGranularity = BinGranularities.ByYear,
                                 SecondaryCalculation = SecondaryCalculationOptions.AnnualChange,
@@ -428,7 +428,7 @@ public static class SuggestedPresetLists
                                             new ChartSeriesDefinition()
                                             {
                                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Earth"), co2!),
+                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Atmosphere"), co2!),
                                                 Aggregation = SeriesAggregationOptions.Mean,
                                                 BinGranularity = BinGranularities.ByYearAndMonth,
                                                 Smoothing = SeriesSmoothingOptions.None,
@@ -449,7 +449,7 @@ public static class SuggestedPresetLists
                                             new ChartSeriesDefinition()
                                             {
                                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Earth"), ch4!),
+                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Atmosphere"), ch4!),
                                                 Aggregation = SeriesAggregationOptions.Mean,
                                                 BinGranularity = BinGranularities.ByYearAndMonth,
                                                 Smoothing = SeriesSmoothingOptions.None,
@@ -470,7 +470,7 @@ public static class SuggestedPresetLists
                                             new ChartSeriesDefinition()
                                             {
                                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Earth"), n2o!),
+                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Atmosphere"), n2o!),
                                                 Aggregation = SeriesAggregationOptions.Mean,
                                                 BinGranularity = BinGranularities.ByYearAndMonth,
                                                 Smoothing = SeriesSmoothingOptions.None,
@@ -500,8 +500,8 @@ public static class SuggestedPresetLists
                         SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Earth"), globalTemp!),
                         Aggregation = SeriesAggregationOptions.Mean,
                         BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 20,
+                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                        SmoothingWindow = 3,
                         Value = SeriesValueOptions.Value,
                         Year = null,
                         DisplayStyle = SeriesDisplayStyle.Line,
@@ -510,11 +510,11 @@ public static class SuggestedPresetLists
                     new ChartSeriesDefinition()
                     {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Earth - land"), globalLandTemp!),
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Land"), globalLandTemp!),
                         Aggregation = SeriesAggregationOptions.Mean,
                         BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 20,
+                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                        SmoothingWindow = 3,
                         Value = SeriesValueOptions.Value,
                         Year = null,
                         DisplayStyle = SeriesDisplayStyle.Line,
@@ -523,11 +523,11 @@ public static class SuggestedPresetLists
                     new ChartSeriesDefinition()
                     {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Earth - ocean"), globalLandTemp!),
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Ocean"), globalLandTemp!),
                         Aggregation = SeriesAggregationOptions.Mean,
                         BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 20,
+                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                        SmoothingWindow = 3,
                         Value = SeriesValueOptions.Value,
                         Year = null,
                         DisplayStyle = SeriesDisplayStyle.Line,
@@ -640,8 +640,6 @@ public static class SuggestedPresetLists
             }
         );
 
-        var australia = new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia", CountryCode = "AS", Coordinates = new Coordinates() };
-
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
@@ -652,7 +650,7 @@ public static class SuggestedPresetLists
                         new ChartSeriesDefinition()
                         {
                             SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInRegion,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(australia, tempMax!),
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Australia"), tempMax!),
                             Aggregation = SeriesAggregationOptions.Mean,
                             BinGranularity = BinGranularities.ByYear,
                             Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -664,7 +662,7 @@ public static class SuggestedPresetLists
                         new ChartSeriesDefinition()
                         {
                             SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInRegion,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(australia, precipitation!),
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Australia"), precipitation!),
                             Aggregation = SeriesAggregationOptions.Sum,
                             BinGranularity = BinGranularities.ByYear,
                             Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -685,7 +683,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInRegion,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(australia, tempMax!),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Australia"), tempMax!),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.None,
@@ -705,7 +703,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInRegion,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(australia, tempMax!),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Australia"), tempMax!),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.None,
@@ -717,7 +715,7 @@ public static class SuggestedPresetLists
                                     new ChartSeriesDefinition()
                                     {
                                         SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInRegion,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(australia, tempMaxUnadjusted!),
+                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Australia"), tempMaxUnadjusted!),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
                                         Smoothing = SeriesSmoothingOptions.None,

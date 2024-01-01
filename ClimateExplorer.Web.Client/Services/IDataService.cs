@@ -6,7 +6,8 @@ public interface IDataService
 {
     Task<ApiMetadataModel> GetAbout();
     Task<IEnumerable<DataSetDefinitionViewModel>> GetDataSetDefinitions();
-    Task<IEnumerable<Location>> GetLocations(string? dataSetName = null, bool includeNearbyLocations = false, bool includeWarmingIndex = false, bool excludeLocationsWithNullWarmingIndex = true);
+    Task<IEnumerable<Location>> GetLocations(string? dataSetName = null, bool includeNearbyLocations = false, bool includeWarmingAnomaly = false, bool excludeLocationsWithNullWarmingAnomaly = true);
+    Task<IEnumerable<Region>> GetRegions();
     Task<DataSet> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f);
     Task<DataSet> PostDataSet(
         BinGranularities binGranularity,

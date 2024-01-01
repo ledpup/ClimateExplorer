@@ -1,6 +1,6 @@
 ﻿namespace ClimateExplorer.Core.Model;
 
-public class Region : LocationBase
+public class Region : GeographicalEntity
 {
     public List<Guid>? LocationIds { get; set; }
 
@@ -20,8 +20,9 @@ public class Region : LocationBase
         {
             "Sun" => new Guid("6F4C185E-F846-4DFE-BE28-8DB99A53CF7D"),
             "Earth" => new Guid("379ACE49-0B44-4B47-AB61-3B6E09C27C82"),
-            "Earth - land" => new Guid("6FA62EA0-F9EC-46CB-A9E5-F610EB6BAC5E"),
-            "Earth - ocean" => new Guid("9107612D-057D-4982-BF93-1F32A01D4EE0"),
+            "Land" => new Guid("6FA62EA0-F9EC-46CB-A9E5-F610EB6BAC5E"),
+            "Ocean" => new Guid("9107612D-057D-4982-BF93-1F32A01D4EE0"),
+            "Atmosphere" => new Guid("8B00649C-E232-49B3-9065-3866FD1B9952"),
             "Northern Hemisphere" => new Guid("E29D2979-B243-49E1-A339-280F588AE878"),
             "Southern Hemisphere" => new Guid("1D9FAF5C-77EE-4B3F-B9D2-10D93A176F74"),
             "Australia" => new Guid("143983A0-240E-447F-8578-8DAF2C0A246A"),
@@ -48,13 +49,18 @@ public class Region : LocationBase
             },
             new Region
             {
-                Id = RegionId("Earth - land"),
-                Name = "Earth - land",
+                Id = RegionId("Land"),
+                Name = "Land",
             },
             new Region
             {
-                Id = RegionId("Earth - ocean"),
-                Name = "Earth - ocean",
+                Id = RegionId("Ocean"),
+                Name = "Ocean",
+            },
+            new Region
+            {
+                Id = RegionId("Atmosphere"),
+                Name = "Atmosphere",
             },
             new Region
             {
@@ -84,7 +90,7 @@ public class Region : LocationBase
             new Region
             {
                 Id = RegionId("Australia"),
-                Name = "ACORN-SAT locations - excluding urban heat-influenced", // Excluded are: Sydney, Melbourne, Adelaide and Hobart + Laverton, Richmond (NSW), Townsville and Rockhampton
+                Name = "ACORN-SAT - excluding urban heat-influenced", // Excluded are: Sydney, Melbourne, Adelaide and Hobart + Laverton, Richmond (NSW), Townsville and Rockhampton
                 LocationIds =
                 [
                     new("cbb11150-ec74-4401-8357-fae6fef70768"),

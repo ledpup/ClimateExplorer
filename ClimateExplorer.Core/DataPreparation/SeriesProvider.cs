@@ -195,12 +195,11 @@ public static class SeriesProvider
                 x.DataType == seriesSpecification.DataType &&
                 x.DataAdjustment == seriesSpecification.DataAdjustment);
 
+        var geoEntity = await GeographicalEntity.GetGeographicalEntity(seriesSpecification.LocationId);
 
-        var location = (await Location.GetLocations()).Single(x => x.Id == seriesSpecification.LocationId);
-
-        if (!dsd.DataLocationMapping!.LocationIdToDataFileMappings.TryGetValue(location.Id, out List<DataFileFilterAndAdjustment>? dataFileFilterAndAdjustments))
+        if (!dsd.DataLocationMapping!.LocationIdToDataFileMappings.TryGetValue(geoEntity.Id, out List<DataFileFilterAndAdjustment>? dataFileFilterAndAdjustments))
         {
-            throw new Exception($"DataSetDefinition {dsd.Id} does not have a LocationIdToDataFileMapping entry for location {location.Id}");
+            throw new Exception($"DataSetDefinition {dsd.Id} does not have a LocationIdToDataFileMapping entry for location {geoEntity.Id}");
         }
 
         // We have two different "data readers".
