@@ -34,7 +34,7 @@ var dataFileMapping = new DataFileMapping
             }
         },
         {
-            Region.RegionId("Earth - land"),
+            Region.RegionId("Land"),
             new()
             {
                 new()
@@ -44,7 +44,7 @@ var dataFileMapping = new DataFileMapping
             }
         },
         {
-        Region.RegionId("Earth - ocean"),
+        Region.RegionId("Ocean"),
             new()
             {
                 new()
