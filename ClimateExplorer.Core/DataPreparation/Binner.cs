@@ -61,7 +61,7 @@ public static class Binner
         // Cup is a CupSize segment of bucket
         var binIdentifier = bin.Key as MonthOnlyBinIdentifier;
 
-        List<Bucket> buckets = new List<Bucket>();
+        List<Bucket> buckets = [];
 
         var dataPointsByMonth = bin.GroupBy(x => new { x.Year, x.Month });
 
@@ -122,7 +122,7 @@ public static class Binner
         // Cup is a cupSize segment of bucket
         var binIdentifier = bin.Key as SouthernHemisphereTemperateSeasonOnlyBinIdentifier;
 
-        List<Bucket> buckets = new List<Bucket>();
+        List<Bucket> buckets = [];
 
         var dataPointsBySeasonOccurrence = bin.GroupBy(x => DateHelpers.GetSouthernHemisphereTemperateSeasonAndYear(x.Year, x.Month!.Value));
 
@@ -155,7 +155,7 @@ public static class Binner
         // Cup is a cupSize segment of bucket
         var binIdentifier = bin.Key as SouthernHemisphereTropicalSeasonOnlyBinIdentifier;
 
-        List<Bucket> buckets = new List<Bucket>();
+        List<Bucket> buckets = [];
 
         var dataPointsBySeasonOccurrence = bin.GroupBy(x => DateHelpers.GetSouthernHemisphereTropicalSeasonAndYear(x.Year, x.Month!.Value));
 

@@ -8,14 +8,12 @@
   </PropertyGroup>
 
 	<Target Name="CompressZipFiles" AfterTargets="Build">
+    <ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Atmosphere" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Atmosphere.zip" Overwrite="true" />
+    <ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Ice" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Ice.zip" Overwrite="true" />
+    <ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Ocean" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Ocean.zip" Overwrite="true" />
+    <ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Precipitation" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Precipitation.zip" Overwrite="true" />
+    <ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Solar" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Solar.zip" Overwrite="true" />
 		<ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Temperature" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Temperature.zip" Overwrite="true" />
-
-		<ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Rainfall" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Rainfall.zip" Overwrite="true" />
-
-    <ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\SolarRadiation" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\SolarRadiation.zip" Overwrite="true" />
-
-		<ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Reference" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Reference.zip" Overwrite="true" />
-
 	</Target>
 
 	<ItemGroup>

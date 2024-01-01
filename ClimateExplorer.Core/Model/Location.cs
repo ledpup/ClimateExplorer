@@ -4,12 +4,12 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace ClimateExplorer.Core.Model;
-public class Location : LocationBase
+public class Location : GeographicalEntity
 {
     public required string CountryCode { get; set; }
     public string? Country { get; set; }
     public required Coordinates Coordinates { get; set; }
-    public float? WarmingIndex { get; set; }
+    public float? WarmingAnomaly { get; set; }
     public short? HeatingScore { get; set; }
     public List<LocationDistance>? NearbyLocations { get; set; }
 
@@ -79,6 +79,11 @@ public class Location : LocationBase
     }
     string? title;
 
+    public override string ToString()
+    {
+        return FullTitle;
+    }
+
     public static async Task<List<Location>> GetLocationsFromFile(string pathAndFileName)
     {
         var locationText = await File.ReadAllTextAsync(pathAndFileName);
@@ -89,7 +94,7 @@ public class Location : LocationBase
 
     public static async Task<List<Location>> GetLocations(string? folderName = null)
     {
-        folderName = folderName ?? @"MetaData\Location";
+        folderName ??= @"MetaData\Location";
         var locations = new List<Location>();
         var locationFiles = Directory.GetFiles(folderName).ToList();
         foreach (var file in locationFiles)
@@ -98,9 +103,7 @@ public class Location : LocationBase
             locations.AddRange(locationsInFile);
         }
 
-        locations.Add(new Location { Id = new Guid("143983a0-240e-447f-8578-8daf2c0a246a"), Name = "Australia anomaly", CountryCode = "AS", Coordinates = new Coordinates() });
-
-        locations = locations.OrderBy(x => x.Name).ToList();
+        locations = [.. locations.OrderBy(x => x.Name)];
 
         return locations;
     }
@@ -152,9 +155,9 @@ public class Location : LocationBase
 
     public static void SetHeatingScores(IEnumerable<Location> locations)
     {
-        var locationsWithWarming = locations.Where(x => x?.WarmingIndex >= 0);
+        var locationsWithWarming = locations.Where(x => x?.WarmingAnomaly >= 0);
         var numberOfLocations = locationsWithWarming.Count();
-        var locationsOrderedByWarming = locationsWithWarming.OrderByDescending(x => x.WarmingIndex);
+        var locationsOrderedByWarming = locationsWithWarming.OrderByDescending(x => x.WarmingAnomaly);
         var tenPercent = (int)MathF.Round(numberOfLocations * .1f, 0);
         for (short i = 9; i >= 0; i--)
         {
@@ -174,11 +177,11 @@ public class Location : LocationBase
             nextTenPercent.ForEach(x => x.HeatingScore = i);
         }
 
-        // If the WarmingIndex is negative, use that as the HeatingScore, rounded to 0 decimal places
+        // If the WarmingAnomaly is negative, use that as the HeatingScore, rounded to 0 decimal places
         locations
-            .Where(x => x?.WarmingIndex < 0)
+            .Where(x => x?.WarmingAnomaly < 0)
             .ToList()
-            .ForEach(x => x.HeatingScore = (short)MathF.Round((float)x.WarmingIndex!, 0));
+            .ForEach(x => x.HeatingScore = (short)MathF.Round((float)x.WarmingAnomaly!, 0));
     }
 }
 

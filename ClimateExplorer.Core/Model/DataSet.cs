@@ -7,14 +7,14 @@ public class DataSet
 {
     public DataSet()
     {
-        DataRecords = new List<DataRecord>();
+        DataRecords = [];
     }
 
     public BinGranularities BinGranularity { get; set; }
 
     // TODO: This will go (replaced by BinGranularity)
     public DataResolution Resolution { get; set; }
-    public LocationBase? Location { get;  set; }
+    public GeographicalEntity? GeographicalEntity { get;  set; }
     public MeasurementDefinitionViewModel? MeasurementDefinition { get; set; }
     public DataType DataType { get { return MeasurementDefinition!.DataType; } }
     public DataAdjustment? DataAdjustment { get { return MeasurementDefinition!.DataAdjustment; } }
@@ -68,7 +68,7 @@ public class DataSet
         {
             if (Year != null)
             {
-                return new List<short> { Year.Value };
+                return [Year.Value];
             }
 
             return 
@@ -97,7 +97,7 @@ public class DataSet
 
     public override string ToString()
     {
-        return $"{DataType} | {DataAdjustment} | {BinGranularity} | {Location} | {DataRecords.Count}";
+        return $"{DataType} | {DataAdjustment} | {BinGranularity} | {GeographicalEntity} | {DataRecords.Count}";
     }
 }
 

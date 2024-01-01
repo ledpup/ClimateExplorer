@@ -31,6 +31,8 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     Guid _componentInstanceId = Guid.NewGuid();
 
     protected IEnumerable<Location>? Locations { get; set; }
+    protected IEnumerable<Region>? Regions { get; set; }
+    protected IEnumerable<GeographicalEntity>? GeographicalEntities { get; set; }
 
     protected Modal? addDataSetModal { get; set; }
 
@@ -48,7 +50,12 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
             }
             DataSetDefinitions = (await DataService.GetDataSetDefinitions()).ToList();
 
-            Locations = new List<Location>();
+            Locations = (await DataService!.GetLocations(includeNearbyLocations: true, includeWarmingAnomaly: true, excludeLocationsWithNullWarmingAnomaly: false)).ToList();
+            Regions = (await DataService!.GetRegions()).ToList();
+
+            List<GeographicalEntity> geo = [.. Locations];
+            geo.AddRange(Regions);
+            GeographicalEntities = geo;
         }
     }
 
@@ -169,7 +176,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         {
             try
             {
-                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions!, Locations!);
+                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions!, GeographicalEntities!);
 
                 if (csdList.Any())
                 {
@@ -203,21 +210,6 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         }
     }
 
-    protected async Task OnDownloadDataClicked(DataDownloadPackage dataDownloadPackage)
-    {
-        var fileStream = Exporter!.ExportChartData(Logger!, Locations!, dataDownloadPackage, NavManager!.Uri.ToString());
-
-        var locationNames = dataDownloadPackage.ChartSeriesWithData!.SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!).Select(x => x.LocationName).Where(x => x != null).Distinct().ToArray();
-
-        var fileName = locationNames.Any() ? string.Join("-", locationNames) + "-" : "";
-
-        fileName = $"Export-{fileName}-{dataDownloadPackage.BinGranularity}-{dataDownloadPackage.Bins!.First().Label}-{dataDownloadPackage.Bins!.Last().Label}.csv";
-
-        using var streamRef = new DotNetStreamReference(stream: fileStream);
-
-        await JsRuntime!.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
-    }
-
     protected Task ShowAddDataSetModal()
     {
         return addDataSetModal!.Show();
@@ -231,5 +223,20 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     protected async Task OnChartPresetSelected(List<ChartSeriesDefinition> chartSeriesDefinitions)
     {
         await chartView!.OnChartPresetSelected(chartSeriesDefinitions);
+    }
+
+    protected async Task OnDownloadDataClicked(DataDownloadPackage dataDownloadPackage)
+    {
+        var fileStream = Exporter!.ExportChartData(Logger!, GeographicalEntities!, dataDownloadPackage, NavManager!.Uri.ToString());
+
+        var locationNames = dataDownloadPackage.ChartSeriesWithData!.SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!).Select(x => x.LocationName).Where(x => x != null).Distinct().ToArray();
+
+        var fileName = locationNames.Any() ? string.Join("-", locationNames) + "-" : "";
+
+        fileName = $"Export-{fileName}-{dataDownloadPackage.BinGranularity}-{dataDownloadPackage.Bins!.First().Label}-{dataDownloadPackage.Bins!.Last().Label}.csv";
+
+        using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+        await JsRuntime!.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 }

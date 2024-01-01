@@ -36,13 +36,13 @@ public static class DataReader
     {
         if (dataFileFilterAndAdjustments == null)
         {
-            dataFileFilterAndAdjustments = new List<DataFileFilterAndAdjustment>
-            {
+            dataFileFilterAndAdjustments =
+            [
                 new DataFileFilterAndAdjustment
                 {
                     Id = string.Empty
                 }
-            };
+            ];
         }
 
         var regEx = new Regex(measurementDefinition.DataRowRegEx!);
@@ -119,7 +119,7 @@ public static class DataReader
         if (lines == null)
         {
             // We couldn't find the data in any of the expected locations
-            return new Dictionary<string, DataRecord>();
+            return [];
         }
 
         var dataRecords = new Dictionary<string, DataRecord>();

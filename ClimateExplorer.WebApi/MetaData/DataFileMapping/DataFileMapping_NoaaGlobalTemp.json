@@ -1,0 +1,20 @@
+{
+  "DataSetDefinitionId": "e61c6279-edf4-461b-bdd1-0724d21f42f3",
+  "LocationIdToDataFileMappings": {
+    "379ace49-0b44-4b47-ab61-3b6e09c27c82": [
+      {
+        "Id": "land_ocean.90S.90N"
+      }
+    ],
+    "6fa62ea0-f9ec-46cb-a9e5-f610eb6bac5e": [
+      {
+        "Id": "land.90S.90N"
+      }
+    ],
+    "9107612d-057d-4982-bf93-1f32a01d4ee0": [
+      {
+        "Id": "ocean.90S.90N"
+      }
+    ]
+  }
+}

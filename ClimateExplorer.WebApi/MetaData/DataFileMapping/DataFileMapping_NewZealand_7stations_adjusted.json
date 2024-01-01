@@ -1,0 +1,254 @@
+{
+  "DataSetDefinitionId": "7522e8ec-e743-4cb0-bc65-6e9f202fc824",
+  "MeasurementDefinitionId": null,
+  "LocationIdToDataFileMappings": {
+    "a28e017a-a23b-4f59-914d-d1171bfd60be": [
+      {
+        "Id": "1427",
+        "StartDate": "1909-09-01T00:00:00",
+        "EndDate": "1950-12-31T00:00:00",
+        "ValueAdjustment": -0.62
+      },
+      {
+        "Id": "1427",
+        "StartDate": "1951-01-01T00:00:00",
+        "EndDate": "1976-03-31T00:00:00",
+        "ValueAdjustment": -0.65
+      },
+      {
+        "Id": "1945",
+        "StartDate": "1976-04-01T00:00:00",
+        "EndDate": "1998-07-31T00:00:00",
+        "ValueAdjustment": 0.01
+      },
+      {
+        "Id": "1962",
+        "StartDate": "1998-08-01T00:00:00",
+        "EndDate": null,
+        "ValueAdjustment": 0
+      }
+    ],
+    "0c75321e-ffc1-48cd-afd2-2d30301a545d": [
+      {
+        "Id": "5380",
+        "StartDate": "1900-01-01T00:00:00",
+        "EndDate": "1912-12-31T00:00:00",
+        "ValueAdjustment": 0.25
+      },
+      {
+        "Id": "5375",
+        "StartDate": "1913-01-01T00:00:00",
+        "EndDate": "1942-11-30T00:00:00",
+        "ValueAdjustment": -0.14
+      },
+      {
+        "Id": "5379",
+        "StartDate": "1942-12-01T00:00:00",
+        "EndDate": "1947-05-31T00:00:00",
+        "ValueAdjustment": 0.59
+      },
+      {
+        "Id": "5402",
+        "StartDate": "1947-06-01T00:00:00",
+        "EndDate": "1960-10-31T00:00:00",
+        "ValueAdjustment": -0.14
+      },
+      {
+        "Id": "5402",
+        "StartDate": "1960-11-01T00:00:00",
+        "EndDate": "1997-08-31T00:00:00",
+        "ValueAdjustment": -0.07
+      },
+      {
+        "Id": "15752",
+        "StartDate": "1997-09-01T00:00:00",
+        "EndDate": null,
+        "ValueAdjustment": 0
+      }
+    ],
+    "53fc123f-ea7e-493a-a9e4-474b798a763c": [
+      {
+        "Id": "2473",
+        "StartDate": "1912-02-01T00:00:00",
+        "EndDate": "1920-04-30T00:00:00",
+        "ValueAdjustment": -0.55
+      },
+      {
+        "Id": "2473",
+        "StartDate": "1920-06-01T00:00:00",
+        "EndDate": "1942-09-30T00:00:00",
+        "ValueAdjustment": -0.34
+      },
+      {
+        "Id": "2473",
+        "StartDate": "1942-10-01T00:00:00",
+        "EndDate": "1990-12-31T00:00:00",
+        "ValueAdjustment": -0.08
+      },
+      {
+        "Id": "2612",
+        "StartDate": "1991-01-01T00:00:00",
+        "EndDate": "2009-10-30T00:00:00",
+        "ValueAdjustment": 0
+      },
+      {
+        "Id": "21938",
+        "StartDate": "2009-11-01T00:00:00",
+        "EndDate": null,
+        "ValueAdjustment": -0.28
+      }
+    ],
+    "f7f809a7-6755-4ab7-b1e6-3ae933dd89ae": [
+      {
+        "Id": "3907",
+        "StartDate": "1900-01-01T00:00:00",
+        "EndDate": "1912-08-31T00:00:00",
+        "ValueAdjustment": -1.57
+      },
+      {
+        "Id": "3907",
+        "StartDate": "1912-09-01T00:00:00",
+        "EndDate": "1928-10-31T00:00:00",
+        "ValueAdjustment": -0.36
+      },
+      {
+        "Id": "3907",
+        "StartDate": "1928-11-01T00:00:00",
+        "EndDate": "1944-12-31T00:00:00",
+        "ValueAdjustment": -0.34
+      },
+      {
+        "Id": "37939",
+        "StartDate": "1945-01-01T00:00:00",
+        "EndDate": "1963-12-30T00:00:00",
+        "ValueAdjustment": 0.34
+      },
+      {
+        "Id": "3909",
+        "StartDate": "1964-01-01T00:00:00",
+        "EndDate": "1967-10-31T00:00:00",
+        "ValueAdjustment": 0.05
+      },
+      {
+        "Id": "3909",
+        "StartDate": "1967-11-01T00:00:00",
+        "EndDate": null,
+        "ValueAdjustment": 0
+      }
+    ],
+    "ccbb9417-cc42-4503-b5f6-58e01ae7ebfa": [
+      {
+        "Id": "4881",
+        "StartDate": "1905-01-01T00:00:00",
+        "EndDate": "1915-11-30T00:00:00",
+        "ValueAdjustment": -0.97
+      },
+      {
+        "Id": "4881",
+        "StartDate": "1915-12-01T00:00:00",
+        "EndDate": "1923-10-31T00:00:00",
+        "ValueAdjustment": -0.45
+      },
+      {
+        "Id": "4881",
+        "StartDate": "1923-11-01T00:00:00",
+        "EndDate": "1925-12-31T00:00:00",
+        "ValueAdjustment": -1.02
+      },
+      {
+        "Id": "4881",
+        "StartDate": "1926-01-01T00:00:00",
+        "EndDate": "1943-12-31T00:00:00",
+        "ValueAdjustment": -0.41
+      },
+      {
+        "Id": "4881",
+        "StartDate": "1944-01-01T00:00:00",
+        "EndDate": "1964-04-30T00:00:00",
+        "ValueAdjustment": 0.22
+      },
+      {
+        "Id": "4881",
+        "StartDate": "1964-05-01T00:00:00",
+        "EndDate": "1975-12-31T00:00:00",
+        "ValueAdjustment": -0.1
+      },
+      {
+        "Id": "4881",
+        "StartDate": "1976-01-01T00:00:00",
+        "EndDate": "1987-05-31T00:00:00",
+        "ValueAdjustment": 0.02
+      },
+      {
+        "Id": "4882",
+        "StartDate": "1987-06-01T00:00:00",
+        "EndDate": "1999-12-31T00:00:00",
+        "ValueAdjustment": 0
+      },
+      {
+        "Id": "17603",
+        "StartDate": "2000-01-01T00:00:00",
+        "EndDate": null,
+        "ValueAdjustment": 0
+      }
+    ],
+    "4977fb61-9228-45d4-be28-e9d19d23088b": [
+      {
+        "Id": "4244",
+        "StartDate": "1907-10-01T00:00:00",
+        "EndDate": "1920-11-30T00:00:00",
+        "ValueAdjustment": -1.05
+      },
+      {
+        "Id": "4244",
+        "StartDate": "1920-12-31T00:00:00",
+        "EndDate": "1931-12-31T00:00:00",
+        "ValueAdjustment": -0.17
+      },
+      {
+        "Id": "4239",
+        "StartDate": "1932-01-01T00:00:00",
+        "EndDate": "1996-11-30T00:00:00",
+        "ValueAdjustment": -0.02
+      },
+      {
+        "Id": "4241",
+        "StartDate": "1996-12-01T00:00:00",
+        "EndDate": "1997-05-31T00:00:00",
+        "ValueAdjustment": 0.31
+      },
+      {
+        "Id": "4241",
+        "StartDate": "1997-06-01T00:00:00",
+        "EndDate": null,
+        "ValueAdjustment": 0
+      }
+    ],
+    "24c35f2d-a4a3-44e4-9a5e-6ea16cec8c9c": [
+      {
+        "Id": "3431",
+        "StartDate": "1906-06-01T00:00:00",
+        "EndDate": "1912-06-30T00:00:00",
+        "ValueAdjustment": -0.73
+      },
+      {
+        "Id": "3391",
+        "StartDate": "1912-07-01T00:00:00",
+        "EndDate": "1927-12-31T00:00:00",
+        "ValueAdjustment": -0.89
+      },
+      {
+        "Id": "3385",
+        "StartDate": "1928-01-01T00:00:00",
+        "EndDate": "2005-08-31T00:00:00",
+        "ValueAdjustment": 0
+      },
+      {
+        "Id": "25354",
+        "StartDate": "2005-09-01T00:00:00",
+        "EndDate": null,
+        "ValueAdjustment": -0.06
+      }
+    ]
+  }
+}

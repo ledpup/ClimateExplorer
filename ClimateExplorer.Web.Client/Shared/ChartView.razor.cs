@@ -195,8 +195,8 @@ public partial class ChartView
         return
             new SourceSeriesSpecification
             {
-                LocationId = sss.LocationId,
-                LocationName = sss.LocationName,
+                LocationId = sss.LocationId!.Value,
+                LocationName = sss.LocationName!,
                 DataSetDefinition = dsd,
                 MeasurementDefinition = md
             };
@@ -316,10 +316,7 @@ public partial class ChartView
 
             LogChartSeriesList();
 
-            // We used to choose set ChartType to Bar if the user's selected chart type was bar or difference or rainfall,
-            // and line otherwise.
-            //
-            // Since v2, we now set ChartType to Bar if any series is of type Bar, and Line otherwise.
+            // We now set ChartType to Bar if any series is of type Bar, and Line otherwise.
             var newInternalChartType =
                 ChartSeriesWithData.Any(x => x.ChartSeries!.DisplayStyle == SeriesDisplayStyle.Bar)
                 ? ChartType.Bar
@@ -561,7 +558,7 @@ public partial class ChartView
                 cs.SourceDataSet =
                     new DataSet
                     {
-                        Location = cs.SourceDataSet.Location,
+                        GeographicalEntity = cs.SourceDataSet.GeographicalEntity,
                         MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
                         DataRecords = newDataRecords
                     };
@@ -606,7 +603,7 @@ public partial class ChartView
                 cs.PreProcessedDataSet =
                     new DataSet
                     {
-                        Location = cs.SourceDataSet.Location,
+                        GeographicalEntity = cs.SourceDataSet.GeographicalEntity,
                         MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
                         DataRecords = newDataRecords
                     };
@@ -678,7 +675,7 @@ public partial class ChartView
             cs.ProcessedDataSet =
                 new DataSet
                 {
-                    Location = cs.PreProcessedDataSet.Location,
+                    GeographicalEntity = cs.PreProcessedDataSet.GeographicalEntity,
                     MeasurementDefinition = cs.PreProcessedDataSet.MeasurementDefinition,
                     DataRecords =
                         chartBins

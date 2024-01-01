@@ -44,7 +44,7 @@ public static class ChartSeriesListSerializer
         throw new Exception($"Failed to parse '{s}'");
     }
 
-    public static List<ChartSeriesDefinition> ParseChartSeriesDefinitionList(ILogger logger, string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<Location> locations)
+    public static List<ChartSeriesDefinition> ParseChartSeriesDefinitionList(ILogger logger, string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<GeographicalEntity> geographicalEntities)
     {
         logger.LogInformation("ParseChartSeriesDefinitionList: " + s);
 
@@ -52,7 +52,7 @@ public static class ChartSeriesListSerializer
 
         var seriesList =
             segments
-            .Select(x => ParseChartSeriesUrlComponent(logger, x, dataSetDefinitions, locations))
+            .Select(x => ParseChartSeriesUrlComponent(logger, x, dataSetDefinitions, geographicalEntities))
             .Where(x => x != null)
             .ToList();
 
@@ -61,7 +61,7 @@ public static class ChartSeriesListSerializer
         return seriesList;
     }
 
-    static ChartSeriesDefinition ParseChartSeriesUrlComponent(ILogger logger, string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<Location> locations)
+    static ChartSeriesDefinition ParseChartSeriesUrlComponent(ILogger logger, string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<GeographicalEntity> geographicalEntities)
     {
         string[] segments = s.Split(SeparatorsByLevel[1]);
 
@@ -69,7 +69,7 @@ public static class ChartSeriesListSerializer
             new ChartSeriesDefinition()
             {
                 SeriesDerivationType = ParseEnum<SeriesDerivationTypes>(segments[0]),
-                SourceSeriesSpecifications = ParseSourceSeriesSpecifications(segments[1], dataSetDefinitions, locations),
+                SourceSeriesSpecifications = ParseSourceSeriesSpecifications(segments[1], dataSetDefinitions, geographicalEntities),
                 Aggregation = ParseEnum<SeriesAggregationOptions>(segments[2]),
                 RequestedColour = ParseEnum<Colours>(segments[3]),
                 BinGranularity = ParseEnum<BinGranularities>(segments[4]),
@@ -88,22 +88,22 @@ public static class ChartSeriesListSerializer
             };
     }
 
-    static SourceSeriesSpecification[] ParseSourceSeriesSpecifications(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<Location> locations)
+    static SourceSeriesSpecification[] ParseSourceSeriesSpecifications(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<GeographicalEntity> geographicalEntities)
     {
         string[] segments = s.Split(SeparatorsByLevel[2]);
 
         return
             segments
-            .Select(x => ParseSourceSeriesSpecification(x, dataSetDefinitions, locations))
+            .Select(x => ParseSourceSeriesSpecification(x, dataSetDefinitions, geographicalEntities))
             .ToArray();
     }
 
-    static SourceSeriesSpecification ParseSourceSeriesSpecification(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<Location> locations)
+    static SourceSeriesSpecification ParseSourceSeriesSpecification(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<GeographicalEntity> geographicalEntities)
     {
         string[] segments = s.Split(SeparatorsByLevel[3]);
 
         var dsd = dataSetDefinitions.Single(x => x.Id == Guid.Parse(segments[0]));
-        var dt = (Core.Enums.DataType?)ParseNullableEnum<Core.Enums.DataType>(segments[1]);
+        var dt = (Core.Enums.DataType?)ParseNullableEnum<DataType>(segments[1]);
         var da = (DataAdjustment?)ParseNullableEnum<DataAdjustment>(segments[2]);
 
         var dataMatches = new List<DataSubstitute>
@@ -114,7 +114,7 @@ public static class ChartSeriesListSerializer
                 DataAdjustment = da,
             }
         };
-        if (dt == Core.Enums.DataType.TempMax || dt == Core.Enums.DataType.TempMean)
+        if (dt == Core.Enums.DataType.TempMax || dt == DataType.TempMean)
         {
             if (da == DataAdjustment.Unadjusted)
             {
@@ -126,17 +126,17 @@ public static class ChartSeriesListSerializer
             }
         }
 
-        Location? l = null;
-        Guid? locationId = null;
+        GeographicalEntity? geographicalEntity = null;
+        Guid? id = null;
 
         if (segments[3].Length > 0)
         {
-            locationId = Guid.Parse(segments[3]);
-            l = locations.SingleOrDefault(x => x.Id == locationId);
+            id = Guid.Parse(segments[3]);
+            geographicalEntity = geographicalEntities.SingleOrDefault(x => x.Id == id);
 
-            if (l == null)
+            if (geographicalEntity == null)
             {
-                throw new Exception($"A location (ID = {locationId}) has been specified in the source series specification that has not been found in the list of locations.");
+                throw new Exception($"A geographical entity (ID = {id}) has been specified in the source series specification that has not been found in the list of geographical entities.");
             }
         }
 
@@ -147,10 +147,8 @@ public static class ChartSeriesListSerializer
         {
             foreach (var match in dataMatches)
             {
-                var dsds = dataSetDefinitions.Where(x => (locationId == null
-                                                            || (x.LocationIds != null && x.LocationIds.Any(y => y == locationId))
-                                                         )
-                                                 && x.MeasurementDefinitions!.Any(y => y.DataType == match.DataType && y.DataAdjustment == match.DataAdjustment))
+                var dsds = dataSetDefinitions.Where(x => x.LocationIds != null && x.LocationIds.Any(y => y == id)
+                                                      && x.MeasurementDefinitions!.Any(y => y.DataType == match.DataType && y.DataAdjustment == match.DataAdjustment))
                                          .ToList();
 
                 if (dsds.Any())
@@ -173,8 +171,8 @@ public static class ChartSeriesListSerializer
             {
                 DataSetDefinition = dsd,
                 MeasurementDefinition = md,
-                LocationId = l?.Id,
-                LocationName = l?.Name,
+                LocationId = geographicalEntity!.Id,
+                LocationName = geographicalEntity.Name,
             };
     }
 

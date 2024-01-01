@@ -13,7 +13,7 @@ public static class NiwaLocationsAndStationsMapper
 
         var locations = new List<Location>();
         var stations = new List<Station>();
-        var dataFileLocationMapping = new DataFileLocationMapping() { DataSetDefinitionId = dataSetDefinitionId };
+        var dataFileLocationMapping = new DataFileMapping() { DataSetDefinitionId = dataSetDefinitionId };
 
         var regEx = new Regex(@"^(?<name>[\w|\s]*),(?<station>\d+),\w\d+\w?,(?<lat>-?\d+\.\d+),(?<lng>-?\d+\.\d+),(?<alt>-?\d+),.*,.*,(?<startdate>null|\d{4}\/\d{2}\/\d{2})\s*,(?<enddate>null|\d{4}\/\d{2}\/\d{2})\s*,(?<adjustment>0|-?\d*\.\d*)\s*,(?<seriesName>[\w|'|\s|-]*),(?<stationName>[\w|\s|,]*)$");
         var locationRowData = File.ReadAllLines(@$"ReferenceMetaData\NIWA\{sourceLocationsFileName}");
@@ -92,10 +92,8 @@ public static class NiwaLocationsAndStationsMapper
         var options = new JsonSerializerOptions
         {
             WriteIndented = true,
-            Converters =
-        {
-            new JsonStringEnumConverter()
-        }
+            Converters = { new JsonStringEnumConverter() },
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         };
         Directory.CreateDirectory(@"Output\Location");
         Directory.CreateDirectory(@"Output\Station");

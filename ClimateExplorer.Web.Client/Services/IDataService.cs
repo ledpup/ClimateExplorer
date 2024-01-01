@@ -6,7 +6,8 @@ public interface IDataService
 {
     Task<ApiMetadataModel> GetAbout();
     Task<IEnumerable<DataSetDefinitionViewModel>> GetDataSetDefinitions();
-    Task<IEnumerable<Location>> GetLocations(string? dataSetName = null, bool includeNearbyLocations = false, bool includeWarmingIndex = false, bool excludeLocationsWithNullWarmingIndex = true);
+    Task<IEnumerable<Location>> GetLocations(string? dataSetName = null, bool includeNearbyLocations = false, bool includeWarmingAnomaly = false, bool excludeLocationsWithNullWarmingAnomaly = true);
+    Task<IEnumerable<Region>> GetRegions();
     Task<DataSet> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f);
     Task<DataSet> PostDataSet(
         BinGranularities binGranularity,
@@ -22,7 +23,6 @@ public interface IDataService
         int cupSize,
         SeriesTransformations seriesTransformation,
         short? year = null);
-    Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .7f, float locationGroupingThreshold = .7f);
-
+    Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .7f, float regionThreshold = .7f);
     Task<Dictionary<string, string>> GetCountries();
 }

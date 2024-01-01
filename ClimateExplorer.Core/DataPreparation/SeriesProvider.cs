@@ -18,7 +18,7 @@ public static class SeriesProvider
         switch (seriesDerivationType)
         {
             case SeriesDerivationTypes.ReturnSingleSeries:
-            case SeriesDerivationTypes.AverageOfAnomaliesInLocationGroup:
+            case SeriesDerivationTypes.AverageOfAnomaliesInRegion:
                 if (seriesSpecifications.Length != 1)
                 {
                     throw new Exception($"When SeriesDerivationType is {nameof(seriesDerivationType)}, exactly one SeriesSpecification must be provided.");
@@ -76,7 +76,7 @@ public static class SeriesProvider
                 var date = new DateOnly(point.Year, point.Month ?? 1, point.Day ?? 1);
                 if (!dbGroups.ContainsKey(date))
                 {
-                    dbGroups.Add(date, new List<TemporalDataPoint>());
+                    dbGroups.Add(date, []);
                 }
                 dbGroups[date].Add(point);
             }
@@ -195,23 +195,17 @@ public static class SeriesProvider
                 x.DataType == seriesSpecification.DataType &&
                 x.DataAdjustment == seriesSpecification.DataAdjustment);
 
+        var geoEntity = await GeographicalEntity.GetGeographicalEntity(seriesSpecification.LocationId);
 
-        var location = seriesSpecification.LocationId == null ? null : (await Location.GetLocations()).Single(x => x.Id == seriesSpecification.LocationId);
-
-        List<DataFileFilterAndAdjustment>? dataFileFilterAndAdjustments = null;
-
-        if (location != null)
+        if (!dsd.DataLocationMapping!.LocationIdToDataFileMappings.TryGetValue(geoEntity.Id, out List<DataFileFilterAndAdjustment>? dataFileFilterAndAdjustments))
         {
-            if (!dsd.DataLocationMapping!.LocationIdToDataFileMappings.TryGetValue(location.Id, out dataFileFilterAndAdjustments))
-            {
-                throw new Exception($"DataSetDefinition {dsd.Id} does not have a LocationIdToDataFileMapping entry for location {location.Id}");
-            }
+            throw new Exception($"DataSetDefinition {dsd.Id} does not have a LocationIdToDataFileMapping entry for location {geoEntity.Id}");
         }
 
         // We have two different "data readers".
         //
         // DataReader is the configurable reg-ex-y one that can handle one-sample-per-line file formats. It's
-        // used for temperature, rainfall and CO2, for example.
+        // used for temperature, precipitation and CO2, for example.
         //
         // The other one is a twelve-month-per-line reader.
         List<DataRecord> dataRecords;

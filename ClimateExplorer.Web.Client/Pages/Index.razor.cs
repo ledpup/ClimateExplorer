@@ -42,7 +42,7 @@ public partial class Index : ChartablePage
 
         if (firstRender)
         {
-            Locations = (await DataService!.GetLocations(includeNearbyLocations: true, includeWarmingIndex: true, excludeLocationsWithNullWarmingIndex: false)).ToList();
+            Locations = (await DataService!.GetLocations(includeNearbyLocations: true, includeWarmingAnomaly: true, excludeLocationsWithNullWarmingAnomaly: false)).ToList();
 
             var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
             GetLocationIdViaNameFromPath(uri);
@@ -116,7 +116,7 @@ public partial class Index : ChartablePage
         var location = Locations!.Single(x => x.Id == Guid.Parse("aed87aa0-1d0c-44aa-8561-cde0fc936395"));
 
         var tempMaxOrMean = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataSubstitute.StandardTemperatureDataMatches(), throwIfNoMatch: true)!;
-        var rainfall = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.Rainfall, null, throwIfNoMatch: true)!;
+        var precipitation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.Precipitation, null, throwIfNoMatch: true)!;
 
         if (chartView!.ChartSeriesList == null)
         {
@@ -148,7 +148,7 @@ public partial class Index : ChartablePage
             new ChartSeriesDefinition()
             {
                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, rainfall),
+                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, precipitation),
                 Aggregation = SeriesAggregationOptions.Sum,
                 BinGranularity = BinGranularities.ByYear,
                 Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -242,13 +242,11 @@ public partial class Index : ChartablePage
             {
                 if (!csd.IsLocked)
                 {
-                    // If this source series is location-specific
-                    if (sss.LocationId != null &&
-                        // and this is a simple series (only one data source), or we're not changing location, or this series belongs
-                        // to the location we were previously on. (this check is to ensure that when the user changes location, when
-                        // we update compound series that are comparing across locations, we don't update both source series to the
-                        // same location, which would be nonsense.)
-                        (csd.SourceSeriesSpecifications.Length == 1 || PreviousLocation == null || sss.LocationId == PreviousLocation.Id))
+                    // If this source series is a simple series (only one data source), or we're not changing location, or this series belongs
+                    // to the location we were previously on. (this check is to ensure that when the user changes location, when
+                    // we update compound series that are comparing across locations, we don't update both source series to the
+                    // same location, which would be nonsense.)
+                    if (csd.SourceSeriesSpecifications.Length == 1 || PreviousLocation == null || sss.LocationId == PreviousLocation.Id)
                     {
                         sss.LocationId = newValue;
                         sss.LocationName = SelectedLocation.Name;
@@ -450,4 +448,6 @@ public partial class Index : ChartablePage
             await SelectedLocationChanged(locationId.Value);
         }
     }
+
+
 }

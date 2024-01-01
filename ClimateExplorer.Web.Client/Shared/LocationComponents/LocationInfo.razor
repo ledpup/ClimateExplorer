@@ -15,7 +15,7 @@
                 <a class="chart-control" @onclick="() => ChangeLocationClicked(new EventArgs())"><i class="fas fa-map"></i> Change location</a>
                 @if (LocationCollapsible!.ShowContent)
                 {
-                    <a class="chart-control" @onclick="() => ToggleRainfall()"><i class="@( rainfall ? "fas fa-check-square" : "fas fa-square" )"></i> Precipitation</a>
+                    <a class="chart-control" @onclick="() => TogglePrecipitation()"><i class="@( precipitation ? "fas fa-check-square" : "fas fa-square" )"></i> Precipitation</a>
                 }
             </span>
         </HeaderContent>
@@ -32,10 +32,10 @@
             }
             <ClimateStripe UnitOfMeasure="UnitOfMeasure.DegreesCelsius" LocationName=@Location?.Name LocationMean=@TemperatureLocationMean DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange ShowInfo="true" />
             <WarmestYears DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
-            @if (rainfall && RainfallLocationMean != null)
+            @if (precipitation && PrecipitationLocationMean != null)
             {
-                <ClimateStripe UnitOfMeasure="UnitOfMeasure.Millimetres" LocationName=@Location?.Name LocationMean=@RainfallLocationMean DataRecords="@RainfallAnomalyRecords" OnYearFilterChange=HandleOnRainfallYearFilterChange ShowInfo="false" />
-                <DriestYears DataRecords="@RainfallAnomalyRecords" OnYearFilterChange=HandleOnRainfallYearFilterChange />
+                <ClimateStripe UnitOfMeasure="UnitOfMeasure.Millimetres" LocationName=@Location?.Name LocationMean=@PrecipitationLocationMean DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange=HandleOnPrecipitationYearFilterChange ShowInfo="false" />
+                <DriestYears DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange=HandleOnPrecipitationYearFilterChange />
             }
         </Content>
     </Collapsible>
@@ -71,15 +71,15 @@
     string GeoLocationAsString => Location == null ? "Nowhere" : Location.Coordinates.ToString();
 
     public bool LocationLoadingIndicatorVisible { get; set; }
-    bool rainfall { get; set; }
+    bool precipitation { get; set; }
 
     List<YearAndValue>? TemperatureAnomalyRecords { get; set; }
     float? TemperatureLocationMean { get; set; }
     string? WarmingAnomalyDescription;
     string? WarmingAnomalyAsString;
 
-    List<YearAndValue>? RainfallAnomalyRecords { get; set; }
-    float? RainfallLocationMean { get; set; }
+    List<YearAndValue>? PrecipitationAnomalyRecords { get; set; }
+    float? PrecipitationLocationMean { get; set; }
     string? PrecipitationAnomalyAsString;
 
     Guid? locationIdLastTimeOnParametersSetAsyncWasCalled;
@@ -124,8 +124,8 @@
         locationIdLastTimeOnParametersSetAsyncWasCalled = Location?.Id;
 
         // Clear the previous values so we don't accidentally end-up reporting them
-        RainfallLocationMean = null;
-        RainfallAnomalyRecords = null;
+        PrecipitationLocationMean = null;
+        PrecipitationAnomalyRecords = null;
         PrecipitationAnomalyAsString = null;
 
         // We can't do anything until we're supplied our tasty, tasty DataSetDefinitions
@@ -134,7 +134,7 @@
             return;
         }
 
-        await GetData(new List<DataSubstitute> { new DataSubstitute { DataType = DataType.Rainfall } }, ContainerAggregationFunctions.Sum);
+        await GetData(new List<DataSubstitute> { new DataSubstitute { DataType = DataType.Precipitation } }, ContainerAggregationFunctions.Sum);
         await GetData(DataSubstitute.StandardTemperatureDataMatches(), ContainerAggregationFunctions.Mean);
 
         LocationLoadingIndicatorVisible = false;
@@ -209,13 +209,13 @@
                     14,
                     SeriesTransformations.Identity);
 
-            var index = IndexCalculator.CalculateIndex(series.DataRecords);
+            var index = AnomalyCalculator.CalculateAnomaly(series.DataRecords);
 
-            if (dataSubstitutes.Any(x => x.DataType == DataType.Rainfall))
+            if (dataSubstitutes.Any(x => x.DataType == DataType.Precipitation))
             {
                 PrecipitationAnomalyAsString = GetPrecipitationAnomalyAsString(index, measurementForLocation.MeasurementDefinition.UnitOfMeasure);
-                RainfallLocationMean = series.DataRecords.Average(x => x.Value);
-                RainfallAnomalyRecords = anomalyRecords;
+                PrecipitationLocationMean = series.DataRecords.Average(x => x.Value);
+                PrecipitationAnomalyRecords = anomalyRecords;
             }
             else if (dataSubstitutes.Any(x => x.DataType == DataType.TempMax))
             {
@@ -239,9 +239,9 @@
         await OnYearFilterChange.InvokeAsync(yearAndFilter);
     }
 
-    public async Task HandleOnRainfallYearFilterChange(short year)
+    public async Task HandleOnPrecipitationYearFilterChange(short year)
     {
-        var yearAndFilter = new YearAndDataTypeFilter(year) { DataType = DataType.Rainfall };
+        var yearAndFilter = new YearAndDataTypeFilter(year) { DataType = DataType.Precipitation };
         await OnYearFilterChange.InvokeAsync(yearAndFilter);
     }
 
@@ -291,8 +291,8 @@
             );
     }
 
-    void ToggleRainfall()
+    void TogglePrecipitation()
     {
-        rainfall = !rainfall;
+        precipitation = !precipitation;
     }
 }

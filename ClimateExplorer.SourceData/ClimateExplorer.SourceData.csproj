@@ -7,10 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-	  <Content Include="Rainfall/**" />
-	  <Content Include="Reference/**" />
+    <Content Include="Atmosphere/**" />
+    <Content Include="Ice/**" />
+    <Content Include="Ocean/**" />
+    <Content Include="Precipitation/**" />
+    <Content Include="Solar/**" />
 	  <Content Include="Temperature/**" />
-    <Content Include="SolarRadiation/**" />
   </ItemGroup>
 
 </Project>

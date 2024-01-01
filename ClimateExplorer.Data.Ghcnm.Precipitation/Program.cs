@@ -48,7 +48,7 @@ foreach (var station in stations)
 var measurementDefinition = new MeasurementDefinition
 {
     DataAdjustment = null,
-    DataType = DataType.Rainfall,
+    DataType = DataType.Precipitation,
     DataResolution = DataResolution.Monthly,
     UnitOfMeasure = UnitOfMeasure.Millimetres,
     NullValue = "99999",
@@ -160,7 +160,7 @@ foreach (var station in stations)
     }
 }
 
-var dataFileLocationMapping = new DataFileLocationMapping
+var dataFileMapping = new DataFileMapping
 {
     DataSetDefinitionId = Guid.Parse("6ABB028A-29F6-481C-837E-1FC9C8E989AF"),
     LocationIdToDataFileMappings = new Dictionary<Guid, List<DataFileFilterAndAdjustment>>()
@@ -170,34 +170,31 @@ var ghcnIdToLocationIds = await GetGhcnIdToLocationIds(stations);
 
 stationsWithData.ForEach(x =>
 {
-    dataFileLocationMapping.LocationIdToDataFileMappings.Add(
+    dataFileMapping.LocationIdToDataFileMappings.Add(
         ghcnIdToLocationIds[x.Id],
-        new List<DataFileFilterAndAdjustment>
-        {
-                new DataFileFilterAndAdjustment
+        [
+                new()
                 {
                     Id = x.Id
                 }
-        });
+        ]);
 });
 
 
 var jsonSerializerOptions = new JsonSerializerOptions
 {
     WriteIndented = true,
-    Converters =
-        {
-            new JsonStringEnumConverter()
-        }
+    Converters = { new JsonStringEnumConverter() },
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
 };
 
 Directory.CreateDirectory(@"Output\Location");
 Directory.CreateDirectory(@"Output\Station");
-Directory.CreateDirectory(@"Output\DataFileLocationMapping");
+Directory.CreateDirectory(@"Output\DataFileMapping");
 
 var outputFileSuffix = "_ghcnm_precipitation";
 
-File.WriteAllText($@"Output\DataFileLocationMapping\DataFileLocationMapping{outputFileSuffix}.json", JsonSerializer.Serialize(dataFileLocationMapping, jsonSerializerOptions));
+File.WriteAllText($@"Output\DataFileMapping\DataFileMapping{outputFileSuffix}.json", JsonSerializer.Serialize(dataFileMapping, jsonSerializerOptions));
 
 static async Task<Dictionary<string, Guid>> GetGhcnIdToLocationIds(List<Station> stations)
 {

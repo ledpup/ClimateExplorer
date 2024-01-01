@@ -203,7 +203,7 @@ public static class DateHelpers
         if (start.Day != 1) throw new Exception($"Day component of start date must be 1 - {start}");
         if (end.AddDays(1).Day != 1) throw new Exception($"Day day of end date must be last day of month - {end}");
 
-        List<DateOnlySpan> spans = new List<DateOnlySpan>();
+        List<DateOnlySpan> spans = [];
 
         int firstMonthIndex = GetMonthIndex(start);
         int lastMonthIndex = GetMonthIndex(end);

@@ -107,7 +107,7 @@ public static class BinAggregator
         // the number of entries in our list of AggregationIntermediates each time, until we have one entry per bin.
 
         // First, build a list of cups, each with a calculated aggregate based on the data points inside that cup.
-        List<AggregationIntermediate> cupLevelIntermediates = new List<AggregationIntermediate>();
+        List<AggregationIntermediate> cupLevelIntermediates = [];
 
         foreach (var bin in rawBins)
         {

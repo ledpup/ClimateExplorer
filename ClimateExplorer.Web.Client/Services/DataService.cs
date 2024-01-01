@@ -112,9 +112,9 @@ public class DataService : IDataService
         return result!;
     }
 
-    public async Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .5f, float locationGroupingThreshold = .5f)
+    public async Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .5f, float regionThreshold = .5f)
     {
-        var url = $"dataSet/{dataType}/{resolution}/{dataAdjustment}?dayGrouping={dayGrouping}&dayGroupingThreshold={dayGroupingThreshold}&locationGroupingThreshold={locationGroupingThreshold}";
+        var url = $"dataSet/{dataType}/{resolution}/{dataAdjustment}?dayGrouping={dayGrouping}&dayGroupingThreshold={dayGroupingThreshold}&regionThreshold={regionThreshold}";
         if (minLatitude != null)
         {
             url += $"&minLatitude={minLatitude}";
@@ -140,7 +140,7 @@ public class DataService : IDataService
         return dataSetDefinitions!;
     }
 
-    public async Task<IEnumerable<Location>> GetLocations(string? dataSetName = null, bool includeNearbyLocations = false, bool includeWarmingIndex = false, bool excludeLocationsWithNullWarmingIndex = true)
+    public async Task<IEnumerable<Location>> GetLocations(string? dataSetName = null, bool includeNearbyLocations = false, bool includeWarmingAnomaly = false, bool excludeLocationsWithNullWarmingAnomaly = true)
     {
         var url = $"/location";
         if (dataSetName != null)
@@ -148,8 +148,8 @@ public class DataService : IDataService
             url = QueryHelpers.AddQueryString(url, "dataSetName", dataSetName);
         }
         url = QueryHelpers.AddQueryString(url, "includeNearbyLocations", includeNearbyLocations.ToString());
-        url = QueryHelpers.AddQueryString(url, "includeWarmingIndex", includeWarmingIndex.ToString());
-        url = QueryHelpers.AddQueryString(url, "excludeLocationsWithNullWarmingIndex", excludeLocationsWithNullWarmingIndex.ToString());
+        url = QueryHelpers.AddQueryString(url, "includeWarmingAnomaly", includeWarmingAnomaly.ToString());
+        url = QueryHelpers.AddQueryString(url, "excludeLocationsWithNullWarmingAnomaly", excludeLocationsWithNullWarmingAnomaly.ToString());
 
         var locations = await _httpClient.GetFromJsonAsync<Location[]>(url);
         return locations!;
@@ -160,5 +160,12 @@ public class DataService : IDataService
         var url = $"/country";
         var countries = await _httpClient.GetFromJsonAsync<Dictionary<string, string>>(url);
         return countries!;
+    }
+
+    public async Task<IEnumerable<Region>> GetRegions()
+    {
+        var url = $"/region";
+        var result = await _httpClient.GetFromJsonAsync<Region[]>(url);
+        return result!;
     }
 }

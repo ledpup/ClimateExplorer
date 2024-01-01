@@ -38,6 +38,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Web.Client"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorCurrentDevice", "BlazorCurrentDevice\BlazorCurrentDevice.csproj", "{769941C2-931A-42A7-98FB-C4C60B27D7BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.Data.NoaaGlobalTemp", "ClimateExplorer.Data.NoaaGlobalTemp\ClimateExplorer.Data.NoaaGlobalTemp.csproj", "{A5ED39A9-CC3D-4B49-AE1D-5AFB235E4F4F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,10 @@ Global
 		{769941C2-931A-42A7-98FB-C4C60B27D7BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{769941C2-931A-42A7-98FB-C4C60B27D7BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{769941C2-931A-42A7-98FB-C4C60B27D7BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5ED39A9-CC3D-4B49-AE1D-5AFB235E4F4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5ED39A9-CC3D-4B49-AE1D-5AFB235E4F4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5ED39A9-CC3D-4B49-AE1D-5AFB235E4F4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5ED39A9-CC3D-4B49-AE1D-5AFB235E4F4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

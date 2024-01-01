@@ -6,27 +6,33 @@ namespace ClimateExplorer.Web.Services;
 
 public interface IExporter
 {
-    Stream ExportChartData(ILogger logger, IEnumerable<Location> locations, DataDownloadPackage dataDownloadPackage, string sourceUri);
+    Stream ExportChartData(ILogger logger, IEnumerable<GeographicalEntity> locations, DataDownloadPackage dataDownloadPackage, string sourceUri);
 }
 
 public class Exporter : IExporter
 {
-    public Stream ExportChartData(ILogger logger, IEnumerable<Location> locations, DataDownloadPackage dataDownloadPackage, string sourceUri)
+    public Stream ExportChartData(ILogger logger, IEnumerable<GeographicalEntity> locations, DataDownloadPackage dataDownloadPackage, string sourceUri)
     {
         logger.LogInformation("ExportChartData got bin range " + dataDownloadPackage.Bins![0].ToString() + " to " + dataDownloadPackage.Bins.Last().ToString());
 
         var data = new List<string>
         {
-            "Exported from," + sourceUri
+            $"Exported from, \"{sourceUri}\""
         };
 
-        var locationIds = dataDownloadPackage.ChartSeriesWithData!.SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!).Select(x => x.LocationId).Where(x => x != null).Distinct().ToArray();
+        var locationIds = dataDownloadPackage.ChartSeriesWithData!.SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!).Select(x => x.LocationId).Distinct().ToArray();
 
         var relevantLocations = locationIds.Select(x => locations.Single(y => y.Id == x)).ToArray();
 
         foreach (var location in relevantLocations)
         {
-            data.Add($"{location.Name},{location.Coordinates.ToFriendlyString(true)}");
+            var text = location switch
+            {
+                Location l => $"{l.FullTitle},{l.Coordinates.ToFriendlyString(true)}",
+                Region region => region.Name,
+                _ => throw new NotImplementedException()
+            };
+            data.Add(text);
         }
 
         data.Add(string.Empty);
@@ -53,7 +59,7 @@ public class Exporter : IExporter
         return fileStream;
     }
 
-    string BuildColumnHeader(Location[] relevantLocations, ChartSeriesDefinition csd)
+    string BuildColumnHeader(GeographicalEntity[] relevantLocations, ChartSeriesDefinition csd)
     {
         var s = "";
 

@@ -2,14 +2,12 @@
   {
     "Id": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "ACORN-SAT",
-    "ShortName": null,
     "Description": "The Australian Climate Observations Reference Network - Surface Air Temperature data set is a homogenized daily maximum and minimum temperature data set containing data from 112 locations across Australia extending from 1910 to the present.",
     "Publisher": "Australian Bureau of Meteorology",
     "PublisherUrl": "http://www.bom.gov.au/",
     "MoreInformationUrl": "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
     "StationInfoUrl": "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
     "LocationInfoUrl": "http://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
-    "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
         "DataType": "TempMax",
@@ -19,9 +17,7 @@
         "RowDataType": "OneValuePerRow",
         "FolderName": "Temperature\\ACORN-SAT\\daily_tmax",
         "FileNameFormat": "tmax.[station].daily.csv",
-        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E-?\\d*\\.?\\d*),*$",
-        "NullValue": null,
-        "ValueAdjustment": null
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E-?\\d*\\.?\\d*),*$"
       },
       {
         "DataType": "TempMin",
@@ -31,24 +27,17 @@
         "RowDataType": "OneValuePerRow",
         "FolderName": "Temperature\\ACORN-SAT\\daily_tmin",
         "FileNameFormat": "tmin.[station].daily.csv",
-        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E-?\\d*\\.?\\d*),*$",
-        "NullValue": null,
-        "ValueAdjustment": null
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E-?\\d*\\.?\\d*),*$"
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "e5eea4d6-5fd5-49ab-bf85-144a8921111e",
     "Name": "Bureau of Meteorology",
-    "ShortName": null,
-    "Description": null,
     "Publisher": "Australian Bureau of Meteorology",
     "PublisherUrl": "http://www.bom.gov.au/",
-    "MoreInformationUrl": null,
     "StationInfoUrl": "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
     "LocationInfoUrl": "http://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
-    "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
         "DataType": "TempMax",
@@ -58,9 +47,7 @@
         "RowDataType": "OneValuePerRow",
         "FolderName": "Temperature\\BOM\\daily_tempmax",
         "FileNameFormat": "[station]_daily_tempmax.csv",
-        "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
-        "NullValue": null,
-        "ValueAdjustment": null
+        "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$"
       },
       {
         "DataType": "TempMin",
@@ -70,48 +57,36 @@
         "RowDataType": "OneValuePerRow",
         "FolderName": "Temperature\\BOM\\daily_tempmin",
         "FileNameFormat": "[station]_daily_tempmin.csv",
-        "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
-        "NullValue": null,
-        "ValueAdjustment": null
+        "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$"
       },
       {
-        "DataType": "Rainfall",
+        "DataType": "Precipitation",
         "UnitOfMeasure": "Millimetres",
         "DataResolution": "Daily",
-        "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Rainfall\\BOM",
+        "FolderName": "Precipitation\\BOM",
         "FileNameFormat": "[station]_daily_rainfall.csv",
-        "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$",
-        "NullValue": null,
-        "ValueAdjustment": null
+        "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*),.*,.*$"
       },
       {
         "DataType": "SolarRadiation",
         "UnitOfMeasure": "MegajoulesPerSquareMetre",
         "DataResolution": "Daily",
-        "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "SolarRadiation\\BOM",
+        "FolderName": "Solar\\BOM",
         "FileNameFormat": "[station]_daily_solarradiation.csv",
-        "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*)$",
-        "NullValue": null,
-        "ValueAdjustment": null
+        "DataRowRegEx": "^(?\u003CproductCode\u003E.\u002B),(?\u003Cstation\u003E\\d{6}),(?\u003Cyear\u003E\\d{4}),(?\u003Cmonth\u003E\\d{2}),(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E.*)$"
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "647b6a05-43e4-48e0-a43e-04ae81a74653",
     "Name": "RAIA",
-    "ShortName": null,
     "Description": "This ACORN-SAT dataset includes homogenised monthly data from the Remote Australian Islands and Antarctica network of 8 locations, which provide ground-based temperature records.",
     "Publisher": "Australian Bureau of Meteorology",
     "PublisherUrl": "http://www.bom.gov.au/",
     "MoreInformationUrl": "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
     "StationInfoUrl": "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
-    "LocationInfoUrl": null,
-    "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
         "DataType": "TempMax",
@@ -122,8 +97,7 @@
         "FolderName": "Temperature\\RAIA\\Monthly\\adjusted\\maxT",
         "FileNameFormat": "acorn.ria.maxT.[station].monthly.txt",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})\\d{2}\\s\\d\u002B\\s\u002B(?\u003Cvalue\u003E-?\\d\u002B\\.\\d\u002B)$",
-        "NullValue": "99999.9",
-        "ValueAdjustment": null
+        "NullValue": "99999.9"
       },
       {
         "DataType": "TempMin",
@@ -134,23 +108,17 @@
         "FolderName": "Temperature\\RAIA\\Monthly\\adjusted\\minT",
         "FileNameFormat": "acorn.ria.minT.[station].monthly.txt",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})\\d{2}\\s\\d\u002B\\s\u002B(?\u003Cvalue\u003E-?\\d\u002B\\.\\d\u002B)$",
-        "NullValue": "99999.9",
-        "ValueAdjustment": null
+        "NullValue": "99999.9"
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "7522e8ec-e743-4cb0-bc65-6e9f202fc824",
     "Name": "NIWA 7-stations series adjusted",
-    "ShortName": null,
     "Description": "NIWA\u0027s long-running \u0027seven-station\u0027 series shows NZ\u0027s average annual temperature has increased by about 1 \u00B0C over the past 100 years.",
     "Publisher": "National Institute of Water and Atmospheric Research (NIWA)",
     "PublisherUrl": "http://www.niwa.co.nz/",
     "MoreInformationUrl": "https://niwa.co.nz/seven-stations",
-    "StationInfoUrl": null,
-    "LocationInfoUrl": null,
-    "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
         "DataType": "TempMax",
@@ -161,8 +129,7 @@
         "FolderName": "Temperature\\NIWA",
         "FileNameFormat": "[station]_temperature.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Ctmin\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-        "NullValue": "-",
-        "ValueAdjustment": null
+        "NullValue": "-"
       },
       {
         "DataType": "TempMin",
@@ -173,23 +140,17 @@
         "FolderName": "Temperature\\NIWA",
         "FileNameFormat": "[station]_temperature.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Ctmax\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-        "NullValue": "-",
-        "ValueAdjustment": null
+        "NullValue": "-"
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "534950dc-eda4-4db5-8816-3705358f1797",
     "Name": "NIWA 7-stations series unadjusted",
-    "ShortName": null,
     "Description": "NIWA\u0027s long-running \u0027seven-station\u0027 series shows NZ\u0027s average annual temperature has increased by about 1 \u00B0C over the past 100 years.",
     "Publisher": "National Institute of Water and Atmospheric Research (NIWA)",
     "PublisherUrl": "http://www.niwa.co.nz/",
     "MoreInformationUrl": "https://niwa.co.nz/seven-stations",
-    "StationInfoUrl": null,
-    "LocationInfoUrl": null,
-    "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
         "DataType": "TempMax",
@@ -200,8 +161,7 @@
         "FolderName": "Temperature\\NIWA",
         "FileNameFormat": "[station]_temperature.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Ctmin\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-        "NullValue": "-",
-        "ValueAdjustment": null
+        "NullValue": "-"
       },
       {
         "DataType": "TempMin",
@@ -212,35 +172,27 @@
         "FolderName": "Temperature\\NIWA",
         "FileNameFormat": "[station]_temperature.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Ctmax\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-        "NullValue": "-",
-        "ValueAdjustment": null
+        "NullValue": "-"
       },
       {
-        "DataType": "Rainfall",
+        "DataType": "Precipitation",
         "UnitOfMeasure": "Millimetres",
         "DataResolution": "Daily",
-        "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Rainfall\\NIWA",
+        "FolderName": "Precipitation\\NIWA",
         "FileNameFormat": "[station]_rainfall.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),.*,D$",
-        "NullValue": "-",
-        "ValueAdjustment": null
+        "NullValue": "-"
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "88e52edd-3c67-484a-b614-91070037d47a",
     "Name": "NIWA 11-stations series",
-    "ShortName": null,
     "Description": "The National Institute of Water and Atmospheric Research (NIWA) eleven-station series are New Zealand temperature trends from a set of eleven climate stations with no significant site changes since the 1930s.",
     "Publisher": "National Institute of Water and Atmospheric Research (NIWA)",
     "PublisherUrl": "http://www.niwa.co.nz/",
     "MoreInformationUrl": "https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data",
-    "StationInfoUrl": null,
-    "LocationInfoUrl": null,
-    "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
         "DataType": "TempMax",
@@ -251,8 +203,7 @@
         "FolderName": "Temperature\\NIWA",
         "FileNameFormat": "[station]_temperature.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Ctmin\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-        "NullValue": "-",
-        "ValueAdjustment": null
+        "NullValue": "-"
       },
       {
         "DataType": "TempMin",
@@ -263,35 +214,27 @@
         "FolderName": "Temperature\\NIWA",
         "FileNameFormat": "[station]_temperature.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Ctmax\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),-?\\d*,.*,D$",
-        "NullValue": "-",
-        "ValueAdjustment": null
+        "NullValue": "-"
       },
       {
-        "DataType": "Rainfall",
+        "DataType": "Precipitation",
         "UnitOfMeasure": "Millimetres",
         "DataResolution": "Daily",
-        "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Rainfall\\NIWA",
+        "FolderName": "Precipitation\\NIWA",
         "FileNameFormat": "[station]_rainfall.csv",
         "DataRowRegEx": "^(?\u003Cstation\u003E\\d\u002B),(?\u003Cyear\u003E\\d{4})(?\u003Cmonth\u003E\\d{2})(?\u003Cday\u003E\\d{2}):\\d\u002B,(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*),.*,D$",
-        "NullValue": "-",
-        "ValueAdjustment": null
+        "NullValue": "-"
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "1dc38f20-3606-4d90-a2a0-84f93e75c964",
     "Name": "Global Historical Climatology Network monthly (GHCNm)",
-    "ShortName": null,
     "Description": "The Global Historical Climatology Network monthly (GHCNm) dataset provides monthly climate summaries from thousands of weather stations around the world. The initial version was developed in the early 1990s, and subsequent iterations were released in 1997, 2011, and most recently in 2018. The period of record for each summary varies by station, with the earliest observations dating to the 18th century. Some station records are purely historical and are no longer updated, but many others are still operational and provide short time delay updates that are useful for climate monitoring.",
     "Publisher": "National Oceanic and Atmospheric Administration (NOAA)",
     "PublisherUrl": "https://www.noaa.gov/",
     "MoreInformationUrl": "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-monthly",
-    "StationInfoUrl": null,
-    "LocationInfoUrl": null,
-    "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
         "DataType": "TempMean",
@@ -317,35 +260,28 @@
         "NullValue": "-9999",
         "ValueAdjustment": 100
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "6abb028a-29f6-481c-837e-1fc9c8e989af",
     "Name": "Global Historical Climatology Network (GHCN) Monthly Precipitation",
-    "ShortName": null,
     "Description": "The Global Historical Climatology Network (GHCN) Monthly Precipitation, Version 4 is a collection of worldwide monthly precipitation values offering significant enhancement over the previous version 2.  It contains more values both historically and for the most recent months.  Its methods for merging records and quality control have been modernized.",
     "Publisher": "National Oceanic and Atmospheric Administration (NOAA)",
     "PublisherUrl": "https://www.noaa.gov/",
     "MoreInformationUrl": "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-monthly#tab-800",
-    "StationInfoUrl": null,
-    "LocationInfoUrl": null,
-    "DataDownloadUrl": null,
     "MeasurementDefinitions": [
       {
-        "DataType": "Rainfall",
+        "DataType": "Precipitation",
         "UnitOfMeasure": "Millimetres",
         "DataResolution": "Monthly",
-        "DataAdjustment": null,
         "RowDataType": "TwelveMonthsPerRow",
-        "FolderName": "Rainfall\\GHCNm",
+        "FolderName": "Precipitation\\GHCNm",
         "FileNameFormat": "[station].csv",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4}),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B),(-?\\d\u002B)$",
         "NullValue": "-9999",
         "ValueAdjustment": 10
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "ffd5f5e2-d8df-4779-a7f4-f5d148505033",
@@ -355,305 +291,221 @@
     "Publisher": "US National Oceanic and Atmospheric Administration\u0027s Physical Sciences Laboratory (NOAA PSL)",
     "PublisherUrl": "https://psl.noaa.gov/",
     "MoreInformationUrl": "https://psl.noaa.gov/enso/mei/",
-    "StationInfoUrl": null,
-    "LocationInfoUrl": null,
     "DataDownloadUrl": "https://psl.noaa.gov/enso/mei/data/meiv2.data",
     "MeasurementDefinitions": [
       {
         "DataType": "MEIv2",
         "UnitOfMeasure": "EnsoIndex",
         "DataResolution": "Monthly",
-        "DataAdjustment": null,
         "RowDataType": "TwelveMonthsPerRow",
-        "FolderName": "Reference\\ENSO",
+        "FolderName": "Ocean\\ENSO",
         "FileNameFormat": "meiv2.data.txt",
         "DataRowRegEx": "^\\s*(?\u003Cyear\u003E\\d{4})\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
-        "NullValue": "-999.00",
-        "ValueAdjustment": null
+        "NullValue": "-999.00"
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "c31270fa-b207-4d8f-b68e-4995698f1a4d",
     "Name": "Southern Oscillation Index (SOI)",
     "ShortName": "SOI",
     "Description": "The Southern Oscillation Index is calculated based on atmospheric pressure difference between Tahiti and Darwin. Higher values of the SOI indicate that Tahiti has higher atmospheric pressure, relative to its typical value, than Darwin does relative to its typical value.\r\n\r\n                    High values of the SOI correlate with cold waters in the eastern tropical Pacific.",
-    "Publisher": null,
-    "PublisherUrl": null,
     "MoreInformationUrl": "https://www.ncdc.noaa.gov/teleconnections/enso/soi",
-    "StationInfoUrl": null,
-    "LocationInfoUrl": null,
     "DataDownloadUrl": "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/soi.long.data",
     "MeasurementDefinitions": [
       {
         "DataType": "SOI",
         "UnitOfMeasure": "EnsoIndex",
         "DataResolution": "Monthly",
-        "DataAdjustment": null,
         "RowDataType": "TwelveMonthsPerRow",
-        "FolderName": "Reference\\ENSO",
+        "FolderName": "Ocean\\ENSO",
         "FileNameFormat": "soi.long.data.txt",
         "DataRowRegEx": "^\\s*(?\u003Cyear\u003E\\d{4})\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
-        "NullValue": "-99.99",
-        "ValueAdjustment": null
+        "NullValue": "-99.99"
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "1042147a-8625-4ee7-bb5a-f0f17795c393",
     "Name": "Oceanic Ni\u00F1o Index (ONI)",
     "ShortName": "ONI",
     "Description": "The Oceanic Ni\u00F1o Index (ONI) is calculated from 3-month running averages of sea surface temperature measurements from the same area as Ni\u00F1o 3.4 (around the equator in the East Pacific, 5 deg N to 5 deg C, 170 deg W to 120 deg W), and then expressed as an anomaly (i.e. difference from a 30 year rolling average).\r\n\r\n                    ONI conditions of \u002B0.5 deg C or higher are considered El Ni\u00F1o, and -0.5 deg C or lower are considered La Ni\u00F1a. El Ni\u00F1o or La Ni\u00F1a conditions must prevail for at least five consecutive months to be considered an El Ni\u00F1o or La Ni\u00F1a event.",
-    "Publisher": null,
-    "PublisherUrl": null,
     "MoreInformationUrl": "https://www.climate.gov/news-features/understanding-climate/climate-variability-oceanic-ni%C3%B1o-index",
-    "StationInfoUrl": null,
-    "LocationInfoUrl": null,
     "DataDownloadUrl": "https://psl.noaa.gov/data/correlation/oni.data",
     "MeasurementDefinitions": [
       {
         "DataType": "ONI",
         "UnitOfMeasure": "DegreesCelsiusAnomaly",
         "DataResolution": "Monthly",
-        "DataAdjustment": null,
         "RowDataType": "TwelveMonthsPerRow",
-        "FolderName": "Reference\\ENSO",
+        "FolderName": "Ocean\\ENSO",
         "FileNameFormat": "oni.data.txt",
         "DataRowRegEx": "^\\s*(?\u003Cyear\u003E\\d{4})\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
-        "NullValue": "-99.9",
-        "ValueAdjustment": null
+        "NullValue": "-99.9"
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "bfbaa69b-c10d-4de3-a78c-1ed6ff307327",
     "Name": "Ni\u00F1o 3.4",
     "ShortName": "Ni\u00F1o 3.4",
     "Description": "The Ni\u00F1o 3.4 index is calculated as a 3-month running average of sea surface temperature measurements around the equator in the East Pacific (5 deg N to 5 deg C, 170 deg W to 120 deg W), and then expressed as an anomaly (i.e. difference from the average).\r\n\r\n                    Ni\u00F1o 3.4 conditions of \u002B0.4 deg C or higher are considered El Ni\u00F1o, and -0.4 deg C or lower are considered La Ni\u00F1a.",
-    "Publisher": null,
-    "PublisherUrl": null,
     "MoreInformationUrl": "https://climatedataguide.ucar.edu/climate-data/nino-sst-indices-nino-12-3-34-4-oni-and-tni",
-    "StationInfoUrl": null,
-    "LocationInfoUrl": null,
     "DataDownloadUrl": "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/nino34.long.anom.data",
     "MeasurementDefinitions": [
       {
         "DataType": "Nino34",
         "UnitOfMeasure": "DegreesCelsiusAnomaly",
         "DataResolution": "Monthly",
-        "DataAdjustment": null,
         "RowDataType": "TwelveMonthsPerRow",
-        "FolderName": "Reference\\ENSO",
+        "FolderName": "Ocean\\ENSO",
         "FileNameFormat": "nino34.long.anom.data.txt",
         "DataRowRegEx": "^\\s*(?\u003Cyear\u003E\\d{4})\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
-        "NullValue": "-99.99",
-        "ValueAdjustment": null
+        "NullValue": "-99.99"
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "42c9195e-edc0-4894-97dc-923f9d5e72f0",
     "Name": "Carbon dioxide (CO\u2082) from the Mauna Loa Observatory",
     "ShortName": "Carbon Dioxide (CO\u2082)",
     "Description": "The carbon dioxide data on Mauna Loa constitute the longest record of direct measurements of CO2 in the atmosphere. They were started by C. David Keeling of the Scripps Institution of Oceanography in March of 1958 at a facility of the National Oceanic and Atmospheric Administration. NOAA started its own CO2 measurements in May of 1974, and they have run in parallel with those made by Scripps since then.",
-    "Publisher": null,
-    "PublisherUrl": null,
     "MoreInformationUrl": "https://gml.noaa.gov/ccgg/trends/mlo.html",
-    "StationInfoUrl": null,
-    "LocationInfoUrl": null,
     "DataDownloadUrl": "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt",
     "MeasurementDefinitions": [
       {
         "DataType": "CO2",
         "UnitOfMeasure": "PartsPerMillion",
         "DataResolution": "Monthly",
-        "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Reference\\CO2",
+        "FolderName": "Atmosphere",
         "FileNameFormat": "co2_mm_mlo.txt",
-        "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
-        "NullValue": null,
-        "ValueAdjustment": null
+        "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$"
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "2debe203-cbaa-4015-977c-2f40e2782547",
     "Name": "Methane (CH\u2084) from a globally distributed network",
     "ShortName": "Methane (CH\u2084)",
     "Description": "The Global Monitoring Division of NOAA\u0027s Earth System Research Laboratory has measured methane since 1983 at a globally distributed network of air sampling sites. A global average is constructed by first smoothing the data for each site as a function of time, and then smoothed values for each site are plotted as a function of latitude for 48 equal time steps per year. Global means are calculated from the latitude plot at each time step.",
-    "Publisher": null,
-    "PublisherUrl": null,
     "MoreInformationUrl": "https://gml.noaa.gov/ccgg/trends_ch4/",
-    "StationInfoUrl": null,
-    "LocationInfoUrl": null,
     "DataDownloadUrl": "https://gml.noaa.gov/webdata/ccgg/trends/ch4/ch4_mm_gl.txt",
     "MeasurementDefinitions": [
       {
         "DataType": "CH4",
         "UnitOfMeasure": "PartsPerBillion",
         "DataResolution": "Monthly",
-        "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Reference\\CH4",
+        "FolderName": "Atmosphere",
         "FileNameFormat": "ch4_mm_gl.txt",
-        "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
-        "NullValue": null,
-        "ValueAdjustment": null
+        "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$"
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "6e84e743-3c77-488f-8a1c-152306c3d6f0",
     "Name": "Nitrous oxide (N\u2082O) from a globally distributed network",
     "ShortName": "N\u2082O",
     "Description": "The Global Monitoring Division of NOAA\u0027s Earth System Research Laboratory has measured nitrous oxide since 2001 at a globally distributed network of air sampling sites. A global average is constructed by first smoothing the data for each site as a function of time, and then smoothed values for each site are fitted as a function of latitude at 48 equally-spaced time steps per year. Global means are calculated from the latitude fits at each time step.",
-    "Publisher": null,
-    "PublisherUrl": null,
     "MoreInformationUrl": "https://gml.noaa.gov/ccgg/trends_n2o/",
-    "StationInfoUrl": null,
-    "LocationInfoUrl": null,
     "DataDownloadUrl": "https://gml.noaa.gov/webdata/ccgg/trends/n2o/n2o_mm_gl.txt",
     "MeasurementDefinitions": [
       {
         "DataType": "N2O",
         "UnitOfMeasure": "PartsPerBillion",
         "DataResolution": "Monthly",
-        "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Reference\\N2O",
+        "FolderName": "Atmosphere",
         "FileNameFormat": "n2o_mm_gl.txt",
-        "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
-        "NullValue": null,
-        "ValueAdjustment": null
+        "DataRowRegEx": "^\\s\u002B(?\u003Cyear\u003E\\d\u002B)\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003CdecimalDate\u003E\\d\u002B\\.\\d\u002B)\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$"
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "a3841b12-2dd4-424b-a96e-c35ddba66efc",
     "Name": "Indian Ocean Dipole",
     "ShortName": "IOD",
     "Description": "Indian Ocean Dipole (IOD) events are driven by changes in the tropical Indian Ocean. Sustained changes in the difference between normal sea surface temperatures in the tropical western and eastern Indian Ocean are what characterise IOD events.\r\n\r\n        The IOD is commonly measured by an index (sometimes referred to as the Dipole Mode Index, or DMI) that is the difference between sea surface temperature (SST) anomalies in two regions of the tropical Indian Ocean (see map above):\r\n\r\n        IOD west: 50\u00B0E to 70\u00B0E and 10\u00B0S to 10\u00B0N\r\n        IOD east: 90\u00B0E to 110\u00B0E and 10\u00B0S to 0\u00B0S\r\n\r\n        A positive IOD period is characterised by cooler than average water in the tropical eastern Indian Ocean and warmer than average water in the tropical western Indian Ocean. Conversely, a negative IOD period is characterised by warmer than average water in the tropical eastern Indian Ocean and cooler than average water in the tropical western Indian Ocean.\r\n\r\n        For monitoring the IOD, Australian climatologists consider sustained values above \u002B0.4 \u00B0C as typical of a positive IOD, and values below \u22120.4 \u00B0C as typical of a negative IOD.",
-    "Publisher": null,
-    "PublisherUrl": null,
     "MoreInformationUrl": "http://www.bom.gov.au/climate/enso/indices/about.shtml",
-    "StationInfoUrl": null,
-    "LocationInfoUrl": null,
     "DataDownloadUrl": "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/dmi.had.long.data",
     "MeasurementDefinitions": [
       {
         "DataType": "IOD",
         "UnitOfMeasure": "DegreesCelsiusAnomaly",
         "DataResolution": "Monthly",
-        "DataAdjustment": null,
         "RowDataType": "TwelveMonthsPerRow",
-        "FolderName": "Reference\\IOD",
+        "FolderName": "Ocean\\IOD",
         "FileNameFormat": "dmi.had.long.data.txt",
         "DataRowRegEx": "^\\s*(?\u003Cyear\u003E\\d{4})\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)\\s\u002B(-?\\d\u002B\\.?\\d\u002B)$",
-        "NullValue": "-9999",
-        "ValueAdjustment": null
+        "NullValue": "-9999"
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "4ea1e30b-af74-4be8-b55d-c28764cf384e",
     "Name": "Arctic sea ice extent",
     "ShortName": "Arctic sea ice extent",
     "Description": "The daily Sea Ice Index provides a quick look at Arctic-wide changes in sea ice. It provides consistently processed daily ice extent and concentration images and data since 1979.",
-    "Publisher": null,
-    "PublisherUrl": null,
     "MoreInformationUrl": "https://nsidc.org/data/seaice_index/",
-    "StationInfoUrl": null,
-    "LocationInfoUrl": null,
     "DataDownloadUrl": "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v3.0.csv",
     "MeasurementDefinitions": [
       {
         "DataType": "NorthSeaIce",
         "UnitOfMeasure": "MillionSqKm",
         "DataResolution": "Daily",
-        "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Reference\\Ice",
+        "FolderName": "Ice",
         "FileNameFormat": "N_seaice_extent_daily_v3.0.csv",
-        "DataRowRegEx": "^(?\u003Cyear\u003E\\d\u002B),\\s\u002B(?\u003Cmonth\u003E\\d\u002B),\\s\u002B(?\u003Cday\u003E\\d\u002B),\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
-        "NullValue": null,
-        "ValueAdjustment": null
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d\u002B),\\s\u002B(?\u003Cmonth\u003E\\d\u002B),\\s\u002B(?\u003Cday\u003E\\d\u002B),\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$"
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "ec8af0ac-215f-4d9c-9770-cc24ee24fbc7",
     "Name": "Antarctic sea ice extent",
     "ShortName": "Antarctic sea ice extent",
     "Description": "The daily Sea Ice Index provides a quick look at Antarctic-wide changes in sea ice. It provides consistently processed daily ice extent and concentration images and data since 1979.",
-    "Publisher": null,
-    "PublisherUrl": null,
     "MoreInformationUrl": "https://nsidc.org/data/seaice_index/",
-    "StationInfoUrl": null,
-    "LocationInfoUrl": null,
     "DataDownloadUrl": "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/south/daily/data/S_seaice_extent_daily_v3.0.csv",
     "MeasurementDefinitions": [
       {
         "DataType": "SouthSeaIce",
         "UnitOfMeasure": "MillionSqKm",
         "DataResolution": "Daily",
-        "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Reference\\Ice",
+        "FolderName": "Ice",
         "FileNameFormat": "S_seaice_extent_daily_v3.0.csv",
-        "DataRowRegEx": "^(?\u003Cyear\u003E\\d\u002B),\\s\u002B(?\u003Cmonth\u003E\\d\u002B),\\s\u002B(?\u003Cday\u003E\\d\u002B),\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$",
-        "NullValue": null,
-        "ValueAdjustment": null
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d\u002B),\\s\u002B(?\u003Cmonth\u003E\\d\u002B),\\s\u002B(?\u003Cday\u003E\\d\u002B),\\s\u002B(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B).*$"
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "6484a7f8-43bc-4b16-8c4d-9168f8d6699c",
     "Name": "Greenland ice melt area",
     "ShortName": "Greenland ice melt",
     "Description": "Greenland ice melt area since 1979",
-    "Publisher": null,
-    "PublisherUrl": null,
     "MoreInformationUrl": "https://nsidc.org/greenland-today",
-    "StationInfoUrl": null,
-    "LocationInfoUrl": null,
     "DataDownloadUrl": "https://nsidc.org/api/greenland/melt_area/{year}",
     "MeasurementDefinitions": [
       {
         "DataType": "GreenlandIceMelt",
         "UnitOfMeasure": "SqKm",
         "DataResolution": "Daily",
-        "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Reference\\Ice",
+        "FolderName": "Ice",
         "FileNameFormat": "greenland-melt-area.csv",
-        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E\\d*).*$",
-        "NullValue": null,
-        "ValueAdjustment": null
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),(?\u003Cvalue\u003E\\d*).*$"
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "0561cf7e-83f2-4617-ac61-4962a0e95093",
     "Name": "Hadley Centre",
-    "ShortName": null,
     "Description": "The Met Office Hadley Centre is one of the UK\u0027s foremost climate change research centres.\r\n\r\nOur aim is to provide climate science and services to people and organisations, so they can make better decisions to stay safe and thrive. We do this by working with partners around the globe, carrying out world leading research.",
     "Publisher": "Met Office",
     "PublisherUrl": "https://www.metoffice.gov.uk/",
-    "MoreInformationUrl": null,
     "StationInfoUrl": "https://www.metoffice.gov.uk/hadobs/",
-    "LocationInfoUrl": null,
     "DataDownloadUrl": "https://www.metoffice.gov.uk/hadobs/hadcet/data/download.html",
     "MeasurementDefinitions": [
       {
@@ -664,9 +516,7 @@
         "RowDataType": "OneValuePerRow",
         "FolderName": "Temperature\\Met",
         "FileNameFormat": "maxtemp_daily_totals.txt",
-        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2})\\s\u002B(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*)$",
-        "NullValue": null,
-        "ValueAdjustment": null
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2})\\s\u002B(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*)$"
       },
       {
         "DataType": "TempMin",
@@ -676,24 +526,18 @@
         "RowDataType": "OneValuePerRow",
         "FolderName": "Temperature\\Met",
         "FileNameFormat": "mintemp_daily_totals.txt",
-        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2})\\s\u002B(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*)$",
-        "NullValue": null,
-        "ValueAdjustment": null
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2})\\s\u002B(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*)$"
       },
       {
-        "DataType": "Rainfall",
+        "DataType": "Precipitation",
         "UnitOfMeasure": "Millimetres",
         "DataResolution": "Daily",
-        "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Rainfall\\Met",
+        "FolderName": "Precipitation\\Met",
         "FileNameFormat": "HadCEP_daily_totals.txt",
-        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2})\\s\u002B(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*)$",
-        "NullValue": null,
-        "ValueAdjustment": null
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2})\\s\u002B(?\u003Cvalue\u003E-?[\\d\u002B\\.\\d\u002B]*)$"
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "e2d9a74b-3c30-4332-8b22-26bb14a0bdc7",
@@ -701,26 +545,20 @@
     "ShortName": "Sunspot number",
     "Description": "Sunspot number since 1818. On July 1st, 2015, the sunspot number series has been replaced by a new improved version (version 2.0) that includes several corrections of past inhomogeneities in the time series.",
     "Publisher": "WDC-SILSO, Royal Observatory of Belgium, Brussels",
-    "PublisherUrl": null,
     "MoreInformationUrl": "https://sidc.be/SILSO/newdataset",
-    "StationInfoUrl": null,
-    "LocationInfoUrl": null,
     "DataDownloadUrl": "https://sidc.be/SILSO/DATA/SN_d_tot_V2.0.txt",
     "MeasurementDefinitions": [
       {
         "DataType": "SunspotNumber",
         "UnitOfMeasure": "Sn",
         "DataResolution": "Daily",
-        "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Reference\\Solar",
+        "FolderName": "Solar",
         "FileNameFormat": "SN_d_tot_V2.0.txt",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s(?\u003Cday\u003E\\d{2})\\s\\d{4}\\.\\d{3}\\s\u002B(?\u003Cvalue\u003E-?\\d\u002B).*$",
-        "NullValue": "-1",
-        "ValueAdjustment": null
+        "NullValue": "-1"
       }
-    ],
-    "DataLocationMapping": null
+    ]
   },
   {
     "Id": "e45293f9-b7ac-4874-9544-25e006b6b998",
@@ -728,25 +566,39 @@
     "ShortName": "TSI",
     "Description": "The Solar Irradiance Climate Data Record (CDR) includes a composite observational record of total solar irradiance (TSI) constructed from space-based radiometer composite records between 1978 and 2014 and Total Irradiance Monitor (TIM) observations after the launch of the SOlar Radiation and Climate  Experiment (SORCE). The SORCE TIM record ended Feb 25, 2020. The TSIS-1 TIM record began Jan 11, 2018.",
     "Publisher": "National Oceanic and Atmospheric Administration (NOAA)",
-    "PublisherUrl": null,
     "MoreInformationUrl": "https://sidc.be/SILSO/newdataset",
-    "StationInfoUrl": null,
-    "LocationInfoUrl": null,
     "DataDownloadUrl": "https://www.ncei.noaa.gov/data/total-solar-irradiance/access/ancillary-data/tsi-ssi_v02r01_observed-tsi-composite_s19780101_e20230930_c20231010.txt",
     "MeasurementDefinitions": [
       {
         "DataType": "SolarRadiation",
         "UnitOfMeasure": "WattsPerSquareMetre",
         "DataResolution": "Daily",
-        "DataAdjustment": null,
         "RowDataType": "OneValuePerRow",
-        "FolderName": "Reference\\Solar",
+        "FolderName": "Solar",
         "FileNameFormat": "tsi-ssi_v02r01_observed-tsi-composite.txt",
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})-(?\u003Cmonth\u003E\\d{2})-(?\u003Cday\u003E\\d{2}),\u002B(?\u003Cvalue\u003E-?\\d\u002B\\.*\\d*),.*$$",
-        "NullValue": "-99.0",
-        "ValueAdjustment": null
+        "NullValue": "-99.0"
       }
-    ],
-    "DataLocationMapping": null
+    ]
+  },
+  {
+    "Id": "e61c6279-edf4-461b-bdd1-0724d21f42f3",
+    "Name": "Global temperature anomaly",
+    "ShortName": "Global temp",
+    "Description": "The NOAA Merged Land Ocean Global Surface Temperature Analysis (NOAAGlobalTemp, formerly known as MLOST) combines long-term sea surface (water) temperature (SST) and land surface (air) temperature datasets to create a complete, accurate depiction of global temperature trends. The dataset is used to support climate monitoring activities such as the Monthly Global Climate Assessment, and also provides input data for a number of climate models.",
+    "Publisher": "National Oceanic and Atmospheric Administration (NOAA)",
+    "MoreInformationUrl": "https://www.ncei.noaa.gov/products/land-based-station/noaa-global-temp",
+    "DataDownloadUrl": "aravg.mon.land.90S.90N.v5.1.0.[year][month].asc",
+    "MeasurementDefinitions": [
+      {
+        "DataType": "TempMean",
+        "UnitOfMeasure": "DegreesCelsiusAnomaly",
+        "DataResolution": "Monthly",
+        "RowDataType": "OneValuePerRow",
+        "FolderName": "Temperature\\NOAAGlobalTemp",
+        "FileNameFormat": "aravg.mon.[station].v5.1.0.202311.asc",
+        "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003Cvalue\u003E-?\\d\u002B\\.\\d\u002B).*$"
+      }
+    ]
   }
 ]

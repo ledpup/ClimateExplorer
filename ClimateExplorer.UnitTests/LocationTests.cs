@@ -8,12 +8,12 @@ namespace ClimateExplorer.UnitTests;
 public class LocationTests
 {
     [TestMethod]
-    [DataRow("Portoviejo", "Ecuador", "Portoviejo, Ecuador", "Portoviejo, Ecuador", "Portoviejo, Ecuador")]
+    [DataRow("Portoviejo", "Ecuador", "Portoviejo", "Portoviejo, Ecuador", "Portoviejo, Ecuador")]
     [DataRow("Puyo", "Ecuador", "Puyo, Ecuador", "Puyo, Ecuador", "Puyo, Ecuador")]
-    [DataRow("Pichilingue", "Ecuador", "Pichilingue, Ecuador", "Pichilingue, Ecuador", "Pichilingue, Ecuador")]
+    [DataRow("Pichilingue", "Ecuador", "Pichilingue", "Pichilingue, Ecuador", "Pichilingue, Ecuador")]
     [DataRow("Pisco Intl", "Peru", "Pisco Intl, Peru", "Pisco Intl, Peru", "Pisco Intl, Peru")]
     [DataRow("Jorge Chavez Intl", "Peru", "Jorge Chavez Intl", "Jorge Chavez Intl, Peru", "Jorge Chavez Intl, Peru")]
-    [DataRow("Canberra", "Australia", "Canberra, Australia", "Canberra, Australia", "Canberra, Australia")]
+    [DataRow("Canberra", "Australia", "Canberra", "Canberra, Australia", "Canberra, Australia")]
     [DataRow("Cali Alfonso Bonill", "Colombia", "Cali Alfonso Bonill", "Cali Alfonso Bonill, Colombia", "Cali Alfonso Bonill, Colombia")]
 
     [DataRow("Westermarkelsdorf Fehmarn", "Germany", "Westermarkelsdorf Fehmarn", "Westermarkelsdorf Fehmarn, Germany", "Westermarkelsdorf Fehmarn, Germany")]
@@ -22,9 +22,9 @@ public class LocationTests
     [DataRow("Hato", "Netherlands Antilles [Netherlands]", "Hato", "Hato, Netherlands Antilles", "Hato, Netherlands Antilles [Netherlands]")]
 
     [DataRow("Le Lamentin", "Martinique [France]", "Le Lamentin", "Le Lamentin, Martinique", "Le Lamentin, Martinique [France]")]
-    [DataRow("Coloso", "Puerto Rico [United States of America]", "Coloso, Puerto Rico", "Coloso, Puerto Rico", "Coloso, Puerto Rico [United States of America]")]
+    [DataRow("Coloso", "Puerto Rico [United States of America]", "Coloso", "Coloso, Puerto Rico", "Coloso, Puerto Rico [United States of America]")]
     [DataRow("Bird Island", "South Georgia and the South Sandwich Islands [United Kingdom]", "Bird Island", "Bird Island, South Georgia and the South Sandwich Islands", "Bird Island, South Georgia and the South Sandwich Islands [United Kingdom]")]
-    [DataRow("Gibraltar", "Gibraltar [United Kingdom]", "Gibraltar, Gibraltar", "Gibraltar, Gibraltar", "Gibraltar, Gibraltar [United Kingdom]")]
+    [DataRow("Gibraltar", "Gibraltar [United Kingdom]", "Gibraltar", "Gibraltar, Gibraltar", "Gibraltar, Gibraltar [United Kingdom]")]
 
     public void LocationName(string name, string country, string title, string shorterTitle, string fullTitle)
     {

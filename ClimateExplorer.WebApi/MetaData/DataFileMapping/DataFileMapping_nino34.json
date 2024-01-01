@@ -1,0 +1,10 @@
+{
+  "DataSetDefinitionId": "bfbaa69b-c10d-4de3-a78c-1ed6ff307327",
+  "LocationIdToDataFileMappings": {
+    "379ACE49-0B44-4B47-AB61-3B6E09C27C82": [
+      {
+        "Id": "Earth"
+      }
+    ]
+  }
+}

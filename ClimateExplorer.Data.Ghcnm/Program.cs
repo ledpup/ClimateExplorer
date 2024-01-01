@@ -41,14 +41,16 @@ var fullStations = await GetStations("qcf", dataStations);
 
 logger.LogInformation($"{fullStations.Count} stations found by reading the meta-data file and combining with country and stations found via the data files");
 
-var filteredStations = FilterStationsByRecencyAndMinimumScore(fullStations, (short)(DateTime.Now.Year - 10), IndexCalculator.MinimumNumberOfYearsToCalculateIndex);
+var filteredStations = FilterStationsByRecencyAndMinimumScore(fullStations, (short)(DateTime.Now.Year - 10), AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly);
 
-logger.LogInformation($"{filteredStations.Count} stations remaining after filtering based on recency and longevity of the data (records no longer than {DateTime.Now.Year - 10}) and at least {IndexCalculator.MinimumNumberOfYearsToCalculateIndex} years of data");
+logger.LogInformation($"{filteredStations.Count} stations remaining after filtering based on recency and longevity of the data (records no longer than {DateTime.Now.Year - 10}) and at least {AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly} years of data");
 
 var combinedStations = await EnsureCountryRepresentation(fullStations, filteredStations, (short)(DateTime.Now.Year - 10));
 
 logger.LogInformation($"{combinedStations.Count} stations after adjusting for country representation (trying to having at least 5 stations per country, even if the data is poor)");
 
+// Germany and the US had a poor representation of stations over the map (due to quantity and density).
+// Have changed the distance to be more favourable to selecting a good representation.
 var countryDistanceOverride = new Dictionary<string, int>
 {
     { "GM", 45 },
@@ -78,7 +80,7 @@ var selectedStations = await RemoveDuplicateLocations(selectedStationsPostCluste
 logger.LogInformation($"{selectedStations.Count} stations have been selected after adjusting for data quality, cluster using DBSCAN and removing of duplicates due to pre-existing locations");
 
 var locations = new List<Location>();
-var dataFileLocationMapping = new DataFileLocationMapping
+var dataFileMapping = new DataFileMapping
 {
     DataSetDefinitionId = Guid.Parse("1DC38F20-3606-4D90-A2A0-84F93E75C964"),
     LocationIdToDataFileMappings = new Dictionary<Guid, List<DataFileFilterAndAdjustment>>()
@@ -97,37 +99,34 @@ selectedStations.ForEach(x =>
         };
         locations.Add(location);
 
-        dataFileLocationMapping.LocationIdToDataFileMappings.Add(
+        dataFileMapping.LocationIdToDataFileMappings.Add(
             location.Id, 
-            new List<DataFileFilterAndAdjustment>
-            {
-                new DataFileFilterAndAdjustment
+            [
+                new()
                 {
                     Id = x.Id
                 }
-            });
+            ]);
     });
 
 var jsonSerializerOptions = new JsonSerializerOptions
 {
     WriteIndented = true,
-    Converters =
-        {
-            new JsonStringEnumConverter()
-        }
+    Converters = { new JsonStringEnumConverter() },
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
 };
 
 SaveStations(selectedStations, selectedStationsFileJson);
 
 Directory.CreateDirectory(@"Output\Location");
 Directory.CreateDirectory(@"Output\Station");
-Directory.CreateDirectory(@"Output\DataFileLocationMapping");
+Directory.CreateDirectory(@"Output\DataFileMapping");
 
 var outputFileSuffix = "_ghcnm_adjusted";
 
 File.WriteAllText($@"Output\Location\Locations{outputFileSuffix}.json", JsonSerializer.Serialize(locations, jsonSerializerOptions));
 File.WriteAllText($@"Output\Station\Stations{outputFileSuffix}.json", JsonSerializer.Serialize(selectedStations, jsonSerializerOptions));
-File.WriteAllText($@"Output\DataFileLocationMapping\DataFileLocationMapping{outputFileSuffix}.json", JsonSerializer.Serialize(dataFileLocationMapping, jsonSerializerOptions));
+File.WriteAllText($@"Output\DataFileMapping\DataFileMapping{outputFileSuffix}.json", JsonSerializer.Serialize(dataFileMapping, jsonSerializerOptions));
 
 
 
@@ -341,6 +340,7 @@ void SaveStations(List<Station> stations, string path)
     var options = new JsonSerializerOptions
     {
         WriteIndented = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     };
     var contents = JsonSerializer.Serialize(stations, options);
     File.WriteAllText(path, contents);
@@ -450,6 +450,7 @@ static async Task<Dictionary<string, Guid>> GetGhcnIdToLocationIds(List<Station>
         var jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         };
         var contents = JsonSerializer.Serialize(ghcnIdToLocationIds, jsonOptions);
         await File.WriteAllTextAsync(ghcnIdToLocationIdsFile, contents);
