@@ -90,7 +90,7 @@ public class Region : GeographicalEntity
             new Region
             {
                 Id = RegionId("Australia"),
-                Name = "ACORN-SAT - excluding urban heat-influenced", // Excluded are: Sydney, Melbourne, Adelaide and Hobart + Laverton, Richmond (NSW), Townsville and Rockhampton
+                Name = "Australia", // Excluded: Sydney, Melbourne, Adelaide and Hobart + Laverton, Richmond (NSW), Townsville and Rockhampton
                 LocationIds =
                 [
                     new("cbb11150-ec74-4401-8357-fae6fef70768"),
