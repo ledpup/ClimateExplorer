@@ -16,6 +16,23 @@ var stations = new List<Station>()
     new() {
         Id = "ocean.90S.90N",
     },
+
+    new() {
+        Id = "land_ocean.00N.90N",
+    },
+    new() {
+        Id = "land_ocean.90S.00N",
+    },
+
+    new() {
+        Id = "land_ocean.60N.90N",
+    },
+    new() {
+        Id = "land_ocean.90S.60S",
+    },
+    new() {
+        Id = "land_ocean.60S.60N",
+    },
 };
 
 var dataFileMapping = new DataFileMapping
@@ -52,7 +69,59 @@ var dataFileMapping = new DataFileMapping
                     Id = "ocean.90S.90N",
                 }
             }
-        }
+        },
+
+        {
+            Region.RegionId(Region.NorthernHemi),
+            new()
+            {
+                new()
+                {
+                    Id = "land_ocean.00N.90N",
+                }
+            }
+        },
+        {
+        Region.RegionId(Region.SouthernHemi),
+            new()
+            {
+                new()
+                {
+                    Id = "land_ocean.90S.00N",
+                }
+            }
+        },
+
+        {
+            Region.RegionId(Region.Arctic),
+            new()
+            {
+                new()
+                {
+                    Id = "land_ocean.60N.90N",
+                }
+            }
+        },
+        {
+            Region.RegionId(Region.Antarctic),
+            new()
+            {
+                new()
+                {
+                    Id = "land_ocean.90S.60S",
+                }
+            }
+        },
+        {
+        Region.RegionId(Region.R60S60N),
+            new()
+            {
+                new()
+                {
+                    Id = "land_ocean.60S.60N",
+                }
+            }
+        },
     }
 };
 
