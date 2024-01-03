@@ -7,5 +7,20 @@
   },
   {
     "Id": "ocean.90S.90N"
+  },
+  {
+    "Id": "land_ocean.00N.90N"
+  },
+  {
+    "Id": "land_ocean.90S.00N"
+  },
+  {
+    "Id": "land_ocean.60N.90N"
+  },
+  {
+    "Id": "land_ocean.90S.60S"
+  },
+  {
+    "Id": "land_ocean.60S.60N"
   }
 ]
