@@ -1,6 +1,6 @@
 # Climate Explorer
 
-[Climate Explorer](https://www.climateexplorer.net/) is a website to help people understand climate change. It's focussed on trying to provide a simple and approachable interface for people to explore the changes to climate in their region. This github site is the digital repository for everything used to bring [the website](https://www.climateexplorer.net/) together.
+[Climate Explorer](https://climateexplorer.net/) is a website to help people understand climate change. It's focussed on trying to provide a simple and approachable interface for people to explore the changes to climate in their region. This github site is the digital repository for everything used to bring [the website](https://climateexplorer.net/) together.
 
 ## Architecture and code
 - Built in [Visual Studio 2022 Community Edition](https://visualstudio.microsoft.com/vs/community/) using
