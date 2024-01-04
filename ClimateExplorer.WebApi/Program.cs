@@ -132,24 +132,26 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
     return dtos;
 }
 
-async Task<IEnumerable<Location>> GetLocations(Guid? locationId = null, bool includeWarmingAnomaly = false)
+async Task<IEnumerable<Location>> GetLocations(Guid? locationId = null)
 {
-    string cacheKey = $"Locations_{locationId}_{includeWarmingAnomaly}";
+    string cacheKey = $"Locations_{locationId}";
 
     var result = await _cache.Get<Location[]>(cacheKey);
 
     if (result != null) return result;
 
-    var allLocations = (await Location.GetLocations()).OrderBy(x => x.Name);
-    IEnumerable<Location> locations = allLocations;
+    IEnumerable<Location> locations;
 
     if (locationId != null)
     {
+        var allLocations = (await GetLocations(null)).OrderBy(x => x.Name);
         locations = allLocations.Where(x => x.Id == locationId);
+        Location.SetNearbyLocations(locations.Single(), allLocations.ToList());
     }
-
-    if (includeWarmingAnomaly)
+    else
     {
+        locations = (await Location.GetLocations()).OrderBy(x => x.Name);
+
         var definitions = await GetDataSetDefinitions();
 
         // For each location, retrieve the TempMax dataset (Adjusted if available, Adjustment null otherwise), and copy its WarmingAnomaly
@@ -204,16 +206,7 @@ async Task<IEnumerable<Location>> GetLocations(Guid? locationId = null, bool inc
             }
         }
 
-        // heatingScore is calculated across the full set of locations. If we've been asked for details on just one location, we don't calculate it.
-        if (locationId == null)
-        {
-            Location.SetHeatingScores(allLocations);
-        }
-    }
-
-    if (locations.Count() == 1)
-    {
-        Location.SetNearbyLocations(allLocations.ToList());
+        Location.SetHeatingScores(locations);
     }
 
     await _cache.Put(cacheKey, locations.ToArray());
