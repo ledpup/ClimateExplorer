@@ -84,12 +84,8 @@
                 segments.Add("Solar radiation");
                 break;
 
-            case DataType.SouthSeaIce:
-                segments.Add("Antarctic sea ice extent");
-                break;
-
-            case DataType.NorthSeaIce:
-                segments.Add("Arctic sea ice extent");
+            case DataType.SeaIceExtent:
+                segments.Add("Sea ice extent");
                 break;
         }
 
@@ -404,7 +400,7 @@
                                         new DataSetLibraryEntry.SourceSeriesSpecification
                                         {
                                             SourceDataSetId = Guid.Parse("EC8AF0AC-215F-4D9C-9770-CC24EE24FBC7"),
-                                            DataType = DataType.SouthSeaIce
+                                            DataType = DataType.SeaIceExtent
                                         }
                                     }
                             },
@@ -417,7 +413,7 @@
                                         new DataSetLibraryEntry.SourceSeriesSpecification
                                         {
                                             SourceDataSetId = Guid.Parse("4EA1E30B-AF74-4BE8-B55D-C28764CF384E"),
-                                            DataType = DataType.NorthSeaIce
+                                            DataType = DataType.SeaIceExtent
                                         }
                                     }
                             },
@@ -430,7 +426,7 @@
                                         new DataSetLibraryEntry.SourceSeriesSpecification
                                         {
                                             SourceDataSetId = Guid.Parse("6484a7f8-43bc-4b16-8c4d-9168f8d6699c"),
-                                            DataType = DataType.GreenlandIceMelt
+                                            DataType = DataType.IceMeltArea
                                         }
                                     }
                             },

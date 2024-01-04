@@ -22,9 +22,8 @@ public static class Enums
         N2O,
         IOD,
 
-        NorthSeaIce,
-        SouthSeaIce,
-        GreenlandIceMelt,
+        SeaIceExtent,
+        IceMeltArea,
 
         SunspotNumber,
     }
