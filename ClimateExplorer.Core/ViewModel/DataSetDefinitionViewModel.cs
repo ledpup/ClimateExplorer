@@ -35,7 +35,7 @@ public class DataSetDefinitionViewModel
 
     public static DataSetAndMeasurementDefinition? GetDataSetDefinitionAndMeasurement(
             IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions,
-            Guid? locationId,
+            Guid locationId,
             List<DataSubstitute> dataSubstitutes,
             bool throwIfNoMatch = true)
     {
@@ -44,32 +44,19 @@ public class DataSetDefinitionViewModel
         Enums.DataType? dataType = null;
         DataAdjustment? dataAdjustment = null;
 
-        if (locationId == null)
+        foreach (var dataMatch in dataSubstitutes)
         {
-            // Reference data
-            var dataMatch = dataSubstitutes.Single();
             dataType = dataMatch.DataType;
             dataAdjustment = dataMatch.DataAdjustment;
-            dsds = dataSetDefinitions.Where(x => x.LocationIds == null
-                                                 && x.MeasurementDefinitions!.Any(y => y.DataType == dataType && y.DataAdjustment == dataAdjustment))
-                                         .ToList();
-        }
-        else
-        {
-            foreach (var dataMatch in dataSubstitutes)
-            {
-                dataType = dataMatch.DataType;
-                dataAdjustment = dataMatch.DataAdjustment;
-                dsds = dataSetDefinitions.Where(x => x.LocationIds != null
-                                                  && x.LocationIds.Any(y => y == locationId)
-                                                  && x.MeasurementDefinitions!.Any(y => y.DataType == dataType && y.DataAdjustment == dataAdjustment))
-                                         .ToList();
+            dsds = dataSetDefinitions.Where(x => x.LocationIds != null
+                                                && x.LocationIds.Any(y => y == locationId)
+                                                && x.MeasurementDefinitions!.Any(y => y.DataType == dataType && y.DataAdjustment == dataAdjustment))
+                                        .ToList();
 
-                // If we find a match, break out of the search (we need to order the matches on preference
-                if (dsds.Any())
-                {
-                    break;
-                }
+            // If we find a match, break out of the search (we need to order the matches on preference
+            if (dsds.Any())
+            {
+                break;
             }
         }
 

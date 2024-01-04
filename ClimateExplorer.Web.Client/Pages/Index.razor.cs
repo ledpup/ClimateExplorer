@@ -248,15 +248,19 @@ public partial class Index : ChartablePage
             {
                 if (!csd.IsLocked)
                 {
-                    // If this source series is a simple series (only one data source), or we're not changing location, or this series belongs
-                    // to the location we were previously on. (this check is to ensure that when the user changes location, when
-                    // we update compound series that are comparing across locations, we don't update both source series to the
-                    // same location, which would be nonsense.)
-                    if (csd.SourceSeriesSpecifications.Length == 1 || PreviousLocation == null || sss.LocationId == PreviousLocation.Id)
+                    // If this source series is
+                    // 1) a simple series (only one data source), or
+                    // 2) we're not changing location, or
+                    // 3) this series belongs to the location we were previously on.
+                    // (This check is to ensure that when the user changes location, when we update compound series that are comparing
+                    // across locations, we don't update both source series to the same location, which would be nonsense.)
+                    // Furthermore, we only run location change substition for geographical entities that are locations. If it is a region, we skip this.
+                    if ((csd.SourceSeriesSpecifications.Length == 1 || PreviousLocation == null || sss.LocationId == PreviousLocation.Id)
+                            && !Regions!.Any(x => x.Id == sss.LocationId))
                     {
                         sss.LocationId = newValue;
                         sss.LocationName = SelectedLocation.Name;
-
+                        
                         var dataMatches = new List<DataSubstitute>
                         {
                             new DataSubstitute
