@@ -132,22 +132,21 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
     return dtos;
 }
 
-async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool includeNearbyLocations = false, bool includeWarmingAnomaly = false)
+async Task<IEnumerable<Location>> GetLocations(Guid? locationId = null, bool includeWarmingAnomaly = false)
 {
-    string cacheKey = $"Locations_{locationId}_{includeNearbyLocations}_{includeWarmingAnomaly}";
+    string cacheKey = $"Locations_{locationId}_{includeWarmingAnomaly}";
 
     var result = await _cache.Get<Location[]>(cacheKey);
 
     if (result != null) return result;
 
-    IEnumerable<Location> locations = (await Location.GetLocations()).OrderBy(x => x.Name);
-    
+    var allLocations = (await Location.GetLocations()).OrderBy(x => x.Name);
+    IEnumerable<Location> locations = allLocations;
+
     if (locationId != null)
     {
-        locations = locations.Where(x => x.Id == Guid.Parse(locationId));
+        locations = allLocations.Where(x => x.Id == locationId);
     }
-
-    locations = locations.ToList();
 
     if (includeWarmingAnomaly)
     {
@@ -208,13 +207,13 @@ async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool in
         // heatingScore is calculated across the full set of locations. If we've been asked for details on just one location, we don't calculate it.
         if (locationId == null)
         {
-            Location.SetHeatingScores(locations);
+            Location.SetHeatingScores(allLocations);
         }
     }
 
-    if (includeNearbyLocations)
+    if (locations.Count() == 1)
     {
-        Location.SetNearbyLocations(locations.ToList());
+        Location.SetNearbyLocations(allLocations.ToList());
     }
 
     await _cache.Put(cacheKey, locations.ToArray());
