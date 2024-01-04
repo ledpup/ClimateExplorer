@@ -79,63 +79,56 @@
 </Modal>
 
 @code {
-Modal? modal;
+    Modal? modal;
 
-[Parameter]
-public IEnumerable<Location>? Locations { get; set; }
+    [Parameter]
+    public IEnumerable<Location>? Locations { get; set; }
 
-[Parameter]
-public Location? SelectedLocation { get; set; }
+    [Parameter]
+    public Location? SelectedLocation { get; set; }
 
-[Parameter]
-public string? BrowserLocationErrorMessage { get; set; }
+    [Parameter]
+    public string? BrowserLocationErrorMessage { get; set; }
 
-[Parameter]
-public EventCallback<Guid> OnLocationChange { get; set; }
+    [Parameter]
+    public EventCallback<Guid> OnLocationChange { get; set; }
 
-[Parameter]
-public EventCallback SetCurrentLocation { get; set; }
+    [Parameter]
+    public EventCallback SetCurrentLocation { get; set; }
 
-Dictionary<Guid, List<Location>>? nearbyLocationCache;
+    Dictionary<Guid, List<Location>>? nearbyLocationCache;
 
-protected override void OnInitialized()
-{
-    nearbyLocationCache = new Dictionary<Guid, List<Location>>();
-}
-
-protected override void OnParametersSet()
-{
-    if (Locations != null)
+    protected override void OnInitialized()
     {
-        Locations = Locations.OrderBy(x => x.Name);
-        if (SelectedLocation?.NearbyLocations != null)
-        {
-            if (!nearbyLocationCache!.ContainsKey(SelectedLocation.Id))
-            {
-                var locations = new List<Location>();
-                SelectedLocation!.NearbyLocations!.ForEach(x => locations.Add(Locations.Single(y => y.Id == x.LocationId)));
-                nearbyLocationCache.Add(SelectedLocation.Id, locations);
-            }
+        nearbyLocationCache = new Dictionary<Guid, List<Location>>();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (Locations != null && SelectedLocation != null && !nearbyLocationCache!.ContainsKey(SelectedLocation.Id))
+        {            
+            var locations = new List<Location>();
+            SelectedLocation!.NearbyLocations!.ForEach(x => locations.Add(Locations.Single(y => y.Id == x.LocationId)));
+            nearbyLocationCache.Add(SelectedLocation.Id, locations);
         }
     }
-}
 
-public Task Show()
-{
-    return modal!.Show();
-}
-public Task Hide()
-{
-    return modal!.Hide();
-}
+    public Task Show()
+    {
+        return modal!.Show();
+    }
+    public Task Hide()
+    {
+        return modal!.Hide();
+    }
 
-async Task FireUseCurrentLocation()
-{
-    await SetCurrentLocation.InvokeAsync();
-}
+    async Task FireUseCurrentLocation()
+    {
+        await SetCurrentLocation.InvokeAsync();
+    }
 
-async Task FireOnLocationChange(Guid locationId)
-{
-    await OnLocationChange.InvokeAsync(locationId);
-}
+    async Task FireOnLocationChange(Guid locationId)
+    {
+        await OnLocationChange.InvokeAsync(locationId);
+    }
 }

@@ -42,7 +42,7 @@ public partial class Index : ChartablePage
 
         if (firstRender)
         {
-            Locations = (await DataService!.GetLocations(includeNearbyLocations: true, includeWarmingAnomaly: true)).ToList();
+            Locations = (await DataService!.GetLocations(includeWarmingAnomaly: true)).ToList();
             Regions = (await DataService!.GetRegions()).ToList();
 
             var geographicalEntities = new List<GeographicalEntity>();
@@ -235,7 +235,7 @@ public partial class Index : ChartablePage
         }
 
         SelectedLocationId = newValue;
-        SelectedLocation = Locations!.Single(x => x.Id == SelectedLocationId);
+        SelectedLocation = (await DataService!.GetLocations(SelectedLocationId, true)).Single();
 
         await LocalStorage!.SetItemAsync("lastLocationId", SelectedLocationId.ToString());
 

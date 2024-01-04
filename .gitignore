@@ -366,8 +366,8 @@ FodyWeavers.xsd
 /ClimateExplorer.WebApi/cache/*
 
 # Include the locations cache because it takes some time to generate
-!/ClimateExplorer.WebApi/cache/hash_-1417604819.json
-!/ClimateExplorer.WebApi/cache/ee19a6b6-b09a-4564-ba60-298584aa8141.json
+!/ClimateExplorer.WebApi/cache/hash_-152510748.json
+!/ClimateExplorer.WebApi/cache/603aa7aa-6fa1-4ba4-90d2-1d07ab27c8e2.json
 
 !/ClimateExplorer.WebApi/cache/hash_287116763.json
 !/ClimateExplorer.WebApi/cache/d8a5c359-3f54-44f5-86d1-62459bb19721.json
