@@ -28,8 +28,12 @@
     <Content Include="cache\d8a5c359-3f54-44f5-86d1-62459bb19721.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cache\ee19a6b6-b09a-4564-ba60-298584aa8141.json" />
-    <Content Include="cache\hash_-1417604819.json" />
+    <Content Include="cache\ee19a6b6-b09a-4564-ba60-298584aa8141.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cache\hash_-1417604819.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="cache\hash_-1555916136.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
