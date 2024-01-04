@@ -140,7 +140,7 @@ public class DataService : IDataService
         return dataSetDefinitions!;
     }
 
-    public async Task<IEnumerable<Location>> GetLocations(string? dataSetName = null, bool includeNearbyLocations = false, bool includeWarmingAnomaly = false, bool excludeLocationsWithNullWarmingAnomaly = true)
+    public async Task<IEnumerable<Location>> GetLocations(string? dataSetName = null, bool includeNearbyLocations = false, bool includeWarmingAnomaly = false)
     {
         var url = $"/location";
         if (dataSetName != null)
@@ -149,7 +149,6 @@ public class DataService : IDataService
         }
         url = QueryHelpers.AddQueryString(url, "includeNearbyLocations", includeNearbyLocations.ToString());
         url = QueryHelpers.AddQueryString(url, "includeWarmingAnomaly", includeWarmingAnomaly.ToString());
-        url = QueryHelpers.AddQueryString(url, "excludeLocationsWithNullWarmingAnomaly", excludeLocationsWithNullWarmingAnomaly.ToString());
 
         var locations = await _httpClient.GetFromJsonAsync<Location[]>(url);
         return locations!;

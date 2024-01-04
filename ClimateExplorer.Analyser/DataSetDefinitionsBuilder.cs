@@ -515,7 +515,7 @@ internal class DataSetDefinitionsBuilder
                 MeasurementDefinitions =
                 [
                     new() {
-                        DataType = DataType.NorthSeaIce,
+                        DataType = DataType.SeaIceExtent,
                         UnitOfMeasure = UnitOfMeasure.MillionSqKm,
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
@@ -535,7 +535,7 @@ internal class DataSetDefinitionsBuilder
                 MeasurementDefinitions =
                 [
                     new() {
-                        DataType = DataType.SouthSeaIce,
+                        DataType = DataType.SeaIceExtent,
                         UnitOfMeasure = UnitOfMeasure.MillionSqKm,
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
@@ -555,7 +555,7 @@ internal class DataSetDefinitionsBuilder
                 MeasurementDefinitions =
                 [
                     new() {
-                        DataType = DataType.GreenlandIceMelt,
+                        DataType = DataType.IceMeltArea,
                         UnitOfMeasure = UnitOfMeasure.SqKm,
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,

@@ -451,7 +451,7 @@
     "DataDownloadUrl": "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v3.0.csv",
     "MeasurementDefinitions": [
       {
-        "DataType": "NorthSeaIce",
+        "DataType": "SeaIceExtent",
         "UnitOfMeasure": "MillionSqKm",
         "DataResolution": "Daily",
         "RowDataType": "OneValuePerRow",
@@ -470,7 +470,7 @@
     "DataDownloadUrl": "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/south/daily/data/S_seaice_extent_daily_v3.0.csv",
     "MeasurementDefinitions": [
       {
-        "DataType": "SouthSeaIce",
+        "DataType": "SeaIceExtent",
         "UnitOfMeasure": "MillionSqKm",
         "DataResolution": "Daily",
         "RowDataType": "OneValuePerRow",
@@ -489,7 +489,7 @@
     "DataDownloadUrl": "https://nsidc.org/api/greenland/melt_area/{year}",
     "MeasurementDefinitions": [
       {
-        "DataType": "GreenlandIceMelt",
+        "DataType": "IceMeltArea",
         "UnitOfMeasure": "SqKm",
         "DataResolution": "Daily",
         "RowDataType": "OneValuePerRow",

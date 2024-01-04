@@ -42,7 +42,13 @@ public partial class Index : ChartablePage
 
         if (firstRender)
         {
-            Locations = (await DataService!.GetLocations(includeNearbyLocations: true, includeWarmingAnomaly: true, excludeLocationsWithNullWarmingAnomaly: false)).ToList();
+            Locations = (await DataService!.GetLocations(includeNearbyLocations: true, includeWarmingAnomaly: true)).ToList();
+            Regions = (await DataService!.GetRegions()).ToList();
+
+            var geographicalEntities = new List<GeographicalEntity>();
+            geographicalEntities.AddRange(Locations);
+            geographicalEntities.AddRange(Regions);
+            GeographicalEntities = geographicalEntities;
 
             var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
             GetLocationIdViaNameFromPath(uri);

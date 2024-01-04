@@ -378,9 +378,9 @@ public static class SuggestedPresetLists
         var ch4 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Atmosphere"), DataType.CH4, null, throwIfNoMatch: true);
         var n2o = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Atmosphere"), DataType.N2O, null, throwIfNoMatch: true);
 
-        var northSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Arctic), DataType.NorthSeaIce, null, throwIfNoMatch: true);
-        var southSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Antarctic), DataType.SouthSeaIce, null, throwIfNoMatch: true);
-        var greenland = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Greenland"), DataType.GreenlandIceMelt, null, throwIfNoMatch: true);
+        var northSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Arctic), DataType.SeaIceExtent, null, throwIfNoMatch: true);
+        var southSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Antarctic), DataType.SeaIceExtent, null, throwIfNoMatch: true);
+        var greenland = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Greenland"), DataType.IceMeltArea, null, throwIfNoMatch: true);
 
         var nino34 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Earth"), DataType.Nino34, null, throwIfNoMatch: true);
         var oni = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Earth"), DataType.ONI, null, throwIfNoMatch: true);
@@ -544,7 +544,7 @@ public static class SuggestedPresetLists
                 Variants = [
                     new ()
                     {
-                        Title = "North vs South",
+                        Title = "North vs south",
                         Description = "Combined land and ocean temperature anomalies for the Northern and Southern Hemisphere",
                         ChartSeriesList =
                             [
