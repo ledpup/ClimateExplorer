@@ -114,14 +114,11 @@ public class Location : GeographicalEntity
         locations.ForEach(x => x.Country = countries[x.CountryCode!].Name);
     }
 
-    public static void SetNearbyLocations(List<Location>? locations)
+    public static void SetNearbyLocations(Location location, List<Location>? locations)
     {
-        Parallel.ForEach(locations!, location =>
-        {
-            var distances = GetDistances(location, locations!);
+        var distances = GetDistances(location, locations!);
 
-            location.NearbyLocations = distances.OrderBy(x => x.Distance).Take(10).ToList();
-        });
+        location.NearbyLocations = distances.OrderBy(x => x.Distance).Take(10).ToList();
     }
 
     public static List<LocationDistance> GetDistances(Location location, List<Location> locations)
