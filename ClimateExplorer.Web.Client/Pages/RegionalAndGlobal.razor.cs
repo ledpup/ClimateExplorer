@@ -21,7 +21,8 @@ public partial class RegionalAndGlobal : ChartablePage
 
         if (firstRender)
         {
-            Locations = (await DataService!.GetLocations()).ToList();   
+            Regions = (await DataService!.GetRegions()).ToList();
+            GeographicalEntities = Regions;
         }
 
         if (!finishedSetup)

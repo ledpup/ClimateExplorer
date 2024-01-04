@@ -132,9 +132,9 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
     return dtos;
 }
 
-async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool includeNearbyLocations = false, bool includeWarmingAnomaly = false, bool excludeLocationsWithNullWarmingAnomaly = false)
+async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool includeNearbyLocations = false, bool includeWarmingAnomaly = false)
 {
-    string cacheKey = $"Locations_{locationId}_{includeNearbyLocations}_{includeWarmingAnomaly}_{excludeLocationsWithNullWarmingAnomaly}";
+    string cacheKey = $"Locations_{locationId}_{includeNearbyLocations}_{includeWarmingAnomaly}";
 
     var result = await _cache.Get<Location[]>(cacheKey);
 
@@ -210,11 +210,6 @@ async Task<IEnumerable<Location>> GetLocations(string locationId = null, bool in
         {
             Location.SetHeatingScores(locations);
         }
-    }
-
-    if (includeWarmingAnomaly && excludeLocationsWithNullWarmingAnomaly)
-    {
-        locations = locations.Where(x => x.WarmingAnomaly != null);
     }
 
     if (includeNearbyLocations)

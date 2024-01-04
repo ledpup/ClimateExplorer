@@ -544,7 +544,7 @@ public static class SuggestedPresetLists
                 Variants = [
                     new ()
                     {
-                        Title = "North vs South",
+                        Title = "North vs south",
                         Description = "Combined land and ocean temperature anomalies for the Northern and Southern Hemisphere",
                         ChartSeriesList =
                             [

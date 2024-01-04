@@ -49,13 +49,6 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
                 throw new NullReferenceException(nameof(DataService));
             }
             DataSetDefinitions = (await DataService.GetDataSetDefinitions()).ToList();
-
-            Locations = (await DataService!.GetLocations(includeNearbyLocations: true, includeWarmingAnomaly: true, excludeLocationsWithNullWarmingAnomaly: false)).ToList();
-            Regions = (await DataService!.GetRegions()).ToList();
-
-            List<GeographicalEntity> geo = [.. Locations];
-            geo.AddRange(Regions);
-            GeographicalEntities = geo;
         }
     }
 
