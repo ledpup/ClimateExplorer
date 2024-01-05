@@ -84,6 +84,11 @@ public class Location : GeographicalEntity
         return FullTitle;
     }
 
+    public string UrlReadyName()
+    {
+        return Name.ToLower().Replace(" ", "-");
+    }
+
     public static async Task<List<Location>> GetLocationsFromFile(string pathAndFileName)
     {
         var locationText = await File.ReadAllTextAsync(pathAndFileName);

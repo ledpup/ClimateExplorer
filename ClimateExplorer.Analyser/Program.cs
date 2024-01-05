@@ -15,7 +15,6 @@ httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
 
 GenerateMapMarkers();
 await BuildStaticContent.GenerateSiteMap();
-await BuildStaticContent.GenerateIndexFiles();
 
 await GreenlandApiClient.GetMeltDataAndSave(httpClient);
 
