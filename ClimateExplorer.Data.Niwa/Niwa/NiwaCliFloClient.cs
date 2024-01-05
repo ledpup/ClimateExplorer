@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace ClimateExplorer.Analyser.Niwa;
+namespace ClimateExplorer.Data.Niwa;
 
 public class NiwaCliFloClient
 {
