@@ -1,7 +1,7 @@
 ﻿using ClimateExplorer.Core.Model;
 using System.Xml;
 
-namespace ClimateExplorer.Analyser.StaticContent;
+namespace ClimateExplorer.Data.StaticContent;
 
 public class BuildStaticContent
 {

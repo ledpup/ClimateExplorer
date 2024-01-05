@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ReferenceMetaData\**" />
+    <EmbeddedResource Remove="ReferenceMetaData\**" />
+    <None Remove="ReferenceMetaData\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="MetaData\countries.txt" />
   </ItemGroup>
 
@@ -17,11 +23,6 @@
     </Content>
     <Content Include="MetaData\countries.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ReferenceMetaData\RAIA\Locations.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
 

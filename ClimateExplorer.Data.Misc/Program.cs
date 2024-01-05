@@ -1,6 +1,6 @@
-﻿using ClimateExplorer.Analyser;
-using ClimateExplorer.Analyser.Greenland;
-using ClimateExplorer.Analyser.StaticContent;
+﻿using ClimateExplorer.Data;
+using ClimateExplorer.Data.Greenland;
+using ClimateExplorer.Data.StaticContent;
 using ClimateExplorer.Core.Model;
 
 var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
@@ -28,9 +28,6 @@ foreach ( var dataSetDefinition in referenceDataDefintions)
 {
     await DownloadDataSetData(dataSetDefinition);
 }
-
-
-
 
 async Task DownloadDataSetData(DataSetDefinition dataSetDefinition)
 {
