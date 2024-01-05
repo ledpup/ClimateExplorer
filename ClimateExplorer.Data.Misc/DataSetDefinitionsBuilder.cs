@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using static ClimateExplorer.Core.Enums;
 
-namespace ClimateExplorer.Data;
+namespace ClimateExplorer.Data.Misc;
 
 internal class DataSetDefinitionsBuilder
 {

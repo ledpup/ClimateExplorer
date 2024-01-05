@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace ClimateExplorer.Data.Greenland;
+namespace ClimateExplorer.Data.Misc;
 
 public class GreenlandApiClient
 {

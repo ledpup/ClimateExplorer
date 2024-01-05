@@ -1,7 +1,5 @@
-﻿using ClimateExplorer.Data;
-using ClimateExplorer.Data.Greenland;
-using ClimateExplorer.Data.StaticContent;
-using ClimateExplorer.Core.Model;
+﻿using ClimateExplorer.Core.Model;
+using ClimateExplorer.Data.Misc;
 
 var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
 
