@@ -22,9 +22,11 @@ public class BuildStaticContent
         WriteTag(writer, "https://climateexplorer.net/about");
         WriteTag(writer, "https://climateexplorer.net/blog");
         WriteTag(writer, "https://climateexplorer.net/blog/about");
-        foreach (var location in locations)
+
+        var distinctLocations = locations.Select(x => x.UrlReadyName()).Distinct();
+        foreach (var locationName in distinctLocations)
         {
-            WriteTag(writer, $"https://climateexplorer.net/location/{location.UrlReadyName()}");
+            WriteTag(writer, $"https://climateexplorer.net/location/{locationName}");
         }
 
         writer.WriteEndElement();
