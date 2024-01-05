@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <None Remove="MetaData\countries.txt" />
-    <None Remove="StaticContent\index-template.html" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,11 +22,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="StaticContent\index-template.html">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
