@@ -134,19 +134,36 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
 
 async Task<IEnumerable<Location>> GetLocations(Guid? locationId = null)
 {
+    return await GetCachingLocations(locationId);
+}
+
+async Task<IEnumerable<Location>> GetCachingLocations(Guid? locationId = null, bool includeNearbyLocations = false)
+{
     string cacheKey = $"Locations_{locationId}";
 
     var result = await _cache.Get<Location[]>(cacheKey);
 
-    if (result != null) return result;
+    if (result != null)
+    {
+        // If returning a single location, include nearby locations
+        // If returning a collection, don't return nearby locations if includeNearbyLocations is false
+        if (locationId == null && !includeNearbyLocations)
+        {
+            foreach (var l in result)
+            {
+                l.NearbyLocations = null;
+            }
+        }
+
+        return result;
+    }
 
     IEnumerable<Location> locations;
 
     if (locationId != null)
     {
-        var allLocations = (await GetLocations(null)).OrderBy(x => x.Name);
+        var allLocations = (await GetCachingLocations(includeNearbyLocations: true)).OrderBy(x => x.Name);
         locations = allLocations.Where(x => x.Id == locationId);
-        Location.SetNearbyLocations(locations.Single(), allLocations.ToList());
     }
     else
     {
@@ -207,6 +224,7 @@ async Task<IEnumerable<Location>> GetLocations(Guid? locationId = null)
         }
 
         Location.SetHeatingScores(locations);
+        Location.SetNearbyLocations(locations);
     }
 
     await _cache.Put(cacheKey, locations.ToArray());

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace ClimateExplorer.Analyser.Greenland;
+namespace ClimateExplorer.Data.Misc;
 
 public class GreenlandApiClient
 {
@@ -15,7 +15,7 @@ public class GreenlandApiClient
 
         var meltRecords = new List<string>();
 
-        for (var year = 1979; year <= DateTime.Now.Year; year++)
+        for (var year = 1979; year < DateTime.Now.Year; year++)
         {
             var dataFile = $"{year}_greenland.json";
             var csvFilePathAndName = @$"{sourcePath}\{dataFile}";

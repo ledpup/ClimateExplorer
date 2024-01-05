@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
-namespace ClimateExplorer.Analyser.Bom;
+namespace ClimateExplorer.Data.Bom;
 
 public static class BomLocationsAndStationsMapper
 {

@@ -84,6 +84,11 @@ public class Location : GeographicalEntity
         return FullTitle;
     }
 
+    public string UrlReadyName()
+    {
+        return Name.ToLower().Replace(" ", "-").Replace("'", "-");
+    }
+
     public static async Task<List<Location>> GetLocationsFromFile(string pathAndFileName)
     {
         var locationText = await File.ReadAllTextAsync(pathAndFileName);
@@ -114,14 +119,17 @@ public class Location : GeographicalEntity
         locations.ForEach(x => x.Country = countries[x.CountryCode!].Name);
     }
 
-    public static void SetNearbyLocations(Location location, List<Location>? locations)
+    public static void SetNearbyLocations(IEnumerable<Location>? locations)
     {
-        var distances = GetDistances(location, locations!);
+        Parallel.ForEach(locations!, location =>
+        {
+            var distances = GetDistances(location, locations!);
 
-        location.NearbyLocations = distances.OrderBy(x => x.Distance).Take(10).ToList();
+            location.NearbyLocations = distances.OrderBy(x => x.Distance).Take(10).ToList();
+        });
     }
 
-    public static List<LocationDistance> GetDistances(Location location, List<Location> locations)
+    public static List<LocationDistance> GetDistances(Location location, IEnumerable<Location> locations)
     {
         var originCoord = new GeoCoordinate(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation ?? 0);
         return GetDistances(originCoord, locations.Where(x => x != location));

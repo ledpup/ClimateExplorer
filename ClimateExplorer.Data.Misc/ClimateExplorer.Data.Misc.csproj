@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ReferenceMetaData\**" />
+    <EmbeddedResource Remove="ReferenceMetaData\**" />
+    <None Remove="ReferenceMetaData\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="MetaData\countries.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="MapMarker.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MetaData\countries.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GeoCoordinate.NetStandard1" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ClimateExplorer.Core\ClimateExplorer.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    
+    <None Update="ReferenceMetaData/**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

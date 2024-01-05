@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
-namespace ClimateExplorer.Analyser.Niwa;
+namespace ClimateExplorer.Data.Niwa;
 
 public static class NiwaLocationsAndStationsMapper
 {

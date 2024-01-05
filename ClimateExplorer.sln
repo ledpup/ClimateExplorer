@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Analyser", "ClimateExplorer.Analyser\ClimateExplorer.Analyser.csproj", "{3E1C678A-776B-4D7E-B6F2-FCE053E94242}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Analyser", "ClimateExplorer.Data.Misc\ClimateExplorer.Data.Misc.csproj", "{3E1C678A-776B-4D7E-B6F2-FCE053E94242}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.WebApi", "ClimateExplorer.WebApi\ClimateExplorer.WebApi.csproj", "{BE5779FD-C685-4561-9C1F-ABFEDD1AC2A9}"
 EndProject
@@ -38,7 +38,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Web.Client"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorCurrentDevice", "BlazorCurrentDevice\BlazorCurrentDevice.csproj", "{769941C2-931A-42A7-98FB-C4C60B27D7BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.Data.NoaaGlobalTemp", "ClimateExplorer.Data.NoaaGlobalTemp\ClimateExplorer.Data.NoaaGlobalTemp.csproj", "{A5ED39A9-CC3D-4B49-AE1D-5AFB235E4F4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Data.NoaaGlobalTemp", "ClimateExplorer.Data.NoaaGlobalTemp\ClimateExplorer.Data.NoaaGlobalTemp.csproj", "{A5ED39A9-CC3D-4B49-AE1D-5AFB235E4F4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.Data.Bom", "ClimateExplorer.Data.Bom\ClimateExplorer.Data.Bom.csproj", "{806E5DC9-73DD-47A1-805D-638F4BCE06F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.Data.Niwa", "ClimateExplorer.Data.Niwa\ClimateExplorer.Data.Niwa.csproj", "{7E293EA2-B1B8-41AA-A8C6-6B703EF3F75B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -110,6 +114,14 @@ Global
 		{A5ED39A9-CC3D-4B49-AE1D-5AFB235E4F4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5ED39A9-CC3D-4B49-AE1D-5AFB235E4F4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5ED39A9-CC3D-4B49-AE1D-5AFB235E4F4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{806E5DC9-73DD-47A1-805D-638F4BCE06F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{806E5DC9-73DD-47A1-805D-638F4BCE06F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{806E5DC9-73DD-47A1-805D-638F4BCE06F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{806E5DC9-73DD-47A1-805D-638F4BCE06F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E293EA2-B1B8-41AA-A8C6-6B703EF3F75B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E293EA2-B1B8-41AA-A8C6-6B703EF3F75B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E293EA2-B1B8-41AA-A8C6-6B703EF3F75B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E293EA2-B1B8-41AA-A8C6-6B703EF3F75B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

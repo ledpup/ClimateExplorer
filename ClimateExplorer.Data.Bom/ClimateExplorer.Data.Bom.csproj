@@ -8,11 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="StaticContent\index-template.html" />
+    <None Remove="MetaData\countries.txt" />
+    <None Remove="ReferenceMetaData\RAIA\Locations.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="MapMarker.svg">
+    <Content Include="MetaData\countries.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="ReferenceMetaData\RAIA\Locations.json">
@@ -20,15 +21,6 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="StaticContent\index-template.html">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="GeoCoordinate.NetStandard1" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,8 +28,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    
-    <None Update="ReferenceMetaData/**">
+    <None Update="ReferenceMetaData\ACORN-SAT\acorn_sat_v2.3.0_stations.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="ReferenceMetaData\ACORN-SAT\acorn_sat_v2.3.0_stations.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="ReferenceMetaData\ACORN-SAT\Locations.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="ReferenceMetaData\ACORN-SAT\primarysites.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="ReferenceMetaData\RAIA\RAIA.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
