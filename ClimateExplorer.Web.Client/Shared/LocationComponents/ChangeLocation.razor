@@ -39,7 +39,7 @@
                               FreeTyping
                               SelectedValueChanged="@OnLocationChange"
                               MaxMenuHeight="350px"
-                              />
+                              @bind-SelectedText="@selectedText" />
             </Field>
             @if (SelectedLocation != null && nearbyLocationCache != null && nearbyLocationCache!.ContainsKey(SelectedLocation.Id))
             {
@@ -98,6 +98,8 @@
 
     Dictionary<Guid, List<Location>>? nearbyLocationCache;
 
+    string? selectedText;
+
     protected override void OnInitialized()
     {
         nearbyLocationCache = new Dictionary<Guid, List<Location>>();
@@ -115,6 +117,7 @@
 
     public Task Show()
     {
+        selectedText = null;
         return modal!.Show();
     }
     public Task Hide()
