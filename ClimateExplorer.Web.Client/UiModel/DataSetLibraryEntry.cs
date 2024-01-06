@@ -12,10 +12,10 @@ public class DataSetLibraryEntry
 
     public class SourceSeriesSpecification
     {
-        public Guid SourceDataSetId { get; set; }
-        public DataType DataType { get; set; }
+        public required Guid SourceDataSetId { get; set; }
+        public required DataType DataType { get; set; }
+        public required Guid LocationId { get; set; }
         public DataAdjustment? DataAdjustment { get; set; }
-        public Guid? LocationId { get; set; }
         public string? LocationName { get; set; }
     }
 }

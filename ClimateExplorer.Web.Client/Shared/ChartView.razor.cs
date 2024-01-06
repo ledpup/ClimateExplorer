@@ -195,7 +195,7 @@ public partial class ChartView
         return
             new SourceSeriesSpecification
             {
-                LocationId = sss.LocationId!.Value,
+                LocationId = sss.LocationId,
                 LocationName = sss.LocationName!,
                 DataSetDefinition = dsd,
                 MeasurementDefinition = md
