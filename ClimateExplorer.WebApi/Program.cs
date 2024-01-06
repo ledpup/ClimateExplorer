@@ -134,27 +134,22 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
 
 async Task<IEnumerable<Location>> GetLocations(Guid? locationId = null)
 {
-    return await GetCachingLocations(locationId);
+    return await GetCachedLocations(locationId);
 }
 
-async Task<IEnumerable<Location>> GetCachingLocations(Guid? locationId = null, bool includeNearbyLocations = false)
+async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null, bool includeNearbyLocations = false)
 {
-    string cacheKey = $"Locations_{locationId}";
+    // If we're asking for a single location, we'll always return nearby locations
+    if (locationId != null)
+    {
+        includeNearbyLocations = true;
+    }
+
+    string cacheKey = $"Locations_{locationId}_{includeNearbyLocations}";
 
     var result = await _cache.Get<Location[]>(cacheKey);
-
     if (result != null)
     {
-        // If returning a single location, include nearby locations
-        // If returning a collection, don't return nearby locations if includeNearbyLocations is false
-        if (locationId == null && !includeNearbyLocations)
-        {
-            foreach (var l in result)
-            {
-                l.NearbyLocations = null;
-            }
-        }
-
         return result;
     }
 
@@ -162,7 +157,7 @@ async Task<IEnumerable<Location>> GetCachingLocations(Guid? locationId = null, b
 
     if (locationId != null)
     {
-        var allLocations = (await GetCachingLocations(includeNearbyLocations: true)).OrderBy(x => x.Name);
+        var allLocations = (await GetCachedLocations(includeNearbyLocations: true)).OrderBy(x => x.Name);
         locations = allLocations.Where(x => x.Id == locationId);
     }
     else
@@ -224,7 +219,10 @@ async Task<IEnumerable<Location>> GetCachingLocations(Guid? locationId = null, b
         }
 
         Location.SetHeatingScores(locations);
-        Location.SetNearbyLocations(locations);
+        if (includeNearbyLocations)
+        {
+            Location.SetNearbyLocations(locations);
+        }
     }
 
     await _cache.Put(cacheKey, locations.ToArray());
