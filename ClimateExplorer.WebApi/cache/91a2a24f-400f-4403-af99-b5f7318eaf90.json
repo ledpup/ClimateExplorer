@@ -7100,7 +7100,7 @@
       "Longitude": 174.78873,
       "Elevation": 7
     },
-    "WarmingAnomaly": 1.0246849,
+    "WarmingAnomaly": 1.0528717,
     "HeatingScore": 4,
     "NearbyLocations": [
       {
@@ -20029,7 +20029,7 @@
       "Longitude": 169.14978,
       "Elevation": 16
     },
-    "WarmingAnomaly": 0.13160801,
+    "WarmingAnomaly": 0.14810371,
     "HeatingScore": 0,
     "NearbyLocations": [
       {
@@ -34679,7 +34679,7 @@
       "Longitude": 170.5147,
       "Elevation": 4
     },
-    "WarmingAnomaly": 0.3310814,
+    "WarmingAnomaly": 0.40251064,
     "HeatingScore": 0,
     "NearbyLocations": [
       {
@@ -48741,7 +48741,7 @@
       "Longitude": 175.30518,
       "Elevation": 45
     },
-    "WarmingAnomaly": 0.70575523,
+    "WarmingAnomaly": 0.76412964,
     "HeatingScore": 2,
     "NearbyLocations": [
       {
@@ -51358,7 +51358,7 @@
       "Longitude": 170.984,
       "Elevation": 39
     },
-    "WarmingAnomaly": 0.34389305,
+    "WarmingAnomaly": 0.40897274,
     "HeatingScore": 0,
     "NearbyLocations": [
       {
@@ -53528,7 +53528,7 @@
       "Elevation": 1441.4
     },
     "WarmingAnomaly": 0.6823888,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "NearbyLocations": [
       {
         "LocationId": "9843744c-21dc-467b-94e1-009ca115aea1",
@@ -55394,7 +55394,7 @@
       "Longitude": 168.33052,
       "Elevation": 1
     },
-    "WarmingAnomaly": 0.31964397,
+    "WarmingAnomaly": 0.37420273,
     "HeatingScore": 0,
     "NearbyLocations": [
       {
@@ -74676,7 +74676,7 @@
       "Longitude": 172.4704,
       "Elevation": 18
     },
-    "WarmingAnomaly": 0.30897903,
+    "WarmingAnomaly": 0.3596077,
     "HeatingScore": 0,
     "NearbyLocations": [
       {
@@ -81463,7 +81463,7 @@
       "Longitude": 175.38985,
       "Elevation": 20
     },
-    "WarmingAnomaly": 0.5039444,
+    "WarmingAnomaly": 0.50567436,
     "HeatingScore": 1,
     "NearbyLocations": [
       {
@@ -91998,7 +91998,7 @@
       "Longitude": 173.226,
       "Elevation": 2
     },
-    "WarmingAnomaly": 0.4242115,
+    "WarmingAnomaly": 0.49389458,
     "HeatingScore": 0,
     "NearbyLocations": [
       {
@@ -99778,7 +99778,7 @@
       "Longitude": 175.60915,
       "Elevation": 21
     },
-    "WarmingAnomaly": 0.41625404,
+    "WarmingAnomaly": 0.43933105,
     "HeatingScore": 0,
     "NearbyLocations": [
       {
@@ -129330,8 +129330,8 @@
       "Longitude": 176.1966,
       "Elevation": 5
     },
-    "WarmingAnomaly": 0.6376457,
-    "HeatingScore": 1,
+    "WarmingAnomaly": 0.68883514,
+    "HeatingScore": 2,
     "NearbyLocations": [
       {
         "LocationId": "f5a8a194-681a-4116-8a75-97fcbb57e20b",
@@ -143098,7 +143098,7 @@
       "Longitude": 174.76794,
       "Elevation": 125
     },
-    "WarmingAnomaly": 0.400383,
+    "WarmingAnomaly": 0.43652534,
     "HeatingScore": 0,
     "NearbyLocations": [
       {
