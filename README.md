@@ -26,4 +26,5 @@
 
 - Download the github repo. 
 - Open in Visual Studio 2022. 
-- Set your start-up projects to be Web and WebApi and run. Two websites should start-up; the user interface and the web API.
+- Set your start-up projects to be **Web** and **WebApi** and run.
+  - Two websites should start-up; the user interface and the web API.
