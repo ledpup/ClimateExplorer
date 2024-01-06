@@ -15,6 +15,11 @@
 
 <PageTitle>@GetPageTitle()</PageTitle>
 
+<HeadContent>
+    <meta property="og:title" content="@ogtitle" />
+    <meta property="og:url" content="@ogurl" />
+</HeadContent>
+
 <SnackbarStack @ref="snackbar" Location="SnackbarStackLocation.Top" Interval="20000" Multiline="true" />
 
 <div style="flex-grow: 0">

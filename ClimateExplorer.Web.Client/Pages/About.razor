@@ -3,6 +3,11 @@
 
 <PageTitle>ClimateExplorer - About</PageTitle>
 
+<HeadContent>
+    <meta property="og:title" content="@ogtitle" />
+    <meta property="og:url" content="@ogurl" />
+</HeadContent>
+
 <h1>About this site</h1>
 
 <div>
@@ -137,20 +142,26 @@
 }
 
 @code {
-[Inject]
-public IDataService? DataService { get; set; }
+    [Inject]
+    public IDataService? DataService { get; set; }
 
-ApiMetadataModel? _apiMetadata;
+    ApiMetadataModel? _apiMetadata;
 
-protected override async Task OnInitializedAsync()
-{
-    if (DataService == null)
+    protected string? ogtitle { get; set; }
+    protected string? ogurl { get; set; }
+
+    protected override async Task OnInitializedAsync()
     {
-        throw new NullReferenceException(nameof(DataService));
+        ogtitle = $"About ClimateExplorer";
+        ogurl = $"https://climateexplorer.net/about";
+
+        if (DataService == null)
+        {
+            throw new NullReferenceException(nameof(DataService));
+        }
+
+        _apiMetadata = await DataService.GetAbout();
+
+        await base.OnInitializedAsync();
     }
-
-    _apiMetadata = await DataService.GetAbout();
-
-    await base.OnInitializedAsync();
-}
 }

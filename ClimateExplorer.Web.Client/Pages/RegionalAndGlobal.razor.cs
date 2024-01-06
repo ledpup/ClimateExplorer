@@ -15,6 +15,12 @@ public partial class RegionalAndGlobal : ChartablePage
 
     bool finishedSetup;
 
+    protected override void OnInitialized()
+    {
+        ogtitle = $"Regional and global long-term climate trends";
+        ogurl = $"https://climateexplorer.net/regionalandglobal";
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);

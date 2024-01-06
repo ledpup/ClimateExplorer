@@ -78,6 +78,10 @@ app.MapGet(
         "       Returns a list of locations.\n" +
         "           Parameters:\n" +
         "               locationId: filter to a particular location by id (still returns an array of location, but max one entry)\n" +
+        "   GET /location-by-path\n" +
+        "       Returns a single location given it's path ready name\n" +
+        "           Parameters:\n" +
+        "               path: name of the location that has been passed to the web client. For example: hobart, cape-town-intl, birni-n-konni. These are paths in the sitemap.xml\n" +
         "   GET /country\n" +
         "       Returns a list of countries.\n" +
         "   GET /region\n" +
@@ -88,6 +92,7 @@ app.MapGet(
 app.MapGet("/about",                                                GetAbout);
 app.MapGet("/datasetdefinition",                                    GetDataSetDefinitions);
 app.MapGet("/location",                                             GetLocations);
+app.MapGet("/location-by-path",                                     GetLocationByPath);
 app.MapGet("/country",                                              GetCountries);
 app.MapGet("/region",                                               GetRegions);
 app.MapPost("/dataset",                                             PostDataSets);
@@ -420,4 +425,14 @@ async Task<Dictionary<string, string>> GetCountries()
 List<Region> GetRegions()
 {
     return Region.GetRegions();
+}
+
+async Task<Location> GetLocationByPath(string path)
+{
+    var locations = await GetCachedLocations();
+
+    // There are some duplicate location names (e.g., Jan Mayen and Uliastai)
+    // Use FirstOrDefault rather than SingleOrDefault
+    var location = locations.FirstOrDefault(x => x.UrlReadyName() == path);
+    return location;
 }

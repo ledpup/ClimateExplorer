@@ -165,4 +165,15 @@ public class DataService : IDataService
         var result = await _httpClient.GetFromJsonAsync<Region[]>(url);
         return result!;
     }
+
+    public async Task<Location> GetLocationByPath(string path)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path, nameof(path));
+
+        var url = $"/location-by-path";
+        url = QueryHelpers.AddQueryString(url, "path", path);
+        
+        var location = await _httpClient.GetFromJsonAsync<Location>(url);
+        return location!;
+    }
 }

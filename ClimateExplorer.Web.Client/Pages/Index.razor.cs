@@ -36,6 +36,20 @@ public partial class Index : ChartablePage
         pageName = "location";
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        ogtitle = $"Local long-term climate trends";
+        ogurl = $"https://climateexplorer.net";
+        
+        var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+        var location = await GetLocationViaNameFromPath(uri);
+        if (location != null)
+        {
+            ogtitle = $"ClimateExplorer - {location.FullTitle}";
+            ogurl += uri.AbsolutePath;
+        }
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -51,7 +65,8 @@ public partial class Index : ChartablePage
             GeographicalEntities = geographicalEntities;
 
             var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
-            GetLocationIdViaNameFromPath(uri);
+            var location = await GetLocationViaNameFromPath(uri);
+            LocationId = location?.Id.ToString();
             if (LocationId == null)
             {
                 LocationId = (await LocalStorage!.GetItemAsync<string>("lastLocationId"));
@@ -94,21 +109,17 @@ public partial class Index : ChartablePage
         }
     }
 
-    private void GetLocationIdViaNameFromPath(Uri uri)
+    private async Task<Location?> GetLocationViaNameFromPath(Uri uri)
     {
         if (uri.Segments.Length > 2 && !Guid.TryParse(uri.Segments[2], out Guid locationGuid))
         {
             var locationName = uri.Segments[2];
 
-            // There are some duplicate location names (e.g., Jan Mayen and Uliastai)
-            // Use FirstOrDefault rather than SingleOrDefault
-            var location = Locations!.FirstOrDefault(x => x.UrlReadyName() == locationName);
+            var location = await DataService!.GetLocationByPath(locationName);
 
-            if (location != null)
-            {
-                LocationId = location.Id.ToString();
-            }
+            return location;
         }
+        return null;
     }
 
     private void SetUpDefaultCharts(Guid? locationId)
