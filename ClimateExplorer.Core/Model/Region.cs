@@ -2,11 +2,16 @@
 
 public class Region : GeographicalEntity
 {
+    public const string Sun = "Sun";
+    public const string Earth = "Earth";
+    public const string Atmosphere = "Atmosphere";
+
     public const string NorthernHemi = "Northern Hemisphere";
     public const string SouthernHemi = "Southern Hemisphere";
 
     public const string Arctic = "Arctic";
     public const string Antarctic = "Antarctic";
+    public const string Greenland = "Greenland";
     public const string R60S60N = "60°S-60°N";
 
     public List<Guid>? LocationIds { get; set; }
@@ -25,17 +30,17 @@ public class Region : GeographicalEntity
     {
         return name switch
         {
-            "Sun" => new Guid("6F4C185E-F846-4DFE-BE28-8DB99A53CF7D"),
-            "Earth" => new Guid("379ACE49-0B44-4B47-AB61-3B6E09C27C82"),
+            Sun => new Guid("6F4C185E-F846-4DFE-BE28-8DB99A53CF7D"),
+            Earth => new Guid("379ACE49-0B44-4B47-AB61-3B6E09C27C82"),
             "Land" => new Guid("6FA62EA0-F9EC-46CB-A9E5-F610EB6BAC5E"),
             "Ocean" => new Guid("9107612D-057D-4982-BF93-1F32A01D4EE0"),
-            "Atmosphere" => new Guid("8B00649C-E232-49B3-9065-3866FD1B9952"),
+            Atmosphere => new Guid("8B00649C-E232-49B3-9065-3866FD1B9952"),
             NorthernHemi => new Guid("E29D2979-B243-49E1-A339-280F588AE878"),
             SouthernHemi => new Guid("1D9FAF5C-77EE-4B3F-B9D2-10D93A176F74"),
             "Australia" => new Guid("143983A0-240E-447F-8578-8DAF2C0A246A"),
             Arctic => new Guid("A2F94904-5EAE-45E5-AFFA-F6F190256C5D"),
             Antarctic => new Guid("C596129B-724C-472A-86BE-8B98901377D4"),
-            "Greenland" => new Guid("F414D04E-E08D-4908-A5A4-F9513D4A9C25"),
+            Greenland => new Guid("F414D04E-E08D-4908-A5A4-F9513D4A9C25"),
             R60S60N => new Guid("DC61D863-32BF-4A4E-AE86-7A34911B8509"),
             _ => throw new NotImplementedException()
         };
@@ -47,13 +52,13 @@ public class Region : GeographicalEntity
         [
             new Region
             {
-                Id = RegionId("Sun"),
-                Name = "Sun",
+                Id = RegionId(Sun),
+                Name = Sun,
             },
             new Region
             {
-                Id = RegionId("Earth"),
-                Name = "Earth",
+                Id = RegionId(Earth),
+                Name = Earth,
             },
             new Region
             {
@@ -67,8 +72,8 @@ public class Region : GeographicalEntity
             },
             new Region
             {
-                Id = RegionId("Atmosphere"),
-                Name = "Atmosphere",
+                Id = RegionId(Atmosphere),
+                Name = Atmosphere,
             },
             new Region
             {
@@ -92,8 +97,8 @@ public class Region : GeographicalEntity
             },
             new Region
             {
-                Id = RegionId("Greenland"),
-                Name = "Greenland",
+                Id = RegionId(Greenland),
+                Name = Greenland,
             },
             new Region
             {

@@ -41,7 +41,7 @@ var dataFileMapping = new DataFileMapping
     LocationIdToDataFileMappings = new Dictionary<Guid, List<DataFileFilterAndAdjustment>>()
     {
         {
-            Region.RegionId("Earth"),
+            Region.RegionId(Region.Earth),
             new()
             {
                 new()
