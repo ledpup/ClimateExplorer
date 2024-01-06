@@ -679,6 +679,7 @@ public static class SuggestedPresetLists
                                         Year = null,
                                         DisplayStyle = SeriesDisplayStyle.Line,
                                         RequestedColour = UiLogic.Colours.Blue,
+                                        GroupingThreshold = 0.1f,
                                     },
                                 ]
                         },
