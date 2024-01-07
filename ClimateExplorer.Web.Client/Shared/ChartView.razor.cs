@@ -387,6 +387,11 @@ public partial class ChartView
                     Display = true,
                     Color = "black"
                 },
+                Tooltip = new
+                {
+                    Mode = "index",
+                    Intersect = false
+                }
             },
             Scales = scales,
             //Parsing = false
