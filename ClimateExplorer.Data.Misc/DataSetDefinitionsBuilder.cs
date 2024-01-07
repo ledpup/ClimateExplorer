@@ -576,6 +576,7 @@ internal class DataSetDefinitionsBuilder
 Our aim is to provide climate science and services to people and organisations, so they can make better decisions to stay safe and thrive. We do this by working with partners around the globe, carrying out world leading research.",
                 Publisher = "Met Office",
                 PublisherUrl = "https://www.metoffice.gov.uk/",
+                MoreInformationUrl = "https://www.metoffice.gov.uk/hadobs/",
                 StationInfoUrl = "https://www.metoffice.gov.uk/hadobs/",
                 DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/download.html",
                 MeasurementDefinitions =
