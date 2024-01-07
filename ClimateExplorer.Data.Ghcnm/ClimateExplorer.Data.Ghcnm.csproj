@@ -16,7 +16,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="isd-history.csv" />
+    <Content Include="SiteMetaData\GhcnIdToLocationIds.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SiteMetaData\ghcnm-countries.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SiteMetaData\pre-existing-locations.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -30,15 +38,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClimateExplorer.Core\ClimateExplorer.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="SiteMetaData\ghcnm-countries.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SiteMetaData\pre-existing-locations.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>
