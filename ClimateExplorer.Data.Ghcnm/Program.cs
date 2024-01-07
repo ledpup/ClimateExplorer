@@ -36,7 +36,7 @@ var dataStations = await GetStationFromData("qcf");
 
 logger.LogInformation($"{dataStations.Count} stations found by reading the data files");
 
-var ghcnIdToLocationIds = await GetGhcnIdToLocationIds(dataStations);
+var ghcnIdToLocationIds = await GetGhcnIdToLocationIds(dataStations, logger);
 var fullStations = await GetStations("qcf", dataStations);
 
 logger.LogInformation($"{fullStations.Count} stations found by reading the meta-data file and combining with country and stations found via the data files");
@@ -435,7 +435,7 @@ static int[] GetValues(string record)
     return values;
 }
 
-static async Task<Dictionary<string, Guid>> GetGhcnIdToLocationIds(List<Station> stations)
+static async Task<Dictionary<string, Guid>> GetGhcnIdToLocationIds(List<Station> stations, ILogger logger)
 {
     const string ghcnIdToLocationIdsFile = @"SiteMetaData\GhcnIdToLocationIds.json";
     Dictionary<string, Guid>? ghcnIdToLocationIds = null;
@@ -446,6 +446,7 @@ static async Task<Dictionary<string, Guid>> GetGhcnIdToLocationIds(List<Station>
     }
     else
     {
+        logger.LogWarning($"{ghcnIdToLocationIdsFile} not found so creating a new one. New IDs will be created for every location.");
         ghcnIdToLocationIds = stations.ToDictionary<Station, string, Guid>(x => x.Id, x => Guid.NewGuid());
         var jsonOptions = new JsonSerializerOptions
         {
@@ -454,7 +455,7 @@ static async Task<Dictionary<string, Guid>> GetGhcnIdToLocationIds(List<Station>
         };
         var contents = JsonSerializer.Serialize(ghcnIdToLocationIds, jsonOptions);
         await File.WriteAllTextAsync(ghcnIdToLocationIdsFile, contents);
-        return await GetGhcnIdToLocationIds(stations);
+        return await GetGhcnIdToLocationIds(stations, logger);
     }
 
     return ghcnIdToLocationIds!;
