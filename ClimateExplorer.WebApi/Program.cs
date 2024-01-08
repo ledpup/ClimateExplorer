@@ -1,5 +1,4 @@
-﻿using ClimateExplorer.Core;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -21,6 +20,8 @@ using System.Text.Json.Serialization;
 
 //ICache _cache = new FileBackedCache("cache");
 ICache _cache = new FileBackedTwoLayerCache("cache");
+
+const string HeatingScoreTable = "HeatingScoreTable";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -86,6 +87,8 @@ app.MapGet(
         "       Returns a list of countries.\n" +
         "   GET /region\n" +
         "       Returns a list of regions.\n" +
+        "   GET /heating-score-table\n" +
+        "       A table that records the range of warming anomalies for each heating score.\n" +
         "   POST /dataset\n" +
         "       Returns the specified data set, transformed as requested");
 
@@ -95,7 +98,8 @@ app.MapGet("/location",                                             GetLocations
 app.MapGet("/location-by-path",                                     GetLocationByPath);
 app.MapGet("/country",                                              GetCountries);
 app.MapGet("/region",                                               GetRegions);
-app.MapPost("/dataset",                                             PostDataSets);
+app.MapGet("/heating-score-table",                                  GetHeatingScoreTable);
+app.MapPost("/dataset", PostDataSets);
 
 app.Run();
 
@@ -223,7 +227,9 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null, bo
             }
         }
 
-        Location.SetHeatingScores(locations);
+        var heatingScoreTable = Location.SetHeatingScores(locations);
+        await _cache.Put(HeatingScoreTable, heatingScoreTable.ToArray());
+
         if (includeNearbyLocations)
         {
             Location.SetNearbyLocations(locations);
@@ -339,8 +345,8 @@ static PostDataSetsRequestBody GetPostRequestBody(PostDataSetsRequestBody body, 
         RequiredBucketDataProportion = body.RequiredBinDataProportion,
         RequiredCupDataProportion = body.RequiredCupDataProportion,
         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-        SeriesSpecifications = new SeriesSpecification[]
-                    {
+        SeriesSpecifications = new []
+                {
                     new SeriesSpecification
                     {
                         DataAdjustment = body.SeriesSpecifications[0].DataAdjustment,
@@ -348,7 +354,7 @@ static PostDataSetsRequestBody GetPostRequestBody(PostDataSetsRequestBody body, 
                         DataType = body.SeriesSpecifications[0].DataType,
                         LocationId = locationId,
                     },
-                    },
+                },
         SeriesTransformation = body.SeriesTransformation,
         Anomaly = body.Anomaly,
         FilterToYear = body.FilterToYear,
@@ -435,4 +441,10 @@ async Task<Location> GetLocationByPath(string path)
     // Use FirstOrDefault rather than SingleOrDefault
     var location = locations.FirstOrDefault(x => x.UrlReadyName() == path);
     return location;
+}
+
+async Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable()
+{
+    var result = await _cache.Get<List<HeatingScoreRow>>(HeatingScoreTable);
+    return result;
 }

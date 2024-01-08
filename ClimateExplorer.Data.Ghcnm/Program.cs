@@ -41,6 +41,25 @@ var fullStations = await GetStations("qcf", dataStations);
 
 logger.LogInformation($"{fullStations.Count} stations found by reading the meta-data file and combining with country and stations found via the data files");
 
+var newStations = new List<string>();
+fullStations.ForEach(x =>
+{
+    if (!ghcnIdToLocationIds.ContainsKey(x.Id))
+    {
+        ghcnIdToLocationIds.Add(x.Id, Guid.NewGuid());
+        newStations.Add(x.Id);
+    }
+});
+if (newStations.Any())
+{
+    logger.LogInformation($"There are new stations that are not found in ghcnIdToLocationIds. These stations are: {string.Join(", ", newStations)}");
+    logger.LogWarning($"Will now save an updated ghcnIdToLocationIds file");
+    logger.LogWarning($"PLEASE UPDATE THE SOURCE FILE BEFORE PROCEEDING");
+    await SaveGhcnIdToLocationIds(ghcnIdToLocationIds!);
+    Console.ReadKey();
+    Environment.Exit(0);
+}
+
 var filteredStations = FilterStationsByRecencyAndMinimumScore(fullStations, (short)(DateTime.Now.Year - 10), AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly);
 
 logger.LogInformation($"{filteredStations.Count} stations remaining after filtering based on recency and longevity of the data (records no longer than {DateTime.Now.Year - 10}) and at least {AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly} years of data");
@@ -443,22 +462,23 @@ static async Task<Dictionary<string, Guid>> GetGhcnIdToLocationIds(List<Station>
     {
         var contents = await File.ReadAllTextAsync(ghcnIdToLocationIdsFile);
         ghcnIdToLocationIds = JsonSerializer.Deserialize<Dictionary<string, Guid>>(contents);
+        return ghcnIdToLocationIds!;
     }
-    else
-    {
-        logger.LogWarning($"{ghcnIdToLocationIdsFile} not found so creating a new one. New IDs will be created for every location.");
-        ghcnIdToLocationIds = stations.ToDictionary<Station, string, Guid>(x => x.Id, x => Guid.NewGuid());
-        var jsonOptions = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        };
-        var contents = JsonSerializer.Serialize(ghcnIdToLocationIds, jsonOptions);
-        await File.WriteAllTextAsync(ghcnIdToLocationIdsFile, contents);
-        return await GetGhcnIdToLocationIds(stations, logger);
-    }
+    
+    throw new FileNotFoundException($"{ghcnIdToLocationIdsFile} not found");
+}
 
-    return ghcnIdToLocationIds!;
+static async Task SaveGhcnIdToLocationIds(Dictionary<string, Guid>? ghcnIdToLocationIds)
+{
+    const string ghcnIdToLocationIdsFile = @"Output\GhcnIdToLocationIds.json";
+
+    var jsonOptions = new JsonSerializerOptions
+    {
+        WriteIndented = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+    };
+    var contents = JsonSerializer.Serialize(ghcnIdToLocationIds, jsonOptions);
+    await File.WriteAllTextAsync(ghcnIdToLocationIdsFile, contents);
 }
 
 async Task<List<Station>> RemoveDuplicateLocations(List<Station> dataQualityFilteredStations)

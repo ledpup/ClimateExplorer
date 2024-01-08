@@ -1,7 +1,6 @@
 ﻿using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Core.DataPreparation;
-using ClimateExplorer.Web.Services;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -175,5 +174,12 @@ public class DataService : IDataService
         
         var location = await _httpClient.GetFromJsonAsync<Location>(url);
         return location!;
+    }
+
+    public async Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable()
+    {
+        var url = $"/heating-score-table";
+        var result = await _httpClient.GetFromJsonAsync<HeatingScoreRow[]>(url);
+        return result!;
     }
 }

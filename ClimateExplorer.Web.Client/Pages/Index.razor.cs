@@ -115,7 +115,7 @@ public partial class Index : ChartablePage
         {
             var locationName = uri.Segments[2];
 
-            var location = await DataService!.GetLocationByPath(locationName);
+            var location = await DataService!.GetLocationByPath(locationName.ToLower());
 
             return location;
         }

@@ -1,0 +1,52 @@
+[
+  {
+    "MinimumWarmingAnomaly": 1.8196813,
+    "MaximumWarmingAnomaly": 2.9886541,
+    "Score": 9
+  },
+  {
+    "MinimumWarmingAnomaly": 1.5757971,
+    "MaximumWarmingAnomaly": 1.8189167,
+    "Score": 8
+  },
+  {
+    "MinimumWarmingAnomaly": 1.4425316,
+    "MaximumWarmingAnomaly": 1.5749168,
+    "Score": 7
+  },
+  {
+    "MinimumWarmingAnomaly": 1.3167076,
+    "MaximumWarmingAnomaly": 1.4420643,
+    "Score": 6
+  },
+  {
+    "MinimumWarmingAnomaly": 1.1830511,
+    "MaximumWarmingAnomaly": 1.3150578,
+    "Score": 5
+  },
+  {
+    "MinimumWarmingAnomaly": 1.0597048,
+    "MaximumWarmingAnomaly": 1.1828709,
+    "Score": 4
+  },
+  {
+    "MinimumWarmingAnomaly": 0.91548824,
+    "MaximumWarmingAnomaly": 1.0595932,
+    "Score": 3
+  },
+  {
+    "MinimumWarmingAnomaly": 0.7449932,
+    "MaximumWarmingAnomaly": 0.91547155,
+    "Score": 2
+  },
+  {
+    "MinimumWarmingAnomaly": 0.5494518,
+    "MaximumWarmingAnomaly": 0.7444649,
+    "Score": 1
+  },
+  {
+    "MinimumWarmingAnomaly": 0.01301384,
+    "MaximumWarmingAnomaly": 0.54896164,
+    "Score": 0
+  }
+]
