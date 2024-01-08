@@ -154,7 +154,7 @@
 <ul><li>The location is inland. The ocean is warming more slowly compared with the land. Coastal locations are therefore likely to have warmed less than inland locations.</li>
 <li>The station(s) has been operating for a long time. The effect of global warming is more obvious with a large number of records as temperatures in the past were cooler.</li></ul>
 <p>The table below lists each heating score and the range of warming anomalies that bound the score.</p>
-<p>The heating score for your current location is highlighted (the warming anomaly at {Location.Name} is <strong>{WarmingAnomalyAsString}</strong>).</p>";
+<p>The heating score for your current location is highlighted (the warming anomaly at {Location.Name} is <strong>{Location.WarmingAnomaly!.Value.ToString("0.00")}°C</strong>).</p>";
 
         HeatingScoreDescription += "<table class=\"table table-bordered table-sm\">";
 
@@ -163,7 +163,7 @@
         foreach (var heatingScoreRow in HeatingScoreTable)
         {
             var highlight = Location.HeatingScore == heatingScoreRow.Score ? " class=\"table-info\"" : null;
-            HeatingScoreDescription += $"<tr{highlight}><td>{MathF.Round(heatingScoreRow.MinimumWarmingAnomaly, 2).ToString("0.00")}</td><td>{MathF.Round(heatingScoreRow.MaximumWarmingAnomaly, 2).ToString("0.00")}</td><td>{heatingScoreRow.Score}</td></tr>";
+            HeatingScoreDescription += $"<tr{highlight}><td>{heatingScoreRow.MinimumWarmingAnomaly.ToString("0.00")}</td><td>{heatingScoreRow.MaximumWarmingAnomaly.ToString("0.00")}</td><td>{heatingScoreRow.Score}</td></tr>";
         }
 
         HeatingScoreDescription += "</table>";
@@ -248,15 +248,15 @@
 
             if (dataSubstitutes.Any(x => x.DataType == DataType.Precipitation))
             {
-                PrecipitationAnomalyAsString = GetPrecipitationAnomalyAsString(index, measurementForLocation.MeasurementDefinition.UnitOfMeasure);
+                PrecipitationAnomalyAsString = GetPrecipitationAnomalyAsString(index);
                 PrecipitationLocationMean = series.DataRecords.Average(x => x.Value);
                 PrecipitationAnomalyRecords = anomalyRecords;
             }
             else if (dataSubstitutes.Any(x => x.DataType == DataType.TempMax))
             {
                 TemperatureDataType = series.DataType;
-                WarmingAnomalyAsString = GetWarmingAnomalyAsString(index, measurementForLocation.MeasurementDefinition.UnitOfMeasure);
-                WarmingAnomalyDescription = GenerateWarmingAnomalyDescription(index, measurementForLocation.MeasurementDefinition.UnitOfMeasure);
+                WarmingAnomalyAsString = GetWarmingAnomalyAsString(index);
+                WarmingAnomalyDescription = GenerateWarmingAnomalyDescription(index);
                 TemperatureLocationMean = series.DataRecords.Average(x => x.Value);
                 TemperatureAnomalyRecords = anomalyRecords;
             }
@@ -280,30 +280,30 @@
         await OnYearFilterChange.InvokeAsync(yearAndFilter);
     }
 
-    static string GetPrecipitationAnomalyAsString(CalculatedAnomaly anomaly, UnitOfMeasure unitOfMeasure)
+    static string GetPrecipitationAnomalyAsString(CalculatedAnomaly anomaly)
     {
         if (anomaly == null) return "NA";
 
         var value = anomaly.AnomalyValue;
 
-        return $"{(value >= 0 ? "+" : "")}{string.Format("{0:0.0}", MathF.Round(value, 0))}mm";
+        return $"{(value >= 0 ? "+" : "")}{string.Format("{0:0.0}", value)}mm";
     }
 
-    static string GetWarmingAnomalyAsString(CalculatedAnomaly warmingAnomaly, UnitOfMeasure unitOfMeasure)
+    static string GetWarmingAnomalyAsString(CalculatedAnomaly warmingAnomaly)
     {
         if (warmingAnomaly == null) return "NA";
 
-        return $"{(warmingAnomaly.AnomalyValue >= 0 ? "+" : "")}{string.Format("{0:0.0}", MathF.Round(warmingAnomaly.AnomalyValue, 1))}{(unitOfMeasure == UnitOfMeasure.DegreesCelsius ? "°C" : "mm")}";
+        return $"{(warmingAnomaly.AnomalyValue >= 0 ? "+" : "")}{string.Format("{0:0.0}", warmingAnomaly.AnomalyValue)}°C";
     }
 
-    string GenerateWarmingAnomalyDescription(CalculatedAnomaly warmingAnomaly, UnitOfMeasure unitOfMeasure)
+    string GenerateWarmingAnomalyDescription(CalculatedAnomaly warmingAnomaly)
     {
         if (Location == null)
         {
             return "NA";
         }
 
-        string warmingAnomalyAsString = GetWarmingAnomalyAsString(warmingAnomaly, unitOfMeasure);
+        string warmingAnomalyAsString = GetWarmingAnomalyAsString(warmingAnomaly);
 
         if (warmingAnomaly == null)
         {
@@ -317,8 +317,8 @@
             String.Join(
                 Environment.NewLine,
                 $"<p>The warming anomaly is the temperature difference between the average of the last 30 years of temperatures compared with the average of the first half ({warmingAnomaly.CountOfFirstHalf} years) of the dataset. 30 years was chosen to fit the convention of the <a href=\"https://en.wikipedia.org/wiki/Climatological_normal\" target=\"_blank\">climatological normal</a>. The first half of the datatset is used as a proxy for a natural baseline; it is expected to be less affected by anthropogenic warming.</p>",
-                $"<div>{Location.Name}, between the years {warmingAnomaly.FirstYearInLast30Years}-{warmingAnomaly.LastYearInLast30Years}, had an average temperature of <strong>{string.Format("{0:0.00}", MathF.Round(warmingAnomaly.AverageOfLast30Years, 2))}°C</strong>.</div>",
-                $"<div>{Location.Name}, between the years {warmingAnomaly.FirstYearInFirstHalf}-{warmingAnomaly.LastYearInFirstHalf}, had an average temperature of <strong>{string.Format("{0:0.00}", MathF.Round(warmingAnomaly.AverageOfFirstHalf, 2))}°C</strong>.</div>",
+                $"<div>{Location.Name}, between the years {warmingAnomaly.FirstYearInLast30Years}-{warmingAnomaly.LastYearInLast30Years}, had an average temperature of <strong>{string.Format("{0:0.00}", warmingAnomaly.AverageOfLast30Years)}°C</strong>.</div>",
+                $"<div>{Location.Name}, between the years {warmingAnomaly.FirstYearInFirstHalf}-{warmingAnomaly.LastYearInFirstHalf}, had an average temperature of <strong>{string.Format("{0:0.00}", warmingAnomaly.AverageOfFirstHalf)}°C</strong>.</div>",
                 $"<div>The difference is <strong>{warmingAnomalyAsString}</strong> (after rounding to 1 decimal place).</div><br/>",
                 $"<p>Over the long-term, with no external influences, we'd expect the warming anomaly to trend towards zero. A non-zero warming anomaly may indicate an effect of climate change. A positive warming anomaly may indicate global warming.</p>",
                 $"<p>A minimum of 60 years of data is required to calculate a warming anomaly.</p>",
