@@ -46,7 +46,7 @@ public class Exporter : IExporter
             foreach (var cswd in dataDownloadPackage.ChartSeriesWithData!)
             {
                 var val = cswd.ProcessedDataSet!.DataRecords.SingleOrDefault(x => x.BinId == bin.Id)?.Value;
-                dataRow += (val == null ? string.Empty : MathF.Round((float)val, 2).ToString("0.00")) + ",";
+                dataRow += (val == null ? string.Empty : val.Value.ToString("0.00")) + ",";
             }
             dataRow = dataRow.TrimEnd(',');
             data.Add(dataRow);
