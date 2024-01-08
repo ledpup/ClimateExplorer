@@ -4,12 +4,13 @@
 }
 
     h1:not(:first-child) {
-        margin-top: 1em;
+        margin-top: 1.5em;
     }
 
 h2 {
     color: #444;
     font-size: 1.5em;
+    margin-top: 1.5em;
 }
 
 h3 {
