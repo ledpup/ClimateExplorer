@@ -22,6 +22,8 @@
   </ItemGroup>
   
   <ItemGroup>
+    <Content Include="cache\2d9af3bd-70ae-4c30-8a7d-e80b6bcedc92.json" />
+    <Content Include="cache\hash_-510263034.json" />
     <Content Include="cache\91a2a24f-400f-4403-af99-b5f7318eaf90.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

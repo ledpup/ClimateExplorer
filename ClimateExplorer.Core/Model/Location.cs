@@ -158,12 +158,13 @@ public class Location : GeographicalEntity
         return distances;
     }
 
-    public static void SetHeatingScores(IEnumerable<Location> locations)
+    public static List<HeatingScoreRow> SetHeatingScores(IEnumerable<Location> locations)
     {
         var locationsWithWarming = locations.Where(x => x?.WarmingAnomaly >= 0);
         var numberOfLocations = locationsWithWarming.Count();
         var locationsOrderedByWarming = locationsWithWarming.OrderByDescending(x => x.WarmingAnomaly);
         var tenPercent = (int)MathF.Round(numberOfLocations * .1f, 0);
+        var heatingScoreTable = new List<HeatingScoreRow>();
         for (short i = 9; i >= 0; i--)
         {
             var nextTenPercent = locationsOrderedByWarming
@@ -179,6 +180,14 @@ public class Location : GeographicalEntity
                     .ToList();
             }
 
+            heatingScoreTable.Add(
+                new HeatingScoreRow
+                    {
+                        MaximumWarmingAnomaly = nextTenPercent.First().WarmingAnomaly!.Value,
+                        MinimumWarmingAnomaly = nextTenPercent.Last().WarmingAnomaly!.Value,
+                        Score = i,
+                    });
+
             nextTenPercent.ForEach(x => x.HeatingScore = i);
         }
 
@@ -187,6 +196,8 @@ public class Location : GeographicalEntity
             .Where(x => x?.WarmingAnomaly < 0)
             .ToList()
             .ForEach(x => x.HeatingScore = (short)MathF.Round((float)x.WarmingAnomaly!, 0));
+
+        return heatingScoreTable;
     }
 }
 

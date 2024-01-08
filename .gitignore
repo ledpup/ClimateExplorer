@@ -377,3 +377,6 @@ FodyWeavers.xsd
 
 !/ClimateExplorer.WebApi/cache/hash_-1555916136.json
 !/ClimateExplorer.WebApi/cache/9837b40b-68cc-43b3-a53d-ead28c8d507c.json
+
+!/ClimateExplorer.WebApi/cache/hash_-510263034.json
+!/ClimateExplorer.WebApi/cache/2d9af3bd-70ae-4c30-8a7d-e80b6bcedc92.json
