@@ -1,1 +1,1 @@
-Sitemap: /blog/sitemap.xml
+Sitemap: https://climateexplorer.net/blog/sitemap.xml
