@@ -22,6 +22,7 @@ using System.Text.Json.Serialization;
 ICache _cache = new FileBackedTwoLayerCache("cache");
 
 const string HeatingScoreTable = "HeatingScoreTable";
+const string NearbyLocations = "NearbyLocations";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -146,15 +147,9 @@ async Task<IEnumerable<Location>> GetLocations(Guid? locationId = null)
     return await GetCachedLocations(locationId);
 }
 
-async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null, bool includeNearbyLocations = false)
+async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null)
 {
-    // If we're asking for a single location, we'll always return nearby locations
-    if (locationId != null)
-    {
-        includeNearbyLocations = true;
-    }
-
-    string cacheKey = $"Locations_{locationId}_{includeNearbyLocations}";
+    string cacheKey = $"Locations_{locationId}";
 
     var result = await _cache.Get<Location[]>(cacheKey);
     if (result != null)
@@ -166,8 +161,13 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null, bo
 
     if (locationId != null)
     {
-        var allLocations = (await GetCachedLocations(includeNearbyLocations: true)).OrderBy(x => x.Name);
+        var allLocations = (await GetCachedLocations()).OrderBy(x => x.Name);
         locations = allLocations.Where(x => x.Id == locationId);
+        var nearbyLocations = await _cache.Get<Dictionary<Guid, List<LocationDistance>>>(NearbyLocations);
+        foreach (var l in locations)
+        {
+            l.NearbyLocations = nearbyLocations[l.Id];
+        }
     }
     else
     {
@@ -175,9 +175,11 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null, bo
 
         var definitions = await GetDataSetDefinitions();
 
+        ParallelOptions parallelOptions = new();
+
         // For each location, retrieve the TempMax dataset (Adjusted if available, Adjustment null otherwise), and copy its WarmingAnomaly
         // to the location we're about to return.
-        foreach (var location in locations)
+        await Parallel.ForEachAsync(locations!, parallelOptions, async (location, token) =>
         {
             try
             {
@@ -225,15 +227,15 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null, bo
                 // For now, just swallow failures here, caused by missing data
                 Console.WriteLine("Exception while calculating warming index for " + location.Name + ": " + ex.ToString());
             }
-        }
+        });
 
+
+        // Can't set the heating scores until all warming anomalies are calculated.
         var heatingScoreTable = Location.SetHeatingScores(locations);
         await _cache.Put(HeatingScoreTable, heatingScoreTable.ToArray());
 
-        if (includeNearbyLocations)
-        {
-            Location.SetNearbyLocations(locations);
-        }
+        var nearbyLocations = Location.GenerateNearbyLocations(locations);
+        await _cache.Put(NearbyLocations, nearbyLocations);
     }
 
     await _cache.Put(cacheKey, locations.ToArray());
