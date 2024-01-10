@@ -365,18 +365,17 @@ FodyWeavers.xsd
 # Ignore the WebApi cache
 /ClimateExplorer.WebApi/cache/*
 
-# Include the locations cache because it takes some time to generate
-!/ClimateExplorer.WebApi/cache/hash_-152510748.json
-!/ClimateExplorer.WebApi/cache/91a2a24f-400f-4403-af99-b5f7318eaf90.json
-
-!/ClimateExplorer.WebApi/cache/hash_-355089669.json
-!/ClimateExplorer.WebApi/cache/e7387e1e-aa7e-4667-a7b0-97cee8e7cdb1.json
-
-!/ClimateExplorer.WebApi/cache/hash_287116763.json
-!/ClimateExplorer.WebApi/cache/d8a5c359-3f54-44f5-86d1-62459bb19721.json
-
-!/ClimateExplorer.WebApi/cache/hash_-1555916136.json
-!/ClimateExplorer.WebApi/cache/9837b40b-68cc-43b3-a53d-ead28c8d507c.json
-
+# Locations
+!/ClimateExplorer.WebApi/cache/hash_-419260639.json
+!/ClimateExplorer.WebApi/cache/d3059fa1-0887-4e64-bfb9-f1a54dcb77d4.json
+# HeatingScoreTable
 !/ClimateExplorer.WebApi/cache/hash_-510263034.json
 !/ClimateExplorer.WebApi/cache/2d9af3bd-70ae-4c30-8a7d-e80b6bcedc92.json
+# NearbyLocations
+!/ClimateExplorer.WebApi/cache/hash_-1567702759.json
+!/ClimateExplorer.WebApi/cache/2695ba27-ad5e-4745-8859-62d91928ede4.json
+# Australia
+!/ClimateExplorer.WebApi/cache/hash_-1555916136.json
+!/ClimateExplorer.WebApi/cache/9837b40b-68cc-43b3-a53d-ead28c8d507c.json
+!/ClimateExplorer.WebApi/cache/hash_287116763.json
+!/ClimateExplorer.WebApi/cache/d8a5c359-3f54-44f5-86d1-62459bb19721.json

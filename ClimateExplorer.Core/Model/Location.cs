@@ -1,4 +1,5 @@
 ﻿using GeoCoordinatePortable;
+using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -119,14 +120,18 @@ public class Location : GeographicalEntity
         locations.ForEach(x => x.Country = countries[x.CountryCode!].Name);
     }
 
-    public static void SetNearbyLocations(IEnumerable<Location>? locations)
+    public static Dictionary<Guid, List<LocationDistance>> GenerateNearbyLocations(IEnumerable<Location>? locations)
     {
+        var nearbyLocations = new ConcurrentDictionary<Guid, List<LocationDistance>>();
         Parallel.ForEach(locations!, location =>
         {
             var distances = GetDistances(location, locations!);
 
-            location.NearbyLocations = distances.OrderBy(x => x.Distance).Take(10).ToList();
+            var nearby = distances.OrderBy(x => x.Distance).Take(10).ToList();
+
+            nearbyLocations.TryAdd(location.Id, nearby);
         });
+        return nearbyLocations.ToDictionary();
     }
 
     public static List<LocationDistance> GetDistances(Location location, IEnumerable<Location> locations)
