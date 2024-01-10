@@ -26,6 +26,8 @@ public static class Enums
         IceMeltArea,
 
         SunspotNumber,
+
+        CO2Emissions,
     }
 
     public enum DataResolution
@@ -56,6 +58,7 @@ public static class Enums
         SqKm,
         Sn,
         WattsPerSquareMetre,
+        MegaTonnes,
     }
 
     public enum SeriesAggregationOptions
