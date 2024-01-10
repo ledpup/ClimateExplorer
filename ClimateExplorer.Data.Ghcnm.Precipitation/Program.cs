@@ -204,11 +204,8 @@ static async Task<Dictionary<string, Guid>> GetGhcnIdToLocationIds(List<Station>
     {
         var contents = await File.ReadAllTextAsync(ghcnIdToLocationIdsFile);
         ghcnIdToLocationIds = JsonSerializer.Deserialize<Dictionary<string, Guid>>(contents);
+        return ghcnIdToLocationIds!;
     }
-    else
-    {
-        throw new Exception($"Expecting {ghcnIdToLocationIdsFile} to exist");
-    }
-
-    return ghcnIdToLocationIds!;
+    
+    throw new Exception($"Expecting {ghcnIdToLocationIdsFile} to exist");    
 }
