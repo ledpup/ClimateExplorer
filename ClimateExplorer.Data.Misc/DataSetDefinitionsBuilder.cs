@@ -685,6 +685,30 @@ Our aim is to provide climate science and services to people and organisations, 
                 ],
             },
 
+            new() {
+                Id = Guid.Parse("71374F06-926A-4F89-8183-B2E765DB9747"),
+                Name = "Carbon dioxide emissions",
+                ShortName = "CO₂ emissions",
+                Description = "The Global Carbon Project (GCP) has been publishing estimates of global and national fossil CO2 emissions since 2001. In the first instance these were simple re-publications of data from another source, but over subsequent years refinements have been made in response to feedback and identification of inaccuracies.",
+                Publisher = "The Global Carbon Project",
+                PublisherUrl = "https://www.globalcarbonproject.org/",
+                MoreInformationUrl = "https://zenodo.org/records/10177738",
+                DataDownloadUrl = null,
+                MeasurementDefinitions =
+                [
+                    new MeasurementDefinition
+                    {
+                        DataType = DataType.CO2Emissions,
+                        UnitOfMeasure = UnitOfMeasure.MegaTonnes,
+                        DataResolution = DataResolution.Yearly,
+                        DataAdjustment = null,
+                        DataRowRegEx = @"^\""(?<station>\w+)\"",.*,(?<year>\d{4}),(?<value>\d+\.\d+),.*$",
+                        FolderName = @"Enission",
+                        FileNameFormat = "GCB2023v36_MtCO2_flat.csv",
+                        NullValue = null,
+                    },
+                ],
+            },
         };
 
         var options = new JsonSerializerOptions
