@@ -61,7 +61,11 @@ var stationsWithData = new List<Station>();
 
 var outputFolder = @"Output\Data\";
 
-Directory.Delete(outputFolder, true);
+try
+{
+    Directory.Delete(outputFolder, true);
+}
+catch { }
 Directory.CreateDirectory(outputFolder);
 
 StreamWriter? writer = null;
@@ -188,8 +192,6 @@ var jsonSerializerOptions = new JsonSerializerOptions
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
 };
 
-Directory.CreateDirectory(@"Output\Location");
-Directory.CreateDirectory(@"Output\Station");
 Directory.CreateDirectory(@"Output\DataFileMapping");
 
 var outputFileSuffix = "_ghcnm_precipitation";
