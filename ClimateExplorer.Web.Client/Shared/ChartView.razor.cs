@@ -389,7 +389,7 @@ public partial class ChartView
                 },
                 Tooltip = new
                 {
-                    Mode = "index",
+                    Mode = IsMobileDevice!.Value ? "point" : "index",
                     Intersect = false
                 }
             },
