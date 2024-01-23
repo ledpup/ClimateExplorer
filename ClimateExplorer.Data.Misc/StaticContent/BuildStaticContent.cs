@@ -7,9 +7,7 @@ public class BuildStaticContent
 {
     public static async Task GenerateSiteMap()
     {
-        Directory.CreateDirectory(@"Output\Location");
-
-        var locations = await Location.GetLocations(@"Output\Location");
+        var locations = await Location.GetLocations();
 
         var writer = XmlTextWriter.Create(@"Output\sitemap.xml", new XmlWriterSettings { Indent = true, NewLineOnAttributes = true });
 
