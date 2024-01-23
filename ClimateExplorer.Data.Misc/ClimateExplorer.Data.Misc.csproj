@@ -15,6 +15,12 @@
 
   <ItemGroup>
     <None Remove="MetaData\countries.txt" />
+    <None Remove="MetaData\Location\Locations_Australia_Raia.json" />
+    <None Remove="MetaData\Location\Locations_Australia_unadjusted.json" />
+    <None Remove="MetaData\Location\Locations_ghcnm_adjusted.json" />
+    <None Remove="MetaData\Location\Locations_NewZealand_11stations.json" />
+    <None Remove="MetaData\Location\Locations_NewZealand_7stations_unadjusted.json" />
+    <None Remove="MetaData\Location\Locations_UK_HadObs.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +29,36 @@
     </Content>
     <Content Include="MetaData\countries.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MetaData\Location\Locations_Australia_Raia.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="MetaData\Location\Locations_Australia_unadjusted.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="MetaData\Location\Locations_ghcnm_adjusted.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="MetaData\Location\Locations_NewZealand_11stations.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="MetaData\Location\Locations_NewZealand_7stations_unadjusted.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="MetaData\Location\Locations_UK_HadObs.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
 
