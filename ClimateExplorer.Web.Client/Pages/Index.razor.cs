@@ -117,6 +117,11 @@ public partial class Index : ChartablePage
 
             var location = await DataService!.GetLocationByPath(locationName.ToLower());
 
+            if (location == null)
+            {
+                NavManager!.NavigateTo("/error", true);
+            }
+
             return location;
         }
         return null;
