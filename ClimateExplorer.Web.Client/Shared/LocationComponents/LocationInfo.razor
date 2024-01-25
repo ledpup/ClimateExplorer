@@ -189,14 +189,13 @@
 
         if (measurementForLocation != null)
         {
-            // Retrieve TempMax anomaly
             var series =
                 await DataService!.PostDataSet(
                     BinGranularities.ByYear,
                     function,
                     function,
                     function,
-                    SeriesValueOptions.Anomaly,
+                    SeriesValueOptions.Value,
                     new SeriesSpecification[]
                         {
                             new SeriesSpecification
@@ -214,36 +213,13 @@
                     14,
                     SeriesTransformations.Identity);
 
-            // Filter to records that have values
+            var average = series.DataRecords.Average(x => x.Value)!.Value;
+
             var anomalyRecords =
                 series.DataRecords
                 .Where(x => x.Value != null)
-                .Select(x => new YearAndValue(((YearBinIdentifier)BinIdentifier.Parse(x.BinId!)).Year, x.Value!.Value))
+                .Select(x => new YearAndValue(((YearBinIdentifier)BinIdentifier.Parse(x.BinId!)).Year, x.Value!.Value - average))
                 .ToList();
-
-            series =
-                await DataService.PostDataSet(
-                    BinGranularities.ByYear,
-                    function,
-                    function,
-                    function,
-                    SeriesValueOptions.Value,
-                    new SeriesSpecification[]
-                        {
-                            new SeriesSpecification
-                            {
-                                DataAdjustment = measurementForLocation.MeasurementDefinition.DataAdjustment,
-                                DataSetDefinitionId = measurementForLocation.DataSetDefinition.Id,
-                                DataType = measurementForLocation.MeasurementDefinition.DataType,
-                                LocationId = Location.Id
-                            }
-                        },
-                    SeriesDerivationTypes.ReturnSingleSeries,
-                    1.0f,
-                    1.0f,
-                    0.7f,
-                    14,
-                    SeriesTransformations.Identity);
 
             var index = AnomalyCalculator.CalculateAnomaly(series.DataRecords);
 
