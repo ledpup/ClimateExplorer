@@ -155,7 +155,14 @@
 <li>The station(s) has been operating for a long time. The effect of global warming is more obvious with many records as temperatures in the past were cooler.</li>
 <li>The location is inland. The ocean is warming more slowly compared with the land. Coastal locations are therefore likely to have warmed less than inland locations.</li>
 </ul>
-<p>The table below lists each heating score and the range of warming anomalies that bound the score. Note: the heating score for {Location.Name} is highlighted - its warming anomaly is <strong>{Location.WarmingAnomaly!.Value.ToString("0.00")}°C</strong>.</p>";
+<p>The table below lists each heating score and the range of warming anomalies that bound the score.";
+
+        if (Location.WarmingAnomaly.HasValue)
+        {
+            HeatingScoreDescription += $" Note: the heating score for {Location.Name} is highlighted - its warming anomaly is <strong>{Location.WarmingAnomaly!.Value.ToString("0.00")}°C </strong>.";
+        }
+
+        HeatingScoreDescription += "</p>";
 
         HeatingScoreDescription += "<table class=\"table table-bordered table-sm\">";
 

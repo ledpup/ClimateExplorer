@@ -16,18 +16,22 @@
                     Current location: <Strong>@SelectedLocation.FullTitle</Strong>
                 </Field>
             }
-            <Field>
-                <FieldLabel>Click the "near me" button to find the station closest to you (the browser will ask to "know your location")</FieldLabel>
-                <Button Clicked="@FireUseCurrentLocation" Color="Color.Primary">Near me</Button>
+            
+            <Div Class="mt-3">Click the "near me" button to find the station closest to you (the browser will ask to "know your location").</Div>
+            <Div Class="mt-1"><Button Clicked="@UseCurrentLocationClicked" Color="Color.Primary">Near me</Button></Div>
 
                 @if (BrowserLocationErrorMessage != null)
                 {
-                    <div class="error-message">
+                    <Div class="error-message">
                         @BrowserLocationErrorMessage
-                    </div>
+                    </Div>
                 }
-            </Field>
-            <Field>
+            
+            
+            <Div Class="mt-3">Click "random locaiton" to go to a random location from around the world.</Div>
+            <Div Class="mt-1"><Button Clicked="@RandomLocationClicked" Color="Color.Secondary">Random location</Button></Div>
+            
+            <Field Class="mt-3">
                 <FieldLabel>Free text search for a location</FieldLabel>
                 <Autocomplete TItem="Location"
                               TValue="Guid"
@@ -37,7 +41,8 @@
                               Placeholder="Search..."
                               Filter="AutocompleteFilter.Contains"
                               FreeTyping
-                              SelectedValueChanged="@OnLocationChange"
+                              MinLength="2"
+                              SelectedValueChanged="@FireOnLocationChange"
                               MaxMenuHeight="350px"
                               @bind-SelectedText="@selectedText" />
             </Field>
@@ -120,18 +125,32 @@
         selectedText = null;
         return modal!.Show();
     }
+
     public Task Hide()
     {
         return modal!.Hide();
     }
 
-    async Task FireUseCurrentLocation()
+    async Task UseCurrentLocationClicked()
     {
         await SetCurrentLocation.InvokeAsync();
+        await Hide();
     }
 
     async Task FireOnLocationChange(Guid locationId)
     {
-        await OnLocationChange.InvokeAsync(locationId);
+        if (locationId != Guid.Empty)
+        {
+            await OnLocationChange.InvokeAsync(locationId);
+            await Hide();
+        }
+    }
+
+    async Task RandomLocationClicked()
+    {
+        var random = new Random();
+        var randomLocation = random.Next(Locations!.Count());
+        await OnLocationChange.InvokeAsync(Locations!.ToArray()[randomLocation].Id);
+        await Hide();
     }
 }
