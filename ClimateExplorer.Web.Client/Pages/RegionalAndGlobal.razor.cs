@@ -15,10 +15,20 @@ public partial class RegionalAndGlobal : ChartablePage
 
     bool finishedSetup;
 
-    protected override void OnInitialized()
+    protected override string PageTitle
     {
-        ogtitle = $"Regional and global long-term climate trends";
-        ogurl = $"https://climateexplorer.net/regionalandglobal";
+        get
+        {
+            return $"Regional and global long-term climate trends"; ;
+        }
+    }
+
+    protected override string PageUrl
+    {
+        get
+        {
+            return $"https://climateexplorer.net/regionalandglobal";
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -75,15 +85,6 @@ public partial class RegionalAndGlobal : ChartablePage
         );
 
         await BuildDataSets();
-    }
-
-    string GetPageTitle()
-    {
-        string title = $"ClimateExplorer";
-
-        Logger!.LogInformation("GetPageTitle() returning '" + title + "' NavigateTo");
-
-        return title;
     }
 
     protected override async Task UpdateComponents()

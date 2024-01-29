@@ -37,8 +37,8 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     protected Modal? addDataSetModal { get; set; }
 
     protected SnackbarStack? snackbar;
-    protected string? ogtitle { get; set; }
-    protected string? ogurl { get; set; }
+    protected virtual string? PageTitle { get; }
+    protected virtual string? PageUrl { get; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
