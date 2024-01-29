@@ -13,11 +13,12 @@
 
 @inherits ChartablePage
 
-<PageTitle>@GetPageTitle()</PageTitle>
+<PageTitle>@PageTitle</PageTitle>
 
 <HeadContent>
-    <meta property="og:title" content="@ogtitle" />
-    <meta property="og:url" content="@ogurl" />
+    <meta property="og:title" content="@PageTitle" />
+    <meta property="og:url" content="@PageUrl" />
+    <link rel="canonical" href="@PageUrl" />
 </HeadContent>
 
 <SnackbarStack @ref="snackbar" Location="SnackbarStackLocation.Top" Interval="20000" Multiline="true" />
