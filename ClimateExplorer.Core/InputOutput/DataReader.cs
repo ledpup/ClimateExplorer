@@ -51,7 +51,7 @@ public static class DataReader
         foreach (var dataFileDefinition in dataFileFilterAndAdjustments)
         {
             var filePath = measurementDefinition.FolderName + @"\" + measurementDefinition.FileNameFormat!.Replace("[station]", dataFileDefinition.Id);
-            var fileRecords = await ReadDataFile(filePath, regEx, measurementDefinition.NullValue!, measurementDefinition.DataResolution, dataFileDefinition.StartDate, dataFileDefinition.EndDate);
+            var fileRecords = await ReadDataFile(filePath, regEx, measurementDefinition.NullValue!, measurementDefinition.DataResolution, dataFileDefinition.StartDate, dataFileDefinition.EndDate, dataFileDefinition.Id);
 
             // Apply any adjustment
             var values = fileRecords.Values.ToList();
@@ -92,11 +92,12 @@ public static class DataReader
         string nullValue,
         DataResolution dataResolution,
         DateTime? startDate = null,
-        DateTime? endDate = null)
+        DateTime? endDate = null,
+        string? station = null)
     {
         string[]? lines = await GetLinesInDataFileWithCascade(pathAndFile);
 
-        return ProcessDataFile(lines, regEx, nullValue, dataResolution, startDate, endDate);
+        return ProcessDataFile(lines, regEx, nullValue, dataResolution, startDate, endDate, station);
     }
 
     public static Dictionary<string, DataRecord> ProcessDataFile(
@@ -105,11 +106,13 @@ public static class DataReader
     string nullValue,
     DataResolution dataResolution,
     DateTime? startDate = null,
-    DateTime? endDate = null)
+    DateTime? endDate = null,
+    string? station = null)
     {
         switch (dataResolution)
         {
             case DataResolution.Yearly:
+                return ProcessYearlyData(linesOfFile, regEx, nullValue, dataResolution, station);
             case DataResolution.Weekly:
                 throw new NotImplementedException("Supported data resolution is currently only daily or monthly.");
         }
@@ -124,7 +127,7 @@ public static class DataReader
 
         var dataRecords = new Dictionary<string, DataRecord>();
 
-        var initialDataIndex = GetStartIndex(regEx, lines);
+        var initialDataIndex = GetStartIndex(regEx, lines, station);
 
         var firstValidLine = regEx.Match(lines[initialDataIndex]);
 
@@ -197,7 +200,7 @@ public static class DataReader
             }
 
             var valueString = match.Groups["value"].Value;
-            float? value = string.IsNullOrWhiteSpace(valueString) || valueString == nullValue ? null : float.Parse(valueString);
+            double? value = string.IsNullOrWhiteSpace(valueString) || valueString == nullValue ? null : double.Parse(valueString);
 
             previousDate = recordDate;
             if (dataResolution == DataResolution.Daily)
@@ -212,6 +215,66 @@ public static class DataReader
                 dataRecords.Add(record.Key!, record);
                 date = date.AddMonths(1);
             }
+        }
+
+        return dataRecords;
+    }
+
+    private static Dictionary<string, DataRecord> ProcessYearlyData(string[]? linesOfFile, Regex regEx, string nullValue, DataResolution dataResolution, string? station)
+    {
+        var lines = linesOfFile;
+
+        if (lines == null)
+        {
+            // We couldn't find the data in any of the expected locations
+            return [];
+        }
+
+        var dataRecords = new Dictionary<string, DataRecord>();
+
+        var initialDataIndex = GetStartIndex(regEx, lines, station);
+
+        var firstValidLine = regEx.Match(lines[initialDataIndex]);
+
+        var startYear = short.Parse(firstValidLine.Groups["year"].Value);
+        // Yearly data represents data from the whole year, so use the last day of the year as the "date"
+        var date = new DateTime(startYear, 12, 31);
+        var previousDate = date.AddYears(-1);
+        foreach (var line in lines)
+        {
+            var match = regEx.Match(line);
+            // Is the line we've moved to a line that fits as a DataRecord? If not, skip it
+            if (!(match.Success && (station == null || match.Groups["station"].Value == station)))
+            {
+                continue;
+            }
+
+            var year = short.Parse(match.Groups["year"].Value);
+
+            var recordDate = new DateTime(year, 12, 31);
+            if (recordDate <= previousDate)
+            {
+                Console.Error.WriteLine($"Date of current record ({recordDate}) is earlier than or equal to the previous date ({previousDate}). The file is not ordered by date properly and/or there are duplicate records. Will skip this record.");
+                continue;
+            }
+
+            while (recordDate > date)
+            {
+                var record = new DataRecord(date, null);
+                dataRecords.Add(record.Key!, record);
+                date = date.AddYears(1);
+            }
+
+            {
+                var valueString = match.Groups["value"].Value;
+                double? value = string.IsNullOrWhiteSpace(valueString) || valueString == nullValue ? null : double.Parse(valueString);
+
+                var record = new DataRecord(year, 12, 31, value);
+                dataRecords.Add(record.Key!, record);
+            }
+
+            previousDate = recordDate;
+            date = date.AddYears(1);
         }
 
         return dataRecords;
@@ -313,16 +376,18 @@ public static class DataReader
         }
     }
 
-    private static int GetStartIndex(Regex regEx, string[] dataRows)
+    private static int GetStartIndex(Regex regEx, string[] dataRows, string? station)
     {
         var index = 0;
-        while (!regEx.IsMatch(dataRows[index]))
+        var match = regEx.Match(dataRows[index]);
+        while ( !(match.Success && (station == null || match.Groups["station"].Value == station)) )
         {
             index++;
             if (index >= dataRows.Length)
             {
                 throw new FileLoadException("None of the data in the input file fits the regular expression.");
             }
+            match = regEx.Match(dataRows[index]);
         }
         return index;
     }

@@ -202,6 +202,28 @@ public static class Binner
         return cups;
     }
 
+    static IEnumerable<Cup> BuildYearlyCupsForYearlyData(
+    DateOnly firstDay,
+    DateOnly lastDay,
+    TemporalDataPoint[] points)
+    {
+
+        var cups =
+            points
+            .Select(
+                x =>
+                new Cup
+                {
+                    FirstDayInCup = firstDay,
+                    LastDayInCup = lastDay,
+                    DataPoints = [x],
+                    ExpectedDataPointsInCup = 1
+                }
+            );
+
+        return cups;
+    }
+
     static IEnumerable<Cup> BuildCupsForDataPointRange(
         DateOnly firstDay, 
         DateOnly lastDay, 
@@ -262,6 +284,10 @@ public static class Binner
             case DataResolution.Monthly:
                 // If the underlying data is monthly resolution, we create one cup per month in the bin
                 cups = BuildMonthlyCupsForMonthlyData(binIdentifier.FirstDayInBin, binIdentifier.LastDayInBin, bin.ToArray());
+                break;
+
+            case DataResolution.Yearly:
+                cups = BuildYearlyCupsForYearlyData(new DateOnly(binIdentifier.FirstDayInBin.Year, 1, 1), binIdentifier.LastDayInBin, bin.ToArray());
                 break;
 
             default:
