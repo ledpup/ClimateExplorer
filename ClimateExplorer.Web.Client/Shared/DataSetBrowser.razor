@@ -264,7 +264,7 @@
                         {
                             new DataSetLibraryEntry()
                             {
-                                Name = "CO₂ (Carbon Dioxide) parts per million",
+                                Name = "CO₂ (Carbon Dioxide) | parts per million",
                                 SourceSeriesSpecifications = 
                                     new DataSetLibraryEntry.SourceSeriesSpecification[]
                                     {
@@ -278,7 +278,7 @@
                             },
                             new DataSetLibraryEntry()
                             {
-                                Name = "CH₄ (Methane) parts per billion",
+                                Name = "CH₄ (Methane) | parts per billion",
                                 SourceSeriesSpecifications = 
                                     new DataSetLibraryEntry.SourceSeriesSpecification[]
                                     {
@@ -293,7 +293,7 @@
                             },
                             new DataSetLibraryEntry()
                             {
-                                Name = "N₂O (Nitrous Oxide) parts per billion",
+                                Name = "N₂O (Nitrous Oxide) | parts per billion",
                                 SourceSeriesSpecifications = 
                                     new DataSetLibraryEntry.SourceSeriesSpecification[]
                                     {
@@ -304,7 +304,21 @@
                                             DataType = DataType.N2O
                                         }
                                     }
-                            }
+                            },
+                            new DataSetLibraryEntry()
+                            {
+                                Name = "CO₂ emissions | megatonnes",
+                                SourceSeriesSpecifications =
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            LocationId = Region.RegionId(Region.Atmosphere),
+                                            SourceDataSetId = Guid.Parse("71374f06-926a-4f89-8183-b2e765db9747"),
+                                            DataType = DataType.CO2Emissions
+                                        }
+                                    }
+                            },
                         }
                 },
                 new DataSetLibraryFolder
@@ -313,6 +327,48 @@
                     DataSets =
                         new List<DataSetLibraryEntry>()
                         {
+                            new DataSetLibraryEntry()
+                            {
+                                Name = "Niño 3.4",
+                                SourceSeriesSpecifications =
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            LocationId = Region.RegionId(Region.Earth),
+                                            SourceDataSetId = Guid.Parse("bfbaa69b-c10d-4de3-a78c-1ed6ff307327"),
+                                            DataType = DataType.Nino34
+                                        }
+                                    }
+                            },
+                            new DataSetLibraryEntry()
+                            {
+                                Name = "Oceanic Niño Index (ONI)",
+                                SourceSeriesSpecifications =
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            LocationId = Region.RegionId(Region.Earth),
+                                            SourceDataSetId = Guid.Parse("1042147a-8625-4ee7-bb5a-f0f17795c393"),
+                                            DataType = DataType.ONI
+                                        }
+                                    }
+                            },
+                            new DataSetLibraryEntry()
+                            {
+                                Name = "Southern Oscillation Index (SOI)",
+                                SourceSeriesSpecifications =
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            LocationId = Region.RegionId(Region.Earth),
+                                            SourceDataSetId = Guid.Parse("c31270fa-b207-4d8f-b68e-4995698f1a4d"),
+                                            DataType = DataType.SOI
+                                        }
+                                    }
+                            },
                             new DataSetLibraryEntry()
                             {
                                 Name = "Multivariate ENSO index (MEI.v2)",
@@ -327,48 +383,6 @@
                                         }
                                     }
                             },
-                            new DataSetLibraryEntry()
-                            {
-                                Name = "Southern Oscillation Index (SOI)",
-                                SourceSeriesSpecifications = 
-                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
-                                    {
-                                        new DataSetLibraryEntry.SourceSeriesSpecification
-                                        {
-                                            LocationId = Region.RegionId(Region.Earth),
-                                            SourceDataSetId = Guid.Parse("c31270fa-b207-4d8f-b68e-4995698f1a4d"),
-                                            DataType = DataType.SOI
-                                        }
-                                    }
-                            },
-                            new DataSetLibraryEntry()
-                            {
-                                Name = "Niño 3.4",
-                                SourceSeriesSpecifications = 
-                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
-                                    {
-                                        new DataSetLibraryEntry.SourceSeriesSpecification
-                                        {
-                                            LocationId = Region.RegionId(Region.Earth),
-                                            SourceDataSetId = Guid.Parse("bfbaa69b-c10d-4de3-a78c-1ed6ff307327"),
-                                            DataType = DataType.Nino34
-                                        }
-                                    }
-                            },
-                            new DataSetLibraryEntry()
-                            {
-                                Name = "Oceanic Niño Index (ONI)",
-                                SourceSeriesSpecifications = 
-                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
-                                    {
-                                        new DataSetLibraryEntry.SourceSeriesSpecification
-                                        {
-                                            LocationId = Region.RegionId(Region.Earth),
-                                            SourceDataSetId = Guid.Parse("1042147a-8625-4ee7-bb5a-f0f17795c393"),
-                                            DataType = DataType.ONI
-                                        }
-                                    }
-                            }
                         }
                 },
                 new DataSetLibraryFolder

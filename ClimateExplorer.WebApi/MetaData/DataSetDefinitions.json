@@ -601,5 +601,25 @@
         "DataRowRegEx": "^(?\u003Cyear\u003E\\d{4})\\s\u002B(?\u003Cmonth\u003E\\d\u002B)\\s\u002B(?\u003Cvalue\u003E-?\\d\u002B\\.\\d\u002B).*$"
       }
     ]
+  },
+  {
+    "Id": "71374f06-926a-4f89-8183-b2e765db9747",
+    "Name": "Carbon dioxide emissions",
+    "ShortName": "CO\u2082 emissions",
+    "Description": "The Global Carbon Project (GCP) has been publishing estimates of global and national fossil CO2 emissions since 2001. In the first instance these were simple re-publications of data from another source, but over subsequent years refinements have been made in response to feedback and identification of inaccuracies.",
+    "Publisher": "The Global Carbon Project",
+    "PublisherUrl": "https://www.globalcarbonproject.org/",
+    "MoreInformationUrl": "https://zenodo.org/records/10177738",
+    "MeasurementDefinitions": [
+      {
+        "DataType": "CO2Emissions",
+        "UnitOfMeasure": "MegaTonnes",
+        "DataResolution": "Yearly",
+        "RowDataType": "OneValuePerRow",
+        "FolderName": "Atmosphere",
+        "FileNameFormat": "GCB2023v43_MtCO2_flat.csv",
+        "DataRowRegEx": "^\\\u0022(?\u003Cstation\u003E\\w\u002B)\\\u0022,.*,(?\u003Cyear\u003E\\d{4}),(?\u003Cvalue\u003E\\d\u002B\\.\\d\u002B),.*$"
+      }
+    ]
   }
 ]
