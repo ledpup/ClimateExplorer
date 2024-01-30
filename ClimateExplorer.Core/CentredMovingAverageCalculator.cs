@@ -2,11 +2,11 @@
 
 public static class CentredMovingAverageCalculator
 {
-    public static IEnumerable<float?> CalculateCentredMovingAverage(this IEnumerable<float?> values, int windowSize, float requiredDataThreshold)
+    public static IEnumerable<double?> CalculateCentredMovingAverage(this IEnumerable<double?> values, int windowSize, float requiredDataThreshold)
     {
-        float?[] valuesArray = values as float?[] ?? values.ToArray();
+        double?[] valuesArray = values as double?[] ?? values.ToArray();
 
-        List<float?> result = [];
+        List<double?> result = [];
 
         int startIndex = 0 - windowSize / 2;
         int endIndex = windowSize / 2;

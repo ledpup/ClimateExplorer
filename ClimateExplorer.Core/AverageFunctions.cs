@@ -2,7 +2,7 @@
 
 public static class AverageFunctions
 {
-    public static float Median(this IEnumerable<float> values)
+    public static double Median(this IEnumerable<double> values)
     {
         if (values == null)
             throw new ArgumentNullException("values");
@@ -14,7 +14,7 @@ public static class AverageFunctions
         return data[data.Length / 2];
     }
 
-    public static float Mode(this IEnumerable<float> values)
+    public static double Mode(this IEnumerable<double> values)
     {
         var mode = values.GroupBy(n => n)
                             .OrderByDescending(g => g.Count())

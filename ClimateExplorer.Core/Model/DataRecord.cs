@@ -9,14 +9,14 @@ public class DataRecord
 
     }
 
-    public DataRecord(short year, float? value = null)
+    public DataRecord(short year, double? value = null)
     {
         Year = year;
         Value = value;
         CreateKey();
     }
 
-    public DataRecord(short year, short? month, short? day, float? value)
+    public DataRecord(short year, short? month, short? day, double? value)
     {
         Year = year;
         Month = month;
@@ -27,7 +27,7 @@ public class DataRecord
         CreateKey();
     }
 
-    public DataRecord(DateTime date, float? value)
+    public DataRecord(DateTime date, double? value)
     {
         Year = (short)date.Year;
         Month = (short)date.Month;
@@ -43,7 +43,7 @@ public class DataRecord
     public short? Month { get; set; }
     public short Year { get; set; }
     public short? Week { get; set; }
-    public float? Value { get; set; }
+    public double? Value { get; set; }
 
     public string? Label { get; set; }
     public string? BinId { get; set; }

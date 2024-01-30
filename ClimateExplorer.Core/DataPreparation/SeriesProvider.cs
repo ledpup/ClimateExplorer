@@ -96,7 +96,7 @@ public static class SeriesProvider
         {
             var dpsForDateExists = dbGroups.TryGetValue(d, out var dpsForDate);
 
-            float? val = null;
+            double? val = null;
 
             if (dpsForDateExists && dpsForDate!.All(x => x.Value != null))
             {
@@ -159,7 +159,7 @@ public static class SeriesProvider
             var dp1ForDateExists = dp1Grouped.TryGetValue(d, out var dp1ForDate);
             var dp2ForDateExists = dp2Grouped.TryGetValue(d, out var dp2ForDate);
 
-            float? val = null;
+            double? val = null;
 
             if (dp1ForDateExists && dp2ForDateExists)
             {

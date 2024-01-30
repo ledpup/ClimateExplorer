@@ -3,5 +3,5 @@
 public class Bin
 {
     public BinIdentifier? Identifier { get; set; }
-    public float? Value { get; set; }
+    public double? Value { get; set; }
 }
