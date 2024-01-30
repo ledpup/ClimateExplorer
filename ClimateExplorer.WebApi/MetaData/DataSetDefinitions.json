@@ -369,7 +369,7 @@
     "Id": "42c9195e-edc0-4894-97dc-923f9d5e72f0",
     "Name": "Carbon dioxide (CO\u2082) from the Mauna Loa Observatory",
     "ShortName": "Carbon Dioxide (CO\u2082)",
-    "Description": "The carbon dioxide data on Mauna Loa constitute the longest record of direct measurements of CO2 in the atmosphere. They were started by C. David Keeling of the Scripps Institution of Oceanography in March of 1958 at a facility of the National Oceanic and Atmospheric Administration. NOAA started its own CO2 measurements in May of 1974, and they have run in parallel with those made by Scripps since then.",
+    "Description": "The carbon dioxide data on Mauna Loa constitute the longest record of direct measurements of CO\u2082 in the atmosphere. They were started by C. David Keeling of the Scripps Institution of Oceanography in March of 1958 at a facility of the National Oceanic and Atmospheric Administration. NOAA started its own CO\u2082 measurements in May of 1974, and they have run in parallel with those made by Scripps since then.",
     "MoreInformationUrl": "https://gml.noaa.gov/ccgg/trends/mlo.html",
     "DataDownloadUrl": "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt",
     "MeasurementDefinitions": [
@@ -606,7 +606,7 @@
     "Id": "71374f06-926a-4f89-8183-b2e765db9747",
     "Name": "Carbon dioxide emissions",
     "ShortName": "CO\u2082 emissions",
-    "Description": "The Global Carbon Project (GCP) has been publishing estimates of global and national fossil CO2 emissions since 2001. In the first instance these were simple re-publications of data from another source, but over subsequent years refinements have been made in response to feedback and identification of inaccuracies.",
+    "Description": "The Global Carbon Project (GCP) has been publishing estimates of global and national fossil CO\u2082 emissions since 2001. In the first instance these were simple re-publications of data from another source, but over subsequent years refinements have been made in response to feedback and identification of inaccuracies.",
     "Publisher": "The Global Carbon Project",
     "PublisherUrl": "https://www.globalcarbonproject.org/",
     "MoreInformationUrl": "https://zenodo.org/records/10177738",
