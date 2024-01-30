@@ -120,6 +120,7 @@ public static class Enums
             UnitOfMeasure.SqKm => "Square kilometres (km²)",
             UnitOfMeasure.Sn => "Sunsport number (Sn)",
             UnitOfMeasure.WattsPerSquareMetre => "Watts per square metre (W/m²)",
+            UnitOfMeasure.MegaTonnes => "Megatonnes",
             _ => throw new NotImplementedException(),
         };
     }
@@ -139,6 +140,7 @@ public static class Enums
             UnitOfMeasure.SqKm => "km²",
             UnitOfMeasure.Sn => "Sn",
             UnitOfMeasure.WattsPerSquareMetre => "W/m²",
+            UnitOfMeasure.MegaTonnes => "Mt",
             _ => throw new NotImplementedException(),
         };
     }
