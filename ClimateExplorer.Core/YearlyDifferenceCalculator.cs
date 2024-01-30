@@ -2,12 +2,12 @@
 
 public static class YearlyDifferenceCalculator
 {
-    public static IEnumerable<float?> CalculateYearlyDifference(this IEnumerable<float?> values)
+    public static IEnumerable<double?> CalculateYearlyDifference(this IEnumerable<double?> values)
     {
-        var valuesArray = values as float?[] ?? values.ToArray();
+        var valuesArray = values as double?[] ?? values.ToArray();
 
         // Set the first year slot to be null
-        var result = new List<float?>
+        var result = new List<double?>
         {
             null
         };

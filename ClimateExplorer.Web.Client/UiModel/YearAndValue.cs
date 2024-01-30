@@ -3,9 +3,9 @@
 public class YearAndValue
 {
     public short Year { get; set; }
-    public float Value { get; set; }
+    public double Value { get; set; }
 
-    public YearAndValue(short year, float value)
+    public YearAndValue(short year, double value)
     {
         Year = year;
         Value = value;

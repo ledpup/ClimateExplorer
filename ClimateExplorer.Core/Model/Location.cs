@@ -10,7 +10,7 @@ public class Location : GeographicalEntity
     public required string CountryCode { get; set; }
     public string? Country { get; set; }
     public required Coordinates Coordinates { get; set; }
-    public float? WarmingAnomaly { get; set; }
+    public double? WarmingAnomaly { get; set; }
     public short? HeatingScore { get; set; }
     public List<LocationDistance>? NearbyLocations { get; set; }
 
@@ -200,7 +200,7 @@ public class Location : GeographicalEntity
         locations
             .Where(x => x?.WarmingAnomaly < 0)
             .ToList()
-            .ForEach(x => x.HeatingScore = (short)MathF.Round((float)x.WarmingAnomaly!, 0));
+            .ForEach(x => x.HeatingScore = (short)Math.Round(x.WarmingAnomaly!.Value, 0));
 
         return heatingScoreTable;
     }

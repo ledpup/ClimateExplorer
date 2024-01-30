@@ -90,7 +90,7 @@ public class DataSet
         get { return DataRecords.Count(x => x.Value == null); }
     }
 
-    public float? Mean
+    public double? Mean
     {
         get { return DataRecords.Average(x => x.Value); }
     }

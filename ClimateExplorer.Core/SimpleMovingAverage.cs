@@ -4,7 +4,7 @@ namespace ClimateExplorer.Core;
 
 public interface IMovingAverageCalculator
 {
-    public float? AddSample(float? value);
+    public double? AddSample(double? value);
 }
 
 public class SimpleMovingAverageCalculator : IMovingAverageCalculator
@@ -13,10 +13,10 @@ public class SimpleMovingAverageCalculator : IMovingAverageCalculator
     {
         _windowSize = windowSize;
     }
-    private Queue<float?> samples = new Queue<float?>();
+    private Queue<double?> samples = new Queue<double?>();
     private int _windowSize = 5;
 
-    public float? AddSample(float? value)
+    public double? AddSample(double? value)
     {
         // The "samples" queue contains the most recent data points, up to a max of _windowSize entries.
         // Each can be null or have a value.
@@ -51,13 +51,13 @@ public class OptimizedMovingAverageCalculator : IMovingAverageCalculator
     {
         _windowSize = windowSize;
     }
-    private Queue<float?> samples = new Queue<float?>();
+    private Queue<double?> samples = new Queue<double?>();
     private int _windowSize = 5;
 
     int _numberOfNonNullSamplesInQueue = 0;
-    float _runningTotalOfNonNullSamplesInQueue = 0;
+    double _runningTotalOfNonNullSamplesInQueue = 0;
 
-    public float? AddSample(float? value)
+    public double? AddSample(double? value)
     {
         var requiredNumberOfNonNullSamples = (int)(_windowSize * 0.25f);
 

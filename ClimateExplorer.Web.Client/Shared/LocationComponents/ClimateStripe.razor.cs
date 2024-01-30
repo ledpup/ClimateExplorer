@@ -12,7 +12,7 @@ public partial class ClimateStripe
     public string? LocationName { get; set; }
 
     [Parameter]
-    public float? LocationMean { get; set; }
+    public double? LocationMean { get; set; }
 
     [Parameter]
     public List<YearAndValue>? DataRecords { get; set; }
@@ -31,8 +31,8 @@ public partial class ClimateStripe
     [Parameter]
     public EventCallback<short> OnYearFilterChange { get; set; }
 
-    float Min;
-    float Max;
+    double Min;
+    double Max;
 
     string? UomString;
     int UomRounding;
@@ -118,7 +118,7 @@ public partial class ClimateStripe
         return true;
     }
 
-    string GetColour(float value)
+    string GetColour(double value)
     {
         Colour colour = new Colour();
         if (UnitOfMeasure == UnitOfMeasure.DegreesCelsius)
@@ -151,25 +151,25 @@ public partial class ClimateStripe
 
 
 
-    string GetRelativeTemp(float v) => $"{(v >= 0 ? "+" : "")}{MathF.Round(v, UomRounding)}{UomString}";
+    string GetRelativeTemp(double v) => $"{(v >= 0 ? "+" : "")}{Math.Round(v, UomRounding)}{UomString}";
 
-    string GetTitle(float value)
+    string GetTitle(double value)
     {
         var aboveOrBelow = value > 0 ? "above" : "below";
-        return $"{MathF.Round(value, UomRounding)}{UomString} {aboveOrBelow} average";
+        return $"{Math.Round(value, UomRounding)}{UomString} {aboveOrBelow} average";
     }
 
-    string GetTextColour(float value, string lightTextColour, string darkTextColour)
+    string GetTextColour(double value, string lightTextColour, string darkTextColour)
     {
         if (UnitOfMeasure == UnitOfMeasure.DegreesCelsius)
         {
-            return MathF.Round(value, UomRounding) <= Min / 2 ? lightTextColour : darkTextColour;
+            return Math.Round(value, UomRounding) <= Min / 2 ? lightTextColour : darkTextColour;
         }
 
         if (UnitOfMeasure == UnitOfMeasure.Millimetres)
         {
-            return value > 0 ? MathF.Round(value, UomRounding) > Max / 1.4 ? lightTextColour : darkTextColour
-                             : MathF.Round(value, UomRounding) < Min / 1.4 ? lightTextColour : darkTextColour;
+            return value > 0 ? Math.Round(value, UomRounding) > Max / 1.4 ? lightTextColour : darkTextColour
+                             : Math.Round(value, UomRounding) < Min / 1.4 ? lightTextColour : darkTextColour;
         }
 
         throw new NotImplementedException();

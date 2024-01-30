@@ -42,12 +42,12 @@ public static class TwelveMonthPerLineDataReader
 
             var groups = match.Groups;
 
-            var values = new List<float>();
+            var values = new List<double>();
             for (var i = 1; i < groups.Count - 1; i++)
             {
                 if (!groups[i].Value.StartsWith(measurementDefinition.NullValue!))
                 {
-                    var value = float.Parse(groups[i].Value);
+                    var value = double.Parse(groups[i].Value);
 
                     if (measurementDefinition.ValueAdjustment != null)
                     {

@@ -107,7 +107,7 @@ foreach (var station in stations)
 
         var year = dataRecords[0].Year;
         var month = 1;
-        var values = new float[12];
+        var values = new double[12];
         var yearsOfData = 0;
 
         foreach (var record in dataRecords)
@@ -121,7 +121,7 @@ foreach (var station in stations)
                 logger.LogError($"{station.Id}: Missing data for year {year}. Will skip this year.");
                 year++;
                 month = 1;
-                values = new float[12];
+                values = new double[12];
                 continue;
             }
             else
@@ -135,7 +135,7 @@ foreach (var station in stations)
 
                     year++;
                     month = 1;
-                    values = new float[12];
+                    values = new double[12];
 
                     yearsOfData++;
                 }

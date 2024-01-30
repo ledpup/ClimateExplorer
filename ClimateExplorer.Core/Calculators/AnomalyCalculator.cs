@@ -10,7 +10,7 @@ public static class AnomalyCalculator
     class YearAndValue
     {
         public int Year { get; set; }
-        public float? Value { get; set; }
+        public double? Value { get; set; }
     }
 
     public static CalculatedAnomaly CalculateAnomaly(IEnumerable<DataRecord> dataRecords)
@@ -81,10 +81,10 @@ public static class AnomalyCalculator
 
 public class CalculatedAnomaly
 {
-    public float AnomalyValue { get; set; }
-    public float AverageOfFirstHalf { get; set; }
+    public double AnomalyValue { get; set; }
+    public double AverageOfFirstHalf { get; set; }
     public int CountOfFirstHalf { get; set; }
-    public float AverageOfLast30Years { get; set; }
+    public double AverageOfLast30Years { get; set; }
     public int FirstYearInFirstHalf { get; set; }
     public int LastYearInFirstHalf { get; set; }
     public int FirstYearInLast30Years { get; set; }
