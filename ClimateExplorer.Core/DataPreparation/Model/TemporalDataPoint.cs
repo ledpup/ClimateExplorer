@@ -5,9 +5,9 @@ public struct TemporalDataPoint
     public short Year { get; set; }
     public short? Month { get; set; }
     public short? Day { get; set; }
-    public float? Value { get; set; }
+    public double? Value { get; set; }
 
-    public TemporalDataPoint(short year, short? month, short? day, float? value)
+    public TemporalDataPoint(short year, short? month, short? day, double? value)
     {
         Year = year;
         Month = month;
@@ -15,7 +15,7 @@ public struct TemporalDataPoint
         Value = value;
     }
 
-    public TemporalDataPoint(DateOnly d, float? value)
+    public TemporalDataPoint(DateOnly d, double? value)
     {
         Year = (short)d.Year;
         Month = (short)d.Month;
@@ -29,7 +29,7 @@ public struct TemporalDataPoint
     /// <param name="v"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public TemporalDataPoint WithValue(float? value)
+    public TemporalDataPoint WithValue(double? value)
     {
         return
             new TemporalDataPoint

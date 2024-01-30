@@ -35,10 +35,10 @@ public class DataReaderTests
         Assert.AreEqual("1951_1_2", recordsList[3].Key);
         Assert.AreEqual(DateTime.Parse("1951/1/2"), records["1951_1_2"].Date);
 
-        Assert.AreEqual(21.8f, records["1950_12_30"].Value);
-        Assert.AreEqual(24.2f, records["1950_12_31"].Value);
-        Assert.AreEqual(26.4f, records["1951_1_1"].Value);
-        Assert.AreEqual(19.0f, records["1951_1_2"].Value);
+        Assert.AreEqual(21.8d, records["1950_12_30"].Value);
+        Assert.AreEqual(24.2d, records["1950_12_31"].Value);
+        Assert.AreEqual(26.4d, records["1951_1_1"].Value);
+        Assert.AreEqual(19.0d, records["1951_1_2"].Value);
     }
 
     [TestMethod]
@@ -60,10 +60,10 @@ public class DataReaderTests
 
         Assert.AreEqual(4, records.Count);
 
-        Assert.AreEqual(21.8f, records["1950_12_30"].Value);
+        Assert.AreEqual(21.8d, records["1950_12_30"].Value);
         Assert.AreEqual(null, records["1950_12_31"].Value);
         Assert.AreEqual(null, records["1951_1_1"].Value);
-        Assert.AreEqual(19.0f, records["1951_1_2"].Value);
+        Assert.AreEqual(19.0d, records["1951_1_2"].Value);
     }
 
     [TestMethod]
@@ -85,10 +85,10 @@ public class DataReaderTests
 
         Assert.AreEqual(4, records.Count);
 
-        Assert.AreEqual(21.8f, records["1950_12_30"].Value);
+        Assert.AreEqual(21.8d, records["1950_12_30"].Value);
         Assert.AreEqual(null, records["1950_12_31"].Value);
         Assert.AreEqual(null, records["1951_1_1"].Value);
-        Assert.AreEqual(19.0f, records["1951_1_2"].Value);
+        Assert.AreEqual(19.0d, records["1951_1_2"].Value);
     }
 
     [TestMethod]
@@ -113,8 +113,8 @@ public class DataReaderTests
 
         Assert.AreEqual(2, records.Count);
 
-        Assert.AreEqual(24.2f, records["1950_12_31"].Value);
-        Assert.AreEqual(26.4f, records["1951_1_1"].Value);
+        Assert.AreEqual(24.2D, records["1950_12_31"].Value);
+        Assert.AreEqual(26.4D, records["1951_1_1"].Value);
     }
 
     [TestMethod]
@@ -140,10 +140,10 @@ public class DataReaderTests
         Assert.AreEqual("1940_11", recordsList[3].Key);
         Assert.AreEqual(null, records["1940_11"].Date);
 
-        Assert.AreEqual(18.7f, records["1940_8"].Value);
-        Assert.AreEqual(19.5f, records["1940_9"].Value);
-        Assert.AreEqual(19.7f, records["1940_10"].Value);
-        Assert.AreEqual(21.1f, records["1940_11"].Value);
+        Assert.AreEqual(18.7d, records["1940_8"].Value);
+        Assert.AreEqual(19.5d, records["1940_9"].Value);
+        Assert.AreEqual(19.7d, records["1940_10"].Value);
+        Assert.AreEqual(21.1d, records["1940_11"].Value);
     }
 
     [TestMethod]
@@ -168,10 +168,10 @@ public class DataReaderTests
         Assert.AreEqual("1940_8", recordsList[0].Key);
         Assert.AreEqual("1940_11", recordsList[3].Key);
 
-        Assert.AreEqual(18.7f, records["1940_8"].Value);
+        Assert.AreEqual(18.7d, records["1940_8"].Value);
         Assert.AreEqual(null, records["1940_9"].Value);
-        Assert.AreEqual(19.7f, records["1940_10"].Value);
-        Assert.AreEqual(21.1f, records["1940_11"].Value);
+        Assert.AreEqual(19.7d, records["1940_10"].Value);
+        Assert.AreEqual(21.1d, records["1940_11"].Value);
     }
 
     [TestMethod]
@@ -196,9 +196,9 @@ public class DataReaderTests
         Assert.AreEqual("1940_8", recordsList[0].Key);
         Assert.AreEqual("1940_10", recordsList[2].Key);
 
-        Assert.AreEqual(18.7f, records["1940_8"].Value);
-        Assert.AreEqual(19.5f, records["1940_9"].Value);
-        Assert.AreEqual(19.7f, records["1940_10"].Value);
+        Assert.AreEqual(18.7d, records["1940_8"].Value);
+        Assert.AreEqual(19.5d, records["1940_9"].Value);
+        Assert.AreEqual(19.7d, records["1940_10"].Value);
     }
 
     [TestMethod]
@@ -223,9 +223,44 @@ public class DataReaderTests
         Assert.AreEqual("1940_9", recordsList[0].Key);
         Assert.AreEqual("1940_11", recordsList[2].Key);
 
-        Assert.AreEqual(19.5f, records["1940_9"].Value);
-        Assert.AreEqual(19.7f, records["1940_10"].Value);
+        Assert.AreEqual(19.5d, records["1940_9"].Value);
+        Assert.AreEqual(19.7d, records["1940_10"].Value);
     }
+
+    [TestMethod]
+    public void ProcessYearlyDataTest()
+    {
+        string[]? lines =
+        [
+            "Header",
+            "\"Global\",\"WLD\",756,1988,22076.769322,8892.934287,8960.304520,3466.495212,482.360190,185.512163,,4.301540",
+            "\"Global\",\"WLD\",756,1989,22378.778617,8891.691526,9116.432093,3640.650191,492.612225,150.683382,,4.284082",
+            "\"Global\",\"WLD\",756,1990,22752.649114,8701.799477,9245.112051,3830.345091,493.565461,258.802642,223.024393,4.279890",
+            "\"Global\",\"WLD\",756,1991,23229.424559,8614.591441,9708.487194,3909.326426,507.413180,274.011689,215.594629,4.296775",
+            "\"Global\",\"WLD\",756,1992,22567.119570,8409.501692,9211.264628,3959.732615,528.464970,241.983808,216.171857,4.108576",
+            "\"Global\",\"WLD\",756,1993,22798.269517,8511.262954,9218.422025,4067.149925,551.190066,234.102199,216.142348,4.087591",
+            "\"Global\",\"WLD\",756,1994,23034.638495,8559.118996,9254.104133,4101.934082,588.277980,314.820766,216.382540,4.069201",
+            "\"Global\",\"WLD\",756,1995,23524.361461,8803.171255,9338.964092,4210.041956,622.152180,326.479046,223.552931,4.096023",
+            "\"Global\",\"WLD\",756,1996,24249.971916,9024.367871,9621.536738,4396.569850,634.919641,350.563692,222.014124,4.162981",
+            "\"Global\",\"WLD\",756,1997,24395.796139,8977.736981,9767.216134,4413.479090,660.690751,352.942116,223.731067,4.130343",
+            "\"Global\",\"WLD\",756,1998,24330.768589,8735.932385,9893.816307,4485.610753,658.172190,336.677532,220.559423,4.063721",
+            "\"Global\",\"WLD\",756,1999,24833.433836,8862.755670,10135.524759,4595.318074,690.450942,330.129361,219.255030,4.092687",
+            "EOF",
+        ];
+
+        var regEx = new Regex(@"^\""(?<station>\w+)\"",.*,(?<year>\d{4}),(?<value>\d+\.\d+),.*$");
+
+        var records = DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Yearly);
+        var recordsList = records.Values.ToList();
+
+        Assert.AreEqual(12, records.Count);
+        Assert.AreEqual("1997_12_31", recordsList[9].Key);
+        Assert.AreEqual("1999_12_31", recordsList[11].Key);
+
+        Assert.AreEqual(23229.424559D, records["1991_12_31"].Value);
+        Assert.AreEqual(24395.796139D, records["1997_12_31"].Value);
+    }
+
 
     [TestMethod]
     public async Task MultiFileReadAndAdjustTest()

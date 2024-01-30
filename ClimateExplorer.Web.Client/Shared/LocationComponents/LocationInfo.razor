@@ -74,12 +74,12 @@
     bool precipitation { get; set; }
 
     List<YearAndValue>? TemperatureAnomalyRecords { get; set; }
-    float? TemperatureLocationMean { get; set; }
+    double? TemperatureLocationMean { get; set; }
     string? WarmingAnomalyDescription;
     string? WarmingAnomalyAsString;
 
     List<YearAndValue>? PrecipitationAnomalyRecords { get; set; }
-    float? PrecipitationLocationMean { get; set; }
+    double? PrecipitationLocationMean { get; set; }
     string? PrecipitationAnomalyAsString;
 
     Guid? locationIdLastTimeOnParametersSetAsyncWasCalled;

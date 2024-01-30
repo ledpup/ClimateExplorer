@@ -15,7 +15,7 @@ public class DataRecordFileSaver
             var min = dataRecords[dateOfRecord].Min(x => !x.DataRecords.Any(y => y.Type == DataType.Temperature) ? null : x.DataRecords.Where(y => y.Type == DataType.Temperature).Select(y => y.Value).Single());
             var max = dataRecords[dateOfRecord].Max(x => !x.DataRecords.Any(y => y.Type == DataType.Temperature) ? null : x.DataRecords.Where(y => y.Type == DataType.Temperature).Select(y => y.Value).Single());
             var dewPoint = dataRecords[dateOfRecord].Average(x => !x.DataRecords.Any(y => y.Type == DataType.DewPointTemperature) ? null : x.DataRecords.Where(y => y.Type == DataType.DewPointTemperature).Select(y => y.Value).Single());
-            float? rainfall = null;
+            double? rainfall = null;
             if (dataRecords[dateOfRecord].Any(x => x.DataRecords.Any(y => y.Type == DataType.Rainfall)))
             {
                 rainfall = dataRecords[dateOfRecord].Sum(x => !x.DataRecords.Any(y => y.Type == DataType.Rainfall) ? null : x.DataRecords.Where(y => y.Type == DataType.Rainfall).Select(y => y.Value).Single());
@@ -55,7 +55,7 @@ public class TimedRecord
 public class DataRecord
 {
     public DataType Type { get; set; }
-    public float? Value { get; set; }
+    public double? Value { get; set; }
 }
 
 public enum DataType

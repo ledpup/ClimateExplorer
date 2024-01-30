@@ -50,7 +50,7 @@ public class DataSetBuilderTests
         );
 
         Assert.AreEqual(1, cdp.Length);
-        Assert.AreEqual(10, cdp[0].Value);
+        Assert.AreEqual(10, Math.Round(cdp[0].Value!.Value, 0));
         Assert.AreEqual("1990", cdp[0].Label);
     }
 
@@ -102,7 +102,7 @@ public class DataSetBuilderTests
         );
 
         Assert.AreEqual(1, cdp.Length);
-        Assert.AreEqual(41.4f, cdp[0].Value);
+        Assert.AreEqual(41.4d, Math.Round(cdp[0].Value!.Value, 1));
         Assert.AreEqual("1990", cdp[0].Label);
     }
 
@@ -144,7 +144,7 @@ public class DataSetBuilderTests
         //
         // Notice that the weighted mean of cups equals the mean of all days in the month (5 up to 8 in
         // 0.1 increments), which is what we want.
-        Assert.AreEqual(6.5f, cdp[0].Value);
+        Assert.AreEqual(6.5d, Math.Round(cdp[0].Value!.Value, 1));
     }
 
     [TestMethod]
@@ -171,11 +171,11 @@ public class DataSetBuilderTests
 
         // First entry should be for Jan
         Assert.AreEqual("Jan 1990", cdp[0].Label);
-        Assert.AreEqual(6.5f, cdp[0].Value); // Jan has 31 entries - odd number, a unique midpoint, just return it.
+        Assert.AreEqual(6.5d, Math.Round(cdp[0].Value!.Value, 1)); // Jan has 31 entries - odd number, a unique midpoint, just return it.
 
         // Second entry should be for Feb
         Assert.AreEqual("Feb 1990", cdp[1].Label);
-        Assert.AreEqual(9.45f, cdp[1].Value); // Feb has 28 entries - even number, so average two neighbours of midpoint. Entries 14 and 15 are 9.4 and 9.5.
+        Assert.AreEqual(9.45d, Math.Round(cdp[1].Value!.Value, 2)); // Feb has 28 entries - even number, so average two neighbours of midpoint. Entries 14 and 15 are 9.4 and 9.5.
     }
 
     [TestMethod]
@@ -257,7 +257,7 @@ public class DataSetBuilderTests
         );
 
         Assert.AreEqual(12, cdp.Length); // Twelve months
-        Assert.AreEqual(6.487841f, cdp[0].Value);
+        Assert.AreEqual(6.487841d, Math.Round(cdp[0].Value!.Value, 6));
         Assert.AreEqual("Jan 1990", cdp[0].Label);
     }
 
@@ -315,7 +315,7 @@ public class DataSetBuilderTests
         );
 
         Assert.AreEqual(12, cdp.Length); // Twelve months
-        Assert.AreEqual(6.444575f, cdp[0].Value);
+        Assert.AreEqual(6.444575d, Math.Round(cdp[0].Value!.Value, 6));
         Assert.AreEqual("Jan 1990", cdp[0].Label);
     }
 
@@ -431,7 +431,7 @@ public class DataSetBuilderTests
 
         Assert.AreEqual(12, cdp.Length);
         Assert.AreEqual("Jan", cdp[0].Label);
-        Assert.AreEqual(24.75, cdp[0].Value!.Value);
+        Assert.AreEqual(24.75d, Math.Round(cdp[0].Value!.Value, 2));
     }
 
     [TestMethod]
@@ -461,7 +461,7 @@ public class DataSetBuilderTests
         Assert.AreEqual(4, cdp.Length);
         Assert.AreEqual("Summer", cdp[0].Label);
         // This needs manual verification
-        Assert.AreEqual(243.81953f, actual: cdp[0].Value!.Value);
+        Assert.AreEqual(243.81952d, actual: Math.Round(cdp[0].Value!.Value, 5));
     }
 
 
@@ -523,7 +523,7 @@ public class DataSetBuilderTests
     }
 
 
-    TemporalDataPoint[] BuildConstantTemporalDataPointArrayFor1990(float? value = 10)
+    TemporalDataPoint[] BuildConstantTemporalDataPointArrayFor1990(double? value = 10)
     {
         return 
             Enumerable.Range(0, 365)
@@ -532,19 +532,19 @@ public class DataSetBuilderTests
             .ToArray();
     }
 
-    TemporalDataPoint[] BuildLinearlyIncreasingTemporalDataPointArrayFor1990(float min, float dailyIncrement)
+    TemporalDataPoint[] BuildLinearlyIncreasingTemporalDataPointArrayFor1990(double min, double dailyIncrement)
     {
         return
             Enumerable.Range(0, 365)
-            .Select(x => new TemporalDataPoint(new DateOnly(1990, 1, 1).AddDays(x), (float?)(min + x * dailyIncrement)))
+            .Select(x => new TemporalDataPoint(new DateOnly(1990, 1, 1).AddDays(x), min + x * dailyIncrement))
             .ToArray();
     }
 
-    TemporalDataPoint[] BuildLinearlyIncreasingTemporalDataPointArray(DateOnly startDate, int nDays, float min, float dailyIncrement)
+    TemporalDataPoint[] BuildLinearlyIncreasingTemporalDataPointArray(DateOnly startDate, int nDays, double min, double dailyIncrement)
     {
         return
             Enumerable.Range(0, nDays)
-            .Select(x => new TemporalDataPoint(startDate.AddDays(x), (float?)(min + x * dailyIncrement)))
+            .Select(x => new TemporalDataPoint(startDate.AddDays(x), min + x * dailyIncrement))
             .ToArray();
     }
 

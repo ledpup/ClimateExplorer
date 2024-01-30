@@ -39,7 +39,7 @@ public class HeatingScoreTests
     {
         var locations = new List<Location>
         {
-            new Location
+            new()
             {
                 Id = Guid.Empty,
                 Name = "Unknown",
@@ -59,13 +59,12 @@ public class HeatingScoreTests
     {
         var locations = new List<Location>
         {
-            new Location
-            {
+            new() {
                 Id = Guid.Empty,
                 Name = "Unknown",
                 Coordinates = new Coordinates(),
                 CountryCode = "UU",
-                WarmingAnomaly = -.6f,
+                WarmingAnomaly = -.6d,
             }
         };
 

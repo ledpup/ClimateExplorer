@@ -65,7 +65,7 @@ public static class NiwaLocationsAndStationsMapper
                 Id = externalStationCode,
                 StartDate = match.Groups["startdate"].Value == "null" ? null : DateTime.Parse(match.Groups["startdate"].Value),
                 EndDate = match.Groups["enddate"].Value == "null" ? null : DateTime.Parse(match.Groups["enddate"].Value),
-                ValueAdjustment = float.Parse(match.Groups["adjustment"].Value)
+                ValueAdjustment = double.Parse(match.Groups["adjustment"].Value)
             };
 
             if (!stations.Any(x => x.Id == externalStationCode))

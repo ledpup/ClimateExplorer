@@ -33,9 +33,9 @@ public static class ChartLogic
         return "Climate data";
     }
 
-    public static LineChartDataset<float?> GetLineChartDataset(
+    public static LineChartDataset<double?> GetLineChartDataset(
         string label, 
-        List<float?> values, 
+        List<double?> values, 
         ChartColor chartColor, 
         UnitOfMeasure unitOfMeasure,
         SeriesTransformations seriesTransformations,
@@ -48,7 +48,7 @@ public static class ChartLogic
             colour.Add(chartColor);
 
         var lineChartDataset =
-            new LineChartDataset<float?>
+            new LineChartDataset<double?>
             {
                 Label = label,
                 Data = values,
@@ -67,9 +67,9 @@ public static class ChartLogic
         return lineChartDataset;
     }
 
-    public static BarChartDataset<float?> GetBarChartDataset(
+    public static BarChartDataset<double?> GetBarChartDataset(
         string label, 
-        List<float?> values, 
+        List<double?> values, 
         UnitOfMeasure unitOfMeasure, 
         bool? absoluteValues, 
         bool redPositive,
@@ -79,19 +79,19 @@ public static class ChartLogic
         var colour = GetBarChartColourSet(values, seriesTransformations == SeriesTransformations.IsFrosty ? false : redPositive);
 
         return 
-            new BarChartDataset<float?>
+            new BarChartDataset<double?>
             {
                 Label = label,
-                Data = values.Select(x => absoluteValues.GetValueOrDefault() && x.HasValue ? MathF.Abs(x.Value) : x).ToList(),
+                Data = values.Select(x => absoluteValues.GetValueOrDefault() && x.HasValue ? Math.Abs(x.Value) : x).ToList(),
                 BorderColor = colour,
                 BackgroundColor = colour,
                 YAxisID = GetYAxisId(seriesTransformations, unitOfMeasure, seriesAggregationOptions),
             };
     }
 
-    public static ChartDataset<float?> GetChartDataset(
+    public static ChartDataset<double?> GetChartDataset(
         string label, 
-        List<float?> values, 
+        List<double?> values, 
         UnitOfMeasure unitOfMeasure, 
         ChartType chartType, 
         ChartColor? chartColour = null, 
@@ -143,7 +143,7 @@ public static class ChartLogic
     }
 
     public static async Task AddDataSetToChart(
-        Chart<float?> chart,
+        Chart<double?> chart,
         SeriesWithData chartSeries,
         DataSet dataSet,
         string label,
@@ -276,7 +276,7 @@ public static class ChartLogic
         };
     }
 
-    public static List<string> GetBarChartColourSet(List<float?> values, bool redPositive = true)
+    public static List<string> GetBarChartColourSet(List<double?> values, bool redPositive = true)
     {
         var count = values.Count;
 

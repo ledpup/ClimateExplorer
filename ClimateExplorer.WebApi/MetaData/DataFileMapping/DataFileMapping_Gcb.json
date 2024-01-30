@@ -1,0 +1,10 @@
+{
+  "DataSetDefinitionId": "71374F06-926A-4F89-8183-B2E765DB9747",
+  "LocationIdToDataFileMappings": {
+    "8B00649C-E232-49B3-9065-3866FD1B9952": [
+      {
+        "Id": "Global"
+      }
+    ]
+  }
+}

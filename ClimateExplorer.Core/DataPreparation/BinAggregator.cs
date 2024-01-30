@@ -4,7 +4,7 @@ namespace ClimateExplorer.Core.DataPreparation;
 
 public static class BinAggregator
 {
-    static float? WeightedMean(IEnumerable<ContainerAggregate> data)
+    static double? WeightedMean(IEnumerable<ContainerAggregate> data)
     {
         var containersWithData = data.Where(x => x.Value.HasValue);
 
@@ -20,13 +20,13 @@ public static class BinAggregator
             .Sum();
     }
 
-    static float? Median(IEnumerable<ContainerAggregate> data)
+    static double? Median(IEnumerable<ContainerAggregate> data)
     {
         var containersWithData = data.Where(x => x.Value.HasValue).ToArray();
 
         if (!containersWithData.Any()) return null;
 
-        float[] sortedValues = containersWithData.Select(x => x.Value!.Value).OrderBy(x => x).ToArray();
+        double[] sortedValues = containersWithData.Select(x => x.Value!.Value).OrderBy(x => x).ToArray();
 
         int indexOfMidpoint = sortedValues.Length / 2;
 
@@ -38,11 +38,11 @@ public static class BinAggregator
         else
         {
             // Even number of values, so return mean of the two "midpoint" values
-            return (float)((sortedValues[indexOfMidpoint - 1] + sortedValues[indexOfMidpoint]) / 2);
+            return (double)((sortedValues[indexOfMidpoint - 1] + sortedValues[indexOfMidpoint]) / 2);
         }
     }
 
-    static Func<IEnumerable<ContainerAggregate>, float?> GetAggregationFunction(ContainerAggregationFunctions function, SeriesTransformations seriesTransformation)
+    static Func<IEnumerable<ContainerAggregate>, double?> GetAggregationFunction(ContainerAggregationFunctions function, SeriesTransformations seriesTransformation)
     {
         switch (function)
         {
@@ -62,7 +62,7 @@ public static class BinAggregator
 
     struct ContainerAggregate
     {
-        public float? Value { get; set; }
+        public double? Value { get; set; }
         public int NumberOfPeriodsCoveredByAggregate { get; set; }
     }
 
@@ -74,7 +74,7 @@ public static class BinAggregator
         public ContainerAggregate Aggregate { get; set; }
     }
 
-    static ContainerAggregate BuildContainerAggregateForCup(Cup cup, Func<IEnumerable<ContainerAggregate>, float?> aggregationFunction)
+    static ContainerAggregate BuildContainerAggregateForCup(Cup cup, Func<IEnumerable<ContainerAggregate>, double?> aggregationFunction)
     {
         return
             new ContainerAggregate
@@ -98,9 +98,9 @@ public static class BinAggregator
 
     static Bin[] AggregateBinsByRepeatedlyApplyingAggregationFunctions(
         RawBinWithDataAdequacyFlag[] rawBins, 
-        Func<IEnumerable<ContainerAggregate>, float?> binAggregationFunctionImpl,
-        Func<IEnumerable<ContainerAggregate>, float?> bucketAggregationFunctionImpl,
-        Func<IEnumerable<ContainerAggregate>, float?> cupAggregationFunctionImpl)
+        Func<IEnumerable<ContainerAggregate>, double?> binAggregationFunctionImpl,
+        Func<IEnumerable<ContainerAggregate>, double?> bucketAggregationFunctionImpl,
+        Func<IEnumerable<ContainerAggregate>, double?> cupAggregationFunctionImpl)
     {
         // Strategy: we have an object tree - each bin has a list of buckets, each of which has a list of cups, each of which has a list of data points.
         // We're going to flatten out that tree into a list of AggregationIntermediates, one per cup. Then we're going to repeatedly aggregate, reducing
@@ -169,7 +169,7 @@ public static class BinAggregator
 
     static Bin[] AggregateBinsByApplyingAggregationFunctionOnceForAllDataPoints(
         RawBinWithDataAdequacyFlag[] rawBins, 
-        Func<IEnumerable<ContainerAggregate>, float?> aggregationFunction)
+        Func<IEnumerable<ContainerAggregate>, double?> aggregationFunction)
     {
         return
             rawBins
@@ -195,7 +195,7 @@ public static class BinAggregator
 
     static ContainerAggregate AggregateContainerAggregates(
         IEnumerable<ContainerAggregate> aggregates,
-        Func<IEnumerable<ContainerAggregate>, float?> aggregationFunction)
+        Func<IEnumerable<ContainerAggregate>, double?> aggregationFunction)
     {
         return
             new ContainerAggregate()

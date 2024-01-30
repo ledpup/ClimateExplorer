@@ -18,8 +18,8 @@ namespace ClimateExplorer.Web.Client.Shared;
 
 public partial class ChartView
 {
-    Chart<float?>? chart;
-    ChartTrendline<float?>? chartTrendline;
+    Chart<double?>? chart;
+    ChartTrendline<double?>? chartTrendline;
     
     BinIdentifier? ChartStartBin, ChartEndBin;
 
