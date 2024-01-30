@@ -185,13 +185,16 @@ public class Location : GeographicalEntity
                     .ToList();
             }
 
-            heatingScoreTable.Add(
-                new HeatingScoreRow
+            if (nextTenPercent.Any())
+            {
+                heatingScoreTable.Add(
+                    new HeatingScoreRow
                     {
                         MaximumWarmingAnomaly = nextTenPercent.First().WarmingAnomaly!.Value,
                         MinimumWarmingAnomaly = nextTenPercent.Last().WarmingAnomaly!.Value,
                         Score = i,
                     });
+            }
 
             nextTenPercent.ForEach(x => x.HeatingScore = i);
         }
