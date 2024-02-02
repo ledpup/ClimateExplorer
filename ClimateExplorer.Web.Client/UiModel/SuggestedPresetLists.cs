@@ -378,7 +378,7 @@ public static class SuggestedPresetLists
         var ch4 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Atmosphere), DataType.CH4, null, throwIfNoMatch: true);
         var n2o = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Atmosphere), DataType.N2O, null, throwIfNoMatch: true);
 
-        var co2emissions = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Atmosphere), DataType.CO2Emissions, null, throwIfNoMatch: true);
+        var co2emissions = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Earth), DataType.CO2Emissions, null, throwIfNoMatch: true);
 
         var northSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Arctic), DataType.SeaIceExtent, null, throwIfNoMatch: true);
         var southSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Antarctic), DataType.SeaIceExtent, null, throwIfNoMatch: true);
@@ -500,7 +500,7 @@ public static class SuggestedPresetLists
             new SuggestedChartPresetModelWithVariants()
             {
                 Title = "Atmospheric CO₂ vs emissions",
-                Description = "Compare the CO₂ measured in the atmosphere with the reported global anthropogenic emissions of CO₂",
+                Description = "Compare the CO₂ measured in the atmosphere with the reported global emissions of CO₂",
                 ChartSeriesList =
                     [
                             new ChartSeriesDefinition()
@@ -519,7 +519,7 @@ public static class SuggestedPresetLists
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2emissions!),
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), co2emissions!),
                                 Aggregation = SeriesAggregationOptions.Mean,
                                 BinGranularity = BinGranularities.ByYear,
                                 Smoothing = SeriesSmoothingOptions.None,
