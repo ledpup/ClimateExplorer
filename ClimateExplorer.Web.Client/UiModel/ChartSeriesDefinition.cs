@@ -315,7 +315,7 @@ public class ChartSeriesDefinition
             DataType.SeaIceExtent => "Sea ice extent",
             DataType.IceMeltArea => "Ice melt area",
             DataType.SunspotNumber => "Sunspot number",
-            DataType.CO2Emissions => "CO₂ emissions",
+            DataType.CO2Emissions => "Reported CO₂ emissions",
             _ => throw new NotImplementedException(),
         };
     }
