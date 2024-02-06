@@ -1,5 +1,6 @@
 ﻿using ClimateExplorer.Core.Model;
 using ClimateExplorer.Data.Misc;
+using ClimateExplorer.Data.Misc.Ozone;
 
 var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
 
@@ -9,8 +10,10 @@ var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
 httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
 httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
 
-GenerateMapMarkers();
+OzoneFileReducer.Process();
+
 await BuildStaticContent.GenerateSiteMap();
+GenerateMapMarkers();
 
 await GreenlandApiClient.GetMeltDataAndSave(httpClient);
 

@@ -51,7 +51,7 @@ public static class DataReader
         foreach (var dataFileDefinition in dataFileFilterAndAdjustments)
         {
             var filePath = measurementDefinition.FolderName + @"\" + measurementDefinition.FileNameFormat!.Replace("[station]", dataFileDefinition.Id);
-            var fileRecords = await ReadDataFile(filePath, regEx, measurementDefinition.NullValue!, measurementDefinition.DataResolution, dataFileDefinition.StartDate, dataFileDefinition.EndDate, dataFileDefinition.Id);
+            var fileRecords = await ReadDataFile(filePath, regEx, measurementDefinition.NullValue!, measurementDefinition.DataResolution, dataFileDefinition.Id, dataFileDefinition.StartDate, dataFileDefinition.EndDate);
 
             // Apply any adjustment
             var values = fileRecords.Values.ToList();
@@ -91,13 +91,13 @@ public static class DataReader
         Regex regEx,
         string nullValue,
         DataResolution dataResolution,
+        string station,
         DateTime? startDate = null,
-        DateTime? endDate = null,
-        string? station = null)
+        DateTime? endDate = null)
     {
         string[]? lines = await GetLinesInDataFileWithCascade(pathAndFile);
 
-        return ProcessDataFile(lines, regEx, nullValue, dataResolution, startDate, endDate, station);
+        return ProcessDataFile(lines, regEx, nullValue, dataResolution, station, startDate, endDate);
     }
 
     public static Dictionary<string, DataRecord> ProcessDataFile(
@@ -105,9 +105,9 @@ public static class DataReader
     Regex regEx,
     string nullValue,
     DataResolution dataResolution,
+    string station,
     DateTime? startDate = null,
-    DateTime? endDate = null,
-    string? station = null)
+    DateTime? endDate = null)
     {
         switch (dataResolution)
         {
@@ -220,7 +220,7 @@ public static class DataReader
         return dataRecords;
     }
 
-    private static Dictionary<string, DataRecord> ProcessYearlyData(string[]? linesOfFile, Regex regEx, string nullValue, DataResolution dataResolution, string? station)
+    private static Dictionary<string, DataRecord> ProcessYearlyData(string[]? linesOfFile, Regex regEx, string nullValue, DataResolution dataResolution, string station)
     {
         var lines = linesOfFile;
 
@@ -244,7 +244,7 @@ public static class DataReader
         {
             var match = regEx.Match(line);
             // Is the line we've moved to a line that fits as a DataRecord? If not, skip it
-            if (!(match.Success && (station == null || match.Groups["station"].Value == station)))
+            if ( !(match.Success && (!match.Groups.ContainsKey("station") || match.Groups["station"].Value == station)) )
             {
                 continue;
             }
@@ -376,11 +376,11 @@ public static class DataReader
         }
     }
 
-    private static int GetStartIndex(Regex regEx, string[] dataRows, string? station)
+    private static int GetStartIndex(Regex regEx, string[] dataRows, string station)
     {
         var index = 0;
         var match = regEx.Match(dataRows[index]);
-        while ( !(match.Success && (station == null || match.Groups["station"].Value == station)) )
+        while ( !(match.Success && (!match.Groups.ContainsKey("station") || match.Groups["station"].Value == station)) )
         {
             index++;
             if (index >= dataRows.Length)
