@@ -81,8 +81,9 @@ public partial class Index : ChartablePage
 
             var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
             internalLocation = await GetLocation(uri, false);
-            
-            if (internalLocation != null)
+
+            var csd = QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
+            if (!csd && internalLocation != null)
             {
                 SetUpDefaultCharts(internalLocation.Id);
                 await SelectedLocationChanged(internalLocation.Id);
