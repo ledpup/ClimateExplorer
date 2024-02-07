@@ -887,7 +887,7 @@ public partial class ChartView
                         Aggregation = chartSeries.Aggregation,
                         BinGranularity = SelectedBinGranularity,
                         Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 5,
+                        SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
                         Year = yearAndDataTypeFilter.Year,
                     }

@@ -28,6 +28,8 @@ public static class Enums
         SunspotNumber,
 
         CO2Emissions,
+
+        ApparentTransmission,
     }
 
     public enum DataResolution
@@ -59,6 +61,7 @@ public static class Enums
         Sn,
         WattsPerSquareMetre,
         MegaTonnes,
+        AtmosphericTransmission,
     }
 
     public enum SeriesAggregationOptions
@@ -109,8 +112,8 @@ public static class Enums
     {
         return unitOfMeasure switch
         {
-            UnitOfMeasure.DegreesCelsius => "Degrees Celsius (°C)",
-            UnitOfMeasure.DegreesCelsiusAnomaly => "Degrees Celsius (°C) - Anomaly",
+            UnitOfMeasure.DegreesCelsius => "Degrees celsius (°C)",
+            UnitOfMeasure.DegreesCelsiusAnomaly => "Degrees celsius (°C) - anomaly",
             UnitOfMeasure.Millimetres => "Millimetres (mm)",
             UnitOfMeasure.PartsPerMillion => "Parts per million (ppm)",
             UnitOfMeasure.PartsPerBillion => "Parts per billion (ppb)",
@@ -121,6 +124,7 @@ public static class Enums
             UnitOfMeasure.Sn => "Sunsport number (Sn)",
             UnitOfMeasure.WattsPerSquareMetre => "Watts per square metre (W/m²)",
             UnitOfMeasure.MegaTonnes => "Megatonnes",
+            UnitOfMeasure.AtmosphericTransmission => "Atmospheric transmission",
             _ => throw new NotImplementedException(),
         };
     }
@@ -130,7 +134,7 @@ public static class Enums
         return unitOfMeasure switch
         {
             UnitOfMeasure.DegreesCelsius => "°C",
-            UnitOfMeasure.DegreesCelsiusAnomaly => "°C Anomaly",
+            UnitOfMeasure.DegreesCelsiusAnomaly => "°C anomaly",
             UnitOfMeasure.Millimetres => "mm",
             UnitOfMeasure.PartsPerMillion => "ppm",
             UnitOfMeasure.PartsPerBillion => "ppb",
@@ -141,6 +145,7 @@ public static class Enums
             UnitOfMeasure.Sn => "Sn",
             UnitOfMeasure.WattsPerSquareMetre => "W/m²",
             UnitOfMeasure.MegaTonnes => "Mt",
+            UnitOfMeasure.AtmosphericTransmission => "Transmission",
             _ => throw new NotImplementedException(),
         };
     }

@@ -314,6 +314,7 @@ internal class DataSetDefinitionsBuilder
                 Publisher = "US National Oceanic and Atmospheric Administration's Physical Sciences Laboratory (NOAA PSL)",
                 PublisherUrl = "https://psl.noaa.gov/",
                 MoreInformationUrl = "https://psl.noaa.gov/enso/mei/",
+                DataDownloadUrl = "https://psl.noaa.gov/enso/mei/data/meiv2.data",
                 MeasurementDefinitions =
                 [
                     new() {
@@ -328,7 +329,6 @@ internal class DataSetDefinitionsBuilder
                         NullValue = "-999.00"
                     },
                 ],
-                DataDownloadUrl = "https://psl.noaa.gov/enso/mei/data/meiv2.data",
             },
             new() {
                 Id = Guid.Parse("c31270fa-b207-4d8f-b68e-4995698f1a4d"),
@@ -338,6 +338,7 @@ internal class DataSetDefinitionsBuilder
 
                     High values of the SOI correlate with cold waters in the eastern tropical Pacific.",
                 MoreInformationUrl = "https://www.ncdc.noaa.gov/teleconnections/enso/soi",
+                DataDownloadUrl = "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/soi.long.data",
                 MeasurementDefinitions =
                 [
                     new() {
@@ -352,7 +353,6 @@ internal class DataSetDefinitionsBuilder
                         NullValue = "-99.99"
                     },
                 ],
-                DataDownloadUrl = "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/soi.long.data",
             },
             new() {
                 Id = Guid.Parse("1042147a-8625-4ee7-bb5a-f0f17795c393"),
@@ -362,6 +362,7 @@ internal class DataSetDefinitionsBuilder
 
                     ONI conditions of +0.5 deg C or higher are considered El Niño, and -0.5 deg C or lower are considered La Niña. El Niño or La Niña conditions must prevail for at least five consecutive months to be considered an El Niño or La Niña event.",
                 MoreInformationUrl = "https://www.climate.gov/news-features/understanding-climate/climate-variability-oceanic-ni%C3%B1o-index",
+                DataDownloadUrl = "https://psl.noaa.gov/data/correlation/oni.data",
                 MeasurementDefinitions =
                 [
                     new() {
@@ -376,7 +377,6 @@ internal class DataSetDefinitionsBuilder
                         NullValue = "-99.9"
                     },
                 ],
-                DataDownloadUrl = "https://psl.noaa.gov/data/correlation/oni.data",
             },
             new() {
                 Id = Guid.Parse("bfbaa69b-c10d-4de3-a78c-1ed6ff307327"),
@@ -386,6 +386,7 @@ internal class DataSetDefinitionsBuilder
 
                     Niño 3.4 conditions of +0.4 deg C or higher are considered El Niño, and -0.4 deg C or lower are considered La Niña.",
                 MoreInformationUrl = "https://climatedataguide.ucar.edu/climate-data/nino-sst-indices-nino-12-3-34-4-oni-and-tni",
+                DataDownloadUrl = "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/nino34.long.anom.data",
                 MeasurementDefinitions =
                 [
                     new() {
@@ -400,7 +401,6 @@ internal class DataSetDefinitionsBuilder
                         NullValue = "-99.99"
                     },
                 ],
-                DataDownloadUrl = "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/nino34.long.anom.data",
             },
 
 
@@ -412,6 +412,8 @@ internal class DataSetDefinitionsBuilder
                 Name = "Carbon dioxide (CO₂) from the Mauna Loa Observatory",
                 ShortName = "Carbon Dioxide (CO₂)",
                 Description = "The carbon dioxide data on Mauna Loa constitute the longest record of direct measurements of CO\u2082 in the atmosphere. They were started by C. David Keeling of the Scripps Institution of Oceanography in March of 1958 at a facility of the National Oceanic and Atmospheric Administration. NOAA started its own CO\u2082 measurements in May of 1974, and they have run in parallel with those made by Scripps since then.",
+                Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
+                PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://gml.noaa.gov/ccgg/trends/mlo.html",
                 DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt",
                 MeasurementDefinitions =
@@ -432,6 +434,8 @@ internal class DataSetDefinitionsBuilder
                 Name = "Methane (CH₄) from a globally distributed network",
                 ShortName = "Methane (CH₄)",
                 Description = "The Global Monitoring Division of NOAA's Earth System Research Laboratory has measured methane since 1983 at a globally distributed network of air sampling sites. A global average is constructed by first smoothing the data for each site as a function of time, and then smoothed values for each site are plotted as a function of latitude for 48 equal time steps per year. Global means are calculated from the latitude plot at each time step.",
+                Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
+                PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://gml.noaa.gov/ccgg/trends_ch4/",
                 DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/ch4/ch4_mm_gl.txt",
                 MeasurementDefinitions =
@@ -452,6 +456,8 @@ internal class DataSetDefinitionsBuilder
                 Name = "Nitrous oxide (N₂O) from a globally distributed network",
                 ShortName = "N₂O",
                 Description = "The Global Monitoring Division of NOAA's Earth System Research Laboratory has measured nitrous oxide since 2001 at a globally distributed network of air sampling sites. A global average is constructed by first smoothing the data for each site as a function of time, and then smoothed values for each site are fitted as a function of latitude at 48 equally-spaced time steps per year. Global means are calculated from the latitude fits at each time step.",
+                Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
+                PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://gml.noaa.gov/ccgg/trends_n2o/",
                 DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/n2o/n2o_mm_gl.txt",
                 MeasurementDefinitions =
@@ -705,6 +711,33 @@ Our aim is to provide climate science and services to people and organisations, 
                         DataRowRegEx = @"^\""(?<station>\w+)\"",.*,(?<year>\d{4}),(?<value>\d+\.\d+),.*$",
                         FolderName = @"Atmosphere",
                         FileNameFormat = "GCB2023v43_MtCO2_flat.csv",
+                        NullValue = null,
+                    },
+                ],
+            },
+
+            new() {
+                Id = Guid.Parse("0ACF9042-9822-4CC4-92B5-0BC189DA8148"),
+                Name = "Atmospheric Transmission of Direct Solar Radiation at Mauna Loa",
+                ShortName = "Mauna Loa atmospheric transmission",
+                Description = @"The clear-sky atmospheric transmission, measured at Mauna Loa, Hawaii, from 1958. This net solar irradiance (total solar irradiance minus losses through the atmosphere) is fundamental to defining the climate of the earth.
+
+Aerosols have the greatest potential influence on the record and in general have the ability to cause both scattering and absorption but because the largest anomalies in the record are known to be due to volcanic eruptions (that produce predominantly conservative scattering aerosols), large anomalies result in net radiative cooling tendencies in the entire associated atmospheric column.",
+                Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
+                PublisherUrl = "https://www.noaa.gov/",
+                MoreInformationUrl = "https://gml.noaa.gov/grad/mloapt.html",
+                DataDownloadUrl = "https://gml.noaa.gov/webdata/grad/mloapt/mauna_loa_transmission.dat",
+                MeasurementDefinitions =
+                [
+                    new MeasurementDefinition
+                    {
+                        DataType = DataType.ApparentTransmission,
+                        UnitOfMeasure = UnitOfMeasure.AtmosphericTransmission,
+                        DataResolution = DataResolution.Monthly,
+                        DataAdjustment = null,
+                        DataRowRegEx = @"^(?<month>\w+)-(?<year>\d{4})\s+\d*\.\d*\s+(?<value>-?\d+\.\d+).*$",
+                        FolderName = @"Atmosphere",
+                        FileNameFormat = "mauna_loa_transmission.dat",
                         NullValue = null,
                     },
                 ],

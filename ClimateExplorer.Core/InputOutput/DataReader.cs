@@ -86,6 +86,22 @@ public static class DataReader
         return records.Values.ToList();
     }
 
+    static readonly Dictionary<string, short> MonthNamesToNumeric = new()
+    {
+        { "jan", 1 },
+        { "feb", 2 },
+        { "mar", 3 },
+        { "apr", 4 },
+        { "may", 5 },
+        { "jun", 6 },
+        { "jul", 7 },
+        { "aug", 8 },
+        { "sep", 9 },
+        { "oct", 10 },
+        { "nov", 11 },
+        { "dec", 12 },
+    };
+
     static async Task<Dictionary<string, DataRecord>> ReadDataFile(
         string pathAndFile,
         Regex regEx,
@@ -132,7 +148,8 @@ public static class DataReader
         var firstValidLine = regEx.Match(lines[initialDataIndex]);
 
         var startYear = short.Parse(firstValidLine.Groups["year"].Value);
-        var startMonth = short.Parse(firstValidLine.Groups["month"].Value);
+        var startMonth = GetMonthValue(firstValidLine);
+
         short startDay = 1;
         if (dataResolution == DataResolution.Daily)
         {
@@ -152,7 +169,7 @@ public static class DataReader
             }
 
             var year = short.Parse(match.Groups["year"].Value);
-            var month = short.Parse(match.Groups["month"].Value);
+            var month = GetMonthValue(match);
             short day = 1;
             if (dataResolution == DataResolution.Daily)
             {
@@ -218,6 +235,23 @@ public static class DataReader
         }
 
         return dataRecords;
+    }
+
+    private static short GetMonthValue(Match match)
+    {
+        var isMonthParsed = short.TryParse(match.Groups["month"].Value, out short monthValue);
+        if (!isMonthParsed)
+        {
+            if (MonthNamesToNumeric.ContainsKey(match.Groups["month"].Value))
+            {
+                monthValue = MonthNamesToNumeric[match.Groups["month"].Value];
+            }
+            else
+            {
+                throw new FormatException($"Month field (value is '{match.Groups["month"].Value}') is an unrecognised format");
+            }
+        }
+        return monthValue;
     }
 
     private static Dictionary<string, DataRecord> ProcessYearlyData(string[]? linesOfFile, Regex regEx, string nullValue, DataResolution dataResolution, string station)

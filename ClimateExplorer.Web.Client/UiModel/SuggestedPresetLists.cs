@@ -34,6 +34,7 @@ public static class SuggestedPresetLists
         var nino34 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Earth), DataType.Nino34, null, throwIfNoMatch: true);
         var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Atmosphere), DataType.CO2, null, throwIfNoMatch: true);
         var sunspot = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Sun"), DataType.SunspotNumber, null, throwIfNoMatch: true);
+        var transmission = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Atmosphere), DataType.ApparentTransmission, null, throwIfNoMatch: true);
 
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
@@ -195,6 +196,38 @@ public static class SuggestedPresetLists
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                                 SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Sun"), sunspot!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.None,
+                                SmoothingWindow = 5,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                RequestedColour = UiLogic.Colours.Yellow,
+                                GroupingThreshold = 0.1f,
+                            }
+                        ],
+                    },
+                    new SuggestedChartPresetModel()
+                    {
+                        Title = "Temperature + transmission",
+                        Description = "Yearly average temperature and atmospheric transmission at Mauna Loa. (Shows the global effect of large volcanic erruptions.)",
+                        ChartSeriesList =
+                        [
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.None,
+                                SmoothingWindow = 10,
+                                Value = SeriesValueOptions.Value,
+                                Year = null
+                            },
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), transmission!),
                                 Aggregation = SeriesAggregationOptions.Mean,
                                 BinGranularity = BinGranularities.ByYear,
                                 Smoothing = SeriesSmoothingOptions.None,
@@ -866,8 +899,8 @@ public static class SuggestedPresetLists
                                         SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), nino34!),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.None,
-                                        SmoothingWindow = 10,
+                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                        SmoothingWindow = 20,
                                         Value = SeriesValueOptions.Value,
                                         Year = null,
                                         DisplayStyle = SeriesDisplayStyle.Line,
@@ -880,8 +913,8 @@ public static class SuggestedPresetLists
                                         SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), iod!),
                                         Aggregation = SeriesAggregationOptions.Mean,
                                         BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.None,
-                                        SmoothingWindow = 10,
+                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                        SmoothingWindow = 20,
                                         Value = SeriesValueOptions.Value,
                                         Year = null,
                                         DisplayStyle = SeriesDisplayStyle.Line,
@@ -889,71 +922,6 @@ public static class SuggestedPresetLists
                                         GroupingThreshold = 0.1f,
                                     },
                             ],
-                Variants =
-                                [
-                                    new SuggestedChartPresetModel()
-                                    {
-                                        Title = "All ENSO",
-                                        Description = "Nino 3.4, ONI, an inverted SOI, and MEI v2",
-                                        ChartSeriesList =
-                                            [
-                                                    new ChartSeriesDefinition()
-                                                    {
-                                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), nino34!),
-                                                        Aggregation = SeriesAggregationOptions.Mean,
-                                                        BinGranularity = BinGranularities.ByYearAndMonth,
-                                                        Smoothing = SeriesSmoothingOptions.None,
-                                                        SmoothingWindow = 10,
-                                                        Value = SeriesValueOptions.Value,
-                                                        Year = null,
-                                                        DisplayStyle = SeriesDisplayStyle.Line,
-                                                        RequestedColour = UiLogic.Colours.Blue,
-                                                        GroupingThreshold = 0.1f,
-                                                    },
-                                                    new ChartSeriesDefinition()
-                                                    {
-                                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), oni!),
-                                                        Aggregation = SeriesAggregationOptions.Mean,
-                                                        BinGranularity = BinGranularities.ByYearAndMonth,
-                                                        Smoothing = SeriesSmoothingOptions.None,
-                                                        SmoothingWindow = 10,
-                                                        Value = SeriesValueOptions.Value,
-                                                        Year = null,
-                                                        DisplayStyle = SeriesDisplayStyle.Line,
-                                                        GroupingThreshold = 0.1f,
-                                                    },
-                                                    new ChartSeriesDefinition()
-                                                    {
-                                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), soi!),
-                                                        Aggregation = SeriesAggregationOptions.Mean,
-                                                        BinGranularity = BinGranularities.ByYearAndMonth,
-                                                        Smoothing = SeriesSmoothingOptions.None,
-                                                        SmoothingWindow = 10,
-                                                        Value = SeriesValueOptions.Value,
-                                                        Year = null,
-                                                        DisplayStyle = SeriesDisplayStyle.Line,
-                                                        GroupingThreshold = 0.1f,
-                                                        SeriesTransformation = SeriesTransformations.Negate,
-                                                    },
-                                                    new ChartSeriesDefinition()
-                                                    {
-                                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), mei!),
-                                                        Aggregation = SeriesAggregationOptions.Mean,
-                                                        BinGranularity = BinGranularities.ByYearAndMonth,
-                                                        Smoothing = SeriesSmoothingOptions.None,
-                                                        SmoothingWindow = 10,
-                                                        Value = SeriesValueOptions.Value,
-                                                        Year = null,
-                                                        DisplayStyle = SeriesDisplayStyle.Line,
-                                                        GroupingThreshold = 0.1f,
-                                                    },
-                                            ]
-                                    },
-                                ],
             }
         );
 
