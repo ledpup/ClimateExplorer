@@ -210,7 +210,7 @@ public static class SuggestedPresetLists
                     new SuggestedChartPresetModel()
                     {
                         Title = "Temperature + transmission",
-                        Description = "Yearly average temperature and atmospheric transmission at Mauna Loa. (Shows the global effect of large volcanic erruptions.)",
+                        Description = "Yearly average temperature and atmospheric transmission at Mauna Loa. (Shows the effect of volcanic erruptions on temperatures.)",
                         ChartSeriesList =
                         [
                             new ChartSeriesDefinition()
