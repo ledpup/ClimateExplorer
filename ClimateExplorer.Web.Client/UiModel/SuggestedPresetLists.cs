@@ -146,7 +146,7 @@ public static class SuggestedPresetLists
             new SuggestedChartPresetModelWithVariants()
             {
                 Title = "Temperature + CO₂",
-                Description = "Smoothed yearly average temperature and carbon dioxide",
+                Description = "Smoothed yearly average temperature and carbon dioxide from Mauna Loa.",
                 ChartSeriesList =
                 [
                         new ChartSeriesDefinition()
@@ -210,7 +210,7 @@ public static class SuggestedPresetLists
                     new SuggestedChartPresetModel()
                     {
                         Title = "Temperature + transmission",
-                        Description = "Yearly average temperature and atmospheric transmission at Mauna Loa. (Shows the global effect of large volcanic erruptions.)",
+                        Description = "Yearly average temperature and apparent atmospheric transmission from Mauna Loa. (May show the effect of volcanic erruptions on temperatures.)",
                         ChartSeriesList =
                         [
                             new ChartSeriesDefinition()
@@ -220,7 +220,7 @@ public static class SuggestedPresetLists
                                 Aggregation = SeriesAggregationOptions.Mean,
                                 BinGranularity = BinGranularities.ByYear,
                                 Smoothing = SeriesSmoothingOptions.None,
-                                SmoothingWindow = 10,
+                                SmoothingWindow = 5,
                                 Value = SeriesValueOptions.Value,
                                 Year = null
                             },

@@ -258,7 +258,7 @@
             {
                 new DataSetLibraryFolder
                 {
-                    Name = "Atmospheric gases",
+                    Name = "Atmosphere",
                     DataSets =
                         new List<DataSetLibraryEntry>()
                         {
@@ -316,6 +316,20 @@
                                             LocationId = Region.RegionId(Region.Earth),
                                             SourceDataSetId = Guid.Parse("71374f06-926a-4f89-8183-b2e765db9747"),
                                             DataType = DataType.CO2Emissions
+                                        }
+                                    }
+                            },
+                            new DataSetLibraryEntry()
+                            {
+                                Name = "Apparent atmospheric transmission",
+                                SourceSeriesSpecifications =
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            LocationId = Region.RegionId(Region.Atmosphere),
+                                            SourceDataSetId = Guid.Parse("0ACF9042-9822-4CC4-92B5-0BC189DA8148"),
+                                            DataType = DataType.ApparentTransmission,
                                         }
                                     }
                             },
