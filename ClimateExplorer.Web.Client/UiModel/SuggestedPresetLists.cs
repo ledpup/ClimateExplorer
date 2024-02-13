@@ -437,6 +437,10 @@ public static class SuggestedPresetLists
         var antarcticTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Antarctic), DataType.TempMean, null, throwIfNoMatch: true);
         var r60S60NTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.R60S60N), DataType.TempMean, null, throwIfNoMatch: true);
 
+        var ozoneHoleArea = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.SouthernHemi), DataType.OzoneHoleArea, null, throwIfNoMatch: true);
+        var ozoneHoleColumn = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.SouthernHemi), DataType.OzoneHoleColumn, null, throwIfNoMatch: true);
+        var odgi = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.SouthernHemi), DataType.Ozone, null, throwIfNoMatch: true);
+
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
@@ -893,34 +897,73 @@ public static class SuggestedPresetLists
                 Description = "The El Niño Southern Oscillation (ENSO) and Indian Ocean Dipole (IOD) are sea surface temperature anomalies",
                 ChartSeriesList =
                             [
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), nino34!),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 20,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null,
-                                        DisplayStyle = SeriesDisplayStyle.Line,
-                                        RequestedColour = UiLogic.Colours.Blue,
-                                        GroupingThreshold = 0.1f,
-                                    },
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), iod!),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 20,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null,
-                                        DisplayStyle = SeriesDisplayStyle.Line,
-                                        RequestedColour = UiLogic.Colours.Orange,
-                                        GroupingThreshold = 0.1f,
-                                    },
+                                new ChartSeriesDefinition()
+                                {
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), nino34!),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYear,
+                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                    SmoothingWindow = 20,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null,
+                                    DisplayStyle = SeriesDisplayStyle.Line,
+                                    RequestedColour = UiLogic.Colours.Blue,
+                                    GroupingThreshold = 0.1f,
+                                },
+                                new ChartSeriesDefinition()
+                                {
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), iod!),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYear,
+                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                    SmoothingWindow = 20,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null,
+                                    DisplayStyle = SeriesDisplayStyle.Line,
+                                    RequestedColour = UiLogic.Colours.Orange,
+                                    GroupingThreshold = 0.1f,
+                                },
+                            ],
+            }
+        );
+
+        suggestedPresets.Add(
+            new SuggestedChartPresetModelWithVariants()
+            {
+                Title = "Ozone Hole + ODGI",
+                Description = "Smoothed yearly average size of the Southern Hemisphere Ozone Hole compared with the Ozone Depleting Gas Index",
+                ChartSeriesList =
+                            [
+                                new ChartSeriesDefinition()
+                                {
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.SouthernHemi), ozoneHoleArea!),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYear,
+                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                    SmoothingWindow = 5,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null,
+                                    DisplayStyle = SeriesDisplayStyle.Line,
+                                    RequestedColour = UiLogic.Colours.Green,
+                                    GroupingThreshold = 0.1f,
+                                },
+                                new ChartSeriesDefinition()
+                                {
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.SouthernHemi), odgi!),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYear,
+                                    Smoothing = SeriesSmoothingOptions.None,
+                                    SmoothingWindow = 20,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null,
+                                    DisplayStyle = SeriesDisplayStyle.Line,
+                                    RequestedColour = UiLogic.Colours.Black,
+                                    GroupingThreshold = 0.1f,
+                                },
                             ],
             }
         );

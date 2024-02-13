@@ -1,4 +1,5 @@
 ﻿using ClimateExplorer.Core.Model;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -6,9 +7,9 @@ namespace ClimateExplorer.Data.Misc.Ozone;
 
 public class OzoneFileReducer
 {
-    public static void Process()
+    public static void Process(string fileName)
     {
-        var lines = File.ReadAllLines(@"Ozone\cams_ozone_monitoring_sh_ozone_area.csv");
+        var lines = File.ReadAllLines(@$"Ozone\{fileName}.csv");
         var regEx = new Regex("^(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2}).*,(?<value>\\d*\\.?\\d*)$");
         var currentDay = new DateOnly(1979, 1, 1);
         var dayValues = new List<double>();
@@ -42,6 +43,6 @@ public class OzoneFileReducer
 
         records.ForEach(x => outputLines.Add($"{x.Date!.Value.ToString("yyyy-MM-dd")},{x.Value!.Value:0.000}"));
 
-        File.WriteAllLines(@"Output\ozone.csv", outputLines);
+        File.WriteAllLines(@$"Output\{fileName}_reduced.csv", outputLines);
     }
 }

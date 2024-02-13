@@ -30,6 +30,10 @@ public static class Enums
         CO2Emissions,
 
         ApparentTransmission,
+
+        OzoneHoleArea,
+        OzoneHoleColumn,
+        Ozone,
     }
 
     public enum DataResolution
@@ -62,6 +66,8 @@ public static class Enums
         WattsPerSquareMetre,
         MegaTonnes,
         AtmosphericTransmission,
+        DobsonUnits,
+        Odgi,
     }
 
     public enum SeriesAggregationOptions
@@ -125,6 +131,8 @@ public static class Enums
             UnitOfMeasure.WattsPerSquareMetre => "Watts per square metre (W/m²)",
             UnitOfMeasure.MegaTonnes => "Megatonnes",
             UnitOfMeasure.AtmosphericTransmission => "Atmospheric transmission",
+            UnitOfMeasure.DobsonUnits => "Dobson Units",
+            UnitOfMeasure.Odgi => "Ozone Depleting Gas Index",
             _ => throw new NotImplementedException(),
         };
     }
@@ -146,6 +154,8 @@ public static class Enums
             UnitOfMeasure.WattsPerSquareMetre => "W/m²",
             UnitOfMeasure.MegaTonnes => "Mt",
             UnitOfMeasure.AtmosphericTransmission => "Transmission",
+            UnitOfMeasure.DobsonUnits => "DU",
+            UnitOfMeasure.Odgi => "ODGI",
             _ => throw new NotImplementedException(),
         };
     }

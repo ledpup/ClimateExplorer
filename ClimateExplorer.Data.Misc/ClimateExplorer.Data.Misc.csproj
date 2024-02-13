@@ -14,16 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="MetaData\countries.txt" />
-    <None Remove="MetaData\Location\Locations_Australia_Raia.json" />
-    <None Remove="MetaData\Location\Locations_Australia_unadjusted.json" />
-    <None Remove="MetaData\Location\Locations_ghcnm_adjusted.json" />
-    <None Remove="MetaData\Location\Locations_NewZealand_11stations.json" />
-    <None Remove="MetaData\Location\Locations_NewZealand_7stations_unadjusted.json" />
-    <None Remove="MetaData\Location\Locations_UK_HadObs.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="MapMarker.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -91,6 +81,9 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="Ozone\cams_ozone_monitoring_sh_ozone_area.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Ozone\cams_ozone_monitoring_sh_ozone_minimum.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
