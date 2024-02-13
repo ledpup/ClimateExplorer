@@ -507,6 +507,56 @@
                             },
                         }
                 },
+                new DataSetLibraryFolder
+                {
+                    Name = "Southern hemisphere",
+                    DataSets =
+                        new List<DataSetLibraryEntry>()
+                        {
+                            new DataSetLibraryEntry()
+                            {
+                                Name = "Ozone Hole area",
+                                SourceSeriesSpecifications =
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            LocationId = Region.RegionId(Region.SouthernHemi),
+                                            SourceDataSetId = Guid.Parse("489E9F1A-057F-4EA8-9C48-0C86517D08A2"),
+                                            DataType = DataType.OzoneHoleArea
+                                        }
+                                    }
+                            },
+                            new DataSetLibraryEntry()
+                            {
+                                Name = "Ozone Hole column",
+                                SourceSeriesSpecifications =
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            LocationId = Region.RegionId(Region.SouthernHemi),
+                                            SourceDataSetId = Guid.Parse("F3F925D6-8DBD-4080-9BF3-40D98D56FBEC"),
+                                            DataType = DataType.OzoneHoleColumn
+                                        }
+                                    }
+                            },
+                            new DataSetLibraryEntry()
+                            {
+                                Name = "Ozone Depleting Gas Index",
+                                SourceSeriesSpecifications =
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            LocationId = Region.RegionId(Region.SouthernHemi),
+                                            SourceDataSetId = Guid.Parse("A8F34F99-0908-4BF3-8C7F-744574FFEADA"),
+                                            DataType = DataType.Ozone
+                                        }
+                                    }
+                            },
+                        }
+                },
             }
         );
     }

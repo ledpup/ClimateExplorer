@@ -10,7 +10,8 @@ var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
 httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
 httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
 
-OzoneFileReducer.Process();
+OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_area");
+OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_minimum");
 
 await BuildStaticContent.GenerateSiteMap();
 GenerateMapMarkers();

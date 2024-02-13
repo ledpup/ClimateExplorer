@@ -93,7 +93,7 @@ internal class DataSetDefinitionsBuilder
             },
             new() {
                 Id = Guid.Parse("647b6a05-43e4-48e0-a43e-04ae81a74653"),
-                Name = "RAIA",
+                Name = "Remote Australian Islands and Antarctica (RAIA)",
                 Description = "This ACORN-SAT dataset includes homogenised monthly data from the Remote Australian Islands and Antarctica network of 8 locations, which provide ground-based temperature records.",
                 Publisher = "Australian Bureau of Meteorology",
                 PublisherUrl = "http://www.bom.gov.au/",
@@ -424,7 +424,7 @@ internal class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Monthly,
                         DataAdjustment = null,
                         DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Atmosphere",
+                        FolderName = @"Atmosphere\GHGs",
                         FileNameFormat = "co2_mm_mlo.txt",
                     },
                 ],
@@ -446,7 +446,7 @@ internal class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Monthly,
                         DataAdjustment = null,
                         DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Atmosphere",
+                        FolderName = @"Atmosphere\GHGs",
                         FileNameFormat = "ch4_mm_gl.txt",
                     },
                 ],
@@ -468,7 +468,7 @@ internal class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Monthly,
                         DataAdjustment = null,
                         DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Atmosphere",
+                        FolderName = @"Atmosphere\GHGs",
                         FileNameFormat = "n2o_mm_gl.txt",
                     },
                 ],
@@ -645,7 +645,7 @@ Our aim is to provide climate science and services to people and organisations, 
                 Id = Guid.Parse("E45293F9-B7AC-4874-9544-25E006B6B998"),
                 Name = "Total solar irradiance",
                 ShortName = "TSI",
-                Description = "The Solar Irradiance Climate Data Record (CDR) includes a composite observational record of total solar irradiance (TSI) constructed from space-based radiometer composite records between 1978 and 2014 and Total Irradiance Monitor (TIM) observations after the launch of the SOlar Radiation and Climate  Experiment (SORCE). The SORCE TIM record ended Feb 25, 2020. The TSIS-1 TIM record began Jan 11, 2018.",
+                Description = "The Solar Irradiance Climate Data Record (CDR) includes a composite observational record of total solar irradiance (TSI) constructed from space-based radiometer composite records between 1978 and 2014 and Total Irradiance Monitor (TIM) observations after the launch of the SOlar Radiation and Climate Experiment (SORCE). The SORCE TIM record ended Feb 25, 2020. The TSIS-1 TIM record began Jan 11, 2018.",
                 Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
                 MoreInformationUrl = "https://www.ncei.noaa.gov/products/climate-data-records/total-solar-irradiance",
                 DataDownloadUrl = "https://www.ncei.noaa.gov/data/total-solar-irradiance/access/ancillary-data/tsi-ssi_v02r01_observed-tsi-composite_s19780101_e20230930_c20231010.txt",
@@ -738,6 +738,85 @@ Aerosols have the greatest potential influence on the record and in general have
                         DataRowRegEx = @"^(?<month>\w+)-(?<year>\d{4})\s+\d*\.\d*\s+(?<value>-?\d+\.\d+).*$",
                         FolderName = @"Atmosphere",
                         FileNameFormat = "mauna_loa_transmission.dat",
+                        NullValue = null,
+                    },
+                ],
+            },
+
+            new() {
+                Id = Guid.Parse("489E9F1A-057F-4EA8-9C48-0C86517D08A2"),
+                Name = "Southern Hemisphere ozone hole area",
+                ShortName = "Ozone hole area",
+                Description = @"During the Southern Hemisphere spring season (August - October) the ozone hole over the Antarctic increases in size, reaching a maximum between mid-September and mid-October.
+
+When temperatures high up in the atmosphere (stratosphere) start to rise in late Southern Hemisphere spring, ozone depletion slows, the polar vortex weakens and finally breaks down, and by the end of December ozone levels have returned to normal.
+
+The ozone hole area is calculated as the area with ozone values below 220 DU south of 60S.",
+                Publisher = "Copernicus Atmospheric Monitoring Service (CAMS)",
+                PublisherUrl = "https://www.copernicus.eu/",
+                MoreInformationUrl = "https://atmosphere.copernicus.eu/monitoring-ozone-layer",
+                DataDownloadUrl = "https://sites.ecmwf.int/data/cams/ozone_monitoring/data/cams_ozone_monitoring_sh_ozone_area.csv",
+                MeasurementDefinitions =
+                [
+                    new MeasurementDefinition
+                    {
+                        DataType = DataType.OzoneHoleArea,
+                        UnitOfMeasure = UnitOfMeasure.MillionSqKm,
+                        DataResolution = DataResolution.Daily,
+                        DataAdjustment = null,
+                        DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d+\.\d+)$",
+                        FolderName = @"Atmosphere",
+                        FileNameFormat = "cams_ozone_monitoring_sh_ozone_area_reduced.csv",
+                        NullValue = null,
+                    },
+                ],
+            },
+            new() {
+                Id = Guid.Parse("F3F925D6-8DBD-4080-9BF3-40D98D56FBEC"),
+                Name = "Southern Hemisphere ozone column",
+                ShortName = "Ozone hole column",
+                Description = @"Ozone values are often measured as the number of ozone molecules in a vertical column and denoted in Dobson Units (DU). During the Antarctic ozone hole period, values can be less than half the normal levels. CAMS monitors the minimum value within the ozone hole area over time as another measure of the significance of each year's event. By comparing the current state of the ozone hole with its long-term evolution, it is possible to get an indication of whether the ozone layer is being restored and how fast this process is occurring, bearing in mind that meteorological and dynamical interannual variability also impact the size and duration of the current ozone hole.",
+                Publisher = "Copernicus Atmospheric Monitoring Service (CAMS)",
+                PublisherUrl = "https://www.copernicus.eu/",
+                MoreInformationUrl = "https://atmosphere.copernicus.eu/monitoring-ozone-layer",
+                DataDownloadUrl = "https://sites.ecmwf.int/data/cams/ozone_monitoring/data/cams_ozone_monitoring_sh_ozone_minimum.csv",
+                MeasurementDefinitions =
+                [
+                    new MeasurementDefinition
+                    {
+                        DataType = DataType.OzoneHoleColumn,
+                        UnitOfMeasure = UnitOfMeasure.DobsonUnits,
+                        DataResolution = DataResolution.Daily,
+                        DataAdjustment = null,
+                        DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d+\.\d+)$",
+                        FolderName = @"Atmosphere",
+                        FileNameFormat = "cams_ozone_monitoring_sh_ozone_minimum_reduced.csv",
+                        NullValue = null,
+                    },
+                ],
+            },
+            new() {
+                Id = Guid.Parse("A8F34F99-0908-4BF3-8C7F-744574FFEADA"),
+                Name = "Ozone Depleting Gas Index",
+                ShortName = "ODGI",
+                Description = @"This index is derived from NOAA’s measurements of chemicals that contain chlorine and bromine at multiple remote surface sites across the planet (see the map in Figure 1). It is defined as 100 at the peak in ozone depleting halogen abundance as determined by NOAA observations, and zero for the 1980 abundance, which corresponds to when recovery of the ozone layer might be expected based on observations in the past, all other things being constant.
+
+Two different indices are calculated, one that is relevant for the ozone layer over Antarctica (the ODGI-A), and one that is relevant for the ozone layer at mid-latitudes (the ODGI-ML). While both indices are derived from NOAA measurements of halocarbon abundances at Earth’s surface, separate indices for these different stratospheric regions are necessary to account for the unique nature of the Antarctic stratosphere compared to the stratosphere at mid-latitudes in both hemispheres. Though an index for the Arctic stratosphere is not explicitly calculated here, it is likely that its value would lie between the mid-latitude and Antarctic ODGI in any given year.",
+                Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
+                PublisherUrl = "https://www.noaa.gov/",
+                MoreInformationUrl = "https://gml.noaa.gov/odgi/",
+                DataDownloadUrl = "https://gml.noaa.gov/odgi/odgi_[station].csv",
+                MeasurementDefinitions =
+                [
+                    new MeasurementDefinition
+                    {
+                        DataType = DataType.Ozone,
+                        UnitOfMeasure = UnitOfMeasure.Odgi,
+                        DataResolution = DataResolution.Yearly,
+                        DataAdjustment = null,
+                        DataRowRegEx = @"^(?<year>\d{4}),.*,(?<value>\d+\.\d+)$",
+                        FolderName = @"Atmosphere\ODGI",
+                        FileNameFormat = "odgi_[station].csv",
                         NullValue = null,
                     },
                 ],

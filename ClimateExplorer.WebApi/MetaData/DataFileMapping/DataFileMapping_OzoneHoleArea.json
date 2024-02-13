@@ -1,0 +1,10 @@
+{
+  "DataSetDefinitionId": "489E9F1A-057F-4EA8-9C48-0C86517D08A2",
+  "LocationIdToDataFileMappings": {
+    "1D9FAF5C-77EE-4B3F-B9D2-10D93A176F74": [
+      {
+        "Id": "Atmosphere"
+      }
+    ]
+  }
+}

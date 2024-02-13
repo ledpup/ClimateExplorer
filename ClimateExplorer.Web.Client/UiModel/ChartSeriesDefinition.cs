@@ -317,6 +317,9 @@ public class ChartSeriesDefinition
             DataType.SunspotNumber => "Sunspot number",
             DataType.CO2Emissions => "Reported CO₂ emissions",
             DataType.ApparentTransmission => "Apparent atmospheric transmission",
+            DataType.OzoneHoleArea => "Ozone Hole area",
+            DataType.OzoneHoleColumn => "Ozone Hole column",
+            DataType.Ozone => "Ozone",
             _ => throw new NotImplementedException(),
         };
     }
