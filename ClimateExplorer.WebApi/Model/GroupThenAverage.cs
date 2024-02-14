@@ -7,6 +7,7 @@ public class GroupThenAverage : StatsParameters
         DayGrouping = dayGrouping;
         DayGroupingThreshold = dayGroupingThreshold;
     }
+
     public short DayGrouping { get; set; }
     public float DayGroupingThreshold { get; set; }
 }

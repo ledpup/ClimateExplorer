@@ -1,8 +1,8 @@
-﻿using ClimateExplorer.Core.Model;
+﻿namespace ClimateExplorer.Web.Services;
+
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.Core.DataPreparation;
-
-namespace ClimateExplorer.Web.Services;
 
 public interface IExporter
 {
@@ -17,7 +17,7 @@ public class Exporter : IExporter
 
         var data = new List<string>
         {
-            $"Exported from, \"{sourceUri}\""
+            $"Exported from, \"{sourceUri}\"",
         };
 
         var locationIds = dataDownloadPackage.ChartSeriesWithData!.SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!).Select(x => x.LocationId).Distinct().ToArray();
@@ -48,6 +48,7 @@ public class Exporter : IExporter
                 var val = cswd.ProcessedDataSet!.DataRecords.SingleOrDefault(x => x.BinId == bin.Id)?.Value;
                 dataRow += (val == null ? string.Empty : val.Value.ToString("0.00")) + ",";
             }
+
             dataRow = dataRow.TrimEnd(',');
             data.Add(dataRow);
         }
@@ -59,9 +60,9 @@ public class Exporter : IExporter
         return fileStream;
     }
 
-    string BuildColumnHeader(GeographicalEntity[] relevantLocations, ChartSeriesDefinition csd)
+    private string BuildColumnHeader(GeographicalEntity[] relevantLocations, ChartSeriesDefinition csd)
     {
-        var s = "";
+        var s = string.Empty;
 
         bool includeLocationInColumnHeader = relevantLocations.Length > 1;
 
@@ -81,9 +82,9 @@ public class Exporter : IExporter
         }
     }
 
-    string BuildColumnHeader(bool includeLocationInColumnHeader, SourceSeriesSpecification sss)
+    private string BuildColumnHeader(bool includeLocationInColumnHeader, SourceSeriesSpecification sss)
     {
-        string s = "";
+        string s = string.Empty;
 
         if (includeLocationInColumnHeader)
         {

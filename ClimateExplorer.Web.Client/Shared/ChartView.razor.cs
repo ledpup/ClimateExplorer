@@ -1,39 +1,40 @@
-﻿using Blazorise;
-using Blazorise.Charts.Trendline;
+﻿namespace ClimateExplorer.Web.Client.Shared;
+
+using System.Dynamic;
+using BlazorCurrentDevice;
+using Blazorise;
 using Blazorise.Charts;
+using Blazorise.Charts.Trendline;
+using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Infrastructure;
+using ClimateExplorer.Core.Model;
+using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.Web.Services;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;
-using System.Dynamic;
-using static ClimateExplorer.Core.Enums;
-using BlazorCurrentDevice;
 using Microsoft.JSInterop;
-using ClimateExplorer.Core.ViewModel;
-using ClimateExplorer.Core;
-using ClimateExplorer.Core.Model;
-
-namespace ClimateExplorer.Web.Client.Shared;
+using static ClimateExplorer.Core.Enums;
 
 public partial class ChartView
 {
-    Chart<double?>? chart;
-    ChartTrendline<double?>? chartTrendline;
-    
-    BinIdentifier? ChartStartBin, ChartEndBin;
+    private bool haveCalledResizeAtLeastOnce = false;
+    private bool chartRenderedFirstTime = false;
 
-    short SelectingDayGrouping { get; set; }
+    private Chart<double?>? chart;
+    private ChartTrendline<double?>? chartTrendline;
 
-    float InternalGroupingThreshold { get; set; } = .7f;
+    private BinIdentifier? chartStartBin;
+    private BinIdentifier? chartEndBin;
 
-    bool UserOverridePresetAggregationSettings { get; set; }
+    private Modal? chartOptionsModal;
+    private Modal? aggregationOptionsModal;
 
-    short SelectedDayGrouping { get; set; } = 14;
+    public bool ChartLoadingIndicatorVisible { get; set; }
+    public bool ChartLoadingErrored { get; set; }
 
     public BinGranularities SelectedBinGranularity { get; set; } = BinGranularities.ByYear;
-
-    BinIdentifier[]? ChartBins { get; set; }
 
     public List<SeriesWithData>? ChartSeriesWithData { get; set; }
 
@@ -47,42 +48,6 @@ public partial class ChartView
 
     [Parameter]
     public EventCallback ShowAddDataSetModalEvent { get; set; }
-
-    [Inject] IDataService? DataService { get; set; }
-    [Inject] IBlazorCurrentDeviceService? BlazorCurrentDeviceService { get; set; }
-    [Inject] IJSRuntime? JsRuntime { get; set; }
-    [Inject] ILogger<Index>? Logger { get; set; }
-
-    string? SelectedStartYear { get; set; }
-    string? SelectedEndYear { get; set; }
-
-    bool _haveCalledResizeAtLeastOnce = false;
-    bool chartRenderedFirstTime = false;
-    bool? IsMobileDevice { get; set; }
-
-    bool? EnableRangeSlider { get; set; }
-    int SliderMin { get; set; }
-    int SliderMax { get; set; }
-    int? SliderStart { get; set; }
-    int? SliderEnd { get; set; }
-
-    /// <summary>
-    /// The chart type selected by the user on the options page
-    /// </summary>
-    ChartType SelectedChartType { get; set; }
-    List<short>? DatasetYears { get; set; }
-    List<short>? SelectedYears { get; set; }
-    List<short>? StartYears { get; set; }
-    short EndYear { get; set; }
-    ChartStartYears? ChartStartYear { get; set; } = ChartStartYears.LastYear;
-
-    ColourServer colours { get; set; } = new ColourServer();
-
-    string? GroupingThresholdText { get; set; }
-
-    YearFilter? yearFilter { get; set; }
-
-    Modal? optionsModal { get; set; }
 
     public string ChartOptionsText { get; set; } = @"<div style=""padding-bottom: 24px;""><img style=""max-width: 100%;"" src=""images/ChartOptions.png"" alt=""Chart Options image"" /></div>
 <p><strong>Year filtering</strong>: allows you to change the start and end years for the chart. For example, if you want to see the change in temperature for the 20th century, you could set the end year to 2000.</p>
@@ -101,7 +66,57 @@ public partial class ChartView
 <p><strong>Apply</strong>: save your changes and apply them to the chart. These settings will persist as you change locations and datasets within the application.</p>
 <p><strong>Clear override</strong>: this will reset the settings back to their default (14 days at 70% threshold). Only appears after applying your settings.</p>";
 
-    private Modal? chartOptionsModal, aggregationOptionsModal;
+    [Inject]
+    private IDataService? DataService { get; set; }
+
+    [Inject]
+    private IBlazorCurrentDeviceService? BlazorCurrentDeviceService { get; set; }
+
+    [Inject]
+    private IJSRuntime? JsRuntime { get; set; }
+
+    [Inject]
+    private ILogger<Index>? Logger { get; set; }
+
+    private short SelectingDayGrouping { get; set; }
+
+    private float InternalGroupingThreshold { get; set; } = .7f;
+
+    private bool UserOverridePresetAggregationSettings { get; set; }
+
+    private short SelectedDayGrouping { get; set; } = 14;
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
+    private BinIdentifier[]? ChartBins { get; set; }
+
+    private string? SelectedStartYear { get; set; }
+    private string? SelectedEndYear { get; set; }
+
+    private bool? IsMobileDevice { get; set; }
+
+    private bool? EnableRangeSlider { get; set; }
+    private int SliderMin { get; set; }
+    private int SliderMax { get; set; }
+    private int? SliderStart { get; set; }
+    private int? SliderEnd { get; set; }
+
+    /// <summary>
+    /// Gets or sets the chart type selected by the user on the options page.
+    /// </summary>
+    private ChartType SelectedChartType { get; set; }
+    private List<short>? DatasetYears { get; set; }
+    private List<short>? SelectedYears { get; set; }
+    private List<short>? StartYears { get; set; }
+    private short EndYear { get; set; }
+    private ChartStartYears? ChartStartYear { get; set; } = ChartStartYears.LastYear;
+
+    private ColourServer Colours { get; set; } = new ColourServer();
+
+    private string? GroupingThresholdText { get; set; }
+
+    private YearFilter? YearFilter { get; set; }
+
+    private Modal? OptionsModal { get; set; }
 
     /// <summary>
     /// The chart type applied to the chart control. If any series is in "Bar" mode, we switch
@@ -109,55 +124,7 @@ public partial class ChartView
     /// between grid lines and datapoints for any line series that are being displayed.
     /// Otherwise, we display in "Line" mode to avoid that cost.
     /// </summary>
-    ChartType InternalChartType { get; set; }
-
-    public bool ChartLoadingIndicatorVisible;
-    public bool ChartLoadingErrored;
-
-    protected override void OnInitialized()
-    {
-        ChartLoadingIndicatorVisible = true;
-        ChartLoadingErrored = false;
-
-        SelectedYears = [];
-
-        var datasetYears = new List<short>();
-        for (short i = 1800; i <= (short)DateTime.Now.Year; i++)
-        {
-            datasetYears.Add(i);
-        }
-        DatasetYears = datasetYears;
-
-        SliderMax = DateTime.Now.Year;
-    }
-
-    protected override void OnParametersSet()
-    {
-        ChartLoadingErrored = false;
-    }
-
-    async Task ShowFilterModal()
-    {
-        await yearFilter!.Show();
-    }
-
-    private Task ShowChartOptionsInfo()
-    {
-        if (!string.IsNullOrWhiteSpace(ChartOptionsText))
-        {
-            return chartOptionsModal!.Show();
-        }
-        return Task.CompletedTask;
-    }
-
-    private Task ShowAggregationOptionsInfo()
-    {
-        if (!string.IsNullOrWhiteSpace(AggregationOptionsInfoText))
-        {
-            return aggregationOptionsModal!.Show();
-        }
-        return Task.CompletedTask;
-    }
+    private ChartType InternalChartType { get; set; }
 
     public async Task OnAddDataSet(DataSetLibraryEntry dle, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions)
     {
@@ -177,29 +144,12 @@ public partial class ChartView
                         Smoothing = SeriesSmoothingOptions.None,
                         SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
-                        Year = null
-                    }
-                }
-            )
+                        Year = null,
+                    },
+                })
             .ToList();
 
         await BuildDataSets();
-    }
-
-    SourceSeriesSpecification BuildSourceSeriesSpecification(DataSetLibraryEntry.SourceSeriesSpecification sss, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions)
-    {
-        var dsd = dataSetDefinitions.Single(x => x.Id == sss.SourceDataSetId);
-
-        var md = dsd.MeasurementDefinitions!.Single(x => x.DataType == sss.DataType && x.DataAdjustment == sss.DataAdjustment);
-
-        return
-            new SourceSeriesSpecification
-            {
-                LocationId = sss.LocationId,
-                LocationName = sss.LocationName!,
-                DataSetDefinition = dsd,
-                MeasurementDefinition = md
-            };
     }
 
     public async Task OnChartPresetSelected(List<ChartSeriesDefinition> chartSeriesDefinitions)
@@ -248,42 +198,15 @@ public partial class ChartView
                     GetGroupingThreshold(csd.GroupingThreshold),
                     SelectedDayGrouping,
                     csd.SeriesTransformation,
-                    csd.Year
-                );
+                    csd.Year);
 
             datasetsToReturn.Add(
-                new SeriesWithData() { ChartSeries = csd, SourceDataSet = dataSet }
-            );
+                new SeriesWithData() { ChartSeries = csd, SourceDataSet = dataSet });
         }
 
         Logger!.LogInformation("RetrieveDataSets: completed enumeration");
 
         return datasetsToReturn;
-    }
-
-    static ContainerAggregationFunctions MapSeriesAggregationOptionToBinAggregationFunction(SeriesAggregationOptions a)
-    {
-        return a switch
-        {
-            SeriesAggregationOptions.Mean => ContainerAggregationFunctions.Mean,
-            SeriesAggregationOptions.Minimum => ContainerAggregationFunctions.Min,
-            SeriesAggregationOptions.Maximum => ContainerAggregationFunctions.Max,
-            SeriesAggregationOptions.Median => ContainerAggregationFunctions.Median,
-            SeriesAggregationOptions.Sum => ContainerAggregationFunctions.Sum,
-            _ => throw new NotImplementedException($"SeriesAggregationOptions {a}"),
-        };
-    }
-
-    SeriesSpecification BuildDataPrepSeriesSpecification(SourceSeriesSpecification sss)
-    {
-        return
-            new SeriesSpecification
-            {
-                DataSetDefinitionId = sss.DataSetDefinition!.Id,
-                DataType = sss.MeasurementDefinition!.DataType,
-                DataAdjustment = sss.MeasurementDefinition.DataAdjustment,
-                LocationId = sss.LocationId
-            };
     }
 
     public async Task HandleRedraw()
@@ -313,7 +236,6 @@ public partial class ChartView
         }
         else
         {
-
             LogChartSeriesList();
 
             // We now set ChartType to Bar if any series is of type Bar, and Line otherwise.
@@ -329,7 +251,7 @@ public partial class ChartView
                 await chart.ChangeType(newInternalChartType);
             }
 
-            colours = new ColourServer();
+            Colours = new ColourServer();
 
             title = ChartLogic.BuildChartTitle(ChartSeriesWithData);
 
@@ -339,16 +261,15 @@ public partial class ChartView
             //
             // To ensure these gaps are handled correctly in the plotted chart, we build a new dataset that includes
             // records for each missing year. Value is set to null for those records.
-
             l.LogInformation("Calling BuildProcessedDataSets");
 
             BuildProcessedDataSets(ChartSeriesWithData, ChartStartYear);
 
             subtitle =
-                (ChartStartBin != null && ChartEndBin != null)
-                ? ChartStartBin is YearBinIdentifier
-                    ? $"{ChartStartBin.Label}-{ChartEndBin.Label}, {Convert.ToInt16(ChartEndBin.Label) - Convert.ToInt16(ChartStartBin.Label)} years"
-                    : $"{ChartStartBin.Label}-{ChartEndBin.Label}"
+                (chartStartBin != null && chartEndBin != null)
+                ? chartStartBin is YearBinIdentifier
+                    ? $"{chartStartBin.Label}-{chartEndBin.Label}, {Convert.ToInt16(chartEndBin.Label) - Convert.ToInt16(chartStartBin.Label)} years"
+                    : $"{chartStartBin.Label}-{chartEndBin.Label}"
                 : SelectedBinGranularity.ToFriendlyString();
 
             subtitle += $" | Aggregation: {SelectedDayGrouping} day groups, {GetGroupingThresholdText()} threshold";
@@ -379,22 +300,23 @@ public partial class ChartView
                 {
                     Text = title,
                     Display = true,
-                    Color = "black"
+                    Color = "black",
                 },
                 Subtitle = new
                 {
                     Text = subtitle,
                     Display = true,
-                    Color = "black"
+                    Color = "black",
                 },
                 Tooltip = new
                 {
                     Mode = IsMobileDevice!.Value ? "point" : "index",
-                    Intersect = false
-                }
+                    Intersect = false,
+                },
             },
             Scales = scales,
-            //Parsing = false
+
+            // Parsing = false
         };
 
         await chart.SetOptionsObject(chartOptions);
@@ -410,10 +332,10 @@ public partial class ChartView
         // If you don't call resize, the chart will apply the styling only after you resize the window,
         // but it does not apply the style on the initial load of the page.
         // See https://www.chartjs.org/docs/latest/configuration/responsive.html for more information
-        if (!_haveCalledResizeAtLeastOnce)
+        if (!haveCalledResizeAtLeastOnce)
         {
             await chart.Resize();
-            _haveCalledResizeAtLeastOnce = true;
+            haveCalledResizeAtLeastOnce = true;
         }
 
         chartRenderedFirstTime = true;
@@ -422,15 +344,73 @@ public partial class ChartView
         l.LogInformation("Leaving");
     }
 
-    float GetGroupingThreshold(float? groupingThreshold, bool binGranularityIsLinear = false)
+    public void LogChartSeriesList()
     {
-        // If we're in linear time, all buckets in a bin must have passed the data completeness test.
-        // Otherwise, we apply GroupingThreshold from either user input or ChartSeriesDefinition
-        return binGranularityIsLinear
-            ? 1.0f
-            : (UserOverridePresetAggregationSettings || groupingThreshold == null)
-                ? InternalGroupingThreshold
-                : groupingThreshold.Value;
+        Logger!.LogInformation("ChartSeriesList: (SelectedBinGranularity is " + SelectedBinGranularity + ")");
+
+        foreach (var csd in ChartSeriesList!)
+        {
+            Logger!.LogInformation("    " + csd.ToString());
+        }
+    }
+
+    public async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)
+    {
+        await OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly, false);
+
+        var chartWithData = ChartSeriesWithData!
+            .First(x =>
+            (x.SourceDataSet!.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
+            (x.SourceDataSet.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null));
+
+        var chartSeries = ChartSeriesList!
+            .First(x => x.SourceSeriesSpecifications!.Any(y =>
+               (y.MeasurementDefinition!.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
+               (y.MeasurementDefinition.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null)));
+
+        ChartSeriesList =
+            ChartSeriesList!
+            .Concat(
+                new List<ChartSeriesDefinition>()
+                {
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = chartWithData.ChartSeries!.SourceSeriesSpecifications,
+                        Aggregation = chartSeries.Aggregation,
+                        BinGranularity = SelectedBinGranularity,
+                        Smoothing = SeriesSmoothingOptions.None,
+                        SmoothingWindow = 20,
+                        Value = SeriesValueOptions.Value,
+                        Year = yearAndDataTypeFilter.Year,
+                    },
+                })
+            .ToList();
+
+        await BuildDataSets();
+    }
+
+    protected override void OnInitialized()
+    {
+        ChartLoadingIndicatorVisible = true;
+        ChartLoadingErrored = false;
+
+        SelectedYears = [];
+
+        var datasetYears = new List<short>();
+        for (short i = 1800; i <= (short)DateTime.Now.Year; i++)
+        {
+            datasetYears.Add(i);
+        }
+
+        DatasetYears = datasetYears;
+
+        SliderMax = DateTime.Now.Year;
+    }
+
+    protected override void OnParametersSet()
+    {
+        ChartLoadingErrored = false;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -451,28 +431,104 @@ public partial class ChartView
         }
     }
 
-    async Task<List<ChartTrendlineData>> AddDataSetsToChart()
+    private static ContainerAggregationFunctions MapSeriesAggregationOptionToBinAggregationFunction(SeriesAggregationOptions a)
+    {
+        return a switch
+        {
+            SeriesAggregationOptions.Mean => ContainerAggregationFunctions.Mean,
+            SeriesAggregationOptions.Minimum => ContainerAggregationFunctions.Min,
+            SeriesAggregationOptions.Maximum => ContainerAggregationFunctions.Max,
+            SeriesAggregationOptions.Median => ContainerAggregationFunctions.Median,
+            SeriesAggregationOptions.Sum => ContainerAggregationFunctions.Sum,
+            _ => throw new NotImplementedException($"SeriesAggregationOptions {a}"),
+        };
+    }
+
+    private async Task ShowFilterModal()
+    {
+        await YearFilter!.Show();
+    }
+
+    private Task ShowChartOptionsInfo()
+    {
+        if (!string.IsNullOrWhiteSpace(ChartOptionsText))
+        {
+            return chartOptionsModal!.Show();
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private Task ShowAggregationOptionsInfo()
+    {
+        if (!string.IsNullOrWhiteSpace(AggregationOptionsInfoText))
+        {
+            return aggregationOptionsModal!.Show();
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private SourceSeriesSpecification BuildSourceSeriesSpecification(DataSetLibraryEntry.SourceSeriesSpecification sss, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions)
+    {
+        var dsd = dataSetDefinitions.Single(x => x.Id == sss.SourceDataSetId);
+
+        var md = dsd.MeasurementDefinitions!.Single(x => x.DataType == sss.DataType && x.DataAdjustment == sss.DataAdjustment);
+
+        return
+            new SourceSeriesSpecification
+            {
+                LocationId = sss.LocationId,
+                LocationName = sss.LocationName!,
+                DataSetDefinition = dsd,
+                MeasurementDefinition = md,
+            };
+    }
+
+    private SeriesSpecification BuildDataPrepSeriesSpecification(SourceSeriesSpecification sss)
+    {
+        return
+            new SeriesSpecification
+            {
+                DataSetDefinitionId = sss.DataSetDefinition!.Id,
+                DataType = sss.MeasurementDefinition!.DataType,
+                DataAdjustment = sss.MeasurementDefinition.DataAdjustment,
+                LocationId = sss.LocationId,
+            };
+    }
+
+    private float GetGroupingThreshold(float? groupingThreshold, bool binGranularityIsLinear = false)
+    {
+        // If we're in linear time, all buckets in a bin must have passed the data completeness test.
+        // Otherwise, we apply GroupingThreshold from either user input or ChartSeriesDefinition
+        return binGranularityIsLinear
+            ? 1.0f
+            : (UserOverridePresetAggregationSettings || groupingThreshold == null)
+                ? InternalGroupingThreshold
+                : groupingThreshold.Value;
+    }
+
+    private async Task<List<ChartTrendlineData>> AddDataSetsToChart()
     {
         var dataSetIndex = 0;
 
-        colours = new ColourServer();
+        Colours = new ColourServer();
 
         var trendlines = new List<ChartTrendlineData>();
 
         var requestedColours = ChartSeriesWithData!
-            .Where(x => x.ChartSeries!.RequestedColour != Colours.AutoAssigned)
+            .Where(x => x.ChartSeries!.RequestedColour != UiLogic.Colours.AutoAssigned)
             .Select(x => x.ChartSeries!.RequestedColour)
             .ToList();
 
         foreach (var chartSeries in ChartSeriesWithData!)
         {
             var dataSet = chartSeries.ProcessedDataSet!;
-            var htmlColourCode = colours.GetNextColour(chartSeries.ChartSeries!.RequestedColour, requestedColours);
+            var htmlColourCode = Colours.GetNextColour(chartSeries.ChartSeries!.RequestedColour, (List<Colours>)requestedColours);
             var renderSmallPoints = (bool)IsMobileDevice! || dataSet.DataRecords.Count > 400;
             var defaultLabel = (bool)IsMobileDevice!
                 ? chartSeries.ChartSeries.GetFriendlyTitleShort()
                 : $"{chartSeries.ChartSeries.FriendlyTitle} | {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition!.UnitOfMeasure)}";
-
 
             await ChartLogic.AddDataSetToChart(
                 chart!,
@@ -493,7 +549,7 @@ public partial class ChartView
         return trendlines;
     }
 
-    void RebuildChartSeriesListToReflectSelectedYears()
+    private void RebuildChartSeriesListToReflectSelectedYears()
     {
         var years = SelectedYears!.Any() ? SelectedYears!.Select(x => (short?)x).ToList() : new List<short?>() { null };
 
@@ -522,8 +578,7 @@ public partial class ChartView
                         Year = year,
                         SeriesTransformation = csd.SeriesTransformation,
                         GroupingThreshold = csd.GroupingThreshold,
-                    }
-                );
+                    });
             }
         }
 
@@ -531,7 +586,8 @@ public partial class ChartView
         ChartSeriesList = newCsds;
     }
 
-    void BuildProcessedDataSets(List<SeriesWithData> chartSeriesWithData, ChartStartYears? chartStartYear)
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
+    private void BuildProcessedDataSets(List<SeriesWithData> chartSeriesWithData, ChartStartYears? chartStartYear)
     {
         var l = new LogAugmenter(Logger!, "BuildProcessedDataSets");
 
@@ -555,9 +611,8 @@ public partial class ChartView
                         {
                             Label = dr.Label,
                             BinId = dr.BinId,
-                            Value = val
-                        }
-                    )
+                            Value = val,
+                        })
                     .ToList();
 
                 cs.SourceDataSet =
@@ -565,11 +620,10 @@ public partial class ChartView
                     {
                         GeographicalEntity = cs.SourceDataSet.GeographicalEntity,
                         MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
-                        DataRecords = newDataRecords
+                        DataRecords = newDataRecords,
                     };
             }
         }
-
 
         // If we're doing smoothing via the moving average, precalculate these data and add them to PreProcessedDataSets.
         // We do this because the SimpleMovingAverage calculate function will remove some years from the start of the data set.
@@ -600,9 +654,8 @@ public partial class ChartView
                         {
                             Label = dr.Label,
                             BinId = dr.BinId,
-                            Value = val
-                        }
-                    )
+                            Value = val,
+                        })
                     .ToList();
 
                 cs.PreProcessedDataSet =
@@ -610,7 +663,7 @@ public partial class ChartView
                     {
                         GeographicalEntity = cs.SourceDataSet.GeographicalEntity,
                         MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
-                        DataRecords = newDataRecords
+                        DataRecords = newDataRecords,
                     };
             }
             else
@@ -619,7 +672,7 @@ public partial class ChartView
             }
         }
 
-        l.LogInformation("done with moving average calculation");    
+        l.LogInformation("done with moving average calculation");
 
         // There must be exactly one bin granularity or else something odd's going on.
         var binGranularity = chartSeriesWithData.Select(x => x.ChartSeries!.BinGranularity).Distinct().Single();
@@ -641,16 +694,14 @@ public partial class ChartView
                 var preProcessedDataSets = chartSeriesWithData.Select(x => x.PreProcessedDataSet);
                 var allDataRecords = preProcessedDataSets.SelectMany(x => x!.DataRecords);
 
-                (ChartStartBin, ChartEndBin) =
+                (chartStartBin, chartEndBin) =
                     ChartLogic.GetBinRangeToPlotForGaplessRange(
-                        // Pass in the data available for plotting
-                        preProcessedDataSets!,
-                        // and the user's preferences about what x axis range they'd like plotted
-                        chartStartYear,
+                        preProcessedDataSets!, // Pass in the data available for plotting
+                        chartStartYear, // and the user's preferences about what x axis range they'd like plotted
                         SelectedStartYear!,
                         SelectedEndYear!);
 
-                chartBins = BinHelpers.EnumerateBinsInRange(ChartStartBin, ChartEndBin).ToArray();
+                chartBins = BinHelpers.EnumerateBinsInRange(chartStartBin, chartEndBin).ToArray();
 
                 SetStartAndEndYears(chartSeriesWithData);
 
@@ -659,8 +710,8 @@ public partial class ChartView
             case BinGranularities.ByMonthOnly:
             case BinGranularities.BySouthernHemisphereTemperateSeasonOnly:
             case BinGranularities.BySouthernHemisphereTropicalSeasonOnly:
-                ChartStartBin = null;
-                ChartEndBin = null;
+                chartStartBin = null;
+                chartEndBin = null;
                 chartBins = BinHelpers.GetBinsForModularGranularity(binGranularity);
                 break;
 
@@ -686,12 +737,13 @@ public partial class ChartView
                         chartBins
                         .Select(
                             bin =>
+
                             // If there's a record in the source dataset, use it
                             recordsByBinId[bin.Id].SingleOrDefault()
+
                             // Otherwise, create a null record
-                            ?? new DataRecord { BinId = bin.Id, Value = null }
-                        )
-                        .ToList()
+                            ?? new DataRecord { BinId = bin.Id, Value = null })
+                        .ToList(),
                 };
         }
 
@@ -777,18 +829,7 @@ public partial class ChartView
         return scales;
     }
 
-    public void LogChartSeriesList()
-    {
-        Logger!.LogInformation("ChartSeriesList: (SelectedBinGranularity is " + SelectedBinGranularity + ")");
-
-        foreach (var csd in ChartSeriesList!)
-        {
-            Logger!.LogInformation("    " + csd.ToString());
-        }
-    }
-
-
-    async Task OnSelectedBinGranularityChanged(BinGranularities value, bool rebuildDataSets = true)
+    private async Task OnSelectedBinGranularityChanged(BinGranularities value, bool rebuildDataSets = true)
     {
         SelectedBinGranularity = value;
 
@@ -812,12 +853,12 @@ public partial class ChartView
         }
     }
 
-    void OnDayGroupThresholdTextChanged(string value)
+    private void OnDayGroupThresholdTextChanged(string value)
     {
         GroupingThresholdText = value;
     }
 
-    async Task ApplyYearlyAverageParameters()
+    private async Task ApplyYearlyAverageParameters()
     {
         UserOverridePresetAggregationSettings = true;
         InternalGroupingThreshold = float.Parse(GroupingThresholdText!) / 100;
@@ -836,7 +877,7 @@ public partial class ChartView
                     : $"{MathF.Round((float)groupingThreshold * 100, 0)}% (preset defined)";
     }
 
-    async Task OnLineChartClicked(ChartMouseEventArgs e)
+    private async Task OnLineChartClicked(ChartMouseEventArgs e)
     {
         if (SelectedBinGranularity != BinGranularities.ByYear)
         {
@@ -861,44 +902,7 @@ public partial class ChartView
         await HandleOnYearFilterChange(new YearAndDataTypeFilter(year) { DataType = dataType, DataAdjustment = dataAdjustment });
     }
 
-    public async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)
-    {
-        await OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly, false);
-
-        var chartWithData = ChartSeriesWithData!
-            .First(x =>
-            (x.SourceDataSet!.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
-            (x.SourceDataSet.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null));
-
-        var chartSeries = ChartSeriesList!
-            .First(x => x.SourceSeriesSpecifications!.Any(y =>
-               (y.MeasurementDefinition!.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
-               (y.MeasurementDefinition.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null)));
-
-        ChartSeriesList =
-            ChartSeriesList!
-            .Concat(
-                new List<ChartSeriesDefinition>()
-                {
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = chartWithData.ChartSeries!.SourceSeriesSpecifications,
-                        Aggregation = chartSeries.Aggregation,
-                        BinGranularity = SelectedBinGranularity,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 20,
-                        Value = SeriesValueOptions.Value,
-                        Year = yearAndDataTypeFilter.Year,
-                    }
-                }
-            )
-            .ToList();
-
-        await BuildDataSets();
-    }
-
-    async Task ShowRangeSliderChanged(bool? value)
+    private async Task ShowRangeSliderChanged(bool? value)
     {
         EnableRangeSlider = value;
         if (EnableRangeSlider.GetValueOrDefault() && SliderStart == null)
@@ -909,19 +913,19 @@ public partial class ChartView
                                  : SelectedBinGranularity == BinGranularities.ByYearAndWeek ? 0.1f
                                  : SelectedBinGranularity == BinGranularities.ByYearAndMonth ? 0.15f
                                  : .3f;
-            var rangeStart = (int)MathF.Ceiling(((EndYear - StartYears!.Max()) * proportionToShow));
+            var rangeStart = (int)MathF.Ceiling((EndYear - StartYears!.Max()) * proportionToShow);
             await OnStartYearTextChanged((EndYear - rangeStart).ToString());
         }
     }
 
-    async Task OnSelectedYearsChanged(ExtentValues extentValues)
+    private async Task OnSelectedYearsChanged(ExtentValues extentValues)
     {
         await ChangeStartYear(extentValues.FromValue!, false);
         await ChangeEndYear(extentValues.ToValue!, false);
         await HandleRedraw();
     }
 
-    async Task OnStartYearTextChanged(string? text)
+    private async Task OnStartYearTextChanged(string? text)
     {
         await ChangeStartYear(text, true);
     }
@@ -940,7 +944,7 @@ public partial class ChartView
         }
     }
 
-    async Task OnEndYearTextChanged(string text)
+    private async Task OnEndYearTextChanged(string text)
     {
         await ChangeEndYear(text, true);
     }
@@ -957,13 +961,14 @@ public partial class ChartView
             SelectedEndYear = text;
             SliderEnd = Convert.ToInt32(SelectedEndYear);
         }
+
         if (redraw)
         {
             await HandleRedraw();
         }
     }
 
-    async Task OnDynamicStartYearChanged(ChartStartYears? value)
+    private async Task OnDynamicStartYearChanged(ChartStartYears? value)
     {
         ChartStartYear = value;
         if (value != null)
@@ -974,12 +979,12 @@ public partial class ChartView
         }
     }
 
-    void OnSelectedDayGroupingChanged(short value)
+    private void OnSelectedDayGroupingChanged(short value)
     {
         SelectingDayGrouping = value;
     }
 
-    async Task ClearUserAggregationOverride()
+    private async Task ClearUserAggregationOverride()
     {
         UserOverridePresetAggregationSettings = false;
         await BuildDataSets();
@@ -1006,7 +1011,7 @@ public partial class ChartView
         }
     }
 
-    async Task OnClearFilter()
+    private async Task OnClearFilter()
     {
         ChartStartYear = ChartStartYears.FirstYear;
         SelectedStartYear = null;
@@ -1018,7 +1023,7 @@ public partial class ChartView
         await HandleRedraw();
     }
 
-    async Task BuildDataSets()
+    private async Task BuildDataSets()
     {
         await BuildDataSetsEvent.InvokeAsync();
     }
@@ -1028,7 +1033,7 @@ public partial class ChartView
         await DownloadDataEvent.InvokeAsync(new DataDownloadPackage { ChartSeriesWithData = ChartSeriesWithData!, Bins = ChartBins!, BinGranularity = SelectedBinGranularity });
     }
 
-    async Task ShowAddDataSetModal()
+    private async Task ShowAddDataSetModal()
     {
         await ShowAddDataSetModalEvent.InvokeAsync();
     }
@@ -1036,10 +1041,10 @@ public partial class ChartView
     private Task ShowOptionsModal()
     {
         GroupingThresholdText = MathF.Round(InternalGroupingThreshold * 100, 0).ToString();
-        return optionsModal!.Show();
+        return OptionsModal!.Show();
     }
 
-    string DayGroupingText(int dayGrouping)
+    private string DayGroupingText(int dayGrouping)
     {
         return dayGrouping switch
         {

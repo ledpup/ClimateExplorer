@@ -1,30 +1,30 @@
-﻿using ClimateExplorer.Core.Model;
-using ClimateExplorer.Core.ViewModel;
-using ClimateExplorer.Core.DataPreparation;
-using Microsoft.AspNetCore.WebUtilities;
+﻿namespace ClimateExplorer.Web.Services;
+
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.Model;
+using ClimateExplorer.Core.ViewModel;
+using Microsoft.AspNetCore.WebUtilities;
 using static ClimateExplorer.Core.Enums;
 
-namespace ClimateExplorer.Web.Services;
-
 public class DataService : IDataService
-{   
-    private readonly HttpClient _httpClient;
-    private readonly IDataServiceCache _dataServiceCache;
-    JsonSerializerOptions _jsonSerializerOptions;
+{
+    private readonly HttpClient httpClient;
+    private readonly IDataServiceCache dataServiceCache;
+    private readonly JsonSerializerOptions jsonSerializerOptions;
 
     public DataService(
         HttpClient httpClient,
         IDataServiceCache dataServiceCache)
     {
-        _httpClient = httpClient;
-        _dataServiceCache = dataServiceCache;
-        _jsonSerializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web) { Converters = { new JsonStringEnumConverter() } };
+        this.httpClient = httpClient;
+        this.dataServiceCache = dataServiceCache;
+        jsonSerializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web) { Converters = { new JsonStringEnumConverter() } };
     }
 
-    public async Task<DataSet> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short ? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f)
+    public async Task<DataSet> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f)
     {
         var url = $"dataSet/{dataType}/{resolution}";
 
@@ -32,39 +32,43 @@ public class DataService : IDataService
         {
             url = QueryHelpers.AddQueryString(url, "dataAdjustment", dataAdjustment.Value.ToString());
         }
+
         if (locationId != null)
         {
             url = QueryHelpers.AddQueryString(url, "locationId", locationId.Value.ToString());
         }
+
         if (aggregationMethod != null)
         {
             url = QueryHelpers.AddQueryString(url, "aggregationMethod", aggregationMethod.Value.ToString());
         }
+
         if (year != null)
         {
             url = QueryHelpers.AddQueryString(url, "year", year.Value.ToString());
         }
+
         if (dayGrouping != null)
         {
             url = QueryHelpers.AddQueryString(url, "dayGrouping", dayGrouping.Value.ToString());
         }
+
         if (dayGroupingThreshold != null)
         {
             url = QueryHelpers.AddQueryString(url, "dayGroupingThreshold", dayGroupingThreshold.Value.ToString());
         }
 
-        var result = _dataServiceCache.Get<DataSet>(url);
+        var result = dataServiceCache.Get<DataSet>(url);
 
         if (result == null)
         {
-            result = await _httpClient.GetFromJsonAsync<DataSet>(url, _jsonSerializerOptions);
+            result = await httpClient.GetFromJsonAsync<DataSet>(url, jsonSerializerOptions);
 
-            _dataServiceCache.Put(url, result!);
+            dataServiceCache.Put(url, result!);
         }
 
         return result!;
     }
-
 
     public async Task<DataSet> PostDataSet(
         BinGranularities binGranularity,
@@ -81,8 +85,8 @@ public class DataService : IDataService
         SeriesTransformations seriesTransformation,
         short? year)
     {
-        var response = 
-            await _httpClient.PostAsJsonAsync<PostDataSetsRequestBody>(
+        var response =
+            await httpClient.PostAsJsonAsync<PostDataSetsRequestBody>(
                 "dataset",
                 new PostDataSetsRequestBody
                 {
@@ -118,50 +122,52 @@ public class DataService : IDataService
         {
             url += $"&minLatitude={minLatitude}";
         }
+
         if (maxLatitude != null)
         {
             url += $"&maxLatitude={maxLatitude}";
         }
-        var dataset = await _httpClient.GetFromJsonAsync<DataSet[]>(url);
+
+        var dataset = await httpClient.GetFromJsonAsync<DataSet[]>(url);
         return dataset!;
     }
 
     public async Task<ApiMetadataModel> GetAbout()
     {
-        var about = await _httpClient.GetFromJsonAsync<ApiMetadataModel>("/about");
+        var about = await httpClient.GetFromJsonAsync<ApiMetadataModel>("/about");
         return about!;
     }
 
     public async Task<IEnumerable<DataSetDefinitionViewModel>> GetDataSetDefinitions()
     {
         var url = "/datasetdefinition";
-        var dataSetDefinitions = await _httpClient.GetFromJsonAsync<DataSetDefinitionViewModel[]>(url, _jsonSerializerOptions);
+        var dataSetDefinitions = await httpClient.GetFromJsonAsync<DataSetDefinitionViewModel[]>(url, jsonSerializerOptions);
         return dataSetDefinitions!;
     }
 
     public async Task<IEnumerable<Location>> GetLocations(Guid? locationId = null)
     {
         var url = $"/location";
-        if (locationId.HasValue && Guid.Empty != locationId)
+        if (locationId.HasValue && locationId != Guid.Empty)
         {
             url = QueryHelpers.AddQueryString(url, "locationId", locationId.Value.ToString());
         }
 
-        var locations = await _httpClient.GetFromJsonAsync<Location[]>(url);
+        var locations = await httpClient.GetFromJsonAsync<Location[]>(url);
         return locations!;
     }
 
     public async Task<Dictionary<string, string>> GetCountries()
     {
         var url = $"/country";
-        var countries = await _httpClient.GetFromJsonAsync<Dictionary<string, string>>(url);
+        var countries = await httpClient.GetFromJsonAsync<Dictionary<string, string>>(url);
         return countries!;
     }
 
     public async Task<IEnumerable<Region>> GetRegions()
     {
         var url = $"/region";
-        var result = await _httpClient.GetFromJsonAsync<Region[]>(url);
+        var result = await httpClient.GetFromJsonAsync<Region[]>(url);
         return result!;
     }
 
@@ -171,15 +177,15 @@ public class DataService : IDataService
 
         var url = $"/location-by-path";
         url = QueryHelpers.AddQueryString(url, "path", path);
-        
-        var location = await _httpClient.GetFromJsonAsync<Location>(url);
+
+        var location = await httpClient.GetFromJsonAsync<Location>(url);
         return location!;
     }
 
     public async Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable()
     {
         var url = $"/heating-score-table";
-        var result = await _httpClient.GetFromJsonAsync<HeatingScoreRow[]>(url);
+        var result = await httpClient.GetFromJsonAsync<HeatingScoreRow[]>(url);
         return result!;
     }
 }

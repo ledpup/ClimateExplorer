@@ -2,28 +2,25 @@
 
 public interface IDataServiceCache
 {
-    T? Get<T>(string key) where T : class;
-    void Put<T>(string key, T val) where T : class;
+    T? Get<T>(string key)
+        where T : class;
+    void Put<T>(string key, T val)
+        where T : class;
 }
 
 public class DataServiceCache : IDataServiceCache
 {
-    private class CacheEntry
-    {
-        public DateTime LastHitUtc { get; set; }
-        public object? Value { get; set; }
-    }
-
-    readonly Dictionary<string, CacheEntry> entries = new Dictionary<string, CacheEntry>();
-    readonly ILogger<DataServiceCache> _logger;
-    const int MaxEntryCount = 20;
+    private const int MaxEntryCount = 20;
+    private readonly Dictionary<string, CacheEntry> entries = new Dictionary<string, CacheEntry>();
+    private readonly ILogger<DataServiceCache> logger;
 
     public DataServiceCache(ILogger<DataServiceCache> logger)
     {
-        _logger = logger;
+        this.logger = logger;
     }
 
-    public T? Get<T>(string key) where T : class
+    public T? Get<T>(string key)
+        where T : class
     {
         lock (entries)
         {
@@ -31,7 +28,7 @@ public class DataServiceCache : IDataServiceCache
             {
                 if (entry != null)
                 {
-                    _logger.LogInformation($"DataServiceCache.Get({key}) - hit");
+                    logger.LogInformation($"DataServiceCache.Get({key}) - hit");
 
                     entry.LastHitUtc = DateTime.UtcNow;
 
@@ -39,18 +36,36 @@ public class DataServiceCache : IDataServiceCache
                 }
             }
 
-            _logger.LogInformation($"DataServiceCache.Get({key}) - miss");
+            logger.LogInformation($"DataServiceCache.Get({key}) - miss");
 
             return null;
         }
     }
 
-    void Evict()
+    public void Put<T>(string key, T val)
+    where T : class
+    {
+        lock (entries)
+        {
+            logger.LogInformation($"DataServiceCache.Put({key})");
+
+            entries[key] =
+                new CacheEntry()
+                {
+                    LastHitUtc = DateTime.UtcNow,
+                    Value = val,
+                };
+
+            Evict();
+        }
+    }
+
+    private void Evict()
     {
         // Remove LRU entries beyond max number of entries
         if (entries.Count > MaxEntryCount)
         {
-            _logger.LogInformation($"$DataServiceCache.Evict() - triggering eviction as entry count is {entries.Count}, which is > {MaxEntryCount}");
+            logger.LogInformation($"$DataServiceCache.Evict() - triggering eviction as entry count is {entries.Count}, which is > {MaxEntryCount}");
 
             var keysToRemove =
                 entries
@@ -61,28 +76,17 @@ public class DataServiceCache : IDataServiceCache
 
             foreach (var keyToRemove in keysToRemove)
             {
-                _logger.LogInformation($"$DataServiceCache.Evict() - evicting entry ${keyToRemove}");
+                logger.LogInformation($"$DataServiceCache.Evict() - evicting entry ${keyToRemove}");
                 entries.Remove(keyToRemove);
             }
 
-            _logger.LogInformation($"$DataServiceCache.Evict() - eviction complete, entry count is now {entries.Count}");
+            logger.LogInformation($"$DataServiceCache.Evict() - eviction complete, entry count is now {entries.Count}");
         }
     }
 
-    public void Put<T>(string key, T val) where T : class
+    private class CacheEntry
     {
-        lock (entries)
-        {
-            _logger.LogInformation($"DataServiceCache.Put({key})");
-
-            entries[key] =
-                new CacheEntry()
-                {
-                    LastHitUtc = DateTime.UtcNow,
-                    Value = val
-                };
-
-            Evict();
-        }
+        public DateTime LastHitUtc { get; set; }
+        public object? Value { get; set; }
     }
 }

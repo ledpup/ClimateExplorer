@@ -19,7 +19,7 @@ public class CountryFileProcessor
 
             countries.Add(fields[0].Trim(),
                 new Country
-                { 
+                {
                     Code = fields[0].Trim(),
                     Name = fields[1].Trim(),
                 });

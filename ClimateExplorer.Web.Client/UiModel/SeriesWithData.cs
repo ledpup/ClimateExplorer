@@ -1,11 +1,11 @@
-﻿using ClimateExplorer.Core.Model;
+﻿namespace ClimateExplorer.Web.UiModel;
 
-namespace ClimateExplorer.Web.UiModel;
+using ClimateExplorer.Core.Model;
 
 public class SeriesWithData
 {
-    public required ChartSeriesDefinition ChartSeries { get; set; }
-    public required DataSet SourceDataSet { get; set; }
+    required public ChartSeriesDefinition ChartSeries { get; set; }
+    required public DataSet SourceDataSet { get; set; }
     public DataSet? PreProcessedDataSet { get; set; }
     public DataSet? ProcessedDataSet { get; set; }
 }

@@ -1,17 +1,11 @@
-﻿using ClimateExplorer.Core.DataPreparation;
-using ClimateExplorer.Core.Model;
+﻿namespace ClimateExplorer.Core.Calculators;
 
-namespace ClimateExplorer.Core.Calculators;
+using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.Model;
 
 public static class AnomalyCalculator
 {
     public const int MinimumNumberOfYearsToCalculateAnomaly = 60;
-
-    class YearAndValue
-    {
-        public int Year { get; set; }
-        public double? Value { get; set; }
-    }
 
     public static CalculatedAnomaly CalculateAnomaly(IEnumerable<DataRecord> dataRecords)
     {
@@ -22,11 +16,9 @@ public static class AnomalyCalculator
                     new YearAndValue
                     {
                         Year = ((YearBinIdentifier)BinIdentifier.Parse(x.BinId!)).Year,
-                        Value = x.Value
-                    }
-                )
-                .ToArray()
-            );
+                        Value = x.Value,
+                    })
+                .ToArray());
     }
 
     public static CalculatedAnomaly CalculateAnomaly(ChartableDataPoint[] dataPoints)
@@ -38,14 +30,13 @@ public static class AnomalyCalculator
                     new YearAndValue
                     {
                         Year = ((YearBinIdentifier)BinIdentifier.Parse(x.BinId!)).Year,
-                        Value = x.Value
-                    }
-                )
-                .ToArray()
-            );
+                        Value = x.Value,
+                    })
+                .ToArray());
     }
 
-    static CalculatedAnomaly CalculateAnomaly(YearAndValue[] dataPoints)
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
+    private static CalculatedAnomaly CalculateAnomaly(YearAndValue[] dataPoints)
     {
         var nonNullDataPoints = dataPoints.Where(x => x.Value.HasValue).ToArray();
 
@@ -74,8 +65,14 @@ public static class AnomalyCalculator
                 FirstYearInFirstHalf = firstHalf.First().Year,
                 LastYearInFirstHalf = firstHalf.Last().Year,
                 FirstYearInLast30Years = lastThirtyYears.First().Year,
-                LastYearInLast30Years = lastThirtyYears.Last().Year
-            };                
+                LastYearInLast30Years = lastThirtyYears.Last().Year,
+            };
+    }
+
+    private class YearAndValue
+    {
+        public int Year { get; set; }
+        public double? Value { get; set; }
     }
 }
 

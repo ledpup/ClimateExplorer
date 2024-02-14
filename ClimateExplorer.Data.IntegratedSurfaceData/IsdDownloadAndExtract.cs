@@ -36,7 +36,7 @@ internal class IsdDownloadAndExtract
                 await response.Content.CopyToAsync(fs);
             }
         }
-        
+
         try
         {
             ExtractGz(zipFile, extractedFile, logger);
@@ -51,7 +51,7 @@ internal class IsdDownloadAndExtract
         return true;
     }
 
-    static void ExtractGz(string gzArchiveName,  string extractedFile, ILogger<Program> logger)
+    static void ExtractGz(string gzArchiveName, string extractedFile, ILogger<Program> logger)
     {
         logger.LogInformation($"Extracting file {gzArchiveName} to {extractedFile}");
         Stream inStream = System.IO.File.OpenRead(gzArchiveName);

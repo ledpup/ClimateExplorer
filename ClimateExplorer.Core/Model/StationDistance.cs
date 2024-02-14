@@ -1,9 +1,9 @@
-﻿using GeoCoordinatePortable;
+﻿namespace ClimateExplorer.Core.Model;
 
-namespace ClimateExplorer.Core.Model;
+using GeoCoordinatePortable;
 public class StationDistance
 {
-    public required string Id { get; set; }
+    required public string Id { get; set; }
     public double Distance { get; set; }
 
     public static List<StationDistance>? GetDistances(Station station, List<Station> stations)
@@ -12,6 +12,7 @@ public class StationDistance
         {
             throw new Exception($"Unable to get distances for station {station.Id} as it has no coordinates");
         }
+
         var coords = station.Coordinates.Value;
         var originCoord = new GeoCoordinate(coords.Latitude, coords.Longitude, coords.Elevation ?? 0);
         return GetDistances(originCoord, stations.Where(x => x != station));
@@ -27,6 +28,7 @@ public class StationDistance
             {
                 throw new Exception($"Unable to get distances for station {x.Id} as it has no coordinates");
             }
+
             var coords = x.Coordinates.Value;
             var destCoord = new GeoCoordinate(coords.Latitude, coords.Longitude, coords.Elevation ?? 0);
             var distance = geoCoordinate.GetDistanceTo(destCoord) / 1000; // GetDistanceTo is in metres. Convert to km

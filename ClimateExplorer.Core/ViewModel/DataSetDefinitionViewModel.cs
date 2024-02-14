@@ -1,7 +1,7 @@
-﻿using ClimateExplorer.Core.Model;
-using static ClimateExplorer.Core.Enums;
+﻿namespace ClimateExplorer.Core.ViewModel;
 
-namespace ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.Core.Model;
+using static ClimateExplorer.Core.Enums;
 
 public class DataSetDefinitionViewModel
 {
@@ -17,7 +17,6 @@ public class DataSetDefinitionViewModel
     public List<Guid>? LocationIds { get; set; }
     public List<MeasurementDefinitionViewModel>? MeasurementDefinitions { get; set; }
 
-
     public static IEnumerable<Tuple<DataSetDefinitionViewModel, MeasurementDefinitionViewModel>> GetMeasurementsForLocation(IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, Guid locationId)
     {
         var dsds = dataSetDefinitions.Where(x => x.LocationIds != null
@@ -29,7 +28,7 @@ public class DataSetDefinitionViewModel
             foreach (var md in dsd.MeasurementDefinitions!)
             {
                 yield return new Tuple<DataSetDefinitionViewModel, MeasurementDefinitionViewModel>(dsd, md);
-            }           
+            }
         }
     }
 
@@ -85,7 +84,7 @@ public class DataSetDefinitionViewModel
             new DataSetAndMeasurementDefinition
             {
                 DataSetDefinition = dsd,
-                MeasurementDefinition = md
+                MeasurementDefinition = md,
             };
     }
 
@@ -102,7 +101,7 @@ public class DataSetDefinitionViewModel
             {
                 DataType = dataType,
                 DataAdjustment = dataAdjustment,
-            }
+            },
         };
 
         return GetDataSetDefinitionAndMeasurement(dataSetDefinitions, locationId, dataMatches, throwIfNoMatch);

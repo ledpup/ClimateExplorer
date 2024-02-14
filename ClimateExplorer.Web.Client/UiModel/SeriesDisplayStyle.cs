@@ -3,5 +3,5 @@
 public enum SeriesDisplayStyle
 {
     Line,
-    Bar
+    Bar,
 }

@@ -21,7 +21,7 @@
     <link rel="canonical" href="@PageUrl" />
 </HeadContent>
 
-<SnackbarStack @ref="snackbar" Location="SnackbarStackLocation.Top" Interval="20000" Multiline="true" />
+<SnackbarStack @ref="Snackbar" Location="SnackbarStackLocation.Top" Interval="20000" Multiline="true" />
 
 <div style="flex-grow: 0">
     <Collapsible Title="Suggested charts" InitiallyShown="false" ShowTitleWhenExpanded="false" ContentLayoutType="CollapserContentLayoutTypes.FlexboxRow">
@@ -34,10 +34,10 @@
 <div class="location-and-chart-container">
     <div style="position: relative;">
         <div class="map-space-reserver" id="mapContainerContainer">
-            <MapContainer @ref="mapContainer"
+            <MapContainer @ref="MapContainer"
                 Locations="@Locations"
                 OnLocationChange="@SelectedLocationChanged"
-                LocationCoordinates="@LocationCoordinates"></MapContainer>
+                LocationCoordinates="@locationCoordinates"></MapContainer>
         </div>
 
         <div class="location-info-container">
@@ -52,20 +52,20 @@
         <div style="clear: both;"></div>
     </div>
 
-    <ChartView @ref="chartView"
+    <ChartView @ref="ChartView"
                BuildDataSetsEvent="@BuildDataSets"
                ShowAddDataSetModalEvent="@ShowAddDataSetModal"
                DownloadDataEvent="@OnDownloadDataClicked" />
 </div>
 
-<ChangeLocation @ref="changeLocationModal"
+<ChangeLocation @ref="ChangeLocationModal"
                 Locations="@Locations"
                 SelectedLocation="@SelectedLocation"
                 OnLocationChange="@SelectedLocationChanged"
                 SetCurrentLocation=@SetCurrentLocation
                 BrowserLocationErrorMessage=@BrowserLocationErrorMessage />
 
-<Modal @ref="addDataSetModal">
+<Modal @ref="AddDataSetModal">
     <ModalContent>
         <ModalHeader Background="Background.Light">
             <ModalTitle>Add data set</ModalTitle>

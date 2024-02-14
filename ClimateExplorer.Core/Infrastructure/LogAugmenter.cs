@@ -1,30 +1,30 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Diagnostics;
+﻿namespace ClimateExplorer.Core.Infrastructure;
 
-namespace ClimateExplorer.Core.Infrastructure;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 public class LogAugmenter
 {
-    Guid _g = Guid.NewGuid();
-    string _name;
-    ILogger _logger;
-    Stopwatch _sw;
+    private readonly Guid g = Guid.NewGuid();
+    private readonly string name;
+    private readonly ILogger logger;
+    private readonly Stopwatch sw;
 
     public LogAugmenter(ILogger logger, string name)
     {
-        _logger = logger;
-        _name = name;
-        _sw = new Stopwatch();
-        _sw.Start();
+        this.logger = logger;
+        this.name = name;
+        sw = new Stopwatch();
+        sw.Start();
     }
 
     public void LogInformation(string s)
     {
-        _logger.LogInformation($"{_name} {_g} {s} ({_sw.Elapsed})", _name, _g, s, _sw.Elapsed);
+        logger.LogInformation($"{name} {g} {s} ({sw.Elapsed})", name, g, s, sw.Elapsed);
     }
 
     public void LogError(string s)
     {
-        _logger.LogError($"{_name} {_g} {s} ({_sw.Elapsed})", _name, _g, s, _sw.Elapsed);
+        logger.LogError($"{name} {g} {s} ({sw.Elapsed})", name, g, s, sw.Elapsed);
     }
 }

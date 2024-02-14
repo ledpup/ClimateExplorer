@@ -12,13 +12,12 @@ public static class BinRejector
                 {
                     Identifier = x.Identifier,
                     Buckets = x.Buckets,
-                    MeetsDataRequirements = BinMeetsDataRequirements(x, requiredCupDataProportion, requiredBucketDataProportion, requiredBinDataProportion)
-                }
-            )
+                    MeetsDataRequirements = BinMeetsDataRequirements(x, requiredCupDataProportion, requiredBucketDataProportion, requiredBinDataProportion),
+                })
             .ToArray();
     }
 
-    static bool BinMeetsDataRequirements(RawBin bin, float requiredCupDataProportion, float requiredBucketDataProportion, float requiredBinDataProportion)
+    private static bool BinMeetsDataRequirements(RawBin bin, float requiredCupDataProportion, float requiredBucketDataProportion, float requiredBinDataProportion)
     {
         int fullEnoughBuckets = 0;
 

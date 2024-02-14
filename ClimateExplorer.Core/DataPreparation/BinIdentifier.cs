@@ -1,37 +1,17 @@
-﻿using System.Globalization;
+﻿namespace ClimateExplorer.Core.DataPreparation;
 
-namespace ClimateExplorer.Core.DataPreparation;
+using System.Globalization;
 
 public abstract class BinIdentifier : IComparable<BinIdentifier>
 {
-    public string Id { get; private set; }
-    public string Label { get; private set; }
-
     public BinIdentifier(string id, string label)
     {
         Id = id;
         Label = label;
     }
 
-    public override bool Equals(object? obj)
-    {
-        if (obj is not BinIdentifier other)
-        {
-            return false;
-        }
-
-        return other.Id == Id;
-    }
-
-    public override int GetHashCode()
-    {
-        return Id.GetHashCode();
-    }
-
-    public override string ToString()
-    {
-        return "Bin " + Label;
-    }
+    public string Id { get; private set; }
+    public string Label { get; private set; }
 
     public static BinIdentifier Parse(string id)
     {
@@ -87,6 +67,26 @@ public abstract class BinIdentifier : IComparable<BinIdentifier>
         }
     }
 
+    public override bool Equals(object? obj)
+    {
+        if (obj is not BinIdentifier other)
+        {
+            return false;
+        }
+
+        return other.Id == Id;
+    }
+
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();
+    }
+
+    public override string ToString()
+    {
+        return "Bin " + Label;
+    }
+
     public int CompareTo(BinIdentifier? other)
     {
         if (this is BinIdentifierForGaplessBin b1 &&
@@ -107,15 +107,15 @@ public abstract class BinIdentifier : IComparable<BinIdentifier>
 
 public abstract class BinIdentifierForGaplessBin : BinIdentifier, IComparable<BinIdentifierForGaplessBin>
 {
-    public DateOnly FirstDayInBin { get; private set; }
-    public DateOnly LastDayInBin { get; private set; }
-
     public BinIdentifierForGaplessBin(string id, string label, DateOnly firstDayInBin, DateOnly lastDayInBin)
         : base(id, label)
     {
         FirstDayInBin = firstDayInBin;
         LastDayInBin = lastDayInBin;
     }
+
+    public DateOnly FirstDayInBin { get; private set; }
+    public DateOnly LastDayInBin { get; private set; }
 
     public int CompareTo(BinIdentifierForGaplessBin? other)
     {
@@ -125,23 +125,23 @@ public abstract class BinIdentifierForGaplessBin : BinIdentifier, IComparable<Bi
 
 public class YearBinIdentifier : BinIdentifierForGaplessBin
 {
-    short _year;
+    private readonly short year;
 
-    public YearBinIdentifier(short year) 
+    public YearBinIdentifier(short year)
         : base(
             $"y{year}",
             $"{year}",
             new DateOnly(year, 1, 1),
             new DateOnly(year, 12, 31))
     {
-        _year = year;
+        this.year = year;
     }
 
-    public short Year => _year;
+    public short Year => year;
 
     public IEnumerable<YearBinIdentifier> EnumerateYearBinRangeUpTo(YearBinIdentifier endOfRange)
     {
-        for (short i = _year; i <= endOfRange.Year; i++)
+        for (short i = year; i <= endOfRange.Year; i++)
         {
             yield return new YearBinIdentifier(i);
         }
@@ -150,26 +150,26 @@ public class YearBinIdentifier : BinIdentifierForGaplessBin
 
 public class YearAndMonthBinIdentifier : BinIdentifierForGaplessBin
 {
-    short _year;
-    short _month;
+    private readonly short year;
+    private readonly short month;
 
     public YearAndMonthBinIdentifier(short year, short month)
         : base(
-              $"y{year}m{month.ToString().PadLeft(2, '0')}", 
+              $"y{year}m{month.ToString().PadLeft(2, '0')}",
               $"{DateHelpers.GetShortMonthName(month)} {year}",
               new DateOnly(year, month, 1),
               DateHelpers.GetLastDayInMonth(year, month))
     {
-        _year = year;
-        _month = month;
+        this.year = year;
+        this.month = month;
     }
 
-    public short Year => _year;
-    public short Month => _month;
+    public short Year => year;
+    public short Month => month;
 
     public IEnumerable<YearAndMonthBinIdentifier> EnumerateYearAndMonthBinRangeUpTo(YearAndMonthBinIdentifier endOfRange)
     {
-        for (int i = _year * 12 + _month - 1; i <= endOfRange.Year * 12 + endOfRange.Month - 1; i++)
+        for (int i = (year * 12) + month - 1; i <= (endOfRange.Year * 12) + endOfRange.Month - 1; i++)
         {
             yield return new YearAndMonthBinIdentifier((short)(i / 12), (short)((i % 12) + 1));
         }
@@ -178,8 +178,8 @@ public class YearAndMonthBinIdentifier : BinIdentifierForGaplessBin
 
 public class YearAndWeekBinIdentifier : BinIdentifierForGaplessBin
 {
-    short _year;
-    short _week;
+    private readonly short year;
+    private readonly short week;
 
     public YearAndWeekBinIdentifier(short year, short week)
         : base(
@@ -188,20 +188,12 @@ public class YearAndWeekBinIdentifier : BinIdentifierForGaplessBin
               FirstDateOfWeekIso8601(year, week),
               FirstDateOfWeekIso8601(year, week).AddDays(6))
     {
-        _year = year;
-        _week = week;
+        this.year = year;
+        this.week = week;
     }
 
-    public short Year => _year;
-    public short Week => _week;
-
-    public IEnumerable<YearAndWeekBinIdentifier> EnumerateYearAndWeekBinRangeUpTo(YearAndWeekBinIdentifier endOfRange)
-    {
-        for (int i = _year * 52 + _week - 1; i <= endOfRange.Year * 52 + endOfRange.Week - 1; i++)
-        {
-            yield return new YearAndWeekBinIdentifier((short)(i / 52), (short)((i % 52) + 1));
-        }
-    }
+    public short Year => year;
+    public short Week => week;
 
     public static DateOnly FirstDateOfWeekIso8601(int year, int weekOfYear)
     {
@@ -215,6 +207,7 @@ public class YearAndWeekBinIdentifier : BinIdentifierForGaplessBin
         int firstWeek = cal.GetWeekOfYear(firstThursday, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
 
         var weekNum = weekOfYear;
+
         // As we're adding days to a date in Week 1,
         // we need to subtract 1 in order to get the right date for week #1
         if (firstWeek == 1)
@@ -229,13 +222,21 @@ public class YearAndWeekBinIdentifier : BinIdentifierForGaplessBin
         // Subtract 3 days from Thursday to get Monday, which is the first weekday in ISO8601
         return DateOnly.FromDateTime(result.AddDays(-3));
     }
+
+    public IEnumerable<YearAndWeekBinIdentifier> EnumerateYearAndWeekBinRangeUpTo(YearAndWeekBinIdentifier endOfRange)
+    {
+        for (int i = (year * 52) + week - 1; i <= (endOfRange.Year * 52) + endOfRange.Week - 1; i++)
+        {
+            yield return new YearAndWeekBinIdentifier((short)(i / 52), (short)((i % 52) + 1));
+        }
+    }
 }
 
 public class YearAndDayBinIdentifier : BinIdentifierForGaplessBin
 {
-    short _year;
-    short _month;
-    short _day;
+    private readonly short year;
+    private readonly short month;
+    private readonly short day;
 
     public YearAndDayBinIdentifier(short year, short month, short day)
         : base(
@@ -244,14 +245,14 @@ public class YearAndDayBinIdentifier : BinIdentifierForGaplessBin
               new DateOnly(year, month, day),
               new DateOnly(year, month, day))
     {
-        _year = year;
-        _month = month;
-        _day = day;
+        this.year = year;
+        this.month = month;
+        this.day = day;
     }
 
-    public short Year => _year;
-    public short Month => _month;
-    public short Day => _day;
+    public short Year => year;
+    public short Month => month;
+    public short Day => day;
 
     public IEnumerable<YearAndDayBinIdentifier> EnumerateYearAndDayBinRangeUpTo(YearAndDayBinIdentifier endOfRange)
     {
@@ -267,33 +268,39 @@ public class YearAndDayBinIdentifier : BinIdentifierForGaplessBin
 
 public class MonthOnlyBinIdentifier : BinIdentifier, IComparable<MonthOnlyBinIdentifier>
 {
-    int _month;
+    private readonly int month;
 
     public MonthOnlyBinIdentifier(short month)
         : base(
             $"m{month}",
             $"{DateHelpers.GetShortMonthName(month)}")
     {
-        _month = month;
+        this.month = month;
     }
 
-    public int Month { get { return _month; } }
+    public int Month
+    {
+        get { return month; }
+    }
 
     public int CompareTo(MonthOnlyBinIdentifier? other)
     {
-        if (other == null) throw new ArgumentNullException(nameof(other));
+        if (other == null)
+        {
+            throw new ArgumentNullException(nameof(other));
+        }
 
-        return this._month - other._month;
+        return this.month - other.month;
     }
 
     public override bool Equals(object? other)
     {
-        return this._month == (other as MonthOnlyBinIdentifier)?._month;
+        return this.month == (other as MonthOnlyBinIdentifier)?.month;
     }
 
     public override int GetHashCode()
     {
-        return _month.GetHashCode();
+        return month.GetHashCode();
     }
 }
 

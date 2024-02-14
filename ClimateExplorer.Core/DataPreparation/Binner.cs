@@ -1,7 +1,7 @@
-﻿using System.Globalization;
-using static ClimateExplorer.Core.Enums;
+﻿namespace ClimateExplorer.Core.DataPreparation.Model;
 
-namespace ClimateExplorer.Core.DataPreparation.Model;
+using System.Globalization;
+using static ClimateExplorer.Core.Enums;
 
 public static class Binner
 {
@@ -18,15 +18,31 @@ public static class Binner
                 new RawBin()
                 {
                     Identifier = x.Key,
-                    Buckets = BuildBucketsForBin(binningRule, x, cupSize, dataResolution)
-                }
-            )
+                    Buckets = BuildBucketsForBin(binningRule, x, cupSize, dataResolution),
+                })
             .ToArray();
     }
 
-    static Bucket[] BuildBucketsForBin(
-        BinGranularities binningRule, 
-        IGrouping<BinIdentifier, TemporalDataPoint> bin, 
+    // This presumes that weeks start with Monday.
+    // Week 1 is the 1st week of the year with a Thursday in it.
+    public static int GetIso8601WeekOfYear(DateTime time)
+    {
+        // Seriously cheat.  If its Monday, Tuesday or Wednesday, then it'll
+        // be the same week# as whatever Thursday, Friday or Saturday are,
+        // and we always get those right
+        DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
+        if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
+        {
+            time = time.AddDays(3);
+        }
+
+        // Return the week of our adjusted day
+        return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+    }
+
+    private static Bucket[] BuildBucketsForBin(
+        BinGranularities binningRule,
+        IGrouping<BinIdentifier, TemporalDataPoint> bin,
         int cupSize,
         DataResolution dataResolution)
     {
@@ -51,7 +67,7 @@ public static class Binner
         }
     }
 
-    static Bucket[] BuildBucketsForMonth(
+    private static Bucket[] BuildBucketsForMonth(
         IGrouping<BinIdentifier, TemporalDataPoint> bin,
         int cupSize,
         DataResolution dataResolution)
@@ -82,27 +98,24 @@ public static class Binner
                                     lastDayInMonth,
                                     group.ToArray(),
                                     cupSize)
-                                .ToArray()
-                        }
-                    );
+                                .ToArray(),
+                        });
                     break;
                 case DataResolution.Monthly:
                     buckets.Add(
                         new Bucket
                         {
                             Cups =
-                                new Cup[]
-                                {
+                                [
                                     new Cup
                                     {
                                         FirstDayInCup = firstDayInMonth,
                                         LastDayInCup = lastDayInMonth,
                                         DataPoints = group.ToArray(),
-                                        ExpectedDataPointsInCup = 1
-                                    }
-                                }
-                        }
-                    );
+                                        ExpectedDataPointsInCup = 1,
+                                    },
+                                ],
+                        });
                     break;
                 default:
                     throw new Exception($"Cannot convert underlying data at resolution {dataResolution} into bins at monthly level");
@@ -112,7 +125,7 @@ public static class Binner
         return buckets.ToArray();
     }
 
-    static Bucket[] BuildBucketsForSouthernHemisphereTemperateSeason(
+    private static Bucket[] BuildBucketsForSouthernHemisphereTemperateSeason(
         IGrouping<BinIdentifier, TemporalDataPoint> bin,
         int cupSize,
         DataResolution dataResolution)
@@ -137,15 +150,14 @@ public static class Binner
                             DateHelpers.GetLastDayInTemperateSeasonOccurrence(seasonOccurrence.Key),
                             seasonOccurrence.ToArray(),
                             cupSize)
-                        .ToArray()
-                }
-            );
+                        .ToArray(),
+                });
         }
 
         return buckets.ToArray();
     }
 
-    static Bucket[] BuildBucketsForSouthernHemisphereTropicalSeason(
+    private static Bucket[] BuildBucketsForSouthernHemisphereTropicalSeason(
         IGrouping<BinIdentifier, TemporalDataPoint> bin,
         int cupSize,
         DataResolution dataResolution)
@@ -170,15 +182,14 @@ public static class Binner
                             DateHelpers.GetLastDayInTropicalSeasonOccurrence(seasonOccurrence.Key),
                             seasonOccurrence.ToArray(),
                             cupSize)
-                        .ToArray()
-                }
-            );
+                        .ToArray(),
+                });
         }
 
         return buckets.ToArray();
     }
 
-    static IEnumerable<Cup> BuildMonthlyCupsForMonthlyData(
+    private static IEnumerable<Cup> BuildMonthlyCupsForMonthlyData(
         DateOnly firstDay,
         DateOnly lastDay,
         TemporalDataPoint[] points)
@@ -195,19 +206,17 @@ public static class Binner
                     FirstDayInCup = x.Start,
                     LastDayInCup = x.End,
                     DataPoints = points.Where(y => DataPointFallsInInclusiveRange(y, x.Start, x.End)).ToArray(),
-                    ExpectedDataPointsInCup = 1
-                }
-            );
+                    ExpectedDataPointsInCup = 1,
+                });
 
         return cups;
     }
 
-    static IEnumerable<Cup> BuildYearlyCupsForYearlyData(
+    private static IEnumerable<Cup> BuildYearlyCupsForYearlyData(
     DateOnly firstDay,
     DateOnly lastDay,
     TemporalDataPoint[] points)
     {
-
         var cups =
             points
             .Select(
@@ -217,16 +226,15 @@ public static class Binner
                     FirstDayInCup = firstDay,
                     LastDayInCup = lastDay,
                     DataPoints = [x],
-                    ExpectedDataPointsInCup = 1
-                }
-            );
+                    ExpectedDataPointsInCup = 1,
+                });
 
         return cups;
     }
 
-    static IEnumerable<Cup> BuildCupsForDataPointRange(
-        DateOnly firstDay, 
-        DateOnly lastDay, 
+    private static IEnumerable<Cup> BuildCupsForDataPointRange(
+        DateOnly firstDay,
+        DateOnly lastDay,
         TemporalDataPoint[] points,
         int cupSize)
     {
@@ -234,8 +242,7 @@ public static class Binner
             DateHelpers.DivideDateSpanIntoSegmentsWithIncompleteFinalSegmentAddedToFinalSegment(
                 firstDay,
                 lastDay,
-                cupSize
-            );
+                cupSize);
 
         var cups =
             cupSegments
@@ -246,15 +253,14 @@ public static class Binner
                     FirstDayInCup = x.Start,
                     LastDayInCup = x.End,
                     DataPoints = points.Where(y => DataPointFallsInInclusiveRange(y, x.Start, x.End)).ToArray(),
-                    ExpectedDataPointsInCup = DateHelpers.CountDaysInRange(x.Start, x.End)
-                }
-            );
+                    ExpectedDataPointsInCup = DateHelpers.CountDaysInRange(x.Start, x.End),
+                });
 
         return cups;
     }
 
-    static Bucket[] BuildBucketsForGaplessBin(
-        IGrouping<BinIdentifier, TemporalDataPoint> bin, 
+    private static Bucket[] BuildBucketsForGaplessBin(
+        IGrouping<BinIdentifier, TemporalDataPoint> bin,
         int cupSize,
         DataResolution dataResolution)
     {
@@ -294,7 +300,6 @@ public static class Binner
                 throw new NotImplementedException($"DataResolution {dataResolution}");
         }
 
-
         var buckets =
             cups
             .Select(
@@ -303,23 +308,21 @@ public static class Binner
                 {
                     FirstDayInBucket = x.FirstDayInCup,
                     LastDayInBucket = x.LastDayInCup,
-                    Cups = new Cup[] { x }
-                }
-            )
+                    Cups = new Cup[] { x },
+                })
             .ToArray();
 
         return buckets;
-
     }
 
-    static bool DataPointFallsInInclusiveRange(TemporalDataPoint dp, DateOnly start, DateOnly end)
+    private static bool DataPointFallsInInclusiveRange(TemporalDataPoint dp, DateOnly start, DateOnly end)
     {
         DateOnly d = new DateOnly(dp.Year, dp.Month ?? 1, dp.Day ?? 1);
 
         return d >= start && d <= end;
     }
 
-    static BinIdentifier GetBinIdentifier(TemporalDataPoint dp, BinGranularities binningRule)
+    private static BinIdentifier GetBinIdentifier(TemporalDataPoint dp, BinGranularities binningRule)
     {
         // TODO: Notice that (for example) for a year with 365 data points, we will allocate 365 otherwise identical year bin identifiers.
         // We could cache them centrally and re-use to reduce allocations.
@@ -334,22 +337,5 @@ public static class Binner
             BinGranularities.BySouthernHemisphereTropicalSeasonOnly => new SouthernHemisphereTropicalSeasonOnlyBinIdentifier(DateHelpers.GetSouthernHemisphereTropicalSeasonForMonth(dp.Month!.Value)),
             _ => throw new NotImplementedException($"BinningRule {binningRule}"),
         };
-    }
-
-    // This presumes that weeks start with Monday.
-    // Week 1 is the 1st week of the year with a Thursday in it.
-    public static int GetIso8601WeekOfYear(DateTime time)
-    {
-        // Seriously cheat.  If its Monday, Tuesday or Wednesday, then it'll 
-        // be the same week# as whatever Thursday, Friday or Saturday are,
-        // and we always get those right
-        DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
-        if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
-        {
-            time = time.AddDays(3);
-        }
-
-        // Return the week of our adjusted day
-        return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
     }
 }

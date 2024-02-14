@@ -15,9 +15,9 @@ public class ChartTests : TestBase
         await page.Locator("div").Filter(new() { HasTextRegex = new Regex("^Hobart \\| Precipitation$") }).ClickAsync();
         await page.GetByTitle("Remove this series").ClickAsync();
         await page.WaitForURLAsync($"{_baseSiteUrl}/location?csd**");
-        
+
         var count = await page.Locator("div").Filter(new() { HasTextRegex = new Regex("^Hobart \\| Precipitation$") }).CountAsync();
-        
+
         Assert.That(count, Is.EqualTo(0));
     }
 }

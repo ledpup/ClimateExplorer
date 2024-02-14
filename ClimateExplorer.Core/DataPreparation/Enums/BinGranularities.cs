@@ -8,14 +8,14 @@ public enum BinGranularities
     ByYearAndDay,
     BySouthernHemisphereTemperateSeasonOnly,
     BySouthernHemisphereTropicalSeasonOnly,
-    ByMonthOnly
+    ByMonthOnly,
 }
 
 public static class BinGranularityHelpers
 {
     public static bool IsLinear(this BinGranularities b)
     {
-        return b == BinGranularities.ByYear 
+        return b == BinGranularities.ByYear
             || b == BinGranularities.ByYearAndMonth
             || b == BinGranularities.ByYearAndWeek
             || b == BinGranularities.ByYearAndDay;

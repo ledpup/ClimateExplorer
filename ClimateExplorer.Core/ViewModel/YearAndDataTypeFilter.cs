@@ -1,10 +1,10 @@
-﻿using static ClimateExplorer.Core.Enums;
+﻿namespace ClimateExplorer.Core.ViewModel;
 
-namespace ClimateExplorer.Core.ViewModel;
+using static ClimateExplorer.Core.Enums;
 
 public class YearAndDataTypeFilter
 {
-    public YearAndDataTypeFilter (short year)
+    public YearAndDataTypeFilter(short year)
     {
         Year = year;
     }

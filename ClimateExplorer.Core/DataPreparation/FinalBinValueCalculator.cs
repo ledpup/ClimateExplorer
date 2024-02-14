@@ -1,6 +1,6 @@
-﻿using ClimateExplorer.Core.DataPreparation.Model;
+﻿namespace ClimateExplorer.Core.DataPreparation;
 
-namespace ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.DataPreparation.Model;
 
 public static class FinalBinValueCalculator
 {

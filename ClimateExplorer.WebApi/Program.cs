@@ -1,25 +1,27 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
+﻿#pragma warning disable SA1200 // Using directives should be placed correctly
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using static ClimateExplorer.Core.Enums;
-using System.Threading.Tasks;
-using ClimateExplorer.Core.ViewModel;
-using Microsoft.AspNetCore.Http.Json;
-using Microsoft.Extensions.Logging;
 using System.Reflection;
-using ClimateExplorer.Core.DataPreparation;
-using ClimateExplorer.Core.Calculators;
-using ClimateExplorer.WebApi.Infrastructure;
 using System.Text.Json;
-using ClimateExplorer.Core.Model;
-using static ClimateExplorer.Core.DataPreparation.DataSetBuilder;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+using ClimateExplorer.Core.Calculators;
+using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.Model;
+using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.WebApi.Infrastructure;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http.Json;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using static ClimateExplorer.Core.DataPreparation.DataSetBuilder;
+using static ClimateExplorer.Core.Enums;
+#pragma warning restore SA1200 // Using directives should be placed correctly
 
-//ICache _cache = new FileBackedCache("cache");
-ICache _cache = new FileBackedTwoLayerCache("cache");
+// ICache cache = new FileBackedCache("cache");
+ICache cache = new FileBackedTwoLayerCache("cache");
 
 const string HeatingScoreTable = "HeatingScoreTable";
 const string NearbyLocations = "NearbyLocations";
@@ -41,7 +43,7 @@ builder.Services.AddCors(
                 //       of a nominated domain, which would be overly permissive in our case. (Because the
                 //       generated client site DNS name is of the form:
                 //           lively-sky-06d813c1e-36.westus2.1.azurestaticapps.net
-                //       It's the "36" which changes each time a deployment happens to staging.                
+                //       It's the "36" which changes each time a deployment happens to staging.
                 //
                 //    2. Our users aren't authenticated. External web apps can't induce our users' browsers to
                 //       do anything using their credentials against our API site because they don't have
@@ -49,18 +51,15 @@ builder.Services.AddCors(
                 builder.AllowAnyOrigin();
 
                 builder.AllowAnyHeader();
-            }
-        );
-    }
-);
+            });
+    });
 
 builder.Services.Configure<JsonOptions>(
     options =>
     {
         // This causes the JSON returned from API calls to omit properties if their value is null anyway
         options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-    }
-);
+    });
 
 builder.Logging.AddConsole();
 
@@ -93,13 +92,13 @@ app.MapGet(
         "   POST /dataset\n" +
         "       Returns the specified data set, transformed as requested");
 
-app.MapGet("/about",                                                GetAbout);
-app.MapGet("/datasetdefinition",                                    GetDataSetDefinitions);
-app.MapGet("/location",                                             GetLocations);
-app.MapGet("/location-by-path",                                     GetLocationByPath);
-app.MapGet("/country",                                              GetCountries);
-app.MapGet("/region",                                               GetRegions);
-app.MapGet("/heating-score-table",                                  GetHeatingScoreTable);
+app.MapGet("/about", GetAbout);
+app.MapGet("/datasetdefinition", GetDataSetDefinitions);
+app.MapGet("/location", GetLocations);
+app.MapGet("/location-by-path", GetLocationByPath);
+app.MapGet("/country", GetCountries);
+app.MapGet("/region", GetRegions);
+app.MapGet("/heating-score-table", GetHeatingScoreTable);
 app.MapPost("/dataset", PostDataSets);
 
 app.Run();
@@ -112,7 +111,7 @@ object GetAbout()
         new
         {
             Version = asm.GetName().Version.ToString(),
-            BuildTimeUtc = File.GetLastWriteTimeUtc(asm.Location)
+            BuildTimeUtc = File.GetLastWriteTimeUtc(asm.Location),
         };
 }
 
@@ -151,7 +150,7 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null)
 {
     string cacheKey = $"Locations_{locationId}";
 
-    var result = await _cache.Get<Location[]>(cacheKey);
+    var result = await cache.Get<Location[]>(cacheKey);
     if (result != null)
     {
         return result;
@@ -163,7 +162,7 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null)
     {
         var allLocations = (await GetCachedLocations()).OrderBy(x => x.Name);
         locations = allLocations.Where(x => x.Id == locationId);
-        var nearbyLocations = await _cache.Get<Dictionary<Guid, List<LocationDistance>>>(NearbyLocations);
+        var nearbyLocations = await cache.Get<Dictionary<Guid, List<LocationDistance>>>(NearbyLocations);
         foreach (var l in locations)
         {
             l.NearbyLocations = nearbyLocations[l.Id];
@@ -175,7 +174,7 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null)
 
         var definitions = await GetDataSetDefinitions();
 
-        ParallelOptions parallelOptions = new();
+        ParallelOptions parallelOptions = new ();
 
         // For each location, retrieve the TempMax dataset (Adjusted if available, Adjustment null otherwise), and copy its WarmingAnomaly
         // to the location we're about to return.
@@ -210,15 +209,15 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null)
                             SeriesSpecifications =
                                 new SeriesSpecification[]
                                 {
-                                    new() {
+                                    new ()
+                                    {
                                         DataAdjustment = dsdmd.MeasurementDefinition.DataAdjustment,
                                         DataSetDefinitionId = dsdmd.DataSetDefinition.Id,
                                         DataType = dsdmd.MeasurementDefinition.DataType,
-                                        LocationId = location.Id
-                                    }
-                                }
-                        }
-                    );
+                                        LocationId = location.Id,
+                                    },
+                                },
+                        });
 
                 location.WarmingAnomaly = AnomalyCalculator.CalculateAnomaly(series.DataPoints)?.AnomalyValue;
             }
@@ -229,16 +228,15 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null)
             }
         });
 
-
         // Can't set the heating scores until all warming anomalies are calculated.
         var heatingScoreTable = Location.SetHeatingScores(locations);
-        await _cache.Put(HeatingScoreTable, heatingScoreTable.ToArray());
+        await cache.Put(HeatingScoreTable, heatingScoreTable.ToArray());
 
         var nearbyLocations = Location.GenerateNearbyLocations(locations);
-        await _cache.Put(NearbyLocations, nearbyLocations);
+        await cache.Put(NearbyLocations, nearbyLocations);
     }
 
-    await _cache.Put(cacheKey, locations.ToArray());
+    await cache.Put(cacheKey, locations.ToArray());
 
     return locations;
 }
@@ -247,9 +245,12 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
 {
     string cacheKey = $"DataSet_" + JsonSerializer.Serialize(body);
 
-    var result = await _cache.Get<DataSet>(cacheKey);
+    var result = await cache.Get<DataSet>(cacheKey);
 
-    if (result != null) return result;
+    if (result != null)
+    {
+        return result;
+    }
 
     var dsb = new DataSetBuilder();
 
@@ -264,7 +265,7 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
 
         // The following section is probably the most expensive operation in the whole application
         // Let's do it all parallel baby, like we did in 2007!
-        ParallelOptions parallelOptions = new();
+        ParallelOptions parallelOptions = new ();
         await Parallel.ForEachAsync(region.LocationIds, parallelOptions, async (locationId, cancellationToken) =>
         {
             // Initial values will be absolute values
@@ -286,7 +287,7 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
     {
         series = await dsb.BuildDataSet(body);
     }
-    
+
     var definitions = await DataSetDefinition.GetDataSetDefinitions();
     var spec = body.SeriesSpecifications[0];
     var dsd = definitions.Single(x => x.Id == spec.DataSetDefinitionId);
@@ -298,29 +299,28 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
         {
             GeographicalEntity = geoEntity,
             Resolution = DataResolution.Yearly,
-            MeasurementDefinition = 
-                new MeasurementDefinitionViewModel 
-                { 
-                    DataAdjustment = spec.DataAdjustment, 
+            MeasurementDefinition =
+                new MeasurementDefinitionViewModel
+                {
+                    DataAdjustment = spec.DataAdjustment,
                     DataType = spec.DataType,
                     UnitOfMeasure = series.UnitOfMeasure,
                 },
-            DataRecords = 
+            DataRecords =
                 series.DataPoints
                 .Select(
-                    x => 
-                    new DataRecord 
-                    { 
-                        Label = x.Label, 
-                        Value = x.Value, 
+                    x =>
+                    new DataRecord
+                    {
+                        Label = x.Label,
+                        Value = x.Value,
                         BinId = x.BinId,
-                    }
-                )
+                    })
                 .ToList(),
             RawDataRecords =
                 body.IncludeRawDataPoints
                 ? series.RawDataPoints
-                : null
+                : null,
         };
 
     // If the BinningRule is ByYearAndDay then there is little to gain by caching the data
@@ -329,7 +329,8 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
     {
         return returnDataSet;
     }
-    await _cache.Put(cacheKey, returnDataSet);
+
+    await cache.Put(cacheKey, returnDataSet);
     return returnDataSet;
 }
 
@@ -337,7 +338,6 @@ static PostDataSetsRequestBody GetPostRequestBody(PostDataSetsRequestBody body, 
 {
     return new PostDataSetsRequestBody
     {
-
         BinAggregationFunction = body.BinAggregationFunction,
         BucketAggregationFunction = body.BucketAggregationFunction,
         CupAggregationFunction = body.CupAggregationFunction,
@@ -347,7 +347,7 @@ static PostDataSetsRequestBody GetPostRequestBody(PostDataSetsRequestBody body, 
         RequiredBucketDataProportion = body.RequiredBinDataProportion,
         RequiredCupDataProportion = body.RequiredCupDataProportion,
         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-        SeriesSpecifications = new []
+        SeriesSpecifications = new[]
                 {
                     new SeriesSpecification
                     {
@@ -390,10 +390,11 @@ static DataSet GenerateAnomalyDataSetForLocation(DataSet dataset)
                 Year = record.Year,
             });
         }
+
         return
             new DataSet
             {
-                DataRecords = anomalyRecords
+                DataRecords = anomalyRecords,
             };
     }
 
@@ -413,9 +414,10 @@ static async Task<BuildDataSetResult> GenerateAverageOfAnomaliesSeries(PostDataS
         {
             BinId = $"y{i}",
             Label = i.ToString(),
-            Value = averageForYear
+            Value = averageForYear,
         });
     }
+
     var seriesDefinition = await SeriesProvider.GetSeriesDataPointsForRequest(body.SeriesDerivationType, body.SeriesSpecifications);
     series = new BuildDataSetResult
     {
@@ -447,6 +449,6 @@ async Task<Location> GetLocationByPath(string path)
 
 async Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable()
 {
-    var result = await _cache.Get<List<HeatingScoreRow>>(HeatingScoreTable);
+    var result = await cache.Get<List<HeatingScoreRow>>(HeatingScoreTable);
     return result;
 }

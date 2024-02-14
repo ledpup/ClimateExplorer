@@ -6,5 +6,5 @@ public enum ContainerAggregationFunctions
     Sum,
     Min,
     Max,
-    Median
+    Median,
 }

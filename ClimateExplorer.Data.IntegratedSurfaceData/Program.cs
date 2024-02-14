@@ -33,7 +33,7 @@ foreach (var station in filteredStations)//.Where(x => x.Name.Contains("LAUNCEST
     var results = await GetStationRecords(httpClient, station, logger, isdFileProcessorLogger);
     if (results.MissingYears.Any())
     {
-        logger.LogWarning($"There are {results.MissingYears.Count} missing years for {station.FileName} where data is expected from {station.Begin.Year} to {station.End.Year}. They are: { string.Join(',', results.MissingYears) }");
+        logger.LogWarning($"There are {results.MissingYears.Count} missing years for {station.FileName} where data is expected from {station.Begin.Year} to {station.End.Year}. They are: {string.Join(',', results.MissingYears)}");
     }
     DataRecordFileSaver.Save(station.FileName, results.Records, logger);
 }
@@ -119,7 +119,7 @@ static async Task<(Dictionary<DateOnly, List<TimedRecord>> Records, List<int> Mi
                 logger.LogWarning($"Failed to download or extract ISD file for {year} of {stationName}. No data will be available for this year.");
             }
         }
-      
+
         var recordsForYear = File.ReadAllLines(extractedFile);
         var failedYear = false;
         if (recordsForYear[0].StartsWith("Failed"))

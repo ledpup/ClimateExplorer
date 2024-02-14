@@ -1,8 +1,8 @@
-﻿using System;
+﻿namespace ClimateExplorer.WebApi.Model;
+
+using System;
 using System.Text;
 using static ClimateExplorer.Core.Enums;
-
-namespace ClimateExplorer.WebApi.Model;
 
 public class QueryParameters
 {
@@ -26,6 +26,7 @@ public class QueryParameters
                 break;
         }
     }
+
     public DataType DataType { get; set; }
     public DataResolution Resolution { get; set; }
     public DataAdjustment? DataAdjustment { get; set; }
@@ -44,10 +45,12 @@ public class QueryParameters
         {
             stringBuilder.Append($"_{DataAdjustment}");
         }
+
         if (LocationId.HasValue)
         {
             stringBuilder.Append($"_{LocationId}");
         }
+
         if (AggregationMethod.HasValue)
         {
             stringBuilder.Append($"_{AggregationMethod}");
@@ -63,18 +66,21 @@ public class QueryParameters
                     {
                         stringBuilder.Append($"_{((BinThenCount)StatsParameters).NumberOfBins}");
                     }
+
                     if (((BinThenCount)StatsParameters).BinSize.HasValue)
                     {
                         stringBuilder.Append($"_{((BinThenCount)StatsParameters).BinSize}");
                     }
+
                     break;
             }
         }
+
         if (Year.HasValue)
         {
             stringBuilder.Append($"_{Year}");
         }
-        
+
         string encodedStr = Convert.ToBase64String(Encoding.UTF8.GetBytes(stringBuilder.ToString()));
 
         return encodedStr;

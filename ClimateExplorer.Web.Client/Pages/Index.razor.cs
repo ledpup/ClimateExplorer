@@ -1,55 +1,39 @@
-﻿using ClimateExplorer.Core.ViewModel;
-using ClimateExplorer.Web.UiModel;
+﻿namespace ClimateExplorer.Web.Client.Pages;
+
+using Blazorise.Snackbar;
 using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.Model;
+using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.Web.Client.Shared;
+using ClimateExplorer.Web.Client.Shared.LocationComponents;
+using ClimateExplorer.Web.UiModel;
 using DPBlazorMapLibrary;
+using GeoCoordinatePortable;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
-using GeoCoordinatePortable;
-using ClimateExplorer.Core.Model;
-using Blazorise.Snackbar;
-using ClimateExplorer.Web.Client.Shared.LocationComponents;
-using ClimateExplorer.Web.Client.Shared;
-
-namespace ClimateExplorer.Web.Client.Pages;
 
 public partial class Index : ChartablePage
 {
-    [Parameter]
-    public string? LocationId { get; set; }
-    ChangeLocation? changeLocationModal { get; set; }
-    MapContainer? mapContainer { get; set; }
-
-    Guid SelectedLocationId { get; set; }
-    Location? _selectedLocation { get; set; }
-    Location? PreviousLocation { get; set; }
-    string? BrowserLocationErrorMessage { get; set; }
-
-    Location? internalLocation { get; set; }
-
-    [Inject] Blazored.LocalStorage.ILocalStorageService? LocalStorage { get; set; }
-
-    bool finishedSetup;
-    Guid oldLocationId = Guid.Empty;
+    private bool finishedSetup;
+    private Guid oldLocationId = Guid.Empty;
+    private Location? selectedLocation;
+    private Coordinates locationCoordinates;
 
     public Index()
     {
-        pageName = "location";
+        PageName = "location";
     }
 
-    protected override async Task OnInitializedAsync()
+    [Parameter]
+    public string? LocationId { get; set; }
+
+    protected override string PageTitle
     {
-        var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
-        var location = await GetLocation(uri, true);
-        internalLocation = location;
-    }
-
-    protected override string PageTitle 
-    { 
-        get 
+        get
         {
-            var title =  internalLocation == null ? $"Local long-term climate trends" : $"ClimateExplorer - {internalLocation.FullTitle}";
+            var title = InternalLocation == null ? $"Local long-term climate trends" : $"ClimateExplorer - {InternalLocation.FullTitle}";
 
             Logger!.LogInformation($"PageTitle is '{title}'");
 
@@ -61,8 +45,50 @@ public partial class Index : ChartablePage
     {
         get
         {
-            return internalLocation == null ? $"https://climateexplorer.net" : $"https://climateexplorer.net/location/{internalLocation.UrlReadyName()}";
+            return InternalLocation == null ? $"https://climateexplorer.net" : $"https://climateexplorer.net/location/{InternalLocation.UrlReadyName()}";
         }
+    }
+
+    private ChangeLocation? ChangeLocationModal { get; set; }
+    private MapContainer? MapContainer { get; set; }
+
+    private Guid SelectedLocationId { get; set; }
+    private Location? PreviousLocation { get; set; }
+    private string? BrowserLocationErrorMessage { get; set; }
+
+    private Location? InternalLocation { get; set; }
+
+    [Inject]
+    private Blazored.LocalStorage.ILocalStorageService? LocalStorage { get; set; }
+
+    private Location SelectedLocation
+    {
+        get
+        {
+            return selectedLocation!;
+        }
+        set
+        {
+            if (value != selectedLocation)
+            {
+                PreviousLocation = SelectedLocation;
+                selectedLocation = value;
+                InternalLocation = value;
+                locationCoordinates = SelectedLocation.Coordinates;
+            }
+        }
+    }
+
+    void IDisposable.Dispose()
+    {
+        Dispose();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+        var location = await GetLocation(uri, true);
+        InternalLocation = location;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -80,13 +106,13 @@ public partial class Index : ChartablePage
             GeographicalEntities = geographicalEntities;
 
             var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
-            internalLocation = await GetLocation(uri, false);
+            InternalLocation = await GetLocation(uri, false);
 
             var csd = QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
-            if (!csd && internalLocation != null)
+            if (!csd && InternalLocation != null)
             {
-                SetUpDefaultCharts(internalLocation.Id);
-                await SelectedLocationChanged(internalLocation.Id);
+                SetUpDefaultCharts(InternalLocation.Id);
+                await SelectedLocationChanged(InternalLocation.Id);
                 StateHasChanged();
             }
         }
@@ -104,6 +130,14 @@ public partial class Index : ChartablePage
                     StateHasChanged();
                 }
             }
+        }
+    }
+
+    protected override async Task UpdateComponents()
+    {
+        if (SelectedLocation != null && MapContainer != null)
+        {
+            await MapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
         }
     }
 
@@ -130,7 +164,7 @@ public partial class Index : ChartablePage
         LocationId = location?.Id.ToString();
         if (location == null)
         {
-            LocationId = (await LocalStorage!.GetItemAsync<string>("lastLocationId"));
+            LocationId = await LocalStorage!.GetItemAsync<string>("lastLocationId");
             var validGuid = Guid.TryParse(LocationId, out Guid guid);
             if (!validGuid || guid == Guid.Empty || !Locations!.Any(x => x.Id == guid))
             {
@@ -142,8 +176,9 @@ public partial class Index : ChartablePage
         if (csd)
         {
             await UpdateUiStateBasedOnQueryString();
+
             // Going to assume that the first chart is the primary location
-            LocationId = chartView!.ChartSeriesList!.First().SourceSeriesSpecifications!.First().LocationId.ToString();
+            LocationId = ChartView!.ChartSeriesList!.First().SourceSeriesSpecifications!.First().LocationId.ToString();
         }
 
         var valid = Guid.TryParse(LocationId, out Guid id);
@@ -152,6 +187,7 @@ public partial class Index : ChartablePage
         return location;
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
     private void SetUpDefaultCharts(Guid? locationId)
     {
         // Use Hobart as the basis for building the default chart. We want temperature and precipitation on the default chart, whether it's the first time the user has arrived
@@ -162,21 +198,21 @@ public partial class Index : ChartablePage
         var tempMaxOrMean = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataSubstitute.StandardTemperatureDataMatches(), throwIfNoMatch: true)!;
         var precipitation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.Precipitation, null, throwIfNoMatch: true)!;
 
-        if (chartView!.ChartSeriesList == null)
+        if (ChartView!.ChartSeriesList == null)
         {
-            chartView.ChartSeriesList = new List<ChartSeriesDefinition>();
+            ChartView.ChartSeriesList = new List<ChartSeriesDefinition>();
         }
 
-        chartView.ChartSeriesList.Add(
+        ChartView.ChartSeriesList.Add(
             new ChartSeriesDefinition()
             {
                 // TODO: remove if we're not going to default to average temperature
-                //SeriesDerivationType = SeriesDerivationTypes.AverageOfMultipleSeries,
-                //SourceSeriesSpecifications = new SourceSeriesSpecification[]
-                //{
+                // SeriesDerivationType = SeriesDerivationTypes.AverageOfMultipleSeries,
+                // SourceSeriesSpecifications = new SourceSeriesSpecification[]
+                // {
                 //    SourceSeriesSpecification.BuildArray(location, tempMax)[0],
                 //    SourceSeriesSpecification.BuildArray(location, tempMin)[0],
-                //},
+                // },
                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                 SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMaxOrMean),
                 Aggregation = SeriesAggregationOptions.Mean,
@@ -184,11 +220,10 @@ public partial class Index : ChartablePage
                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                 SmoothingWindow = 20,
                 Value = SeriesValueOptions.Value,
-                Year = null
-            }
-        );
+                Year = null,
+            });
 
-        chartView.ChartSeriesList.Add(
+        ChartView.ChartSeriesList.Add(
             new ChartSeriesDefinition()
             {
                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -198,15 +233,13 @@ public partial class Index : ChartablePage
                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                 SmoothingWindow = 20,
                 Value = SeriesValueOptions.Value,
-                Year = null
-            }
-        );
+                Year = null,
+            });
     }
 
-
-    async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)
+    private async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)
     {
-        await chartView!.HandleOnYearFilterChange(yearAndDataTypeFilter);
+        await ChartView!.HandleOnYearFilterChange(yearAndDataTypeFilter);
     }
 
     private async Task OnOverviewShowHide(bool isOverviewVisible)
@@ -216,44 +249,21 @@ public partial class Index : ChartablePage
 
     private Task ShowChangeLocationModal()
     {
-        return changeLocationModal!.Show();
+        return ChangeLocationModal!.Show();
     }
 
-    Location SelectedLocation
-    {
-        get
-        {
-            return _selectedLocation!;
-        }
-        set
-        {
-            if (value != _selectedLocation)
-            {
-                PreviousLocation = _selectedLocation;
-                _selectedLocation = value;
-                internalLocation = value;
-                LocationCoordinates = _selectedLocation.Coordinates;
-            }
-        }
-    }
-    Coordinates LocationCoordinates;
-
-    async Task SelectedLocationChanged(Guid locationId)
+    private async Task SelectedLocationChanged(Guid locationId)
     {
         if (locationId == Guid.Empty)
         {
             return;
         }
+
         finishedSetup = false;
-        await NavigateTo($"/{pageName}/" + locationId.ToString());
+        await NavigateTo($"/{PageName}/" + locationId.ToString());
     }
 
-    void IDisposable.Dispose()
-    {
-        Dispose();
-    }
-
-    async Task SelectedLocationChangedInternal(Guid newValue)
+    private async Task SelectedLocationChangedInternal(Guid newValue)
     {
         Logger!.LogInformation("SelectedLocationChangedInternal(): " + newValue);
 
@@ -271,7 +281,7 @@ public partial class Index : ChartablePage
         var additionalCsds = new List<ChartSeriesDefinition>();
 
         // Update data series to reflect new location
-        foreach (var csd in chartView!.ChartSeriesList!.ToArray())
+        foreach (var csd in ChartView!.ChartSeriesList!.ToArray())
         {
             foreach (var sss in csd.SourceSeriesSpecifications!)
             {
@@ -289,14 +299,14 @@ public partial class Index : ChartablePage
                     {
                         sss.LocationId = newValue;
                         sss.LocationName = SelectedLocation.Name;
-                        
+
                         var dataMatches = new List<DataSubstitute>
                         {
                             new DataSubstitute
                             {
                                 DataType = sss.MeasurementDefinition!.DataType,
                                 DataAdjustment = sss.MeasurementDefinition.DataAdjustment,
-                            }
+                            },
                         };
 
                         // If the data type is max or mean temperature, pass through an accepted list of near matching data
@@ -323,7 +333,7 @@ public partial class Index : ChartablePage
                         if (dsd == null)
                         {
                             var dataType = ChartSeriesDefinition.MapDataTypeToFriendlyName(sss.MeasurementDefinition.DataType);
-                            await snackbar!.PushAsync($"{dataType} data is not available at {SelectedLocation.Name}", SnackbarColor.Warning);
+                            await Snackbar!.PushAsync($"{dataType} data is not available at {SelectedLocation.Name}", SnackbarColor.Warning);
                             csd.DataAvailable = false;
 
                             break;
@@ -409,6 +419,7 @@ public partial class Index : ChartablePage
                                         LocationName = SelectedLocation.Name,
                                         MeasurementDefinition = newMd,
                                     }
+
                                     ],
                                 Aggregation = csd.Aggregation,
                                 BinGranularity = csd.BinGranularity,
@@ -421,8 +432,7 @@ public partial class Index : ChartablePage
                                 Year = csd.Year,
                                 SeriesTransformation = csd.SeriesTransformation,
                                 GroupingThreshold = csd.GroupingThreshold,
-                            }
-                        );
+                            });
                     }
                 }
             }
@@ -430,31 +440,14 @@ public partial class Index : ChartablePage
 
         Logger!.LogInformation("Adding items to list inside SelectedLocationChangedInternal()");
 
-        var draftList = chartView.ChartSeriesList.Concat(additionalCsds).ToList();
+        var draftList = ChartView.ChartSeriesList.Concat(additionalCsds).ToList();
 
-        chartView.ChartSeriesList = draftList.CreateNewListWithoutDuplicates();
+        ChartView.ChartSeriesList = draftList.CreateNewListWithoutDuplicates();
 
         await BuildDataSets();
     }
 
-    protected override async Task UpdateComponents()
-    {
-        if (SelectedLocation != null && mapContainer != null)
-        {
-            await mapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
-        }
-    }
-
-    class GetLocationResult
-    {
-        public float Latitude { get; set; }
-        public float Longitude { get; set; }
-
-        public float ErrorCode { get; set; }
-        public string? ErrorMessage { get; set; }
-    }
-
-    async Task<Guid?> GetCurrentLocation()
+    private async Task<Guid?> GetCurrentLocation()
     {
         if (JsRuntime == null)
         {
@@ -466,7 +459,7 @@ public partial class Index : ChartablePage
         BrowserLocationErrorMessage = null;
         if (getLocationResult.ErrorCode > 0)
         {
-            BrowserLocationErrorMessage = "Unable to determine your location" + (!string.IsNullOrWhiteSpace(getLocationResult.ErrorMessage) ? $" ({getLocationResult.ErrorMessage})" : "");
+            BrowserLocationErrorMessage = "Unable to determine your location" + (!string.IsNullOrWhiteSpace(getLocationResult.ErrorMessage) ? $" ({getLocationResult.ErrorMessage})" : string.Empty);
             Logger!.LogError(BrowserLocationErrorMessage);
             return null;
         }
@@ -479,7 +472,7 @@ public partial class Index : ChartablePage
         return closestLocation.LocationId;
     }
 
-    async Task SetCurrentLocation()
+    private async Task SetCurrentLocation()
     {
         var locationId = await GetCurrentLocation();
         if (locationId != null)
@@ -488,5 +481,12 @@ public partial class Index : ChartablePage
         }
     }
 
+    private class GetLocationResult
+    {
+        public float Latitude { get; set; }
+        public float Longitude { get; set; }
 
+        public float ErrorCode { get; set; }
+        public string? ErrorMessage { get; set; }
+    }
 }

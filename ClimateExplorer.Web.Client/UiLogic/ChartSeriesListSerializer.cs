@@ -1,48 +1,14 @@
-﻿using ClimateExplorer.Core.Model;
+﻿namespace ClimateExplorer.Web.UiLogic;
+
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.Core.DataPreparation;
 using static ClimateExplorer.Core.Enums;
 
-namespace ClimateExplorer.Web.UiLogic;
-
 public static class ChartSeriesListSerializer
 {
-    static short? ParseNullableShort(string s)
-    {
-        if (String.IsNullOrWhiteSpace(s)) return null;
-
-        if (short.TryParse(s, out short val))
-        {
-            return val;
-        }
-
-        throw new Exception($"Failed to parse '{s}'");
-    }
-
-    static object ParseNullableEnum<T>(string s) 
-    {
-        if (string.IsNullOrWhiteSpace(s)) return null!;
-
-        return (T)Enum.Parse(typeof(T), s);
-    }
-
-    static T ParseEnum<T>(string s) where T : notnull, System.Enum
-    {
-        return (T)Enum.Parse(typeof(T), s);
-    }
-
-    static float? ParseNullableFloat(string s)
-    {
-        if (String.IsNullOrWhiteSpace(s)) return null;
-
-        if (float.TryParse(s, out float val))
-        {
-            return val;
-        }
-
-        throw new Exception($"Failed to parse '{s}'");
-    }
+    private static readonly char[] SeparatorsByLevel = [';', ',', '|', '*'];
 
     public static List<ChartSeriesDefinition> ParseChartSeriesDefinitionList(ILogger logger, string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<GeographicalEntity> geographicalEntities)
     {
@@ -61,7 +27,61 @@ public static class ChartSeriesListSerializer
         return seriesList;
     }
 
-    static ChartSeriesDefinition ParseChartSeriesUrlComponent(ILogger logger, string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<GeographicalEntity> geographicalEntities)
+    public static string BuildChartSeriesListUrlComponent(List<ChartSeriesDefinition> chartSeriesList)
+    {
+        return
+            string.Join(
+                SeparatorsByLevel[0],
+                chartSeriesList.Select(BuildChartSeriesUrlComponent));
+    }
+
+    private static short? ParseNullableShort(string s)
+    {
+        if (string.IsNullOrWhiteSpace(s))
+        {
+            return null;
+        }
+
+        if (short.TryParse(s, out short val))
+        {
+            return val;
+        }
+
+        throw new Exception($"Failed to parse '{s}'");
+    }
+
+    private static object ParseNullableEnum<T>(string s)
+    {
+        if (string.IsNullOrWhiteSpace(s))
+        {
+            return null!;
+        }
+
+        return (T)Enum.Parse(typeof(T), s);
+    }
+
+    private static T ParseEnum<T>(string s)
+        where T : notnull, System.Enum
+    {
+        return (T)Enum.Parse(typeof(T), s);
+    }
+
+    private static float? ParseNullableFloat(string s)
+    {
+        if (string.IsNullOrWhiteSpace(s))
+        {
+            return null;
+        }
+
+        if (float.TryParse(s, out float val))
+        {
+            return val;
+        }
+
+        throw new Exception($"Failed to parse '{s}'");
+    }
+
+    private static ChartSeriesDefinition ParseChartSeriesUrlComponent(ILogger logger, string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<GeographicalEntity> geographicalEntities)
     {
         string[] segments = s.Split(SeparatorsByLevel[1]);
 
@@ -88,7 +108,7 @@ public static class ChartSeriesListSerializer
             };
     }
 
-    static SourceSeriesSpecification[] ParseSourceSeriesSpecifications(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<GeographicalEntity> geographicalEntities)
+    private static SourceSeriesSpecification[] ParseSourceSeriesSpecifications(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<GeographicalEntity> geographicalEntities)
     {
         string[] segments = s.Split(SeparatorsByLevel[2]);
 
@@ -98,7 +118,7 @@ public static class ChartSeriesListSerializer
             .ToArray();
     }
 
-    static SourceSeriesSpecification ParseSourceSeriesSpecification(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<GeographicalEntity> geographicalEntities)
+    private static SourceSeriesSpecification ParseSourceSeriesSpecification(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<GeographicalEntity> geographicalEntities)
     {
         string[] segments = s.Split(SeparatorsByLevel[3]);
 
@@ -112,7 +132,7 @@ public static class ChartSeriesListSerializer
             {
                 DataType = (Core.Enums.DataType)dt,
                 DataAdjustment = da,
-            }
+            },
         };
         if (dt == Core.Enums.DataType.TempMax || dt == DataType.TempMean)
         {
@@ -153,7 +173,7 @@ public static class ChartSeriesListSerializer
 
                 if (dsds.Any())
                 {
-                    dsd = dsds.SingleOrDefault()!;
+                    dsd = dsds.SingleOrDefault() !;
                     md = dsd.MeasurementDefinitions!.Single(x => x.DataType == match.DataType && x.DataAdjustment == match.DataAdjustment);
 
                     break;
@@ -176,9 +196,7 @@ public static class ChartSeriesListSerializer
             };
     }
 
-    static readonly char[] SeparatorsByLevel = [';', ',', '|', '*'];
-
-    static string BuildSourceSeriesSpecificationsUrlComponent(SourceSeriesSpecification sss)
+    private static string BuildSourceSeriesSpecificationsUrlComponent(SourceSeriesSpecification sss)
     {
         if (sss == null || sss.MeasurementDefinition == null || sss.DataSetDefinition == null)
         {
@@ -191,21 +209,18 @@ public static class ChartSeriesListSerializer
                 sss.DataSetDefinition.Id,
                 sss.MeasurementDefinition.DataType,
                 sss.MeasurementDefinition.DataAdjustment,
-                sss.LocationId
-            );
+                sss.LocationId);
     }
 
-    static string BuildSourceSeriesSpecificationsUrlComponent(SourceSeriesSpecification[] sss)
+    private static string BuildSourceSeriesSpecificationsUrlComponent(SourceSeriesSpecification[] sss)
     {
         return
             string.Join(
                 SeparatorsByLevel[2],
-                sss.Select(BuildSourceSeriesSpecificationsUrlComponent)
-            );
+                sss.Select(BuildSourceSeriesSpecificationsUrlComponent));
     }
 
-
-    static string BuildChartSeriesUrlComponent(ChartSeriesDefinition csd)
+    private static string BuildChartSeriesUrlComponent(ChartSeriesDefinition csd)
     {
         return
             string.Join(
@@ -226,16 +241,6 @@ public static class ChartSeriesListSerializer
                 csd.IsExpanded,
                 csd.SeriesTransformation,
                 csd.GroupingThreshold,
-                csd.DataAvailable
-            );
-    }
-
-    public static string BuildChartSeriesListUrlComponent(List<ChartSeriesDefinition> chartSeriesList)
-    {
-        return
-            string.Join(
-                SeparatorsByLevel[0],
-                chartSeriesList.Select(BuildChartSeriesUrlComponent)
-            );
+                csd.DataAvailable);
     }
 }

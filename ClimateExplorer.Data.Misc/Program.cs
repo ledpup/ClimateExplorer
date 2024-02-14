@@ -1,6 +1,9 @@
-﻿using ClimateExplorer.Core.Model;
+﻿#pragma warning disable SA1200 // Using directives should be placed correctly
+using ClimateExplorer.Core;
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Data.Misc;
 using ClimateExplorer.Data.Misc.Ozone;
+#pragma warning restore SA1200 // Using directives should be placed correctly
 
 var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
 
@@ -22,11 +25,10 @@ var referenceDataDefintions = dataSetDefinitions
     .Where(x =>
             !string.IsNullOrEmpty(x.DataDownloadUrl)
             && x.MeasurementDefinitions!.Count == 1
-            && x.Id != Guid.Parse("6484A7F8-43BC-4B16-8C4D-9168F8D6699C") // Greenland is dealt with as a special case, see GreenlandApiClient
-            )
+            && x.Id != Guid.Parse("6484A7F8-43BC-4B16-8C4D-9168F8D6699C")) // Greenland is dealt with as a special case, see GreenlandApiClient
     .ToList();
 
-foreach ( var dataSetDefinition in referenceDataDefintions)
+foreach (var dataSetDefinition in referenceDataDefintions)
 {
     await DownloadDataSetData(dataSetDefinition);
 }
@@ -47,12 +49,11 @@ async Task DownloadDataSetData(DataSetDefinition dataSetDefinition)
 
     var fileUrl = dataSetDefinition.DataDownloadUrl;
     var response = await httpClient.GetAsync(fileUrl);
-    
+
     var content = await response.Content.ReadAsStringAsync();
 
     await File.WriteAllTextAsync(filePathAndName, content);
 }
-
 
 static void GenerateMapMarkers()
 {

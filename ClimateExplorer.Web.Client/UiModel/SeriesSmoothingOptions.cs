@@ -4,5 +4,5 @@ public enum SeriesSmoothingOptions
 {
     None,
     MovingAverage,
-    Trendline
+    Trendline,
 }

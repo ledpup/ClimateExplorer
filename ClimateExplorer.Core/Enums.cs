@@ -1,6 +1,6 @@
-﻿using ClimateExplorer.Core.DataPreparation;
+﻿namespace ClimateExplorer.Core;
 
-namespace ClimateExplorer.Core;
+using ClimateExplorer.Core.DataPreparation;
 
 public static class Enums
 {
@@ -48,7 +48,7 @@ public static class Enums
     {
         Unadjusted,
         Adjusted,
-        Difference
+        Difference,
     }
 
     public enum UnitOfMeasure
@@ -76,19 +76,33 @@ public static class Enums
         Maximum,
         Minimum,
         Sum,
-        Median
+        Median,
     }
 
     public enum SeriesValueOptions
     {
         Value,
-        Anomaly
+        Anomaly,
     }
 
     public enum ChartStartYears
     {
         FirstYear,
-        LastYear
+        LastYear,
+    }
+
+    public enum AggregationMethod
+    {
+        GroupByDayThenAverage,
+        GroupByDayThenAverage_Anomaly,
+        BinThenCount,
+        Sum,
+    }
+
+    public enum RowDataType
+    {
+        OneValuePerRow,
+        TwelveMonthsPerRow,
     }
 
     public static string UnitOfMeasureLabel(SeriesTransformations seriesTransformations, UnitOfMeasure unitOfMeasure, SeriesAggregationOptions seriesAggregationOptions, SeriesValueOptions seriesValueOptions)
@@ -112,29 +126,6 @@ public static class Enums
         }
 
         return label;
-    }
-
-    static string UnitOfMeasureLabel(UnitOfMeasure unitOfMeasure)
-    {
-        return unitOfMeasure switch
-        {
-            UnitOfMeasure.DegreesCelsius => "Degrees celsius (°C)",
-            UnitOfMeasure.DegreesCelsiusAnomaly => "Degrees celsius (°C) - anomaly",
-            UnitOfMeasure.Millimetres => "Millimetres (mm)",
-            UnitOfMeasure.PartsPerMillion => "Parts per million (ppm)",
-            UnitOfMeasure.PartsPerBillion => "Parts per billion (ppb)",
-            UnitOfMeasure.EnsoIndex => "ENSO index",
-            UnitOfMeasure.MegajoulesPerSquareMetre => "Megajoules per square metre (MJ/m²)",
-            UnitOfMeasure.MillionSqKm => "Million square kilometres",
-            UnitOfMeasure.SqKm => "Square kilometres (km²)",
-            UnitOfMeasure.Sn => "Sunsport number (Sn)",
-            UnitOfMeasure.WattsPerSquareMetre => "Watts per square metre (W/m²)",
-            UnitOfMeasure.MegaTonnes => "Megatonnes",
-            UnitOfMeasure.AtmosphericTransmission => "Atmospheric transmission",
-            UnitOfMeasure.DobsonUnits => "Dobson Units",
-            UnitOfMeasure.Odgi => "Ozone Depleting Gas Index",
-            _ => throw new NotImplementedException(),
-        };
     }
 
     public static string UnitOfMeasureLabelShort(UnitOfMeasure unitOfMeasure)
@@ -171,17 +162,26 @@ public static class Enums
         };
     }
 
-    public enum AggregationMethod
+    private static string UnitOfMeasureLabel(UnitOfMeasure unitOfMeasure)
     {
-        GroupByDayThenAverage,
-        GroupByDayThenAverage_Anomaly,
-        BinThenCount,
-        Sum
-    }
-
-    public enum RowDataType
-    {
-        OneValuePerRow,
-        TwelveMonthsPerRow
+        return unitOfMeasure switch
+        {
+            UnitOfMeasure.DegreesCelsius => "Degrees celsius (°C)",
+            UnitOfMeasure.DegreesCelsiusAnomaly => "Degrees celsius (°C) - anomaly",
+            UnitOfMeasure.Millimetres => "Millimetres (mm)",
+            UnitOfMeasure.PartsPerMillion => "Parts per million (ppm)",
+            UnitOfMeasure.PartsPerBillion => "Parts per billion (ppb)",
+            UnitOfMeasure.EnsoIndex => "ENSO index",
+            UnitOfMeasure.MegajoulesPerSquareMetre => "Megajoules per square metre (MJ/m²)",
+            UnitOfMeasure.MillionSqKm => "Million square kilometres",
+            UnitOfMeasure.SqKm => "Square kilometres (km²)",
+            UnitOfMeasure.Sn => "Sunsport number (Sn)",
+            UnitOfMeasure.WattsPerSquareMetre => "Watts per square metre (W/m²)",
+            UnitOfMeasure.MegaTonnes => "Megatonnes",
+            UnitOfMeasure.AtmosphericTransmission => "Atmospheric transmission",
+            UnitOfMeasure.DobsonUnits => "Dobson Units",
+            UnitOfMeasure.Odgi => "Ozone Depleting Gas Index",
+            _ => throw new NotImplementedException(),
+        };
     }
 }

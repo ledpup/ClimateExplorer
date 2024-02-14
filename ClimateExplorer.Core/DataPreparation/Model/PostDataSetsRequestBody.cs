@@ -3,6 +3,8 @@
 public class PostDataSetsRequestBody
 {
     public SeriesDerivationTypes SeriesDerivationType { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
     public SeriesSpecification[]? SeriesSpecifications { get; set; }
     public SeriesTransformations SeriesTransformation { get; set; }
 
@@ -17,13 +19,11 @@ public class PostDataSetsRequestBody
     public float RequiredBucketDataProportion { get; set; }
     public float RequiredBinDataProportion { get; set; }
 
-
     public BinGranularities BinningRule { get; set; }
     public ContainerAggregationFunctions BinAggregationFunction { get; set; }
     public ContainerAggregationFunctions BucketAggregationFunction { get; set; }
     public ContainerAggregationFunctions CupAggregationFunction { get; set; }
     public bool Anomaly { get; set; }
-
 
     public bool IncludeRawDataPoints { get; set; }
 }

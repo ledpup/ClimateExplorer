@@ -1,13 +1,30 @@
-﻿using ClimateExplorer.Core.Model;
+﻿namespace ClimateExplorer.Core.InputOutput;
+
+using ClimateExplorer.Core.Model;
 using System.Diagnostics;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
 using static ClimateExplorer.Core.Enums;
 
-namespace ClimateExplorer.Core.InputOutput;
-
+[System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
 public static class DataReader
 {
+    private static readonly Dictionary<string, short> MonthNamesToNumeric = new ()
+    {
+        { "jan", 1 },
+        { "feb", 2 },
+        { "mar", 3 },
+        { "apr", 4 },
+        { "may", 5 },
+        { "jun", 6 },
+        { "jul", 7 },
+        { "aug", 8 },
+        { "sep", 9 },
+        { "oct", 10 },
+        { "nov", 11 },
+        { "dec", 12 },
+    };
+
     public static async Task<DataSet> GetDataSet(MeasurementDefinition measurementDefinition, List<DataFileFilterAndAdjustment> dataFileDefinitions)
     {
         var records = await GetDataRecords(measurementDefinition, dataFileDefinitions);
@@ -31,7 +48,7 @@ public static class DataReader
     }
 
     public static async Task<List<DataRecord>> GetDataRecords(
-        MeasurementDefinition measurementDefinition, 
+        MeasurementDefinition measurementDefinition,
         List<DataFileFilterAndAdjustment>? dataFileFilterAndAdjustments)
     {
         if (dataFileFilterAndAdjustments == null)
@@ -40,8 +57,9 @@ public static class DataReader
             [
                 new DataFileFilterAndAdjustment
                 {
-                    Id = string.Empty
+                    Id = string.Empty,
                 }
+
             ];
         }
 
@@ -86,44 +104,14 @@ public static class DataReader
         return records.Values.ToList();
     }
 
-    static readonly Dictionary<string, short> MonthNamesToNumeric = new()
-    {
-        { "jan", 1 },
-        { "feb", 2 },
-        { "mar", 3 },
-        { "apr", 4 },
-        { "may", 5 },
-        { "jun", 6 },
-        { "jul", 7 },
-        { "aug", 8 },
-        { "sep", 9 },
-        { "oct", 10 },
-        { "nov", 11 },
-        { "dec", 12 },
-    };
-
-    static async Task<Dictionary<string, DataRecord>> ReadDataFile(
-        string pathAndFile,
+    public static Dictionary<string, DataRecord> ProcessDataFile(
+        string[]? linesOfFile,
         Regex regEx,
         string nullValue,
         DataResolution dataResolution,
         string station,
         DateTime? startDate = null,
         DateTime? endDate = null)
-    {
-        string[]? lines = await GetLinesInDataFileWithCascade(pathAndFile);
-
-        return ProcessDataFile(lines, regEx, nullValue, dataResolution, station, startDate, endDate);
-    }
-
-    public static Dictionary<string, DataRecord> ProcessDataFile(
-    string[]? linesOfFile,
-    Regex regEx,
-    string nullValue,
-    DataResolution dataResolution,
-    string station,
-    DateTime? startDate = null,
-    DateTime? endDate = null)
     {
         switch (dataResolution)
         {
@@ -162,6 +150,7 @@ public static class DataReader
         foreach (var line in lines)
         {
             var match = regEx.Match(line);
+
             // Is the line we've moved to a line that fits as a DataRecord? If not, skip it
             if (!match.Success)
             {
@@ -192,6 +181,7 @@ public static class DataReader
                 date = filterDate;
                 resetDate = false;
             }
+
             var recordDate = new DateTime(year, month, day);
             if (recordDate <= previousDate)
             {
@@ -237,6 +227,37 @@ public static class DataReader
         return dataRecords;
     }
 
+    public static async Task<string[]> GetLinesInDataFileWithCascade(string dataFilePath)
+    {
+        string[]? lines = TryGetDataFromDatasetZipFile(dataFilePath);
+
+        if (lines == null)
+        {
+            lines = TryGetDataFromSingleEntryZipFile(dataFilePath);
+        }
+
+        if (lines == null)
+        {
+            lines = await TryGetDataFromUncompressedSingleFile(dataFilePath);
+        }
+
+        return lines!;
+    }
+
+    private static async Task<Dictionary<string, DataRecord>> ReadDataFile(
+        string pathAndFile,
+        Regex regEx,
+        string nullValue,
+        DataResolution dataResolution,
+        string station,
+        DateTime? startDate = null,
+        DateTime? endDate = null)
+    {
+        string[]? lines = await GetLinesInDataFileWithCascade(pathAndFile);
+
+        return ProcessDataFile(lines, regEx, nullValue, dataResolution, station, startDate, endDate);
+    }
+
     private static short GetMonthValue(Match match)
     {
         var isMonthParsed = short.TryParse(match.Groups["month"].Value, out short monthValue);
@@ -251,6 +272,7 @@ public static class DataReader
                 throw new FormatException($"Month field (value is '{match.Groups["month"].Value}') is an unrecognised format");
             }
         }
+
         return monthValue;
     }
 
@@ -271,14 +293,16 @@ public static class DataReader
         var firstValidLine = regEx.Match(lines[initialDataIndex]);
 
         var startYear = short.Parse(firstValidLine.Groups["year"].Value);
+
         // Yearly data represents data from the whole year, so use the last day of the year as the "date"
         var date = new DateTime(startYear, 12, 31);
         var previousDate = date.AddYears(-1);
         foreach (var line in lines)
         {
             var match = regEx.Match(line);
+
             // Is the line we've moved to a line that fits as a DataRecord? If not, skip it
-            if ( !(match.Success && (!match.Groups.ContainsKey("station") || match.Groups["station"].Value == station)) )
+            if (!Match(station, match))
             {
                 continue;
             }
@@ -314,24 +338,7 @@ public static class DataReader
         return dataRecords;
     }
 
-    public static async Task<string[]> GetLinesInDataFileWithCascade(string dataFilePath)
-    {
-        string[]? lines = TryGetDataFromDatasetZipFile(dataFilePath);
-
-        if (lines == null)
-        {
-            lines = TryGetDataFromSingleEntryZipFile(dataFilePath);
-        }
-
-        if (lines == null)
-        {
-            lines = await TryGetDataFromUncompressedSingleFile(dataFilePath);
-        }
-
-        return lines!;
-    }
-
-    static async Task<string[]?> TryGetDataFromUncompressedSingleFile(string siteFilePath)
+    private static async Task<string[]?> TryGetDataFromUncompressedSingleFile(string siteFilePath)
     {
         if (File.Exists(siteFilePath))
         {
@@ -341,13 +348,12 @@ public static class DataReader
         return null;
     }
 
-    static string[]? TryGetDataFromDatasetZipFile(string filePath)
+    private static string[]? TryGetDataFromDatasetZipFile(string filePath)
     {
         string[] pathComponents =
             filePath.Split(
                 new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
-                StringSplitOptions.RemoveEmptyEntries
-            );
+                StringSplitOptions.RemoveEmptyEntries);
 
         var shallowestFolderName = pathComponents.First();
 
@@ -355,7 +361,10 @@ public static class DataReader
 
         string zipPath = Path.Combine("Datasets", datasetName + ".zip");
 
-        if (!File.Exists(zipPath)) return null;
+        if (!File.Exists(zipPath))
+        {
+            return null;
+        }
 
         var zipEntryPath = string.Join('/', pathComponents.Skip(1));
 
@@ -363,16 +372,19 @@ public static class DataReader
         return ReadLinesFromZipFileEntry(zipPath, zipEntryPath);
     }
 
-    static string[]? TryGetDataFromSingleEntryZipFile(string filePath)
+    private static string[]? TryGetDataFromSingleEntryZipFile(string filePath)
     {
         var zipPath = Path.ChangeExtension(filePath, ".zip");
 
-        if (!File.Exists(zipPath)) return null;
+        if (!File.Exists(zipPath))
+        {
+            return null;
+        }
 
         return ReadLinesFromZipFileEntry(zipPath, Path.GetFileName(filePath));
     }
 
-    static string[]? ReadLinesFromZipFileEntry(string zipFilename, string zipEntryFilename)
+    private static string[]? ReadLinesFromZipFileEntry(string zipFilename, string zipEntryFilename)
     {
         using (FileStream zipFileStream = new FileStream(zipFilename, FileMode.Open, FileAccess.Read, FileShare.Read))
         {
@@ -413,16 +425,38 @@ public static class DataReader
     private static int GetStartIndex(Regex regEx, string[] dataRows, string station)
     {
         var index = 0;
-        var match = regEx.Match(dataRows[index]);
-        while ( !(match.Success && (!match.Groups.ContainsKey("station") || match.Groups["station"].Value == station)) )
+        Match match = regEx.Match(dataRows[index]);
+        while (!Match(station, match))
         {
             index++;
             if (index >= dataRows.Length)
             {
                 throw new FileLoadException("None of the data in the input file fits the regular expression.");
             }
+
             match = regEx.Match(dataRows[index]);
         }
+
         return index;
+    }
+
+    private static bool Match(string station, Match match)
+    {
+        if (match.Success)
+        {
+            if (match.Groups.ContainsKey("station"))
+            {
+                if (match.Groups["station"].Value == station || string.IsNullOrEmpty(station))
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

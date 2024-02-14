@@ -9,7 +9,7 @@ public static class YearlyDifferenceCalculator
         // Set the first year slot to be null
         var result = new List<double?>
         {
-            null
+            null,
         };
 
         for (int i = 1; i < valuesArray.Length; i++)
@@ -19,6 +19,7 @@ public static class YearlyDifferenceCalculator
                 result.Add(null);
                 continue;
             }
+
             result.Add(valuesArray[i] - valuesArray[i - 1]);
         }
 

@@ -42,7 +42,7 @@ internal class DownloadAndExtract
 
             logger.LogInformation($"Download of file at {url} was successful");
         }
-        
+
         try
         {
             await ExtractGzAndTar(zipFile, extractFolder, logger);

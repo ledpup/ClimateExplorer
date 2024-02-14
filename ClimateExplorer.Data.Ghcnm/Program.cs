@@ -107,7 +107,7 @@ var dataFileMapping = new DataFileMapping
 
 var textinfo = CultureInfo.CurrentCulture.TextInfo;
 
-selectedStations.ForEach(x => 
+selectedStations.ForEach(x =>
     {
         var location = new Location
         {
@@ -119,7 +119,7 @@ selectedStations.ForEach(x =>
         locations.Add(location);
 
         dataFileMapping.LocationIdToDataFileMappings.Add(
-            location.Id, 
+            location.Id,
             [
                 new()
                 {
@@ -309,7 +309,7 @@ async Task<List<Station>> GetStations(string version, List<Station> inputStation
     {
         return GetStationsFromFile();
     }
-    
+
     var countries = await Country.GetCountries(@"SiteMetaData\ghcnm-countries.txt");
     var stations = await StationFile.Load(version, inputStations, countries, logger);
 
@@ -464,7 +464,7 @@ static async Task<Dictionary<string, Guid>> GetGhcnIdToLocationIds(List<Station>
         ghcnIdToLocationIds = JsonSerializer.Deserialize<Dictionary<string, Guid>>(contents);
         return ghcnIdToLocationIds!;
     }
-    
+
     throw new FileNotFoundException($"{ghcnIdToLocationIdsFile} not found");
 }
 
@@ -542,7 +542,7 @@ async Task<List<Station>> EnsureCountryRepresentation(List<Station> stations, Li
 
             logger.LogInformation($"{country.Value} has {stationCount} selected stations out of {countryCount} in GHCNm. Will try to add more stations to bring the number to a minimum of {minimumStationsInCountry}");
             var bestStations = stations
-                .Where(x => x.CountryCode == country.Key 
+                .Where(x => x.CountryCode == country.Key
                             && x.Score >= 10
                             && x.LastYear >= lastYearOfDataNoLaterThan)
                 .OrderByDescending(x => x.Score).Take(minimumStationsInCountry);

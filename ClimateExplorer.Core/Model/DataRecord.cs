@@ -1,12 +1,14 @@
-﻿using ClimateExplorer.Core.DataPreparation;
+﻿namespace ClimateExplorer.Core.Model;
+
+using ClimateExplorer.Core.DataPreparation;
 using System.Text.Json.Serialization;
 
-namespace ClimateExplorer.Core.Model;
 public class DataRecord
 {
+    private BinIdentifier? cachedParsedBinId;
+
     public DataRecord()
     {
-
     }
 
     public DataRecord(short year, double? value = null)
@@ -48,29 +50,33 @@ public class DataRecord
     public string? Label { get; set; }
     public string? BinId { get; set; }
 
-    BinIdentifier? _cachedParsedBinId;
-
-    public BinIdentifier? GetBinIdentifier()
-    {
-        if (_cachedParsedBinId == null)
-        {
-            _cachedParsedBinId = BinIdentifier.Parse(BinId!);
-        }
-
-        return _cachedParsedBinId;
-    }
-
     [JsonIgnore]
     public DateTime? Date
-    { 
-        get 
+    {
+        get
         {
             if (Month.HasValue && Day.HasValue)
             {
                 return new DateTime(Year, Month.Value, Day.Value);
             }
+
             return null;
-        } 
+        }
+    }
+
+    public BinIdentifier? GetBinIdentifier()
+    {
+        if (cachedParsedBinId == null)
+        {
+            cachedParsedBinId = BinIdentifier.Parse(BinId!);
+        }
+
+        return cachedParsedBinId;
+    }
+
+    public override string ToString()
+    {
+        return $"{Year}-{Month}-{Day}: {Value}";
     }
 
     private void CreateKey()
@@ -80,13 +86,10 @@ public class DataRecord
         {
             Key += "_" + Month;
         }
+
         if (Day != null)
         {
             Key += "_" + Day;
         }
-    }
-    public override string ToString()
-    {
-        return $"{Year}-{Month}-{Day}: {Value}";
     }
 }

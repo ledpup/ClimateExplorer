@@ -1,18 +1,13 @@
-﻿using ClimateExplorer.Core.DataPreparation;
-
-namespace ClimateExplorer.Core.Model;
+﻿namespace ClimateExplorer.Core.Model;
 
 public class GeographicalEntity
 {
-    public required Guid Id { get; set; }
-    public required string Name { get; set; }
-
-    public GeographicalEntity() { }
-
-    public override string ToString()
+    public GeographicalEntity()
     {
-        return Name;
     }
+
+    required public Guid Id { get; set; }
+    required public string Name { get; set; }
 
     public static async Task<GeographicalEntity> GetGeographicalEntity(Guid id)
     {
@@ -23,5 +18,10 @@ public class GeographicalEntity
         }
 
         return geoEntity;
+    }
+
+    public override string ToString()
+    {
+        return Name;
     }
 }

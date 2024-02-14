@@ -1,7 +1,6 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿namespace ClimateExplorer.Core.Model;
 
-namespace ClimateExplorer.Core.Model;
+using System.Text.Json;
 
 public class DataFileMapping
 {
@@ -31,6 +30,7 @@ public class DataFileMapping
             var dataFileMapping = await GetDataFileMappingFromFile(file);
             dataFileMappings.Add(dataFileMapping);
         }
+
         return dataFileMappings;
     }
 }

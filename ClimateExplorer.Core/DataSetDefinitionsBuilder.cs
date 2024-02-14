@@ -1,17 +1,16 @@
-﻿using ClimateExplorer.Core.Model;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿namespace ClimateExplorer.Core;
+
+using ClimateExplorer.Core.Model;
 using static ClimateExplorer.Core.Enums;
 
-namespace ClimateExplorer.Data.Misc;
-
-internal class DataSetDefinitionsBuilder
+public class DataSetDefinitionsBuilder
 {
     public static List<DataSetDefinition> BuildDataSetDefinitions()
     {
         var dataSetDefinitions = new List<DataSetDefinition>
         {
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"),
                 Name = "ACORN-SAT",
                 Description = "The Australian Climate Observations Reference Network - Surface Air Temperature data set is a homogenized daily maximum and minimum temperature data set containing data from 112 locations across Australia extending from 1910 to the present.",
@@ -22,7 +21,8 @@ internal class DataSetDefinitionsBuilder
                 LocationInfoUrl = "http://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
                 MeasurementDefinitions =
                 [
-                    new() {
+                    new ()
+                    {
                         DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -31,7 +31,8 @@ internal class DataSetDefinitionsBuilder
                         FolderName = @"Temperature\ACORN-SAT\daily_tmax",
                         FileNameFormat = "tmax.[station].daily.csv",
                     },
-                    new() {
+                    new ()
+                    {
                         DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -42,18 +43,21 @@ internal class DataSetDefinitionsBuilder
                     },
                 ],
             },
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("E5EEA4D6-5FD5-49AB-BF85-144A8921111E"),
                 Name = "Bureau of Meteorology",
                 Description = null,
                 Publisher = "Australian Bureau of Meteorology",
                 PublisherUrl = "http://www.bom.gov.au/",
-                //MoreInformationUrl = "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
+
+                // MoreInformationUrl = "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
                 StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
                 LocationInfoUrl = "http://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
                 MeasurementDefinitions =
                 [
-                    new() {
+                    new ()
+                    {
                         DataAdjustment = DataAdjustment.Unadjusted,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -62,7 +66,8 @@ internal class DataSetDefinitionsBuilder
                         FolderName = @"Temperature\BOM\daily_tempmax",
                         FileNameFormat = "[station]_daily_tempmax.csv",
                     },
-                    new() {
+                    new ()
+                    {
                         DataAdjustment = DataAdjustment.Unadjusted,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -71,7 +76,8 @@ internal class DataSetDefinitionsBuilder
                         FolderName = @"Temperature\BOM\daily_tempmin",
                         FileNameFormat = "[station]_daily_tempmin.csv",
                     },
-                    new() {
+                    new ()
+                    {
                         DataType = DataType.Precipitation,
                         UnitOfMeasure = UnitOfMeasure.Millimetres,
                         DataResolution = DataResolution.Daily,
@@ -80,7 +86,8 @@ internal class DataSetDefinitionsBuilder
                         FolderName = @"Precipitation\BOM",
                         FileNameFormat = "[station]_daily_rainfall.csv",
                     },
-                    new() {
+                    new ()
+                    {
                         DataType = DataType.SolarRadiation,
                         UnitOfMeasure = UnitOfMeasure.MegajoulesPerSquareMetre,
                         DataResolution = DataResolution.Daily,
@@ -91,7 +98,8 @@ internal class DataSetDefinitionsBuilder
                     },
                 ],
             },
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("647b6a05-43e4-48e0-a43e-04ae81a74653"),
                 Name = "Remote Australian Islands and Antarctica (RAIA)",
                 Description = "This ACORN-SAT dataset includes homogenised monthly data from the Remote Australian Islands and Antarctica network of 8 locations, which provide ground-based temperature records.",
@@ -101,7 +109,8 @@ internal class DataSetDefinitionsBuilder
                 StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
                 MeasurementDefinitions =
                 [
-                    new() {
+                    new ()
+                    {
                         DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -111,7 +120,8 @@ internal class DataSetDefinitionsBuilder
                         FileNameFormat = "acorn.ria.maxT.[station].monthly.txt",
                         NullValue = "99999.9",
                     },
-                    new() {
+                    new ()
+                    {
                         DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -124,10 +134,8 @@ internal class DataSetDefinitionsBuilder
                 ],
             },
 
-
-
-
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("7522E8EC-E743-4CB0-BC65-6E9F202FC824"),
                 Name = "NIWA 7-stations series adjusted",
                 Description = "NIWA's long-running 'seven-station' series shows NZ's average annual temperature has increased by about 1 °C over the past 100 years.",
@@ -136,7 +144,8 @@ internal class DataSetDefinitionsBuilder
                 MoreInformationUrl = "https://niwa.co.nz/seven-stations",
                 MeasurementDefinitions =
                 [
-                    new() {
+                    new ()
+                    {
                         DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -146,7 +155,8 @@ internal class DataSetDefinitionsBuilder
                         FileNameFormat = "[station]_temperature.csv",
                         NullValue = "-",
                     },
-                    new() {
+                    new ()
+                    {
                         DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -158,7 +168,8 @@ internal class DataSetDefinitionsBuilder
                     },
                 ],
             },
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("534950DC-EDA4-4DB5-8816-3705358F1797"),
                 Name = "NIWA 7-stations series unadjusted",
                 Description = "NIWA's long-running 'seven-station' series shows NZ's average annual temperature has increased by about 1 °C over the past 100 years.",
@@ -167,7 +178,8 @@ internal class DataSetDefinitionsBuilder
                 MoreInformationUrl = "https://niwa.co.nz/seven-stations",
                 MeasurementDefinitions =
                 [
-                    new() {
+                    new ()
+                    {
                         DataAdjustment = DataAdjustment.Unadjusted,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -177,7 +189,8 @@ internal class DataSetDefinitionsBuilder
                         FileNameFormat = "[station]_temperature.csv",
                         NullValue = "-",
                     },
-                    new() {
+                    new ()
+                    {
                         DataAdjustment = DataAdjustment.Unadjusted,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -187,7 +200,8 @@ internal class DataSetDefinitionsBuilder
                         FileNameFormat = "[station]_temperature.csv",
                         NullValue = "-",
                     },
-                    new() {
+                    new ()
+                    {
                         DataType = DataType.Precipitation,
                         UnitOfMeasure = UnitOfMeasure.Millimetres,
                         DataResolution = DataResolution.Daily,
@@ -200,10 +214,8 @@ internal class DataSetDefinitionsBuilder
                 ],
             },
 
-
-
-
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"),
                 Name = "NIWA 11-stations series",
                 Description = "The National Institute of Water and Atmospheric Research (NIWA) eleven-station series are New Zealand temperature trends from a set of eleven climate stations with no significant site changes since the 1930s.",
@@ -212,7 +224,8 @@ internal class DataSetDefinitionsBuilder
                 MoreInformationUrl = "https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data",
                 MeasurementDefinitions =
                 [
-                    new() {
+                    new ()
+                    {
                         DataAdjustment = DataAdjustment.Unadjusted,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -222,7 +235,8 @@ internal class DataSetDefinitionsBuilder
                         FileNameFormat = "[station]_temperature.csv",
                         NullValue = "-",
                     },
-                    new() {
+                    new ()
+                    {
                         DataAdjustment = DataAdjustment.Unadjusted,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -232,7 +246,8 @@ internal class DataSetDefinitionsBuilder
                         FileNameFormat = "[station]_temperature.csv",
                         NullValue = "-",
                     },
-                    new() {
+                    new ()
+                    {
                         DataType = DataType.Precipitation,
                         UnitOfMeasure = UnitOfMeasure.Millimetres,
                         DataResolution = DataResolution.Daily,
@@ -245,8 +260,8 @@ internal class DataSetDefinitionsBuilder
                 ],
             },
 
-
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("1DC38F20-3606-4D90-A2A0-84F93E75C964"),
                 Name = "Global Historical Climatology Network monthly (GHCNm)",
                 Description = "The Global Historical Climatology Network monthly (GHCNm) dataset provides monthly climate summaries from thousands of weather stations around the world. The initial version was developed in the early 1990s, and subsequent iterations were released in 1997, 2011, and most recently in 2018. The period of record for each summary varies by station, with the earliest observations dating to the 18th century. Some station records are purely historical and are no longer updated, but many others are still operational and provide short time delay updates that are useful for climate monitoring.",
@@ -255,7 +270,8 @@ internal class DataSetDefinitionsBuilder
                 MoreInformationUrl = "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-monthly",
                 MeasurementDefinitions =
                 [
-                    new() {
+                    new ()
+                    {
                         DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMean,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -267,7 +283,8 @@ internal class DataSetDefinitionsBuilder
                         NullValue = "-9999",
                         ValueAdjustment = 100.0f,
                     },
-                    new() {
+                    new ()
+                    {
                         DataAdjustment = DataAdjustment.Unadjusted,
                         DataType = DataType.TempMean,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -282,7 +299,8 @@ internal class DataSetDefinitionsBuilder
                 ],
             },
 
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("6ABB028A-29F6-481C-837E-1FC9C8E989AF"),
                 Name = "Global Historical Climatology Network (GHCN) Monthly Precipitation",
                 Description = "The Global Historical Climatology Network (GHCN) Monthly Precipitation, Version 4 is a collection of worldwide monthly precipitation values offering significant enhancement over the previous version 2.  It contains more values both historically and for the most recent months.  Its methods for merging records and quality control have been modernized.",
@@ -291,7 +309,8 @@ internal class DataSetDefinitionsBuilder
                 MoreInformationUrl = "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-monthly#tab-800",
                 MeasurementDefinitions =
                 [
-                    new() {
+                    new ()
+                    {
                         DataAdjustment = null,
                         DataType = DataType.Precipitation,
                         UnitOfMeasure = UnitOfMeasure.Millimetres,
@@ -303,10 +322,11 @@ internal class DataSetDefinitionsBuilder
                         NullValue = "-9999",
                         ValueAdjustment = 10.0f,
                     },
-                ]
+                ],
             },
 
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("ffd5f5e2-d8df-4779-a7f4-f5d148505033"),
                 Name = "Multivariate ENSO index (MEI)",
                 ShortName = "MEI.v2",
@@ -317,7 +337,8 @@ internal class DataSetDefinitionsBuilder
                 DataDownloadUrl = "https://psl.noaa.gov/enso/mei/data/meiv2.data",
                 MeasurementDefinitions =
                 [
-                    new() {
+                    new ()
+                    {
                         DataType = DataType.MEIv2,
                         UnitOfMeasure = UnitOfMeasure.EnsoIndex,
                         DataResolution = DataResolution.Monthly,
@@ -326,11 +347,12 @@ internal class DataSetDefinitionsBuilder
                         FolderName = @"Ocean\ENSO",
                         FileNameFormat = "meiv2.data.txt",
                         DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
-                        NullValue = "-999.00"
+                        NullValue = "-999.00",
                     },
                 ],
             },
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("c31270fa-b207-4d8f-b68e-4995698f1a4d"),
                 Name = "Southern Oscillation Index (SOI)",
                 ShortName = "SOI",
@@ -341,7 +363,8 @@ internal class DataSetDefinitionsBuilder
                 DataDownloadUrl = "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/soi.long.data",
                 MeasurementDefinitions =
                 [
-                    new() {
+                    new ()
+                    {
                         DataType = DataType.SOI,
                         UnitOfMeasure = UnitOfMeasure.EnsoIndex,
                         DataResolution = DataResolution.Monthly,
@@ -350,11 +373,12 @@ internal class DataSetDefinitionsBuilder
                         FolderName = @"Ocean\ENSO",
                         FileNameFormat = "soi.long.data.txt",
                         DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
-                        NullValue = "-99.99"
+                        NullValue = "-99.99",
                     },
                 ],
             },
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("1042147a-8625-4ee7-bb5a-f0f17795c393"),
                 Name = "Oceanic Niño Index (ONI)",
                 ShortName = "ONI",
@@ -365,7 +389,8 @@ internal class DataSetDefinitionsBuilder
                 DataDownloadUrl = "https://psl.noaa.gov/data/correlation/oni.data",
                 MeasurementDefinitions =
                 [
-                    new() {
+                    new ()
+                    {
                         DataType = DataType.ONI,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsiusAnomaly,
                         DataResolution = DataResolution.Monthly,
@@ -374,11 +399,12 @@ internal class DataSetDefinitionsBuilder
                         FolderName = @"Ocean\ENSO",
                         FileNameFormat = "oni.data.txt",
                         DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
-                        NullValue = "-99.9"
+                        NullValue = "-99.9",
                     },
                 ],
             },
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("bfbaa69b-c10d-4de3-a78c-1ed6ff307327"),
                 Name = "Niño 3.4",
                 ShortName = "Niño 3.4",
@@ -389,7 +415,8 @@ internal class DataSetDefinitionsBuilder
                 DataDownloadUrl = "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/nino34.long.anom.data",
                 MeasurementDefinitions =
                 [
-                    new() {
+                    new ()
+                    {
                         DataType = DataType.Nino34,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsiusAnomaly,
                         DataResolution = DataResolution.Monthly,
@@ -398,16 +425,13 @@ internal class DataSetDefinitionsBuilder
                         FolderName = @"Ocean\ENSO",
                         FileNameFormat = "nino34.long.anom.data.txt",
                         DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
-                        NullValue = "-99.99"
+                        NullValue = "-99.99",
                     },
                 ],
             },
 
-
-
-
-
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("42c9195e-edc0-4894-97dc-923f9d5e72f0"),
                 Name = "Carbon dioxide (CO₂) from the Mauna Loa Observatory",
                 ShortName = "Carbon Dioxide (CO₂)",
@@ -418,7 +442,8 @@ internal class DataSetDefinitionsBuilder
                 DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt",
                 MeasurementDefinitions =
                 [
-                    new() {
+                    new ()
+                    {
                         DataType = DataType.CO2,
                         UnitOfMeasure = UnitOfMeasure.PartsPerMillion,
                         DataResolution = DataResolution.Monthly,
@@ -429,7 +454,8 @@ internal class DataSetDefinitionsBuilder
                     },
                 ],
             },
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("2debe203-cbaa-4015-977c-2f40e2782547"),
                 Name = "Methane (CH₄) from a globally distributed network",
                 ShortName = "Methane (CH₄)",
@@ -440,7 +466,8 @@ internal class DataSetDefinitionsBuilder
                 DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/ch4/ch4_mm_gl.txt",
                 MeasurementDefinitions =
                 [
-                    new() {
+                    new ()
+                    {
                         DataType = DataType.CH4,
                         UnitOfMeasure = UnitOfMeasure.PartsPerBillion,
                         DataResolution = DataResolution.Monthly,
@@ -451,7 +478,8 @@ internal class DataSetDefinitionsBuilder
                     },
                 ],
             },
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("6e84e743-3c77-488f-8a1c-152306c3d6f0"),
                 Name = "Nitrous oxide (N₂O) from a globally distributed network",
                 ShortName = "N₂O",
@@ -462,7 +490,8 @@ internal class DataSetDefinitionsBuilder
                 DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/n2o/n2o_mm_gl.txt",
                 MeasurementDefinitions =
                 [
-                    new() {
+                    new ()
+                    {
                         DataType = DataType.N2O,
                         UnitOfMeasure = UnitOfMeasure.PartsPerBillion,
                         DataResolution = DataResolution.Monthly,
@@ -474,11 +503,8 @@ internal class DataSetDefinitionsBuilder
                 ],
             },
 
-
-
-
-
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("a3841b12-2dd4-424b-a96e-c35ddba66efc"),
                 Name = "Indian Ocean Dipole",
                 ShortName = "IOD",
@@ -496,7 +522,8 @@ internal class DataSetDefinitionsBuilder
                 DataDownloadUrl = "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/dmi.had.long.data",
                 MeasurementDefinitions =
                 [
-                    new() {
+                    new ()
+                    {
                         DataType = DataType.IOD,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsiusAnomaly,
                         DataResolution = DataResolution.Monthly,
@@ -505,13 +532,13 @@ internal class DataSetDefinitionsBuilder
                         DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                         FolderName = @"Ocean\IOD",
                         FileNameFormat = "dmi.had.long.data.txt",
-                        NullValue = "-9999"
+                        NullValue = "-9999",
                     },
                 ],
             },
 
-
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("4EA1E30B-AF74-4BE8-B55D-C28764CF384E"),
                 Name = "Arctic sea ice extent",
                 ShortName = "Arctic sea ice extent",
@@ -520,7 +547,8 @@ internal class DataSetDefinitionsBuilder
                 DataDownloadUrl = "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v3.0.csv",
                 MeasurementDefinitions =
                 [
-                    new() {
+                    new ()
+                    {
                         DataType = DataType.SeaIceExtent,
                         UnitOfMeasure = UnitOfMeasure.MillionSqKm,
                         DataResolution = DataResolution.Daily,
@@ -531,7 +559,8 @@ internal class DataSetDefinitionsBuilder
                     },
                 ],
             },
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("EC8AF0AC-215F-4D9C-9770-CC24EE24FBC7"),
                 Name = "Antarctic sea ice extent",
                 ShortName = "Antarctic sea ice extent",
@@ -540,7 +569,8 @@ internal class DataSetDefinitionsBuilder
                 DataDownloadUrl = "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/south/daily/data/S_seaice_extent_daily_v3.0.csv",
                 MeasurementDefinitions =
                 [
-                    new() {
+                    new ()
+                    {
                         DataType = DataType.SeaIceExtent,
                         UnitOfMeasure = UnitOfMeasure.MillionSqKm,
                         DataResolution = DataResolution.Daily,
@@ -551,7 +581,8 @@ internal class DataSetDefinitionsBuilder
                     },
                 ],
             },
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("6484A7F8-43BC-4B16-8C4D-9168F8D6699C"),
                 Name = "Greenland ice melt area",
                 ShortName = "Greenland ice melt",
@@ -560,7 +591,8 @@ internal class DataSetDefinitionsBuilder
                 DataDownloadUrl = "https://nsidc.org/api/greenland/melt_area/{year}",
                 MeasurementDefinitions =
                 [
-                    new() {
+                    new ()
+                    {
                         DataType = DataType.IceMeltArea,
                         UnitOfMeasure = UnitOfMeasure.SqKm,
                         DataResolution = DataResolution.Daily,
@@ -572,9 +604,8 @@ internal class DataSetDefinitionsBuilder
                 ],
             },
 
-
-
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("0561CF7E-83F2-4617-AC61-4962A0E95093"),
                 Name = "Hadley Centre",
                 Description = @"The Met Office Hadley Centre is one of the UK's foremost climate change research centres.
@@ -587,7 +618,8 @@ Our aim is to provide climate science and services to people and organisations, 
                 DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/download.html",
                 MeasurementDefinitions =
                 [
-                    new() {
+                    new ()
+                    {
                         DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -596,7 +628,8 @@ Our aim is to provide climate science and services to people and organisations, 
                         FolderName = @"Temperature\Met",
                         FileNameFormat = "maxtemp_daily_totals.txt",
                     },
-                    new() {
+                    new ()
+                    {
                         DataAdjustment = DataAdjustment.Adjusted,
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
@@ -605,7 +638,8 @@ Our aim is to provide climate science and services to people and organisations, 
                         FolderName = @"Temperature\Met",
                         FileNameFormat = "mintemp_daily_totals.txt",
                     },
-                    new() {
+                    new ()
+                    {
                         DataType = DataType.Precipitation,
                         UnitOfMeasure = UnitOfMeasure.Millimetres,
                         DataResolution = DataResolution.Daily,
@@ -617,8 +651,8 @@ Our aim is to provide climate science and services to people and organisations, 
                 ],
             },
 
-
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("E2D9A74B-3C30-4332-8B22-26BB14A0BDC7"),
                 Name = "Sunspot number",
                 ShortName = "Sunspot number",
@@ -641,7 +675,8 @@ Our aim is to provide climate science and services to people and organisations, 
                     },
                 ],
             },
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("E45293F9-B7AC-4874-9544-25E006B6B998"),
                 Name = "Total solar irradiance",
                 ShortName = "TSI",
@@ -665,9 +700,8 @@ Our aim is to provide climate science and services to people and organisations, 
                 ],
             },
 
-
-
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("E61C6279-EDF4-461B-BDD1-0724D21F42F3"),
                 Name = "Global temperature anomaly",
                 ShortName = "Global temp",
@@ -691,7 +725,8 @@ Our aim is to provide climate science and services to people and organisations, 
                 ],
             },
 
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("71374F06-926A-4F89-8183-B2E765DB9747"),
                 Name = "Carbon dioxide emissions",
                 ShortName = "CO₂ emissions",
@@ -716,7 +751,8 @@ Our aim is to provide climate science and services to people and organisations, 
                 ],
             },
 
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("0ACF9042-9822-4CC4-92B5-0BC189DA8148"),
                 Name = "Atmospheric Transmission of Direct Solar Radiation at Mauna Loa",
                 ShortName = "Mauna Loa atmospheric transmission",
@@ -743,7 +779,8 @@ Aerosols have the greatest potential influence on the record and in general have
                 ],
             },
 
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("489E9F1A-057F-4EA8-9C48-0C86517D08A2"),
                 Name = "Southern Hemisphere ozone hole area",
                 ShortName = "Ozone hole area",
@@ -771,7 +808,8 @@ The ozone hole area is calculated as the area with ozone values below 220 DU sou
                     },
                 ],
             },
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("F3F925D6-8DBD-4080-9BF3-40D98D56FBEC"),
                 Name = "Southern Hemisphere ozone column",
                 ShortName = "Ozone hole column",
@@ -795,7 +833,8 @@ The ozone hole area is calculated as the area with ozone values below 220 DU sou
                     },
                 ],
             },
-            new() {
+            new ()
+            {
                 Id = Guid.Parse("A8F34F99-0908-4BF3-8C7F-744574FFEADA"),
                 Name = "Ozone Depleting Gas Index",
                 ShortName = "ODGI",
@@ -822,17 +861,6 @@ Two different indices are calculated, one that is relevant for the ozone layer o
                 ],
             },
         };
-
-        var options = new JsonSerializerOptions
-        { 
-            WriteIndented = true,
-            Converters = { new JsonStringEnumConverter() },
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        };
-
-        Directory.CreateDirectory("Output");
-
-        File.WriteAllText(@"Output\DataSetDefinitions.json", JsonSerializer.Serialize(dataSetDefinitions, options));
 
         return dataSetDefinitions;
     }
