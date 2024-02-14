@@ -1,8 +1,4 @@
 ﻿namespace ClimateExplorer.Core.Model;
-
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
 public class DataSetDefinition
 {
     public Guid Id { get; set; }

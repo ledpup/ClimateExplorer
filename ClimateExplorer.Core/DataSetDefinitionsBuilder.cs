@@ -1,8 +1,6 @@
 ﻿namespace ClimateExplorer.Core;
 
 using ClimateExplorer.Core.Model;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using static ClimateExplorer.Core.Enums;
 
 public class DataSetDefinitionsBuilder
