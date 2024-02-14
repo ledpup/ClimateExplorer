@@ -1,19 +1,12 @@
-﻿using ClimateExplorer.Core.InputOutput;
+﻿namespace ClimateExplorer.Core.DataPreparation;
+
+using ClimateExplorer.Core.InputOutput;
 using ClimateExplorer.Core.Model;
 using static ClimateExplorer.Core.Enums;
 
-namespace ClimateExplorer.Core.DataPreparation;
-
 public static class SeriesProvider
 {
-    public class Series
-    {
-        public TemporalDataPoint[]? DataPoints { get; set; }
-        public UnitOfMeasure UnitOfMeasure { get; set; }
-        public DataResolution DataResolution { get; set; }
-    }
-
-    static public async Task<Series> GetSeriesDataPointsForRequest(SeriesDerivationTypes seriesDerivationType, SeriesSpecification[] seriesSpecifications)
+    public static async Task<Series> GetSeriesDataPointsForRequest(SeriesDerivationTypes seriesDerivationType, SeriesSpecification[] seriesSpecifications)
     {
         switch (seriesDerivationType)
         {
@@ -34,11 +27,10 @@ public static class SeriesProvider
 
             default:
                 throw new NotImplementedException($"SeriesDerivationType {seriesDerivationType}");
-
         }
     }
 
-    static async Task<Series> BuildAverageOfMultipleSeries(SeriesSpecification[] seriesSpecifications)
+    private static async Task<Series> BuildAverageOfMultipleSeries(SeriesSpecification[] seriesSpecifications)
     {
         if (seriesSpecifications.Length < 2)
         {
@@ -69,7 +61,7 @@ public static class SeriesProvider
             }
 
             uom = series.UnitOfMeasure;
-            dataResolution= series.DataResolution;
+            dataResolution = series.DataResolution;
 
             foreach (var point in dp!)
             {
@@ -78,6 +70,7 @@ public static class SeriesProvider
                 {
                     dbGroups.Add(date, []);
                 }
+
                 dbGroups[date].Add(point);
             }
 
@@ -120,7 +113,7 @@ public static class SeriesProvider
             };
     }
 
-    static async Task<Series> BuildDifferenceBetweenTwoSeries(SeriesSpecification[] seriesSpecifications)
+    private static async Task<Series> BuildDifferenceBetweenTwoSeries(SeriesSpecification[] seriesSpecifications)
     {
         if (seriesSpecifications.Length != 2)
         {
@@ -178,11 +171,11 @@ public static class SeriesProvider
             {
                 DataPoints = results.ToArray(),
                 UnitOfMeasure = series1.UnitOfMeasure,
-                DataResolution = series1.DataResolution
+                DataResolution = series1.DataResolution,
             };
     }
 
-    static async Task<Series> GetSeriesDataPoints(SeriesSpecification seriesSpecification)
+    private static async Task<Series> GetSeriesDataPoints(SeriesSpecification seriesSpecification)
     {
         var definitions = await DataSetDefinition.GetDataSetDefinitions();
 
@@ -230,7 +223,15 @@ public static class SeriesProvider
             {
                 DataPoints = dataRecords.Select(x => new TemporalDataPoint { Year = x.Year, Month = x.Month, Day = x.Day, Value = x.Value }).ToArray(),
                 UnitOfMeasure = measurementDefinition.UnitOfMeasure,
-                DataResolution = measurementDefinition.DataResolution
+                DataResolution = measurementDefinition.DataResolution,
             };
+    }
+
+    public class Series
+    {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
+        public TemporalDataPoint[]? DataPoints { get; set; }
+        public UnitOfMeasure UnitOfMeasure { get; set; }
+        public DataResolution DataResolution { get; set; }
     }
 }

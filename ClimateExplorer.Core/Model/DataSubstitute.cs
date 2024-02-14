@@ -1,6 +1,6 @@
-﻿using static ClimateExplorer.Core.Enums;
+﻿namespace ClimateExplorer.Core.Model;
 
-namespace ClimateExplorer.Core.Model;
+using static ClimateExplorer.Core.Enums;
 
 public class DataSubstitute
 {

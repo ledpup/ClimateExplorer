@@ -1,9 +1,7 @@
-﻿using ClimateExplorer.Core.Model;
-using System.Globalization;
-using System.Text.Json;
-using System.Text.RegularExpressions;
+﻿namespace ClimateExplorer.Data.Misc.Ozone;
 
-namespace ClimateExplorer.Data.Misc.Ozone;
+using ClimateExplorer.Core.Model;
+using System.Text.RegularExpressions;
 
 public class OzoneFileReducer
 {
@@ -19,7 +17,7 @@ public class OzoneFileReducer
         foreach (var line in lines)
         {
             var match = regEx.Match(line);
-            
+
             if (match.Success)
             {
                 var date = new DateOnly(int.Parse(match.Groups["year"].Value), int.Parse(match.Groups["month"].Value), int.Parse(match.Groups["day"].Value));
@@ -32,13 +30,14 @@ public class OzoneFileReducer
                     records.Add(new DataRecord(currentDay.ToDateTime(new TimeOnly(0)), dayValues.Average()));
                     dayValues = [];
                 }
+
                 currentDay = date;
             }
         }
 
         var outputLines = new List<string>
         {
-            lines[0]
+            lines[0],
         };
 
         records.ForEach(x => outputLines.Add($"{x.Date!.Value.ToString("yyyy-MM-dd")},{x.Value!.Value:0.000}"));

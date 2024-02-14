@@ -92,7 +92,7 @@ foreach (var station in stations)
         logger.LogError($"Error loading file for station {station.Id}. Will skip this station.", ex);
         continue;
     }
-    
+
     if (dataRecords!.Any())
     {
         logger.LogInformation($"Precipitation data has been loaded for {station.Id}. There are {dataRecords.Count} records. Will now save to a simplified file format into the output folder.");
@@ -208,6 +208,6 @@ static async Task<Dictionary<string, Guid>> GetGhcnIdToLocationIds(List<Station>
         ghcnIdToLocationIds = JsonSerializer.Deserialize<Dictionary<string, Guid>>(contents);
         return ghcnIdToLocationIds!;
     }
-    
-    throw new Exception($"Expecting {ghcnIdToLocationIdsFile} to exist");    
+
+    throw new Exception($"Expecting {ghcnIdToLocationIdsFile} to exist");
 }

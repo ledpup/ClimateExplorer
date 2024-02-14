@@ -1,16 +1,16 @@
-﻿using ClimateExplorer.Core.DataPreparation;
+﻿namespace ClimateExplorer.Web.UiModel;
+
+using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using static ClimateExplorer.Core.Enums;
-
-namespace ClimateExplorer.Web.UiModel;
 
 public static class SuggestedPresetLists
 {
     public enum PresetTypes
     {
         Location,
-        RegionalAndGlobal
+        RegionalAndGlobal,
     }
 
     public static List<SuggestedChartPresetModelWithVariants> LocationBasedPresets(IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, Location location)
@@ -52,7 +52,7 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
-                        Year = null
+                        Year = null,
                     },
                     new ChartSeriesDefinition()
                     {
@@ -63,8 +63,9 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
-                        Year = null
+                        Year = null,
                     }
+
                 ],
                 Variants = [
                     new SuggestedChartPresetModelWithVariants()
@@ -122,25 +123,26 @@ public static class SuggestedPresetLists
                                         SeriesTransformation = SeriesTransformations.EqualOrAbove1,
                                         RequestedColour = UiLogic.Colours.Blue,
                                     },
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, precipitation!),
-                                        Aggregation = SeriesAggregationOptions.Sum,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 20,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null,
-                                        DisplayStyle = SeriesDisplayStyle.Line,
-                                        SeriesTransformation = SeriesTransformations.EqualOrAbove10,
-                                        RequestedColour = UiLogic.Colours.Pink,
-                                    }
+                                new ChartSeriesDefinition()
+                                {
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, precipitation!),
+                                    Aggregation = SeriesAggregationOptions.Sum,
+                                    BinGranularity = BinGranularities.ByYear,
+                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                    SmoothingWindow = 20,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null,
+                                    DisplayStyle = SeriesDisplayStyle.Line,
+                                    SeriesTransformation = SeriesTransformations.EqualOrAbove10,
+                                    RequestedColour = UiLogic.Colours.Pink,
+                                }
+
                             ],
-                        }
-                ]
-            }
-        );
+                    }
+
+                ],
+            });
 
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
@@ -158,20 +160,21 @@ public static class SuggestedPresetLists
                             Smoothing = SeriesSmoothingOptions.MovingAverage,
                             SmoothingWindow = 10,
                             Value = SeriesValueOptions.Value,
-                            Year = null
-                        },
-                        new ChartSeriesDefinition()
-                        {
-                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
-                            Aggregation = SeriesAggregationOptions.Mean,
-                            BinGranularity = BinGranularities.ByYear,
-                            Smoothing = SeriesSmoothingOptions.None,
-                            SmoothingWindow = 5,
-                            Value = SeriesValueOptions.Value,
                             Year = null,
-                            RequestedColour = UiLogic.Colours.Black,
-                        }
+                        },
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
+                        Aggregation = SeriesAggregationOptions.Mean,
+                        BinGranularity = BinGranularities.ByYear,
+                        Smoothing = SeriesSmoothingOptions.None,
+                        SmoothingWindow = 5,
+                        Value = SeriesValueOptions.Value,
+                        Year = null,
+                        RequestedColour = UiLogic.Colours.Black,
+                    }
+
                 ],
                 Variants =
                 [
@@ -190,7 +193,7 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 10,
                                 Value = SeriesValueOptions.Value,
-                                Year = null
+                                Year = null,
                             },
                             new ChartSeriesDefinition()
                             {
@@ -205,6 +208,7 @@ public static class SuggestedPresetLists
                                 RequestedColour = UiLogic.Colours.Yellow,
                                 GroupingThreshold = 0.1f,
                             }
+
                         ],
                     },
                     new SuggestedChartPresetModel()
@@ -222,7 +226,7 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.None,
                                 SmoothingWindow = 5,
                                 Value = SeriesValueOptions.Value,
-                                Year = null
+                                Year = null,
                             },
                             new ChartSeriesDefinition()
                             {
@@ -237,8 +241,10 @@ public static class SuggestedPresetLists
                                 RequestedColour = UiLogic.Colours.Yellow,
                                 GroupingThreshold = 0.1f,
                             }
+
                         ],
                     }
+
                 ],
             });
 
@@ -251,16 +257,17 @@ public static class SuggestedPresetLists
                     [
                         new ChartSeriesDefinition()
                         {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
-                        Aggregation = SeriesAggregationOptions.Mean,
-                        BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 5,
-                        Value = SeriesValueOptions.Anomaly,
-                        Year = null,
-                        DisplayStyle = SeriesDisplayStyle.Bar
-                    }
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
+                            Aggregation = SeriesAggregationOptions.Mean,
+                            BinGranularity = BinGranularities.ByYear,
+                            Smoothing = SeriesSmoothingOptions.None,
+                            SmoothingWindow = 5,
+                            Value = SeriesValueOptions.Anomaly,
+                            Year = null,
+                            DisplayStyle = SeriesDisplayStyle.Bar,
+                        }
+
                 ],
                 Variants =
                     [
@@ -280,9 +287,10 @@ public static class SuggestedPresetLists
                                         Smoothing = SeriesSmoothingOptions.None,
                                         SmoothingWindow = 5,
                                         Value = SeriesValueOptions.Value,
-                                        Year = null
+                                        Year = null,
                                     }
-                                ]
+
+                                ],
                         },
                         new SuggestedChartPresetModelWithVariants()
                         {
@@ -300,7 +308,7 @@ public static class SuggestedPresetLists
                                     Smoothing = SeriesSmoothingOptions.None,
                                     SmoothingWindow = 5,
                                     Value = SeriesValueOptions.Value,
-                                    Year = null
+                                    Year = null,
                                 },
                                 new ChartSeriesDefinition()
                                 {
@@ -312,13 +320,13 @@ public static class SuggestedPresetLists
                                     Smoothing = SeriesSmoothingOptions.None,
                                     SmoothingWindow = 5,
                                     Value = SeriesValueOptions.Value,
-                                    Year = null
+                                    Year = null,
                                 }
+
                             ],
                         },
-                    ]
-            }
-        );
+                    ],
+            });
 
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
@@ -353,6 +361,7 @@ public static class SuggestedPresetLists
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 SeriesTransformation = SeriesTransformations.IsFrosty,
                             }
+
                         ],
                 Variants =
                         [
@@ -388,11 +397,11 @@ public static class SuggestedPresetLists
                                         DisplayStyle = SeriesDisplayStyle.Line,
                                         SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
                                     }
-                                ]
+
+                                ],
                         },
-                    ]
-            }
-        );
+                        ],
+            });
 
         return suggestedPresets;
     }
@@ -505,7 +514,7 @@ public static class SuggestedPresetLists
                                                 DisplayStyle = SeriesDisplayStyle.Line,
                                                 RequestedColour = UiLogic.Colours.Brown,
                                             },
-                                        ]
+                                        ],
                                 },
                                 new ()
                                 {
@@ -526,12 +535,12 @@ public static class SuggestedPresetLists
                                                 DisplayStyle = SeriesDisplayStyle.Line,
                                                 RequestedColour = UiLogic.Colours.Brown,
                                             }
-                                        ]
-                                }
-                            ]
-            }
-            );
 
+                                        ],
+                                }
+
+                            ],
+            });
 
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
@@ -553,19 +562,19 @@ public static class SuggestedPresetLists
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Brown,
                             },
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), co2emissions!),
-                                Aggregation = SeriesAggregationOptions.Mean,
-                                BinGranularity = BinGranularities.ByYear,
-                                Smoothing = SeriesSmoothingOptions.None,
-                                SmoothingWindow = 5,
-                                Value = SeriesValueOptions.Value,
-                                Year = null,
-                                DisplayStyle = SeriesDisplayStyle.Line,
-                                RequestedColour = UiLogic.Colours.Black,
-                            },
+                        new ChartSeriesDefinition()
+                        {
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), co2emissions!),
+                            Aggregation = SeriesAggregationOptions.Mean,
+                            BinGranularity = BinGranularities.ByYear,
+                            Smoothing = SeriesSmoothingOptions.None,
+                            SmoothingWindow = 5,
+                            Value = SeriesValueOptions.Value,
+                            Year = null,
+                            DisplayStyle = SeriesDisplayStyle.Line,
+                            RequestedColour = UiLogic.Colours.Black,
+                        },
                     ],
             });
 
@@ -647,9 +656,9 @@ public static class SuggestedPresetLists
                                     Year = null,
                                     DisplayStyle = SeriesDisplayStyle.Line,
                                 },
-                            ]
+                            ],
                     },
-                    new()
+                    new ()
                     {
                         Title = "Arctic vs Antarctic",
                         Description = "Combined land and ocean temperatures for the Arctic, Antarctic and 60°S-60°N regions",
@@ -691,12 +700,11 @@ public static class SuggestedPresetLists
                                     Year = null,
                                     DisplayStyle = SeriesDisplayStyle.Line,
                                 },
-                            ]
+                            ],
                     }
-                ]
-            }
-        );
 
+                ],
+            });
 
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
@@ -756,50 +764,10 @@ public static class SuggestedPresetLists
                                         RequestedColour = UiLogic.Colours.Blue,
                                         GroupingThreshold = 0.1f,
                                     },
-                                ]
+                                ],
                         },
                     ],
-            }
-        );
-
-        suggestedPresets.Add(
-            new SuggestedChartPresetModelWithVariants()
-            {
-                Title = "Solar irradiation + sunspots",
-                Description = "Total solar irradiance (from satelite data) compared with the number of sunspots",
-                ChartSeriesList =
-                [
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Sun"), tsi!),
-                        Aggregation = SeriesAggregationOptions.Mean,
-                        BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 10,
-                        Value = SeriesValueOptions.Value,
-                        Year = null,
-                        DisplayStyle = SeriesDisplayStyle.Line,
-                        RequestedColour = UiLogic.Colours.Green,
-                        GroupingThreshold = 0.1f,
-                    },
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Sun"), sunspots!),
-                        Aggregation = SeriesAggregationOptions.Mean,
-                        BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 10,
-                        Value = SeriesValueOptions.Value,
-                        Year = null,
-                        DisplayStyle = SeriesDisplayStyle.Line,
-                        RequestedColour = UiLogic.Colours.Yellow,
-                        GroupingThreshold = 0.1f,
-                    },
-                ],
-            }
-        );
+            });
 
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
@@ -853,7 +821,7 @@ public static class SuggestedPresetLists
                                         Year = null,
                                         DisplayStyle = SeriesDisplayStyle.Bar,
                                     },
-                                ]
+                                ],
                         },
                         new SuggestedChartPresetModel()
                         {
@@ -885,7 +853,7 @@ public static class SuggestedPresetLists
                                         Year = null,
                                         DisplayStyle = SeriesDisplayStyle.Line,
                                     },
-                                ]
+                                ],
                         },
                     ],
             });
@@ -926,8 +894,7 @@ public static class SuggestedPresetLists
                                     GroupingThreshold = 0.1f,
                                 },
                             ],
-            }
-        );
+            });
 
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
@@ -965,8 +932,45 @@ public static class SuggestedPresetLists
                                     GroupingThreshold = 0.1f,
                                 },
                             ],
-            }
-        );
+            });
+
+        suggestedPresets.Add(
+            new SuggestedChartPresetModelWithVariants()
+            {
+                Title = "Solar irradiation + sunspots",
+                Description = "Total solar irradiance (from satelite data) compared with the number of sunspots",
+                ChartSeriesList =
+                [
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Sun"), tsi!),
+                        Aggregation = SeriesAggregationOptions.Mean,
+                        BinGranularity = BinGranularities.ByYear,
+                        Smoothing = SeriesSmoothingOptions.None,
+                        SmoothingWindow = 10,
+                        Value = SeriesValueOptions.Value,
+                        Year = null,
+                        DisplayStyle = SeriesDisplayStyle.Line,
+                        RequestedColour = UiLogic.Colours.Green,
+                        GroupingThreshold = 0.1f,
+                    },
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Sun"), sunspots!),
+                        Aggregation = SeriesAggregationOptions.Mean,
+                        BinGranularity = BinGranularities.ByYear,
+                        Smoothing = SeriesSmoothingOptions.None,
+                        SmoothingWindow = 10,
+                        Value = SeriesValueOptions.Value,
+                        Year = null,
+                        DisplayStyle = SeriesDisplayStyle.Line,
+                        RequestedColour = UiLogic.Colours.Yellow,
+                        GroupingThreshold = 0.1f,
+                    },
+                ],
+            });
 
         return suggestedPresets;
     }

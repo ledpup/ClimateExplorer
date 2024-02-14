@@ -1,44 +1,48 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿namespace ClimateExplorer.Web.Client.Shared;
 
-namespace ClimateExplorer.Web.Client.Shared;
+using Microsoft.AspNetCore.Components;
 
 public partial class DualRangeSlider
 {
     [Parameter]
     public int Min { get; set; }
+
     [Parameter]
     public int Max { get; set; }
 
     [Parameter]
     public int? FromValue { get; set; }
+
     [Parameter]
     public int? ToValue { get; set; }
 
-    int InternalFromValue { get; set; }
-    int InternalToValue { get; set; }
-
     [Parameter]
     public string? SlideColor { get; set; }
+
     [Parameter]
     public string? RangeColor { get; set; }
 
-    [Parameter] public EventCallback<ExtentValues> OnValuesChanged { get; set; }
-    [Parameter] public EventCallback<bool?> OnShowComponent { get; set; }
+    [Parameter]
+    public EventCallback<ExtentValues> OnValuesChanged { get; set; }
 
-    private string? SliderOutput { get;set; }
+    [Parameter]
+    public EventCallback<bool?> OnShowComponent { get; set; }
+
+    private int InternalFromValue { get; set; }
+    private int InternalToValue { get; set; }
+
+    private string? SliderOutput { get; set; }
 
     private int RangeMin { get; set; }
     private int RangeMax { get; set; }
     private int RangeValue { get; set; }
     private string? RangeWidth { get; set; }
 
-
-
     protected override void OnInitialized()
     {
         SlideColor = "#C6C6C6";
         RangeColor = "#25DAA5";
-        SliderOutput = "";
+        SliderOutput = string.Empty;
 
         base.OnInitialized();
     }
@@ -53,13 +57,10 @@ public partial class DualRangeSlider
             InternalToValue = Max - 1;
             await Task.Yield();
 
-
             InternalFromValue = FromValue == null ? Min : FromValue.Value;
             InternalToValue = ToValue == null ? Max : ToValue.Value;
             SetRangeSlider();
         }
-        
-        base.OnParametersSet();
     }
 
     private async Task FromChangedAsync(ChangeEventArgs e)
@@ -84,20 +85,20 @@ public partial class DualRangeSlider
         RangeMin = Min + halfExtent;
         RangeMax = Max - halfExtent;
 
-        RangeValue = (int)Math.Round(((float)(InternalToValue - InternalFromValue) / 2)) + InternalFromValue;
+        RangeValue = (int)Math.Round((float)(InternalToValue - InternalFromValue) / 2) + InternalFromValue;
         var width = (float)(InternalToValue - InternalFromValue) / (Max - Min) * 100;
         RangeWidth = $"{width}%";
-        SliderOutput = "";
+        SliderOutput = string.Empty;
     }
 
     private async Task RangeChangedAsync(ChangeEventArgs e)
     {
         var newRange = Convert.ToInt32(e.Value);
-        
+
         RangeValue = newRange;
         await SetFromAndToValuesAsync(newRange, true);
 
-        SliderOutput = "";
+        SliderOutput = string.Empty;
     }
 
     private async Task SetFromAndToValuesAsync(int newRange, bool sendOnChangedEvent = false)
@@ -151,7 +152,7 @@ public partial class DualRangeSlider
         await SetFromAndToValuesAsync(newRange);
     }
 
-    async Task Close()
+    private async Task Close()
     {
         await OnShowComponent.InvokeAsync(false);
     }

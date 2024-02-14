@@ -95,7 +95,7 @@ public class IsdFileProcessor
             {
                 logger.LogWarning($"Expecting only two parts of the data, mandatory and additional data. There are {mandatoryAdditionalSplit.Length} parts for this line. Line is: {line}");
             }
-            
+
             if (mandatoryAdditionalSplit.Length >= 2)
             {
                 var additionalData = mandatoryAdditionalSplit[1];

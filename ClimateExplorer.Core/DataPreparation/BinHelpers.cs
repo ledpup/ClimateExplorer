@@ -29,7 +29,7 @@ public static class BinHelpers
 
     public static BinIdentifier[] GetMonthBins()
     {
-        return 
+        return
             Enumerable.Range(1, 12)
             .Select(x => new MonthOnlyBinIdentifier((short)x))
             .ToArray();

@@ -2,8 +2,8 @@
 
 public class SeriesSpecification
 {
-    public required Guid DataSetDefinitionId { get; set; }
-    public required Guid LocationId { get; set; }
-    public required Enums.DataType DataType { get; set; }
+    required public Guid DataSetDefinitionId { get; set; }
+    required public Guid LocationId { get; set; }
+    required public Enums.DataType DataType { get; set; }
     public Enums.DataAdjustment? DataAdjustment { get; set; }
 }

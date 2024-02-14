@@ -7,6 +7,7 @@ public class BinThenCount : StatsParameters
         NumberOfBins = numberOfBins;
         BinSize = binSize;
     }
+
     public short? NumberOfBins { get; set; }
     public short? BinSize { get; set; }
 }

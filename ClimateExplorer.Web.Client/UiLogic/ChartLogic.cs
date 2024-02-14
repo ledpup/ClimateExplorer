@@ -1,12 +1,12 @@
-﻿using ClimateExplorer.Core;
+﻿namespace ClimateExplorer.Web.UiLogic;
+
+using ClimateExplorer.Core;
 using ClimateExplorer.Web.UiModel;
 using Blazorise.Charts;
 using Blazorise.Charts.Trendline;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using static ClimateExplorer.Core.Enums;
-
-namespace ClimateExplorer.Web.UiLogic;
 
 public static class ChartLogic
 {
@@ -27,16 +27,16 @@ public static class ChartLogic
 
         if (locationNames.Length > 0)
         {
-            return String.Join(", ", locationNames);
+            return string.Join(", ", locationNames);
         }
 
         return "Climate data";
     }
 
     public static LineChartDataset<double?> GetLineChartDataset(
-        string label, 
-        List<double?> values, 
-        ChartColor chartColor, 
+        string label,
+        List<double?> values,
+        ChartColor chartColor,
         UnitOfMeasure unitOfMeasure,
         SeriesTransformations seriesTransformations,
         bool renderSmallPoints,
@@ -45,7 +45,9 @@ public static class ChartLogic
         var count = values.Count;
         var colour = new List<string>();
         for (var i = 0; i < count; i++)
+        {
             colour.Add(chartColor);
+        }
 
         var lineChartDataset =
             new LineChartDataset<double?>
@@ -60,7 +62,8 @@ public static class ChartLogic
                 PointBorderColor = colour,
                 PointHoverBackgroundColor = colour,
                 BorderDash = new List<int> { },
-                //Tension = 0.1f,
+
+                // Tension = 0.1f,
                 YAxisID = GetYAxisId(seriesTransformations, unitOfMeasure, seriesAggregationOptions),
             };
 
@@ -68,17 +71,17 @@ public static class ChartLogic
     }
 
     public static BarChartDataset<double?> GetBarChartDataset(
-        string label, 
-        List<double?> values, 
-        UnitOfMeasure unitOfMeasure, 
-        bool? absoluteValues, 
+        string label,
+        List<double?> values,
+        UnitOfMeasure unitOfMeasure,
+        bool? absoluteValues,
         bool redPositive,
         SeriesTransformations seriesTransformations,
         SeriesAggregationOptions seriesAggregationOptions)
     {
         var colour = GetBarChartColourSet(values, seriesTransformations == SeriesTransformations.IsFrosty ? false : redPositive);
 
-        return 
+        return
             new BarChartDataset<double?>
             {
                 Label = label,
@@ -90,12 +93,12 @@ public static class ChartLogic
     }
 
     public static ChartDataset<double?> GetChartDataset(
-        string label, 
-        List<double?> values, 
-        UnitOfMeasure unitOfMeasure, 
-        ChartType chartType, 
-        ChartColor? chartColour = null, 
-        bool? absoluteValues = false, 
+        string label,
+        List<double?> values,
+        UnitOfMeasure unitOfMeasure,
+        ChartType chartType,
+        ChartColor? chartColour = null,
+        bool? absoluteValues = false,
         bool redPositive = true,
         SeriesTransformations seriesTransformations = SeriesTransformations.Identity,
         SeriesAggregationOptions seriesAggregationOptions = SeriesAggregationOptions.Mean,
@@ -108,6 +111,7 @@ public static class ChartLogic
                 {
                     throw new NullReferenceException(nameof(chartColour));
                 }
+
                 return GetLineChartDataset(label, values, chartColour.Value, unitOfMeasure, seriesTransformations, renderSmallPoints, seriesAggregationOptions);
             case ChartType.Bar:
                 return GetBarChartDataset(label, values, unitOfMeasure, absoluteValues, redPositive, seriesTransformations, seriesAggregationOptions);
@@ -123,7 +127,7 @@ public static class ChartLogic
             {
                 DatasetIndex = datasetIndex,
                 Width = 3,
-                Color = colour
+                Color = colour,
             };
     }
 
@@ -171,6 +175,7 @@ public static class ChartLogic
         await chart.AddDataSet(chartDataset);
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rules conflict")]
     public static Tuple<BinIdentifier, BinIdentifier> GetBinRangeToPlotForGaplessRange(
         IEnumerable<DataSet> preProcessedDataSets,
         ChartStartYears? chartStartYear,
@@ -276,6 +281,8 @@ public static class ChartLogic
         };
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
     public static List<string> GetBarChartColourSet(List<double?> values, bool redPositive = true)
     {
         var count = values.Count;
@@ -296,12 +303,13 @@ public static class ChartLogic
                 }
                 else if (adjustedValue > 0)
                 {
-                    chartColor = ChartColor.FromRgba((byte)(63 + (Math.Abs(adjustedValue / max)) * 192), 0, 0, 1f);
+                    chartColor = ChartColor.FromRgba((byte)(63 + (Math.Abs(adjustedValue / max) * 192)), 0, 0, 1f);
                 }
                 else
                 {
-                    chartColor = ChartColor.FromRgba(0, 0, (byte)(63 + (Math.Abs(adjustedValue / min)) * 192), 1f);
+                    chartColor = ChartColor.FromRgba(0, 0, (byte)(63 + (Math.Abs(adjustedValue / min) * 192)), 1f);
                 }
+
                 colour.Add(chartColor);
             }
             else

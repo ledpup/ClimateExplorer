@@ -1,7 +1,7 @@
-﻿using ClimateExplorer.Core.Model;
-using System.Xml;
+﻿namespace ClimateExplorer.Data.Misc;
 
-namespace ClimateExplorer.Data.Misc;
+using ClimateExplorer.Core.Model;
+using System.Xml;
 
 public class BuildStaticContent
 {
@@ -14,7 +14,6 @@ public class BuildStaticContent
         writer.WriteStartDocument();
         writer.WriteStartElement("urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
 
-        
         WriteTag(writer, "https://climateexplorer.net/");
         WriteTag(writer, "https://climateexplorer.net/regionalandglobal");
         WriteTag(writer, "https://climateexplorer.net/about");
@@ -32,12 +31,12 @@ public class BuildStaticContent
         writer.Close();
     }
 
-    private static void WriteTag(XmlWriter writer, string Navigation)
+    private static void WriteTag(XmlWriter writer, string navigation)
     {
         writer.WriteStartElement("url");
 
         writer.WriteStartElement("loc");
-        writer.WriteValue(Navigation);
+        writer.WriteValue(navigation);
         writer.WriteEndElement();
 
         writer.WriteEndElement();

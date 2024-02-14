@@ -1,20 +1,21 @@
-﻿using ClimateExplorer.Core;
+﻿namespace ClimateExplorer.Web.UiModel;
+
+using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using static ClimateExplorer.Core.Enums;
 using ClimateExplorer.Web.UiLogic;
 
-namespace ClimateExplorer.Web.UiModel;
-
 public class ChartSeriesDefinition
 {
     /// <summary>
-    /// Used only for uniqueness tracking by UI controls
+    /// Used only for uniqueness tracking by UI controls.
     /// </summary>
     public Guid Id { get; set; } = Guid.NewGuid();
 
     // Source data fields
+    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
     public SourceSeriesSpecification[]? SourceSeriesSpecifications { get; set; }
     public SeriesDerivationTypes SeriesDerivationType { get; set; }
     public BinGranularities BinGranularity { get; set; }
@@ -40,7 +41,7 @@ public class ChartSeriesDefinition
     // Editing mode fields
 
     /// <summary>
-    /// If IsLocked is set, then the series will remain in place even if the user navigates to another notification
+    /// If IsLocked is set, then the series will remain in place even if the user navigates to another notification.
     /// </summary>
     public bool IsLocked { get; set; }
 
@@ -48,11 +49,7 @@ public class ChartSeriesDefinition
     public bool IsExpanded { get; set; }
     public bool DataAvailable { get; internal set; } = true;
 
-    public override string ToString()
-    {
-        return $"CSD: {BinGranularity} | {Smoothing} | {Aggregation} | {Value} | {DisplayStyle}";
-    }
-
+    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
     public string FriendlyTitle
     {
         get
@@ -111,7 +108,7 @@ public class ChartSeriesDefinition
                 switch (Smoothing)
                 {
                     case SeriesSmoothingOptions.MovingAverage:
-                        segments.Add($"{SmoothingWindow} {(BinGranularity == BinGranularities.ByYear ? "year": "month")} moving average");
+                        segments.Add($"{SmoothingWindow} {(BinGranularity == BinGranularities.ByYear ? "year" : "month")} moving average");
                         break;
                     case SeriesSmoothingOptions.Trendline:
                         segments.Add("Trendline");
@@ -119,78 +116,11 @@ public class ChartSeriesDefinition
                 }
             }
 
-            return String.Join(" | ", segments);
+            return string.Join(" | ", segments);
         }
     }
 
-    string GetFriendlySeriesTransformationLabel(SeriesTransformations seriesTransformation)
-    {
-        return seriesTransformation switch
-        {
-            SeriesTransformations.IsFrosty => "Is Frost",
-            SeriesTransformations.DayOfYearIfFrost => "Day if frost",
-            SeriesTransformations.EqualOrAbove35 => "35°C or above",
-            SeriesTransformations.EqualOrAbove1 => "1mm or more",
-            SeriesTransformations.EqualOrAbove1AndLessThan10 => "Between 1mm and 10mm",
-            SeriesTransformations.EqualOrAbove10 => "10mm or more",
-            SeriesTransformations.EqualOrAbove10AndLessThan25 => "Between 10mm and 25mm",
-            SeriesTransformations.EqualOrAbove25 => "25mm or more",
-            _ => seriesTransformation.ToString(),
-        };
-    }
-
-    public string GetFriendlyTitleShort()
-    {
-        switch (SeriesDerivationType)
-        {
-            case SeriesDerivationTypes.ReturnSingleSeries:
-            case SeriesDerivationTypes.AverageOfAnomaliesInRegion:
-                return BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications!.Single(), BinGranularity, Aggregation, Year);
-
-            case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
-                return $"[{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications![0], BinGranularity, Aggregation, Year)}] minus [{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[1], BinGranularity, Aggregation, Year)}]";
-
-            case SeriesDerivationTypes.AverageOfMultipleSeries:
-                return BuildAverageMultipleSeriesTitle(SourceSeriesSpecifications!);
-
-            default: throw new NotImplementedException($"SeriesDerivationType {SeriesDerivationType}");
-        }
-    }
-
-    static string BuildAverageMultipleSeriesTitle(SourceSeriesSpecification[] sss)
-    {
-        var segments = new List<string>();
-
-        if (sss.All(o => o.LocationName == sss[0].LocationName))
-        {
-            segments.Add(sss[0].LocationName!);
-        }
-        else
-        {
-            throw new NotImplementedException();
-        }
-
-        if (sss.All(o => o.MeasurementDefinition!.DataType == sss[0].MeasurementDefinition!.DataType))
-        {
-            throw new NotImplementedException();
-        }
-        else
-        {
-            segments.Add($"Average {string.Join(", ", sss.Select(x => MapDataTypeToFriendlyName(x.MeasurementDefinition!.DataType)).ToList())}");
-        }
-
-        if (sss.All(o => o.MeasurementDefinition!.DataAdjustment == sss[0].MeasurementDefinition!.DataAdjustment))
-        {
-            segments.Add(sss[0].MeasurementDefinition!.DataAdjustment.ToString()!);
-        }
-        else
-        {
-            throw new NotImplementedException();
-        }
-
-        return String.Join(" | ", segments);
-    }
-
+    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
     public static string BuildFriendlyTitleShortForSeries(SourceSeriesSpecification sss, BinGranularities binGranularity, SeriesAggregationOptions aggregation, short? year = null)
     {
         var segments = new List<string>();
@@ -219,9 +149,62 @@ public class ChartSeriesDefinition
             segments.Add(aggregation.ToString());
         }
 
-        return String.Join(" | ", segments);
+        return string.Join(" | ", segments);
     }
 
+    public static string MapDataTypeToFriendlyName(DataType dataType)
+    {
+        return dataType switch
+        {
+            DataType.TempMin => "Minimum temperature",
+            DataType.TempMax => "Maximum temperature",
+            DataType.TempMean => "Mean temperature",
+            DataType.SolarRadiation => "Solar radiation",
+            DataType.Precipitation => "Precipitation",
+            DataType.MEIv2 => "MEI v2",
+            DataType.SOI => "SOI",
+            DataType.Nino34 => "Nino 3.4",
+            DataType.ONI => "ONI",
+            DataType.CO2 => "Carbon dioxide (CO\u2082)",
+            DataType.CH4 => "Methane (CH\u2084)",
+            DataType.N2O => "Nitrous oxide (N\u2082O)",
+            DataType.IOD => "Indian Ocean Dipole (IOD)",
+            DataType.SeaIceExtent => "Sea ice extent",
+            DataType.IceMeltArea => "Ice melt area",
+            DataType.SunspotNumber => "Sunspot number",
+            DataType.CO2Emissions => "Reported CO₂ emissions",
+            DataType.ApparentTransmission => "Apparent atmospheric transmission",
+            DataType.OzoneHoleArea => "Ozone Hole area",
+            DataType.OzoneHoleColumn => "Ozone Hole column",
+            DataType.Ozone => "Ozone",
+            _ => throw new NotImplementedException(),
+        };
+    }
+
+    public override string ToString()
+    {
+        return $"CSD: {BinGranularity} | {Smoothing} | {Aggregation} | {Value} | {DisplayStyle}";
+    }
+
+    public string GetFriendlyTitleShort()
+    {
+        switch (SeriesDerivationType)
+        {
+            case SeriesDerivationTypes.ReturnSingleSeries:
+            case SeriesDerivationTypes.AverageOfAnomaliesInRegion:
+                return BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications!.Single(), BinGranularity, Aggregation, Year);
+
+            case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
+                return $"[{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications![0], BinGranularity, Aggregation, Year)}] minus [{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[1], BinGranularity, Aggregation, Year)}]";
+
+            case SeriesDerivationTypes.AverageOfMultipleSeries:
+                return BuildAverageMultipleSeriesTitle(SourceSeriesSpecifications!);
+
+            default: throw new NotImplementedException($"SeriesDerivationType {SeriesDerivationType}");
+        }
+    }
+
+    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
     public string GetFriendlyDescription()
     {
         var segments = new List<string>();
@@ -292,79 +275,161 @@ public class ChartSeriesDefinition
             segments.Add(uomLabel);
         }
 
-        return String.Join(" | ", segments);
+        return string.Join(" | ", segments);
     }
 
-    public static string MapDataTypeToFriendlyName(DataType dataType)
+    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
+    private static string BuildAverageMultipleSeriesTitle(SourceSeriesSpecification[] sss)
     {
-        return dataType switch
+        var segments = new List<string>();
+
+        if (sss.All(o => o.LocationName == sss[0].LocationName))
         {
-            DataType.TempMin => "Minimum temperature",
-            DataType.TempMax => "Maximum temperature",
-            DataType.TempMean => "Mean temperature",
-            DataType.SolarRadiation => "Solar radiation",
-            DataType.Precipitation => "Precipitation",
-            DataType.MEIv2 => "MEI v2",
-            DataType.SOI => "SOI",
-            DataType.Nino34 => "Nino 3.4",
-            DataType.ONI => "ONI",
-            DataType.CO2 => "Carbon dioxide (CO\u2082)",
-            DataType.CH4 => "Methane (CH\u2084)",
-            DataType.N2O => "Nitrous oxide (N\u2082O)",
-            DataType.IOD => "Indian Ocean Dipole (IOD)",
-            DataType.SeaIceExtent => "Sea ice extent",
-            DataType.IceMeltArea => "Ice melt area",
-            DataType.SunspotNumber => "Sunspot number",
-            DataType.CO2Emissions => "Reported CO₂ emissions",
-            DataType.ApparentTransmission => "Apparent atmospheric transmission",
-            DataType.OzoneHoleArea => "Ozone Hole area",
-            DataType.OzoneHoleColumn => "Ozone Hole column",
-            DataType.Ozone => "Ozone",
-            _ => throw new NotImplementedException(),
+            segments.Add(sss[0].LocationName!);
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+
+        if (sss.All(o => o.MeasurementDefinition!.DataType == sss[0].MeasurementDefinition!.DataType))
+        {
+            throw new NotImplementedException();
+        }
+        else
+        {
+            segments.Add($"Average {string.Join(", ", sss.Select(x => MapDataTypeToFriendlyName(x.MeasurementDefinition!.DataType)).ToList())}");
+        }
+
+        if (sss.All(o => o.MeasurementDefinition!.DataAdjustment == sss[0].MeasurementDefinition!.DataAdjustment))
+        {
+            segments.Add(sss[0].MeasurementDefinition!.DataAdjustment.ToString()!);
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+
+        return string.Join(" | ", segments);
+    }
+
+    private string GetFriendlySeriesTransformationLabel(SeriesTransformations seriesTransformation)
+    {
+        return seriesTransformation switch
+        {
+            SeriesTransformations.IsFrosty => "Is Frost",
+            SeriesTransformations.DayOfYearIfFrost => "Day if frost",
+            SeriesTransformations.EqualOrAbove35 => "35°C or above",
+            SeriesTransformations.EqualOrAbove1 => "1mm or more",
+            SeriesTransformations.EqualOrAbove1AndLessThan10 => "Between 1mm and 10mm",
+            SeriesTransformations.EqualOrAbove10 => "10mm or more",
+            SeriesTransformations.EqualOrAbove10AndLessThan25 => "Between 10mm and 25mm",
+            SeriesTransformations.EqualOrAbove25 => "25mm or more",
+            _ => seriesTransformation.ToString(),
         };
     }
 
     public class ChartSeriesDefinitionComparerWhichIgnoresYearAndIsLocked : IEqualityComparer<ChartSeriesDefinition>
     {
-        public bool Equals(ChartSeriesDefinition? x, ChartSeriesDefinition? y)
-        {
-            return BaseComparer(x, y);
-        }
-
         public static bool BaseComparer(ChartSeriesDefinition? x, ChartSeriesDefinition? y)
         {
-            if (x == null && y == null) return true;
-            if (x == null || y == null) return false;
+            if (x == null && y == null)
+            {
+                return true;
+            }
 
-            if (x.Aggregation != y.Aggregation) return false;
-            if (x.BinGranularity != y.BinGranularity) return false;
-            if (x.DisplayStyle != y.DisplayStyle) return false;
-            if (x.ShowTrendline != y.ShowTrendline) return false;
-            if (x.Smoothing != y.Smoothing) return false;
-            if (x.SmoothingWindow != y.SmoothingWindow) return false;
-            if (x.Value != y.Value) return false;
-            if (x.SeriesTransformation != y.SeriesTransformation) return false;
-            if (x.GroupingThreshold != y.GroupingThreshold) return false;
+            if (x == null || y == null)
+            {
+                return false;
+            }
 
-            if (x.SourceSeriesSpecifications!.Length != y.SourceSeriesSpecifications!.Length) return false;
+            if (x.Aggregation != y.Aggregation)
+            {
+                return false;
+            }
+
+            if (x.BinGranularity != y.BinGranularity)
+            {
+                return false;
+            }
+
+            if (x.DisplayStyle != y.DisplayStyle)
+            {
+                return false;
+            }
+
+            if (x.ShowTrendline != y.ShowTrendline)
+            {
+                return false;
+            }
+
+            if (x.Smoothing != y.Smoothing)
+            {
+                return false;
+            }
+
+            if (x.SmoothingWindow != y.SmoothingWindow)
+            {
+                return false;
+            }
+
+            if (x.Value != y.Value)
+            {
+                return false;
+            }
+
+            if (x.SeriesTransformation != y.SeriesTransformation)
+            {
+                return false;
+            }
+
+            if (x.GroupingThreshold != y.GroupingThreshold)
+            {
+                return false;
+            }
+
+            if (x.SourceSeriesSpecifications!.Length != y.SourceSeriesSpecifications!.Length)
+            {
+                return false;
+            }
 
             for (int i = 0; i < x.SourceSeriesSpecifications.Length; i++)
             {
                 var sssX = x.SourceSeriesSpecifications[i];
                 var sssY = y.SourceSeriesSpecifications[i];
 
-                if (sssX.DataSetDefinition != sssY.DataSetDefinition) return false;
-                if (sssX.LocationId != sssY.LocationId) return false;
-                if (sssX.LocationName != sssY.LocationName) return false;
-                if (sssX.MeasurementDefinition != sssY.MeasurementDefinition) return false;
+                if (sssX.DataSetDefinition != sssY.DataSetDefinition)
+                {
+                    return false;
+                }
+
+                if (sssX.LocationId != sssY.LocationId)
+                {
+                    return false;
+                }
+
+                if (sssX.LocationName != sssY.LocationName)
+                {
+                    return false;
+                }
+
+                if (sssX.MeasurementDefinition != sssY.MeasurementDefinition)
+                {
+                    return false;
+                }
             }
 
             return true;
         }
 
+        public bool Equals(ChartSeriesDefinition? x, ChartSeriesDefinition? y)
+        {
+            return BaseComparer(x, y);
+        }
+
         public int GetHashCode([DisallowNull] ChartSeriesDefinition obj)
         {
-            var hashCode =
+            int hashCode =
                 obj.Aggregation.GetHashCode() ^
                 obj.RequestedColour.GetHashCode() ^
                 obj.BinGranularity.GetHashCode() ^
@@ -402,15 +467,22 @@ public class ChartSeriesDefinition
                 return false;
             }
 
-            if (x!.IsLocked != y!.IsLocked) return false;
-            if (x.Year != y.Year) return false;
+            if (x!.IsLocked != y!.IsLocked)
+            {
+                return false;
+            }
+
+            if (x.Year != y.Year)
+            {
+                return false;
+            }
 
             return true;
         }
 
         public int GetHashCode([DisallowNull] ChartSeriesDefinition obj)
         {
-            var hashCode =
+            int hashCode =
                 obj.Aggregation.GetHashCode() ^
                 obj.RequestedColour.GetHashCode() ^
                 obj.BinGranularity.GetHashCode() ^

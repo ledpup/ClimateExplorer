@@ -13,7 +13,8 @@ public class HeatingScoreTests
     public void CategoriseStandardScores()
     {
         var locations = new List<Location>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 20; i++)
+        {
             locations.Add(new Location
             {
                 Id = Guid.Empty,

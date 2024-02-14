@@ -1,25 +1,25 @@
+namespace ClimateExplorer.Web.Client.Pages;
+
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.WebUtilities;
 using static ClimateExplorer.Core.Enums;
-
-namespace ClimateExplorer.Web.Client.Pages;
 public partial class RegionalAndGlobal : ChartablePage
 {
+    private bool finishedSetup;
+
     public RegionalAndGlobal()
     {
-        pageName = "regionalandglobal";
+        PageName = "regionalandglobal";
     }
-
-    bool finishedSetup;
 
     protected override string PageTitle
     {
         get
         {
-            return $"Regional and global long-term climate trends"; ;
+            return $"Regional and global long-term climate trends";
         }
     }
 
@@ -54,20 +54,26 @@ public partial class RegionalAndGlobal : ChartablePage
             {
                 await AddDefaultChart();
             }
+
             StateHasChanged();
         }
     }
 
+    protected override async Task UpdateComponents()
+    {
+        await Task.CompletedTask;
+    }
+
     private async Task AddDefaultChart()
     {
-        if (chartView == null || chartView.ChartSeriesList == null || chartView.ChartSeriesList.Any())
+        if (ChartView == null || ChartView.ChartSeriesList == null || ChartView.ChartSeriesList.Any())
         {
             return;
         }
 
         var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, Region.RegionId(Region.Atmosphere), DataType.CO2, null, throwIfNoMatch: true);
 
-        chartView!.ChartSeriesList!.Add(
+        ChartView!.ChartSeriesList!.Add(
             new ChartSeriesDefinition()
             {
                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -81,14 +87,8 @@ public partial class RegionalAndGlobal : ChartablePage
                 Year = null,
                 DisplayStyle = SeriesDisplayStyle.Line,
                 RequestedColour = UiLogic.Colours.Brown,
-            }
-        );
+            });
 
         await BuildDataSets();
-    }
-
-    protected override async Task UpdateComponents()
-    {
-        await Task.CompletedTask;
     }
 }

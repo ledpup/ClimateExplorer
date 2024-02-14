@@ -1,12 +1,12 @@
-﻿using ClimateExplorer.Core.ViewModel;
-using static ClimateExplorer.Core.Enums;
+﻿namespace ClimateExplorer.Core.Model;
 
-namespace ClimateExplorer.Core.Model;
+using ClimateExplorer.Core.ViewModel;
+using static ClimateExplorer.Core.Enums;
 public class MeasurementDefinition
 {
-    public required DataType DataType { get; set; }
-    public required UnitOfMeasure UnitOfMeasure { get; set; }
-    public required DataResolution DataResolution { get; set; }
+    required public DataType DataType { get; set; }
+    required public UnitOfMeasure UnitOfMeasure { get; set; }
+    required public DataResolution DataResolution { get; set; }
     public DataAdjustment? DataAdjustment { get; set; }
     public RowDataType RowDataType { get; set; }
     public string? FolderName { get; set; }

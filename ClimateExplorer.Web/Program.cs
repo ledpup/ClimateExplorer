@@ -1,13 +1,15 @@
-using ClimateExplorer.Web;
-using ClimateExplorer.Web.Services;
+#pragma warning disable SA1200 // Using directives should be placed correctly
+using BlazorCurrentDevice;
+using Blazored.LocalStorage;
 using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
+using ClimateExplorer.Web;
+using ClimateExplorer.Web.Client.Pages;
+using ClimateExplorer.Web.Services;
 using DPBlazorMapLibrary;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using BlazorCurrentDevice;
-using Blazored.LocalStorage;
-using ClimateExplorer.Web.Client.Pages;
+#pragma warning restore SA1200 // Using directives should be placed correctly
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,7 +30,9 @@ builder.Services
     .AddBlazoredLocalStorage()
     .AddHttpClient<IDataService, DataService>(client =>
     {
-    client.BaseAddress = new Uri(builder.Configuration["DataServiceBaseUri"]!);
+#pragma warning disable SA1011 // Closing square brackets should be spaced correctly
+        client.BaseAddress = new Uri(builder.Configuration["DataServiceBaseUri"]!);
+#pragma warning restore SA1011 // Closing square brackets should be spaced correctly
     });
 
 var app = builder.Build();
@@ -41,6 +45,7 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
+
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }

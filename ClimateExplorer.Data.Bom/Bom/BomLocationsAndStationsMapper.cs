@@ -93,7 +93,7 @@ public static class BomLocationsAndStationsMapper
                 if (!stations.Any(x => x.Id == externalStationCode))
                 {
                     stations.Add(
-                        new Station 
+                        new Station
                         {
                             Id = externalStationCode,
                             CountryCode = "AS"
@@ -215,7 +215,7 @@ public static class BomLocationsAndStationsMapper
 
             stations.Add(
                 new Station
-                { 
+                {
                     Id = stationCode,
                     CountryCode = "AS",
                     Coordinates = coordinates

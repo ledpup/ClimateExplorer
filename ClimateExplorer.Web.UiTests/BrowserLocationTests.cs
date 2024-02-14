@@ -6,7 +6,7 @@ namespace ClimateExplorer.Web.UiTests;
 [Parallelizable(ParallelScope.Self)]
 [TestFixture]
 public class BrowserLocationTests : TestBase
-{ 
+{
     [Test]
     public async Task GoToAllLocationsAndGetAScreenshot()
     {

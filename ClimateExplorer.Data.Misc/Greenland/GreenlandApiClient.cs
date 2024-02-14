@@ -1,6 +1,6 @@
-﻿using System.Text.Json;
+﻿namespace ClimateExplorer.Data.Misc;
 
-namespace ClimateExplorer.Data.Misc;
+using System.Text.Json;
 
 public class GreenlandApiClient
 {
@@ -46,8 +46,7 @@ public class GreenlandApiClient
         File.WriteAllLines(destinationPath, meltRecords);
     }
 
-
-    async static Task DownloadAndExtractData(HttpClient httpClient, int year, string filePath)
+    private static async Task DownloadAndExtractData(HttpClient httpClient, int year, string filePath)
     {
         var dataFile = $"{year}_greenland.json";
 

@@ -25,13 +25,13 @@
 </div>
 
 <div class="chart-container">
-    <ChartView @ref="chartView"
+    <ChartView @ref="ChartView"
                   BuildDataSetsEvent="@BuildDataSets"
                   ShowAddDataSetModalEvent="@ShowAddDataSetModal"
                   DownloadDataEvent="@OnDownloadDataClicked" />
 </div>
 
-<Modal @ref="addDataSetModal">
+<Modal @ref="AddDataSetModal">
     <ModalContent>
         <ModalHeader Background="Background.Light">
             <ModalTitle>Add data set</ModalTitle>

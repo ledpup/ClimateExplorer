@@ -1,7 +1,7 @@
-﻿using ClimateExplorer.Core.Model;
-using System.Text.RegularExpressions;
+﻿namespace ClimateExplorer.Core.InputOutput;
 
-namespace ClimateExplorer.Core.InputOutput;
+using ClimateExplorer.Core.Model;
+using System.Text.RegularExpressions;
 
 public static class TwelveMonthPerLineDataReader
 {
@@ -62,7 +62,7 @@ public static class TwelveMonthPerLineDataReader
         return
             new DataSet()
             {
-                DataRecords = list
+                DataRecords = list,
             };
     }
 }

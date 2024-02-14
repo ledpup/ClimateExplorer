@@ -1,18 +1,11 @@
-﻿using ClimateExplorer.Core.DataPreparation.Model;
+﻿namespace ClimateExplorer.Core.DataPreparation;
+
+using ClimateExplorer.Core.DataPreparation.Model;
 using System.Diagnostics;
 using static ClimateExplorer.Core.Enums;
 
-namespace ClimateExplorer.Core.DataPreparation;
-
 public class DataSetBuilder
 {
-    public class BuildDataSetResult
-    {
-        public UnitOfMeasure UnitOfMeasure { get; set; }
-        public ChartableDataPoint[]? DataPoints { get; set; }
-        public TemporalDataPoint[]? RawDataPoints { get; set; }
-    }
-
     public async Task<BuildDataSetResult> BuildDataSet(PostDataSetsRequestBody request)
     {
         ValidateRequest(request);
@@ -68,9 +61,9 @@ public class DataSetBuilder
         sw.Restart();
 
         // Flag bins that have a bucket containing a cup with insufficient data
-        var filteredRawBins = 
+        var filteredRawBins =
             BinRejector.ApplyBinRejectionRules(
-                rawBins, 
+                rawBins,
                 request.RequiredCupDataProportion,
                 request.RequiredBucketDataProportion,
                 request.RequiredBinDataProportion);
@@ -90,15 +83,22 @@ public class DataSetBuilder
         return
             finalBins
             .Select(
-                x => 
-                new ChartableDataPoint 
+                x =>
+                new ChartableDataPoint
                 {
                     BinId = x.Identifier!.Id,
-                    Label = x.Identifier.Label, 
-                    Value = x.Value
-                }
-            )
+                    Label = x.Identifier.Label,
+                    Value = x.Value,
+                })
             .ToArray();
+    }
+
+    public void ValidateRequest(PostDataSetsRequestBody request)
+    {
+        if (request.SeriesSpecifications == null)
+        {
+            throw new ArgumentNullException(nameof(request.SeriesSpecifications));
+        }
     }
 
     private static ChartableDataPoint[] ConvertDataPointsToChartableDataPoints(TemporalDataPoint[] filteredDataPoints)
@@ -112,13 +112,16 @@ public class DataSetBuilder
                 BinId = x.Item1.Id,
                 Label = x.Item1.Label,
                 Value = x.Item2 == null ? null : x.Item2.Value,
-            }
-        )
+            })
         .ToArray();
     }
 
-    public void ValidateRequest(PostDataSetsRequestBody request)
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
+    public class BuildDataSetResult
     {
-        if (request.SeriesSpecifications == null) throw new ArgumentNullException(nameof(request.SeriesSpecifications));
+        public UnitOfMeasure UnitOfMeasure { get; set; }
+
+        public ChartableDataPoint[]? DataPoints { get; set; }
+        public TemporalDataPoint[]? RawDataPoints { get; set; }
     }
 }

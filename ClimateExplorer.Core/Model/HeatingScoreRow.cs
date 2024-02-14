@@ -2,7 +2,7 @@
 
 public class HeatingScoreRow
 {
-    public required double MinimumWarmingAnomaly { get;set; }
-    public required double MaximumWarmingAnomaly { get; set; }
-    public required int Score { get; set; }
+    required public double MinimumWarmingAnomaly { get; set; }
+    required public double MaximumWarmingAnomaly { get; set; }
+    required public int Score { get; set; }
 }

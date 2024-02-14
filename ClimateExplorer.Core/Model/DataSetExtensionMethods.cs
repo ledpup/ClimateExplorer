@@ -1,6 +1,6 @@
-﻿using ClimateExplorer.Core.DataPreparation;
+﻿namespace ClimateExplorer.Core.Model;
 
-namespace ClimateExplorer.Core.Model;
+using ClimateExplorer.Core.DataPreparation;
 
 public static class DataSetExtensionMethods
 {
@@ -31,7 +31,8 @@ public static class DataSetExtensionMethods
         return GetYearForDataRecord(GetFirstDataRecordWithValueInDataSet(dataSet));
     }
 
-    static short GetYearForDataRecord(DataRecord dr)
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
+    private static short GetYearForDataRecord(DataRecord dr)
     {
         BinIdentifier parsedId = dr.GetBinIdentifier()!;
 
@@ -42,5 +43,4 @@ public static class DataSetExtensionMethods
 
         throw new NotImplementedException();
     }
-
 }

@@ -1,7 +1,8 @@
-﻿using System.IO.Compression;
-using System.Text.RegularExpressions;
+﻿namespace ClimateExplorer.Data.Bom;
 
-namespace ClimateExplorer.Data.Bom;
+using ClimateExplorer.Core.Model;
+using System.IO.Compression;
+using System.Text.RegularExpressions;
 
 public class BomDataDownloader
 {

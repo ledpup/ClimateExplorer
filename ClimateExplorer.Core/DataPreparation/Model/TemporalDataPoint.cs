@@ -2,11 +2,6 @@
 
 public struct TemporalDataPoint
 {
-    public short Year { get; set; }
-    public short? Month { get; set; }
-    public short? Day { get; set; }
-    public double? Value { get; set; }
-
     public TemporalDataPoint(short year, short? month, short? day, double? value)
     {
         Year = year;
@@ -23,12 +18,11 @@ public struct TemporalDataPoint
         Value = value;
     }
 
-    /// <summary>
-    /// Returns a clone of this DataPoint, but with the specified value
-    /// </summary>
-    /// <param name="v"></param>
-    /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    public short Year { get; set; }
+    public short? Month { get; set; }
+    public short? Day { get; set; }
+    public double? Value { get; set; }
+
     public TemporalDataPoint WithValue(double? value)
     {
         return
@@ -37,7 +31,7 @@ public struct TemporalDataPoint
                 Year = Year,
                 Month = Month,
                 Day = Day,
-                Value = value
+                Value = value,
             };
     }
 

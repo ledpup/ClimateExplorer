@@ -5,5 +5,5 @@ public enum SouthernHemisphereTemperateSeasons
     Summer,
     Autumn,
     Winter,
-    Spring
+    Spring,
 }

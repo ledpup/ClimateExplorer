@@ -1,6 +1,8 @@
-﻿using ClimateExplorer.Core.Model;
-using ClimateExplorer.Core.ViewModel;
+﻿namespace ClimateExplorer.Web.Services;
+
 using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.Model;
+using ClimateExplorer.Core.ViewModel;
 using static ClimateExplorer.Core.Enums;
 public interface IDataService
 {

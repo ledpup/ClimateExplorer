@@ -32,7 +32,7 @@ public static class SeriesFilterer
             query = query.Where(x => x.Year < filterToYearsBefore.Value);
         }
 
-        if(filterToYear != null)
+        if (filterToYear != null)
         {
             query = query.Where(x => x.Year == filterToYear.Value);
         }

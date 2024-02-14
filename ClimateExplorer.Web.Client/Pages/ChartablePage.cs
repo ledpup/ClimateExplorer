@@ -1,4 +1,6 @@
-﻿using Blazorise;
+﻿namespace ClimateExplorer.Web.Client.Pages;
+
+using Blazorise;
 using Blazorise.Snackbar;
 using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.Model;
@@ -12,33 +14,46 @@ using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 
-namespace ClimateExplorer.Web.Client.Pages;
-
 public abstract partial class ChartablePage : ComponentBase, IDisposable
 {
-    [Inject] protected IDataService? DataService { get; set; }
-    [Inject] protected NavigationManager? NavManager { get; set; }
-    [Inject] protected IExporter? Exporter { get; set; }
-    [Inject] protected IJSRuntime? JsRuntime { get; set; }
-    [Inject] protected ILogger<ChartablePage>? Logger { get; set; }
+    private readonly Guid componentInstanceId = Guid.NewGuid();
+
+    [Inject]
+    protected IDataService? DataService { get; set; }
+
+    [Inject]
+    protected NavigationManager? NavManager { get; set; }
+
+    [Inject]
+    protected IExporter? Exporter { get; set; }
+
+    [Inject]
+    protected IJSRuntime? JsRuntime { get; set; }
+
+    [Inject]
+    protected ILogger<ChartablePage>? Logger { get; set; }
+
+    protected SnackbarStack? Snackbar { get; set; }
 
     protected IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
-    protected ChartView? chartView;
+    protected ChartView? ChartView { get; set; }
 
-    protected string? pageName;
-
-    Guid _componentInstanceId = Guid.NewGuid();
+    protected string? PageName { get; set; }
 
     protected IEnumerable<Location>? Locations { get; set; }
     protected IEnumerable<Region>? Regions { get; set; }
     protected IEnumerable<GeographicalEntity>? GeographicalEntities { get; set; }
 
-    protected Modal? addDataSetModal { get; set; }
-
-    protected SnackbarStack? snackbar;
+    protected Modal? AddDataSetModal { get; set; }
     protected virtual string? PageTitle { get; }
     protected virtual string? PageUrl { get; }
+
+    public void Dispose()
+    {
+        Logger!.LogInformation("Instance " + componentInstanceId + " disposing");
+        NavManager!.LocationChanged -= HandleNavigationLocationChanged!;
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -50,6 +65,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
             {
                 throw new NullReferenceException(nameof(DataService));
             }
+
             DataSetDefinitions = (await DataService.GetDataSetDefinitions()).ToList();
         }
     }
@@ -84,20 +100,22 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         // re-rendering the chart on two different async call chains at the same time (bad for correctness -
         // this was leading to the same series being rendered more than once, and the year labels on the
         // X axis being added more than once).
-
         var l = new LogAugmenter(Logger!, "BuildDataSets");
         l.LogInformation("Starting");
 
-        chartView!.ChartLoadingIndicatorVisible = true;
-        chartView!.ChartLoadingErrored = false;
-        chartView.LogChartSeriesList();
+        ChartView!.ChartLoadingIndicatorVisible = true;
+        ChartView!.ChartLoadingErrored = false;
+        ChartView.LogChartSeriesList();
 
         // Recalculate the URL
-        string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(chartView.ChartSeriesList!);
+        string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(ChartView.ChartSeriesList!);
 
-        string url = pageName!;
+        string url = PageName!;
 
-        if (chartSeriesUrlComponent.Length > 0) url += "?csd=" + chartSeriesUrlComponent;
+        if (chartSeriesUrlComponent.Length > 0)
+        {
+            url += "?csd=" + chartSeriesUrlComponent;
+        }
 
         string currentUri = NavManager!.Uri;
         string newUri = NavManager.ToAbsoluteUri(url).ToString();
@@ -115,26 +133,20 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         {
             l.LogInformation("Not calling NavigationManager.NavigateTo().");
 
-            var usableChartSeries = chartView.ChartSeriesList!.Where(x => x.DataAvailable);
+            var usableChartSeries = ChartView.ChartSeriesList!.Where(x => x.DataAvailable);
 
             // Fetch the data required to render the selected data series
-            chartView.ChartSeriesWithData = await chartView.RetrieveDataSets(usableChartSeries);
+            ChartView.ChartSeriesWithData = await ChartView.RetrieveDataSets(usableChartSeries);
 
             l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + usableChartSeries.Count() + " entries.");
 
             // Render the series
-            await chartView.HandleRedraw();
+            await ChartView.HandleRedraw();
 
             await UpdateComponents();
         }
 
         l.LogInformation("Leaving");
-    }
-
-    public void Dispose()
-    {
-        Logger!.LogInformation("Instance " + _componentInstanceId + " disposing");
-        NavManager!.LocationChanged -= HandleNavigationLocationChanged!;
     }
 
     protected abstract Task UpdateComponents();
@@ -148,14 +160,6 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         await JsRuntime!.InvokeVoidAsync("willSkipScrollTo", true);
 
         NavManager!.NavigateTo(uri, false, replace);
-    }
-
-    void HandleNavigationLocationChanged(object sender, LocationChangedEventArgs e)
-    {
-        Logger!.LogInformation("Instance " + _componentInstanceId + " HandleLocationChanged: " + NavManager!.Uri);
-
-        // The URL changed. Update UI state to reflect what's in the URL.
-        InvokeAsync(UpdateUiStateBasedOnQueryString);
     }
 
     protected async Task UpdateUiStateBasedOnQueryString()
@@ -175,12 +179,12 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
                 if (csdList.Any())
                 {
-                    chartView!.SelectedBinGranularity = csdList.First().BinGranularity;
+                    ChartView!.SelectedBinGranularity = csdList.First().BinGranularity;
                 }
 
                 Logger!.LogInformation("Setting ChartSeriesList to list with " + csdList.Count + " items");
 
-                chartView!.ChartSeriesList = csdList.ToList();
+                ChartView!.ChartSeriesList = csdList.ToList();
 
                 try
                 {
@@ -188,9 +192,9 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
                 }
                 catch (Exception)
                 {
-                    await snackbar!.PushAsync($"Failed to create the chart with the current settings", SnackbarColor.Danger);
-                    chartView!.ChartLoadingErrored = true;
-                    await chartView!.HandleRedraw();
+                    await Snackbar!.PushAsync($"Failed to create the chart with the current settings", SnackbarColor.Danger);
+                    ChartView!.ChartLoadingErrored = true;
+                    await ChartView!.HandleRedraw();
                 }
 
                 if (stateChanged)
@@ -207,17 +211,17 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     protected Task ShowAddDataSetModal()
     {
-        return addDataSetModal!.Show();
+        return AddDataSetModal!.Show();
     }
 
     protected async Task OnAddDataSet(DataSetLibraryEntry dle)
     {
-        await chartView!.OnAddDataSet(dle, DataSetDefinitions!);
+        await ChartView!.OnAddDataSet(dle, DataSetDefinitions!);
     }
 
     protected async Task OnChartPresetSelected(List<ChartSeriesDefinition> chartSeriesDefinitions)
     {
-        await chartView!.OnChartPresetSelected(chartSeriesDefinitions);
+        await ChartView!.OnChartPresetSelected(chartSeriesDefinitions);
     }
 
     protected async Task OnDownloadDataClicked(DataDownloadPackage dataDownloadPackage)
@@ -226,12 +230,20 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
         var locationNames = dataDownloadPackage.ChartSeriesWithData!.SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!).Select(x => x.LocationName).Where(x => x != null).Distinct().ToArray();
 
-        var fileName = locationNames.Any() ? string.Join("-", locationNames) + "-" : "";
+        var fileName = locationNames.Any() ? string.Join("-", locationNames) + "-" : string.Empty;
 
         fileName = $"Export-{fileName}-{dataDownloadPackage.BinGranularity}-{dataDownloadPackage.Bins!.First().Label}-{dataDownloadPackage.Bins!.Last().Label}.csv";
 
         using var streamRef = new DotNetStreamReference(stream: fileStream);
 
         await JsRuntime!.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+    }
+
+    private void HandleNavigationLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        Logger!.LogInformation("Instance " + componentInstanceId + " HandleLocationChanged: " + NavManager!.Uri);
+
+        // The URL changed. Update UI state to reflect what's in the URL.
+        InvokeAsync(UpdateUiStateBasedOnQueryString);
     }
 }

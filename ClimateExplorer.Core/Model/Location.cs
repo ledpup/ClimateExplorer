@@ -1,15 +1,22 @@
-﻿using GeoCoordinatePortable;
+﻿namespace ClimateExplorer.Core.Model;
+
+using GeoCoordinatePortable;
 using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
-namespace ClimateExplorer.Core.Model;
 public class Location : GeographicalEntity
 {
-    public required string CountryCode { get; set; }
+    public const int TitleMaximumLength = 18;
+
+    private string? title;
+    private string? fullTitle;
+    private string? shorterTitle;
+
+    required public string CountryCode { get; set; }
     public string? Country { get; set; }
-    public required Coordinates Coordinates { get; set; }
+    required public Coordinates Coordinates { get; set; }
     public double? WarmingAnomaly { get; set; }
     public short? HeatingScore { get; set; }
     public List<LocationDistance>? NearbyLocations { get; set; }
@@ -20,14 +27,15 @@ public class Location : GeographicalEntity
         get
         {
             if (fullTitle != null)
+            {
                 return fullTitle;
+            }
 
             fullTitle = Country == null ? Name : $"{Name}, {Country}";
 
             return fullTitle;
         }
     }
-    string? fullTitle;
 
     [JsonIgnore]
     public string ShorterTitle
@@ -35,7 +43,9 @@ public class Location : GeographicalEntity
         get
         {
             if (shorterTitle != null)
+            {
                 return shorterTitle;
+            }
 
             shorterTitle = $"{Name}, {Country}";
 
@@ -50,9 +60,6 @@ public class Location : GeographicalEntity
             return shorterTitle;
         }
     }
-    string? shorterTitle;
-
-    public const int TitleMaximumLength = 18;
 
     [JsonIgnore]
     public string Title
@@ -60,7 +67,9 @@ public class Location : GeographicalEntity
         get
         {
             if (title != null)
+            {
                 return title;
+            }
 
             if (FullTitle.Length <= TitleMaximumLength)
             {
@@ -74,20 +83,9 @@ public class Location : GeographicalEntity
             {
                 title = Name;
             }
-            
+
             return title;
         }
-    }
-    string? title;
-
-    public override string ToString()
-    {
-        return FullTitle;
-    }
-
-    public string UrlReadyName()
-    {
-        return Name.ToLower().Replace(" ", "-").Replace("'", "-");
     }
 
     public static async Task<List<Location>> GetLocationsFromFile(string pathAndFileName)
@@ -112,12 +110,6 @@ public class Location : GeographicalEntity
         locations = [.. locations.OrderBy(x => x.Name)];
 
         return locations;
-    }
-
-    private static async Task SetCountries(List<Location> locations)
-    {
-        var countries = await Model.Country.GetCountries(@"MetaData\countries.txt");
-        locations.ForEach(x => x.Country = countries[x.CountryCode!].Name);
     }
 
     public static Dictionary<Guid, List<LocationDistance>> GenerateNearbyLocations(IEnumerable<Location>? locations)
@@ -156,7 +148,7 @@ public class Location : GeographicalEntity
                     LocationId = x.Id,
                     Distance = distance,
                     BearingDegrees = bearing,
-                    CompassRoseDirection = GeometryHelpers.GetCompassRoseDirectionName(bearing)
+                    CompassRoseDirection = GeometryHelpers.GetCompassRoseDirectionName(bearing),
                 });
         });
 
@@ -207,12 +199,28 @@ public class Location : GeographicalEntity
 
         return heatingScoreTable;
     }
+
+    public override string ToString()
+    {
+        return FullTitle;
+    }
+
+    public string UrlReadyName()
+    {
+        return Name.ToLower().Replace(" ", "-").Replace("'", "-");
+    }
+
+    private static async Task SetCountries(List<Location> locations)
+    {
+        var countries = await Model.Country.GetCountries(@"MetaData\countries.txt");
+        locations.ForEach(x => x.Country = countries[x.CountryCode!].Name);
+    }
 }
 
 public class LocationDistance
 {
-    public required Guid LocationId { get; set; }
-    public required double Distance { get; set; }
-    public required double BearingDegrees { get; set; }
-    public required string CompassRoseDirection { get; set; }
+    required public Guid LocationId { get; set; }
+    required public double Distance { get; set; }
+    required public double BearingDegrees { get; set; }
+    required public string CompassRoseDirection { get; set; }
 }

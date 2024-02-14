@@ -1,7 +1,8 @@
-﻿using System.Text.Json;
+﻿namespace ClimateExplorer.Core.Model;
+
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace ClimateExplorer.Core.Model;
 public class DataSetDefinition
 {
     public Guid Id { get; set; }
@@ -40,4 +41,3 @@ public class DataSetDefinition
         return "DSD " + Name;
     }
 }
-

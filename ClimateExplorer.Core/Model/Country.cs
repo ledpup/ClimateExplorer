@@ -1,16 +1,11 @@
-﻿using System.Text.RegularExpressions;
+﻿namespace ClimateExplorer.Core.Model;
 
-namespace ClimateExplorer.Core.Model;
+using System.Text.RegularExpressions;
 
 public class Country
 {
-    public required string Name { get; set; }
-    public required string Code { get; set; }
-
-    public override string ToString()
-    {
-        return Name;
-    }
+    required public string Name { get; set; }
+    required public string Code { get; set; }
 
     public static async Task<Dictionary<string, Country>> GetCountries(string location)
     {
@@ -34,7 +29,8 @@ public class Country
                 continue;
             }
 
-            countries.Add(groups["id"].Value,
+            countries.Add(
+                groups["id"].Value,
                 new Country
                 {
                     Code = groups["id"].Value,
@@ -43,5 +39,10 @@ public class Country
         }
 
         return countries;
+    }
+
+    public override string ToString()
+    {
+        return Name;
     }
 }

@@ -3,5 +3,5 @@
 public enum SouthernHemisphereTropicalSeasons
 {
     Wet,
-    Dry
+    Dry,
 }

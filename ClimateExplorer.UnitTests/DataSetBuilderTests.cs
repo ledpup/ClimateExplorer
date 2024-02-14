@@ -237,7 +237,7 @@ public class DataSetBuilderTests
     {
         var dsb = new DataSetBuilder();
 
-        var dataPoints = 
+        var dataPoints =
             BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f)
             .Where(x => x.Month != 1 || x.Day < 11 || x.Day > 11)
             .ToArray();
@@ -525,7 +525,7 @@ public class DataSetBuilderTests
 
     TemporalDataPoint[] BuildConstantTemporalDataPointArrayFor1990(double? value = 10)
     {
-        return 
+        return
             Enumerable.Range(0, 365)
             .Select(x => new TemporalDataPoint(new DateOnly(1990, 1, 1)
             .AddDays(x), value))

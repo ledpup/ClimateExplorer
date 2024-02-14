@@ -1,8 +1,9 @@
-﻿using ClimateExplorer.Core.ViewModel;
+﻿namespace ClimateExplorer.Core.Model;
+
 using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.ViewModel;
 using static ClimateExplorer.Core.Enums;
 
-namespace ClimateExplorer.Core.Model;
 public class DataSet
 {
     public DataSet()
@@ -14,25 +15,35 @@ public class DataSet
 
     // TODO: This will go (replaced by BinGranularity)
     public DataResolution Resolution { get; set; }
-    public GeographicalEntity? GeographicalEntity { get;  set; }
+    public GeographicalEntity? GeographicalEntity { get; set; }
     public MeasurementDefinitionViewModel? MeasurementDefinition { get; set; }
-    public DataType DataType { get { return MeasurementDefinition!.DataType; } }
-    public DataAdjustment? DataAdjustment { get { return MeasurementDefinition!.DataAdjustment; } }
+    public DataType DataType
+    {
+        get { return MeasurementDefinition!.DataType; }
+    }
 
-    /// <summary>
-    /// Used when doing multi-location series like "Temperature by latitude"
-    /// </summary>
+    public DataAdjustment? DataAdjustment
+    {
+        get { return MeasurementDefinition!.DataAdjustment; }
+    }
+
+    // Used when doing multi-location series like "Temperature by latitude".
     public List<Location>? Locations { get; set; }
 
     public List<DataRecord> DataRecords { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
     public TemporalDataPoint[]? RawDataRecords { get; set; }
 
     // TODO: This will go (replaced by code that is bin-oriented)
-    public short? StartYear 
+    public short? StartYear
     {
-        get 
+        get
         {
-            if (!DataRecords.Any()) return null;
+            if (!DataRecords.Any())
+            {
+                return null;
+            }
 
             switch (Resolution)
             {
@@ -60,10 +71,11 @@ public class DataSet
             }
         }
     }
+
     public short? Year { get; set; }
 
     public List<short> Years
-    { 
+    {
         get
         {
             if (Year != null)
@@ -71,7 +83,7 @@ public class DataSet
                 return [Year.Value];
             }
 
-            return 
+            return
                 DataRecords
                 .Where(x => x.Value != null)
                 .Select(x => x.Year)
@@ -100,4 +112,3 @@ public class DataSet
         return $"{DataType} | {DataAdjustment} | {BinGranularity} | {GeographicalEntity} | {DataRecords.Count}";
     }
 }
-

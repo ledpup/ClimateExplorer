@@ -1,9 +1,13 @@
-﻿using System.Globalization;
+﻿namespace ClimateExplorer.Core.DataPreparation;
 
-namespace ClimateExplorer.Core.DataPreparation;
+using System.Globalization;
 
 public static class DateHelpers
 {
+    private const int FirstMonthOfSouthernHemisphereSummer = 12;
+    private const int FirstMonthOfSouthernHemisphereWetSeason = 10;
+    private const int LastMonthOfSouthernHemisphereWetSeason = 4;
+
     public static string GetShortMonthName(short monthNumber)
     {
         if (monthNumber < 1 || monthNumber > 12)
@@ -23,100 +27,61 @@ public static class DateHelpers
         do
         {
             d = d.AddDays(1);
-        } while (d.Month == month);
+        }
+        while (d.Month == month);
 
         return d.AddDays(-1);
     }
 
-    public class SouthernHemisphereTemperateSeasonOccurrence
-    {
-        public int Year;
-        public SouthernHemisphereTemperateSeasons Season;
-
-        public override bool Equals(object? obj)
-        {
-            var other = obj as SouthernHemisphereTemperateSeasonOccurrence;
-
-            if (other == null) return false;
-
-            return Year == other.Year && Season == other.Season;
-        }
-
-        public override int GetHashCode()
-        {
-            return Year * (((int)Season) + 10);
-        }
-
-        public override string ToString()
-        {
-            return $"{Season} {Year}";
-        }
-
-    }
-
-    public class SouthernHemisphereTropicalSeasonOccurrence
-    {
-        public int Year;
-        public SouthernHemisphereTropicalSeasons Season;
-
-        public override bool Equals(object? obj)
-        {
-            var other = obj as SouthernHemisphereTropicalSeasonOccurrence;
-
-            if (other == null) return false;
-
-            return Year == other.Year && Season == other.Season;
-        }
-
-        public override int GetHashCode()
-        {
-            return Year * (((int)Season) + 10);
-        }
-
-        public override string ToString()
-        {
-            return $"{Season} {Year}";
-        }
-    }
-
-    const int FirstMonthOfSouthernHemisphereSummer = 12;
-
     public static SouthernHemisphereTemperateSeasonOccurrence GetSouthernHemisphereTemperateSeasonAndYear(short year, short month)
     {
-        return 
+        return
             new SouthernHemisphereTemperateSeasonOccurrence
             {
                 // Special case: December is Summer, and we place it in the next year's summer.
                 Year = year + ((month == 12) ? 1 : 0),
-                Season = GetSouthernHemisphereTemperateSeasonForMonth(month)
+                Season = GetSouthernHemisphereTemperateSeasonForMonth(month),
             };
     }
 
-    const int FirstMonthOfSouthernHemisphereWetSeason = 10;
-    const int LastMonthOfSouthernHemisphereWetSeason = 4;
-
     public static SouthernHemisphereTropicalSeasonOccurrence GetSouthernHemisphereTropicalSeasonAndYear(short year, short month)
     {
-        return 
+        return
             new SouthernHemisphereTropicalSeasonOccurrence
             {
                 // Special case: Oct-Dec are wet season, and we place them in the next year's wet season.
                 Year = year + ((month >= FirstMonthOfSouthernHemisphereWetSeason) ? 1 : 0),
-                Season = GetSouthernHemisphereTropicalSeasonForMonth(month)
+                Season = GetSouthernHemisphereTropicalSeasonForMonth(month),
             };
     }
 
     public static SouthernHemisphereTemperateSeasons GetSouthernHemisphereTemperateSeasonForMonth(int month)
     {
-        if (month <= 2 || month == 12) return SouthernHemisphereTemperateSeasons.Summer;
-        if (month <= 5) return SouthernHemisphereTemperateSeasons.Autumn;
-        if (month <= 8) return SouthernHemisphereTemperateSeasons.Winter;
+        if (month <= 2 || month == 12)
+        {
+            return SouthernHemisphereTemperateSeasons.Summer;
+        }
+
+        if (month <= 5)
+        {
+            return SouthernHemisphereTemperateSeasons.Autumn;
+        }
+
+        if (month <= 8)
+        {
+            return SouthernHemisphereTemperateSeasons.Winter;
+        }
+
         return SouthernHemisphereTemperateSeasons.Spring;
     }
 
     public static SouthernHemisphereTropicalSeasons GetSouthernHemisphereTropicalSeasonForMonth(int month)
     {
-        if (month <= LastMonthOfSouthernHemisphereWetSeason || month >= FirstMonthOfSouthernHemisphereWetSeason) return SouthernHemisphereTropicalSeasons.Wet;
+        if (month <= LastMonthOfSouthernHemisphereWetSeason || month >= FirstMonthOfSouthernHemisphereWetSeason)
+        {
+            return SouthernHemisphereTropicalSeasons.Wet;
+        }
+
         return SouthernHemisphereTropicalSeasons.Dry;
     }
 
@@ -146,7 +111,6 @@ public static class DateHelpers
         }
     }
 
-
     public static DateOnly GetFirstDayInTropicalSeasonOccurrence(SouthernHemisphereTropicalSeasonOccurrence seasonOccurrence)
     {
         switch (seasonOccurrence.Season)
@@ -169,21 +133,9 @@ public static class DateHelpers
         }
     }
 
-    public struct DateOnlySpan
-    {
-        public DateOnlySpan(DateOnly start, DateOnly end)
-        {
-            Start = start;
-            End = end;
-        }
-
-        public DateOnly Start { get; set; }
-        public DateOnly End { get; set; }
-    }
-
     public static int GetMonthIndex(DateOnly d)
     {
-        return d.Year * 12 + d.Month - 1;
+        return (d.Year * 12) + d.Month - 1;
     }
 
     public static DateOnly GetFirstDayInMonthByMonthIndex(int monthIndex)
@@ -200,8 +152,15 @@ public static class DateHelpers
 
     public static DateOnlySpan[] DivideDateSpanIntoMonthSegments(DateOnly start, DateOnly end)
     {
-        if (start.Day != 1) throw new Exception($"Day component of start date must be 1 - {start}");
-        if (end.AddDays(1).Day != 1) throw new Exception($"Day day of end date must be last day of month - {end}");
+        if (start.Day != 1)
+        {
+            throw new Exception($"Day component of start date must be 1 - {start}");
+        }
+
+        if (end.AddDays(1).Day != 1)
+        {
+            throw new Exception($"Day day of end date must be last day of month - {end}");
+        }
 
         List<DateOnlySpan> spans = [];
 
@@ -219,7 +178,7 @@ public static class DateHelpers
     public static DateOnlySpan[] DivideDateSpanIntoSegmentsWithIncompleteFinalSegmentAddedToFinalSegment(DateOnly start, DateOnly end, int segmentSizeInDays)
     {
         int daysInSpan =
-            (int)((end.ToDateTime(new TimeOnly()) - start.ToDateTime(new TimeOnly())).TotalDays) + 1;
+            (int)(end.ToDateTime(default(TimeOnly)) - start.ToDateTime(default(TimeOnly))).TotalDays + 1;
 
         int completeSegmentsInSpan = daysInSpan / segmentSizeInDays;
 
@@ -228,7 +187,7 @@ public static class DateHelpers
         {
             return new DateOnlySpan[]
             {
-                new DateOnlySpan { Start = start, End = end }
+                new DateOnlySpan { Start = start, End = end },
             };
         }
 
@@ -251,6 +210,74 @@ public static class DateHelpers
 
     public static int CountDaysInRange(DateOnly start, DateOnly end)
     {
-        return (int)((end.ToDateTime(new TimeOnly()) - start.ToDateTime(new TimeOnly())).TotalDays) + 1;
+        return (int)(end.ToDateTime(default(TimeOnly)) - start.ToDateTime(default(TimeOnly))).TotalDays + 1;
+    }
+
+    public struct DateOnlySpan
+    {
+        public DateOnlySpan(DateOnly start, DateOnly end)
+        {
+            Start = start;
+            End = end;
+        }
+
+        public DateOnly Start { get; set; }
+        public DateOnly End { get; set; }
+    }
+
+    public class SouthernHemisphereTropicalSeasonOccurrence
+    {
+        public int Year { get; set; }
+        public SouthernHemisphereTropicalSeasons Season { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            var other = obj as SouthernHemisphereTropicalSeasonOccurrence;
+
+            if (other == null)
+            {
+                return false;
+            }
+
+            return Year == other.Year && Season == other.Season;
+        }
+
+        public override int GetHashCode()
+        {
+            return Year * (((int)Season) + 10);
+        }
+
+        public override string ToString()
+        {
+            return $"{Season} {Year}";
+        }
+    }
+
+    public class SouthernHemisphereTemperateSeasonOccurrence
+    {
+        public int Year { get; set; }
+        public SouthernHemisphereTemperateSeasons Season { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            var other = obj as SouthernHemisphereTemperateSeasonOccurrence;
+
+            if (other == null)
+            {
+                return false;
+            }
+
+            return Year == other.Year && Season == other.Season;
+        }
+
+        public override int GetHashCode()
+        {
+            return Year * (((int)Season) + 10);
+        }
+
+        public override string ToString()
+        {
+            return $"{Season} {Year}";
+        }
     }
 }

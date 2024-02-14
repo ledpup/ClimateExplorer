@@ -1,6 +1,6 @@
-﻿using static ClimateExplorer.Core.Enums;
+﻿namespace ClimateExplorer.Core.ViewModel;
 
-namespace ClimateExplorer.Core.ViewModel;
+using static ClimateExplorer.Core.Enums;
 
 public class MeasurementDefinitionViewModel
 {

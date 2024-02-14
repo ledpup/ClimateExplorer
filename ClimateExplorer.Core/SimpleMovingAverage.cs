@@ -1,6 +1,6 @@
-﻿using ClimateExplorer.Core.Model;
+﻿namespace ClimateExplorer.Core;
 
-namespace ClimateExplorer.Core;
+using ClimateExplorer.Core.Model;
 
 public interface IMovingAverageCalculator
 {
@@ -9,12 +9,13 @@ public interface IMovingAverageCalculator
 
 public class SimpleMovingAverageCalculator : IMovingAverageCalculator
 {
+    private readonly Queue<double?> samples = new Queue<double?>();
+    private readonly int windowSize = 5;
+
     public SimpleMovingAverageCalculator(int windowSize)
     {
-        _windowSize = windowSize;
+        this.windowSize = windowSize;
     }
-    private Queue<double?> samples = new Queue<double?>();
-    private int _windowSize = 5;
 
     public double? AddSample(double? value)
     {
@@ -25,7 +26,7 @@ public class SimpleMovingAverageCalculator : IMovingAverageCalculator
         samples.Enqueue(value);
 
         // If that has made our "history window" larger than its max size, we remove the oldest entry.
-        if (samples.Count > _windowSize)
+        if (samples.Count > windowSize)
         {
             samples.Dequeue();
         }
@@ -35,7 +36,7 @@ public class SimpleMovingAverageCalculator : IMovingAverageCalculator
         // 20, and we have only seen 5 samples so far, and none of them are null, then we will return
         // an average).
         var nonNullSamplesInWindow = samples.Where(x => x != null).ToArray();
-        if (nonNullSamplesInWindow.Length >= _windowSize * .25f)
+        if (nonNullSamplesInWindow.Length >= windowSize * .25f)
         {
             return nonNullSamplesInWindow.Average();
         }
@@ -47,19 +48,20 @@ public class SimpleMovingAverageCalculator : IMovingAverageCalculator
 
 public class OptimizedMovingAverageCalculator : IMovingAverageCalculator
 {
+    private readonly Queue<double?> samples = new Queue<double?>();
+    private readonly int windowSize = 5;
+
+    private int numberOfNonNullSamplesInQueue = 0;
+    private double runningTotalOfNonNullSamplesInQueue = 0;
+
     public OptimizedMovingAverageCalculator(int windowSize)
     {
-        _windowSize = windowSize;
+        this.windowSize = windowSize;
     }
-    private Queue<double?> samples = new Queue<double?>();
-    private int _windowSize = 5;
-
-    int _numberOfNonNullSamplesInQueue = 0;
-    double _runningTotalOfNonNullSamplesInQueue = 0;
 
     public double? AddSample(double? value)
     {
-        var requiredNumberOfNonNullSamples = (int)(_windowSize * 0.25f);
+        var requiredNumberOfNonNullSamples = (int)(windowSize * 0.25f);
 
         // The "samples" queue contains the most recent data points, up to a max of _windowSize entries.
         // Each can be null or have a value.
@@ -69,19 +71,19 @@ public class OptimizedMovingAverageCalculator : IMovingAverageCalculator
 
         if (value != null)
         {
-            _numberOfNonNullSamplesInQueue++;
-            _runningTotalOfNonNullSamplesInQueue += value.Value;
+            numberOfNonNullSamplesInQueue++;
+            runningTotalOfNonNullSamplesInQueue += value.Value;
         }
 
         // If that has made our "history window" larger than its max size, we remove the oldest entry.
-        if (samples.Count > _windowSize)
+        if (samples.Count > windowSize)
         {
             var dequeued = samples.Dequeue();
 
             if (dequeued != null)
             {
-                _numberOfNonNullSamplesInQueue--;
-                _runningTotalOfNonNullSamplesInQueue -= dequeued.Value;
+                numberOfNonNullSamplesInQueue--;
+                runningTotalOfNonNullSamplesInQueue -= dequeued.Value;
             }
         }
 
@@ -89,9 +91,9 @@ public class OptimizedMovingAverageCalculator : IMovingAverageCalculator
         // of them. (Note that, for example, this means that if the max size of the history window is
         // 20, and we have only seen 5 samples so far, and none of them are null, then we will return
         // an average).
-        if (_numberOfNonNullSamplesInQueue >= requiredNumberOfNonNullSamples)
+        if (numberOfNonNullSamplesInQueue >= requiredNumberOfNonNullSamples)
         {
-            return _runningTotalOfNonNullSamplesInQueue / _numberOfNonNullSamplesInQueue;
+            return runningTotalOfNonNullSamplesInQueue / numberOfNonNullSamplesInQueue;
         }
 
         // Otherwise, we don't have enough data, so just return null
@@ -101,11 +103,11 @@ public class OptimizedMovingAverageCalculator : IMovingAverageCalculator
 
 public class DataRecordMovingAverageCalculator
 {
-    IMovingAverageCalculator _calculator;
+    private readonly IMovingAverageCalculator calculator;
 
     public DataRecordMovingAverageCalculator(IMovingAverageCalculator calculator)
     {
-        _calculator = calculator;
+        this.calculator = calculator;
     }
 
     public List<DataRecord> Calculate(IEnumerable<DataRecord> dataRecords)
@@ -116,7 +118,7 @@ public class DataRecordMovingAverageCalculator
 
         foreach (var dr in dataRecords)
         {
-            var val = _calculator.AddSample(dr.Value);
+            var val = calculator.AddSample(dr.Value);
 
             if (val != null || haveEmittedAnyRecords)
             {
@@ -125,9 +127,8 @@ public class DataRecordMovingAverageCalculator
                     {
                         Label = dr.Label,
                         BinId = dr.BinId,
-                        Value = val
-                    }
-                );
+                        Value = val,
+                    });
             }
         }
 
