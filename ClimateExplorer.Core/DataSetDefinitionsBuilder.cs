@@ -1,11 +1,11 @@
-﻿namespace ClimateExplorer.Data.Misc;
+﻿namespace ClimateExplorer.Core;
 
 using ClimateExplorer.Core.Model;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using static ClimateExplorer.Core.Enums;
 
-internal class DataSetDefinitionsBuilder
+public class DataSetDefinitionsBuilder
 {
     public static List<DataSetDefinition> BuildDataSetDefinitions()
     {
@@ -863,17 +863,6 @@ Two different indices are calculated, one that is relevant for the ozone layer o
                 ],
             },
         };
-
-        var options = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            Converters = { new JsonStringEnumConverter() },
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        };
-
-        Directory.CreateDirectory("Output");
-
-        File.WriteAllText(@"Output\DataSetDefinitions.json", JsonSerializer.Serialize(dataSetDefinitions, options));
 
         return dataSetDefinitions;
     }

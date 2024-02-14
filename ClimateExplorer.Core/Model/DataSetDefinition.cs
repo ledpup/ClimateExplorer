@@ -20,11 +20,9 @@ public class DataSetDefinition
 
     public DataFileMapping? DataLocationMapping { get; set; }
 
-    public static async Task<List<DataSetDefinition>> GetDataSetDefinitions(string filePath = @"MetaData\DataSetDefinitions.json")
+    public static async Task<List<DataSetDefinition>> GetDataSetDefinitions()
     {
-        var text = await File.ReadAllTextAsync(filePath);
-        var options = new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() } };
-        var ddds = JsonSerializer.Deserialize<List<DataSetDefinition>>(text, options);
+        var ddds = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
 
         var dataFileMappings = await DataFileMapping.GetDataFileMappings();
         foreach (var ddd in ddds!)

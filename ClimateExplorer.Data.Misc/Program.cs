@@ -1,4 +1,5 @@
 ﻿#pragma warning disable SA1200 // Using directives should be placed correctly
+using ClimateExplorer.Core;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Data.Misc;
 using ClimateExplorer.Data.Misc.Ozone;
