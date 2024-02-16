@@ -113,7 +113,7 @@ var dataFileMapping = new DataFileMapping
             }
         },
         {
-        Region.RegionId(Region.R60S60N),
+        Region.RegionId(Region.R60s60n),
             new()
             {
                 new()

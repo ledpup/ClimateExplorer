@@ -12,7 +12,14 @@ public class Region : GeographicalEntity
     public const string Arctic = "Arctic";
     public const string Antarctic = "Antarctic";
     public const string Greenland = "Greenland";
-    public const string R60S60N = "60°S-60°N";
+    public const string R60s60n = "60°S-60°N";
+    public const string R60s60nOcean = "60°S-60°N Ocean";
+
+    public const string NorthernHemiOcean = "Northern Hemisphere Ocean";
+    public const string SouthernHemiOcean = "Southern Hemisphere Ocean";
+
+    public const string ArcticOcean = "Arctic Ocean";
+    public const string AntarcticOcean = "Antarctic Ocean";
 
     public List<Guid>? LocationIds { get; set; }
 
@@ -41,7 +48,12 @@ public class Region : GeographicalEntity
             Arctic => new Guid("A2F94904-5EAE-45E5-AFFA-F6F190256C5D"),
             Antarctic => new Guid("C596129B-724C-472A-86BE-8B98901377D4"),
             Greenland => new Guid("F414D04E-E08D-4908-A5A4-F9513D4A9C25"),
-            R60S60N => new Guid("DC61D863-32BF-4A4E-AE86-7A34911B8509"),
+            R60s60n => new Guid("DC61D863-32BF-4A4E-AE86-7A34911B8509"),
+            R60s60nOcean => new Guid("3AB58FCA-497F-4D21-B93A-76D69E283072"),
+            NorthernHemiOcean => new Guid("0504C1B9-5A1A-4157-AF2E-E75EAEB42189"),
+            SouthernHemiOcean => new Guid("330FFE23-9D6F-4DE8-B96D-2960CD2EF063"),
+            ArcticOcean => new Guid("50523F70-6A9A-4B7C-A824-434CD91328DD"),
+            AntarcticOcean => new Guid("4A2EBA37-E623-47D8-9FB9-58F695CEDF72"),
             _ => throw new NotImplementedException()
         };
     }
@@ -102,8 +114,33 @@ public class Region : GeographicalEntity
             },
             new Region
             {
-                Id = RegionId(R60S60N),
-                Name = R60S60N,
+                Id = RegionId(R60s60n),
+                Name = R60s60n,
+            },
+            new Region
+            {
+                Id = RegionId(R60s60nOcean),
+                Name = R60s60nOcean,
+            },
+            new Region
+            {
+                Id = RegionId(ArcticOcean),
+                Name = ArcticOcean,
+            },
+            new Region
+            {
+                Id = RegionId(AntarcticOcean),
+                Name = AntarcticOcean,
+            },
+            new Region
+            {
+                Id = RegionId(NorthernHemiOcean),
+                Name = NorthernHemiOcean,
+            },
+            new Region
+            {
+                Id = RegionId(SouthernHemiOcean),
+                Name = SouthernHemiOcean,
             },
             new Region
             {
