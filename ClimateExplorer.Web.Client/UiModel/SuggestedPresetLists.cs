@@ -443,11 +443,18 @@ public static class SuggestedPresetLists
 
         var arcticTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Arctic), DataType.TempMean, null, throwIfNoMatch: true);
         var antarcticTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Antarctic), DataType.TempMean, null, throwIfNoMatch: true);
-        var r60S60NTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.R60S60N), DataType.TempMean, null, throwIfNoMatch: true);
+        var r60S60NTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.R60s60n), DataType.TempMean, null, throwIfNoMatch: true);
 
         var ozoneHoleArea = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.SouthernHemi), DataType.OzoneHoleArea, null, throwIfNoMatch: true);
         var ozoneHoleColumn = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.SouthernHemi), DataType.OzoneHoleColumn, null, throwIfNoMatch: true);
         var odgi = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.SouthernHemi), DataType.Ozone, null, throwIfNoMatch: true);
+
+        var northernOceanTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.NorthernHemiOcean), DataType.TempMean, null, throwIfNoMatch: true);
+        var southernOceanTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.SouthernHemiOcean), DataType.TempMean, null, throwIfNoMatch: true);
+
+        var arcticOceanTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.ArcticOcean), DataType.TempMean, null, throwIfNoMatch: true);
+        var antarcticOceanTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.AntarcticOcean), DataType.TempMean, null, throwIfNoMatch: true);
+        var r60S60NOceanTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.R60s60nOcean), DataType.TempMean, null, throwIfNoMatch: true);
 
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
@@ -581,7 +588,7 @@ public static class SuggestedPresetLists
             new SuggestedChartPresetModelWithVariants()
             {
                 Title = "Global temperature anomaly",
-                Description = "Global temperature anomalies of ocean, land and combined temperatures",
+                Description = "Bar chart of the global temperature anomaly for a combined land and ocean sea surface temperature (SST)",
                 ChartSeriesList =
                 [
                     new ()
@@ -590,41 +597,83 @@ public static class SuggestedPresetLists
                         SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), globalTemp!),
                         Aggregation = SeriesAggregationOptions.Mean,
                         BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                        Smoothing = SeriesSmoothingOptions.None,
                         SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
                         Year = null,
-                        DisplayStyle = SeriesDisplayStyle.Line,
+                        DisplayStyle = SeriesDisplayStyle.Bar,
                         RequestedColour = UiLogic.Colours.Red,
-                    },
-                    new ()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Land"), globalLandTemp!),
-                        Aggregation = SeriesAggregationOptions.Mean,
-                        BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                        SmoothingWindow = 20,
-                        Value = SeriesValueOptions.Value,
-                        Year = null,
-                        DisplayStyle = SeriesDisplayStyle.Line,
-                        RequestedColour = UiLogic.Colours.Green,
-                    },
-                    new ()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Ocean"), globalLandTemp!),
-                        Aggregation = SeriesAggregationOptions.Mean,
-                        BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                        SmoothingWindow = 20,
-                        Value = SeriesValueOptions.Value,
-                        Year = null,
-                        DisplayStyle = SeriesDisplayStyle.Line,
-                        RequestedColour = UiLogic.Colours.Blue,
                     },
                 ],
                 Variants = [
+                    new ()
+                    {
+                        Title = "Land vs ocean",
+                        Description = "Global temperature anomalies of ocean and land temperatures",
+                        ChartSeriesList =
+                        [
+                            new ()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Land"), globalLandTemp!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 20,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                RequestedColour = UiLogic.Colours.Green,
+                            },
+                            new ()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Ocean"), globalOceanTemp!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 20,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                RequestedColour = UiLogic.Colours.Blue,
+                            },
+                        ],
+                    },
+                    new ()
+                    {
+                        Title = "Arctic vs Antarctic",
+                        Description = "Combined land and ocean temperatures for the Arctic and Antarctic regions",
+                        ChartSeriesList =
+                            [
+                                new ChartSeriesDefinition()
+                                {
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Arctic), arcticTemp!),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYear,
+                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                    SmoothingWindow = 20,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null,
+                                    DisplayStyle = SeriesDisplayStyle.Line,
+                                    RequestedColour = UiLogic.Colours.Orange,
+                                },
+                                new ChartSeriesDefinition()
+                                {
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Antarctic), antarcticTemp!),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYear,
+                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                    SmoothingWindow = 20,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null,
+                                    DisplayStyle = SeriesDisplayStyle.Line,
+                                    RequestedColour = UiLogic.Colours.Purple,
+                                },
+                            ],
+                    },
                     new ()
                     {
                         Title = "North vs south",
@@ -657,16 +706,74 @@ public static class SuggestedPresetLists
                                 },
                             ],
                     },
+                ],
+            });
+
+        suggestedPresets.Add(
+            new SuggestedChartPresetModelWithVariants()
+            {
+                Title = "Ocean temperature anomaly",
+                Description = "Bar chart of the temperature anomaly of the sea surface temperatures (SSTs) from 60°S to 60°N",
+                ChartSeriesList =
+                [
+                    new ()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.R60s60nOcean), r60S60NOceanTemp!),
+                        Aggregation = SeriesAggregationOptions.Mean,
+                        BinGranularity = BinGranularities.ByYear,
+                        Smoothing = SeriesSmoothingOptions.None,
+                        SmoothingWindow = 20,
+                        Value = SeriesValueOptions.Value,
+                        Year = null,
+                        DisplayStyle = SeriesDisplayStyle.Bar,
+                    },
+                ],
+                Variants = [
                     new ()
                     {
                         Title = "Arctic vs Antarctic",
-                        Description = "Combined land and ocean temperatures for the Arctic, Antarctic and 60°S-60°N regions",
+                        Description = "Sea surface temperature (SST) anomalies of the Arctic and Antarctic",
+                        ChartSeriesList =
+                        [
+                            new ()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.ArcticOcean), arcticOceanTemp!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 20,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                RequestedColour = UiLogic.Colours.Orange,
+                            },
+                            new ()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.AntarcticOcean), antarcticOceanTemp!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 20,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                RequestedColour = UiLogic.Colours.Purple,
+                            },
+                        ],
+                    },
+                    new ()
+                    {
+                        Title = "North vs south",
+                        Description = "Ocean temperature anomalies for the Northern and Southern Hemisphere",
                         ChartSeriesList =
                             [
                                 new ChartSeriesDefinition()
                                 {
                                     SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Arctic), arcticTemp!),
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.NorthernHemiOcean), northernOceanTemp!),
                                     Aggregation = SeriesAggregationOptions.Mean,
                                     BinGranularity = BinGranularities.ByYear,
                                     Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -678,19 +785,7 @@ public static class SuggestedPresetLists
                                 new ChartSeriesDefinition()
                                 {
                                     SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Antarctic), antarcticTemp!),
-                                    Aggregation = SeriesAggregationOptions.Mean,
-                                    BinGranularity = BinGranularities.ByYear,
-                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                    SmoothingWindow = 20,
-                                    Value = SeriesValueOptions.Value,
-                                    Year = null,
-                                    DisplayStyle = SeriesDisplayStyle.Line,
-                                },
-                                new ChartSeriesDefinition()
-                                {
-                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.R60S60N), r60S60NTemp!),
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.SouthernHemiOcean), southernOceanTemp!),
                                     Aggregation = SeriesAggregationOptions.Mean,
                                     BinGranularity = BinGranularities.ByYear,
                                     Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -700,8 +795,7 @@ public static class SuggestedPresetLists
                                     DisplayStyle = SeriesDisplayStyle.Line,
                                 },
                             ],
-                    }
-
+                    },
                 ],
             });
 
@@ -709,23 +803,9 @@ public static class SuggestedPresetLists
             new SuggestedChartPresetModelWithVariants()
             {
                 Title = "Sea ice extent",
-                Description = "Antarctic and Arctic sea ice extent, measured in millions of square kilometres since 1979",
+                Description = "Arctic and Antarctic sea ice extent, measured in millions of square kilometres since 1979",
                 ChartSeriesList =
                     [
-                        new ChartSeriesDefinition()
-                        {
-                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Antarctic), southSeaIceExtent!),
-                            Aggregation = SeriesAggregationOptions.Mean,
-                            BinGranularity = BinGranularities.ByYear,
-                            Smoothing = SeriesSmoothingOptions.MovingAverage,
-                            SmoothingWindow = 10,
-                            Value = SeriesValueOptions.Value,
-                            Year = null,
-                            DisplayStyle = SeriesDisplayStyle.Line,
-                            RequestedColour = UiLogic.Colours.Purple,
-                            GroupingThreshold = 0.1f,
-                        },
                         new ChartSeriesDefinition()
                         {
                             SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -738,6 +818,20 @@ public static class SuggestedPresetLists
                             Year = null,
                             DisplayStyle = SeriesDisplayStyle.Line,
                             RequestedColour = UiLogic.Colours.Orange,
+                            GroupingThreshold = 0.1f,
+                        },
+                        new ChartSeriesDefinition()
+                        {
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Antarctic), southSeaIceExtent!),
+                            Aggregation = SeriesAggregationOptions.Mean,
+                            BinGranularity = BinGranularities.ByYear,
+                            Smoothing = SeriesSmoothingOptions.MovingAverage,
+                            SmoothingWindow = 10,
+                            Value = SeriesValueOptions.Value,
+                            Year = null,
+                            DisplayStyle = SeriesDisplayStyle.Line,
+                            RequestedColour = UiLogic.Colours.Purple,
                             GroupingThreshold = 0.1f,
                         },
                     ],
