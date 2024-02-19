@@ -7,6 +7,7 @@ using Blazorise.Charts.Trendline;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using static ClimateExplorer.Core.Enums;
+using Blazorise;
 
 public static class ChartLogic
 {
@@ -281,14 +282,13 @@ public static class ChartLogic
         };
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
     public static List<string> GetBarChartColourSet(List<double?> values, bool redPositive = true)
     {
         var count = values.Count;
 
-        var min = (redPositive ? values.Min()! : values.Max()!).Value;
-        var max = (redPositive ? values.Max()! : values.Min()!).Value;
+        var red = ChartColor.FromRgba(255, 63, 63, 1f);
+        var blue = ChartColor.FromRgba(63, 63, 255, 1f);
 
         var colour = new List<string>();
         for (var i = 0; i < count; i++)
@@ -296,18 +296,14 @@ public static class ChartLogic
             ChartColor chartColor;
             if (values[i].HasValue)
             {
-                var adjustedValue = values![i]!.Value * (redPositive ? 1f : -1f);
-                if (Math.Abs(adjustedValue) < .5)
+                var value = values![i]!.Value * (redPositive ? 1f : -1f);
+                if (value > 0)
                 {
-                    chartColor = ChartColor.FromHtmlColorCode("#000000");
-                }
-                else if (adjustedValue > 0)
-                {
-                    chartColor = ChartColor.FromRgba((byte)(63 + (Math.Abs(adjustedValue / max) * 192)), 0, 0, 1f);
+                    chartColor = red;
                 }
                 else
                 {
-                    chartColor = ChartColor.FromRgba(0, 0, (byte)(63 + (Math.Abs(adjustedValue / min) * 192)), 1f);
+                    chartColor = blue;
                 }
 
                 colour.Add(chartColor);
