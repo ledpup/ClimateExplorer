@@ -71,4 +71,30 @@ public class DateHelpersTests
         // The last segment should end on the last day of the year
         Assert.AreEqual(new DateOnly(1990, 12, 31), segments[25].End);
     }
+
+    [TestMethod]
+    public void DecimalDateTest()
+    {
+        // These data are from co2_daily_mlo.csv so we can assume that the decimal column is correct.
+        // Cross-check the decimal column with the year, month and day fields of the first 3 columns.
+        var data = @"1974,12,29,1974.9932
+1974,12,30,1974.9959
+1974,12,31,1974.9986
+1975,1,1,1975.0014
+1975,1,2,1975.0041
+1975,1,3,1975.0068
+1994,8,19,1994.6315
+1994,8,20,1994.6342
+2004,12,24,2004.9795
+2023,4,11,2023.2753";
+
+        var rows = data.Split("\r\n");
+        foreach (var row in rows)
+        {
+            var fields = row.Split(',');
+
+            var result = DateHelpers.ConvertDecimalDate(double.Parse(fields[3]));
+            Assert.AreEqual(new DateOnly(int.Parse(fields[0]), int.Parse(fields[1]), int.Parse(fields[2])), result);
+        }
+    }
 }

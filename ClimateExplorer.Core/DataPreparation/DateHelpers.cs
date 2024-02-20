@@ -213,6 +213,16 @@ public static class DateHelpers
         return (int)(end.ToDateTime(default(TimeOnly)) - start.ToDateTime(default(TimeOnly))).TotalDays + 1;
     }
 
+    public static DateOnly ConvertDecimalDate(double decimalDate)
+    {
+        var year = (int)double.Floor(decimalDate);
+        var reminder = decimalDate - year;
+        var daysPerYear = DateTime.IsLeapYear(year) ? 366 : 365;
+        var milliseconds = reminder * daysPerYear * 24 * 60 * 60 * 1000D;
+        var yearDate = new DateTime(year, 1, 1);
+        return DateOnly.FromDateTime(yearDate.AddMilliseconds(milliseconds));
+    }
+
     public struct DateOnlySpan
     {
         public DateOnlySpan(DateOnly start, DateOnly end)
