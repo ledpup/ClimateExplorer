@@ -865,7 +865,7 @@ Two different indices are calculated, one that is relevant for the ozone layer o
             new ()
             {
                 Id = Guid.Parse("F478726F-7A7C-4B73-B942-1644857D442D"),
-                Name = "Sea level",
+                Name = "Mean sea level rise",
                 ShortName = "Sea level",
                 Description = @"Data are from TOPEX/Poseidon (T/P), Jason-1, Jason-2, and Jason-3, which have monitored the same ground track since 1992.
 
