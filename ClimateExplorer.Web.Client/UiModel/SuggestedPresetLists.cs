@@ -456,6 +456,8 @@ public static class SuggestedPresetLists
         var antarcticOceanTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.AntarcticOcean), DataType.TempMean, null, throwIfNoMatch: true);
         var r60S60NOceanTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.R60s60nOcean), DataType.TempMean, null, throwIfNoMatch: true);
 
+        var seaLevel = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Earth), DataType.SeaLevel, null, throwIfNoMatch: true);
+
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
@@ -588,7 +590,7 @@ public static class SuggestedPresetLists
             new SuggestedChartPresetModelWithVariants()
             {
                 Title = "Global temperature anomaly",
-                Description = "Bar chart of the global temperature anomaly for a combined land and ocean sea surface temperature (SST)",
+                Description = "Bar chart of the global temperature anomaly for a combined land and ocean temperature. Reference period: 1971-2000",
                 ChartSeriesList =
                 [
                     new ()
@@ -713,7 +715,7 @@ public static class SuggestedPresetLists
             new SuggestedChartPresetModelWithVariants()
             {
                 Title = "Ocean temperature anomaly",
-                Description = "Bar chart of the temperature anomaly of the sea surface temperatures (SSTs) from 60°S to 60°N",
+                Description = "Bar chart of the temperature anomaly of the sea surface temperatures (SSTs) from 60°S to 60°N. Reference period: 1971-2000",
                 ChartSeriesList =
                 [
                     new ()
@@ -730,6 +732,40 @@ public static class SuggestedPresetLists
                     },
                 ],
                 Variants = [
+                    new ()
+                    {
+                        Title = "Land vs ocean",
+                        Description = "Global temperature anomalies of ocean and land temperatures",
+                        ChartSeriesList =
+                        [
+                            new ()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Land"), globalLandTemp!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 20,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                RequestedColour = UiLogic.Colours.Green,
+                            },
+                            new ()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Ocean"), globalOceanTemp!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 20,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                RequestedColour = UiLogic.Colours.Blue,
+                            },
+                        ],
+                    },
                     new ()
                     {
                         Title = "Arctic vs Antarctic",
@@ -859,6 +895,30 @@ public static class SuggestedPresetLists
                                     },
                                 ],
                         },
+                    ],
+            });
+
+        suggestedPresets.Add(
+            new SuggestedChartPresetModelWithVariants()
+            {
+                Title = "Sea level rise",
+                Description = "The measure (in millimetres) of sea level rise from satellite measurements, since 1992",
+                ChartSeriesList =
+                    [
+                        new ChartSeriesDefinition()
+                                {
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), seaLevel!),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYearAndMonth,
+                                    Smoothing = SeriesSmoothingOptions.None,
+                                    SmoothingWindow = 20,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null,
+                                    DisplayStyle = SeriesDisplayStyle.Line,
+                                    RequestedColour = UiLogic.Colours.Grey,
+                                    GroupingThreshold = 0.05f,
+                                },
                     ],
             });
 

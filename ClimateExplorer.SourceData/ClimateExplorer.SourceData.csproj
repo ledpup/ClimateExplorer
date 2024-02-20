@@ -15,4 +15,8 @@
 	  <Content Include="Temperature/**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Ocean\slr_sla_gbl_free_txj1j2_90_reduced.csv" />
+  </ItemGroup>
+
 </Project>

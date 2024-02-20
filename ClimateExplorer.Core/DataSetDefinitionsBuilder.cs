@@ -862,6 +862,33 @@ Two different indices are calculated, one that is relevant for the ozone layer o
                     },
                 ],
             },
+            new ()
+            {
+                Id = Guid.Parse("F478726F-7A7C-4B73-B942-1644857D442D"),
+                Name = "Mean sea level",
+                ShortName = "Sea level",
+                Description = @"Data are from TOPEX/Poseidon (T/P), Jason-1, Jason-2, and Jason-3, which have monitored the same ground track since 1992.
+
+Only altimetry measurements between 66°S and 66°N have been processed. An inverted barometer has been applied to the time series. The estimates of sea level rise do not include glacial isostatic adjustment effects on the geoid, which are modeled to be +0.2 to +0.5 mm/year when globally averaged.",
+                Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
+                PublisherUrl = "https://www.noaa.gov/",
+                MoreInformationUrl = "https://www.star.nesdis.noaa.gov/socd/lsa/SeaLevelRise/LSA_SLR_timeseries_global.php",
+                DataDownloadUrl = "https://www.star.nesdis.noaa.gov/socd/lsa/SeaLevelRise/slr/slr_sla_gbl_free_txj1j2_90.csv",
+                MeasurementDefinitions =
+                [
+                    new MeasurementDefinition
+                    {
+                        DataType = DataType.SeaLevel,
+                        UnitOfMeasure = UnitOfMeasure.Millimetres,
+                        DataResolution = DataResolution.Daily,
+                        DataAdjustment = null,
+                        DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d+\.\d+)$",
+                        FolderName = @"Ocean",
+                        FileNameFormat = "slr_sla_gbl_free_txj1j2_90_reduced.csv",
+                        NullValue = null,
+                    },
+                ],
+            },
         };
 
         return dataSetDefinitions;

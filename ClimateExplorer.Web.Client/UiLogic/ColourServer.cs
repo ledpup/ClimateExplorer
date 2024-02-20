@@ -16,7 +16,7 @@ public class ColourServer
         { Colours.Yellow, "#e3bd0d" },
         { Colours.Brown, "#a65628" },
         { Colours.Pink, "#f781bf" },
-        { Colours.Grey, "#999999" },
+        { Colours.Grey, "#666666" },
     };
 
     // https://observablehq.com/@d3/color-schemes

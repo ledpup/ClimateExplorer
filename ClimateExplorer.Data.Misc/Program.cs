@@ -13,6 +13,8 @@ var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
 httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
 httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
 
+SeaLevelFileReducer.Process("slr_sla_gbl_free_txj1j2_90");
+
 OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_area");
 OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_minimum");
 

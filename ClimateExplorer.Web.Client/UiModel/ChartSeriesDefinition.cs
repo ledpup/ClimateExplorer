@@ -177,6 +177,7 @@ public class ChartSeriesDefinition
             DataType.OzoneHoleArea => "Ozone Hole area",
             DataType.OzoneHoleColumn => "Ozone Hole column",
             DataType.Ozone => "Ozone",
+            DataType.SeaLevel => "Sea level",
             _ => throw new NotImplementedException(),
         };
     }
