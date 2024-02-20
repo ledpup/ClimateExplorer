@@ -34,6 +34,8 @@ public static class Enums
         OzoneHoleArea,
         OzoneHoleColumn,
         Ozone,
+
+        SeaLevel,
     }
 
     public enum DataResolution
