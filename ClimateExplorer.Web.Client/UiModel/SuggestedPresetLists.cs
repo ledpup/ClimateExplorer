@@ -108,37 +108,37 @@ public static class SuggestedPresetLists
                         Title = "Days of rain",
                         Description = "Number of rainy days, ≥ 1mm and ≥ 10mm; 20-year smoothing",
                         ChartSeriesList =
-                            [
-                                new ChartSeriesDefinition()
-                                {
-                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, precipitation!),
-                                    Aggregation = SeriesAggregationOptions.Sum,
-                                    BinGranularity = BinGranularities.ByYear,
-                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                    SmoothingWindow = 20,
-                                    Value = SeriesValueOptions.Value,
-                                    Year = null,
-                                    DisplayStyle = SeriesDisplayStyle.Line,
-                                    SeriesTransformation = SeriesTransformations.EqualOrAbove1,
-                                    RequestedColour = UiLogic.Colours.Blue,
-                                },
-                                new ChartSeriesDefinition()
-                                {
-                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, precipitation!),
-                                    Aggregation = SeriesAggregationOptions.Sum,
-                                    BinGranularity = BinGranularities.ByYear,
-                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                    SmoothingWindow = 20,
-                                    Value = SeriesValueOptions.Value,
-                                    Year = null,
-                                    DisplayStyle = SeriesDisplayStyle.Line,
-                                    SeriesTransformation = SeriesTransformations.EqualOrAbove10,
-                                    RequestedColour = UiLogic.Colours.Pink,
-                                }
+                        [
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, precipitation!),
+                                Aggregation = SeriesAggregationOptions.Sum,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 20,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                SeriesTransformation = SeriesTransformations.EqualOrAbove1,
+                                RequestedColour = UiLogic.Colours.Blue,
+                            },
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, precipitation!),
+                                Aggregation = SeriesAggregationOptions.Sum,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 20,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                SeriesTransformation = SeriesTransformations.EqualOrAbove10,
+                                RequestedColour = UiLogic.Colours.Pink,
+                            }
 
-                            ],
+                        ],
                     }
 
                 ],
@@ -243,8 +243,7 @@ public static class SuggestedPresetLists
                             }
 
                         ],
-                    }
-
+                    },
                 ],
             });
 
@@ -254,69 +253,35 @@ public static class SuggestedPresetLists
                 Title = "Temperature anomaly",
                 Description = "Yearly average temperatures relative to the average of the whole dataset",
                 ChartSeriesList =
-                    [
-                        new ChartSeriesDefinition()
-                        {
-                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
-                            Aggregation = SeriesAggregationOptions.Mean,
-                            BinGranularity = BinGranularities.ByYear,
-                            Smoothing = SeriesSmoothingOptions.None,
-                            SmoothingWindow = 5,
-                            Value = SeriesValueOptions.Anomaly,
-                            Year = null,
-                            DisplayStyle = SeriesDisplayStyle.Bar,
-                        }
-
+                [
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
+                        Aggregation = SeriesAggregationOptions.Mean,
+                        BinGranularity = BinGranularities.ByYear,
+                        Smoothing = SeriesSmoothingOptions.None,
+                        SmoothingWindow = 5,
+                        Value = SeriesValueOptions.Anomaly,
+                        Year = null,
+                        DisplayStyle = SeriesDisplayStyle.Bar,
+                    },
                 ],
                 Variants =
-                    [
-                        new SuggestedChartPresetModel()
-                        {
-                            Title = "Temperature with trendline",
-                            Description = "Yearly view of average temperature with a straight line fit to the data (the trendline)",
-                            ChartSeriesList =
-                                [
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        ShowTrendline = true,
-                                        Smoothing = SeriesSmoothingOptions.None,
-                                        SmoothingWindow = 5,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null,
-                                    }
-
-                                ],
-                        },
-                        new SuggestedChartPresetModelWithVariants()
-                        {
-                            Title = "Adjusted vs raw temperature",
-                            Description = "Compare temperature values that have been adjusted for abnormalities with raw values",
-                            ChartSeriesList =
+                [
+                    new SuggestedChartPresetModel()
+                    {
+                        Title = "Temperature with trendline",
+                        Description = "Yearly view of average temperature with a straight line fit to the data (the trendline)",
+                        ChartSeriesList =
                             [
                                 new ChartSeriesDefinition()
                                 {
                                     SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempAdjusted!),
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
                                     Aggregation = SeriesAggregationOptions.Mean,
                                     BinGranularity = BinGranularities.ByYear,
-                                    ShowTrendline = false,
-                                    Smoothing = SeriesSmoothingOptions.None,
-                                    SmoothingWindow = 5,
-                                    Value = SeriesValueOptions.Value,
-                                    Year = null,
-                                },
-                                new ChartSeriesDefinition()
-                                {
-                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempUnadjusted!),
-                                    Aggregation = SeriesAggregationOptions.Mean,
-                                    BinGranularity = BinGranularities.ByYear,
-                                    ShowTrendline = false,
+                                    ShowTrendline = true,
                                     Smoothing = SeriesSmoothingOptions.None,
                                     SmoothingWindow = 5,
                                     Value = SeriesValueOptions.Value,
@@ -324,8 +289,41 @@ public static class SuggestedPresetLists
                                 }
 
                             ],
-                        },
-                    ],
+                    },
+                    new SuggestedChartPresetModelWithVariants()
+                    {
+                        Title = "Adjusted vs raw temperature",
+                        Description = "Compare temperature values that have been adjusted for abnormalities with raw values",
+                        ChartSeriesList =
+                        [
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempAdjusted!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                ShowTrendline = false,
+                                Smoothing = SeriesSmoothingOptions.None,
+                                SmoothingWindow = 5,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                            },
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempUnadjusted!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                ShowTrendline = false,
+                                Smoothing = SeriesSmoothingOptions.None,
+                                SmoothingWindow = 5,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                            }
+
+                        ],
+                    },
+                ],
             });
 
         suggestedPresets.Add(
@@ -334,72 +332,71 @@ public static class SuggestedPresetLists
                 Title = "Days of extremes",
                 Description = "Number of frosty days (≤ 2.2°C) and days 35°C or above; 20-year smoothing",
                 ChartSeriesList =
+                [
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
+                        Aggregation = SeriesAggregationOptions.Sum,
+                        BinGranularity = BinGranularities.ByYear,
+                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                        SmoothingWindow = 20,
+                        Value = SeriesValueOptions.Value,
+                        Year = null,
+                        DisplayStyle = SeriesDisplayStyle.Line,
+                        SeriesTransformation = SeriesTransformations.EqualOrAbove35,
+                    },
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMin!),
+                        Aggregation = SeriesAggregationOptions.Sum,
+                        BinGranularity = BinGranularities.ByYear,
+                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                        SmoothingWindow = 20,
+                        Value = SeriesValueOptions.Value,
+                        Year = null,
+                        DisplayStyle = SeriesDisplayStyle.Line,
+                        SeriesTransformation = SeriesTransformations.IsFrosty,
+                    },
+                ],
+                Variants =
+                [
+                    new SuggestedChartPresetModelWithVariants()
+                    {
+                        Title = "First and last day of frost",
+                        Description = "First and last day of the year that has temperature ≤ 2.2°C; 20-year smoothing",
+                        ChartSeriesList =
                         [
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
-                                Aggregation = SeriesAggregationOptions.Sum,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMin!),
+                                Aggregation = SeriesAggregationOptions.Minimum,
                                 BinGranularity = BinGranularities.ByYear,
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
                                 Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
-                                SeriesTransformation = SeriesTransformations.EqualOrAbove35,
+                                SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
                             },
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                                 SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMin!),
-                                Aggregation = SeriesAggregationOptions.Sum,
+                                Aggregation = SeriesAggregationOptions.Maximum,
                                 BinGranularity = BinGranularities.ByYear,
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
                                 Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
-                                SeriesTransformation = SeriesTransformations.IsFrosty,
+                                SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
                             },
                         ],
-                Variants =
-                    [
-                        new SuggestedChartPresetModelWithVariants()
-                        {
-                            Title = "First and last day of frost",
-                            Description = "First and last day of the year that has temperature ≤ 2.2°C; 20-year smoothing",
-                            ChartSeriesList =
-                                [
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMin!),
-                                        Aggregation = SeriesAggregationOptions.Minimum,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 20,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null,
-                                        DisplayStyle = SeriesDisplayStyle.Line,
-                                        SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
-                                    },
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMin!),
-                                        Aggregation = SeriesAggregationOptions.Maximum,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 20,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null,
-                                        DisplayStyle = SeriesDisplayStyle.Line,
-                                        SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
-                                    }
-
-                                ],
-                        },
-                    ],
+                    },
+                ],
             });
 
         return suggestedPresets;
@@ -465,90 +462,90 @@ public static class SuggestedPresetLists
                 Title = "Carbon dioxide annual change",
                 Description = "Smoothed difference between current and previous year CO\u2082 maximums",
                 ChartSeriesList =
-                    [
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
-                                Aggregation = SeriesAggregationOptions.Maximum,
-                                BinGranularity = BinGranularities.ByYear,
-                                SecondaryCalculation = SecondaryCalculationOptions.AnnualChange,
-                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                SmoothingWindow = 10,
-                                Value = SeriesValueOptions.Value,
-                                Year = null,
-                                DisplayStyle = SeriesDisplayStyle.Line,
-                                RequestedColour = UiLogic.Colours.Brown,
-                            },
-                    ],
+                [
+                        new ChartSeriesDefinition()
+                        {
+                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
+                            Aggregation = SeriesAggregationOptions.Maximum,
+                            BinGranularity = BinGranularities.ByYear,
+                            SecondaryCalculation = SecondaryCalculationOptions.AnnualChange,
+                            Smoothing = SeriesSmoothingOptions.MovingAverage,
+                            SmoothingWindow = 10,
+                            Value = SeriesValueOptions.Value,
+                            Year = null,
+                            DisplayStyle = SeriesDisplayStyle.Line,
+                            RequestedColour = UiLogic.Colours.Brown,
+                        },
+                ],
                 Variants =
+                [
+                    new ()
+                    {
+                        Title = "Carbon dioxide (CO\u2082)",
+                        Description = "Carbon dioxide records from the Mauna Loa Observatory since 1958. AKA The Keeling Curve",
+                        ChartSeriesList =
+                        [
+                                new ()
+                                {
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYearAndMonth,
+                                    Smoothing = SeriesSmoothingOptions.None,
+                                    SmoothingWindow = 5,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null,
+                                    DisplayStyle = SeriesDisplayStyle.Line,
+                                    RequestedColour = UiLogic.Colours.Brown,
+                                },
+                        ],
+                    },
+                    new ()
+                    {
+                        Title = "Methane (CH\u2084)",
+                        Description = "NOAA's Earth System Research Laboratory has measured methane since 1983",
+                        ChartSeriesList =
                             [
                                 new ()
                                 {
-                                    Title = "Carbon dioxide (CO\u2082)",
-                                    Description = "Carbon dioxide records from the Mauna Loa Observatory since 1958. AKA The Keeling Curve",
-                                    ChartSeriesList =
-                                    [
-                                            new ()
-                                            {
-                                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
-                                                Aggregation = SeriesAggregationOptions.Mean,
-                                                BinGranularity = BinGranularities.ByYearAndMonth,
-                                                Smoothing = SeriesSmoothingOptions.None,
-                                                SmoothingWindow = 5,
-                                                Value = SeriesValueOptions.Value,
-                                                Year = null,
-                                                DisplayStyle = SeriesDisplayStyle.Line,
-                                                RequestedColour = UiLogic.Colours.Brown,
-                                            },
-                                    ],
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), ch4!),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYearAndMonth,
+                                    Smoothing = SeriesSmoothingOptions.None,
+                                    SmoothingWindow = 5,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null,
+                                    DisplayStyle = SeriesDisplayStyle.Line,
+                                    RequestedColour = UiLogic.Colours.Brown,
                                 },
+                            ],
+                    },
+                    new ()
+                    {
+                        Title = "Nitrous oxide (N\u2082O)",
+                        Description = "NOAA's Earth System Research Laboratory has measured nitrous oxide since 2001",
+                        ChartSeriesList =
+                            [
                                 new ()
                                 {
-                                    Title = "Methane (CH\u2084)",
-                                    Description = "NOAA's Earth System Research Laboratory has measured methane since 1983",
-                                    ChartSeriesList =
-                                        [
-                                            new ()
-                                            {
-                                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), ch4!),
-                                                Aggregation = SeriesAggregationOptions.Mean,
-                                                BinGranularity = BinGranularities.ByYearAndMonth,
-                                                Smoothing = SeriesSmoothingOptions.None,
-                                                SmoothingWindow = 5,
-                                                Value = SeriesValueOptions.Value,
-                                                Year = null,
-                                                DisplayStyle = SeriesDisplayStyle.Line,
-                                                RequestedColour = UiLogic.Colours.Brown,
-                                            },
-                                        ],
-                                },
-                                new ()
-                                {
-                                    Title = "Nitrous oxide (N\u2082O)",
-                                    Description = "NOAA's Earth System Research Laboratory has measured nitrous oxide since 2001",
-                                    ChartSeriesList =
-                                        [
-                                            new ()
-                                            {
-                                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), n2o!),
-                                                Aggregation = SeriesAggregationOptions.Mean,
-                                                BinGranularity = BinGranularities.ByYearAndMonth,
-                                                Smoothing = SeriesSmoothingOptions.None,
-                                                SmoothingWindow = 5,
-                                                Value = SeriesValueOptions.Value,
-                                                Year = null,
-                                                DisplayStyle = SeriesDisplayStyle.Line,
-                                                RequestedColour = UiLogic.Colours.Brown,
-                                            }
-
-                                        ],
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), n2o!),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYearAndMonth,
+                                    Smoothing = SeriesSmoothingOptions.None,
+                                    SmoothingWindow = 5,
+                                    Value = SeriesValueOptions.Value,
+                                    Year = null,
+                                    DisplayStyle = SeriesDisplayStyle.Line,
+                                    RequestedColour = UiLogic.Colours.Brown,
                                 }
 
                             ],
+                    }
+
+                ],
             });
 
         suggestedPresets.Add(
@@ -557,34 +554,34 @@ public static class SuggestedPresetLists
                 Title = "Atmospheric CO₂ vs emissions",
                 Description = "Compare the CO₂ measured in the atmosphere with the reported global emissions of CO₂",
                 ChartSeriesList =
-                    [
-                        new ChartSeriesDefinition()
-                        {
-                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
-                            Aggregation = SeriesAggregationOptions.Mean,
-                            BinGranularity = BinGranularities.ByYear,
-                            Smoothing = SeriesSmoothingOptions.None,
-                            SmoothingWindow = 5,
-                            Value = SeriesValueOptions.Value,
-                            Year = null,
-                            DisplayStyle = SeriesDisplayStyle.Line,
-                            RequestedColour = UiLogic.Colours.Brown,
-                        },
-                        new ChartSeriesDefinition()
-                        {
-                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), co2emissions!),
-                            Aggregation = SeriesAggregationOptions.Mean,
-                            BinGranularity = BinGranularities.ByYear,
-                            Smoothing = SeriesSmoothingOptions.None,
-                            SmoothingWindow = 5,
-                            Value = SeriesValueOptions.Value,
-                            Year = null,
-                            DisplayStyle = SeriesDisplayStyle.Line,
-                            RequestedColour = UiLogic.Colours.Black,
-                        },
-                    ],
+                [
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
+                        Aggregation = SeriesAggregationOptions.Mean,
+                        BinGranularity = BinGranularities.ByYear,
+                        Smoothing = SeriesSmoothingOptions.None,
+                        SmoothingWindow = 5,
+                        Value = SeriesValueOptions.Value,
+                        Year = null,
+                        DisplayStyle = SeriesDisplayStyle.Line,
+                        RequestedColour = UiLogic.Colours.Brown,
+                    },
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), co2emissions!),
+                        Aggregation = SeriesAggregationOptions.Mean,
+                        BinGranularity = BinGranularities.ByYear,
+                        Smoothing = SeriesSmoothingOptions.None,
+                        SmoothingWindow = 5,
+                        Value = SeriesValueOptions.Value,
+                        Year = null,
+                        DisplayStyle = SeriesDisplayStyle.Line,
+                        RequestedColour = UiLogic.Colours.Black,
+                    },
+                ],
             });
 
         suggestedPresets.Add(
@@ -900,61 +897,61 @@ public static class SuggestedPresetLists
                 Title = "Sea ice extent",
                 Description = "Arctic and Antarctic sea ice extent, measured in millions of square kilometres since 1979",
                 ChartSeriesList =
-                    [
-                        new ChartSeriesDefinition()
-                        {
-                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Arctic), northSeaIceExtent!),
-                            Aggregation = SeriesAggregationOptions.Mean,
-                            BinGranularity = BinGranularities.ByYear,
-                            Smoothing = SeriesSmoothingOptions.MovingAverage,
-                            SmoothingWindow = 10,
-                            Value = SeriesValueOptions.Value,
-                            Year = null,
-                            DisplayStyle = SeriesDisplayStyle.Line,
-                            RequestedColour = UiLogic.Colours.Orange,
-                            GroupingThreshold = 0.1f,
-                        },
-                        new ChartSeriesDefinition()
-                        {
-                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Antarctic), southSeaIceExtent!),
-                            Aggregation = SeriesAggregationOptions.Mean,
-                            BinGranularity = BinGranularities.ByYear,
-                            Smoothing = SeriesSmoothingOptions.MovingAverage,
-                            SmoothingWindow = 10,
-                            Value = SeriesValueOptions.Value,
-                            Year = null,
-                            DisplayStyle = SeriesDisplayStyle.Line,
-                            RequestedColour = UiLogic.Colours.Purple,
-                            GroupingThreshold = 0.1f,
-                        },
-                    ],
+                [
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Arctic), northSeaIceExtent!),
+                        Aggregation = SeriesAggregationOptions.Mean,
+                        BinGranularity = BinGranularities.ByYear,
+                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                        SmoothingWindow = 10,
+                        Value = SeriesValueOptions.Value,
+                        Year = null,
+                        DisplayStyle = SeriesDisplayStyle.Line,
+                        RequestedColour = UiLogic.Colours.Orange,
+                        GroupingThreshold = 0.1f,
+                    },
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Antarctic), southSeaIceExtent!),
+                        Aggregation = SeriesAggregationOptions.Mean,
+                        BinGranularity = BinGranularities.ByYear,
+                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                        SmoothingWindow = 10,
+                        Value = SeriesValueOptions.Value,
+                        Year = null,
+                        DisplayStyle = SeriesDisplayStyle.Line,
+                        RequestedColour = UiLogic.Colours.Purple,
+                        GroupingThreshold = 0.1f,
+                    },
+                ],
                 Variants =
-                    [
-                        new SuggestedChartPresetModel()
-                        {
-                            Title = "Greenland ice melt area",
-                            Description = "Smoothed ice melt area, measured in square kilometres since 1979",
-                            ChartSeriesList =
-                                [
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Greenland), greenland!),
-                                        Aggregation = SeriesAggregationOptions.Sum,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                        SmoothingWindow = 10,
-                                        Value = SeriesValueOptions.Value,
-                                        Year = null,
-                                        DisplayStyle = SeriesDisplayStyle.Line,
-                                        RequestedColour = UiLogic.Colours.Blue,
-                                        GroupingThreshold = 0.1f,
-                                    },
-                                ],
-                        },
-                    ],
+                [
+                    new SuggestedChartPresetModel()
+                    {
+                        Title = "Greenland ice melt area",
+                        Description = "Smoothed ice melt area, measured in square kilometres since 1979",
+                        ChartSeriesList =
+                        [
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Greenland), greenland!),
+                                Aggregation = SeriesAggregationOptions.Sum,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 10,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                RequestedColour = UiLogic.Colours.Blue,
+                                GroupingThreshold = 0.1f,
+                            },
+                        ],
+                    },
+                ],
             });
 
         suggestedPresets.Add(
@@ -963,22 +960,22 @@ public static class SuggestedPresetLists
                 Title = "Sea level rise",
                 Description = "The measure (in millimetres) of sea level rise from satellite measurements, since 1992",
                 ChartSeriesList =
-                    [
-                        new ChartSeriesDefinition()
-                                {
-                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), seaLevel!),
-                                    Aggregation = SeriesAggregationOptions.Mean,
-                                    BinGranularity = BinGranularities.ByYearAndMonth,
-                                    Smoothing = SeriesSmoothingOptions.None,
-                                    SmoothingWindow = 20,
-                                    Value = SeriesValueOptions.Value,
-                                    Year = null,
-                                    DisplayStyle = SeriesDisplayStyle.Line,
-                                    RequestedColour = UiLogic.Colours.Grey,
-                                    GroupingThreshold = 0.05f,
-                                },
-                    ],
+                [
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), seaLevel!),
+                        Aggregation = SeriesAggregationOptions.Mean,
+                        BinGranularity = BinGranularities.ByYearAndMonth,
+                        Smoothing = SeriesSmoothingOptions.None,
+                        SmoothingWindow = 20,
+                        Value = SeriesValueOptions.Value,
+                        Year = null,
+                        DisplayStyle = SeriesDisplayStyle.Line,
+                        RequestedColour = UiLogic.Colours.Grey,
+                        GroupingThreshold = 0.05f,
+                    },
+                ],
             });
 
         suggestedPresets.Add(
@@ -987,36 +984,36 @@ public static class SuggestedPresetLists
                 Title = "Ozone Hole + ODGI",
                 Description = "Smoothed yearly average size of the Southern Hemisphere Ozone Hole compared with the Ozone Depleting Gas Index",
                 ChartSeriesList =
-                    [
-                        new ChartSeriesDefinition()
-                                {
-                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.SouthernHemi), ozoneHoleArea!),
-                                    Aggregation = SeriesAggregationOptions.Mean,
-                                    BinGranularity = BinGranularities.ByYear,
-                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                    SmoothingWindow = 5,
-                                    Value = SeriesValueOptions.Value,
-                                    Year = null,
-                                    DisplayStyle = SeriesDisplayStyle.Line,
-                                    RequestedColour = UiLogic.Colours.Green,
-                                    GroupingThreshold = 0.1f,
-                                },
-                                new ChartSeriesDefinition()
-                                {
-                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.SouthernHemi), odgi!),
-                                    Aggregation = SeriesAggregationOptions.Mean,
-                                    BinGranularity = BinGranularities.ByYear,
-                                    Smoothing = SeriesSmoothingOptions.None,
-                                    SmoothingWindow = 20,
-                                    Value = SeriesValueOptions.Value,
-                                    Year = null,
-                                    DisplayStyle = SeriesDisplayStyle.Line,
-                                    RequestedColour = UiLogic.Colours.Black,
-                                    GroupingThreshold = 0.1f,
-                                },
-                    ],
+                [
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.SouthernHemi), ozoneHoleArea!),
+                        Aggregation = SeriesAggregationOptions.Mean,
+                        BinGranularity = BinGranularities.ByYear,
+                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                        SmoothingWindow = 5,
+                        Value = SeriesValueOptions.Value,
+                        Year = null,
+                        DisplayStyle = SeriesDisplayStyle.Line,
+                        RequestedColour = UiLogic.Colours.Green,
+                        GroupingThreshold = 0.1f,
+                    },
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.SouthernHemi), odgi!),
+                        Aggregation = SeriesAggregationOptions.Mean,
+                        BinGranularity = BinGranularities.ByYear,
+                        Smoothing = SeriesSmoothingOptions.None,
+                        SmoothingWindow = 20,
+                        Value = SeriesValueOptions.Value,
+                        Year = null,
+                        DisplayStyle = SeriesDisplayStyle.Line,
+                        RequestedColour = UiLogic.Colours.Black,
+                        GroupingThreshold = 0.1f,
+                    },
+                ],
             });
 
         suggestedPresets.Add(
@@ -1078,32 +1075,32 @@ public static class SuggestedPresetLists
                             Title = "Adjusted vs raw temperature",
                             Description = "Compare temperature values that have been adjusted for abnormalities with raw values",
                             ChartSeriesList =
-                                [
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInRegion,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Australia"), tempMax!),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.None,
-                                        SmoothingWindow = 20,
-                                        Value = SeriesValueOptions.Anomaly,
-                                        Year = null,
-                                        DisplayStyle = SeriesDisplayStyle.Line,
-                                    },
-                                    new ChartSeriesDefinition()
-                                    {
-                                        SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInRegion,
-                                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Australia"), tempMaxUnadjusted!),
-                                        Aggregation = SeriesAggregationOptions.Mean,
-                                        BinGranularity = BinGranularities.ByYear,
-                                        Smoothing = SeriesSmoothingOptions.None,
-                                        SmoothingWindow = 20,
-                                        Value = SeriesValueOptions.Anomaly,
-                                        Year = null,
-                                        DisplayStyle = SeriesDisplayStyle.Line,
-                                    },
-                                ],
+                            [
+                                new ChartSeriesDefinition()
+                                {
+                                    SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInRegion,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Australia"), tempMax!),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYear,
+                                    Smoothing = SeriesSmoothingOptions.None,
+                                    SmoothingWindow = 20,
+                                    Value = SeriesValueOptions.Anomaly,
+                                    Year = null,
+                                    DisplayStyle = SeriesDisplayStyle.Line,
+                                },
+                                new ChartSeriesDefinition()
+                                {
+                                    SeriesDerivationType = SeriesDerivationTypes.AverageOfAnomaliesInRegion,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Australia"), tempMaxUnadjusted!),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYear,
+                                    Smoothing = SeriesSmoothingOptions.None,
+                                    SmoothingWindow = 20,
+                                    Value = SeriesValueOptions.Anomaly,
+                                    Year = null,
+                                    DisplayStyle = SeriesDisplayStyle.Line,
+                                },
+                            ],
                         },
                     ],
             });
