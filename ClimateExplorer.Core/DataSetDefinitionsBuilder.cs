@@ -889,6 +889,32 @@ Only altimetry measurements between 66°S and 66°N have been processed. An inve
                     },
                 ],
             },
+            new ()
+            {
+                Id = Guid.Parse("8FD9692D-8A0E-4591-89BD-0FE77783CC4D"),
+                Name = "Atlantic Multidecadal Oscillation",
+                ShortName = "AMO",
+                Description = @"The Atlantic Multi-decadal Oscillation (AMO) has been identified as a coherent mode of natural variability occurring in the North Atlantic Ocean with an estimated period of 60-80 years.
+
+This AMO time-series is from NOAA/NCEI, using the ERSSTV5 dataset. It is a sea-surface temperature anomaly (SSTA) North Atlantic 0-60N",
+                PublisherUrl = "https://www.noaa.gov/",
+                MoreInformationUrl = "https://psl.noaa.gov/data/timeseries/AMO/",
+                DataDownloadUrl = "https://www1.ncdc.noaa.gov/pub/data/cmb/ersst/v5/index/ersst.v5.amo.dat",
+                MeasurementDefinitions =
+                [
+                    new MeasurementDefinition
+                    {
+                        DataType = DataType.Amo,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsiusAnomaly,
+                        DataResolution = DataResolution.Monthly,
+                        DataAdjustment = null,
+                        DataRowRegEx = @"^(?<year>\d{4})\s+(?<month>\d+)\s+(?<value>-?\d+\.\d+)$",
+                        FolderName = @"Ocean",
+                        FileNameFormat = "ersst.v5.amo.dat",
+                        NullValue = null,
+                    },
+                ],
+            },
         };
 
         return dataSetDefinitions;

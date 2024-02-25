@@ -1,9 +1,9 @@
 {
   "DataSetDefinitionId": "1042147a-8625-4ee7-bb5a-f0f17795c393",
   "LocationIdToDataFileMappings": {
-    "379ACE49-0B44-4B47-AB61-3B6E09C27C82": [
+    "9107612D-057D-4982-BF93-1F32A01D4EE0": [
       {
-        "Id": "Earth"
+        "Id": "Ocean"
       }
     ]
   }

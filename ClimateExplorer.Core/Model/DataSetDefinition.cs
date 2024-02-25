@@ -23,8 +23,13 @@ public class DataSetDefinition
         var dataFileMappings = await DataFileMapping.GetDataFileMappings();
         foreach (var ddd in ddds!)
         {
-            var dataFileMapping = dataFileMappings.SingleOrDefault(x => x.DataSetDefinitionId == ddd.Id);
-            ddd.DataLocationMapping = dataFileMapping;
+            var dataFileMapping = dataFileMappings.Where(x => x.DataSetDefinitionId == ddd.Id);
+            if (dataFileMapping.Count() > 1)
+            {
+                throw new Exception($"More than one data file mapping found for data set definition ID {ddd.Id}. Only one is permitted");
+            }
+
+            ddd.DataLocationMapping = dataFileMapping.SingleOrDefault();
         }
 
         return ddds;
