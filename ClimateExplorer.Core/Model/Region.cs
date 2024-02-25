@@ -5,6 +5,7 @@ public class Region : GeographicalEntity
     public const string Sun = "Sun";
     public const string Earth = "Earth";
     public const string Atmosphere = "Atmosphere";
+    public const string Ocean = "Ocean";
 
     public const string NorthernHemi = "Northern Hemisphere";
     public const string SouthernHemi = "Southern Hemisphere";
@@ -40,7 +41,7 @@ public class Region : GeographicalEntity
             Sun => new Guid("6F4C185E-F846-4DFE-BE28-8DB99A53CF7D"),
             Earth => new Guid("379ACE49-0B44-4B47-AB61-3B6E09C27C82"),
             "Land" => new Guid("6FA62EA0-F9EC-46CB-A9E5-F610EB6BAC5E"),
-            "Ocean" => new Guid("9107612D-057D-4982-BF93-1F32A01D4EE0"),
+            Ocean => new Guid("9107612D-057D-4982-BF93-1F32A01D4EE0"),
             Atmosphere => new Guid("8B00649C-E232-49B3-9065-3866FD1B9952"),
             NorthernHemi => new Guid("E29D2979-B243-49E1-A339-280F588AE878"),
             SouthernHemi => new Guid("1D9FAF5C-77EE-4B3F-B9D2-10D93A176F74"),

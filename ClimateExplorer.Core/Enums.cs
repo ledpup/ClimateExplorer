@@ -16,11 +16,12 @@ public static class Enums
         SOI,
         Nino34,
         ONI,
+        IOD,
+        Amo,
 
         CO2,
         CH4,
         N2O,
-        IOD,
 
         SeaIceExtent,
         IceMeltArea,

@@ -169,6 +169,7 @@ public class ChartSeriesDefinition
             DataType.CH4 => "Methane (CH\u2084)",
             DataType.N2O => "Nitrous oxide (N\u2082O)",
             DataType.IOD => "Indian Ocean Dipole (IOD)",
+            DataType.Amo => "Atlantic Multidecadal Oscillation (AMO)",
             DataType.SeaIceExtent => "Sea ice extent",
             DataType.IceMeltArea => "Ice melt area",
             DataType.SunspotNumber => "Sunspot number",
