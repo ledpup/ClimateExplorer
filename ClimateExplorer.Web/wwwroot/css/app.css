@@ -86,3 +86,7 @@ a, .btn-link {
         padding-left: 1rem !important;
     }
 }
+
+.modal-open {
+    overflow: hidden;
+}
