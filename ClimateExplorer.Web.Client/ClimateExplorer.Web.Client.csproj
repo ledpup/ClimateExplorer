@@ -18,13 +18,13 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
-    <PackageReference Include="Blazorise" Version="1.4.3" />
-    <PackageReference Include="Blazorise.Bootstrap5" Version="1.4.3" />
-    <PackageReference Include="Blazorise.Charts" Version="1.4.3" />
-    <PackageReference Include="Blazorise.Charts.Trendline" Version="1.4.3" />
-    <PackageReference Include="Blazorise.Components" Version="1.4.3" />
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.4.3" />
-    <PackageReference Include="Blazorise.LoadingIndicator" Version="1.4.3" />
+    <PackageReference Include="Blazorise" Version="1.3.3" />
+    <PackageReference Include="Blazorise.Bootstrap5" Version="1.3.3" />
+    <PackageReference Include="Blazorise.Charts" Version="1.3.3" />
+    <PackageReference Include="Blazorise.Charts.Trendline" Version="1.3.3" />
+    <PackageReference Include="Blazorise.Components" Version="1.3.3" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.3.3" />
+    <PackageReference Include="Blazorise.LoadingIndicator" Version="1.3.3" />
     <PackageReference Include="GeoCoordinate.NetStandard1" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="8.0.3" />
