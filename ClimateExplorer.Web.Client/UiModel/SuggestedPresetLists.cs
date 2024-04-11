@@ -91,7 +91,7 @@ public static class SuggestedPresetLists
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), nino34!),
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Ocean), nino34!),
                                 Aggregation = SeriesAggregationOptions.Mean,
                                 BinGranularity = BinGranularities.ByYearAndMonth,
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
