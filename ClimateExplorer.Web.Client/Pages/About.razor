@@ -14,12 +14,16 @@
     <h1>About this site</h1>
 
     <p>
-        This site provides a simple interface to view climate observations from around the world. The site was originally designed with data for Australia, New Zealand and HadCET. They have daily temperature and precipitation datasets.
+        This site provides a simple interface to view climate observations from around the world. The site was originally designed with data for Australia, New Zealand and Central England. Those regions have daily temperature and precipitation datasets.
     </p>
 
     <p>
-        The rest of the world has values coming from monthly datasets (from GHCNm).
+        The rest of the world has temperature and precipitation values coming from monthly datasets (from <a href="https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-monthly" target="_blank">GHCNm</a>).
     </p>
+
+    <p>Other types of data come from various other sources, described below.</p>
+    
+    <p>All data is from instrument-based recordings. There is no proxy data (for example, using tree rings or ice-cores to estimate temperature) nor modelled data on this website. The developers of the website are not sceptical of proxy-data or modelling but wanted to present the most simple and easily understandable climate science.</p>
 
     <h2>Source code and programming</h2>
 
@@ -38,14 +42,14 @@
 
     <h3>Australian datasets</h3>
 
-    <h4>ACORN-SAT</h4>
+    <h4>Australian Climate Observations Reference Network – Surface Air Temperature (ACORN-SAT)</h4>
 
     <p>
         The <a target="_blank" href="http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks">Australian Climate Observations Reference Network – Surface Air Temperature</a> (ACORN-SAT) dataset includes ground-based temperature records
         for 112 stations in Australia. It is published by Australia's <a target="_blank" href="http://www.bom.gov.au/">Bureau of Meteorology</a>.
     </p>
 
-    <h4>RAIA</h4>
+    <h4>Remote Australian Islands and Antarctica</h4>
 
     <p>
         The <a target="_blank" href="http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks">Remote Australian Islands and Antarctica</a> (RAIA) dataset includes ground-based temperature records
@@ -62,19 +66,11 @@
         These are: precipitation, solar radiation, unadjusted minimum and maximum temperatures. These are downloaded for the sites listed in ACORN-SAT and combined into a unified representation of the 112 locations.
     </p>
 
-    <h3>GHCNm</h3>
+    <h3>Copernicus</h3>
 
-    <p>
-        <a href="https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-monthly" target="_blank">Global Historical Climatology Network monthly</a> (GHCNm) provides monthly climate summaries
-        from thousands of weather stations around the world. The initial version was developed in the early 1990s, and subsequent iterations were released in 1997, 2011, and most recently in 2018.
-        The period of record for each summary varies by station, with the earliest observations dating to the 18th century.
-        Some station records are purely historical and are no longer updated, but many others are still operational and provide short time delay updates that are useful for climate monitoring.
-    </p>
+    <p>Copernicus is the Earth observation component of the European Union’s Space programme, looking at our planet and its environment </p>
 
-    <p>
-        The current version (GHCNm v4) consists of mean monthly temperature data, as well as a beta release of monthly precipitation data.
-        <a href="https://climateexplorer.net" target="_blank">ClimateExplorer</a> uses the mean monthly temperature and the monthly precipitation data.
-    </p>
+    <p>The Southern Hemisphere Ozone Hole area in <a href="https://climateexplorer.net" target="_blank">ClimateExplorer</a> is sourced from Copernicus.</p>
 
     <h3>The Global Carbon Project</h3>
 
@@ -84,23 +80,15 @@
 
     <p><a href="https://climateexplorer.net" target="_blank">ClimateExplorer</a> uses the CO₂ emissions dataset at <a href="https://zenodo.org/records/10562476" target="_blank">zenodo</a>.</p>
 
-
-    <h3>Global Monitoring Laboratory</h3>
-
-    <p>The <a href="https://gml.noaa.gov/" target="_blank">Global Monitoring Laboratory</a> (GML) of the <a href="https://www.noaa.gov/" target="_blank">National Oceanic and Atmospheric Administration</a> (NOAA)
-        conducts research that addresses three major challenges: greenhouse gas and carbon cycle feedbacks, changes in clouds, aerosols, and surface radiation, and recovery of stratospheric ozone.</p>
-
-    <p>The carbon dioxide, methane and nitrous oxide data in <a href="https://climateexplorer.net" target="_blank">ClimateExplorer</a> are sourced from GML.</p>
-
     <h3>Hadley Centre</h3>
 
-    <h4>HadCET</h4>
+    <h4>Central England Temperature</h4>
 
     <p>
         <a href="https://www.metoffice.gov.uk/hadobs/hadcet/index.html" target="_blank">The Hadley Centre Central England Temperature</a> (HadCET) dataset is the longest instrumental record of temperature in the world.
     </p>
 
-    <h4>HadCEP</h4>
+    <h4>Central England Precipitation</h4>
 
     <p>
         <a href="https://www.metoffice.gov.uk/hadobs/hadukp/" target="_blank">UK regional precipitation series</a> (HadUKP) is a series of datasets of UK regional precipitation, which incorporates
@@ -111,7 +99,7 @@
         <a href="https://climateexplorer.net" target="_blank">ClimateExplorer</a> uses HadCEP (Central England precipitation), with a daily series that began in 1931.
     </p>
 
-    <h3>NIWA</h3>
+    <h3>National Institute of Water and Atmospheric Research (NIWA)</h3>
 
     <h4>7-station series</h4>
 
@@ -131,7 +119,32 @@
         <a href="http://niwa.co.nz/">National Institute of Water and Atmospheric Research</a> (NIWA).
     </p>
 
-    <h3>NOAAGlobalTemp</h3>
+    <h3>National Oceanic and Atmospheric Administration (NOAA)</h3>
+
+    <h4>Global Historical Climatology Network</h4>
+
+    <p>
+        <a href="https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-monthly" target="_blank">Global Historical Climatology Network monthly</a> (GHCNm) provides monthly climate summaries
+        from thousands of weather stations around the world. The initial version was developed in the early 1990s, and subsequent iterations were released in 1997, 2011, and most recently in 2018.
+        The period of record for each summary varies by station, with the earliest observations dating to the 18th century.
+        Some station records are purely historical and are no longer updated, but many others are still operational and provide short time delay updates that are useful for climate monitoring.
+    </p>
+
+    <p>
+        The current version (GHCNm v4) consists of mean monthly temperature data, as well as a beta release of monthly precipitation data.
+        <a href="https://climateexplorer.net" target="_blank">ClimateExplorer</a> uses the mean monthly temperature and the monthly precipitation data.
+    </p>
+
+    <h4>Global Monitoring Laboratory</h4>
+
+    <p>
+        The <a href="https://gml.noaa.gov/" target="_blank">Global Monitoring Laboratory</a> (GML) of the <a href="https://www.noaa.gov/" target="_blank">National Oceanic and Atmospheric Administration</a> (NOAA)
+        conducts research that addresses three major challenges: greenhouse gas and carbon cycle feedbacks, changes in clouds, aerosols, and surface radiation, and recovery of stratospheric ozone.
+    </p>
+
+    <p>The carbon dioxide, methane, nitrous oxide, and Ozone Depleting Gas Index (ODGI) data in <a href="https://climateexplorer.net" target="_blank">ClimateExplorer</a> are sourced from GML.</p>
+
+    <h4>NOAAGlobalTemp</h4>
 
     <p>
         The NOAA Merged Land Ocean Global Surface Temperature Analysis (<a href="https://www.ncei.noaa.gov/products/land-based-station/noaa-global-temp" target="_blank">NOAAGlobalTemp</a>, formerly known as MLOST)
@@ -139,13 +152,7 @@
         The dataset is used to support climate monitoring activities such as the Monthly Global Climate Assessment, and also provides input data for a number of climate models.
     </p>
 
-    <h3>Sunspot number</h3>
-
-    <p>
-        The <a href="https://www.astro.oma.be/en/" target="_blank">Royal Observatory of Belgium</a> (ROB) maintains a <a href="https://sidc.be/SILSO/newdataset" target="_blank">sunspot dataset</a> that goes back to 1818.
-    </p>
-
-    <h3>Total solar irradiance</h3>
+    <h4>Total solar irradiance</h4>
 
     <p>
         The <a href="https://www.ncei.noaa.gov/products/climate-data-records/total-solar-irradiance" target="_blank">Total Solar Irradiance</a> (TSI) Climate Data Record (CDR) measures the spectrally
@@ -154,6 +161,14 @@
 
     <p>
         <a href="https://climateexplorer.net" target="_blank">ClimateExplorer</a> uses the satellite data of observed TSI, beginning 1978.
+    </p>
+
+    <h3>Royal Observatory of Belgium</h3>
+
+    <h4>Sunspot number</h4>
+
+    <p>
+        The <a href="https://www.astro.oma.be/en/" target="_blank">Royal Observatory of Belgium</a> (ROB) maintains a <a href="https://sidc.be/SILSO/newdataset" target="_blank">sunspot dataset</a> that goes back to 1818.
     </p>
 
 </div>
