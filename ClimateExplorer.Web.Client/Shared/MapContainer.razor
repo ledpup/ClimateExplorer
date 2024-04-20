@@ -26,31 +26,23 @@
     [Parameter] public IEnumerable<Location>? Locations { get; set; }
     [Parameter] public EventCallback<Guid> OnLocationChange { get; set; }
     [Parameter] public Coordinates LocationCoordinates { get; set; }
+    [Parameter] public bool? IsMobileDevice { get; set; }
 
     [Inject] public LayerFactory? LayerFactory { get; init; }
     [Inject] IIconFactory? IconFactory { get; init; }
     [Inject] IJSRuntime? JsRuntime { get; init; }
     [Inject] ILogger<MapContainer>? Logger { get; init; }
-    [Inject] IBlazorCurrentDeviceService? BlazorCurrentDeviceService { get; set; }
+    [Inject] ICurrentDeviceService? CurrentDeviceService { get; set; }
 
     Map? map;
     MapOptions? mapOptions;
     bool IsMapExpanded { get; set; } = false;
-    bool? IsMobileDevice { get; set; }
-
+    
     bool _mapMarkersCreated = false;
 
     int lastZoom = 8;
 
     Coordinates PreviousSeenLocationCoordinates;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            IsMobileDevice = await BlazorCurrentDeviceService!.Mobile();
-        }
-    }
 
     protected override async Task OnParametersSetAsync()
     {

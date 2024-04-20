@@ -49,6 +49,9 @@ public partial class ChartView
     [Parameter]
     public EventCallback ShowAddDataSetModalEvent { get; set; }
 
+    [Parameter]
+    public bool? IsMobileDevice { get; set; }
+
     public string ChartOptionsText { get; set; } = @"<div style=""padding-bottom: 24px;""><img style=""max-width: 100%;"" src=""images/ChartOptions.png"" alt=""Chart Options image"" /></div>
 <p><strong>Year filtering</strong>: allows you to change the start and end years for the chart. For example, if you want to see the change in temperature for the 20th century, you could set the end year to 2000.</p>
 <p><strong>Clear filter</strong>: the clear filter button is only displayed when there is a start or end year filter applied to the chart. Clicking this button will reset the chart back to the default filter and remove the range slider (if it has been turned on).</p>
@@ -70,9 +73,6 @@ public partial class ChartView
     private IDataService? DataService { get; set; }
 
     [Inject]
-    private IBlazorCurrentDeviceService? BlazorCurrentDeviceService { get; set; }
-
-    [Inject]
     private IJSRuntime? JsRuntime { get; set; }
 
     [Inject]
@@ -91,8 +91,6 @@ public partial class ChartView
 
     private string? SelectedStartYear { get; set; }
     private string? SelectedEndYear { get; set; }
-
-    private bool? IsMobileDevice { get; set; }
 
     private bool? EnableRangeSlider { get; set; }
     private int SliderMin { get; set; }
@@ -418,11 +416,6 @@ public partial class ChartView
         if (chart == null || chartTrendline == null)
         {
             return;
-        }
-
-        if (firstRender)
-        {
-            IsMobileDevice = await BlazorCurrentDeviceService!.Mobile();
         }
 
         if (!chartRenderedFirstTime)
