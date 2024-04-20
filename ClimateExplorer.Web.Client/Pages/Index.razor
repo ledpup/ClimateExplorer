@@ -37,7 +37,8 @@
             <MapContainer @ref="MapContainer"
                 Locations="@Locations"
                 OnLocationChange="@SelectedLocationChanged"
-                LocationCoordinates="@locationCoordinates"></MapContainer>
+                LocationCoordinates="@locationCoordinates"
+                IsMobileDevice="@IsMobileDevice"></MapContainer>
         </div>
 
         <div class="location-info-container">
@@ -55,7 +56,8 @@
     <ChartView @ref="ChartView"
                BuildDataSetsEvent="@BuildDataSets"
                ShowAddDataSetModalEvent="@ShowAddDataSetModal"
-               DownloadDataEvent="@OnDownloadDataClicked" />
+               DownloadDataEvent="@OnDownloadDataClicked"
+               IsMobileDevice="@IsMobileDevice" />
 </div>
 
 <ChangeLocation @ref="ChangeLocationModal"

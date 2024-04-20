@@ -19,7 +19,7 @@ builder.Services
     .AddScoped(sp => new HttpClient())
     .AddSingleton<IDataServiceCache, DataServiceCache>()
     .AddTransient<IExporter, Exporter>()
-    .AddBlazorCurrentDevice()
+    .AddCurrentDeviceService()
     .AddBlazoredLocalStorage()
     .AddHttpClient<IDataService, DataService>(client =>
     {
