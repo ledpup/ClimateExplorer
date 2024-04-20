@@ -18,7 +18,7 @@
   - https://github.com/Megabit/Blazorise
   - https://github.com/DP-projects/DPBlazorMap
   - https://github.com/AeonLucid/GeoCoordinate.NetStandard1
-  - https://github.com/arivera12/BlazorCurrentDevice
+  - https://github.com/HugoVG/CurrentDevice
   - https://www.nuget.org/packages/DBSCAN/ ([source](https://github.com/viceroypenguin/Dbscan))
   - https://www.nuget.org/packages/Blazored.LocalStorage/ ([source](https://github.com/Blazored/LocalStorage))
 
