@@ -1,5 +1,4 @@
 #pragma warning disable SA1200 // Using directives should be placed correctly
-using BlazorCurrentDevice;
 using Blazored.LocalStorage;
 using Blazorise;
 using Blazorise.Bootstrap5;
@@ -7,6 +6,7 @@ using Blazorise.Icons.FontAwesome;
 using ClimateExplorer.Web;
 using ClimateExplorer.Web.Client.Pages;
 using ClimateExplorer.Web.Services;
+using CurrentDevice;
 using DPBlazorMapLibrary;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 #pragma warning restore SA1200 // Using directives should be placed correctly
