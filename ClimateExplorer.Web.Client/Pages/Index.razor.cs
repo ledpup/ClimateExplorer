@@ -1,6 +1,5 @@
 ﻿namespace ClimateExplorer.Web.Client.Pages;
 
-using BlazorCurrentDevice;
 using Blazorise.Snackbar;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
@@ -63,8 +62,6 @@ public partial class Index : ChartablePage
     [Inject]
     private Blazored.LocalStorage.ILocalStorageService? LocalStorage { get; set; }
 
-    [Inject]
-    private ICurrentDeviceService? CurrentDeviceService { get; set; }
     private Location SelectedLocation
     {
         get
@@ -98,11 +95,6 @@ public partial class Index : ChartablePage
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
-
-        if (IsMobileDevice == null)
-        {
-            IsMobileDevice = await CurrentDeviceService!.Mobile();
-        }
 
         if (firstRender)
         {
