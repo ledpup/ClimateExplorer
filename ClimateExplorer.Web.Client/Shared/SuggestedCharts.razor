@@ -12,53 +12,53 @@
 <LoadingIndicator @bind-Visible="@LoadingIndicatorVisible">
     <div class="suggested-data-set-list">
         @if (SuggestedPresets != null)
-    {
-        foreach (var s in SuggestedPresets)
         {
-            @if (s.MenuExpanded)
+            foreach (var s in SuggestedPresets)
             {
-                <div class="modal-underlay" @onclick="() => s.MenuExpanded = false"></div>
-            }
+                @if (s.MenuExpanded)
+                {
+                    <div class="modal-underlay" @onclick="() => s.MenuExpanded = false"></div>
+                }
 
-            <div class="@CalculateClassForSuggestedDataSetElement(s)">
+                <div class="@CalculateClassForSuggestedDataSetElement(s)">
                     <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(s.ChartSeriesList)">
                         <div class="title">@s.Title</div>
                         <div class="description">@s.Description</div>
                         @if (s.MissingChartSeries)
-                    {
-                        <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available here</div>
-                    }
+                        {
+                            <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available here</div>
+                        }
                     </div>
 
                     @if (s.Variants != null && s.Variants.Count > 0)
-                {
-                    <div class="expander" @onclick="() => s.MenuExpanded = !s.MenuExpanded">
+                    {
+                        <div class="expander" @onclick="() => s.MenuExpanded = !s.MenuExpanded">
                             <span class="oi oi-chevron-bottom" aria-hidden="true"></span>
                         </div>
-                }
+                    }
 
                     @if (s.MenuExpanded)
-                {
-                    <div class="menu">
+                    {
+                        <div class="menu">
                             @if (s.Variants != null)
-                        {
-                            foreach (var v in s.Variants)
                             {
-                                <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(v.ChartSeriesList)">
+                                foreach (var v in s.Variants)
+                                {
+                                    <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(v.ChartSeriesList)">
                                         <div class="title">@v.Title</div>
                                         <div class="description">@v.Description</div>
                                         @if (v.MissingChartSeries)
-                                    {
-                                        <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available here</div>
-                                    }
+                                        {
+                                            <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available here</div>
+                                        }
                                     </div>
+                                }
                             }
-                        }
                         </div>
-                }
+                    }
                 </div>
+            }
         }
-    }
     </div>
 </LoadingIndicator>
 
