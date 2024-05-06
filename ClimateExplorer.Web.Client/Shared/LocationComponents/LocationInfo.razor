@@ -11,15 +11,15 @@
 
 <LoadingIndicator @bind-Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
     <Collapsible @ref="LocationCollapsible" Title="@Location?.Title" FullTitle="@Location?.FullTitle" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
-        <HeaderContent>
+        <CollapsedContent>
             <span class="chart-controls">
-                <a class="chart-control" @onclick="() => ChangeLocationClicked(new EventArgs())"><i class="fas fa-map"></i> Change location</a>
+                <a class="chart-control" style="margin-left: 100px;" @onclick="() => ChangeLocationClicked(new EventArgs())"><i class="fas fa-map"></i> Change location</a>
                 @if (LocationCollapsible!.ShowContent)
                 {
                     <a class="chart-control" @onclick="() => TogglePrecipitation()"><i class="@( precipitation ? "fas fa-check-square" : "fas fa-square" )"></i> Precipitation</a>
                 }
             </span>
-        </HeaderContent>
+        </CollapsedContent>
         <Content>
             <OverviewField Label="Location"><Value><a href="@LocationMapUrl" target="_blank">@GeoLocationAsString</a></Value></OverviewField>
             @if (WarmingAnomalyAsString != null && WarmingAnomalyAsString != "NA")

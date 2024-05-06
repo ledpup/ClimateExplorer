@@ -20,6 +20,7 @@ public partial class Index : ChartablePage
     private Guid oldLocationId = Guid.Empty;
     private Location? selectedLocation;
     private Coordinates locationCoordinates;
+    private Collapsible? suggestedChartsCollapsible;
 
     public Index()
     {

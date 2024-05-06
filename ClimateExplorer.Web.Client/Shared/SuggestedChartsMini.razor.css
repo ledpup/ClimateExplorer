@@ -1,0 +1,70 @@
+﻿.suggested-data-set-list {
+    display: flex;
+    flex-wrap: wrap;
+    user-select: none;
+    margin-top: -4px;
+}
+
+.suggested-data-set {
+    display: flex;
+    margin-right: 24px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    background-color: #eee;
+    border-radius: 12px;
+    vertical-align: top;
+    cursor: pointer;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+    position: relative;
+}
+
+    .suggested-data-set .main {
+        padding: 6px;
+        border-radius: 12px;
+        transition: 0.25s;
+    }
+
+        .suggested-data-set .main:hover {
+            background-color: #cfc;
+            transition: 0.25s;
+        }
+
+    .suggested-data-set .title {
+        font-weight: bold;
+        color: #425f59
+    }
+
+    .suggested-data-set .description {
+        color: #595959;
+        font-size: 0.85rem;
+    }
+
+    .suggested-data-set .missing-chart-series {
+        color: orangered;
+        font-size: 0.85rem;
+    }
+
+.title {
+    display: inline-block;
+}
+
+    .title .tooltip-content {
+        display: none;
+        position: absolute;
+        width: 300px;
+        box-shadow: rgb(0 0 0 / 15%) 1px 1px 12px;
+        border-radius: 8px;
+        left: 16px;
+        top: 32px;
+        padding: 4px;
+        background-color: #fff;
+        font-size: 0.85rem;
+        color: #425f59;
+        z-index: 1500;
+    }
+
+    .title:hover .tooltip-content {
+        display: block;
+    }

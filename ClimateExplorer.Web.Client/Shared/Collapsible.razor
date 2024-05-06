@@ -7,43 +7,46 @@
                                                                     ? "flexbox-column-layout" 
                                                                     : "flexbox-row-layout")) + (NoBottomMargin ? " no-bottom-margin" : ""))">
     @if (AllowCollapse)
-{
-    <span class="collapser @(CollapserSize.ToString().ToLower()) @(ShowContent ? "content-shown" : "content-hidden" )">
+    {
+        <span class="collapser @(CollapserSize.ToString().ToLower()) @(ShowContent ? "content-shown" : "content-hidden" )">
             <span @onclick="CollapserOnClick">
-            @if (ShowContent)
-        {
-            <span class="oi oi-chevron-bottom @(CollapserSize.ToString().ToLower())" aria-hidden="true"></span>
-        }
-        else
-        {
-            <span class="oi oi-chevron-right @(CollapserSize.ToString().ToLower())" aria-hidden="true"></span>
-        }
-
-            @if (ShowTitleWhenExpanded || !ShowContent)
-        {
-            <span class="title">
-                    @Title
-                    @if (FullTitle != null && Title != FullTitle)
+                @if (ShowContent)
                 {
-                    <span class="tooltip-content">
-                            @FullTitle
-                        </span>   
+                    <span class="oi oi-chevron-bottom @(CollapserSize.ToString().ToLower())" aria-hidden="true"></span>
                 }
-                </span>
-        }
+                else
+                {
+                    <span class="oi oi-chevron-right @(CollapserSize.ToString().ToLower())" aria-hidden="true"></span>
+                }
+
+                @if (ShowTitleWhenExpanded || !ShowContent)
+                {
+                    <span class="title">
+                        @Title
+                        @if (FullTitle != null && Title != FullTitle)
+                        {
+                            <span class="tooltip-content">
+                                @FullTitle
+                            </span>   
+                        }
+                    </span>
+                }
             </span>
-            @HeaderContent
         </span>
-        
-    
-}
+        if (CollapsedContent != null)
+        {
+            <span>
+                @CollapsedContent
+            </span>
+        }
+    }
 
     @if (ShowContent)
-{
-    <div class="@((ShadeBackground ? "collapsible-with-background " : " ") + (ContentLayoutType == CollapserContentLayoutTypes.Block ? "block-layout" : "flexbox-column-layout"))">
+    {
+        <div class="@((ShadeBackground ? "collapsible-with-background " : " ") + (ContentLayoutType == CollapserContentLayoutTypes.Block ? "block-layout" : "flexbox-column-layout"))">
             @Content
         </div>
-}
+    }
 </div>
 
 @code {
@@ -75,7 +78,7 @@
     public string? FullTitle { get; set; }
 
     [Parameter]
-    public RenderFragment? HeaderContent { get; set; }
+    public RenderFragment? CollapsedContent { get; set; }
 
     [Parameter]
     public RenderFragment? Content { get; set; }

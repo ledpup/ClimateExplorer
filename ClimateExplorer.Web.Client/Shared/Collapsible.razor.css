@@ -14,7 +14,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 320px;
 }
 
     .title .tooltip-content {
@@ -100,11 +99,9 @@
 .flexbox-column-layout {
     display: flex;
     flex-direction: column;
-    flex-grow: 0;
 }
 
 .flexbox-row-layout {
     display: flex;
     flex-direction: row;
-    flex-grow: 0;
 }
