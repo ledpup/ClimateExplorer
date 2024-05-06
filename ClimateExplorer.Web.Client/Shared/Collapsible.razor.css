@@ -78,6 +78,7 @@
     .collapser.extralarge {
         font-size: 2em;
         height: 48px;
+        min-width: 360px;
     }
 
     .collapser:hover {

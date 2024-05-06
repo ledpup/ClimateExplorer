@@ -13,7 +13,7 @@
     <Collapsible @ref="LocationCollapsible" Title="@Location?.Title" FullTitle="@Location?.FullTitle" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
         <CollapsedContent>
             <span class="chart-controls">
-                <a class="chart-control" style="margin-left: 100px;" @onclick="() => ChangeLocationClicked(new EventArgs())"><i class="fas fa-map"></i> Change location</a>
+                <a class="chart-control" @onclick="() => ChangeLocationClicked(new EventArgs())"><i class="fas fa-map"></i> Change location</a>
                 @if (LocationCollapsible!.ShowContent)
                 {
                     <a class="chart-control" @onclick="() => TogglePrecipitation()"><i class="@( precipitation ? "fas fa-check-square" : "fas fa-square" )"></i> Precipitation</a>
