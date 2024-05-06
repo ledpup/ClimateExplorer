@@ -15,49 +15,27 @@
         {
             foreach (var s in SuggestedPresets)
             {
-                @if (s.MenuExpanded)
-                {
-                    <div class="modal-underlay" @onclick="() => s.MenuExpanded = false"></div>
-                }
-
                 <div class="@CalculateClassForSuggestedDataSetElement(s)">
                     <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(s.ChartSeriesList)">
-                        <div class="title">@s.Title</div>
-                        <div class="description">@s.Description</div>
+                        <div class="title">@s.Title
+                            <span class="tooltip-content">
+                                @s.Description
+                            </span>
+                        </div>
                         @if (s.MissingChartSeries)
                         {
                             <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available</div>
                         }
                     </div>
-
-                    @if (s.Variants != null && s.Variants.Count > 0)
-                    {
-                        <div class="expander" @onclick="() => s.MenuExpanded = !s.MenuExpanded">
-                            <span class="oi oi-chevron-bottom" aria-hidden="true"></span>
-                        </div>
-                    }
-
-                    @if (s.MenuExpanded)
-                    {
-                        <div class="menu">
-                            @if (s.Variants != null)
-                            {
-                                foreach (var v in s.Variants)
-                                {
-                                    <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(v.ChartSeriesList)">
-                                        <div class="title">@v.Title</div>
-                                        <div class="description">@v.Description</div>
-                                        @if (v.MissingChartSeries)
-                                        {
-                                            <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available</div>
-                                        }
-                                    </div>
-                                }
-                            }
-                        </div>
-                    }
                 </div>
             }
+            <div class="suggested-data-set">
+                <div class="main" @onclick="() => OnClickCollapser.InvokeAsync()">
+                    <div class="title">
+                        More...
+                    </div>
+                </div>
+            </div>
         }
     </div>
 </LoadingIndicator>
@@ -73,10 +51,7 @@
     public EventCallback<List<ChartSeriesDefinition>> OnChartPresetSelected { get; set; }
 
     [Parameter]
-    public bool ExpandUpwards { get; set; }
-
-    [Parameter]
-    public PresetTypes PresetType { get; set; }
+    public EventCallback OnClickCollapser { get; set; }
 
     List<SuggestedChartPresetModelWithVariants>? SuggestedPresets { get; set; }
 
@@ -88,8 +63,6 @@
 
         if (s.MenuExpanded) c += " menu-expanded";
 
-        if (ExpandUpwards) c += " expand-upwards";
-
         return c;
     }
 
@@ -97,20 +70,12 @@
     {
         LoadingIndicatorVisible = true;
 
-        if (DataSetDefinitions == null)
+        if (DataSetDefinitions == null || SelectedLocation == null)
         {
             return;
         }
 
-        switch (PresetType)
-        {
-            case PresetTypes.Location:
-                SuggestedPresets = SuggestedPresetLists.LocationBasedPresets(DataSetDefinitions, SelectedLocation!);
-                break;
-            case PresetTypes.RegionalAndGlobal:
-                SuggestedPresets = SuggestedPresetLists.RegionalAndGlobalPresets(DataSetDefinitions);
-                break;
-        }
+        SuggestedPresets = SuggestedPresetLists.LocationBasedPresetsMini(DataSetDefinitions, SelectedLocation!);
 
         // Presets may call for data that is not available at all locations. In those
         // cases, remove the ChartSeries entries that aren't available & set a flag

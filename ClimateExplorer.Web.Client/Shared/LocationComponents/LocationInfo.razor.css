@@ -19,7 +19,7 @@
 
 .chart-controls .chart-control {
     padding: 8px;
-    background-color: #eee;
+    background-color: #f8f8f8;
     border-radius: 8px;
     margin: 8px;
     text-decoration: none;
@@ -27,9 +27,10 @@
     cursor: pointer;
     display: inline-block;
     position: relative;
-    top: -16px;
     user-select: none;
     font-size: 16px;
+    top: -16px;
+    box-shadow: rgb(0 0 0 / 20%) 0px 0px 6px;
 }
 
     .chart-controls .chart-control i {

@@ -23,13 +23,17 @@
 
 <SnackbarStack @ref="Snackbar" Location="SnackbarStackLocation.Top" Interval="20000" Multiline="true" />
 
-<div style="flex-grow: 0">
-    <Collapsible Title="Suggested charts" InitiallyShown="false" ShowTitleWhenExpanded="false" ContentLayoutType="CollapserContentLayoutTypes.FlexboxRow">
-        <Content>
-            <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@SelectedLocation" OnChartPresetSelected="@OnChartPresetSelected" ExpandUpwards="false" PresetType="PresetTypes.Location"></SuggestedCharts>
-        </Content>
-    </Collapsible>
-</div>
+<Collapsible @ref="suggestedChartsCollapsible" InitiallyShown="false" ShowTitleWhenExpanded="false" ContentLayoutType="CollapserContentLayoutTypes.FlexboxRow">
+    <CollapsedContent>
+        @if (!suggestedChartsCollapsible!.ShowContent)
+        {
+            <SuggestedChartsMini DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@SelectedLocation" OnChartPresetSelected="@OnChartPresetSelected" OnClickCollapser="@suggestedChartsCollapsible.CollapserOnClick" />
+        }
+    </CollapsedContent>
+    <Content>
+        <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@SelectedLocation" OnChartPresetSelected="@OnChartPresetSelected" ExpandUpwards="false" PresetType="PresetTypes.Location" />
+    </Content>
+</Collapsible>
 
 <div class="location-and-chart-container">
     <div style="position: relative;">

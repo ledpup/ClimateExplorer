@@ -14,7 +14,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 320px;
 }
 
     .title .tooltip-content {
@@ -22,8 +21,8 @@
         position: absolute;
         box-shadow: rgb(0 0 0 / 15%) 1px 1px 12px;
         border-radius: 12px;
-        top: -54px;
-        left: 0px;
+        top: 48px;
+        left: 48px;
         padding: 8px;
         background-color: #fff;
         width: max-content;
@@ -79,6 +78,7 @@
     .collapser.extralarge {
         font-size: 2em;
         height: 48px;
+        min-width: 360px;
     }
 
     .collapser:hover {
@@ -100,11 +100,9 @@
 .flexbox-column-layout {
     display: flex;
     flex-direction: column;
-    flex-grow: 0;
 }
 
 .flexbox-row-layout {
     display: flex;
     flex-direction: row;
-    flex-grow: 0;
 }
