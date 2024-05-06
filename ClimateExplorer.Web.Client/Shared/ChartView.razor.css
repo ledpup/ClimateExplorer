@@ -55,14 +55,14 @@
     margin-right: 16px;
     display: inline-block;
     top: -1px;
+    border-radius: 8px;
+    box-shadow: rgb(0 0 0 / 20%) 0px 0px 4px;
 }
 
     ::deep .chart-controls .dropdown .btn {
         padding: 8px;
-        background: #eee;
-        border-radius: 8px;
+        background-color: #f8f8f8;
         color: #425f59;
-        border: 0px;
     }
 
         ::deep .chart-controls .dropdown .btn i {
@@ -76,7 +76,7 @@
 
 .chart-controls .chart-control {
     padding: 8px;
-    background-color: #eee;
+    background-color: #f8f8f8;
     border-radius: 8px;
     margin-right: 16px;
     text-decoration: none;
@@ -84,6 +84,7 @@
     cursor: pointer;
     margin-bottom: 16px;
     display: inline-block;
+    box-shadow: rgb(0 0 0 / 20%) 0px 0px 4px;
 }
 
     .chart-controls .chart-control i {

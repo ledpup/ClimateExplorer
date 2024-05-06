@@ -27,7 +27,7 @@
     <CollapsedContent>
         @if (!suggestedChartsCollapsible!.ShowContent)
         {
-            <SuggestedChartsMini DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@SelectedLocation" OnChartPresetSelected="@OnChartPresetSelected" />
+            <SuggestedChartsMini DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@SelectedLocation" OnChartPresetSelected="@OnChartPresetSelected" OnClickCollapser="@suggestedChartsCollapsible.CollapserOnClick" />
         }
     </CollapsedContent>
     <Content>

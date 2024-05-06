@@ -29,6 +29,13 @@
                     </div>
                 </div>
             }
+            <div class="suggested-data-set">
+                <div class="main" @onclick="() => OnClickCollapser.InvokeAsync()">
+                    <div class="title">
+                        More...
+                    </div>
+                </div>
+            </div>
         }
     </div>
 </LoadingIndicator>
@@ -42,6 +49,9 @@
 
     [Parameter]
     public EventCallback<List<ChartSeriesDefinition>> OnChartPresetSelected { get; set; }
+
+    [Parameter]
+    public EventCallback OnClickCollapser { get; set; }
 
     List<SuggestedChartPresetModelWithVariants>? SuggestedPresets { get; set; }
 
