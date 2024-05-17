@@ -27,7 +27,14 @@
     <CollapsedContent>
         @if (!suggestedChartsCollapsible!.ShowContent)
         {
-            <SuggestedChartsMini DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@SelectedLocation" OnChartPresetSelected="@OnChartPresetSelected" OnClickCollapser="@suggestedChartsCollapsible.CollapserOnClick" />
+            if (IsMobileDevice == true)
+            {
+                <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@SelectedLocation" OnChartPresetSelected="@OnChartPresetSelected" ExpandUpwards="false" PresetType="PresetTypes.MobileLocation" />
+            }
+            else
+            {
+                <SuggestedChartsMini DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@SelectedLocation" OnChartPresetSelected="@OnChartPresetSelected" OnClickCollapser="@suggestedChartsCollapsible.CollapserOnClick" />
+            }
         }
     </CollapsedContent>
     <Content>

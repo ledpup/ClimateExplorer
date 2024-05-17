@@ -4,41 +4,38 @@
 @using Blazorise
 @using Blazorise.Components
 @using Blazorise.Charts
-@using Blazorise.LoadingIndicator
 @using ClimateExplorer.Core.DataPreparation
 @using static ClimateExplorer.Web.UiModel.SuggestedPresetLists;
 @using static ClimateExplorer.Core.Enums
 
-<LoadingIndicator @bind-Visible="@LoadingIndicatorVisible">
-    <div class="suggested-data-set-list">
-        @if (SuggestedPresets != null)
+<div class="suggested-data-set-list">
+    @if (SuggestedPresets != null)
+    {
+        foreach (var s in SuggestedPresets)
         {
-            foreach (var s in SuggestedPresets)
-            {
-                <div class="@CalculateClassForSuggestedDataSetElement(s)">
-                    <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(s.ChartSeriesList)">
-                        <div class="title">@s.Title
-                            <span class="tooltip-content">
-                                @s.Description
-                            </span>
-                        </div>
-                        @if (s.MissingChartSeries)
-                        {
-                            <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available</div>
-                        }
+            <div class="@CalculateClassForSuggestedDataSetElement(s)">
+                <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(s.ChartSeriesList)">
+                    <div class="title">@s.Title
+                        <span class="tooltip-content">
+                            @s.Description
+                        </span>
                     </div>
-                </div>
-            }
-            <div class="suggested-data-set">
-                <div class="main" @onclick="() => OnClickCollapser.InvokeAsync()">
-                    <div class="title">
-                        More...
-                    </div>
+                    @if (s.MissingChartSeries)
+                    {
+                        <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available</div>
+                    }
                 </div>
             </div>
         }
-    </div>
-</LoadingIndicator>
+        <div class="suggested-data-set">
+            <div class="main" @onclick="() => OnClickCollapser.InvokeAsync()">
+                <div class="title">
+                    More...
+                </div>
+            </div>
+        </div>
+    }
+</div>
 
 @code {
     [Parameter]
@@ -55,8 +52,6 @@
 
     List<SuggestedChartPresetModelWithVariants>? SuggestedPresets { get; set; }
 
-    bool LoadingIndicatorVisible { get; set; }
-
     string CalculateClassForSuggestedDataSetElement(SuggestedChartPresetModel s)
     {
         string c = "suggested-data-set";
@@ -68,8 +63,6 @@
 
     protected override void OnParametersSet()
     {
-        LoadingIndicatorVisible = true;
-
         if (DataSetDefinitions == null || SelectedLocation == null)
         {
             return;
@@ -112,7 +105,5 @@
                 }
             }
         }
-
-        LoadingIndicatorVisible = false;
     }
 }

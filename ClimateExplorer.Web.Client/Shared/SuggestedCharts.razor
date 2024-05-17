@@ -4,63 +4,60 @@
 @using Blazorise
 @using Blazorise.Components
 @using Blazorise.Charts
-@using Blazorise.LoadingIndicator
 @using ClimateExplorer.Core.DataPreparation
 @using static ClimateExplorer.Web.UiModel.SuggestedPresetLists;
 @using static ClimateExplorer.Core.Enums
 
-<LoadingIndicator @bind-Visible="@LoadingIndicatorVisible">
-    <div class="suggested-data-set-list">
-        @if (SuggestedPresets != null)
+<div class="suggested-data-set-list">
+    @if (SuggestedPresets != null)
+    {
+        foreach (var s in SuggestedPresets)
         {
-            foreach (var s in SuggestedPresets)
+            @if (s.MenuExpanded)
             {
-                @if (s.MenuExpanded)
-                {
-                    <div class="modal-underlay" @onclick="() => s.MenuExpanded = false"></div>
-                }
+                <div class="modal-underlay" @onclick="() => s.MenuExpanded = false"></div>
+            }
 
-                <div class="@CalculateClassForSuggestedDataSetElement(s)">
-                    <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(s.ChartSeriesList)">
-                        <div class="title">@s.Title</div>
-                        <div class="description">@s.Description</div>
-                        @if (s.MissingChartSeries)
-                        {
-                            <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available</div>
-                        }
-                    </div>
-
-                    @if (s.Variants != null && s.Variants.Count > 0)
+            <div class="@CalculateClassForSuggestedDataSetElement(s)">
+                <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(s.ChartSeriesList)">
+                    <div class="title">@s.Title</div>
+                    <div class="description">@s.Description</div>
+                    @if (s.MissingChartSeries)
                     {
-                        <div class="expander" @onclick="() => s.MenuExpanded = !s.MenuExpanded">
-                            <span class="oi oi-chevron-bottom" aria-hidden="true"></span>
-                        </div>
-                    }
-
-                    @if (s.MenuExpanded)
-                    {
-                        <div class="menu">
-                            @if (s.Variants != null)
-                            {
-                                foreach (var v in s.Variants)
-                                {
-                                    <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(v.ChartSeriesList)">
-                                        <div class="title">@v.Title</div>
-                                        <div class="description">@v.Description</div>
-                                        @if (v.MissingChartSeries)
-                                        {
-                                            <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available</div>
-                                        }
-                                    </div>
-                                }
-                            }
-                        </div>
+                        <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available</div>
                     }
                 </div>
-            }
+
+                @if (s.Variants != null && s.Variants.Count > 0)
+                {
+                    <div class="expander" @onclick="() => s.MenuExpanded = !s.MenuExpanded">
+                        <span class="oi oi-chevron-bottom" aria-hidden="true"></span>
+                    </div>
+                }
+
+                @if (s.MenuExpanded)
+                {
+                    <div class="menu">
+                        @if (s.Variants != null)
+                        {
+                            foreach (var v in s.Variants)
+                            {
+                                <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(v.ChartSeriesList)">
+                                    <div class="title">@v.Title</div>
+                                    <div class="description">@v.Description</div>
+                                    @if (v.MissingChartSeries)
+                                    {
+                                        <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available</div>
+                                    }
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+            </div>
         }
-    </div>
-</LoadingIndicator>
+    }
+</div>
 
 @code {
     [Parameter]
@@ -80,8 +77,6 @@
 
     List<SuggestedChartPresetModelWithVariants>? SuggestedPresets { get; set; }
 
-    bool LoadingIndicatorVisible { get; set; }
-
     string CalculateClassForSuggestedDataSetElement(SuggestedChartPresetModel s)
     {
         string c = "suggested-data-set";
@@ -95,8 +90,6 @@
 
     protected override void OnParametersSet()
     {
-        LoadingIndicatorVisible = true;
-
         if (DataSetDefinitions == null)
         {
             return;
@@ -109,6 +102,9 @@
                 break;
             case PresetTypes.RegionalAndGlobal:
                 SuggestedPresets = SuggestedPresetLists.RegionalAndGlobalPresets(DataSetDefinitions);
+                break;
+            case PresetTypes.MobileLocation:
+                SuggestedPresets = SuggestedPresetLists.LocationBasedPresetsMobile(DataSetDefinitions, SelectedLocation!);
                 break;
         }
 
@@ -147,7 +143,5 @@
                 }
             }
         }
-
-        LoadingIndicatorVisible = false;
     }
 }

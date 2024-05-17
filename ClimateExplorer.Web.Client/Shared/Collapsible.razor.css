@@ -5,8 +5,6 @@
     margin-right: -18px;
     margin-bottom: 24px;
     padding: 8px;
-    flex-grow: 1;
-    flex-shrink: 0;
 }
 
 .title {
@@ -64,7 +62,6 @@
     cursor: pointer;
     user-select: none;
     display: inline-block;
-    height: 20px;
 }
 
     .collapser.content-shown {
@@ -75,10 +72,18 @@
         font-size: 1.5em;
     }
 
+    .collapser.titled {
+        top: 5px;
+    }
+
     .collapser.extralarge {
         font-size: 2em;
-        height: 48px;
         min-width: 360px;
+        top: 0px;
+    }
+
+    .collapser.untitled {
+        top: 12px;
     }
 
     .collapser:hover {

@@ -29,7 +29,7 @@
     position: relative;
     user-select: none;
     font-size: 16px;
-    top: -16px;
+    vertical-align: text-bottom;
     box-shadow: rgb(0 0 0 / 20%) 0px 0px 6px;
 }
 

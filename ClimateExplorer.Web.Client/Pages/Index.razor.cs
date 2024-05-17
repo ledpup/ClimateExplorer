@@ -7,6 +7,7 @@ using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Shared;
 using ClimateExplorer.Web.Client.Shared.LocationComponents;
 using ClimateExplorer.Web.UiModel;
+using CurrentDevice;
 using DPBlazorMapLibrary;
 using GeoCoordinatePortable;
 using Microsoft.AspNetCore.Components;
@@ -29,6 +30,8 @@ public partial class Index : ChartablePage
 
     [Parameter]
     public string? LocationId { get; set; }
+
+    public bool? IsMobileDevice { get; private set; }
 
     protected override string PageTitle
     {
@@ -58,10 +61,12 @@ public partial class Index : ChartablePage
     private string? BrowserLocationErrorMessage { get; set; }
 
     private Location? InternalLocation { get; set; }
-    private bool? IsMobileDevice { get; set; }
 
     [Inject]
     private Blazored.LocalStorage.ILocalStorageService? LocalStorage { get; set; }
+
+    [Inject]
+    private ICurrentDeviceService? CurrentDeviceService { get; set; }
 
     private Location SelectedLocation
     {
@@ -96,6 +101,11 @@ public partial class Index : ChartablePage
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
+
+        if (IsMobileDevice == null)
+        {
+            IsMobileDevice = await CurrentDeviceService!.Mobile();
+        }
 
         if (firstRender)
         {
