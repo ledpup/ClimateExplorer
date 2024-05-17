@@ -8,7 +8,7 @@
                                                                     : "flexbox-row-layout")) + (NoBottomMargin ? " no-bottom-margin" : ""))">
     @if (AllowCollapse)
     {
-        <span class="collapser @(CollapserSize.ToString().ToLower()) @(ShowContent ? "content-shown" : "content-hidden" )">
+        <span class="collapser @(CollapserSize.ToString().ToLower()) @(ShowContent ? "content-shown" : "content-hidden") @(Title != null ? "titled" : "untitled")">
             <span @onclick="CollapserOnClick">
                 @if (ShowContent)
                 {
