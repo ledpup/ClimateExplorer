@@ -2,7 +2,7 @@
 layout: single
 title: "The rest of the world"
 date: 2024-06-02 12:00:00 +1000
-categories: meta
+categories: datasets
 ---
 
 In 2023 ClimateExplorer had temperature records for Australia, New Zealand and the UK. We wanted to add temperature records from all around the world. Finding a dataset that fitted our requirements wasn't easy. Below are the required criteria.

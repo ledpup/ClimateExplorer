@@ -2,7 +2,7 @@
 layout: single
 title: "Chart options information"
 date: 2022-11-19 06:16:00 +1100
-categories: meta
+categories: site-info
 ---
 When using [ClimateExplorer](https://climateexplorer.net), you may notice that below the chart there is a cluster of buttons that allow you to customise the data and the chart. This post explains what they are and how to use them. There is a general help (chart options) and detailed information on two of the more complicated areas. The sections are:
 

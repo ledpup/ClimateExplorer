@@ -2,7 +2,7 @@
 layout: single
 title: "What's up with temperature anomalies?"
 date: 2023-07-25 18:00:00 +1000
-categories: meta
+categories: climate-science
 ---
 
 An anomaly is anything that is *not normal*. In science and mathematics, series of related numbers can be compared to discover anomalies within the series. To calculate a climate anomaly, we need to first *decide* what is "normal". Climate scientists have decided that any 30-year average of weather (i.e., average temperatures, rainfall or other phenomena) to be a sufficiently long enough period of time to use as a basis for a [climatological normal](https://en.wikipedia.org/wiki/Climatological_normal) (see [previous blog entry](https://climateexplorer.net/blog/meta/2022/12/05/climatological-normals.html) for more). Below we'll discuss why and how climate anomalies are used in conjunction with a climate normal.
