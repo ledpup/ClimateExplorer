@@ -34,4 +34,10 @@ var store = [{
         "tags": [],
         "url": "/blog/meta/2023/07/25/temperature-anomaly.html",
         "teaser": null
+      },{
+        "title": "The rest of the world",
+        "excerpt":"In 2023 ClimateExplorer had temperature records for Australia, New Zealand and the UK. We wanted to add temperature records from all around the world. Finding a dataset that fitted our requirements wasn’t easy. Below are the required criteria. A dataset that has unadjusted (what was recorded on the gauge) and...","categories": ["meta"],
+        "tags": [],
+        "url": "/blog/meta/2024/06/02/the-rest-of-the-world.html",
+        "teaser": null
       }]
