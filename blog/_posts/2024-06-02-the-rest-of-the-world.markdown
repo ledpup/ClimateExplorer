@@ -19,17 +19,17 @@ The advantage of starting with [ACORN-SAT](http://www.bom.gov.au/climate/data/ac
 
 [NCEI](https://www.ncei.noaa.gov/)/[NOAA](https://www.noaa.gov/) have a few products that looked suitable. They are:
 
-1. [Global Hourly - Integrated Surface Database (ISD)](https://www.ncei.noaa.gov/products/land-based-station/integrated-surface-database) - this seemed ideal at first because it has hourly data as well as a daily summary of temperature with many other data types. We could pre-process daily into daily records and then build in functionality to support other types of data (e.g., windspeed).
+1. [Global Hourly - Integrated Surface Database (ISD)](https://www.ncei.noaa.gov/products/land-based-station/integrated-surface-database) - this seemed ideal at first because it has hourly data as well as a daily summary of temperature with many other data types. We could pre-process hourly records into daily records and then build in functionality to support other types of data (e.g., windspeed).
 1. [Global Historical Climatology Network daily (GHCNd)](https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily)
 2. [Global Historical Climatology Network monthly (GHCNm)](https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-monthly)
 
-We assessed each product with the criteria above.
+We assessed each product with the criteria specified above, at the start of this article.
 
 ## Criterion 1 - adjusted and raw datasets
 
-We started by looking at [ISD](https://www.ncei.noaa.gov/products/land-based-station/integrated-surface-database). The ISD doesn't have an adjusted dataset; but maybe that was okay if the other criteria were met. The nice thing about ISD is that it records, as meta-data, when the station started operating and when it shutdown (if it has). The downside, however, is that it wasn't until we started downloading all of the climate data (many gigabytes) that we saw how much of it was missing for some stations. It's a challenge to describe a station as "good" when, although it's been running for one hundred years, it's missing decades of data during that time. Frustrated, we put on hold integrating ISD into ClimateExplorer and further explored what datasets were available.
+We started by looking at [ISD](https://www.ncei.noaa.gov/products/land-based-station/integrated-surface-database). The ISD doesn't have an adjusted dataset. Maybe that was okay if the other criteria were met. The nice thing about ISD is that it records, as meta-data, when the station started operating and when it shutdown (if it has). The downside, however, is that it wasn't until we started downloading all of the climate data (many gigabytes) that we saw how much of it was missing for some stations. It's a challenge to describe a station as "good" when, although it's been running for one hundred years, it's missing decades of data during that time. Frustrated, we put on hold integrating ISD into ClimateExplorer and further explored what datasets were available.
 
-GHCNd was looked at next. It is also solely an unadjusted dataset. From the [Methods](https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily#tab-298):
+GHCNd was looked at next. GHCNd is also solely an unadjusted dataset. From the [Methods](https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily#tab-298):
 
 > Unlike GHCNm, GHCNd does not contain adjustments for biases resulting from historical changes in instrumentation and observing practices. It should be noted that historically (and in general), the deployed stations providing daily summaries for the dataset were not designed to meet all of the desired standards for climate monitoring. Rather, the deployment of the stations was to meet the demands of agriculture, hydrology, weather forecasting, aviation, etc. Because GHCNd has not been homogenized to account for artifacts associated with the various eras in reporting practice at any particular station (i.e., for changes in systematic bias), users should consider whether or not the potential for changes in systematic bias might be important to their application. In addition, GHCNd and GHCNm are not internally consistent (i.e., GHCNm is not necessarily derived from the data in GHCNd) until the release of GHCNm version 4.
 
@@ -47,7 +47,7 @@ There are three versions of GHCNm. They are:
 > - QCF: Quality Control, Adjusted, using the Pairwise Homogeneity Algorithm (PHA, Menne and Williams, 2009).
 > - QFE: Quality Control, Adjusted, Estimated using the Pairwise Homogeneity Algorithm. Only the years 1961-2010 are provided. This is to help maximize station coverage when calculating normals. For more information, see Williams et al, 2012.
 
-ClimateExplorer would use QCU and QCF. It does not need QFE because we would calculate our own normals, from the selected stations in the process discussed below.
+ClimateExplorer would use QCU and QCF. ClimateExplorer does not need QFE because we would calculate our own normals, from the selected stations in the process discussed below.
 
 ## Criterion 2 - quality over quantity
 
@@ -61,11 +61,11 @@ Wikipedia explains [k-means clustering](https://en.wikipedia.org/wiki/K-means_cl
 
 > a method of vector quantization, originally from signal processing, that aims to partition *n* observations into *k* clusters in which each observation belongs to the cluster with the nearest mean (cluster centers or cluster centroid), serving as a prototype of the cluster.
 
+The above description seemed close to what we wanted. The *n* would be the number of stations in the cluster, and *k* could be how many clusters we'd end up with (wanting about 2,000) from which we could then select our best stations from within each cluster.
+
 ![Illustration of k-means]({{site.url}}/blog/assets/k-means-clustering-algorithm.png)
 
-That seemed close to what we wanted. The *n* would be the number of stations in the cluster, and *k* could be how many clusters we'd end up with (wanting about 2,000) from which we could then select our best stations from within each cluster.
-
-A question we had was: could k-means deal with [geodetic coordinates](https://en.wikipedia.org/wiki/Geodetic_coordinates) (i.e., longitude and latitude). A [stack-overflow question](https://stackoverflow.com/questions/24762435/clustering-geo-location-coordinates-lat-long-pairs-using-kmeans-algorithm-with) queried the issue; i.e., since k-means only uses [Euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance), would it work for places on the Earth - where we use the [haversine formula](https://en.wikipedia.org/wiki/Haversine_formula) to resolve the distances between locations with coordinates in latitude and longitude? The answer on stack-overlow was: no, k-means will not work, use [density-based spatial clustering of applications with noise (DBSCAN)](https://en.wikipedia.org/wiki/DBSCAN) with the Haversine formula to calculate distance.
+A question we had was: could k-means deal with [geodetic coordinates](https://en.wikipedia.org/wiki/Geodetic_coordinates) (i.e., longitude and latitude). A [stack-overflow question](https://stackoverflow.com/questions/24762435/clustering-geo-location-coordinates-lat-long-pairs-using-kmeans-algorithm-with) queried the issue; i.e., since k-means only uses [Euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance), would it work for places on the Earth - where we use the [haversine formula](https://en.wikipedia.org/wiki/Haversine_formula) to resolve the distances between locations with coordinates in latitude and longitude? The answer on stack-overlow was: "no, k-means will not work, use [density-based spatial clustering of applications with noise (DBSCAN)](https://en.wikipedia.org/wiki/DBSCAN) with the Haversine formula to calculate distance."
 
 ### DBSCAN
 
@@ -73,9 +73,9 @@ Wikipedia explains [density-based spatial clustering of applications with noise 
 
 > a density-based clustering non-parametric algorithm: given a set of points in some space, it groups together points that are closely packed (points with many nearby neighbors), and marks as outliers points that lie alone in low-density regions (those whose nearest neighbors are too far away). DBSCAN is one of the most common, and most commonly cited, clustering algorithms.
 
-![Example results of DBSCAN]({{site.url}}/blog/assets/DBSCAN-density-data.svg.png)
+That description also seemed like what we wanted (in the same way that k-means appeared appropriate). We also watched some videos about DBSCAN, such as: [Clustering with DBSCAN, Clearly Explained!!!](https://www.youtube.com/watch?v=RDZUdRSDOok) and read more on it; such as [Clustering to Reduce Spatial Data Set Size](https://geoffboeing.com/2014/08/clustering-to-reduce-spatial-data-set-size/).
 
-That seemed like what we wanted. We also watched some videos about DBSCAN, such as: [Clustering with DBSCAN, Clearly Explained!!!](https://www.youtube.com/watch?v=RDZUdRSDOok) and read more on it; such as [Clustering to Reduce Spatial Data Set Size](https://geoffboeing.com/2014/08/clustering-to-reduce-spatial-data-set-size/).
+![Example results of DBSCAN]({{site.url}}/blog/assets/DBSCAN-density-data.svg.png)
 
 It did not take too much longer to find [a software package for DBSCAN implemented in .NET](https://github.com/viceroypenguin/Dbscan). The library did not provide a haversine formula for distances, but **did** provide an interface (ISpatialIndex<T>), enabling us to implement our own distance function to be used by the algorithm. Things were looking promising!
 
@@ -107,7 +107,7 @@ Once we had done all that we had our stations from GHCNm that could then be inte
 
 ## Criterion 3 - data resolution
 
-A downside of GHCNm is that it is monthly temperature records, not daily. We'd still prefer a daily record but haven't been able to find one that also fits in well with the other criteria. Another downside is that it's monthly mean, not maximum and minimums temperatures. Temperature gauge recording traditionally records the minimum and maximum. GHCNm has averaged the minimum and maximum and then averaged to a monthly value. This means some of the interesting graphs (e.g., number of days of frost) aren't available.
+A downside of GHCNm is that it is monthly temperature records, not daily. We would prefer a daily record but have not found one that also fits with the other criteria. Another downside is that GHCNm is monthly mean, not maximum and minimums temperatures. Temperature gauge recording traditionally records the minimum and maximum. GHCNm has averaged the minimum and maximum and then averaged to a monthly value. This means some of the interesting graphs (e.g., number of days of frost) aren't available.
 
 As the data is monthly mean, we only need 12 values for the year, rather than the 730 values we have for stations with daily minimums and maximums. Therefore, storage space limitations disappear if we use GHCNm. When we include the adjusted (GHCNm call this QCF) and unadjusted (QCU) records, that's still only 24 values a year.
 
@@ -117,22 +117,22 @@ From the [GHCNm website](https://www.ncei.noaa.gov/products/land-based-station/g
 
 > The Global Historical Climatology Network monthly (GHCNm) dataset provides monthly climate summaries from **thousands of weather stations around the world**. (emphasis mine)
 
-By using GHCNm, we've only included data from really existing stations.
+By using GHCNm, we have only included data from really existing stations.
 
 ## Criterion 5 - precipitation
 
-Precipitation data was available for each of the NOAA products. Given that we'd all but settled on GHCNm, we needed to look at the GHCNm precipitation data. It's currently a beta product.
+Precipitation data was available for each of the NOAA products. Given that we had all but settled on GHCNm, we needed to look at the GHCNm precipitation data. GHCNm Precipitation is currently a beta product.
 
 > The Global Historical Climatology Network (GHCN) Monthly Precipitation, Version 4 is a collection of worldwide monthly precipitation values offering significant enhancement over the previous version 2.  It contains more values both historically and for the most recent months.  Its methods for merging records and quality control have been modernized.  
 
 > The data set is updated typically in the first week of each month and available through the links below.
 
-The precipitation data uses the same identifiers as GHCNm, thankfully. Surprisingly, and annoyingly, the access method and the format of the data between temperatures and precipitation are different. GHCNm temperature records are all in one big file, 1.5 million rows - about 160MB. We wrote a preprocessor to iterate through the file, pulling out each station and year of records - if a year didn't have 12 months of recordings, the year was discharged. We had assumed GHCNm Precipitation would follow the same data structure. Unfortunately, each station is stored as a single file on their server, available at [https://www.ncei.noaa.gov/data/ghcnm/v4beta/](https://www.ncei.noaa.gov/data/ghcnm/v4beta/). We needed to write a HTTP client that would connect to the server and download each file for the selected stations.
+The precipitation data uses the same identifiers as GHCNm, thankfully. Surprisingly, and annoyingly, the access method and the format of the data between temperatures and precipitation are different. GHCNm temperature records are all in one big file, 1.5 million rows - about 160MB. We wrote a preprocessor to iterate through the file, pulling out each station and year of records - if a year didn't have 12 months of recordings, the year was discarded. We had assumed GHCNm Precipitation would follow the same data structure. Unfortunately, each station is stored as a single file on their server, available at [https://www.ncei.noaa.gov/data/ghcnm/v4beta/](https://www.ncei.noaa.gov/data/ghcnm/v4beta/). We needed to write a HTTP client that would connect to the server and download each file for the selected stations.
 
 ## Future extension
 
-By using GHCNm, we're not able to display some of the interesting charts that rely on daily minimum and maximum temperatures and daily precipitation. A future extension could be to integrate GHCNd with GHCNm within ClimateExplorer. It's likely that the integration would be seamless as ClimateExplorer already has significant abstraction setup to support different datasets for Australia and New Zealand (e.g., ACORN-SAT vs standard BoM data). These daily data would only have unadjusted records (GHCNd only has raw values), but that wouldn't be a problem as we could drop back to GHCNm when comparing adjusted vs raw values.
+By using GHCNm, we are not able to display some of the interesting charts that rely on daily minimum and maximum temperatures and daily precipitation. A future extension could be to integrate GHCNd with GHCNm within ClimateExplorer. It is likely that the integration would be seamless as ClimateExplorer already has significant abstraction setup to support different datasets for Australia and New Zealand (e.g., ACORN-SAT vs standard BoM data). These daily data would only have unadjusted records (GHCNd only has raw values), but that would not be a problem as we could drop back to GHCNm when comparing adjusted vs raw values.
 
-Another bonus is that the identifiers are the same for stations between GHCNd and GHCNm, though it would have been possible to identify stations by latitude and longitude. 
+Another bonus is that the identifiers are the same for stations between GHCNd and GHCNm, though it would have been possible to identify stations by latitude and longitude anyway. 
 
 The only real concern in integrating GHCNd is whether we could support the increased storage space required. It would be a jump from 24 records per station, per year (12 for mean temperature and 12 for precipitation) to 1095 records per station, per year (365 for min temperature, 365 for max temperature and 365 for precipitation).
