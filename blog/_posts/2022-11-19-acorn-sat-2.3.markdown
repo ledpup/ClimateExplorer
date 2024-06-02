@@ -2,7 +2,7 @@
 layout: single
 title: "ACORN-SAT version 2.3"
 date: 2022-11-19 19:00:00 +1100
-categories: meta
+categories: datasets
 ---
 ACORN-SAT version 2.3 was release 2022-11-18. Version 2.3 has temperatures records from 1910 up until the end of 2021, for the 112 locations around Australia included in ACORN-SAT.
 

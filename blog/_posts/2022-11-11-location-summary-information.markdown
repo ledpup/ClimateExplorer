@@ -2,7 +2,7 @@
 layout: single
 title: "Location summary information"
 date: 2022-11-11 06:39:00 +1100
-categories: meta
+categories: site-info
 ---
 When you use ClimateExplorer, you may see info boxes that explain a few of the climate-related concepts presented in the web application. In the location summary area, they are:
 

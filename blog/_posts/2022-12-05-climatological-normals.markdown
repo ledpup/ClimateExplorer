@@ -2,7 +2,7 @@
 layout: single
 title: "Climatological normal"
 date: 2022-12-05 18:40:00 +1100
-categories: meta
+categories: climate-science
 ---
 While reading [a news article on US climate normals](https://www.noaa.gov/news/new-us-climate-normals-are-here-what-do-they-tell-us-about-climate-change), I decided it might be better to use the most recent **30 years** of temperature data to calculate the warming index, rather than **20 years** of data. This change will align the warming index with the convention of the [climatological normal](https://en.wikipedia.org/wiki/Climatological_normal).
 
