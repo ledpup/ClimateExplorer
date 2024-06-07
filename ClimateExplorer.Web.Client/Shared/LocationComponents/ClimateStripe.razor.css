@@ -10,9 +10,6 @@
     height: inherit;
     display: inline-block;
     flex-grow: 1;
-    flex-basis: 0;
-    transition: min-width 0.5s ease-in-out;
-    user-select: none;
 }
 
     .single-stripe .label {
@@ -22,18 +19,22 @@
     }
 
         .single-stripe .label .year {
-            font-size: 0.7rem;
+            font-size: 1rem;
         }
 
-        .single-stripe .label .amt {
+        .single-stripe .label .abs {
             font-size: 1rem;
             font-weight: bold;
         }
 
+        .single-stripe .label .rel {
+            font-size: 0.8rem;
+        }
+
     .single-stripe:hover {
         position: relative;
-        top: -10px;
-        height: 70px;
+        top: -15px;
+        height: 90px;
         min-width: 70px;
     }
 
