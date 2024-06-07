@@ -5,15 +5,15 @@ public class ColourServer
     private readonly List<Colours> reservedColours;
     private readonly List<Colours> availableColours;
 
-    private readonly Dictionary<Colours, string> set1Modified = new Dictionary<Colours, string>
+    private readonly Dictionary<Colours, string> colours = new Dictionary<Colours, string>
     {
-        { Colours.Red, "#e41a1c" },
-        { Colours.Blue, "#377eb8" },
-        { Colours.Green, "#4daf4a" },
-        { Colours.Purple, "#984ea3" },
+        { Colours.Red, "#FF2D2D" },
+        { Colours.Blue, "#36A2EB" },
+        { Colours.Green, "#4BC0C0" },
+        { Colours.Purple, "#9966FF" },
+        { Colours.Orange, "#FF9532" },
         { Colours.Black, "#000000" },
-        { Colours.Orange, "#ff7f00" },
-        { Colours.Yellow, "#e3bd0d" },
+        { Colours.Yellow, "#FFCD56" },
         { Colours.Brown, "#a65628" },
         { Colours.Pink, "#f781bf" },
         { Colours.Grey, "#666666" },
@@ -55,7 +55,7 @@ public class ColourServer
 
         var nextColour = availableColours.First(x => (requestedColour == Colours.AutoAssigned && !requestedColours.Contains(x)) || x == requestedColour);
         availableColours.Remove(nextColour);
-        return set1Modified[nextColour];
+        return colours[nextColour];
     }
 
     private void SetupAvailableColours()

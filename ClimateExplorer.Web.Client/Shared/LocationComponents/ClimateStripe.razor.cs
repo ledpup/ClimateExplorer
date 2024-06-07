@@ -23,7 +23,7 @@ public partial class ClimateStripe
     public double? LocationMean { get; set; }
 
     [Parameter]
-    public List<YearAndValue>? DataRecords { get; set; }
+    public List<YearlyValues>? DataRecords { get; set; }
 
     [Parameter]
     public UnitOfMeasure UnitOfMeasure { get; set; }
@@ -39,7 +39,7 @@ public partial class ClimateStripe
 
     public string? PopupText { get; set; }
 
-    private List<YearAndValue>? PreviouslySeenDataRecords { get; set; }
+    private List<YearlyValues>? PreviouslySeenDataRecords { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -60,8 +60,8 @@ public partial class ClimateStripe
 
         if (DataRecords != null)
         {
-            min = DataRecords.Min(x => x.Value);
-            max = DataRecords.Max(x => x.Value);
+            min = DataRecords.Min(x => x.Relative);
+            max = DataRecords.Max(x => x.Relative);
         }
 
         PreviouslySeenDataRecords = DataRecords;
@@ -97,7 +97,7 @@ public partial class ClimateStripe
         return Task.CompletedTask;
     }
 
-    private bool YearAndValueListsAreEqual(List<YearAndValue> a, List<YearAndValue> b)
+    private bool YearAndValueListsAreEqual(List<YearlyValues> a, List<YearlyValues> b)
     {
         // If they're both null, the lists are the same
         if (a == null && b == null)
@@ -126,7 +126,7 @@ public partial class ClimateStripe
             }
 
             // If a value is different, the lists are different
-            if (a[i].Value != b[i].Value)
+            if (a[i].Absolute != b[i].Absolute)
             {
                 return false;
             }
@@ -167,12 +167,13 @@ public partial class ClimateStripe
         throw new NotImplementedException();
     }
 
-    private string GetRelativeTemp(double v) => $"{(v >= 0 ? "+" : string.Empty)}{Math.Round(v, uomRounding)}{uomString}";
+    private string GetRelativeValue(double v) => $"{(v >= 0 ? "+" : string.Empty)}{Math.Round(v, uomRounding)}{uomString}";
+    private string GetAbsoluteValue(double v) => $"{Math.Round(v, uomRounding)}{uomString}";
 
-    private string GetTitle(double value)
+    private string GetTitle(YearlyValues values)
     {
-        var aboveOrBelow = value > 0 ? "above" : "below";
-        return $"{Math.Round(value, uomRounding)}{uomString} {aboveOrBelow} average";
+        var aboveOrBelow = values.Relative > 0 ? "above" : "below";
+        return $"Year {values.Year}\r\n{(UnitOfMeasure == UnitOfMeasure.DegreesCelsius ? "Average of" : "Total of")} {Math.Round(values.Absolute, uomRounding)}{uomString}\r\n{Math.Round(values.Relative, uomRounding)}{uomString} {aboveOrBelow} average";
     }
 
     private string GetTextColour(double value, string lightTextColour, string darkTextColour)

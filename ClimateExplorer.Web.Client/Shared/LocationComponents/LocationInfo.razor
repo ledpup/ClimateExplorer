@@ -74,12 +74,12 @@
     public bool LocationLoadingIndicatorVisible { get; set; }
     bool precipitation { get; set; }
 
-    List<YearAndValue>? TemperatureAnomalyRecords { get; set; }
+    List<YearlyValues>? TemperatureAnomalyRecords { get; set; }
     double? TemperatureLocationMean { get; set; }
     string? WarmingAnomalyDescription;
     string? WarmingAnomalyAsString;
 
-    List<YearAndValue>? PrecipitationAnomalyRecords { get; set; }
+    List<YearlyValues>? PrecipitationAnomalyRecords { get; set; }
     double? PrecipitationLocationMean { get; set; }
     string? PrecipitationAnomalyAsString;
 
@@ -226,7 +226,7 @@
             var anomalyRecords =
                 series.DataRecords
                 .Where(x => x.Value != null)
-                .Select(x => new YearAndValue(((YearBinIdentifier)BinIdentifier.Parse(x.BinId!)).Year, x.Value!.Value - average))
+                .Select(x => new YearlyValues(((YearBinIdentifier)BinIdentifier.Parse(x.BinId!)).Year, x.Value!.Value - average, x.Value!.Value))
                 .ToList();
 
             var index = AnomalyCalculator.CalculateAnomaly(series.DataRecords);
