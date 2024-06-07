@@ -167,13 +167,25 @@ public partial class ClimateStripe
         throw new NotImplementedException();
     }
 
-    private string GetRelativeValue(double v) => $"{(v >= 0 ? "+" : string.Empty)}{Math.Round(v, uomRounding)}{uomString}";
+    private string GetRelativeValue(YearlyValues values) => UnitOfMeasure == UnitOfMeasure.Millimetres ? $"{Math.Round(values.PercentageOfAverage, 0)}%" : $"{(values.Relative >= 0 ? "+" : string.Empty)}{Math.Round(values.Relative, uomRounding)}{uomString}";
     private string GetAbsoluteValue(double v) => $"{Math.Round(v, uomRounding)}{uomString}";
 
     private string GetTitle(YearlyValues values)
     {
         var aboveOrBelow = values.Relative > 0 ? "above" : "below";
-        return $"Year {values.Year}\r\n{(UnitOfMeasure == UnitOfMeasure.DegreesCelsius ? "Average of" : "Total of")} {Math.Round(values.Absolute, uomRounding)}{uomString}\r\n{Math.Round(values.Relative, uomRounding)}{uomString} {aboveOrBelow} average";
+        var title = $"Year {values.Year}\r\n";
+        if (UnitOfMeasure == UnitOfMeasure.Millimetres)
+        {
+            title += $"Total of {Math.Round(values.Absolute, uomRounding)}{uomString} ({Math.Abs(Math.Round(values.Relative, uomRounding))}{uomString} {aboveOrBelow} average)\r\n";
+            title += $"{Math.Round(values.PercentageOfAverage, 0)}% of the average\r\n";
+        }
+        else
+        {
+            title += $"Average of {Math.Round(values.Absolute, uomRounding)}{uomString}\r\n";
+            title += $"{Math.Abs(Math.Round(values.Relative, uomRounding))}{uomString} {aboveOrBelow} average";
+        }
+
+        return title;
     }
 
     private string GetTextColour(double value, string lightTextColour, string darkTextColour)

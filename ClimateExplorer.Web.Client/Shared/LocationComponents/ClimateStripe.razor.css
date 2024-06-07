@@ -23,12 +23,12 @@
         }
 
         .single-stripe .label .abs {
-            font-size: 1rem;
-            font-weight: bold;
+            font-size: 0.8rem;
         }
 
         .single-stripe .label .rel {
-            font-size: 0.8rem;
+            font-size: 1rem;
+            font-weight: bold;
         }
 
     .single-stripe:hover {
