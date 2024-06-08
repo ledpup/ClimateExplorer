@@ -10,9 +10,9 @@
         {
             <div title="@GetTitle(record)" class="single-stripe" style="background-color: @GetColour(record.Relative); cursor: pointer;" @onclick="() => FilterToYear(record.Year)">
                 <div class="label">
-                    <div class="year" style="color: @GetTextColour(record.Relative, "#eee", "#555")">@record.Year</div>
-                    <div class="rel" style="color: @GetTextColour(record.Relative, "#eee", "#555")">@GetRelativeValue(record)</div>
-                    <div class="abs" style="color: @GetTextColour(record.Relative, "#eee", "#555")">@GetAbsoluteValue(record.Absolute)</div>
+                    <div class="year" style="color: @GetTextColour(record.Relative, "#fff", "#000")">@record.Year</div>
+                    <div class="rel" style="color: @GetTextColour(record.Relative, "#fff", "#000")">@GetRelativeValue(record)</div>
+                    <div class="abs" style="color: @GetTextColour(record.Relative, "#fff", "#000")">@GetAbsoluteValue(record.Absolute)</div>
                 </div>
             </div>
         }
