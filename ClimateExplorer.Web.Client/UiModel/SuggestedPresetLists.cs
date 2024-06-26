@@ -206,7 +206,7 @@ public static class SuggestedPresetLists
                                 SmoothingWindow = 5,
                                 Value = SeriesValueOptions.Value,
                                 Year = null,
-                                RequestedColour = UiLogic.Colours.Yellow,
+                                RequestedColour = UiLogic.Colours.Orange,
                                 GroupingThreshold = 0.1f,
                             }
 
@@ -768,6 +768,7 @@ public static class SuggestedPresetLists
                     {
                         Title = "Carbon dioxide (CO\u2082)",
                         Description = "Carbon dioxide records from the Mauna Loa Observatory since 1958. AKA The Keeling Curve",
+                        ChartAllData = true,
                         ChartSeriesList =
                         [
                                 new ()
@@ -1267,6 +1268,7 @@ public static class SuggestedPresetLists
             {
                 Title = "Ozone Hole + ODGI",
                 Description = "Smoothed yearly average size of the Southern Hemisphere Ozone Hole compared with the Ozone Depleting Gas Index",
+                ChartAllData = true,
                 ChartSeriesList =
                 [
                     new ChartSeriesDefinition()
@@ -1305,6 +1307,7 @@ public static class SuggestedPresetLists
             {
                 Title = "Australian anomaly",
                 Description = "Smoothed average of ACORN-SAT anomalies (excluding urban-influenced locations). Reference period is 1961-1990",
+                ChartAllData = true,
                 ChartSeriesList =
                     [
                         new ChartSeriesDefinition()
@@ -1394,6 +1397,7 @@ public static class SuggestedPresetLists
             {
                 Title = "Solar irradiation + sunspots",
                 Description = "Total solar irradiance (from satelite data) compared with the number of sunspots",
+                ChartAllData = true,
                 ChartSeriesList =
                 [
                     new ChartSeriesDefinition()
@@ -1421,7 +1425,7 @@ public static class SuggestedPresetLists
                         Value = SeriesValueOptions.Value,
                         Year = null,
                         DisplayStyle = SeriesDisplayStyle.Line,
-                        RequestedColour = UiLogic.Colours.Yellow,
+                        RequestedColour = UiLogic.Colours.Orange,
                         GroupingThreshold = 0.1f,
                     },
                 ],

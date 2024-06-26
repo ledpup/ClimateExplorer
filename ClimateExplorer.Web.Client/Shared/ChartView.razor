@@ -24,7 +24,7 @@
                     </div>
 
                     <div class="chart-controls">
-                        <a class="chart-control" @onclick="ShowFilterModal"><i class="fas fa-filter"></i> Year filtering</a>
+                        <a class="chart-control" @onclick="ChartAllDataToggle"><i class="@( ChartAllData ? "fas fa-check-square" : "fas fa-square" )"></i> Chart all data</a>
 
                         @if (!string.IsNullOrWhiteSpace(SelectedStartYear) || !string.IsNullOrWhiteSpace(SelectedEndYear))
                         {
@@ -123,18 +123,18 @@
     </ModalContent>
 </Modal>
 
-<YearFilter @ref="YearFilter"
+@* <YearFilter @ref="YearFilter"
             DatasetYears="@DatasetYears"
             SelectedYears="@SelectedYears"
             SelectedStartYear="@SelectedStartYear"
             SelectedEndYear="@SelectedEndYear"
             SelectedBinGranularity="@SelectedBinGranularity"
-            ChartStartYear="@ChartStartYear"
+            ChartAllData="@ChartAllData"
             OnStartYearTextChanged="@OnStartYearTextChanged"
             OnEndYearTextChanged="@OnEndYearTextChanged"
             OnDynamicStartYearChanged="@OnDynamicStartYearChanged"
             ShowRangeSlider=@EnableRangeSlider
-            OnShowRangeSliderChanged=@ShowRangeSliderChanged />
+            OnShowRangeSliderChanged=@ShowRangeSliderChanged /> *@
 
 @if (ChartOptionsText != null)
 {

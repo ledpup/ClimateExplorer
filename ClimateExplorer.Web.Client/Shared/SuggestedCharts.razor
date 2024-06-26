@@ -19,7 +19,7 @@
             }
 
             <div class="@CalculateClassForSuggestedDataSetElement(s)">
-                <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(s.ChartSeriesList)">
+                <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(s)">
                     <div class="title">@s.Title</div>
                     <div class="description">@s.Description</div>
                     @if (s.MissingChartSeries)
@@ -42,7 +42,7 @@
                         {
                             foreach (var v in s.Variants)
                             {
-                                <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(v.ChartSeriesList)">
+                                <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(v)">
                                     <div class="title">@v.Title</div>
                                     <div class="description">@v.Description</div>
                                     @if (v.MissingChartSeries)
@@ -67,7 +67,7 @@
     public Location? SelectedLocation { get; set; }
 
     [Parameter]
-    public EventCallback<List<ChartSeriesDefinition>> OnChartPresetSelected { get; set; }
+    public EventCallback<SuggestedChartPresetModel> OnChartPresetSelected { get; set; }
 
     [Parameter]
     public bool ExpandUpwards { get; set; }

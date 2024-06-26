@@ -16,6 +16,8 @@ using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
+using Microsoft.AspNetCore.WebUtilities;
+using System;
 
 public partial class ChartView
 {
@@ -38,6 +40,8 @@ public partial class ChartView
 
     public List<SeriesWithData>? ChartSeriesWithData { get; set; }
 
+    public bool ChartAllData { get; set; }
+
     public List<ChartSeriesDefinition>? ChartSeriesList { get; set; } = new List<ChartSeriesDefinition>();
 
     [Parameter]
@@ -50,12 +54,11 @@ public partial class ChartView
     public EventCallback ShowAddDataSetModalEvent { get; set; }
 
     public string ChartOptionsText { get; set; } = @"<div style=""padding-bottom: 24px;""><img style=""max-width: 100%;"" src=""images/ChartOptions.png"" alt=""Chart Options image"" /></div>
-<p><strong>Year filtering</strong>: allows you to change the start and end years for the chart. For example, if you want to see the change in temperature for the 20th century, you could set the end year to 2000.</p>
+<p><strong>Chart all data</strong>: when checked, all data from all series will be displayed. When unchecked, data will be cropped to a starting point that all datasets share.</p>
 <p><strong>Clear filter</strong>: the clear filter button is only displayed when there is a start or end year filter applied to the chart. Clicking this button will reset the chart back to the default filter and remove the range slider (if it has been turned on).</p>
 <p><strong>Grouping</strong>: the grouping option allows you to look at the data from another point of view. The default view is ""Yearly""; i.e., each point on the graph represents a single year in the series. To represent daily data at the yearly level, ClimateExplorer applies rules and aggregations to average (or sum) the data together. If you select ""Year + Month"" the data will be re-processed, starting with the daily data for the particular year, to present twelve points on the chart per year. This view works best in combination with the range slider. If you select ""Month"", the data will be sliced, again starting with the lowest level of the data (usually daily), into only twelve points, one point for every month of the year. The value for each point will be an average (or sum) of the data across all years. This will give you a climatic view of the data for the location, it will not be as useful for viewing the change in the climate over time.</p>
 <p><strong>Download data</strong>: the download data button allows you to download, as a csv file, the data for the chart you are currently looking at. The button is context sensitive; it'll download data that applies to the current view. For example, if you are looking at the data as a ""Year + Month"" grouping, you will get twelve records for each year.</p>
-<p><strong>Aggregation options</strong>: the aggregation options allow you to change the underlying grouping parameters for the chart. The default values will group the daily data into 14 day (i.e., fortnightly) sub-bins. If each of those sub-bins has records for 70% of those days (i.e., 10 days of the 14 days will need to have records) then the whole year is considered valid. This means that you can still have substantial data loss, while the data remains valid. E.g., a meteorologist unwilling to come in on some weekends to record the min and max temperatures may not invalidate the data for the year. However, going on a 3-week holiday in the middle of winter would invalidate the year as it would distort the average to make the year seem warmer than it was.</p>
-<p><strong>Add data set</strong>: the suggested charts at the bottom of the screen provide the user with a number of predefined and recommended charts that can be viewed within ClimateExplorer. Other datasets can be added in an ad-hoc manner with the ""Add data set"" button. The list on the ""Add data set"" dialog contains data for your current location, such as solar radiation and the diurnal range for temperature. The list also contains reference data sets that can be added, such as CO₂, ENSO indexes and data from the cryosphere (the cryosphere comprises the parts of the planet that are frozen most of the year).</p>";
+<p><strong>Aggregation options</strong>: the aggregation options allow you to change the underlying grouping parameters for the chart. The default values will group the daily data into 14 day (i.e., fortnightly) sub-bins. If each of those sub-bins has records for 70% of those days (i.e., 10 days of the 14 days will need to have records) then the whole year is considered valid. This means that you can still have substantial data loss, while the data remains valid. E.g., a meteorologist unwilling to come in on some weekends to record the min and max temperatures may not invalidate the data for the year. However, going on a 3-week holiday in the middle of winter would invalidate the year as it would distort the average to make the year seem warmer than it was.</p>";
 
     public string AggregationOptionsInfoText { get; set; } = @"<p>The aggregation options are advanced features that allows you to change the underlying aggregation process. To calculate a single aggregated value for data for a year, from daily or monthly series, data is bundled together. If each bundle of data does not have enough records, the bundle is rejected as being unreliable.</p>
 <p>By default, the bundles are groups of 14 days (fortnights) and each bundle requires 70% (10 days of the 14) of the records to be present for the year to be considered reliable enough for an average mean to be calculated. This means that a number of records can be missing for the year, so long as not too many consecutive days are missing. As temperature (and other climate data) follows cyclic patterns, missing data from a consecutive block is considered to be more untrustworthy than sporadic data missing throughout the year.</p>
@@ -77,6 +80,9 @@ public partial class ChartView
 
     [Inject]
     private ILogger<Index>? Logger { get; set; }
+
+    [Inject]
+    private NavigationManager? NavManager { get; set; }
 
     private short SelectingDayGrouping { get; set; }
 
@@ -108,13 +114,10 @@ public partial class ChartView
     private List<short>? SelectedYears { get; set; }
     private List<short>? StartYears { get; set; }
     private short EndYear { get; set; }
-    private ChartStartYears? ChartStartYear { get; set; } = ChartStartYears.LastYear;
 
     private ColourServer Colours { get; set; } = new ColourServer();
 
     private string? GroupingThresholdText { get; set; }
-
-    private YearFilter? YearFilter { get; set; }
 
     private Modal? OptionsModal { get; set; }
 
@@ -152,16 +155,18 @@ public partial class ChartView
         await BuildDataSets();
     }
 
-    public async Task OnChartPresetSelected(List<ChartSeriesDefinition> chartSeriesDefinitions)
+    public async Task OnChartPresetSelected(SuggestedChartPresetModel chartPresetModel)
     {
-        if (!chartSeriesDefinitions.Any())
+        if (chartPresetModel.ChartSeriesList == null || !chartPresetModel.ChartSeriesList.Any())
         {
             throw new Exception("No chart series definition passed as a parameter when preset was selected");
         }
 
-        SelectedBinGranularity = chartSeriesDefinitions.First().BinGranularity;
+        ChartAllData = chartPresetModel.ChartAllData;
 
-        ChartSeriesList = chartSeriesDefinitions.ToList();
+        SelectedBinGranularity = chartPresetModel.ChartSeriesList.First().BinGranularity;
+
+        ChartSeriesList = chartPresetModel.ChartSeriesList;
 
         await BuildDataSets();
     }
@@ -263,7 +268,7 @@ public partial class ChartView
             // records for each missing year. Value is set to null for those records.
             l.LogInformation("Calling BuildProcessedDataSets");
 
-            BuildProcessedDataSets(ChartSeriesWithData, ChartStartYear);
+            BuildProcessedDataSets(ChartSeriesWithData, ChartAllData);
 
             subtitle =
                 (chartStartBin != null && chartEndBin != null)
@@ -429,6 +434,17 @@ public partial class ChartView
         {
             await HandleRedraw();
         }
+
+        if (firstRender)
+        {
+            var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+            QueryHelpers.ParseQuery(uri.Query).TryGetValue("chartAllData", out var chartAllData);
+
+            if (bool.TryParse(chartAllData.ToString(), out bool result))
+            {
+                ChartAllData = result;
+            }
+        }
     }
 
     private static ContainerAggregationFunctions MapSeriesAggregationOptionToBinAggregationFunction(SeriesAggregationOptions a)
@@ -444,9 +460,10 @@ public partial class ChartView
         };
     }
 
-    private async Task ShowFilterModal()
+    private async Task ChartAllDataToggle()
     {
-        await YearFilter!.Show();
+        ChartAllData = !ChartAllData;
+        await BuildDataSets();
     }
 
     private Task ShowChartOptionsInfo()
@@ -587,7 +604,7 @@ public partial class ChartView
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
-    private void BuildProcessedDataSets(List<SeriesWithData> chartSeriesWithData, ChartStartYears? chartStartYear)
+    private void BuildProcessedDataSets(List<SeriesWithData> chartSeriesWithData, bool chartAllData)
     {
         var l = new LogAugmenter(Logger!, "BuildProcessedDataSets");
 
@@ -697,7 +714,7 @@ public partial class ChartView
                 (chartStartBin, chartEndBin) =
                     ChartLogic.GetBinRangeToPlotForGaplessRange(
                         preProcessedDataSets!, // Pass in the data available for plotting
-                        chartStartYear, // and the user's preferences about what x axis range they'd like plotted
+                        chartAllData, // and the user's preferences about what x axis range they'd like plotted
                         SelectedStartYear!,
                         SelectedEndYear!);
 
@@ -885,14 +902,7 @@ public partial class ChartView
             return;
         }
 
-        int startYear = ChartStartYear switch
-        {
-            ChartStartYears.LastYear => StartYears!.Last(),
-            ChartStartYears.FirstYear => StartYears!.First(),
-            _ => SelectedStartYear != null
-                ? Convert.ToInt16(SelectedStartYear)
-                : throw new NotImplementedException(),
-        };
+        int startYear = ChartAllData ? StartYears!.First() : StartYears!.Last();
 
         var year = (short)(startYear + e.Index);
 
@@ -933,7 +943,6 @@ public partial class ChartView
     private async Task ChangeStartYear(string? text, bool redraw)
     {
         SelectedStartYear = text;
-        ChartStartYear = null;
         if (SelectedStartYear != null)
         {
             SliderStart = Convert.ToInt32(SelectedStartYear);
@@ -968,9 +977,9 @@ public partial class ChartView
         }
     }
 
-    private async Task OnDynamicStartYearChanged(ChartStartYears? value)
+    private async Task OnDynamicStartYearChanged(bool? value)
     {
-        ChartStartYear = value;
+        ChartAllData = value.GetValueOrDefault();
         if (value != null)
         {
             SliderStart = null;
@@ -1013,7 +1022,7 @@ public partial class ChartView
 
     private async Task OnClearFilter()
     {
-        ChartStartYear = ChartStartYears.FirstYear;
+        ChartAllData = false;
         SelectedStartYear = null;
         SelectedEndYear = null;
         SliderStart = null;
