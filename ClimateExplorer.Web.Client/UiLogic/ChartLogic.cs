@@ -179,7 +179,7 @@ public static class ChartLogic
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rules conflict")]
     public static Tuple<BinIdentifier, BinIdentifier> GetBinRangeToPlotForGaplessRange(
         IEnumerable<DataSet> preProcessedDataSets,
-        ChartStartYears? chartStartYear,
+        bool chartAllData,
         string selectedStartYear,
         string selectedEndYear)
     {
@@ -202,12 +202,7 @@ public static class ChartLogic
         var lastFirstBinAcrossAllDataSets = firstBinInEachDataSet.Max();
         var lastBinAcrossAllDataSets = lastBinInEachDataSet.Max();
 
-        var startBin = chartStartYear switch
-        {
-            ChartStartYears.FirstYear => firstBinAcrossAllDataSets!,
-            ChartStartYears.LastYear => lastFirstBinAcrossAllDataSets!,
-            _ => firstBinAcrossAllDataSets!,
-        };
+        var startBin = chartAllData ? firstBinAcrossAllDataSets! : lastFirstBinAcrossAllDataSets!;
 
         var endBin = lastBinAcrossAllDataSets;
 

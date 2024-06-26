@@ -14,7 +14,7 @@
         foreach (var s in SuggestedPresets)
         {
             <div class="@CalculateClassForSuggestedDataSetElement(s)">
-                <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(s.ChartSeriesList)">
+                <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(s)">
                     <div class="title">@s.Title
                         <span class="tooltip-content">
                             @s.Description
@@ -45,7 +45,7 @@
     public Location? SelectedLocation { get; set; }
 
     [Parameter]
-    public EventCallback<List<ChartSeriesDefinition>> OnChartPresetSelected { get; set; }
+    public EventCallback<SuggestedChartPresetModel> OnChartPresetSelected { get; set; }
 
     [Parameter]
     public EventCallback OnClickCollapser { get; set; }

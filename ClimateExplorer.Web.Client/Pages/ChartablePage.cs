@@ -114,7 +114,9 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
         if (chartSeriesUrlComponent.Length > 0)
         {
-            url += "?csd=" + chartSeriesUrlComponent;
+            var chartAllData = ChartView.ChartAllData.ToString() !.ToLower();
+
+            url += "?chartAllData=" + chartAllData + "&csd=" + chartSeriesUrlComponent;
         }
 
         string currentUri = NavManager!.Uri;
@@ -219,9 +221,9 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         await ChartView!.OnAddDataSet(dle, DataSetDefinitions!);
     }
 
-    protected async Task OnChartPresetSelected(List<ChartSeriesDefinition> chartSeriesDefinitions)
+    protected async Task OnChartPresetSelected(SuggestedChartPresetModel chartPresetModel)
     {
-        await ChartView!.OnChartPresetSelected(chartSeriesDefinitions);
+        await ChartView!.OnChartPresetSelected(chartPresetModel);
     }
 
     protected async Task OnDownloadDataClicked(DataDownloadPackage dataDownloadPackage)

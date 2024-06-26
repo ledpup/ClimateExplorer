@@ -88,12 +88,6 @@ public static class Enums
         Anomaly,
     }
 
-    public enum ChartStartYears
-    {
-        FirstYear,
-        LastYear,
-    }
-
     public enum AggregationMethod
     {
         GroupByDayThenAverage,
