@@ -766,6 +766,41 @@ public static class SuggestedPresetLists
                 [
                     new ()
                     {
+                        Title = "Atmospheric CO₂ vs emissions",
+                        Description = "Compare the CO₂ measured in the atmosphere with the reported global emissions of CO₂",
+                        ChartAllData = true,
+                        ChartSeriesList =
+                        [
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.None,
+                                SmoothingWindow = 5,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                RequestedColour = UiLogic.Colours.Brown,
+                            },
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2emissions!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.None,
+                                SmoothingWindow = 5,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                RequestedColour = UiLogic.Colours.Black,
+                            },
+                        ],
+                    },
+                    new ()
+                    {
                         Title = "Carbon dioxide (CO\u2082)",
                         Description = "Carbon dioxide records from the Mauna Loa Observatory since 1958. AKA The Keeling Curve",
                         ChartAllData = true,
@@ -830,42 +865,6 @@ public static class SuggestedPresetLists
                             ],
                     }
 
-                ],
-            });
-
-        suggestedPresets.Add(
-            new SuggestedChartPresetModelWithVariants()
-            {
-                Title = "Atmospheric CO₂ vs emissions",
-                Description = "Compare the CO₂ measured in the atmosphere with the reported global emissions of CO₂",
-                ChartSeriesList =
-                [
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
-                        Aggregation = SeriesAggregationOptions.Mean,
-                        BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 5,
-                        Value = SeriesValueOptions.Value,
-                        Year = null,
-                        DisplayStyle = SeriesDisplayStyle.Line,
-                        RequestedColour = UiLogic.Colours.Brown,
-                    },
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2emissions!),
-                        Aggregation = SeriesAggregationOptions.Mean,
-                        BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 5,
-                        Value = SeriesValueOptions.Value,
-                        Year = null,
-                        DisplayStyle = SeriesDisplayStyle.Line,
-                        RequestedColour = UiLogic.Colours.Black,
-                    },
                 ],
             });
 
