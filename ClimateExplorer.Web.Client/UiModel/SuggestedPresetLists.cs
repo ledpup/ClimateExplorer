@@ -863,8 +863,44 @@ public static class SuggestedPresetLists
                                 }
 
                             ],
-                    }
-
+                    },
+                    new ()
+                    {
+                        Title = "Ozone Hole + ODGI",
+                        Description = "Smoothed yearly average size of the Southern Hemisphere Ozone Hole compared with the Ozone Depleting Gas Index",
+                        ChartAllData = true,
+                        ChartSeriesList =
+                        [
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.SouthernHemi), ozoneHoleArea!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 5,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                RequestedColour = UiLogic.Colours.Green,
+                                GroupingThreshold = 0.1f,
+                            },
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.SouthernHemi), odgi!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.None,
+                                SmoothingWindow = 20,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                RequestedColour = UiLogic.Colours.Black,
+                                GroupingThreshold = 0.1f,
+                            },
+                        ],
+                    },
                 ],
             });
 
@@ -1265,19 +1301,19 @@ public static class SuggestedPresetLists
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
-                Title = "Ozone Hole + ODGI",
-                Description = "Smoothed yearly average size of the Southern Hemisphere Ozone Hole compared with the Ozone Depleting Gas Index",
+                Title = "Solar irradiation + sunspots",
+                Description = "Total solar irradiance (from satelite data) compared with the number of sunspots",
                 ChartAllData = true,
                 ChartSeriesList =
                 [
                     new ChartSeriesDefinition()
                     {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.SouthernHemi), ozoneHoleArea!),
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Sun), tsi!),
                         Aggregation = SeriesAggregationOptions.Mean,
                         BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.MovingAverage,
-                        SmoothingWindow = 5,
+                        Smoothing = SeriesSmoothingOptions.None,
+                        SmoothingWindow = 10,
                         Value = SeriesValueOptions.Value,
                         Year = null,
                         DisplayStyle = SeriesDisplayStyle.Line,
@@ -1287,15 +1323,15 @@ public static class SuggestedPresetLists
                     new ChartSeriesDefinition()
                     {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.SouthernHemi), odgi!),
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Sun), sunspots!),
                         Aggregation = SeriesAggregationOptions.Mean,
                         BinGranularity = BinGranularities.ByYear,
                         Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 20,
+                        SmoothingWindow = 10,
                         Value = SeriesValueOptions.Value,
                         Year = null,
                         DisplayStyle = SeriesDisplayStyle.Line,
-                        RequestedColour = UiLogic.Colours.Black,
+                        RequestedColour = UiLogic.Colours.Orange,
                         GroupingThreshold = 0.1f,
                     },
                 ],
@@ -1389,45 +1425,6 @@ public static class SuggestedPresetLists
                             ],
                         },
                     ],
-            });
-
-        suggestedPresets.Add(
-            new SuggestedChartPresetModelWithVariants()
-            {
-                Title = "Solar irradiation + sunspots",
-                Description = "Total solar irradiance (from satelite data) compared with the number of sunspots",
-                ChartAllData = true,
-                ChartSeriesList =
-                [
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Sun"), tsi!),
-                        Aggregation = SeriesAggregationOptions.Mean,
-                        BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 10,
-                        Value = SeriesValueOptions.Value,
-                        Year = null,
-                        DisplayStyle = SeriesDisplayStyle.Line,
-                        RequestedColour = UiLogic.Colours.Green,
-                        GroupingThreshold = 0.1f,
-                    },
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Sun"), sunspots!),
-                        Aggregation = SeriesAggregationOptions.Mean,
-                        BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 10,
-                        Value = SeriesValueOptions.Value,
-                        Year = null,
-                        DisplayStyle = SeriesDisplayStyle.Line,
-                        RequestedColour = UiLogic.Colours.Orange,
-                        GroupingThreshold = 0.1f,
-                    },
-                ],
             });
 
         return suggestedPresets;
