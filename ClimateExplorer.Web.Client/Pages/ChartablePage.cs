@@ -115,8 +115,15 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         if (chartSeriesUrlComponent.Length > 0)
         {
             var chartAllData = ChartView.ChartAllData.ToString() !.ToLower();
+            var startYear = ChartView.SelectedStartYear;
 
-            url += "?chartAllData=" + chartAllData + "&csd=" + chartSeriesUrlComponent;
+            url += "?chartAllData=" + chartAllData;
+            if (!string.IsNullOrWhiteSpace(startYear))
+            {
+                url += $"&startYear={startYear}";
+            }
+
+            url += "&csd=" + chartSeriesUrlComponent;
         }
 
         string currentUri = NavManager!.Uri;

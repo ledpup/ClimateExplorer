@@ -41,6 +41,7 @@ public partial class ChartView
     public List<SeriesWithData>? ChartSeriesWithData { get; set; }
 
     public bool ChartAllData { get; set; }
+    public string? SelectedStartYear { get; set; }
 
     public List<ChartSeriesDefinition>? ChartSeriesList { get; set; } = new List<ChartSeriesDefinition>();
 
@@ -94,8 +95,6 @@ public partial class ChartView
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
     private BinIdentifier[]? ChartBins { get; set; }
-
-    private string? SelectedStartYear { get; set; }
     private string? SelectedEndYear { get; set; }
 
     private bool? IsMobileDevice { get; set; }
@@ -163,6 +162,7 @@ public partial class ChartView
         }
 
         ChartAllData = chartPresetModel.ChartAllData;
+        SelectedStartYear = chartPresetModel.StartYear?.ToString();
 
         SelectedBinGranularity = chartPresetModel.ChartSeriesList.First().BinGranularity;
 
@@ -1022,14 +1022,13 @@ public partial class ChartView
 
     private async Task OnClearFilter()
     {
-        ChartAllData = false;
         SelectedStartYear = null;
         SelectedEndYear = null;
         SliderStart = null;
         SliderEnd = null;
         EnableRangeSlider = false;
 
-        await HandleRedraw();
+        await BuildDataSets();
     }
 
     private async Task BuildDataSets()
