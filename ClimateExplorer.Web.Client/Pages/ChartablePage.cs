@@ -115,8 +115,24 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         if (chartSeriesUrlComponent.Length > 0)
         {
             var chartAllData = ChartView.ChartAllData.ToString() !.ToLower();
+            var startYear = ChartView.SelectedStartYear;
+            var endYear = ChartView.SelectedEndYear;
 
-            url += "?chartAllData=" + chartAllData + "&csd=" + chartSeriesUrlComponent;
+            var queryString = new Uri(NavManager!.Uri).Query;
+            var queryDictionary = System.Web.HttpUtility.ParseQueryString(queryString);
+
+            url += "?chartAllData=" + chartAllData;
+            if (!string.IsNullOrWhiteSpace(startYear))
+            {
+                url += $"&startYear={startYear}";
+            }
+
+            if (!string.IsNullOrWhiteSpace(endYear))
+            {
+                url += $"&endYear={endYear}";
+            }
+
+            url += "&csd=" + chartSeriesUrlComponent;
         }
 
         string currentUri = NavManager!.Uri;
@@ -172,6 +188,11 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     protected async Task UpdateUiStateBasedOnQueryString(bool stateChanged)
     {
         var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+        var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+        ChartView!.ChartAllData = queryDictionary["chartAllData"] == null ? false : bool.Parse(queryDictionary["chartAllData"] !);
+        ChartView!.SelectedStartYear = queryDictionary["startYear"];
+        ChartView!.SelectedEndYear = queryDictionary["endYear"];
 
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier))
         {

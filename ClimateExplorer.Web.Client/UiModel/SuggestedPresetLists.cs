@@ -768,7 +768,7 @@ public static class SuggestedPresetLists
                     {
                         Title = "Atmospheric CO₂ vs emissions",
                         Description = "Compare the CO₂ measured in the atmosphere with the reported global emissions of CO₂",
-                        ChartAllData = true,
+                        StartYear = 1900,
                         ChartSeriesList =
                         [
                             new ChartSeriesDefinition()
@@ -1303,7 +1303,7 @@ public static class SuggestedPresetLists
             {
                 Title = "Solar irradiation + sunspots",
                 Description = "Total solar irradiance (from satelite data) compared with the number of sunspots",
-                ChartAllData = true,
+                StartYear = 1900,
                 ChartSeriesList =
                 [
                     new ChartSeriesDefinition()
