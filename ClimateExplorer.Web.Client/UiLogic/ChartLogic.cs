@@ -202,35 +202,43 @@ public static class ChartLogic
         var lastFirstBinAcrossAllDataSets = firstBinInEachDataSet.Max();
         var lastBinAcrossAllDataSets = lastBinInEachDataSet.Max();
 
-        var startBin = chartAllData ? firstBinAcrossAllDataSets! : lastFirstBinAcrossAllDataSets!;
+        BinIdentifierForGaplessBin? startBin = null;
 
-        var endBin = lastBinAcrossAllDataSets;
-
-        if (userStartYear != null)
+        if (chartAllData)
         {
-            if (userStartYear.Value > startBin!.FirstDayInBin.Year)
+            startBin = firstBinAcrossAllDataSets!;
+        }
+        else if (userStartYear.HasValue)
+        {
+            if (userStartYear.Value > firstBinAcrossAllDataSets!.FirstDayInBin.Year)
             {
-                if (startBin is YearBinIdentifier)
+                if (firstBinAcrossAllDataSets is YearBinIdentifier)
                 {
                     startBin = new YearBinIdentifier(userStartYear.Value);
                 }
 
-                if (startBin is YearAndMonthBinIdentifier)
+                if (firstBinAcrossAllDataSets is YearAndMonthBinIdentifier)
                 {
                     startBin = new YearAndMonthBinIdentifier(userStartYear.Value, 1);
                 }
 
-                if (startBin is YearAndWeekBinIdentifier)
+                if (firstBinAcrossAllDataSets is YearAndWeekBinIdentifier)
                 {
                     startBin = new YearAndWeekBinIdentifier(userStartYear.Value, 1);
                 }
 
-                if (startBin is YearAndDayBinIdentifier)
+                if (firstBinAcrossAllDataSets is YearAndDayBinIdentifier)
                 {
                     startBin = new YearAndDayBinIdentifier(userStartYear.Value, 1, 1);
                 }
             }
         }
+        else
+        {
+            startBin = lastFirstBinAcrossAllDataSets!;
+        }
+
+        var endBin = lastBinAcrossAllDataSets;
 
         if (userEndYear != null)
         {

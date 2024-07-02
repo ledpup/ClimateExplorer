@@ -8,6 +8,7 @@ public class SuggestedChartPresetModel
     public bool MissingChartSeries { get; set; }
     public bool ChartAllData { get; set; }
     public short? StartYear { get; set; }
+    public short? EndYear { get; set; }
 
     public List<ChartSeriesDefinition>? ChartSeriesList { get; set; }
 }
