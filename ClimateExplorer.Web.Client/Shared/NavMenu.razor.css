@@ -28,5 +28,5 @@
     }
 
 ::deep .bg-dark {
-    background-color: #425f59 !important;
+    background: linear-gradient(to left, #425f59, #425f59) no-repeat 80px 0px !important;
 }
