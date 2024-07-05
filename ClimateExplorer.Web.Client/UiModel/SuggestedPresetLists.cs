@@ -73,6 +73,7 @@ public static class SuggestedPresetLists
                     {
                         Title = "ENSO + rainfall",
                         Description = "Monthly chart of the Nino 3.4 index and precipitation",
+                        StartYear = 2000,
                         ChartSeriesList =
                         [
                             new ChartSeriesDefinition()
