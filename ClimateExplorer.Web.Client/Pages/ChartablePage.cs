@@ -188,6 +188,11 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     protected async Task UpdateUiStateBasedOnQueryString(bool stateChanged)
     {
         var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+        if (string.IsNullOrWhiteSpace(uri.Query))
+        {
+            return;
+        }
+
         var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
 
         ChartView!.ChartAllData = queryDictionary["chartAllData"] == null ? false : bool.Parse(queryDictionary["chartAllData"] !);
