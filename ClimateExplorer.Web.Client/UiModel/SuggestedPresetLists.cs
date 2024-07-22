@@ -71,42 +71,6 @@ public static class SuggestedPresetLists
                 Variants = [
                     new SuggestedChartPresetModelWithVariants()
                     {
-                        Title = "ENSO + rainfall",
-                        Description = "Monthly chart of the Nino 3.4 index and precipitation",
-                        StartYear = 2000,
-                        ChartSeriesList =
-                        [
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, precipitation!),
-                                Aggregation = SeriesAggregationOptions.Sum,
-                                BinGranularity = BinGranularities.ByYearAndMonth,
-                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                SmoothingWindow = 3,
-                                Value = SeriesValueOptions.Value,
-                                Year = null,
-                                DisplayStyle = SeriesDisplayStyle.Line,
-                                SeriesTransformation = SeriesTransformations.Identity,
-                                RequestedColour = UiLogic.Colours.Green,
-                            },
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Ocean), nino34!),
-                                Aggregation = SeriesAggregationOptions.Mean,
-                                BinGranularity = BinGranularities.ByYearAndMonth,
-                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                SmoothingWindow = 3,
-                                Value = SeriesValueOptions.Value,
-                                Year = null,
-                                DisplayStyle = SeriesDisplayStyle.Bar,
-                                SeriesTransformation = SeriesTransformations.Identity,
-                            },
-                        ],
-                    },
-                    new SuggestedChartPresetModelWithVariants()
-                    {
                         Title = "Days of rain",
                         Description = "Number of rainy days, ≥ 1mm and ≥ 10mm; 20-year smoothing",
                         ChartSeriesList =
@@ -141,8 +105,43 @@ public static class SuggestedPresetLists
                             }
 
                         ],
-                    }
-
+                    },
+                    new SuggestedChartPresetModelWithVariants()
+                    {
+                        Title = "ENSO + rainfall",
+                        Description = "Monthly chart of the Nino 3.4 index and precipitation",
+                        StartYear = 2000,
+                        ChartSeriesList =
+                        [
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, precipitation!),
+                                Aggregation = SeriesAggregationOptions.Sum,
+                                BinGranularity = BinGranularities.ByYearAndMonth,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 3,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                SeriesTransformation = SeriesTransformations.Identity,
+                                RequestedColour = UiLogic.Colours.Green,
+                            },
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Ocean), nino34!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYearAndMonth,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 3,
+                                Value = SeriesValueOptions.Value,
+                                Year = null,
+                                DisplayStyle = SeriesDisplayStyle.Bar,
+                                SeriesTransformation = SeriesTransformations.Identity,
+                            },
+                        ],
+                    },
                 ],
             });
 
@@ -207,7 +206,7 @@ public static class SuggestedPresetLists
                                 SmoothingWindow = 5,
                                 Value = SeriesValueOptions.Value,
                                 Year = null,
-                                RequestedColour = UiLogic.Colours.Orange,
+                                RequestedColour = UiLogic.Colours.Yellow,
                                 GroupingThreshold = 0.1f,
                             }
 
