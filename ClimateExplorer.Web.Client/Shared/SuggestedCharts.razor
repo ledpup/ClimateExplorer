@@ -123,6 +123,12 @@
 
                     p.MissingChartSeries = true;
                 }
+                else if (csd.MinimumDataResolution != null && csd.SourceSeriesSpecifications!.Any(x => x.MeasurementDefinition!.DataResolution < csd.MinimumDataResolution))
+                {
+                    p.ChartSeriesList.Remove(csd);
+
+                    p.MissingChartSeries = true;
+                }
             }
 
             if (p.Variants != null)
@@ -134,6 +140,12 @@
                     foreach (var csd in v.ChartSeriesList!.ToArray())
                     {
                         if (!csd.SourceSeriesSpecifications!.Any() || csd.SourceSeriesSpecifications!.Any(x => x.MeasurementDefinition == null))
+                        {
+                            v.ChartSeriesList.Remove(csd);
+
+                            v.MissingChartSeries = true;
+                        }
+                        else if (csd.MinimumDataResolution != null && csd.SourceSeriesSpecifications!.Any(x => x.MeasurementDefinition!.DataResolution < csd.MinimumDataResolution))
                         {
                             v.ChartSeriesList.Remove(csd);
 

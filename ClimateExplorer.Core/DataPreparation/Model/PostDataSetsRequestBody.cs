@@ -1,5 +1,7 @@
 ﻿namespace ClimateExplorer.Core.DataPreparation;
 
+using static ClimateExplorer.Core.Enums;
+
 public class PostDataSetsRequestBody
 {
     public SeriesDerivationTypes SeriesDerivationType { get; set; }
@@ -26,4 +28,6 @@ public class PostDataSetsRequestBody
     public bool Anomaly { get; set; }
 
     public bool IncludeRawDataPoints { get; set; }
+
+    public DataResolution? MinimumDataResolution { get; set; }
 }

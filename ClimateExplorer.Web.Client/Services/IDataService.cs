@@ -25,7 +25,8 @@ public interface IDataService
         float requiredCupDataProportion,
         int cupSize,
         SeriesTransformations seriesTransformation,
-        short? year = null);
+        short? year = null,
+        DataResolution? minimumDataResolution = null);
     Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .7f, float regionThreshold = .7f);
     Task<Dictionary<string, string>> GetCountries();
 

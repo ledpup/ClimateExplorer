@@ -84,6 +84,7 @@ public static class SuggestedPresetLists
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 SeriesTransformation = SeriesTransformations.EqualOrAbove1,
                                 RequestedColour = UiLogic.Colours.Blue,
+                                MinimumDataResolution = DataResolution.Daily,
                             },
                             new ChartSeriesDefinition()
                             {
@@ -97,6 +98,7 @@ public static class SuggestedPresetLists
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 SeriesTransformation = SeriesTransformations.EqualOrAbove10,
                                 RequestedColour = UiLogic.Colours.Pink,
+                                MinimumDataResolution = DataResolution.Daily,
                             }
 
                         ],
@@ -326,6 +328,7 @@ public static class SuggestedPresetLists
                         Value = SeriesValueOptions.Value,
                         DisplayStyle = SeriesDisplayStyle.Line,
                         SeriesTransformation = SeriesTransformations.EqualOrAbove35,
+                        MinimumDataResolution = DataResolution.Daily,
                     },
                     new ChartSeriesDefinition()
                     {
@@ -338,6 +341,7 @@ public static class SuggestedPresetLists
                         Value = SeriesValueOptions.Value,
                         DisplayStyle = SeriesDisplayStyle.Line,
                         SeriesTransformation = SeriesTransformations.IsFrosty,
+                        MinimumDataResolution = DataResolution.Daily,
                     },
                 ],
                 Variants =
@@ -359,6 +363,7 @@ public static class SuggestedPresetLists
                                 Value = SeriesValueOptions.Value,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
+                                MinimumDataResolution = DataResolution.Daily,
                             },
                             new ChartSeriesDefinition()
                             {
@@ -371,6 +376,7 @@ public static class SuggestedPresetLists
                                 Value = SeriesValueOptions.Value,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
+                                MinimumDataResolution = DataResolution.Daily,
                             },
                         ],
                     },

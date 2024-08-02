@@ -83,7 +83,8 @@ public class DataService : IDataService
         float requiredCupDataProportion,
         int cupSize,
         SeriesTransformations seriesTransformation,
-        short? year)
+        short? year,
+        DataResolution? minimumDataResolution)
     {
         var response =
             await httpClient.PostAsJsonAsync<PostDataSetsRequestBody>(
@@ -103,6 +104,7 @@ public class DataService : IDataService
                     SeriesTransformation = seriesTransformation,
                     Anomaly = seriesValueOption == SeriesValueOptions.Anomaly,
                     FilterToYear = year,
+                    MinimumDataResolution = minimumDataResolution,
                 });
 
         if (!response.IsSuccessStatusCode)

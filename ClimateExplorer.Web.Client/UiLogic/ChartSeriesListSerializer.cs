@@ -105,6 +105,7 @@ public static class ChartSeriesListSerializer
                 SeriesTransformation = ParseEnum<SeriesTransformations>(segments[14]),
                 GroupingThreshold = ParseNullableFloat(segments[15]),
                 DataAvailable = bool.Parse(segments[16]),
+                MinimumDataResolution = (DataResolution?)ParseNullableEnum<DataResolution>(segments[17]),
             };
     }
 
@@ -241,6 +242,7 @@ public static class ChartSeriesListSerializer
                 csd.IsExpanded,
                 csd.SeriesTransformation,
                 csd.GroupingThreshold,
-                csd.DataAvailable);
+                csd.DataAvailable,
+                csd.MinimumDataResolution);
     }
 }
