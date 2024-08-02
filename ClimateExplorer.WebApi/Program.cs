@@ -360,6 +360,7 @@ static PostDataSetsRequestBody GetPostRequestBody(PostDataSetsRequestBody body, 
         SeriesTransformation = body.SeriesTransformation,
         Anomaly = body.Anomaly,
         FilterToYear = body.FilterToYear,
+        MinimumDataResolution = body.MinimumDataResolution,
     };
 }
 

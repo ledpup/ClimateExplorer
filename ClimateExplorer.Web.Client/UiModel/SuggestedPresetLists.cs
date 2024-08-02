@@ -53,7 +53,6 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
                     },
                     new ChartSeriesDefinition()
                     {
@@ -64,9 +63,7 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
-                    }
-
+                    },
                 ],
                 Variants = [
                     new SuggestedChartPresetModelWithVariants()
@@ -84,10 +81,10 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 SeriesTransformation = SeriesTransformations.EqualOrAbove1,
                                 RequestedColour = UiLogic.Colours.Blue,
+                                MinimumDataResolution = DataResolution.Daily,
                             },
                             new ChartSeriesDefinition()
                             {
@@ -98,10 +95,10 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 SeriesTransformation = SeriesTransformations.EqualOrAbove10,
                                 RequestedColour = UiLogic.Colours.Pink,
+                                MinimumDataResolution = DataResolution.Daily,
                             }
 
                         ],
@@ -122,7 +119,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 3,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 SeriesTransformation = SeriesTransformations.Identity,
                                 RequestedColour = UiLogic.Colours.Green,
@@ -136,7 +132,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 3,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Bar,
                                 SeriesTransformation = SeriesTransformations.Identity,
                             },
@@ -161,7 +156,6 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 10,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
                     },
                     new ChartSeriesDefinition()
                     {
@@ -172,7 +166,6 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.None,
                         SmoothingWindow = 5,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
                         RequestedColour = UiLogic.Colours.Black,
                     }
 
@@ -194,7 +187,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 10,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                             },
                             new ChartSeriesDefinition()
                             {
@@ -205,7 +197,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.None,
                                 SmoothingWindow = 5,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 RequestedColour = UiLogic.Colours.Yellow,
                                 GroupingThreshold = 0.1f,
                             }
@@ -227,7 +218,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.None,
                                 SmoothingWindow = 5,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                             },
                             new ChartSeriesDefinition()
                             {
@@ -238,7 +228,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.None,
                                 SmoothingWindow = 5,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 RequestedColour = UiLogic.Colours.Yellow,
                                 GroupingThreshold = 0.1f,
                             }
@@ -264,7 +253,6 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.None,
                         SmoothingWindow = 5,
                         Value = SeriesValueOptions.Anomaly,
-                        Year = null,
                         DisplayStyle = SeriesDisplayStyle.Bar,
                     },
                 ],
@@ -286,9 +274,7 @@ public static class SuggestedPresetLists
                                     Smoothing = SeriesSmoothingOptions.None,
                                     SmoothingWindow = 5,
                                     Value = SeriesValueOptions.Value,
-                                    Year = null,
-                                }
-
+                                },
                             ],
                     },
                     new SuggestedChartPresetModelWithVariants()
@@ -307,7 +293,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.None,
                                 SmoothingWindow = 5,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                             },
                             new ChartSeriesDefinition()
                             {
@@ -319,9 +304,7 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.None,
                                 SmoothingWindow = 5,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
-                            }
-
+                            },
                         ],
                     },
                 ],
@@ -343,9 +326,9 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
                         DisplayStyle = SeriesDisplayStyle.Line,
                         SeriesTransformation = SeriesTransformations.EqualOrAbove35,
+                        MinimumDataResolution = DataResolution.Daily,
                     },
                     new ChartSeriesDefinition()
                     {
@@ -356,9 +339,9 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
                         DisplayStyle = SeriesDisplayStyle.Line,
                         SeriesTransformation = SeriesTransformations.IsFrosty,
+                        MinimumDataResolution = DataResolution.Daily,
                     },
                 ],
                 Variants =
@@ -378,9 +361,9 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
+                                MinimumDataResolution = DataResolution.Daily,
                             },
                             new ChartSeriesDefinition()
                             {
@@ -391,9 +374,9 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
+                                MinimumDataResolution = DataResolution.Daily,
                             },
                         ],
                     },
@@ -436,7 +419,6 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
                     },
                     new ChartSeriesDefinition()
                     {
@@ -447,7 +429,6 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
                     }
 
                 ],
@@ -469,7 +450,6 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 10,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
                     },
                     new ChartSeriesDefinition()
                     {
@@ -480,7 +460,6 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.None,
                         SmoothingWindow = 5,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
                         RequestedColour = UiLogic.Colours.Black,
                     }
 
@@ -503,7 +482,6 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.None,
                         SmoothingWindow = 5,
                         Value = SeriesValueOptions.Anomaly,
-                        Year = null,
                         DisplayStyle = SeriesDisplayStyle.Bar,
                     },
                 ],
@@ -526,7 +504,6 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.None,
                         SmoothingWindow = 5,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
                     },
                     new ChartSeriesDefinition()
                     {
@@ -538,7 +515,6 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.None,
                         SmoothingWindow = 5,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
                     },
                 ],
             });
@@ -579,7 +555,6 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
                     },
                     new ChartSeriesDefinition()
                     {
@@ -590,7 +565,6 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
                     }
 
                 ],
@@ -611,7 +585,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 10,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                             },
                             new ChartSeriesDefinition()
                             {
@@ -622,7 +595,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.None,
                                 SmoothingWindow = 5,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 RequestedColour = UiLogic.Colours.Black,
                             }
 
@@ -643,7 +615,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.None,
                                 SmoothingWindow = 5,
                                 Value = SeriesValueOptions.Anomaly,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Bar,
                             },
                         ],
@@ -664,7 +635,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.None,
                                 SmoothingWindow = 5,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                             },
                             new ChartSeriesDefinition()
                             {
@@ -676,7 +646,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.None,
                                 SmoothingWindow = 5,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                             },
                         ],
                     },
@@ -757,7 +726,6 @@ public static class SuggestedPresetLists
                             Smoothing = SeriesSmoothingOptions.MovingAverage,
                             SmoothingWindow = 10,
                             Value = SeriesValueOptions.Value,
-                            Year = null,
                             DisplayStyle = SeriesDisplayStyle.Line,
                             RequestedColour = UiLogic.Colours.Brown,
                         },
@@ -780,7 +748,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.None,
                                 SmoothingWindow = 5,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Brown,
                             },
@@ -793,7 +760,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.None,
                                 SmoothingWindow = 5,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Black,
                             },
@@ -815,7 +781,6 @@ public static class SuggestedPresetLists
                                     Smoothing = SeriesSmoothingOptions.None,
                                     SmoothingWindow = 5,
                                     Value = SeriesValueOptions.Value,
-                                    Year = null,
                                     DisplayStyle = SeriesDisplayStyle.Line,
                                     RequestedColour = UiLogic.Colours.Brown,
                                 },
@@ -836,7 +801,6 @@ public static class SuggestedPresetLists
                                     Smoothing = SeriesSmoothingOptions.None,
                                     SmoothingWindow = 5,
                                     Value = SeriesValueOptions.Value,
-                                    Year = null,
                                     DisplayStyle = SeriesDisplayStyle.Line,
                                     RequestedColour = UiLogic.Colours.Brown,
                                 },
@@ -857,7 +821,6 @@ public static class SuggestedPresetLists
                                     Smoothing = SeriesSmoothingOptions.None,
                                     SmoothingWindow = 5,
                                     Value = SeriesValueOptions.Value,
-                                    Year = null,
                                     DisplayStyle = SeriesDisplayStyle.Line,
                                     RequestedColour = UiLogic.Colours.Brown,
                                 }
@@ -880,7 +843,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 5,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Green,
                                 GroupingThreshold = 0.1f,
@@ -894,7 +856,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.None,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Black,
                                 GroupingThreshold = 0.1f,
@@ -920,7 +881,6 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.None,
                         SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
                         DisplayStyle = SeriesDisplayStyle.Bar,
                         RequestedColour = UiLogic.Colours.Red,
                     },
@@ -941,7 +901,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Green,
                             },
@@ -954,7 +913,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Blue,
                             },
@@ -975,7 +933,6 @@ public static class SuggestedPresetLists
                                     Smoothing = SeriesSmoothingOptions.MovingAverage,
                                     SmoothingWindow = 20,
                                     Value = SeriesValueOptions.Value,
-                                    Year = null,
                                     DisplayStyle = SeriesDisplayStyle.Line,
                                     RequestedColour = UiLogic.Colours.Orange,
                                 },
@@ -988,7 +945,6 @@ public static class SuggestedPresetLists
                                     Smoothing = SeriesSmoothingOptions.MovingAverage,
                                     SmoothingWindow = 20,
                                     Value = SeriesValueOptions.Value,
-                                    Year = null,
                                     DisplayStyle = SeriesDisplayStyle.Line,
                                     RequestedColour = UiLogic.Colours.Purple,
                                 },
@@ -1009,7 +965,6 @@ public static class SuggestedPresetLists
                                     Smoothing = SeriesSmoothingOptions.MovingAverage,
                                     SmoothingWindow = 20,
                                     Value = SeriesValueOptions.Value,
-                                    Year = null,
                                     DisplayStyle = SeriesDisplayStyle.Line,
                                 },
                                 new ChartSeriesDefinition()
@@ -1021,7 +976,6 @@ public static class SuggestedPresetLists
                                     Smoothing = SeriesSmoothingOptions.MovingAverage,
                                     SmoothingWindow = 20,
                                     Value = SeriesValueOptions.Value,
-                                    Year = null,
                                     DisplayStyle = SeriesDisplayStyle.Line,
                                 },
                             ],
@@ -1045,7 +999,6 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.None,
                         SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
                         DisplayStyle = SeriesDisplayStyle.Bar,
                     },
                 ],
@@ -1065,7 +1018,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Green,
                             },
@@ -1078,7 +1030,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Blue,
                             },
@@ -1099,7 +1050,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Orange,
                             },
@@ -1112,7 +1062,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Purple,
                             },
@@ -1133,7 +1082,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                             },
                             new ChartSeriesDefinition()
@@ -1145,7 +1093,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                             },
                         ],
@@ -1165,7 +1112,6 @@ public static class SuggestedPresetLists
                                     Smoothing = SeriesSmoothingOptions.MovingAverage,
                                     SmoothingWindow = 20,
                                     Value = SeriesValueOptions.Value,
-                                    Year = null,
                                     DisplayStyle = SeriesDisplayStyle.Line,
                                     RequestedColour = UiLogic.Colours.Blue,
                                     GroupingThreshold = 0.1f,
@@ -1179,7 +1125,6 @@ public static class SuggestedPresetLists
                                     Smoothing = SeriesSmoothingOptions.MovingAverage,
                                     SmoothingWindow = 20,
                                     Value = SeriesValueOptions.Value,
-                                    Year = null,
                                     DisplayStyle = SeriesDisplayStyle.Line,
                                     RequestedColour = UiLogic.Colours.Orange,
                                     GroupingThreshold = 0.1f,
@@ -1201,7 +1146,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Pink,
                                 GroupingThreshold = 0.1f,
@@ -1227,7 +1171,6 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 10,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
                         DisplayStyle = SeriesDisplayStyle.Line,
                         RequestedColour = UiLogic.Colours.Orange,
                         GroupingThreshold = 0.1f,
@@ -1241,7 +1184,6 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 10,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
                         DisplayStyle = SeriesDisplayStyle.Line,
                         RequestedColour = UiLogic.Colours.Purple,
                         GroupingThreshold = 0.1f,
@@ -1264,7 +1206,6 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 10,
                                 Value = SeriesValueOptions.Value,
-                                Year = null,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Blue,
                                 GroupingThreshold = 0.1f,
@@ -1290,7 +1231,6 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.None,
                         SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
                         DisplayStyle = SeriesDisplayStyle.Line,
                         RequestedColour = UiLogic.Colours.Grey,
                         GroupingThreshold = 0.05f,
@@ -1315,7 +1255,6 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.None,
                         SmoothingWindow = 10,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
                         DisplayStyle = SeriesDisplayStyle.Line,
                         RequestedColour = UiLogic.Colours.Green,
                         GroupingThreshold = 0.1f,
@@ -1329,7 +1268,6 @@ public static class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.None,
                         SmoothingWindow = 10,
                         Value = SeriesValueOptions.Value,
-                        Year = null,
                         DisplayStyle = SeriesDisplayStyle.Line,
                         RequestedColour = UiLogic.Colours.Orange,
                         GroupingThreshold = 0.1f,
@@ -1354,7 +1292,6 @@ public static class SuggestedPresetLists
                             Smoothing = SeriesSmoothingOptions.MovingAverage,
                             SmoothingWindow = 20,
                             Value = SeriesValueOptions.Anomaly,
-                            Year = null,
                             DisplayStyle = SeriesDisplayStyle.Line,
                         },
                         new ChartSeriesDefinition()
@@ -1366,7 +1303,6 @@ public static class SuggestedPresetLists
                             Smoothing = SeriesSmoothingOptions.MovingAverage,
                             SmoothingWindow = 20,
                             Value = SeriesValueOptions.Anomaly,
-                            Year = null,
                             DisplayStyle = SeriesDisplayStyle.Line,
                         },
                     ],
@@ -1387,7 +1323,6 @@ public static class SuggestedPresetLists
                                         Smoothing = SeriesSmoothingOptions.None,
                                         SmoothingWindow = 20,
                                         Value = SeriesValueOptions.Anomaly,
-                                        Year = null,
                                         DisplayStyle = SeriesDisplayStyle.Bar,
                                     },
                                 ],
@@ -1407,7 +1342,6 @@ public static class SuggestedPresetLists
                                     Smoothing = SeriesSmoothingOptions.None,
                                     SmoothingWindow = 20,
                                     Value = SeriesValueOptions.Anomaly,
-                                    Year = null,
                                     DisplayStyle = SeriesDisplayStyle.Line,
                                 },
                                 new ChartSeriesDefinition()
@@ -1419,7 +1353,6 @@ public static class SuggestedPresetLists
                                     Smoothing = SeriesSmoothingOptions.None,
                                     SmoothingWindow = 20,
                                     Value = SeriesValueOptions.Anomaly,
-                                    Year = null,
                                     DisplayStyle = SeriesDisplayStyle.Line,
                                 },
                             ],

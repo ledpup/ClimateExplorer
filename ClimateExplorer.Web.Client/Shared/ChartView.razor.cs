@@ -204,7 +204,8 @@ public partial class ChartView
                     GetGroupingThreshold(csd.GroupingThreshold),
                     SelectedDayGrouping,
                     csd.SeriesTransformation,
-                    csd.Year);
+                    csd.Year,
+                    csd.MinimumDataResolution);
 
             datasetsToReturn.Add(
                 new SeriesWithData() { ChartSeries = csd, SourceDataSet = dataSet });
@@ -596,6 +597,7 @@ public partial class ChartView
                         Year = year,
                         SeriesTransformation = csd.SeriesTransformation,
                         GroupingThreshold = csd.GroupingThreshold,
+                        MinimumDataResolution = csd.MinimumDataResolution,
                     });
             }
         }

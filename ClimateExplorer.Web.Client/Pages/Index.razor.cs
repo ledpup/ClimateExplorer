@@ -444,6 +444,7 @@ public partial class Index : ChartablePage
                                 Year = csd.Year,
                                 SeriesTransformation = csd.SeriesTransformation,
                                 GroupingThreshold = csd.GroupingThreshold,
+                                MinimumDataResolution = csd.MinimumDataResolution,
                             });
                     }
                 }

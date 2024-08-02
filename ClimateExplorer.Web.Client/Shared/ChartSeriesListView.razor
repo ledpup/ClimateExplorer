@@ -73,7 +73,8 @@ async Task OnDuplicateSeries(ChartSeriesDefinition csd)
             Value = csd.Value,
             Year = csd.Year,
             SeriesTransformation = csd.SeriesTransformation,
-            GroupingThreshold = csd.GroupingThreshold
+            GroupingThreshold = csd.GroupingThreshold,
+            MinimumDataResolution = csd.MinimumDataResolution,
         }
     );
 

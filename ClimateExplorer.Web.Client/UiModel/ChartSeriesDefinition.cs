@@ -48,6 +48,7 @@ public class ChartSeriesDefinition
     // Transient view state
     public bool IsExpanded { get; set; }
     public bool DataAvailable { get; internal set; } = true;
+    public DataResolution? MinimumDataResolution { get; set; }
 
     [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
     public string FriendlyTitle

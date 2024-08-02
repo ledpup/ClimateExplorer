@@ -18,6 +18,11 @@ public class DataSetBuilder
 
         Console.WriteLine("GetSeriesDataPointsForRequest completed in " + sw.Elapsed);
 
+        if (request.MinimumDataResolution != null && series.DataResolution < request.MinimumDataResolution)
+        {
+            throw new Exception($"The data resolution of this series is {series.DataResolution}. A minimum data resolution thresold of {request.MinimumDataResolution} is required for this type of aggregation.");
+        }
+
         // Run the rest of the pipeline (this is a separate method for testability)
         var dataPoints = BuildDataSetFromDataPoints(series.DataPoints!, series.DataResolution, request);
 
