@@ -11,7 +11,7 @@ public interface IDataService
     Task<IEnumerable<Location>> GetLocations(Guid? locationId = null);
     Task<Location> GetLocationByPath(string path);
     Task<IEnumerable<Region>> GetRegions();
-    Task<DataSet> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f);
+    Task<DataSet> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short? year = null, short? groupingDays = 14, float? groupingThreshold = .7f);
     Task<DataSet> PostDataSet(
         BinGranularities binGranularity,
         ContainerAggregationFunctions binAggregationFunction,
@@ -27,7 +27,7 @@ public interface IDataService
         SeriesTransformations seriesTransformation,
         short? year = null,
         DataResolution? minimumDataResolution = null);
-    Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .7f, float regionThreshold = .7f);
+    Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short groupingDays = 14, float groupingThreshold = .7f, float regionThreshold = .7f);
     Task<Dictionary<string, string>> GetCountries();
 
     Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable();

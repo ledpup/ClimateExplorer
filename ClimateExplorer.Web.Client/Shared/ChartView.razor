@@ -81,23 +81,23 @@
         </ModalHeader>
         <ModalBody>
             <Field>
-                <strong>Day grouping</strong>
+                <strong>Grouping days</strong>
 
-                <Select TValue="short" SelectedValue="@SelectedDayGrouping" SelectedValueChanged="@OnSelectedDayGroupingChanged">
-                    <SelectItem Value="5">@DayGroupingText(5)</SelectItem>
-                    <SelectItem Value="7">@DayGroupingText(7)</SelectItem>
-                    <SelectItem Value="13">@DayGroupingText(13)</SelectItem>
-                    <SelectItem Value="14">@DayGroupingText(14)</SelectItem>
-                    <SelectItem Value="26">@DayGroupingText(26)</SelectItem>
-                    <SelectItem Value="28">@DayGroupingText(28)</SelectItem>
-                    <SelectItem Value="73">@DayGroupingText(73)</SelectItem>
-                    <SelectItem Value="91">@DayGroupingText(91)</SelectItem>
-                    <SelectItem Value="182">@DayGroupingText(182)</SelectItem>
+                <Select TValue="short" SelectedValue="@SelectedGroupingDays" SelectedValueChanged="@OnSelectedGroupingDaysChanged">
+                    <SelectItem Value="5">@GroupingDaysText(5)</SelectItem>
+                    <SelectItem Value="7">@GroupingDaysText(7)</SelectItem>
+                    <SelectItem Value="13">@GroupingDaysText(13)</SelectItem>
+                    <SelectItem Value="14">@GroupingDaysText(14)</SelectItem>
+                    <SelectItem Value="26">@GroupingDaysText(26)</SelectItem>
+                    <SelectItem Value="28">@GroupingDaysText(28)</SelectItem>
+                    <SelectItem Value="73">@GroupingDaysText(73)</SelectItem>
+                    <SelectItem Value="91">@GroupingDaysText(91)</SelectItem>
+                    <SelectItem Value="182">@GroupingDaysText(182)</SelectItem>
                 </Select>
             </Field>
             <Field>
                 <strong>Threshold required to form a valid group (% percentage)</strong>
-                <TextEdit Text="@GroupingThresholdText" TextChanged="@OnDayGroupThresholdTextChanged" MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
+                <TextEdit Text="@GroupingThresholdText" TextChanged="@OnGroupingThresholdTextChanged" MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
             </Field>
             <Field>
                 <Text>
@@ -122,19 +122,6 @@
         </ModalFooter>
     </ModalContent>
 </Modal>
-
-@* <YearFilter @ref="YearFilter"
-            DatasetYears="@DatasetYears"
-            SelectedYears="@SelectedYears"
-            SelectedStartYear="@SelectedStartYear"
-            SelectedEndYear="@SelectedEndYear"
-            SelectedBinGranularity="@SelectedBinGranularity"
-            ChartAllData="@ChartAllData"
-            OnStartYearTextChanged="@OnStartYearTextChanged"
-            OnEndYearTextChanged="@OnEndYearTextChanged"
-            OnDynamicStartYearChanged="@OnDynamicStartYearChanged"
-            ShowRangeSlider=@EnableRangeSlider
-            OnShowRangeSliderChanged=@ShowRangeSliderChanged /> *@
 
 @if (ChartOptionsText != null)
 {

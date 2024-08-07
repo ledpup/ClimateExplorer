@@ -24,7 +24,7 @@ public class DataService : IDataService
         jsonSerializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web) { Converters = { new JsonStringEnumConverter() } };
     }
 
-    public async Task<DataSet> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short? year = null, short? dayGrouping = 14, float? dayGroupingThreshold = .7f)
+    public async Task<DataSet> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short? year = null, short? groupingDays = 14, float? groupingThreshold = .7f)
     {
         var url = $"dataSet/{dataType}/{resolution}";
 
@@ -48,14 +48,14 @@ public class DataService : IDataService
             url = QueryHelpers.AddQueryString(url, "year", year.Value.ToString());
         }
 
-        if (dayGrouping != null)
+        if (groupingDays != null)
         {
-            url = QueryHelpers.AddQueryString(url, "dayGrouping", dayGrouping.Value.ToString());
+            url = QueryHelpers.AddQueryString(url, "groupingDays", groupingDays.Value.ToString());
         }
 
-        if (dayGroupingThreshold != null)
+        if (groupingThreshold != null)
         {
-            url = QueryHelpers.AddQueryString(url, "dayGroupingThreshold", dayGroupingThreshold.Value.ToString());
+            url = QueryHelpers.AddQueryString(url, "groupingThreshold", groupingThreshold.Value.ToString());
         }
 
         var result = dataServiceCache.Get<DataSet>(url);
@@ -117,9 +117,9 @@ public class DataService : IDataService
         return result!;
     }
 
-    public async Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short dayGrouping = 14, float dayGroupingThreshold = .5f, float regionThreshold = .5f)
+    public async Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short groupingDays = 14, float groupingThreshold = .5f, float regionThreshold = .5f)
     {
-        var url = $"dataSet/{dataType}/{resolution}/{dataAdjustment}?dayGrouping={dayGrouping}&dayGroupingThreshold={dayGroupingThreshold}&regionThreshold={regionThreshold}";
+        var url = $"dataSet/{dataType}/{resolution}/{dataAdjustment}?groupingDays={groupingDays}&groupingThreshold={groupingThreshold}&regionThreshold={regionThreshold}";
         if (minLatitude != null)
         {
             url += $"&minLatitude={minLatitude}";
