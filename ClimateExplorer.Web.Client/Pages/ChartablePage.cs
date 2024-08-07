@@ -132,6 +132,18 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
                 url += $"&endYear={endYear}";
             }
 
+            var groupingDays = ChartView.SelectedGroupingDays;
+            if (ChartView.SelectedGroupingDays > 0)
+            {
+                url += $"&groupingDays={groupingDays}";
+            }
+
+            var groupingThresholdText = ChartView.GroupingThresholdText;
+            if (!string.IsNullOrWhiteSpace(groupingThresholdText))
+            {
+                url += $"&groupingThreshold={groupingThresholdText}";
+            }
+
             url += "&csd=" + chartSeriesUrlComponent;
         }
 
@@ -198,6 +210,8 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         ChartView!.ChartAllData = queryDictionary["chartAllData"] == null ? false : bool.Parse(queryDictionary["chartAllData"] !);
         ChartView!.SelectedStartYear = queryDictionary["startYear"];
         ChartView!.SelectedEndYear = queryDictionary["endYear"];
+        ChartView!.SelectedGroupingDays = queryDictionary["groupingDays"] == null ? (short)14 : short.Parse(queryDictionary["groupingDays"] !);
+        ChartView!.GroupingThresholdText = string.IsNullOrWhiteSpace(queryDictionary["groupingThreshold"]) ? "70" : queryDictionary["groupingThreshold"];
 
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier))
         {

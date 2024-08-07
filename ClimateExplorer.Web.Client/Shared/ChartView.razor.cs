@@ -16,7 +16,6 @@ using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
-using Microsoft.AspNetCore.WebUtilities;
 using System;
 
 public partial class ChartView
@@ -33,6 +32,8 @@ public partial class ChartView
     private Modal? chartOptionsModal;
     private Modal? aggregationOptionsModal;
 
+    private string? groupingThresholdText;
+
     public bool ChartLoadingIndicatorVisible { get; set; }
     public bool ChartLoadingErrored { get; set; }
 
@@ -43,6 +44,22 @@ public partial class ChartView
     public bool ChartAllData { get; set; }
     public string? SelectedStartYear { get; set; }
     public string? SelectedEndYear { get; set; }
+    public short SelectedGroupingDays { get; set; }
+    public string? GroupingThresholdText
+    {
+        get
+        {
+            return groupingThresholdText;
+        }
+        set
+        {
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                groupingThresholdText = value;
+                InternalGroupingThreshold = float.Parse(value) / 100;
+            }
+        }
+    }
 
     public List<ChartSeriesDefinition>? ChartSeriesList { get; set; } = new List<ChartSeriesDefinition>();
 
@@ -86,13 +103,11 @@ public partial class ChartView
     [Inject]
     private NavigationManager? NavManager { get; set; }
 
-    private short SelectingDayGrouping { get; set; }
+    private short SelectingGroupingDays { get; set; }
 
     private float InternalGroupingThreshold { get; set; } = .7f;
 
     private bool UserOverridePresetAggregationSettings { get; set; }
-
-    private short SelectedDayGrouping { get; set; } = 14;
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
     private BinIdentifier[]? ChartBins { get; set; }
@@ -115,8 +130,6 @@ public partial class ChartView
     private short EndYear { get; set; }
 
     private ColourServer Colours { get; set; } = new ColourServer();
-
-    private string? GroupingThresholdText { get; set; }
 
     private Modal? OptionsModal { get; set; }
 
@@ -202,7 +215,7 @@ public partial class ChartView
                     GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
                     GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
                     GetGroupingThreshold(csd.GroupingThreshold),
-                    SelectedDayGrouping,
+                    SelectedGroupingDays,
                     csd.SeriesTransformation,
                     csd.Year,
                     csd.MinimumDataResolution);
@@ -279,7 +292,7 @@ public partial class ChartView
                     : $"{chartStartBin.Label}-{chartEndBin.Label}"
                 : SelectedBinGranularity.ToFriendlyString();
 
-            subtitle += $" | Aggregation: {SelectedDayGrouping} day groups, {GetGroupingThresholdText()} threshold";
+            subtitle += $" | Aggregation: {SelectedGroupingDays} day groups, {GetGroupingThresholdText()} threshold";
 
             l.LogInformation("Calling AddDataSetsToGraph");
 
@@ -435,17 +448,6 @@ public partial class ChartView
         if (!chartRenderedFirstTime)
         {
             await HandleRedraw();
-        }
-
-        if (firstRender)
-        {
-            var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
-            QueryHelpers.ParseQuery(uri.Query).TryGetValue("chartAllData", out var chartAllData);
-
-            if (bool.TryParse(chartAllData.ToString(), out bool result))
-            {
-                ChartAllData = result;
-            }
         }
     }
 
@@ -873,7 +875,7 @@ public partial class ChartView
         }
     }
 
-    private void OnDayGroupThresholdTextChanged(string value)
+    private void OnGroupingThresholdTextChanged(string value)
     {
         GroupingThresholdText = value;
     }
@@ -882,7 +884,7 @@ public partial class ChartView
     {
         UserOverridePresetAggregationSettings = true;
         InternalGroupingThreshold = float.Parse(GroupingThresholdText!) / 100;
-        SelectedDayGrouping = SelectingDayGrouping == 0 ? SelectedDayGrouping : SelectingDayGrouping;
+        SelectedGroupingDays = SelectingGroupingDays == 0 ? SelectedGroupingDays : SelectingGroupingDays;
         await BuildDataSets();
     }
 
@@ -991,9 +993,9 @@ public partial class ChartView
         }
     }
 
-    private void OnSelectedDayGroupingChanged(short value)
+    private void OnSelectedGroupingDaysChanged(short value)
     {
-        SelectingDayGrouping = value;
+        SelectingGroupingDays = value;
     }
 
     private async Task ClearUserAggregationOverride()
@@ -1055,9 +1057,9 @@ public partial class ChartView
         return OptionsModal!.Show();
     }
 
-    private string DayGroupingText(int dayGrouping)
+    private string GroupingDaysText(int groupingDays)
     {
-        return dayGrouping switch
+        return groupingDays switch
         {
             5 => "Groups of 5 days (73 groups)",
             7 => "Groups of 7 days (52 groups)",
@@ -1068,7 +1070,7 @@ public partial class ChartView
             73 => "Groups of 73 days (5 groups)",
             91 => "Groups of 91 days (4 groups)",
             182 => "Groups of 182 days (2 groups)",
-            _ => throw new NotImplementedException(dayGrouping.ToString()),
+            _ => throw new NotImplementedException(groupingDays.ToString()),
         };
     }
 }
