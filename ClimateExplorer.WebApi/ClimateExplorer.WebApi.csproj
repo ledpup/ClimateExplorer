@@ -23,26 +23,14 @@
   
   <ItemGroup>
     <Content Include="cache\0cbac719-d45e-4fe6-8d1f-003f21527780.json" />
-    <Content Include="cache\2695ba27-ad5e-4745-8859-62d91928ede4.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="cache\2d9af3bd-70ae-4c30-8a7d-e80b6bcedc92.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="cache\2695ba27-ad5e-4745-8859-62d91928ede4.json" />
+    <Content Include="cache\2d9af3bd-70ae-4c30-8a7d-e80b6bcedc92.json" />
     <Content Include="cache\6608b18e-75f6-4175-873d-34a8179850d0.json" />
-    <Content Include="cache\d3059fa1-0887-4e64-bfb9-f1a54dcb77d4.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="cache\d3059fa1-0887-4e64-bfb9-f1a54dcb77d4.json" />
     <Content Include="cache\hash_-1136848310.json" />
-    <Content Include="cache\hash_-1567702759.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="cache\hash_-419260639.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="cache\hash_-510263034.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="cache\hash_-1567702759.json" />
+    <Content Include="cache\hash_-419260639.json" />
+    <Content Include="cache\hash_-510263034.json" />
     <Content Include="cache\hash_-528907859.json" />
     <Content Include="MetaData\countries.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
