@@ -40,4 +40,10 @@ var store = [{
         "tags": [],
         "url": "/blog/datasets/2024/06/02/the-rest-of-the-world.html",
         "teaser": null
+      },{
+        "title": "ACORN-SAT version 2.5",
+        "excerpt":"ACORN-SAT 2.5 was released in August 2024. This release includes temperature data until the end of 2023. ClimateExplorer has been updated to this dataset. The Bureau of Meteorology (BoM) made the following statement concerning version 2.5. ACORN-SAT 2.5 includes new or reassessed adjustments at 15 of the 112 ACORN-SAT locations....","categories": ["datasets"],
+        "tags": [],
+        "url": "/blog/datasets/2024/09/03/ACORN-SAT-2.5.html",
+        "teaser": null
       }]
