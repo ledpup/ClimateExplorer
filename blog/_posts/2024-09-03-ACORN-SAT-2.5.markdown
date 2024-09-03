@@ -1,0 +1,25 @@
+---
+layout: single
+title: "ACORN-SAT version 2.5"
+date: 2024-09-03 21:00:00 +1100
+categories: datasets
+---
+[ACORN-SAT](http://www.bom.gov.au/climate/data/acorn-sat/) 2.5 was released in August 2024. This release includes temperature data until the end of 2023. ClimateExplorer has been updated to this dataset.
+
+The [Bureau of Meteorology](http://www.bom.gov.au/) (BoM) made the following statement concerning version 2.5.
+
+> ACORN-SAT 2.5 includes new or reassessed adjustments at 15 of the 112 ACORN-SAT locations. Previously applied adjustments at 5 locations were removed after being found to be no longer significant with the inclusion of additional data.
+
+> Analysis has shown the changed adjustments in ACORN-SAT 2.5 have had a negligible impact on estimated long-term warming trend in Australia.
+
+> Full details of all adjustments, including the time periods and reference periods used, are available in the station catalogue. The Bureau's ACORN-SAT dataset and methods have been thoroughly peer-reviewed and found to be world-leading. Further information on the dataset and the reasons for adjustments can be found in the ACORN-SAT [FAQ section](http://www.bom.gov.au/climate/data/acorn-sat/#tabs=FAQs).
+
+## Implications of using ACORN-SAT in ClimateExplorer
+
+The downside of using ACORN-SAT is the 6-11 month lag in updates of the previous year. All other datasets in ClimateExplorer update the previous year's data sometime in January of the current year.
+
+### A future improvement
+
+Calculate the transfer functions that are likely to be applied (presuming no changes to the adjustment methods) and project them to the current, unadjusted data. When the latest ACORN-SAT becomes available later in the year, replace the extrapolated data with the official ACORN-SAT data.
+
+Only 15 of the 112 locations in version 2.5 had any changes in the functions compared with 2.4; therefore all other locations' adjustments to temperature applied in the same way as the previous year, resulting in the same adjusted temperatures between extrapolated and official. Of the 15 that were altered, the difference between extrapolated and official would be minimal (i.e., "a negligible impact").
