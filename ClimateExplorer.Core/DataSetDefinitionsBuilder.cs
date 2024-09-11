@@ -327,6 +327,59 @@ public class DataSetDefinitionsBuilder
 
             new ()
             {
+                Id = Guid.Parse("87C65C34-C689-4BA1-8061-626E4A63D401"),
+                Name = "Global Historical Climatology Network daily (GHCNd)",
+                Description = "The Global Historical Climatology Network daily (GHCNd) s an integrated database of daily climate summaries from land surface stations across the globe. GHCNd is made up of daily climate records from numerous sources that have been integrated and subjected to a common suite of quality assurance reviews.",
+                Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
+                PublisherUrl = "https://www.noaa.gov/",
+                MoreInformationUrl = "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily",
+                MeasurementDefinitions =
+                [
+                    new ()
+                    {
+                        DataAdjustment = DataAdjustment.Unadjusted,
+                        DataType = DataType.TempMax,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                        DataResolution = DataResolution.Daily,
+                        RowDataType = RowDataType.OneValuePerRow,
+                        DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}),(?<precipitation>[\d+\.\d+]*),(?<value>-?[\d+\.\d+]*),(?<tmin>-?[\d+\.\d+]*)$",
+                        FolderName = @"GHCNd",
+                        FileNameFormat = "[station].csv",
+                        NullValue = "9999",
+                        ValueAdjustment = 10.0f,
+                    },
+                    new ()
+                    {
+                        DataAdjustment = DataAdjustment.Unadjusted,
+                        DataType = DataType.TempMin,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                        DataResolution = DataResolution.Daily,
+                        RowDataType = RowDataType.OneValuePerRow,
+                        DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}),(?<precipitation>[\d+\.\d+]*),(?<tmax>-?[\d+\.\d+]*),(?<value>-?[\d+\.\d+]*)$",
+                        FolderName = @"GHCNd",
+                        FileNameFormat = "[station].csv",
+                        NullValue = "9999",
+                        ValueAdjustment = 10.0f,
+                    },
+
+                    // new ()
+                    // {
+                    //    DataAdjustment = null,
+                    //    DataType = DataType.Precipitation,
+                    //    UnitOfMeasure = UnitOfMeasure.Millimetres,
+                    //    DataResolution = DataResolution.Daily,
+                    //    RowDataType = RowDataType.OneValuePerRow,
+                    //    DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}),(?<value>[\d+\.\d+]*),(?<tmax>-?[\d+\.\d+]*),(?<tmin>-?[\d+\.\d+]*)$",
+                    //    FolderName = @"GHCNd",
+                    //    FileNameFormat = "[station].csv",
+                    //    NullValue = "9999",
+                    //    ValueAdjustment = 10.0f,
+                    // },
+                ],
+            },
+
+            new ()
+            {
                 Id = Guid.Parse("ffd5f5e2-d8df-4779-a7f4-f5d148505033"),
                 Name = "Multivariate ENSO index (MEI)",
                 ShortName = "MEI.v2",

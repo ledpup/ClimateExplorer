@@ -70,9 +70,15 @@ public static class DataReader
         {
             var filePath = measurementDefinition.FolderName + @"\" + measurementDefinition.FileNameFormat!.Replace("[station]", dataFileDefinition.Id);
             var fileRecords = await ReadDataFile(filePath, regEx, measurementDefinition.NullValue!, measurementDefinition.DataResolution, dataFileDefinition.Id, dataFileDefinition.StartDate, dataFileDefinition.EndDate);
-
-            // Apply any adjustment
             var values = fileRecords.Values.ToList();
+
+            // Adjust based on the measurement definition (how the data is stored on file vs the unit of measure in the measurement definition).
+            if (measurementDefinition.ValueAdjustment != null)
+            {
+                values.ForEach(x => x.Value = x.Value / measurementDefinition.ValueAdjustment.Value);
+            }
+
+            // Adjusting the temperature record based on climatological analysis (currently only New Zealand data uses this).
             if (dataFileDefinition.ValueAdjustment != null)
             {
                 values.ForEach(x =>

@@ -13,10 +13,7 @@
     <Content Include="Precipitation/**" />
     <Content Include="Solar/**" />
 	  <Content Include="Temperature/**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Ocean\slr_sla_gbl_free_txj1j2_90_reduced.csv" />
+    <Content Include="GHCNd/**" />
   </ItemGroup>
 
 </Project>
