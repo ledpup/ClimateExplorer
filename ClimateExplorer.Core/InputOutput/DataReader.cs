@@ -380,7 +380,7 @@ public static class DataReader
 
     private static string[]? TryGetDataFromSingleEntryZipFile(string filePath)
     {
-        var zipPath = Path.ChangeExtension(filePath, ".zip");
+        var zipPath = Path.Combine("Datasets", Path.ChangeExtension(filePath, ".zip"));
 
         if (!File.Exists(zipPath))
         {
@@ -392,40 +392,35 @@ public static class DataReader
 
     private static string[]? ReadLinesFromZipFileEntry(string zipFilename, string zipEntryFilename)
     {
-        using (FileStream zipFileStream = new FileStream(zipFilename, FileMode.Open, FileAccess.Read, FileShare.Read))
+        using FileStream zipFileStream = new FileStream(zipFilename, FileMode.Open, FileAccess.Read, FileShare.Read);
+        using ZipArchive archive = new ZipArchive(zipFileStream, ZipArchiveMode.Read);
+        ZipArchiveEntry? siteFileEntry = archive.GetEntry(zipEntryFilename);
+
+        if (siteFileEntry == null)
         {
-            using (ZipArchive archive = new ZipArchive(zipFileStream, ZipArchiveMode.Read))
+            return null;
+        }
+
+        using StreamReader sr = new (siteFileEntry.Open());
+
+        // This could probably be optimized
+        var lineList = new List<string>();
+
+        while (true)
+        {
+            var line = sr.ReadLine();
+
+            if (line != null)
             {
-                ZipArchiveEntry? siteFileEntry = archive.GetEntry(zipEntryFilename);
-
-                if (siteFileEntry == null)
-                {
-                    return null;
-                }
-
-                using (StreamReader sr = new StreamReader(siteFileEntry.Open()))
-                {
-                    // This could probably be optimized
-                    var lineList = new List<string>();
-
-                    while (true)
-                    {
-                        var line = sr.ReadLine();
-
-                        if (line != null)
-                        {
-                            lineList.Add(line);
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-
-                    return lineList.ToArray();
-                }
+                lineList.Add(line);
+            }
+            else
+            {
+                break;
             }
         }
+
+        return lineList.ToArray();
     }
 
     private static int GetStartIndex(Regex regEx, string[] dataRows, string station)

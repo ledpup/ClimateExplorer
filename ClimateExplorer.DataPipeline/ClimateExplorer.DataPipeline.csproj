@@ -14,7 +14,6 @@
     <ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Precipitation" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Precipitation.zip" Overwrite="true" />
     <ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Solar" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Solar.zip" Overwrite="true" />
 		<ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Temperature" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Temperature.zip" Overwrite="true" />
-    <ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\GHCNd" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\GHCNd.zip" Overwrite="true" />
 	</Target>
 
 	<ItemGroup>
