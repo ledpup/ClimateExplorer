@@ -329,7 +329,7 @@ public class DataSetDefinitionsBuilder
             {
                 Id = Guid.Parse("87C65C34-C689-4BA1-8061-626E4A63D401"),
                 Name = "Global Historical Climatology Network daily (GHCNd)",
-                Description = "The Global Historical Climatology Network daily (GHCNd) s an integrated database of daily climate summaries from land surface stations across the globe. GHCNd is made up of daily climate records from numerous sources that have been integrated and subjected to a common suite of quality assurance reviews.",
+                Description = "The Global Historical Climatology Network daily (GHCNd) is an integrated database of daily climate summaries from land surface stations across the globe. GHCNd is made up of daily climate records from numerous sources that have been integrated and subjected to a common suite of quality assurance reviews.",
                 Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily",
@@ -361,20 +361,19 @@ public class DataSetDefinitionsBuilder
                         NullValue = "9999",
                         ValueAdjustment = 10.0f,
                     },
-
-                    // new ()
-                    // {
-                    //    DataAdjustment = null,
-                    //    DataType = DataType.Precipitation,
-                    //    UnitOfMeasure = UnitOfMeasure.Millimetres,
-                    //    DataResolution = DataResolution.Daily,
-                    //    RowDataType = RowDataType.OneValuePerRow,
-                    //    DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}),(?<value>[\d+\.\d+]*),(?<tmax>-?[\d+\.\d+]*),(?<tmin>-?[\d+\.\d+]*)$",
-                    //    FolderName = @"GHCNd",
-                    //    FileNameFormat = "[station].csv",
-                    //    NullValue = "9999",
-                    //    ValueAdjustment = 10.0f,
-                    // },
+                    new ()
+                    {
+                        DataAdjustment = null,
+                        DataType = DataType.Precipitation,
+                        UnitOfMeasure = UnitOfMeasure.Millimetres,
+                        DataResolution = DataResolution.Daily,
+                        RowDataType = RowDataType.OneValuePerRow,
+                        DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}),(?<value>[\d+\.\d+]*),(?<tmax>-?[\d+\.\d+]*),(?<tmin>-?[\d+\.\d+]*)$",
+                        FolderName = @"GHCNd",
+                        FileNameFormat = "[station].csv",
+                        NullValue = "9999",
+                        ValueAdjustment = 10.0f,
+                    },
                 ],
             },
 

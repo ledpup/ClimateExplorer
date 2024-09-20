@@ -77,7 +77,7 @@ public static class SuggestedPresetLists
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, precipitation!),
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, dailyPrecipitation!),
                                 Aggregation = SeriesAggregationOptions.Sum,
                                 BinGranularity = BinGranularities.ByYear,
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -91,7 +91,7 @@ public static class SuggestedPresetLists
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, precipitation!),
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, dailyPrecipitation!),
                                 Aggregation = SeriesAggregationOptions.Sum,
                                 BinGranularity = BinGranularities.ByYear,
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,

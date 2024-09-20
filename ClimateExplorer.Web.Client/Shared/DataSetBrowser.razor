@@ -216,7 +216,9 @@
                     // Look for a matching measurement at new site
                     var bestMatchingMeasurementAtPreviousLocation =
                         measurementsForPreviousLocation
-                        .SingleOrDefault(x => x.Item2.DataType == measurementAtCurrentLocation.Item2.DataType && x.Item2.DataAdjustment == measurementAtCurrentLocation.Item2.DataAdjustment);
+                        .SingleOrDefault(x => x.Item2.DataType == measurementAtCurrentLocation.Item2.DataType 
+                                     && x.Item2.DataAdjustment == measurementAtCurrentLocation.Item2.DataAdjustment 
+                                     && x.Item2.DataResolution == measurementAtCurrentLocation.Item2.DataResolution);
 
                     if (bestMatchingMeasurementAtPreviousLocation != null)
                     {
