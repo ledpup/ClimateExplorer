@@ -16,6 +16,11 @@ public class DataSetBuilder
         // Reads raw data (from one or multiple sources) & derive a series from it as per the request
         var series = await SeriesProvider.GetSeriesDataPointsForRequest(request.SeriesDerivationType, request.SeriesSpecifications!);
 
+        if (series.DataPoints != null && series.DataPoints.All(x => x.Value == null))
+        {
+            throw new Exception("All data points in the series are null. Check the raw input file");
+        }
+
         Console.WriteLine("GetSeriesDataPointsForRequest completed in " + sw.Elapsed);
 
         if (request.MinimumDataResolution != null && series.DataResolution < request.MinimumDataResolution)
@@ -25,6 +30,11 @@ public class DataSetBuilder
 
         // Run the rest of the pipeline (this is a separate method for testability)
         var dataPoints = BuildDataSetFromDataPoints(series.DataPoints!, series.DataResolution, request);
+
+        if (dataPoints.All(x => x.Value == null))
+        {
+            throw new Exception("All data points are null. There was insufficient data for adequate aggregation.");
+        }
 
         return
             new BuildDataSetResult

@@ -47,6 +47,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{F3EDC6D9-6
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1C6D5A63-FEA2-4452-BCED-EE8A2F830039}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Data.Ghcnd", "ClimateExplorer.Data.Ghcnd\ClimateExplorer.Data.Ghcnd.csproj", "{497B5551-6805-420F-8DA9-8C815000CC69}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -121,6 +123,10 @@ Global
 		{7E293EA2-B1B8-41AA-A8C6-6B703EF3F75B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E293EA2-B1B8-41AA-A8C6-6B703EF3F75B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E293EA2-B1B8-41AA-A8C6-6B703EF3F75B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{497B5551-6805-420F-8DA9-8C815000CC69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{497B5551-6805-420F-8DA9-8C815000CC69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{497B5551-6805-420F-8DA9-8C815000CC69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{497B5551-6805-420F-8DA9-8C815000CC69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -135,6 +141,7 @@ Global
 		{A5ED39A9-CC3D-4B49-AE1D-5AFB235E4F4F} = {F3EDC6D9-6967-4DC9-827C-141F081FA91E}
 		{806E5DC9-73DD-47A1-805D-638F4BCE06F1} = {F3EDC6D9-6967-4DC9-827C-141F081FA91E}
 		{7E293EA2-B1B8-41AA-A8C6-6B703EF3F75B} = {F3EDC6D9-6967-4DC9-827C-141F081FA91E}
+		{497B5551-6805-420F-8DA9-8C815000CC69} = {F3EDC6D9-6967-4DC9-827C-141F081FA91E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4F67DF1E-4405-495A-9FC1-1408F179D95C}

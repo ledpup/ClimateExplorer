@@ -70,9 +70,15 @@ public static class DataReader
         {
             var filePath = measurementDefinition.FolderName + @"\" + measurementDefinition.FileNameFormat!.Replace("[station]", dataFileDefinition.Id);
             var fileRecords = await ReadDataFile(filePath, regEx, measurementDefinition.NullValue!, measurementDefinition.DataResolution, dataFileDefinition.Id, dataFileDefinition.StartDate, dataFileDefinition.EndDate);
-
-            // Apply any adjustment
             var values = fileRecords.Values.ToList();
+
+            // Adjust based on the measurement definition (how the data is stored on file vs the unit of measure in the measurement definition).
+            if (measurementDefinition.ValueAdjustment != null)
+            {
+                values.ForEach(x => x.Value = x.Value / measurementDefinition.ValueAdjustment.Value);
+            }
+
+            // Adjusting the temperature record based on climatological analysis (currently only New Zealand data uses this).
             if (dataFileDefinition.ValueAdjustment != null)
             {
                 values.ForEach(x =>
@@ -374,7 +380,7 @@ public static class DataReader
 
     private static string[]? TryGetDataFromSingleEntryZipFile(string filePath)
     {
-        var zipPath = Path.ChangeExtension(filePath, ".zip");
+        var zipPath = Path.Combine("Datasets", Path.ChangeExtension(filePath, ".zip"));
 
         if (!File.Exists(zipPath))
         {
@@ -386,40 +392,35 @@ public static class DataReader
 
     private static string[]? ReadLinesFromZipFileEntry(string zipFilename, string zipEntryFilename)
     {
-        using (FileStream zipFileStream = new FileStream(zipFilename, FileMode.Open, FileAccess.Read, FileShare.Read))
+        using FileStream zipFileStream = new FileStream(zipFilename, FileMode.Open, FileAccess.Read, FileShare.Read);
+        using ZipArchive archive = new ZipArchive(zipFileStream, ZipArchiveMode.Read);
+        ZipArchiveEntry? siteFileEntry = archive.GetEntry(zipEntryFilename);
+
+        if (siteFileEntry == null)
         {
-            using (ZipArchive archive = new ZipArchive(zipFileStream, ZipArchiveMode.Read))
+            return null;
+        }
+
+        using StreamReader sr = new (siteFileEntry.Open());
+
+        // This could probably be optimized
+        var lineList = new List<string>();
+
+        while (true)
+        {
+            var line = sr.ReadLine();
+
+            if (line != null)
             {
-                ZipArchiveEntry? siteFileEntry = archive.GetEntry(zipEntryFilename);
-
-                if (siteFileEntry == null)
-                {
-                    return null;
-                }
-
-                using (StreamReader sr = new StreamReader(siteFileEntry.Open()))
-                {
-                    // This could probably be optimized
-                    var lineList = new List<string>();
-
-                    while (true)
-                    {
-                        var line = sr.ReadLine();
-
-                        if (line != null)
-                        {
-                            lineList.Add(line);
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-
-                    return lineList.ToArray();
-                }
+                lineList.Add(line);
+            }
+            else
+            {
+                break;
             }
         }
+
+        return lineList.ToArray();
     }
 
     private static int GetStartIndex(Regex regEx, string[] dataRows, string station)

@@ -34,6 +34,7 @@ foreach (var station in stations)
     }
     else
     {
+        logger.LogInformation($"Downloading precipitation for {station.Id}");
         var url = $"https://www.ncei.noaa.gov/data/ghcnm/v4beta/access/{station.Id}.csv";
         var response = await httpClient.GetAsync(url);
 

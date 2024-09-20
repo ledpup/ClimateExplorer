@@ -85,11 +85,13 @@ public static class ChartSeriesListSerializer
     {
         string[] segments = s.Split(SeparatorsByLevel[1]);
 
+        var dr = (DataResolution?)ParseNullableEnum<DataResolution>(segments[17]);
+
         return
             new ChartSeriesDefinition()
             {
                 SeriesDerivationType = ParseEnum<SeriesDerivationTypes>(segments[0]),
-                SourceSeriesSpecifications = ParseSourceSeriesSpecifications(segments[1], dataSetDefinitions, geographicalEntities),
+                SourceSeriesSpecifications = ParseSourceSeriesSpecifications(segments[1], dataSetDefinitions, geographicalEntities, dr),
                 Aggregation = ParseEnum<SeriesAggregationOptions>(segments[2]),
                 RequestedColour = ParseEnum<Colours>(segments[3]),
                 BinGranularity = ParseEnum<BinGranularities>(segments[4]),
@@ -109,23 +111,24 @@ public static class ChartSeriesListSerializer
             };
     }
 
-    private static SourceSeriesSpecification[] ParseSourceSeriesSpecifications(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<GeographicalEntity> geographicalEntities)
+    private static SourceSeriesSpecification[] ParseSourceSeriesSpecifications(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<GeographicalEntity> geographicalEntities, DataResolution? dataResolution)
     {
         string[] segments = s.Split(SeparatorsByLevel[2]);
 
         return
             segments
-            .Select(x => ParseSourceSeriesSpecification(x, dataSetDefinitions, geographicalEntities))
+            .Select(x => ParseSourceSeriesSpecification(x, dataSetDefinitions, geographicalEntities, dataResolution))
             .ToArray();
     }
 
-    private static SourceSeriesSpecification ParseSourceSeriesSpecification(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<GeographicalEntity> geographicalEntities)
+    private static SourceSeriesSpecification ParseSourceSeriesSpecification(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IEnumerable<GeographicalEntity> geographicalEntities, DataResolution? dataResolution)
     {
         string[] segments = s.Split(SeparatorsByLevel[3]);
 
         var dsd = dataSetDefinitions.Single(x => x.Id == Guid.Parse(segments[0]));
         var dt = (Core.Enums.DataType?)ParseNullableEnum<DataType>(segments[1]);
         var da = (DataAdjustment?)ParseNullableEnum<DataAdjustment>(segments[2]);
+        var dr = dataResolution;
 
         var dataMatches = new List<DataSubstitute>
         {
@@ -133,11 +136,16 @@ public static class ChartSeriesListSerializer
             {
                 DataType = (Core.Enums.DataType)dt,
                 DataAdjustment = da,
+                DataResolution = dr,
             },
         };
         if (dt == Core.Enums.DataType.TempMax || dt == DataType.TempMean)
         {
-            if (da == DataAdjustment.Unadjusted)
+            if (dr == DataResolution.Daily)
+            {
+                dataMatches = DataSubstitute.DailyMaxTemperatureDataMatches();
+            }
+            else if (da == DataAdjustment.Unadjusted)
             {
                 dataMatches = DataSubstitute.UnadjustedTemperatureDataMatches();
             }
@@ -145,6 +153,10 @@ public static class ChartSeriesListSerializer
             {
                 dataMatches = DataSubstitute.AdjustedTemperatureDataMatches();
             }
+        }
+        else if (dt == DataType.TempMin && dr == DataResolution.Daily)
+        {
+            dataMatches = DataSubstitute.DailyMinTemperatureDataMatches();
         }
 
         GeographicalEntity? geographicalEntity = null;
@@ -169,13 +181,13 @@ public static class ChartSeriesListSerializer
             foreach (var match in dataMatches)
             {
                 var dsds = dataSetDefinitions.Where(x => x.LocationIds != null && x.LocationIds.Any(y => y == id)
-                                                      && x.MeasurementDefinitions!.Any(y => y.DataType == match.DataType && y.DataAdjustment == match.DataAdjustment))
+                                                      && x.MeasurementDefinitions!.Any(y => y.DataType == match.DataType && y.DataAdjustment == match.DataAdjustment && (match.DataResolution == null || y.DataResolution == match.DataResolution)))
                                          .ToList();
 
                 if (dsds.Any())
                 {
                     dsd = dsds.SingleOrDefault() !;
-                    md = dsd.MeasurementDefinitions!.Single(x => x.DataType == match.DataType && x.DataAdjustment == match.DataAdjustment);
+                    md = dsd.MeasurementDefinitions!.Single(x => x.DataType == match.DataType && x.DataAdjustment == match.DataAdjustment && (match.DataResolution == null || x.DataResolution == match.DataResolution));
 
                     break;
                 }

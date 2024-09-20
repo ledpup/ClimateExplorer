@@ -43,13 +43,15 @@ public class DataSetDefinitionViewModel
         Enums.DataType? dataType = null;
         DataAdjustment? dataAdjustment = null;
 
-        foreach (var dataMatch in dataSubstitutes)
+        foreach (var dataSubstitute in dataSubstitutes)
         {
-            dataType = dataMatch.DataType;
-            dataAdjustment = dataMatch.DataAdjustment;
+            dataType = dataSubstitute.DataType;
+            dataAdjustment = dataSubstitute.DataAdjustment;
             dsds = dataSetDefinitions.Where(x => x.LocationIds != null
                                                 && x.LocationIds.Any(y => y == locationId)
-                                                && x.MeasurementDefinitions!.Any(y => y.DataType == dataType && y.DataAdjustment == dataAdjustment))
+                                                && x.MeasurementDefinitions!.Any(y => y.DataType == dataType
+                                                                                   && y.DataAdjustment == dataAdjustment
+                                                                                   && (dataSubstitute.DataResolution == null || y.DataResolution == dataSubstitute.DataResolution)))
                                         .ToList();
 
             // If we find a match, break out of the search (we need to order the matches on preference
@@ -75,8 +77,9 @@ public class DataSetDefinitionViewModel
             }
         }
 
-        // TODO: This could be generalised in case one day we incorporate multiple "publishers" of the same data for the same location
-        var dsd = dsds.SingleOrDefault();
+        // Changed to FirstOrDefault because some locations have GHCNm precipitation and GHCNd precipitation
+        // TODO: add a UI control to allow the user to select between them
+        var dsd = dsds.FirstOrDefault();
 
         var md = dsd!.MeasurementDefinitions!.Single(x => x.DataType == dataType && x.DataAdjustment == dataAdjustment);
 
