@@ -94,7 +94,17 @@ Parallel.ForEach(stations, station =>
             {
                 var outputFile = $@"{outputFolder}{station.Id}.csv";
 
-                var cleanedRecords = records.Where(x => !string.IsNullOrWhiteSpace(x.Prcp) && !string.IsNullOrWhiteSpace(x.Tmax) && !string.IsNullOrWhiteSpace(x.Tmin));
+                var cleanedRecords = records
+                                .Where(x => !string.IsNullOrWhiteSpace(x.Prcp) && !string.IsNullOrWhiteSpace(x.Tmax) && !string.IsNullOrWhiteSpace(x.Tmin))
+                                .ToList();
+
+                var sufficientData = SufficientData(cleanedRecords);
+
+                if (!sufficientData)
+                {
+                    logger.LogInformation($"Insufficient data exists for {station.Id}. It will be excluded from the dataset.");
+                    return;
+                }
 
                 using (var writer = new StreamWriter(outputFile))
                 using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
@@ -129,6 +139,26 @@ Parallel.ForEach(stations, station =>
         logger.LogError($"Error loading file for station {station.Id}. Will skip this station.", ex);
     }
 });
+
+bool SufficientData(List<GhcndInputRow> cleanedRecords)
+{
+    var yearRecords = new Dictionary<int, int>();
+    foreach (var record in cleanedRecords)
+    {
+        var year = int.Parse(record.Date!.Substring(0, 4));
+        if (yearRecords.ContainsKey(year))
+        {
+            yearRecords[year]++;
+        }
+        else
+        {
+            yearRecords.Add(year, 1);
+        }
+    }
+    // Need at least 10 years worth of data where each of those years have more than 300 days of data.
+    var yearsWithMinimumNumberOfRecords = yearRecords.Values.Where(x => x > 300);
+    return yearsWithMinimumNumberOfRecords.Count() > 10;
+}
 
 var dataFileMapping = new DataFileMapping
 {
