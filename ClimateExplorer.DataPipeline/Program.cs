@@ -14,7 +14,7 @@ foreach (var folder in foldersToProcess)
 {
     if (Directory.Exists(folder.OutputFolder))
     {
-        Directory.Delete(folder.OutputFolder);
+        Directory.Delete(folder.OutputFolder, true);
     }
     Directory.CreateDirectory(folder.OutputFolder);
 
@@ -28,12 +28,12 @@ foreach (var folder in foldersToProcess)
             }
         );
 
-    foreach (var file in filesToProcess)
+    Parallel.ForEach(filesToProcess, file =>
     {
         Console.WriteLine(file);
 
         CompressFile(file, folder.OutputFolder);
-    }
+    });
 }
 
 static void CompressFile(string file, string outFolder)
