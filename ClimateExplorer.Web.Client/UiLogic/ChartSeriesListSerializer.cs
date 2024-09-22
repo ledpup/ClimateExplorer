@@ -132,7 +132,7 @@ public static class ChartSeriesListSerializer
 
         var dataMatches = new List<DataSubstitute>
         {
-            new DataSubstitute
+            new ()
             {
                 DataType = (Core.Enums.DataType)dt,
                 DataAdjustment = da,
@@ -174,7 +174,7 @@ public static class ChartSeriesListSerializer
         }
 
         var md = dsd.MeasurementDefinitions!
-                .SingleOrDefault(x => x.DataAdjustment == da && x.DataType == dt);
+                .SingleOrDefault(x => x.DataAdjustment == da && x.DataType == dt && (dr == null || x.DataResolution == dr));
 
         if (md == null)
         {

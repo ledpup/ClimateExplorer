@@ -5,8 +5,13 @@ var foldersToProcess =
     {
         new()
         {
-            InputFolder = @"..\..\..\..\ClimateExplorer.SourceData\GHCNd",
-            OutputFolder = @"..\..\..\..\ClimateExplorer.WebApi\Datasets\GHCNd",
+            InputFolder = @"..\..\..\..\ClimateExplorer.SourceData\GHCNd\Temperature",
+            OutputFolder = @"..\..\..\..\ClimateExplorer.WebApi\Datasets\GHCNd\Temperature",
+        },
+        new()
+        {
+            InputFolder = @"..\..\..\..\ClimateExplorer.SourceData\GHCNd\Precipitation",
+            OutputFolder = @"..\..\..\..\ClimateExplorer.WebApi\Datasets\GHCNd\Precipitation",
         }
     };
 

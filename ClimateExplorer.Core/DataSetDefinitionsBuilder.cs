@@ -342,8 +342,8 @@ public class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         RowDataType = RowDataType.OneValuePerRow,
-                        DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}),(?<precipitation>[\d+\.\d+]*),(?<value>-?[\d+\.\d+]*),(?<tmin>-?[\d+\.\d+]*)$",
-                        FolderName = @"GHCNd",
+                        DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}),(?<value>-?[\d+\.\d+]*),(?<tmin>-?[\d+\.\d+]*)$",
+                        FolderName = @"GHCNd\Temperature",
                         FileNameFormat = "[station].csv",
                         NullValue = "9999",
                         ValueAdjustment = 10.0f,
@@ -355,12 +355,25 @@ public class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         RowDataType = RowDataType.OneValuePerRow,
-                        DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}),(?<precipitation>[\d+\.\d+]*),(?<tmax>-?[\d+\.\d+]*),(?<value>-?[\d+\.\d+]*)$",
-                        FolderName = @"GHCNd",
+                        DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}),(?<tmax>-?[\d+\.\d+]*),(?<value>-?[\d+\.\d+]*)$",
+                        FolderName = @"GHCNd\Temperature",
                         FileNameFormat = "[station].csv",
                         NullValue = "9999",
                         ValueAdjustment = 10.0f,
                     },
+                ],
+            },
+
+            new ()
+            {
+                Id = Guid.Parse("5BBEAF4C-B459-410E-9B77-470905CB1E46"),
+                Name = "Global Historical Climatology Network daily (GHCNd) precipitation",
+                Description = "The Global Historical Climatology Network daily (GHCNd) is an integrated database of daily climate summaries from land surface stations across the globe. GHCNd is made up of daily climate records from numerous sources that have been integrated and subjected to a common suite of quality assurance reviews.",
+                Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
+                PublisherUrl = "https://www.noaa.gov/",
+                MoreInformationUrl = "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily",
+                MeasurementDefinitions =
+                [
                     new ()
                     {
                         DataAdjustment = null,
@@ -368,8 +381,8 @@ public class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.Millimetres,
                         DataResolution = DataResolution.Daily,
                         RowDataType = RowDataType.OneValuePerRow,
-                        DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}),(?<value>[\d+\.\d+]*),(?<tmax>-?[\d+\.\d+]*),(?<tmin>-?[\d+\.\d+]*)$",
-                        FolderName = @"GHCNd",
+                        DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}),(?<value>[\d+\.\d+]*)$",
+                        FolderName = @"GHCNd\Precipitation",
                         FileNameFormat = "[station].csv",
                         NullValue = "9999",
                         ValueAdjustment = 10.0f,

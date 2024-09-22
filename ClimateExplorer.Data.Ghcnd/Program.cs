@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using static ClimateExplorer.Core.Enums;
 using ClimateExplorer.Data.Ghcnd;
 
 var serviceProvider = new ServiceCollection()
@@ -52,7 +51,8 @@ foreach (var station in stations)
 
 
 
-var stationsWithData = new List<Station>();
+var stationsWithTempData = new List<Station>();
+var stationsWithPrcpData = new List<Station>();
 var outputFolder = @"Output\Data\";
 
 try
@@ -60,7 +60,8 @@ try
     Directory.Delete(outputFolder, true);
 }
 catch { }
-Directory.CreateDirectory(outputFolder);
+Directory.CreateDirectory(outputFolder + "Temperature");
+Directory.CreateDirectory(outputFolder + "Precipitation");
 
 Parallel.ForEach(stations, station =>
 {
@@ -92,36 +93,62 @@ Parallel.ForEach(stations, station =>
 
             if (records.Any())
             {
-                var outputFile = $@"{outputFolder}{station.Id}.csv";
-
-                var cleanedRecords = records
-                                .Where(x => !string.IsNullOrWhiteSpace(x.Prcp) && !string.IsNullOrWhiteSpace(x.Tmax) && !string.IsNullOrWhiteSpace(x.Tmin))
+                var recordsWithNoNullRows = records
+                                .Where(x => !((string.IsNullOrWhiteSpace(x.Prcp) || x.Prcp == nullRecord)
+                                            && (string.IsNullOrWhiteSpace(x.Tmax) || x.Tmax == nullRecord)
+                                            && (string.IsNullOrWhiteSpace(x.Tmin) || x.Tmin == nullRecord)))
                                 .ToList();
 
-                var sufficientData = SufficientData(cleanedRecords);
-
-                if (!sufficientData)
+                var temperatureRecords = recordsWithNoNullRows.Select(x => new OutputRowTemperature
                 {
-                    logger.LogInformation($"Insufficient data exists for {station.Id}. It will be excluded from the dataset.");
-                    return;
+                    Date = x.Date?.Replace("-", string.Empty),
+                    Tmax = string.IsNullOrWhiteSpace(x.Tmax) ? nullRecord : x.Tmax.Trim('\"').Trim(),
+                    Tmin = string.IsNullOrWhiteSpace(x.Tmin) ? nullRecord : x.Tmin.Trim('\"').Trim(),
+                });
+
+                var cleanedRecords = SufficientDataTemp(temperatureRecords);
+                if (cleanedRecords.Count() < 10)
+                {
+                    logger.LogInformation($"Insufficient temperature data exists for {station.Id}. It will be excluded from the dataset.");
                 }
-
-                using (var writer = new StreamWriter(outputFile))
-                using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                else
                 {
-                    var nicerRecords = cleanedRecords.Select(x => new OutputRow
+                    var outputFileTemp = $@"{outputFolder}\Temp\{station.Id}.csv";
+                    using (var writer = new StreamWriter(outputFileTemp))
+                    using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
                     {
-                        Date = x.Date?.Replace("-", string.Empty),
-                        Precipitation = string.IsNullOrWhiteSpace(x.Prcp) ? nullRecord : x.Prcp.Trim('\"').Trim(),
-                        Tmax = string.IsNullOrWhiteSpace(x.Tmax) ? nullRecord : x.Tmax.Trim('\"').Trim(),
-                        Tmin = string.IsNullOrWhiteSpace(x.Tmin) ? nullRecord : x.Tmin.Trim('\"').Trim()
-                    });
+                        logger.LogInformation($"Writing {outputFileTemp}.");
+                        csvWriter.WriteRecords(cleanedRecords);
+                    }
 
-                    logger.LogInformation($"Writing {outputFile}.");
-                    csvWriter.WriteRecords(nicerRecords);
+                    stationsWithTempData.Add(station);
                 }
 
-                stationsWithData.Add(station);
+
+
+                var prcpRecords = recordsWithNoNullRows.Select(x => new OutputRowPrecipitation
+                {
+                    Date = x.Date?.Replace("-", string.Empty),
+                    Precipitation = string.IsNullOrWhiteSpace(x.Prcp) ? nullRecord : x.Prcp.Trim('\"').Trim(),
+                });
+
+                var cleanedRecordsPrcp = SufficientDataPrcp(prcpRecords);
+                if (cleanedRecordsPrcp.Count() < 10)
+                {
+                    logger.LogInformation($"Insufficient precipitation data exists for {station.Id}. It will be excluded from the dataset.");
+                }
+                else
+                {
+                    var outputFilePrcp = $@"{outputFolder}\Prcp\{station.Id}.csv";
+                    using (var writer = new StreamWriter(outputFilePrcp))
+                    using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                    {
+                        logger.LogInformation($"Writing {outputFilePrcp}.");
+                        csvWriter.WriteRecords(cleanedRecordsPrcp);
+                    }
+
+                    stationsWithPrcpData.Add(station);
+                }
             }
             else
             {
@@ -140,59 +167,66 @@ Parallel.ForEach(stations, station =>
     }
 });
 
-bool SufficientData(List<GhcndInputRow> cleanedRecords)
+
+await CreateDataFileMapping(stations, stationsWithTempData, "temperature", "87C65C34-C689-4BA1-8061-626E4A63D401");
+await CreateDataFileMapping(stations, stationsWithPrcpData, "precipitation", "5BBEAF4C-B459-410E-9B77-470905CB1E46");
+
+IEnumerable<OutputRowTemperature> SufficientDataTemp(IEnumerable<OutputRowTemperature> records)
 {
-    var yearRecords = new Dictionary<int, int>();
-    foreach (var record in cleanedRecords)
+    var yearRecordCount = new Dictionary<string, TempRow>();
+    foreach (var record in records)
     {
-        var year = int.Parse(record.Date!.Substring(0, 4));
-        if (yearRecords.ContainsKey(year))
+        var year = record.Date!.Substring(0, 4);
+        if (!yearRecordCount.ContainsKey(year))
         {
-            yearRecords[year]++;
+            yearRecordCount.Add(year, new TempRow());
         }
-        else
+
+        yearRecordCount[year].TMax += record.Tmax == nullRecord ? 0 : 1;
+        yearRecordCount[year].TMin += record.Tmin == nullRecord ? 0 : 1;
+    }
+
+    var yearsWithMinimumNumberOfRecords = yearRecordCount.Where(x => x.Value.TMax > 300 && x.Value.TMin > 300).ToDictionary().Keys.ToList();
+
+    var cleanedData = new List<OutputRowTemperature>();
+    foreach (var record in records)
+    {
+        if (yearsWithMinimumNumberOfRecords.Contains(record.Date!.Substring(0, 4)))
         {
-            yearRecords.Add(year, 1);
+            cleanedData.Add(record);
         }
     }
-    // Need at least 10 years worth of data where each of those years have more than 300 days of data.
-    var yearsWithMinimumNumberOfRecords = yearRecords.Values.Where(x => x > 300);
-    return yearsWithMinimumNumberOfRecords.Count() > 10;
+
+    return cleanedData;
 }
 
-var dataFileMapping = new DataFileMapping
+IEnumerable<OutputRowPrecipitation> SufficientDataPrcp(IEnumerable<OutputRowPrecipitation> records)
 {
-    DataSetDefinitionId = Guid.Parse("87C65C34-C689-4BA1-8061-626E4A63D401"),
-    LocationIdToDataFileMappings = new Dictionary<Guid, List<DataFileFilterAndAdjustment>>()
-};
+    var yearRecordCount = new Dictionary<string, int>();
+    foreach (var record in records)
+    {
+        var year = record.Date!.Substring(0, 4);
+        if (!yearRecordCount.ContainsKey(year))
+        {
+            yearRecordCount.Add(year, 0);
+        }
 
-var ghcnIdToLocationIds = await GetGhcnIdToLocationIds(stations);
+        yearRecordCount[year] += record.Precipitation == nullRecord ? 0 : 1;
+    }
 
-stationsWithData.ForEach(x =>
-{
-    dataFileMapping.LocationIdToDataFileMappings.Add(
-        ghcnIdToLocationIds[x.Id],
-        [
-                new()
-                {
-                    Id = x.Id
-                }
-        ]);
-});
+    var yearsWithMinimumNumberOfRecords = yearRecordCount.Where(x => x.Value > 300).ToDictionary().Keys.ToList();
 
+    var cleanedData = new List<OutputRowPrecipitation>();
+    foreach (var record in records)
+    {
+        if (yearsWithMinimumNumberOfRecords.Contains(record.Date!.Substring(0, 4)))
+        {
+            cleanedData.Add(record);
+        }
+    }
 
-var jsonSerializerOptions = new JsonSerializerOptions
-{
-    WriteIndented = true,
-    Converters = { new JsonStringEnumConverter() },
-    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-};
-
-Directory.CreateDirectory(@"Output\DataFileMapping");
-
-var outputFileSuffix = "_ghcnd";
-
-File.WriteAllText($@"Output\DataFileMapping\DataFileMapping{outputFileSuffix}.json", JsonSerializer.Serialize(dataFileMapping, jsonSerializerOptions));
+    return cleanedData;
+}
 
 static async Task<Dictionary<string, Guid>> GetGhcnIdToLocationIds(List<Station> stations)
 {
@@ -206,4 +240,44 @@ static async Task<Dictionary<string, Guid>> GetGhcnIdToLocationIds(List<Station>
     }
 
     throw new Exception($"Expecting {ghcnIdToLocationIdsFile} to exist");
+}
+
+static async Task CreateDataFileMapping(List<Station> stations, List<Station> stationsWithData, string dataType, string dsdId)
+{
+    var dataFileMapping = new DataFileMapping
+    {
+        DataSetDefinitionId = Guid.Parse(dsdId),
+        LocationIdToDataFileMappings = []
+    };
+
+    var ghcnIdToLocationIds = await GetGhcnIdToLocationIds(stations);
+
+    stationsWithData.ForEach(x =>
+    {
+        dataFileMapping.LocationIdToDataFileMappings.Add(
+            ghcnIdToLocationIds[x.Id],
+            [
+                new()
+                {
+                    Id = x.Id
+                }
+            ]);
+    });
+
+    var jsonSerializerOptions = new JsonSerializerOptions
+    {
+        WriteIndented = true,
+        Converters = { new JsonStringEnumConverter() },
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+    };
+
+    Directory.CreateDirectory(@"Output\DataFileMapping");
+
+    File.WriteAllText($@"Output\DataFileMapping\DataFileMapping_ghcnd_{dataType}.json", JsonSerializer.Serialize(dataFileMapping, jsonSerializerOptions));
+}
+
+public record TempRow
+{
+    public int TMax { get; set; }
+    public int TMin { get; set; }
 }

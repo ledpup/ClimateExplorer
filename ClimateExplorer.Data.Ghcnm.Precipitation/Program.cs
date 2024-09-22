@@ -168,7 +168,7 @@ foreach (var station in stations)
 var dataFileMapping = new DataFileMapping
 {
     DataSetDefinitionId = Guid.Parse("6ABB028A-29F6-481C-837E-1FC9C8E989AF"),
-    LocationIdToDataFileMappings = new Dictionary<Guid, List<DataFileFilterAndAdjustment>>()
+    LocationIdToDataFileMappings = []
 };
 
 var ghcnIdToLocationIds = await GetGhcnIdToLocationIds(stations);
