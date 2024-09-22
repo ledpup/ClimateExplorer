@@ -647,6 +647,8 @@ public partial class ChartView
             }
         }
 
+        var badChartSeries = new List<SeriesWithData>();
+
         // If we're doing smoothing via the moving average, precalculate these data and add them to PreProcessedDataSets.
         // We do this because the SimpleMovingAverage calculate function will remove some years from the start of the data set.
         // It removes these years because it doesn't have a good enough average to present it to the user.
@@ -664,7 +666,9 @@ public partial class ChartView
 
                 if (movingAverageValues.All(y => y == null))
                 {
-                    l.LogError("The moving average calculation has resulted in no data records with any values.");
+                    l.LogError("Moving average calculation has resulted in no records. Will remove this series from the chart.");
+                    badChartSeries.Add(cs);
+                    continue;
                 }
 
                 // Now, join back to the original DataRecord set
@@ -693,6 +697,8 @@ public partial class ChartView
                 cs.PreProcessedDataSet = cs.SourceDataSet;
             }
         }
+
+        badChartSeries.ForEach(x => chartSeriesWithData.Remove(x));
 
         l.LogInformation("done with moving average calculation");
 

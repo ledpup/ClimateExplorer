@@ -36,7 +36,7 @@ var store = [{
         "teaser": null
       },{
         "title": "The rest of the world",
-        "excerpt":"In 2023 ClimateExplorer had temperature records for Australia, New Zealand and the UK. We wanted to add temperature records from all around the world. Finding a dataset that fitted our requirements wasn’t easy. Below are the required criteria. A dataset that has unadjusted (what was recorded on the gauge) and...","categories": ["datasets"],
+        "excerpt":"In 2023 Climate Explorer had temperature records for Australia, New Zealand and the UK. We wanted to add temperature records from all around the world. Finding a dataset that fitted our requirements wasn’t easy. Below are the required criteria. A dataset that has unadjusted (what was recorded on the gauge)...","categories": ["datasets"],
         "tags": [],
         "url": "/blog/datasets/2024/06/02/the-rest-of-the-world.html",
         "teaser": null
@@ -45,5 +45,11 @@ var store = [{
         "excerpt":"ACORN-SAT 2.5 was released in August 2024. This release includes temperature data until the end of 2023. ClimateExplorer has been updated to this dataset. The Bureau of Meteorology (BoM) made the following statement concerning version 2.5. ACORN-SAT 2.5 includes new or reassessed adjustments at 15 of the 112 ACORN-SAT locations....","categories": ["datasets"],
         "tags": [],
         "url": "/blog/datasets/2024/09/03/ACORN-SAT-2.5.html",
+        "teaser": null
+      },{
+        "title": "Global Historical Climatology Network daily",
+        "excerpt":"After we added The rest of the world (i.e., adding sites from around the world, sourced from Global Historical Climatology Network monthly (GHCNm)), I thought it would be worthwhile to acquire the daily data for those sites from the Global Historical Climatology Network daily (GHCNd). Initially, this seemed like a...","categories": ["datasets"],
+        "tags": [],
+        "url": "/blog/datasets/2024/09/21/GHCN-daily.html",
         "teaser": null
       }]
