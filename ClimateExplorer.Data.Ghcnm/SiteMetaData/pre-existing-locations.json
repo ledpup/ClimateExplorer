@@ -1,1948 +1,1443 @@
 [
   {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -34.92,
-      "Longitude": 138.62,
-      "Elevation": 48
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "70a07bb0-2220-402b-be83-f2c35edfdd12",
-    "Name": "Adelaide"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -34.94,
-      "Longitude": 117.82,
-      "Elevation": 68
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "e491279a-781c-4eb0-8ccf-d49f3d9e2d5a",
-    "Name": "Albany"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -23.8,
-      "Longitude": 133.89,
-      "Elevation": 546
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "fbb67194-9253-4ed2-bd20-f4a0211b264b",
-    "Name": "Alice Springs"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -27.63,
-      "Longitude": 152.71,
-      "Elevation": 24
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "0cfb93a1-e0b6-4b87-87a6-90c0e01ca9ca",
-    "Name": "Amberley"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -37.00813,
-      "Longitude": 174.78873,
-      "Elevation": 7
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "a28e017a-a23b-4f59-914d-d1171bfd60be",
-    "Name": "Auckland"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -23.55,
-      "Longitude": 145.29,
-      "Elevation": 266
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "176e8056-e246-4566-b307-3c0b1ca8fde4",
-    "Name": "Barcaldine"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -33.43,
-      "Longitude": 149.56,
-      "Elevation": 713
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "0b927604-fbaa-4930-bb5c-cf4b0f8b8914",
-    "Name": "Bathurst"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -25.9,
-      "Longitude": 139.35,
-      "Elevation": 46
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "65aea1bb-5395-4b14-bf6f-8ca1559099cd",
-    "Name": "Birdsville"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -22.91,
-      "Longitude": 139.9,
-      "Elevation": 161
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "f285ba2b-d6d6-4390-a80f-803522668bde",
-    "Name": "Boulia"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -30.04,
-      "Longitude": 145.95,
-      "Elevation": 107
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "bab198bd-3940-4f13-a4f7-68af10735039",
-    "Name": "Bourke"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -33.95,
-      "Longitude": 116.13,
-      "Elevation": 178
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "9ea5be14-0e54-4453-8e8b-4c11e075cb42",
-    "Name": "Bridgetown"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -27.39,
-      "Longitude": 153.13,
-      "Elevation": 4
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "b7e0c061-e71c-4fc4-8068-c0432398c24f",
-    "Name": "Brisbane Airport"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -17.95,
-      "Longitude": 122.24,
-      "Elevation": 7
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "05daa0ea-6227-4225-bf52-8204808709b5",
-    "Name": "Broome"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -24.91,
-      "Longitude": 152.32,
-      "Elevation": 30
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "b2c819cd-b20b-48b0-8148-eef2f8fd88b7",
-    "Name": "Bundaberg"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -17.75,
-      "Longitude": 139.54,
-      "Elevation": 5
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "fba7ed39-c752-460d-aa2e-342da7b55817",
-    "Name": "Burketown"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -42.28,
-      "Longitude": 146.28,
-      "Elevation": 667
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "5f6f3d62-4c80-441d-b30f-104d2f5d2e96",
-    "Name": "Butlers Gorge"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -35.94,
-      "Longitude": 148.38,
-      "Elevation": 1482
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "f7a20e98-23e9-4920-be3c-b72f8a22754d",
-    "Name": "Cabramurra"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -16.87,
-      "Longitude": 145.75,
-      "Elevation": 2
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "8fe98f5f-c239-4f2f-961a-5686147e53f7",
-    "Name": "Cairns"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -19.92,
-      "Longitude": 138.12,
-      "Elevation": 231
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "09a5ba01-f523-4be3-ae7b-7a29a0da581c",
-    "Name": "Camooweal"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -52.55059,
-      "Longitude": 169.14978,
-      "Elevation": 16
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "1e69bdc6-1bdd-42b6-96ad-35b0648aa9d0",
-    "Name": "Campbell Island"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -35.31,
-      "Longitude": 149.2,
-      "Elevation": 577
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "c0f2743b-fb00-4128-9024-bafa4e1c85ed",
-    "Name": "Canberra"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -35.75,
-      "Longitude": 136.6,
-      "Elevation": 158
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "f1be5e90-f9fd-40f4-9db8-2c5564a7e908",
-    "Name": "Cape Borda"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -43.49,
-      "Longitude": 147.14,
-      "Elevation": 60
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "eb75b5eb-8feb-4118-b6ab-bbe9b4fbc334",
-    "Name": "Cape Bruny"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -34.37,
-      "Longitude": 115.14,
-      "Elevation": 13
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "f8dfe45b-d49c-4c0f-8d69-27d2d92cdb4b",
-    "Name": "Cape Leeuwin"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -27.03,
-      "Longitude": 153.47,
-      "Elevation": 99
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "33d2cd26-bded-4abc-8e03-2f3266e3923f",
-    "Name": "Cape Moreton"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -38.86,
-      "Longitude": 143.51,
-      "Elevation": 82
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "592c8e33-cc36-4cce-9af1-82bb3f26a5af",
-    "Name": "Cape Otway"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -24.89,
-      "Longitude": 113.67,
-      "Elevation": 4
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "1c72f3e1-7d98-4ac5-8b64-1b5b2a4d599e",
-    "Name": "Carnarvon"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -66.28,
-      "Longitude": 110.52,
-      "Elevation": 40
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "e0ddbbca-2d03-4ad3-b901-bacf5fff19c0",
-    "Name": "Casey"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -32.13,
-      "Longitude": 133.7,
-      "Elevation": 15
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "4397371d-a43b-4925-af58-bec79e6ca802",
-    "Name": "Ceduna"
-  },
-  {
-    "CountryCode": "UK",
-    "Country": "United Kingdom",
-    "Coordinates": {
-      "Latitude": 52.42,
-      "Longitude": -1.83,
-      "Elevation": 78
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "a5a179b5-5394-44d1-b653-bbf6b052279c",
-    "Name": "Central England"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -26.41,
-      "Longitude": 146.26,
-      "Elevation": 301
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "0bc92500-5977-4aa2-81ae-a57ff8eabed3",
-    "Name": "Charleville"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -20.05,
-      "Longitude": 146.27,
-      "Elevation": 289
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "80a5afb6-f043-4e61-b1e3-b60029b9c559",
-    "Name": "Charters Towers"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -31.48,
-      "Longitude": 145.83,
-      "Elevation": 260
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "6f523c50-bf77-44d1-8418-57ea555855a3",
-    "Name": "Cobar"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -12.19,
-      "Longitude": 96.83,
-      "Elevation": 3
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "fe4f7ca3-f92c-459b-a85b-e37be4871fda",
-    "Name": "Cocos Island"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -30.32,
-      "Longitude": 153.12,
-      "Elevation": 3
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "8a63813f-8544-46b6-806e-6bc32dfc1b0d",
-    "Name": "Coffs Harbour"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -31.62,
-      "Longitude": 117.22,
-      "Elevation": 216
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "d7307020-9788-4269-ae25-19926ca9e198",
-    "Name": "Cunderdin"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -30.28,
-      "Longitude": 116.67,
-      "Elevation": 324
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "fc5ff168-2c7a-4913-bac7-957d7efa065b",
-    "Name": "Dalwallinu"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -12.42,
-      "Longitude": 130.89,
-      "Elevation": 30
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "00147d6f-1569-422f-8322-a42b98e25071",
-    "Name": "Darwin"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -68.57,
-      "Longitude": 77.97,
-      "Elevation": 18
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "4fec65a7-6c18-4a3e-bbd0-ec80a0baaa59",
-    "Name": "Davis"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -35.56,
-      "Longitude": 144.95,
-      "Elevation": 94
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "2e2acf0b-592b-4ba4-adc9-b6f08546b92a",
-    "Name": "Deniliquin"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -32.22,
-      "Longitude": 148.58,
-      "Elevation": 284
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "5e5c8eee-e28d-4651-bb04-24d08e89c254",
-    "Name": "Dubbo"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -45.90129,
-      "Longitude": 170.5147,
-      "Elevation": 4
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "0c75321e-ffc1-48cd-afd2-2d30301a545d",
-    "Name": "Dunedin"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -33.83,
-      "Longitude": 121.89,
-      "Elevation": 25
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "7c7d3560-0741-4966-a878-b2749afc7737",
-    "Name": "Esperance"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -31.68,
-      "Longitude": 128.9,
-      "Elevation": 93
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "663a6037-a8de-462a-9d74-396ec881ffeb",
-    "Name": "Eucla"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -30.85,
-      "Longitude": 128.11,
-      "Elevation": 159
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "a7a48420-7677-444a-a6aa-e8d6eb195729",
-    "Name": "Forrest"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -37.57,
-      "Longitude": 149.92,
-      "Elevation": 15
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "714a7fe5-cea8-4e9b-bac0-cb01f8d0fff3",
-    "Name": "Gabo Island"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -25.62,
-      "Longitude": 151.62,
-      "Elevation": 110
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "64004954-c0c6-4de3-9ac1-3f50bada1ec9",
-    "Name": "Gayndah"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -18.3,
-      "Longitude": 143.53,
-      "Elevation": 301
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "2bf20585-6b1a-4e3c-a8ed-1d87e67789a6",
-    "Name": "Georgetown"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -28.8,
-      "Longitude": 114.7,
-      "Elevation": 29
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "c6ba58ea-6142-4954-afac-256ca81c67bc",
-    "Name": "Geraldton"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -25.03,
-      "Longitude": 128.3,
-      "Elevation": 598
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "e61fd5fb-f6a0-41b0-99bf-bc2eddb1a90c",
-    "Name": "Giles"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -38.6586,
-      "Longitude": 177.98512,
-      "Elevation": 5
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "28e0e278-1bc8-46b8-b809-23b85618623e",
-    "Name": "Gisborne Airport"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -42.99,
-      "Longitude": 147.07,
-      "Elevation": 65
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "db8309f6-72b8-49e2-89b3-69a13989a392",
-    "Name": "Grove"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -31.03,
-      "Longitude": 150.27,
-      "Elevation": 307
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "b8a3092a-041f-478d-951f-5ee4dda0a410",
-    "Name": "Gunnedah"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -18.23,
-      "Longitude": 127.67,
-      "Elevation": 409
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "ba6fb433-bc80-4890-8c8b-16830b95f633",
-    "Name": "Halls Creek"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -37.77389,
-      "Longitude": 175.30518,
-      "Elevation": 45
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "f5a8a194-681a-4116-8a75-97fcbb57e20b",
-    "Name": "Hamilton"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -42.89,
-      "Longitude": 147.33,
-      "Elevation": 50
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "aed87aa0-1d0c-44aa-8561-cde0fc936395",
-    "Name": "Hobart"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -42.712,
-      "Longitude": 170.984,
-      "Elevation": 39
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "f7f809a7-6755-4ab7-b1e6-3ae933dd89ae",
-    "Name": "Hokitika"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -10.58,
-      "Longitude": 142.29,
-      "Elevation": 4
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "1d06ff8a-82ba-4613-875f-1b4893536c42",
-    "Name": "Horn Island"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -46.41741,
-      "Longitude": 168.33052,
-      "Elevation": 1
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "7a6c3b06-bfed-4cee-b256-a456e6fb6e1d",
-    "Name": "Invercargill Airport"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -29.78,
-      "Longitude": 151.11,
-      "Elevation": 582
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "c5094f09-3fb3-4455-bf7b-b835928ad5f3",
-    "Name": "Inverell"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -30.78,
-      "Longitude": 121.45,
-      "Elevation": 365
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "6e8b7fce-49bf-41d2-959d-62130a40fb22",
-    "Name": "Kalgoorlie-Boulder"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -14.3,
-      "Longitude": 126.65,
-      "Elevation": 23
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "cbb11150-ec74-4401-8357-fae6fef70768",
-    "Name": "Kalumburu"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -22.3,
-      "Longitude": 118.45,
-      "Elevation": 474
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "48c35ccf-3ff8-4448-90de-1e491c500887",
-    "Name": "Karijini North (Wittenoom)"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -33.69,
-      "Longitude": 117.61,
-      "Elevation": 320
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "aa0021dd-8c27-4101-96b7-5e6b60c0c70a",
-    "Name": "Katanning"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -35.72,
-      "Longitude": 143.92,
-      "Elevation": 77
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "23701518-8a46-4b7e-b9ef-da570d77b7cb",
-    "Name": "Kerang"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -33.13,
-      "Longitude": 135.55,
-      "Elevation": 59
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "6b771c0b-97d3-45c7-9cd1-72fdee232e7c",
-    "Name": "Kyancutta"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -40.99,
-      "Longitude": 148.35,
-      "Elevation": 19
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "20ab0202-8038-4275-aad2-70788ec68d6e",
-    "Name": "Larapuna (Eddystone Point)"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -41.55,
-      "Longitude": 147.22,
-      "Elevation": 166
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "b483cb66-25cc-45ee-b1c8-8db405f0415a",
-    "Name": "Launceston Airport"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -37.86,
-      "Longitude": 144.76,
-      "Elevation": 20
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "ddbdddc8-8f95-4a44-b55b-f52378460640",
-    "Name": "Laverton"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -22.24,
-      "Longitude": 114.1,
-      "Elevation": 5
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "2119d5bf-94b0-4724-b2b8-bcd5f787877b",
-    "Name": "Learmonth"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -43.62622,
-      "Longitude": 172.4704,
-      "Elevation": 18
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "ccbb9417-cc42-4503-b5f6-58e01ae7ebfa",
-    "Name": "Lincoln"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -23.44,
-      "Longitude": 144.28,
-      "Elevation": 192
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "9fff8b80-9230-4161-a626-c0f6e8c3b3e7",
-    "Name": "Longreach"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -31.54,
-      "Longitude": 159.08,
-      "Elevation": 5
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "8eb51f35-e4ff-4686-ad76-306778fcc706",
-    "Name": "Lord Howe Island"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -41.05,
-      "Longitude": 146.79,
-      "Elevation": 3
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "1b4b65dc-5742-432d-a4ae-d83069397723",
-    "Name": "Low Head"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -21.12,
-      "Longitude": 149.22,
-      "Elevation": 30
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "a5bff3b7-d9dc-40cb-bdb0-f2f07af2e2b7",
-    "Name": "Mackay"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -54.5,
-      "Longitude": 158.94,
-      "Elevation": 6
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "07987b31-4934-47f7-b62c-5c5f39e49935",
-    "Name": "Macquarie Island"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -21.18,
-      "Longitude": 119.75,
-      "Elevation": 182
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "909dadb1-c33b-412b-97e0-42f5704f4090",
-    "Name": "Marble Bar"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -29.66,
-      "Longitude": 138.07,
-      "Elevation": 50
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "516cbbab-1226-4caa-b18d-e5b2aeeff7d6",
-    "Name": "Marree"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -41.25231,
-      "Longitude": 175.38985,
-      "Elevation": 20
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "53fc123f-ea7e-493a-a9e4-474b798a763c",
-    "Name": "Masterton"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -67.6,
-      "Longitude": 62.88,
-      "Elevation": 10
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "484e686d-c55e-420c-aa53-71293e73dafe",
-    "Name": "Mawson"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -26.61,
-      "Longitude": 118.54,
-      "Elevation": 517
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "9ce454b6-7e6c-4516-88a7-6504444a4754",
-    "Name": "Meekatharra"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -37.83,
-      "Longitude": 144.98,
-      "Elevation": 7
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "1e743b5c-f9bf-477c-8b16-7d45c67909a7",
-    "Name": "Melbourne"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -31.48,
-      "Longitude": 118.28,
-      "Elevation": 315
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "fdd46b2e-4da4-4426-a17d-034ee9752ef6",
-    "Name": "Merredin"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -34.24,
-      "Longitude": 142.09,
-      "Elevation": 50
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "f6093d63-0476-4bd4-bb88-6322cf04dfaa",
-    "Name": "Mildura"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -26.66,
-      "Longitude": 150.18,
-      "Elevation": 304
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "a14c760f-4858-4f36-8d0a-7f219dc9b303",
-    "Name": "Miles"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -42.087,
-      "Longitude": 173.26,
-      "Elevation": 883
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "42d5c5d9-ed1c-4517-8c49-005a0991d252",
-    "Name": "Molesworth"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -29.2,
-      "Longitude": 116.02,
-      "Elevation": 271
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "503be743-9f46-4f6f-8b3e-8ce830e12fe7",
-    "Name": "Morawa"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -29.49,
-      "Longitude": 149.85,
-      "Elevation": 213
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "8867cc4a-6da5-41e6-a4f7-e02dd9460cdd",
-    "Name": "Moree"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -35.91,
-      "Longitude": 150.15,
-      "Elevation": 17
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "59803ca9-d81b-4888-bd08-473f659e1fc0",
-    "Name": "Moruya Heads"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -37.75,
-      "Longitude": 140.77,
-      "Elevation": 63
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "4865e9b4-d86a-4961-b65c-cc33f969ff04",
-    "Name": "Mount Gambier"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -39.19589,
-      "Longitude": 175.54504,
-      "Elevation": 1097
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "9344c843-31d8-4b66-ba9f-d1c99e57cfbe",
-    "Name": "Mt Ruapehu"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -41.299,
-      "Longitude": 173.226,
-      "Elevation": 2
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "4977fb61-9228-45d4-be28-e9d19d23088b",
-    "Name": "Nelson"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -36.31,
-      "Longitude": 141.65,
-      "Elevation": 138
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "4006f876-24bb-4b31-9318-72fcf44f47b0",
-    "Name": "Nhill"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -29.04,
-      "Longitude": 167.94,
-      "Elevation": 112
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "bf97eea8-252d-4f89-9ba8-924341973039",
-    "Name": "Norfolk Island"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -17.69,
-      "Longitude": 141.07,
-      "Elevation": 18
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "f0991551-814d-4323-9c0b-c8f12b887985",
-    "Name": "Normanton"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -34.95,
-      "Longitude": 150.54,
-      "Elevation": 109
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "6c8d1781-f74b-45b8-bfe2-8a952b278011",
-    "Name": "Nowra"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -34.48,
-      "Longitude": 139.01,
-      "Elevation": 275
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "b13e3137-51c7-432a-9194-2c3f42f0e438",
-    "Name": "Nuriootpa"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -27.56,
-      "Longitude": 135.45,
-      "Elevation": 116
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "69e0e687-7e35-466a-b518-ee4c76af5cf6",
-    "Name": "Oodnadatta"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -37.69,
-      "Longitude": 148.47,
-      "Elevation": 62
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "32ecbe0c-95a6-4d39-b8f4-c7ac859c8122",
-    "Name": "Orbost"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -40.38195,
-      "Longitude": 175.60915,
-      "Elevation": 21
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "c0c902ba-64b3-46d7-a844-837d237537f2",
-    "Name": "Palmerston North"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -16,
-      "Longitude": 144.08,
-      "Elevation": 203
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "944b1732-d083-40b8-b865-fbf63941414c",
-    "Name": "Palmerville"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -31.93,
-      "Longitude": 115.98,
-      "Elevation": 15
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "02619137-0d4d-4bcf-8ae3-f87697cd178d",
-    "Name": "Perth Airport"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -35.09,
-      "Longitude": 150.8,
-      "Elevation": 85
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "1130dd09-dd90-4a8f-8a65-31f14dd449e3",
-    "Name": "Point Perpendicular"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -20.37,
-      "Longitude": 118.63,
-      "Elevation": 6
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "04d33b2f-2a8a-4cf0-b281-68b74475d2b4",
-    "Name": "Port Hedland"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -34.6,
-      "Longitude": 135.88,
-      "Elevation": 8
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "b4e10e95-ce0f-4ae6-85cf-bc611c8164e8",
-    "Name": "Port Lincoln"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -31.43,
-      "Longitude": 152.87,
-      "Elevation": 4
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "5d20e960-257d-4bc2-8d06-162c19fa86a2",
-    "Name": "Port Macquarie"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -45.03476,
-      "Longitude": 168.66364,
-      "Elevation": 322
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "47685338-885d-4c7b-82db-8bd5def52cc4",
-    "Name": "Queenstown"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -20.18,
-      "Longitude": 130.01,
-      "Elevation": 340
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "916c204a-0847-4fd3-9ad0-0ccc5ae9c601",
-    "Name": "Rabbit Flat"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -29.24488,
-      "Longitude": -177.92912,
-      "Elevation": 50
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "22ce0fe4-99d7-4522-87f1-e1a0b024a098",
-    "Name": "Raoul Island"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -33.6,
-      "Longitude": 150.78,
-      "Elevation": 19
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "6c834afc-799c-473e-9d59-91a7ec7974a2",
-    "Name": "Richmond (NSW)"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -20.7,
-      "Longitude": 143.12,
-      "Elevation": 206
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "53ea40d9-d6fb-4ffe-9bde-e4188698f2de",
-    "Name": "Richmond (Qld)"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -37.16,
-      "Longitude": 139.76,
-      "Elevation": 3
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "5885b48d-d66d-4e89-a30e-ff40a0c7d153",
-    "Name": "Robe"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -23.38,
-      "Longitude": 150.48,
-      "Elevation": 10
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "e51c740e-2666-4f56-b397-0a68b26a6c3c",
-    "Name": "Rockhampton"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -36.1,
-      "Longitude": 146.51,
-      "Elevation": 175
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "9498f548-f000-4ff2-9c5d-fb7d3037493c",
-    "Name": "Rutherglen"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -38.12,
-      "Longitude": 147.13,
-      "Elevation": 4
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "7703f086-589e-406d-b152-dde26cbe6418",
-    "Name": "Sale"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -32.03,
-      "Longitude": 150.83,
-      "Elevation": 221
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "5a927fc5-5f9d-46a0-af66-3023610337d8",
-    "Name": "Scone"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -33.77,
-      "Longitude": 138.22,
-      "Elevation": 109
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "55f5699c-7d1f-4952-8bf1-4b924d7461d1",
-    "Name": "Snowtown"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -28.05,
-      "Longitude": 148.59,
-      "Elevation": 198
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "e9581d86-1e15-42aa-ad4b-b3960a119b10",
-    "Name": "St George"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -33.86,
-      "Longitude": 151.21,
-      "Elevation": 39
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "0788f2da-2034-40e2-badc-b77fc7d4bbd3",
-    "Name": "Sydney"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -30.71,
-      "Longitude": 134.58,
-      "Elevation": 123
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "9882e6ca-a0aa-479c-b1a6-169e94481afd",
-    "Name": "Tarcoola"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -37.67068,
-      "Longitude": 176.1966,
-      "Elevation": 5
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "fc05dce1-79cd-4f0a-b84d-6b2919b8450a",
-    "Name": "Tauranga Airport"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -19.64,
-      "Longitude": 134.18,
-      "Elevation": 375
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "5cfaf343-06a2-4bc6-a451-b8f2d3751da9",
-    "Name": "Tennant Creek"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -27.99,
-      "Longitude": 143.82,
-      "Elevation": 130
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "a205d717-c18b-4082-9822-d3309f2637f7",
-    "Name": "Thargomindah"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -29.44,
-      "Longitude": 142.06,
-      "Elevation": 176
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "04f7dd04-7bc2-4c4f-ae1e-2ee7180d8649",
-    "Name": "Tibooburra"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -19.25,
-      "Longitude": 146.77,
-      "Elevation": 4
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "b0783cae-1c6f-4570-8ab3-19df57ee1820",
-    "Name": "Townsville"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -16.4,
-      "Longitude": 131.01,
-      "Elevation": 88
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "be54baa5-c044-41c3-affa-50884f7c9735",
-    "Name": "Victoria River Downs"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -35.16,
-      "Longitude": 147.46,
-      "Elevation": 212
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "d209e7e6-d3da-40d4-b377-61cf7056d376",
-    "Name": "Wagga Wagga"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -30.04,
-      "Longitude": 148.12,
-      "Elevation": 133
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "82fbe1bf-5c58-4f9b-8f5d-71fdd060d2e9",
-    "Name": "Walgett"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -32.67,
-      "Longitude": 116.67,
-      "Elevation": 275
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "81644c2e-0ddc-472f-bae6-d976e6d623bc",
-    "Name": "Wandering"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -12.68,
-      "Longitude": 141.92,
-      "Elevation": 18
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "bc211d96-5bf6-4427-acac-81b40e17a4ce",
-    "Name": "Weipa"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -41.28445,
-      "Longitude": 174.76794,
-      "Elevation": 125
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "24c35f2d-a4a3-44e4-9a5e-6ea16cec8c9c",
-    "Name": "Wellington"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -33.94,
-      "Longitude": 147.2,
-      "Elevation": 257
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "141b8a24-fc66-4ec5-a71c-2c779d802ca2",
-    "Name": "West Wyalong"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -41.74075,
-      "Longitude": 171.57985,
-      "Elevation": 5
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "50a2dd7c-afe5-4645-8f49-508fd805e8f5",
-    "Name": "Westport Airport"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -31.52,
-      "Longitude": 143.39,
-      "Elevation": 94
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "bd628d1f-9c2d-403c-abb5-e2e440fd3a02",
-    "Name": "Wilcannia"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -32.79,
-      "Longitude": 151.84,
-      "Elevation": 7
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "f0f62231-f0d3-4ded-a945-133d4ecc4255",
-    "Name": "Williamtown"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -16.29,
-      "Longitude": 149.97,
-      "Elevation": 8
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "9433c91f-acd9-4a8f-9bbd-31f0af2e8e42",
-    "Name": "Willis Island"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -39.13,
-      "Longitude": 146.42,
-      "Elevation": 95
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "45feed6f-2821-43de-99ec-e605e3f36f75",
-    "Name": "Wilsons Promontory"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -31.16,
-      "Longitude": 136.81,
-      "Elevation": 166
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "b41a2fa1-ce5c-473e-b2d7-17d43e9dbc8b",
-    "Name": "Woomera"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -29.43,
-      "Longitude": 153.36,
-      "Elevation": 27
-    },
-    "WarmingIndex": null,
-    "HeatingScore": null,
-    "NearbyLocations": null,
-    "Id": "54e1d0a7-54be-4fb9-b88e-d6a4b8a1b595",
-    "Name": "Yamba"
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -34.92,
+      "longitude": 138.62,
+      "elevation": 48
+    },
+    "id": "70a07bb0-2220-402b-be83-f2c35edfdd12",
+    "name": "Adelaide"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -34.94,
+      "longitude": 117.82,
+      "elevation": 68
+    },
+    "id": "e491279a-781c-4eb0-8ccf-d49f3d9e2d5a",
+    "name": "Albany"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -23.8,
+      "longitude": 133.89,
+      "elevation": 546
+    },
+    "id": "fbb67194-9253-4ed2-bd20-f4a0211b264b",
+    "name": "Alice Springs"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -27.63,
+      "longitude": 152.71,
+      "elevation": 24
+    },
+    "id": "0cfb93a1-e0b6-4b87-87a6-90c0e01ca9ca",
+    "name": "Amberley"
+  },
+  {
+    "countryCode": "NZ",
+    "country": "New Zealand",
+    "coordinates": {
+      "latitude": -37.00813,
+      "longitude": 174.78873,
+      "elevation": 7
+    },
+    "id": "a28e017a-a23b-4f59-914d-d1171bfd60be",
+    "name": "Auckland"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -23.55,
+      "longitude": 145.29,
+      "elevation": 266
+    },
+    "id": "176e8056-e246-4566-b307-3c0b1ca8fde4",
+    "name": "Barcaldine"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -33.43,
+      "longitude": 149.56,
+      "elevation": 713
+    },
+    "id": "0b927604-fbaa-4930-bb5c-cf4b0f8b8914",
+    "name": "Bathurst"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -25.9,
+      "longitude": 139.35,
+      "elevation": 46
+    },
+    "id": "65aea1bb-5395-4b14-bf6f-8ca1559099cd",
+    "name": "Birdsville"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -22.91,
+      "longitude": 139.9,
+      "elevation": 161
+    },
+    "id": "f285ba2b-d6d6-4390-a80f-803522668bde",
+    "name": "Boulia"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -30.04,
+      "longitude": 145.95,
+      "elevation": 107
+    },
+    "id": "bab198bd-3940-4f13-a4f7-68af10735039",
+    "name": "Bourke"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -33.95,
+      "longitude": 116.13,
+      "elevation": 178
+    },
+    "id": "9ea5be14-0e54-4453-8e8b-4c11e075cb42",
+    "name": "Bridgetown"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -27.39,
+      "longitude": 153.13,
+      "elevation": 4
+    },
+    "id": "b7e0c061-e71c-4fc4-8068-c0432398c24f",
+    "name": "Brisbane Airport"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -17.95,
+      "longitude": 122.24,
+      "elevation": 7
+    },
+    "id": "05daa0ea-6227-4225-bf52-8204808709b5",
+    "name": "Broome"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -24.91,
+      "longitude": 152.32,
+      "elevation": 30
+    },
+    "id": "b2c819cd-b20b-48b0-8148-eef2f8fd88b7",
+    "name": "Bundaberg"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -17.75,
+      "longitude": 139.54,
+      "elevation": 5
+    },
+    "id": "fba7ed39-c752-460d-aa2e-342da7b55817",
+    "name": "Burketown"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -42.28,
+      "longitude": 146.28,
+      "elevation": 667
+    },
+    "id": "5f6f3d62-4c80-441d-b30f-104d2f5d2e96",
+    "name": "Butlers Gorge"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -35.94,
+      "longitude": 148.38,
+      "elevation": 1482
+    },
+    "id": "f7a20e98-23e9-4920-be3c-b72f8a22754d",
+    "name": "Cabramurra"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -16.87,
+      "longitude": 145.75,
+      "elevation": 2
+    },
+    "id": "8fe98f5f-c239-4f2f-961a-5686147e53f7",
+    "name": "Cairns"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -19.92,
+      "longitude": 138.12,
+      "elevation": 231
+    },
+    "id": "09a5ba01-f523-4be3-ae7b-7a29a0da581c",
+    "name": "Camooweal"
+  },
+  {
+    "countryCode": "NZ",
+    "country": "New Zealand",
+    "coordinates": {
+      "latitude": -52.55059,
+      "longitude": 169.14978,
+      "elevation": 16
+    },
+    "id": "1e69bdc6-1bdd-42b6-96ad-35b0648aa9d0",
+    "name": "Campbell Island"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -35.31,
+      "longitude": 149.2,
+      "elevation": 577
+    },
+    "id": "c0f2743b-fb00-4128-9024-bafa4e1c85ed",
+    "name": "Canberra"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -35.75,
+      "longitude": 136.6,
+      "elevation": 158
+    },
+    "id": "f1be5e90-f9fd-40f4-9db8-2c5564a7e908",
+    "name": "Cape Borda"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -43.49,
+      "longitude": 147.14,
+      "elevation": 60
+    },
+    "id": "eb75b5eb-8feb-4118-b6ab-bbe9b4fbc334",
+    "name": "Cape Bruny"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -34.37,
+      "longitude": 115.14,
+      "elevation": 13
+    },
+    "id": "f8dfe45b-d49c-4c0f-8d69-27d2d92cdb4b",
+    "name": "Cape Leeuwin"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -27.03,
+      "longitude": 153.47,
+      "elevation": 99
+    },
+    "id": "33d2cd26-bded-4abc-8e03-2f3266e3923f",
+    "name": "Cape Moreton"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -38.86,
+      "longitude": 143.51,
+      "elevation": 82
+    },
+    "id": "592c8e33-cc36-4cce-9af1-82bb3f26a5af",
+    "name": "Cape Otway"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -24.89,
+      "longitude": 113.67,
+      "elevation": 4
+    },
+    "id": "1c72f3e1-7d98-4ac5-8b64-1b5b2a4d599e",
+    "name": "Carnarvon"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -32.13,
+      "longitude": 133.7,
+      "elevation": 15
+    },
+    "id": "4397371d-a43b-4925-af58-bec79e6ca802",
+    "name": "Ceduna"
+  },
+  {
+    "countryCode": "UK",
+    "country": "United Kingdom",
+    "coordinates": {
+      "latitude": 52.42,
+      "longitude": -1.83,
+      "elevation": 78
+    },
+    "id": "a5a179b5-5394-44d1-b653-bbf6b052279c",
+    "name": "Central England"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -26.41,
+      "longitude": 146.26,
+      "elevation": 301
+    },
+    "id": "0bc92500-5977-4aa2-81ae-a57ff8eabed3",
+    "name": "Charleville"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -20.05,
+      "longitude": 146.27,
+      "elevation": 289
+    },
+    "id": "80a5afb6-f043-4e61-b1e3-b60029b9c559",
+    "name": "Charters Towers"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -31.48,
+      "longitude": 145.83,
+      "elevation": 260
+    },
+    "id": "6f523c50-bf77-44d1-8418-57ea555855a3",
+    "name": "Cobar"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -30.32,
+      "longitude": 153.12,
+      "elevation": 3
+    },
+    "id": "8a63813f-8544-46b6-806e-6bc32dfc1b0d",
+    "name": "Coffs Harbour"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -31.62,
+      "longitude": 117.22,
+      "elevation": 216
+    },
+    "id": "d7307020-9788-4269-ae25-19926ca9e198",
+    "name": "Cunderdin"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -30.28,
+      "longitude": 116.67,
+      "elevation": 324
+    },
+    "id": "fc5ff168-2c7a-4913-bac7-957d7efa065b",
+    "name": "Dalwallinu"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -12.42,
+      "longitude": 130.89,
+      "elevation": 30
+    },
+    "id": "00147d6f-1569-422f-8322-a42b98e25071",
+    "name": "Darwin"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -35.56,
+      "longitude": 144.95,
+      "elevation": 94
+    },
+    "id": "2e2acf0b-592b-4ba4-adc9-b6f08546b92a",
+    "name": "Deniliquin"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -32.22,
+      "longitude": 148.58,
+      "elevation": 284
+    },
+    "id": "5e5c8eee-e28d-4651-bb04-24d08e89c254",
+    "name": "Dubbo"
+  },
+  {
+    "countryCode": "NZ",
+    "country": "New Zealand",
+    "coordinates": {
+      "latitude": -45.90129,
+      "longitude": 170.5147,
+      "elevation": 4
+    },
+    "id": "0c75321e-ffc1-48cd-afd2-2d30301a545d",
+    "name": "Dunedin"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -33.83,
+      "longitude": 121.89,
+      "elevation": 25
+    },
+    "id": "7c7d3560-0741-4966-a878-b2749afc7737",
+    "name": "Esperance"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -31.68,
+      "longitude": 128.9,
+      "elevation": 93
+    },
+    "id": "663a6037-a8de-462a-9d74-396ec881ffeb",
+    "name": "Eucla"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -30.85,
+      "longitude": 128.11,
+      "elevation": 159
+    },
+    "id": "a7a48420-7677-444a-a6aa-e8d6eb195729",
+    "name": "Forrest"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -37.57,
+      "longitude": 149.92,
+      "elevation": 15
+    },
+    "id": "714a7fe5-cea8-4e9b-bac0-cb01f8d0fff3",
+    "name": "Gabo Island"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -25.62,
+      "longitude": 151.62,
+      "elevation": 110
+    },
+    "id": "64004954-c0c6-4de3-9ac1-3f50bada1ec9",
+    "name": "Gayndah"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -18.3,
+      "longitude": 143.53,
+      "elevation": 301
+    },
+    "id": "2bf20585-6b1a-4e3c-a8ed-1d87e67789a6",
+    "name": "Georgetown"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -28.8,
+      "longitude": 114.7,
+      "elevation": 29
+    },
+    "id": "c6ba58ea-6142-4954-afac-256ca81c67bc",
+    "name": "Geraldton"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -25.03,
+      "longitude": 128.3,
+      "elevation": 598
+    },
+    "id": "e61fd5fb-f6a0-41b0-99bf-bc2eddb1a90c",
+    "name": "Giles"
+  },
+  {
+    "countryCode": "NZ",
+    "country": "New Zealand",
+    "coordinates": {
+      "latitude": -38.6586,
+      "longitude": 177.98512,
+      "elevation": 5
+    },
+    "id": "28e0e278-1bc8-46b8-b809-23b85618623e",
+    "name": "Gisborne Airport"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -42.99,
+      "longitude": 147.07,
+      "elevation": 65
+    },
+    "id": "db8309f6-72b8-49e2-89b3-69a13989a392",
+    "name": "Grove"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -31.03,
+      "longitude": 150.27,
+      "elevation": 307
+    },
+    "id": "b8a3092a-041f-478d-951f-5ee4dda0a410",
+    "name": "Gunnedah"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -18.23,
+      "longitude": 127.67,
+      "elevation": 409
+    },
+    "id": "ba6fb433-bc80-4890-8c8b-16830b95f633",
+    "name": "Halls Creek"
+  },
+  {
+    "countryCode": "NZ",
+    "country": "New Zealand",
+    "coordinates": {
+      "latitude": -37.77389,
+      "longitude": 175.30518,
+      "elevation": 45
+    },
+    "id": "f5a8a194-681a-4116-8a75-97fcbb57e20b",
+    "name": "Hamilton"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -42.89,
+      "longitude": 147.33,
+      "elevation": 50
+    },
+    "id": "aed87aa0-1d0c-44aa-8561-cde0fc936395",
+    "name": "Hobart"
+  },
+  {
+    "countryCode": "NZ",
+    "country": "New Zealand",
+    "coordinates": {
+      "latitude": -42.712,
+      "longitude": 170.984,
+      "elevation": 39
+    },
+    "id": "f7f809a7-6755-4ab7-b1e6-3ae933dd89ae",
+    "name": "Hokitika"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -10.58,
+      "longitude": 142.29,
+      "elevation": 4
+    },
+    "id": "1d06ff8a-82ba-4613-875f-1b4893536c42",
+    "name": "Horn Island"
+  },
+  {
+    "countryCode": "NZ",
+    "country": "New Zealand",
+    "coordinates": {
+      "latitude": -46.41741,
+      "longitude": 168.33052,
+      "elevation": 1
+    },
+    "id": "7a6c3b06-bfed-4cee-b256-a456e6fb6e1d",
+    "name": "Invercargill Airport"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -29.78,
+      "longitude": 151.11,
+      "elevation": 582
+    },
+    "id": "c5094f09-3fb3-4455-bf7b-b835928ad5f3",
+    "name": "Inverell"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -30.78,
+      "longitude": 121.45,
+      "elevation": 365
+    },
+    "id": "6e8b7fce-49bf-41d2-959d-62130a40fb22",
+    "name": "Kalgoorlie-Boulder"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -14.3,
+      "longitude": 126.65,
+      "elevation": 23
+    },
+    "id": "cbb11150-ec74-4401-8357-fae6fef70768",
+    "name": "Kalumburu"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -22.3,
+      "longitude": 118.45,
+      "elevation": 474
+    },
+    "id": "48c35ccf-3ff8-4448-90de-1e491c500887",
+    "name": "Karijini North (Wittenoom)"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -33.69,
+      "longitude": 117.61,
+      "elevation": 320
+    },
+    "id": "aa0021dd-8c27-4101-96b7-5e6b60c0c70a",
+    "name": "Katanning"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -35.72,
+      "longitude": 143.92,
+      "elevation": 77
+    },
+    "id": "23701518-8a46-4b7e-b9ef-da570d77b7cb",
+    "name": "Kerang"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -33.13,
+      "longitude": 135.55,
+      "elevation": 59
+    },
+    "id": "6b771c0b-97d3-45c7-9cd1-72fdee232e7c",
+    "name": "Kyancutta"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -40.99,
+      "longitude": 148.35,
+      "elevation": 19
+    },
+    "id": "20ab0202-8038-4275-aad2-70788ec68d6e",
+    "name": "Larapuna (Eddystone Point)"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -41.55,
+      "longitude": 147.22,
+      "elevation": 166
+    },
+    "id": "b483cb66-25cc-45ee-b1c8-8db405f0415a",
+    "name": "Launceston Airport"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -37.86,
+      "longitude": 144.76,
+      "elevation": 20
+    },
+    "id": "ddbdddc8-8f95-4a44-b55b-f52378460640",
+    "name": "Laverton"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -22.24,
+      "longitude": 114.1,
+      "elevation": 5
+    },
+    "id": "2119d5bf-94b0-4724-b2b8-bcd5f787877b",
+    "name": "Learmonth"
+  },
+  {
+    "countryCode": "NZ",
+    "country": "New Zealand",
+    "coordinates": {
+      "latitude": -43.62622,
+      "longitude": 172.4704,
+      "elevation": 18
+    },
+    "id": "ccbb9417-cc42-4503-b5f6-58e01ae7ebfa",
+    "name": "Lincoln"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -23.44,
+      "longitude": 144.28,
+      "elevation": 192
+    },
+    "id": "9fff8b80-9230-4161-a626-c0f6e8c3b3e7",
+    "name": "Longreach"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -41.05,
+      "longitude": 146.79,
+      "elevation": 3
+    },
+    "id": "1b4b65dc-5742-432d-a4ae-d83069397723",
+    "name": "Low Head"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -21.12,
+      "longitude": 149.22,
+      "elevation": 30
+    },
+    "id": "a5bff3b7-d9dc-40cb-bdb0-f2f07af2e2b7",
+    "name": "Mackay"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -21.18,
+      "longitude": 119.75,
+      "elevation": 182
+    },
+    "id": "909dadb1-c33b-412b-97e0-42f5704f4090",
+    "name": "Marble Bar"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -29.66,
+      "longitude": 138.07,
+      "elevation": 50
+    },
+    "id": "516cbbab-1226-4caa-b18d-e5b2aeeff7d6",
+    "name": "Marree"
+  },
+  {
+    "countryCode": "NZ",
+    "country": "New Zealand",
+    "coordinates": {
+      "latitude": -41.25231,
+      "longitude": 175.38985,
+      "elevation": 20
+    },
+    "id": "53fc123f-ea7e-493a-a9e4-474b798a763c",
+    "name": "Masterton"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -26.61,
+      "longitude": 118.54,
+      "elevation": 517
+    },
+    "id": "9ce454b6-7e6c-4516-88a7-6504444a4754",
+    "name": "Meekatharra"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -37.83,
+      "longitude": 144.98,
+      "elevation": 7
+    },
+    "id": "1e743b5c-f9bf-477c-8b16-7d45c67909a7",
+    "name": "Melbourne"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -31.48,
+      "longitude": 118.28,
+      "elevation": 315
+    },
+    "id": "fdd46b2e-4da4-4426-a17d-034ee9752ef6",
+    "name": "Merredin"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -34.24,
+      "longitude": 142.09,
+      "elevation": 50
+    },
+    "id": "f6093d63-0476-4bd4-bb88-6322cf04dfaa",
+    "name": "Mildura"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -26.66,
+      "longitude": 150.18,
+      "elevation": 304
+    },
+    "id": "a14c760f-4858-4f36-8d0a-7f219dc9b303",
+    "name": "Miles"
+  },
+  {
+    "countryCode": "NZ",
+    "country": "New Zealand",
+    "coordinates": {
+      "latitude": -42.087,
+      "longitude": 173.26,
+      "elevation": 883
+    },
+    "id": "42d5c5d9-ed1c-4517-8c49-005a0991d252",
+    "name": "Molesworth"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -29.2,
+      "longitude": 116.02,
+      "elevation": 271
+    },
+    "id": "503be743-9f46-4f6f-8b3e-8ce830e12fe7",
+    "name": "Morawa"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -29.49,
+      "longitude": 149.85,
+      "elevation": 213
+    },
+    "id": "8867cc4a-6da5-41e6-a4f7-e02dd9460cdd",
+    "name": "Moree"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -35.91,
+      "longitude": 150.15,
+      "elevation": 17
+    },
+    "id": "59803ca9-d81b-4888-bd08-473f659e1fc0",
+    "name": "Moruya Heads"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -37.75,
+      "longitude": 140.77,
+      "elevation": 63
+    },
+    "id": "4865e9b4-d86a-4961-b65c-cc33f969ff04",
+    "name": "Mount Gambier"
+  },
+  {
+    "countryCode": "NZ",
+    "country": "New Zealand",
+    "coordinates": {
+      "latitude": -39.19589,
+      "longitude": 175.54504,
+      "elevation": 1097
+    },
+    "id": "9344c843-31d8-4b66-ba9f-d1c99e57cfbe",
+    "name": "Mt Ruapehu"
+  },
+  {
+    "countryCode": "NZ",
+    "country": "New Zealand",
+    "coordinates": {
+      "latitude": -41.299,
+      "longitude": 173.226,
+      "elevation": 2
+    },
+    "id": "4977fb61-9228-45d4-be28-e9d19d23088b",
+    "name": "Nelson"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -36.31,
+      "longitude": 141.65,
+      "elevation": 138
+    },
+    "id": "4006f876-24bb-4b31-9318-72fcf44f47b0",
+    "name": "Nhill"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -17.69,
+      "longitude": 141.07,
+      "elevation": 18
+    },
+    "id": "f0991551-814d-4323-9c0b-c8f12b887985",
+    "name": "Normanton"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -34.95,
+      "longitude": 150.54,
+      "elevation": 109
+    },
+    "id": "6c8d1781-f74b-45b8-bfe2-8a952b278011",
+    "name": "Nowra"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -34.48,
+      "longitude": 139.01,
+      "elevation": 275
+    },
+    "id": "b13e3137-51c7-432a-9194-2c3f42f0e438",
+    "name": "Nuriootpa"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -27.56,
+      "longitude": 135.45,
+      "elevation": 116
+    },
+    "id": "69e0e687-7e35-466a-b518-ee4c76af5cf6",
+    "name": "Oodnadatta"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -37.69,
+      "longitude": 148.47,
+      "elevation": 62
+    },
+    "id": "32ecbe0c-95a6-4d39-b8f4-c7ac859c8122",
+    "name": "Orbost"
+  },
+  {
+    "countryCode": "NZ",
+    "country": "New Zealand",
+    "coordinates": {
+      "latitude": -40.38195,
+      "longitude": 175.60915,
+      "elevation": 21
+    },
+    "id": "c0c902ba-64b3-46d7-a844-837d237537f2",
+    "name": "Palmerston North"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -16,
+      "longitude": 144.08,
+      "elevation": 203
+    },
+    "id": "944b1732-d083-40b8-b865-fbf63941414c",
+    "name": "Palmerville"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -31.93,
+      "longitude": 115.98,
+      "elevation": 15
+    },
+    "id": "02619137-0d4d-4bcf-8ae3-f87697cd178d",
+    "name": "Perth Airport"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -35.09,
+      "longitude": 150.8,
+      "elevation": 85
+    },
+    "id": "1130dd09-dd90-4a8f-8a65-31f14dd449e3",
+    "name": "Point Perpendicular"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -20.37,
+      "longitude": 118.63,
+      "elevation": 6
+    },
+    "id": "04d33b2f-2a8a-4cf0-b281-68b74475d2b4",
+    "name": "Port Hedland"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -34.6,
+      "longitude": 135.88,
+      "elevation": 8
+    },
+    "id": "b4e10e95-ce0f-4ae6-85cf-bc611c8164e8",
+    "name": "Port Lincoln"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -31.43,
+      "longitude": 152.87,
+      "elevation": 4
+    },
+    "id": "5d20e960-257d-4bc2-8d06-162c19fa86a2",
+    "name": "Port Macquarie"
+  },
+  {
+    "countryCode": "NZ",
+    "country": "New Zealand",
+    "coordinates": {
+      "latitude": -45.03476,
+      "longitude": 168.66364,
+      "elevation": 322
+    },
+    "id": "47685338-885d-4c7b-82db-8bd5def52cc4",
+    "name": "Queenstown"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -20.18,
+      "longitude": 130.01,
+      "elevation": 340
+    },
+    "id": "916c204a-0847-4fd3-9ad0-0ccc5ae9c601",
+    "name": "Rabbit Flat"
+  },
+  {
+    "countryCode": "NZ",
+    "country": "New Zealand",
+    "coordinates": {
+      "latitude": -29.24488,
+      "longitude": -177.92912,
+      "elevation": 50
+    },
+    "id": "22ce0fe4-99d7-4522-87f1-e1a0b024a098",
+    "name": "Raoul Island"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -33.6,
+      "longitude": 150.78,
+      "elevation": 19
+    },
+    "id": "6c834afc-799c-473e-9d59-91a7ec7974a2",
+    "name": "Richmond (NSW)"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -20.7,
+      "longitude": 143.12,
+      "elevation": 206
+    },
+    "id": "53ea40d9-d6fb-4ffe-9bde-e4188698f2de",
+    "name": "Richmond (Qld)"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -37.16,
+      "longitude": 139.76,
+      "elevation": 3
+    },
+    "id": "5885b48d-d66d-4e89-a30e-ff40a0c7d153",
+    "name": "Robe"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -23.38,
+      "longitude": 150.48,
+      "elevation": 10
+    },
+    "id": "e51c740e-2666-4f56-b397-0a68b26a6c3c",
+    "name": "Rockhampton"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -36.1,
+      "longitude": 146.51,
+      "elevation": 175
+    },
+    "id": "9498f548-f000-4ff2-9c5d-fb7d3037493c",
+    "name": "Rutherglen"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -38.12,
+      "longitude": 147.13,
+      "elevation": 4
+    },
+    "id": "7703f086-589e-406d-b152-dde26cbe6418",
+    "name": "Sale"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -32.03,
+      "longitude": 150.83,
+      "elevation": 221
+    },
+    "id": "5a927fc5-5f9d-46a0-af66-3023610337d8",
+    "name": "Scone"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -33.77,
+      "longitude": 138.22,
+      "elevation": 109
+    },
+    "id": "55f5699c-7d1f-4952-8bf1-4b924d7461d1",
+    "name": "Snowtown"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -28.05,
+      "longitude": 148.59,
+      "elevation": 198
+    },
+    "id": "e9581d86-1e15-42aa-ad4b-b3960a119b10",
+    "name": "St George"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -33.86,
+      "longitude": 151.21,
+      "elevation": 39
+    },
+    "id": "0788f2da-2034-40e2-badc-b77fc7d4bbd3",
+    "name": "Sydney"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -30.71,
+      "longitude": 134.58,
+      "elevation": 123
+    },
+    "id": "9882e6ca-a0aa-479c-b1a6-169e94481afd",
+    "name": "Tarcoola"
+  },
+  {
+    "countryCode": "NZ",
+    "country": "New Zealand",
+    "coordinates": {
+      "latitude": -37.67068,
+      "longitude": 176.1966,
+      "elevation": 5
+    },
+    "id": "fc05dce1-79cd-4f0a-b84d-6b2919b8450a",
+    "name": "Tauranga Airport"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -19.64,
+      "longitude": 134.18,
+      "elevation": 375
+    },
+    "id": "5cfaf343-06a2-4bc6-a451-b8f2d3751da9",
+    "name": "Tennant Creek"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -27.99,
+      "longitude": 143.82,
+      "elevation": 130
+    },
+    "id": "a205d717-c18b-4082-9822-d3309f2637f7",
+    "name": "Thargomindah"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -29.44,
+      "longitude": 142.06,
+      "elevation": 176
+    },
+    "id": "04f7dd04-7bc2-4c4f-ae1e-2ee7180d8649",
+    "name": "Tibooburra"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -19.25,
+      "longitude": 146.77,
+      "elevation": 4
+    },
+    "id": "b0783cae-1c6f-4570-8ab3-19df57ee1820",
+    "name": "Townsville"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -16.4,
+      "longitude": 131.01,
+      "elevation": 88
+    },
+    "id": "be54baa5-c044-41c3-affa-50884f7c9735",
+    "name": "Victoria River Downs"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -35.16,
+      "longitude": 147.46,
+      "elevation": 212
+    },
+    "id": "d209e7e6-d3da-40d4-b377-61cf7056d376",
+    "name": "Wagga Wagga"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -30.04,
+      "longitude": 148.12,
+      "elevation": 133
+    },
+    "id": "82fbe1bf-5c58-4f9b-8f5d-71fdd060d2e9",
+    "name": "Walgett"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -32.67,
+      "longitude": 116.67,
+      "elevation": 275
+    },
+    "id": "81644c2e-0ddc-472f-bae6-d976e6d623bc",
+    "name": "Wandering"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -12.68,
+      "longitude": 141.92,
+      "elevation": 18
+    },
+    "id": "bc211d96-5bf6-4427-acac-81b40e17a4ce",
+    "name": "Weipa"
+  },
+  {
+    "countryCode": "NZ",
+    "country": "New Zealand",
+    "coordinates": {
+      "latitude": -41.28445,
+      "longitude": 174.76794,
+      "elevation": 125
+    },
+    "id": "24c35f2d-a4a3-44e4-9a5e-6ea16cec8c9c",
+    "name": "Wellington"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -33.94,
+      "longitude": 147.2,
+      "elevation": 257
+    },
+    "id": "141b8a24-fc66-4ec5-a71c-2c779d802ca2",
+    "name": "West Wyalong"
+  },
+  {
+    "countryCode": "NZ",
+    "country": "New Zealand",
+    "coordinates": {
+      "latitude": -41.74075,
+      "longitude": 171.57985,
+      "elevation": 5
+    },
+    "id": "50a2dd7c-afe5-4645-8f49-508fd805e8f5",
+    "name": "Westport Airport"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -31.52,
+      "longitude": 143.39,
+      "elevation": 94
+    },
+    "id": "bd628d1f-9c2d-403c-abb5-e2e440fd3a02",
+    "name": "Wilcannia"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -32.79,
+      "longitude": 151.84,
+      "elevation": 7
+    },
+    "id": "f0f62231-f0d3-4ded-a945-133d4ecc4255",
+    "name": "Williamtown"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -39.13,
+      "longitude": 146.42,
+      "elevation": 95
+    },
+    "id": "45feed6f-2821-43de-99ec-e605e3f36f75",
+    "name": "Wilsons Promontory"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -31.16,
+      "longitude": 136.81,
+      "elevation": 166
+    },
+    "id": "b41a2fa1-ce5c-473e-b2d7-17d43e9dbc8b",
+    "name": "Woomera"
+  },
+  {
+    "countryCode": "AS",
+    "country": "Australia",
+    "coordinates": {
+      "latitude": -29.43,
+      "longitude": 153.36,
+      "elevation": 27
+    },
+    "id": "54e1d0a7-54be-4fb9-b88e-d6a4b8a1b595",
+    "name": "Yamba"
   }
 ]

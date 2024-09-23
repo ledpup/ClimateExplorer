@@ -472,6 +472,36 @@
   {
     "CountryCode": "AS",
     "Coordinates": {
+      "Latitude": -16.288,
+      "Longitude": 149.965,
+      "Elevation": 9
+    },
+    "Id": "6916fd1c-68bd-4f56-a531-e7cb96931335",
+    "Name": "Willis Island"
+  },
+  {
+    "CountryCode": "AS",
+    "Coordinates": {
+      "Latitude": -31.542,
+      "Longitude": 159.079,
+      "Elevation": 7
+    },
+    "Id": "eeafdca3-6cae-4273-8c5a-c608530a717e",
+    "Name": "Lord Howe Island Aero"
+  },
+  {
+    "CountryCode": "AS",
+    "Coordinates": {
+      "Latitude": -54.499,
+      "Longitude": 158.937,
+      "Elevation": 8.3
+    },
+    "Id": "0881b35c-9a60-4d9f-abfb-e028f9516091",
+    "Name": "Macquarie Island"
+  },
+  {
+    "CountryCode": "AS",
+    "Coordinates": {
       "Latitude": -20.7767,
       "Longitude": 117.1456,
       "Elevation": 12
@@ -712,12 +742,32 @@
   {
     "CountryCode": "AY",
     "Coordinates": {
+      "Latitude": -67.6,
+      "Longitude": 62.867,
+      "Elevation": 16
+    },
+    "Id": "c6673b47-e158-4dac-95de-3ee4c31d284e",
+    "Name": "Mawson"
+  },
+  {
+    "CountryCode": "AY",
+    "Coordinates": {
       "Latitude": -66.55,
       "Longitude": 93.017,
       "Elevation": 40
     },
     "Id": "c8bf18e2-a228-4c1c-add9-ae72a55caed3",
     "Name": "Mirnyj"
+  },
+  {
+    "CountryCode": "AY",
+    "Coordinates": {
+      "Latitude": -66.283,
+      "Longitude": 110.517,
+      "Elevation": 41
+    },
+    "Id": "5fd8efb6-c019-4ab1-8471-0fb223c4b88b",
+    "Name": "Casey"
   },
   {
     "CountryCode": "AY",
@@ -3948,6 +3998,16 @@
     },
     "Id": "b63cd17d-e556-40dc-aa1f-7d0b7481c3cc",
     "Name": "Punta Arenas"
+  },
+  {
+    "CountryCode": "CK",
+    "Coordinates": {
+      "Latitude": -12.183,
+      "Longitude": 96.833,
+      "Elevation": 4
+    },
+    "Id": "da498846-1bac-4abb-be75-120a0699e1b6",
+    "Name": "Cocos Island Aero"
   },
   {
     "CountryCode": "CU",
@@ -8048,6 +8108,16 @@
     },
     "Id": "2fd04ffd-cd93-4ad4-bdd8-11fa12dae932",
     "Name": "Koumac Nlle Caledo"
+  },
+  {
+    "CountryCode": "NF",
+    "Coordinates": {
+      "Latitude": -29.042,
+      "Longitude": 167.939,
+      "Elevation": 113.1
+    },
+    "Id": "35e09731-c09c-4882-a870-9d7901459bdf",
+    "Name": "Norfolk Island Intl"
   },
   {
     "CountryCode": "NG",
