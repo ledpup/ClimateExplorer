@@ -2956,7 +2956,7 @@
       "Elevation": 95.4
     },
     "WarmingAnomaly": 0.7470032051281983,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "Id": "314f12a3-a9d1-4b83-9349-6b8c71d90b2f",
     "Name": "Brenham"
   },
@@ -3846,14 +3846,16 @@
     "Name": "Casa Blancala Habana"
   },
   {
-    "CountryCode": "AS",
-    "Country": "Australia",
+    "CountryCode": "AY",
+    "Country": "Antarctica",
     "Coordinates": {
-      "Latitude": -66.28,
-      "Longitude": 110.52,
-      "Elevation": 40
+      "Latitude": -66.283,
+      "Longitude": 110.517,
+      "Elevation": 41
     },
-    "Id": "e0ddbbca-2d03-4ad3-b901-bacf5fff19c0",
+    "WarmingAnomaly": -0.18407258064516085,
+    "HeatingScore": 0,
+    "Id": "5fd8efb6-c019-4ab1-8471-0fb223c4b88b",
     "Name": "Casey"
   },
   {
@@ -4123,7 +4125,7 @@
       "Elevation": 204.5
     },
     "WarmingAnomaly": 0.7464896351575447,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "Id": "afd14c8f-ddf5-4391-a7ce-fbe0fb6f4b52",
     "Name": "Chattanooga Lovell Ap"
   },
@@ -4614,17 +4616,17 @@
     "Name": "Cochabamba"
   },
   {
-    "CountryCode": "AS",
-    "Country": "Australia",
+    "CountryCode": "CK",
+    "Country": "Cocos (Keeling) Islands [Australia]",
     "Coordinates": {
-      "Latitude": -12.19,
-      "Longitude": 96.83,
-      "Elevation": 3
+      "Latitude": -12.183,
+      "Longitude": 96.833,
+      "Elevation": 4
     },
-    "WarmingAnomaly": 0.06333333333333258,
-    "HeatingScore": 0,
-    "Id": "fe4f7ca3-f92c-459b-a85b-e37be4871fda",
-    "Name": "Cocos Island"
+    "WarmingAnomaly": 0.6916268115942046,
+    "HeatingScore": 1,
+    "Id": "da498846-1bac-4abb-be75-120a0699e1b6",
+    "Name": "Cocos Island Aero"
   },
   {
     "CountryCode": "AS",
@@ -5338,7 +5340,7 @@
       "Elevation": 3968
     },
     "WarmingAnomaly": 0.9163120915032676,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "Id": "ce4c8394-3dc1-4d85-a8bd-73942a83ee6a",
     "Name": "Darlag"
   },
@@ -5393,17 +5395,6 @@
     "HeatingScore": 5,
     "Id": "40223456-a8fa-4e5a-92dd-c3f4ab7ba85f",
     "Name": "Daugavpils"
-  },
-  {
-    "CountryCode": "AS",
-    "Country": "Australia",
-    "Coordinates": {
-      "Latitude": -68.57,
-      "Longitude": 77.97,
-      "Elevation": 18
-    },
-    "Id": "4fec65a7-6c18-4a3e-bbd0-ec80a0baaa59",
-    "Name": "Davis"
   },
   {
     "CountryCode": "CA",
@@ -7586,7 +7577,7 @@
       "Elevation": 74.5
     },
     "WarmingAnomaly": 0.5515483870967763,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "Id": "af257187-4006-4544-beb0-e675e8bb7114",
     "Name": "Gladstone Radar"
   },
@@ -10273,7 +10264,7 @@
       "Elevation": 44
     },
     "WarmingAnomaly": 0.7455601851851847,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "Id": "eb4373f3-f5be-4337-ba14-229f2d16b4ea",
     "Name": "Juzhno Kurilsk"
   },
@@ -13071,14 +13062,14 @@
     "CountryCode": "AS",
     "Country": "Australia",
     "Coordinates": {
-      "Latitude": -31.54,
-      "Longitude": 159.08,
-      "Elevation": 5
+      "Latitude": -31.542,
+      "Longitude": 159.079,
+      "Elevation": 7
     },
-    "WarmingAnomaly": 0.5820138888888877,
-    "HeatingScore": 1,
-    "Id": "8eb51f35-e4ff-4686-ad76-306778fcc706",
-    "Name": "Lord Howe Island"
+    "WarmingAnomaly": 1.0036352657004848,
+    "HeatingScore": 3,
+    "Id": "eeafdca3-6cae-4273-8c5a-c608530a717e",
+    "Name": "Lord Howe Island Aero"
   },
   {
     "CountryCode": "US",
@@ -13362,13 +13353,13 @@
     "CountryCode": "AS",
     "Country": "Australia",
     "Coordinates": {
-      "Latitude": -54.5,
-      "Longitude": 158.94,
-      "Elevation": 6
+      "Latitude": -54.499,
+      "Longitude": 158.937,
+      "Elevation": 8.3
     },
-    "WarmingAnomaly": 0.21697712418300696,
+    "WarmingAnomaly": 0.4942957516339881,
     "HeatingScore": 0,
-    "Id": "07987b31-4934-47f7-b62c-5c5f39e49935",
+    "Id": "0881b35c-9a60-4d9f-abfb-e028f9516091",
     "Name": "Macquarie Island"
   },
   {
@@ -14042,16 +14033,16 @@
     "Name": "Maun"
   },
   {
-    "CountryCode": "AS",
-    "Country": "Australia",
+    "CountryCode": "AY",
+    "Country": "Antarctica",
     "Coordinates": {
       "Latitude": -67.6,
-      "Longitude": 62.88,
-      "Elevation": 10
+      "Longitude": 62.867,
+      "Elevation": 16
     },
-    "WarmingAnomaly": 0.24150537634408487,
+    "WarmingAnomaly": 0.04841666666667166,
     "HeatingScore": 0,
-    "Id": "484e686d-c55e-420c-aa53-71293e73dafe",
+    "Id": "c6673b47-e158-4dac-95de-3ee4c31d284e",
     "Name": "Mawson"
   },
   {
@@ -16154,17 +16145,17 @@
     "Name": "Norderney"
   },
   {
-    "CountryCode": "AS",
-    "Country": "Australia",
+    "CountryCode": "NF",
+    "Country": "Norfolk Island [Australia]",
     "Coordinates": {
-      "Latitude": -29.04,
-      "Longitude": 167.94,
-      "Elevation": 112
+      "Latitude": -29.042,
+      "Longitude": 167.939,
+      "Elevation": 113.1
     },
-    "WarmingAnomaly": 0.32365497076023075,
-    "HeatingScore": 0,
-    "Id": "bf97eea8-252d-4f89-9ba8-924341973039",
-    "Name": "Norfolk Island"
+    "WarmingAnomaly": 0.7740092592592482,
+    "HeatingScore": 2,
+    "Id": "35e09731-c09c-4882-a870-9d7901459bdf",
+    "Name": "Norfolk Island Intl"
   },
   {
     "CountryCode": "JM",
@@ -16433,7 +16424,7 @@
       "Elevation": 1389.6
     },
     "WarmingAnomaly": 0.5506063941299768,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "Id": "ad5f41f1-cc56-4d53-b7eb-12e241e6478a",
     "Name": "Oakley"
   },
@@ -17338,7 +17329,7 @@
       "Elevation": 85
     },
     "WarmingAnomaly": 0.5544775985663026,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "Id": "5a49d4aa-e4d7-4d73-b989-79d50c056804",
     "Name": "Pehuajo Aero"
   },
@@ -24649,13 +24640,13 @@
     "CountryCode": "AS",
     "Country": "Australia",
     "Coordinates": {
-      "Latitude": -16.29,
-      "Longitude": 149.97,
-      "Elevation": 8
+      "Latitude": -16.288,
+      "Longitude": 149.965,
+      "Elevation": 9
     },
-    "WarmingAnomaly": 0.1461965811965733,
-    "HeatingScore": 0,
-    "Id": "9433c91f-acd9-4a8f-9bbd-31f0af2e8e42",
+    "WarmingAnomaly": 0.8592546296296355,
+    "HeatingScore": 2,
+    "Id": "6916fd1c-68bd-4f56-a531-e7cb96931335",
     "Name": "Willis Island"
   },
   {

@@ -611,6 +611,45 @@
     "YearsOfMissingData": 6
   },
   {
+    "Id": "ASM00094299",
+    "Name": "WILLIS_ISLAND",
+    "CountryCode": "AS",
+    "Coordinates": {
+      "Latitude": -16.288,
+      "Longitude": 149.965,
+      "Elevation": 9
+    },
+    "FirstYear": 1939,
+    "LastYear": 2023,
+    "YearsOfMissingData": 12
+  },
+  {
+    "Id": "ASM00094995",
+    "Name": "LORD_HOWE_ISLAND_AERO",
+    "CountryCode": "AS",
+    "Coordinates": {
+      "Latitude": -31.542,
+      "Longitude": 159.079,
+      "Elevation": 7
+    },
+    "FirstYear": 1912,
+    "LastYear": 2023,
+    "YearsOfMissingData": 20
+  },
+  {
+    "Id": "ASM00094998",
+    "Name": "MACQUARIE_ISLAND",
+    "CountryCode": "AS",
+    "Coordinates": {
+      "Latitude": -54.499,
+      "Longitude": 158.937,
+      "Elevation": 8.3
+    },
+    "FirstYear": 1951,
+    "LastYear": 2023,
+    "YearsOfMissingData": 5
+  },
+  {
     "Id": "ASN00004035",
     "Name": "ROEBOURNE",
     "CountryCode": "AS",
@@ -923,6 +962,19 @@
     "YearsOfMissingData": 5
   },
   {
+    "Id": "AYM00089564",
+    "Name": "MAWSON",
+    "CountryCode": "AY",
+    "Coordinates": {
+      "Latitude": -67.6,
+      "Longitude": 62.867,
+      "Elevation": 16
+    },
+    "FirstYear": 1955,
+    "LastYear": 2023,
+    "YearsOfMissingData": 8
+  },
+  {
     "Id": "AYM00089592",
     "Name": "MIRNYJ",
     "CountryCode": "AY",
@@ -932,6 +984,19 @@
       "Elevation": 40
     },
     "FirstYear": 1957,
+    "LastYear": 2023,
+    "YearsOfMissingData": 4
+  },
+  {
+    "Id": "AYM00089611",
+    "Name": "CASEY",
+    "CountryCode": "AY",
+    "Coordinates": {
+      "Latitude": -66.283,
+      "Longitude": 110.517,
+      "Elevation": 41
+    },
+    "FirstYear": 1958,
     "LastYear": 2023,
     "YearsOfMissingData": 4
   },
@@ -5133,6 +5198,19 @@
     "FirstYear": 1888,
     "LastYear": 2023,
     "YearsOfMissingData": 16
+  },
+  {
+    "Id": "CK000096996",
+    "Name": "COCOS_ISLAND_AERO",
+    "CountryCode": "CK",
+    "Coordinates": {
+      "Latitude": -12.183,
+      "Longitude": 96.833,
+      "Elevation": 4
+    },
+    "FirstYear": 1911,
+    "LastYear": 2023,
+    "YearsOfMissingData": 21
   },
   {
     "Id": "CUM00078325",
@@ -10463,6 +10541,19 @@
     "FirstYear": 1952,
     "LastYear": 2023,
     "YearsOfMissingData": 4
+  },
+  {
+    "Id": "NFM00094996",
+    "Name": "NORFOLK_ISLAND_INTL",
+    "CountryCode": "NF",
+    "Coordinates": {
+      "Latitude": -29.042,
+      "Longitude": 167.939,
+      "Elevation": 113.1
+    },
+    "FirstYear": 1915,
+    "LastYear": 2023,
+    "YearsOfMissingData": 19
   },
   {
     "Id": "NG000001052",

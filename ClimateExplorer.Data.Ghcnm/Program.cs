@@ -515,7 +515,7 @@ async Task<List<Station>> RemoveDuplicateLocations(List<Station> dataQualityFilt
 async Task<List<Location>> GetPreExistingLocations()
 {
     var contents = await File.ReadAllTextAsync(preExistingLocationsFile);
-    var preExistingLocations = JsonSerializer.Deserialize<List<Location>>(contents)!;
+    var preExistingLocations = JsonSerializer.Deserialize<List<Location>>(contents, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
     return preExistingLocations;
 }
 

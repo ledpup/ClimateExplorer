@@ -98,41 +98,6 @@ public class DataSetDefinitionsBuilder
                     },
                 ],
             },
-            new ()
-            {
-                Id = Guid.Parse("647b6a05-43e4-48e0-a43e-04ae81a74653"),
-                Name = "Remote Australian Islands and Antarctica (RAIA)",
-                Description = "This ACORN-SAT dataset includes homogenised monthly data from the Remote Australian Islands and Antarctica network of 8 locations, which provide ground-based temperature records.",
-                Publisher = "Australian Bureau of Meteorology",
-                PublisherUrl = "http://www.bom.gov.au/",
-                MoreInformationUrl = "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
-                StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
-                MeasurementDefinitions =
-                [
-                    new ()
-                    {
-                        DataAdjustment = DataAdjustment.Adjusted,
-                        DataType = DataType.TempMax,
-                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
-                        DataResolution = DataResolution.Monthly,
-                        DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$",
-                        FolderName = @"Temperature\RAIA\Monthly\adjusted\maxT",
-                        FileNameFormat = "acorn.ria.maxT.[station].monthly.txt",
-                        NullValue = "99999.9",
-                    },
-                    new ()
-                    {
-                        DataAdjustment = DataAdjustment.Adjusted,
-                        DataType = DataType.TempMin,
-                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
-                        DataResolution = DataResolution.Monthly,
-                        DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$",
-                        FolderName = @"Temperature\RAIA\Monthly\adjusted\minT",
-                        FileNameFormat = "acorn.ria.minT.[station].monthly.txt",
-                        NullValue = "99999.9",
-                    },
-                ],
-            },
 
             new ()
             {
