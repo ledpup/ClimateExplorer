@@ -69,6 +69,16 @@ public class DataSetDefinitionsBuilder
                     new ()
                     {
                         DataAdjustment = DataAdjustment.Unadjusted,
+                        DataType = DataType.TempMean,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                        DataResolution = DataResolution.Daily,
+                        DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}),(?<value>.*)$",
+                        FolderName = @"Temperature\BOM\daily_tempmean",
+                        FileNameFormat = "[station]_daily_tempmean.csv",
+                    },
+                    new ()
+                    {
+                        DataAdjustment = DataAdjustment.Unadjusted,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,

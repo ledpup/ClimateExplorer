@@ -78,18 +78,6 @@ public static class DataReader
                 values.ForEach(x => x.Value = x.Value / measurementDefinition.ValueAdjustment.Value);
             }
 
-            // Adjusting the temperature record based on climatological analysis (currently only New Zealand data uses this).
-            if (dataFileDefinition.ValueAdjustment != null)
-            {
-                values.ForEach(x =>
-                {
-                    if (x.Value.HasValue)
-                    {
-                        x.Value += dataFileDefinition.ValueAdjustment;
-                    }
-                });
-            }
-
             // Add to full record set
             if (fileRecords != null)
             {

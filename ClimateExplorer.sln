@@ -51,6 +51,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Data.Ghcnd"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Archived", "Archived", "{55EFD2B7-CF33-4D5A-BBC7-7D19742DE029}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.Data.Bom.CreateTempMean", "ClimateExplorer.Data.CreateTempMean\ClimateExplorer.Data.Bom.CreateTempMean.csproj", "{7D02454C-B47D-4ED1-AD59-A156FAB5B6F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +131,10 @@ Global
 		{497B5551-6805-420F-8DA9-8C815000CC69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{497B5551-6805-420F-8DA9-8C815000CC69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{497B5551-6805-420F-8DA9-8C815000CC69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D02454C-B47D-4ED1-AD59-A156FAB5B6F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D02454C-B47D-4ED1-AD59-A156FAB5B6F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D02454C-B47D-4ED1-AD59-A156FAB5B6F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D02454C-B47D-4ED1-AD59-A156FAB5B6F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -145,6 +151,7 @@ Global
 		{7E293EA2-B1B8-41AA-A8C6-6B703EF3F75B} = {55EFD2B7-CF33-4D5A-BBC7-7D19742DE029}
 		{497B5551-6805-420F-8DA9-8C815000CC69} = {F3EDC6D9-6967-4DC9-827C-141F081FA91E}
 		{55EFD2B7-CF33-4D5A-BBC7-7D19742DE029} = {F3EDC6D9-6967-4DC9-827C-141F081FA91E}
+		{7D02454C-B47D-4ED1-AD59-A156FAB5B6F4} = {F3EDC6D9-6967-4DC9-827C-141F081FA91E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4F67DF1E-4405-495A-9FC1-1408F179D95C}

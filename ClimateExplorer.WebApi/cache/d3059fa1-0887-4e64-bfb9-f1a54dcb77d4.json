@@ -181,7 +181,7 @@
       "Longitude": 138.62,
       "Elevation": 48
     },
-    "WarmingAnomaly": 0.7507321272403509,
+    "WarmingAnomaly": 0.7858859712486819,
     "HeatingScore": 2,
     "Id": "70a07bb0-2220-402b-be83-f2c35edfdd12",
     "Name": "Adelaide"
@@ -221,7 +221,7 @@
       "Elevation": 15
     },
     "WarmingAnomaly": 0.5822247474747488,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "Id": "661198c6-e451-4729-bfc6-728f0efa2b37",
     "Name": "Agassiz Cda"
   },
@@ -449,7 +449,7 @@
       "Elevation": 704
     },
     "WarmingAnomaly": 1.3181660206718337,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "Id": "b82ff48b-353f-498a-b9d5-2c2fdc34a60f",
     "Name": "Albacete Los Llanos"
   },
@@ -461,8 +461,8 @@
       "Longitude": 117.82,
       "Elevation": 68
     },
-    "WarmingAnomaly": 0.8626473857037418,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 0.6964282567120517,
+    "HeatingScore": 1,
     "Id": "e491279a-781c-4eb0-8ccf-d49f3d9e2d5a",
     "Name": "Albany"
   },
@@ -626,8 +626,8 @@
       "Longitude": 133.89,
       "Elevation": 546
     },
-    "WarmingAnomaly": 1.4837938844325755,
-    "HeatingScore": 7,
+    "WarmingAnomaly": 1.2552931462703576,
+    "HeatingScore": 5,
     "Id": "fbb67194-9253-4ed2-bd20-f4a0211b264b",
     "Name": "Alice Springs"
   },
@@ -730,7 +730,7 @@
       "Longitude": 152.71,
       "Elevation": 24
     },
-    "WarmingAnomaly": 0.8400851285926301,
+    "WarmingAnomaly": 0.8522886958662745,
     "HeatingScore": 2,
     "Id": "0cfb93a1-e0b6-4b87-87a6-90c0e01ca9ca",
     "Name": "Amberley"
@@ -1033,7 +1033,7 @@
       "Elevation": 133
     },
     "WarmingAnomaly": 1.3196821705426358,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "Id": "c2fd9b05-14f0-4a2b-bb37-b0e2e6d0e2f4",
     "Name": "Arhara"
   },
@@ -1247,14 +1247,14 @@
     "CountryCode": "NZ",
     "Country": "New Zealand",
     "Coordinates": {
-      "Latitude": -37.00813,
-      "Longitude": 174.78873,
+      "Latitude": -37,
+      "Longitude": 174.8,
       "Elevation": 7
     },
-    "WarmingAnomaly": 1.052872871837092,
-    "HeatingScore": 3,
-    "Id": "a28e017a-a23b-4f59-914d-d1171bfd60be",
-    "Name": "Auckland"
+    "WarmingAnomaly": 1.3980645424836542,
+    "HeatingScore": 6,
+    "Id": "5217a55c-93c0-4313-9d3a-6c5e934b4bc7",
+    "Name": "Auckland Aero Aws"
   },
   {
     "CountryCode": "GM",
@@ -1369,7 +1369,7 @@
       "Elevation": 159
     },
     "WarmingAnomaly": 1.0653128654970756,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "Id": "6a594259-6678-4aab-b8b1-aa98ea23d257",
     "Name": "Bagotville A"
   },
@@ -1616,7 +1616,7 @@
       "Elevation": 921
     },
     "WarmingAnomaly": 0.5762408789386377,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "Id": "ac31ef0d-e2c7-46fe-a364-ae1bd3768304",
     "Name": "Bangalore"
   },
@@ -1753,7 +1753,7 @@
       "Elevation": 2666
     },
     "WarmingAnomaly": 0.5741818181818132,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "Id": "2c51aa7a-9517-49a5-8fe0-cd732c926a2e",
     "Name": "Barkam"
   },
@@ -1865,8 +1865,6 @@
       "Longitude": 149.56,
       "Elevation": 713
     },
-    "WarmingAnomaly": 0.9191826627244275,
-    "HeatingScore": 3,
     "Id": "0b927604-fbaa-4930-bb5c-cf4b0f8b8914",
     "Name": "Bathurst"
   },
@@ -2044,7 +2042,7 @@
       "Elevation": 36
     },
     "WarmingAnomaly": 1.0671068376068389,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "Id": "48e92d57-3b0b-46fd-ac71-467619cb27c3",
     "Name": "Bella Coola A"
   },
@@ -2587,7 +2585,7 @@
       "Elevation": 182.9
     },
     "WarmingAnomaly": 0.5731929429429456,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "Id": "8ec96f0d-f489-4a4d-ac25-718c1d36f049",
     "Name": "Bollon Mary St"
   },
@@ -2799,8 +2797,8 @@
       "Longitude": 139.9,
       "Elevation": 161
     },
-    "WarmingAnomaly": 1.0511969731129902,
-    "HeatingScore": 3,
+    "WarmingAnomaly": 0.8537656303133048,
+    "HeatingScore": 2,
     "Id": "f285ba2b-d6d6-4390-a80f-803522668bde",
     "Name": "Boulia"
   },
@@ -2825,8 +2823,8 @@
       "Longitude": 145.95,
       "Elevation": 107
     },
-    "WarmingAnomaly": 0.5350935564663111,
-    "HeatingScore": 0,
+    "WarmingAnomaly": 0.7435611025194078,
+    "HeatingScore": 1,
     "Id": "bab198bd-3940-4f13-a4f7-68af10735039",
     "Name": "Bourke"
   },
@@ -2917,7 +2915,7 @@
       "Elevation": 314
     },
     "WarmingAnomaly": 0.7504926900584756,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "Id": "8144d824-5928-442d-9693-10e0c559b419",
     "Name": "Brazzaville"
   },
@@ -2994,8 +2992,8 @@
       "Longitude": 116.13,
       "Elevation": 178
     },
-    "WarmingAnomaly": 0.9178081598980867,
-    "HeatingScore": 3,
+    "WarmingAnomaly": 0.8763422381543329,
+    "HeatingScore": 2,
     "Id": "9ea5be14-0e54-4453-8e8b-4c11e075cb42",
     "Name": "Bridgetown"
   },
@@ -3020,7 +3018,7 @@
       "Longitude": 153.13,
       "Elevation": 4
     },
-    "WarmingAnomaly": 0.32187640137918194,
+    "WarmingAnomaly": 0.47296614593345865,
     "HeatingScore": 0,
     "Id": "b7e0c061-e71c-4fc4-8068-c0432398c24f",
     "Name": "Brisbane Airport"
@@ -3111,8 +3109,8 @@
       "Longitude": 122.24,
       "Elevation": 7
     },
-    "WarmingAnomaly": 0.8521651542558786,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 0.5332690488470782,
+    "HeatingScore": 0,
     "Id": "05daa0ea-6227-4225-bf52-8204808709b5",
     "Name": "Broome"
   },
@@ -3265,8 +3263,8 @@
       "Longitude": 152.32,
       "Elevation": 30
     },
-    "WarmingAnomaly": 0.4931789426627198,
-    "HeatingScore": 0,
+    "WarmingAnomaly": 0.9698509833929485,
+    "HeatingScore": 3,
     "Id": "b2c819cd-b20b-48b0-8148-eef2f8fd88b7",
     "Name": "Bundaberg"
   },
@@ -3291,8 +3289,8 @@
       "Longitude": 139.54,
       "Elevation": 5
     },
-    "WarmingAnomaly": 0.990964959139589,
-    "HeatingScore": 3,
+    "WarmingAnomaly": 1.1251616758050957,
+    "HeatingScore": 4,
     "Id": "fba7ed39-c752-460d-aa2e-342da7b55817",
     "Name": "Burketown"
   },
@@ -3343,8 +3341,6 @@
       "Longitude": 146.28,
       "Elevation": 667
     },
-    "WarmingAnomaly": 1.0436187105769683,
-    "HeatingScore": 3,
     "Id": "5f6f3d62-4c80-441d-b30f-104d2f5d2e96",
     "Name": "Butlers Gorge"
   },
@@ -3430,8 +3426,8 @@
       "Longitude": 145.75,
       "Elevation": 2
     },
-    "WarmingAnomaly": 0.47498166452021806,
-    "HeatingScore": 0,
+    "WarmingAnomaly": 0.9051603658402954,
+    "HeatingScore": 2,
     "Id": "8fe98f5f-c239-4f2f-961a-5686147e53f7",
     "Name": "Cairns"
   },
@@ -3506,8 +3502,6 @@
       "Longitude": 138.12,
       "Elevation": 231
     },
-    "WarmingAnomaly": 0.7396344134610473,
-    "HeatingScore": 1,
     "Id": "09a5ba01-f523-4be3-ae7b-7a29a0da581c",
     "Name": "Camooweal"
   },
@@ -3515,14 +3509,14 @@
     "CountryCode": "NZ",
     "Country": "New Zealand",
     "Coordinates": {
-      "Latitude": -52.55059,
-      "Longitude": 169.14978,
-      "Elevation": 16
+      "Latitude": -52.55,
+      "Longitude": 169.167,
+      "Elevation": 19
     },
-    "WarmingAnomaly": 0.14810420324006657,
+    "WarmingAnomaly": -0.20767735042735147,
     "HeatingScore": 0,
-    "Id": "1e69bdc6-1bdd-42b6-96ad-35b0648aa9d0",
-    "Name": "Campbell Island"
+    "Id": "448febb4-7259-454b-89e5-655971d57d91",
+    "Name": "Campbell Island Aws"
   },
   {
     "CountryCode": "BR",
@@ -3595,7 +3589,7 @@
       "Longitude": 149.2,
       "Elevation": 577
     },
-    "WarmingAnomaly": 1.490585134924153,
+    "WarmingAnomaly": 1.456536495450404,
     "HeatingScore": 7,
     "Id": "c0f2743b-fb00-4128-9024-bafa4e1c85ed",
     "Name": "Canberra"
@@ -3619,8 +3613,8 @@
       "Longitude": 147.14,
       "Elevation": 60
     },
-    "WarmingAnomaly": 0.8338214519389648,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 0.9827904264685063,
+    "HeatingScore": 3,
     "Id": "eb75b5eb-8feb-4118-b6ab-bbe9b4fbc334",
     "Name": "Cape Bruny"
   },
@@ -3658,7 +3652,7 @@
       "Longitude": 115.14,
       "Elevation": 13
     },
-    "WarmingAnomaly": 0.849079487855601,
+    "WarmingAnomaly": 0.8935897972357303,
     "HeatingScore": 2,
     "Id": "f8dfe45b-d49c-4c0f-8d69-27d2d92cdb4b",
     "Name": "Cape Leeuwin"
@@ -3671,8 +3665,8 @@
       "Longitude": 153.47,
       "Elevation": 99
     },
-    "WarmingAnomaly": 0.5201799109876681,
-    "HeatingScore": 0,
+    "WarmingAnomaly": 0.8194960987089139,
+    "HeatingScore": 2,
     "Id": "33d2cd26-bded-4abc-8e03-2f3266e3923f",
     "Name": "Cape Moreton"
   },
@@ -3697,7 +3691,7 @@
       "Longitude": 143.51,
       "Elevation": 82
     },
-    "WarmingAnomaly": 0.6434254764283374,
+    "WarmingAnomaly": 0.7137375812632989,
     "HeatingScore": 1,
     "Id": "592c8e33-cc36-4cce-9af1-82bb3f26a5af",
     "Name": "Cape Otway"
@@ -3788,8 +3782,8 @@
       "Longitude": 113.67,
       "Elevation": 4
     },
-    "WarmingAnomaly": 0.7203935856409522,
-    "HeatingScore": 1,
+    "WarmingAnomaly": 0.8751889591076782,
+    "HeatingScore": 2,
     "Id": "1c72f3e1-7d98-4ac5-8b64-1b5b2a4d599e",
     "Name": "Carnarvon"
   },
@@ -3879,8 +3873,8 @@
       "Longitude": 133.7,
       "Elevation": 15
     },
-    "WarmingAnomaly": 1.2383849574686145,
-    "HeatingScore": 5,
+    "WarmingAnomaly": 1.0656125959679343,
+    "HeatingScore": 3,
     "Id": "4397371d-a43b-4925-af58-bec79e6ca802",
     "Name": "Ceduna"
   },
@@ -3906,7 +3900,7 @@
       "Elevation": 99.1
     },
     "WarmingAnomaly": 0.5720883838383841,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "Id": "5382cac3-97a9-4465-9e4a-a80d497ac54b",
     "Name": "Center"
   },
@@ -3931,8 +3925,8 @@
       "Longitude": -1.83,
       "Elevation": 78
     },
-    "WarmingAnomaly": 1.255225023336921,
-    "HeatingScore": 5,
+    "WarmingAnomaly": 1.3406807081807095,
+    "HeatingScore": 6,
     "Id": "a5a179b5-5394-44d1-b653-bbf6b052279c",
     "Name": "Central England"
   },
@@ -4074,8 +4068,8 @@
       "Longitude": 146.26,
       "Elevation": 301
     },
-    "WarmingAnomaly": 1.1388171330873895,
-    "HeatingScore": 4,
+    "WarmingAnomaly": 1.4816129404670377,
+    "HeatingScore": 7,
     "Id": "0bc92500-5977-4aa2-81ae-a57ff8eabed3",
     "Name": "Charleville"
   },
@@ -4111,8 +4105,8 @@
       "Longitude": 146.27,
       "Elevation": 289
     },
-    "WarmingAnomaly": 0.8393715601489902,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 0.9407595802764632,
+    "HeatingScore": 3,
     "Id": "80a5afb6-f043-4e61-b1e3-b60029b9c559",
     "Name": "Charters Towers"
   },
@@ -4394,7 +4388,7 @@
       "Elevation": 1286
     },
     "WarmingAnomaly": 1.5783700716845876,
-    "HeatingScore": 8,
+    "HeatingScore": 7,
     "Id": "446ca78d-d651-42e0-89e4-0cfef221bc42",
     "Name": "Choir"
   },
@@ -4420,7 +4414,7 @@
       "Elevation": 416
     },
     "WarmingAnomaly": 0.7591701388888943,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "Id": "644d4861-1ef1-4c95-925c-567364734680",
     "Name": "Chongqing"
   },
@@ -4436,6 +4430,19 @@
     "HeatingScore": 8,
     "Id": "c4a41d15-5e7a-470a-8cac-a0506cf706d7",
     "Name": "Choshi"
+  },
+  {
+    "CountryCode": "NZ",
+    "Country": "New Zealand",
+    "Coordinates": {
+      "Latitude": -43.489,
+      "Longitude": 172.532,
+      "Elevation": 37.5
+    },
+    "WarmingAnomaly": 0.8506597222222201,
+    "HeatingScore": 2,
+    "Id": "07f03e68-0cbc-4f7e-a83f-b7f945083bad",
+    "Name": "Christchurch Intl"
   },
   {
     "CountryCode": "KT",
@@ -4599,8 +4606,8 @@
       "Longitude": 145.83,
       "Elevation": 260
     },
-    "WarmingAnomaly": 1.1824839351303034,
-    "HeatingScore": 4,
+    "WarmingAnomaly": 0.8840719771781202,
+    "HeatingScore": 2,
     "Id": "6f523c50-bf77-44d1-8418-57ea555855a3",
     "Name": "Cobar"
   },
@@ -4636,8 +4643,8 @@
       "Longitude": 153.12,
       "Elevation": 3
     },
-    "WarmingAnomaly": 0.5466393549995487,
-    "HeatingScore": 0,
+    "WarmingAnomaly": 0.8443298322694943,
+    "HeatingScore": 2,
     "Id": "8a63813f-8544-46b6-806e-6bc32dfc1b0d",
     "Name": "Coffs Harbour"
   },
@@ -5070,8 +5077,8 @@
       "Longitude": 117.22,
       "Elevation": 216
     },
-    "WarmingAnomaly": 1.3925348654597443,
-    "HeatingScore": 6,
+    "WarmingAnomaly": 0.9023135322676445,
+    "HeatingScore": 2,
     "Id": "d7307020-9788-4269-ae25-19926ca9e198",
     "Name": "Cunderdin"
   },
@@ -5288,7 +5295,7 @@
       "Elevation": 10.1
     },
     "WarmingAnomaly": 0.7534444444444333,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "Id": "723155a6-e9b0-4867-971a-f05608472cb8",
     "Name": "Danang Intl"
   },
@@ -5314,7 +5321,7 @@
       "Elevation": 21.3
     },
     "WarmingAnomaly": 0.7582138242894025,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "Id": "774022c2-3c1d-492f-8d21-5a3ff3457678",
     "Name": "Danevang 1 W"
   },
@@ -5365,8 +5372,8 @@
       "Longitude": 130.89,
       "Elevation": 30
     },
-    "WarmingAnomaly": 1.4351056411065954,
-    "HeatingScore": 6,
+    "WarmingAnomaly": 0.9865408230580819,
+    "HeatingScore": 3,
     "Id": "00147d6f-1569-422f-8322-a42b98e25071",
     "Name": "Darwin"
   },
@@ -5482,8 +5489,8 @@
       "Longitude": 144.95,
       "Elevation": 94
     },
-    "WarmingAnomaly": 0.9446030011794022,
-    "HeatingScore": 3,
+    "WarmingAnomaly": 0.7794490116036634,
+    "HeatingScore": 2,
     "Id": "2e2acf0b-592b-4ba4-adc9-b6f08546b92a",
     "Name": "Deniliquin"
   },
@@ -5646,7 +5653,7 @@
       "Elevation": 686.1
     },
     "WarmingAnomaly": 1.3167829457364313,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "Id": "a49b54a1-f80a-4d49-b626-caaf8cb26c1c",
     "Name": "Diyarbakir"
   },
@@ -5806,7 +5813,7 @@
       "Longitude": 148.58,
       "Elevation": 284
     },
-    "WarmingAnomaly": 1.1472248657041142,
+    "WarmingAnomaly": 1.0889444968581259,
     "HeatingScore": 4,
     "Id": "5e5c8eee-e28d-4651-bb04-24d08e89c254",
     "Name": "Dubbo"
@@ -5875,19 +5882,6 @@
     "HeatingScore": 0,
     "Id": "b5dc5860-1e1d-408e-87f1-8055eb9f1d2a",
     "Name": "Dumont D\u0027urville"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -45.90129,
-      "Longitude": 170.5147,
-      "Elevation": 4
-    },
-    "WarmingAnomaly": 0.402511326212986,
-    "HeatingScore": 0,
-    "Id": "0c75321e-ffc1-48cd-afd2-2d30301a545d",
-    "Name": "Dunedin"
   },
   {
     "CountryCode": "CH",
@@ -6541,8 +6535,8 @@
       "Longitude": 121.89,
       "Elevation": 25
     },
-    "WarmingAnomaly": 0.942963676809697,
-    "HeatingScore": 3,
+    "WarmingAnomaly": 1.1074404956672836,
+    "HeatingScore": 4,
     "Id": "7c7d3560-0741-4966-a878-b2749afc7737",
     "Name": "Esperance"
   },
@@ -6632,8 +6626,6 @@
       "Longitude": 128.9,
       "Elevation": 93
     },
-    "WarmingAnomaly": 1.278027108379149,
-    "HeatingScore": 5,
     "Id": "663a6037-a8de-462a-9d74-396ec881ffeb",
     "Name": "Eucla"
   },
@@ -6916,8 +6908,8 @@
       "Longitude": 128.11,
       "Elevation": 159
     },
-    "WarmingAnomaly": 0.7307775465379329,
-    "HeatingScore": 1,
+    "WarmingAnomaly": 0.8880431925700094,
+    "HeatingScore": 2,
     "Id": "a7a48420-7677-444a-a6aa-e8d6eb195729",
     "Name": "Forrest"
   },
@@ -6930,7 +6922,7 @@
       "Elevation": 382
     },
     "WarmingAnomaly": 1.0686111111111107,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "Id": "5b6d8c0a-e79d-4456-918a-441f79228bdc",
     "Name": "Fort Nelson A"
   },
@@ -7095,7 +7087,7 @@
       "Elevation": 7.6
     },
     "WarmingAnomaly": 0.5731919191919133,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "Id": "b8091b35-05bf-4cbf-b613-303b49028695",
     "Name": "Ft Pierce"
   },
@@ -7209,7 +7201,7 @@
       "Longitude": 149.92,
       "Elevation": 15
     },
-    "WarmingAnomaly": 0.37936682612059514,
+    "WarmingAnomaly": 0.5117856475105373,
     "HeatingScore": 0,
     "Id": "714a7fe5-cea8-4e9b-bac0-cb01f8d0fff3",
     "Name": "Gabo Island"
@@ -7422,8 +7414,8 @@
       "Longitude": 151.62,
       "Elevation": 110
     },
-    "WarmingAnomaly": 1.0038099256231412,
-    "HeatingScore": 3,
+    "WarmingAnomaly": 1.0720435770812955,
+    "HeatingScore": 4,
     "Id": "64004954-c0c6-4de3-9ac1-3f50bada1ec9",
     "Name": "Gayndah"
   },
@@ -7448,8 +7440,8 @@
       "Longitude": 143.53,
       "Elevation": 301
     },
-    "WarmingAnomaly": 0.9266553495399421,
-    "HeatingScore": 3,
+    "WarmingAnomaly": 1.1180473114448297,
+    "HeatingScore": 4,
     "Id": "2bf20585-6b1a-4e3c-a8ed-1d87e67789a6",
     "Name": "Georgetown"
   },
@@ -7461,8 +7453,8 @@
       "Longitude": 114.7,
       "Elevation": 29
     },
-    "WarmingAnomaly": 1.4202940449459227,
-    "HeatingScore": 6,
+    "WarmingAnomaly": 1.0625123740036848,
+    "HeatingScore": 3,
     "Id": "c6ba58ea-6142-4954-afac-256ca81c67bc",
     "Name": "Geraldton"
   },
@@ -7524,8 +7516,8 @@
       "Longitude": 128.3,
       "Elevation": 598
     },
-    "WarmingAnomaly": 1.0473439048163975,
-    "HeatingScore": 3,
+    "WarmingAnomaly": 0.5600762022118495,
+    "HeatingScore": 0,
     "Id": "e61fd5fb-f6a0-41b0-99bf-bc2eddb1a90c",
     "Name": "Giles"
   },
@@ -7559,14 +7551,14 @@
     "CountryCode": "NZ",
     "Country": "New Zealand",
     "Coordinates": {
-      "Latitude": -38.6586,
-      "Longitude": 177.98512,
+      "Latitude": -38.65,
+      "Longitude": 177.983,
       "Elevation": 5
     },
-    "WarmingAnomaly": 0.3897780304964158,
-    "HeatingScore": 0,
-    "Id": "28e0e278-1bc8-46b8-b809-23b85618623e",
-    "Name": "Gisborne Airport"
+    "WarmingAnomaly": 0.9186904761904771,
+    "HeatingScore": 2,
+    "Id": "3b71f6ac-8298-407f-9d0b-20c3ed640e0d",
+    "Name": "Gisborne Aerodrome"
   },
   {
     "CountryCode": "AS",
@@ -7917,7 +7909,7 @@
       "Longitude": 147.07,
       "Elevation": 65
     },
-    "WarmingAnomaly": 0.24780700629878538,
+    "WarmingAnomaly": 0.3507239110832181,
     "HeatingScore": 0,
     "Id": "db8309f6-72b8-49e2-89b3-69a13989a392",
     "Name": "Grove"
@@ -8086,8 +8078,8 @@
       "Longitude": 150.27,
       "Elevation": 307
     },
-    "WarmingAnomaly": 0.7837457803480099,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 0.7216723299280154,
+    "HeatingScore": 1,
     "Id": "b8a3092a-041f-478d-951f-5ee4dda0a410",
     "Name": "Gunnedah"
   },
@@ -8237,7 +8229,7 @@
       "Elevation": 43
     },
     "WarmingAnomaly": 1.4457469558599758,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "Id": "8ad7cc83-1b36-4305-9c27-f587bd183592",
     "Name": "Hakodate"
   },
@@ -8288,8 +8280,8 @@
       "Longitude": 127.67,
       "Elevation": 409
     },
-    "WarmingAnomaly": 1.1106322599419656,
-    "HeatingScore": 4,
+    "WarmingAnomaly": 0.48043468384147303,
+    "HeatingScore": 0,
     "Id": "ba6fb433-bc80-4890-8c8b-16830b95f633",
     "Name": "Halls Creek"
   },
@@ -8302,7 +8294,7 @@
       "Elevation": 24
     },
     "WarmingAnomaly": 1.3175736714975832,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "Id": "ff823c05-3cb6-4317-9397-75fedfd9f100",
     "Name": "Halmstad"
   },
@@ -8357,19 +8349,6 @@
     "HeatingScore": 5,
     "Id": "cf6f988f-e42c-4602-bda9-df7fcc49cb13",
     "Name": "Hami"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -37.77389,
-      "Longitude": 175.30518,
-      "Elevation": 45
-    },
-    "WarmingAnomaly": 0.7641290802792007,
-    "HeatingScore": 2,
-    "Id": "f5a8a194-681a-4116-8a75-97fcbb57e20b",
-    "Name": "Hamilton"
   },
   {
     "CountryCode": "DA",
@@ -8772,8 +8751,8 @@
       "Longitude": 147.33,
       "Elevation": 50
     },
-    "WarmingAnomaly": 0.9618448907530457,
-    "HeatingScore": 3,
+    "WarmingAnomaly": 0.7081313559128226,
+    "HeatingScore": 1,
     "Id": "aed87aa0-1d0c-44aa-8561-cde0fc936395",
     "Name": "Hobart"
   },
@@ -8833,14 +8812,14 @@
     "CountryCode": "NZ",
     "Country": "New Zealand",
     "Coordinates": {
-      "Latitude": -42.712,
-      "Longitude": 170.984,
-      "Elevation": 39
+      "Latitude": -42.717,
+      "Longitude": 170.983,
+      "Elevation": 40
     },
-    "WarmingAnomaly": 0.40897200611283324,
-    "HeatingScore": 0,
-    "Id": "f7f809a7-6755-4ab7-b1e6-3ae933dd89ae",
-    "Name": "Hokitika"
+    "WarmingAnomaly": 0.8715427031509062,
+    "HeatingScore": 2,
+    "Id": "42a1cb48-9fb9-4209-9610-d7ed1ae30e8c",
+    "Name": "Hokitika Aerodrome"
   },
   {
     "CountryCode": "US",
@@ -8913,8 +8892,6 @@
       "Longitude": 142.29,
       "Elevation": 4
     },
-    "WarmingAnomaly": 0.6717383403730999,
-    "HeatingScore": 1,
     "Id": "1d06ff8a-82ba-4613-875f-1b4893536c42",
     "Name": "Horn Island"
   },
@@ -9185,7 +9162,7 @@
       "Elevation": 8
     },
     "WarmingAnomaly": 0.9227251461988306,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "Id": "b3ad012d-3eb6-4d53-9f2e-367b7498389d",
     "Name": "Ica"
   },
@@ -9523,14 +9500,14 @@
     "CountryCode": "NZ",
     "Country": "New Zealand",
     "Coordinates": {
-      "Latitude": -46.41741,
-      "Longitude": 168.33052,
-      "Elevation": 1
+      "Latitude": -46.417,
+      "Longitude": 168.333,
+      "Elevation": 2
     },
-    "WarmingAnomaly": 0.37420336502415985,
-    "HeatingScore": 0,
-    "Id": "7a6c3b06-bfed-4cee-b256-a456e6fb6e1d",
-    "Name": "Invercargill Airport"
+    "WarmingAnomaly": 0.8394439890710377,
+    "HeatingScore": 2,
+    "Id": "f3d8bf61-fad0-4692-9e94-59fab1edc5fb",
+    "Name": "Invercargill Airpor"
   },
   {
     "CountryCode": "AS",
@@ -9540,8 +9517,8 @@
       "Longitude": 151.11,
       "Elevation": 582
     },
-    "WarmingAnomaly": 0.8391166381001796,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 0.9759188234925844,
+    "HeatingScore": 3,
     "Id": "c5094f09-3fb3-4455-bf7b-b835928ad5f3",
     "Name": "Inverell"
   },
@@ -9951,7 +9928,7 @@
       "Elevation": 6.1
     },
     "WarmingAnomaly": 0.7539722222222203,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "Id": "109027a9-455c-4329-a775-aa7c30daa3e4",
     "Name": "Jessore"
   },
@@ -10352,7 +10329,7 @@
       "Longitude": 121.45,
       "Elevation": 365
     },
-    "WarmingAnomaly": 0.7987166557995593,
+    "WarmingAnomaly": 0.7881773427634435,
     "HeatingScore": 2,
     "Id": "6e8b7fce-49bf-41d2-959d-62130a40fb22",
     "Name": "Kalgoorlie-Boulder"
@@ -10379,7 +10356,7 @@
       "Elevation": 901.3
     },
     "WarmingAnomaly": 0.7527499999999998,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "Id": "1c76b9ce-aba5-40ec-93ce-c211ab97ee9f",
     "Name": "Kalispell Glacier Ap"
   },
@@ -10391,8 +10368,6 @@
       "Longitude": 126.65,
       "Elevation": 23
     },
-    "WarmingAnomaly": 0.628000909769689,
-    "HeatingScore": 1,
     "Id": "cbb11150-ec74-4401-8357-fae6fef70768",
     "Name": "Kalumburu"
   },
@@ -10444,7 +10419,7 @@
       "Elevation": 455
     },
     "WarmingAnomaly": 1.1905746527777694,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "Id": "83d42e69-b076-4be6-adcc-03ad698b9fab",
     "Name": "Kamishli"
   },
@@ -10481,7 +10456,7 @@
       "Elevation": 26
     },
     "WarmingAnomaly": 0.7562253086419753,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "Id": "a3131526-a124-4fe1-afd2-3848fc899030",
     "Name": "Kandalaksa"
   },
@@ -10621,8 +10596,6 @@
       "Longitude": 118.45,
       "Elevation": 474
     },
-    "WarmingAnomaly": 1.0958221376210204,
-    "HeatingScore": 4,
     "Id": "48c35ccf-3ff8-4448-90de-1e491c500887",
     "Name": "Karijini North (Wittenoom)"
   },
@@ -10710,8 +10683,8 @@
       "Longitude": 117.61,
       "Elevation": 320
     },
-    "WarmingAnomaly": 0.8651640977029551,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 0.9708994764430692,
+    "HeatingScore": 3,
     "Id": "aa0021dd-8c27-4101-96b7-5e6b60c0c70a",
     "Name": "Katanning"
   },
@@ -10851,8 +10824,6 @@
       "Longitude": 143.92,
       "Elevation": 77
     },
-    "WarmingAnomaly": 1.0059703873039467,
-    "HeatingScore": 3,
     "Id": "23701518-8a46-4b7e-b9ef-da570d77b7cb",
     "Name": "Kerang"
   },
@@ -11468,7 +11439,7 @@
       "Elevation": 1030.5
     },
     "WarmingAnomaly": 0.5715989583333307,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "Id": "dde19a17-913f-4c28-b9af-15ee8c35893d",
     "Name": "Konya"
   },
@@ -12027,8 +11998,8 @@
       "Longitude": 135.55,
       "Elevation": 59
     },
-    "WarmingAnomaly": 1.1979089824797917,
-    "HeatingScore": 5,
+    "WarmingAnomaly": 0.8925721297605698,
+    "HeatingScore": 2,
     "Id": "6b771c0b-97d3-45c7-9cd1-72fdee232e7c",
     "Name": "Kyancutta"
   },
@@ -12106,7 +12077,7 @@
       "Elevation": 6.1
     },
     "WarmingAnomaly": 0.7511553030303091,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "Id": "82a3dceb-0c48-4db4-9399-64e0f307568e",
     "Name": "L F Wade Intl Ap Kindley Fld"
   },
@@ -12156,7 +12127,7 @@
       "Elevation": 146
     },
     "WarmingAnomaly": 0.561984126984127,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "Id": "7f34f144-83d3-485f-a7a1-6d1b671df93f",
     "Name": "La Serena"
   },
@@ -12348,8 +12319,8 @@
       "Longitude": 148.35,
       "Elevation": 19
     },
-    "WarmingAnomaly": 0.7836368620316634,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 0.7311289297306764,
+    "HeatingScore": 1,
     "Id": "20ab0202-8038-4275-aad2-70788ec68d6e",
     "Name": "Larapuna (Eddystone Point)"
   },
@@ -12437,8 +12408,8 @@
       "Longitude": 147.22,
       "Elevation": 166
     },
-    "WarmingAnomaly": 0.6753889284043595,
-    "HeatingScore": 1,
+    "WarmingAnomaly": 0.8856437661719703,
+    "HeatingScore": 2,
     "Id": "b483cb66-25cc-45ee-b1c8-8db405f0415a",
     "Name": "Launceston Airport"
   },
@@ -12450,8 +12421,8 @@
       "Longitude": 144.76,
       "Elevation": 20
     },
-    "WarmingAnomaly": 0.9915630770011035,
-    "HeatingScore": 3,
+    "WarmingAnomaly": 1.1033370068445318,
+    "HeatingScore": 4,
     "Id": "ddbdddc8-8f95-4a44-b55b-f52378460640",
     "Name": "Laverton"
   },
@@ -12477,7 +12448,7 @@
       "Elevation": 4.9
     },
     "WarmingAnomaly": 1.4434872372372354,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "Id": "2b111678-51d2-48bc-b323-2f6494d61cbd",
     "Name": "Le Lamentin"
   },
@@ -12668,7 +12639,7 @@
       "Elevation": 12
     },
     "WarmingAnomaly": 1.3204166666666701,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "Id": "d655fed4-f394-4730-9830-49ee61a8167a",
     "Name": "Leting"
   },
@@ -12799,19 +12770,6 @@
     "HeatingScore": 3,
     "Id": "92fb7166-b08a-4d55-a09d-d6527893cf2a",
     "Name": "Lincang"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -43.62622,
-      "Longitude": 172.4704,
-      "Elevation": 18
-    },
-    "WarmingAnomaly": 0.3596068445864127,
-    "HeatingScore": 0,
-    "Id": "ccbb9417-cc42-4503-b5f6-58e01ae7ebfa",
-    "Name": "Lincoln"
   },
   {
     "CountryCode": "CH",
@@ -12976,7 +12934,7 @@
       "Elevation": 254
     },
     "WarmingAnomaly": 0.7497864583333254,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "Id": "1874d932-f117-4234-83c5-961723e26511",
     "Name": "Loei"
   },
@@ -12989,7 +12947,7 @@
       "Elevation": 278
     },
     "WarmingAnomaly": 1.4455009416195859,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "Id": "12a66be1-3e9b-4818-8759-ca7b2faa2233",
     "Name": "London A"
   },
@@ -13027,8 +12985,8 @@
       "Longitude": 144.28,
       "Elevation": 192
     },
-    "WarmingAnomaly": 0.4589181907234483,
-    "HeatingScore": 0,
+    "WarmingAnomaly": 1.0139292790241647,
+    "HeatingScore": 3,
     "Id": "9fff8b80-9230-4161-a626-c0f6e8c3b3e7",
     "Name": "Longreach"
   },
@@ -13157,8 +13115,8 @@
       "Longitude": 146.79,
       "Elevation": 3
     },
-    "WarmingAnomaly": 0.7642117849109127,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 0.6471592838958067,
+    "HeatingScore": 1,
     "Id": "1b4b65dc-5742-432d-a4ae-d83069397723",
     "Name": "Low Head"
   },
@@ -13344,7 +13302,7 @@
       "Longitude": 149.22,
       "Elevation": 30
     },
-    "WarmingAnomaly": 1.3987172465444466,
+    "WarmingAnomaly": 1.383899080977411,
     "HeatingScore": 6,
     "Id": "a5bff3b7-d9dc-40cb-bdb0-f2f07af2e2b7",
     "Name": "Mackay"
@@ -13734,7 +13692,7 @@
       "Elevation": 44.2
     },
     "WarmingAnomaly": 1.0684288617886146,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "Id": "7b798f66-ade0-4ce8-bc62-668e78ed86e4",
     "Name": "Manston"
   },
@@ -13747,7 +13705,7 @@
       "Elevation": 3
     },
     "WarmingAnomaly": 0.5641125730994148,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "Id": "2022460a-36c3-4e16-ba13-4fdf7ea43d4c",
     "Name": "Manzanillo"
   },
@@ -13805,8 +13763,8 @@
       "Longitude": 119.75,
       "Elevation": 182
     },
-    "WarmingAnomaly": 0.5388540847929661,
-    "HeatingScore": 0,
+    "WarmingAnomaly": 0.6445797916466667,
+    "HeatingScore": 1,
     "Id": "909dadb1-c33b-412b-97e0-42f5704f4090",
     "Name": "Marble Bar"
   },
@@ -13929,8 +13887,8 @@
       "Longitude": 138.07,
       "Elevation": 50
     },
-    "WarmingAnomaly": 1.3722040912727032,
-    "HeatingScore": 6,
+    "WarmingAnomaly": 1.0957047553003392,
+    "HeatingScore": 4,
     "Id": "516cbbab-1226-4caa-b18d-e5b2aeeff7d6",
     "Name": "Marree"
   },
@@ -13981,19 +13939,6 @@
     },
     "Id": "28a229ed-8c39-47cc-98a2-dd59bba9d0dd",
     "Name": "Masirah"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -41.25231,
-      "Longitude": 175.38985,
-      "Elevation": 20
-    },
-    "WarmingAnomaly": 0.5056754162571337,
-    "HeatingScore": 0,
-    "Id": "53fc123f-ea7e-493a-a9e4-474b798a763c",
-    "Name": "Masterton"
   },
   {
     "CountryCode": "ZI",
@@ -14118,8 +14063,8 @@
       "Longitude": 118.54,
       "Elevation": 517
     },
-    "WarmingAnomaly": 1.1158071980668005,
-    "HeatingScore": 4,
+    "WarmingAnomaly": 1.0047217661627954,
+    "HeatingScore": 3,
     "Id": "9ce454b6-7e6c-4516-88a7-6504444a4754",
     "Name": "Meekatharra"
   },
@@ -14144,8 +14089,8 @@
       "Longitude": 144.98,
       "Elevation": 7
     },
-    "WarmingAnomaly": 1.015164029789208,
-    "HeatingScore": 3,
+    "WarmingAnomaly": 1.0812717154959657,
+    "HeatingScore": 4,
     "Id": "1e743b5c-f9bf-477c-8b16-7d45c67909a7",
     "Name": "Melbourne"
   },
@@ -14221,7 +14166,7 @@
       "Elevation": 1302
     },
     "WarmingAnomaly": 0.7570252525252563,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "Id": "7e5d1d03-ea72-43fa-85b7-98cf17d2a054",
     "Name": "Mengzi"
   },
@@ -14298,8 +14243,8 @@
       "Longitude": 118.28,
       "Elevation": 315
     },
-    "WarmingAnomaly": 0.8806524541715746,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 0.6578150423968836,
+    "HeatingScore": 1,
     "Id": "fdd46b2e-4da4-4426-a17d-034ee9752ef6",
     "Name": "Merredin"
   },
@@ -14403,7 +14348,7 @@
       "Elevation": 874.2
     },
     "WarmingAnomaly": 0.5771597222222269,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "Id": "fbd9edaf-f685-45ec-9657-273a0ae180ab",
     "Name": "Midland Odessa"
   },
@@ -14441,8 +14386,8 @@
       "Longitude": 142.09,
       "Elevation": 50
     },
-    "WarmingAnomaly": 0.6467138919418325,
-    "HeatingScore": 1,
+    "WarmingAnomaly": 0.5582464108507992,
+    "HeatingScore": 0,
     "Id": "f6093d63-0476-4bd4-bb88-6322cf04dfaa",
     "Name": "Mildura"
   },
@@ -14454,8 +14399,8 @@
       "Longitude": 150.18,
       "Elevation": 304
     },
-    "WarmingAnomaly": 0.8216420360411654,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 1.140254239436402,
+    "HeatingScore": 4,
     "Id": "a14c760f-4858-4f36-8d0a-7f219dc9b303",
     "Name": "Miles"
   },
@@ -14729,17 +14674,6 @@
     "Name": "Mokpo"
   },
   {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -42.087,
-      "Longitude": 173.26,
-      "Elevation": 883
-    },
-    "Id": "42d5c5d9-ed1c-4517-8c49-005a0991d252",
-    "Name": "Molesworth"
-  },
-  {
     "CountryCode": "KE",
     "Country": "Kenya",
     "Coordinates": {
@@ -14859,7 +14793,7 @@
       "Elevation": 10.7
     },
     "WarmingAnomaly": 0.5760656565656532,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "Id": "2ae12d1e-0ef1-4cb5-b83f-d3dbbcb3a33e",
     "Name": "Moore Haven Lock 1"
   },
@@ -14908,8 +14842,8 @@
       "Longitude": 149.85,
       "Elevation": 213
     },
-    "WarmingAnomaly": 0.40712501307709914,
-    "HeatingScore": 0,
+    "WarmingAnomaly": 0.7407505506416143,
+    "HeatingScore": 1,
     "Id": "8867cc4a-6da5-41e6-a4f7-e02dd9460cdd",
     "Name": "Moree"
   },
@@ -14921,8 +14855,8 @@
       "Longitude": 150.15,
       "Elevation": 17
     },
-    "WarmingAnomaly": 0.6227058060484936,
-    "HeatingScore": 1,
+    "WarmingAnomaly": 0.9750544615499681,
+    "HeatingScore": 3,
     "Id": "59803ca9-d81b-4888-bd08-473f659e1fc0",
     "Name": "Moruya Heads"
   },
@@ -14997,8 +14931,8 @@
       "Longitude": 140.77,
       "Elevation": 63
     },
-    "WarmingAnomaly": 0.5331795321483099,
-    "HeatingScore": 0,
+    "WarmingAnomaly": 0.8421510393997487,
+    "HeatingScore": 2,
     "Id": "4865e9b4-d86a-4961-b65c-cc33f969ff04",
     "Name": "Mount Gambier"
   },
@@ -15049,17 +14983,6 @@
     "HeatingScore": 3,
     "Id": "4b1e378d-7ffa-4a06-b628-769c55e784d2",
     "Name": "Mt Locke"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -39.19589,
-      "Longitude": 175.54504,
-      "Elevation": 1097
-    },
-    "Id": "9344c843-31d8-4b66-ba9f-d1c99e57cfbe",
-    "Name": "Mt Ruapehu"
   },
   {
     "CountryCode": "TZ",
@@ -15754,22 +15677,9 @@
       "Elevation": 20
     },
     "WarmingAnomaly": 0.573635416666658,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "Id": "609917e7-a056-41f0-872a-7060873668e1",
     "Name": "Nellore"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -41.299,
-      "Longitude": 173.226,
-      "Elevation": 2
-    },
-    "WarmingAnomaly": 0.4938930639026857,
-    "HeatingScore": 0,
-    "Id": "4977fb61-9228-45d4-be28-e9d19d23088b",
-    "Name": "Nelson"
   },
   {
     "CountryCode": "JA",
@@ -15920,8 +15830,8 @@
       "Longitude": 141.65,
       "Elevation": 138
     },
-    "WarmingAnomaly": 0.973334056383365,
-    "HeatingScore": 3,
+    "WarmingAnomaly": 0.7325717776310103,
+    "HeatingScore": 1,
     "Id": "4006f876-24bb-4b31-9318-72fcf44f47b0",
     "Name": "Nhill"
   },
@@ -16023,7 +15933,7 @@
       "Elevation": 201
     },
     "WarmingAnomaly": 1.0717500000000015,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "Id": "7472c775-3a43-49fd-ab51-31f32b089d1e",
     "Name": "Nis"
   },
@@ -16191,8 +16101,8 @@
       "Longitude": 141.07,
       "Elevation": 18
     },
-    "WarmingAnomaly": 0.7524676231996708,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 0.7330386359621066,
+    "HeatingScore": 1,
     "Id": "f0991551-814d-4323-9c0b-c8f12b887985",
     "Name": "Normanton"
   },
@@ -16244,7 +16154,7 @@
       "Elevation": 522.1
     },
     "WarmingAnomaly": 1.1839429824561396,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "Id": "19222bf3-8708-4646-a62b-98efa6731d04",
     "Name": "Northway Ap"
   },
@@ -16371,7 +16281,7 @@
       "Longitude": 139.01,
       "Elevation": 275
     },
-    "WarmingAnomaly": 0.6325606931748915,
+    "WarmingAnomaly": 0.5984265391584334,
     "HeatingScore": 1,
     "Id": "b13e3137-51c7-432a-9194-2c3f42f0e438",
     "Name": "Nuriootpa"
@@ -16385,7 +16295,7 @@
       "Elevation": 80
     },
     "WarmingAnomaly": 1.81968115942029,
-    "HeatingScore": 9,
+    "HeatingScore": 8,
     "Id": "b869713f-185e-41be-b652-7de5a13382e3",
     "Name": "Nuuk"
   },
@@ -16398,7 +16308,7 @@
       "Elevation": 1880
     },
     "WarmingAnomaly": 0.583179824561407,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "Id": "d43e8489-6285-44a7-925d-ab716fa832fc",
     "Name": "Nuwara Eliya"
   },
@@ -16632,7 +16542,7 @@
       "Elevation": 689.8
     },
     "WarmingAnomaly": 0.7497499999999953,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "Id": "f98cebb6-35c5-4a60-a438-292b3ef33481",
     "Name": "Omeo"
   },
@@ -16671,7 +16581,7 @@
       "Elevation": 15
     },
     "WarmingAnomaly": 0.564722972972973,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "Id": "941ab534-b453-49c7-a7dc-fecd32d2e2ac",
     "Name": "Omu"
   },
@@ -16707,8 +16617,8 @@
       "Longitude": 135.45,
       "Elevation": 116
     },
-    "WarmingAnomaly": 1.0631474295801304,
-    "HeatingScore": 4,
+    "WarmingAnomaly": 0.8725054910895977,
+    "HeatingScore": 2,
     "Id": "69e0e687-7e35-466a-b518-ee4c76af5cf6",
     "Name": "Oodnadatta"
   },
@@ -16733,8 +16643,8 @@
       "Longitude": 148.47,
       "Elevation": 62
     },
-    "WarmingAnomaly": 0.554507940838441,
-    "HeatingScore": 1,
+    "WarmingAnomaly": 0.4605690316509303,
+    "HeatingScore": 0,
     "Id": "32ecbe0c-95a6-4d39-b8f4-c7ac859c8122",
     "Name": "Orbost"
   },
@@ -16812,7 +16722,7 @@
       "Elevation": 88
     },
     "WarmingAnomaly": 1.5812421227197344,
-    "HeatingScore": 8,
+    "HeatingScore": 7,
     "Id": "bb13cf81-9a66-408f-ba45-d72613bedd2a",
     "Name": "Osijek"
   },
@@ -16838,7 +16748,7 @@
       "Elevation": 13
     },
     "WarmingAnomaly": 1.8248730158730186,
-    "HeatingScore": 9,
+    "HeatingScore": 8,
     "Id": "4453b576-ab72-4a21-9613-c3ddb4c65d31",
     "Name": "Ostrov Aion"
   },
@@ -17001,7 +16911,7 @@
       "Elevation": 50.3
     },
     "WarmingAnomaly": 0.755120870870865,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "Id": "757b0fba-85d8-4048-b23d-3c6565d6ad48",
     "Name": "Ouyen Post Office"
   },
@@ -17093,19 +17003,6 @@
     "Name": "Pakse"
   },
   {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -40.38195,
-      "Longitude": 175.60915,
-      "Elevation": 21
-    },
-    "WarmingAnomaly": 0.4393299630835479,
-    "HeatingScore": 0,
-    "Id": "c0c902ba-64b3-46d7-a844-837d237537f2",
-    "Name": "Palmerston North"
-  },
-  {
     "CountryCode": "AS",
     "Country": "Australia",
     "Coordinates": {
@@ -17113,8 +17010,8 @@
       "Longitude": 144.08,
       "Elevation": 203
     },
-    "WarmingAnomaly": 0.16140794753068377,
-    "HeatingScore": 0,
+    "WarmingAnomaly": 0.7011534624522611,
+    "HeatingScore": 1,
     "Id": "944b1732-d083-40b8-b865-fbf63941414c",
     "Name": "Palmerville"
   },
@@ -17264,7 +17161,7 @@
       "Elevation": 60
     },
     "WarmingAnomaly": 0.5674722222222215,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "Id": "033f713b-6b63-4bf8-8f1a-2a8ce2bd29d5",
     "Name": "Patna"
   },
@@ -17431,7 +17328,7 @@
       "Elevation": 171
     },
     "WarmingAnomaly": 1.5757971014492742,
-    "HeatingScore": 8,
+    "HeatingScore": 7,
     "Id": "d63f3571-3c67-4558-88e8-a186a42a7d91",
     "Name": "Perm"
   },
@@ -17456,8 +17353,8 @@
       "Longitude": 115.98,
       "Elevation": 15
     },
-    "WarmingAnomaly": 1.449181800034939,
-    "HeatingScore": 7,
+    "WarmingAnomaly": 1.295298693895365,
+    "HeatingScore": 5,
     "Id": "02619137-0d4d-4bcf-8ae3-f87697cd178d",
     "Name": "Perth Airport"
   },
@@ -17496,7 +17393,7 @@
       "Elevation": 32
     },
     "WarmingAnomaly": 0.919249999999999,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "Id": "98592640-9f93-430f-9cf3-c1b9a5ca5f74",
     "Name": "Petropavlovsk Kamchatskij"
   },
@@ -17642,7 +17539,7 @@
       "Elevation": 164
     },
     "WarmingAnomaly": 1.1915634920634979,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "Id": "a95eb34b-140e-4796-b3a8-d5b0b467ddfb",
     "Name": "Piestany"
   },
@@ -17826,8 +17723,6 @@
       "Longitude": 150.8,
       "Elevation": 85
     },
-    "WarmingAnomaly": 0.6205386113499003,
-    "HeatingScore": 1,
     "Id": "1130dd09-dd90-4a8f-8a65-31f14dd449e3",
     "Name": "Point Perpendicular"
   },
@@ -18030,8 +17925,8 @@
       "Longitude": 118.63,
       "Elevation": 6
     },
-    "WarmingAnomaly": 0.46908164089688853,
-    "HeatingScore": 0,
+    "WarmingAnomaly": 0.816247336180691,
+    "HeatingScore": 2,
     "Id": "04d33b2f-2a8a-4cf0-b281-68b74475d2b4",
     "Name": "Port Hedland"
   },
@@ -18043,8 +17938,8 @@
       "Longitude": 135.88,
       "Elevation": 8
     },
-    "WarmingAnomaly": 1.131063675051717,
-    "HeatingScore": 4,
+    "WarmingAnomaly": 0.7967865567527799,
+    "HeatingScore": 2,
     "Id": "b4e10e95-ce0f-4ae6-85cf-bc611c8164e8",
     "Name": "Port Lincoln"
   },
@@ -18056,8 +17951,8 @@
       "Longitude": 152.87,
       "Elevation": 4
     },
-    "WarmingAnomaly": 1.1908549631634422,
-    "HeatingScore": 5,
+    "WarmingAnomaly": 1.5783841432988304,
+    "HeatingScore": 7,
     "Id": "5d20e960-257d-4bc2-8d06-162c19fa86a2",
     "Name": "Port Macquarie"
   },
@@ -18220,7 +18115,7 @@
       "Elevation": 428
     },
     "WarmingAnomaly": 1.5809272875816998,
-    "HeatingScore": 8,
+    "HeatingScore": 7,
     "Id": "24df4385-3ec4-4240-b99b-4c6e795d5f16",
     "Name": "Prince Albert A"
   },
@@ -18281,7 +18176,7 @@
       "Elevation": 702
     },
     "WarmingAnomaly": 0.7522094017094014,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "Id": "47673975-d9a0-4d91-94ce-2bc8e19c5d50",
     "Name": "Princeton A"
   },
@@ -18333,7 +18228,7 @@
       "Elevation": 3
     },
     "WarmingAnomaly": 1.1930555555555546,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "Id": "432eb35d-52c8-4205-963a-205de992887b",
     "Name": "Pte De La Hague"
   },
@@ -18610,19 +18505,6 @@
     "Name": "Quatsino"
   },
   {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -45.03476,
-      "Longitude": 168.66364,
-      "Elevation": 322
-    },
-    "WarmingAnomaly": 1.0499393320456836,
-    "HeatingScore": 3,
-    "Id": "47685338-885d-4c7b-82db-8bd5def52cc4",
-    "Name": "Queenstown"
-  },
-  {
     "CountryCode": "MZ",
     "Country": "Mozambique",
     "Coordinates": {
@@ -18724,14 +18606,14 @@
     "CountryCode": "NZ",
     "Country": "New Zealand",
     "Coordinates": {
-      "Latitude": -29.24488,
-      "Longitude": -177.92912,
-      "Elevation": 50
+      "Latitude": -29.25,
+      "Longitude": -177.917,
+      "Elevation": 49
     },
-    "WarmingAnomaly": 0.6504535066731414,
-    "HeatingScore": 1,
-    "Id": "22ce0fe4-99d7-4522-87f1-e1a0b024a098",
-    "Name": "Raoul Island"
+    "WarmingAnomaly": 0.5603611111111029,
+    "HeatingScore": 0,
+    "Id": "5dc6b0ed-de7e-4aab-88da-7b31a81b5dde",
+    "Name": "Raoul Isl Kermadec"
   },
   {
     "CountryCode": "FP",
@@ -18936,7 +18818,7 @@
       "Longitude": 150.78,
       "Elevation": 19
     },
-    "WarmingAnomaly": 0.6165568433927682,
+    "WarmingAnomaly": 0.6962330909503258,
     "HeatingScore": 1,
     "Id": "6c834afc-799c-473e-9d59-91a7ec7974a2",
     "Name": "Richmond (NSW)"
@@ -18949,8 +18831,8 @@
       "Longitude": 143.12,
       "Elevation": 206
     },
-    "WarmingAnomaly": 0.41353736167657473,
-    "HeatingScore": 0,
+    "WarmingAnomaly": 1.1720198333761012,
+    "HeatingScore": 4,
     "Id": "53ea40d9-d6fb-4ffe-9bde-e4188698f2de",
     "Name": "Richmond (Qld)"
   },
@@ -19040,7 +18922,7 @@
       "Longitude": 139.76,
       "Elevation": 3
     },
-    "WarmingAnomaly": 0.3267453118292991,
+    "WarmingAnomaly": 0.4684879560376025,
     "HeatingScore": 0,
     "Id": "5885b48d-d66d-4e89-a30e-ff40a0c7d153",
     "Name": "Robe"
@@ -19103,8 +18985,8 @@
       "Longitude": 150.48,
       "Elevation": 10
     },
-    "WarmingAnomaly": 0.7452309637170096,
-    "HeatingScore": 1,
+    "WarmingAnomaly": 1.184867343295231,
+    "HeatingScore": 4,
     "Id": "e51c740e-2666-4f56-b397-0a68b26a6c3c",
     "Name": "Rockhampton"
   },
@@ -19320,7 +19202,7 @@
       "Longitude": 146.51,
       "Elevation": 175
     },
-    "WarmingAnomaly": 1.0030613631194996,
+    "WarmingAnomaly": 1.0236906498573237,
     "HeatingScore": 3,
     "Id": "9498f548-f000-4ff2-9c5d-fb7d3037493c",
     "Name": "Rutherglen"
@@ -19399,7 +19281,7 @@
       "Elevation": 900.4
     },
     "WarmingAnomaly": 0.7573472222222222,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "Id": "78dcb049-cc3d-4031-bae7-3ad611fcee10",
     "Name": "Safford Agricultrl Ctr"
   },
@@ -19513,7 +19395,7 @@
       "Longitude": 147.13,
       "Elevation": 4
     },
-    "WarmingAnomaly": 0.7638283404444692,
+    "WarmingAnomaly": 0.8397011984248888,
     "HeatingScore": 2,
     "Id": "7703f086-589e-406d-b152-dde26cbe6418",
     "Name": "Sale"
@@ -19592,7 +19474,7 @@
       "Elevation": 51
     },
     "WarmingAnomaly": 0.5554444444444506,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "Id": "2d5fc684-4244-4408-b1d7-3bb3d7cbd9d5",
     "Name": "Salvador"
   },
@@ -19922,7 +19804,7 @@
       "Elevation": 16
     },
     "WarmingAnomaly": 0.9197142857142886,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "Id": "161350d5-26c3-4461-95a3-285dd8aab2c3",
     "Name": "Saskylah"
   },
@@ -20814,8 +20696,8 @@
       "Longitude": 138.22,
       "Elevation": 109
     },
-    "WarmingAnomaly": 1.4167654869380115,
-    "HeatingScore": 6,
+    "WarmingAnomaly": 1.0103297395760364,
+    "HeatingScore": 3,
     "Id": "55f5699c-7d1f-4952-8bf1-4b924d7461d1",
     "Name": "Snowtown"
   },
@@ -20867,7 +20749,7 @@
       "Elevation": 531
     },
     "WarmingAnomaly": 1.064277777777777,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "Id": "21af3cb6-6914-4430-89de-6e13646c9392",
     "Name": "Sofia"
   },
@@ -21183,8 +21065,8 @@
       "Longitude": 148.59,
       "Elevation": 198
     },
-    "WarmingAnomaly": 1.0554326775657756,
-    "HeatingScore": 3,
+    "WarmingAnomaly": 1.1418150494024246,
+    "HeatingScore": 4,
     "Id": "e9581d86-1e15-42aa-ad4b-b3960a119b10",
     "Name": "St George"
   },
@@ -21323,7 +21205,7 @@
       "Elevation": 9
     },
     "WarmingAnomaly": 0.9224861111111089,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "Id": "fcc50196-92a4-45e8-b08d-8fa4aa954cc7",
     "Name": "Stornoway Airport"
   },
@@ -21479,7 +21361,7 @@
       "Elevation": 131
     },
     "WarmingAnomaly": 1.4448940568475441,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "Id": "166313f3-e59b-44ed-9ffb-0352ca402164",
     "Name": "Suntar"
   },
@@ -21621,7 +21503,7 @@
       "Longitude": 151.21,
       "Elevation": 39
     },
-    "WarmingAnomaly": 0.7454494519195194,
+    "WarmingAnomaly": 0.7087645241661527,
     "HeatingScore": 1,
     "Id": "0788f2da-2034-40e2-badc-b77fc7d4bbd3",
     "Name": "Sydney"
@@ -21835,7 +21717,7 @@
       "Elevation": 1218
     },
     "WarmingAnomaly": 1.068854166666668,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "Id": "0ca87152-e815-44d6-8446-9bfd6fbfd426",
     "Name": "Talas"
   },
@@ -22043,7 +21925,7 @@
       "Longitude": 134.58,
       "Elevation": 123
     },
-    "WarmingAnomaly": 1.168023461051984,
+    "WarmingAnomaly": 1.1919363891825903,
     "HeatingScore": 4,
     "Id": "9882e6ca-a0aa-479c-b1a6-169e94481afd",
     "Name": "Tarcoola"
@@ -22125,19 +22007,6 @@
     "HeatingScore": 9,
     "Id": "b7338fab-074c-4dc6-ab19-407291eb279f",
     "Name": "Tatarsk"
-  },
-  {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -37.67068,
-      "Longitude": 176.1966,
-      "Elevation": 5
-    },
-    "WarmingAnomaly": 0.6888357392613607,
-    "HeatingScore": 1,
-    "Id": "fc05dce1-79cd-4f0a-b84d-6b2919b8450a",
-    "Name": "Tauranga Airport"
   },
   {
     "CountryCode": "RS",
@@ -22260,8 +22129,8 @@
       "Longitude": 134.18,
       "Elevation": 375
     },
-    "WarmingAnomaly": 0.95527842035305,
-    "HeatingScore": 3,
+    "WarmingAnomaly": 0.7837005785308477,
+    "HeatingScore": 2,
     "Id": "5cfaf343-06a2-4bc6-a451-b8f2d3751da9",
     "Name": "Tennant Creek"
   },
@@ -22399,7 +22268,7 @@
       "Longitude": 142.06,
       "Elevation": 176
     },
-    "WarmingAnomaly": 0.8607844508684295,
+    "WarmingAnomaly": 0.796499633643684,
     "HeatingScore": 2,
     "Id": "04f7dd04-7bc2-4c4f-ae1e-2ee7180d8649",
     "Name": "Tibooburra"
@@ -22439,7 +22308,7 @@
       "Elevation": 6
     },
     "WarmingAnomaly": 1.192675505050504,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "Id": "85b1f704-04ac-4d6c-89e7-d1c65b53b496",
     "Name": "Tiksi"
   },
@@ -22718,8 +22587,8 @@
       "Longitude": 146.77,
       "Elevation": 4
     },
-    "WarmingAnomaly": 0.5401813098292827,
-    "HeatingScore": 0,
+    "WarmingAnomaly": 0.7215329815379796,
+    "HeatingScore": 1,
     "Id": "b0783cae-1c6f-4570-8ab3-19df57ee1820",
     "Name": "Townsville"
   },
@@ -23042,7 +22911,7 @@
       "Elevation": 103
     },
     "WarmingAnomaly": 1.3222158119658118,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "Id": "62be18e4-09fc-4cb7-87e5-e26c0c5a885e",
     "Name": "Turinsk"
   },
@@ -23068,7 +22937,7 @@
       "Elevation": 82
     },
     "WarmingAnomaly": 1.0688968253968216,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "Id": "8dfcf134-2570-4682-be4c-bce61f476f73",
     "Name": "Turkmen Bashi"
   },
@@ -23185,7 +23054,7 @@
       "Elevation": 178
     },
     "WarmingAnomaly": 0.752965277777772,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "Id": "89f13f00-1bde-4531-9fe8-e6839da9886c",
     "Name": "Udon Thani"
   },
@@ -23352,7 +23221,7 @@
       "Elevation": 220
     },
     "WarmingAnomaly": 1.0648028455284635,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "Id": "51caa006-8630-47e5-a67f-eec84f303816",
     "Name": "Ulleungdo"
   },
@@ -23560,7 +23429,7 @@
       "Elevation": 113
     },
     "WarmingAnomaly": 1.444433760683761,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "Id": "bfa298a8-4f38-4289-a50e-1d627ec0ff4d",
     "Name": "Ust Ozernoe"
   },
@@ -24028,7 +23897,7 @@
       "Elevation": 136
     },
     "WarmingAnomaly": 1.1881388888888882,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "Id": "83bd2255-3849-4b8b-afa2-345672c245b9",
     "Name": "Vetluga"
   },
@@ -24228,7 +24097,7 @@
       "Elevation": 37
     },
     "WarmingAnomaly": 0.9246501501501445,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "Id": "c492e86e-f2e6-4108-a7ce-bfca70133164",
     "Name": "Volochanka"
   },
@@ -24344,8 +24213,8 @@
       "Longitude": 147.46,
       "Elevation": 212
     },
-    "WarmingAnomaly": 0.7730354015092615,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 1.3003159107998439,
+    "HeatingScore": 5,
     "Id": "d209e7e6-d3da-40d4-b377-61cf7056d376",
     "Name": "Wagga Wagga"
   },
@@ -24381,8 +24250,8 @@
       "Longitude": 148.12,
       "Elevation": 133
     },
-    "WarmingAnomaly": 1.1790560755186554,
-    "HeatingScore": 4,
+    "WarmingAnomaly": 1.3475810215159463,
+    "HeatingScore": 6,
     "Id": "82fbe1bf-5c58-4f9b-8f5d-71fdd060d2e9",
     "Name": "Walgett"
   },
@@ -24394,8 +24263,8 @@
       "Longitude": 116.67,
       "Elevation": 275
     },
-    "WarmingAnomaly": 1.1149013606030778,
-    "HeatingScore": 4,
+    "WarmingAnomaly": 0.9561306727225976,
+    "HeatingScore": 3,
     "Id": "81644c2e-0ddc-472f-bae6-d976e6d623bc",
     "Name": "Wandering"
   },
@@ -24487,19 +24356,6 @@
     "Name": "Weissenburg"
   },
   {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -41.28445,
-      "Longitude": 174.76794,
-      "Elevation": 125
-    },
-    "WarmingAnomaly": 0.43652488103258236,
-    "HeatingScore": 0,
-    "Id": "24c35f2d-a4a3-44e4-9a5e-6ea16cec8c9c",
-    "Name": "Wellington"
-  },
-  {
     "CountryCode": "US",
     "Country": "United States of America",
     "Coordinates": {
@@ -24537,17 +24393,6 @@
     "Name": "Westermarkelsdorf Fehmarn"
   },
   {
-    "CountryCode": "NZ",
-    "Country": "New Zealand",
-    "Coordinates": {
-      "Latitude": -41.74075,
-      "Longitude": 171.57985,
-      "Elevation": 5
-    },
-    "Id": "50a2dd7c-afe5-4645-8f49-508fd805e8f5",
-    "Name": "Westport Airport"
-  },
-  {
     "CountryCode": "CA",
     "Country": "Canada",
     "Coordinates": {
@@ -24556,7 +24401,7 @@
       "Elevation": 706
     },
     "WarmingAnomaly": 1.4439999999999997,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "Id": "978a5e55-48a4-4fe3-bb21-5ef81777aeea",
     "Name": "Whitehorse A"
   },
@@ -24569,7 +24414,7 @@
       "Elevation": 310
     },
     "WarmingAnomaly": 0.758809178743963,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "Id": "59faa5c8-d341-4868-b41f-89a0938feffa",
     "Name": "Wichita Falls Muni Ap"
   },
@@ -24618,7 +24463,7 @@
       "Longitude": 143.39,
       "Elevation": 94
     },
-    "WarmingAnomaly": 1.0736789008207275,
+    "WarmingAnomaly": 1.1464341217181158,
     "HeatingScore": 4,
     "Id": "bd628d1f-9c2d-403c-abb5-e2e440fd3a02",
     "Name": "Wilcannia"
@@ -24631,8 +24476,8 @@
       "Longitude": 151.84,
       "Elevation": 7
     },
-    "WarmingAnomaly": 0.7072632955141955,
-    "HeatingScore": 1,
+    "WarmingAnomaly": 0.8851525149114075,
+    "HeatingScore": 2,
     "Id": "f0f62231-f0d3-4ded-a945-133d4ecc4255",
     "Name": "Williamtown"
   },
@@ -24670,8 +24515,8 @@
       "Longitude": 146.42,
       "Elevation": 95
     },
-    "WarmingAnomaly": 0.6186089457805366,
-    "HeatingScore": 1,
+    "WarmingAnomaly": 0.5372072829090868,
+    "HeatingScore": 0,
     "Id": "45feed6f-2821-43de-99ec-e605e3f36f75",
     "Name": "Wilsons Promontory"
   },
@@ -24811,8 +24656,8 @@
       "Longitude": 136.81,
       "Elevation": 166
     },
-    "WarmingAnomaly": 1.0618106112862833,
-    "HeatingScore": 3,
+    "WarmingAnomaly": 0.8925997813772568,
+    "HeatingScore": 2,
     "Id": "b41a2fa1-ce5c-473e-b2d7-17d43e9dbc8b",
     "Name": "Woomera"
   },
@@ -25106,7 +24951,7 @@
       "Longitude": 153.36,
       "Elevation": 27
     },
-    "WarmingAnomaly": 0.6476785484844783,
+    "WarmingAnomaly": 0.6740968993701237,
     "HeatingScore": 1,
     "Id": "54e1d0a7-54be-4fb9-b88e-d6a4b8a1b595",
     "Name": "Yamba"
@@ -25443,7 +25288,7 @@
       "Elevation": 3717
     },
     "WarmingAnomaly": 1.0702831541218645,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "Id": "884ee2ed-ab42-4e7a-9146-7f111b27f1ab",
     "Name": "Yushu"
   },
