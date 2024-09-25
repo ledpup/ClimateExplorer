@@ -73,7 +73,7 @@ public class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}),(?<value>.*)$",
-                        FolderName = @"Temperature\BOM\daily_tempmean",
+                        FolderName = @"Temperature_BOM\daily_tempmean",
                         FileNameFormat = "[station]_daily_tempmean.csv",
                     },
                     new ()
@@ -83,7 +83,7 @@ public class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
-                        FolderName = @"Temperature\BOM\daily_tempmax",
+                        FolderName = @"Temperature_BOM\daily_tempmax",
                         FileNameFormat = "[station]_daily_tempmax.csv",
                     },
                     new ()
@@ -93,7 +93,7 @@ public class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
-                        FolderName = @"Temperature\BOM\daily_tempmin",
+                        FolderName = @"Temperature_BOM\daily_tempmin",
                         FileNameFormat = "[station]_daily_tempmin.csv",
                     },
                     new ()

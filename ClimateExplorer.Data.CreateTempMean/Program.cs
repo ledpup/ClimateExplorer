@@ -6,9 +6,9 @@ var dataSets = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
 
 var bom = dataSets.Single(x => x.Id == Guid.Parse("E5EEA4D6-5FD5-49AB-BF85-144A8921111E"));
 
-var tempMaxFolder =  @"..\..\..\..\ClimateExplorer.SourceData\Temperature\BOM\daily_tempmax";
-var tempMinFolder = @"..\..\..\..\ClimateExplorer.SourceData\Temperature\BOM\daily_tempmin";
-var tempMeanFolder = @"..\..\..\..\ClimateExplorer.SourceData\Temperature\BOM\daily_tempmean";
+var tempMaxFolder = @"..\..\..\..\ClimateExplorer.SourceData\Temperature_BOM\daily_tempmax";
+var tempMinFolder = @"..\..\..\..\ClimateExplorer.SourceData\Temperature_BOM\daily_tempmin";
+var tempMeanFolder = @"..\..\..\..\ClimateExplorer.SourceData\Temperature_BOM\daily_tempmean";
 
 var tempMaxFiles = Directory.GetFiles(tempMaxFolder);
 var tempMinFiles = Directory.GetFiles(tempMinFolder);
