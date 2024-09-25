@@ -45,6 +45,7 @@ public static class SeriesTransformer
                     .ToArray();
 
             case SeriesTransformations.EqualOrAbove25:
+            case SeriesTransformations.EqualOrAbove25mm:
                 return
                     dataPoints
                     .Select(x => x.WithValue(x.Value == null ? null : (x.Value >= 25 ? 1 : 0)))
@@ -83,12 +84,6 @@ public static class SeriesTransformer
                 return
                     dataPoints
                     .Select(x => x.WithValue(x.Value == null ? null : (x.Value >= 10 && x.Value < 25 ? 1 : 0)))
-                    .ToArray();
-
-            case SeriesTransformations.EqualOrAbove25mm:
-                return
-                    dataPoints
-                    .Select(x => x.WithValue(x.Value == null ? null : (x.Value >= 25 ? 1 : 0)))
                     .ToArray();
 
             case SeriesTransformations.DayOfYearIfFrost:
