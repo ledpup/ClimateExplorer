@@ -9,10 +9,11 @@ public enum SeriesTransformations
     Negate,
     IsFrosty,
     DayOfYearIfFrost,
+    EqualOrAbove25,
     EqualOrAbove35,
     EqualOrAbove1,
     EqualOrAbove1AndLessThan10,
     EqualOrAbove10,
     EqualOrAbove10AndLessThan25,
-    EqualOrAbove25,
+    EqualOrAbove25mm,
 }

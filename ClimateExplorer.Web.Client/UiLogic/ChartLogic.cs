@@ -275,12 +275,13 @@ public static class ChartLogic
         {
             SeriesTransformations.IsFrosty => "daysOfFrost",
             SeriesTransformations.DayOfYearIfFrost => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "lastDayOfFrost" : "firstDayOfFrost",
+            SeriesTransformations.EqualOrAbove25 => "daysEqualOrAbove25",
             SeriesTransformations.EqualOrAbove35 => "daysEqualOrAbove35",
             SeriesTransformations.EqualOrAbove1 => "daysEqualOrAbove1",
             SeriesTransformations.EqualOrAbove1AndLessThan10 => "daysEqualOrAbove1LessThan10",
             SeriesTransformations.EqualOrAbove10 => "daysEqualOrAbove10",
             SeriesTransformations.EqualOrAbove10AndLessThan25 => "daysEqualOrAbove10LessThan25",
-            SeriesTransformations.EqualOrAbove25 => "daysEqualOrAbove25",
+            SeriesTransformations.EqualOrAbove25mm => "daysEqualOrAbove25mm",
             _ => unitOfMeasure.ToString().ToLowerFirstChar()
         };
     }

@@ -316,7 +316,7 @@ public static class SuggestedPresetLists
             new SuggestedChartPresetModelWithVariants()
             {
                 Title = "Days of extremes",
-                Description = "Number of frosty days (≤ 2.2°C) and days 35°C or above; 20-year smoothing",
+                Description = "Number of frosty days (≤ 2.2°C) and days 35°C or above",
                 ChartSeriesList =
                 [
                     new ChartSeriesDefinition()
@@ -348,6 +348,27 @@ public static class SuggestedPresetLists
                 ],
                 Variants =
                 [
+                    new SuggestedChartPresetModelWithVariants()
+                    {
+                        Title = "Hot nights",
+                        Description = "Number of days when the minimum temperature is 25°C or above",
+                        ChartSeriesList =
+                        [
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, dailyTempMin!),
+                                Aggregation = SeriesAggregationOptions.Sum,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.None,
+                                SmoothingWindow = 20,
+                                Value = SeriesValueOptions.Value,
+                                DisplayStyle = SeriesDisplayStyle.Bar,
+                                SeriesTransformation = SeriesTransformations.EqualOrAbove25,
+                                MinimumDataResolution = DataResolution.Daily,
+                            },
+                        ],
+                    },
                     new SuggestedChartPresetModelWithVariants()
                     {
                         Title = "First and last day of frost",

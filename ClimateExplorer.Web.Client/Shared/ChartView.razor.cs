@@ -799,12 +799,13 @@ public partial class ChartView
         {
             SeriesTransformations.IsFrosty => "Number of days of frost",
             SeriesTransformations.DayOfYearIfFrost => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "Last day of frost" : "First day of frost",
+            SeriesTransformations.EqualOrAbove25 => "Number of days 25°C or above",
             SeriesTransformations.EqualOrAbove35 => "Number of days 35°C or above",
             SeriesTransformations.EqualOrAbove1 => "Number of days with 1mm of rain or more",
             SeriesTransformations.EqualOrAbove1AndLessThan10 => "Number of days between 1mm and 10mm of rain",
             SeriesTransformations.EqualOrAbove10 => "Number of days with 10mm of rain or more",
             SeriesTransformations.EqualOrAbove10AndLessThan25 => "Number of days between 10mm and 25mm of rain",
-            SeriesTransformations.EqualOrAbove25 => "Number of days with 25mm of rain or more",
+            SeriesTransformations.EqualOrAbove25mm => "Number of days with 25mm of rain or more",
             _ => defaultLabel,
         };
     }
