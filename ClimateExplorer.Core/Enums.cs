@@ -108,12 +108,13 @@ public static class Enums
         {
             SeriesTransformations.IsFrosty => "Days of frost",
             SeriesTransformations.DayOfYearIfFrost => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "Last day of frost" : "First day of frost",
+            SeriesTransformations.EqualOrAbove25 => "Days of 25°C or above",
             SeriesTransformations.EqualOrAbove35 => "Days of 35°C or above",
             SeriesTransformations.EqualOrAbove1 => "Days of 1mm of rain or more",
             SeriesTransformations.EqualOrAbove1AndLessThan10 => "Days between 1mm and 10mm of rain",
             SeriesTransformations.EqualOrAbove10 => "Days of 10mm of rain or more",
             SeriesTransformations.EqualOrAbove10AndLessThan25 => "Days between 10mm and 25mm of rain",
-            SeriesTransformations.EqualOrAbove25 => "Days of 25mm of rain or more",
+            SeriesTransformations.EqualOrAbove25mm => "Days of 25mm of rain or more",
             _ => UnitOfMeasureLabel(unitOfMeasure),
         };
 

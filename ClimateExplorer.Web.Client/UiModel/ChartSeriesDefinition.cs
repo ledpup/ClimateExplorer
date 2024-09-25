@@ -322,12 +322,13 @@ public class ChartSeriesDefinition
         {
             SeriesTransformations.IsFrosty => "Is Frost",
             SeriesTransformations.DayOfYearIfFrost => "Day if frost",
+            SeriesTransformations.EqualOrAbove25 => "25°C or above",
             SeriesTransformations.EqualOrAbove35 => "35°C or above",
             SeriesTransformations.EqualOrAbove1 => "1mm or more",
             SeriesTransformations.EqualOrAbove1AndLessThan10 => "Between 1mm and 10mm",
             SeriesTransformations.EqualOrAbove10 => "10mm or more",
             SeriesTransformations.EqualOrAbove10AndLessThan25 => "Between 10mm and 25mm",
-            SeriesTransformations.EqualOrAbove25 => "25mm or more",
+            SeriesTransformations.EqualOrAbove25mm => "25mm or more",
             _ => seriesTransformation.ToString(),
         };
     }
