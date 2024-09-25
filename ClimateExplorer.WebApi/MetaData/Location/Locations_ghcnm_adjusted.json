@@ -8442,12 +8442,82 @@
   {
     "CountryCode": "NZ",
     "Coordinates": {
+      "Latitude": -38.65,
+      "Longitude": 177.983,
+      "Elevation": 5
+    },
+    "Id": "3b71f6ac-8298-407f-9d0b-20c3ed640e0d",
+    "Name": "Gisborne Aerodrome"
+  },
+  {
+    "CountryCode": "NZ",
+    "Coordinates": {
+      "Latitude": -46.417,
+      "Longitude": 168.333,
+      "Elevation": 2
+    },
+    "Id": "f3d8bf61-fad0-4692-9e94-59fab1edc5fb",
+    "Name": "Invercargill Airpor"
+  },
+  {
+    "CountryCode": "NZ",
+    "Coordinates": {
+      "Latitude": -29.25,
+      "Longitude": -177.917,
+      "Elevation": 49
+    },
+    "Id": "5dc6b0ed-de7e-4aab-88da-7b31a81b5dde",
+    "Name": "Raoul Isl Kermadec"
+  },
+  {
+    "CountryCode": "NZ",
+    "Coordinates": {
       "Latitude": -39.017,
       "Longitude": 174.183,
       "Elevation": 32
     },
     "Id": "1126ebd7-79c2-4fe3-80b2-f425d2d92952",
     "Name": "New Plymouth Aws"
+  },
+  {
+    "CountryCode": "NZ",
+    "Coordinates": {
+      "Latitude": -42.717,
+      "Longitude": 170.983,
+      "Elevation": 40
+    },
+    "Id": "42a1cb48-9fb9-4209-9610-d7ed1ae30e8c",
+    "Name": "Hokitika Aerodrome"
+  },
+  {
+    "CountryCode": "NZ",
+    "Coordinates": {
+      "Latitude": -52.55,
+      "Longitude": 169.167,
+      "Elevation": 19
+    },
+    "Id": "448febb4-7259-454b-89e5-655971d57d91",
+    "Name": "Campbell Island Aws"
+  },
+  {
+    "CountryCode": "NZ",
+    "Coordinates": {
+      "Latitude": -37,
+      "Longitude": 174.8,
+      "Elevation": 7
+    },
+    "Id": "5217a55c-93c0-4313-9d3a-6c5e934b4bc7",
+    "Name": "Auckland Aero Aws"
+  },
+  {
+    "CountryCode": "NZ",
+    "Coordinates": {
+      "Latitude": -43.489,
+      "Longitude": 172.532,
+      "Elevation": 37.5
+    },
+    "Id": "07f03e68-0cbc-4f7e-a83f-b7f945083bad",
+    "Name": "Christchurch Intl"
   },
   {
     "CountryCode": "PA",

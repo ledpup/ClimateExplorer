@@ -13,7 +13,7 @@ public class DataSetDefinitionsBuilder
             {
                 Id = Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"),
                 Name = "ACORN-SAT",
-                Description = "The Australian Climate Observations Reference Network - Surface Air Temperature data set is a homogenized daily maximum and minimum temperature data set containing data from 112 locations across Australia extending from 1910 to the present.",
+                Description = "The Australian Climate Observations Reference Network - Surface Air Temperature data set is a homogenized daily maximum, minimum and mean temperature data set containing data from 112 locations across Australia extending from 1910 to the present.",
                 Publisher = "Australian Bureau of Meteorology",
                 PublisherUrl = "http://www.bom.gov.au/",
                 MoreInformationUrl = "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
@@ -21,6 +21,16 @@ public class DataSetDefinitionsBuilder
                 LocationInfoUrl = "http://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
                 MeasurementDefinitions =
                 [
+                    new ()
+                    {
+                        DataAdjustment = DataAdjustment.Adjusted,
+                        DataType = DataType.TempMean,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                        DataResolution = DataResolution.Daily,
+                        DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d*\.?\d*),*$",
+                        FolderName = @"Temperature\ACORN-SAT\daily_tmean",
+                        FileNameFormat = "tmean.[station].daily.csv",
+                    },
                     new ()
                     {
                         DataAdjustment = DataAdjustment.Adjusted,
@@ -59,11 +69,21 @@ public class DataSetDefinitionsBuilder
                     new ()
                     {
                         DataAdjustment = DataAdjustment.Unadjusted,
+                        DataType = DataType.TempMean,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                        DataResolution = DataResolution.Daily,
+                        DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}),(?<value>.*)$",
+                        FolderName = @"Temperature_BOM\daily_tempmean",
+                        FileNameFormat = "[station]_daily_tempmean.csv",
+                    },
+                    new ()
+                    {
+                        DataAdjustment = DataAdjustment.Unadjusted,
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
-                        FolderName = @"Temperature\BOM\daily_tempmax",
+                        FolderName = @"Temperature_BOM\daily_tempmax",
                         FileNameFormat = "[station]_daily_tempmax.csv",
                     },
                     new ()
@@ -73,7 +93,7 @@ public class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
-                        FolderName = @"Temperature\BOM\daily_tempmin",
+                        FolderName = @"Temperature_BOM\daily_tempmin",
                         FileNameFormat = "[station]_daily_tempmin.csv",
                     },
                     new ()
@@ -95,132 +115,6 @@ public class DataSetDefinitionsBuilder
                         DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*)$",
                         FolderName = @"Solar\BOM",
                         FileNameFormat = "[station]_daily_solarradiation.csv",
-                    },
-                ],
-            },
-
-            new ()
-            {
-                Id = Guid.Parse("7522E8EC-E743-4CB0-BC65-6E9F202FC824"),
-                Name = "NIWA 7-stations series adjusted",
-                Description = "NIWA's long-running 'seven-station' series shows NZ's average annual temperature has increased by about 1 °C over the past 100 years.",
-                Publisher = "National Institute of Water and Atmospheric Research (NIWA)",
-                PublisherUrl = "http://www.niwa.co.nz/",
-                MoreInformationUrl = "https://niwa.co.nz/seven-stations",
-                MeasurementDefinitions =
-                [
-                    new ()
-                    {
-                        DataAdjustment = DataAdjustment.Adjusted,
-                        DataType = DataType.TempMax,
-                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
-                        DataResolution = DataResolution.Daily,
-                        DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$",
-                        FolderName = @"Temperature\NIWA",
-                        FileNameFormat = "[station]_temperature.csv",
-                        NullValue = "-",
-                    },
-                    new ()
-                    {
-                        DataAdjustment = DataAdjustment.Adjusted,
-                        DataType = DataType.TempMin,
-                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
-                        DataResolution = DataResolution.Daily,
-                        DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<tmax>-?[\d+\.\d+]*),-?\d*,(?<value>-?[\d+\.\d+]*),-?\d*,.*,D$",
-                        FolderName = @"Temperature\NIWA",
-                        FileNameFormat = "[station]_temperature.csv",
-                        NullValue = "-",
-                    },
-                ],
-            },
-            new ()
-            {
-                Id = Guid.Parse("534950DC-EDA4-4DB5-8816-3705358F1797"),
-                Name = "NIWA 7-stations series unadjusted",
-                Description = "NIWA's long-running 'seven-station' series shows NZ's average annual temperature has increased by about 1 °C over the past 100 years.",
-                Publisher = "National Institute of Water and Atmospheric Research (NIWA)",
-                PublisherUrl = "http://www.niwa.co.nz/",
-                MoreInformationUrl = "https://niwa.co.nz/seven-stations",
-                MeasurementDefinitions =
-                [
-                    new ()
-                    {
-                        DataAdjustment = DataAdjustment.Unadjusted,
-                        DataType = DataType.TempMax,
-                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
-                        DataResolution = DataResolution.Daily,
-                        DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$",
-                        FolderName = @"Temperature\NIWA",
-                        FileNameFormat = "[station]_temperature.csv",
-                        NullValue = "-",
-                    },
-                    new ()
-                    {
-                        DataAdjustment = DataAdjustment.Unadjusted,
-                        DataType = DataType.TempMin,
-                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
-                        DataResolution = DataResolution.Daily,
-                        DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<tmax>-?[\d+\.\d+]*),-?\d*,(?<value>-?[\d+\.\d+]*),-?\d*,.*,D$",
-                        FolderName = @"Temperature\NIWA",
-                        FileNameFormat = "[station]_temperature.csv",
-                        NullValue = "-",
-                    },
-                    new ()
-                    {
-                        DataType = DataType.Precipitation,
-                        UnitOfMeasure = UnitOfMeasure.Millimetres,
-                        DataResolution = DataResolution.Daily,
-                        DataAdjustment = null,
-                        DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),.*,D$",
-                        FolderName = @"Precipitation\NIWA",
-                        FileNameFormat = "[station]_rainfall.csv",
-                        NullValue = "-",
-                    },
-                ],
-            },
-
-            new ()
-            {
-                Id = Guid.Parse("88e52edd-3c67-484a-b614-91070037d47a"),
-                Name = "NIWA 11-stations series",
-                Description = "The National Institute of Water and Atmospheric Research (NIWA) eleven-station series are New Zealand temperature trends from a set of eleven climate stations with no significant site changes since the 1930s.",
-                Publisher = "National Institute of Water and Atmospheric Research (NIWA)",
-                PublisherUrl = "http://www.niwa.co.nz/",
-                MoreInformationUrl = "https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data",
-                MeasurementDefinitions =
-                [
-                    new ()
-                    {
-                        DataAdjustment = DataAdjustment.Unadjusted,
-                        DataType = DataType.TempMax,
-                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
-                        DataResolution = DataResolution.Daily,
-                        DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$",
-                        FolderName = @"Temperature\NIWA",
-                        FileNameFormat = "[station]_temperature.csv",
-                        NullValue = "-",
-                    },
-                    new ()
-                    {
-                        DataAdjustment = DataAdjustment.Unadjusted,
-                        DataType = DataType.TempMin,
-                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
-                        DataResolution = DataResolution.Daily,
-                        DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<tmax>-?[\d+\.\d+]*),-?\d*,(?<value>-?[\d+\.\d+]*),-?\d*,.*,D$",
-                        FolderName = @"Temperature\NIWA",
-                        FileNameFormat = "[station]_temperature.csv",
-                        NullValue = "-",
-                    },
-                    new ()
-                    {
-                        DataType = DataType.Precipitation,
-                        UnitOfMeasure = UnitOfMeasure.Millimetres,
-                        DataResolution = DataResolution.Daily,
-                        DataAdjustment = null,
-                        DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),.*,D$",
-                        FolderName = @"Precipitation\NIWA",
-                        FileNameFormat = "[station]_rainfall.csv",
-                        NullValue = "-",
                     },
                 ],
             },
@@ -648,6 +542,18 @@ Our aim is to provide climate science and services to people and organisations, 
                 DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/download.html",
                 MeasurementDefinitions =
                 [
+                    new ()
+                    {
+                        DataAdjustment = DataAdjustment.Adjusted,
+                        DataType = DataType.TempMean,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                        DataResolution = DataResolution.Monthly,
+                        RowDataType = RowDataType.TwelveMonthsPerRow,
+                        DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+).*$",
+                        FolderName = @"Temperature\Met",
+                        FileNameFormat = "meantemp_monthly_totals.txt",
+                        NullValue = "-99.9",
+                    },
                     new ()
                     {
                         DataAdjustment = DataAdjustment.Adjusted,

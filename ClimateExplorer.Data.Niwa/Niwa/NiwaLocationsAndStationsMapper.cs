@@ -65,7 +65,9 @@ public static class NiwaLocationsAndStationsMapper
                 Id = externalStationCode,
                 StartDate = match.Groups["startdate"].Value == "null" ? null : DateTime.Parse(match.Groups["startdate"].Value),
                 EndDate = match.Groups["enddate"].Value == "null" ? null : DateTime.Parse(match.Groups["enddate"].Value),
-                ValueAdjustment = double.Parse(match.Groups["adjustment"].Value)
+                // ValueAdjustment has been removed from the codebase. NIWA was the only dataset that used it.
+                // NIWA has been removed from ClimateExplorer, replaced by the GHCN.
+                // ValueAdjustment = double.Parse(match.Groups["adjustment"].Value)
             };
 
             if (!stations.Any(x => x.Id == externalStationCode))

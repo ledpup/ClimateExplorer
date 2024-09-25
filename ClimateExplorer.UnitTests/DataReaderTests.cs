@@ -276,28 +276,24 @@ public class DataReaderTests
                 Id = "1427",
                 StartDate = DateTime.Parse("1909/09/01"),
                 EndDate = DateTime.Parse("1950/12/31"),
-                ValueAdjustment = -0.62f,
             },
             new DataFileFilterAndAdjustment
             {
                 Id = "1427",
                 StartDate = DateTime.Parse("1951/01/01"),
                 EndDate = DateTime.Parse("1976/03/31"),
-                ValueAdjustment = -0.65f,
             },
             new DataFileFilterAndAdjustment
             {
                 Id = "1945",
                 StartDate = DateTime.Parse("1976-04-01"),
                 EndDate = DateTime.Parse("1998-07-31"),
-                ValueAdjustment = 0.01f
             },
             new DataFileFilterAndAdjustment
             {
                 Id = "1962",
                 StartDate = DateTime.Parse("1998-08-01T00:00:00"),
                 EndDate = null,
-                ValueAdjustment = 0
             }
         };
 

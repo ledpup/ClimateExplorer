@@ -10972,6 +10972,45 @@
     "YearsOfMissingData": 12
   },
   {
+    "Id": "NZ000093292",
+    "Name": "GISBORNE_AERODROME",
+    "CountryCode": "NZ",
+    "Coordinates": {
+      "Latitude": -38.65,
+      "Longitude": 177.983,
+      "Elevation": 5
+    },
+    "FirstYear": 1906,
+    "LastYear": 2023,
+    "YearsOfMissingData": 33
+  },
+  {
+    "Id": "NZ000093844",
+    "Name": "INVERCARGILL_AIRPOR",
+    "CountryCode": "NZ",
+    "Coordinates": {
+      "Latitude": -46.417,
+      "Longitude": 168.333,
+      "Elevation": 2
+    },
+    "FirstYear": 1866,
+    "LastYear": 2023,
+    "YearsOfMissingData": 35
+  },
+  {
+    "Id": "NZ000093994",
+    "Name": "RAOUL_ISL_KERMADEC",
+    "CountryCode": "NZ",
+    "Coordinates": {
+      "Latitude": -29.25,
+      "Longitude": -177.917,
+      "Elevation": 49
+    },
+    "FirstYear": 1941,
+    "LastYear": 2020,
+    "YearsOfMissingData": 7
+  },
+  {
     "Id": "NZ000933090",
     "Name": "NEW_PLYMOUTH_AWS",
     "CountryCode": "NZ",
@@ -10983,6 +11022,58 @@
     "FirstYear": 1944,
     "LastYear": 2023,
     "YearsOfMissingData": 4
+  },
+  {
+    "Id": "NZ000936150",
+    "Name": "HOKITIKA_AERODROME",
+    "CountryCode": "NZ",
+    "Coordinates": {
+      "Latitude": -42.717,
+      "Longitude": 170.983,
+      "Elevation": 40
+    },
+    "FirstYear": 1867,
+    "LastYear": 2023,
+    "YearsOfMissingData": 22
+  },
+  {
+    "Id": "NZ000939450",
+    "Name": "CAMPBELL_ISLAND_AWS",
+    "CountryCode": "NZ",
+    "Coordinates": {
+      "Latitude": -52.55,
+      "Longitude": 169.167,
+      "Elevation": 19
+    },
+    "FirstYear": 1944,
+    "LastYear": 2023,
+    "YearsOfMissingData": 2
+  },
+  {
+    "Id": "NZM00093110",
+    "Name": "AUCKLAND_AERO_AWS",
+    "CountryCode": "NZ",
+    "Coordinates": {
+      "Latitude": -37,
+      "Longitude": 174.8,
+      "Elevation": 7
+    },
+    "FirstYear": 1865,
+    "LastYear": 2023,
+    "YearsOfMissingData": 23
+  },
+  {
+    "Id": "NZM00093780",
+    "Name": "CHRISTCHURCH_INTL",
+    "CountryCode": "NZ",
+    "Coordinates": {
+      "Latitude": -43.489,
+      "Longitude": 172.532,
+      "Elevation": 37.5
+    },
+    "FirstYear": 1864,
+    "LastYear": 2023,
+    "YearsOfMissingData": 32
   },
   {
     "Id": "PA000086297",
