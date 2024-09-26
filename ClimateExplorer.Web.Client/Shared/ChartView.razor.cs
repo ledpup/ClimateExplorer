@@ -238,6 +238,12 @@ public partial class ChartView
         // This can happen at startup, or if the user switches off all data series
         if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0 || chart == null || chartTrendline == null)
         {
+            if (chart != null)
+            {
+                await chart.Clear();
+                await chart.SetOptionsObject(new { });
+            }
+
             l.LogInformation("Bailing early as no chart data available");
             return;
         }

@@ -146,6 +146,12 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
             url += "&csd=" + chartSeriesUrlComponent;
         }
+        else
+        {
+            ChartView!.ChartLoadingIndicatorVisible = false;
+            ChartView.ChartSeriesWithData = null;
+            await ChartView.HandleRedraw();
+        }
 
         string currentUri = NavManager!.Uri;
         string newUri = NavManager.ToAbsoluteUri(url).ToString();

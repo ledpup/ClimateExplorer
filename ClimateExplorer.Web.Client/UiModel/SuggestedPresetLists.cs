@@ -372,7 +372,7 @@ public static class SuggestedPresetLists
                     new SuggestedChartPresetModelWithVariants()
                     {
                         Title = "First and last day of frost",
-                        Description = "First and last day of the year that has temperature ≤ 2.2°C; 20-year smoothing",
+                        Description = "First and last day of the year that has temperature ≤ 2.2°C",
                         ChartSeriesList =
                         [
                             new ChartSeriesDefinition()
