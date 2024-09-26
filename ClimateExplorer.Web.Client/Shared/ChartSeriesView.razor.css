@@ -29,6 +29,13 @@
             transition: 0.25s;
         }
 
+        .chart-series-config .title-bar .trash {
+            padding: 8px;
+            padding-top: 12px;
+            color: #a00000;
+            margin-left: auto;
+        }
+
         .chart-series-config .title-bar .expander {
             padding: 8px;
             padding-top: 12px;

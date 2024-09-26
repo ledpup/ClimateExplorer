@@ -12,6 +12,9 @@
             <div class="title">@ChartSeries!.GetFriendlyTitleShort()</div>
             <div class="description">@ChartSeries!.GetFriendlyDescription()</div>
         </div>
+        <div class="trash" title="Remove this series" @onclick="@OnRemoveSeriesClicked">
+            <i class="fas fa-trash fa-lg"></i>
+        </div>
         <div class="expander">
             <span class="oi oi-chevron-bottom" aria-hidden="true"></span>
         </div>
