@@ -176,12 +176,13 @@ public partial class ClimateStripe
         var title = $"Year {values.Year}\r\n";
         if (UnitOfMeasure == UnitOfMeasure.Millimetres)
         {
-            title += $"Total of {Math.Round(values.Absolute, uomRounding)}{uomString} ({Math.Abs(Math.Round(values.Relative, uomRounding))}{uomString} {aboveOrBelow} average)\r\n";
+            title += $"Precipitation total of {Math.Round(values.Absolute, uomRounding)}{uomString}\r\n";
+            title += $"{Math.Abs(Math.Round(values.Relative, uomRounding))}{uomString} {aboveOrBelow} average\r\n";
             title += $"{Math.Round(values.PercentageOfAverage, 0)}% of the average\r\n";
         }
         else
         {
-            title += $"Average of {Math.Round(values.Absolute, uomRounding)}{uomString}\r\n";
+            title += $"Mean temperature average of {Math.Round(values.Absolute, uomRounding)}{uomString}\r\n";
             title += $"{Math.Abs(Math.Round(values.Relative, uomRounding))}{uomString} {aboveOrBelow} average";
         }
 
