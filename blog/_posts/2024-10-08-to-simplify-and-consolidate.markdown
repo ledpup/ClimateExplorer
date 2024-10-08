@@ -14,4 +14,4 @@ Now that the [Global Historical Climatology Network]({{site.baseurl}}{% post_url
 
 This change has made mean temperature the default temperature data. Maximum and minimum temperatures are still available for every site (via GHCNd for most sites), but the presets will give you mean temperature (it used to be either maximum or mean temperature, depending on the dataset).
 
-All sites now have adjusted and unadjusted temperature records and, if available, precipitation data. If we'd kept RAIA and NIWA datasets there would have been weird inconsistencies in those areas.
+All sites now have adjusted and unadjusted temperature records and, if available, precipitation data. If we'd kept RIA and NIWA datasets there would have been weird inconsistencies in those areas.
