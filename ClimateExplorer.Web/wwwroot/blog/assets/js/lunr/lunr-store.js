@@ -54,7 +54,7 @@ var store = [{
         "teaser": null
       },{
         "title": "To simplify and consolidate",
-        "excerpt":"Until recently, ClimateExplorer was sourcing temperature and precipitation data for locations from multiple sources. We started ClimateExplorer by using data from Australian Climate Observations Reference Network – Surface Air Temperature (ACORN-SAT). It expanded to include Remote Islands and Antarctica and to New Zealand’s 7-station series and 11-station series from the...","categories": ["datasets"],
+        "excerpt":"Until recently, Climate Explorer was sourcing temperature and precipitation data for locations from multiple sources. We started ClimateExplorer by using data from Australian Climate Observations Reference Network – Surface Air Temperature (ACORN-SAT). It expanded to include Remote Islands and Antarctica and to New Zealand’s 7-station series and 11-station series from...","categories": ["datasets"],
         "tags": [],
         "url": "/blog/datasets/2024/10/08/to-simplify-and-consolidate.html",
         "teaser": null

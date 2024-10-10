@@ -5,7 +5,7 @@ date: 2024-06-02 12:00:00 +1000
 categories: datasets
 ---
 
-In 2023 [Climate Explorer](https://climateexplorer.net/) had temperature records for Australia, New Zealand and the UK. We wanted to add temperature records from all around the world. Finding a dataset that fitted our requirements wasn't easy. Below are the required criteria.
+In 2023 [ClimateExplorer](https://climateexplorer.net/) had temperature records for Australia, New Zealand and the UK. We wanted to add temperature records from all around the world. Finding a dataset that fitted our requirements wasn't easy. Below are the required criteria.
 
 1. A dataset that has unadjusted (what was recorded on the gauge) and adjusted records (corrections due to changes at the site and fixes for errors).
 1. Only the best quality and longest running stations, from the tens of thousands of available sites around the world.

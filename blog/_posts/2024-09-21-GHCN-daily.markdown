@@ -8,7 +8,7 @@ After we added [The rest of the world]({{site.baseurl}}{% post_url 2024-06-02-th
 
 Initially, this seemed like a daunting task. We had selected 1883 sites from GHCNm. GHCNd data files for those sites total over 7 gigabytes. I wanted it to be a few hundred megabytes.
 
-The first thing to do would be to transform the GHCNd file into something that [Climate Explorer](https://climateexplorer.net/) could use. The data file format in GHCNd looks like the below.
+The first thing to do would be to transform the GHCNd file into something that [ClimateExplorer](https://climateexplorer.net/) could use. The data file format in GHCNd looks like the below.
 
 ```
 "STATION","DATE","LATITUDE","LONGITUDE","ELEVATION","NAME","PRCP","PRCP_ATTRIBUTES","SNWD","SNWD_ATTRIBUTES","TMAX","TMAX_ATTRIBUTES","TMIN","TMIN_ATTRIBUTES","TAVG","TAVG_ATTRIBUTES"
