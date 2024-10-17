@@ -3,12 +3,10 @@
 @using ClimateExplorer.Core
 @using ClimateExplorer.Core.Model
 @using ClimateExplorer.Core.ViewModel
-@using ClimateExplorer.Web.Client.UiModel
 @using ClimateExplorer.Web.Services
 @using ClimateExplorer.Web.UiModel
 @using ClimateExplorer.Core.Calculators
 @using ClimateExplorer.Core.DataPreparation
-@using System.Globalization
 @using static ClimateExplorer.Core.Enums
 
 <LoadingIndicator @bind-Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
@@ -32,10 +30,6 @@
             @if (PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
             {
                 <OverviewField Label="Precipitation anomaly"><Value>@(PrecipitationAnomalyAsString == null ? "NA" : PrecipitationAnomalyAsString)</Value></OverviewField>
-            }
-            @if (RecordHigh != null)
-            {
-                <OverviewField Label="Record high" PopupTitle="@("Record highs and lows for " + Location?.Name)" PopupText="@ClimateRecordsDescription" ToolTip="@RecordHighToolTip"><Value>@(RecordHigh == null ? "NA" : RecordHigh.Year)</Value></OverviewField>
             }
             <ClimateStripe UnitOfMeasure="UnitOfMeasure.DegreesCelsius" LocationName=@Location?.Name LocationMean=@TemperatureLocationMean DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange ShowInfo="true" />
             <WarmestYears DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
@@ -96,10 +90,6 @@
     string? HeatingScoreDescription;
     IEnumerable<HeatingScoreRow>? HeatingScoreTable { get; set; }
 
-    ClimateRecord? RecordHigh { get; set; }
-    string? RecordHighToolTip { get; set; }
-    string? ClimateRecordsDescription;
-
     public void ChangeLocationClicked(EventArgs args)
     {
         RequestLocationChange.InvokeAsync();
@@ -135,91 +125,20 @@
         PrecipitationAnomalyRecords = null;
         PrecipitationAnomalyAsString = null;
 
-        TemperatureDataType = null;
-        WarmingAnomalyAsString = null;
-        WarmingAnomalyDescription = null;
-        TemperatureLocationMean = null;
-        TemperatureAnomalyRecords = null;
-
-        RecordHigh = null;
-        RecordHighToolTip = null;
-        ClimateRecordsDescription = null;
-
         // We can't do anything until we're supplied our tasty, tasty DataSetDefinitions
         if (DataSetDefinitions == null)
         {
             return;
         }
 
-        var precipitationAnomaly = await CalculateAnomaly(new List<DataSubstitute> { new DataSubstitute { DataType = DataType.Precipitation } }, ContainerAggregationFunctions.Sum);
-        if (precipitationAnomaly != null)
-        {
-            PrecipitationAnomalyAsString = GetPrecipitationAnomalyAsString(precipitationAnomaly.CalculatedAnomaly!);
-            PrecipitationLocationMean = precipitationAnomaly.DataSet?.DataRecords.Average(x => x.Value);
-            PrecipitationAnomalyRecords = precipitationAnomaly.AnomalyRecords;
-        }
-
-        var temperatureAnomaly  = await CalculateAnomaly(DataSubstitute.StandardTemperatureDataMatches(), ContainerAggregationFunctions.Mean);
-        if (temperatureAnomaly != null)
-        {
-            TemperatureDataType = temperatureAnomaly.DataSet?.DataType;
-            WarmingAnomalyAsString = GetWarmingAnomalyAsString(temperatureAnomaly.CalculatedAnomaly!);
-            WarmingAnomalyDescription = GenerateWarmingAnomalyDescription(temperatureAnomaly.CalculatedAnomaly!);
-            TemperatureLocationMean = temperatureAnomaly?.DataSet?.DataRecords.Average(x => x.Value);
-            TemperatureAnomalyRecords = temperatureAnomaly?.AnomalyRecords;
-        }
-
-        var climateRecords = await DataService!.GetClimateRecords(Location!.Id);
-        var max = climateRecords.Where(x => x.DataType == DataType.TempMax && x.RecordType == RecordType.High);
-        if (max.Count() > 0)
-        {
-            if (max.Count() > 1)
-            {
-                max = max.Where(x => x.DataAdjustment == DataAdjustment.Adjusted);
-            }
-            RecordHigh = max.Single();
-            RecordHighToolTip = $"{Location.Name} record high of {RecordHigh.Value}°C set {(RecordHigh.Day == null ? string.Empty : RecordHigh.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(RecordHigh.Month)} {RecordHigh.Year}.\r\nClick for more records.";
-            BuildClimateRecordsTable(climateRecords);
-        }
+        await GetData(new List<DataSubstitute> { new DataSubstitute { DataType = DataType.Precipitation } }, ContainerAggregationFunctions.Sum);
+        await GetData(DataSubstitute.StandardTemperatureDataMatches(), ContainerAggregationFunctions.Mean);
 
         BuildHeatingScoreDescription();
 
         LocationLoadingIndicatorVisible = false;
 
         await base.OnParametersSetAsync();
-    }
-
-    protected void BuildClimateRecordsTable(IEnumerable<ClimateRecord> climateRecords)
-    {
-        ClimateRecordsDescription = "";
-        var daGroups = climateRecords.GroupBy(x => x.DataAdjustment);
-        foreach (var daGroup in daGroups)
-        {
-            ClimateRecordsDescription += $"<h4 class=\"mt-4\">{(daGroup.Key == null ? "Other" : daGroup.Key)} records</h4>";
-            ClimateRecordsDescription += "<table class=\"table\"><tr><th width=\"40%\"></th><th>Record low</th><th>Record high</th></tr>";
-
-            var dtGroups = daGroup.GroupBy(x => x.DataType);
-
-            foreach (var dtGroup in dtGroups)
-            {
-                var drGroups = dtGroup.GroupBy(x => x.DataResolution);
-
-                foreach (var drGroup in drGroups)
-                {
-                    ClimateRecordsDescription += $"<tr><td>{drGroup.Key} {ChartSeriesDefinition.MapDataTypeToFriendlyName(dtGroup.Key).ToLower()}</td>";
-
-                    var recordHigh = drGroup.Single(x => x.RecordType == RecordType.High);
-                    var recordLow = drGroup.Single(x => x.RecordType == RecordType.Low);
-
-                    ClimateRecordsDescription += $"<td>{(recordLow.Day == null ? string.Empty : recordLow.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(recordLow.Month)} {recordLow.Year}<br><span class=\"secondary-text\">{recordLow.Value}{Enums.UnitOfMeasureLabelShort(recordLow.UnitOfMeasure)}</span></td>";
-                    ClimateRecordsDescription += $"<td>{(recordHigh.Day == null ? string.Empty : recordHigh.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(recordHigh.Month)} {recordHigh.Year}<br><span class=\"secondary-text\">{recordHigh.Value}{Enums.UnitOfMeasureLabelShort(recordHigh.UnitOfMeasure)}</span></td>";
-
-                    ClimateRecordsDescription += "</tr>";
-                }
-            }
-
-            ClimateRecordsDescription += "</table>";
-        }
     }
 
     protected void BuildHeatingScoreDescription()
@@ -267,68 +186,71 @@
         }
     }
 
-    protected async Task<LocationAnomalySummary?> CalculateAnomaly(List<DataSubstitute> dataSubstitutes, ContainerAggregationFunctions function)
+    protected async Task GetData(List<DataSubstitute> dataSubstitutes, ContainerAggregationFunctions function)
     {
-        var series = await GetData(dataSubstitutes, function);
-
-        if (series == null)
-        {
-            return null;
-        }
-
-        var average = series.DataRecords.Average(x => x.Value)!.Value;
-
-        var anomalyRecords =
-            series.DataRecords
-            .Where(x => x.Value != null)
-            .Select(x => new YearlyValues(((YearBinIdentifier)BinIdentifier.Parse(x.BinId!)).Year, x.Value!.Value - average, x.Value!.Value, x.Value!.Value / average * 100D))
-            .ToList();
-
-        var anomaly = AnomalyCalculator.CalculateAnomaly(series.DataRecords);
-
-        return new LocationAnomalySummary { CalculatedAnomaly = anomaly, DataSet = series, AnomalyRecords = anomalyRecords };
-    }
-
-    protected async Task<DataSet?> GetData(List<DataSubstitute> dataSubstitutes, ContainerAggregationFunctions function)
-    {
-        DataSetAndMeasurementDefinition measurementForLocation =
+        var measurementForLocation =
             DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
                 DataSetDefinitions!,
                 Location!.Id,
                 dataSubstitutes,
-                throwIfNoMatch: false)!;
+                throwIfNoMatch: false);
 
-
-        if (measurementForLocation == null)
+        if (measurementForLocation != null)
         {
-            return null;
+            var series =
+                await DataService!.PostDataSet(
+                    BinGranularities.ByYear,
+                    function,
+                    function,
+                    function,
+                    SeriesValueOptions.Value,
+                    new SeriesSpecification[]
+                        {
+                            new SeriesSpecification
+                            {
+                                DataAdjustment = measurementForLocation.MeasurementDefinition!.DataAdjustment,
+                                DataSetDefinitionId = measurementForLocation.DataSetDefinition!.Id,
+                                DataType = measurementForLocation.MeasurementDefinition.DataType,
+                                LocationId = Location.Id
+                            }
+                        },
+                    SeriesDerivationTypes.ReturnSingleSeries,
+                    1.0f,
+                    1.0f,
+                    0.7f,
+                    14,
+                    SeriesTransformations.Identity);
+
+            var average = series.DataRecords.Average(x => x.Value)!.Value;
+
+            var anomalyRecords =
+                series.DataRecords
+                .Where(x => x.Value != null)
+                .Select(x => new YearlyValues(((YearBinIdentifier)BinIdentifier.Parse(x.BinId!)).Year, x.Value!.Value - average, x.Value!.Value, x.Value!.Value / average * 100D))
+                .ToList();
+
+            var index = AnomalyCalculator.CalculateAnomaly(series.DataRecords);
+
+            if (dataSubstitutes.Any(x => x.DataType == DataType.Precipitation))
+            {
+                PrecipitationAnomalyAsString = GetPrecipitationAnomalyAsString(index);
+                PrecipitationLocationMean = series.DataRecords.Average(x => x.Value);
+                PrecipitationAnomalyRecords = anomalyRecords;
+            }
+            else if (dataSubstitutes.Any(x => x.DataType == DataType.TempMax))
+            {
+                TemperatureDataType = series.DataType;
+                WarmingAnomalyAsString = GetWarmingAnomalyAsString(index);
+                WarmingAnomalyDescription = GenerateWarmingAnomalyDescription(index);
+                TemperatureLocationMean = series.DataRecords.Average(x => x.Value);
+                TemperatureAnomalyRecords = anomalyRecords;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
-        var series =
-            await DataService!.PostDataSet(
-                BinGranularities.ByYear,
-                function,
-                function,
-                function,
-                SeriesValueOptions.Value,
-                new SeriesSpecification[]
-                    {
-                        new SeriesSpecification
-                        {
-                            DataAdjustment = measurementForLocation.MeasurementDefinition!.DataAdjustment,
-                            DataSetDefinitionId = measurementForLocation.DataSetDefinition!.Id,
-                            DataType = measurementForLocation.MeasurementDefinition.DataType,
-                            LocationId = Location.Id
-                        }
-                    },
-                SeriesDerivationTypes.ReturnSingleSeries,
-                1.0f,
-                1.0f,
-                0.7f,
-                14,
-                SeriesTransformations.Identity);
-
-        return series!;
     }
 
     public async Task HandleOnYearFilterChange(short year)

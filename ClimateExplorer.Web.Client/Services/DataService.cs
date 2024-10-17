@@ -190,11 +190,4 @@ public class DataService : IDataService
         var result = await httpClient.GetFromJsonAsync<HeatingScoreRow[]>(url);
         return result!;
     }
-
-    public async Task<IEnumerable<ClimateRecord>> GetClimateRecords(Guid locationId)
-    {
-        var url = $"/climate-record?locationId={locationId}";
-        var result = await httpClient.GetFromJsonAsync<ClimateRecord[]>(url);
-        return result!;
-    }
 }
