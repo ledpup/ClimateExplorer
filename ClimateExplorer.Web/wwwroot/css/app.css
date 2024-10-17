@@ -90,3 +90,15 @@ a, .btn-link {
 .modal-open {
     overflow: hidden;
 }
+
+h4:first-child {
+    margin-top: 0px !important;
+}
+
+.secondary-text {
+    color: #aaa;
+}
+
+td {
+    vertical-align: middle;
+}

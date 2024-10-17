@@ -60,4 +60,4 @@ Climate stripe colours are calculated by the following algorithm.
 
 6. All anomalies between the extremes are lighter shades of blue or red
 
-Climate Explorer's stripe is interactive. Hover over any year in the series then click. The chart will update with a monthly view of the selected year.
+[ClimateExplorer](https://climateexplorer.net/)'s stripe is interactive. Hover over any year in the series then click. The chart will update with a monthly view of the selected year.
