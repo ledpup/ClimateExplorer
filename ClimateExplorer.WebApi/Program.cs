@@ -89,6 +89,10 @@ app.MapGet(
         "       Returns a list of regions.\n" +
         "   GET /heating-score-table\n" +
         "       A table that records the range of warming anomalies for each heating score.\n" +
+        "   GET /climate-record\n" +
+        "       Returns a list of climate-records at a specific location\n" +
+        "           Parameters:\n" +
+        "               locationId: location id for the climate-records\n" +
         "   POST /dataset\n" +
         "       Returns the specified data set, transformed as requested");
 
@@ -99,6 +103,7 @@ app.MapGet("/location-by-path", GetLocationByPath);
 app.MapGet("/country", GetCountries);
 app.MapGet("/region", GetRegions);
 app.MapGet("/heating-score-table", GetHeatingScoreTable);
+app.MapGet("/climate-record", GetClimateRecords);
 app.MapPost("/dataset", PostDataSets);
 
 app.Run();
@@ -452,4 +457,98 @@ async Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable()
 {
     var result = await cache.Get<List<HeatingScoreRow>>(HeatingScoreTable);
     return result;
+}
+
+async Task<IEnumerable<ClimateRecord>> GetClimateRecords(Guid locationId)
+{
+    string cacheKey = $"ClimateRecord_" + JsonSerializer.Serialize(locationId);
+    var result = await cache.Get<IEnumerable<ClimateRecord>>(cacheKey);
+    if (result != null)
+    {
+        return result;
+    }
+
+    var dataSetDefinitions = await GetDataSetDefinitions();
+    var locationDsds = dataSetDefinitions.Where(x => x.LocationIds.Contains(locationId));
+
+    var climateRecords = new List<ClimateRecord>();
+
+    foreach (var dataSetDefinition in locationDsds)
+    {
+        foreach (var md in dataSetDefinition.MeasurementDefinitions)
+        {
+            if (!(md.DataResolution == DataResolution.Daily || md.DataResolution == DataResolution.Monthly))
+            {
+                throw new NotImplementedException();
+            }
+
+            var dataSets = await PostDataSets(
+                new PostDataSetsRequestBody
+                {
+                    BinningRule = md.DataResolution == DataResolution.Daily ? BinGranularities.ByYearAndDay : BinGranularities.ByYearAndMonth,
+                    SeriesTransformation = SeriesTransformations.Identity,
+                    SeriesSpecifications =
+                    [
+                        new SeriesSpecification
+                        {
+                            DataSetDefinitionId = dataSetDefinition.Id,
+                            DataType = md.DataType,
+                            LocationId = locationId,
+                            DataAdjustment = md.DataAdjustment,
+                        },
+                    ],
+                });
+
+            climateRecords.Add(CreateClimateRecord(md, dataSets, RecordType.High));
+            climateRecords.Add(CreateClimateRecord(md, dataSets, RecordType.Low));
+        }
+    }
+
+    await cache.Put(cacheKey, climateRecords);
+
+    return climateRecords;
+}
+
+static ClimateRecord CreateClimateRecord(MeasurementDefinitionViewModel md, DataSet dataSets, RecordType recordType)
+{
+    double record = (double)(recordType == RecordType.High ? dataSets.DataRecords.Max(x => x.Value)
+                                                           : dataSets.DataRecords.Min(x => x.Value));
+    var records = dataSets.DataRecords.Where(x => x.Value == record).OrderBy(x => x.BinId).ToList();
+    var binId = records.FirstOrDefault().GetBinIdentifier();
+
+    var cr = new ClimateRecord
+    {
+        DataAdjustment = md.DataAdjustment,
+        DataResolution = md.DataResolution,
+        DataType = md.DataType,
+        UnitOfMeasure = md.UnitOfMeasure,
+        RecordType = recordType,
+        Value = record,
+        NumberOfTimes = records.Count,
+    };
+
+    switch (md.DataResolution)
+    {
+        case DataResolution.Daily:
+            {
+                var bin = (YearAndDayBinIdentifier)binId;
+                cr.Year = bin.Year;
+                cr.Month = bin.Month;
+                cr.Day = bin.Day;
+                break;
+            }
+
+        case DataResolution.Monthly:
+            {
+                var bin = (YearAndMonthBinIdentifier)binId;
+                cr.Year = bin.Year;
+                cr.Month = bin.Month;
+                break;
+            }
+
+        default:
+            throw new NotImplementedException();
+    }
+
+    return cr;
 }
