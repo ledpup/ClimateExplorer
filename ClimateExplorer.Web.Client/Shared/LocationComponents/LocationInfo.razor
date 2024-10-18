@@ -9,6 +9,7 @@
 @using ClimateExplorer.Core.Calculators
 @using ClimateExplorer.Core.DataPreparation
 @using System.Globalization
+@using ClimateExplorer.WebApiClient.Services
 @using static ClimateExplorer.Core.Enums
 
 <LoadingIndicator @bind-Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
@@ -195,8 +196,8 @@
         var daGroups = climateRecords.GroupBy(x => x.DataAdjustment);
         foreach (var daGroup in daGroups)
         {
-            ClimateRecordsDescription += $"<h4 class=\"mt-4\">{(daGroup.Key == null ? "Other" : daGroup.Key)} records</h4>";
-            ClimateRecordsDescription += "<table class=\"table\"><tr><th width=\"40%\"></th><th>Record low</th><th>Record high</th></tr>";
+            ClimateRecordsDescription += $"<h5 class=\"mt-5 mb-0\">{(daGroup.Key == null ? "Other" : daGroup.Key)} records</h5>";
+            ClimateRecordsDescription += "<table class=\"table mb-3\"><tr><th width=\"40%\"></th><th>Record low</th><th>Record high</th></tr>";
 
             var dtGroups = daGroup.GroupBy(x => x.DataType);
 
@@ -211,8 +212,8 @@
                     var recordHigh = drGroup.Single(x => x.RecordType == RecordType.High);
                     var recordLow = drGroup.Single(x => x.RecordType == RecordType.Low);
 
-                    ClimateRecordsDescription += $"<td>{(recordLow.Day == null ? string.Empty : recordLow.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(recordLow.Month)} {recordLow.Year}<br><span class=\"secondary-text\">{recordLow.Value}{Enums.UnitOfMeasureLabelShort(recordLow.UnitOfMeasure)}</span></td>";
-                    ClimateRecordsDescription += $"<td>{(recordHigh.Day == null ? string.Empty : recordHigh.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(recordHigh.Month)} {recordHigh.Year}<br><span class=\"secondary-text\">{recordHigh.Value}{Enums.UnitOfMeasureLabelShort(recordHigh.UnitOfMeasure)}</span></td>";
+                    ClimateRecordsDescription += $"<td><span class=\"secondary-text\">{(recordLow.Day == null ? string.Empty : recordLow.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(recordLow.Month)}</span> {recordLow.Year}<div class=\"secondary-text\">{recordLow.Value}{Enums.UnitOfMeasureLabelShort(recordLow.UnitOfMeasure)}</div></td>";
+                    ClimateRecordsDescription += $"<td><span class=\"secondary-text\">{(recordHigh.Day == null ? string.Empty : recordHigh.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(recordHigh.Month)}</span> {recordHigh.Year}<div class=\"secondary-text\">{recordHigh.Value}{Enums.UnitOfMeasureLabelShort(recordHigh.UnitOfMeasure)}</div></td>";
 
                     ClimateRecordsDescription += "</tr>";
                 }

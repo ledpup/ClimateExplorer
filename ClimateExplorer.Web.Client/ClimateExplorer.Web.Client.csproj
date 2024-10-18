@@ -28,7 +28,7 @@
     <PackageReference Include="CurrentDevice" Version="1.0.2" />
     <PackageReference Include="GeoCoordinate.NetStandard1" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="8.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="8.0.10" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
@@ -40,6 +40,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClimateExplorer.Core\ClimateExplorer.Core.csproj" />
+    <ProjectReference Include="..\ClimateExplorer.WebApiClient\ClimateExplorer.WebApiClient.csproj" />
     <ProjectReference Include="..\DPBlazorMapLibrary\DPBlazorMapLibrary.csproj" />
   </ItemGroup>
 

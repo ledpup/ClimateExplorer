@@ -6,6 +6,7 @@ using Blazorise.Icons.FontAwesome;
 using ClimateExplorer.Web;
 using ClimateExplorer.Web.Client.Pages;
 using ClimateExplorer.Web.Services;
+using ClimateExplorer.WebApiClient.Services;
 using CurrentDevice;
 using DPBlazorMapLibrary;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
