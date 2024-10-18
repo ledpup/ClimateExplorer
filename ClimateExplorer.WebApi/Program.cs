@@ -20,8 +20,8 @@ using static ClimateExplorer.Core.DataPreparation.DataSetBuilder;
 using static ClimateExplorer.Core.Enums;
 #pragma warning restore SA1200 // Using directives should be placed correctly
 
-// ICache cache = new FileBackedCache("cache");
 ICache cache = new FileBackedTwoLayerCache("cache");
+ICache longtermCache = new FileBackedTwoLayerCache("cache-longterm");
 
 const string HeatingScoreTable = "HeatingScoreTable";
 const string NearbyLocations = "NearbyLocations";
@@ -153,12 +153,22 @@ async Task<IEnumerable<Location>> GetLocations(Guid? locationId = null)
 
 async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null)
 {
-    string cacheKey = $"Locations_{locationId}";
-
-    var result = await cache.Get<Location[]>(cacheKey);
-    if (result != null)
+    string cacheKey = null;
+    Location[] cacheResult = null;
+    if (locationId == null)
     {
-        return result;
+        cacheKey = "Locations";
+        cacheResult = await longtermCache.Get<Location[]>(cacheKey);
+    }
+    else
+    {
+        cacheKey = $"Locations_{locationId}";
+        cacheResult = await cache.Get<Location[]>(cacheKey);
+    }
+
+    if (cacheResult != null)
+    {
+        return cacheResult;
     }
 
     IEnumerable<Location> locations;
@@ -167,7 +177,7 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null)
     {
         var allLocations = (await GetCachedLocations()).OrderBy(x => x.Name);
         locations = allLocations.Where(x => x.Id == locationId);
-        var nearbyLocations = await cache.Get<Dictionary<Guid, List<LocationDistance>>>(NearbyLocations);
+        var nearbyLocations = await longtermCache.Get<Dictionary<Guid, List<LocationDistance>>>(NearbyLocations);
         foreach (var l in locations)
         {
             l.NearbyLocations = nearbyLocations[l.Id];
@@ -235,13 +245,13 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null)
 
         // Can't set the heating scores until all warming anomalies are calculated.
         var heatingScoreTable = Location.SetHeatingScores(locations);
-        await cache.Put(HeatingScoreTable, heatingScoreTable.ToArray());
+        await longtermCache.Put(HeatingScoreTable, heatingScoreTable.ToArray());
 
         var nearbyLocations = Location.GenerateNearbyLocations(locations);
-        await cache.Put(NearbyLocations, nearbyLocations);
-    }
+        await longtermCache.Put(NearbyLocations, nearbyLocations);
 
-    await cache.Put(cacheKey, locations.ToArray());
+        await longtermCache.Put(cacheKey, locations.ToArray());
+    }
 
     return locations;
 }
@@ -455,14 +465,14 @@ async Task<Location> GetLocationByPath(string path)
 
 async Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable()
 {
-    var result = await cache.Get<List<HeatingScoreRow>>(HeatingScoreTable);
+    var result = await longtermCache.Get<List<HeatingScoreRow>>(HeatingScoreTable);
     return result;
 }
 
 async Task<IEnumerable<ClimateRecord>> GetClimateRecords(Guid locationId)
 {
     string cacheKey = $"ClimateRecord_" + JsonSerializer.Serialize(locationId);
-    var result = await cache.Get<IEnumerable<ClimateRecord>>(cacheKey);
+    var result = await longtermCache.Get<IEnumerable<ClimateRecord>>(cacheKey);
     if (result != null)
     {
         return result;
@@ -504,7 +514,7 @@ async Task<IEnumerable<ClimateRecord>> GetClimateRecords(Guid locationId)
         }
     }
 
-    await cache.Put(cacheKey, climateRecords);
+    await longtermCache.Put(cacheKey, climateRecords);
 
     return climateRecords;
 }

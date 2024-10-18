@@ -7,7 +7,6 @@ using Blazorise.Charts.Trendline;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using static ClimateExplorer.Core.Enums;
-using Blazorise;
 
 public static class ChartLogic
 {

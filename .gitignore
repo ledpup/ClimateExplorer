@@ -365,15 +365,6 @@ FodyWeavers.xsd
 # Ignore the WebApi cache
 /ClimateExplorer.WebApi/cache/*
 
-# Locations
-!/ClimateExplorer.WebApi/cache/hash_-419260639.json
-!/ClimateExplorer.WebApi/cache/d3059fa1-0887-4e64-bfb9-f1a54dcb77d4.json
-# HeatingScoreTable
-!/ClimateExplorer.WebApi/cache/hash_-510263034.json
-!/ClimateExplorer.WebApi/cache/2d9af3bd-70ae-4c30-8a7d-e80b6bcedc92.json
-# NearbyLocations
-!/ClimateExplorer.WebApi/cache/hash_-1567702759.json
-!/ClimateExplorer.WebApi/cache/2695ba27-ad5e-4745-8859-62d91928ede4.json
 # Australia
 !/ClimateExplorer.WebApi/cache/hash_-1136848310.json
 !/ClimateExplorer.WebApi/cache/6608b18e-75f6-4175-873d-34a8179850d0.json

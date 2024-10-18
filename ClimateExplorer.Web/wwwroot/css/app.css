@@ -91,14 +91,19 @@ a, .btn-link {
     overflow: hidden;
 }
 
-h4:first-child {
+h5:first-child {
     margin-top: 0px !important;
 }
 
 .secondary-text {
-    color: #aaa;
+    color: #595959;
 }
 
-td {
+td:nth-child(n+2) {
+    text-align: center;
     vertical-align: middle;
+}
+
+th {
+    text-align: center;
 }

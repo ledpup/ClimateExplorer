@@ -9,6 +9,7 @@ using ClimateExplorer.Web.Client.Shared;
 using ClimateExplorer.Web.Services;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
+using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.WebUtilities;
