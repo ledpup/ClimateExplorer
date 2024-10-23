@@ -274,20 +274,23 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
     if (body.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInRegion)
     {
         var regionId = body.SeriesSpecifications[0].LocationId;
-        var region = Region.GetRegion(regionId);
+        var region = (await Region.GetRegions()).Single(x => x.Id == regionId);
 
         var anomalyDatasets = new List<DataSet>();
 
         // The following section is probably the most expensive operation in the whole application
         // Let's do it all parallel baby, like we did in 2007!
         ParallelOptions parallelOptions = new ();
-        await Parallel.ForEachAsync(region.LocationIds, parallelOptions, async (locationId, cancellationToken) =>
+
+        var locations = await GetLocations();
+        var locationIds = locations.Where(x => x.CountryCode == region.CountryCode).Select(x => x.Id);
+
+        await Parallel.ForEachAsync(locationIds, parallelOptions, async (locationId, cancellationToken) =>
         {
             // Initial values will be absolute values
             body.Anomaly = false;
             var dataset = await PostDataSets(GetPostRequestBody(body, locationId));
             var anomalyDataSet = GenerateAnomalyDataSetForLocation(dataset);
-
             if (anomalyDataSet != null)
             {
                 anomalyDatasets.Add(anomalyDataSet);
@@ -362,8 +365,8 @@ static PostDataSetsRequestBody GetPostRequestBody(PostDataSetsRequestBody body, 
         RequiredBucketDataProportion = body.RequiredBinDataProportion,
         RequiredCupDataProportion = body.RequiredCupDataProportion,
         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-        SeriesSpecifications = new[]
-                {
+        SeriesSpecifications =
+                [
                     new SeriesSpecification
                     {
                         DataAdjustment = body.SeriesSpecifications[0].DataAdjustment,
@@ -371,7 +374,7 @@ static PostDataSetsRequestBody GetPostRequestBody(PostDataSetsRequestBody body, 
                         DataType = body.SeriesSpecifications[0].DataType,
                         LocationId = locationId,
                     },
-                },
+                ],
         SeriesTransformation = body.SeriesTransformation,
         Anomaly = body.Anomaly,
         FilterToYear = body.FilterToYear,
@@ -448,9 +451,9 @@ async Task<Dictionary<string, string>> GetCountries()
     return (await Country.GetCountries(@"MetaData\countries.txt")).ToDictionary(x => x.Key, x => x.Value.Name);
 }
 
-List<Region> GetRegions()
+async Task<List<Region>> GetRegions()
 {
-    return Region.GetRegions();
+    return await Region.GetRegions();
 }
 
 async Task<Location> GetLocationByPath(string path)

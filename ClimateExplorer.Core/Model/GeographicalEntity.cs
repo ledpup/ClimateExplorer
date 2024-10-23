@@ -11,7 +11,7 @@ public class GeographicalEntity
 
     public static async Task<GeographicalEntity> GetGeographicalEntity(Guid id)
     {
-        var geoEntity = Region.GetRegions().SingleOrDefault(x => x.Id == id) as GeographicalEntity;
+        var geoEntity = (await Region.GetRegions()).SingleOrDefault(x => x.Id == id) as GeographicalEntity;
         if (geoEntity == null)
         {
             geoEntity = (await Location.GetLocations()).Single(x => x.Id == id);

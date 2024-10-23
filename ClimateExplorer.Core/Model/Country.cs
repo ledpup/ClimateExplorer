@@ -7,9 +7,9 @@ public class Country
     required public string Name { get; set; }
     required public string Code { get; set; }
 
-    public static async Task<Dictionary<string, Country>> GetCountries(string location)
+    public static async Task<Dictionary<string, Country>> GetCountries(string filenName)
     {
-        var countryFile = await File.ReadAllLinesAsync(location);
+        var countryFile = await File.ReadAllLinesAsync(filenName);
 
         var countries = new Dictionary<string, Country>();
 

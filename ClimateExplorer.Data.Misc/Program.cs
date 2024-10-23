@@ -1,9 +1,27 @@
 ﻿#pragma warning disable SA1200 // Using directives should be placed correctly
+using System.Text.Json;
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Data.Misc;
 using ClimateExplorer.Data.Misc.Ozone;
 #pragma warning restore SA1200 // Using directives should be placed correctly
+
+var countries = (await Country.GetCountries(@"..\..\..\..\ClimateExplorer.WebApi\MetaData\countries.txt")).Values;
+
+var options = new JsonSerializerOptions { WriteIndented = true };
+
+var countriesJson = await File.ReadAllTextAsync(@"..\..\..\..\ClimateExplorer.WebApi\MetaData\Region\Countries.json");
+var regions = JsonSerializer.Deserialize<List<Region>>(countriesJson)!;
+foreach (var country in countries)
+{
+    if (!regions.Any(x => x.CountryCode == country.Code))
+    {
+        regions.Add(new Region { Id = Guid.NewGuid(), CountryCode = country.Code, Name = country.Name });
+    }
+}
+
+var json = JsonSerializer.Serialize(regions, options);
+File.WriteAllText(@"..\..\..\..\ClimateExplorer.WebApi\MetaData\Region\Countries.json", json);
 
 var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
 

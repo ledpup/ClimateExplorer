@@ -77,7 +77,7 @@ public partial class RegionalAndGlobal : ChartablePage
             new ChartSeriesDefinition()
             {
                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
+                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.PhysicalRegionsDict[Region.Atmosphere], co2!),
                 Aggregation = SeriesAggregationOptions.Maximum,
                 BinGranularity = BinGranularities.ByYear,
                 SecondaryCalculation = SecondaryCalculationOptions.AnnualChange,

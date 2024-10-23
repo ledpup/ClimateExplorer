@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="cache-longterm\" />
+    <Folder Include="MetaData\Region\" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="cache-longterm\*">
