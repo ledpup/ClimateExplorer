@@ -43,11 +43,4 @@
     <ProjectReference Include="..\ClimateExplorer.WebApiClient\ClimateExplorer.WebApiClient.csproj" />
     <ProjectReference Include="..\DPBlazorMapLibrary\DPBlazorMapLibrary.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="BlazorCurrentDevice">
-      <HintPath>..\..\BlazorCurrentDevice\BlazorCurrentDevice\bin\Debug\netstandard2.0\BlazorCurrentDevice.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
