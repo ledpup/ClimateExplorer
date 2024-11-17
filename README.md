@@ -4,7 +4,7 @@
 
 ## Architecture and code
 - Built in [Visual Studio 2022 Community Edition](https://visualstudio.microsoft.com/vs/community/) using
-  - .NET 8
+  - .NET 9
   - C#
   - Blazor
   - Minimal Web API
