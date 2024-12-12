@@ -28,14 +28,14 @@ public partial class DualRangeSlider
     [Parameter]
     public EventCallback<bool?> OnShowComponent { get; set; }
 
-    private int InternalFromValue { get; set; }
-    private int InternalToValue { get; set; }
+    private double InternalFromValue { get; set; }
+    private double InternalToValue { get; set; }
 
     private string? SliderOutput { get; set; }
 
-    private int RangeMin { get; set; }
-    private int RangeMax { get; set; }
-    private int RangeValue { get; set; }
+    private double RangeMin { get; set; }
+    private double RangeMax { get; set; }
+    private double RangeValue { get; set; }
     private string? RangeWidth { get; set; }
 
     protected override void OnInitialized()
@@ -65,7 +65,7 @@ public partial class DualRangeSlider
 
     private async Task FromChangedAsync(ChangeEventArgs e)
     {
-        var newFrom = Convert.ToInt32(e.Value);
+        var newFrom = Convert.ToDouble(e.Value);
         InternalFromValue = newFrom < InternalToValue ? newFrom : InternalToValue;
         SetRangeSlider();
         await OnValuesChanged.InvokeAsync(new ExtentValues { FromValue = InternalFromValue.ToString(), ToValue = InternalToValue.ToString() });
@@ -73,7 +73,7 @@ public partial class DualRangeSlider
 
     private async Task ToChangedAsync(ChangeEventArgs e)
     {
-        var newTo = Convert.ToInt32(e.Value);
+        var newTo = Convert.ToDouble(e.Value);
         InternalToValue = newTo > InternalFromValue ? newTo : InternalFromValue;
         SetRangeSlider();
         await OnValuesChanged.InvokeAsync(new ExtentValues { FromValue = InternalFromValue.ToString(), ToValue = InternalToValue.ToString() });
@@ -81,19 +81,23 @@ public partial class DualRangeSlider
 
     private void SetRangeSlider()
     {
-        var halfExtent = (int)((float)(InternalToValue - InternalFromValue) / 2);
+        double totalRange = Max - Min;
+        var fromPosition = InternalFromValue - Min;
+        var toPosition = InternalToValue - Min;
+
+        var halfExtent = (InternalToValue - InternalFromValue) / 2;
         RangeMin = Min + halfExtent;
         RangeMax = Max - halfExtent;
 
-        RangeValue = (int)Math.Round((float)(InternalToValue - InternalFromValue) / 2) + InternalFromValue;
-        var width = (float)(InternalToValue - InternalFromValue) / (Max - Min) * 100;
+        RangeValue = (InternalFromValue + InternalToValue) / 2;
+        var width = (toPosition - fromPosition) / totalRange * 100;
         RangeWidth = $"{width}%";
         SliderOutput = string.Empty;
     }
 
     private async Task RangeChangedAsync(ChangeEventArgs e)
     {
-        var newRange = Convert.ToInt32(e.Value);
+        var newRange = Convert.ToDouble(e.Value);
 
         RangeValue = newRange;
         await SetFromAndToValuesAsync(newRange, true);
@@ -101,7 +105,7 @@ public partial class DualRangeSlider
         SliderOutput = string.Empty;
     }
 
-    private async Task SetFromAndToValuesAsync(int newRange, bool sendOnChangedEvent = false)
+    private async Task SetFromAndToValuesAsync(double newRange, bool sendOnChangedEvent = false)
     {
         var extent = InternalToValue - InternalFromValue;
         var newFrom = newRange - (extent / 2f);
@@ -119,8 +123,8 @@ public partial class DualRangeSlider
         }
         else
         {
-            InternalFromValue = (int)newFrom;
-            InternalToValue = (int)newTo;
+            InternalFromValue = newFrom;
+            InternalToValue = newTo;
         }
 
         if (sendOnChangedEvent)
@@ -141,7 +145,7 @@ public partial class DualRangeSlider
 
     private async Task RangeOnInputAsync(ChangeEventArgs e)
     {
-        var newRange = Convert.ToInt32(e.Value);
+        var newRange = Convert.ToDouble(e.Value);
 
         var extent = InternalToValue - InternalFromValue;
         var newFrom = Math.Round(newRange - (extent / 2f));
