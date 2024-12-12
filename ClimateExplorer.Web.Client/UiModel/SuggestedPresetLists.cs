@@ -146,7 +146,7 @@ public static class SuggestedPresetLists
             new SuggestedChartPresetModelWithVariants()
             {
                 Title = "Temperature + CO₂",
-                Description = "Smoothed yearly average temperature and carbon dioxide from Mauna Loa.",
+                Description = "Smoothed yearly average temperature and carbon dioxide",
                 ChartSeriesList =
                 [
                     new ChartSeriesDefinition()
@@ -177,7 +177,7 @@ public static class SuggestedPresetLists
                     new SuggestedChartPresetModel()
                     {
                         Title = "Temperature + sunspots",
-                        Description = "Smoothed yearly average temperature and sunpot number (a proxy for solar radiation)",
+                        Description = "Smoothed yearly average temperature and sunspot number (a proxy for solar radiation)",
                         ChartSeriesList =
                         [
                             new ChartSeriesDefinition()
@@ -461,7 +461,7 @@ public static class SuggestedPresetLists
             new SuggestedChartPresetModelWithVariants()
             {
                 Title = "Temperature + CO₂",
-                Description = "Smoothed yearly average temperature and carbon dioxide from Mauna Loa.",
+                Description = "Smoothed yearly average temperature and carbon dioxide",
                 ChartSeriesList =
                 [
                     new ChartSeriesDefinition()
@@ -596,7 +596,7 @@ public static class SuggestedPresetLists
                     new ()
                     {
                         Title = "Temperature + CO₂",
-                        Description = "Smoothed yearly average temperature and carbon dioxide from Mauna Loa.",
+                        Description = "Smoothed yearly average temperature and carbon dioxide",
                         ChartSeriesList =
                         [
                             new ChartSeriesDefinition()
