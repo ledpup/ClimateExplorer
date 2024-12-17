@@ -39,7 +39,8 @@
     bool IsMapExpanded { get; set; } = false;
     bool? IsMobileDevice { get; set; }
 
-    bool _mapMarkersCreated = false;
+    bool mapMarkersCreated = false;
+    bool mainTileLayerCreated = false;
 
     int lastZoom = 8;
 
@@ -63,7 +64,8 @@
         PreviousSeenLocationCoordinates = LocationCoordinates;
 
         InitialiseMapOptions();
-        await EnsureMapMarkers();
+        await CreateMapMarkers();
+        await CreateMainTileLayer();
 
         if (IsMapExpanded)
         {
@@ -75,16 +77,8 @@
 
     private async Task AfterMapRender()
     {
-        await EnsureMapMarkers();
-
-        // Create Tile Layer
-        var tileLayerOptions =
-            new TileLayerOptions()
-            {
-                Attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"
-            };
-
-        var mainTileLayer = await LayerFactory!.CreateTileLayerAndAddToMap("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", map!, tileLayerOptions);
+        await CreateMapMarkers();
+        await CreateMainTileLayer();
     }
 
     public async Task ScrollToPoint(LatLng? point)
@@ -106,14 +100,14 @@
         }
     }
 
-    public async Task EnsureMapMarkers()
+    public async Task CreateMapMarkers()
     {
         if (Locations == null || mapOptions == null || map == null || this.IconFactory == null || this.LayerFactory == null || JsRuntime == null)
         {
             return;
         }
 
-        if (_mapMarkersCreated)
+        if (mapMarkersCreated)
         {
             return;
         }
@@ -161,9 +155,37 @@
             await marker.OnClick(async (MouseEvent mouseEvent) => await HandleMapMouseEvent(mouseEvent));
         }
 
-        _mapMarkersCreated = true;
+        mapMarkersCreated = true;
 
         Logger!.LogInformation("Created map markers");
+    }
+
+    public async Task CreateMainTileLayer()
+    {
+        if (map == null)
+        {
+            return;
+        }
+
+        if (mainTileLayerCreated)
+        {
+            return;
+        }
+
+        Logger!.LogInformation("Creating main tile layer");
+
+        // Create Tile Layer
+        var tileLayerOptions =
+            new TileLayerOptions()
+                {
+                    Attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"
+                };
+
+        var mainTileLayer = await LayerFactory!.CreateTileLayerAndAddToMap("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", map!, tileLayerOptions);
+
+        mainTileLayerCreated = true;
+
+        Logger!.LogInformation("Created main tile layer");
     }
 
     async Task HandleMapMouseEvent(MouseEvent mouseEvent)
@@ -178,7 +200,8 @@
 
     async Task ToggleMapExpansion()
     {
-        _mapMarkersCreated = false;
+        mapMarkersCreated = false;
+        mainTileLayerCreated = false;
         mapOptions = null;
 
         await JsRuntime!.InvokeVoidAsync("toggleMapExpansion", null);
