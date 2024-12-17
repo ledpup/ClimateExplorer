@@ -8,7 +8,6 @@ using ClimateExplorer.Web.Client.Shared;
 using ClimateExplorer.Web.Client.Shared.LocationComponents;
 using ClimateExplorer.Web.UiModel;
 using CurrentDevice;
-using DPBlazorMapLibrary;
 using GeoCoordinatePortable;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
@@ -149,7 +148,7 @@ public partial class Index : ChartablePage
     {
         if (SelectedLocation != null && MapContainer != null)
         {
-            await MapContainer.ScrollToPoint(new LatLng(SelectedLocation.Coordinates.Latitude, SelectedLocation.Coordinates.Longitude));
+            await MapContainer.ScrollToPoint(SelectedLocation.Coordinates);
         }
     }
 

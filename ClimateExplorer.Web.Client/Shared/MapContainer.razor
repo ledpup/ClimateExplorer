@@ -81,16 +81,17 @@
         await CreateMainTileLayer();
     }
 
-    public async Task ScrollToPoint(LatLng? point)
+    public async Task ScrollToPoint(Coordinates point)
     {
-        if (map == null || point == null)
+        if (map == null)
         {
             return;
         }
 
         try
         {
-            await map.PanTo(point);
+            var latlng = new LatLng(point.Latitude, point.Longitude);
+            await map.PanTo(latlng);
         }
         catch (Exception ex)
         {
