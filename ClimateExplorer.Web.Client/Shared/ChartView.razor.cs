@@ -3,8 +3,6 @@
 using System.Dynamic;
 using CurrentDevice;
 using Blazorise;
-using Blazorise.Charts;
-using Blazorise.Charts.Trendline;
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Infrastructure;
@@ -17,14 +15,12 @@ using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
 using System;
 using ClimateExplorer.WebApiClient.Services;
+using ApexCharts;
 
 public partial class ChartView
 {
-    private bool haveCalledResizeAtLeastOnce = false;
-    private bool chartRenderedFirstTime = false;
-
-    private Chart<double?>? chart;
-    private ChartTrendline<double?>? chartTrendline;
+    private ApexChart<ChartDataItem>? chart;
+    private List<ChartSeries> chartSeries = new ();
 
     private BinIdentifier? chartStartBin;
     private BinIdentifier? chartEndBin;
@@ -103,6 +99,8 @@ public partial class ChartView
     [Inject]
     private NavigationManager? NavManager { get; set; }
 
+    private ApexChartOptions<ChartDataItem> ChartOptions { get; set; } = new ();
+
     private short SelectingGroupingDays { get; set; }
 
     private float InternalGroupingThreshold { get; set; } = .7f;
@@ -148,8 +146,7 @@ public partial class ChartView
         ChartSeriesList =
             ChartSeriesList!
             .Concat(
-                new List<ChartSeriesDefinition>()
-                {
+                [
                     new ChartSeriesDefinition()
                     {
                         SeriesDerivationType = dle.SeriesDerivationType,
@@ -161,7 +158,7 @@ public partial class ChartView
                         Value = SeriesValueOptions.Value,
                         Year = null,
                     },
-                })
+                ])
             .ToList();
 
         await BuildDataSets();
@@ -236,135 +233,91 @@ public partial class ChartView
         l.LogInformation("Entering");
 
         // This can happen at startup, or if the user switches off all data series
-        if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0 || chart == null || chartTrendline == null)
+        if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0 || chart == null)
         {
-            if (chart != null)
-            {
-                await chart.Clear();
-                await chart.SetOptionsObject(new { });
-            }
-
             l.LogInformation("Bailing early as no chart data available");
             return;
         }
-
-        await chart.Clear();
-
-        var title = string.Empty;
-        var subtitle = string.Empty;
-        List<ChartTrendlineData>? trendlines = null;
-        dynamic scales = new ExpandoObject();
 
         if (ChartLoadingErrored)
         {
             l.LogInformation("We have identified an error. Will not try to render the chart normally");
             ChartLoadingIndicatorVisible = false;
-        }
-        else
-        {
-            LogChartSeriesList();
-
-            // We now set ChartType to Bar if any series is of type Bar, and Line otherwise.
-            var newInternalChartType =
-                ChartSeriesWithData.Any(x => x.ChartSeries!.DisplayStyle == SeriesDisplayStyle.Bar)
-                ? ChartType.Bar
-                : ChartType.Line;
-
-            if (newInternalChartType != InternalChartType)
-            {
-                InternalChartType = newInternalChartType;
-
-                await chart.ChangeType(newInternalChartType);
-            }
-
-            Colours = new ColourServer();
-
-            title = ChartLogic.BuildChartTitle(ChartSeriesWithData);
-
-            // Data sets sometimes have internal gaps in data (i.e. years which have no data even though earlier
-            // and later years have data). Additionally, they may have external gaps in data if the overall period
-            // to be charted goes beyond the range of the available data in one particular data set.
-            //
-            // To ensure these gaps are handled correctly in the plotted chart, we build a new dataset that includes
-            // records for each missing year. Value is set to null for those records.
-            l.LogInformation("Calling BuildProcessedDataSets");
-
-            BuildProcessedDataSets(ChartSeriesWithData, ChartAllData);
-
-            subtitle =
-                (chartStartBin != null && chartEndBin != null)
-                ? chartStartBin is YearBinIdentifier
-                    ? $"{chartStartBin.Label}-{chartEndBin.Label}, {Convert.ToInt16(chartEndBin.Label) - Convert.ToInt16(chartStartBin.Label)} years"
-                    : $"{chartStartBin.Label}-{chartEndBin.Label}"
-                : SelectedBinGranularity.ToFriendlyString();
-
-            subtitle += $" | Aggregation: {SelectedGroupingDays} day groups, {GetGroupingThresholdText()} threshold";
-
-            l.LogInformation("Calling AddDataSetsToGraph");
-
-            trendlines = await AddDataSetsToChart();
-
-            l.LogInformation("Trendlines count: " + trendlines.Count);
-
-            l.LogInformation("Calling AddLabels");
-
-            var labels = ChartBins!.Select(x => x.Label).ToArray();
-            await chart.AddLabels(labels);
-
-            scales = BuildChartScales();
+            l.LogInformation("Leaving");
+            return;
         }
 
-        object chartOptions = new
+        LogChartSeriesList();
+
+        // We now set ChartType to Bar if any series is of type Bar, and Line otherwise.
+        var newInternalChartType =
+            ChartSeriesWithData.Any(x => x.ChartSeries!.DisplayStyle == SeriesDisplayStyle.Bar)
+            ? ChartType.Bar
+            : ChartType.Line;
+
+        if (newInternalChartType != InternalChartType)
         {
-            Animation = false,
-            Responsive = true,
-            MaintainAspectRatio = false,
-            SpanGaps = false,
-            Plugins = new
+            InternalChartType = newInternalChartType;
+
+            // await chart.ChangeType(newInternalChartType);
+        }
+
+        Colours = new ColourServer();
+
+        var title = ChartLogic.BuildChartTitle(ChartSeriesWithData);
+
+        // Data sets sometimes have internal gaps in data (i.e. years which have no data even though earlier
+        // and later years have data). Additionally, they may have external gaps in data if the overall period
+        // to be charted goes beyond the range of the available data in one particular data set.
+        //
+        // To ensure these gaps are handled correctly in the plotted chart, we build a new dataset that includes
+        // records for each missing year. Value is set to null for those records.
+        l.LogInformation("Calling BuildProcessedDataSets");
+
+        BuildProcessedDataSets(ChartSeriesWithData, ChartAllData);
+
+        var subtitle =
+            (chartStartBin != null && chartEndBin != null)
+            ? chartStartBin is YearBinIdentifier
+                ? $"{chartStartBin.Label}-{chartEndBin.Label}, {Convert.ToInt16(chartEndBin.Label) - Convert.ToInt16(chartStartBin.Label)} years"
+                : $"{chartStartBin.Label}-{chartEndBin.Label}"
+            : SelectedBinGranularity.ToFriendlyString();
+
+        subtitle += $" | Aggregation: {SelectedGroupingDays} day groups, {GetGroupingThresholdText()} threshold";
+
+        l.LogInformation("Calling AddDataSetsToGraph");
+
+        AddDataSetsToChart();
+
+        l.LogInformation("Setting up chart options");
+
+        var labels = ChartBins!.Select(x => x.Label).ToArray();
+
+        ChartOptions.Title = new Title { Text = title, Align = Align.Center, Style = new TitleStyle { FontSize = "14px" } };
+        ChartOptions.Subtitle = new Subtitle { Text = subtitle, Align = Align.Center, Style = new SubtitleStyle { FontSize = "12px" } };
+        ChartOptions.Chart.Animations = new Animations { Enabled = false };
+        ChartOptions.Chart.Zoom = new Zoom { AllowMouseWheelZoom = false };
+        ChartOptions.Chart.Height = "100%";
+        BuildChartAxes();
+        ChartOptions.Legend = new Legend { Position = LegendPosition.Bottom, FontSize = "12px", HorizontalAlign = Align.Right };
+        ChartOptions.Grid = new ApexCharts.Grid
+        {
+            Xaxis = new GridXAxis
             {
-                Title = new
-                {
-                    Text = title,
-                    Display = true,
-                    Color = "black",
-                },
-                Subtitle = new
-                {
-                    Text = subtitle,
-                    Display = true,
-                    Color = "black",
-                },
-                Tooltip = new
-                {
-                    Mode = IsMobileDevice!.Value ? "point" : "index",
-                    Intersect = false,
-                },
+                Lines = new Lines { Show = true },
             },
-            Scales = scales,
-
-            // Parsing = false
+            Yaxis = new GridYAxis
+            {
+                Lines = new Lines { Show = false },
+            },
         };
 
-        await chart.SetOptionsObject(chartOptions);
+        StateHasChanged();
 
-        if (trendlines != null && trendlines.Count > 0)
-        {
-            await chartTrendline.AddTrendLineOptions(trendlines);
-        }
+        await chart.UpdateOptionsAsync(true, false, false);
 
-        await chart.Update();
+        l.LogInformation("Finished setting up chart options");
 
-        // The below line is required to get the chart.js component to honour the styling applied on the parent div
-        // If you don't call resize, the chart will apply the styling only after you resize the window,
-        // but it does not apply the style on the initial load of the page.
-        // See https://www.chartjs.org/docs/latest/configuration/responsive.html for more information
-        if (!haveCalledResizeAtLeastOnce)
-        {
-            await chart.Resize();
-            haveCalledResizeAtLeastOnce = true;
-        }
-
-        chartRenderedFirstTime = true;
         ChartLoadingIndicatorVisible = false;
 
         l.LogInformation("Leaving");
@@ -441,19 +394,9 @@ public partial class ChartView
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (chart == null || chartTrendline == null)
-        {
-            return;
-        }
-
         if (IsMobileDevice == null)
         {
             IsMobileDevice = await CurrentDeviceService!.Mobile();
-        }
-
-        if (!chartRenderedFirstTime)
-        {
-            await HandleRedraw();
         }
     }
 
@@ -535,45 +478,39 @@ public partial class ChartView
                 : groupingThreshold.Value;
     }
 
-    private async Task<List<ChartTrendlineData>> AddDataSetsToChart()
+    private void AddDataSetsToChart()
     {
         var dataSetIndex = 0;
 
         Colours = new ColourServer();
-
-        var trendlines = new List<ChartTrendlineData>();
 
         var requestedColours = ChartSeriesWithData!
             .Where(x => x.ChartSeries!.RequestedColour != UiLogic.Colours.AutoAssigned)
             .Select(x => x.ChartSeries!.RequestedColour)
             .ToList();
 
-        foreach (var chartSeries in ChartSeriesWithData!)
+        chartSeries = [];
+
+        foreach (var cs in ChartSeriesWithData!)
         {
-            var dataSet = chartSeries.ProcessedDataSet!;
-            var htmlColourCode = Colours.GetNextColour(chartSeries.ChartSeries!.RequestedColour, (List<Colours>)requestedColours);
+            var dataSet = cs.ProcessedDataSet!;
+            var htmlColourCode = Colours.GetNextColour(cs.ChartSeries!.RequestedColour, requestedColours);
             var renderSmallPoints = (bool)IsMobileDevice! || dataSet.DataRecords.Count > 400;
             var defaultLabel = (bool)IsMobileDevice!
-                ? chartSeries.ChartSeries.GetFriendlyTitleShort()
-                : $"{chartSeries.ChartSeries.FriendlyTitle} | {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition!.UnitOfMeasure)}";
+                ? cs.ChartSeries.GetFriendlyTitleShort()
+                : $"{cs.ChartSeries.FriendlyTitle} | {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition!.UnitOfMeasure)}";
 
-            await ChartLogic.AddDataSetToChart(
-                chart!,
-                chartSeries,
+            var result = ChartLogic.AddDataSetToChart(
+                cs,
                 dataSet,
-                GetChartLabel(chartSeries.ChartSeries.SeriesTransformation, defaultLabel, chartSeries.ChartSeries.Aggregation),
+                GetChartLabel(cs.ChartSeries.SeriesTransformation, defaultLabel, cs.ChartSeries.Aggregation),
                 htmlColourCode,
                 renderSmallPoints: renderSmallPoints);
 
-            if (chartSeries.ChartSeries.ShowTrendline)
-            {
-                trendlines.Add(ChartLogic.CreateTrendline(dataSetIndex, ChartColor.FromHtmlColorCode(htmlColourCode)));
-            }
+            chartSeries.Add(result);
 
             dataSetIndex++;
         }
-
-        return trendlines;
     }
 
     private void RebuildChartSeriesListToReflectSelectedYears()
@@ -816,24 +753,23 @@ public partial class ChartView
         };
     }
 
-    private dynamic BuildChartScales()
+    private void BuildChartAxes()
     {
         dynamic scales = new ExpandoObject();
 
         var xLabel = ChartLogic.GetXAxisLabel(SelectedBinGranularity);
 
-        // The casing on the names of the scales is case-sensitive.
-        // The x axis needs to be x (not X) or the chart will not register the scale correctly.
-        // This will at least break the trendlines component
-        scales.x = new
+        ChartOptions.Xaxis = new XAxis
         {
-            Title = new
+            Title = new AxisTitle { Text = xLabel, Style = new AxisTitleStyle { FontSize = "13px", FontFamily = "Helvetica, Arial, sans-serif", FontWeight = "400" } },
+            Labels = new XAxisLabels
             {
-                Text = xLabel,
-                Display = true,
-                Color = "black",
+                Style = new AxisLabelStyle { FontSize = "12px" },
             },
+            TickAmount = 20,
         };
+
+        ChartOptions.Yaxis = [];
 
         var axes = new List<string>();
         foreach (var s in ChartSeriesList!.Where(x => x.DataAvailable))
@@ -842,26 +778,27 @@ public partial class ChartView
             var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, uom, s.Aggregation);
             if (!axes.Contains(axisId))
             {
-                ((IDictionary<string, object>)scales).Add(
-                    axisId,
-                    new
+                var label = UnitOfMeasureLabel(s.SeriesTransformation, uom, s.Aggregation, s.Value);
+                ChartOptions.Yaxis.Add(
+                    new YAxis
                     {
-                        Display = true,
-                        Axis = "y",
-                        Position = axes.Count % 2 == 0 ? "left" : "right",
-                        Grid = new { DrawOnChartArea = false },
-                        Title = new
+                        Title = new AxisTitle
                         {
-                            Text = UnitOfMeasureLabel(s.SeriesTransformation, uom, s.Aggregation, s.Value),
-                            Display = true,
-                            Color = s.Colour,
+                            Text = label,
+                            Style = new AxisTitleStyle { FontSize = "13px", FontFamily = "Helvetica, Arial, sans-serif", FontWeight = "400", Color = s.Colour },
                         },
+                        SeriesName = label,
+                        DecimalsInFloat = 1,
+                        Labels = new YAxisLabels
+                        {
+                            Style = new AxisLabelStyle { FontSize = "12px" },
+                        },
+                        Opposite = axes.Count % 2 != 0,
                     });
+
                 axes.Add(axisId);
             }
         }
-
-        return scales;
     }
 
     private async Task OnSelectedBinGranularityChanged(BinGranularities value, bool rebuildDataSets = true)
@@ -912,23 +849,23 @@ public partial class ChartView
                     : $"{MathF.Round((float)groupingThreshold * 100, 0)}% (preset defined)";
     }
 
-    private async Task OnLineChartClicked(ChartMouseEventArgs e)
-    {
-        if (SelectedBinGranularity != BinGranularities.ByYear)
-        {
-            // TODO: Add support for SelectedBinGranularity != BinGranularities.ByYear
-            return;
-        }
+    //private async Task OnLineChartClicked(ChartMouseEventArgs e)
+    //{
+    //    if (SelectedBinGranularity != BinGranularities.ByYear)
+    //    {
+    //        // TODO: Add support for SelectedBinGranularity != BinGranularities.ByYear
+    //        return;
+    //    }
 
-        int startYear = ChartAllData ? StartYears!.First() : StartYears!.Last();
+    //    int startYear = ChartAllData ? StartYears!.First() : StartYears!.Last();
 
-        var year = (short)(startYear + e.Index);
+    //    var year = (short)(startYear + e.Index);
 
-        var dataType = ChartSeriesWithData![e.DatasetIndex].SourceDataSet!.DataType;
-        var dataAdjustment = ChartSeriesWithData[e.DatasetIndex].SourceDataSet!.DataAdjustment;
+    //    var dataType = ChartSeriesWithData![e.DatasetIndex].SourceDataSet!.DataType;
+    //    var dataAdjustment = ChartSeriesWithData[e.DatasetIndex].SourceDataSet!.DataAdjustment;
 
-        await HandleOnYearFilterChange(new YearAndDataTypeFilter(year) { DataType = dataType, DataAdjustment = dataAdjustment });
-    }
+    //    await HandleOnYearFilterChange(new YearAndDataTypeFilter(year) { DataType = dataType, DataAdjustment = dataAdjustment });
+    //}
 
     private async Task ShowRangeSliderChanged(bool? value)
     {
@@ -1086,4 +1023,17 @@ public partial class ChartView
             _ => throw new NotImplementedException(groupingDays.ToString()),
         };
     }
+}
+
+public class ChartSeries
+{
+    public string? Name { get; set; }
+    public List<ChartDataItem>? ChartDataItems { get; set; }
+    public string? Colour { get; set; }
+}
+
+public class ChartDataItem
+{
+    public string? Year { get; set; }
+    public decimal? Value { get; set; }
 }

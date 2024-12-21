@@ -2,11 +2,10 @@
 
 using ClimateExplorer.Core;
 using ClimateExplorer.Web.UiModel;
-using Blazorise.Charts;
-using Blazorise.Charts.Trendline;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using static ClimateExplorer.Core.Enums;
+using ClimateExplorer.Web.Client.Shared;
 
 public static class ChartLogic
 {
@@ -33,103 +32,103 @@ public static class ChartLogic
         return "Climate data";
     }
 
-    public static LineChartDataset<double?> GetLineChartDataset(
-        string label,
-        List<double?> values,
-        ChartColor chartColor,
-        UnitOfMeasure unitOfMeasure,
-        SeriesTransformations seriesTransformations,
-        bool renderSmallPoints,
-        SeriesAggregationOptions seriesAggregationOptions)
-    {
-        var count = values.Count;
-        var colour = new List<string>();
-        for (var i = 0; i < count; i++)
-        {
-            colour.Add(chartColor);
-        }
+    //public static LineChartDataset<double?> GetLineChartDataset(
+    //   string label,
+    //   List<double?> values,
+    //   ChartColor chartColor,
+    //   UnitOfMeasure unitOfMeasure,
+    //   SeriesTransformations seriesTransformations,
+    //   bool renderSmallPoints,
+    //   SeriesAggregationOptions seriesAggregationOptions)
+    //{
+    //    var count = values.Count;
+    //    var colour = new List<string>();
+    //    for (var i = 0; i < count; i++)
+    //    {
+    //        colour.Add(chartColor);
+    //    }
 
-        var lineChartDataset =
-            new LineChartDataset<double?>
-            {
-                Label = label,
-                Data = values,
-                BackgroundColor = colour,
-                BorderColor = colour,
-                Fill = false,
-                PointRadius = renderSmallPoints ? 0.1f : 1,
-                ShowLine = true,
-                PointBorderColor = colour,
-                PointHoverBackgroundColor = colour,
-                BorderDash = new List<int> { },
+    //    var lineChartDataset =
+    //           new LineChartDataset<double?>
+    //           {
+    //               Label = label,
+    //               Data = values,
+    //               BackgroundColor = colour,
+    //               BorderColor = colour,
+    //               Fill = false,
+    //               PointRadius = renderSmallPoints ? 0.1f : 1,
+    //               ShowLine = true,
+    //               PointBorderColor = colour,
+    //               PointHoverBackgroundColor = colour,
+    //               BorderDash = new List<int> { },
 
-                // Tension = 0.1f,
-                YAxisID = GetYAxisId(seriesTransformations, unitOfMeasure, seriesAggregationOptions),
-            };
+    //               // Tension = 0.1f,
+    //               YAxisID = GetYAxisId(seriesTransformations, unitOfMeasure, seriesAggregationOptions),
+    //           };
 
-        return lineChartDataset;
-    }
+    //    return lineChartDataset;
+    //}
 
-    public static BarChartDataset<double?> GetBarChartDataset(
-        string label,
-        List<double?> values,
-        UnitOfMeasure unitOfMeasure,
-        bool? absoluteValues,
-        bool redPositive,
-        SeriesTransformations seriesTransformations,
-        SeriesAggregationOptions seriesAggregationOptions)
-    {
-        var colour = GetBarChartColourSet(values, seriesTransformations == SeriesTransformations.IsFrosty ? false : redPositive);
+    //public static BarChartDataset<double?> GetBarChartDataset(
+    //   string label,
+    //   List<double?> values,
+    //   UnitOfMeasure unitOfMeasure,
+    //   bool? absoluteValues,
+    //   bool redPositive,
+    //   SeriesTransformations seriesTransformations,
+    //   SeriesAggregationOptions seriesAggregationOptions)
+    //{
+    //    var colour = GetBarChartColourSet(values, seriesTransformations == SeriesTransformations.IsFrosty ? false : redPositive);
 
-        return
-            new BarChartDataset<double?>
-            {
-                Label = label,
-                Data = values.Select(x => absoluteValues.GetValueOrDefault() && x.HasValue ? Math.Abs(x.Value) : x).ToList(),
-                BorderColor = colour,
-                BackgroundColor = colour,
-                YAxisID = GetYAxisId(seriesTransformations, unitOfMeasure, seriesAggregationOptions),
-            };
-    }
+    //    return
+    //           new BarChartDataset<double?>
+    //           {
+    //               Label = label,
+    //               Data = values.Select(x => absoluteValues.GetValueOrDefault() && x.HasValue ? Math.Abs(x.Value) : x).ToList(),
+    //               BorderColor = colour,
+    //               BackgroundColor = colour,
+    //               YAxisID = GetYAxisId(seriesTransformations, unitOfMeasure, seriesAggregationOptions),
+    //           };
+    //}
 
-    public static ChartDataset<double?> GetChartDataset(
-        string label,
-        List<double?> values,
-        UnitOfMeasure unitOfMeasure,
-        ChartType chartType,
-        ChartColor? chartColour = null,
-        bool? absoluteValues = false,
-        bool redPositive = true,
-        SeriesTransformations seriesTransformations = SeriesTransformations.Identity,
-        SeriesAggregationOptions seriesAggregationOptions = SeriesAggregationOptions.Mean,
-        bool renderSmallPoints = false)
-    {
-        switch (chartType)
-        {
-            case ChartType.Line:
-                if (!chartColour.HasValue)
-                {
-                    throw new NullReferenceException(nameof(chartColour));
-                }
+    //public static ChartDataset<double?> GetChartDataset(
+    //   string label,
+    //   List<double?> values,
+    //   UnitOfMeasure unitOfMeasure,
+    //   ChartType chartType,
+    //   ChartColor? chartColour = null,
+    //   bool? absoluteValues = false,
+    //   bool redPositive = true,
+    //   SeriesTransformations seriesTransformations = SeriesTransformations.Identity,
+    //   SeriesAggregationOptions seriesAggregationOptions = SeriesAggregationOptions.Mean,
+    //   bool renderSmallPoints = false)
+    //{
+    //    switch (chartType)
+    //    {
+    //        case ChartType.Line:
+    //            if (!chartColour.HasValue)
+    //            {
+    //                throw new NullReferenceException(nameof(chartColour));
+    //            }
 
-                return GetLineChartDataset(label, values, chartColour.Value, unitOfMeasure, seriesTransformations, renderSmallPoints, seriesAggregationOptions);
-            case ChartType.Bar:
-                return GetBarChartDataset(label, values, unitOfMeasure, absoluteValues, redPositive, seriesTransformations, seriesAggregationOptions);
-        }
+    //            return GetLineChartDataset(label, values, chartColour.Value, unitOfMeasure, seriesTransformations, renderSmallPoints, seriesAggregationOptions);
+    //        case ChartType.Bar:
+    //            return GetBarChartDataset(label, values, unitOfMeasure, absoluteValues, redPositive, seriesTransformations, seriesAggregationOptions);
+    //    }
 
-        throw new NotImplementedException($"ChartType {chartType}");
-    }
+    //    throw new NotImplementedException($"ChartType {chartType}");
+    //}
 
-    public static ChartTrendlineData CreateTrendline(int datasetIndex, ChartColor colour)
-    {
-        return
-            new ChartTrendlineData
-            {
-                DatasetIndex = datasetIndex,
-                Width = 3,
-                Color = colour,
-            };
-    }
+    //public static ChartTrendlineData CreateTrendline(int datasetIndex, ChartColor colour)
+    //{
+    //    return
+    //        new ChartTrendlineData
+    //        {
+    //            DatasetIndex = datasetIndex,
+    //            Width = 3,
+    //            Color = colour,
+    //        };
+    //}
 
     public static string GetXAxisLabel(BinGranularities binGranularity)
     {
@@ -146,9 +145,8 @@ public static class ChartLogic
         };
     }
 
-    public static async Task AddDataSetToChart(
-        Chart<double?> chart,
-        SeriesWithData chartSeries,
+    public static ChartSeries AddDataSetToChart(
+        SeriesWithData cs,
         DataSet dataSet,
         string label,
         string htmlColourCode,
@@ -156,23 +154,25 @@ public static class ChartLogic
         bool redPositive = true,
         bool renderSmallPoints = false)
     {
-        var values =
-            dataSet.DataRecords
-            .Select(x => x.Value)
-            .ToList();
+        //var colour = ChartColor.FromHtmlColorCode(htmlColourCode);
 
-        var colour = ChartColor.FromHtmlColorCode(htmlColourCode);
+        cs.ChartSeries!.Colour = htmlColourCode;
 
-        chartSeries.ChartSeries!.Colour = htmlColourCode;
+        //var chartType =
+        //    chartSeries.ChartSeries.DisplayStyle == SeriesDisplayStyle.Line
+        //    ? ChartType.Line
+        //    : ChartType.Bar;
 
-        var chartType =
-            chartSeries.ChartSeries.DisplayStyle == SeriesDisplayStyle.Line
-            ? ChartType.Line
-            : ChartType.Bar;
+        //var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition!.UnitOfMeasure, chartType, colour, absoluteValues, redPositive, chartSeries.ChartSeries.SeriesTransformation, chartSeries.ChartSeries.Aggregation, renderSmallPoints);
 
-        var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition!.UnitOfMeasure, chartType, colour, absoluteValues, redPositive, chartSeries.ChartSeries.SeriesTransformation, chartSeries.ChartSeries.Aggregation, renderSmallPoints);
+        // await chart.AddDataSet(chartDataset);
 
-        await chart.AddDataSet(chartDataset);
+        return new ChartSeries
+        {
+            Name = label,
+            ChartDataItems = dataSet.DataRecords.Select(x => new ChartDataItem { Year = x.Label, Value = (decimal?)x.Value }).ToList(),
+            Colour = htmlColourCode,
+        };
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rules conflict")]
@@ -290,32 +290,32 @@ public static class ChartLogic
     {
         var count = values.Count;
 
-        var red = ChartColor.FromRgba(255, 63, 63, 1f);
-        var blue = ChartColor.FromRgba(63, 63, 255, 1f);
+        //var red = ChartColor.FromRgba(255, 63, 63, 1f);
+        //var blue = ChartColor.FromRgba(63, 63, 255, 1f);
 
         var colour = new List<string>();
-        for (var i = 0; i < count; i++)
-        {
-            ChartColor chartColor;
-            if (values[i].HasValue)
-            {
-                var value = values![i]!.Value * (redPositive ? 1f : -1f);
-                if (value > 0)
-                {
-                    chartColor = red;
-                }
-                else
-                {
-                    chartColor = blue;
-                }
+        //for (var i = 0; i < count; i++)
+        //{
+        //    ChartColor chartColor;
+        //    if (values[i].HasValue)
+        //    {
+        //        var value = values![i]!.Value * (redPositive ? 1f : -1f);
+        //        if (value > 0)
+        //        {
+        //            chartColor = red;
+        //        }
+        //        else
+        //        {
+        //            chartColor = blue;
+        //        }
 
-                colour.Add(chartColor);
-            }
-            else
-            {
-                colour.Add(null!);
-            }
-        }
+        //        colour.Add(chartColor);
+        //    }
+        //    else
+        //    {
+        //        colour.Add(null!);
+        //    }
+        //}
 
         return colour;
     }

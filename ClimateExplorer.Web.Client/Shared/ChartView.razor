@@ -1,6 +1,5 @@
-﻿@using Blazorise
-@using Blazorise.Charts
-@using Blazorise.Charts.Trendline
+﻿@using ApexCharts
+@using Blazorise
 @using Blazorise.LoadingIndicator
 @using ClimateExplorer.Core.DataPreparation;
 
@@ -18,9 +17,18 @@
                     </div>
 
                     <div class="chart-wrapper">
-                        <Chart @ref="chart" TItem="double?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
-                            <ChartTrendline @ref="chartTrendline" TItem="double?" />
-                        </Chart>
+                        <ApexChart @ref="chart" TItem=ChartDataItem Options=ChartOptions>
+                            @foreach (var s in chartSeries)
+                            {
+                                <ApexPointSeries TItem="ChartDataItem"
+                                                 Items="s.ChartDataItems"
+                                                 Name="@s.Name"
+                                                 XValue="@(e => e.Year)"
+                                                 YValue="@(e => e.Value)"
+                                                 Color="@s.Colour"
+                                                 SeriesType="SeriesType.Line" />
+                            }
+                        </ApexChart>
                     </div>
 
                     <div class="chart-controls">
@@ -116,9 +124,9 @@
         <ModalFooter>
             @if (UserOverridePresetAggregationSettings)
             {
-                <Button Color="Color.Secondary" Clicked="@ClearUserAggregationOverride">Clear override</Button>
+                <Button Color="Blazorise.Color.Secondary" Clicked="@ClearUserAggregationOverride">Clear override</Button>
             }
-            <Button Color="Color.Primary" Clicked="@ApplyYearlyAverageParameters">Apply</Button>
+            <Button Color="Blazorise.Color.Primary" Clicked="@ApplyYearlyAverageParameters">Apply</Button>
         </ModalFooter>
     </ModalContent>
 </Modal>

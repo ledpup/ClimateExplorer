@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -17,11 +17,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazor-ApexCharts" Version="4.0.1" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="Blazorise" Version="1.3.3" />
     <PackageReference Include="Blazorise.Bootstrap5" Version="1.3.3" />
-    <PackageReference Include="Blazorise.Charts" Version="1.3.3" />
-    <PackageReference Include="Blazorise.Charts.Trendline" Version="1.3.3" />
     <PackageReference Include="Blazorise.Components" Version="1.3.3" />
     <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.3.3" />
     <PackageReference Include="Blazorise.LoadingIndicator" Version="1.3.3" />
