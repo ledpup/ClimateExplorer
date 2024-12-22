@@ -279,8 +279,6 @@ public partial class ChartView
 
             Colours = new ColourServer();
 
-            title = ChartLogic.BuildChartTitle(ChartSeriesWithData);
-
             // Data sets sometimes have internal gaps in data (i.e. years which have no data even though earlier
             // and later years have data). Additionally, they may have external gaps in data if the overall period
             // to be charted goes beyond the range of the available data in one particular data set.
@@ -291,14 +289,8 @@ public partial class ChartView
 
             BuildProcessedDataSets(ChartSeriesWithData, ChartAllData);
 
-            subtitle =
-                (chartStartBin != null && chartEndBin != null)
-                ? chartStartBin is YearBinIdentifier
-                    ? $"{chartStartBin.Label}-{chartEndBin.Label}, {Convert.ToInt16(chartEndBin.Label) - Convert.ToInt16(chartStartBin.Label)} years"
-                    : $"{chartStartBin.Label}-{chartEndBin.Label}"
-                : SelectedBinGranularity.ToFriendlyString();
-
-            subtitle += $" | Aggregation: {SelectedGroupingDays} day groups, {GetGroupingThresholdText()} threshold";
+            title = ChartLogic.BuildChartTitle(ChartSeriesWithData);
+            subtitle = ChartLogic.BuildChartSubtitle(chartStartBin, chartEndBin, SelectedBinGranularity, IsMobileDevice!.Value, SelectedGroupingDays, GetGroupingThresholdText());
 
             l.LogInformation("Calling AddDataSetsToGraph");
 
