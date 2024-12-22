@@ -298,7 +298,10 @@ public partial class ChartView
                     : $"{chartStartBin.Label}-{chartEndBin.Label}"
                 : SelectedBinGranularity.ToFriendlyString();
 
-            subtitle += $" | Aggregation: {SelectedGroupingDays} day groups, {GetGroupingThresholdText()} threshold";
+            if (!IsMobileDevice!.Value)
+            {
+                subtitle += $" | Aggregation: {SelectedGroupingDays} day groups, {GetGroupingThresholdText()} threshold";
+            }
 
             l.LogInformation("Calling AddDataSetsToGraph");
 
