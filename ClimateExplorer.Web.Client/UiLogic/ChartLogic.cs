@@ -33,6 +33,23 @@ public static class ChartLogic
         return "Climate data";
     }
 
+    public static string BuildChartSubtitle(BinIdentifier? chartStartBin, BinIdentifier? chartEndBin, BinGranularities binGranularity, bool isMobileDevice, short groupingDays, string groupingThresholdText)
+    {
+        var subtitle =
+                        (chartStartBin != null && chartEndBin != null)
+                        ? chartStartBin is YearBinIdentifier
+                            ? $"{chartStartBin.Label}-{chartEndBin.Label}, {Convert.ToInt16(chartEndBin.Label) - Convert.ToInt16(chartStartBin.Label)} years"
+                            : $"{chartStartBin.Label}-{chartEndBin.Label}"
+                        : binGranularity.ToFriendlyString();
+
+        if (!isMobileDevice)
+        {
+            subtitle += $" | Aggregation: {groupingDays} day groups, {groupingThresholdText} threshold";
+        }
+
+        return subtitle;
+    }
+
     public static LineChartDataset<double?> GetLineChartDataset(
         string label,
         List<double?> values,
