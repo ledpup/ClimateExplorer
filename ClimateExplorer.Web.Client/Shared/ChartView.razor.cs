@@ -339,10 +339,13 @@ public partial class ChartView
                     Mode = IsMobileDevice!.Value ? "point" : "index",
                     Intersect = false,
                 },
+                Legend = new
+                {
+                    Position = "bottom",
+                    Align = "right",
+                },
             },
             Scales = scales,
-
-            // Parsing = false
         };
 
         await chart.SetOptionsObject(chartOptions);
@@ -776,7 +779,7 @@ public partial class ChartView
                             recordsByBinId[bin.Id].SingleOrDefault()
 
                             // Otherwise, create a null record
-                            ?? new DataRecord { BinId = bin.Id, Value = null })
+                            ?? new DataRecord { BinId = bin.Id, Label = bin.Label, Value = null })
                         .ToList(),
                 };
         }
@@ -827,6 +830,7 @@ public partial class ChartView
         // This will at least break the trendlines component
         scales.x = new
         {
+            Grid = new { DrawOnChartArea = false },
             Title = new
             {
                 Text = xLabel,
@@ -849,7 +853,7 @@ public partial class ChartView
                         Display = true,
                         Axis = "y",
                         Position = axes.Count % 2 == 0 ? "left" : "right",
-                        Grid = new { DrawOnChartArea = false },
+                        Grid = new { DrawOnChartArea = axes.Count == 0 },
                         Title = new
                         {
                             Text = UnitOfMeasureLabel(s.SeriesTransformation, uom, s.Aggregation, s.Value),

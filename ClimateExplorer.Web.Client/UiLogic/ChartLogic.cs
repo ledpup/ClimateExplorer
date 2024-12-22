@@ -57,13 +57,13 @@ public static class ChartLogic
                 BackgroundColor = colour,
                 BorderColor = colour,
                 Fill = false,
-                PointRadius = renderSmallPoints ? 0.1f : 1,
+                PointRadius = renderSmallPoints ? 0.1f : 0.2f,
                 ShowLine = true,
                 PointBorderColor = colour,
                 PointHoverBackgroundColor = colour,
-                BorderDash = new List<int> { },
+                BorderDash = [],
+                BorderWidth = 4,
 
-                // Tension = 0.1f,
                 YAxisID = GetYAxisId(seriesTransformations, unitOfMeasure, seriesAggregationOptions),
             };
 
