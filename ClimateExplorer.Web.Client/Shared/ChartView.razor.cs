@@ -342,7 +342,6 @@ public partial class ChartView
                 Legend = new
                 {
                     Position = "bottom",
-                    Align = "right",
                 },
             },
             Scales = scales,
