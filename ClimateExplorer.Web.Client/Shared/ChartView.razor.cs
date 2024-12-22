@@ -304,14 +304,15 @@ public partial class ChartView
         {
             Xaxis = new GridXAxis
             {
-                Lines = new Lines { Show = true },
+                Lines = new Lines { Show = false },
             },
             Yaxis = new GridYAxis
             {
-                Lines = new Lines { Show = false },
+                Lines = new Lines { Show = true },
             },
         };
 
+        // StateHasChanged needs to be called before UpdateOptionsAsync otherwise the chart will not update in sync with the options.
         StateHasChanged();
 
         await chart.UpdateOptionsAsync(true, false, false);
@@ -713,7 +714,7 @@ public partial class ChartView
                             recordsByBinId[bin.Id].SingleOrDefault()
 
                             // Otherwise, create a null record
-                            ?? new DataRecord { BinId = bin.Id, Value = null })
+                            ?? new DataRecord { BinId = bin.Id, Label = bin.Label, Value = null })
                         .ToList(),
                 };
         }
@@ -755,8 +756,6 @@ public partial class ChartView
 
     private void BuildChartAxes()
     {
-        dynamic scales = new ExpandoObject();
-
         var xLabel = ChartLogic.GetXAxisLabel(SelectedBinGranularity);
 
         ChartOptions.Xaxis = new XAxis
@@ -1032,8 +1031,8 @@ public class ChartSeries
     public string? Colour { get; set; }
 }
 
-public class ChartDataItem
+public class ChartDataItem(string year, decimal? value)
 {
-    public string? Year { get; set; }
-    public decimal? Value { get; set; }
+    public string Year { get; set; } = year;
+    public decimal? Value { get; set; } = value;
 }

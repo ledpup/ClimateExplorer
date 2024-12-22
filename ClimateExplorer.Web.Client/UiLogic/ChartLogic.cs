@@ -170,7 +170,7 @@ public static class ChartLogic
         return new ChartSeries
         {
             Name = label,
-            ChartDataItems = dataSet.DataRecords.Select(x => new ChartDataItem { Year = x.Label, Value = (decimal?)x.Value }).ToList(),
+            ChartDataItems = dataSet.DataRecords.Select(x => new ChartDataItem(x.Label!, (decimal?)x.Value)).ToList(),
             Colour = htmlColourCode,
         };
     }
