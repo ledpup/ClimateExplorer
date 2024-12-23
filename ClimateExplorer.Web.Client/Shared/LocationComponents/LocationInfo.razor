@@ -197,7 +197,7 @@
         foreach (var daGroup in daGroups)
         {
             ClimateRecordsDescription += $"<h5 class=\"mt-5 mb-0\">{(daGroup.Key == null ? "Other" : daGroup.Key)} records</h5>";
-            ClimateRecordsDescription += "<table class=\"table mb-3\"><tr><th width=\"40%\"></th><th>Record low</th><th>Record high</th></tr>";
+            ClimateRecordsDescription += "<table class=\"table mb-3\"><tr><th width=\"40%\"></th><th class=\"text-center\">Record low</th><th class=\"text-center\">Record high</th></tr>";
 
             var dtGroups = daGroup.GroupBy(x => x.DataType);
 
@@ -249,7 +249,7 @@
 
         HeatingScoreDescription += "<table class=\"table table-bordered table-sm\">";
 
-        HeatingScoreDescription += "<tr><th>Heating score</th><th>Warming anomaly range (°C)</th></tr>";
+        HeatingScoreDescription += "<tr><th>Heating score</th><th class=\"text-center\">Warming anomaly range (°C)</th></tr>";
 
         foreach (var heatingScoreRow in HeatingScoreTable)
         {

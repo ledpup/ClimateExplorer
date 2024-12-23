@@ -50,8 +50,7 @@
             {
                 <Field>
                     <FieldLabel>Select a nearby location</FieldLabel>
-                    <Alert Color="Color.Secondary" Visible="true">
-                        <Table Borderless Narrow>
+                        <Table Narrow>
                             <TableBody>
                                 @foreach (var row in SelectedLocation.NearbyLocations!)
                                 {
@@ -76,7 +75,6 @@
                                 }
                             </TableBody>
                         </Table>
-                    </Alert>
                 </Field>
             }
         </ModalBody>
