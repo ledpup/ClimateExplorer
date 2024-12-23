@@ -69,17 +69,22 @@ public partial class ClimateStripe
         var url = "\"https://en.wikipedia.org/wiki/Warming_stripes\"";
 
         PopupText = $@"<p><a href={url} target=""_blank"">Climate stripes</a> are a simplified bar chart of average weather phenomena, ordered by year, from the earliest year in the record until the most recent. Each coloured stripe represents a single year of data. A blue stripe is a year where the value is below the average of the whole series. A red stripe represents an above average value.</p>
-<p>Climate stripe colours are calculated by the following algorithm.</p>
+<p>Climate stripe colours are calculated by the following algorithm, using temperature as the example.</p>
 <ol>
-<li>Calculate the average for the whole series (e.g., {LocationName} {DataRecords!.First().Year}-{DataRecords!.Last().Year} mean is {Math.Round(LocationMean.Value, uomRounding)}{uomString})</li>
-<li>For each year in the series, subtract the average for the <strong>series</strong> from the average for the <strong>year</strong> (e.g., if series average is 15{uomString} and the year average is 14{uomString}, the result is -1{uomString}). Note:</li>
+<li>Calculate the average for the whole series
+<br>(The <strong>{LocationName}</strong> years {DataRecords!.First().Year}-{DataRecords!.Last().Year} mean is {Math.Round(LocationMean.Value, uomRounding)}{uomString})</li>
+<li>For each year in the series, subtract the average for the <strong>series</strong> from the average for the <strong>year</strong>
+<br>(If the series average is {Math.Round(LocationMean.Value, uomRounding)}{uomString} and an example yearly average is {Math.Round(LocationMean.Value - 1.3, uomRounding)}{uomString}, the result is -1.3{uomString})
+<br>Note:</li>
     <ul>
         <li>This value in step 2 is often called the anomaly</li>
         <li>If the anomaly is above 0{uomString}, we consider it a warmer than average year</li>
         <li>If the anomaly is below 0{uomString}, we consider it a colder than average year</li>
     </ul>
-<li>Find the coldest temperature anomaly (e.g., {LocationName}'s is {Math.Round(min, uomRounding)}{uomString}) and assign it the strongest colour of blue</li>
-<li>Find the warmest temperature anomaly (e.g., {LocationName}'s is {Math.Round(max, uomRounding)}{uomString}) and assign it the strongest colour of red</li>
+<li>Find the coldest temperature anomaly and assign it the strongest colour of blue
+<br>(The coldest <strong>{LocationName}</strong> temperature anomaly is {(Math.Round(min, uomRounding) >= 0 ? "+" : string.Empty)}{Math.Round(min, uomRounding)}{uomString})</li>
+<li>Find the warmest temperature anomaly and assign it the strongest colour of red
+<br>(The warmest <strong>{LocationName}</strong> temperature anomaly is {(Math.Round(max, uomRounding) >= 0 ? "+" : string.Empty)}{Math.Round(max, uomRounding)}{uomString})</li>
 <li>All anomalies between the extremes are lighter shades of blue or red</li>
 </ol>
 <p>Climate Explorer's stripe is interactive. Hover over any year in the series then click. The chart will update with a monthly view of the selected year.";
