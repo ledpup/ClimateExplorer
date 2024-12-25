@@ -162,10 +162,7 @@ public class ChartSeriesDefinition
             DataType.TempMean => "Mean temperature",
             DataType.SolarRadiation => "Solar radiation",
             DataType.Precipitation => "Precipitation",
-            DataType.MEIv2 => "MEI v2",
-            DataType.SOI => "SOI",
             DataType.Nino34 => "Nino 3.4",
-            DataType.ONI => "ONI",
             DataType.CO2 => "Carbon dioxide (CO\u2082)",
             DataType.CH4 => "Methane (CH\u2084)",
             DataType.N2O => "Nitrous oxide (N\u2082O)",
@@ -180,6 +177,7 @@ public class ChartSeriesDefinition
             DataType.OzoneHoleColumn => "Ozone Hole column",
             DataType.Ozone => "Ozone",
             DataType.SeaLevel => "Sea level",
+            DataType.OceanAcidity => "Ocean acidity",
             _ => throw new NotImplementedException(),
         };
     }

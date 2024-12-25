@@ -251,84 +251,6 @@ public class DataSetDefinitionsBuilder
 
             new ()
             {
-                Id = Guid.Parse("ffd5f5e2-d8df-4779-a7f4-f5d148505033"),
-                Name = "Multivariate ENSO index (MEI)",
-                ShortName = "MEI.v2",
-                Description = "The MEI combines both oceanic and atmospheric variables to form a single index assessment of ENSO. It is an Empirical Orthogonal Function (EOF) of five different variables (sea level pressure (SLP), sea surface temperature (SST), zonal and meridional components of the surface wind, and outgoing longwave radiation (OLR)) over the tropical Pacific basin (30°S-30°N and 100°E-70°W).",
-                Publisher = "US National Oceanic and Atmospheric Administration's Physical Sciences Laboratory (NOAA PSL)",
-                PublisherUrl = "https://psl.noaa.gov/",
-                MoreInformationUrl = "https://psl.noaa.gov/enso/mei/",
-                DataDownloadUrl = "https://psl.noaa.gov/enso/mei/data/meiv2.data",
-                MeasurementDefinitions =
-                [
-                    new ()
-                    {
-                        DataType = DataType.MEIv2,
-                        UnitOfMeasure = UnitOfMeasure.EnsoIndex,
-                        DataResolution = DataResolution.Monthly,
-                        DataAdjustment = null,
-                        RowDataType = RowDataType.TwelveMonthsPerRow,
-                        FolderName = @"Ocean\ENSO",
-                        FileNameFormat = "meiv2.data.txt",
-                        DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
-                        NullValue = "-999.00",
-                    },
-                ],
-            },
-            new ()
-            {
-                Id = Guid.Parse("c31270fa-b207-4d8f-b68e-4995698f1a4d"),
-                Name = "Southern Oscillation Index (SOI)",
-                ShortName = "SOI",
-                Description = @"The Southern Oscillation Index is calculated based on atmospheric pressure difference between Tahiti and Darwin. Higher values of the SOI indicate that Tahiti has higher atmospheric pressure, relative to its typical value, than Darwin does relative to its typical value.
-
-                    High values of the SOI correlate with cold waters in the eastern tropical Pacific.",
-                MoreInformationUrl = "https://www.ncdc.noaa.gov/teleconnections/enso/soi",
-                DataDownloadUrl = "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/soi.long.data",
-                MeasurementDefinitions =
-                [
-                    new ()
-                    {
-                        DataType = DataType.SOI,
-                        UnitOfMeasure = UnitOfMeasure.EnsoIndex,
-                        DataResolution = DataResolution.Monthly,
-                        DataAdjustment = null,
-                        RowDataType = RowDataType.TwelveMonthsPerRow,
-                        FolderName = @"Ocean\ENSO",
-                        FileNameFormat = "soi.long.data.txt",
-                        DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
-                        NullValue = "-99.99",
-                    },
-                ],
-            },
-            new ()
-            {
-                Id = Guid.Parse("1042147a-8625-4ee7-bb5a-f0f17795c393"),
-                Name = "Oceanic Niño Index (ONI)",
-                ShortName = "ONI",
-                Description = @"The Oceanic Niño Index (ONI) is calculated from 3-month running averages of sea surface temperature measurements from the same area as Niño 3.4 (around the equator in the East Pacific, 5 deg N to 5 deg C, 170 deg W to 120 deg W), and then expressed as an anomaly (i.e. difference from a 30 year rolling average).
-
-                    ONI conditions of +0.5 deg C or higher are considered El Niño, and -0.5 deg C or lower are considered La Niña. El Niño or La Niña conditions must prevail for at least five consecutive months to be considered an El Niño or La Niña event.",
-                MoreInformationUrl = "https://www.climate.gov/news-features/understanding-climate/climate-variability-oceanic-ni%C3%B1o-index",
-                DataDownloadUrl = "https://psl.noaa.gov/data/correlation/oni.data",
-                MeasurementDefinitions =
-                [
-                    new ()
-                    {
-                        DataType = DataType.ONI,
-                        UnitOfMeasure = UnitOfMeasure.DegreesCelsiusAnomaly,
-                        DataResolution = DataResolution.Monthly,
-                        DataAdjustment = null,
-                        RowDataType = RowDataType.TwelveMonthsPerRow,
-                        FolderName = @"Ocean\ENSO",
-                        FileNameFormat = "oni.data.txt",
-                        DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
-                        NullValue = "-99.9",
-                    },
-                ],
-            },
-            new ()
-            {
                 Id = Guid.Parse("bfbaa69b-c10d-4de3-a78c-1ed6ff307327"),
                 Name = "Niño 3.4",
                 ShortName = "Niño 3.4",
@@ -346,7 +268,7 @@ public class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Monthly,
                         DataAdjustment = null,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
-                        FolderName = @"Ocean\ENSO",
+                        FolderName = @"Ocean",
                         FileNameFormat = "nino34.long.anom.data.txt",
                         DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                         NullValue = "-99.99",
@@ -454,7 +376,7 @@ public class DataSetDefinitionsBuilder
                         DataAdjustment = null,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
                         DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
-                        FolderName = @"Ocean\IOD",
+                        FolderName = @"Ocean",
                         FileNameFormat = "dmi.had.long.data.txt",
                         NullValue = "-9999",
                     },
@@ -683,7 +605,7 @@ The reference period used to calculate the anomalies is 1971–2000.",
                         DataAdjustment = null,
                         DataRowRegEx = @"^\""(?<station>\w+)\"",.*,(?<year>\d{4}),(?<value>\d+\.\d+),.*$",
                         FolderName = @"Atmosphere",
-                        FileNameFormat = "GCB2023v43_MtCO2_flat.csv",
+                        FileNameFormat = "GCB2024v18_MtCO2_flat.csv",
                         NullValue = null,
                     },
                 ],
@@ -847,6 +769,32 @@ This AMO time-series is from NOAA/NCEI, using the ERSSTV5 dataset. It is a sea-s
                         DataRowRegEx = @"^(?<year>\d{4})\s+(?<month>\d+)\s+(?<value>-?\d+\.\d+)$",
                         FolderName = @"Ocean",
                         FileNameFormat = "ersst.v5.amo.dat",
+                        NullValue = null,
+                    },
+                ],
+            },
+            new ()
+            {
+                Id = Guid.Parse("6859B806-12FD-4161-B0B6-3E4DA984B731"),
+                Name = "Ocean acidity",
+                ShortName = "Ocean pH",
+                Description = @"Station ALOHA (22°45'N, 158°00'W) is a deep water (~4,800 m) location approximately 100 km north of the Hawaiian Island of Oahu. The Hawaii Ocean Time-series (HOT) surface CO₂ system data product (HOT_surface_CO2.txt) is created after taking cruises to the station (every 1-2 months) for measurements, beginning in 1988.
+
+The mean seawater pH is calculated from the mean seawater dissolved inorganic carbon (DIC - equal to the total CO₂) concentration and mean seawater total alkalinity (TA) at 25 °C, on the total scale.",
+                PublisherUrl = "https://www.noaa.gov/",
+                MoreInformationUrl = "https://hahana.soest.hawaii.edu/hot/",
+                DataDownloadUrl = "https://hahana.soest.hawaii.edu/hot/hotco2/HOT_surface_CO2.txt",
+                MeasurementDefinitions =
+                [
+                    new MeasurementDefinition
+                    {
+                        DataType = DataType.OceanAcidity,
+                        UnitOfMeasure = UnitOfMeasure.Ph,
+                        DataResolution = DataResolution.Monthly,
+                        DataAdjustment = null,
+                        DataRowRegEx = @"^(?<year>\d{4}),(?<month>\d+),(?<value>-?\d+\.\d+)$",
+                        FolderName = @"Ocean",
+                        FileNameFormat = "HOT_surface_CO2_reduced.csv",
                         NullValue = null,
                     },
                 ],

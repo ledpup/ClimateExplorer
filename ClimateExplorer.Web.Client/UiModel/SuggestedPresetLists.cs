@@ -689,6 +689,7 @@ public static class SuggestedPresetLists
         var precipitation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Australia"), DataType.Precipitation, null, throwIfNoMatch: false);
 
         var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Atmosphere), DataType.CO2, null, throwIfNoMatch: true);
+        var oceanAcidity = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Ocean), DataType.OceanAcidity, null, throwIfNoMatch: true);
         var ch4 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Atmosphere), DataType.CH4, null, throwIfNoMatch: true);
         var n2o = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Atmosphere), DataType.N2O, null, throwIfNoMatch: true);
 
@@ -699,9 +700,6 @@ public static class SuggestedPresetLists
         var greenland = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Greenland), DataType.IceMeltArea, null, throwIfNoMatch: true);
 
         var nino34 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Ocean), DataType.Nino34, null, throwIfNoMatch: true);
-        var oni = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Ocean), DataType.ONI, null, throwIfNoMatch: true);
-        var soi = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Ocean), DataType.SOI, null, throwIfNoMatch: true);
-        var mei = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Ocean), DataType.MEIv2, null, throwIfNoMatch: true);
         var iod = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Ocean), DataType.IOD, null, throwIfNoMatch: true);
         var amo = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Ocean), DataType.Amo, null, throwIfNoMatch: true);
 
@@ -790,8 +788,8 @@ public static class SuggestedPresetLists
                     },
                     new ()
                     {
-                        Title = "Carbon dioxide (CO\u2082)",
-                        Description = "Carbon dioxide records from the Mauna Loa Observatory since 1958. AKA The Keeling Curve",
+                        Title = "CO₂ + ocean acidity",
+                        Description = "Carbon dioxide records from the Mauna Loa Observatory and ocean acidity levels from Station ALOHA",
                         ChartAllData = true,
                         ChartSeriesList =
                         [
@@ -806,6 +804,18 @@ public static class SuggestedPresetLists
                                     Value = SeriesValueOptions.Value,
                                     DisplayStyle = SeriesDisplayStyle.Line,
                                     RequestedColour = UiLogic.Colours.Brown,
+                                },
+                                new ()
+                                {
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Ocean), oceanAcidity!),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYearAndMonth,
+                                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                    SmoothingWindow = 10,
+                                    Value = SeriesValueOptions.Value,
+                                    DisplayStyle = SeriesDisplayStyle.Line,
+                                    RequestedColour = UiLogic.Colours.Blue,
                                 },
                         ],
                     },
