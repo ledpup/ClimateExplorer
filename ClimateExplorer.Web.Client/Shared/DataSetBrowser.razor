@@ -339,7 +339,7 @@
                 },
                 new DataSetLibraryFolder
                 {
-                    Name = "ENSO",
+                    Name = "Ocean",
                     DataSets =
                         new List<DataSetLibraryEntry>()
                         {
@@ -359,58 +359,8 @@
                             },
                             new DataSetLibraryEntry()
                             {
-                                Name = "Oceanic Niño Index (ONI)",
-                                SourceSeriesSpecifications =
-                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
-                                    {
-                                        new DataSetLibraryEntry.SourceSeriesSpecification
-                                        {
-                                            LocationId = Region.RegionId(Region.Ocean),
-                                            SourceDataSetId = Guid.Parse("1042147a-8625-4ee7-bb5a-f0f17795c393"),
-                                            DataType = DataType.ONI
-                                        }
-                                    }
-                            },
-                            new DataSetLibraryEntry()
-                            {
-                                Name = "Southern Oscillation Index (SOI)",
-                                SourceSeriesSpecifications =
-                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
-                                    {
-                                        new DataSetLibraryEntry.SourceSeriesSpecification
-                                        {
-                                            LocationId = Region.RegionId(Region.Ocean),
-                                            SourceDataSetId = Guid.Parse("c31270fa-b207-4d8f-b68e-4995698f1a4d"),
-                                            DataType = DataType.SOI
-                                        }
-                                    }
-                            },
-                            new DataSetLibraryEntry()
-                            {
-                                Name = "Multivariate ENSO index (MEI.v2)",
-                                SourceSeriesSpecifications = 
-                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
-                                    {
-                                        new DataSetLibraryEntry.SourceSeriesSpecification
-                                        {
-                                            LocationId = Region.RegionId(Region.Ocean),
-                                            SourceDataSetId = Guid.Parse("ffd5f5e2-d8df-4779-a7f4-f5d148505033"),
-                                            DataType = DataType.MEIv2
-                                        }
-                                    }
-                            },
-                        }
-                },
-                new DataSetLibraryFolder
-                {
-                    Name = "Indian Ocean Dipole",
-                    DataSets =
-                        new List<DataSetLibraryEntry>()
-                        {
-                            new DataSetLibraryEntry()
-                            {
                                 Name = "Indian Ocean Dipole (IOD)",
-                                SourceSeriesSpecifications = 
+                                SourceSeriesSpecifications =
                                     new DataSetLibraryEntry.SourceSeriesSpecification[]
                                     {
                                         new DataSetLibraryEntry.SourceSeriesSpecification
@@ -420,7 +370,7 @@
                                             DataType = DataType.IOD
                                         }
                                     }
-                            }
+                            },
                         }
                 },
                 new DataSetLibraryFolder

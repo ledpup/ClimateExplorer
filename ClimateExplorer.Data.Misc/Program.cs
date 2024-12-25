@@ -2,8 +2,11 @@
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Data.Misc;
+using ClimateExplorer.Data.Misc.OceanAcidity;
 using ClimateExplorer.Data.Misc.Ozone;
 #pragma warning restore SA1200 // Using directives should be placed correctly
+
+OceanAcidityReducer.Process("HOT_surface_CO2");
 
 var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
 

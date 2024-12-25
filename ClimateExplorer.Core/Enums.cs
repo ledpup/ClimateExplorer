@@ -12,12 +12,10 @@ public static class Enums
         Precipitation,
         SolarRadiation,
 
-        MEIv2,
-        SOI,
         Nino34,
-        ONI,
         IOD,
         Amo,
+        OceanAcidity,
 
         CO2,
         CH4,
@@ -71,6 +69,7 @@ public static class Enums
         AtmosphericTransmission,
         DobsonUnits,
         Odgi,
+        Ph,
     }
 
     public enum SeriesAggregationOptions
@@ -145,6 +144,7 @@ public static class Enums
             UnitOfMeasure.AtmosphericTransmission => "Transmission",
             UnitOfMeasure.DobsonUnits => "DU",
             UnitOfMeasure.Odgi => "ODGI",
+            UnitOfMeasure.Ph => "pH",
             _ => throw new NotImplementedException(),
         };
     }
@@ -179,6 +179,7 @@ public static class Enums
             UnitOfMeasure.AtmosphericTransmission => "Atmospheric transmission",
             UnitOfMeasure.DobsonUnits => "Dobson Units",
             UnitOfMeasure.Odgi => "Ozone Depleting Gas Index",
+            UnitOfMeasure.Ph => "pH",
             _ => throw new NotImplementedException(),
         };
     }
