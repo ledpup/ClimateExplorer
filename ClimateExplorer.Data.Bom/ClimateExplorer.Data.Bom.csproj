@@ -9,17 +9,11 @@
 
   <ItemGroup>
     <None Remove="MetaData\countries.txt" />
-    <None Remove="ReferenceMetaData\RAIA\Locations.json" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="MetaData\countries.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ReferenceMetaData\RAIA\Locations.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
 
@@ -38,9 +32,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="ReferenceMetaData\ACORN-SAT\primarysites.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="ReferenceMetaData\RAIA\RAIA.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
