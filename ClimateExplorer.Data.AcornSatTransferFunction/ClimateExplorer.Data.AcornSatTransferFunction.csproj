@@ -12,4 +12,8 @@
     <PackageReference Include="SharpCompress" Version="0.34.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ClimateExplorer.Core\ClimateExplorer.Core.csproj" />
+  </ItemGroup>
+
 </Project>

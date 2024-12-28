@@ -273,6 +273,7 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
 
     if (body.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInRegion)
     {
+        // This needs to be moved out into a new function
         var regionId = body.SeriesSpecifications[0].LocationId;
         var region = Region.GetRegion(regionId);
 

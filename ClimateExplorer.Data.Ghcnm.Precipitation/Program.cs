@@ -86,7 +86,7 @@ foreach (var station in stations)
     List<DataRecord>? dataRecords = null;
     try
     {
-        dataRecords = await DataReader.GetDataRecords(measurementDefinition, dataFileFilterAndAdjustments);
+        dataRecords = await DataReaderFunctions.GetDataRecords(measurementDefinition, dataFileFilterAndAdjustments);
     }
     catch (FileLoadException ex)
     {

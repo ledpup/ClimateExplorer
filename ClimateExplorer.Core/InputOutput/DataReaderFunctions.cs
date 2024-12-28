@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using static ClimateExplorer.Core.Enums;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
-public static class DataReader
+public static class DataReaderFunctions
 {
     private static readonly Dictionary<string, short> MonthNamesToNumeric = new ()
     {

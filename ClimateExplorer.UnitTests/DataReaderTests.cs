@@ -27,7 +27,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$");
 
-        var records = DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty);
+        var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty);
         var recordsList = records.Values.ToList();
 
         Assert.AreEqual(4, records.Count);
@@ -56,7 +56,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$");
 
-        var records = DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty);
+        var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty);
 
         Assert.AreEqual(4, records.Count);
 
@@ -81,7 +81,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$");
 
-        var records = DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty);
+        var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty);
 
         Assert.AreEqual(4, records.Count);
 
@@ -109,7 +109,7 @@ public class DataReaderTests
         var start = DateTime.Parse("1950/12/31");
         var end = DateTime.Parse("1951/1/1");
 
-        var records = DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty, start, end);
+        var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty, start, end);
 
         Assert.AreEqual(2, records.Count);
 
@@ -132,7 +132,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$");
 
-        var records = DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly, string.Empty);
+        var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly, string.Empty);
         var recordsList = records.Values.ToList();
 
         Assert.AreEqual(4, records.Count);
@@ -161,7 +161,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$");
 
-        var records = DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly, string.Empty);
+        var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly, string.Empty);
         var recordsList = records.Values.ToList();
 
         Assert.AreEqual(4, records.Count);
@@ -189,7 +189,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$");
 
-        var records = DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly, string.Empty);
+        var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly, string.Empty);
         var recordsList = records.Values.ToList();
 
         Assert.AreEqual(3, records.Count);
@@ -216,7 +216,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$");
 
-        var records = DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly, string.Empty);
+        var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly, string.Empty);
         var recordsList = records.Values.ToList();
 
         Assert.AreEqual(3, records.Count);
@@ -254,7 +254,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^\""(?<station>\w+)\"",.*,(?<year>\d{4}),(?<value>\d+\.\d+),.*$");
 
-        var records = DataReader.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Yearly, "Global");
+        var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Yearly, "Global");
         var recordsList = records.Values.ToList();
 
         Assert.AreEqual(12, records.Count);
@@ -311,6 +311,6 @@ public class DataReaderTests
             FileNameFormat = "[station].csv"
         };
 
-        await DataReader.GetDataRecords(md, dataFileFilterAndAdjustments);
+        await DataReaderFunctions.GetDataRecords(md, dataFileFilterAndAdjustments);
     }
 }

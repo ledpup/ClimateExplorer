@@ -13,7 +13,7 @@ public static class TwelveMonthPerLineDataReader
             dataPath = dataPath.Replace("[station]", dataFileFilterAndAdjustments!.Single().Id);
         }
 
-        var records = await DataReader.GetLinesInDataFileWithCascade(dataPath);
+        var records = await DataReaderFunctions.GetLinesInDataFileWithCascade(dataPath);
         if (records == null)
         {
             throw new Exception("Unable to read data " + dataPath);

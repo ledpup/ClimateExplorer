@@ -32,8 +32,8 @@ await Parallel.ForEachAsync(tempMaxStations, async (station, token) =>
 {
     Console.WriteLine($"Processing station {station.Id}");
 
-    var maxRecords = (await DataReader.GetDataRecords(mdTempMax, [station])).Where(x => x.Value != null);
-    var minRecords = (await DataReader.GetDataRecords(mdTempMin, [station])).Where(x => x.Value != null);
+    var maxRecords = (await DataReaderFunctions.GetDataRecords(mdTempMax, [station])).Where(x => x.Value != null);
+    var minRecords = (await DataReaderFunctions.GetDataRecords(mdTempMin, [station])).Where(x => x.Value != null);
     var meanRecords = new List<DataRecord>();
 
     foreach (var maxRecord in maxRecords)

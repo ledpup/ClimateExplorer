@@ -206,7 +206,7 @@ public static class SeriesProvider
         switch (measurementDefinition.RowDataType)
         {
             case RowDataType.OneValuePerRow:
-                dataRecords = await DataReader.GetDataRecords(measurementDefinition, dataFileFilterAndAdjustments!);
+                dataRecords = await DataReaderFunctions.GetDataRecords(measurementDefinition, dataFileFilterAndAdjustments!);
                 break;
 
             case RowDataType.TwelveMonthsPerRow:
