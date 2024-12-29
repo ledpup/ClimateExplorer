@@ -1,11 +1,12 @@
 ﻿namespace ClimateExplorer.Core.DataPreparation.Model;
 
+using ClimateExplorer.Core.Model;
 using System.Globalization;
 using static ClimateExplorer.Core.Enums;
 
 public static class Binner
 {
-    public static RawBin[] ApplyBinningRules(TemporalDataPoint[] dataPoints, BinGranularities binningRule, int cupSize, DataResolution dataResolution)
+    public static RawBin[] ApplyBinningRules(DataRecord[] dataPoints, BinGranularities binningRule, int cupSize, DataResolution dataResolution)
     {
         var dataPointsByBinId =
             dataPoints
@@ -42,7 +43,7 @@ public static class Binner
 
     private static Bucket[] BuildBucketsForBin(
         BinGranularities binningRule,
-        IGrouping<BinIdentifier, TemporalDataPoint> bin,
+        IGrouping<BinIdentifier, DataRecord> bin,
         int cupSize,
         DataResolution dataResolution)
     {
@@ -68,7 +69,7 @@ public static class Binner
     }
 
     private static Bucket[] BuildBucketsForMonth(
-        IGrouping<BinIdentifier, TemporalDataPoint> bin,
+        IGrouping<BinIdentifier, DataRecord> bin,
         int cupSize,
         DataResolution dataResolution)
     {
@@ -111,7 +112,7 @@ public static class Binner
                                     {
                                         FirstDayInCup = firstDayInMonth,
                                         LastDayInCup = lastDayInMonth,
-                                        DataPoints = group.ToArray(),
+                                        DataRecords = group.ToArray(),
                                         ExpectedDataPointsInCup = 1,
                                     },
                                 ],
@@ -126,7 +127,7 @@ public static class Binner
     }
 
     private static Bucket[] BuildBucketsForSouthernHemisphereTemperateSeason(
-        IGrouping<BinIdentifier, TemporalDataPoint> bin,
+        IGrouping<BinIdentifier, DataRecord> bin,
         int cupSize,
         DataResolution dataResolution)
     {
@@ -158,7 +159,7 @@ public static class Binner
     }
 
     private static Bucket[] BuildBucketsForSouthernHemisphereTropicalSeason(
-        IGrouping<BinIdentifier, TemporalDataPoint> bin,
+        IGrouping<BinIdentifier, DataRecord> bin,
         int cupSize,
         DataResolution dataResolution)
     {
@@ -192,7 +193,7 @@ public static class Binner
     private static IEnumerable<Cup> BuildMonthlyCupsForMonthlyData(
         DateOnly firstDay,
         DateOnly lastDay,
-        TemporalDataPoint[] points)
+        DataRecord[] points)
     {
         var cupSegments =
             DateHelpers.DivideDateSpanIntoMonthSegments(firstDay, lastDay);
@@ -205,7 +206,7 @@ public static class Binner
                 {
                     FirstDayInCup = x.Start,
                     LastDayInCup = x.End,
-                    DataPoints = points.Where(y => DataPointFallsInInclusiveRange(y, x.Start, x.End)).ToArray(),
+                    DataRecords = points.Where(y => DataPointFallsInInclusiveRange(y, x.Start, x.End)).ToArray(),
                     ExpectedDataPointsInCup = 1,
                 });
 
@@ -215,7 +216,7 @@ public static class Binner
     private static IEnumerable<Cup> BuildYearlyCupsForYearlyData(
     DateOnly firstDay,
     DateOnly lastDay,
-    TemporalDataPoint[] points)
+    DataRecord[] points)
     {
         var cups =
             points
@@ -225,7 +226,7 @@ public static class Binner
                 {
                     FirstDayInCup = firstDay,
                     LastDayInCup = lastDay,
-                    DataPoints = [x],
+                    DataRecords = [x],
                     ExpectedDataPointsInCup = 1,
                 });
 
@@ -235,7 +236,7 @@ public static class Binner
     private static IEnumerable<Cup> BuildCupsForDataPointRange(
         DateOnly firstDay,
         DateOnly lastDay,
-        TemporalDataPoint[] points,
+        DataRecord[] points,
         int cupSize)
     {
         var cupSegments =
@@ -252,7 +253,7 @@ public static class Binner
                 {
                     FirstDayInCup = x.Start,
                     LastDayInCup = x.End,
-                    DataPoints = points.Where(y => DataPointFallsInInclusiveRange(y, x.Start, x.End)).ToArray(),
+                    DataRecords = points.Where(y => DataPointFallsInInclusiveRange(y, x.Start, x.End)).ToArray(),
                     ExpectedDataPointsInCup = DateHelpers.CountDaysInRange(x.Start, x.End),
                 });
 
@@ -260,7 +261,7 @@ public static class Binner
     }
 
     private static Bucket[] BuildBucketsForGaplessBin(
-        IGrouping<BinIdentifier, TemporalDataPoint> bin,
+        IGrouping<BinIdentifier, DataRecord> bin,
         int cupSize,
         DataResolution dataResolution)
     {
@@ -315,14 +316,14 @@ public static class Binner
         return buckets;
     }
 
-    private static bool DataPointFallsInInclusiveRange(TemporalDataPoint dp, DateOnly start, DateOnly end)
+    private static bool DataPointFallsInInclusiveRange(DataRecord dp, DateOnly start, DateOnly end)
     {
         DateOnly d = new DateOnly(dp.Year, dp.Month ?? 1, dp.Day ?? 1);
 
         return d >= start && d <= end;
     }
 
-    private static BinIdentifier GetBinIdentifier(TemporalDataPoint dp, BinGranularities binningRule)
+    private static BinIdentifier GetBinIdentifier(DataRecord dp, BinGranularities binningRule)
     {
         // TODO: Notice that (for example) for a year with 365 data points, we will allocate 365 otherwise identical year bin identifiers.
         // We could cache them centrally and re-use to reduce allocations.

@@ -324,14 +324,7 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
                 },
             DataRecords =
                 series.DataPoints
-                .Select(
-                    x =>
-                    new DataRecord
-                    {
-                        Label = x.Label,
-                        Value = x.Value,
-                        BinId = x.BinId,
-                    })
+                .Select(x => new BinnedRecord(x.BinId, x.Value))
                 .ToList(),
             RawDataRecords =
                 body.IncludeRawDataPoints
@@ -388,24 +381,16 @@ const float ReferencePeriodThreshold = 0.5f;
 
 static DataSet GenerateAnomalyDataSetForLocation(DataSet dataset)
 {
-    dataset.DataRecords.ForEach(x => x.Year = ((YearBinIdentifier)BinIdentifier.Parse(x.BinId)).Year);
-
     float referencePeriod = ReferenceEndYear - ReferenceStartYear + 1;
 
     var referencePeriodCount = dataset.Years.Count(x => x >= ReferenceStartYear && x <= ReferenceEndYear);
     if (referencePeriodCount / referencePeriod > ReferencePeriodThreshold)
     {
         var referencePeriodAverage = dataset.DataRecords.Where(x => x.Year >= 1961 && x.Year <= 1990).Average(x => x.Value);
-        var anomalyRecords = new List<DataRecord>();
+        var anomalyRecords = new List<BinnedRecord>();
         foreach (var record in dataset.DataRecords)
         {
-            anomalyRecords.Add(new DataRecord
-            {
-                Label = record.Label,
-                BinId = record.BinId,
-                Value = record.Value - referencePeriodAverage,
-                Year = record.Year,
-            });
+            anomalyRecords.Add(new BinnedRecord(record.BinId, record.Value - referencePeriodAverage));
         }
 
         return
@@ -525,7 +510,7 @@ static ClimateRecord CreateClimateRecord(MeasurementDefinitionViewModel md, Data
     double record = (double)(recordType == RecordType.High ? dataSets.DataRecords.Max(x => x.Value)
                                                            : dataSets.DataRecords.Min(x => x.Value));
     var records = dataSets.DataRecords.Where(x => x.Value == record).OrderBy(x => x.BinId).ToList();
-    var binId = records.FirstOrDefault().GetBinIdentifier();
+    var binId = records.FirstOrDefault().BinIdentifier;
 
     var cr = new ClimateRecord
     {

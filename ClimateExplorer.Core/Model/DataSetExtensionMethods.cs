@@ -4,7 +4,7 @@ using ClimateExplorer.Core.DataPreparation;
 
 public static class DataSetExtensionMethods
 {
-    public static DataRecord GetFirstDataRecordWithValueInDataSet(this DataSet dataSet)
+    public static BinnedRecord GetFirstDataRecordWithValueInDataSet(this DataSet dataSet)
     {
         var firstRecordWithValueIfAny = dataSet.DataRecords.FirstOrDefault(x => x.Value.HasValue);
 
@@ -16,7 +16,7 @@ public static class DataSetExtensionMethods
         return firstRecordWithValueIfAny;
     }
 
-    public static DataRecord GetLastDataRecordWithValueInDataSet(this DataSet dataSet)
+    public static BinnedRecord GetLastDataRecordWithValueInDataSet(this DataSet dataSet)
     {
         return dataSet.DataRecords.Last(x => x.Value.HasValue);
     }
@@ -32,9 +32,9 @@ public static class DataSetExtensionMethods
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
-    private static short GetYearForDataRecord(DataRecord dr)
+    private static short GetYearForDataRecord(BinnedRecord dr)
     {
-        BinIdentifier parsedId = dr.GetBinIdentifier()!;
+        BinIdentifier parsedId = dr.BinIdentifier!;
 
         if (parsedId is BinIdentifierForGaplessBin id)
         {

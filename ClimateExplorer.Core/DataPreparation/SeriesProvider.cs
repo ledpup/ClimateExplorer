@@ -40,7 +40,7 @@ public static class SeriesProvider
         DateOnly minDate = DateOnly.FromDateTime(DateTime.Today.Date);
         DateOnly maxDate = DateOnly.FromDateTime(DateTime.MinValue);
 
-        var dbGroups = new Dictionary<DateOnly, List<TemporalDataPoint>>();
+        var dbGroups = new Dictionary<DateOnly, List<DataRecord>>();
 
         UnitOfMeasure? uom = null;
         DataResolution? dataResolution = null;
@@ -48,7 +48,7 @@ public static class SeriesProvider
         foreach (var seriesSpec in seriesSpecifications)
         {
             var series = await GetSeriesDataPoints(seriesSpec);
-            var dp = series.DataPoints;
+            var dp = series.DataRecords;
 
             if (uom != null && uom != series.UnitOfMeasure)
             {
@@ -83,7 +83,7 @@ public static class SeriesProvider
 
         DateOnly d = minDate;
 
-        var results = new List<TemporalDataPoint>();
+        var results = new List<DataRecord>();
 
         while (d <= maxDate)
         {
@@ -98,7 +98,7 @@ public static class SeriesProvider
             }
             else
             {
-                results.Add(new TemporalDataPoint { Day = (short)d.Day, Month = (short)d.Month, Year = (short)d.Year, Value = val });
+                results.Add(new DataRecord((short)d.Year, (short)d.Month, (short)d.Day, val));
             }
 
             d = d.AddDays(1);
@@ -107,7 +107,7 @@ public static class SeriesProvider
         return
             new Series
             {
-                DataPoints = results.ToArray(),
+                DataRecords = results.ToArray(),
                 UnitOfMeasure = uom!.Value,
                 DataResolution = dataResolution!.Value,
             };
@@ -123,12 +123,12 @@ public static class SeriesProvider
         var series1 = await GetSeriesDataPoints(seriesSpecifications[0]);
         var series2 = await GetSeriesDataPoints(seriesSpecifications[1]);
 
-        var dp1 = series1.DataPoints;
-        var dp2 = series2.DataPoints;
+        var dp1 = series1.DataRecords;
+        var dp2 = series2.DataRecords;
 
         if (dp1!.Length == 0 || dp2!.Length == 0)
         {
-            return new Series { DataPoints = Array.Empty<TemporalDataPoint>(), UnitOfMeasure = series1.UnitOfMeasure };
+            return new Series { DataRecords = Array.Empty<DataRecord>(), UnitOfMeasure = series1.UnitOfMeasure };
         }
 
         var dp1Grouped = dp1.ToDictionary(x => new DateOnly(x.Year, x.Month ?? 1, x.Day ?? 1));
@@ -145,7 +145,7 @@ public static class SeriesProvider
 
         DateOnly d = minDate;
 
-        var results = new List<TemporalDataPoint>();
+        var results = new List<DataRecord>();
 
         while (d <= maxDate)
         {
@@ -156,12 +156,12 @@ public static class SeriesProvider
 
             if (dp1ForDateExists && dp2ForDateExists)
             {
-                val = dp1ForDate.Value - dp2ForDate.Value;
+                val = dp1ForDate!.Value - dp2ForDate!.Value;
             }
 
             var dpToUse = dp1ForDateExists ? dp1ForDate : dp2ForDate;
 
-            results.Add(dpToUse.WithValue(val));
+            results.Add(dpToUse!.WithValue(val));
 
             d = d.AddDays(1);
         }
@@ -169,7 +169,7 @@ public static class SeriesProvider
         return
             new Series
             {
-                DataPoints = results.ToArray(),
+                DataRecords = results.ToArray(),
                 UnitOfMeasure = series1.UnitOfMeasure,
                 DataResolution = series1.DataResolution,
             };
@@ -210,8 +210,7 @@ public static class SeriesProvider
                 break;
 
             case RowDataType.TwelveMonthsPerRow:
-                var dataSet = await TwelveMonthPerLineDataReader.GetTwelveMonthsPerRowData(measurementDefinition, dataFileFilterAndAdjustments);
-                dataRecords = dataSet.DataRecords;
+                dataRecords = await TwelveMonthPerLineDataReader.GetTwelveMonthsPerRowData(measurementDefinition, dataFileFilterAndAdjustments);
                 break;
 
             default:
@@ -221,7 +220,7 @@ public static class SeriesProvider
         return
             new Series
             {
-                DataPoints = dataRecords.Select(x => new TemporalDataPoint { Year = x.Year, Month = x.Month, Day = x.Day, Value = x.Value }).ToArray(),
+                DataRecords = dataRecords.Select(x => new DataRecord(x.Year, x.Month, x.Day, x.Value)).ToArray(),
                 UnitOfMeasure = measurementDefinition.UnitOfMeasure,
                 DataResolution = measurementDefinition.DataResolution,
             };
@@ -230,7 +229,7 @@ public static class SeriesProvider
     public class Series
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
-        public TemporalDataPoint[]? DataPoints { get; set; }
+        public DataRecord[]? DataRecords { get; set; }
         public UnitOfMeasure UnitOfMeasure { get; set; }
         public DataResolution DataResolution { get; set; }
     }

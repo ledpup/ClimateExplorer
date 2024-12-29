@@ -207,12 +207,12 @@ public static class ChartLogic
         var firstBinInEachDataSet =
             preProcessedDataSets
             .Select(x => x.GetFirstDataRecordWithValueInDataSet())
-            .Select(x => (BinIdentifierForGaplessBin)x.GetBinIdentifier()!);
+            .Select(x => (BinIdentifierForGaplessBin)x.BinIdentifier!);
 
         var lastBinInEachDataSet =
             preProcessedDataSets
             .Select(x => x.GetLastDataRecordWithValueInDataSet())
-            .Select(x => (BinIdentifierForGaplessBin)x.GetBinIdentifier()!);
+            .Select(x => (BinIdentifierForGaplessBin)x.BinIdentifier!);
 
         var firstBinAcrossAllDataSets = firstBinInEachDataSet.Min();
         var lastFirstBinAcrossAllDataSets = firstBinInEachDataSet.Max();

@@ -110,9 +110,9 @@ public class DataRecordMovingAverageCalculator
         this.calculator = calculator;
     }
 
-    public List<DataRecord> Calculate(IEnumerable<DataRecord> dataRecords)
+    public List<BinnedRecord> Calculate(IEnumerable<BinnedRecord> dataRecords)
     {
-        var returnDataRecords = new List<DataRecord>();
+        var returnDataRecords = new List<BinnedRecord>();
 
         bool haveEmittedAnyRecords = false;
 
@@ -122,13 +122,7 @@ public class DataRecordMovingAverageCalculator
 
             if (val != null || haveEmittedAnyRecords)
             {
-                returnDataRecords.Add(
-                    new DataRecord
-                    {
-                        Label = dr.Label,
-                        BinId = dr.BinId,
-                        Value = val,
-                    });
+                returnDataRecords.Add(new BinnedRecord(dr.BinId, val));
             }
         }
 

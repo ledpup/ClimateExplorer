@@ -1,4 +1,5 @@
 ﻿using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
@@ -471,9 +472,9 @@ public class DataSetBuilderTests
         var dsb = new DataSetBuilder();
 
         var dataPoints =
-            new TemporalDataPoint[]
+            new DataRecord[]
             {
-                new TemporalDataPoint(1990, 01, 01, 10)
+                new DataRecord(1990, 01, 01, 10)
             };
 
         var cdp = dsb.BuildDataSetFromDataPoints(
@@ -501,7 +502,7 @@ public class DataSetBuilderTests
         var dsb = new DataSetBuilder();
 
         var dataPoints =
-            new TemporalDataPoint[]
+            new DataRecord[]
             {
             };
 
@@ -523,28 +524,28 @@ public class DataSetBuilderTests
     }
 
 
-    TemporalDataPoint[] BuildConstantTemporalDataPointArrayFor1990(double? value = 10)
+    DataRecord[] BuildConstantTemporalDataPointArrayFor1990(double? value = 10)
     {
         return
             Enumerable.Range(0, 365)
-            .Select(x => new TemporalDataPoint(new DateOnly(1990, 1, 1)
+            .Select(x => new DataRecord(new DateOnly(1990, 1, 1)
             .AddDays(x), value))
             .ToArray();
     }
 
-    TemporalDataPoint[] BuildLinearlyIncreasingTemporalDataPointArrayFor1990(double min, double dailyIncrement)
+    DataRecord[] BuildLinearlyIncreasingTemporalDataPointArrayFor1990(double min, double dailyIncrement)
     {
         return
             Enumerable.Range(0, 365)
-            .Select(x => new TemporalDataPoint(new DateOnly(1990, 1, 1).AddDays(x), min + x * dailyIncrement))
+            .Select(x => new DataRecord(new DateOnly(1990, 1, 1).AddDays(x), min + x * dailyIncrement))
             .ToArray();
     }
 
-    TemporalDataPoint[] BuildLinearlyIncreasingTemporalDataPointArray(DateOnly startDate, int nDays, double min, double dailyIncrement)
+    DataRecord[] BuildLinearlyIncreasingTemporalDataPointArray(DateOnly startDate, int nDays, double min, double dailyIncrement)
     {
         return
             Enumerable.Range(0, nDays)
-            .Select(x => new TemporalDataPoint(startDate.AddDays(x), min + x * dailyIncrement))
+            .Select(x => new DataRecord(startDate.AddDays(x), min + x * dailyIncrement))
             .ToArray();
     }
 

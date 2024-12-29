@@ -33,7 +33,7 @@ public class DataReaderTests
         Assert.AreEqual(4, records.Count);
         Assert.AreEqual("1950_12_30", recordsList[0].Key);
         Assert.AreEqual("1951_1_2", recordsList[3].Key);
-        Assert.AreEqual(DateTime.Parse("1951/1/2"), records["1951_1_2"].Date);
+        Assert.AreEqual(DateOnly.Parse("1951/1/2"), records["1951_1_2"].Date);
 
         Assert.AreEqual(21.8d, records["1950_12_30"].Value);
         Assert.AreEqual(24.2d, records["1950_12_31"].Value);
@@ -106,8 +106,8 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$");
 
-        var start = DateTime.Parse("1950/12/31");
-        var end = DateTime.Parse("1951/1/1");
+        var start = DateOnly.Parse("1950/12/31");
+        var end = DateOnly.Parse("1951/1/1");
 
         var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty, start, end);
 
@@ -274,25 +274,25 @@ public class DataReaderTests
             new DataFileFilterAndAdjustment
             {
                 Id = "1427",
-                StartDate = DateTime.Parse("1909/09/01"),
-                EndDate = DateTime.Parse("1950/12/31"),
+                StartDate = DateOnly.Parse("1909/09/01"),
+                EndDate = DateOnly.Parse("1950/12/31"),
             },
             new DataFileFilterAndAdjustment
             {
                 Id = "1427",
-                StartDate = DateTime.Parse("1951/01/01"),
-                EndDate = DateTime.Parse("1976/03/31"),
+                StartDate = DateOnly.Parse("1951/01/01"),
+                EndDate = DateOnly.Parse("1976/03/31"),
             },
             new DataFileFilterAndAdjustment
             {
                 Id = "1945",
-                StartDate = DateTime.Parse("1976-04-01"),
-                EndDate = DateTime.Parse("1998-07-31"),
+                StartDate = DateOnly.Parse("1976-04-01"),
+                EndDate = DateOnly.Parse("1998-07-31"),
             },
             new DataFileFilterAndAdjustment
             {
                 Id = "1962",
-                StartDate = DateTime.Parse("1998-08-01T00:00:00"),
+                StartDate = DateOnly.Parse("1998-08-01T00:00:00"),
                 EndDate = null,
             }
         };

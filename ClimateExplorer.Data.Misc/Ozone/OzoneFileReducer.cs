@@ -27,7 +27,7 @@ public class OzoneFileReducer
                 }
                 else
                 {
-                    records.Add(new DataRecord(currentDay.ToDateTime(new TimeOnly(0)), dayValues.Average()));
+                    records.Add(new DataRecord(currentDay, dayValues.Average()));
                     dayValues = [];
                 }
 

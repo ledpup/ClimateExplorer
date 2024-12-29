@@ -1,16 +1,18 @@
 ﻿namespace ClimateExplorer.Core.DataPreparation;
 
+using ClimateExplorer.Core.Model;
+
 public static class SeriesFilterer
 {
-    public static TemporalDataPoint[] ApplySeriesFilters(
-        TemporalDataPoint[] transformedDataPoints,
+    public static DataRecord[] ApplySeriesFilters(
+        DataRecord[] transformedDataPoints,
         SouthernHemisphereTemperateSeasons? filterToSouthernHemisphereTemperateSeason,
         SouthernHemisphereTropicalSeasons? filterToTropicalSeason,
         short? filterToYear,
         int? filterToYearsAfterAndIncluding,
         int? filterToYearsBefore)
     {
-        IEnumerable<TemporalDataPoint> query = transformedDataPoints;
+        IEnumerable<DataRecord> query = transformedDataPoints;
 
         if (filterToSouthernHemisphereTemperateSeason != null)
         {

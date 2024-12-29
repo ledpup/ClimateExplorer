@@ -1,6 +1,7 @@
 ﻿namespace ClimateExplorer.Core.DataPreparation;
 
 using ClimateExplorer.Core.DataPreparation.Model;
+using ClimateExplorer.Core.Model;
 using System.Diagnostics;
 using static ClimateExplorer.Core.Enums;
 
@@ -16,7 +17,7 @@ public class DataSetBuilder
         // Reads raw data (from one or multiple sources) & derive a series from it as per the request
         var series = await SeriesProvider.GetSeriesDataPointsForRequest(request.SeriesDerivationType, request.SeriesSpecifications!);
 
-        if (series.DataPoints != null && series.DataPoints.All(x => x.Value == null))
+        if (series.DataRecords != null && series.DataRecords.All(x => x.Value == null))
         {
             throw new Exception("All data points in the series are null. Check the raw input file");
         }
@@ -29,7 +30,7 @@ public class DataSetBuilder
         }
 
         // Run the rest of the pipeline (this is a separate method for testability)
-        var dataPoints = BuildDataSetFromDataPoints(series.DataPoints!, series.DataResolution, request);
+        var dataPoints = BuildDataSetFromDataPoints(series.DataRecords!, series.DataResolution, request);
 
         if (dataPoints.All(x => x.Value == null))
         {
@@ -40,12 +41,12 @@ public class DataSetBuilder
             new BuildDataSetResult
             {
                 DataPoints = dataPoints,
-                RawDataPoints = request.IncludeRawDataPoints ? series.DataPoints : null,
+                RawDataPoints = request.IncludeRawDataPoints ? series.DataRecords : null,
                 UnitOfMeasure = series.UnitOfMeasure,
             };
     }
 
-    public ChartableDataPoint[] BuildDataSetFromDataPoints(TemporalDataPoint[] dataPoints, DataResolution dataResolution, PostDataSetsRequestBody request)
+    public ChartableDataPoint[] BuildDataSetFromDataPoints(DataRecord[] dataPoints, DataResolution dataResolution, PostDataSetsRequestBody request)
     {
         Stopwatch sw = new Stopwatch();
         sw.Start();
@@ -116,7 +117,7 @@ public class DataSetBuilder
         }
     }
 
-    private static ChartableDataPoint[] ConvertDataPointsToChartableDataPoints(TemporalDataPoint[] filteredDataPoints)
+    private static ChartableDataPoint[] ConvertDataPointsToChartableDataPoints(DataRecord[] filteredDataPoints)
     {
         return filteredDataPoints
             .Select(x => (new YearAndDayBinIdentifier(x.Year, x.Month!.Value, x.Day!.Value), x.Value))
@@ -137,6 +138,6 @@ public class DataSetBuilder
         public UnitOfMeasure UnitOfMeasure { get; set; }
 
         public ChartableDataPoint[]? DataPoints { get; set; }
-        public TemporalDataPoint[]? RawDataPoints { get; set; }
+        public DataRecord[]? RawDataPoints { get; set; }
     }
 }

@@ -44,7 +44,7 @@ await Parallel.ForEachAsync(tempMaxStations, async (station, token) =>
         if (minRecord != null)
         {
             var value = Math.Round((double)(maxRecord.Value! + minRecord.Value!) / 2D, 2);
-            var meanRecord = new DataRecord((DateTime)maxRecord.Date!, value);
+            var meanRecord = new DataRecord((DateOnly)maxRecord.Date!, value);
             meanRecords.Add(meanRecord);
         }
         else

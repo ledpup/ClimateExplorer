@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 public static class TwelveMonthPerLineDataReader
 {
-    public static async Task<DataSet> GetTwelveMonthsPerRowData(MeasurementDefinition measurementDefinition, List<DataFileFilterAndAdjustment>? dataFileFilterAndAdjustments)
+    public static async Task<List<DataRecord>> GetTwelveMonthsPerRowData(MeasurementDefinition measurementDefinition, List<DataFileFilterAndAdjustment>? dataFileFilterAndAdjustments)
     {
         var dataPath = $@"{measurementDefinition.FolderName}\{measurementDefinition!.FileNameFormat!}";
         if (dataFileFilterAndAdjustments != null)
@@ -21,7 +21,7 @@ public static class TwelveMonthPerLineDataReader
 
         var regEx = new Regex(measurementDefinition.DataRowRegEx!);
 
-        var list = new List<DataRecord>();
+        var dataRecords = new List<DataRecord>();
         var dataRowFound = false;
         foreach (var record in records)
         {
@@ -54,15 +54,11 @@ public static class TwelveMonthPerLineDataReader
                         value = value / measurementDefinition.ValueAdjustment.Value;
                     }
 
-                    list.Add(new DataRecord(short.Parse(groups["year"].Value), (short)i, null, value));
+                    dataRecords.Add(new DataRecord(short.Parse(groups["year"].Value), (short?)i, value));
                 }
             }
         }
 
-        return
-            new DataSet()
-            {
-                DataRecords = list,
-            };
+        return dataRecords;
     }
 }

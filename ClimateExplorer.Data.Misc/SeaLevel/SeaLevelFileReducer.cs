@@ -48,7 +48,7 @@ public class SeaLevelFileReducer
 
                 if (values.Any())
                 {
-                    records.Add(new DataRecord(date.ToDateTime(new TimeOnly(0)), values.Average()));
+                    records.Add(new DataRecord(date, values.Average()));
                 }
 
                 values = [];

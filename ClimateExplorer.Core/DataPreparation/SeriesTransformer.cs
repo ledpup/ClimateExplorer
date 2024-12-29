@@ -1,8 +1,10 @@
 ﻿namespace ClimateExplorer.Core.DataPreparation;
 
+using ClimateExplorer.Core.Model;
+
 public static class SeriesTransformer
 {
-    public static TemporalDataPoint[] ApplySeriesTransformation(TemporalDataPoint[] dataPoints, SeriesTransformations seriesTransformation)
+    public static DataRecord[] ApplySeriesTransformation(DataRecord[] dataPoints, SeriesTransformations seriesTransformation)
     {
         switch (seriesTransformation)
         {

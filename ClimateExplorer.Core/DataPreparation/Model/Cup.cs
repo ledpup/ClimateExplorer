@@ -1,12 +1,14 @@
 ﻿namespace ClimateExplorer.Core.DataPreparation;
 
+using ClimateExplorer.Core.Model;
+
 public class Cup
 {
     public DateOnly FirstDayInCup { get; set; }
     public DateOnly LastDayInCup { get; set; }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
-    public TemporalDataPoint[]? DataPoints { get; set; }
+    public DataRecord[]? DataRecords { get; set; }
 
     /// <summary>
     /// This indicates how many data points would fall into this cup, if the data set was complete throughout. This varies depending on the underlying
@@ -17,6 +19,6 @@ public class Cup
 
     public override string ToString()
     {
-        return FirstDayInCup.ToString("yyyy-MM-dd") + " -> " + LastDayInCup.ToString("yyyy-MM-dd") + " (" + DataPoints!.Where(x => x.Value != null).Count() + " data points / " + ExpectedDataPointsInCup + " expected)";
+        return FirstDayInCup.ToString("yyyy-MM-dd") + " -> " + LastDayInCup.ToString("yyyy-MM-dd") + " (" + DataRecords!.Where(x => x.Value != null).Count() + " data points / " + ExpectedDataPointsInCup + " expected)";
     }
 }
