@@ -33,13 +33,12 @@ await Parallel.ForEachAsync(tempMaxStations, async (station, token) =>
     Console.WriteLine($"Processing station {station.Id}");
 
     var maxRecords = (await DataReaderFunctions.GetDataRecords(mdTempMax, [station])).Where(x => x.Value != null);
-    var minRecords = (await DataReaderFunctions.GetDataRecords(mdTempMin, [station])).Where(x => x.Value != null);
+    var minRecords = (await DataReaderFunctions.GetDataRecords(mdTempMin, [station])).Where(x => x.Value != null).ToLookup(x => x.Key, x => x);
     var meanRecords = new List<DataRecord>();
 
     foreach (var maxRecord in maxRecords)
     {
-        // The following line is what's causing poor performance. Should fix.
-        var minRecord = minRecords.FirstOrDefault(x => x.Date == maxRecord.Date);
+        var minRecord = minRecords[maxRecord.Key].SingleOrDefault();
 
         if (minRecord != null)
         {
