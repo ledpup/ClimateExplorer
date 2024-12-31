@@ -324,7 +324,7 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
                 },
             DataRecords =
                 series.DataPoints
-                .Select(x => new BinnedRecord(x.BinId, x.Value))
+                .Select(x => new BinnedRecord(x.BinId, x.Value.HasValue ? Math.Round(x.Value.Value, 4) : null)) // 4 decimal places should be enough for anyone
                 .ToList(),
             RawDataRecords =
                 body.IncludeRawDataPoints
@@ -356,8 +356,8 @@ static PostDataSetsRequestBody GetPostRequestBody(PostDataSetsRequestBody body, 
         RequiredBucketDataProportion = body.RequiredBinDataProportion,
         RequiredCupDataProportion = body.RequiredCupDataProportion,
         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-        SeriesSpecifications = new[]
-                {
+        SeriesSpecifications =
+                [
                     new SeriesSpecification
                     {
                         DataAdjustment = body.SeriesSpecifications[0].DataAdjustment,
@@ -365,7 +365,7 @@ static PostDataSetsRequestBody GetPostRequestBody(PostDataSetsRequestBody body, 
                         DataType = body.SeriesSpecifications[0].DataType,
                         LocationId = locationId,
                     },
-                },
+                ],
         SeriesTransformation = body.SeriesTransformation,
         Anomaly = body.Anomaly,
         FilterToYear = body.FilterToYear,

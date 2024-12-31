@@ -14,7 +14,6 @@ var tempMaxFiles = Directory.GetFiles(tempMaxFolder);
 var tempMinFiles = Directory.GetFiles(tempMinFolder);
 
 var tempMaxStations = tempMaxFiles.Select(x => new DataFileFilterAndAdjustment { Id = Path.GetFileName(x).Substring(0, 6) }).ToList();
-var tempMinStations = tempMinFiles.Select(x => new DataFileFilterAndAdjustment { Id = Path.GetFileName(x).Substring(0, 6) }).ToList();
 
 var mdTempMax = bom.MeasurementDefinitions!.Single(x => x.DataType == Enums.DataType.TempMax);
 var mdTempMin = bom.MeasurementDefinitions!.Single(x => x.DataType == Enums.DataType.TempMin);

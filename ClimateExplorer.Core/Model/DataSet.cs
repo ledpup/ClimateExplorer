@@ -7,6 +7,7 @@ using static ClimateExplorer.Core.Enums;
 
 public class DataSet
 {
+    private double? mean;
     public DataSet()
     {
         DataRecords = [];
@@ -75,7 +76,7 @@ public class DataSet
     public short? Year { get; set; }
 
     [JsonIgnore]
-    public List<short> Years
+    public List<short?> Years
     {
         get
         {
@@ -105,7 +106,19 @@ public class DataSet
 
     public double? Mean
     {
-        get { return DataRecords.Average(x => x.Value); }
+        get
+        {
+            if (mean == null)
+            {
+                mean = DataRecords.Average(x => x.Value);
+                if (mean != null)
+                {
+                    mean = Math.Round(mean.Value, 4);
+                }
+            }
+
+            return mean;
+        }
     }
 
     public override string ToString()
