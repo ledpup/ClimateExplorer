@@ -272,7 +272,7 @@
     {
         var series = await GetData(dataSubstitutes, function);
 
-        if (series == null)
+        if (series == null || series.DataRecords.Count == 0)
         {
             return null;
         }

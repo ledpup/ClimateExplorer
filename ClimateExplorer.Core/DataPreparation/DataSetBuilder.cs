@@ -34,7 +34,8 @@ public class DataSetBuilder
 
         if (dataPoints.All(x => x.Value == null))
         {
-            throw new Exception("All data points are null. There was insufficient data for adequate aggregation.");
+            // There is insufficient data for aggregation. Will return an empty set.
+            dataPoints = [];
         }
 
         return

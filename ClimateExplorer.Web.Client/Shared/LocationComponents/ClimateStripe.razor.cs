@@ -72,7 +72,7 @@ public partial class ClimateStripe
 <p>Climate stripe colours are calculated by the following algorithm, using temperature as the example.</p>
 <ol>
 <li>Calculate the average for the whole series
-<br>(The <strong>{LocationName}</strong> years {DataRecords!.First().Year}-{DataRecords!.Last().Year} mean is {Math.Round(LocationMean.Value, uomRounding)}{uomString})</li>
+<br>(The <strong>{LocationName}</strong> mean is {Math.Round(LocationMean.Value, uomRounding)}{uomString} for years {DataRecords!.First().Year}-{DataRecords!.Last().Year})</li>
 <li>For each year in the series, subtract the average for the <strong>series</strong> from the average for the <strong>year</strong>
 <br>(If the series average is {Math.Round(LocationMean.Value, uomRounding)}{uomString} and an example yearly average is {Math.Round(LocationMean.Value - 1.3, uomRounding)}{uomString}, the result is -1.3{uomString})
 <br>Note:</li>
