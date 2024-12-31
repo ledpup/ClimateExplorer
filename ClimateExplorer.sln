@@ -55,7 +55,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.WebApiClien
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.CachingTool", "ClimateExplorer.CachingTool\ClimateExplorer.CachingTool.csproj", "{148C807C-7B48-4532-A4AE-F6D279EFA5C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.Data.AcornSatTransferFunction", "ClimateExplorer.Data.AcornSatTransferFunction\ClimateExplorer.Data.AcornSatTransferFunction.csproj", "{D4F92FFD-7608-4716-BB92-67B1C98FF27B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.Data.AcornSatTransferFunctionAnalysis", "ClimateExplorer.Data.AcornSatTransferFunctionAnalysis\ClimateExplorer.Data.AcornSatTransferFunctionAnalysis.csproj", "{245609B4-1088-4F16-A73B-F1BC5A0218CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -143,10 +143,10 @@ Global
 		{148C807C-7B48-4532-A4AE-F6D279EFA5C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{148C807C-7B48-4532-A4AE-F6D279EFA5C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{148C807C-7B48-4532-A4AE-F6D279EFA5C7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D4F92FFD-7608-4716-BB92-67B1C98FF27B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D4F92FFD-7608-4716-BB92-67B1C98FF27B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D4F92FFD-7608-4716-BB92-67B1C98FF27B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D4F92FFD-7608-4716-BB92-67B1C98FF27B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{245609B4-1088-4F16-A73B-F1BC5A0218CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{245609B4-1088-4F16-A73B-F1BC5A0218CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{245609B4-1088-4F16-A73B-F1BC5A0218CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{245609B4-1088-4F16-A73B-F1BC5A0218CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -164,7 +164,7 @@ Global
 		{497B5551-6805-420F-8DA9-8C815000CC69} = {F3EDC6D9-6967-4DC9-827C-141F081FA91E}
 		{55EFD2B7-CF33-4D5A-BBC7-7D19742DE029} = {F3EDC6D9-6967-4DC9-827C-141F081FA91E}
 		{F46E5FF2-88F8-4638-910E-B5B4253754FD} = {F3EDC6D9-6967-4DC9-827C-141F081FA91E}
-		{D4F92FFD-7608-4716-BB92-67B1C98FF27B} = {F3EDC6D9-6967-4DC9-827C-141F081FA91E}
+		{245609B4-1088-4F16-A73B-F1BC5A0218CA} = {F3EDC6D9-6967-4DC9-827C-141F081FA91E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4F67DF1E-4405-495A-9FC1-1408F179D95C}
