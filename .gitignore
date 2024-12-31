@@ -364,9 +364,3 @@ FodyWeavers.xsd
 
 # Ignore the WebApi cache
 /ClimateExplorer.WebApi/cache/*
-
-# Australia
-!/ClimateExplorer.WebApi/cache/hash_-1136848310.json
-!/ClimateExplorer.WebApi/cache/6608b18e-75f6-4175-873d-34a8179850d0.json
-!/ClimateExplorer.WebApi/cache/hash_-528907859.json
-!/ClimateExplorer.WebApi/cache/0cbac719-d45e-4fe6-8d1f-003f21527780.json

@@ -119,10 +119,10 @@ public static class BinAggregator
         return
             new ContainerAggregate
             {
-                NumberOfPeriodsCoveredByAggregate = cup.ExpectedDataPointsInCup,
+                NumberOfPeriodsCoveredByAggregate = cup.ExpectedDataRecordsInCup,
                 Value =
                     aggregationFunction(
-                        cup.DataPoints!
+                        cup.DataRecords!
                         .Where(x => x.Value.HasValue)
                         .Select(
                             x =>
@@ -217,7 +217,7 @@ public static class BinAggregator
                         ? aggregationFunction(
                             x.Buckets!
                             .SelectMany(y => y.Cups!)
-                            .SelectMany(y => y.DataPoints!)
+                            .SelectMany(y => y.DataRecords!)
                             .Where(y => y.Value.HasValue)
                             .Select(y => new ContainerAggregate() { Value = y.Value!.Value, NumberOfPeriodsCoveredByAggregate = 1 }))
                         : null,

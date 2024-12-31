@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using static ClimateExplorer.Core.Enums;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
-public static class DataReader
+public static class DataReaderFunctions
 {
     private static readonly Dictionary<string, short> MonthNamesToNumeric = new ()
     {
@@ -24,28 +24,6 @@ public static class DataReader
         { "nov", 11 },
         { "dec", 12 },
     };
-
-    public static async Task<DataSet> GetDataSet(MeasurementDefinition measurementDefinition, List<DataFileFilterAndAdjustment> dataFileDefinitions)
-    {
-        var records = await GetDataRecords(measurementDefinition, dataFileDefinitions);
-
-        short? year = null;
-        if (records != null && records.Any())
-        {
-            var firstYear = records.First().Year;
-            year = records.All(x => x.Year == firstYear) ? firstYear : null;
-        }
-
-        var dataSet = new DataSet
-        {
-            Resolution = measurementDefinition.DataResolution,
-            MeasurementDefinition = measurementDefinition.ToViewModel(),
-            Year = year,
-            DataRecords = records!,
-        };
-
-        return dataSet;
-    }
 
     public static async Task<List<DataRecord>> GetDataRecords(
         MeasurementDefinition measurementDefinition,
@@ -104,8 +82,8 @@ public static class DataReader
         string nullValue,
         DataResolution dataResolution,
         string station,
-        DateTime? startDate = null,
-        DateTime? endDate = null)
+        DateOnly? startDate = null,
+        DateOnly? endDate = null)
     {
         switch (dataResolution)
         {
@@ -138,7 +116,7 @@ public static class DataReader
             startDay = short.Parse(firstValidLine.Groups["day"].Value);
         }
 
-        var date = new DateTime(startYear, startMonth, startDay);
+        var date = new DateOnly(startYear, startMonth, startDay);
         var previousDate = date.AddDays(-1);
         var resetDate = false;
         foreach (var line in lines)
@@ -159,7 +137,7 @@ public static class DataReader
                 day = short.Parse(match.Groups["day"].Value);
             }
 
-            var filterDate = new DateTime(year, month, day);
+            var filterDate = new DateOnly(year, month, day);
             if (startDate.HasValue && filterDate < startDate.Value)
             {
                 resetDate = true;
@@ -176,7 +154,7 @@ public static class DataReader
                 resetDate = false;
             }
 
-            var recordDate = new DateTime(year, month, day);
+            var recordDate = new DateOnly(year, month, day);
             if (recordDate <= previousDate)
             {
                 Console.Error.WriteLine($"Date of current record ({recordDate}) is earlier than or equal to the previous date ({previousDate}). The file is not ordered by date properly and/or there are duplicate records. Will skip this record.");
@@ -244,8 +222,8 @@ public static class DataReader
         string nullValue,
         DataResolution dataResolution,
         string station,
-        DateTime? startDate = null,
-        DateTime? endDate = null)
+        DateOnly? startDate = null,
+        DateOnly? endDate = null)
     {
         string[]? lines = await GetLinesInDataFileWithCascade(pathAndFile);
 
@@ -289,7 +267,7 @@ public static class DataReader
         var startYear = short.Parse(firstValidLine.Groups["year"].Value);
 
         // Yearly data represents data from the whole year, so use the last day of the year as the "date"
-        var date = new DateTime(startYear, 12, 31);
+        var date = new DateOnly(startYear, 12, 31);
         var previousDate = date.AddYears(-1);
         foreach (var line in lines)
         {
@@ -303,7 +281,7 @@ public static class DataReader
 
             var year = short.Parse(match.Groups["year"].Value);
 
-            var recordDate = new DateTime(year, 12, 31);
+            var recordDate = new DateOnly(year, 12, 31);
             if (recordDate <= previousDate)
             {
                 Console.Error.WriteLine($"Date of current record ({recordDate}) is earlier than or equal to the previous date ({previousDate}). The file is not ordered by date properly and/or there are duplicate records. Will skip this record.");

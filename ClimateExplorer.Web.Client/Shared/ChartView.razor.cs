@@ -546,7 +546,7 @@ public partial class ChartView
         {
             var dataSet = chartSeries.ProcessedDataSet!;
             var htmlColourCode = Colours.GetNextColour(chartSeries.ChartSeries!.RequestedColour, (List<Colours>)requestedColours);
-            var renderSmallPoints = (bool)IsMobileDevice! || dataSet.DataRecords.Count > 400;
+            var renderSmallPoints = (bool)IsMobileDevice! || dataSet.DataRecords.Count() > 400;
             var defaultLabel = (bool)IsMobileDevice!
                 ? chartSeries.ChartSeries.GetFriendlyTitleShort()
                 : $"{chartSeries.ChartSeries.FriendlyTitle} | {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition!.UnitOfMeasure)}";
@@ -629,12 +629,7 @@ public partial class ChartView
                     yearlyDifferenceValues
                     .Zip(
                         cs.SourceDataSet.DataRecords,
-                        (val, dr) => new DataRecord
-                        {
-                            Label = dr.Label,
-                            BinId = dr.BinId,
-                            Value = val,
-                        })
+                        (val, dr) => new BinnedRecord(dr.BinId, val))
                     .ToList();
 
                 cs.SourceDataSet =
@@ -676,12 +671,7 @@ public partial class ChartView
                     movingAverageValues
                     .Zip(
                         cs.SourceDataSet.DataRecords,
-                        (val, dr) => new DataRecord
-                        {
-                            Label = dr.Label,
-                            BinId = dr.BinId,
-                            Value = val,
-                        })
+                        (val, dr) => new BinnedRecord(dr.BinId, val))
                     .ToList();
 
                 cs.PreProcessedDataSet =
@@ -770,7 +760,7 @@ public partial class ChartView
                             recordsByBinId[bin.Id].SingleOrDefault()
 
                             // Otherwise, create a null record
-                            ?? new DataRecord { BinId = bin.Id, Label = bin.Label, Value = null })
+                            ?? new BinnedRecord(bin.Id, null))
                         .ToList(),
                 };
         }

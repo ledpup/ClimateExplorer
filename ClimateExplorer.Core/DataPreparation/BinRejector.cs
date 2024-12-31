@@ -27,9 +27,9 @@ public static class BinRejector
 
             foreach (var cup in bucket.Cups!)
             {
-                var dataPointsInCup = cup.DataPoints!.Count(x => x.Value.HasValue);
+                var dataPointsInCup = cup.DataRecords!.Count(x => x.Value.HasValue);
 
-                var proportionOfPointsInCup = (float)dataPointsInCup / cup.ExpectedDataPointsInCup;
+                var proportionOfPointsInCup = (float)dataPointsInCup / cup.ExpectedDataRecordsInCup;
 
                 if (proportionOfPointsInCup >= requiredCupDataProportion)
                 {

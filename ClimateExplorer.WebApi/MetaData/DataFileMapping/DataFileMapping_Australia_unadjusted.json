@@ -5,13 +5,13 @@
     "cbb11150-ec74-4401-8357-fae6fef70768": [
       {
         "Id": "001021",
-        "StartDate": "1941-09-01T00:00:00",
-        "EndDate": "1998-09-15T00:00:00",
+        "StartDate": "1941-09-01",
+        "EndDate": "1998-09-15",
         "ValueAdjustment": null
       },
       {
         "Id": "001019",
-        "StartDate": "1998-09-16T00:00:00",
+        "StartDate": "1998-09-16",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -20,18 +20,18 @@
       {
         "Id": "002011",
         "StartDate": null,
-        "EndDate": "1949-12-31T00:00:00",
+        "EndDate": "1949-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "002012",
-        "StartDate": "1950-01-01T00:00:00",
-        "EndDate": "2015-09-18T00:00:00",
+        "StartDate": "1950-01-01",
+        "EndDate": "2015-09-18",
         "ValueAdjustment": null
       },
       {
         "Id": "002079",
-        "StartDate": "2015-09-19T00:00:00",
+        "StartDate": "2015-09-19",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -40,12 +40,12 @@
       {
         "Id": "003002",
         "StartDate": null,
-        "EndDate": "1941-12-31T00:00:00",
+        "EndDate": "1941-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "003003",
-        "StartDate": "1942-01-01T00:00:00",
+        "StartDate": "1942-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -53,13 +53,13 @@
     "04d33b2f-2a8a-4cf0-b281-68b74475d2b4": [
       {
         "Id": "004002",
-        "StartDate": "1912-10-10T00:00:00",
-        "EndDate": "1948-06-30T00:00:00",
+        "StartDate": "1912-10-10",
+        "EndDate": "1948-06-30",
         "ValueAdjustment": null
       },
       {
         "Id": "004032",
-        "StartDate": "1948-07-01T00:00:00",
+        "StartDate": "1948-07-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -68,12 +68,12 @@
       {
         "Id": "004020",
         "StartDate": null,
-        "EndDate": "2000-09-25T00:00:00",
+        "EndDate": "2000-09-25",
         "ValueAdjustment": null
       },
       {
         "Id": "004106",
-        "StartDate": "2000-09-26T00:00:00",
+        "StartDate": "2000-09-26",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -81,7 +81,7 @@
     "2119d5bf-94b0-4724-b2b8-bcd5f787877b": [
       {
         "Id": "005007",
-        "StartDate": "1975-03-01T00:00:00",
+        "StartDate": "1975-03-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -89,13 +89,13 @@
     "48c35ccf-3ff8-4448-90de-1e491c500887": [
       {
         "Id": "005026",
-        "StartDate": "1951-10-01T00:00:00",
-        "EndDate": "2018-08-31T00:00:00",
+        "StartDate": "1951-10-01",
+        "EndDate": "2018-08-31",
         "ValueAdjustment": null
       },
       {
         "Id": "005098",
-        "StartDate": "2018-09-01T00:00:00",
+        "StartDate": "2018-09-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -104,12 +104,12 @@
       {
         "Id": "006062",
         "StartDate": null,
-        "EndDate": "1947-12-31T00:00:00",
+        "EndDate": "1947-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "006011",
-        "StartDate": "1948-01-01T00:00:00",
+        "StartDate": "1948-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -117,13 +117,13 @@
     "9ce454b6-7e6c-4516-88a7-6504444a4754": [
       {
         "Id": "007046",
-        "StartDate": "1926-10-05T00:00:00",
-        "EndDate": "1950-04-24T00:00:00",
+        "StartDate": "1926-10-05",
+        "EndDate": "1950-04-24",
         "ValueAdjustment": null
       },
       {
         "Id": "007045",
-        "StartDate": "1950-04-25T00:00:00",
+        "StartDate": "1950-04-25",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -131,13 +131,13 @@
     "503be743-9f46-4f6f-8b3e-8ce830e12fe7": [
       {
         "Id": "008093",
-        "StartDate": "1925-03-01T00:00:00",
-        "EndDate": "1997-03-25T00:00:00",
+        "StartDate": "1925-03-01",
+        "EndDate": "1997-03-25",
         "ValueAdjustment": null
       },
       {
         "Id": "008296",
-        "StartDate": "1997-03-26T00:00:00",
+        "StartDate": "1997-03-26",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -145,13 +145,13 @@
     "fc5ff168-2c7a-4913-bac7-957d7efa065b": [
       {
         "Id": "008039",
-        "StartDate": "1955-01-01T00:00:00",
-        "EndDate": "2006-12-31T00:00:00",
+        "StartDate": "1955-01-01",
+        "EndDate": "2006-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "008297",
-        "StartDate": "2007-01-01T00:00:00",
+        "StartDate": "2007-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -160,18 +160,18 @@
       {
         "Id": "008050",
         "StartDate": null,
-        "EndDate": "1941-12-31T00:00:00",
+        "EndDate": "1941-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "008051",
-        "StartDate": "1942-01-01T00:00:00",
-        "EndDate": "2011-07-19T00:00:00",
+        "StartDate": "1942-01-01",
+        "EndDate": "2011-07-19",
         "ValueAdjustment": null
       },
       {
         "Id": "008315",
-        "StartDate": "2011-07-20T00:00:00",
+        "StartDate": "2011-07-20",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -180,12 +180,12 @@
       {
         "Id": "009034",
         "StartDate": null,
-        "EndDate": "1963-12-31T00:00:00",
+        "EndDate": "1963-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "009021",
-        "StartDate": "1964-01-01T00:00:00",
+        "StartDate": "1964-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -202,12 +202,12 @@
       {
         "Id": "009510",
         "StartDate": null,
-        "EndDate": "2007-12-31T00:00:00",
+        "EndDate": "2007-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "009617",
-        "StartDate": "2008-01-01T00:00:00",
+        "StartDate": "2008-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -216,12 +216,12 @@
       {
         "Id": "009541",
         "StartDate": null,
-        "EndDate": "1969-06-29T00:00:00",
+        "EndDate": "1969-06-29",
         "ValueAdjustment": null
       },
       {
         "Id": "009789",
-        "StartDate": "1969-06-30T00:00:00",
+        "StartDate": "1969-06-30",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -230,18 +230,18 @@
       {
         "Id": "009500",
         "StartDate": null,
-        "EndDate": "1965-04-11T00:00:00",
+        "EndDate": "1965-04-11",
         "ValueAdjustment": null
       },
       {
         "Id": "009741",
-        "StartDate": "1965-04-12T00:00:00",
-        "EndDate": "2012-01-12T00:00:00",
+        "StartDate": "1965-04-12",
+        "EndDate": "2012-01-12",
         "ValueAdjustment": null
       },
       {
         "Id": "009999",
-        "StartDate": "2012-01-13T00:00:00",
+        "StartDate": "2012-01-13",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -249,13 +249,13 @@
     "fdd46b2e-4da4-4426-a17d-034ee9752ef6": [
       {
         "Id": "010093",
-        "StartDate": "1912-12-01T00:00:00",
-        "EndDate": "1974-12-31T00:00:00",
+        "StartDate": "1912-12-01",
+        "EndDate": "1974-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "010092",
-        "StartDate": "1975-01-01T00:00:00",
+        "StartDate": "1975-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -263,13 +263,13 @@
     "d7307020-9788-4269-ae25-19926ca9e198": [
       {
         "Id": "010035",
-        "StartDate": "1950-07-16T00:00:00",
-        "EndDate": "1996-12-31T00:00:00",
+        "StartDate": "1950-07-16",
+        "EndDate": "1996-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "010286",
-        "StartDate": "1997-01-01T00:00:00",
+        "StartDate": "1997-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -278,12 +278,12 @@
       {
         "Id": "010579",
         "StartDate": null,
-        "EndDate": "1999-01-08T00:00:00",
+        "EndDate": "1999-01-08",
         "ValueAdjustment": null
       },
       {
         "Id": "010916",
-        "StartDate": "1999-01-09T00:00:00",
+        "StartDate": "1999-01-09",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -292,12 +292,12 @@
       {
         "Id": "010648",
         "StartDate": null,
-        "EndDate": "1998-12-13T00:00:00",
+        "EndDate": "1998-12-13",
         "ValueAdjustment": null
       },
       {
         "Id": "010917",
-        "StartDate": "1998-12-14T00:00:00",
+        "StartDate": "1998-12-14",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -305,7 +305,7 @@
     "663a6037-a8de-462a-9d74-396ec881ffeb": [
       {
         "Id": "011003",
-        "StartDate": "1913-01-01T00:00:00",
+        "StartDate": "1913-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -313,13 +313,13 @@
     "a7a48420-7677-444a-a6aa-e8d6eb195729": [
       {
         "Id": "011004",
-        "StartDate": "1946-02-01T00:00:00",
-        "EndDate": "1993-03-14T00:00:00",
+        "StartDate": "1946-02-01",
+        "EndDate": "1993-03-14",
         "ValueAdjustment": null
       },
       {
         "Id": "011052",
-        "StartDate": "1993-03-15T00:00:00",
+        "StartDate": "1993-03-15",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -328,12 +328,12 @@
       {
         "Id": "012039",
         "StartDate": null,
-        "EndDate": "1943-12-31T00:00:00",
+        "EndDate": "1943-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "012038",
-        "StartDate": "1944-01-01T00:00:00",
+        "StartDate": "1944-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -341,7 +341,7 @@
     "e61fd5fb-f6a0-41b0-99bf-bc2eddb1a90c": [
       {
         "Id": "013017",
-        "StartDate": "1956-08-13T00:00:00",
+        "StartDate": "1956-08-13",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -350,12 +350,12 @@
       {
         "Id": "014016",
         "StartDate": null,
-        "EndDate": "1941-02-01T00:00:00",
+        "EndDate": "1941-02-01",
         "ValueAdjustment": null
       },
       {
         "Id": "014015",
-        "StartDate": "1941-02-02T00:00:00",
+        "StartDate": "1941-02-02",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -363,7 +363,7 @@
     "be54baa5-c044-41c3-affa-50884f7c9735": [
       {
         "Id": "014825",
-        "StartDate": "1965-01-01T00:00:00",
+        "StartDate": "1965-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -371,13 +371,13 @@
     "5cfaf343-06a2-4bc6-a451-b8f2d3751da9": [
       {
         "Id": "015087",
-        "StartDate": "1910-02-01T00:00:00",
-        "EndDate": "1969-12-31T00:00:00",
+        "StartDate": "1910-02-01",
+        "EndDate": "1969-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "015135",
-        "StartDate": "1970-01-01T00:00:00",
+        "StartDate": "1970-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -386,12 +386,12 @@
       {
         "Id": "015540",
         "StartDate": null,
-        "EndDate": "1941-12-31T00:00:00",
+        "EndDate": "1941-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "015590",
-        "StartDate": "1942-01-01T00:00:00",
+        "StartDate": "1942-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -399,13 +399,13 @@
     "916c204a-0847-4fd3-9ad0-0ccc5ae9c601": [
       {
         "Id": "015548",
-        "StartDate": "1969-08-21T00:00:00",
-        "EndDate": "1996-12-31T00:00:00",
+        "StartDate": "1969-08-21",
+        "EndDate": "1996-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "015666",
-        "StartDate": "1997-01-01T00:00:00",
+        "StartDate": "1997-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -413,7 +413,7 @@
     "b41a2fa1-ce5c-473e-b2d7-17d43e9dbc8b": [
       {
         "Id": "016001",
-        "StartDate": "1949-04-01T00:00:00",
+        "StartDate": "1949-04-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -421,13 +421,13 @@
     "9882e6ca-a0aa-479c-b1a6-169e94481afd": [
       {
         "Id": "016044",
-        "StartDate": "1921-11-01T00:00:00",
-        "EndDate": "1997-09-30T00:00:00",
+        "StartDate": "1921-11-01",
+        "EndDate": "1997-09-30",
         "ValueAdjustment": null
       },
       {
         "Id": "016098",
-        "StartDate": "1997-10-01T00:00:00",
+        "StartDate": "1997-10-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -435,19 +435,19 @@
     "69e0e687-7e35-466a-b518-ee4c76af5cf6": [
       {
         "Id": "017043",
-        "StartDate": "1940-02-01T00:00:00",
-        "EndDate": "1985-07-26T00:00:00",
+        "StartDate": "1940-02-01",
+        "EndDate": "1985-07-26",
         "ValueAdjustment": null
       },
       {
         "Id": "017114",
-        "StartDate": "1985-07-27T00:00:00",
-        "EndDate": "1994-12-11T00:00:00",
+        "StartDate": "1985-07-27",
+        "EndDate": "1994-12-11",
         "ValueAdjustment": null
       },
       {
         "Id": "017043",
-        "StartDate": "1994-12-12T00:00:00",
+        "StartDate": "1994-12-12",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -456,18 +456,18 @@
       {
         "Id": "017024",
         "StartDate": null,
-        "EndDate": "1939-03-31T00:00:00",
+        "EndDate": "1939-03-31",
         "ValueAdjustment": null
       },
       {
         "Id": "017031",
-        "StartDate": "1939-04-01T00:00:00",
-        "EndDate": "2005-12-31T00:00:00",
+        "StartDate": "1939-04-01",
+        "EndDate": "2005-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "017126",
-        "StartDate": "2006-01-01T00:00:00",
+        "StartDate": "2006-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -475,7 +475,7 @@
     "4397371d-a43b-4925-af58-bec79e6ca802": [
       {
         "Id": "018012",
-        "StartDate": "1939-07-02T00:00:00",
+        "StartDate": "1939-07-02",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -483,7 +483,7 @@
     "6b771c0b-97d3-45c7-9cd1-72fdee232e7c": [
       {
         "Id": "018044",
-        "StartDate": "1930-02-10T00:00:00",
+        "StartDate": "1930-02-10",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -492,12 +492,12 @@
       {
         "Id": "018070",
         "StartDate": null,
-        "EndDate": "1994-12-31T00:00:00",
+        "EndDate": "1994-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "018192",
-        "StartDate": "1995-01-01T00:00:00",
+        "StartDate": "1995-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -506,12 +506,12 @@
       {
         "Id": "021046",
         "StartDate": null,
-        "EndDate": "1998-06-22T00:00:00",
+        "EndDate": "1998-06-22",
         "ValueAdjustment": null
       },
       {
         "Id": "021133",
-        "StartDate": "1998-06-23T00:00:00",
+        "StartDate": "1998-06-23",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -519,13 +519,13 @@
     "f1be5e90-f9fd-40f4-9db8-2c5564a7e908": [
       {
         "Id": "022801",
-        "StartDate": "1957-09-01T00:00:00",
-        "EndDate": "2002-09-09T00:00:00",
+        "StartDate": "1957-09-01",
+        "EndDate": "2002-09-09",
         "ValueAdjustment": null
       },
       {
         "Id": "022823",
-        "StartDate": "2002-09-10T00:00:00",
+        "StartDate": "2002-09-10",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -534,12 +534,12 @@
       {
         "Id": "023000",
         "StartDate": null,
-        "EndDate": "1977-01-31T00:00:00",
+        "EndDate": "1977-01-31",
         "ValueAdjustment": null
       },
       {
         "Id": "023090",
-        "StartDate": "1977-02-01T00:00:00",
+        "StartDate": "1977-02-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -547,13 +547,13 @@
     "b13e3137-51c7-432a-9194-2c3f42f0e438": [
       {
         "Id": "023321",
-        "StartDate": "1957-01-01T00:00:00",
-        "EndDate": "1996-08-27T00:00:00",
+        "StartDate": "1957-01-01",
+        "EndDate": "1996-08-27",
         "ValueAdjustment": null
       },
       {
         "Id": "023373",
-        "StartDate": "1996-08-28T00:00:00",
+        "StartDate": "1996-08-28",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -562,12 +562,12 @@
       {
         "Id": "026020",
         "StartDate": null,
-        "EndDate": "1941-12-31T00:00:00",
+        "EndDate": "1941-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "026021",
-        "StartDate": "1942-01-01T00:00:00",
+        "StartDate": "1942-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -583,13 +583,13 @@
     "bc211d96-5bf6-4427-acac-81b40e17a4ce": [
       {
         "Id": "027042",
-        "StartDate": "1959-01-01T00:00:00",
-        "EndDate": "1992-11-05T00:00:00",
+        "StartDate": "1959-01-01",
+        "EndDate": "1992-11-05",
         "ValueAdjustment": null
       },
       {
         "Id": "027045",
-        "StartDate": "1992-11-06T00:00:00",
+        "StartDate": "1992-11-06",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -597,19 +597,19 @@
     "1d06ff8a-82ba-4613-875f-1b4893536c42": [
       {
         "Id": "027022",
-        "StartDate": "1950-09-04T00:00:00",
-        "EndDate": "1992-12-31T00:00:00",
+        "StartDate": "1950-09-04",
+        "EndDate": "1992-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "027021",
-        "StartDate": "1993-01-01T00:00:00",
-        "EndDate": "1995-12-31T00:00:00",
+        "StartDate": "1993-01-01",
+        "EndDate": "1995-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "027058",
-        "StartDate": "1996-01-01T00:00:00",
+        "StartDate": "1996-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -626,12 +626,12 @@
       {
         "Id": "029041",
         "StartDate": null,
-        "EndDate": "2001-04-30T00:00:00",
+        "EndDate": "2001-04-30",
         "ValueAdjustment": null
       },
       {
         "Id": "029063",
-        "StartDate": "2001-05-01T00:00:00",
+        "StartDate": "2001-05-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -640,12 +640,12 @@
       {
         "Id": "029004",
         "StartDate": null,
-        "EndDate": "2001-10-15T00:00:00",
+        "EndDate": "2001-10-15",
         "ValueAdjustment": null
       },
       {
         "Id": "029077",
-        "StartDate": "2001-10-16T00:00:00",
+        "StartDate": "2001-10-16",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -654,12 +654,12 @@
       {
         "Id": "030045",
         "StartDate": null,
-        "EndDate": "2010-12-31T00:00:00",
+        "EndDate": "2010-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "030161",
-        "StartDate": "2011-01-01T00:00:00",
+        "StartDate": "2011-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -668,12 +668,12 @@
       {
         "Id": "030018",
         "StartDate": null,
-        "EndDate": "2004-06-30T00:00:00",
+        "EndDate": "2004-06-30",
         "ValueAdjustment": null
       },
       {
         "Id": "030124",
-        "StartDate": "2004-07-01T00:00:00",
+        "StartDate": "2004-07-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -682,12 +682,12 @@
       {
         "Id": "031010",
         "StartDate": null,
-        "EndDate": "1942-10-21T00:00:00",
+        "EndDate": "1942-10-21",
         "ValueAdjustment": null
       },
       {
         "Id": "031011",
-        "StartDate": "1942-10-22T00:00:00",
+        "StartDate": "1942-10-22",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -695,7 +695,7 @@
     "b0783cae-1c6f-4570-8ab3-19df57ee1820": [
       {
         "Id": "032040",
-        "StartDate": "1940-10-19T00:00:00",
+        "StartDate": "1940-10-19",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -704,18 +704,18 @@
       {
         "Id": "033046",
         "StartDate": null,
-        "EndDate": "1947-07-31T00:00:00",
+        "EndDate": "1947-07-31",
         "ValueAdjustment": null
       },
       {
         "Id": "033047",
-        "StartDate": "1947-08-01T00:00:00",
-        "EndDate": "1959-09-24T00:00:00",
+        "StartDate": "1947-08-01",
+        "EndDate": "1959-09-24",
         "ValueAdjustment": null
       },
       {
         "Id": "033119",
-        "StartDate": "1959-09-25T00:00:00",
+        "StartDate": "1959-09-25",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -724,12 +724,12 @@
       {
         "Id": "034002",
         "StartDate": null,
-        "EndDate": "1992-12-14T00:00:00",
+        "EndDate": "1992-12-14",
         "ValueAdjustment": null
       },
       {
         "Id": "034084",
-        "StartDate": "1992-12-15T00:00:00",
+        "StartDate": "1992-12-15",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -737,7 +737,7 @@
     "176e8056-e246-4566-b307-3c0b1ca8fde4": [
       {
         "Id": "036007",
-        "StartDate": "1962-01-01T00:00:00",
+        "StartDate": "1962-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -746,12 +746,12 @@
       {
         "Id": "036030",
         "StartDate": null,
-        "EndDate": "1967-03-31T00:00:00",
+        "EndDate": "1967-03-31",
         "ValueAdjustment": null
       },
       {
         "Id": "036031",
-        "StartDate": "1967-04-01T00:00:00",
+        "StartDate": "1967-04-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -759,7 +759,7 @@
     "09a5ba01-f523-4be3-ae7b-7a29a0da581c": [
       {
         "Id": "037010",
-        "StartDate": "1939-06-01T00:00:00",
+        "StartDate": "1939-06-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -775,13 +775,13 @@
     "65aea1bb-5395-4b14-bf6f-8ca1559099cd": [
       {
         "Id": "038002",
-        "StartDate": "1954-05-10T00:00:00",
-        "EndDate": "2000-06-28T00:00:00",
+        "StartDate": "1954-05-10",
+        "EndDate": "2000-06-28",
         "ValueAdjustment": null
       },
       {
         "Id": "038026",
-        "StartDate": "2000-06-29T00:00:00",
+        "StartDate": "2000-06-29",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -790,12 +790,12 @@
       {
         "Id": "039039",
         "StartDate": null,
-        "EndDate": "2005-12-31T00:00:00",
+        "EndDate": "2005-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "039066",
-        "StartDate": "2006-01-01T00:00:00",
+        "StartDate": "2006-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -803,7 +803,7 @@
     "e51c740e-2666-4f56-b397-0a68b26a6c3c": [
       {
         "Id": "039083",
-        "StartDate": "1939-08-06T00:00:00",
+        "StartDate": "1939-08-06",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -812,12 +812,12 @@
       {
         "Id": "039015",
         "StartDate": null,
-        "EndDate": "1990-06-30T00:00:00",
+        "EndDate": "1990-06-30",
         "ValueAdjustment": null
       },
       {
         "Id": "039128",
-        "StartDate": "1990-07-01T00:00:00",
+        "StartDate": "1990-07-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -825,7 +825,7 @@
     "0cfb93a1-e0b6-4b87-87a6-90c0e01ca9ca": [
       {
         "Id": "040004",
-        "StartDate": "1941-08-25T00:00:00",
+        "StartDate": "1941-08-25",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -841,13 +841,13 @@
     "b7e0c061-e71c-4fc4-8068-c0432398c24f": [
       {
         "Id": "040223",
-        "StartDate": "1949-06-03T00:00:00",
-        "EndDate": "1995-12-31T00:00:00",
+        "StartDate": "1949-06-03",
+        "EndDate": "1995-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "040842",
-        "StartDate": "1996-01-01T00:00:00",
+        "StartDate": "1996-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -856,12 +856,12 @@
       {
         "Id": "042023",
         "StartDate": null,
-        "EndDate": "1997-07-09T00:00:00",
+        "EndDate": "1997-07-09",
         "ValueAdjustment": null
       },
       {
         "Id": "042112",
-        "StartDate": "1997-07-10T00:00:00",
+        "StartDate": "1997-07-10",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -869,13 +869,13 @@
     "e9581d86-1e15-42aa-ad4b-b3960a119b10": [
       {
         "Id": "043034",
-        "StartDate": "1913-02-01T00:00:00",
-        "EndDate": "1997-05-31T00:00:00",
+        "StartDate": "1913-02-01",
+        "EndDate": "1997-05-31",
         "ValueAdjustment": null
       },
       {
         "Id": "043109",
-        "StartDate": "1997-06-01T00:00:00",
+        "StartDate": "1997-06-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -884,12 +884,12 @@
       {
         "Id": "044022",
         "StartDate": null,
-        "EndDate": "1948-12-31T00:00:00",
+        "EndDate": "1948-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "044021",
-        "StartDate": "1949-01-01T00:00:00",
+        "StartDate": "1949-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -897,13 +897,13 @@
     "a205d717-c18b-4082-9822-d3309f2637f7": [
       {
         "Id": "045017",
-        "StartDate": "1957-01-01T00:00:00",
-        "EndDate": "1999-07-31T00:00:00",
+        "StartDate": "1957-01-01",
+        "EndDate": "1999-07-31",
         "ValueAdjustment": null
       },
       {
         "Id": "045025",
-        "StartDate": "1999-08-01T00:00:00",
+        "StartDate": "1999-08-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -911,13 +911,13 @@
     "bd628d1f-9c2d-403c-abb5-e2e440fd3a02": [
       {
         "Id": "046043",
-        "StartDate": "1957-01-01T00:00:00",
-        "EndDate": "2010-12-31T00:00:00",
+        "StartDate": "1957-01-01",
+        "EndDate": "2010-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "046012",
-        "StartDate": "2011-01-01T00:00:00",
+        "StartDate": "2011-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -926,12 +926,12 @@
       {
         "Id": "046037",
         "StartDate": null,
-        "EndDate": "2006-12-31T00:00:00",
+        "EndDate": "2006-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "046126",
-        "StartDate": "2007-01-01T00:00:00",
+        "StartDate": "2007-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -940,12 +940,12 @@
       {
         "Id": "048030",
         "StartDate": null,
-        "EndDate": "1962-05-20T00:00:00",
+        "EndDate": "1962-05-20",
         "ValueAdjustment": null
       },
       {
         "Id": "048027",
-        "StartDate": "1962-05-21T00:00:00",
+        "StartDate": "1962-05-21",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -954,18 +954,18 @@
       {
         "Id": "048013",
         "StartDate": null,
-        "EndDate": "1994-11-10T00:00:00",
+        "EndDate": "1994-11-10",
         "ValueAdjustment": null
       },
       {
         "Id": "048239",
-        "StartDate": "1994-11-11T00:00:00",
-        "EndDate": "1998-12-31T00:00:00",
+        "StartDate": "1994-11-11",
+        "EndDate": "1998-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "048245",
-        "StartDate": "1999-01-01T00:00:00",
+        "StartDate": "1999-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -973,13 +973,13 @@
     "141b8a24-fc66-4ec5-a71c-2c779d802ca2": [
       {
         "Id": "073054",
-        "StartDate": "1965-01-01T00:00:00",
-        "EndDate": "2004-12-31T00:00:00",
+        "StartDate": "1965-01-01",
+        "EndDate": "2004-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "050017",
-        "StartDate": "2005-01-01T00:00:00",
+        "StartDate": "2005-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -988,12 +988,12 @@
       {
         "Id": "052026",
         "StartDate": null,
-        "EndDate": "1993-05-31T00:00:00",
+        "EndDate": "1993-05-31",
         "ValueAdjustment": null
       },
       {
         "Id": "052088",
-        "StartDate": "1993-06-01T00:00:00",
+        "StartDate": "1993-06-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1002,18 +1002,18 @@
       {
         "Id": "053027",
         "StartDate": null,
-        "EndDate": "1965-12-31T00:00:00",
+        "EndDate": "1965-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "053048",
-        "StartDate": "1966-01-01T00:00:00",
-        "EndDate": "1995-05-16T00:00:00",
+        "StartDate": "1966-01-01",
+        "EndDate": "1995-05-16",
         "ValueAdjustment": null
       },
       {
         "Id": "053115",
-        "StartDate": "1995-05-17T00:00:00",
+        "StartDate": "1995-05-17",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1021,7 +1021,7 @@
     "b8a3092a-041f-478d-951f-5ee4dda0a410": [
       {
         "Id": "055024",
-        "StartDate": "1948-01-01T00:00:00",
+        "StartDate": "1948-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1030,12 +1030,12 @@
       {
         "Id": "056017",
         "StartDate": null,
-        "EndDate": "1996-12-31T00:00:00",
+        "EndDate": "1996-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "056242",
-        "StartDate": "1997-01-01T00:00:00",
+        "StartDate": "1997-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1051,13 +1051,13 @@
     "8a63813f-8544-46b6-806e-6bc32dfc1b0d": [
       {
         "Id": "059040",
-        "StartDate": "1943-02-01T00:00:00",
-        "EndDate": "2013-08-09T00:00:00",
+        "StartDate": "1943-02-01",
+        "EndDate": "2013-08-09",
         "ValueAdjustment": null
       },
       {
         "Id": "059151",
-        "StartDate": "2013-08-10T00:00:00",
+        "StartDate": "2013-08-10",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1066,12 +1066,12 @@
       {
         "Id": "060026",
         "StartDate": null,
-        "EndDate": "1999-12-31T00:00:00",
+        "EndDate": "1999-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "060139",
-        "StartDate": "2000-01-01T00:00:00",
+        "StartDate": "2000-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1079,7 +1079,7 @@
     "f0f62231-f0d3-4ded-a945-133d4ecc4255": [
       {
         "Id": "061078",
-        "StartDate": "1942-09-10T00:00:00",
+        "StartDate": "1942-09-10",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1087,13 +1087,13 @@
     "5a927fc5-5f9d-46a0-af66-3023610337d8": [
       {
         "Id": "061089",
-        "StartDate": "1965-01-01T00:00:00",
-        "EndDate": "1994-12-31T00:00:00",
+        "StartDate": "1965-01-01",
+        "EndDate": "1994-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "061363",
-        "StartDate": "1995-01-01T00:00:00",
+        "StartDate": "1995-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1109,13 +1109,13 @@
     "5e5c8eee-e28d-4651-bb04-24d08e89c254": [
       {
         "Id": "065012",
-        "StartDate": "1921-01-01T00:00:00",
-        "EndDate": "1994-12-31T00:00:00",
+        "StartDate": "1921-01-01",
+        "EndDate": "1994-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "065070",
-        "StartDate": "1995-01-01T00:00:00",
+        "StartDate": "1995-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1124,26 +1124,26 @@
       {
         "Id": "066062",
         "StartDate": null,
-        "EndDate": "2020-08-31T00:00:00",
+        "EndDate": "2020-08-31",
         "ValueAdjustment": null
       },
       {
         "Id": "066214",
-        "StartDate": "2020-09-01T00:00:00",
-        "EndDate": "2022-12-31T00:00:00",
+        "StartDate": "2020-09-01",
+        "EndDate": "2022-12-31",
         "ValueAdjustment": null
       }
     ],
     "6c834afc-799c-473e-9d59-91a7ec7974a2": [
       {
         "Id": "067033",
-        "StartDate": "1939-12-01T00:00:00",
-        "EndDate": "1994-10-31T00:00:00",
+        "StartDate": "1939-12-01",
+        "EndDate": "1994-10-31",
         "ValueAdjustment": null
       },
       {
         "Id": "067105",
-        "StartDate": "1994-11-01T00:00:00",
+        "StartDate": "1994-11-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1151,13 +1151,13 @@
     "6c8d1781-f74b-45b8-bfe2-8a952b278011": [
       {
         "Id": "068076",
-        "StartDate": "1955-12-01T00:00:00",
-        "EndDate": "2000-11-27T00:00:00",
+        "StartDate": "1955-12-01",
+        "EndDate": "2000-11-27",
         "ValueAdjustment": null
       },
       {
         "Id": "068072",
-        "StartDate": "2000-11-28T00:00:00",
+        "StartDate": "2000-11-28",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1165,13 +1165,13 @@
     "1130dd09-dd90-4a8f-8a65-31f14dd449e3": [
       {
         "Id": "068034",
-        "StartDate": "1946-01-01T00:00:00",
-        "EndDate": "2001-05-20T00:00:00",
+        "StartDate": "1946-01-01",
+        "EndDate": "2001-05-20",
         "ValueAdjustment": null
       },
       {
         "Id": "068151",
-        "StartDate": "2001-05-21T00:00:00",
+        "StartDate": "2001-05-21",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1187,19 +1187,19 @@
     "c0f2743b-fb00-4128-9024-bafa4e1c85ed": [
       {
         "Id": "070099",
-        "StartDate": "1921-01-01T00:00:00",
-        "EndDate": "1939-03-31T00:00:00",
+        "StartDate": "1921-01-01",
+        "EndDate": "1939-03-31",
         "ValueAdjustment": null
       },
       {
         "Id": "070014",
-        "StartDate": "1939-04-01T00:00:00",
-        "EndDate": "2010-11-30T00:00:00",
+        "StartDate": "1939-04-01",
+        "EndDate": "2010-11-30",
         "ValueAdjustment": null
       },
       {
         "Id": "070351",
-        "StartDate": "2010-12-01T00:00:00",
+        "StartDate": "2010-12-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1208,12 +1208,12 @@
       {
         "Id": "072151",
         "StartDate": null,
-        "EndDate": "1942-12-31T00:00:00",
+        "EndDate": "1942-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "072150",
-        "StartDate": "1943-01-01T00:00:00",
+        "StartDate": "1943-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1221,13 +1221,13 @@
     "f7a20e98-23e9-4920-be3c-b72f8a22754d": [
       {
         "Id": "072091",
-        "StartDate": "1962-01-01T00:00:00",
-        "EndDate": "1996-12-31T00:00:00",
+        "StartDate": "1962-01-01",
+        "EndDate": "1996-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "072161",
-        "StartDate": "1997-01-01T00:00:00",
+        "StartDate": "1997-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1236,12 +1236,12 @@
       {
         "Id": "074128",
         "StartDate": null,
-        "EndDate": "1997-06-02T00:00:00",
+        "EndDate": "1997-06-02",
         "ValueAdjustment": null
       },
       {
         "Id": "074258",
-        "StartDate": "1997-06-03T00:00:00",
+        "StartDate": "1997-06-03",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1250,12 +1250,12 @@
       {
         "Id": "076077",
         "StartDate": null,
-        "EndDate": "1946-08-25T00:00:00",
+        "EndDate": "1946-08-25",
         "ValueAdjustment": null
       },
       {
         "Id": "076031",
-        "StartDate": "1946-08-26T00:00:00",
+        "StartDate": "1946-08-26",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1264,12 +1264,12 @@
       {
         "Id": "078031",
         "StartDate": null,
-        "EndDate": "2003-06-10T00:00:00",
+        "EndDate": "2003-06-10",
         "ValueAdjustment": null
       },
       {
         "Id": "078015",
-        "StartDate": "2003-06-11T00:00:00",
+        "StartDate": "2003-06-11",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1285,7 +1285,7 @@
     "9498f548-f000-4ff2-9c5d-fb7d3037493c": [
       {
         "Id": "082039",
-        "StartDate": "1912-11-07T00:00:00",
+        "StartDate": "1912-11-07",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1301,13 +1301,13 @@
     "32ecbe0c-95a6-4d39-b8f4-c7ac859c8122": [
       {
         "Id": "084030",
-        "StartDate": "1938-01-01T00:00:00",
-        "EndDate": "2000-11-22T00:00:00",
+        "StartDate": "1938-01-01",
+        "EndDate": "2000-11-22",
         "ValueAdjustment": null
       },
       {
         "Id": "084145",
-        "StartDate": "2000-11-23T00:00:00",
+        "StartDate": "2000-11-23",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1316,12 +1316,12 @@
       {
         "Id": "085133",
         "StartDate": null,
-        "EndDate": "1945-07-31T00:00:00",
+        "EndDate": "1945-07-31",
         "ValueAdjustment": null
       },
       {
         "Id": "085072",
-        "StartDate": "1945-08-01T00:00:00",
+        "StartDate": "1945-08-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1338,12 +1338,12 @@
       {
         "Id": "086071",
         "StartDate": null,
-        "EndDate": "2013-06-01T00:00:00",
+        "EndDate": "2013-06-01",
         "ValueAdjustment": null
       },
       {
         "Id": "086338",
-        "StartDate": "2013-06-02T00:00:00",
+        "StartDate": "2013-06-02",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1351,7 +1351,7 @@
     "ddbdddc8-8f95-4a44-b55b-f52378460640": [
       {
         "Id": "087031",
-        "StartDate": "1943-10-01T00:00:00",
+        "StartDate": "1943-10-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1368,12 +1368,12 @@
       {
         "Id": "091057",
         "StartDate": null,
-        "EndDate": "1998-01-07T00:00:00",
+        "EndDate": "1998-01-07",
         "ValueAdjustment": null
       },
       {
         "Id": "091293",
-        "StartDate": "1998-01-08T00:00:00",
+        "StartDate": "1998-01-08",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1382,18 +1382,18 @@
       {
         "Id": "091049",
         "StartDate": null,
-        "EndDate": "1939-03-31T00:00:00",
+        "EndDate": "1939-03-31",
         "ValueAdjustment": null
       },
       {
         "Id": "091104",
-        "StartDate": "1939-04-01T00:00:00",
-        "EndDate": "2004-07-11T00:00:00",
+        "StartDate": "1939-04-01",
+        "EndDate": "2004-07-11",
         "ValueAdjustment": null
       },
       {
         "Id": "091311",
-        "StartDate": "2004-07-12T00:00:00",
+        "StartDate": "2004-07-12",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1409,13 +1409,13 @@
     "eb75b5eb-8feb-4118-b6ab-bbe9b4fbc334": [
       {
         "Id": "094010",
-        "StartDate": "1923-01-01T00:00:00",
-        "EndDate": "2006-12-31T00:00:00",
+        "StartDate": "1923-01-01",
+        "EndDate": "2006-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "094198",
-        "StartDate": "2007-01-01T00:00:00",
+        "StartDate": "2007-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1423,7 +1423,7 @@
     "aed87aa0-1d0c-44aa-8561-cde0fc936395": [
       {
         "Id": "094029",
-        "StartDate": "1918-01-01T00:00:00",
+        "StartDate": "1918-01-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1431,13 +1431,13 @@
     "db8309f6-72b8-49e2-89b3-69a13989a392": [
       {
         "Id": "094069",
-        "StartDate": "1952-05-01T00:00:00",
-        "EndDate": "2004-06-15T00:00:00",
+        "StartDate": "1952-05-01",
+        "EndDate": "2004-06-15",
         "ValueAdjustment": null
       },
       {
         "Id": "094220",
-        "StartDate": "2004-06-16T00:00:00",
+        "StartDate": "2004-06-16",
         "EndDate": null,
         "ValueAdjustment": null
       }
@@ -1445,19 +1445,19 @@
     "5f6f3d62-4c80-441d-b30f-104d2f5d2e96": [
       {
         "Id": "096003",
-        "StartDate": "1944-06-01T00:00:00",
-        "EndDate": "1989-12-31T00:00:00",
+        "StartDate": "1944-06-01",
+        "EndDate": "1989-12-31",
         "ValueAdjustment": null
       },
       {
         "Id": "096071",
-        "StartDate": "1990-01-01T00:00:00",
-        "EndDate": "2008-05-20T00:00:00",
+        "StartDate": "1990-01-01",
+        "EndDate": "2008-05-20",
         "ValueAdjustment": null
       },
       {
         "Id": "096003",
-        "StartDate": "2008-05-21T00:00:00",
+        "StartDate": "2008-05-21",
         "EndDate": null,
         "ValueAdjustment": null
       }

@@ -38,23 +38,21 @@ public static class BinHelpers
     public static BinIdentifier[] GetSouthernHemisphereTemperateSeasonBins()
     {
         return
-            new BinIdentifier[]
-            {
+            [
                 new SouthernHemisphereTemperateSeasonOnlyBinIdentifier(SouthernHemisphereTemperateSeasons.Summer),
                 new SouthernHemisphereTemperateSeasonOnlyBinIdentifier(SouthernHemisphereTemperateSeasons.Autumn),
                 new SouthernHemisphereTemperateSeasonOnlyBinIdentifier(SouthernHemisphereTemperateSeasons.Winter),
                 new SouthernHemisphereTemperateSeasonOnlyBinIdentifier(SouthernHemisphereTemperateSeasons.Spring),
-            };
+            ];
     }
 
     public static BinIdentifier[] GetTropicalSeasonBins()
     {
         return
-            new BinIdentifier[]
-            {
+            [
                 new SouthernHemisphereTropicalSeasonOnlyBinIdentifier(SouthernHemisphereTropicalSeasons.Wet),
                 new SouthernHemisphereTropicalSeasonOnlyBinIdentifier(SouthernHemisphereTropicalSeasons.Dry),
-            };
+            ];
     }
 
     public static BinIdentifier[] GetBinsForModularGranularity(BinGranularities binGranularity)

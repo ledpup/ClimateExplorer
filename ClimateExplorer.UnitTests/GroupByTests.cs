@@ -2,6 +2,7 @@
 using ClimateExplorer.Core.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ClimateExplorer.UnitTests;
@@ -12,9 +13,9 @@ public class GroupByTests
     [TestMethod]
     public void GroupByWeekTest()
     {
-        var dataSet = GetDataset();
+        var dataRecords = GetDataRecords();
 
-        var groupedData = dataSet.DataRecords.GroupYearByWeek();
+        var groupedData = dataRecords.GroupYearByWeek();
 
         foreach (var group in groupedData)
         {
@@ -32,9 +33,9 @@ public class GroupByTests
     [TestMethod]
     public void GroupByMonthTest()
     {
-        var dataSet = GetDataset();
+        var dataRecords = GetDataRecords();
 
-        var groupedData = dataSet.DataRecords.GroupYearByMonth();
+        var groupedData = dataRecords.GroupYearByMonth();
 
         Assert.AreEqual(12, groupedData.Count());
     }
@@ -42,9 +43,9 @@ public class GroupByTests
     [TestMethod]
     public void GroupByThirteenDaysTest()
     {
-        var dataSet = GetDataset();
+        var dataRecords = GetDataRecords();
 
-        var groupedData = dataSet.DataRecords.GroupYearByDays(13);
+        var groupedData = dataRecords.GroupYearByDays(13);
 
         Assert.AreEqual(28, groupedData.Count());
         groupedData.ToList().Take(27).ToList().ForEach(x => Assert.AreEqual(13, x.ToList().Count));
@@ -54,53 +55,53 @@ public class GroupByTests
     [TestMethod]
     public void GroupByWeekCheckForDuplicateDayTest()
     {
-        var dataSet = GetDataset();
+        var dataRecords = GetDataRecords();
 
-        dataSet.DataRecords[0] = new DataRecord(new DateTime(2021, 1, 2), null);
+        dataRecords[0] = new DataRecord(new DateOnly(2021, 1, 2), null);
 
-        Assert.ThrowsException<Exception>(() => dataSet.DataRecords.GroupYearByWeek());
+        Assert.ThrowsException<Exception>(() => dataRecords.GroupYearByWeek());
     }
 
     [TestMethod]
     public void GroupByWeekCheckForTooManyRecordsTest()
     {
-        var dataSet = GetDataset();
+        var dataRecords = GetDataRecords();
 
-        dataSet.DataRecords.Add(new DataRecord(new DateTime(2021, 1, 1), null));
+        dataRecords.Add(new DataRecord(new DateOnly(2021, 1, 1), null));
 
-        Assert.ThrowsException<Exception>(() => dataSet.DataRecords.GroupYearByWeek());
+        Assert.ThrowsException<Exception>(() => dataRecords.GroupYearByWeek());
     }
 
     [TestMethod]
     public void GroupByWeekCheckForTooFewRecordsTest()
     {
-        var dataSet = GetDataset();
+        var dataRecords = GetDataRecords();
 
-        dataSet.DataRecords.Remove(dataSet.DataRecords.Last());
+        dataRecords.Remove(dataRecords.Last());
 
-        Assert.ThrowsException<Exception>(() => dataSet.DataRecords.GroupYearByWeek());
+        Assert.ThrowsException<Exception>(() => dataRecords.GroupYearByWeek());
     }
 
     [TestMethod]
     public void GroupByWeekCheckForDifferentYearsTest()
     {
-        var dataSet = GetDataset();
+        var dataRecords = GetDataRecords();
 
-        dataSet.DataRecords[0] = new DataRecord(new DateTime(2022, 1, 2), null);
+        dataRecords[0] = new DataRecord(new DateOnly(2022, 1, 2), null);
 
-        Assert.ThrowsException<Exception>(() => dataSet.DataRecords.GroupYearByWeek());
+        Assert.ThrowsException<Exception>(() => dataRecords.GroupYearByWeek());
     }
 
-    private static DataSet GetDataset()
+    private static List<DataRecord> GetDataRecords()
     {
-        var dataSet = new DataSet() { Resolution = Core.Enums.DataResolution.Daily, Year = 2021 };
-        var date = new DateTime(2021, 1, 1);
+        var dataRecords = new List<DataRecord>();
+        var date = new DateOnly(2021, 1, 1);
         for (var i = 0; i < 365; i++)
         {
-            dataSet.DataRecords.Add(new DataRecord(date, null));
+            dataRecords.Add(new DataRecord(date, null));
             date = date.AddDays(1);
         }
 
-        return dataSet;
+        return dataRecords;
     }
 }

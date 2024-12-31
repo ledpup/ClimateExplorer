@@ -46,7 +46,7 @@ public class SimpleMovingAverageTests
     {
         var c = new DataRecordMovingAverageCalculator(new OptimizedMovingAverageCalculator(20));
 
-        c.Calculate(Enumerable.Range(0, 100000).Select(x => new DataRecord { BinId = "1234", Value = x % 3 == 0 ? null : x }));
+        c.Calculate(Enumerable.Range(0, 100000).Select(x => new BinnedRecord("1234", x % 3 == 0 ? null : x)));
     }
 
     [TestMethod]
@@ -55,7 +55,7 @@ public class SimpleMovingAverageTests
         var c1 = new DataRecordMovingAverageCalculator(new SimpleMovingAverageCalculator(20));
         var c2 = new DataRecordMovingAverageCalculator(new OptimizedMovingAverageCalculator(20));
 
-        var records = Enumerable.Range(0, 5000).Select(x => new DataRecord { BinId = "1234", Value = x % 3 == 0 ? null : x }).ToList();
+        var records = Enumerable.Range(0, 5000).Select(x => new BinnedRecord("1234", x % 3 == 0 ? null : x)).ToList();
 
         var sma1 = c1.Calculate(records);
         var sma2 = c2.Calculate(records);

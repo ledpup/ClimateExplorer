@@ -14,7 +14,6 @@ var tempMaxFiles = Directory.GetFiles(tempMaxFolder);
 var tempMinFiles = Directory.GetFiles(tempMinFolder);
 
 var tempMaxStations = tempMaxFiles.Select(x => new DataFileFilterAndAdjustment { Id = Path.GetFileName(x).Substring(0, 6) }).ToList();
-var tempMinStations = tempMinFiles.Select(x => new DataFileFilterAndAdjustment { Id = Path.GetFileName(x).Substring(0, 6) }).ToList();
 
 var mdTempMax = bom.MeasurementDefinitions!.Single(x => x.DataType == Enums.DataType.TempMax);
 var mdTempMin = bom.MeasurementDefinitions!.Single(x => x.DataType == Enums.DataType.TempMin);
@@ -32,19 +31,18 @@ await Parallel.ForEachAsync(tempMaxStations, async (station, token) =>
 {
     Console.WriteLine($"Processing station {station.Id}");
 
-    var maxRecords = (await DataReader.GetDataRecords(mdTempMax, [station])).Where(x => x.Value != null);
-    var minRecords = (await DataReader.GetDataRecords(mdTempMin, [station])).Where(x => x.Value != null);
+    var maxRecords = (await DataReaderFunctions.GetDataRecords(mdTempMax, [station])).Where(x => x.Value != null);
+    var minRecords = (await DataReaderFunctions.GetDataRecords(mdTempMin, [station])).Where(x => x.Value != null).ToLookup(x => x.Key, x => x);
     var meanRecords = new List<DataRecord>();
 
     foreach (var maxRecord in maxRecords)
     {
-        // The following line is what's causing poor performance. Should fix.
-        var minRecord = minRecords.FirstOrDefault(x => x.Date == maxRecord.Date);
+        var minRecord = minRecords[maxRecord.Key].SingleOrDefault();
 
         if (minRecord != null)
         {
             var value = Math.Round((double)(maxRecord.Value! + minRecord.Value!) / 2D, 2);
-            var meanRecord = new DataRecord((DateTime)maxRecord.Date!, value);
+            var meanRecord = new DataRecord((DateOnly)maxRecord.Date!, value);
             meanRecords.Add(meanRecord);
         }
         else

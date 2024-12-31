@@ -1,4 +1,5 @@
 ﻿using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
@@ -9,11 +10,11 @@ namespace ClimateExplorer.UnitTests;
 public class DataSetBuilderTests
 {
     [TestMethod]
-    public void NoDataPoints()
+    public void NoDataRecords()
     {
         var dsb = new DataSetBuilder();
 
-        var cdp = dsb.BuildDataSetFromDataPoints(
+        var cdp = dsb.BuildDataSetFromDataRecords(
             [],
             Core.Enums.DataResolution.Daily,
             new PostDataSetsRequestBody
@@ -31,11 +32,11 @@ public class DataSetBuilderTests
     }
 
     [TestMethod]
-    public void OneYearOfIdenticalDataPoints_Mean()
+    public void OneYearOfIdenticalDataRecords_Mean()
     {
         var dsb = new DataSetBuilder();
 
-        var cdp = dsb.BuildDataSetFromDataPoints(
+        var cdp = dsb.BuildDataSetFromDataRecords(
             BuildConstantTemporalDataPointArrayFor1990(),
             Core.Enums.DataResolution.Daily,
             new PostDataSetsRequestBody
@@ -55,11 +56,11 @@ public class DataSetBuilderTests
     }
 
     [TestMethod]
-    public void OneYearOfLinearlyIncreasingDataPoints_Min()
+    public void OneYearOfLinearlyIncreasingDataRecords_Min()
     {
         var dsb = new DataSetBuilder();
 
-        var cdp = dsb.BuildDataSetFromDataPoints(
+        var cdp = dsb.BuildDataSetFromDataRecords(
             BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f),
             Core.Enums.DataResolution.Daily,
             new PostDataSetsRequestBody
@@ -81,11 +82,11 @@ public class DataSetBuilderTests
     }
 
     [TestMethod]
-    public void OneYearOfLinearlyIncreasingDataPoints_Max()
+    public void OneYearOfLinearlyIncreasingDataRecords_Max()
     {
         var dsb = new DataSetBuilder();
 
-        var cdp = dsb.BuildDataSetFromDataPoints(
+        var cdp = dsb.BuildDataSetFromDataRecords(
             BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f),
             Core.Enums.DataResolution.Daily,
             new PostDataSetsRequestBody
@@ -107,11 +108,11 @@ public class DataSetBuilderTests
     }
 
     [TestMethod]
-    public void OneYearOfLinearlyIncreasingDataPoints_Monthly_Mean_TestingForWeighting()
+    public void OneYearOfLinearlyIncreasingDataRecords_Monthly_Mean_TestingForWeighting()
     {
         var dsb = new DataSetBuilder();
 
-        var cdp = dsb.BuildDataSetFromDataPoints(
+        var cdp = dsb.BuildDataSetFromDataRecords(
             BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f),
             Core.Enums.DataResolution.Daily,
             new PostDataSetsRequestBody
@@ -148,11 +149,11 @@ public class DataSetBuilderTests
     }
 
     [TestMethod]
-    public void OneYearOfLinearlyIncreasingDataPoints_Monthly_Median()
+    public void OneYearOfLinearlyIncreasingDataRecords_Monthly_Median()
     {
         var dsb = new DataSetBuilder();
 
-        var cdp = dsb.BuildDataSetFromDataPoints(
+        var cdp = dsb.BuildDataSetFromDataRecords(
             BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f),
             Core.Enums.DataResolution.Daily,
             new PostDataSetsRequestBody
@@ -179,11 +180,11 @@ public class DataSetBuilderTests
     }
 
     [TestMethod]
-    public void OneYearOfIdenticalDataPoints_Sum()
+    public void OneYearOfIdenticalDataRecords_Sum()
     {
         var dsb = new DataSetBuilder();
 
-        var cdp = dsb.BuildDataSetFromDataPoints(
+        var cdp = dsb.BuildDataSetFromDataRecords(
             BuildConstantTemporalDataPointArrayFor1990(),
             Core.Enums.DataResolution.Daily,
             new PostDataSetsRequestBody
@@ -205,11 +206,11 @@ public class DataSetBuilderTests
     }
 
     [TestMethod]
-    public void OneYearOfIdenticalDataPoints_Sum_YearAndMonth()
+    public void OneYearOfIdenticalDataRecords_Sum_YearAndMonth()
     {
         var dsb = new DataSetBuilder();
 
-        var cdp = dsb.BuildDataSetFromDataPoints(
+        var cdp = dsb.BuildDataSetFromDataRecords(
             BuildConstantTemporalDataPointArrayFor1990(),
             Core.Enums.DataResolution.Daily,
             new PostDataSetsRequestBody
@@ -237,13 +238,13 @@ public class DataSetBuilderTests
     {
         var dsb = new DataSetBuilder();
 
-        var dataPoints =
+        var dataRecords =
             BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f)
             .Where(x => x.Month != 1 || x.Day < 11 || x.Day > 11)
             .ToArray();
 
-        var cdp = dsb.BuildDataSetFromDataPoints(
-            dataPoints,
+        var cdp = dsb.BuildDataSetFromDataRecords(
+            dataRecords,
             Core.Enums.DataResolution.Daily,
             new PostDataSetsRequestBody
             {
@@ -266,13 +267,13 @@ public class DataSetBuilderTests
     {
         var dsb = new DataSetBuilder();
 
-        var dataPoints =
+        var dataRecords =
             BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f)
             .Where(x => x.Month != 1 || x.Day < 11 || x.Day > 12)
             .ToArray();
 
-        var cdp = dsb.BuildDataSetFromDataPoints(
-            dataPoints,
+        var cdp = dsb.BuildDataSetFromDataRecords(
+            dataRecords,
             Core.Enums.DataResolution.Daily,
             new PostDataSetsRequestBody
             {
@@ -295,13 +296,13 @@ public class DataSetBuilderTests
     {
         var dsb = new DataSetBuilder();
 
-        var dataPoints =
+        var dataRecords =
             BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f)
             .Where(x => x.Month != 1 || x.Day < 11 || x.Day > 13)
             .ToArray();
 
-        var cdp = dsb.BuildDataSetFromDataPoints(
-            dataPoints,
+        var cdp = dsb.BuildDataSetFromDataRecords(
+            dataRecords,
             Core.Enums.DataResolution.Daily,
             new PostDataSetsRequestBody
             {
@@ -324,13 +325,13 @@ public class DataSetBuilderTests
     {
         var dsb = new DataSetBuilder();
 
-        var dataPoints =
+        var dataRecords =
             BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f)
             .Where(x => x.Month != 1 || x.Day < 10 || x.Day > 14)
             .ToArray();
 
-        var cdp = dsb.BuildDataSetFromDataPoints(
-            dataPoints,
+        var cdp = dsb.BuildDataSetFromDataRecords(
+            dataRecords,
             Core.Enums.DataResolution.Daily,
             new PostDataSetsRequestBody
             {
@@ -353,13 +354,13 @@ public class DataSetBuilderTests
     {
         var dsb = new DataSetBuilder();
 
-        var dataPoints =
+        var dataRecords =
             BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f)
             .Where(x => x.Month != 1 || x.Day < 10 || x.Day > 14)
             .ToArray();
 
-        var cdp = dsb.BuildDataSetFromDataPoints(
-            dataPoints,
+        var cdp = dsb.BuildDataSetFromDataRecords(
+            dataRecords,
             Core.Enums.DataResolution.Daily,
             new PostDataSetsRequestBody
             {
@@ -380,13 +381,13 @@ public class DataSetBuilderTests
     {
         var dsb = new DataSetBuilder();
 
-        var dataPoints =
+        var dataRecords =
             BuildLinearlyIncreasingTemporalDataPointArrayFor1990(5, 0.1f)
             .Where(x => x.Month != 1 || x.Day < 10 || x.Day > 14)
             .ToArray();
 
-        var cdp = dsb.BuildDataSetFromDataPoints(
-            dataPoints,
+        var cdp = dsb.BuildDataSetFromDataRecords(
+            dataRecords,
             Core.Enums.DataResolution.Daily,
             new PostDataSetsRequestBody
             {
@@ -410,13 +411,13 @@ public class DataSetBuilderTests
     {
         var dsb = new DataSetBuilder();
 
-        var dataPoints =
+        var dataRecords =
             BuildLinearlyIncreasingTemporalDataPointArray(new DateOnly(1990, 1, 1), 730, 5, 0.1f)
             //.Where(x => x.Month != 1 || x.Day < 10 || x.Day > 14)
             .ToArray();
 
-        var cdp = dsb.BuildDataSetFromDataPoints(
-            dataPoints,
+        var cdp = dsb.BuildDataSetFromDataRecords(
+            dataRecords,
             Core.Enums.DataResolution.Daily,
             new PostDataSetsRequestBody
             {
@@ -439,13 +440,13 @@ public class DataSetBuilderTests
     {
         var dsb = new DataSetBuilder();
 
-        var dataPoints =
+        var dataRecords =
             BuildLinearlyIncreasingTemporalDataPointArray(new DateOnly(1990, 1, 1), 5000, 5, 0.1f)
             //.Where(x => x.Month != 1 || x.Day < 10 || x.Day > 14)
             .ToArray();
 
-        var cdp = dsb.BuildDataSetFromDataPoints(
-            dataPoints,
+        var cdp = dsb.BuildDataSetFromDataRecords(
+            dataRecords,
             Core.Enums.DataResolution.Daily,
             new PostDataSetsRequestBody
             {
@@ -470,14 +471,14 @@ public class DataSetBuilderTests
     {
         var dsb = new DataSetBuilder();
 
-        var dataPoints =
-            new TemporalDataPoint[]
+        var dataRecords =
+            new DataRecord[]
             {
-                new TemporalDataPoint(1990, 01, 01, 10)
+                new DataRecord(1990, 01, 01, 10)
             };
 
-        var cdp = dsb.BuildDataSetFromDataPoints(
-            dataPoints,
+        var cdp = dsb.BuildDataSetFromDataRecords(
+            dataRecords,
             Core.Enums.DataResolution.Daily,
             new PostDataSetsRequestBody
             {
@@ -500,13 +501,13 @@ public class DataSetBuilderTests
     {
         var dsb = new DataSetBuilder();
 
-        var dataPoints =
-            new TemporalDataPoint[]
+        var dataRecords =
+            new DataRecord[]
             {
             };
 
-        var cdp = dsb.BuildDataSetFromDataPoints(
-            dataPoints,
+        var cdp = dsb.BuildDataSetFromDataRecords(
+            dataRecords,
             Core.Enums.DataResolution.Daily,
             new PostDataSetsRequestBody
             {
@@ -523,28 +524,28 @@ public class DataSetBuilderTests
     }
 
 
-    TemporalDataPoint[] BuildConstantTemporalDataPointArrayFor1990(double? value = 10)
+    DataRecord[] BuildConstantTemporalDataPointArrayFor1990(double? value = 10)
     {
         return
             Enumerable.Range(0, 365)
-            .Select(x => new TemporalDataPoint(new DateOnly(1990, 1, 1)
+            .Select(x => new DataRecord(new DateOnly(1990, 1, 1)
             .AddDays(x), value))
             .ToArray();
     }
 
-    TemporalDataPoint[] BuildLinearlyIncreasingTemporalDataPointArrayFor1990(double min, double dailyIncrement)
+    DataRecord[] BuildLinearlyIncreasingTemporalDataPointArrayFor1990(double min, double dailyIncrement)
     {
         return
             Enumerable.Range(0, 365)
-            .Select(x => new TemporalDataPoint(new DateOnly(1990, 1, 1).AddDays(x), min + x * dailyIncrement))
+            .Select(x => new DataRecord(new DateOnly(1990, 1, 1).AddDays(x), min + x * dailyIncrement))
             .ToArray();
     }
 
-    TemporalDataPoint[] BuildLinearlyIncreasingTemporalDataPointArray(DateOnly startDate, int nDays, double min, double dailyIncrement)
+    DataRecord[] BuildLinearlyIncreasingTemporalDataPointArray(DateOnly startDate, int nDays, double min, double dailyIncrement)
     {
         return
             Enumerable.Range(0, nDays)
-            .Select(x => new TemporalDataPoint(startDate.AddDays(x), min + x * dailyIncrement))
+            .Select(x => new DataRecord(startDate.AddDays(x), min + x * dailyIncrement))
             .ToArray();
     }
 

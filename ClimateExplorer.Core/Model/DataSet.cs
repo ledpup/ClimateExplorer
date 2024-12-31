@@ -2,10 +2,12 @@
 
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.ViewModel;
+using System.Text.Json.Serialization;
 using static ClimateExplorer.Core.Enums;
 
 public class DataSet
 {
+    private double? mean;
     public DataSet()
     {
         DataRecords = [];
@@ -30,12 +32,11 @@ public class DataSet
     // Used when doing multi-location series like "Temperature by latitude".
     public List<Location>? Locations { get; set; }
 
-    public List<DataRecord> DataRecords { get; set; }
+    public IList<BinnedRecord> DataRecords { get; set; }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
-    public TemporalDataPoint[]? RawDataRecords { get; set; }
+    public DataRecord[]? RawDataRecords { get; set; }
 
-    // TODO: This will go (replaced by code that is bin-oriented)
     public short? StartYear
     {
         get
@@ -51,16 +52,16 @@ public class DataSet
                     // Return the first year that has a data record for January 1st, regardless of whether
                     // that data record has a value or not (this is different to the Yearly behaviour, not sure
                     // whether it's intentional)
-                    return DataRecords.OrderBy(x => x.Date).First(x => x.Month == 1 && x.Day == 1).Year;
+                    return DataRecords.OrderBy(x => x.BinId).First(x => x.BinId.Contains("m01d01")).Year;
 
                 case DataResolution.Weekly:
-                    return DataRecords.Where(x => x.Value.HasValue).Min(x => x.Year);
+                    return DataRecords.Where(x => x.Value.HasValue).OrderBy(x => x.Year).First().Year;
 
                 case DataResolution.Monthly:
                     // Return the first year that has a data record in January, regardless of whether that data
                     // record has a value or not (this is different to the Yearly behaviour, not sure whether
                     // it's intentional)
-                    return DataRecords.OrderBy(x => x.Year).First(x => x.Month == 1).Year;
+                    return DataRecords.OrderBy(x => x.BinId).First(x => x.BinId.Contains("m01")).Year;
 
                 case DataResolution.Yearly:
                     // Return first year that has a data record that has a value
@@ -74,7 +75,8 @@ public class DataSet
 
     public short? Year { get; set; }
 
-    public List<short> Years
+    [JsonIgnore]
+    public List<short?> Years
     {
         get
         {
@@ -94,7 +96,7 @@ public class DataSet
 
     public int NumberOfRecords
     {
-        get { return DataRecords.Count; }
+        get { return DataRecords.Count(); }
     }
 
     public int NumberOfMissingValues
@@ -104,11 +106,23 @@ public class DataSet
 
     public double? Mean
     {
-        get { return DataRecords.Average(x => x.Value); }
+        get
+        {
+            if (mean == null)
+            {
+                mean = DataRecords.Average(x => x.Value);
+                if (mean != null)
+                {
+                    mean = Math.Round(mean.Value, 4);
+                }
+            }
+
+            return mean;
+        }
     }
 
     public override string ToString()
     {
-        return $"{DataType} | {DataAdjustment} | {BinGranularity} | {GeographicalEntity} | {DataRecords.Count}";
+        return $"{DataType} | {DataAdjustment} | {BinGranularity} | {GeographicalEntity} | {DataRecords.Count()}";
     }
 }

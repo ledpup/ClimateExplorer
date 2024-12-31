@@ -22,18 +22,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Content Include="cache\0cbac719-d45e-4fe6-8d1f-003f21527780.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="cache\6608b18e-75f6-4175-873d-34a8179850d0.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="cache\hash_-1136848310.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="cache\hash_-528907859.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="MetaData\countries.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -50,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="cache-longterm\" />
+    <Folder Include="cache\" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="cache-longterm\*">

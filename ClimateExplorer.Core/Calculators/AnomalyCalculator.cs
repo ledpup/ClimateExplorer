@@ -7,7 +7,7 @@ public static class AnomalyCalculator
 {
     public const int MinimumNumberOfYearsToCalculateAnomaly = 60;
 
-    public static CalculatedAnomaly CalculateAnomaly(IEnumerable<DataRecord> dataRecords)
+    public static CalculatedAnomaly CalculateAnomaly(IEnumerable<BinnedRecord> dataRecords)
     {
         return
             CalculateAnomaly(

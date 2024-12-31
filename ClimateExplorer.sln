@@ -23,8 +23,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.DataPipelin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.SourceData", "ClimateExplorer.SourceData\ClimateExplorer.SourceData.csproj", "{5D8E01C7-7265-4D35-AE08-43C91C054E45}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.AcornSatTransferFunctionAnalysis", "ClimateExplorer.AcornSatTransferFunctionAnalysis\ClimateExplorer.AcornSatTransferFunctionAnalysis.csproj", "{D7A43FF5-A0AF-45D4-BBC3-C67B608A8B02}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Web.UiTests", "ClimateExplorer.Web.UiTests\ClimateExplorer.Web.UiTests.csproj", "{89EC7792-0BEA-43F6-837F-D2F47E9479AE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Data.Ghcnm", "ClimateExplorer.Data.Ghcnm\ClimateExplorer.Data.Ghcnm.csproj", "{AD4D1DF4-C395-45EE-963B-DBF549E2370B}"
@@ -56,6 +54,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.WebApiClient", "ClimateExplorer.WebApiClient\ClimateExplorer.WebApiClient.csproj", "{6C8524D0-9F67-432B-8FA8-F38548A06BB8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.CachingTool", "ClimateExplorer.CachingTool\ClimateExplorer.CachingTool.csproj", "{148C807C-7B48-4532-A4AE-F6D279EFA5C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.Data.AcornSatTransferFunctionAnalysis", "ClimateExplorer.Data.AcornSatTransferFunctionAnalysis\ClimateExplorer.Data.AcornSatTransferFunctionAnalysis.csproj", "{245609B4-1088-4F16-A73B-F1BC5A0218CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -91,10 +91,6 @@ Global
 		{5D8E01C7-7265-4D35-AE08-43C91C054E45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D8E01C7-7265-4D35-AE08-43C91C054E45}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D8E01C7-7265-4D35-AE08-43C91C054E45}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D7A43FF5-A0AF-45D4-BBC3-C67B608A8B02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D7A43FF5-A0AF-45D4-BBC3-C67B608A8B02}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D7A43FF5-A0AF-45D4-BBC3-C67B608A8B02}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D7A43FF5-A0AF-45D4-BBC3-C67B608A8B02}.Release|Any CPU.Build.0 = Release|Any CPU
 		{89EC7792-0BEA-43F6-837F-D2F47E9479AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{89EC7792-0BEA-43F6-837F-D2F47E9479AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89EC7792-0BEA-43F6-837F-D2F47E9479AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -147,6 +143,10 @@ Global
 		{148C807C-7B48-4532-A4AE-F6D279EFA5C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{148C807C-7B48-4532-A4AE-F6D279EFA5C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{148C807C-7B48-4532-A4AE-F6D279EFA5C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{245609B4-1088-4F16-A73B-F1BC5A0218CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{245609B4-1088-4F16-A73B-F1BC5A0218CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{245609B4-1088-4F16-A73B-F1BC5A0218CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{245609B4-1088-4F16-A73B-F1BC5A0218CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -164,6 +164,7 @@ Global
 		{497B5551-6805-420F-8DA9-8C815000CC69} = {F3EDC6D9-6967-4DC9-827C-141F081FA91E}
 		{55EFD2B7-CF33-4D5A-BBC7-7D19742DE029} = {F3EDC6D9-6967-4DC9-827C-141F081FA91E}
 		{F46E5FF2-88F8-4638-910E-B5B4253754FD} = {F3EDC6D9-6967-4DC9-827C-141F081FA91E}
+		{245609B4-1088-4F16-A73B-F1BC5A0218CA} = {F3EDC6D9-6967-4DC9-827C-141F081FA91E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4F67DF1E-4405-495A-9FC1-1408F179D95C}
