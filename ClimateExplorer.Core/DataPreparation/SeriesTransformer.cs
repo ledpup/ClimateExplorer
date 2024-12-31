@@ -4,35 +4,35 @@ using ClimateExplorer.Core.Model;
 
 public static class SeriesTransformer
 {
-    public static DataRecord[] ApplySeriesTransformation(DataRecord[] dataPoints, SeriesTransformations seriesTransformation)
+    public static DataRecord[] ApplySeriesTransformation(DataRecord[] dataRecords, SeriesTransformations seriesTransformation)
     {
         switch (seriesTransformation)
         {
             case SeriesTransformations.Identity:
                 // Clone the input array because we want no side-effects
-                return dataPoints.ToArray();
+                return dataRecords.ToArray();
 
             case SeriesTransformations.IsPositive:
                 return
-                    dataPoints
+                    dataRecords
                     .Select(x => x.WithValue(x.Value == null ? null : (x.Value > 0 ? 1 : 0)))
                     .ToArray();
 
             case SeriesTransformations.IsNegative:
                 return
-                    dataPoints
+                    dataRecords
                     .Select(x => x.WithValue(x.Value == null ? null : (x.Value < 0 ? 1 : 0)))
                     .ToArray();
 
             case SeriesTransformations.EnsoCategory:
                 return
-                    dataPoints
+                    dataRecords
                     .Select(x => x.WithValue(x.Value == null ? null : (x.Value > 0.5 ? 1 : (x.Value < -0.5 ? -1 : 0))))
                     .ToArray();
 
             case SeriesTransformations.Negate:
                 return
-                    dataPoints
+                    dataRecords
                     .Select(x => x.WithValue(x.Value == null ? null : x.Value * -1))
                     .ToArray();
 
@@ -42,20 +42,20 @@ public static class SeriesTransformer
             // http://www.bom.gov.au/climate/map/frost/what-is-frost.shtml#indicator
             case SeriesTransformations.IsFrosty:
                 return
-                    dataPoints
+                    dataRecords
                     .Select(x => x.WithValue(x.Value == null ? null : (x.Value <= 2.2 ? 1 : 0)))
                     .ToArray();
 
             case SeriesTransformations.EqualOrAbove25:
             case SeriesTransformations.EqualOrAbove25mm:
                 return
-                    dataPoints
+                    dataRecords
                     .Select(x => x.WithValue(x.Value == null ? null : (x.Value >= 25 ? 1 : 0)))
                 .ToArray();
 
             case SeriesTransformations.EqualOrAbove35:
                 return
-                    dataPoints
+                    dataRecords
                     .Select(x => x.WithValue(x.Value == null ? null : (x.Value >= 35 ? 1 : 0)))
                 .ToArray();
 
@@ -66,31 +66,31 @@ public static class SeriesTransformer
             // http://www.bom.gov.au/climate/data-services/content/faqs-elements.html
             case SeriesTransformations.EqualOrAbove1:
                 return
-                    dataPoints
+                    dataRecords
                     .Select(x => x.WithValue(x.Value == null ? null : (x.Value >= 1 ? 1 : 0)))
                     .ToArray();
 
             case SeriesTransformations.EqualOrAbove1AndLessThan10:
                 return
-                    dataPoints
+                    dataRecords
                     .Select(x => x.WithValue(x.Value == null ? null : (x.Value >= 1 && x.Value < 10 ? 1 : 0)))
                     .ToArray();
 
             case SeriesTransformations.EqualOrAbove10:
                 return
-                    dataPoints
+                    dataRecords
                     .Select(x => x.WithValue(x.Value == null ? null : (x.Value >= 10 ? 1 : 0)))
                     .ToArray();
 
             case SeriesTransformations.EqualOrAbove10AndLessThan25:
                 return
-                    dataPoints
+                    dataRecords
                     .Select(x => x.WithValue(x.Value == null ? null : (x.Value >= 10 && x.Value < 25 ? 1 : 0)))
                     .ToArray();
 
             case SeriesTransformations.DayOfYearIfFrost:
                 return
-                    dataPoints
+                    dataRecords
                     .Select(x => x.WithValue(x.Value == null ? null : (x.Value <= 2.2 ? new DateTime(x.Year, x.Month!.Value, x.Day!.Value).DayOfYear : 0)))
                     .ToArray();
 

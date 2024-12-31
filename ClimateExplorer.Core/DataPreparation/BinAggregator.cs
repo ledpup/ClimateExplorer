@@ -119,7 +119,7 @@ public static class BinAggregator
         return
             new ContainerAggregate
             {
-                NumberOfPeriodsCoveredByAggregate = cup.ExpectedDataPointsInCup,
+                NumberOfPeriodsCoveredByAggregate = cup.ExpectedDataRecordsInCup,
                 Value =
                     aggregationFunction(
                         cup.DataRecords!

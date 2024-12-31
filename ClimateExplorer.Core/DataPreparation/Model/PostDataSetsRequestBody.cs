@@ -27,7 +27,7 @@ public class PostDataSetsRequestBody
     public ContainerAggregationFunctions CupAggregationFunction { get; set; }
     public bool Anomaly { get; set; }
 
-    public bool IncludeRawDataPoints { get; set; }
+    public bool IncludeRawDataRecords { get; set; }
 
     public DataResolution? MinimumDataResolution { get; set; }
 }

@@ -15,14 +15,14 @@ public class DataSetBuilder
         sw.Start();
 
         // Reads raw data (from one or multiple sources) & derive a series from it as per the request
-        var series = await SeriesProvider.GetSeriesDataPointsForRequest(request.SeriesDerivationType, request.SeriesSpecifications!);
+        var series = await SeriesProvider.GetSeriesDataRecordsForRequest(request.SeriesDerivationType, request.SeriesSpecifications!);
 
         if (series.DataRecords != null && series.DataRecords.All(x => x.Value == null))
         {
-            throw new Exception("All data points in the series are null. Check the raw input file");
+            throw new Exception("All data records in the series are null. Check the raw input file");
         }
 
-        Console.WriteLine("GetSeriesDataPointsForRequest completed in " + sw.Elapsed);
+        Console.WriteLine("GetSeriesDataRecordsForRequest completed in " + sw.Elapsed);
 
         if (request.MinimumDataResolution != null && series.DataResolution < request.MinimumDataResolution)
         {
@@ -30,7 +30,7 @@ public class DataSetBuilder
         }
 
         // Run the rest of the pipeline (this is a separate method for testability)
-        var dataPoints = BuildDataSetFromDataPoints(series.DataRecords!, series.DataResolution, request);
+        var dataPoints = BuildDataSetFromDataRecords(series.DataRecords!, series.DataResolution, request);
 
         if (dataPoints.All(x => x.Value == null))
         {
@@ -41,24 +41,24 @@ public class DataSetBuilder
             new BuildDataSetResult
             {
                 DataPoints = dataPoints,
-                RawDataPoints = request.IncludeRawDataPoints ? series.DataRecords : null,
+                RawDataRecords = request.IncludeRawDataRecords ? series.DataRecords : null,
                 UnitOfMeasure = series.UnitOfMeasure,
             };
     }
 
-    public ChartableDataPoint[] BuildDataSetFromDataPoints(DataRecord[] dataPoints, DataResolution dataResolution, PostDataSetsRequestBody request)
+    public ChartableDataPoint[] BuildDataSetFromDataRecords(DataRecord[] dataRecords, DataResolution dataResolution, PostDataSetsRequestBody request)
     {
-        Stopwatch sw = new Stopwatch();
+        Stopwatch sw = new ();
         sw.Start();
 
         // Apply specified transformation (if any) to each data point in the series
-        var transformedDataPoints = SeriesTransformer.ApplySeriesTransformation(dataPoints, request.SeriesTransformation);
+        var transformedDataRecords = SeriesTransformer.ApplySeriesTransformation(dataRecords, request.SeriesTransformation);
 
         Console.WriteLine("ApplySeriesTransformation completed in " + sw.Elapsed);
         sw.Restart();
 
         // Filter data at series level
-        var filteredDataPoints = SeriesFilterer.ApplySeriesFilters(transformedDataPoints, request.FilterToSouthernHemisphereTemperateSeason, request.FilterToTropicalSeason, request.FilterToYear, request.FilterToYearsAfterAndIncluding, request.FilterToYearsBefore);
+        var filteredDataRecords = SeriesFilterer.ApplySeriesFilters(transformedDataRecords, request.FilterToSouthernHemisphereTemperateSeason, request.FilterToTropicalSeason, request.FilterToYear, request.FilterToYearsAfterAndIncluding, request.FilterToYearsBefore);
 
         Console.WriteLine("ApplySeriesFilters completed in " + sw.Elapsed);
         sw.Restart();
@@ -67,11 +67,11 @@ public class DataSetBuilder
         // No aggregation is required because we're just returning the data at the original resolution (i.e., daily)
         if (request.BinningRule == BinGranularities.ByYearAndDay)
         {
-            return ConvertDataPointsToChartableDataPoints(filteredDataPoints);
+            return ConvertDataRecordsToChartableDataPoints(filteredDataRecords);
         }
 
         // Assign to Bins, Buckets and Cups
-        var rawBins = Binner.ApplyBinningRules(filteredDataPoints, request.BinningRule, request.CupSize, dataResolution);
+        var rawBins = Binner.ApplyBinningRules(filteredDataRecords, request.BinningRule, request.CupSize, dataResolution);
 
         Console.WriteLine("ApplyBinningRules completed in " + sw.Elapsed);
         sw.Restart();
@@ -117,9 +117,9 @@ public class DataSetBuilder
         }
     }
 
-    private static ChartableDataPoint[] ConvertDataPointsToChartableDataPoints(DataRecord[] filteredDataPoints)
+    private static ChartableDataPoint[] ConvertDataRecordsToChartableDataPoints(DataRecord[] filteredDataRecords)
     {
-        return filteredDataPoints
+        return filteredDataRecords
             .Select(x => (new YearAndDayBinIdentifier(x.Year, x.Month!.Value, x.Day!.Value), x.Value))
             .Select(
             x =>
@@ -138,6 +138,6 @@ public class DataSetBuilder
         public UnitOfMeasure UnitOfMeasure { get; set; }
 
         public ChartableDataPoint[]? DataPoints { get; set; }
-        public DataRecord[]? RawDataPoints { get; set; }
+        public DataRecord[]? RawDataRecords { get; set; }
     }
 }

@@ -6,7 +6,7 @@ using static ClimateExplorer.Core.Enums;
 
 public static class SeriesProvider
 {
-    public static async Task<Series> GetSeriesDataPointsForRequest(SeriesDerivationTypes seriesDerivationType, SeriesSpecification[] seriesSpecifications)
+    public static async Task<Series> GetSeriesDataRecordsForRequest(SeriesDerivationTypes seriesDerivationType, SeriesSpecification[] seriesSpecifications)
     {
         switch (seriesDerivationType)
         {
@@ -17,7 +17,7 @@ public static class SeriesProvider
                     throw new Exception($"When SeriesDerivationType is {nameof(seriesDerivationType)}, exactly one SeriesSpecification must be provided.");
                 }
 
-                return await GetSeriesDataPoints(seriesSpecifications.Single());
+                return await GetSeriesDataRecords(seriesSpecifications.Single());
 
             case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
                 return await BuildDifferenceBetweenTwoSeries(seriesSpecifications);
@@ -47,7 +47,7 @@ public static class SeriesProvider
 
         foreach (var seriesSpec in seriesSpecifications)
         {
-            var series = await GetSeriesDataPoints(seriesSpec);
+            var series = await GetSeriesDataRecords(seriesSpec);
             var dp = series.DataRecords;
 
             if (uom != null && uom != series.UnitOfMeasure)
@@ -120,8 +120,8 @@ public static class SeriesProvider
             throw new Exception($"When SeriesDerivationType is {nameof(SeriesDerivationTypes.DifferenceBetweenTwoSeries)}, exactly two SeriesSpecifications must be provided.");
         }
 
-        var series1 = await GetSeriesDataPoints(seriesSpecifications[0]);
-        var series2 = await GetSeriesDataPoints(seriesSpecifications[1]);
+        var series1 = await GetSeriesDataRecords(seriesSpecifications[0]);
+        var series2 = await GetSeriesDataRecords(seriesSpecifications[1]);
 
         var dp1 = series1.DataRecords;
         var dp2 = series2.DataRecords;
@@ -175,7 +175,7 @@ public static class SeriesProvider
             };
     }
 
-    private static async Task<Series> GetSeriesDataPoints(SeriesSpecification seriesSpecification)
+    private static async Task<Series> GetSeriesDataRecords(SeriesSpecification seriesSpecification)
     {
         var definitions = await DataSetDefinition.GetDataSetDefinitions();
 

@@ -29,7 +29,7 @@ public static class BinRejector
             {
                 var dataPointsInCup = cup.DataRecords!.Count(x => x.Value.HasValue);
 
-                var proportionOfPointsInCup = (float)dataPointsInCup / cup.ExpectedDataPointsInCup;
+                var proportionOfPointsInCup = (float)dataPointsInCup / cup.ExpectedDataRecordsInCup;
 
                 if (proportionOfPointsInCup >= requiredCupDataProportion)
                 {

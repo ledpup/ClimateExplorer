@@ -327,8 +327,8 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
                 .Select(x => new BinnedRecord(x.BinId, x.Value.HasValue ? Math.Round(x.Value.Value, 4) : null)) // 4 decimal places should be enough for anyone
                 .ToList(),
             RawDataRecords =
-                body.IncludeRawDataPoints
-                ? series.RawDataPoints
+                body.IncludeRawDataRecords
+                ? series.RawDataRecords
                 : null,
         };
 
@@ -420,7 +420,7 @@ static async Task<BuildDataSetResult> GenerateAverageOfAnomaliesSeries(PostDataS
         });
     }
 
-    var seriesDefinition = await SeriesProvider.GetSeriesDataPointsForRequest(body.SeriesDerivationType, body.SeriesSpecifications);
+    var seriesDefinition = await SeriesProvider.GetSeriesDataRecordsForRequest(body.SeriesDerivationType, body.SeriesSpecifications);
     series = new BuildDataSetResult
     {
         DataPoints = dataPoints.ToArray(),

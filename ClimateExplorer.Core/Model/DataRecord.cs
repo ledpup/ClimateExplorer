@@ -1,6 +1,5 @@
 ﻿namespace ClimateExplorer.Core.Model;
 
-using ClimateExplorer.Core.DataPreparation;
 using System.Text.Json.Serialization;
 
 public class DataRecord

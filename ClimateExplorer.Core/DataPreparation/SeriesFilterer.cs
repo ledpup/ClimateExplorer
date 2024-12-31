@@ -5,14 +5,14 @@ using ClimateExplorer.Core.Model;
 public static class SeriesFilterer
 {
     public static DataRecord[] ApplySeriesFilters(
-        DataRecord[] transformedDataPoints,
+        DataRecord[] transformedDataRecords,
         SouthernHemisphereTemperateSeasons? filterToSouthernHemisphereTemperateSeason,
         SouthernHemisphereTropicalSeasons? filterToTropicalSeason,
         short? filterToYear,
         int? filterToYearsAfterAndIncluding,
         int? filterToYearsBefore)
     {
-        IEnumerable<DataRecord> query = transformedDataPoints;
+        IEnumerable<DataRecord> query = transformedDataRecords;
 
         if (filterToSouthernHemisphereTemperateSeason != null)
         {

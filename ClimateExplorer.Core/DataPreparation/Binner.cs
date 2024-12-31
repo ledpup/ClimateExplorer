@@ -6,14 +6,14 @@ using static ClimateExplorer.Core.Enums;
 
 public static class Binner
 {
-    public static RawBin[] ApplyBinningRules(DataRecord[] dataPoints, BinGranularities binningRule, int cupSize, DataResolution dataResolution)
+    public static RawBin[] ApplyBinningRules(DataRecord[] dataRecords, BinGranularities binningRule, int cupSize, DataResolution dataResolution)
     {
-        var dataPointsByBinId =
-            dataPoints
+        var dataRecordsByBinId =
+            dataRecords
             .ToLookup(x => GetBinIdentifier(x, binningRule));
 
         return
-            dataPointsByBinId
+            dataRecordsByBinId
             .Select(
                 x =>
                 new RawBin()
@@ -80,9 +80,9 @@ public static class Binner
 
         List<Bucket> buckets = [];
 
-        var dataPointsByMonth = bin.GroupBy(x => new { x.Year, x.Month });
+        var dataRecordsByMonth = bin.GroupBy(x => new { x.Year, x.Month });
 
-        foreach (var group in dataPointsByMonth)
+        foreach (var group in dataRecordsByMonth)
         {
             var firstDayInMonth = new DateOnly(group.Key.Year, group.Key.Month!.Value, 1);
             var lastDayInMonth = DateHelpers.GetLastDayInMonth(group.Key.Year, group.Key.Month.Value);
@@ -94,7 +94,7 @@ public static class Binner
                         new Bucket
                         {
                             Cups =
-                                BuildCupsForDataPointRange(
+                                BuildCupsForDataRecordRange(
                                     firstDayInMonth,
                                     lastDayInMonth,
                                     group.ToArray(),
@@ -113,7 +113,7 @@ public static class Binner
                                         FirstDayInCup = firstDayInMonth,
                                         LastDayInCup = lastDayInMonth,
                                         DataRecords = group.ToArray(),
-                                        ExpectedDataPointsInCup = 1,
+                                        ExpectedDataRecordsInCup = 1,
                                     },
                                 ],
                         });
@@ -138,15 +138,15 @@ public static class Binner
 
         List<Bucket> buckets = [];
 
-        var dataPointsBySeasonOccurrence = bin.GroupBy(x => DateHelpers.GetSouthernHemisphereTemperateSeasonAndYear(x.Year, x.Month!.Value));
+        var dataRecordsBySeasonOccurrence = bin.GroupBy(x => DateHelpers.GetSouthernHemisphereTemperateSeasonAndYear(x.Year, x.Month!.Value));
 
-        foreach (var seasonOccurrence in dataPointsBySeasonOccurrence)
+        foreach (var seasonOccurrence in dataRecordsBySeasonOccurrence)
         {
             buckets.Add(
                 new Bucket
                 {
                     Cups =
-                        BuildCupsForDataPointRange(
+                        BuildCupsForDataRecordRange(
                             DateHelpers.GetFirstDayInTemperateSeasonOccurrence(seasonOccurrence.Key),
                             DateHelpers.GetLastDayInTemperateSeasonOccurrence(seasonOccurrence.Key),
                             seasonOccurrence.ToArray(),
@@ -170,15 +170,15 @@ public static class Binner
 
         List<Bucket> buckets = [];
 
-        var dataPointsBySeasonOccurrence = bin.GroupBy(x => DateHelpers.GetSouthernHemisphereTropicalSeasonAndYear(x.Year, x.Month!.Value));
+        var dataRecordsBySeasonOccurrence = bin.GroupBy(x => DateHelpers.GetSouthernHemisphereTropicalSeasonAndYear(x.Year, x.Month!.Value));
 
-        foreach (var seasonOccurrence in dataPointsBySeasonOccurrence)
+        foreach (var seasonOccurrence in dataRecordsBySeasonOccurrence)
         {
             buckets.Add(
                 new Bucket
                 {
                     Cups =
-                        BuildCupsForDataPointRange(
+                        BuildCupsForDataRecordRange(
                             DateHelpers.GetFirstDayInTropicalSeasonOccurrence(seasonOccurrence.Key),
                             DateHelpers.GetLastDayInTropicalSeasonOccurrence(seasonOccurrence.Key),
                             seasonOccurrence.ToArray(),
@@ -193,7 +193,7 @@ public static class Binner
     private static IEnumerable<Cup> BuildMonthlyCupsForMonthlyData(
         DateOnly firstDay,
         DateOnly lastDay,
-        DataRecord[] points)
+        DataRecord[] records)
     {
         var cupSegments =
             DateHelpers.DivideDateSpanIntoMonthSegments(firstDay, lastDay);
@@ -206,8 +206,8 @@ public static class Binner
                 {
                     FirstDayInCup = x.Start,
                     LastDayInCup = x.End,
-                    DataRecords = points.Where(y => DataPointFallsInInclusiveRange(y, x.Start, x.End)).ToArray(),
-                    ExpectedDataPointsInCup = 1,
+                    DataRecords = records.Where(y => DataRecordFallsInInclusiveRange(y, x.Start, x.End)).ToArray(),
+                    ExpectedDataRecordsInCup = 1,
                 });
 
         return cups;
@@ -216,10 +216,10 @@ public static class Binner
     private static IEnumerable<Cup> BuildYearlyCupsForYearlyData(
     DateOnly firstDay,
     DateOnly lastDay,
-    DataRecord[] points)
+    DataRecord[] records)
     {
         var cups =
-            points
+            records
             .Select(
                 x =>
                 new Cup
@@ -227,16 +227,16 @@ public static class Binner
                     FirstDayInCup = firstDay,
                     LastDayInCup = lastDay,
                     DataRecords = [x],
-                    ExpectedDataPointsInCup = 1,
+                    ExpectedDataRecordsInCup = 1,
                 });
 
         return cups;
     }
 
-    private static IEnumerable<Cup> BuildCupsForDataPointRange(
+    private static IEnumerable<Cup> BuildCupsForDataRecordRange(
         DateOnly firstDay,
         DateOnly lastDay,
-        DataRecord[] points,
+        DataRecord[] records,
         int cupSize)
     {
         var cupSegments =
@@ -253,8 +253,8 @@ public static class Binner
                 {
                     FirstDayInCup = x.Start,
                     LastDayInCup = x.End,
-                    DataRecords = points.Where(y => DataPointFallsInInclusiveRange(y, x.Start, x.End)).ToArray(),
-                    ExpectedDataPointsInCup = DateHelpers.CountDaysInRange(x.Start, x.End),
+                    DataRecords = records.Where(y => DataRecordFallsInInclusiveRange(y, x.Start, x.End)).ToArray(),
+                    ExpectedDataRecordsInCup = DateHelpers.CountDaysInRange(x.Start, x.End),
                 });
 
         return cups;
@@ -280,7 +280,7 @@ public static class Binner
             case DataResolution.Daily:
                 // If the underlying data is daily resolution, we honour the cup size
                 cups =
-                    BuildCupsForDataPointRange(
+                    BuildCupsForDataRecordRange(
                         binIdentifier.FirstDayInBin,
                         binIdentifier.LastDayInBin,
                         bin.ToArray(),
@@ -309,23 +309,23 @@ public static class Binner
                 {
                     FirstDayInBucket = x.FirstDayInCup,
                     LastDayInBucket = x.LastDayInCup,
-                    Cups = new Cup[] { x },
+                    Cups = [x],
                 })
             .ToArray();
 
         return buckets;
     }
 
-    private static bool DataPointFallsInInclusiveRange(DataRecord dp, DateOnly start, DateOnly end)
+    private static bool DataRecordFallsInInclusiveRange(DataRecord dr, DateOnly start, DateOnly end)
     {
-        DateOnly d = new DateOnly(dp.Year, dp.Month ?? 1, dp.Day ?? 1);
+        DateOnly d = new (dr.Year, dr.Month ?? 1, dr.Day ?? 1);
 
         return d >= start && d <= end;
     }
 
     private static BinIdentifier GetBinIdentifier(DataRecord dp, BinGranularities binningRule)
     {
-        // TODO: Notice that (for example) for a year with 365 data points, we will allocate 365 otherwise identical year bin identifiers.
+        // TODO: Notice that (for example) for a year with 365 data records, we will allocate 365 otherwise identical year bin identifiers.
         // We could cache them centrally and re-use to reduce allocations.
         return binningRule switch
         {
