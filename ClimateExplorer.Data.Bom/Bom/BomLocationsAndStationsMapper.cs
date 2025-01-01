@@ -74,13 +74,13 @@ public static class BomLocationsAndStationsMapper
                     continue;
                 }
 
-                var start = DateTime.ParseExact(stationSubGroups["start"].Value, "yyyyMMdd", provider);
-                var end = DateTime.ParseExact(stationSubGroups["end"].Value, "yyyyMMdd", provider);
+                var start = DateOnly.ParseExact(stationSubGroups["start"].Value, "yyyyMMdd", provider);
+                var end = DateOnly.ParseExact(stationSubGroups["end"].Value, "yyyyMMdd", provider);
 
                 // 1910/01/01 is the start-date for ACORN-SAT. We're only dealing with unadjusted data for the dates. Therefore, we can set 1910/01/01 to null and start when the data starts
-                var startDate = start == DateTime.Parse("1910/01/01") ? null : (DateTime?)start;
+                var startDate = start == DateOnly.Parse("1910/01/01") ? null : (DateOnly?)start;
                 // 2019/12/31 is the end-date for ACORN-SAT 2.1, what we have for the primary sites file. We don't need to honour that date.
-                var endDate = end == DateTime.Parse("2019/12/31") ? null : (DateTime?)end;
+                var endDate = end == DateOnly.Parse("2019/12/31") ? null : (DateOnly?)end;
 
                 var dataFileFilterAndAdjustment = new DataFileFilterAndAdjustment()
                 {

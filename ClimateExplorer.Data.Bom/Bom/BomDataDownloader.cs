@@ -6,32 +6,42 @@ using System.Text.RegularExpressions;
 
 public class BomDataDownloader
 {
-    public static async Task GetDataForEachStation(HttpClient httpClient, List<Station> stations)
+    public static async Task GetDataForEachStation(HttpClient httpClient, List<Station> stations, Dictionary<ObsCode, string> outputDirectories)
     {
-        Directory.CreateDirectory(@$"Output\Temp");
-
-        var obsCodes = Enum.GetValues(typeof(ObsCode)).Cast<ObsCode>().ToList();
-        foreach (var station in stations)
+        if (!Directory.Exists(@$"Output\Temp"))
         {
-            foreach (var obsCode in obsCodes)
-            {
-                await DownloadAndExtractDailyBomData(httpClient, station.Id, obsCode);
-            }
+            Directory.CreateDirectory(@$"Output\Temp");
         }
 
-        DeleteDirectory(new DirectoryInfo(@$"Output\Temp"));
+        var obsCodes = Enum.GetValues<ObsCode>().Cast<ObsCode>().ToList();
+        foreach (var station in stations)
+        {
+            Console.WriteLine($"Processing station {station.Id}");
+            foreach (var obsCode in obsCodes)
+            {
+                Console.WriteLine($"Processing ObsCode {obsCode} for station {station.Id}");
+
+                await DownloadAndExtractDailyBomData(httpClient, station.Id, obsCode, outputDirectories[obsCode]);
+
+                Console.WriteLine($"Finished ObsCode {obsCode} for station {station.Id}");
+            }
+            Console.WriteLine($"Finished station {station.Id}");
+            Console.WriteLine();
+        }
     }
 
-    async static Task DownloadAndExtractDailyBomData(HttpClient httpClient, string station, ObsCode obsCode)
+    async static Task DownloadAndExtractDailyBomData(HttpClient httpClient, string station, ObsCode obsCode, string outputDirectory)
     {
         var dataFile = $"{station}_{obsCode.ToString().ToLower()}";
         var zipfileName = @$"Output\Temp\{dataFile}.zip";
-        var csvFilePathAndName = @$"Output\Data\Bom\{obsCode.ToString().ToLower()}\{dataFile}.csv";
+        var csvFilePathAndName = @$"{outputDirectory}\{dataFile}.csv";
 
-        // If we've already downloaded and extracted the csv, let's not do it again.
-        // Prevents hammering the BOM when we already have the data.
-        if (File.Exists(csvFilePathAndName))
+        // If we've already downloaded the zip, let's not do it again.
+        if (File.Exists(zipfileName))
         {
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine($"Skipping {zipfileName} as it already exists.");
+            Console.ForegroundColor = ConsoleColor.Gray;
             return;
         }
 
@@ -48,6 +58,9 @@ public class BomDataDownloader
 
         if (string.IsNullOrWhiteSpace(startYear))
         {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Unable to find a start year so skipping ObsCode {obsCode} for station {station}");
+            Console.ForegroundColor = ConsoleColor.Gray;
             return;
         }
 
@@ -68,11 +81,7 @@ public class BomDataDownloader
 
             // Find the csv file with the data and move and rename it, putting it in the output folder (named based on the observation code)
             var csv = tempDirectory.GetFiles("*.csv").Single();
-            var destinationDirectory = new DirectoryInfo(@$"Output\Data\Bom\{obsCode.ToString().ToLower()}");
-            if (!destinationDirectory.Exists)
-            {
-                destinationDirectory.Create();
-            }
+            
             csv.MoveTo(csvFilePathAndName, true);
 
             // Remove the temp directory
