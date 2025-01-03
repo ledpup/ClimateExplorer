@@ -7,9 +7,9 @@ var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
 httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
 httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
 
-//AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.5.0_daily_tmean");
-//AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.5.0_daily_tmax");
-//AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.5.0_daily_tmin");
+AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.5.0_daily_tmean");
+AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.5.0_daily_tmax");
+AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.5.0_daily_tmin");
 
 var outDirectories = new Dictionary<ObsCode, string>
     {
@@ -25,6 +25,7 @@ var outDirectories = new Dictionary<ObsCode, string>
  * Ensure you delete the contents of bin\Debug\net9.0\Output\Temp if you're running it in the new year
  * 
  * Directory.Delete(@$"Output\Temp");
+ * 
  * 
  */
 
