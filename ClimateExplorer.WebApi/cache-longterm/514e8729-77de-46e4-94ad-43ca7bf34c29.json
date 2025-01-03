@@ -77,11 +77,11 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 2000,
+    "Year": 2024,
     "Month": 2,
-    "Day": 8,
-    "Value": 36.85,
-    "NumberOfTimes": 2
+    "Day": 18,
+    "Value": 37.75,
+    "NumberOfTimes": 1
   },
   {
     "DataType": 2,
@@ -101,11 +101,11 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 2007,
-    "Month": 3,
-    "Day": 6,
-    "Value": 47.8,
-    "NumberOfTimes": 2
+    "Year": 2024,
+    "Month": 2,
+    "Day": 18,
+    "Value": 49.9,
+    "NumberOfTimes": 1
   },
   {
     "DataType": 0,
@@ -163,7 +163,7 @@
     "Month": 1,
     "Day": 1,
     "Value": 0,
-    "NumberOfTimes": 40688
+    "NumberOfTimes": 41008
   },
   {
     "DataType": 4,

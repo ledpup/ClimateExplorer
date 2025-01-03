@@ -122,9 +122,9 @@ public class FileBackedTwoLayerCache : ICache
 
             var keyHash = GetDeterministicHashCode(key);
 
-            string filename = Guid.NewGuid().ToString() + ".json";
+            string filename = Guid.NewGuid() + ".json";
 
-            // Check if the cache index contains the key
+            // Use the mapping key in the cache index for the filename, if it exists
             var mapping = await ReadKeyToFileMappingForHashcode(keyHash);
             if (mapping.ContainsKey(key))
             {
