@@ -1,4 +1,4 @@
-﻿namespace ClimateExplorer.AcornSatTransferFunctionAnalysis;
+﻿namespace ClimateExplorer.Data.Bom.AcornSatTransferFunctionAnalysis;
 
 public static class HqNewFileParser
 {

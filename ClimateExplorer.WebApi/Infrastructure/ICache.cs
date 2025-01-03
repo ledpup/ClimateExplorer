@@ -93,7 +93,14 @@ public class FileBackedTwoLayerCache : ICache
 
             if (mapping.TryGetValue(key, out var filename))
             {
-                var content = await File.ReadAllTextAsync(Path.Combine(cacheFolderName, filename));
+                var cacheFilePath = Path.Combine(cacheFolderName, filename);
+
+                if (!File.Exists(cacheFilePath))
+                {
+                    return default;
+                }
+
+                var content = await File.ReadAllTextAsync(cacheFilePath);
 
                 return JsonSerializer.Deserialize<T>(content);
             }
@@ -115,11 +122,14 @@ public class FileBackedTwoLayerCache : ICache
 
             var keyHash = GetDeterministicHashCode(key);
 
-            // Check if the cache index contains the key
-            var mapping = await ReadKeyToFileMappingForHashcode(keyHash);
+            string filename = Guid.NewGuid() + ".json";
 
-            Guid id = Guid.NewGuid();
-            string filename = Guid.NewGuid().ToString() + ".json";
+            // Use the mapping key in the cache index for the filename, if it exists
+            var mapping = await ReadKeyToFileMappingForHashcode(keyHash);
+            if (mapping.ContainsKey(key))
+            {
+                filename = mapping[key];
+            }
 
             mapping[key] = filename;
 
