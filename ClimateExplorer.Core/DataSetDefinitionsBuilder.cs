@@ -568,7 +568,7 @@ Our aim is to provide climate science and services to people and organisations, 
 The reference period used to calculate the anomalies is 1971–2000.",
                 Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
                 MoreInformationUrl = "https://www.ncei.noaa.gov/products/land-based-station/noaa-global-temp",
-                DataDownloadUrl = "aravg.mon.land.90S.90N.v5.1.0.[year][month].asc",
+                DataDownloadUrl = "https://www.ncei.noaa.gov/data/noaa-global-surface-temperature/v6/access/timeseries/aravg.mon.[station].v6.0.0.[year][month].asc",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -579,7 +579,7 @@ The reference period used to calculate the anomalies is 1971–2000.",
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d{4})\s+(?<month>\d+)\s+(?<value>-?\d+\.\d+).*$",
                         FolderName = @"Temperature\NOAAGlobalTemp",
-                        FileNameFormat = "aravg.mon.[station].v5.1.0.202312.asc",
+                        FileNameFormat = "aravg.mon.[station].v6.0.0.202412.asc",
                         NullValue = null,
                     },
                 ],

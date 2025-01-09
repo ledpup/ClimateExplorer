@@ -9,7 +9,7 @@ public class BuildStaticContent
     {
         var locations = await Location.GetLocations();
 
-        var writer = XmlTextWriter.Create(@"Output\sitemap.xml", new XmlWriterSettings { Indent = true, NewLineOnAttributes = true });
+        var writer = XmlTextWriter.Create(@"..\..\..\..\ClimateExplorer.Web\wwwroot\sitemap.xml", new XmlWriterSettings { Indent = true, NewLineOnAttributes = true });
 
         writer.WriteStartDocument();
         writer.WriteStartElement("urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");

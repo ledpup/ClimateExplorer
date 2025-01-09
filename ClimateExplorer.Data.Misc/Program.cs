@@ -2,35 +2,39 @@
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Data.Misc;
+using ClimateExplorer.Data.Misc.NoaaGlobalTemp;
 using ClimateExplorer.Data.Misc.OceanAcidity;
 using ClimateExplorer.Data.Misc.Ozone;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 #pragma warning restore SA1200 // Using directives should be placed correctly
 
-OceanAcidityReducer.Process("HOT_surface_CO2");
+using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole());
+ILogger logger = factory.CreateLogger("ClimateExplorer.Data.Misc");
+logger.LogInformation("Starting ClimateExplorer.Data.Misc");
 
 var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
 
-var httpClient = new HttpClient();
-var userAgent = "Mozilla /5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
-var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
-httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
-httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
+var httpClient = CreateHttpClient();
 
-SeaLevelFileReducer.Process("slr_sla_gbl_free_txj1j2_90");
+var jsonSerializerOptions = new JsonSerializerOptions
+{
+    WriteIndented = true,
+    Converters = { new JsonStringEnumConverter() },
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+};
 
-OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_area");
-OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_minimum");
-
-await BuildStaticContent.GenerateSiteMap();
-GenerateMapMarkers();
-
-await GreenlandApiClient.GetMeltDataAndSave(httpClient);
+// Download and build Greenland ice melt first - it doesn't download as part of DownloadDataSetData
+await GreenlandApiClient.GetMeltDataAndSave(httpClient, logger);
 
 var referenceDataDefintions = dataSetDefinitions
     .Where(x =>
             !string.IsNullOrEmpty(x.DataDownloadUrl)
             && x.MeasurementDefinitions!.Count == 1
-            && x.Id != Guid.Parse("6484A7F8-43BC-4B16-8C4D-9168F8D6699C")) // Greenland is dealt with as a special case, see GreenlandApiClient
+            && x.Id != Guid.Parse("6484A7F8-43BC-4B16-8C4D-9168F8D6699C") // Greenland is dealt with as a special case, see GreenlandApiClient
+            && x.Id != Guid.Parse("E61C6279-EDF4-461B-BDD1-0724D21F42F3")) // NoaaGlobalTemp is handled with ClimateExplorer.Data.NoaaGlobalTemp
     .ToList();
 
 foreach (var dataSetDefinition in referenceDataDefintions)
@@ -38,17 +42,52 @@ foreach (var dataSetDefinition in referenceDataDefintions)
     await DownloadDataSetData(dataSetDefinition);
 }
 
+OceanAcidityReducer.Process("HOT_surface_CO2");
+SeaLevelFileReducer.Process("slr_sla_gbl_free_txj1j2_90");
+
+OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_area");
+OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_minimum");
+
+/*
+ *
+ * NoaaGlobalTemp:
+ * Generally, you want to be downloading for the current year - 1 and the 12th month.
+ * But it depends on what is currently available on the server at https://www.ncei.noaa.gov/data/noaa-global-surface-temperature/v6/access/timeseries/
+ *
+ * IMPORTANT: you need to update FileNameFormat property in the measurement definition (in DataSetDefinitionsBuilder.cs) of NoaaGlobalTemp so that it is the same year and month.
+ *
+ */
+var noaaGlobalTempYear = "2024";
+var noaaGlobalTempMonth = "11";
+
+var stations = NoaaGlobalTemp.DataFileMapping().LocationIdToDataFileMappings.Values.Select(x => new Station { Id = x.Single().Id });
+
+File.WriteAllText($@"{Helpers.MetaDataFolder}\Station\Stations_NoaaGlobalTemp.json", JsonSerializer.Serialize(stations, jsonSerializerOptions));
+File.WriteAllText($@"{Helpers.MetaDataFolder}\DataFileMapping\DataFileMapping_NoaaGlobalTemp.json", JsonSerializer.Serialize(NoaaGlobalTemp.DataFileMapping(), jsonSerializerOptions));
+
+var nNoaaGlobalTempDsd = DataSetDefinitionsBuilder.BuildDataSetDefinitions().Single(x => x.Id == Guid.Parse("E61C6279-EDF4-461B-BDD1-0724D21F42F3"));
+
+foreach (var station in stations)
+{
+    logger.LogInformation($"Attempting to download data for the area '{station.Id}', for the year {noaaGlobalTempYear}, month {noaaGlobalTempMonth}");
+    nNoaaGlobalTempDsd.DataDownloadUrl = nNoaaGlobalTempDsd.DataDownloadUrl!.Replace("[station]", station.Id).Replace("[year]", noaaGlobalTempYear.ToString()).Replace("[month]", noaaGlobalTempMonth);
+    await DownloadDataSetData(nNoaaGlobalTempDsd);
+}
+
+await BuildStaticContent.GenerateSiteMap();
+GenerateMapMarkers();
+
 async Task DownloadDataSetData(DataSetDefinition dataSetDefinition)
 {
     var md = dataSetDefinition.MeasurementDefinitions!.Single();
-    var outputPath = $@"Output\Data\{md.FolderName}";
+    var outputPath = $@"Output\{md.FolderName}";
 
     Directory.CreateDirectory(outputPath);
 
     var filePathAndName = $@"{outputPath}\{md.FileNameFormat}";
-    var fi = new FileInfo(filePathAndName);
-    if (fi.Exists)
+    if (File.Exists(filePathAndName))
     {
+        logger.LogInformation($"{md.FileNameFormat} already exists. Will not download again. Delete the file and re-run if you want to re-download.");
         return;
     }
 
@@ -57,7 +96,9 @@ async Task DownloadDataSetData(DataSetDefinition dataSetDefinition)
 
     var content = await response.Content.ReadAsStringAsync();
 
+    logger.LogInformation($"Downloadeding to {md.FileNameFormat}");
     await File.WriteAllTextAsync(filePathAndName, content);
+    logger.LogInformation($"File downloaded to {filePathAndName}");
 }
 
 static void GenerateMapMarkers()
@@ -116,4 +157,14 @@ static void GenerateMapMarkers()
                                     : i.ToString();
         File.WriteAllText($"{fileName}.svg", svg);
     }
+}
+
+static HttpClient CreateHttpClient()
+{
+    var httpClient = new HttpClient();
+    var userAgent = "Mozilla /5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
+    var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
+    httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
+    httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
+    return httpClient;
 }

@@ -59,7 +59,7 @@ public static class OceanAcidityReducer
             outputLines.Add($"{keyValue.Key},{keyValue.Value.Average()}");
         }
 
-        var folder = @"..\..\..\..\ClimateExplorer.SourceData\Ocean";
+        var folder = Path.Combine(Helpers.SourceDataFolder, "Ocean");
         File.WriteAllLines(@$"{folder}\{fileName}_reduced.csv", outputLines);
     }
 }
