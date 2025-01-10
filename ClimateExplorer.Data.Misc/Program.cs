@@ -30,7 +30,8 @@ var referenceDataDefintions = dataSetDefinitions
             !string.IsNullOrEmpty(x.DataDownloadUrl)
             && x.MeasurementDefinitions!.Count == 1
             && x.Id != Guid.Parse("6484A7F8-43BC-4B16-8C4D-9168F8D6699C") // Greenland is dealt with as a special case, see GreenlandApiClient
-            && x.Id != Guid.Parse("E61C6279-EDF4-461B-BDD1-0724D21F42F3")) // NoaaGlobalTemp is handled below
+            && x.Id != Guid.Parse("E61C6279-EDF4-461B-BDD1-0724D21F42F3") // NoaaGlobalTemp is handled below
+            && x.ShortName != "ODGI") // ODGI handled below
     .ToList();
 
 foreach (var dataSetDefinition in referenceDataDefintions)
@@ -49,6 +50,14 @@ OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_area", ozoneArea.Measur
 var ozoneColumn = referenceDataDefintions.Single(x => x.ShortName == "Ozone hole column");
 OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_minimum", ozoneColumn.MeasurementDefinitions!.Single().FolderName!);
 
+// ODGI
+var odgi = dataSetDefinitions.Single(x => x.ShortName == "ODGI");
+var downloadUrl = odgi.DataDownloadUrl;
+odgi.DataDownloadUrl = odgi.DataDownloadUrl!.Replace("[station]", "table1");
+await DownloadDataSetData(odgi, Helpers.SourceDataFolder, "table1");
+odgi.DataDownloadUrl = odgi.DataDownloadUrl!.Replace("[station]", "table2");
+await DownloadDataSetData(odgi, Helpers.SourceDataFolder, "table2");
+
 // Download and build Greenland ice melt
 await GreenlandApiClient.GetMeltDataAndSave(httpClient, logger);
 
@@ -62,9 +71,9 @@ await GreenlandApiClient.GetMeltDataAndSave(httpClient, logger);
  *
  */
 var noaaGlobalTempYear = "2024";
-var noaaGlobalTempMonth = "11";
+var noaaGlobalTempMonth = "12";
 
-var stations = NoaaGlobalTemp.DataFileMapping().LocationIdToDataFileMappings.Values.Select(x => new Station { Id = x.Single().Id });
+var stations = NoaaGlobalTemp.DataFileMapping().LocationIdToDataFileMappings.Values.Select(x => x.Single().Id);
 
 File.WriteAllText($@"{Helpers.MetaDataFolder}\Station\Stations_NoaaGlobalTemp.json", JsonSerializer.Serialize(stations, jsonSerializerOptions));
 File.WriteAllText($@"{Helpers.MetaDataFolder}\DataFileMapping\DataFileMapping_NoaaGlobalTemp.json", JsonSerializer.Serialize(NoaaGlobalTemp.DataFileMapping(), jsonSerializerOptions));
@@ -73,8 +82,8 @@ var nNoaaGlobalTempDsd = DataSetDefinitionsBuilder.BuildDataSetDefinitions().Sin
 
 foreach (var station in stations)
 {
-    logger.LogInformation($"Attempting to download data for the area '{station.Id}', for the year {noaaGlobalTempYear}, month {noaaGlobalTempMonth}");
-    nNoaaGlobalTempDsd.DataDownloadUrl = nNoaaGlobalTempDsd.DataDownloadUrl!.Replace("[station]", station.Id).Replace("[year]", noaaGlobalTempYear.ToString()).Replace("[month]", noaaGlobalTempMonth);
+    logger.LogInformation($"Attempting to download data for the area '{station}', for the year {noaaGlobalTempYear}, month {noaaGlobalTempMonth}");
+    nNoaaGlobalTempDsd.DataDownloadUrl = nNoaaGlobalTempDsd.DataDownloadUrl!.Replace("[station]", station).Replace("[year]", noaaGlobalTempYear.ToString()).Replace("[month]", noaaGlobalTempMonth);
     // await DownloadDataSetData(nNoaaGlobalTempDsd, Helpers.SourceDataFolder, station.Id);
 }
 
