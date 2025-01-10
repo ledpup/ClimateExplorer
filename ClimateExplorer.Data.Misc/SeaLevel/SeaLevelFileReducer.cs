@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 public class SeaLevelFileReducer
 {
-    public static void Process(string fileName)
+    public static void Process(string fileName, string folderName)
     {
         var lines = File.ReadAllLines(@$"SeaLevel\{fileName}.csv");
         var regEx = new Regex("^(?<year>\\d{4})\\.(?<decimalDays>\\d+),(?<topex>-?\\d*\\.?\\d*),(?<jason1>-?\\d*\\.?\\d*),(?<jason2>-?\\d*\\.?\\d*),(?<jason3>-?\\d*\\.?\\d*)$");
@@ -65,6 +65,9 @@ public class SeaLevelFileReducer
 
         records.ForEach(x => outputLines.Add($"{x.Date!.Value.ToString("yyyy-MM-dd")},{x.Value!.Value:0.000}"));
 
-        File.WriteAllLines(@$"Output\{fileName}_reduced.csv", outputLines);
+        var destinationFolder = Path.Combine(Helpers.SourceDataFolder, folderName);
+        var reducedFileName = $"{fileName}_reduced.csv";
+        Console.WriteLine($"Writing sea level file '{reducedFileName}' to folder '{destinationFolder}'");
+        File.WriteAllLines(@$"{destinationFolder}\{reducedFileName}", outputLines);
     }
 }

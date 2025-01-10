@@ -1,4 +1,6 @@
 ﻿#pragma warning disable SA1200 // Using directives should be placed correctly
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Data.Misc;
@@ -6,9 +8,6 @@ using ClimateExplorer.Data.Misc.NoaaGlobalTemp;
 using ClimateExplorer.Data.Misc.OceanAcidity;
 using ClimateExplorer.Data.Misc.Ozone;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 #pragma warning restore SA1200 // Using directives should be placed correctly
 
 using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole());
@@ -26,27 +25,32 @@ var jsonSerializerOptions = new JsonSerializerOptions
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
 };
 
-// Download and build Greenland ice melt first - it doesn't download as part of DownloadDataSetData
-await GreenlandApiClient.GetMeltDataAndSave(httpClient, logger);
-
 var referenceDataDefintions = dataSetDefinitions
     .Where(x =>
             !string.IsNullOrEmpty(x.DataDownloadUrl)
             && x.MeasurementDefinitions!.Count == 1
             && x.Id != Guid.Parse("6484A7F8-43BC-4B16-8C4D-9168F8D6699C") // Greenland is dealt with as a special case, see GreenlandApiClient
-            && x.Id != Guid.Parse("E61C6279-EDF4-461B-BDD1-0724D21F42F3")) // NoaaGlobalTemp is handled with ClimateExplorer.Data.NoaaGlobalTemp
+            && x.Id != Guid.Parse("E61C6279-EDF4-461B-BDD1-0724D21F42F3")) // NoaaGlobalTemp is handled below
     .ToList();
 
 foreach (var dataSetDefinition in referenceDataDefintions)
 {
-    await DownloadDataSetData(dataSetDefinition);
+    await DownloadDataSetData(dataSetDefinition, Helpers.SourceDataFolder);
 }
 
-OceanAcidityReducer.Process("HOT_surface_CO2");
-SeaLevelFileReducer.Process("slr_sla_gbl_free_txj1j2_90");
+var oceanAcidity = referenceDataDefintions.Single(x => x.Name == "Ocean acidity");
+OceanAcidityReducer.Process("HOT_surface_CO2", oceanAcidity.MeasurementDefinitions!.Single().FolderName!);
 
-OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_area");
-OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_minimum");
+var seaLevel = referenceDataDefintions.Single(x => x.Name == "Mean sea level");
+SeaLevelFileReducer.Process("slr_sla_gbl_free_txj1j2_90", seaLevel.MeasurementDefinitions!.Single().FolderName!);
+
+var ozoneArea = referenceDataDefintions.Single(x => x.ShortName == "Ozone hole area");
+OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_area", ozoneArea.MeasurementDefinitions!.Single().FolderName!);
+var ozoneColumn = referenceDataDefintions.Single(x => x.ShortName == "Ozone hole column");
+OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_minimum", ozoneColumn.MeasurementDefinitions!.Single().FolderName!);
+
+// Download and build Greenland ice melt
+await GreenlandApiClient.GetMeltDataAndSave(httpClient, logger);
 
 /*
  *
@@ -71,34 +75,43 @@ foreach (var station in stations)
 {
     logger.LogInformation($"Attempting to download data for the area '{station.Id}', for the year {noaaGlobalTempYear}, month {noaaGlobalTempMonth}");
     nNoaaGlobalTempDsd.DataDownloadUrl = nNoaaGlobalTempDsd.DataDownloadUrl!.Replace("[station]", station.Id).Replace("[year]", noaaGlobalTempYear.ToString()).Replace("[month]", noaaGlobalTempMonth);
-    await DownloadDataSetData(nNoaaGlobalTempDsd);
+    // await DownloadDataSetData(nNoaaGlobalTempDsd, Helpers.SourceDataFolder, station.Id);
 }
 
 await BuildStaticContent.GenerateSiteMap();
 GenerateMapMarkers();
 
-async Task DownloadDataSetData(DataSetDefinition dataSetDefinition)
+async Task DownloadDataSetData(DataSetDefinition dataSetDefinition, string? destinationBasePath = null, string? station = null)
 {
     var md = dataSetDefinition.MeasurementDefinitions!.Single();
-    var outputPath = $@"Output\{md.FolderName}";
+    var outputPath = Path.Combine("Output", md.FolderName!);
 
     Directory.CreateDirectory(outputPath);
 
-    var filePathAndName = $@"{outputPath}\{md.FileNameFormat}";
+    var fileName = station == null ? md.FileNameFormat : md.FileNameFormat!.Replace("[station]", station);
+    var filePathAndName = $@"{outputPath}\{fileName}";
     if (File.Exists(filePathAndName))
     {
-        logger.LogInformation($"{md.FileNameFormat} already exists. Will not download again. Delete the file and re-run if you want to re-download.");
-        return;
+        logger.LogInformation($"{fileName} already exists. Will not download again. Delete the file and re-run if you want to re-download.");
+    }
+    else
+    {
+        var fileUrl = dataSetDefinition.DataDownloadUrl;
+        var response = await httpClient.GetAsync(fileUrl);
+
+        var content = await response.Content.ReadAsStringAsync();
+
+        logger.LogInformation($"Downloading {fileName}");
+        await File.WriteAllTextAsync(filePathAndName, content);
+        logger.LogInformation($"File downloaded to {filePathAndName}");
     }
 
-    var fileUrl = dataSetDefinition.DataDownloadUrl;
-    var response = await httpClient.GetAsync(fileUrl);
-
-    var content = await response.Content.ReadAsStringAsync();
-
-    logger.LogInformation($"Downloadeding to {md.FileNameFormat}");
-    await File.WriteAllTextAsync(filePathAndName, content);
-    logger.LogInformation($"File downloaded to {filePathAndName}");
+    var destinationPathAndFile = destinationBasePath == null ? null : Path.Combine(destinationBasePath, md.FolderName!, fileName!);
+    if (destinationPathAndFile != null)
+    {
+        logger.LogInformation($"Will now copy file to {destinationPathAndFile}");
+        File.Copy(filePathAndName, destinationPathAndFile, true);
+    }
 }
 
 static void GenerateMapMarkers()

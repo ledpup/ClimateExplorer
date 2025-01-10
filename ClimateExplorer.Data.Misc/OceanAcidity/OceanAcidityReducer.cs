@@ -6,7 +6,7 @@ using System.Globalization;
 
 public static class OceanAcidityReducer
 {
-    public static void Process(string fileName)
+    public static void Process(string fileName, string folderName)
     {
         var fileNameAndPath = @$"OceanAcidity\{fileName}.txt";
 
@@ -59,7 +59,9 @@ public static class OceanAcidityReducer
             outputLines.Add($"{keyValue.Key},{keyValue.Value.Average()}");
         }
 
-        var folder = Path.Combine(Helpers.SourceDataFolder, "Ocean");
-        File.WriteAllLines(@$"{folder}\{fileName}_reduced.csv", outputLines);
+        var destinationFolder = Path.Combine(Helpers.SourceDataFolder, folderName);
+        var reducedFileName = $"{fileName}_reduced.csv";
+        Console.WriteLine($"Writing ocean acidity file '{reducedFileName}' to folder '{destinationFolder}'");
+        File.WriteAllLines(@$"{destinationFolder}\{reducedFileName}", outputLines);
     }
 }
