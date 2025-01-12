@@ -8,7 +8,7 @@ public static class OceanAcidityReducer
 {
     public static void Process(string fileName, string folderName)
     {
-        var fileNameAndPath = @$"OceanAcidity\{fileName}.txt";
+        var fileNameAndPath = @$"Output\Ocean\{fileName}.csv";
 
         var config = new CsvConfiguration(CultureInfo.InvariantCulture)
         {

@@ -7,7 +7,7 @@ public class OzoneFileReducer
 {
     public static void Process(string fileName, string folderName)
     {
-        var lines = File.ReadAllLines(@$"Ozone\{fileName}.csv");
+        var lines = File.ReadAllLines(@$"Output\Atmosphere\{fileName}.csv");
         var regEx = new Regex("^(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2}).*,(?<value>\\d*\\.?\\d*)$");
         var currentDay = new DateOnly(1979, 1, 1);
         var dayValues = new List<double>();

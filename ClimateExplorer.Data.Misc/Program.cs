@@ -31,23 +31,25 @@ var referenceDataDefintions = dataSetDefinitions
             && x.MeasurementDefinitions!.Count == 1
             && x.Id != Guid.Parse("6484A7F8-43BC-4B16-8C4D-9168F8D6699C") // Greenland is dealt with as a special case, see GreenlandApiClient
             && x.Id != Guid.Parse("E61C6279-EDF4-461B-BDD1-0724D21F42F3") // NoaaGlobalTemp is handled below
-            && x.ShortName != "ODGI") // ODGI handled below
+            && x.ShortName != "ODGI") // ODGI handled below)
     .ToList();
 
 foreach (var dataSetDefinition in referenceDataDefintions)
 {
+    logger.LogInformation($"Processing {dataSetDefinition.Name}");
     await DownloadDataSetData(dataSetDefinition, Helpers.SourceDataFolder);
 }
 
-var oceanAcidity = referenceDataDefintions.Single(x => x.Name == "Ocean acidity");
+var oceanAcidity = dataSetDefinitions.Single(x => x.Name == "Ocean acidity");
 OceanAcidityReducer.Process("HOT_surface_CO2", oceanAcidity.MeasurementDefinitions!.Single().FolderName!);
 
-var seaLevel = referenceDataDefintions.Single(x => x.Name == "Mean sea level");
-SeaLevelFileReducer.Process("slr_sla_gbl_free_txj1j2_90", seaLevel.MeasurementDefinitions!.Single().FolderName!);
+var seaLevel = dataSetDefinitions.Single(x => x.Name == "Mean sea level");
+SeaLevelFileReducer.Process("slr_sla_gbl_free_ref_90", seaLevel.MeasurementDefinitions!.Single().FolderName!);
 
-var ozoneArea = referenceDataDefintions.Single(x => x.ShortName == "Ozone hole area");
+var ozoneArea = dataSetDefinitions.Single(x => x.ShortName == "Ozone hole area");
 OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_area", ozoneArea.MeasurementDefinitions!.Single().FolderName!);
-var ozoneColumn = referenceDataDefintions.Single(x => x.ShortName == "Ozone hole column");
+
+var ozoneColumn = dataSetDefinitions.Single(x => x.ShortName == "Ozone hole column");
 OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_minimum", ozoneColumn.MeasurementDefinitions!.Single().FolderName!);
 
 // ODGI
@@ -98,6 +100,7 @@ async Task DownloadDataSetData(DataSetDefinition dataSetDefinition, string? dest
     Directory.CreateDirectory(outputPath);
 
     var fileName = station == null ? md.FileNameFormat : md.FileNameFormat!.Replace("[station]", station);
+    fileName = fileName!.Replace("_reduced", string.Empty);
     var filePathAndName = $@"{outputPath}\{fileName}";
     if (File.Exists(filePathAndName))
     {
@@ -115,10 +118,16 @@ async Task DownloadDataSetData(DataSetDefinition dataSetDefinition, string? dest
         logger.LogInformation($"File downloaded to {filePathAndName}");
     }
 
+    // If the downloaded file needs to be altered after download, leave the method here - don't copy the file to the SourceData folder.
+    if (dataSetDefinition.AlterDownloadedFile == true)
+    {
+        return;
+    }
+
     var destinationPathAndFile = destinationBasePath == null ? null : Path.Combine(destinationBasePath, md.FolderName!, fileName!);
     if (destinationPathAndFile != null)
     {
-        logger.LogInformation($"Will now copy file to {destinationPathAndFile}");
+        logger.LogInformation($"Will now copy {fileName} to {destinationPathAndFile}");
         File.Copy(filePathAndName, destinationPathAndFile, true);
     }
 }

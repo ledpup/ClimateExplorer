@@ -7,8 +7,8 @@ public class SeaLevelFileReducer
 {
     public static void Process(string fileName, string folderName)
     {
-        var lines = File.ReadAllLines(@$"SeaLevel\{fileName}.csv");
-        var regEx = new Regex("^(?<year>\\d{4})\\.(?<decimalDays>\\d+),(?<topex>-?\\d*\\.?\\d*),(?<jason1>-?\\d*\\.?\\d*),(?<jason2>-?\\d*\\.?\\d*),(?<jason3>-?\\d*\\.?\\d*)$");
+        var lines = File.ReadAllLines(@$"Output\Ocean\{fileName}.csv");
+        var regEx = new Regex("^(?<year>\\d{4})\\.(?<decimalDays>\\d+),(?<values>.*)$");
         var currentDay = new DateOnly(1992, 1, 1);
         var values = new List<double>();
 
@@ -26,24 +26,14 @@ public class SeaLevelFileReducer
 
                 var date = Core.DataPreparation.DateHelpers.ConvertDecimalDate(decimalDate);
 
-                if (!string.IsNullOrWhiteSpace(match.Groups["topex"].Value))
+                if (!string.IsNullOrWhiteSpace(match.Groups["values"].Value))
                 {
-                    values.Add(double.Parse(match.Groups["topex"].Value));
-                }
+                    var stringValues = match.Groups["values"].Value.Split(',');
 
-                if (!string.IsNullOrWhiteSpace(match.Groups["jason1"].Value))
-                {
-                    values.Add(double.Parse(match.Groups["jason1"].Value));
-                }
-
-                if (!string.IsNullOrWhiteSpace(match.Groups["jason2"].Value))
-                {
-                    values.Add(double.Parse(match.Groups["jason2"].Value));
-                }
-
-                if (!string.IsNullOrWhiteSpace(match.Groups["jason3"].Value))
-                {
-                    values.Add(double.Parse(match.Groups["jason3"].Value));
+                    stringValues
+                        .Where(x => !string.IsNullOrWhiteSpace(x))
+                        .ToList()
+                        .ForEach(x => values.Add(double.Parse(x)));
                 }
 
                 if (values.Any())

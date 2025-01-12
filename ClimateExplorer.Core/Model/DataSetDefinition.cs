@@ -11,6 +11,7 @@ public class DataSetDefinition
     public string? StationInfoUrl { get; set; }
     public string? LocationInfoUrl { get; set; }
     public string? DataDownloadUrl { get; set; }
+    public bool? AlterDownloadedFile { get; set; }
 
     public List<MeasurementDefinition>? MeasurementDefinitions { get; set; }
 

@@ -653,6 +653,7 @@ The ozone hole area is calculated as the area with ozone values below 220 DU sou
                 PublisherUrl = "https://www.copernicus.eu/",
                 MoreInformationUrl = "https://atmosphere.copernicus.eu/monitoring-ozone-layer",
                 DataDownloadUrl = "https://sites.ecmwf.int/data/cams/ozone_monitoring/data/cams_ozone_monitoring_sh_ozone_area.csv",
+                AlterDownloadedFile = true,
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -678,6 +679,7 @@ The ozone hole area is calculated as the area with ozone values below 220 DU sou
                 PublisherUrl = "https://www.copernicus.eu/",
                 MoreInformationUrl = "https://atmosphere.copernicus.eu/monitoring-ozone-layer",
                 DataDownloadUrl = "https://sites.ecmwf.int/data/cams/ozone_monitoring/data/cams_ozone_monitoring_sh_ozone_minimum.csv",
+                AlterDownloadedFile = true,
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -731,7 +733,8 @@ Only altimetry measurements between 66°S and 66°N have been processed. An inve
                 Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://www.star.nesdis.noaa.gov/socd/lsa/SeaLevelRise/LSA_SLR_timeseries_global.php",
-                DataDownloadUrl = "https://www.star.nesdis.noaa.gov/socd/lsa/SeaLevelRise/slr/slr_sla_gbl_free_txj1j2_90.csv",
+                DataDownloadUrl = "https://www.star.nesdis.noaa.gov/socd/lsa/SeaLevelRise/slr/slr_sla_gbl_free_ref_90.csv",
+                AlterDownloadedFile = true,
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -742,7 +745,7 @@ Only altimetry measurements between 66°S and 66°N have been processed. An inve
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d+\.\d+)$",
                         FolderName = @"Ocean",
-                        FileNameFormat = "slr_sla_gbl_free_txj1j2_90_reduced.csv",
+                        FileNameFormat = "slr_sla_gbl_free_ref_90_reduced.csv",
                         NullValue = null,
                     },
                 ],
@@ -784,6 +787,7 @@ The mean seawater pH is calculated from the mean seawater dissolved inorganic ca
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://hahana.soest.hawaii.edu/hot/",
                 DataDownloadUrl = "https://hahana.soest.hawaii.edu/hot/hotco2/HOT_surface_CO2.txt",
+                AlterDownloadedFile = true,
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
