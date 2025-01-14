@@ -45,5 +45,4 @@ public class HotSurfaceCo2InputRow
 
     [Name("pHcalc_25C")]
     public string? Phcalc25c { get; set; }
-
 }
