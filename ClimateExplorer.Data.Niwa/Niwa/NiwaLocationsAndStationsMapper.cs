@@ -63,8 +63,8 @@ public static class NiwaLocationsAndStationsMapper
             var dataFileFilterAndAdjustment = new DataFileFilterAndAdjustment
             {
                 Id = externalStationCode,
-                StartDate = match.Groups["startdate"].Value == "null" ? null : DateTime.Parse(match.Groups["startdate"].Value),
-                EndDate = match.Groups["enddate"].Value == "null" ? null : DateTime.Parse(match.Groups["enddate"].Value),
+                StartDate = match.Groups["startdate"].Value == "null" ? null : DateOnly.Parse(match.Groups["startdate"].Value),
+                EndDate = match.Groups["enddate"].Value == "null" ? null : DateOnly.Parse(match.Groups["enddate"].Value),
                 // ValueAdjustment has been removed from the codebase. NIWA was the only dataset that used it.
                 // NIWA has been removed from ClimateExplorer, replaced by the GHCN.
                 // ValueAdjustment = double.Parse(match.Groups["adjustment"].Value)

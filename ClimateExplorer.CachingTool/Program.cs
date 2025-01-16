@@ -5,8 +5,16 @@ using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsol
 ILogger logger = factory.CreateLogger("Program");
 logger.LogInformation("Hello World! Logging is {Description}.", "fun");
 
-var dscLogger = factory.CreateLogger<DataServiceCache>();
 
+var longtermCache = @"..\..\..\..\ClimateExplorer.WebApi\cache-longterm";
+
+// Delete the content cache files while retaining the key files (those that start with "hash_")
+// This CachingTool will then regenerate the content file based on the latest data.
+var files = Directory.GetFiles(longtermCache);
+var filesToDelete = files.Where(x => !x.Contains("hash_")).ToList();
+filesToDelete.ForEach(File.Delete);
+
+var dscLogger = factory.CreateLogger<DataServiceCache>();
 var dataService = new DataService(new HttpClient() { BaseAddress = new Uri("http://localhost:54836/") }, new DataServiceCache(dscLogger));
 
 logger.LogInformation("Creating locations cache");

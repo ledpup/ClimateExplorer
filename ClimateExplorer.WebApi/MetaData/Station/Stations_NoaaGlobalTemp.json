@@ -22,5 +22,20 @@
   },
   {
     "Id": "land_ocean.60S.60N"
+  },
+  {
+    "Id": "ocean.60S.60N"
+  },
+  {
+    "Id": "ocean.00N.90N"
+  },
+  {
+    "Id": "ocean.90S.00N"
+  },
+  {
+    "Id": "ocean.60N.90N"
+  },
+  {
+    "Id": "ocean.90S.60S"
   }
 ]
