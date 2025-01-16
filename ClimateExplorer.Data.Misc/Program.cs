@@ -77,16 +77,17 @@ var noaaGlobalTempMonth = "12";
 
 var stations = NoaaGlobalTemp.DataFileMapping().LocationIdToDataFileMappings.Values.Select(x => x.Single().Id);
 
-File.WriteAllText($@"{Helpers.MetaDataFolder}\Station\Stations_NoaaGlobalTemp.json", JsonSerializer.Serialize(stations, jsonSerializerOptions));
+File.WriteAllText($@"{Helpers.MetaDataFolder}\Station\Stations_NoaaGlobalTemp.json", JsonSerializer.Serialize(stations.Select(x => new Station { Id = x }), jsonSerializerOptions));
 File.WriteAllText($@"{Helpers.MetaDataFolder}\DataFileMapping\DataFileMapping_NoaaGlobalTemp.json", JsonSerializer.Serialize(NoaaGlobalTemp.DataFileMapping(), jsonSerializerOptions));
 
-var nNoaaGlobalTempDsd = DataSetDefinitionsBuilder.BuildDataSetDefinitions().Single(x => x.Id == Guid.Parse("E61C6279-EDF4-461B-BDD1-0724D21F42F3"));
+var noaaGlobalTempDsd = DataSetDefinitionsBuilder.BuildDataSetDefinitions().Single(x => x.Id == Guid.Parse("E61C6279-EDF4-461B-BDD1-0724D21F42F3"));
+var urlTemplace = noaaGlobalTempDsd.DataDownloadUrl;
 
 foreach (var station in stations)
 {
     logger.LogInformation($"Attempting to download data for the area '{station}', for the year {noaaGlobalTempYear}, month {noaaGlobalTempMonth}");
-    nNoaaGlobalTempDsd.DataDownloadUrl = nNoaaGlobalTempDsd.DataDownloadUrl!.Replace("[station]", station).Replace("[year]", noaaGlobalTempYear.ToString()).Replace("[month]", noaaGlobalTempMonth);
-    // await DownloadDataSetData(nNoaaGlobalTempDsd, Helpers.SourceDataFolder, station.Id);
+    noaaGlobalTempDsd.DataDownloadUrl = urlTemplace!.Replace("[station]", station).Replace("[year]", noaaGlobalTempYear.ToString()).Replace("[month]", noaaGlobalTempMonth);
+    await DownloadDataSetData(noaaGlobalTempDsd, Helpers.SourceDataFolder, station);
 }
 
 await BuildStaticContent.GenerateSiteMap();
