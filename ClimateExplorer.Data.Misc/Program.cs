@@ -60,6 +60,21 @@ await DownloadDataSetData(odgi, Helpers.SourceDataFolder, "table1");
 odgi.DataDownloadUrl = odgi.DataDownloadUrl!.Replace("[station]", "table2");
 await DownloadDataSetData(odgi, Helpers.SourceDataFolder, "table2");
 
+// HadCET
+var hadOps = dataSetDefinitions.Single(x => x.Name == "Hadley Centre");
+hadOps.DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/meantemp_monthly_totals.txt";
+await DownloadDataSetData(hadOps, Helpers.SourceDataFolder, measurementDefinition: hadOps.MeasurementDefinitions!.Single(x => x.DataType == Enums.DataType.TempMean));
+
+hadOps.DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/maxtemp_daily_totals.txt";
+await DownloadDataSetData(hadOps, Helpers.SourceDataFolder, measurementDefinition: hadOps.MeasurementDefinitions!.Single(x => x.DataType == Enums.DataType.TempMax));
+
+hadOps.DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/mintemp_daily_totals.txt";
+await DownloadDataSetData(hadOps, Helpers.SourceDataFolder, measurementDefinition: hadOps.MeasurementDefinitions!.Single(x => x.DataType == Enums.DataType.TempMin));
+
+// HadCEP
+hadOps.DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadukp/data/daily/HadCEP_daily_totals.txt";
+await DownloadDataSetData(hadOps, Helpers.SourceDataFolder, measurementDefinition: hadOps.MeasurementDefinitions!.Single(x => x.DataType == Enums.DataType.Precipitation));
+
 // Download and build Greenland ice melt
 await GreenlandApiClient.GetMeltDataAndSave(httpClient, logger);
 
@@ -93,9 +108,9 @@ foreach (var station in stations)
 await BuildStaticContent.GenerateSiteMap();
 GenerateMapMarkers();
 
-async Task DownloadDataSetData(DataSetDefinition dataSetDefinition, string? destinationBasePath = null, string? station = null)
+async Task DownloadDataSetData(DataSetDefinition dataSetDefinition, string? destinationBasePath = null, string? station = null, MeasurementDefinition? measurementDefinition = null)
 {
-    var md = dataSetDefinition.MeasurementDefinitions!.Single();
+    var md = measurementDefinition == null ? dataSetDefinition.MeasurementDefinitions!.Single() : measurementDefinition;
     var outputPath = Path.Combine("Output", md.FolderName!);
 
     Directory.CreateDirectory(outputPath);
@@ -109,12 +124,12 @@ async Task DownloadDataSetData(DataSetDefinition dataSetDefinition, string? dest
     }
     else
     {
+        logger.LogInformation($"Downloading {fileName}");
         var fileUrl = dataSetDefinition.DataDownloadUrl;
         var response = await httpClient.GetAsync(fileUrl);
 
         var content = await response.Content.ReadAsStringAsync();
 
-        logger.LogInformation($"Downloading {fileName}");
         await File.WriteAllTextAsync(filePathAndName, content);
         logger.LogInformation($"File downloaded to {filePathAndName}");
     }
