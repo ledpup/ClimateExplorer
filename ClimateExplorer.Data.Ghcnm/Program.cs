@@ -28,10 +28,10 @@ httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
 await DownloadAndExtract.DownloadAndExtractFile(httpClient, "https://www.ncei.noaa.gov/pub/data/ghcn/v4/", "qcf", "ghcnm.tavg.latest.qcf.tar.gz", logger);
 await DownloadAndExtract.DownloadAndExtractFile(httpClient, "https://www.ncei.noaa.gov/pub/data/ghcn/v4/", "qcu", "ghcnm.tavg.latest.qcu.tar.gz", logger);
 
-const string stationsFileCsv = @"SiteMetaData\stations.csv";
-const string preExistingLocationsFile = @"SiteMetaData\pre-existing-locations.json";
-const string stationsFileJson = @"Output\SiteMetaData\stations.json";
-const string selectedStationsFileJson = @"Output\SiteMetaData\selected-stations.json";
+const string stationsFileCsv = @"MetaData\stations.csv";
+const string preExistingLocationsFile = @"MetaData\pre-existing-locations.json";
+const string stationsFileJson = @"Output\MetaData\stations.json";
+const string selectedStationsFileJson = @"Output\MetaData\selected-stations.json";
 
 var dataStations = await GetStationFromData("qcf");
 
@@ -307,7 +307,7 @@ async Task<List<Station>> GetStations(string version, List<Station> inputStation
         return GetStationsFromFile();
     }
 
-    var countries = await Country.GetCountries(@"SiteMetaData\ghcnm-countries.txt");
+    var countries = await Country.GetCountries(@"MetaData\ghcnm-countries.txt");
     var stations = await StationFile.Load(version, inputStations, countries, logger);
 
     SaveStations(stations, stationsFileJson);
@@ -454,7 +454,7 @@ static int[] GetValues(string record)
 
 static async Task<Dictionary<string, Guid>> GetGhcnIdToLocationIds(List<Station> stations, ILogger logger)
 {
-    const string ghcnIdToLocationIdsFile = @"SiteMetaData\GhcnIdToLocationIds.json";
+    const string ghcnIdToLocationIdsFile = @"MetaData\GhcnIdToLocationIds.json";
     Dictionary<string, Guid>? ghcnIdToLocationIds = null;
     if (File.Exists(ghcnIdToLocationIdsFile))
     {
@@ -468,7 +468,7 @@ static async Task<Dictionary<string, Guid>> GetGhcnIdToLocationIds(List<Station>
 
 static async Task SaveGhcnIdToLocationIds(Dictionary<string, Guid>? ghcnIdToLocationIds)
 {
-    const string ghcnIdToLocationIdsFile = @"..\..\..\SiteMetaData\GhcnIdToLocationIds.json";
+    const string ghcnIdToLocationIdsFile = @"..\..\..\MetaData\GhcnIdToLocationIds.json";
 
     var jsonOptions = new JsonSerializerOptions
     {
@@ -519,7 +519,7 @@ async Task<List<Location>> GetPreExistingLocations()
 
 async Task<List<Station>> EnsureCountryRepresentation(List<Station> stations, List<Station> selectedStations, short lastYearOfDataNoLaterThan)
 {
-    var countries = await Country.GetCountries(@"SiteMetaData\ghcnm-countries.txt");
+    var countries = await Country.GetCountries(@"MetaData\ghcnm-countries.txt");
     var combinedStations = new List<Station>();
     combinedStations.AddRange(selectedStations);
     foreach (var country in countries)

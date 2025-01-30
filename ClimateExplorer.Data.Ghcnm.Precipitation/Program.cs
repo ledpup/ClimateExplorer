@@ -1,4 +1,5 @@
-﻿using ClimateExplorer.Core.InputOutput;
+﻿using ClimateExplorer.Core;
+using ClimateExplorer.Core.InputOutput;
 using ClimateExplorer.Core.Model;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -20,7 +21,8 @@ var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
 httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
 httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
 
-var stations = await Station.GetStationsFromFile(@"MetaData\selected-stations.json");
+// Get the stations that were selected in the GHCNm project
+var stations = await Station.GetStationsFromFile(Folders.SelectedStationsFile);
 
 Directory.CreateDirectory("Download");
 
@@ -44,8 +46,6 @@ foreach (var station in stations)
     }
 }
 
-
-
 var measurementDefinition = new MeasurementDefinition
 {
     DataAdjustment = null,
@@ -60,7 +60,10 @@ var measurementDefinition = new MeasurementDefinition
 
 var stationsWithData = new List<Station>();
 
-var outputFolder = @"Output\Data\";
+var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
+var ghcnmp = dataSetDefinitions.Single(x => x.ShortName == "GHCNmp");
+
+var outputFolder = Folders.SourceDataFolder + ghcnmp.MeasurementDefinitions!.Single().FolderName;
 
 try
 {
@@ -98,7 +101,7 @@ foreach (var station in stations)
     {
         logger.LogInformation($"Precipitation data has been loaded for {station.Id}. There are {dataRecords.Count} records. Will now save to a simplified file format into the output folder.");
 
-        var fileName = $@"{outputFolder}{station.Id}.csv";
+        var fileName = $@"{outputFolder}\{station.Id}.csv";
         if (File.Exists(fileName))
         {
             throw new Exception($"File {fileName} exists already");
@@ -119,7 +122,7 @@ foreach (var station in stations)
             }
             if (record.Year != year || record.Month! != month || record.Value == null)
             {
-                logger.LogError($"{station.Id}: Missing data for year {year}. Will skip this year.");
+                logger.LogWarning($"{station.Id}: Missing data for year {year}. Will skip this year.");
                 year++;
                 month = 1;
                 values = new double[12];
@@ -193,15 +196,13 @@ var jsonSerializerOptions = new JsonSerializerOptions
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
 };
 
-Directory.CreateDirectory(@"Output\DataFileMapping");
-
 var outputFileSuffix = "_ghcnm_precipitation";
 
-File.WriteAllText($@"Output\DataFileMapping\DataFileMapping{outputFileSuffix}.json", JsonSerializer.Serialize(dataFileMapping, jsonSerializerOptions));
+File.WriteAllText(Folders.MetaDataFolder + $@"DataFileMapping\DataFileMapping{outputFileSuffix}.json", JsonSerializer.Serialize(dataFileMapping, jsonSerializerOptions));
 
 static async Task<Dictionary<string, Guid>> GetGhcnIdToLocationIds(List<Station> stations)
 {
-    const string ghcnIdToLocationIdsFile = @"MetaData\GhcnIdToLocationIds.json";
+    const string ghcnIdToLocationIdsFile = Folders.GhcnmFolder + @"MetaData\GhcnIdToLocationIds.json";
     Dictionary<string, Guid>? ghcnIdToLocationIds = null;
     if (File.Exists(ghcnIdToLocationIdsFile))
     {

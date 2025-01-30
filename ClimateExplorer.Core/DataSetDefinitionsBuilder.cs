@@ -163,6 +163,7 @@ public class DataSetDefinitionsBuilder
             {
                 Id = Guid.Parse("6ABB028A-29F6-481C-837E-1FC9C8E989AF"),
                 Name = "Global Historical Climatology Network (GHCN) Monthly Precipitation",
+                ShortName = "GHCNmp",
                 Description = "The Global Historical Climatology Network (GHCN) Monthly Precipitation, Version 4 is a collection of worldwide monthly precipitation values offering significant enhancement over the previous version 2.  It contains more values both historically and for the most recent months.  Its methods for merging records and quality control have been modernized.",
                 Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
                 PublisherUrl = "https://www.noaa.gov/",

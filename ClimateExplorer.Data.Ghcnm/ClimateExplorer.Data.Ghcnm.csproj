@@ -16,13 +16,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="SiteMetaData\GhcnIdToLocationIds.json">
+    <Content Include="MetaData\GhcnIdToLocationIds.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SiteMetaData\ghcnm-countries.txt">
+    <Content Include="MetaData\ghcnm-countries.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SiteMetaData\pre-existing-locations.json">
+    <Content Include="MetaData\pre-existing-locations.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
