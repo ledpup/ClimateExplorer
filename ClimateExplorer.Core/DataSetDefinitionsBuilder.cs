@@ -123,6 +123,7 @@ public class DataSetDefinitionsBuilder
             {
                 Id = Guid.Parse("1DC38F20-3606-4D90-A2A0-84F93E75C964"),
                 Name = "Global Historical Climatology Network monthly (GHCNm)",
+                ShortName = "GHCNm",
                 Description = "The Global Historical Climatology Network monthly (GHCNm) dataset provides monthly climate summaries from thousands of weather stations around the world. The initial version was developed in the early 1990s, and subsequent iterations were released in 1997, 2011, and most recently in 2018. The period of record for each summary varies by station, with the earliest observations dating to the 18th century. Some station records are purely historical and are no longer updated, but many others are still operational and provide short time delay updates that are useful for climate monitoring.",
                 Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
                 PublisherUrl = "https://www.noaa.gov/",

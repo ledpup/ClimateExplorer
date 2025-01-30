@@ -1,4 +1,5 @@
-﻿using ClimateExplorer.Core.Calculators;
+﻿using ClimateExplorer.Core;
+using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Data.Ghcnm;
 using Dbscan;
@@ -54,9 +55,8 @@ if (newStations.Any())
 {
     logger.LogInformation($"There are new stations that are not found in ghcnIdToLocationIds. These stations are: {string.Join(", ", newStations)}");
     logger.LogWarning($"Will now save an updated ghcnIdToLocationIds file");
-    logger.LogWarning($"PLEASE UPDATE THE SOURCE FILE BEFORE PROCEEDING");
     await SaveGhcnIdToLocationIds(ghcnIdToLocationIds!);
-    Console.ReadKey();
+    logger.LogWarning($"PLEASE RE-RUN THIS APP");
     Environment.Exit(0);
 }
 
@@ -137,21 +137,18 @@ var jsonSerializerOptions = new JsonSerializerOptions
 
 SaveStations(selectedStations, selectedStationsFileJson);
 
-Directory.CreateDirectory(@"Output\Location");
-Directory.CreateDirectory(@"Output\Station");
-Directory.CreateDirectory(@"Output\DataFileMapping");
-
 var outputFileSuffix = "_ghcnm_adjusted";
 
-File.WriteAllText($@"Output\Location\Locations{outputFileSuffix}.json", JsonSerializer.Serialize(locations, jsonSerializerOptions));
-File.WriteAllText($@"Output\Station\Stations{outputFileSuffix}.json", JsonSerializer.Serialize(selectedStations, jsonSerializerOptions));
-File.WriteAllText($@"Output\DataFileMapping\DataFileMapping{outputFileSuffix}.json", JsonSerializer.Serialize(dataFileMapping, jsonSerializerOptions));
+File.WriteAllText(Folders.MetaDataFolder + $@"Location\Locations{outputFileSuffix}.json", JsonSerializer.Serialize(locations, jsonSerializerOptions));
+File.WriteAllText(Folders.MetaDataFolder + $@"Station\Stations{outputFileSuffix}.json", JsonSerializer.Serialize(selectedStations, jsonSerializerOptions));
+File.WriteAllText(Folders.MetaDataFolder + $@"DataFileMapping\DataFileMapping{outputFileSuffix}.json", JsonSerializer.Serialize(dataFileMapping, jsonSerializerOptions));
 
 
+var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
+var ghcnm = dataSetDefinitions.Single(x => x.ShortName == "GHCNm");
 
-
-await CreateStationDataFiles("qcf", selectedStations, logger);
-await CreateStationDataFiles("qcu", selectedStations, logger);
+await CreateStationDataFiles("qcf", ghcnm.MeasurementDefinitions!.Single(x => x.DataAdjustment == Enums.DataAdjustment.Adjusted).FolderName!, selectedStations, logger);
+await CreateStationDataFiles("qcu", ghcnm.MeasurementDefinitions!.Single(x => x.DataAdjustment == Enums.DataAdjustment.Unadjusted).FolderName!, selectedStations, logger);
 
 List<Station> SelectStationsByDbscanClusteringAndTakingHighestScore(List<Station> processedStations, double distance, Dictionary<string, int> countryDistanceOverride, int minimumPointsPerCluster)
 {
@@ -385,9 +382,9 @@ async static Task<List<Station>> GetPreProcessedStations()
     return stations;
 }
 
-static async Task CreateStationDataFiles(string version, List<Station> stations, ILogger<Program> logger)
+static async Task CreateStationDataFiles(string version, string outputFolderName, List<Station> stations, ILogger<Program> logger)
 {
-    var outputFolder = @$"Output\Data\{version}\";
+    var outputFolder = Folders.SourceDataFolder + outputFolderName;
     var dir = new DirectoryInfo(outputFolder);
     if (dir.Exists)
     {
@@ -425,9 +422,10 @@ static async Task CreateStationDataFiles(string version, List<Station> stations,
                     writer.Close();
                 }
                 currentStation = id;
-                var fileName = $@"{outputFolder}{id}.csv";
+                var fileName = $@"{outputFolder}\{id}.csv";
                 if (File.Exists(fileName))
                 {
+                    logger.LogInformation($"Opening data file for station {id}");
                     throw new Exception($"File {fileName} exists already");
                 }
                 logger.LogInformation($"Creating data file for station {id}");
@@ -470,7 +468,7 @@ static async Task<Dictionary<string, Guid>> GetGhcnIdToLocationIds(List<Station>
 
 static async Task SaveGhcnIdToLocationIds(Dictionary<string, Guid>? ghcnIdToLocationIds)
 {
-    const string ghcnIdToLocationIdsFile = @"Output\GhcnIdToLocationIds.json";
+    const string ghcnIdToLocationIdsFile = @"..\..\..\SiteMetaData\GhcnIdToLocationIds.json";
 
     var jsonOptions = new JsonSerializerOptions
     {
