@@ -1,5 +1,4 @@
-﻿using ClimateExplorer.Core.InputOutput;
-using ClimateExplorer.Core.Model;
+﻿using ClimateExplorer.Core.Model;
 using CsvHelper.Configuration;
 using CsvHelper;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +7,7 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using ClimateExplorer.Data.Ghcnd;
+using ClimateExplorer.Core;
 
 var serviceProvider = new ServiceCollection()
     .AddLogging((loggingBuilder) => loggingBuilder
@@ -23,13 +23,19 @@ var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
 httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
 httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
 
-var stations = await Station.GetStationsFromFile(@"MetaData\selected-stations.json");
+// Get the stations that were selected in the GHCNm project
+var stations = await Station.GetStationsFromFile(Folders.SelectedStationsFile);
 
 var nullRecord = "9999";
 
 Directory.CreateDirectory("Download");
 
-foreach (var station in stations)
+var parallelOptions = new ParallelOptions
+{
+    MaxDegreeOfParallelism = 5
+};
+
+await Parallel.ForEachAsync(stations, parallelOptions, async (station, token) =>
 {
     var csvFilePathAndName = @$"Download\{station.Id}.csv";
 
@@ -47,21 +53,25 @@ foreach (var station in stations)
         await File.WriteAllTextAsync(csvFilePathAndName, content);
         logger.LogInformation($"Downloaded GHCNd for {station.Id} ({station.Name}) in {station.CountryCode}");
     }
-}
+});
 
-
+var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
+var ghcndFolder = dataSetDefinitions.Single(x => x.ShortName == "GHCNd").MeasurementDefinitions!.First().FolderName!;
+var ghcndpFolder = dataSetDefinitions.Single(x => x.ShortName == "GHCNdp").MeasurementDefinitions!.Single().FolderName!;
 
 var stationsWithTempData = new List<Station>();
 var stationsWithPrcpData = new List<Station>();
-var outputFolder = @"Output\Data\";
+var temperatureFolder = Folders.SourceDataFolder + ghcndFolder;
+var precipitationFolder = Folders.SourceDataFolder + ghcndpFolder;
 
 try
 {
-    Directory.Delete(outputFolder, true);
+    Directory.Delete(temperatureFolder, true);
+    Directory.Delete(precipitationFolder, true);
 }
 catch { }
-Directory.CreateDirectory(outputFolder + "Temperature");
-Directory.CreateDirectory(outputFolder + "Precipitation");
+Directory.CreateDirectory(temperatureFolder);
+Directory.CreateDirectory(precipitationFolder);
 
 Parallel.ForEach(stations, station =>
 {
@@ -113,7 +123,7 @@ Parallel.ForEach(stations, station =>
                 }
                 else
                 {
-                    var outputFileTemp = $@"{outputFolder}\Temp\{station.Id}.csv";
+                    var outputFileTemp = $@"{temperatureFolder}\{station.Id}.csv";
                     using (var writer = new StreamWriter(outputFileTemp))
                     using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
                     {
@@ -139,7 +149,7 @@ Parallel.ForEach(stations, station =>
                 }
                 else
                 {
-                    var outputFilePrcp = $@"{outputFolder}\Prcp\{station.Id}.csv";
+                    var outputFilePrcp = $@"{precipitationFolder}\{station.Id}.csv";
                     using (var writer = new StreamWriter(outputFilePrcp))
                     using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
                     {
@@ -230,7 +240,7 @@ IEnumerable<OutputRowPrecipitation> SufficientDataPrcp(IEnumerable<OutputRowPrec
 
 static async Task<Dictionary<string, Guid>> GetGhcnIdToLocationIds(List<Station> stations)
 {
-    const string ghcnIdToLocationIdsFile = @"MetaData\GhcnIdToLocationIds.json";
+    const string ghcnIdToLocationIdsFile = Folders.GhcnmFolder + @"MetaData\GhcnIdToLocationIds.json";
     Dictionary<string, Guid>? ghcnIdToLocationIds = null;
     if (File.Exists(ghcnIdToLocationIdsFile))
     {
@@ -271,9 +281,7 @@ static async Task CreateDataFileMapping(List<Station> stations, List<Station> st
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     };
 
-    Directory.CreateDirectory(@"Output\DataFileMapping");
-
-    File.WriteAllText($@"Output\DataFileMapping\DataFileMapping_ghcnd_{dataType}.json", JsonSerializer.Serialize(dataFileMapping, jsonSerializerOptions));
+    File.WriteAllText(Folders.MetaDataFolder + $@"DataFileMapping\DataFileMapping_ghcnd_{dataType}.json", JsonSerializer.Serialize(dataFileMapping, jsonSerializerOptions));
 }
 
 public record TempRow

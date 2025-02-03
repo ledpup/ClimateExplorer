@@ -190,6 +190,7 @@ public class DataSetDefinitionsBuilder
             {
                 Id = Guid.Parse("87C65C34-C689-4BA1-8061-626E4A63D401"),
                 Name = "Global Historical Climatology Network daily (GHCNd)",
+                ShortName = "GHCNd",
                 Description = "The Global Historical Climatology Network daily (GHCNd) is an integrated database of daily climate summaries from land surface stations across the globe. GHCNd is made up of daily climate records from numerous sources that have been integrated and subjected to a common suite of quality assurance reviews.",
                 Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
                 PublisherUrl = "https://www.noaa.gov/",
@@ -229,6 +230,7 @@ public class DataSetDefinitionsBuilder
             {
                 Id = Guid.Parse("5BBEAF4C-B459-410E-9B77-470905CB1E46"),
                 Name = "Global Historical Climatology Network daily (GHCNd) precipitation",
+                ShortName = "GHCNdp",
                 Description = "The Global Historical Climatology Network daily (GHCNd) is an integrated database of daily climate summaries from land surface stations across the globe. GHCNd is made up of daily climate records from numerous sources that have been integrated and subjected to a common suite of quality assurance reviews.",
                 Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
                 PublisherUrl = "https://www.noaa.gov/",

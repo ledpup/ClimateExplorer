@@ -17,17 +17,6 @@
 
   <ItemGroup>
     <None Remove="Locations_ghcnm_adjusted.json" />
-    <None Remove="MetaData\GhcnIdToLocationIds.json" />
-    <None Remove="MetaData\selected-stations.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="MetaData\GhcnIdToLocationIds.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="MetaData\selected-stations.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
