@@ -26,7 +26,12 @@ var stations = await Station.GetStationsFromFile(Folders.SelectedStationsFile);
 
 Directory.CreateDirectory("Download");
 
-foreach (var station in stations)
+var parallelOptions = new ParallelOptions
+{
+    MaxDegreeOfParallelism = 5
+};
+
+await Parallel.ForEachAsync(stations, parallelOptions, async (station, token) =>
 {
     var csvFilePathAndName = @$"Download\{station.Id}.csv";
 
@@ -44,7 +49,7 @@ foreach (var station in stations)
         await File.WriteAllTextAsync(csvFilePathAndName, content);
         logger.LogInformation($"Downloaded precipitation for {station.Id} ({station.Name}) in {station.CountryCode}");
     }
-}
+});
 
 var measurementDefinition = new MeasurementDefinition
 {
