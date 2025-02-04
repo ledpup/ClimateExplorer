@@ -81,10 +81,10 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 2021,
-    "Month": 2,
-    "Day": 16,
-    "Value": -15,
+    "Year": 2024,
+    "Month": 1,
+    "Day": 15,
+    "Value": -15.6,
     "NumberOfTimes": 1
   },
   {
@@ -116,10 +116,10 @@
     "RecordType": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 2,
-    "Year": 2018,
-    "Month": 1,
-    "Day": 17,
-    "Value": 152.4,
+    "Year": 2024,
+    "Month": 11,
+    "Day": 5,
+    "Value": 166.4,
     "NumberOfTimes": 1
   },
   {
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 1,
     "Value": 0,
-    "NumberOfTimes": 25272
+    "NumberOfTimes": 25533
   }
 ]

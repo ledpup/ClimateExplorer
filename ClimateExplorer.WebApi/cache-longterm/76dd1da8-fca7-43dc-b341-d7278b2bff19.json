@@ -42,5 +42,25 @@
     "Month": 5,
     "Value": 5.35,
     "NumberOfTimes": 1
+  },
+  {
+    "DataType": 3,
+    "RecordType": 0,
+    "DataResolution": 1,
+    "UnitOfMeasure": 2,
+    "Year": 1964,
+    "Month": 6,
+    "Value": 824.5,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 3,
+    "RecordType": 1,
+    "DataResolution": 1,
+    "UnitOfMeasure": 2,
+    "Year": 1948,
+    "Month": 1,
+    "Value": 0,
+    "NumberOfTimes": 21
   }
 ]

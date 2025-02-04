@@ -93,11 +93,11 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 2006,
-    "Month": 8,
-    "Day": 2,
-    "Value": 27.8,
-    "NumberOfTimes": 2
+    "Year": 2024,
+    "Month": 7,
+    "Day": 30,
+    "Value": 28.6,
+    "NumberOfTimes": 1
   },
   {
     "DataType": 1,
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 1,
     "Value": 0,
-    "NumberOfTimes": 22170
+    "NumberOfTimes": 22490
   }
 ]

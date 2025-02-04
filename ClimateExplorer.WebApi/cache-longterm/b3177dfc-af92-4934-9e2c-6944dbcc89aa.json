@@ -69,10 +69,10 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 2017,
-    "Month": 9,
-    "Day": 27,
-    "Value": 43.3,
+    "Year": 1969,
+    "Month": 6,
+    "Day": 15,
+    "Value": 34.4,
     "NumberOfTimes": 1
   },
   {
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 1,
     "Value": 0,
-    "NumberOfTimes": 26085
+    "NumberOfTimes": 26437
   }
 ]

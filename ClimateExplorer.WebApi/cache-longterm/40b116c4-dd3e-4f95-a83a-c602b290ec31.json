@@ -62,5 +62,27 @@
     "Month": 12,
     "Value": 0,
     "NumberOfTimes": 30
+  },
+  {
+    "DataType": 3,
+    "RecordType": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 2,
+    "Year": 2024,
+    "Month": 3,
+    "Day": 20,
+    "Value": 51.1,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 3,
+    "RecordType": 1,
+    "DataResolution": 3,
+    "UnitOfMeasure": 2,
+    "Year": 2024,
+    "Month": 1,
+    "Day": 1,
+    "Value": 0,
+    "NumberOfTimes": 242
   }
 ]

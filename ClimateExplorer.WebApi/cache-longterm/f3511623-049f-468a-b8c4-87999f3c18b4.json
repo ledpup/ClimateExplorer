@@ -110,27 +110,5 @@
     "Day": 3,
     "Value": -22,
     "NumberOfTimes": 1
-  },
-  {
-    "DataType": 3,
-    "RecordType": 0,
-    "DataResolution": 3,
-    "UnitOfMeasure": 2,
-    "Year": 1997,
-    "Month": 11,
-    "Day": 5,
-    "Value": 52.4,
-    "NumberOfTimes": 1
-  },
-  {
-    "DataType": 3,
-    "RecordType": 1,
-    "DataResolution": 3,
-    "UnitOfMeasure": 2,
-    "Year": 1944,
-    "Month": 1,
-    "Day": 1,
-    "Value": 0,
-    "NumberOfTimes": 19347
   }
 ]

@@ -81,10 +81,10 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 2022,
-    "Month": 12,
-    "Day": 15,
-    "Value": -7.1,
+    "Year": 2024,
+    "Month": 1,
+    "Day": 7,
+    "Value": -13.8,
     "NumberOfTimes": 1
   },
   {
@@ -105,10 +105,10 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 2022,
-    "Month": 12,
-    "Day": 17,
-    "Value": -18.1,
+    "Year": 2024,
+    "Month": 1,
+    "Day": 8,
+    "Value": -21.6,
     "NumberOfTimes": 1
   },
   {

@@ -116,10 +116,10 @@
     "RecordType": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 2,
-    "Year": 1970,
-    "Month": 5,
-    "Day": 31,
-    "Value": 91.2,
+    "Year": 1937,
+    "Month": 9,
+    "Day": 1,
+    "Value": 104.1,
     "NumberOfTimes": 1
   },
   {
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 1,
     "Value": 0,
-    "NumberOfTimes": 14284
+    "NumberOfTimes": 20144
   }
 ]
