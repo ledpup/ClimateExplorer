@@ -1,0 +1,136 @@
+[
+  {
+    "DataType": 2,
+    "RecordType": 0,
+    "DataAdjustment": 1,
+    "DataResolution": 1,
+    "UnitOfMeasure": 0,
+    "Year": 2016,
+    "Month": 8,
+    "Value": 16.03,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 2,
+    "RecordType": 1,
+    "DataAdjustment": 1,
+    "DataResolution": 1,
+    "UnitOfMeasure": 0,
+    "Year": 1972,
+    "Month": 1,
+    "Value": -26.52,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 2,
+    "RecordType": 0,
+    "DataAdjustment": 0,
+    "DataResolution": 1,
+    "UnitOfMeasure": 0,
+    "Year": 2016,
+    "Month": 8,
+    "Value": 16.03,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 2,
+    "RecordType": 1,
+    "DataAdjustment": 0,
+    "DataResolution": 1,
+    "UnitOfMeasure": 0,
+    "Year": 1972,
+    "Month": 1,
+    "Value": -26.75,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 3,
+    "RecordType": 0,
+    "DataResolution": 1,
+    "UnitOfMeasure": 2,
+    "Year": 1942,
+    "Month": 11,
+    "Value": 349.3,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 3,
+    "RecordType": 1,
+    "DataResolution": 1,
+    "UnitOfMeasure": 2,
+    "Year": 2003,
+    "Month": 7,
+    "Value": 0.5,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 0,
+    "RecordType": 0,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 1981,
+    "Month": 4,
+    "Day": 9,
+    "Value": 35.3,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 0,
+    "RecordType": 1,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 1976,
+    "Month": 12,
+    "Day": 26,
+    "Value": -31.6,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 1,
+    "RecordType": 0,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 2016,
+    "Month": 8,
+    "Day": 18,
+    "Value": 18.5,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 1,
+    "RecordType": 1,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 1978,
+    "Month": 2,
+    "Day": 11,
+    "Value": -51.1,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 3,
+    "RecordType": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 2,
+    "Year": 2015,
+    "Month": 10,
+    "Day": 26,
+    "Value": 185.9,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 3,
+    "RecordType": 1,
+    "DataResolution": 3,
+    "UnitOfMeasure": 2,
+    "Year": 1936,
+    "Month": 1,
+    "Day": 3,
+    "Value": 0,
+    "NumberOfTimes": 14024
+  }
+]

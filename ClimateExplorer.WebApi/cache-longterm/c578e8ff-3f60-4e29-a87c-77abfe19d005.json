@@ -1,0 +1,46 @@
+[
+  {
+    "DataType": 2,
+    "RecordType": 0,
+    "DataAdjustment": 1,
+    "DataResolution": 1,
+    "UnitOfMeasure": 0,
+    "Year": 2023,
+    "Month": 4,
+    "Value": 28.78,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 2,
+    "RecordType": 1,
+    "DataAdjustment": 1,
+    "DataResolution": 1,
+    "UnitOfMeasure": 0,
+    "Year": 2022,
+    "Month": 5,
+    "Value": 19.5,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 2,
+    "RecordType": 0,
+    "DataAdjustment": 0,
+    "DataResolution": 1,
+    "UnitOfMeasure": 0,
+    "Year": 2016,
+    "Month": 2,
+    "Value": 36.95,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 2,
+    "RecordType": 1,
+    "DataAdjustment": 0,
+    "DataResolution": 1,
+    "UnitOfMeasure": 0,
+    "Year": 2019,
+    "Month": 12,
+    "Value": -0.85,
+    "NumberOfTimes": 1
+  }
+]

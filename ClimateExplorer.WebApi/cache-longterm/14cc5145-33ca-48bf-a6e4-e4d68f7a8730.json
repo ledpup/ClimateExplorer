@@ -1,0 +1,136 @@
+[
+  {
+    "DataType": 2,
+    "RecordType": 0,
+    "DataAdjustment": 1,
+    "DataResolution": 1,
+    "UnitOfMeasure": 0,
+    "Year": 1949,
+    "Month": 8,
+    "Value": 14.68,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 2,
+    "RecordType": 1,
+    "DataAdjustment": 1,
+    "DataResolution": 1,
+    "UnitOfMeasure": 0,
+    "Year": 1919,
+    "Month": 1,
+    "Value": -5.24,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 2,
+    "RecordType": 0,
+    "DataAdjustment": 0,
+    "DataResolution": 1,
+    "UnitOfMeasure": 0,
+    "Year": 1949,
+    "Month": 8,
+    "Value": 15.1,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 2,
+    "RecordType": 1,
+    "DataAdjustment": 0,
+    "DataResolution": 1,
+    "UnitOfMeasure": 0,
+    "Year": 1919,
+    "Month": 1,
+    "Value": -4.82,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 3,
+    "RecordType": 0,
+    "DataResolution": 1,
+    "UnitOfMeasure": 2,
+    "Year": 2000,
+    "Month": 11,
+    "Value": 499,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 3,
+    "RecordType": 1,
+    "DataResolution": 1,
+    "UnitOfMeasure": 2,
+    "Year": 2021,
+    "Month": 9,
+    "Value": 0,
+    "NumberOfTimes": 2
+  },
+  {
+    "DataType": 0,
+    "RecordType": 0,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 1985,
+    "Month": 8,
+    "Day": 19,
+    "Value": 43.3,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 0,
+    "RecordType": 1,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 1919,
+    "Month": 1,
+    "Day": 23,
+    "Value": -11.1,
+    "NumberOfTimes": 5
+  },
+  {
+    "DataType": 1,
+    "RecordType": 0,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 2005,
+    "Month": 8,
+    "Day": 20,
+    "Value": 23.3,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 1,
+    "RecordType": 1,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 1985,
+    "Month": 11,
+    "Day": 19,
+    "Value": -53.9,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 3,
+    "RecordType": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 2,
+    "Year": 1947,
+    "Month": 2,
+    "Day": 5,
+    "Value": 192.5,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 3,
+    "RecordType": 1,
+    "DataResolution": 3,
+    "UnitOfMeasure": 2,
+    "Year": 1916,
+    "Month": 1,
+    "Day": 1,
+    "Value": 0,
+    "NumberOfTimes": 8457
+  }
+]

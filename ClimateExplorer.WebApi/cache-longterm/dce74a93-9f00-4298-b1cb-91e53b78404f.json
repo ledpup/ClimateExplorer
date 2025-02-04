@@ -42,5 +42,95 @@
     "Month": 7,
     "Value": 14.4,
     "NumberOfTimes": 1
+  },
+  {
+    "DataType": 3,
+    "RecordType": 0,
+    "DataResolution": 1,
+    "UnitOfMeasure": 2,
+    "Year": 1989,
+    "Month": 12,
+    "Value": 473.2,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 3,
+    "RecordType": 1,
+    "DataResolution": 1,
+    "UnitOfMeasure": 2,
+    "Year": 1899,
+    "Month": 12,
+    "Value": 5.1,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 0,
+    "RecordType": 0,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 1949,
+    "Month": 2,
+    "Day": 17,
+    "Value": 27.8,
+    "NumberOfTimes": 3
+  },
+  {
+    "DataType": 0,
+    "RecordType": 1,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 1949,
+    "Month": 8,
+    "Day": 5,
+    "Value": 16.1,
+    "NumberOfTimes": 6
+  },
+  {
+    "DataType": 1,
+    "RecordType": 0,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 1949,
+    "Month": 2,
+    "Day": 16,
+    "Value": 23.3,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 1,
+    "RecordType": 1,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 1953,
+    "Month": 7,
+    "Day": 29,
+    "Value": 6.1,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 3,
+    "RecordType": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 2,
+    "Year": 1985,
+    "Month": 2,
+    "Day": 13,
+    "Value": 161,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 3,
+    "RecordType": 1,
+    "DataResolution": 3,
+    "UnitOfMeasure": 2,
+    "Year": 1985,
+    "Month": 1,
+    "Day": 3,
+    "Value": 0,
+    "NumberOfTimes": 644
   }
 ]

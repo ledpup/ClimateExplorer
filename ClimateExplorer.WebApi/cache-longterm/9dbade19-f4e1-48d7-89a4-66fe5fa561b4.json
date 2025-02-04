@@ -97,7 +97,7 @@
     "Month": 8,
     "Day": 9,
     "Value": 9.4,
-    "NumberOfTimes": 1
+    "NumberOfTimes": 2
   },
   {
     "DataType": 1,
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 1,
     "Value": 0,
-    "NumberOfTimes": 11349
+    "NumberOfTimes": 11591
   }
 ]

@@ -110,5 +110,27 @@
     "Day": 20,
     "Value": -26.6,
     "NumberOfTimes": 1
+  },
+  {
+    "DataType": 3,
+    "RecordType": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 2,
+    "Year": 1947,
+    "Month": 4,
+    "Day": 19,
+    "Value": 83.3,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 3,
+    "RecordType": 1,
+    "DataResolution": 3,
+    "UnitOfMeasure": 2,
+    "Year": 1927,
+    "Month": 1,
+    "Day": 1,
+    "Value": 0,
+    "NumberOfTimes": 19267
   }
 ]

@@ -37,7 +37,7 @@ var referenceDataDefintions = dataSetDefinitions
 foreach (var dataSetDefinition in referenceDataDefintions)
 {
     logger.LogInformation($"Processing {dataSetDefinition.Name}");
-    await DownloadDataSetData(dataSetDefinition, Helpers.SourceDataFolder);
+    await DownloadDataSetData(dataSetDefinition, Folders.SourceDataFolder);
 }
 
 var oceanAcidity = dataSetDefinitions.Single(x => x.Name == "Ocean acidity");
@@ -56,9 +56,24 @@ OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_minimum", ozoneColumn.M
 var odgi = dataSetDefinitions.Single(x => x.ShortName == "ODGI");
 var downloadUrl = odgi.DataDownloadUrl;
 odgi.DataDownloadUrl = odgi.DataDownloadUrl!.Replace("[station]", "table1");
-await DownloadDataSetData(odgi, Helpers.SourceDataFolder, "table1");
+await DownloadDataSetData(odgi, Folders.SourceDataFolder, "table1");
 odgi.DataDownloadUrl = odgi.DataDownloadUrl!.Replace("[station]", "table2");
-await DownloadDataSetData(odgi, Helpers.SourceDataFolder, "table2");
+await DownloadDataSetData(odgi, Folders.SourceDataFolder, "table2");
+
+// HadCET
+var hadOps = dataSetDefinitions.Single(x => x.Name == "Hadley Centre");
+hadOps.DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/meantemp_monthly_totals.txt";
+await DownloadDataSetData(hadOps, Folders.SourceDataFolder, measurementDefinition: hadOps.MeasurementDefinitions!.Single(x => x.DataType == Enums.DataType.TempMean));
+
+hadOps.DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/maxtemp_daily_totals.txt";
+await DownloadDataSetData(hadOps, Folders.SourceDataFolder, measurementDefinition: hadOps.MeasurementDefinitions!.Single(x => x.DataType == Enums.DataType.TempMax));
+
+hadOps.DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/mintemp_daily_totals.txt";
+await DownloadDataSetData(hadOps, Folders.SourceDataFolder, measurementDefinition: hadOps.MeasurementDefinitions!.Single(x => x.DataType == Enums.DataType.TempMin));
+
+// HadCEP
+hadOps.DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadukp/data/daily/HadCEP_daily_totals.txt";
+await DownloadDataSetData(hadOps, Folders.SourceDataFolder, measurementDefinition: hadOps.MeasurementDefinitions!.Single(x => x.DataType == Enums.DataType.Precipitation));
 
 // Download and build Greenland ice melt
 await GreenlandApiClient.GetMeltDataAndSave(httpClient, logger);
@@ -77,8 +92,8 @@ var noaaGlobalTempMonth = "12";
 
 var stations = NoaaGlobalTemp.DataFileMapping().LocationIdToDataFileMappings.Values.Select(x => x.Single().Id);
 
-File.WriteAllText($@"{Helpers.MetaDataFolder}\Station\Stations_NoaaGlobalTemp.json", JsonSerializer.Serialize(stations.Select(x => new Station { Id = x }), jsonSerializerOptions));
-File.WriteAllText($@"{Helpers.MetaDataFolder}\DataFileMapping\DataFileMapping_NoaaGlobalTemp.json", JsonSerializer.Serialize(NoaaGlobalTemp.DataFileMapping(), jsonSerializerOptions));
+File.WriteAllText($@"{Folders.MetaDataFolder}\Station\Stations_NoaaGlobalTemp.json", JsonSerializer.Serialize(stations.Select(x => new Station { Id = x }), jsonSerializerOptions));
+File.WriteAllText($@"{Folders.MetaDataFolder}\DataFileMapping\DataFileMapping_NoaaGlobalTemp.json", JsonSerializer.Serialize(NoaaGlobalTemp.DataFileMapping(), jsonSerializerOptions));
 
 var noaaGlobalTempDsd = DataSetDefinitionsBuilder.BuildDataSetDefinitions().Single(x => x.Id == Guid.Parse("E61C6279-EDF4-461B-BDD1-0724D21F42F3"));
 var urlTemplace = noaaGlobalTempDsd.DataDownloadUrl;
@@ -87,15 +102,15 @@ foreach (var station in stations)
 {
     logger.LogInformation($"Attempting to download data for the area '{station}', for the year {noaaGlobalTempYear}, month {noaaGlobalTempMonth}");
     noaaGlobalTempDsd.DataDownloadUrl = urlTemplace!.Replace("[station]", station).Replace("[year]", noaaGlobalTempYear.ToString()).Replace("[month]", noaaGlobalTempMonth);
-    await DownloadDataSetData(noaaGlobalTempDsd, Helpers.SourceDataFolder, station);
+    await DownloadDataSetData(noaaGlobalTempDsd, Folders.SourceDataFolder, station);
 }
 
 await BuildStaticContent.GenerateSiteMap();
 GenerateMapMarkers();
 
-async Task DownloadDataSetData(DataSetDefinition dataSetDefinition, string? destinationBasePath = null, string? station = null)
+async Task DownloadDataSetData(DataSetDefinition dataSetDefinition, string? destinationBasePath = null, string? station = null, MeasurementDefinition? measurementDefinition = null)
 {
-    var md = dataSetDefinition.MeasurementDefinitions!.Single();
+    var md = measurementDefinition == null ? dataSetDefinition.MeasurementDefinitions!.Single() : measurementDefinition;
     var outputPath = Path.Combine("Output", md.FolderName!);
 
     Directory.CreateDirectory(outputPath);
@@ -109,12 +124,12 @@ async Task DownloadDataSetData(DataSetDefinition dataSetDefinition, string? dest
     }
     else
     {
+        logger.LogInformation($"Downloading {fileName}");
         var fileUrl = dataSetDefinition.DataDownloadUrl;
         var response = await httpClient.GetAsync(fileUrl);
 
         var content = await response.Content.ReadAsStringAsync();
 
-        logger.LogInformation($"Downloading {fileName}");
         await File.WriteAllTextAsync(filePathAndName, content);
         logger.LogInformation($"File downloaded to {filePathAndName}");
     }

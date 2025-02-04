@@ -42,5 +42,53 @@
     "Month": 1,
     "Value": 4.1,
     "NumberOfTimes": 1
+  },
+  {
+    "DataType": 0,
+    "RecordType": 0,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 2003,
+    "Month": 8,
+    "Day": 8,
+    "Value": 48.2,
+    "NumberOfTimes": 2
+  },
+  {
+    "DataType": 0,
+    "RecordType": 1,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 1983,
+    "Month": 1,
+    "Day": 27,
+    "Value": 5.5,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 1,
+    "RecordType": 0,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 1987,
+    "Month": 8,
+    "Day": 10,
+    "Value": 34.2,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 1,
+    "RecordType": 1,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 1990,
+    "Month": 3,
+    "Day": 21,
+    "Value": -6,
+    "NumberOfTimes": 1
   }
 ]

@@ -42,5 +42,53 @@
     "Month": 8,
     "Value": -24.33,
     "NumberOfTimes": 1
+  },
+  {
+    "DataType": 0,
+    "RecordType": 0,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 1974,
+    "Month": 1,
+    "Day": 9,
+    "Value": 10.6,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 0,
+    "RecordType": 1,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 1962,
+    "Month": 8,
+    "Day": 4,
+    "Value": -32.1,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 1,
+    "RecordType": 0,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 1978,
+    "Month": 12,
+    "Day": 27,
+    "Value": 4,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 1,
+    "RecordType": 1,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 1979,
+    "Month": 7,
+    "Day": 25,
+    "Value": -36,
+    "NumberOfTimes": 4
   }
 ]

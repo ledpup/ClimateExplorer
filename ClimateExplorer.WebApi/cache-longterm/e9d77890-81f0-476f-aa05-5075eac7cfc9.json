@@ -1,52 +1,52 @@
 [
   {
-    "MinimumWarmingAnomaly": 1.8255503144654108,
-    "MaximumWarmingAnomaly": 2.9886536458333364,
+    "MinimumWarmingAnomaly": 1.863544520547945,
+    "MaximumWarmingAnomaly": 2.9628863636363634,
     "Score": 9
   },
   {
-    "MinimumWarmingAnomaly": 1.581659090909091,
-    "MaximumWarmingAnomaly": 1.8248730158730186,
+    "MinimumWarmingAnomaly": 1.6294057539682525,
+    "MaximumWarmingAnomaly": 1.8627486338797823,
     "Score": 8
   },
   {
-    "MinimumWarmingAnomaly": 1.4464444444444444,
-    "MaximumWarmingAnomaly": 1.5812421227197344,
+    "MinimumWarmingAnomaly": 1.507336021505377,
+    "MaximumWarmingAnomaly": 1.628858585858586,
     "Score": 7
   },
   {
-    "MinimumWarmingAnomaly": 1.326694444444449,
-    "MaximumWarmingAnomaly": 1.4457469558599758,
+    "MinimumWarmingAnomaly": 1.3667821637426911,
+    "MaximumWarmingAnomaly": 1.505464646464647,
     "Score": 6
   },
   {
-    "MinimumWarmingAnomaly": 1.1989956660446452,
-    "MaximumWarmingAnomaly": 1.3238207885304663,
+    "MinimumWarmingAnomaly": 1.2329480676328501,
+    "MaximumWarmingAnomaly": 1.3661388888888892,
     "Score": 5
   },
   {
-    "MinimumWarmingAnomaly": 1.07479444444445,
-    "MaximumWarmingAnomaly": 1.1989548611111105,
+    "MinimumWarmingAnomaly": 1.098858422939072,
+    "MaximumWarmingAnomaly": 1.232546296296296,
     "Score": 4
   },
   {
-    "MinimumWarmingAnomaly": 0.9333611662363666,
-    "MaximumWarmingAnomaly": 1.0746616161616203,
+    "MinimumWarmingAnomaly": 0.9473055555555556,
+    "MaximumWarmingAnomaly": 1.098691756272407,
     "Score": 3
   },
   {
-    "MinimumWarmingAnomaly": 0.7602929292929304,
-    "MaximumWarmingAnomaly": 0.9332916666666655,
+    "MinimumWarmingAnomaly": 0.7877063492063421,
+    "MaximumWarmingAnomaly": 0.945836805555551,
     "Score": 2
   },
   {
-    "MinimumWarmingAnomaly": 0.5876977124182998,
-    "MaximumWarmingAnomaly": 0.7597521367521369,
+    "MinimumWarmingAnomaly": 0.6036140350877162,
+    "MaximumWarmingAnomaly": 0.7875520833333383,
     "Score": 1
   },
   {
-    "MinimumWarmingAnomaly": 0.013014336917565927,
-    "MaximumWarmingAnomaly": 0.5876378351279499,
+    "MinimumWarmingAnomaly": 0.006781746031744973,
+    "MaximumWarmingAnomaly": 0.6034211333827351,
     "Score": 0
   }
 ]

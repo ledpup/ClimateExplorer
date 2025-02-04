@@ -81,10 +81,10 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 2021,
+    "Year": 2024,
     "Month": 1,
-    "Day": 8,
-    "Value": -18.2,
+    "Day": 5,
+    "Value": -20.7,
     "NumberOfTimes": 1
   },
   {
@@ -93,10 +93,10 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 2021,
-    "Month": 7,
-    "Day": 14,
-    "Value": 14.2,
+    "Year": 2024,
+    "Month": 6,
+    "Day": 27,
+    "Value": 15.7,
     "NumberOfTimes": 1
   },
   {
@@ -105,10 +105,10 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 2021,
+    "Year": 2024,
     "Month": 1,
-    "Day": 9,
-    "Value": -23.2,
+    "Day": 5,
+    "Value": -26.1,
     "NumberOfTimes": 1
   },
   {
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 3,
     "Value": 0,
-    "NumberOfTimes": 2396
+    "NumberOfTimes": 2591
   }
 ]

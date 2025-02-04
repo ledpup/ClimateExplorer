@@ -59,7 +59,7 @@ public static class OceanAcidityReducer
             outputLines.Add($"{keyValue.Key},{keyValue.Value.Average()}");
         }
 
-        var destinationFolder = Path.Combine(Helpers.SourceDataFolder, folderName);
+        var destinationFolder = Path.Combine(Folders.SourceDataFolder, folderName);
         var reducedFileName = $"{fileName}_reduced.csv";
         Console.WriteLine($"Writing ocean acidity file '{reducedFileName}' to folder '{destinationFolder}'");
         File.WriteAllLines(@$"{destinationFolder}\{reducedFileName}", outputLines);

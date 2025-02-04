@@ -93,11 +93,11 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 2022,
-    "Month": 8,
-    "Day": 5,
-    "Value": 29.8,
-    "NumberOfTimes": 2
+    "Year": 2024,
+    "Month": 7,
+    "Day": 23,
+    "Value": 30,
+    "NumberOfTimes": 1
   },
   {
     "DataType": 1,
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 1,
     "Value": 0,
-    "NumberOfTimes": 17690
+    "NumberOfTimes": 17955
   }
 ]

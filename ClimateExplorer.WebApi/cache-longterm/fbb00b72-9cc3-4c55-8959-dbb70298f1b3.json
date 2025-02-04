@@ -110,27 +110,5 @@
     "Day": 1,
     "Value": -48,
     "NumberOfTimes": 1
-  },
-  {
-    "DataType": 3,
-    "RecordType": 0,
-    "DataResolution": 3,
-    "UnitOfMeasure": 2,
-    "Year": 1971,
-    "Month": 11,
-    "Day": 21,
-    "Value": 46.1,
-    "NumberOfTimes": 1
-  },
-  {
-    "DataType": 3,
-    "RecordType": 1,
-    "DataResolution": 3,
-    "UnitOfMeasure": 2,
-    "Year": 1934,
-    "Month": 1,
-    "Day": 3,
-    "Value": 0,
-    "NumberOfTimes": 9143
   }
 ]

@@ -54,7 +54,7 @@
     "Year": 2016,
     "Month": 7,
     "Day": 20,
-    "Value": 19.5,
+    "Value": 19.6,
     "NumberOfTimes": 1
   },
   {
@@ -89,6 +89,6 @@
     "Month": 1,
     "Day": 5,
     "Value": 0,
-    "NumberOfTimes": 9040
+    "NumberOfTimes": 9099
   }
 ]

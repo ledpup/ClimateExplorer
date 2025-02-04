@@ -55,7 +55,7 @@ public class SeaLevelFileReducer
 
         records.ForEach(x => outputLines.Add($"{x.Date!.Value.ToString("yyyy-MM-dd")},{x.Value!.Value:0.000}"));
 
-        var destinationFolder = Path.Combine(Helpers.SourceDataFolder, folderName);
+        var destinationFolder = Path.Combine(Folders.SourceDataFolder, folderName);
         var reducedFileName = $"{fileName}_reduced.csv";
         Console.WriteLine($"Writing sea level file '{reducedFileName}' to folder '{destinationFolder}'");
         File.WriteAllLines(@$"{destinationFolder}\{reducedFileName}", outputLines);

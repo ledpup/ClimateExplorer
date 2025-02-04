@@ -116,10 +116,10 @@
     "RecordType": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 2,
-    "Year": 1943,
-    "Month": 6,
-    "Day": 16,
-    "Value": 112.3,
+    "Year": 2024,
+    "Month": 7,
+    "Day": 11,
+    "Value": 114.8,
     "NumberOfTimes": 1
   },
   {
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 30,
     "Value": 0,
-    "NumberOfTimes": 17058
+    "NumberOfTimes": 17224
   }
 ]

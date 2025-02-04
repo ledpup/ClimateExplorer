@@ -49,11 +49,11 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 2017,
-    "Month": 3,
-    "Day": 4,
-    "Value": 41.4,
-    "NumberOfTimes": 2
+    "Year": 2024,
+    "Month": 2,
+    "Day": 13,
+    "Value": 41.6,
+    "NumberOfTimes": 1
   },
   {
     "DataType": 0,
@@ -77,7 +77,7 @@
     "Month": 2,
     "Day": 29,
     "Value": 27.2,
-    "NumberOfTimes": 1
+    "NumberOfTimes": 2
   },
   {
     "DataType": 1,
