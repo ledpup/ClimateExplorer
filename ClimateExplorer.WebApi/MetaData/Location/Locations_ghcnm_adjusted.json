@@ -152,16 +152,6 @@
   {
     "CountryCode": "AR",
     "Coordinates": {
-      "Latitude": -31.4,
-      "Longitude": -64.183,
-      "Elevation": 426
-    },
-    "Id": "ff462532-c66b-4cd5-bbc9-86def4c40de0",
-    "Name": "Cordoba Observatorio"
-  },
-  {
-    "CountryCode": "AR",
-    "Coordinates": {
       "Latitude": -32.883,
       "Longitude": -68.85,
       "Elevation": 827
@@ -188,6 +178,16 @@
     },
     "Id": "2d978425-ab90-49f8-a03f-9ff34472596d",
     "Name": "Buenos Aires Observ"
+  },
+  {
+    "CountryCode": "AR",
+    "Coordinates": {
+      "Latitude": -31.4,
+      "Longitude": -64.183,
+      "Elevation": 426
+    },
+    "Id": "ff462532-c66b-4cd5-bbc9-86def4c40de0",
+    "Name": "Cordoba Observatorio"
   },
   {
     "CountryCode": "AR",
@@ -308,6 +308,16 @@
     },
     "Id": "56318acf-9614-4837-a113-e6415052aa30",
     "Name": "Rio Gallegos Aero"
+  },
+  {
+    "CountryCode": "AR",
+    "Coordinates": {
+      "Latitude": -35.867,
+      "Longitude": -61.9,
+      "Elevation": 85
+    },
+    "Id": "5a49d4aa-e4d7-4d73-b989-79d50c056804",
+    "Name": "Pehuajo Aero"
   },
   {
     "CountryCode": "AR",
@@ -1022,22 +1032,22 @@
   {
     "CountryCode": "BN",
     "Coordinates": {
-      "Latitude": 9.35,
-      "Longitude": 2.617,
-      "Elevation": 393
-    },
-    "Id": "47345a37-e5f5-4082-9790-b6eba433a2cf",
-    "Name": "Parakou"
-  },
-  {
-    "CountryCode": "BN",
-    "Coordinates": {
       "Latitude": 8.032,
       "Longitude": 2.467,
       "Elevation": 200
     },
     "Id": "e5889083-6002-4499-992f-d66ea2c09ec2",
     "Name": "Save"
+  },
+  {
+    "CountryCode": "BN",
+    "Coordinates": {
+      "Latitude": 9.35,
+      "Longitude": 2.617,
+      "Elevation": 393
+    },
+    "Id": "47345a37-e5f5-4082-9790-b6eba433a2cf",
+    "Name": "Parakou"
   },
   {
     "CountryCode": "BO",
@@ -3092,6 +3102,16 @@
   {
     "CountryCode": "CH",
     "Coordinates": {
+      "Latitude": 31.367,
+      "Longitude": 90.017,
+      "Elevation": 4701
+    },
+    "Id": "cabf4a49-18c2-48b9-82fe-aa06538e8b07",
+    "Name": "Baingoin"
+  },
+  {
+    "CountryCode": "CH",
+    "Coordinates": {
       "Latitude": 31.483,
       "Longitude": 92.067,
       "Elevation": 4508
@@ -3950,16 +3970,6 @@
     "Name": "Dongfang"
   },
   {
-    "CountryCode": "CH",
-    "Coordinates": {
-      "Latitude": 19.233,
-      "Longitude": 110.467,
-      "Elevation": 25
-    },
-    "Id": "42ff679b-2457-4acf-94f7-32805e9f428d",
-    "Name": "Qionghai"
-  },
-  {
     "CountryCode": "CI",
     "Coordinates": {
       "Latitude": -18.35,
@@ -3978,16 +3988,6 @@
     },
     "Id": "8497df8c-47d3-42db-8aff-ac6e1cf426c7",
     "Name": "Antofagasta"
-  },
-  {
-    "CountryCode": "CI",
-    "Coordinates": {
-      "Latitude": -27.167,
-      "Longitude": -109.433,
-      "Elevation": 69
-    },
-    "Id": "fe7d6b5d-2a0c-4a4d-acef-cc4d24dff3fa",
-    "Name": "Isla De Pascua"
   },
   {
     "CountryCode": "CI",
@@ -4472,12 +4472,12 @@
   {
     "CountryCode": "FI",
     "Coordinates": {
-      "Latitude": 66.5289,
-      "Longitude": 24.6531,
-      "Elevation": 92
+      "Latitude": 66.4981,
+      "Longitude": 25.7119,
+      "Elevation": 85
     },
-    "Id": "da059f7d-3b38-4750-aef7-6b7a1ba46380",
-    "Name": "Ylitornio Meltosjarvi"
+    "Id": "5c24f4c6-b873-4beb-b31d-dbc100e3dec9",
+    "Name": "Rovaniemi Rautatieasema"
   },
   {
     "CountryCode": "FI",
@@ -4572,22 +4572,22 @@
   {
     "CountryCode": "FJ",
     "Coordinates": {
-      "Latitude": -18.043,
-      "Longitude": 178.559,
-      "Elevation": 5.2
-    },
-    "Id": "65ece561-50b7-4a3d-8464-e0cca341613f",
-    "Name": "Nausori Intl"
-  },
-  {
-    "CountryCode": "FJ",
-    "Coordinates": {
       "Latitude": -20.667,
       "Longitude": -178.717,
       "Elevation": 28
     },
     "Id": "fbf7e5d2-aadb-4e95-9a8b-e3d1da4cdc3e",
     "Name": "Ono I Lau Aws"
+  },
+  {
+    "CountryCode": "FJ",
+    "Coordinates": {
+      "Latitude": -18.043,
+      "Longitude": 178.559,
+      "Elevation": 5.2
+    },
+    "Id": "65ece561-50b7-4a3d-8464-e0cca341613f",
+    "Name": "Nausori Intl"
   },
   {
     "CountryCode": "FJ",
@@ -5912,16 +5912,6 @@
   {
     "CountryCode": "ID",
     "Coordinates": {
-      "Latitude": -6.183,
-      "Longitude": 106.833,
-      "Elevation": 8
-    },
-    "Id": "2fe75c05-85a0-44f7-8a4c-3f25e0359f83",
-    "Name": "Jakarta Observatory"
-  },
-  {
-    "CountryCode": "ID",
-    "Coordinates": {
       "Latitude": 3.558,
       "Longitude": 98.672,
       "Elevation": 34.7
@@ -5942,6 +5932,16 @@
   {
     "CountryCode": "ID",
     "Coordinates": {
+      "Latitude": 1.55,
+      "Longitude": 98.883,
+      "Elevation": 3
+    },
+    "Id": "bf6ed4a2-d29d-4b96-8351-78f8203ace49",
+    "Name": "Sibolga Pinangsori"
+  },
+  {
+    "CountryCode": "ID",
+    "Coordinates": {
       "Latitude": 1.533,
       "Longitude": 124.917,
       "Elevation": 80
@@ -5952,12 +5952,12 @@
   {
     "CountryCode": "ID",
     "Coordinates": {
-      "Latitude": 0.461,
-      "Longitude": 101.445,
-      "Elevation": 31.1
+      "Latitude": -3.442,
+      "Longitude": 114.763,
+      "Elevation": 20.1
     },
-    "Id": "f0853685-15e6-4f63-823d-349fa9207c2f",
-    "Name": "Sultan Syarif Kasim Ii"
+    "Id": "7ee2d7d9-9381-49cb-98d9-4a3a22b558c6",
+    "Name": "Syamsudin Noor"
   },
   {
     "CountryCode": "IN",
@@ -6368,6 +6368,16 @@
     },
     "Id": "60a291b7-cab1-4941-bbd5-62e4259b423a",
     "Name": "Arak"
+  },
+  {
+    "CountryCode": "IR",
+    "Coordinates": {
+      "Latitude": 27.218,
+      "Longitude": 56.378,
+      "Elevation": 6.7
+    },
+    "Id": "57ceaa30-dffe-4ca2-930d-75991dd160e4",
+    "Name": "Bandar Abbass Intl"
   },
   {
     "CountryCode": "IS",
@@ -6952,22 +6962,22 @@
   {
     "CountryCode": "KE",
     "Coordinates": {
-      "Latitude": 3.933,
-      "Longitude": 41.867,
-      "Elevation": 231
-    },
-    "Id": "636d8d2e-5add-4e6d-a6dc-03534f581637",
-    "Name": "Mandera"
-  },
-  {
-    "CountryCode": "KE",
-    "Coordinates": {
       "Latitude": -3.229,
       "Longitude": 40.102,
       "Elevation": 25
     },
     "Id": "ec67ed79-1028-4e0d-b0a2-0f7f950fdb05",
     "Name": "Malindi"
+  },
+  {
+    "CountryCode": "KE",
+    "Coordinates": {
+      "Latitude": 3.933,
+      "Longitude": 41.867,
+      "Elevation": 231
+    },
+    "Id": "636d8d2e-5add-4e6d-a6dc-03534f581637",
+    "Name": "Mandera"
   },
   {
     "CountryCode": "KG",
@@ -8510,6 +8520,16 @@
     "Name": "Kjobli I Snaasa"
   },
   {
+    "CountryCode": "NO",
+    "Coordinates": {
+      "Latitude": 69.9775,
+      "Longitude": 23.3581,
+      "Elevation": 3
+    },
+    "Id": "039ca970-f04c-4ab1-b3b9-f13ce5b70acc",
+    "Name": "Alta Lufthavn"
+  },
+  {
     "CountryCode": "NP",
     "Coordinates": {
       "Latitude": 27.7,
@@ -8692,12 +8712,12 @@
   {
     "CountryCode": "PK",
     "Coordinates": {
-      "Latitude": 26.955,
-      "Longitude": 64.133,
-      "Elevation": 1002.5
+      "Latitude": 30.251,
+      "Longitude": 66.938,
+      "Elevation": 1600.2
     },
-    "Id": "e6c6803d-1ad0-4d0d-9623-258de39df8cb",
-    "Name": "Panjgur"
+    "Id": "d0d9a04c-708b-4d4a-816e-0cdbb46b9135",
+    "Name": "Quetta"
   },
   {
     "CountryCode": "PL",
@@ -8948,6 +8968,16 @@
     },
     "Id": "f1cbc631-0e57-46c4-a1e6-cdd298289b63",
     "Name": "Majuro Wbas Ap"
+  },
+  {
+    "CountryCode": "RM",
+    "Coordinates": {
+      "Latitude": 5.9167,
+      "Longitude": 169.65,
+      "Elevation": 1.8
+    },
+    "Id": "9f603b61-f8e5-40c0-bd57-d4ef78227ac4",
+    "Name": "Jaluit"
   },
   {
     "CountryCode": "RO",
@@ -13092,6 +13122,16 @@
   {
     "CountryCode": "SF",
     "Coordinates": {
+      "Latitude": -29.1,
+      "Longitude": 26.3,
+      "Elevation": 1354
+    },
+    "Id": "fb591551-ce8c-4e0b-9a59-a676b9e8c86c",
+    "Name": "Bloemfontein Airpor"
+  },
+  {
+    "CountryCode": "SF",
+    "Coordinates": {
       "Latitude": -28.45,
       "Longitude": 21.25,
       "Elevation": 794
@@ -13152,6 +13192,16 @@
   {
     "CountryCode": "SG",
     "Coordinates": {
+      "Latitude": 13.767,
+      "Longitude": -13.683,
+      "Elevation": 50
+    },
+    "Id": "84569ecf-d7f0-4718-b5d0-2e5b1e77e153",
+    "Name": "Tambacounda"
+  },
+  {
+    "CountryCode": "SG",
+    "Coordinates": {
       "Latitude": 16.051,
       "Longitude": -16.463,
       "Elevation": 2.7
@@ -13168,16 +13218,6 @@
     },
     "Id": "66926156-9005-4cd1-bad8-e88f535b375d",
     "Name": "Linguere"
-  },
-  {
-    "CountryCode": "SG",
-    "Coordinates": {
-      "Latitude": 13.767,
-      "Longitude": -13.683,
-      "Elevation": 50
-    },
-    "Id": "84569ecf-d7f0-4718-b5d0-2e5b1e77e153",
-    "Name": "Tambacounda"
   },
   {
     "CountryCode": "SH",
@@ -13358,16 +13398,6 @@
     },
     "Id": "ea87c3db-37aa-4269-82f2-45e730f8ab9b",
     "Name": "Malaga Aeropuerto"
-  },
-  {
-    "CountryCode": "SP",
-    "Coordinates": {
-      "Latitude": 41.2928,
-      "Longitude": 2.0697,
-      "Elevation": 4
-    },
-    "Id": "3d302764-42a3-4dac-993c-05cb01a9414d",
-    "Name": "Barcelona Aeropuerto"
   },
   {
     "CountryCode": "SP",
@@ -13572,16 +13602,6 @@
   {
     "CountryCode": "SW",
     "Coordinates": {
-      "Latitude": 56.67,
-      "Longitude": 12.92,
-      "Elevation": 24
-    },
-    "Id": "ff823c05-3cb6-4317-9397-75fedfd9f100",
-    "Name": "Halmstad"
-  },
-  {
-    "CountryCode": "SW",
-    "Coordinates": {
       "Latitude": 59.59,
       "Longitude": 16.63,
       "Elevation": 10
@@ -13602,12 +13622,12 @@
   {
     "CountryCode": "SW",
     "Coordinates": {
-      "Latitude": 66.0522,
-      "Longitude": 17.8431,
-      "Elevation": 431
+      "Latitude": 66.3797,
+      "Longitude": 17,
+      "Elevation": 430
     },
-    "Id": "cb0a3457-31ed-4bb5-a2eb-c490778aa2d0",
-    "Name": "Arjeplog A"
+    "Id": "9e4ec598-2feb-4197-b1a3-769dfd7657f7",
+    "Name": "Jackvik"
   },
   {
     "CountryCode": "SW",
@@ -13962,16 +13982,6 @@
   {
     "CountryCode": "TH",
     "Coordinates": {
-      "Latitude": 16.433,
-      "Longitude": 102.833,
-      "Elevation": 166
-    },
-    "Id": "6d470377-3f15-4409-9792-5157d79c6e80",
-    "Name": "Khon Kaen"
-  },
-  {
-    "CountryCode": "TH",
-    "Coordinates": {
       "Latitude": 16.533,
       "Longitude": 104.717,
       "Elevation": 139
@@ -14048,16 +14058,6 @@
     },
     "Id": "447723e6-01b8-44b5-8290-fede2b0ee7c5",
     "Name": "Aranyaprathet"
-  },
-  {
-    "CountryCode": "TH",
-    "Coordinates": {
-      "Latitude": 12.683,
-      "Longitude": 100.983,
-      "Elevation": 18
-    },
-    "Id": "dd10ddf7-6288-4551-a8c1-065ca9ab7808",
-    "Name": "Sattahip"
   },
   {
     "CountryCode": "TH",
@@ -14892,12 +14892,12 @@
   {
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 35.0564,
-      "Longitude": -89.9864,
-      "Elevation": 77.4
+      "Latitude": 35.0311,
+      "Longitude": -85.2014,
+      "Elevation": 204.5
     },
-    "Id": "cb46655e-a73e-4e9d-8108-0862eb68ae4c",
-    "Name": "Memphis Intl Ap"
+    "Id": "afd14c8f-ddf5-4391-a7ce-fbe0fb6f4b52",
+    "Name": "Chattanooga Lovell Ap"
   },
   {
     "CountryCode": "US",
@@ -14912,12 +14912,12 @@
   {
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 34.5706,
-      "Longitude": -112.4322,
-      "Elevation": 1586.5
+      "Latitude": 35.1442,
+      "Longitude": -111.6664,
+      "Elevation": 2134.5
     },
-    "Id": "dc96d02c-0fa5-4546-b32a-489a9f0aafef",
-    "Name": "Prescott"
+    "Id": "af9dcfda-f5d2-4528-a991-cf7ba94e62a5",
+    "Name": "Flagstaff Pulliam Ap"
   },
   {
     "CountryCode": "US",
@@ -14952,22 +14952,32 @@
   {
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 30.5372,
-      "Longitude": -91.1469,
-      "Elevation": 19.5
+      "Latitude": 35.0564,
+      "Longitude": -89.9864,
+      "Elevation": 77.4
     },
-    "Id": "6285e816-1491-4e23-9cd9-e88994588437",
-    "Name": "Baton Rouge Ryan Ap"
+    "Id": "cb46655e-a73e-4e9d-8108-0862eb68ae4c",
+    "Name": "Memphis Intl Ap"
   },
   {
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 42.3978,
-      "Longitude": -90.7036,
-      "Elevation": 321.9
+      "Latitude": 32.9028,
+      "Longitude": -90.3817,
+      "Elevation": 32.6
     },
-    "Id": "1f301743-e86e-4c3d-8642-bfff829ef3ed",
-    "Name": "Dubuque Rgnl Ap"
+    "Id": "91c20da7-e57a-4af8-b64a-ba28215cea7e",
+    "Name": "Yazoo City 5 Nne"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 42.2122,
+      "Longitude": -71.1136,
+      "Elevation": 190.5
+    },
+    "Id": "1fd61096-3838-41bd-a07a-bf5b9a920aeb",
+    "Name": "Blue Hill"
   },
   {
     "CountryCode": "US",
@@ -15092,12 +15102,12 @@
   {
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 41.1519,
-      "Longitude": -104.8061,
-      "Elevation": 1867.8
+      "Latitude": 39.7633,
+      "Longitude": -104.8694,
+      "Elevation": 1611.2
     },
-    "Id": "10a6ac73-563c-40b1-a8ea-5ffbbf2c1f61",
-    "Name": "Cheyenne"
+    "Id": "55464819-83c4-4ef4-8384-3726454b622e",
+    "Name": "Denver Stapleton"
   },
   {
     "CountryCode": "US",
@@ -15128,16 +15138,6 @@
     },
     "Id": "59aabc1b-d4e9-498d-944c-d7076dfb42ed",
     "Name": "Trinidad"
-  },
-  {
-    "CountryCode": "US",
-    "Coordinates": {
-      "Latitude": 42.2122,
-      "Longitude": -71.1136,
-      "Elevation": 190.5
-    },
-    "Id": "1fd61096-3838-41bd-a07a-bf5b9a920aeb",
-    "Name": "Blue Hill"
   },
   {
     "CountryCode": "US",
@@ -15178,16 +15178,6 @@
     },
     "Id": "efa87b5c-7f70-49c7-b3b6-7b9a80b66a30",
     "Name": "Tallahassee Ap"
-  },
-  {
-    "CountryCode": "US",
-    "Coordinates": {
-      "Latitude": 31.5339,
-      "Longitude": -84.1489,
-      "Elevation": 54.9
-    },
-    "Id": "73fdc23f-f8c5-4906-9527-3f67d7c17578",
-    "Name": "Albany 3 Se"
   },
   {
     "CountryCode": "US",
@@ -15292,6 +15282,16 @@
   {
     "CountryCode": "US",
     "Coordinates": {
+      "Latitude": 30.205,
+      "Longitude": -91.9875,
+      "Elevation": 11.6
+    },
+    "Id": "1cd677df-8f22-4a36-b87e-d562b8b083bf",
+    "Name": "Lafayette Rgnl Ap"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
       "Latitude": 32.4506,
       "Longitude": -93.8411,
       "Elevation": 83.2
@@ -15362,12 +15362,12 @@
   {
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 46.8369,
-      "Longitude": -92.2097,
-      "Elevation": 435.3
+      "Latitude": 47.0258,
+      "Longitude": -91.6653,
+      "Elevation": 190.5
     },
-    "Id": "7f464569-111f-42d8-a139-4290b7e67e98",
-    "Name": "Duluth"
+    "Id": "3f3e91ac-74d6-4913-8c27-258004c9824b",
+    "Name": "Two Harbors"
   },
   {
     "CountryCode": "US",
@@ -15378,6 +15378,16 @@
     },
     "Id": "9f82ed57-f362-420e-8309-444121f2d3be",
     "Name": "Crookston Nw Exp Sta"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 46.9006,
+      "Longitude": -95.0678,
+      "Elevation": 437.1
+    },
+    "Id": "a30fd0d2-7008-4a94-ad31-89fab74ea199",
+    "Name": "Park Rapids Muni Ap"
   },
   {
     "CountryCode": "US",
@@ -15562,16 +15572,6 @@
   {
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 34.2192,
-      "Longitude": -102.7328,
-      "Elevation": 1167.4
-    },
-    "Id": "829b5b5d-fae8-4d61-9e83-712b996d361a",
-    "Name": "Muleshoe 1"
-  },
-  {
-    "CountryCode": "US",
-    "Coordinates": {
       "Latitude": 32.2822,
       "Longitude": -106.7597,
       "Elevation": 1184.5
@@ -15618,6 +15618,16 @@
     },
     "Id": "21e775aa-800c-488e-9b46-01d9f898f75f",
     "Name": "Mc Henry 3W"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
+      "Latitude": 47.4825,
+      "Longitude": -100.4444,
+      "Elevation": 587.3
+    },
+    "Id": "bde3ca1c-5e2f-4a54-a969-1eaba18a3580",
+    "Name": "Mc Clusky"
   },
   {
     "CountryCode": "US",
@@ -15718,16 +15728,6 @@
     },
     "Id": "9ae2689f-9dfe-4271-9b45-7823cefbd724",
     "Name": "Plainview"
-  },
-  {
-    "CountryCode": "US",
-    "Coordinates": {
-      "Latitude": 29.0567,
-      "Longitude": -96.2319,
-      "Elevation": 21.3
-    },
-    "Id": "774022c2-3c1d-492f-8d21-5a3ff3457678",
-    "Name": "Danevang 1 W"
   },
   {
     "CountryCode": "US",
@@ -15872,12 +15872,12 @@
   {
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 32.5161,
-      "Longitude": -84.9422,
-      "Elevation": 119.5
+      "Latitude": 32.35,
+      "Longitude": -85,
+      "Elevation": 88.1
     },
-    "Id": "4ff44d5b-0d68-440d-8cc7-73f7f4a98d71",
-    "Name": "Columbus Metro Ap"
+    "Id": "7cc8af62-d2a2-43c9-ba52-6429613ad83a",
+    "Name": "Ft Benning Lawson Fld"
   },
   {
     "CountryCode": "US",
@@ -16232,6 +16232,16 @@
   {
     "CountryCode": "US",
     "Coordinates": {
+      "Latitude": 34.4278,
+      "Longitude": -103.625,
+      "Elevation": 1401.8
+    },
+    "Id": "f6aadaa7-0e75-4cda-b1bb-3b2b01af72bc",
+    "Name": "Melrose"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
       "Latitude": 32.9539,
       "Longitude": -105.8225,
       "Elevation": 2073.9
@@ -16352,6 +16362,16 @@
   {
     "CountryCode": "US",
     "Coordinates": {
+      "Latitude": 30.9072,
+      "Longitude": -102.9153,
+      "Elevation": 926
+    },
+    "Id": "8e55b693-801e-4438-9970-0a356af4233d",
+    "Name": "Ft Stockton"
+  },
+  {
+    "CountryCode": "US",
+    "Coordinates": {
       "Latitude": 30.7064,
       "Longitude": -95.5422,
       "Elevation": 150.6
@@ -16362,12 +16382,12 @@
   {
     "CountryCode": "US",
     "Coordinates": {
-      "Latitude": 31.1331,
-      "Longitude": -102.2217,
-      "Elevation": 750.1
+      "Latitude": 34.2192,
+      "Longitude": -102.7328,
+      "Elevation": 1167.4
     },
-    "Id": "855a5251-8fe7-4530-aa4e-a267306ac345",
-    "Name": "Mccamey"
+    "Id": "829b5b5d-fae8-4d61-9e83-712b996d361a",
+    "Name": "Muleshoe 1"
   },
   {
     "CountryCode": "US",
@@ -17392,22 +17412,22 @@
   {
     "CountryCode": "VM",
     "Coordinates": {
-      "Latitude": 10.82,
-      "Longitude": 106.67,
-      "Elevation": 5
-    },
-    "Id": "e01069f2-575c-439a-ac77-33e3f9949327",
-    "Name": "Tan Son Hoa"
-  },
-  {
-    "CountryCode": "VM",
-    "Coordinates": {
       "Latitude": 13.7667,
       "Longitude": 109.2167,
       "Elevation": 9.1
     },
     "Id": "8226d8a3-1d06-44aa-8096-0697fa0ed79e",
     "Name": "Qui Nhon"
+  },
+  {
+    "CountryCode": "VM",
+    "Coordinates": {
+      "Latitude": 10.82,
+      "Longitude": 106.67,
+      "Elevation": 5
+    },
+    "Id": "e01069f2-575c-439a-ac77-33e3f9949327",
+    "Name": "Tan Son Hoa"
   },
   {
     "CountryCode": "WA",
@@ -17632,12 +17652,12 @@
   {
     "CountryCode": "BL",
     "Coordinates": {
-      "Latitude": -16.367,
-      "Longitude": -60.95,
-      "Elevation": 413
+      "Latitude": -14.47,
+      "Longitude": -67.57,
+      "Elevation": 9999
     },
-    "Id": "4ac6fce9-5bf7-439a-9143-9dcab48865f6",
-    "Name": "San Ignacio Velasco"
+    "Id": "99cc3058-a86d-4dc0-9588-d662e73ae062",
+    "Name": "Rurrenabaque"
   },
   {
     "CountryCode": "BP",
@@ -17762,22 +17782,22 @@
   {
     "CountryCode": "CO",
     "Coordinates": {
-      "Latitude": 3.55,
-      "Longitude": -76.383,
-      "Elevation": 969
-    },
-    "Id": "13908644-7d62-427d-9426-e2286a56ff02",
-    "Name": "Cali Alfonso Bonill"
-  },
-  {
-    "CountryCode": "CO",
-    "Coordinates": {
       "Latitude": 4.701,
       "Longitude": -74.15,
       "Elevation": 2548
     },
     "Id": "3d2a7feb-c2fa-497e-8e2a-58df59a8c109",
     "Name": "Bogota Eldorado"
+  },
+  {
+    "CountryCode": "CO",
+    "Coordinates": {
+      "Latitude": 3.55,
+      "Longitude": -76.383,
+      "Elevation": 969
+    },
+    "Id": "13908644-7d62-427d-9426-e2286a56ff02",
+    "Name": "Cali Alfonso Bonill"
   },
   {
     "CountryCode": "CO",
@@ -17878,6 +17898,16 @@
     },
     "Id": "6af9e807-9e4e-41c1-9433-f479568db609",
     "Name": "Amilcar Cabral Intl"
+  },
+  {
+    "CountryCode": "DR",
+    "Coordinates": {
+      "Latitude": 18.433,
+      "Longitude": -69.883,
+      "Elevation": 14
+    },
+    "Id": "8da12b1c-725d-47cd-8648-8f47475e1739",
+    "Name": "Santo Domingo"
   },
   {
     "CountryCode": "DR",
@@ -18142,6 +18172,16 @@
   {
     "CountryCode": "GH",
     "Coordinates": {
+      "Latitude": 6.715,
+      "Longitude": -1.591,
+      "Elevation": 287.1
+    },
+    "Id": "735553ad-5db1-4af1-9a6f-9981f192c2ef",
+    "Name": "Kumasi"
+  },
+  {
+    "CountryCode": "GH",
+    "Coordinates": {
       "Latitude": 4.896,
       "Longitude": -1.775,
       "Elevation": 6.4
@@ -18168,16 +18208,6 @@
     },
     "Id": "e12cc6b1-7e71-49fb-8bbb-58f4f98b9a32",
     "Name": "Kotoka Intl"
-  },
-  {
-    "CountryCode": "GH",
-    "Coordinates": {
-      "Latitude": 10.083,
-      "Longitude": -2.508,
-      "Elevation": 323.1
-    },
-    "Id": "ccd5fff4-4a38-44d7-b05d-541902974c21",
-    "Name": "Wa"
   },
   {
     "CountryCode": "GV",
@@ -18252,22 +18282,22 @@
   {
     "CountryCode": "IV",
     "Coordinates": {
-      "Latitude": 6.13,
-      "Longitude": -5.95,
-      "Elevation": 205
-    },
-    "Id": "060ed636-4d5e-4b9e-a193-329ddaed77f7",
-    "Name": "Gagnoa"
-  },
-  {
-    "CountryCode": "IV",
-    "Coordinates": {
       "Latitude": 6.65,
       "Longitude": -4.7,
       "Elevation": 110
     },
     "Id": "5a19acb6-28ca-4c2c-9175-48b0146310ca",
     "Name": "Dimbokro"
+  },
+  {
+    "CountryCode": "IV",
+    "Coordinates": {
+      "Latitude": 6.13,
+      "Longitude": -5.95,
+      "Elevation": 205
+    },
+    "Id": "060ed636-4d5e-4b9e-a193-329ddaed77f7",
+    "Name": "Gagnoa"
   },
   {
     "CountryCode": "IV",
@@ -18670,14 +18700,14 @@
     "Name": "Minna"
   },
   {
-    "CountryCode": "NT",
+    "CountryCode": "NS",
     "Coordinates": {
-      "Latitude": 12.189,
-      "Longitude": -68.96,
-      "Elevation": 8.8
+      "Latitude": 5.453,
+      "Longitude": -55.188,
+      "Elevation": 18
     },
-    "Id": "ffcb17aa-a8b0-40e7-83c4-3ed0fba13920",
-    "Name": "Hato"
+    "Id": "40a29384-c023-40fa-9925-72b3c0f0f8ec",
+    "Name": "Johan A Pengel Intl"
   },
   {
     "CountryCode": "NT",
@@ -18688,6 +18718,16 @@
     },
     "Id": "332f2ee9-dad0-4759-b0c8-8801ce30d9d8",
     "Name": "Princess Juliana Intl"
+  },
+  {
+    "CountryCode": "NT",
+    "Coordinates": {
+      "Latitude": 12.189,
+      "Longitude": -68.96,
+      "Elevation": 8.8
+    },
+    "Id": "ffcb17aa-a8b0-40e7-83c4-3ed0fba13920",
+    "Name": "Hato"
   },
   {
     "CountryCode": "NU",
@@ -18758,16 +18798,6 @@
     },
     "Id": "11276ed1-cc5c-44fc-935b-28d41952b6fb",
     "Name": "Arequipa"
-  },
-  {
-    "CountryCode": "PU",
-    "Coordinates": {
-      "Latitude": 11.895,
-      "Longitude": -15.654,
-      "Elevation": 39.3
-    },
-    "Id": "2a2db9a7-1a9c-48e5-b89a-86979a246753",
-    "Name": "Bissau Oswaldo Vieira Intl"
   },
   {
     "CountryCode": "QA",
@@ -18852,22 +18882,22 @@
   {
     "CountryCode": "TO",
     "Coordinates": {
-      "Latitude": 7.58,
-      "Longitude": 1.12,
-      "Elevation": 402
-    },
-    "Id": "6f7d7e18-d72f-4107-a449-627a98e66375",
-    "Name": "Atakpane"
-  },
-  {
-    "CountryCode": "TO",
-    "Coordinates": {
       "Latitude": 8.98,
       "Longitude": 1.13,
       "Elevation": 400
     },
     "Id": "a0258872-0aac-442b-884f-77da1a86ef7e",
     "Name": "Sokode"
+  },
+  {
+    "CountryCode": "TO",
+    "Coordinates": {
+      "Latitude": 7.58,
+      "Longitude": 1.12,
+      "Elevation": 402
+    },
+    "Id": "6f7d7e18-d72f-4107-a449-627a98e66375",
+    "Name": "Atakpane"
   },
   {
     "CountryCode": "TO",
