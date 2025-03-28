@@ -25,4 +25,4 @@ ClimateExplorer data is updated yearly, usually from mid-January. All data is so
 1. Build **ClimateExplorer.DataPipeline** (will update Temperature.zip and Precipitation.zip)
 1. Run **ClimateExplorer.DataPipeline** (will create the GCHNd zip files - CachingTool will almost certainly break if you forget this step)
 1. Run **ClimateExplorer.WebApi**
-  - Run **ClimateExplorer.CachingTool** (re-creates all the long-term cache files; requires ClimateExplorer.WebApi to be running)
+    - Run **ClimateExplorer.CachingTool** (re-creates all the long-term cache files; requires ClimateExplorer.WebApi to be running)
