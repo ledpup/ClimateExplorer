@@ -1032,8 +1032,7 @@
     "CountryCode": "AY",
     "Coordinates": {
       "Latitude": -90,
-      "Longitude": 0,
-      "Elevation": 9999
+      "Longitude": 0
     },
     "FirstYear": 1958,
     "LastYear": 2024,
@@ -22898,8 +22897,7 @@
     "CountryCode": "BL",
     "Coordinates": {
       "Latitude": -21.95,
-      "Longitude": -63.65,
-      "Elevation": 9999
+      "Longitude": -63.65
     },
     "FirstYear": 1914,
     "LastYear": 2022,
@@ -22911,8 +22909,7 @@
     "CountryCode": "BL",
     "Coordinates": {
       "Latitude": -17.42,
-      "Longitude": -66.18,
-      "Elevation": 9999
+      "Longitude": -66.18
     },
     "FirstYear": 1947,
     "LastYear": 2024,
@@ -22950,8 +22947,7 @@
     "CountryCode": "BL",
     "Coordinates": {
       "Latitude": -14.47,
-      "Longitude": -67.57,
-      "Elevation": 9999
+      "Longitude": -67.57
     },
     "FirstYear": 1951,
     "LastYear": 2019,

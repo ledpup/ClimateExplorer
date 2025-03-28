@@ -152,7 +152,7 @@ public partial class Index : ChartablePage
         }
     }
 
-    private async Task<Location?> GetLocation(Uri uri, bool onInitialized)
+    private async Task<Location?> GetLocation(Uri uri, bool onlyCheckUri)
     {
         Location? location = null;
         if (uri.Segments.Length > 2 && !Guid.TryParse(uri.Segments[2], out Guid locationGuid))
@@ -167,7 +167,7 @@ public partial class Index : ChartablePage
             }
         }
 
-        if (onInitialized)
+        if (onlyCheckUri)
         {
             return location;
         }

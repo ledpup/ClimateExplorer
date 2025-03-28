@@ -793,8 +793,7 @@
     "CountryCode": "AY",
     "Coordinates": {
       "Latitude": -90,
-      "Longitude": 0,
-      "Elevation": 9999
+      "Longitude": 0
     },
     "Id": "8e984ba8-451a-4ae7-86e5-f670f31ccd05",
     "Name": "Amundsen Scott"
@@ -17613,8 +17612,7 @@
     "CountryCode": "BL",
     "Coordinates": {
       "Latitude": -21.95,
-      "Longitude": -63.65,
-      "Elevation": 9999
+      "Longitude": -63.65
     },
     "Id": "2f3622a6-bae2-404d-b91e-96457ba1e34c",
     "Name": "Yacuiba"
@@ -17623,8 +17621,7 @@
     "CountryCode": "BL",
     "Coordinates": {
       "Latitude": -17.42,
-      "Longitude": -66.18,
-      "Elevation": 9999
+      "Longitude": -66.18
     },
     "Id": "f4997ec4-eaa1-4d6a-958d-95f9c75c5260",
     "Name": "Cochabamba"
@@ -17653,8 +17650,7 @@
     "CountryCode": "BL",
     "Coordinates": {
       "Latitude": -14.47,
-      "Longitude": -67.57,
-      "Elevation": 9999
+      "Longitude": -67.57
     },
     "Id": "99cc3058-a86d-4dc0-9588-d662e73ae062",
     "Name": "Rurrenabaque"

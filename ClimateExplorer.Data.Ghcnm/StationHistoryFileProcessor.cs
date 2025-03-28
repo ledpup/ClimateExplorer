@@ -59,7 +59,7 @@ public class StationFile
                 {
                     Latitude = Convert.ToSingle(lat),
                     Longitude = Convert.ToSingle(lng),
-                    Elevation = string.IsNullOrWhiteSpace(elevation) ? null : Convert.ToSingle(elevation)
+                    Elevation = string.IsNullOrWhiteSpace(elevation) || elevation == "9999.0" ? null : Convert.ToSingle(elevation)
                 };
             }
 
