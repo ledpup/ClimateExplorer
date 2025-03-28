@@ -738,8 +738,7 @@
     "Country": "Antarctica",
     "Coordinates": {
       "Latitude": -90,
-      "Longitude": 0,
-      "Elevation": 9999
+      "Longitude": 0
     },
     "WarmingAnomaly": 0.1952222222222204,
     "HeatingScore": 0,
@@ -4644,8 +4643,7 @@
     "Country": "Bolivia",
     "Coordinates": {
       "Latitude": -17.42,
-      "Longitude": -66.18,
-      "Elevation": 9999
+      "Longitude": -66.18
     },
     "Id": "f4997ec4-eaa1-4d6a-958d-95f9c75c5260",
     "Name": "Cochabamba"
@@ -19326,8 +19324,7 @@
     "Country": "Bolivia",
     "Coordinates": {
       "Latitude": -14.47,
-      "Longitude": -67.57,
-      "Elevation": 9999
+      "Longitude": -67.57
     },
     "Id": "99cc3058-a86d-4dc0-9588-d662e73ae062",
     "Name": "Rurrenabaque"
@@ -25060,8 +25057,7 @@
     "Country": "Bolivia",
     "Coordinates": {
       "Latitude": -21.95,
-      "Longitude": -63.65,
-      "Elevation": 9999
+      "Longitude": -63.65
     },
     "Id": "2f3622a6-bae2-404d-b91e-96457ba1e34c",
     "Name": "Yacuiba"
