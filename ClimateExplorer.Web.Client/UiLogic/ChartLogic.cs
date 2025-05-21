@@ -79,7 +79,7 @@ public static class ChartLogic
                 PointBorderColor = colour,
                 PointHoverBackgroundColor = colour,
                 BorderDash = [],
-                BorderWidth = 4,
+                BorderWidth = 5,
 
                 YAxisID = GetYAxisId(seriesTransformations, unitOfMeasure, seriesAggregationOptions),
             };
