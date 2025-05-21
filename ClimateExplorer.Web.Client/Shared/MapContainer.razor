@@ -42,7 +42,10 @@
     bool mapMarkersCreated = false;
     bool mainTileLayerCreated = false;
 
-    int lastZoom = 8;
+    int lastExpandedZoom = 8;
+    int lastCollapsedZoom = 8;
+    LatLng? expandedCentre = null;
+    LatLng? collapsedCentre = null;
 
     Coordinates PreviousSeenLocationCoordinates;
 
@@ -205,6 +208,18 @@
         mainTileLayerCreated = false;
         mapOptions = null;
 
+        var zoom = await map!.GetZoom();
+        if (IsMapExpanded)
+        {
+            lastExpandedZoom = zoom;
+            expandedCentre = await map!.GetCenter();
+        }
+        else
+        {
+            lastCollapsedZoom = zoom;
+            collapsedCentre = new LatLng(LocationCoordinates.Latitude, LocationCoordinates.Longitude);
+        }
+
         await JsRuntime!.InvokeVoidAsync("toggleMapExpansion", null);
         IsMapExpanded = !IsMapExpanded;
 
@@ -217,10 +232,11 @@
 
         if (mapOptions == null)
         {
+            var centre = new LatLng(LocationCoordinates.Latitude, LocationCoordinates.Longitude);
             mapOptions = new MapOptions()
                 {
-                    Center = new LatLng(LocationCoordinates.Latitude, LocationCoordinates.Longitude),
-                    Zoom = lastZoom,
+                    Center = IsMapExpanded ? expandedCentre ?? centre : collapsedCentre ?? centre,
+                    Zoom = IsMapExpanded ? lastExpandedZoom : lastCollapsedZoom,
                     Dragging = !(bool)IsMobileDevice! || IsMapExpanded
                 };
         }

@@ -59,7 +59,7 @@ public static class SeriesTransformer
                     .Select(x => x.WithValue(x.Value == null ? null : (x.Value >= 35 ? 1 : 0)))
                 .ToArray();
 
-            // A rain day is recorded when there has been a daily rainfall total of at least 0.2 mm(or 0.1 mm for some more recent sites).
+            // A rain day is recorded when there has been a daily rainfall total of at least 0.2 mm (or 0.1 mm for some more recent sites).
             // A rain day does not occur when there is only a trace of moisture in the rain gauge, or when the precipitation was observed to be solely from frost, dew or fog.
             // A rainfall total of 0.2 mm is quite a small amount of rain, and unlikely to have much impact on many activities.
             // Therefore, days of rain greater than or equal to 1 mm, 10 mm, and 25 mm are often used as indicators of the number of "wet" days.
