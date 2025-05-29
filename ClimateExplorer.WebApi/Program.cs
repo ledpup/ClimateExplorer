@@ -269,41 +269,7 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
 
     var dsb = new DataSetBuilder();
 
-    BuildDataSetResult series = null;
-
-    if (body.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInRegion)
-    {
-        // This needs to be moved out into a new function
-        var regionId = body.SeriesSpecifications[0].LocationId;
-        var region = Region.GetRegion(regionId);
-
-        var anomalyDatasets = new List<DataSet>();
-
-        // The following section is probably the most expensive operation in the whole application
-        // Let's do it all parallel baby, like we did in 2007!
-        ParallelOptions parallelOptions = new ();
-        await Parallel.ForEachAsync(region.LocationIds, parallelOptions, async (locationId, cancellationToken) =>
-        {
-            // Initial values will be absolute values
-            body.Anomaly = false;
-            var dataset = await PostDataSets(GetPostRequestBody(body, locationId));
-            var anomalyDataSet = GenerateAnomalyDataSetForLocation(dataset);
-
-            if (anomalyDataSet != null)
-            {
-                anomalyDatasets.Add(anomalyDataSet);
-            }
-        });
-
-        // We want to always return an anomalous result
-        body.Anomaly = true;
-        series = await GenerateAverageOfAnomaliesSeries(body, series, anomalyDatasets);
-    }
-    else
-    {
-        series = await dsb.BuildDataSet(body);
-    }
-
+    var series = await dsb.BuildDataSet(body);
     var definitions = await DataSetDefinition.GetDataSetDefinitions();
     var spec = body.SeriesSpecifications[0];
     var dsd = definitions.Single(x => x.Id == spec.DataSetDefinitionId);
@@ -341,92 +307,6 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
 
     await cache.Put(cacheKey, returnDataSet);
     return returnDataSet;
-}
-
-static PostDataSetsRequestBody GetPostRequestBody(PostDataSetsRequestBody body, Guid locationId)
-{
-    return new PostDataSetsRequestBody
-    {
-        BinAggregationFunction = body.BinAggregationFunction,
-        BucketAggregationFunction = body.BucketAggregationFunction,
-        CupAggregationFunction = body.CupAggregationFunction,
-        BinningRule = body.BinningRule,
-        CupSize = body.CupSize,
-        RequiredBinDataProportion = body.RequiredBinDataProportion,
-        RequiredBucketDataProportion = body.RequiredBinDataProportion,
-        RequiredCupDataProportion = body.RequiredCupDataProportion,
-        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-        SeriesSpecifications =
-                [
-                    new SeriesSpecification
-                    {
-                        DataAdjustment = body.SeriesSpecifications[0].DataAdjustment,
-                        DataSetDefinitionId = body.SeriesSpecifications[0].DataSetDefinitionId,
-                        DataType = body.SeriesSpecifications[0].DataType,
-                        LocationId = locationId,
-                    },
-                ],
-        SeriesTransformation = body.SeriesTransformation,
-        Anomaly = body.Anomaly,
-        FilterToYear = body.FilterToYear,
-        MinimumDataResolution = body.MinimumDataResolution,
-    };
-}
-
-// These are constants for now but it would be great to them into the UI to allow the user to be able to adjust the reference period and the threshold.
-// Currently, for Australia, Burketown, Eucla, Learmonth, Morawa, Robe, Snowtown, and Victoria River Downs are excluded from the analysis because they don't have enough records in the reference period.
-const short ReferenceStartYear = 1961;
-const short ReferenceEndYear = 1990;
-const float ReferencePeriodThreshold = 0.5f;
-
-static DataSet GenerateAnomalyDataSetForLocation(DataSet dataset)
-{
-    float referencePeriod = ReferenceEndYear - ReferenceStartYear + 1;
-
-    var referencePeriodCount = dataset.Years.Count(x => x >= ReferenceStartYear && x <= ReferenceEndYear);
-    if (referencePeriodCount / referencePeriod > ReferencePeriodThreshold)
-    {
-        var referencePeriodAverage = dataset.DataRecords.Where(x => x.Year >= 1961 && x.Year <= 1990).Average(x => x.Value);
-        var anomalyRecords = new List<BinnedRecord>();
-        foreach (var record in dataset.DataRecords)
-        {
-            anomalyRecords.Add(new BinnedRecord(record.BinId, record.Value - referencePeriodAverage));
-        }
-
-        return
-            new DataSet
-            {
-                DataRecords = anomalyRecords,
-            };
-    }
-
-    Console.WriteLine($"There are only {referencePeriodCount} records for this dataset ({dataset.GeographicalEntity.Name}) in the reference period ({ReferenceStartYear}-{ReferenceEndYear}). A minimum of {ReferencePeriodThreshold * referencePeriod} records ({Math.Round(ReferencePeriodThreshold * 100, 0)}%) for the reference period are required. {dataset.GeographicalEntity.Name} will be excluded from the analysis.");
-    return null;
-}
-
-static async Task<BuildDataSetResult> GenerateAverageOfAnomaliesSeries(PostDataSetsRequestBody body, BuildDataSetResult series, List<DataSet> anomalyDatasets)
-{
-    var minYear = (short)anomalyDatasets.Min(x => x.StartYear);
-
-    var dataPoints = new List<ChartableDataPoint>();
-    for (var i = minYear; i <= DateTime.Now.Year; i++)
-    {
-        var averageForYear = anomalyDatasets.Average(x => x.DataRecords.SingleOrDefault(y => y.Year == i)?.Value);
-        dataPoints.Add(new ChartableDataPoint
-        {
-            BinId = $"y{i}",
-            Label = i.ToString(),
-            Value = averageForYear,
-        });
-    }
-
-    var seriesDefinition = await SeriesProvider.GetSeriesDataRecordsForRequest(body.SeriesDerivationType, body.SeriesSpecifications);
-    series = new BuildDataSetResult
-    {
-        DataPoints = dataPoints.ToArray(),
-        UnitOfMeasure = seriesDefinition.UnitOfMeasure,
-    };
-    return series;
 }
 
 async Task<Dictionary<string, string>> GetCountries()
