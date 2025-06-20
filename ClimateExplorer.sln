@@ -31,8 +31,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Data.Integr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Data.Ghcnm.Precipitation", "ClimateExplorer.Data.Ghcnm.Precipitation\ClimateExplorer.Data.Ghcnm.Precipitation.csproj", "{2F77C0C5-AB5E-4C04-9722-A5089C1CF23C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DPBlazorMapLibrary", "DPBlazorMapLibrary\DPBlazorMapLibrary.csproj", "{35CBA7BA-5535-408B-A584-CB5466B48C71}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Web.Client", "ClimateExplorer.Web.Client\ClimateExplorer.Web.Client.csproj", "{0C963208-7674-4804-84B4-73ECC29049A1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Data.Bom", "ClimateExplorer.Data.Bom\ClimateExplorer.Data.Bom.csproj", "{806E5DC9-73DD-47A1-805D-638F4BCE06F1}"
@@ -105,10 +103,6 @@ Global
 		{2F77C0C5-AB5E-4C04-9722-A5089C1CF23C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F77C0C5-AB5E-4C04-9722-A5089C1CF23C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F77C0C5-AB5E-4C04-9722-A5089C1CF23C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{35CBA7BA-5535-408B-A584-CB5466B48C71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{35CBA7BA-5535-408B-A584-CB5466B48C71}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{35CBA7BA-5535-408B-A584-CB5466B48C71}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{35CBA7BA-5535-408B-A584-CB5466B48C71}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0C963208-7674-4804-84B4-73ECC29049A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0C963208-7674-4804-84B4-73ECC29049A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C963208-7674-4804-84B4-73ECC29049A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
