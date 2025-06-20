@@ -12,19 +12,19 @@ This github site is the digital repository for everything used to bring [the web
   - C#
   - Blazor
   - Minimal Web API
-- The main projects in the solution are:
+- The main projects in the solution are
   - **Web**: Blazor server-side website that displays the data to the user. This is a wrapper project, most of the Blazor files are in Web.Client.
   - **Web.Client**: Blazor Web Assembly version of the website. This will download to the browser and the browser will switch to using this after its downloaded.
   - **WebApi**: Web API that gets and processes the data that the website uses
   - **Core**: code shared between Web, WebApi and other projects
   - **UnitTests**: tests for various sub-systems
 - Additional libraries used
-  - https://github.com/Megabit/Blazorise
-  - https://github.com/DP-projects/DPBlazorMap
+  - Charting: https://github.com/Megabit/Blazorise
+  - Mapping: https://github.com/ledpup/DPBlazorMap - a fork of https://github.com/DP-projects/DPBlazorMap with a minor compatibility change to support .NET 8 and beyond
+  - Clustering tool: https://www.nuget.org/packages/DBSCAN/ ([source](https://github.com/viceroypenguin/Dbscan))
+  - https://www.nuget.org/packages/Blazored.LocalStorage/ ([source](https://github.com/Blazored/LocalStorage))
   - https://github.com/AeonLucid/GeoCoordinate.NetStandard1
   - https://github.com/HugoVG/CurrentDevice
-  - https://www.nuget.org/packages/DBSCAN/ ([source](https://github.com/viceroypenguin/Dbscan))
-  - https://www.nuget.org/packages/Blazored.LocalStorage/ ([source](https://github.com/Blazored/LocalStorage))
 
 ## How to use
 
