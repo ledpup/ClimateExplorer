@@ -15,8 +15,8 @@ public class DataSetDefinitionsBuilder
                 Name = "ACORN-SAT",
                 Description = "The Australian Climate Observations Reference Network - Surface Air Temperature (ACORN-SAT) data set is a homogenized daily maximum, minimum and mean temperature data set containing data from 112 locations across Australia extending from 1910 to the present.",
                 Publisher = "Australian Bureau of Meteorology",
-                PublisherUrl = "http://www.bom.gov.au/",
-                MoreInformationUrl = "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
+                PublisherUrl = "https://www.bom.gov.au/",
+                MoreInformationUrl = "https://www.bom.gov.au/climate/data/acorn-sat/#tabs=ACORN-SAT",
                 StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
                 LocationInfoUrl = "http://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
                 MeasurementDefinitions =
@@ -59,9 +59,8 @@ public class DataSetDefinitionsBuilder
                 Name = "Bureau of Meteorology",
                 Description = null,
                 Publisher = "Australian Bureau of Meteorology",
-                PublisherUrl = "http://www.bom.gov.au/",
+                PublisherUrl = "https://www.bom.gov.au/",
 
-                // MoreInformationUrl = "http://www.bom.gov.au/climate/data/acorn-sat/#tabs=Data-and-networks",
                 StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
                 LocationInfoUrl = "http://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
                 MeasurementDefinitions =
@@ -368,7 +367,7 @@ public class DataSetDefinitionsBuilder
         A positive IOD period is characterised by cooler than average water in the tropical eastern Indian Ocean and warmer than average water in the tropical western Indian Ocean. Conversely, a negative IOD period is characterised by warmer than average water in the tropical eastern Indian Ocean and cooler than average water in the tropical western Indian Ocean.
 
         For monitoring the IOD, Australian climatologists consider sustained values above +0.4 °C as typical of a positive IOD, and values below −0.4 °C as typical of a negative IOD.",
-                MoreInformationUrl = "http://www.bom.gov.au/climate/enso/indices/about.shtml",
+                MoreInformationUrl = "https://www.bom.gov.au/climate/enso",
                 DataDownloadUrl = "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/dmi.had.long.data",
                 MeasurementDefinitions =
                 [
@@ -597,7 +596,7 @@ The reference period used to calculate the anomalies is 1971–2000.",
                 Description = "The Global Carbon Project (GCP) has been publishing estimates of global and national fossil CO\u2082 emissions since 2001. In the first instance these were simple re-publications of data from another source, but over subsequent years refinements have been made in response to feedback and identification of inaccuracies.",
                 Publisher = "The Global Carbon Project",
                 PublisherUrl = "https://www.globalcarbonproject.org/",
-                MoreInformationUrl = "https://zenodo.org/records/10562476",
+                MoreInformationUrl = "https://zenodo.org/records/14106218",
                 DataDownloadUrl = null,
                 MeasurementDefinitions =
                 [
