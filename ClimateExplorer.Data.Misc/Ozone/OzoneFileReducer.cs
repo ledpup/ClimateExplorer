@@ -1,5 +1,6 @@
 ﻿namespace ClimateExplorer.Data.Misc.Ozone;
 
+using ClimateExplorer.Core;
 using ClimateExplorer.Core.Model;
 using System.Text.RegularExpressions;
 

@@ -1,5 +1,6 @@
 ﻿namespace ClimateExplorer.Data.Misc;
 
+using ClimateExplorer.Core;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
