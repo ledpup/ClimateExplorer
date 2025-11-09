@@ -31,9 +31,7 @@ builder.Services
     .AddBlazoredLocalStorage()
     .AddHttpClient<IDataService, DataService>(client =>
     {
-#pragma warning disable SA1011 // Closing square brackets should be spaced correctly
-        client.BaseAddress = new Uri(builder.Configuration["DataServiceBaseUri"]!);
-#pragma warning restore SA1011 // Closing square brackets should be spaced correctly
+        client.BaseAddress = new Uri(builder.Configuration["DataServiceBaseUri"] !);
     });
 
 var app = builder.Build();
@@ -51,11 +49,12 @@ else
     app.UseHsts();
 }
 
+app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
 
 app.UseDefaultFiles();
-app.UseStaticFiles();
 app.UseAntiforgery();
+app.MapStaticAssets();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()

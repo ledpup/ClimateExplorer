@@ -360,6 +360,7 @@ public partial class ChartView
 
         chartRenderedFirstTime = true;
         ChartLoadingIndicatorVisible = false;
+        StateHasChanged();
 
         l.LogInformation("Leaving");
     }
