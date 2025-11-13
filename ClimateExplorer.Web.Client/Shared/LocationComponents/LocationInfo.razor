@@ -30,13 +30,13 @@
                 <OverviewField Label="Warming anomaly" PopupText="@WarmingAnomalyDescription"><Value>@(WarmingAnomalyAsString == null ? "NA" : WarmingAnomalyAsString)</Value></OverviewField>
                 <OverviewField Label="Heating score" PopupText="@HeatingScoreDescription"><Value>@(Location!.HeatingScore == null ? "NA" : Location.HeatingScore)</Value></OverviewField>
             }
-            @if (PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
-            {
-                <OverviewField Label="Precipitation anomaly"><Value>@(PrecipitationAnomalyAsString == null ? "NA" : PrecipitationAnomalyAsString)</Value></OverviewField>
-            }
             @if (RecordHigh != null)
             {
                 <OverviewField Label="Record high" PopupTitle="@("Record highs and lows for " + Location?.Name)" PopupText="@ClimateRecordsDescription" ToolTip="@RecordHighToolTip"><Value>@(RecordHigh == null ? "NA" : RecordHigh.Year)</Value></OverviewField>
+            }
+            @if (precipitation && PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
+            {
+                <OverviewField Label="Precipitation anomaly"><Value>@(PrecipitationAnomalyAsString == null ? "NA" : PrecipitationAnomalyAsString)</Value></OverviewField>
             }
             <ClimateStripe UnitOfMeasure="UnitOfMeasure.DegreesCelsius" LocationName=@Location?.Name LocationMean=@TemperatureLocationMean DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange ShowInfo="true" />
             <WarmestYears DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
@@ -152,12 +152,9 @@
             return;
         }
 
-        var precipitationAnomaly = await CalculateAnomaly(new List<DataSubstitute> { new DataSubstitute { DataType = DataType.Precipitation } }, ContainerAggregationFunctions.Sum);
-        if (precipitationAnomaly != null)
+        if (precipitation)
         {
-            PrecipitationAnomalyAsString = GetPrecipitationAnomalyAsString(precipitationAnomaly.CalculatedAnomaly!);
-            PrecipitationLocationMean = precipitationAnomaly.DataSet?.DataRecords.Average(x => x.Value);
-            PrecipitationAnomalyRecords = precipitationAnomaly.AnomalyRecords;
+            await GeneratePrecipitationView();
         }
 
         var temperatureAnomaly  = await CalculateAnomaly(DataSubstitute.StandardTemperatureDataMatches(), ContainerAggregationFunctions.Mean);
@@ -389,8 +386,24 @@
             );
     }
 
-    void TogglePrecipitation()
+    async Task TogglePrecipitation()
     {
         precipitation = !precipitation;
+
+        if (precipitation && PrecipitationAnomalyAsString == null)
+        {
+            await GeneratePrecipitationView();
+        }
+    }
+
+    async Task GeneratePrecipitationView()
+    {
+        var precipitationAnomaly = await CalculateAnomaly(new List<DataSubstitute> { new DataSubstitute { DataType = DataType.Precipitation } }, ContainerAggregationFunctions.Sum);
+        if (precipitationAnomaly != null)
+        {
+            PrecipitationAnomalyAsString = GetPrecipitationAnomalyAsString(precipitationAnomaly.CalculatedAnomaly!);
+            PrecipitationLocationMean = precipitationAnomaly.DataSet?.DataRecords.Average(x => x.Value);
+            PrecipitationAnomalyRecords = precipitationAnomaly.AnomalyRecords;
+        }
     }
 }
