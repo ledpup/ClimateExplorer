@@ -7,8 +7,8 @@ ClimateExplorer.net has two main sections; 1) [local climate change information]
 This github site is the digital repository for everything used to bring [the website](https://climateexplorer.net/) together.
 
 ## Architecture and code
-- Built in [Visual Studio 2022 Community Edition](https://visualstudio.microsoft.com/vs/community/) using
-  - .NET 9
+- Built in [Visual Studio 2026 Community Edition](https://visualstudio.microsoft.com/vs/community/) using
+  - .NET 10
   - C#
   - Blazor
   - Minimal Web API
@@ -29,6 +29,6 @@ This github site is the digital repository for everything used to bring [the web
 ## How to use
 
 - Download the github repo. 
-- Open in Visual Studio 2022. 
+- Open ClimateExplorer.sln in Visual Studio 2026. 
 - Set your start-up projects to be **Web** and **WebApi** and run.
   - Two websites should start-up; the user interface and the web API.
