@@ -27,6 +27,7 @@ public class LocationTests
     [DataRow("Gibraltar", "Gibraltar [United Kingdom]", "Gibraltar", "Gibraltar, Gibraltar", "Gibraltar, Gibraltar [United Kingdom]")]
 
     [DataRow("Blagnac Aerop Toulouse Blagna", "France", "Blagnac Aerop T...", "Blagnac Aerop Toulouse Blagna, France", "Blagnac Aerop Toulouse Blagna, France")]
+    [DataRow("Koebenhavnlandbohojskolen 1", "Denmark", "Koebenhavnlandb...", "Koebenhavnlandbohojskolen 1, Denmark", "Koebenhavnlandbohojskolen 1, Denmark")]
 
     public void LocationName(string name, string country, string title, string shorterTitle, string fullTitle)
     {
