@@ -30,7 +30,7 @@ public class DataReaderTests
         var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty);
         var recordsList = records.Values.ToList();
 
-        Assert.AreEqual(4, records.Count);
+        Assert.HasCount(4, records);
         Assert.AreEqual("1950_12_30", recordsList[0].Key);
         Assert.AreEqual("1951_1_2", recordsList[3].Key);
         Assert.AreEqual(DateOnly.Parse("1951/1/2"), records["1951_1_2"].Date);
@@ -58,11 +58,11 @@ public class DataReaderTests
 
         var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty);
 
-        Assert.AreEqual(4, records.Count);
+        Assert.HasCount(4, records);
 
         Assert.AreEqual(21.8d, records["1950_12_30"].Value);
-        Assert.AreEqual(null, records["1950_12_31"].Value);
-        Assert.AreEqual(null, records["1951_1_1"].Value);
+        Assert.IsNull(records["1950_12_31"].Value);
+        Assert.IsNull(records["1951_1_1"].Value);
         Assert.AreEqual(19.0d, records["1951_1_2"].Value);
     }
 
@@ -83,11 +83,11 @@ public class DataReaderTests
 
         var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty);
 
-        Assert.AreEqual(4, records.Count);
+        Assert.HasCount(4, records);
 
         Assert.AreEqual(21.8d, records["1950_12_30"].Value);
-        Assert.AreEqual(null, records["1950_12_31"].Value);
-        Assert.AreEqual(null, records["1951_1_1"].Value);
+        Assert.IsNull(records["1950_12_31"].Value);
+        Assert.IsNull(records["1951_1_1"].Value);
         Assert.AreEqual(19.0d, records["1951_1_2"].Value);
     }
 
@@ -111,7 +111,7 @@ public class DataReaderTests
 
         var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty, start, end);
 
-        Assert.AreEqual(2, records.Count);
+        Assert.HasCount(2, records);
 
         Assert.AreEqual(24.2D, records["1950_12_31"].Value);
         Assert.AreEqual(26.4D, records["1951_1_1"].Value);
@@ -135,10 +135,10 @@ public class DataReaderTests
         var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly, string.Empty);
         var recordsList = records.Values.ToList();
 
-        Assert.AreEqual(4, records.Count);
+        Assert.HasCount(4, records);
         Assert.AreEqual("1940_8", recordsList[0].Key);
         Assert.AreEqual("1940_11", recordsList[3].Key);
-        Assert.AreEqual(null, records["1940_11"].Date);
+        Assert.IsNull(records["1940_11"].Date);
 
         Assert.AreEqual(18.7d, records["1940_8"].Value);
         Assert.AreEqual(19.5d, records["1940_9"].Value);
@@ -164,12 +164,12 @@ public class DataReaderTests
         var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly, string.Empty);
         var recordsList = records.Values.ToList();
 
-        Assert.AreEqual(4, records.Count);
+        Assert.HasCount(4, records);
         Assert.AreEqual("1940_8", recordsList[0].Key);
         Assert.AreEqual("1940_11", recordsList[3].Key);
 
         Assert.AreEqual(18.7d, records["1940_8"].Value);
-        Assert.AreEqual(null, records["1940_9"].Value);
+        Assert.IsNull(records["1940_9"].Value);
         Assert.AreEqual(19.7d, records["1940_10"].Value);
         Assert.AreEqual(21.1d, records["1940_11"].Value);
     }
@@ -192,7 +192,7 @@ public class DataReaderTests
         var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly, string.Empty);
         var recordsList = records.Values.ToList();
 
-        Assert.AreEqual(3, records.Count);
+        Assert.HasCount(3, records);
         Assert.AreEqual("1940_8", recordsList[0].Key);
         Assert.AreEqual("1940_10", recordsList[2].Key);
 
@@ -219,7 +219,7 @@ public class DataReaderTests
         var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly, string.Empty);
         var recordsList = records.Values.ToList();
 
-        Assert.AreEqual(3, records.Count);
+        Assert.HasCount(3, records);
         Assert.AreEqual("1940_9", recordsList[0].Key);
         Assert.AreEqual("1940_11", recordsList[2].Key);
 
@@ -257,7 +257,7 @@ public class DataReaderTests
         var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Yearly, "Global");
         var recordsList = records.Values.ToList();
 
-        Assert.AreEqual(12, records.Count);
+        Assert.HasCount(12, records);
         Assert.AreEqual("1997_12_31", recordsList[9].Key);
         Assert.AreEqual("1999_12_31", recordsList[11].Key);
 

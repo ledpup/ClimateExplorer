@@ -60,7 +60,7 @@ public class SimpleMovingAverageTests
         var sma1 = c1.Calculate(records);
         var sma2 = c2.Calculate(records);
 
-        Assert.AreEqual(sma1.Count, sma2.Count);
+        Assert.HasCount(sma1.Count, sma2);
 
         for (int i = 0; i < sma1.Count; i++)
         {

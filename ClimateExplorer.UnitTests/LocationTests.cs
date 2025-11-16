@@ -26,6 +26,8 @@ public class LocationTests
     [DataRow("Bird Island", "South Georgia and the South Sandwich Islands [United Kingdom]", "Bird Island", "Bird Island, South Georgia and the South Sandwich Islands", "Bird Island, South Georgia and the South Sandwich Islands [United Kingdom]")]
     [DataRow("Gibraltar", "Gibraltar [United Kingdom]", "Gibraltar", "Gibraltar, Gibraltar", "Gibraltar, Gibraltar [United Kingdom]")]
 
+    [DataRow("Blagnac Aerop Toulouse Blagna", "France", "Blagnac Aerop Toulouse Blagna", "Blagnac Aerop Toulouse Blagna, France", "Blagnac Aerop Toulouse Blagna, France")]
+
     public void LocationName(string name, string country, string title, string shorterTitle, string fullTitle)
     {
         var location = new Location

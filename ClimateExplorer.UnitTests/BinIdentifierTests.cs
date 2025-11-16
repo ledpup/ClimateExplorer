@@ -15,7 +15,7 @@ public class BinIdentifierTests
 
         var range = start.EnumerateYearAndMonthBinRangeUpTo(end).ToArray();
 
-        Assert.AreEqual(12, range.Length);
+        Assert.HasCount(12, range);
         Assert.AreEqual("y1920m07", range.First().Id);
         Assert.AreEqual("y1921m06", range.Last().Id);
     }
@@ -28,7 +28,7 @@ public class BinIdentifierTests
 
         var range = start.EnumerateYearAndDayBinRangeUpTo(end).ToArray();
 
-        Assert.AreEqual(365, range.Length);
+        Assert.HasCount(365, range);
         Assert.AreEqual("y1920m07d01", range.First().Id);
         Assert.AreEqual("y1921m06d30", range.Last().Id);
     }
@@ -41,7 +41,7 @@ public class BinIdentifierTests
 
         var range = start.EnumerateYearAndWeekBinRangeUpTo(end).ToArray();
 
-        Assert.AreEqual(59, range.Length);
+        Assert.HasCount(59, range);
         Assert.AreEqual("y1920w06", range.First().Id);
         Assert.AreEqual("y1921w12", range.Last().Id);
     }
