@@ -80,6 +80,10 @@ public class Location : GeographicalEntity
             {
                 title = ShorterTitle;
             }
+            else if (Name.Length > TitleMaximumLength)
+            {
+                title = Name.Substring(0, TitleMaximumLength - 3) + "...";
+            }
             else
             {
                 title = Name;

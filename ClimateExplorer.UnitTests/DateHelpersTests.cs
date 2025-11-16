@@ -16,7 +16,7 @@ public class DateHelpersTests
             14
         );
 
-        Assert.AreEqual(2, segments.Length);
+        Assert.HasCount(2, segments);
         Assert.AreEqual(new DateOnly(1990, 01, 01), segments[0].Start);
         Assert.AreEqual(new DateOnly(1990, 01, 14), segments[0].End);
         Assert.AreEqual(new DateOnly(1990, 01, 15), segments[1].Start);
@@ -32,7 +32,7 @@ public class DateHelpersTests
             60
         );
 
-        Assert.AreEqual(1, segments.Length);
+        Assert.HasCount(1, segments);
         Assert.AreEqual(new DateOnly(1990, 01, 01), segments[0].Start);
         Assert.AreEqual(new DateOnly(1990, 01, 31), segments[0].End);
     }
@@ -46,7 +46,7 @@ public class DateHelpersTests
             14
         );
 
-        Assert.AreEqual(26, segments.Length);
+        Assert.HasCount(26, segments);
 
 
         // The first segment should start on the start date

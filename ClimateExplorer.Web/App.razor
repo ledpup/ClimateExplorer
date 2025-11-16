@@ -26,11 +26,11 @@
     <meta property="og:image" content="/images/ClimateExplorerLogo.png" />
 
     <base href="/" />
-
-    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/app.css" />
-    <link rel="stylesheet" href="ClimateExplorer.Web.styles.css" />
-    <link rel="stylesheet" href="_content/Blazorise.Bootstrap5/blazorise.bootstrap5.css" />
+    <ResourcePreloader />
+    <link rel="stylesheet" href="@Assets["css/bootstrap/bootstrap.min.css"]" />
+    <link rel="stylesheet" href="@Assets["css/app.css"]" />
+    <link rel="stylesheet" href="@Assets["ClimateExplorer.Web.styles.css"]" />
+    <link rel="stylesheet" href="@Assets["_content/Blazorise.Bootstrap5/blazorise.bootstrap5.css"]" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.2.0/css/all.css" />
 
     <!--For mapping component -->
@@ -47,6 +47,7 @@
     <meta name="msapplication-TileColor" content="#5bbad5" />
     <meta name="theme-color" content="#ffffff" />
 
+    <ImportMap />
     <HeadOutlet @rendermode="@InteractiveAuto" />
 </head>
 
@@ -135,27 +136,8 @@
         }
     </script>
 
-    <script>
-        // Below is a JavaScript hack to stop NavigateTo from scrolling to the top of the page.
-        // See: https://github.com/dotnet/aspnetcore/issues/40190
-
-        var skipScrollTo = false;
-        const origScrollTo = window.scrollTo;
-        window.scrollTo = (x, y) => {
-            if (x === 0 && y === 0 && skipScrollTo) {
-                skipScrollTo = false;
-                return;
-            }
-            return origScrollTo.apply(this, [x, y]);
-        };
-
-        function willSkipScrollTo(newValue) {
-            skipScrollTo = newValue;
-        }
-    </script>
-
     <Routes @rendermode="@InteractiveAuto" />
-    <script src="_framework/blazor.web.js"></script>
+    <script src="@Assets["_framework/blazor.web.js"]"></script>
 </body>
 
 </html>

@@ -1,0 +1,74 @@
+::deep .navbar-dark .navbar-brand {
+    height: 65px;
+    margin: 0px;
+    padding: 0px;
+    align-content: initial;
+}
+
+::deep .navbar {
+    padding: 0px;
+}
+
+.logo {
+    padding: 0px 0px 0px 10px;
+    margin: 0px;
+    width: 75px;
+    height: 65px;
+    border-radius: 0px 30px 30px 0px;
+    border-top: solid 8px #425f59;
+    border-right: solid 9px #425f59;
+    border-bottom: solid 8px #425f59;
+    align-content: center;
+    background-color: #fff !important;
+}
+
+::deep .navbar-nav {
+    flex-direction: row;
+    display: block;
+    padding-left: 20px;
+}
+
+::deep .nav-item {
+    display: inline;
+    margin-right: 8px;
+    color: white;
+    font-weight: bold;
+}
+
+::deep .nav-link {
+    display: inline;
+    color: white;
+    padding: 0px;
+}
+
+::deep a.nav-link {
+    color: white !important;
+}
+
+    ::deep a.nav-link:hover {
+        color: #aaa !important;
+    }
+
+::deep .bg-dark {
+    background-color: #425f59 !important;
+}
+
+.logo .tooltip-content {
+    display: none;
+    position: absolute;
+    text-align: center;
+    box-shadow: rgb(0 0 0 / 15%) 1px 1px 20px;
+    border-radius: 8px;
+    left: 32px;
+    top: 48px;
+    padding: 4px 10px 4px 10px;
+    background-color: #fff;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #425f59;
+    z-index: 1500;
+}
+
+.logo:hover .tooltip-content {
+    display: block;
+}

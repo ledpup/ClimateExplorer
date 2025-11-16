@@ -21,11 +21,11 @@ public class GroupByTests
         {
             if (group.Key < 51)
             {
-                Assert.AreEqual(7, group.ToList().Count);
+                Assert.HasCount(7, group.ToList());
             }
             else
             {
-                Assert.AreEqual(8, group.ToList().Count);
+                Assert.HasCount(8, group.ToList());
             }
         }
     }
@@ -48,7 +48,7 @@ public class GroupByTests
         var groupedData = dataRecords.GroupYearByDays(13);
 
         Assert.AreEqual(28, groupedData.Count());
-        groupedData.ToList().Take(27).ToList().ForEach(x => Assert.AreEqual(13, x.ToList().Count));
+        groupedData.ToList().Take(27).ToList().ForEach(x => Assert.HasCount(13, x.ToList()));
         Assert.AreEqual(14, groupedData.ToList().Last().Count());
     }
 
@@ -59,7 +59,7 @@ public class GroupByTests
 
         dataRecords[0] = new DataRecord(new DateOnly(2021, 1, 2), null);
 
-        Assert.ThrowsException<Exception>(() => dataRecords.GroupYearByWeek());
+        Assert.Throws<Exception>(() => dataRecords.GroupYearByWeek());
     }
 
     [TestMethod]
@@ -69,7 +69,7 @@ public class GroupByTests
 
         dataRecords.Add(new DataRecord(new DateOnly(2021, 1, 1), null));
 
-        Assert.ThrowsException<Exception>(() => dataRecords.GroupYearByWeek());
+        Assert.Throws<Exception>(() => dataRecords.GroupYearByWeek());
     }
 
     [TestMethod]
@@ -79,7 +79,7 @@ public class GroupByTests
 
         dataRecords.Remove(dataRecords.Last());
 
-        Assert.ThrowsException<Exception>(() => dataRecords.GroupYearByWeek());
+        Assert.Throws<Exception>(() => dataRecords.GroupYearByWeek());
     }
 
     [TestMethod]
@@ -89,7 +89,7 @@ public class GroupByTests
 
         dataRecords[0] = new DataRecord(new DateOnly(2022, 1, 2), null);
 
-        Assert.ThrowsException<Exception>(() => dataRecords.GroupYearByWeek());
+        Assert.Throws<Exception>(() => dataRecords.GroupYearByWeek());
     }
 
     private static List<DataRecord> GetDataRecords()

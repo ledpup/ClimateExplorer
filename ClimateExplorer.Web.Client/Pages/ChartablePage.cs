@@ -192,10 +192,6 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     {
         Logger!.LogInformation("NavManager.NavigateTo(uri=" + uri + ", replace=" + replace + ")");
 
-        // Below is a JavaScript hack to stop NavigateTo from scrolling to the top of the page.
-        // See: https://github.com/dotnet/aspnetcore/issues/40190 and index.html
-        await JsRuntime!.InvokeVoidAsync("willSkipScrollTo", true);
-
         NavManager!.NavigateTo(uri, false, replace);
     }
 

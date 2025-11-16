@@ -1,0 +1,36 @@
+﻿@using Blazorise
+
+<!-- this div is necessary to get Blazor to apply a randomly-generated attribute to a DOM element so that CSS isolation will work & we can 
+     style the navbar's inner elements https://github.com/Megabit/Blazorise/issues/1599 -->
+<div>
+    <Bar Breakpoint="Breakpoint.Desktop"
+         Background="Background.Dark"
+         ThemeContrast="ThemeContrast.Dark">
+        <BarBrand>
+            <BarLink To="">
+                <div class="logo">
+                    <img src="/logo-50.png" width="45" alt="ClimateExplorer" />
+                    <span class="tooltip-content">
+                        ClimateExplorer
+                    </span>
+                </div>
+            </BarLink>
+        </BarBrand>
+        <BarMenu>
+            <BarStart>
+                <BarItem>
+                    <BarLink To="">local</BarLink>
+                </BarItem>
+                <BarItem>
+                    <BarLink To="regionalandglobal">regional & global</BarLink>
+                </BarItem>
+                <BarItem>
+                    <BarLink To="about">about</BarLink>
+                </BarItem>
+                <BarItem>
+                    <BarLink To="blog" Target="Target.Blank">blog</BarLink>
+                </BarItem>
+            </BarStart>
+        </BarMenu>
+    </Bar>
+</div>

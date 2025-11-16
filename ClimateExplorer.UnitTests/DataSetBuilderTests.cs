@@ -28,7 +28,7 @@ public class DataSetBuilderTests
             }
         );
 
-        Assert.AreEqual(0, cdp.Length);
+        Assert.IsEmpty(cdp);
     }
 
     [TestMethod]
@@ -50,7 +50,7 @@ public class DataSetBuilderTests
             }
         );
 
-        Assert.AreEqual(1, cdp.Length);
+        Assert.HasCount(1, cdp);
         Assert.AreEqual(10, Math.Round(cdp[0].Value!.Value, 0));
         Assert.AreEqual("1990", cdp[0].Label);
     }
@@ -76,7 +76,7 @@ public class DataSetBuilderTests
             }
         );
 
-        Assert.AreEqual(1, cdp.Length);
+        Assert.HasCount(1, cdp);
         Assert.AreEqual(5f, cdp[0].Value);
         Assert.AreEqual("1990", cdp[0].Label);
     }
@@ -102,7 +102,7 @@ public class DataSetBuilderTests
             }
         );
 
-        Assert.AreEqual(1, cdp.Length);
+        Assert.HasCount(1, cdp);
         Assert.AreEqual(41.4d, Math.Round(cdp[0].Value!.Value, 1));
         Assert.AreEqual("1990", cdp[0].Label);
     }
@@ -127,7 +127,7 @@ public class DataSetBuilderTests
         );
 
         // We expect one entry per month in the year
-        Assert.AreEqual(12, cdp.Length);
+        Assert.HasCount(12, cdp);
 
         // First entry should be for Jan
         Assert.AreEqual("Jan 1990", cdp[0].Label);
@@ -168,7 +168,7 @@ public class DataSetBuilderTests
         );
 
         // We expect one entry per month in the year
-        Assert.AreEqual(12, cdp.Length);
+        Assert.HasCount(12, cdp);
 
         // First entry should be for Jan
         Assert.AreEqual("Jan 1990", cdp[0].Label);
@@ -200,7 +200,7 @@ public class DataSetBuilderTests
             }
         );
 
-        Assert.AreEqual(1, cdp.Length);
+        Assert.HasCount(1, cdp);
         Assert.AreEqual(3650, cdp[0].Value);
         Assert.AreEqual("1990", cdp[0].Label);
     }
@@ -226,7 +226,7 @@ public class DataSetBuilderTests
             }
         );
 
-        Assert.AreEqual(12, cdp.Length); // Twelve months
+        Assert.HasCount(12, cdp); // Twelve months
         Assert.AreEqual(310, cdp[0].Value); // Jan has 31 days
         Assert.AreEqual("Jan 1990", cdp[0].Label);
         Assert.AreEqual(280, cdp[1].Value); // Feb has 28 days
@@ -257,7 +257,7 @@ public class DataSetBuilderTests
             }
         );
 
-        Assert.AreEqual(12, cdp.Length); // Twelve months
+        Assert.HasCount(12, cdp); // Twelve months
         Assert.AreEqual(6.487841d, Math.Round(cdp[0].Value!.Value, 6));
         Assert.AreEqual("Jan 1990", cdp[0].Label);
     }
@@ -286,7 +286,7 @@ public class DataSetBuilderTests
             }
         );
 
-        Assert.AreEqual(12, cdp.Length); // Twelve months
+        Assert.HasCount(12, cdp); // Twelve months
         Assert.AreEqual(6.469893f, cdp[0].Value!.Value, 0.00001f);
         Assert.AreEqual("Jan 1990", cdp[0].Label);
     }
@@ -315,7 +315,7 @@ public class DataSetBuilderTests
             }
         );
 
-        Assert.AreEqual(12, cdp.Length); // Twelve months
+        Assert.HasCount(12, cdp); // Twelve months
         Assert.AreEqual(6.444575d, Math.Round(cdp[0].Value!.Value, 6));
         Assert.AreEqual("Jan 1990", cdp[0].Label);
     }
@@ -344,7 +344,7 @@ public class DataSetBuilderTests
             }
         );
 
-        Assert.AreEqual(12, cdp.Length);
+        Assert.HasCount(12, cdp);
         Assert.AreEqual("Jan 1990", cdp[0].Label);
         Assert.IsNull(cdp[0].Value);
     }
@@ -400,7 +400,7 @@ public class DataSetBuilderTests
             }
         );
 
-        Assert.AreEqual(12, cdp.Length);
+        Assert.HasCount(12, cdp);
         Assert.AreEqual("Jan", cdp[0].Label);
         Assert.IsNull(cdp[0].Value);
         Assert.AreEqual(11, cdp.Where(x => x.Value != null).Count());
@@ -430,7 +430,7 @@ public class DataSetBuilderTests
             }
         );
 
-        Assert.AreEqual(12, cdp.Length);
+        Assert.HasCount(12, cdp);
         Assert.AreEqual("Jan", cdp[0].Label);
         Assert.AreEqual(24.75d, Math.Round(cdp[0].Value!.Value, 2));
     }
@@ -459,7 +459,7 @@ public class DataSetBuilderTests
             }
         );
 
-        Assert.AreEqual(4, cdp.Length);
+        Assert.HasCount(4, cdp);
         Assert.AreEqual("Summer", cdp[0].Label);
         // This needs manual verification
         Assert.AreEqual(243.81952d, actual: Math.Round(cdp[0].Value!.Value, 5));
@@ -491,7 +491,7 @@ public class DataSetBuilderTests
             }
         );
 
-        Assert.AreEqual(1, cdp.Length); // One month, because that's the only month with any data
+        Assert.HasCount(1, cdp); // One month, because that's the only month with any data
         Assert.AreEqual("Jan 1990", cdp[0].Label);
         Assert.AreEqual(10.0f, cdp[0].Value); // There's only one sample
     }
@@ -520,7 +520,7 @@ public class DataSetBuilderTests
             }
         );
 
-        Assert.AreEqual(0, cdp.Length);
+        Assert.IsEmpty(cdp);
     }
 
 

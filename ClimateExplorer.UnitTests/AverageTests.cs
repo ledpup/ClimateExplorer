@@ -27,7 +27,7 @@ public class AverageTests
     {
         var values = new double?[] { 9, 10, null, 13, 4 };
         var mean = values.Average();
-        Assert.AreEqual(5, values.Length);
+        Assert.HasCount(5, values);
         Assert.AreEqual(9, mean); // This means that nulls are ignored when calculating mean
     }
 }

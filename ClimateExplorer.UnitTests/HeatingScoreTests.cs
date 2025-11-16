@@ -31,8 +31,8 @@ public class HeatingScoreTests
         {
             Assert.AreEqual(2, locations.Count(x => x.HeatingScore == i));
         }
-        Assert.IsTrue(!locations.Any(x => x.HeatingScore > 9));
-        Assert.IsTrue(!locations.Any(x => x.HeatingScore < 0));
+        Assert.IsFalse(locations.Any(x => x.HeatingScore > 9));
+        Assert.IsFalse(locations.Any(x => x.HeatingScore < 0));
     }
 
     [TestMethod]

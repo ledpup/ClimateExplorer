@@ -1,5 +1,6 @@
 ﻿namespace ClimateExplorer.Data.Misc.OceanAcidity;
 
+using ClimateExplorer.Core;
 using CsvHelper;
 using CsvHelper.Configuration;
 using System.Globalization;

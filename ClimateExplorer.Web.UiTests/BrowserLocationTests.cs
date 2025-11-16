@@ -58,7 +58,7 @@ public class BrowserLocationTests : TestBase
         var response = await request.GetAsync("location");
 
 
-        Assert.True(response.Ok);
+        Assert.That(response.Ok, Is.True);
         var jsonResponse = await response.JsonAsync();
 
         var options = new JsonSerializerOptions
