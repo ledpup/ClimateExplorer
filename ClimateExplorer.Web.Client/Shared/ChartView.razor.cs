@@ -257,8 +257,7 @@ public partial class ChartView
 
         if (ChartLoadingErrored)
         {
-            l.LogInformation("We have identified an error. Will not try to render the chart normally");
-            ChartLoadingIndicatorVisible = false;
+            l.LogError("We have identified an error. Will not try to render the chart normally");
         }
         else
         {
@@ -365,16 +364,6 @@ public partial class ChartView
         l.LogInformation("Leaving");
     }
 
-    public void LogChartSeriesList()
-    {
-        Logger!.LogInformation("ChartSeriesList: (SelectedBinGranularity is " + SelectedBinGranularity + ")");
-
-        foreach (var csd in ChartSeriesList!)
-        {
-            Logger!.LogInformation("    " + csd.ToString());
-        }
-    }
-
     public async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)
     {
         await OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly, false);
@@ -409,6 +398,14 @@ public partial class ChartView
             .ToList();
 
         await BuildDataSets();
+    }
+
+    internal void LoadingChart()
+    {
+        ChartLoadingIndicatorVisible = true;
+        ChartLoadingErrored = false;
+        LogChartSeriesList();
+        StateHasChanged();
     }
 
     protected override void OnInitialized()
@@ -463,6 +460,16 @@ public partial class ChartView
             SeriesAggregationOptions.Sum => ContainerAggregationFunctions.Sum,
             _ => throw new NotImplementedException($"SeriesAggregationOptions {a}"),
         };
+    }
+
+    private void LogChartSeriesList()
+    {
+        Logger!.LogInformation("ChartSeriesList: (SelectedBinGranularity is " + SelectedBinGranularity + ")");
+
+        foreach (var csd in ChartSeriesList!)
+        {
+            Logger!.LogInformation("    " + csd.ToString());
+        }
     }
 
     private async Task ChartAllDataToggle()

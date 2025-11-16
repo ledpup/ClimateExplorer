@@ -104,9 +104,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         var l = new LogAugmenter(Logger!, "BuildDataSets");
         l.LogInformation("Starting");
 
-        ChartView!.ChartLoadingIndicatorVisible = true;
-        ChartView!.ChartLoadingErrored = false;
-        ChartView.LogChartSeriesList();
+        ChartView!.LoadingChart();
 
         // Recalculate the URL
         string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(ChartView.ChartSeriesList!);
@@ -149,7 +147,6 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         }
         else
         {
-            ChartView!.ChartLoadingIndicatorVisible = false;
             ChartView.ChartSeriesWithData = null;
             await ChartView.HandleRedraw();
         }
