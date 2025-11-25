@@ -1,48 +1,55 @@
-﻿using FluentFTP;
-using System.Text;
+﻿namespace ClimateExplorer.Data.Bom;
 
-namespace ClimateExplorer.Data.Bom;
-
-using System;
-using System.IO.Compression;
+using FluentFTP;
 using SharpCompress.Common;
 using SharpCompress.Readers;
 using SharpCompress.Readers.Zip;
-using SharpCompress.Readers.Tar;
+using System;
+using System.IO.Compression;
+using System.Text;
 
 public static class AcornSatDownloader
 {
-    public static void DownloadAndExtractData(string acornSatfileName)
+    public static void DownloadAndExtractData(string acornSatfileName, string outputFolder, Dictionary<string, string> fileRenames)
     {
         if (!Directory.Exists("source-data")) Directory.CreateDirectory("source-data");
 
         byte[] v2DailyTmaxTarGzBytes = CachingFtpHelper.Download("ftp.bom.gov.au", $"/anon/home/ncc/www/change/ACORN_SAT_daily/{acornSatfileName}.tar.gz");
 
-        ExtractTarGzToFolder(v2DailyTmaxTarGzBytes, $@"source-data\{acornSatfileName}");
+        ExtractTarGzToFolder(v2DailyTmaxTarGzBytes, outputFolder, fileRenames);
     }
 
-    public static void ExtractTarGzToFolder(byte[] gzTarBytes, string outputFolder)
+    public static void ExtractTarGzToFolder(byte[] gzTarBytes, string outputFolder, Dictionary<string, string> fileRenames)
     {
         if (!Directory.Exists(outputFolder)) Directory.CreateDirectory(outputFolder);
 
-        using MemoryStream ms = new (gzTarBytes);
-        using GZipStream gZipStream = new (ms, CompressionMode.Decompress);
-        using TarReader reader = TarReader.Open(gZipStream);
+        using MemoryStream ms = new(gzTarBytes);
+        using GZipStream gZipStream = new(ms, CompressionMode.Decompress);
+        using var reader = ReaderFactory.Open(gZipStream);
+
         while (reader.MoveToNextEntry())
         {
             if (!reader.Entry.IsDirectory)
             {
-                if (!File.Exists(Path.Combine(outputFolder, reader.Entry.Key!)))
+                if (reader.Entry.Key! == "README.txt")
                 {
-                    Console.WriteLine(reader.Entry.Key);
-
-                    reader.WriteEntryToDirectory(
-                        outputFolder,
-                        new ExtractionOptions()
-                        {
-                            ExtractFullPath = true
-                        });
+                    continue;
                 }
+
+                var fileName = fileRenames.ContainsKey(reader.Entry.Key!)
+                    ? fileRenames[reader.Entry.Key!]
+                    : reader.Entry.Key!;
+
+                Console.WriteLine(fileName);
+
+                var destinationPath = Path.Combine(outputFolder, fileName);
+
+                // Ensure directory exists
+                Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
+
+                using var entryStream = reader.OpenEntryStream();
+                using var outStream = File.Create(destinationPath);
+                entryStream.CopyTo(outStream);
             }
         }
     }
@@ -51,7 +58,7 @@ public static class AcornSatDownloader
     {
         if (!Directory.Exists(outputFolder)) Directory.CreateDirectory(outputFolder);
 
-        using MemoryStream ms = new MemoryStream(zipBytes);
+        using MemoryStream ms = new (zipBytes);
         using ZipReader reader = ZipReader.Open(ms);
 
         while (reader.MoveToNextEntry())
@@ -92,7 +99,7 @@ public static class CachingFtpHelper
 
         Console.WriteLine($"{host} {file} not cached. Downloading.");
 
-        FtpClient c = new FtpClient(host);
+        FtpClient c = new(host);
 
         c.Connect();
 
@@ -105,4 +112,10 @@ public static class CachingFtpHelper
 
         return outBytes;
     }
+}
+
+public class FileRename
+{
+    public string OriginalName { get; init; } = string.Empty;
+    public string NewName { get; init; } = string.Empty;
 }

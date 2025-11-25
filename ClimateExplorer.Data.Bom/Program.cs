@@ -7,9 +7,9 @@ var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
 httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
 httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
 
-AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.5.0_daily_tmean");
-AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.5.0_daily_tmax");
-AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.5.0_daily_tmin");
+AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.6.0_daily_tmean", @"..\..\..\..\ClimateExplorer.SourceData\Temperature\ACORN-SAT\daily_tmean", new Dictionary<string, string>{ { "tmean.060168.daily.csv", "tmean.060139.daily.csv" } });
+AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.6.0_daily_tmax", @"..\..\..\..\ClimateExplorer.SourceData\Temperature\ACORN-SAT\daily_tmax", new Dictionary<string, string> { { "tmax.060168.daily.csv", "tmax.060139.daily.csv" } });
+AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.6.0_daily_tmin", @"..\..\..\..\ClimateExplorer.SourceData\Temperature\ACORN-SAT\daily_tmin", new Dictionary<string, string> { { "tmin.060168.daily.csv", "tmin.060139.daily.csv" } });
 
 var outDirectories = new Dictionary<ObsCode, string>
     {

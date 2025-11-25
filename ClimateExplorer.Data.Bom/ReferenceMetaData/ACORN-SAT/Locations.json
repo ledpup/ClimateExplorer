@@ -1324,7 +1324,8 @@
     "PrimaryStation": "060139",
     "Sites": [
       "060139",
-      "060026"
+      "060026",
+      "060168"
     ],
     "Coordinates": {
       "Latitude": -31.43,
