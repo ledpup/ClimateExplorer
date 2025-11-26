@@ -20,7 +20,7 @@
     "Year": 1965,
     "Month": 7,
     "Day": 19,
-    "Value": 12.6,
+    "Value": 12.5,
     "NumberOfTimes": 1
   },
   {
@@ -32,7 +32,7 @@
     "Year": 2018,
     "Month": 11,
     "Day": 26,
-    "Value": 43.1,
+    "Value": 43,
     "NumberOfTimes": 1
   },
   {
@@ -41,11 +41,11 @@
     "DataAdjustment": 1,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 1938,
-    "Month": 7,
-    "Day": 3,
-    "Value": 14.4,
-    "NumberOfTimes": 1
+    "Year": 1936,
+    "Month": 6,
+    "Day": 16,
+    "Value": 14.3,
+    "NumberOfTimes": 2
   },
   {
     "DataType": 1,
@@ -56,7 +56,7 @@
     "Year": 1927,
     "Month": 1,
     "Day": 29,
-    "Value": 28.7,
+    "Value": 28.9,
     "NumberOfTimes": 1
   },
   {

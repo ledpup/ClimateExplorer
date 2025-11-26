@@ -8,7 +8,7 @@
     "Year": 1912,
     "Month": 2,
     "Day": 3,
-    "Value": 35.3,
+    "Value": 35.4,
     "NumberOfTimes": 1
   },
   {
@@ -20,7 +20,7 @@
     "Year": 1974,
     "Month": 7,
     "Day": 3,
-    "Value": 3.5,
+    "Value": 3.4,
     "NumberOfTimes": 1
   },
   {
@@ -29,10 +29,10 @@
     "DataAdjustment": 1,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 2014,
-    "Month": 2,
-    "Day": 2,
-    "Value": 46.2,
+    "Year": 2019,
+    "Month": 12,
+    "Day": 20,
+    "Value": 45.9,
     "NumberOfTimes": 1
   },
   {
@@ -41,11 +41,11 @@
     "DataAdjustment": 1,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 1947,
-    "Month": 8,
-    "Day": 22,
-    "Value": 7.5,
-    "NumberOfTimes": 3
+    "Year": 1982,
+    "Month": 7,
+    "Day": 16,
+    "Value": 7.4,
+    "NumberOfTimes": 1
   },
   {
     "DataType": 1,
@@ -65,10 +65,10 @@
     "DataAdjustment": 1,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 1950,
-    "Month": 6,
-    "Day": 20,
-    "Value": -4,
+    "Year": 1960,
+    "Month": 7,
+    "Day": 2,
+    "Value": -4.1,
     "NumberOfTimes": 1
   },
   {
