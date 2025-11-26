@@ -7,22 +7,24 @@ var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
 httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
 httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
 
-AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.6.0_daily_tmean", @"..\..\..\..\ClimateExplorer.SourceData\Temperature\ACORN-SAT\daily_tmean", new Dictionary<string, string>{ { "tmean.060168.daily.csv", "tmean.060139.daily.csv" } });
-AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.6.0_daily_tmax", @"..\..\..\..\ClimateExplorer.SourceData\Temperature\ACORN-SAT\daily_tmax", new Dictionary<string, string> { { "tmax.060168.daily.csv", "tmax.060139.daily.csv" } });
-AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.6.0_daily_tmin", @"..\..\..\..\ClimateExplorer.SourceData\Temperature\ACORN-SAT\daily_tmin", new Dictionary<string, string> { { "tmin.060168.daily.csv", "tmin.060139.daily.csv" } });
+const string SourceDataFolder = @"..\..\..\..\ClimateExplorer.SourceData";
+
+AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.6.0_daily_tmean", $@"{SourceDataFolder}\Temperature\ACORN-SAT\daily_tmean", new Dictionary<string, string>{ { "tmean.060168.daily.csv", "tmean.060139.daily.csv" } });
+AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.6.0_daily_tmax", $@"{SourceDataFolder}\Temperature\ACORN-SAT\daily_tmax", new Dictionary<string, string> { { "tmax.060168.daily.csv", "tmax.060139.daily.csv" } });
+AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.6.0_daily_tmin", $@"{SourceDataFolder}\Temperature\ACORN-SAT\daily_tmin", new Dictionary<string, string> { { "tmin.060168.daily.csv", "tmin.060139.daily.csv" } });
 
 var outDirectories = new Dictionary<ObsCode, string>
     {
-        { ObsCode.Daily_TempMax, @"..\..\..\..\ClimateExplorer.SourceData\Temperature_BOM\daily_tempmax" }, 
-        { ObsCode.Daily_TempMin, @"..\..\..\..\ClimateExplorer.SourceData\Temperature_BOM\daily_tempmin" }, 
-        { ObsCode.Daily_Rainfall, @"..\..\..\..\ClimateExplorer.SourceData\Precipitation\BOM" },
-        { ObsCode.Daily_SolarRadiation, @"..\..\..\..\ClimateExplorer.SourceData\Solar\BOM" },
+        { ObsCode.Daily_TempMax, $@"{SourceDataFolder}\Temperature_BOM\daily_tempmax" }, 
+        { ObsCode.Daily_TempMin, $@"{SourceDataFolder}\Temperature_BOM\daily_tempmin" }, 
+        { ObsCode.Daily_Rainfall, $@"{SourceDataFolder}\Precipitation\BOM" },
+        { ObsCode.Daily_SolarRadiation, $@"{SourceDataFolder}\Solar\BOM" },
     };
 
 /*
  * 
  * 
- * Ensure you delete the contents of bin\Debug\net9.0\Output\Temp if you're running it in the new year
+ * Ensure you delete the contents of bin\Debug\netX\Output\Temp if you're running it again in the new year with an unchanged .NET version
  * 
  * Directory.Delete(@$"Output\Temp");
  * 
