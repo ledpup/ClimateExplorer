@@ -24,9 +24,7 @@ builder.Services
     .AddBlazoredLocalStorage()
     .AddHttpClient<IDataService, DataService>(client =>
     {
-#pragma warning disable SA1011 // Closing square brackets should be spaced correctly
-        client.BaseAddress = new Uri(builder.Configuration["DataServiceBaseUri"]!);
-#pragma warning restore SA1011 // Closing square brackets should be spaced correctly
+        client.BaseAddress = new Uri(builder.Configuration["DataServiceBaseUri"] !);
     });
 
 await builder.Build().RunAsync();

@@ -5,10 +5,10 @@
     "DataAdjustment": 1,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 2019,
-    "Month": 12,
-    "Day": 20,
-    "Value": 37,
+    "Year": 1994,
+    "Month": 2,
+    "Day": 8,
+    "Value": 37.2,
     "NumberOfTimes": 1
   },
   {
@@ -20,7 +20,7 @@
     "Year": 1925,
     "Month": 6,
     "Day": 21,
-    "Value": 2.6,
+    "Value": 2.4,
     "NumberOfTimes": 1
   },
   {
@@ -56,8 +56,8 @@
     "Year": 1923,
     "Month": 2,
     "Day": 8,
-    "Value": 31,
-    "NumberOfTimes": 2
+    "Value": 31.4,
+    "NumberOfTimes": 1
   },
   {
     "DataType": 1,
@@ -68,7 +68,7 @@
     "Year": 1925,
     "Month": 6,
     "Day": 21,
-    "Value": -9.4,
+    "Value": -9.7,
     "NumberOfTimes": 1
   },
   {
