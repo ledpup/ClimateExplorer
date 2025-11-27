@@ -12,7 +12,7 @@ ClimateExplorer data is updated yearly, usually from mid-January. All data is so
 
 1. If a new version of ACORN-SAT has been released, update the version number for the FTP download in the AcornSatDownloader.DownloadAndExtractData function in ClimateExplorer.Data.Bom
 1. Run **ClimateExplorer.Data.Bom**
-1. Run **ClimateExplorer.Data.Bom.CreateTempMean** (this will calculate a mean record from the min and max records downloaded in ClimateExplorer.Data.Bom
+1. Run **ClimateExplorer.Data.Bom.CreateTempMean** (this will calculate a mean record from the min and max records downloaded in ClimateExplorer.Data.Bom)
 1. Optionally run **ClimateExplorer.Data.Bom.AcornSatUpdateFromRaw** (do this step if doing the update at the start of the year, not at the time of a new version of ACORN-SAT)
 1. Build **ClimateExplorer.DataPipeline** (zips up the records for use by ClimateExplorer.WebApi)
 
