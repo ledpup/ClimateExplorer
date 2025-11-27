@@ -9,6 +9,7 @@ using ClimateExplorer.Web.Services;
 using ClimateExplorer.WebApiClient.Services;
 using CurrentDevice;
 using DPBlazorMapLibrary;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 #pragma warning restore SA1200 // Using directives should be placed correctly
 
@@ -55,6 +56,11 @@ app.UseHttpsRedirection();
 app.UseDefaultFiles();
 app.UseAntiforgery();
 app.MapStaticAssets();
+
+app.MapGet("/blog", async context =>
+{
+    context.Response.Redirect("/blog/index.html");
+});
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
