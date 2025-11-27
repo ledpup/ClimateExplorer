@@ -55,12 +55,8 @@ app.UseHttpsRedirection();
 
 app.UseDefaultFiles();
 app.UseAntiforgery();
+app.UseStaticFiles();
 app.MapStaticAssets();
-
-app.MapGet("/blog", async context =>
-{
-    context.Response.Redirect("/blog/index.html");
-});
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
