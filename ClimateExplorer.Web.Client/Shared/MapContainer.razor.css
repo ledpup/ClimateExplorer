@@ -11,12 +11,12 @@
    the styles in Index.razor.css which position the .location-info-container accordingly.
 
    The idea is:
-     - when the screen's less than 1000px wide, the map appears at the top, full-width, followed by location info, full-width.
-     - when the screen's more than 1000px wide, the location info section is at top-left, and the map is beside it at top-right. 
+     - when the screen's less than 1024px wide, the map appears at the top, full-width, followed by location info, full-width.
+     - when the screen's more than 1025px wide, the location info section is at top-left, and the map is beside it at top-right. 
        Each takes up 50% of the width of the screen. The map floats itself right. The location & map pair are followed by a div
        that has clear: both so that subsequent content doesn't overlap with the map.
 */
-@media only screen and (max-width: 1000px) {
+@media only screen and (max-width: 1024px) {
     ::deep.mapContainer.collapsed #mapId {
         box-shadow: rgb(0 0 0 / 25%) 2px 2px 12px;
         border: none;
@@ -64,7 +64,7 @@
     }
 }
 
-@media only screen and (min-width: 1000px) {
+@media only screen and (min-width: 1025px) {
     ::deep.mapContainer.collapsed #mapId {
 
         border-radius: 10px;

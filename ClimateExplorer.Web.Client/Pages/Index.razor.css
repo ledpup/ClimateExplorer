@@ -7,7 +7,7 @@
     margin-bottom: -10px;
 }
 
-@media only screen and (max-width: 1000px) {
+@media only screen and (max-width: 1024px) {
     .map-space-reserver {
         margin-bottom: 10px;
         z-index: 1;
@@ -16,7 +16,7 @@
     }
 }
 
-@media only screen and (min-width: 1000px) {
+@media only screen and (min-width: 1025px) {
     .map-space-reserver {
         z-index: 1;
         position: absolute;
