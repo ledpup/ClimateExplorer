@@ -69,8 +69,10 @@
                                         <TableRowCell>
                                             <span>
                                                 @row.CompassRoseDirection
-                                                <span style="display: inline-block; transform: rotate(@($"{row.BearingDegrees}deg"))">⭡</span>
                                             </span>
+                                        </TableRowCell>
+                                        <TableRowCell>
+                                            <span style="display: inline-block; transform: rotate(@($"{row.BearingDegrees}deg")); transform-origin: center;">↑</span>
                                         </TableRowCell>
                                     </TableRow>
                                 }
