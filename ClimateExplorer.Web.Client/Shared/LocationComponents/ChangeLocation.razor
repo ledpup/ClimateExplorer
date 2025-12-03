@@ -27,8 +27,6 @@
                     </Div>
                 }
             
-            
-            <Div Class="mt-3">Click "random location" to go to a random location from around the world.</Div>
             <Div Class="mt-1"><Button Clicked="@RandomLocationClicked" Color="Color.Secondary">Random location</Button></Div>
             
             <Field Class="mt-3">
@@ -50,33 +48,33 @@
             {
                 <Field>
                     <FieldLabel>Select a nearby location</FieldLabel>
-                    <Alert Color="Color.Secondary" Visible="true">
-                        <Table Borderless Narrow>
-                            <TableBody>
-                                @foreach (var row in SelectedLocation.NearbyLocations!)
-                                {
-                                    var location = nearbyLocationCache![SelectedLocation.Id]!.Single(x => x.Id == row.LocationId);
-                                    <TableRow class="table-row">
-                                        <TableRowCell>
-                                            <Blazorise.Link Title="@location.Name"
-                                                            To="#"
-                                                            Clicked="@(()=>FireOnLocationChange(row.LocationId))">
-                                                @location.Name
-                                            </Blazorise.Link>
-                                        </TableRowCell>
-                                        <TableRowCell>@location.Country</TableRowCell>
-                                        <TableRowCell>@(row.Distance) km</TableRowCell>
-                                        <TableRowCell>
-                                            <span>
-                                                @row.CompassRoseDirection
-                                                <span style="display: inline-block; transform: rotate(@($"{row.BearingDegrees}deg"))">⭡</span>
-                                            </span>
-                                        </TableRowCell>
-                                    </TableRow>
-                                }
-                            </TableBody>
-                        </Table>
-                    </Alert>
+                    <Table Borderless Narrow Striped>
+                        <TableBody>
+                            @foreach (var row in SelectedLocation.NearbyLocations!)
+                            {
+                                var location = nearbyLocationCache![SelectedLocation.Id]!.Single(x => x.Id == row.LocationId);
+                                <TableRow class="table-row">
+                                    <TableRowCell>
+                                        <Blazorise.Link Title="@location.Name"
+                                                        To="#"
+                                                        Clicked="@(()=>FireOnLocationChange(row.LocationId))">
+                                            @location.Name
+                                        </Blazorise.Link>
+                                    </TableRowCell>
+                                    <TableRowCell>@location.Country</TableRowCell>
+                                    <TableRowCell>@(row.Distance) km</TableRowCell>
+                                    <TableRowCell>
+                                        <span>
+                                            @row.CompassRoseDirection
+                                        </span>
+                                    </TableRowCell>
+                                    <TableRowCell>
+                                        <span style="display: inline-block; transform: rotate(@($"{row.BearingDegrees}deg")); transform-origin: center;">↑</span>
+                                    </TableRowCell>
+                                </TableRow>
+                            }
+                        </TableBody>
+                    </Table>
                 </Field>
             }
         </ModalBody>
