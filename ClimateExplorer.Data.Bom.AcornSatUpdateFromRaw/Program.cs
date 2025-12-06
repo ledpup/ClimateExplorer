@@ -122,9 +122,10 @@ async Task UpdateAcornSatRecordsFromRaw(DataSetDefinition bom, DataSetDefinition
         }
 
         Console.WriteLine($"{dataType}: Finished station {station.Id}");
-    }//);
+    }
 }
 
+#pragma warning disable CS8321 // Local function is declared but never used
 static void CreateMappingTables(List<AdjustmentRecord> adjustments)
 {
     Dictionary<string, MappingRecord> mapping = [];
@@ -174,6 +175,7 @@ static void CreateMappingTables(List<AdjustmentRecord> adjustments)
 
     DumpMapping(mapping);
 }
+#pragma warning restore CS8321 // Local function is declared but never used
 
 static void DumpMapping(Dictionary<string, MappingRecord> mapping)
 {

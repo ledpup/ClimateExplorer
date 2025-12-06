@@ -9,7 +9,6 @@ using ClimateExplorer.Web.Services;
 using ClimateExplorer.WebApiClient.Services;
 using CurrentDevice;
 using DPBlazorMapLibrary;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 #pragma warning restore SA1200 // Using directives should be placed correctly
 
@@ -30,6 +29,7 @@ builder.Services
     .AddTransient<IExporter, Exporter>()
     .AddCurrentDeviceService()
     .AddBlazoredLocalStorage()
+    .AddMemoryCache()
     .AddHttpClient<IDataService, DataService>(client =>
     {
         client.BaseAddress = new Uri(builder.Configuration["DataServiceBaseUri"] !);
