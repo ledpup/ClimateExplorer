@@ -1,0 +1,78 @@
+﻿@using ClimateExplorer.Web.UiModel
+@using static ClimateExplorer.Core.Enums
+
+@if (LocationName is not null && LocationMean is not null && UnitOfMeasure is not null && DataRecords is not null)
+{
+    <p><a href="https://en.wikipedia.org/wiki/Warming_stripes" target="_blank">Climate stripes</a> are a simplified bar chart of average weather phenomena, ordered by year, from the earliest year in the record until the most recent. Each coloured stripe represents a single year of data. A blue stripe is a year where the value is below the average of the whole series. A red stripe represents an above average value.</p>
+    <p>Climate stripe colours are calculated by the following algorithm, using temperature as the example.</p>
+    <ol>
+        <li>
+            Calculate the average for the whole series<br />
+            (The <strong>@LocationName</strong> mean is @Math.Round(LocationMean.Value, uomRounding)@uomString for years @DataRecords!.First().Year-@DataRecords!.Last().Year)
+        </li>
+        <li>
+            For each year in the series, subtract the average for the <strong>series</strong> from the average for the <strong>year</strong><br />
+            (If the series average is @Math.Round(LocationMean.Value, uomRounding)@uomString and an example yearly average is @Math.Round(LocationMean.Value - 1.3, uomRounding)@(uomString), the result is -1.3@(uomString))<br />
+            Note:
+            <ul>
+                <li>This value in step 2 is often called the anomaly</li>
+                <li>If the anomaly is above 0@(uomString), we consider it a warmer than average year</li>
+                <li>If the anomaly is below 0@(uomString), we consider it a colder than average year</li>
+            </ul>
+        </li>
+        <li>
+            Find the coldest temperature anomaly and assign it the strongest colour of blue<br />
+            (The coldest <strong>@LocationName</strong> temperature anomaly is @(Math.Round(min, uomRounding) >= 0 ? "+" : string.Empty)@Math.Round(min, uomRounding)@uomString)
+        </li>
+        <li>
+            Find the warmest temperature anomaly and assign it the strongest colour of red<br />
+            (The warmest <strong>@LocationName</strong> temperature anomaly is @(Math.Round(max, uomRounding) >= 0 ? "+" : string.Empty)@Math.Round(max, uomRounding)@uomString)
+        </li>
+        <li>All anomalies between the extremes are lighter shades of blue or red</li>
+    </ol>
+    <p>ClimateExplorer's stripe is interactive. Hover over any year in the series then click. The chart will update with a monthly view of the selected year.</p>
+}
+
+@code {
+    private double min;
+    private double max;
+
+    private string? uomString;
+    private int uomRounding;
+
+    [Parameter]
+    public string? LocationName { get; set; }
+
+    [Parameter]
+    public double? LocationMean { get; set; }
+
+    [Parameter]
+    public UnitOfMeasure? UnitOfMeasure { get; set; }
+
+    [Parameter]
+    public List<YearlyValues>? DataRecords { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (UnitOfMeasure == null)
+        {
+            return;
+        }
+
+        uomString = UnitOfMeasureLabelShort(UnitOfMeasure.Value);
+        uomRounding = UnitOfMeasureRounding(UnitOfMeasure.Value);
+
+        if (LocationMean == null)
+        {
+            return;
+        }
+
+        if (DataRecords != null)
+        {
+            min = DataRecords.Min(x => x.Relative);
+            max = DataRecords.Max(x => x.Relative);
+        }
+
+        await base.OnParametersSetAsync();
+    }
+}
