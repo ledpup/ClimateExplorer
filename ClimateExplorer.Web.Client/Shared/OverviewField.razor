@@ -4,28 +4,37 @@
 <div class="overview-field" title="@(Tooltip == null ? title : Tooltip)" @onclick="ShowPopup">
     <div class="label">@Label</div>
     <div class="value">
-        @if (PopupText != null)
-    {
-        <a>@Value</a>
-    }
-    else
-    {
-        @Value
-    }
+        @if (PopupContent != null || !string.IsNullOrWhiteSpace(PopupText))
+        {
+            <a>@Value</a>
+        }
+        else
+        {
+            @Value
+        }
     </div>
     <div class="additional-info">@AdditionalInfo</div>
 </div>
 
-@if (!string.IsNullOrWhiteSpace(PopupText))
+@if (PopupContent != null || !string.IsNullOrWhiteSpace(PopupText))
 {
     <Modal @ref="popup">
         <ModalContent Size="ModalSize.Large">
             <ModalHeader>
-                <ModalTitle>@(PopupTitle == null ? Label : PopupTitle)</ModalTitle>
+                <ModalTitle>
+                    @(string.IsNullOrWhiteSpace(PopupTitle) ? Label : PopupTitle)
+                </ModalTitle>
                 <CloseButton />
             </ModalHeader>
             <ModalBody>
-                @((MarkupString)PopupText)
+                @if (PopupContent != null)
+                {
+                    @PopupContent
+                }
+                else
+                {
+                    @((MarkupString)PopupText!)
+                }
             </ModalBody>
         </ModalContent>
     </Modal>
@@ -36,11 +45,22 @@
     {
         get
         {
-            if (string.IsNullOrWhiteSpace(PopupText))
+            if (!string.IsNullOrWhiteSpace(PopupTitle))
             {
-                return string.Empty;
+                return PopupTitle!;
             }
-            return Regex.Replace(PopupText, "<.*?>", String.Empty);
+
+            if (!string.IsNullOrWhiteSpace(PopupText))
+            {
+                return Regex.Replace(PopupText, "<.*?>", String.Empty);
+            }
+
+            if (PopupContent != null)
+            {
+                return Label ?? string.Empty;
+            }
+
+            return string.Empty;
         }
     }
 
@@ -59,8 +79,13 @@
     [Parameter]
     public string? PopupTitle { get; set; }
 
+    // Backwards-compatible string content
     [Parameter]
     public string? PopupText { get; set; }
+
+    // Allow custom components/content inside the modal body
+    [Parameter]
+    public RenderFragment? PopupContent { get; set; }
 
     private Modal? popup;
     private async Task ShowPopup()
@@ -70,9 +95,17 @@
             return;
         }
 
-        if (!string.IsNullOrWhiteSpace(PopupText))
+        if (PopupContent != null || !string.IsNullOrWhiteSpace(PopupText))
         {
             await popup.Show();
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (PopupContent != null && PopupText != null)
+        {
+            throw new InvalidOperationException("Cannot set both PopupContent and PopupText parameters. Please choose one.");
         }
     }
 }

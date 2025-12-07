@@ -1,0 +1,80 @@
+﻿@using Blazorise
+@using ClimateExplorer.Core.Model
+@using ClimateExplorer.WebApiClient.Services
+@using Microsoft.Extensions.Caching.Memory
+@using System
+
+@if (Location != null && HeatingScoreTable != null)
+{
+    <p>The heating score is a number between 0 and 9. It is calculated by ordering all warming anomalies across the locations in the dataset into 10 sets of <a href="https://en.wikipedia.org/wiki/Percentile" target=" _blank">percentiles</a>. Each set is a single heating score and it represents 10% of the total number of locations.</p>
+    <p>For example, the top ten 10% of warming anomalies are scored as a 9, the bottom 10% are scored as 0.</p>
+    <p>Negative warming anomalies are scored differently; they use the warming anomaly, rounded to zero decimal places as the score. This is to highlight any location that has not warmed.</p>
+    <p>Although the heating score compares locations, its not a fully standardised metric. The biggest influences of scores between locations are:</p>
+    <ul>
+        <li>The station(s) has been operating for a long time. The effect of global warming is more obvious with many records as temperatures in the past were cooler.</li>
+        <li>The location is inland. The ocean is warming more slowly compared with the land. Coastal locations are therefore likely to have warmed less than inland locations.</li>
+    </ul>
+    <p>
+        The table below lists each heating score and the range of warming anomalies that bound the score.
+    </p>
+
+    @if (Location.WarmingAnomaly.HasValue)
+    {
+        <p>
+            Its warming anomaly for <strong>@Location.Name</strong> is <strong>@(Location.WarmingAnomaly!.Value.ToString("0.00"))°C</strong>. Its heating score is <Strong>@Location.HeatingScore</Strong>, highlighted below.
+        </p>
+    }
+    
+    <Table Narrow Striped>
+        <TableHeader>
+            <TableRow>
+                <TableHeaderCell Style="text-align: left;"><Strong>Heating score</Strong></TableHeaderCell>
+                <TableHeaderCell><Strong>Warming anomaly range (°C)</Strong></TableHeaderCell>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+        @foreach (var heatingScoreRow in HeatingScoreTable)
+        {
+            <TableRow Color="@(Location.HeatingScore == heatingScoreRow.Score ? Color.Info : Color.Default)">
+                <TableRowCell>@heatingScoreRow.Score</TableRowCell>
+                <TableRowCell>@heatingScoreRow.MinimumWarmingAnomaly.ToString("0.00") - @heatingScoreRow.MaximumWarmingAnomaly.ToString("0.00")</TableRowCell>
+            </TableRow>
+        }
+        </TableBody>
+    </Table>
+}
+
+@code
+{
+    [Inject]
+    public IDataService? DataService { get; set; }
+
+    [Inject]
+    public IMemoryCache? MemoryCache { get; set; }
+
+    [Parameter]
+    public Location? Location { get; set; }
+
+    [PersistentState]
+    public IEnumerable<HeatingScoreRow>? HeatingScoreTable { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        const string cacheKey = "HeatingScoreTable";
+
+        if (MemoryCache != null && MemoryCache.TryGetValue(cacheKey, out IEnumerable<HeatingScoreRow>? cachedTable))
+        {
+            HeatingScoreTable = cachedTable;
+        }
+        else
+        {
+            var table = await DataService!.GetHeatingScoreTable();
+            HeatingScoreTable = table;
+
+            if (MemoryCache != null)
+            {
+                MemoryCache.Set(cacheKey, table);
+            }
+        }
+    }
+}

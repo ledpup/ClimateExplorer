@@ -1,10 +1,10 @@
 ﻿namespace ClimateExplorer.Web.Client.Shared.LocationComponents;
 
 using Blazorise;
+using ClimateExplorer.Core;
 using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;
 using static ClimateExplorer.Core.Enums;
-using ClimateExplorer.Core;
 
 public partial class ClimateStripe
 {
@@ -16,6 +16,9 @@ public partial class ClimateStripe
 
     private Modal? popup;
 
+    [Inject]
+    public ILogger<ClimateStripe>? Logger { get; set; }
+
     [Parameter]
     public string? LocationName { get; set; }
 
@@ -26,34 +29,25 @@ public partial class ClimateStripe
     public List<YearlyValues>? DataRecords { get; set; }
 
     [Parameter]
-    public UnitOfMeasure UnitOfMeasure { get; set; }
+    public UnitOfMeasure? UnitOfMeasure { get; set; }
 
     [Parameter]
     public bool ShowInfo { get; set; }
 
-    [Inject]
-    public ILogger<ClimateStripe>? Logger { get; set; }
-
     [Parameter]
     public EventCallback<short> OnYearFilterChange { get; set; }
 
-    public string? PopupText { get; set; }
-
-    private List<YearlyValues>? PreviouslySeenDataRecords { get; set; }
-
     protected override async Task OnParametersSetAsync()
     {
-        uomString = UnitOfMeasureLabelShort(UnitOfMeasure);
-        uomRounding = UnitOfMeasureRounding(UnitOfMeasure);
-
-        var weatherPhenomenon = UnitOfMeasure == UnitOfMeasure.Millimetres ? "precipitation" : "temperature";
-
-        if (LocationMean == null)
+        if (UnitOfMeasure == null)
         {
             return;
         }
 
-        if (YearAndValueListsAreEqual(PreviouslySeenDataRecords!, DataRecords!))
+        uomString = UnitOfMeasureLabelShort(UnitOfMeasure.Value);
+        uomRounding = UnitOfMeasureRounding(UnitOfMeasure.Value);
+
+        if (LocationMean == null)
         {
             return;
         }
@@ -64,122 +58,56 @@ public partial class ClimateStripe
             max = DataRecords.Max(x => x.Relative);
         }
 
-        PreviouslySeenDataRecords = DataRecords;
-
-        var url = "\"https://en.wikipedia.org/wiki/Warming_stripes\"";
-
-        PopupText = $@"<p><a href={url} target=""_blank"">Climate stripes</a> are a simplified bar chart of average weather phenomena, ordered by year, from the earliest year in the record until the most recent. Each coloured stripe represents a single year of data. A blue stripe is a year where the value is below the average of the whole series. A red stripe represents an above average value.</p>
-<p>Climate stripe colours are calculated by the following algorithm, using temperature as the example.</p>
-<ol>
-<li>Calculate the average for the whole series
-<br>(The <strong>{LocationName}</strong> mean is {Math.Round(LocationMean.Value, uomRounding)}{uomString} for years {DataRecords!.First().Year}-{DataRecords!.Last().Year})</li>
-<li>For each year in the series, subtract the average for the <strong>series</strong> from the average for the <strong>year</strong>
-<br>(If the series average is {Math.Round(LocationMean.Value, uomRounding)}{uomString} and an example yearly average is {Math.Round(LocationMean.Value - 1.3, uomRounding)}{uomString}, the result is -1.3{uomString})
-<br>Note:</li>
-    <ul>
-        <li>This value in step 2 is often called the anomaly</li>
-        <li>If the anomaly is above 0{uomString}, we consider it a warmer than average year</li>
-        <li>If the anomaly is below 0{uomString}, we consider it a colder than average year</li>
-    </ul>
-<li>Find the coldest temperature anomaly and assign it the strongest colour of blue
-<br>(The coldest <strong>{LocationName}</strong> temperature anomaly is {(Math.Round(min, uomRounding) >= 0 ? "+" : string.Empty)}{Math.Round(min, uomRounding)}{uomString})</li>
-<li>Find the warmest temperature anomaly and assign it the strongest colour of red
-<br>(The warmest <strong>{LocationName}</strong> temperature anomaly is {(Math.Round(max, uomRounding) >= 0 ? "+" : string.Empty)}{Math.Round(max, uomRounding)}{uomString})</li>
-<li>All anomalies between the extremes are lighter shades of blue or red</li>
-</ol>
-<p>Climate Explorer's stripe is interactive. Hover over any year in the series then click. The chart will update with a monthly view of the selected year.";
-
         await base.OnParametersSetAsync();
     }
 
     private Task ShowClimateStripeInfo()
     {
-        if (!string.IsNullOrWhiteSpace(PopupText))
-        {
-            return popup!.Show();
-        }
-
-        return Task.CompletedTask;
-    }
-
-    private bool YearAndValueListsAreEqual(List<YearlyValues> a, List<YearlyValues> b)
-    {
-        // If they're both null, the lists are the same
-        if (a == null && b == null)
-        {
-            return true;
-        }
-
-        // If one is null, the lists are different
-        if (a == null || b == null)
-        {
-            return false;
-        }
-
-        // If length is different, the lists are different
-        if (a.Count != b.Count)
-        {
-            return false;
-        }
-
-        for (int i = 0; i < a.Count; i++)
-        {
-            // If a year is different, the lists are different
-            if (a[i].Year != b[i].Year)
-            {
-                return false;
-            }
-
-            // If a value is different, the lists are different
-            if (a[i].Absolute != b[i].Absolute)
-            {
-                return false;
-            }
-        }
-
-        return true;
+        return popup!.Show();
     }
 
     private string GetColour(double value)
     {
-        Colour colour = default(Colour);
-        if (UnitOfMeasure == UnitOfMeasure.DegreesCelsius)
-        {
-            if (value > 0)
-            {
-                colour = Colour.Blend(new Colour { R = 255, G = 0, B = 0 }, new Colour { R = 255, G = 245, B = 240 }, value / max);
-            }
-            else
-            {
-                colour = Colour.Blend(new Colour { R = 0, G = 0, B = 255 }, new Colour { R = 240, G = 245, B = 255 }, value / min);
-            }
-        }
+        Colour colour = default;
 
-        if (UnitOfMeasure == UnitOfMeasure.Millimetres)
+        if (UnitOfMeasure.HasValue)
         {
-            if (value > 0)
+            if (UnitOfMeasure.Value == Enums.UnitOfMeasure.DegreesCelsius)
             {
-                colour = Colour.Blend(new Colour { R = 18, G = 140, B = 74 }, new Colour { R = 240, G = 255, B = 245 }, value / max);
+                if (value > 0)
+                {
+                    colour = Colour.Blend(new Colour { R = 255, G = 0, B = 0 }, new Colour { R = 255, G = 245, B = 240 }, value / max);
+                }
+                else
+                {
+                    colour = Colour.Blend(new Colour { R = 0, G = 0, B = 255 }, new Colour { R = 240, G = 245, B = 255 }, value / min);
+                }
             }
-            else
+
+            if (UnitOfMeasure!.Value == Enums.UnitOfMeasure.Millimetres)
             {
-                colour = Colour.Blend(new Colour { R = 138, G = 51, B = 36 }, new Colour { R = 255, G = 245, B = 245 }, value / min);
+                if (value > 0)
+                {
+                    colour = Colour.Blend(new Colour { R = 18, G = 140, B = 74 }, new Colour { R = 240, G = 255, B = 245 }, value / max);
+                }
+                else
+                {
+                    colour = Colour.Blend(new Colour { R = 138, G = 51, B = 36 }, new Colour { R = 255, G = 245, B = 245 }, value / min);
+                }
             }
         }
 
         return $"rgba({colour.R}, {colour.G}, {colour.B}, 80%)";
-
-        throw new NotImplementedException();
     }
 
-    private string GetRelativeValue(YearlyValues values) => UnitOfMeasure == UnitOfMeasure.Millimetres ? $"{Math.Round(values.PercentageOfAverage, 0)}%" : $"{(values.Relative >= 0 ? "+" : string.Empty)}{Math.Round(values.Relative, uomRounding)}{uomString}";
+    private string GetRelativeValue(YearlyValues values) => UnitOfMeasure == Enums.UnitOfMeasure.Millimetres ? $"{Math.Round(values.PercentageOfAverage, 0)}%" : $"{(values.Relative >= 0 ? "+" : string.Empty)}{Math.Round(values.Relative, uomRounding)}{uomString}";
     private string GetAbsoluteValue(double v) => $"{Math.Round(v, uomRounding)}{uomString}";
 
     private string GetTitle(YearlyValues values)
     {
         var aboveOrBelow = values.Relative > 0 ? "above" : "below";
         var title = $"Year {values.Year}\r\n";
-        if (UnitOfMeasure == UnitOfMeasure.Millimetres)
+        if (UnitOfMeasure == Enums.UnitOfMeasure.Millimetres)
         {
             title += $"Precipitation total of {Math.Round(values.Absolute, uomRounding)}{uomString}\r\n";
             title += $"{Math.Abs(Math.Round(values.Relative, uomRounding))}{uomString} {aboveOrBelow} average\r\n";
@@ -196,12 +124,11 @@ public partial class ClimateStripe
 
     private string GetTextColour(double value, string lightTextColour, string darkTextColour)
     {
-        if (UnitOfMeasure == UnitOfMeasure.DegreesCelsius)
+        if (UnitOfMeasure == Enums.UnitOfMeasure.DegreesCelsius)
         {
             return Math.Round(value, uomRounding) <= min / 2 ? lightTextColour : darkTextColour;
         }
-
-        if (UnitOfMeasure == UnitOfMeasure.Millimetres)
+        else if (UnitOfMeasure == Enums.UnitOfMeasure.Millimetres)
         {
             return value > 0 ? Math.Round(value, uomRounding) > max / 1.4 ? lightTextColour : darkTextColour
                              : Math.Round(value, uomRounding) < min / 1.4 ? lightTextColour : darkTextColour;

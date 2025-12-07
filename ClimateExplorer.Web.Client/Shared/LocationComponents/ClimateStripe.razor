@@ -1,4 +1,5 @@
 ﻿@using Blazorise
+@using ClimateExplorer.Web.Client.Shared.PopupContent
 @using ClimateExplorer.Web.UiModel
 @using ClimateExplorer.Core.DataPreparation
 @using static ClimateExplorer.Core.Enums
@@ -24,7 +25,7 @@
         }
     }
 
-    @if (PopupText != null)
+    @if (ShowInfo)
     {
         <Modal @ref="popup">
             <ModalContent Size="ModalSize.Large">
@@ -33,7 +34,7 @@
                     <CloseButton />
                 </ModalHeader>
                 <ModalBody>
-                    @((MarkupString)PopupText)
+                    <ClimateStripeContent LocationName="@LocationName" LocationMean="@LocationMean" UnitOfMeasure="@UnitOfMeasure" DataRecords="@DataRecords" />
                 </ModalBody>
             </ModalContent>
         </Modal>

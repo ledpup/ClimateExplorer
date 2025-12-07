@@ -10,6 +10,7 @@
 @using ClimateExplorer.Core.DataPreparation
 @using System.Globalization
 @using ClimateExplorer.WebApiClient.Services
+@using ClimateExplorer.Web.Client.Shared.PopupContent
 @using static ClimateExplorer.Core.Enums
 
 <LoadingIndicator @bind-Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
@@ -27,23 +28,23 @@
             <OverviewField Label="Location"><Value><a href="@LocationMapUrl" target="_blank">@GeoLocationAsString</a></Value></OverviewField>
             @if (WarmingAnomalyAsString != null && WarmingAnomalyAsString != "NA")
             {
-                <OverviewField Label="Warming anomaly" PopupText="@WarmingAnomalyDescription"><Value>@(WarmingAnomalyAsString == null ? "NA" : WarmingAnomalyAsString)</Value></OverviewField>
-                <OverviewField Label="Heating score" PopupText="@HeatingScoreDescription"><Value>@(Location!.HeatingScore == null ? "NA" : Location.HeatingScore)</Value></OverviewField>
+                <OverviewField Label="Warming anomaly" PopupContent="@WarmingAnomalyContent"><Value>@(WarmingAnomalyAsString == null ? "NA" : WarmingAnomalyAsString)</Value></OverviewField>
+                <OverviewField Label="Heating score" PopupContent="@HeatingScoreContent"><Value>@(Location!.HeatingScore == null ? "NA" : Location.HeatingScore)</Value></OverviewField>
             }
             @if (RecordHigh != null)
             {
-                <OverviewField Label="Record high" PopupTitle="@("Record highs and lows for " + Location?.Name)" PopupText="@ClimateRecordsDescription" ToolTip="@RecordHighToolTip"><Value>@(RecordHigh == null ? "NA" : RecordHigh.Year)</Value></OverviewField>
+                <OverviewField Label="Record high" PopupTitle="@("Record highs and lows for " + Location?.Name)" PopupContent="@ClimateRecordsContent" ToolTip="@RecordHighToolTip"><Value>@(RecordHigh == null ? "NA" : RecordHigh.Year)</Value></OverviewField>
             }
             @if (precipitation && PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
             {
                 <OverviewField Label="Precipitation anomaly"><Value>@(PrecipitationAnomalyAsString == null ? "NA" : PrecipitationAnomalyAsString)</Value></OverviewField>
             }
-            <ClimateStripe UnitOfMeasure="UnitOfMeasure.DegreesCelsius" LocationName=@Location?.Name LocationMean=@TemperatureLocationMean DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange ShowInfo="true" />
-            <WarmestYears DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange=HandleOnYearFilterChange />
+            <ClimateStripe UnitOfMeasure="UnitOfMeasure.DegreesCelsius" LocationName=@Location?.Name LocationMean=@TemperatureLocationMean DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" ShowInfo="true" />
+            <WarmestYears DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" />
             @if (precipitation && PrecipitationLocationMean != null)
             {
-                <ClimateStripe UnitOfMeasure="UnitOfMeasure.Millimetres" LocationName=@Location?.Name LocationMean=@PrecipitationLocationMean DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange=HandleOnPrecipitationYearFilterChange ShowInfo="false" />
-                <DriestYears DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange=HandleOnPrecipitationYearFilterChange />
+                <ClimateStripe UnitOfMeasure="UnitOfMeasure.Millimetres" LocationName=@Location?.Name LocationMean=@PrecipitationLocationMean DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange="HandleOnPrecipitationYearFilterChange" ShowInfo="false" />
+                <DriestYears DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange="HandleOnPrecipitationYearFilterChange" />
             }
         </Content>
     </Collapsible>
@@ -83,7 +84,7 @@
 
     List<YearlyValues>? TemperatureAnomalyRecords { get; set; }
     double? TemperatureLocationMean { get; set; }
-    string? WarmingAnomalyDescription;
+    RenderFragment? WarmingAnomalyContent;
     string? WarmingAnomalyAsString;
 
     List<YearlyValues>? PrecipitationAnomalyRecords { get; set; }
@@ -94,12 +95,11 @@
 
     DataType? TemperatureDataType { get; set; }
 
-    string? HeatingScoreDescription;
-    IEnumerable<HeatingScoreRow>? HeatingScoreTable { get; set; }
+    RenderFragment? HeatingScoreContent;
 
     ClimateRecord? RecordHigh { get; set; }
     string? RecordHighToolTip { get; set; }
-    string? ClimateRecordsDescription;
+    RenderFragment? ClimateRecordsContent;
 
     public void ChangeLocationClicked(EventArgs args)
     {
@@ -138,13 +138,13 @@
 
         TemperatureDataType = null;
         WarmingAnomalyAsString = null;
-        WarmingAnomalyDescription = null;
+        WarmingAnomalyContent = null;
         TemperatureLocationMean = null;
         TemperatureAnomalyRecords = null;
 
         RecordHigh = null;
         RecordHighToolTip = null;
-        ClimateRecordsDescription = null;
+        ClimateRecordsContent = null;
 
         // We can't do anything until we're supplied our tasty, tasty DataSetDefinitions
         if (DataSetDefinitions == null)
@@ -161,8 +161,16 @@
         if (temperatureAnomaly != null)
         {
             TemperatureDataType = temperatureAnomaly.DataSet?.DataType;
-            WarmingAnomalyAsString = GetWarmingAnomalyAsString(temperatureAnomaly.CalculatedAnomaly!);
-            WarmingAnomalyDescription = GenerateWarmingAnomalyDescription(temperatureAnomaly.CalculatedAnomaly!);
+            WarmingAnomalyAsString = temperatureAnomaly.CalculatedAnomaly!.ValueAsString();
+            WarmingAnomalyContent = Location == null
+                    ? null
+                    : builder =>
+                    {
+                        builder.OpenComponent(0, typeof(WarmingAnomalyContent));
+                        builder.AddAttribute(1, "Location", Location);
+                        builder.AddAttribute(2, "CalculatedAnomaly", temperatureAnomaly.CalculatedAnomaly);
+                        builder.CloseComponent();
+                    };
             TemperatureLocationMean = temperatureAnomaly?.DataSet?.DataRecords.Average(x => x.Value);
             TemperatureAnomalyRecords = temperatureAnomaly?.AnomalyRecords;
         }
@@ -177,92 +185,29 @@
             }
             RecordHigh = max.Single();
             RecordHighToolTip = $"{Location.Name} record high of {RecordHigh.Value}°C set {(RecordHigh.Day == null ? string.Empty : RecordHigh.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(RecordHigh.Month)} {RecordHigh.Year}.\r\nClick for more records.";
-            BuildClimateRecordsTable(climateRecords);
+            
+            ClimateRecordsContent = Location == null
+                    ? null
+                    : builder =>
+                    {
+                        builder.OpenComponent(0, typeof(ClimateRecordsContent));
+                        builder.AddAttribute(1, "ClimateRecords", climateRecords);
+                        builder.CloseComponent();
+                    };
         }
 
-        BuildHeatingScoreDescription();
+        HeatingScoreContent = Location == null
+                            ? null
+                            : builder =>
+                            {
+                                builder.OpenComponent(0, typeof(HeatingScoreContent));
+                                builder.AddAttribute(1, "Location", Location);
+                                builder.CloseComponent();
+                            };
 
         LocationLoadingIndicatorVisible = false;
 
         await base.OnParametersSetAsync();
-    }
-
-    protected void BuildClimateRecordsTable(IEnumerable<ClimateRecord> climateRecords)
-    {
-        ClimateRecordsDescription = "";
-        var daGroups = climateRecords.GroupBy(x => x.DataAdjustment);
-        foreach (var daGroup in daGroups)
-        {
-            ClimateRecordsDescription += $"<h5 class=\"mt-5 mb-0\">{(daGroup.Key == null ? "Other" : daGroup.Key)} records</h5>";
-            ClimateRecordsDescription += "<table class=\"table mb-3\"><tr><th width=\"40%\"></th><th>Record low</th><th>Record high</th></tr>";
-
-            var dtGroups = daGroup.GroupBy(x => x.DataType);
-
-            foreach (var dtGroup in dtGroups)
-            {
-                var drGroups = dtGroup.GroupBy(x => x.DataResolution);
-
-                foreach (var drGroup in drGroups)
-                {
-                    ClimateRecordsDescription += $"<tr><td>{drGroup.Key} {ChartSeriesDefinition.MapDataTypeToFriendlyName(dtGroup.Key).ToLower()}</td>";
-
-                    var recordHigh = drGroup.Single(x => x.RecordType == RecordType.High);
-                    var recordLow = drGroup.Single(x => x.RecordType == RecordType.Low);
-
-                    ClimateRecordsDescription += $"<td><span class=\"secondary-text\">{(recordLow.Day == null ? string.Empty : recordLow.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(recordLow.Month)}</span> {recordLow.Year}<div class=\"secondary-text\">{recordLow.Value}{Enums.UnitOfMeasureLabelShort(recordLow.UnitOfMeasure)}</div></td>";
-                    ClimateRecordsDescription += $"<td><span class=\"secondary-text\">{(recordHigh.Day == null ? string.Empty : recordHigh.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(recordHigh.Month)}</span> {recordHigh.Year}<div class=\"secondary-text\">{recordHigh.Value}{Enums.UnitOfMeasureLabelShort(recordHigh.UnitOfMeasure)}</div></td>";
-
-                    ClimateRecordsDescription += "</tr>";
-                }
-            }
-
-            ClimateRecordsDescription += "</table>";
-        }
-    }
-
-    protected void BuildHeatingScoreDescription()
-    {
-        if (HeatingScoreTable == null || Location == null)
-        {
-            return;
-        }
-
-        HeatingScoreDescription = $@"<p>The heating score is a number between 0 and 9. It is calculated by ordering all warming anomalies across the locations in the dataset into 10 sets of <a href=""https://en.wikipedia.org/wiki/Percentile"" target=""_blank"">percentiles</a>. Each set is a single heating score and it represents 10% of the total number of locations.</p>
-<p>For example, the top ten 10% of warming anomalies are scored as a 9, the bottom 10% are scored as 0.</p>
-<p>Negative warming anomalies are scored differently; they use the warming anomaly, rounded to zero decimal places as the score. This is to highlight any location that has not warmed.</p>
-<p>Although the heating score compares locations, its not a fully standardised metric. The biggest influences of scores between locations are:</p>
-<ul>
-<li>The station(s) has been operating for a long time. The effect of global warming is more obvious with many records as temperatures in the past were cooler.</li>
-<li>The location is inland. The ocean is warming more slowly compared with the land. Coastal locations are therefore likely to have warmed less than inland locations.</li>
-</ul>
-<p>The table below lists each heating score and the range of warming anomalies that bound the score.";
-
-        if (Location.WarmingAnomaly.HasValue)
-        {
-            HeatingScoreDescription += $"<br>The heating score for <strong>{Location.Name}</strong> is highlighted - its warming anomaly is <strong>{Location.WarmingAnomaly!.Value.ToString("0.00")}°C</strong>.";
-        }
-
-        HeatingScoreDescription += "</p>";
-
-        HeatingScoreDescription += "<table class=\"table table-bordered table-sm\">";
-
-        HeatingScoreDescription += "<tr><th>Heating score</th><th>Warming anomaly range (°C)</th></tr>";
-
-        foreach (var heatingScoreRow in HeatingScoreTable)
-        {
-            var highlight = Location.HeatingScore == heatingScoreRow.Score ? " class=\"table-info\"" : null;
-            HeatingScoreDescription += $"<tr{highlight}><td>{heatingScoreRow.Score}</td><td>{heatingScoreRow.MinimumWarmingAnomaly.ToString("0.00")} - {heatingScoreRow.MaximumWarmingAnomaly.ToString("0.00")}</td></tr>";
-        }
-
-        HeatingScoreDescription += "</table>";
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            HeatingScoreTable = await DataService!.GetHeatingScoreTable();
-        }
     }
 
     protected async Task<LocationAnomalySummary?> CalculateAnomaly(List<DataSubstitute> dataSubstitutes, ContainerAggregationFunctions function)
@@ -348,42 +293,6 @@
         var value = anomaly.AnomalyValue;
 
         return $"{(value >= 0 ? "+" : "")}{string.Format("{0:0}", value)}mm";
-    }
-
-    static string GetWarmingAnomalyAsString(CalculatedAnomaly warmingAnomaly)
-    {
-        if (warmingAnomaly == null) return "NA";
-
-        return $"{(warmingAnomaly.AnomalyValue >= 0 ? "+" : "")}{string.Format("{0:0.0}", warmingAnomaly.AnomalyValue)}°C";
-    }
-
-    string GenerateWarmingAnomalyDescription(CalculatedAnomaly warmingAnomaly)
-    {
-        if (Location == null)
-        {
-            return "NA";
-        }
-
-        string warmingAnomalyAsString = GetWarmingAnomalyAsString(warmingAnomaly);
-
-        if (warmingAnomaly == null)
-        {
-            return $@"<p>The warming anomaly is the temperature difference between the average of the last 30 years of temperatures compared with the average of the first half of the dataset. 30 years was chosen to fit the convention of the <a href=""https://en.wikipedia.org/wiki/Climatological_normal"" target=""_blank"">climatological normal</a>. The first half of the dataset is used as a proxy for a natural baseline; it is expected to be less affected by anthropogenic warming.</p>
-<p>Over the long-term, with no external influences, we'd expect the warming anomaly to trend towards zero. A non-zero warming anomaly may indicate an effect of climate change. A positive warming anomaly may indicate global warming.</p>
-<p>A minimum of 60 years of data is required to calculate a warming anomaly.</p>";
-        }
-
-        return
-            String.Join(
-                Environment.NewLine,
-                $"<p>The warming anomaly is the temperature difference between the average of the last 30 years of temperatures compared with the average of the first half of the dataset. 30 years was chosen to fit the convention of the <a href=\"https://en.wikipedia.org/wiki/Climatological_normal\" target=\"_blank\">climatological normal</a>. The first half of the dataset is used as a proxy for a natural baseline; it is expected to be less affected by anthropogenic warming.</p>",
-                $"<p>For example:</p>",
-                $"<ul><li>In the last 30 years of records at <strong>{Location.Name}</strong> (the years {warmingAnomaly.FirstYearInLast30Years}-{warmingAnomaly.LastYearInLast30Years}) the average temperature was <strong>{string.Format("{0:0.00}", warmingAnomaly.AverageOfLast30Years)}°C</strong>.</li>",
-                $"<li>The first half of the records at <strong>{Location.Name}</strong> (the years {warmingAnomaly.FirstYearInFirstHalf}-{warmingAnomaly.LastYearInFirstHalf}, {warmingAnomaly.CountOfFirstHalf} years in total) the average temperature was <strong>{string.Format("{0:0.00}", warmingAnomaly.AverageOfFirstHalf)}°C</strong>.</li>",
-                $"<li>The difference is <strong>{warmingAnomalyAsString}</strong> (after rounding to 1 decimal place).</li></ul>",
-                $"<p>Over the long-term, with no external influences, we'd expect the warming anomaly to trend towards zero. A non-zero warming anomaly may indicate an effect of climate change. A positive warming anomaly may indicate global warming.</p>",
-                $"<p>A minimum of 60 years of data is required to calculate a warming anomaly.</p>"
-            );
     }
 
     async Task TogglePrecipitation()

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.3.11222.16 d18.3
+VisualStudioVersion = 18.3.11222.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClimateExplorer.Data.Misc", "ClimateExplorer.Data.Misc\ClimateExplorer.Data.Misc.csproj", "{3E1C678A-776B-4D7E-B6F2-FCE053E94242}"
 EndProject

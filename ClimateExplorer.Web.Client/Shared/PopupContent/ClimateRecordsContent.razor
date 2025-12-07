@@ -1,0 +1,59 @@
+﻿@using Blazorise
+@using ClimateExplorer.Core
+@using ClimateExplorer.Core.Model
+@using ClimateExplorer.Web.UiModel
+@using System.Globalization
+@using static ClimateExplorer.Core.Enums
+
+@if (ClimateRecords is not null && ClimateRecords.Count() > 0)
+{
+    var daGroups = ClimateRecords!.GroupBy(x => x.DataAdjustment);
+
+    foreach (var daGroup in daGroups)
+    {        
+        <Table Striped>
+            <TableHeader>
+                <TableRow>
+                    <TableHeaderCell Width="@Width.Is50" Style="text-align: left;"><Strong>@(daGroup.Key == null ? "Other" : daGroup.Key) records</Strong></TableHeaderCell>
+                    <TableHeaderCell><Strong>Record low</Strong></TableHeaderCell>
+                    <TableHeaderCell><Strong>Record high</Strong></TableHeaderCell>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+
+            @{
+                var dtGroups = daGroup.GroupBy(x => x.DataType);
+
+                foreach (var dtGroup in dtGroups)
+                {
+                    var drGroups = dtGroup.GroupBy(x => x.DataResolution);
+
+                    foreach (var drGroup in drGroups)
+                    {
+                        <TableRow>
+                            <TableRowCell>@drGroup.Key @ChartSeriesDefinition.MapDataTypeToFriendlyName(dtGroup.Key).ToLower()</TableRowCell>
+                            @{
+                                var recordHigh = drGroup.Single(x => x.RecordType == RecordType.High);
+                                var recordLow = drGroup.Single(x => x.RecordType == RecordType.Low);
+
+                                <TableRowCell>
+                                <span class="secondary-text">@(recordLow.Day == null ? string.Empty : recordLow.Day) @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(recordLow.Month)</span> @recordLow.Year<div class="secondary-text">@recordLow.Value@Enums.UnitOfMeasureLabelShort(recordLow.UnitOfMeasure)</div>
+                                </TableRowCell>
+                        
+                                <TableRowCell>
+                                <span class="secondary-text">@(recordHigh.Day == null ? string.Empty : recordHigh.Day) @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(recordHigh.Month)</span> @recordHigh.Year<div class="secondary-text">@recordHigh.Value@Enums.UnitOfMeasureLabelShort(recordHigh.UnitOfMeasure)</div>
+                                </TableRowCell>
+                            }
+                        </TableRow>
+                    }
+                }
+            }
+            </TableBody>
+        </Table>
+    }
+}
+@code {
+    [Parameter]
+    public IEnumerable<ClimateRecord>? ClimateRecords { get; set; }
+
+}
