@@ -33,7 +33,7 @@
             }
             @if (RecordHigh != null)
             {
-                <OverviewField Label="Record high" PopupTitle="@("Record highs and lows for " + Location?.Name)" PopupText="@ClimateRecordsDescription" ToolTip="@RecordHighToolTip"><Value>@(RecordHigh == null ? "NA" : RecordHigh.Year)</Value></OverviewField>
+                <OverviewField Label="Record high" PopupTitle="@("Record highs and lows for " + Location?.Name)" PopupContent="@ClimateRecordsContent" ToolTip="@RecordHighToolTip"><Value>@(RecordHigh == null ? "NA" : RecordHigh.Year)</Value></OverviewField>
             }
             @if (precipitation && PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
             {
@@ -99,7 +99,7 @@
 
     ClimateRecord? RecordHigh { get; set; }
     string? RecordHighToolTip { get; set; }
-    string? ClimateRecordsDescription;
+    RenderFragment? ClimateRecordsContent;
 
     public void ChangeLocationClicked(EventArgs args)
     {
@@ -144,7 +144,7 @@
 
         RecordHigh = null;
         RecordHighToolTip = null;
-        ClimateRecordsDescription = null;
+        ClimateRecordsContent = null;
 
         // We can't do anything until we're supplied our tasty, tasty DataSetDefinitions
         if (DataSetDefinitions == null)
@@ -185,7 +185,15 @@
             }
             RecordHigh = max.Single();
             RecordHighToolTip = $"{Location.Name} record high of {RecordHigh.Value}°C set {(RecordHigh.Day == null ? string.Empty : RecordHigh.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(RecordHigh.Month)} {RecordHigh.Year}.\r\nClick for more records.";
-            BuildClimateRecordsTable(climateRecords);
+            
+            ClimateRecordsContent = Location == null
+                    ? null
+                    : builder =>
+                    {
+                        builder.OpenComponent(0, typeof(ClimateRecordsContent));
+                        builder.AddAttribute(1, "ClimateRecords", climateRecords);
+                        builder.CloseComponent();
+                    };
         }
 
         HeatingScoreContent = Location == null
@@ -202,38 +210,7 @@
         await base.OnParametersSetAsync();
     }
 
-    protected void BuildClimateRecordsTable(IEnumerable<ClimateRecord> climateRecords)
-    {
-        ClimateRecordsDescription = "";
-        var daGroups = climateRecords.GroupBy(x => x.DataAdjustment);
-        foreach (var daGroup in daGroups)
-        {
-            ClimateRecordsDescription += $"<h5 class=\"mt-5 mb-0\">{(daGroup.Key == null ? "Other" : daGroup.Key)} records</h5>";
-            ClimateRecordsDescription += "<table class=\"table mb-3\"><tr><th width=\"40%\"></th><th>Record low</th><th>Record high</th></tr>";
 
-            var dtGroups = daGroup.GroupBy(x => x.DataType);
-
-            foreach (var dtGroup in dtGroups)
-            {
-                var drGroups = dtGroup.GroupBy(x => x.DataResolution);
-
-                foreach (var drGroup in drGroups)
-                {
-                    ClimateRecordsDescription += $"<tr><td>{drGroup.Key} {ChartSeriesDefinition.MapDataTypeToFriendlyName(dtGroup.Key).ToLower()}</td>";
-
-                    var recordHigh = drGroup.Single(x => x.RecordType == RecordType.High);
-                    var recordLow = drGroup.Single(x => x.RecordType == RecordType.Low);
-
-                    ClimateRecordsDescription += $"<td><span class=\"secondary-text\">{(recordLow.Day == null ? string.Empty : recordLow.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(recordLow.Month)}</span> {recordLow.Year}<div class=\"secondary-text\">{recordLow.Value}{Enums.UnitOfMeasureLabelShort(recordLow.UnitOfMeasure)}</div></td>";
-                    ClimateRecordsDescription += $"<td><span class=\"secondary-text\">{(recordHigh.Day == null ? string.Empty : recordHigh.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(recordHigh.Month)}</span> {recordHigh.Year}<div class=\"secondary-text\">{recordHigh.Value}{Enums.UnitOfMeasureLabelShort(recordHigh.UnitOfMeasure)}</div></td>";
-
-                    ClimateRecordsDescription += "</tr>";
-                }
-            }
-
-            ClimateRecordsDescription += "</table>";
-        }
-    }
 
     protected async Task<LocationAnomalySummary?> CalculateAnomaly(List<DataSubstitute> dataSubstitutes, ContainerAggregationFunctions function)
     {
