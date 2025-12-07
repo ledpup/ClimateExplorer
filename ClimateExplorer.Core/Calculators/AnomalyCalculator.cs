@@ -35,6 +35,16 @@ public static class AnomalyCalculator
                 .ToArray());
     }
 
+    public static string ValueAsString(this CalculatedAnomaly? calculatedAnomaly, string unitofMeasure = "°C")
+    {
+        if (calculatedAnomaly == null)
+        {
+            return "NA";
+        }
+
+        return $"{(calculatedAnomaly.AnomalyValue >= 0 ? "+" : string.Empty)}{string.Format("{0:0.0}", calculatedAnomaly.AnomalyValue)}{unitofMeasure}";
+    }
+
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
     private static CalculatedAnomaly CalculateAnomaly(YearAndValue[] dataPoints)
     {
