@@ -4,7 +4,7 @@
 <div class="overview-field" title="@(Tooltip == null ? title : Tooltip)" @onclick="ShowPopup">
     <div class="label">@Label</div>
     <div class="value">
-        @if (PopupContent != null || !string.IsNullOrWhiteSpace(PopupText))
+        @if (PopupContent != null)
         {
             <a>@Value</a>
         }
@@ -16,7 +16,7 @@
     <div class="additional-info">@AdditionalInfo</div>
 </div>
 
-@if (PopupContent != null || !string.IsNullOrWhiteSpace(PopupText))
+@if (PopupContent != null)
 {
     <Modal @ref="popup">
         <ModalContent Size="ModalSize.Large">
@@ -31,10 +31,6 @@
                 {
                     @PopupContent
                 }
-                else
-                {
-                    @((MarkupString)PopupText!)
-                }
             </ModalBody>
         </ModalContent>
     </Modal>
@@ -48,11 +44,6 @@
             if (!string.IsNullOrWhiteSpace(PopupTitle))
             {
                 return PopupTitle!;
-            }
-
-            if (!string.IsNullOrWhiteSpace(PopupText))
-            {
-                return Regex.Replace(PopupText, "<.*?>", String.Empty);
             }
 
             if (PopupContent != null)
@@ -79,11 +70,6 @@
     [Parameter]
     public string? PopupTitle { get; set; }
 
-    // Backwards-compatible string content
-    [Parameter]
-    public string? PopupText { get; set; }
-
-    // Allow custom components/content inside the modal body
     [Parameter]
     public RenderFragment? PopupContent { get; set; }
 
@@ -94,18 +80,10 @@
         {
             return;
         }
-
-        if (PopupContent != null || !string.IsNullOrWhiteSpace(PopupText))
+         
+        if (PopupContent != null)
         {
             await popup.Show();
-        }
-    }
-
-    protected override void OnParametersSet()
-    {
-        if (PopupContent != null && PopupText != null)
-        {
-            throw new InvalidOperationException("Cannot set both PopupContent and PopupText parameters. Please choose one.");
         }
     }
 }
