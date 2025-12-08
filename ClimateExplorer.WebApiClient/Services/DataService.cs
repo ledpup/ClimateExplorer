@@ -13,7 +13,7 @@ public class DataService : IDataService
 {
     private readonly HttpClient httpClient;
     private readonly IDataServiceCache dataServiceCache;
-    private readonly JsonSerializerOptions jsonSerializerOptions;
+    private readonly JsonSerializerOptions jsonSerializerOptions;    
 
     public DataService(
         HttpClient httpClient,
@@ -117,23 +117,6 @@ public class DataService : IDataService
         return result!;
     }
 
-    public async Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short groupingDays = 14, float groupingThreshold = .5f, float regionThreshold = .5f)
-    {
-        var url = $"dataSet/{dataType}/{resolution}/{dataAdjustment}?groupingDays={groupingDays}&groupingThreshold={groupingThreshold}&regionThreshold={regionThreshold}";
-        if (minLatitude != null)
-        {
-            url += $"&minLatitude={minLatitude}";
-        }
-
-        if (maxLatitude != null)
-        {
-            url += $"&maxLatitude={maxLatitude}";
-        }
-
-        var dataset = await httpClient.GetFromJsonAsync<DataSet[]>(url);
-        return dataset!;
-    }
-
     public async Task<ApiMetadataModel> GetAbout()
     {
         var about = await httpClient.GetFromJsonAsync<ApiMetadataModel>("/about");
@@ -143,8 +126,15 @@ public class DataService : IDataService
     public async Task<IEnumerable<DataSetDefinitionViewModel>> GetDataSetDefinitions()
     {
         var url = "/datasetdefinition";
-        var dataSetDefinitions = await httpClient.GetFromJsonAsync<DataSetDefinitionViewModel[]>(url, jsonSerializerOptions);
-        return dataSetDefinitions!;
+        var result = dataServiceCache.Get<DataSetDefinitionViewModel[]>(url);
+        if (result == null)
+        {
+            result = await httpClient.GetFromJsonAsync<DataSetDefinitionViewModel[]>(url, jsonSerializerOptions);
+
+            dataServiceCache.Put(url, result!);
+        }
+        
+        return result!;
     }
 
     public async Task<IEnumerable<Location>> GetLocations(Guid? locationId = null)
@@ -155,8 +145,15 @@ public class DataService : IDataService
             url = QueryHelpers.AddQueryString(url, "locationId", locationId.Value.ToString());
         }
 
-        var locations = await httpClient.GetFromJsonAsync<Location[]>(url);
-        return locations!;
+        var result = dataServiceCache.Get<Location[]>(url);
+        if (result == null)
+        {
+            result = await httpClient.GetFromJsonAsync<Location[]>(url);
+
+            dataServiceCache.Put(url, result!);
+        }
+
+        return result!;
     }
 
     public async Task<Dictionary<string, string>> GetCountries()
@@ -169,7 +166,13 @@ public class DataService : IDataService
     public async Task<IEnumerable<Region>> GetRegions()
     {
         var url = $"/region";
-        var result = await httpClient.GetFromJsonAsync<Region[]>(url);
+        var result = dataServiceCache.Get<Region[]>(url);
+        if (result == null)
+        {
+            result = await httpClient.GetFromJsonAsync<Region[]>(url);
+
+            dataServiceCache.Put(url, result!);
+        }
         return result!;
     }
 
@@ -186,15 +189,30 @@ public class DataService : IDataService
 
     public async Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable()
     {
-        var url = $"/heating-score-table";
-        var result = await httpClient.GetFromJsonAsync<HeatingScoreRow[]>(url);
+        const string heatingScoreTableKey = "HeatingScoreTable";
+        var result = dataServiceCache.Get<IEnumerable<HeatingScoreRow>>(heatingScoreTableKey);
+        if (result == null)
+        {
+            var url = $"/heating-score-table";
+            result = await httpClient.GetFromJsonAsync<HeatingScoreRow[]>(url);
+
+            dataServiceCache.Put(heatingScoreTableKey, result!);
+        }
+        
         return result!;
     }
 
     public async Task<IEnumerable<ClimateRecord>> GetClimateRecords(Guid locationId)
     {
         var url = $"/climate-record?locationId={locationId}";
-        var result = await httpClient.GetFromJsonAsync<ClimateRecord[]>(url);
+        var result = dataServiceCache.Get<ClimateRecord[]>(url);
+        if (result == null)
+        {
+            result = await httpClient.GetFromJsonAsync<ClimateRecord[]>(url);
+
+            dataServiceCache.Put(url, result!);
+        }
+
         return result!;
     }
 }

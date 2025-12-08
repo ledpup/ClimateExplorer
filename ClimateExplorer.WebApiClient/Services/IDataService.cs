@@ -27,7 +27,6 @@ public interface IDataService
         SeriesTransformations seriesTransformation,
         short? year = null,
         DataResolution? minimumDataResolution = null);
-    Task<IEnumerable<DataSet>> GetAggregateDataSet(DataType dataType, DataResolution resolution, DataAdjustment dataAdjustment, float? minLatitude, float? maxLatitude, short groupingDays = 14, float groupingThreshold = .7f, float regionThreshold = .7f);
     Task<Dictionary<string, string>> GetCountries();
     Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable();
     Task<IEnumerable<ClimateRecord>> GetClimateRecords(Guid locationId);

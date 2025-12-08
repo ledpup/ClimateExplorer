@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using static ClimateExplorer.Core.DataPreparation.DataSetBuilder;
 using static ClimateExplorer.Core.Enums;
 #pragma warning restore SA1200 // Using directives should be placed correctly
 
