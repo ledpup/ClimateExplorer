@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 2010,
     "Month": 7,
-    "Value": 24.7,
+    "Value": 24.42,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1799,
     "Month": 2,
-    "Value": -18.89,
+    "Value": -19.17,
     "NumberOfTimes": 1
   },
   {
@@ -48,9 +48,9 @@
     "RecordType": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 2,
-    "Year": 2021,
-    "Month": 5,
-    "Value": 1386,
+    "Year": 1742,
+    "Month": 6,
+    "Value": 199.4,
     "NumberOfTimes": 1
   },
   {

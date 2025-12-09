@@ -5,9 +5,9 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 2019,
-    "Month": 3,
-    "Value": 15.87,
+    "Year": 2024,
+    "Month": 4,
+    "Value": 15.85,
     "NumberOfTimes": 2
   },
   {
@@ -16,9 +16,9 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 1985,
-    "Month": 2,
-    "Value": 11.79,
+    "Year": 2004,
+    "Month": 1,
+    "Value": 10.79,
     "NumberOfTimes": 1
   },
   {

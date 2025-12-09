@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 2019,
     "Month": 5,
-    "Value": 25.23,
+    "Value": 25.44,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1975,
     "Month": 12,
-    "Value": 9.42,
+    "Value": 10.27,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 1924,
     "Month": 1,
     "Value": 0,
-    "NumberOfTimes": 22
+    "NumberOfTimes": 23
   },
   {
     "DataType": 0,

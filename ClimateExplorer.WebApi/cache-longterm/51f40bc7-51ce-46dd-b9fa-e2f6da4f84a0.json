@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1985,
     "Month": 2,
-    "Value": -13.5,
+    "Value": -13.33,
     "NumberOfTimes": 1
   },
   {
@@ -48,9 +48,9 @@
     "RecordType": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 2,
-    "Year": 1951,
+    "Year": 2023,
     "Month": 8,
-    "Value": 201.3,
+    "Value": 203.2,
     "NumberOfTimes": 1
   },
   {

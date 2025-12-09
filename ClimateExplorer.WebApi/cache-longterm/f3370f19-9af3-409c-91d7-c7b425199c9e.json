@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 1992,
     "Month": 6,
-    "Value": 36.57,
+    "Value": 36.55,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1905,
     "Month": 2,
-    "Value": 14.27,
+    "Value": 13.86,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 1897,
     "Month": 2,
     "Value": 0,
-    "NumberOfTimes": 540
+    "NumberOfTimes": 541
   },
   {
     "DataType": 0,

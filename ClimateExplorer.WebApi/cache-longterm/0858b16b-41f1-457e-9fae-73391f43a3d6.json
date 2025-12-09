@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 2010,
     "Month": 7,
-    "Value": 26.82,
+    "Value": 26.9,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1964,
     "Month": 2,
-    "Value": -24.44,
+    "Value": -24.35,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 1955,
     "Month": 2,
     "Value": 0,
-    "NumberOfTimes": 95
+    "NumberOfTimes": 93
   },
   {
     "DataType": 0,

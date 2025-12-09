@@ -7,8 +7,8 @@
     "UnitOfMeasure": 0,
     "Year": 2017,
     "Month": 1,
-    "Value": 22.8,
-    "NumberOfTimes": 1
+    "Value": 22,
+    "NumberOfTimes": 2
   },
   {
     "DataType": 2,
@@ -16,9 +16,9 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 1955,
+    "Year": 2010,
     "Month": 7,
-    "Value": 12.32,
+    "Value": 11.68,
     "NumberOfTimes": 1
   },
   {

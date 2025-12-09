@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 2010,
     "Month": 7,
-    "Value": 26.85,
+    "Value": 27.09,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1967,
     "Month": 12,
-    "Value": -17.19,
+    "Value": -16.99,
     "NumberOfTimes": 1
   },
   {
@@ -48,9 +48,9 @@
     "RecordType": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 2,
-    "Year": 1979,
-    "Month": 7,
-    "Value": 87.3,
+    "Year": 2024,
+    "Month": 9,
+    "Value": 94,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 1957,
     "Month": 11,
     "Value": 0,
-    "NumberOfTimes": 168
+    "NumberOfTimes": 169
   },
   {
     "DataType": 0,

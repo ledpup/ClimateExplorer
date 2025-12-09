@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 2018,
     "Month": 3,
-    "Value": 28.86,
+    "Value": 29.06,
     "NumberOfTimes": 2
   },
   {
@@ -16,9 +16,9 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 1960,
+    "Year": 1970,
     "Month": 7,
-    "Value": 20.7,
+    "Value": 20.69,
     "NumberOfTimes": 1
   },
   {
@@ -27,10 +27,10 @@
     "DataAdjustment": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 2018,
-    "Month": 3,
-    "Value": 28.65,
-    "NumberOfTimes": 2
+    "Year": 2024,
+    "Month": 2,
+    "Value": 28.8,
+    "NumberOfTimes": 4
   },
   {
     "DataType": 2,
@@ -48,9 +48,9 @@
     "RecordType": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 2,
-    "Year": 2020,
-    "Month": 3,
-    "Value": 4803,
+    "Year": 1951,
+    "Month": 11,
+    "Value": 548,
     "NumberOfTimes": 1
   },
   {
@@ -61,6 +61,6 @@
     "Year": 1908,
     "Month": 7,
     "Value": 0,
-    "NumberOfTimes": 155
+    "NumberOfTimes": 149
   }
 ]

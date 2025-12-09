@@ -5,9 +5,9 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 1933,
-    "Month": 7,
-    "Value": 30.37,
+    "Year": 2024,
+    "Month": 8,
+    "Value": 30.35,
     "NumberOfTimes": 1
   },
   {
@@ -48,9 +48,9 @@
     "RecordType": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 2,
-    "Year": 2005,
+    "Year": 2024,
     "Month": 7,
-    "Value": 526.9,
+    "Value": 589,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 1918,
     "Month": 1,
     "Value": 0,
-    "NumberOfTimes": 38
+    "NumberOfTimes": 39
   },
   {
     "DataType": 0,
