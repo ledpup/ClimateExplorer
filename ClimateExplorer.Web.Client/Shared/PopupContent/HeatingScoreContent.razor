@@ -56,6 +56,11 @@
 
     protected override async Task OnInitializedAsync()
     {
+        if (HeatingScoreTable is not null)
+        {
+            return;
+        }
+
         HeatingScoreTable = await DataService!.GetHeatingScoreTable();
     }
 }

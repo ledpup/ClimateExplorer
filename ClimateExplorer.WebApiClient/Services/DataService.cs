@@ -137,13 +137,15 @@ public class DataService : IDataService
         return result!;
     }
 
-    public async Task<IEnumerable<Location>> GetLocations(Guid? locationId = null)
+    public async Task<IEnumerable<Location>> GetLocations(Guid? locationId = null, bool permitCreateCache = true)
     {
         var url = $"/location";
         if (locationId.HasValue && locationId != Guid.Empty)
         {
             url = QueryHelpers.AddQueryString(url, "locationId", locationId.Value.ToString());
         }
+
+        url = QueryHelpers.AddQueryString(url, "postProcessing", permitCreateCache.ToString().ToLowerInvariant());
 
         var result = dataServiceCache.Get<Location[]>(url);
         if (result == null)

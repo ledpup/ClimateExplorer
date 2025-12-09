@@ -8,7 +8,7 @@ public interface IDataService
 {
     Task<ApiMetadataModel> GetAbout();
     Task<IEnumerable<DataSetDefinitionViewModel>> GetDataSetDefinitions();
-    Task<IEnumerable<Location>> GetLocations(Guid? locationId = null);
+    Task<IEnumerable<Location>> GetLocations(Guid? locationId = null, bool permitCreateCache = true);
     Task<Location> GetLocationByPath(string path);
     Task<IEnumerable<Region>> GetRegions();
     Task<DataSet> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short? year = null, short? groupingDays = 14, float? groupingThreshold = .7f);

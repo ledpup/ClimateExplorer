@@ -145,12 +145,12 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
     return dtos;
 }
 
-async Task<IEnumerable<Location>> GetLocations(Guid? locationId = null)
+async Task<IEnumerable<Location>> GetLocations(Guid? locationId = null, bool permitCreateCache = true)
 {
-    return await GetCachedLocations(locationId);
+    return await GetCachedLocations(locationId, permitCreateCache);
 }
 
-async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null)
+async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null, bool permitCreateCache = true)
 {
     string cacheKey = null;
     Location[] cacheResult = null;
@@ -186,11 +186,16 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null)
     {
         locations = (await Location.GetLocations()).OrderBy(x => x.Name);
 
+        if (!permitCreateCache)
+        {
+            return locations;
+        }
+
         var definitions = await GetDataSetDefinitions();
 
         ParallelOptions parallelOptions = new ();
 
-        // For each location, retrieve the TempMax dataset (Adjusted if available, Adjustment null otherwise), and copy its WarmingAnomaly
+        // For each location, retrieve the TempMean dataset (Adjusted if available, Adjustment null otherwise), and copy its WarmingAnomaly
         // to the location we're about to return.
         await Parallel.ForEachAsync(locations!, parallelOptions, async (location, token) =>
         {
@@ -221,8 +226,7 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null)
                             RequiredCupDataProportion = 0.7f,
                             SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                             SeriesSpecifications =
-                                new SeriesSpecification[]
-                                {
+                                [
                                     new ()
                                     {
                                         DataAdjustment = dsdmd.MeasurementDefinition.DataAdjustment,
@@ -230,10 +234,21 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null)
                                         DataType = dsdmd.MeasurementDefinition.DataType,
                                         LocationId = location.Id,
                                     },
-                                },
+                                ],
                         });
 
                 location.WarmingAnomaly = AnomalyCalculator.CalculateAnomaly(series.DataPoints)?.AnomalyValue;
+                var climateRecords = await GetClimateRecords(location.Id);
+                var max = climateRecords.Where(x => x.DataType == DataType.TempMax && x.RecordType == RecordType.High);
+                if (max.Count() > 0)
+                {
+                    if (max.Count() > 1)
+                    {
+                        max = max.Where(x => x.DataAdjustment == DataAdjustment.Adjusted);
+                    }
+
+                    location.RecordHigh = max.Single();
+                }
             }
             catch (Exception ex)
             {

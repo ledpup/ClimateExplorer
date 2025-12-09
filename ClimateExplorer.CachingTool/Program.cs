@@ -17,13 +17,17 @@ filesToDelete.ForEach(File.Delete);
 var dscLogger = factory.CreateLogger<DataServiceCache>();
 var dataService = new DataService(new HttpClient() { BaseAddress = new Uri("http://localhost:54836/") }, new DataServiceCache(dscLogger));
 
-logger.LogInformation("Creating locations cache");
-var locations = await dataService.GetLocations();
-logger.LogInformation("Finished creating locations cache");
+// Get the basic list of locations. We need this to calculate the climate records
+var locations = await dataService.GetLocations(permitCreateCache: false);
 
-await Parallel.ForEachAsync(locations!, new ParallelOptions(), async (location, token) => 
+await Parallel.ForEachAsync(locations!, new ParallelOptions(), async (location, token) =>
 {
     logger.LogInformation($"Creating climate records for {location.Name}");
     await dataService.GetClimateRecords(location.Id);
     logger.LogInformation($"Finished creating climate records for {location.Name}");
 });
+
+// Generate cached locations. This will include the RecordHigh climate record
+logger.LogInformation("Creating locations cache");
+locations = await dataService.GetLocations();
+logger.LogInformation("Finished creating locations cache");
