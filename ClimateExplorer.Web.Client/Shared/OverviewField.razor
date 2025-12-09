@@ -18,7 +18,7 @@
 
 @if (PopupContent != null)
 {
-    <Modal @ref="popup">
+    <Modal @ref="popup" Closing="@OnModalClosing">
         <ModalContent Size="ModalSize.Large">
             <ModalHeader>
                 <ModalTitle>
@@ -27,7 +27,7 @@
                 <CloseButton />
             </ModalHeader>
             <ModalBody>
-                @if (PopupContent != null && popupContentVisible)
+                @if (popupContentVisible)
                 {
                     @PopupContent
                 }
@@ -78,17 +78,21 @@
 
     private async Task ShowPopup()
     {
-        if (popup == null)
+        if (popup is null || PopupContent is null)
         {
             return;
         }
          
-        if (PopupContent != null)
-        {
-            // Ensure the popup content is rendered (component instantiated) only when user opens the modal
-            popupContentVisible = true;
-            StateHasChanged();
-            await popup.Show();
-        }
+        // Ensure the popup content is instantiated only when user opens the modal
+        popupContentVisible = true;
+        StateHasChanged();
+        await popup.Show();
+    }
+
+    private Task OnModalClosing(ModalClosingEventArgs e)
+    {
+        popupContentVisible = false;
+
+        return Task.CompletedTask;
     }
 }

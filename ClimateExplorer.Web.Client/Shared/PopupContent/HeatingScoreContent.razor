@@ -32,13 +32,13 @@
             </TableRow>
         </TableHeader>
         <TableBody>
-        @foreach (var heatingScoreRow in HeatingScoreTable)
-        {
-            <TableRow Color="@(Location.HeatingScore == heatingScoreRow.Score ? Color.Info : Color.Default)">
-                <TableRowCell>@heatingScoreRow.Score</TableRowCell>
-                <TableRowCell>@heatingScoreRow.MinimumWarmingAnomaly.ToString("0.00") - @heatingScoreRow.MaximumWarmingAnomaly.ToString("0.00")</TableRowCell>
-            </TableRow>
-        }
+            @foreach (var heatingScoreRow in HeatingScoreTable)
+            {
+                <TableRow Color="@(Location.HeatingScore == heatingScoreRow.Score ? Color.Info : Color.Default)">
+                    <TableRowCell>@heatingScoreRow.Score</TableRowCell>
+                    <TableRowCell>@heatingScoreRow.MinimumWarmingAnomaly.ToString("0.00") - @heatingScoreRow.MaximumWarmingAnomaly.ToString("0.00")</TableRowCell>
+                </TableRow>
+            }
         </TableBody>
     </Table>
 }

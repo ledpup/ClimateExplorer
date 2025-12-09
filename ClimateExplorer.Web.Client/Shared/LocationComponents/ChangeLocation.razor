@@ -52,33 +52,35 @@
                 {
                     <Field>
                         <FieldLabel>Select a nearby location</FieldLabel>
-                        <Table Borderless Narrow Striped>
-                            <TableBody>
-                                @foreach (var row in NearbyLocations)
-                                {
-                                    var location = LocationDictionary[row.LocationId];
-                                    <TableRow class="table-row">
-                                        <TableRowCell>
-                                            <Blazorise.Link Title="@location.Name"
-                                                            To="#"
-                                                            Clicked="@(()=>FireOnLocationChange(row.LocationId))">
-                                                @location.Name
-                                            </Blazorise.Link>
-                                        </TableRowCell>
-                                        <TableRowCell>@location.Country</TableRowCell>
-                                        <TableRowCell>@(row.Distance) km</TableRowCell>
-                                        <TableRowCell>
-                                            <span>
-                                                @row.CompassRoseDirection
-                                            </span>
-                                        </TableRowCell>
-                                        <TableRowCell>
-                                            <span style="display: inline-block; transform: rotate(@($"{row.BearingDegrees}deg")); transform-origin: center;">↑</span>
-                                        </TableRowCell>
-                                    </TableRow>
-                                }
-                            </TableBody>
-                        </Table>
+                        <FieldBody>
+                            <Table Borderless Narrow Striped>
+                                <TableBody>
+                                    @foreach (var row in NearbyLocations)
+                                    {
+                                        var location = LocationDictionary[row.LocationId];
+                                        <TableRow>
+                                            <TableRowCell>
+                                                <Blazorise.Link Title="@location.FullTitle"
+                                                                To="#"
+                                                                Clicked="@(() => FireOnLocationChange(row.LocationId))">
+                                                    @location.Name
+                                                </Blazorise.Link>
+                                            </TableRowCell>
+                                            <TableRowCell>@location.Country</TableRowCell>
+                                            <TableRowCell>@(row.Distance) km</TableRowCell>
+                                            <TableRowCell>
+                                                <span>
+                                                    @row.CompassRoseDirection
+                                                </span>
+                                            </TableRowCell>
+                                            <TableRowCell>
+                                                <span style="display: inline-block; transform: rotate(@($"{row.BearingDegrees}deg")); transform-origin: center;">↑</span>
+                                            </TableRowCell>
+                                        </TableRow>
+                                    }
+                                </TableBody>
+                            </Table>
+                        </FieldBody>
                     </Field>
                 }
             }
