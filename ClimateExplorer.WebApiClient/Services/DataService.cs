@@ -145,7 +145,10 @@ public class DataService : IDataService
             url = QueryHelpers.AddQueryString(url, "locationId", locationId.Value.ToString());
         }
 
-        url = QueryHelpers.AddQueryString(url, "postProcessing", permitCreateCache.ToString().ToLowerInvariant());
+        if (!permitCreateCache)
+        {
+            url = QueryHelpers.AddQueryString(url, "permitCreateCache", permitCreateCache.ToString().ToLowerInvariant());
+        }
 
         var result = dataServiceCache.Get<Location[]>(url);
         if (result == null)

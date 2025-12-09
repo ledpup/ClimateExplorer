@@ -38,8 +38,6 @@ public partial class Index : ChartablePage
         {
             var title = InternalLocation == null ? $"Local long-term climate trends" : $"ClimateExplorer - {InternalLocation.FullTitle}";
 
-            Logger!.LogInformation($"PageTitle is '{title}'");
-
             return title;
         }
     }
@@ -109,6 +107,12 @@ public partial class Index : ChartablePage
         if (firstRender)
         {
             Locations = (await DataService!.GetLocations()).ToList();
+            LocationDictionary = [];
+            foreach (var location in Locations)
+            {
+                LocationDictionary.Add(location.Id, location);
+            }
+
             Regions = (await DataService!.GetRegions()).ToList();
 
             var geographicalEntities = new List<GeographicalEntity>();
@@ -177,7 +181,7 @@ public partial class Index : ChartablePage
         {
             LocationId = await LocalStorage!.GetItemAsync<string>("lastLocationId");
             var validGuid = Guid.TryParse(LocationId, out Guid guid);
-            if (!validGuid || guid == Guid.Empty || !Locations!.Any(x => x.Id == guid))
+            if (!validGuid || guid == Guid.Empty || !LocationDictionary!.ContainsKey(guid))
             {
                 LocationId = "aed87aa0-1d0c-44aa-8561-cde0fc936395";
             }
@@ -193,7 +197,7 @@ public partial class Index : ChartablePage
         }
 
         var valid = Guid.TryParse(LocationId, out Guid id);
-        location = Locations!.SingleOrDefault(x => x.Id == id);
+        location = valid ? LocationDictionary![id] : null;
 
         return location;
     }
@@ -204,7 +208,7 @@ public partial class Index : ChartablePage
         // Use Hobart as the basis for building the default chart. We want temperature and precipitation on the default chart, whether it's the first time the user has arrived
         // at the website or when they return. Some locations won't have precipitation but we use the DataAvailable field to cope with that situation.
         // Doing it this way, when the user navigates to another location that *does* have precipitation (without making any other changes to the selected data), we will detect it and put it on the chart.
-        var location = Locations!.Single(x => x.Id == Guid.Parse("aed87aa0-1d0c-44aa-8561-cde0fc936395"));
+        var location = LocationDictionary![Guid.Parse("aed87aa0-1d0c-44aa-8561-cde0fc936395")];
 
         var tempMaxOrMean = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataSubstitute.StandardTemperatureDataMatches(), throwIfNoMatch: true)!;
         var precipitation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.Precipitation, null, throwIfNoMatch: true)!;
@@ -278,14 +282,14 @@ public partial class Index : ChartablePage
     {
         Logger!.LogInformation("SelectedLocationChangedInternal(): " + newValue);
 
-        if (!Locations!.Any(x => x.Id == newValue))
+        if (!LocationDictionary!.ContainsKey(newValue))
         {
             Logger!.LogError($"{newValue} doesn't exist in the list of locations. Exiting SelectedLocationChangedInternal()");
             return;
         }
 
         SelectedLocationId = newValue;
-        SelectedLocation = (await DataService!.GetLocations(SelectedLocationId)).Single();
+        SelectedLocation = LocationDictionary[SelectedLocationId];
 
         await LocalStorage!.SetItemAsync("lastLocationId", SelectedLocationId.ToString());
 

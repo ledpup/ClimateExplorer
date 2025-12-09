@@ -43,6 +43,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     protected string? PageName { get; set; }
 
     protected IEnumerable<Location>? Locations { get; set; }
+    protected Dictionary<Guid, Location>? LocationDictionary { get; set; }
     protected IEnumerable<Region>? Regions { get; set; }
     protected IEnumerable<GeographicalEntity>? GeographicalEntities { get; set; }
 
