@@ -27,7 +27,7 @@
                 <CloseButton />
             </ModalHeader>
             <ModalBody>
-                @if (PopupContent != null)
+                @if (PopupContent != null && popupContentVisible)
                 {
                     @PopupContent
                 }
@@ -74,6 +74,8 @@
     public RenderFragment? PopupContent { get; set; }
 
     private Modal? popup;
+    private bool popupContentVisible = false;
+
     private async Task ShowPopup()
     {
         if (popup == null)
@@ -83,6 +85,9 @@
          
         if (PopupContent != null)
         {
+            // Ensure the popup content is rendered (component instantiated) only when user opens the modal
+            popupContentVisible = true;
+            StateHasChanged();
             await popup.Show();
         }
     }
