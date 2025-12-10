@@ -113,7 +113,7 @@
 
     Guid? InternalLocationId { get; set; }
 
-    public List<LocationDistance>? NearbyLocations { get; set; }
+    public IEnumerable<LocationDistance>? NearbyLocations { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -135,7 +135,7 @@
 
         if (SelectedLocation is not null && NearbyLocations is null)
         {
-            NearbyLocations = (await DataService!.GetLocations(SelectedLocation.Id)).Single().NearbyLocations;
+            NearbyLocations = await DataService!.GetNearbyLocations(SelectedLocation.Id);
         }
 
         await modal!.Show();

@@ -99,6 +99,7 @@ app.MapGet("/about", GetAbout);
 app.MapGet("/datasetdefinition", GetDataSetDefinitions);
 app.MapGet("/location", GetLocations);
 app.MapGet("/location-by-path", GetLocationByPath);
+app.MapGet("/nearby-locations", GetNearbyLocations);
 app.MapGet("/country", GetCountries);
 app.MapGet("/region", GetRegions);
 app.MapGet("/heating-score-table", GetHeatingScoreTable);
@@ -172,102 +173,95 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null, bo
 
     IEnumerable<Location> locations;
 
-    if (locationId != null)
+    locations = (await Location.GetLocations()).OrderBy(x => x.Name);
+
+    if (!permitCreateCache)
     {
-        var allLocations = (await GetCachedLocations()).OrderBy(x => x.Name);
-        locations = allLocations.Where(x => x.Id == locationId);
-        var nearbyLocations = await longtermCache.Get<Dictionary<Guid, List<LocationDistance>>>(NearbyLocations);
-        foreach (var l in locations)
-        {
-            l.NearbyLocations = nearbyLocations[l.Id];
-        }
+        return locations;
     }
-    else
+
+    var definitions = await GetDataSetDefinitions();
+
+    ParallelOptions parallelOptions = new ();
+
+    // For each location, retrieve the TempMean dataset (Adjusted if available, Adjustment null otherwise), and copy its WarmingAnomaly
+    // to the location we're about to return.
+    await Parallel.ForEachAsync(locations!, parallelOptions, async (location, token) =>
     {
-        locations = (await Location.GetLocations()).OrderBy(x => x.Name);
-
-        if (!permitCreateCache)
+        try
         {
-            return locations;
-        }
+            // First, find what data adjustments are available for TempMax for that location.
+            var dsdmd =
+                DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
+                    definitions,
+                    location.Id,
+                    DataSubstitute.StandardTemperatureDataMatches(),
+                    throwIfNoMatch: true);
 
-        var definitions = await GetDataSetDefinitions();
+            // Next, request that dataset
+            var dsb = new DataSetBuilder();
 
-        ParallelOptions parallelOptions = new ();
-
-        // For each location, retrieve the TempMean dataset (Adjusted if available, Adjustment null otherwise), and copy its WarmingAnomaly
-        // to the location we're about to return.
-        await Parallel.ForEachAsync(locations!, parallelOptions, async (location, token) =>
-        {
-            try
-            {
-                // First, find what data adjustments are available for TempMax for that location.
-                var dsdmd =
-                    DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
-                        definitions,
-                        location.Id,
-                        DataSubstitute.StandardTemperatureDataMatches(),
-                        throwIfNoMatch: true);
-
-                // Next, request that dataset
-                var dsb = new DataSetBuilder();
-
-                var series =
-                    await dsb.BuildDataSet(
-                        new PostDataSetsRequestBody
-                        {
-                            BinAggregationFunction = ContainerAggregationFunctions.Mean,
-                            BinningRule = BinGranularities.ByYear,
-                            BucketAggregationFunction = ContainerAggregationFunctions.Mean,
-                            CupAggregationFunction = ContainerAggregationFunctions.Mean,
-                            CupSize = 14,
-                            RequiredBinDataProportion = 1.0f,
-                            RequiredBucketDataProportion = 1.0f,
-                            RequiredCupDataProportion = 0.7f,
-                            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                            SeriesSpecifications =
-                                [
-                                    new ()
-                                    {
-                                        DataAdjustment = dsdmd.MeasurementDefinition.DataAdjustment,
-                                        DataSetDefinitionId = dsdmd.DataSetDefinition.Id,
-                                        DataType = dsdmd.MeasurementDefinition.DataType,
-                                        LocationId = location.Id,
-                                    },
-                                ],
-                        });
-
-                location.WarmingAnomaly = AnomalyCalculator.CalculateAnomaly(series.DataPoints)?.AnomalyValue;
-                var climateRecords = await GetClimateRecords(location.Id);
-                var max = climateRecords.Where(x => x.DataType == DataType.TempMax && x.RecordType == RecordType.High);
-                if (max.Count() > 0)
-                {
-                    if (max.Count() > 1)
+            var series =
+                await dsb.BuildDataSet(
+                    new PostDataSetsRequestBody
                     {
-                        max = max.Where(x => x.DataAdjustment == DataAdjustment.Adjusted);
-                    }
+                        BinAggregationFunction = ContainerAggregationFunctions.Mean,
+                        BinningRule = BinGranularities.ByYear,
+                        BucketAggregationFunction = ContainerAggregationFunctions.Mean,
+                        CupAggregationFunction = ContainerAggregationFunctions.Mean,
+                        CupSize = 14,
+                        RequiredBinDataProportion = 1.0f,
+                        RequiredBucketDataProportion = 1.0f,
+                        RequiredCupDataProportion = 0.7f,
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SeriesSpecifications =
+                            [
+                                new ()
+                                {
+                                    DataAdjustment = dsdmd.MeasurementDefinition.DataAdjustment,
+                                    DataSetDefinitionId = dsdmd.DataSetDefinition.Id,
+                                    DataType = dsdmd.MeasurementDefinition.DataType,
+                                    LocationId = location.Id,
+                                },
+                            ],
+                    });
 
-                    location.RecordHigh = max.Single();
-                }
-            }
-            catch (Exception ex)
+            location.WarmingAnomaly = AnomalyCalculator.CalculateAnomaly(series.DataPoints)?.AnomalyValue;
+            var climateRecords = await GetClimateRecords(location.Id);
+            var max = climateRecords.Where(x => x.DataType == DataType.TempMax && x.RecordType == RecordType.High);
+            if (max.Count() > 0)
             {
-                // For now, just swallow failures here, caused by missing data
-                Console.WriteLine("Exception while calculating warming index for " + location.Name + ": " + ex.ToString());
+                if (max.Count() > 1)
+                {
+                    max = max.Where(x => x.DataAdjustment == DataAdjustment.Adjusted);
+                }
+
+                location.RecordHigh = max.Single();
             }
-        });
+        }
+        catch (Exception ex)
+        {
+            // For now, just swallow failures here, caused by missing data
+            Console.WriteLine("Exception while calculating warming index for " + location.Name + ": " + ex.ToString());
+        }
+    });
 
-        // Can't set the heating scores until all warming anomalies are calculated.
-        var heatingScoreTable = Location.SetHeatingScores(locations);
-        await longtermCache.Put(HeatingScoreTable, heatingScoreTable.ToArray());
+    // Can't set the heating scores until all warming anomalies are calculated.
+    var heatingScoreTable = Location.SetHeatingScores(locations);
+    await longtermCache.Put(HeatingScoreTable, heatingScoreTable.ToArray());
 
-        var nearbyLocations = Location.GenerateNearbyLocations(locations);
-        await longtermCache.Put(NearbyLocations, nearbyLocations);
+    var nearbyLocations = Location.GenerateNearbyLocations(locations);
+    await longtermCache.Put(NearbyLocations, nearbyLocations);
 
-        await longtermCache.Put(cacheKey, locations.ToArray());
-    }
+    await longtermCache.Put(cacheKey, locations.ToArray());
 
     return locations;
+}
+
+async Task<List<LocationDistance>> GetNearbyLocations(Guid locationId)
+{
+    var nearbyLocations = await longtermCache.Get<Dictionary<Guid, List<LocationDistance>>>(NearbyLocations);
+    return nearbyLocations[locationId];
 }
 
 async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)

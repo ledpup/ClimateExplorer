@@ -137,14 +137,10 @@ public class DataService : IDataService
         return result!;
     }
 
-    public async Task<IEnumerable<Location>> GetLocations(Guid? locationId = null, bool permitCreateCache = true)
+    public async Task<IEnumerable<Location>> GetLocations(bool permitCreateCache = true)
     {
         var url = $"/location";
-        if (locationId.HasValue && locationId != Guid.Empty)
-        {
-            url = QueryHelpers.AddQueryString(url, "locationId", locationId.Value.ToString());
-        }
-
+        
         if (!permitCreateCache)
         {
             url = QueryHelpers.AddQueryString(url, "permitCreateCache", permitCreateCache.ToString().ToLowerInvariant());
@@ -154,6 +150,23 @@ public class DataService : IDataService
         if (result == null)
         {
             result = await httpClient.GetFromJsonAsync<Location[]>(url);
+
+            dataServiceCache.Put(url, result!);
+        }
+
+        return result!;
+    }
+
+    public async Task<IEnumerable<LocationDistance>> GetNearbyLocations(Guid locationId)
+    {
+        var url = $"/nearby-locations";
+        url = QueryHelpers.AddQueryString(url, "locationId", locationId.ToString());
+        
+
+        var result = dataServiceCache.Get<LocationDistance[]>(url);
+        if (result == null)
+        {
+            result = await httpClient.GetFromJsonAsync<LocationDistance[]>(url);
 
             dataServiceCache.Put(url, result!);
         }

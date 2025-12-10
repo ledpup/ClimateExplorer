@@ -20,7 +20,6 @@ public class Location : GeographicalEntity
     public double? WarmingAnomaly { get; set; }
     public short? HeatingScore { get; set; }
     public ClimateRecord? RecordHigh { get; set; }
-    public List<LocationDistance>? NearbyLocations { get; set; }
 
     [JsonIgnore]
     public string FullTitle
