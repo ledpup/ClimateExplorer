@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 1963,
     "Month": 5,
-    "Value": 31.1,
+    "Value": 30.89,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 2011,
     "Month": 1,
-    "Value": 9.48,
+    "Value": 9.27,
     "NumberOfTimes": 1
   },
   {
@@ -27,9 +27,9 @@
     "DataAdjustment": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 1963,
-    "Month": 5,
-    "Value": 31.1,
+    "Year": 2023,
+    "Month": 7,
+    "Value": 31.65,
     "NumberOfTimes": 1
   },
   {

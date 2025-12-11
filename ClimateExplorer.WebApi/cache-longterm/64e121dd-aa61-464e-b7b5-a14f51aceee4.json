@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 2022,
     "Month": 8,
-    "Value": 27.6,
+    "Value": 26.88,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 2002,
     "Month": 1,
-    "Value": -6.06,
+    "Value": -6.78,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 1933,
     "Month": 8,
     "Value": 0,
-    "NumberOfTimes": 39
+    "NumberOfTimes": 37
   },
   {
     "DataType": 0,

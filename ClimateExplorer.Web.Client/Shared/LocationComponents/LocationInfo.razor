@@ -31,9 +31,9 @@
                 <OverviewField Label="Warming anomaly" PopupContent="@WarmingAnomalyContent"><Value>@(WarmingAnomalyAsString == null ? "NA" : WarmingAnomalyAsString)</Value></OverviewField>
                 <OverviewField Label="Heating score" PopupContent="@HeatingScoreContent"><Value>@(Location!.HeatingScore == null ? "NA" : Location.HeatingScore)</Value></OverviewField>
             }
-            @if (RecordHigh != null)
+            @if (Location?.RecordHigh != null)
             {
-                <OverviewField Label="Record high" PopupTitle="@("Record highs and lows for " + Location?.Name)" PopupContent="@ClimateRecordsContent" ToolTip="@RecordHighToolTip"><Value>@(RecordHigh == null ? "NA" : RecordHigh.Year)</Value></OverviewField>
+                <OverviewField Label="Record high" PopupTitle="@("Record highs and lows for " + Location?.Name)" PopupContent="@ClimateRecordsContent" ToolTip="@RecordHighToolTip"><Value>@(Location?.RecordHigh == null ? "NA" : Location?.RecordHigh.Year)</Value></OverviewField>
             }
             @if (precipitation && PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
             {
@@ -97,7 +97,6 @@
 
     RenderFragment? HeatingScoreContent;
 
-    ClimateRecord? RecordHigh { get; set; }
     string? RecordHighToolTip { get; set; }
     RenderFragment? ClimateRecordsContent;
 
@@ -142,7 +141,6 @@
         TemperatureLocationMean = null;
         TemperatureAnomalyRecords = null;
 
-        RecordHigh = null;
         RecordHighToolTip = null;
         ClimateRecordsContent = null;
 
@@ -157,7 +155,7 @@
             await GeneratePrecipitationView();
         }
 
-        var temperatureAnomaly  = await CalculateAnomaly(DataSubstitute.StandardTemperatureDataMatches(), ContainerAggregationFunctions.Mean);
+        var temperatureAnomaly = await CalculateAnomaly(DataSubstitute.StandardTemperatureDataMatches(), ContainerAggregationFunctions.Mean);
         if (temperatureAnomaly != null)
         {
             TemperatureDataType = temperatureAnomaly.DataSet?.DataType;
@@ -175,26 +173,19 @@
             TemperatureAnomalyRecords = temperatureAnomaly?.AnomalyRecords;
         }
 
-        var climateRecords = await DataService!.GetClimateRecords(Location!.Id);
-        var max = climateRecords.Where(x => x.DataType == DataType.TempMax && x.RecordType == RecordType.High);
-        if (max.Count() > 0)
+        if (Location?.RecordHigh is not null)
         {
-            if (max.Count() > 1)
-            {
-                max = max.Where(x => x.DataAdjustment == DataAdjustment.Adjusted);
-            }
-            RecordHigh = max.Single();
-            RecordHighToolTip = $"{Location.Name} record high of {RecordHigh.Value}°C set {(RecordHigh.Day == null ? string.Empty : RecordHigh.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(RecordHigh.Month)} {RecordHigh.Year}.\r\nClick for more records.";
-            
-            ClimateRecordsContent = Location == null
-                    ? null
-                    : builder =>
-                    {
-                        builder.OpenComponent(0, typeof(ClimateRecordsContent));
-                        builder.AddAttribute(1, "ClimateRecords", climateRecords);
-                        builder.CloseComponent();
-                    };
+            RecordHighToolTip = $"{Location.Name} record high of {Location.RecordHigh.Value}°C set {(Location.RecordHigh.Day == null ? string.Empty : Location.RecordHigh.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(Location.RecordHigh.Month)} {Location.RecordHigh.Year}.\r\nClick for more records.";
         }
+            
+        ClimateRecordsContent = Location == null
+                ? null
+                : builder =>
+                {
+                    builder.OpenComponent(0, typeof(ClimateRecordsContent));
+                    builder.AddAttribute(1, "Location", Location);
+                    builder.CloseComponent();
+                };
 
         HeatingScoreContent = Location == null
                             ? null

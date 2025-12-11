@@ -48,9 +48,9 @@
     "RecordType": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 2,
-    "Year": 2023,
-    "Month": 11,
-    "Value": 161,
+    "Year": 2003,
+    "Month": 7,
+    "Value": 154.7,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 2007,
     "Month": 12,
     "Value": 0,
-    "NumberOfTimes": 3
+    "NumberOfTimes": 2
   },
   {
     "DataType": 0,

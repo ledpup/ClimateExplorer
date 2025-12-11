@@ -5,9 +5,9 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 2022,
+    "Year": 2024,
     "Month": 8,
-    "Value": 28.75,
+    "Value": 28.95,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1968,
     "Month": 2,
-    "Value": 3.42,
+    "Value": 3.25,
     "NumberOfTimes": 1
   },
   {
@@ -27,9 +27,9 @@
     "DataAdjustment": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 2022,
+    "Year": 2024,
     "Month": 8,
-    "Value": 28.75,
+    "Value": 28.95,
     "NumberOfTimes": 1
   },
   {

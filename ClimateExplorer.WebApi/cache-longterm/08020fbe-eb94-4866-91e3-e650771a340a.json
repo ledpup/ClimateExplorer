@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 2020,
     "Month": 1,
-    "Value": 30.98,
+    "Value": 30.82,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1908,
     "Month": 6,
-    "Value": 8.49,
+    "Value": 8.5,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 1888,
     "Month": 4,
     "Value": 0,
-    "NumberOfTimes": 75
+    "NumberOfTimes": 76
   },
   {
     "DataType": 0,

@@ -19,8 +19,7 @@ public class Location : GeographicalEntity
     required public Coordinates Coordinates { get; set; }
     public double? WarmingAnomaly { get; set; }
     public short? HeatingScore { get; set; }
-    public List<ClimateRecord>? ClimateRecords { get; set; }
-    public List<LocationDistance>? NearbyLocations { get; set; }
+    public ClimateRecord? RecordHigh { get; set; }
 
     [JsonIgnore]
     public string FullTitle

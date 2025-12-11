@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 1971,
     "Month": 7,
-    "Value": 19.64,
+    "Value": 18.64,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1952,
     "Month": 1,
-    "Value": -46.21,
+    "Value": -47.21,
     "NumberOfTimes": 1
   },
   {
@@ -58,10 +58,10 @@
     "RecordType": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 2,
-    "Year": 2023,
-    "Month": 1,
-    "Value": 0,
-    "NumberOfTimes": 1
+    "Year": 1960,
+    "Month": 5,
+    "Value": 0.4,
+    "NumberOfTimes": 2
   },
   {
     "DataType": 0,

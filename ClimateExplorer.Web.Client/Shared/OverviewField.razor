@@ -4,7 +4,7 @@
 <div class="overview-field" title="@(Tooltip == null ? title : Tooltip)" @onclick="ShowPopup">
     <div class="label">@Label</div>
     <div class="value">
-        @if (PopupContent != null || !string.IsNullOrWhiteSpace(PopupText))
+        @if (PopupContent != null)
         {
             <a>@Value</a>
         }
@@ -16,9 +16,9 @@
     <div class="additional-info">@AdditionalInfo</div>
 </div>
 
-@if (PopupContent != null || !string.IsNullOrWhiteSpace(PopupText))
+@if (PopupContent != null)
 {
-    <Modal @ref="popup">
+    <Modal @ref="popup" Closing="@OnModalClosing">
         <ModalContent Size="ModalSize.Large">
             <ModalHeader>
                 <ModalTitle>
@@ -27,13 +27,9 @@
                 <CloseButton />
             </ModalHeader>
             <ModalBody>
-                @if (PopupContent != null)
+                @if (popupContentVisible)
                 {
                     @PopupContent
-                }
-                else
-                {
-                    @((MarkupString)PopupText!)
                 }
             </ModalBody>
         </ModalContent>
@@ -48,11 +44,6 @@
             if (!string.IsNullOrWhiteSpace(PopupTitle))
             {
                 return PopupTitle!;
-            }
-
-            if (!string.IsNullOrWhiteSpace(PopupText))
-            {
-                return Regex.Replace(PopupText, "<.*?>", String.Empty);
             }
 
             if (PopupContent != null)
@@ -79,33 +70,29 @@
     [Parameter]
     public string? PopupTitle { get; set; }
 
-    // Backwards-compatible string content
-    [Parameter]
-    public string? PopupText { get; set; }
-
-    // Allow custom components/content inside the modal body
     [Parameter]
     public RenderFragment? PopupContent { get; set; }
 
     private Modal? popup;
+    private bool popupContentVisible = false;
+
     private async Task ShowPopup()
     {
-        if (popup == null)
+        if (popup is null || PopupContent is null)
         {
             return;
         }
-
-        if (PopupContent != null || !string.IsNullOrWhiteSpace(PopupText))
-        {
-            await popup.Show();
-        }
+         
+        // Ensure the popup content is instantiated only when user opens the modal
+        popupContentVisible = true;
+        StateHasChanged();
+        await popup.Show();
     }
 
-    protected override void OnParametersSet()
+    private Task OnModalClosing(ModalClosingEventArgs e)
     {
-        if (PopupContent != null && PopupText != null)
-        {
-            throw new InvalidOperationException("Cannot set both PopupContent and PopupText parameters. Please choose one.");
-        }
+        popupContentVisible = false;
+
+        return Task.CompletedTask;
     }
 }

@@ -16,9 +16,9 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 1861,
-    "Month": 1,
-    "Value": 7.51,
+    "Year": 1956,
+    "Month": 2,
+    "Value": 7.91,
     "NumberOfTimes": 1
   },
   {
@@ -48,9 +48,9 @@
     "RecordType": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 2,
-    "Year": 2021,
-    "Month": 7,
-    "Value": 1000,
+    "Year": 1877,
+    "Month": 11,
+    "Value": 370,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 1841,
     "Month": 9,
     "Value": 0,
-    "NumberOfTimes": 334
+    "NumberOfTimes": 335
   },
   {
     "DataType": 0,

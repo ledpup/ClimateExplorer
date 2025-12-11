@@ -48,9 +48,9 @@
     "RecordType": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 2,
-    "Year": 2021,
-    "Month": 7,
-    "Value": 1626,
+    "Year": 2020,
+    "Month": 6,
+    "Value": 308,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 1945,
     "Month": 2,
     "Value": 0,
-    "NumberOfTimes": 19
+    "NumberOfTimes": 18
   },
   {
     "DataType": 3,

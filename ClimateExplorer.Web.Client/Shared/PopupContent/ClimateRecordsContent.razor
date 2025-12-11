@@ -3,6 +3,7 @@
 @using ClimateExplorer.Core.Model
 @using ClimateExplorer.Web.UiModel
 @using System.Globalization
+@using ClimateExplorer.WebApiClient.Services
 @using static ClimateExplorer.Core.Enums
 
 @if (ClimateRecords is not null && ClimateRecords.Count() > 0)
@@ -53,7 +54,25 @@
     }
 }
 @code {
+    [Inject]
+    public IDataService? DataService { get; set; }
+
     [Parameter]
+    public Location? Location { get; set; }
+
+    [PersistentState]
     public IEnumerable<ClimateRecord>? ClimateRecords { get; set; }
 
+    Guid? InternalLocationId { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Location is null || Location.Id == InternalLocationId)
+        {
+            return;
+        }
+
+        InternalLocationId = Location.Id;
+        ClimateRecords = await DataService!.GetClimateRecords(Location.Id);
+    }
 }

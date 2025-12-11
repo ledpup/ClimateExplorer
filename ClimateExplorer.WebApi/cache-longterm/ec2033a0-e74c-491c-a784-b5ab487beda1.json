@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 2005,
     "Month": 2,
-    "Value": 10.69,
+    "Value": 10.54,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1956,
     "Month": 8,
-    "Value": 1.82,
+    "Value": 1.83,
     "NumberOfTimes": 1
   },
   {
@@ -27,10 +27,10 @@
     "DataAdjustment": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 2005,
-    "Month": 2,
-    "Value": 10.89,
-    "NumberOfTimes": 1
+    "Year": 2024,
+    "Month": 1,
+    "Value": 11.4,
+    "NumberOfTimes": 2
   },
   {
     "DataType": 2,
@@ -38,9 +38,9 @@
     "DataAdjustment": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 2019,
-    "Month": 12,
-    "Value": 0.3,
+    "Year": 1956,
+    "Month": 8,
+    "Value": 2.1,
     "NumberOfTimes": 1
   },
   {

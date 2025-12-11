@@ -16,9 +16,9 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 1971,
+    "Year": 1975,
     "Month": 8,
-    "Value": 20.9,
+    "Value": 20.95,
     "NumberOfTimes": 1
   },
   {
@@ -48,9 +48,9 @@
     "RecordType": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 2,
-    "Year": 2023,
-    "Month": 1,
-    "Value": 1176,
+    "Year": 1968,
+    "Month": 3,
+    "Value": 501,
     "NumberOfTimes": 1
   },
   {

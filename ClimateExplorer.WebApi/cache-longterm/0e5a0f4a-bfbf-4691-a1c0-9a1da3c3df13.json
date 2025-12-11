@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1974,
     "Month": 8,
-    "Value": 24.95,
+    "Value": 24.51,
     "NumberOfTimes": 1
   },
   {
@@ -27,9 +27,9 @@
     "DataAdjustment": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 2020,
-    "Month": 3,
-    "Value": 30.65,
+    "Year": 2024,
+    "Month": 12,
+    "Value": 31.05,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 1974,
     "Month": 9,
     "Value": 0,
-    "NumberOfTimes": 45
+    "NumberOfTimes": 39
   },
   {
     "DataType": 0,

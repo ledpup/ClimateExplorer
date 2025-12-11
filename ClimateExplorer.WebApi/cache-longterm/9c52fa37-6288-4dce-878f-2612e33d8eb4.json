@@ -48,9 +48,9 @@
     "RecordType": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 2,
-    "Year": 1959,
-    "Month": 8,
-    "Value": 411.5,
+    "Year": 2024,
+    "Month": 7,
+    "Value": 6023,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 1923,
     "Month": 1,
     "Value": 0,
-    "NumberOfTimes": 524
+    "NumberOfTimes": 530
   },
   {
     "DataType": 0,

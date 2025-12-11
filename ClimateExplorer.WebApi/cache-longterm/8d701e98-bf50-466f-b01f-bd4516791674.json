@@ -5,9 +5,9 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 2002,
+    "Year": 2024,
     "Month": 7,
-    "Value": 19.99,
+    "Value": 20.05,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 2001,
     "Month": 1,
-    "Value": -28.71,
+    "Value": -29.14,
     "NumberOfTimes": 1
   },
   {
@@ -27,9 +27,9 @@
     "DataAdjustment": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 2002,
+    "Year": 2024,
     "Month": 7,
-    "Value": 19.99,
+    "Value": 20.05,
     "NumberOfTimes": 1
   },
   {

@@ -5,10 +5,10 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 1951,
-    "Month": 8,
-    "Value": 31.67,
-    "NumberOfTimes": 2
+    "Year": 1980,
+    "Month": 7,
+    "Value": 31.7,
+    "NumberOfTimes": 1
   },
   {
     "DataType": 2,
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1978,
     "Month": 1,
-    "Value": 1.5,
+    "Value": 1.53,
     "NumberOfTimes": 1
   },
   {

@@ -29,7 +29,6 @@ builder.Services
     .AddTransient<IExporter, Exporter>()
     .AddCurrentDeviceService()
     .AddBlazoredLocalStorage()
-    .AddMemoryCache()
     .AddHttpClient<IDataService, DataService>(client =>
     {
         client.BaseAddress = new Uri(builder.Configuration["DataServiceBaseUri"] !);

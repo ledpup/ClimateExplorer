@@ -5,9 +5,9 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 2013,
+    "Year": 1998,
     "Month": 2,
-    "Value": 27.76,
+    "Value": 27.92,
     "NumberOfTimes": 1
   },
   {
@@ -16,10 +16,10 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 1964,
-    "Month": 8,
-    "Value": 19.83,
-    "NumberOfTimes": 2
+    "Year": 1990,
+    "Month": 7,
+    "Value": 19.85,
+    "NumberOfTimes": 1
   },
   {
     "DataType": 2,

@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1965,
     "Month": 12,
-    "Value": -42.86,
+    "Value": -42.79,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 2006,
     "Month": 3,
     "Value": 0,
-    "NumberOfTimes": 5
+    "NumberOfTimes": 6
   },
   {
     "DataType": 0,

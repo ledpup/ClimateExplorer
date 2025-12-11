@@ -1,7 +1,6 @@
 ﻿@using Blazorise
 @using ClimateExplorer.Core.Model
 @using ClimateExplorer.WebApiClient.Services
-@using Microsoft.Extensions.Caching.Memory
 @using System
 
 @if (Location != null && HeatingScoreTable != null)
@@ -33,13 +32,13 @@
             </TableRow>
         </TableHeader>
         <TableBody>
-        @foreach (var heatingScoreRow in HeatingScoreTable)
-        {
-            <TableRow Color="@(Location.HeatingScore == heatingScoreRow.Score ? Color.Info : Color.Default)">
-                <TableRowCell>@heatingScoreRow.Score</TableRowCell>
-                <TableRowCell>@heatingScoreRow.MinimumWarmingAnomaly.ToString("0.00") - @heatingScoreRow.MaximumWarmingAnomaly.ToString("0.00")</TableRowCell>
-            </TableRow>
-        }
+            @foreach (var heatingScoreRow in HeatingScoreTable)
+            {
+                <TableRow Color="@(Location.HeatingScore == heatingScoreRow.Score ? Color.Info : Color.Default)">
+                    <TableRowCell>@heatingScoreRow.Score</TableRowCell>
+                    <TableRowCell>@heatingScoreRow.MinimumWarmingAnomaly.ToString("0.00") - @heatingScoreRow.MaximumWarmingAnomaly.ToString("0.00")</TableRowCell>
+                </TableRow>
+            }
         </TableBody>
     </Table>
 }
@@ -49,9 +48,6 @@
     [Inject]
     public IDataService? DataService { get; set; }
 
-    [Inject]
-    public IMemoryCache? MemoryCache { get; set; }
-
     [Parameter]
     public Location? Location { get; set; }
 
@@ -60,21 +56,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        const string cacheKey = "HeatingScoreTable";
-
-        if (MemoryCache != null && MemoryCache.TryGetValue(cacheKey, out IEnumerable<HeatingScoreRow>? cachedTable))
+        if (HeatingScoreTable is not null)
         {
-            HeatingScoreTable = cachedTable;
+            return;
         }
-        else
-        {
-            var table = await DataService!.GetHeatingScoreTable();
-            HeatingScoreTable = table;
 
-            if (MemoryCache != null)
-            {
-                MemoryCache.Set(cacheKey, table);
-            }
-        }
+        HeatingScoreTable = await DataService!.GetHeatingScoreTable();
     }
 }

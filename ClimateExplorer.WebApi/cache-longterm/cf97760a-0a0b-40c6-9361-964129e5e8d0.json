@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 2001,
     "Month": 8,
-    "Value": 40.08,
+    "Value": 40.1,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1992,
     "Month": 1,
-    "Value": 13.89,
+    "Value": 13.91,
     "NumberOfTimes": 1
   },
   {
@@ -38,9 +38,9 @@
     "DataAdjustment": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 2023,
-    "Month": 2,
-    "Value": 11.05,
+    "Year": 1992,
+    "Month": 1,
+    "Value": 13.91,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 1959,
     "Month": 1,
     "Value": 0,
-    "NumberOfTimes": 409
+    "NumberOfTimes": 404
   },
   {
     "DataType": 0,

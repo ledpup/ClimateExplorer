@@ -5,10 +5,10 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 2022,
+    "Year": 1960,
     "Month": 1,
-    "Value": 25.3,
-    "NumberOfTimes": 1
+    "Value": 25.6,
+    "NumberOfTimes": 2
   },
   {
     "DataType": 2,
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1916,
     "Month": 6,
-    "Value": 3.31,
+    "Value": 4.02,
     "NumberOfTimes": 1
   },
   {

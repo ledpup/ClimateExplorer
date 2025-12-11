@@ -5,9 +5,9 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 2016,
+    "Year": 2024,
     "Month": 4,
-    "Value": 30.1,
+    "Value": 30.05,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1934,
     "Month": 1,
-    "Value": 25.29,
+    "Value": 25.68,
     "NumberOfTimes": 1
   },
   {

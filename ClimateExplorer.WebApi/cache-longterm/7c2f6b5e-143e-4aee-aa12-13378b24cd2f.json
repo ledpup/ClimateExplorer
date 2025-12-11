@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 2000,
     "Month": 7,
-    "Value": 26.87,
+    "Value": 26.82,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1954,
     "Month": 12,
-    "Value": -24.73,
+    "Value": -24.78,
     "NumberOfTimes": 1
   },
   {
@@ -48,9 +48,9 @@
     "RecordType": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 2,
-    "Year": 2021,
+    "Year": 1976,
     "Month": 7,
-    "Value": 425,
+    "Value": 136.4,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 1939,
     "Month": 12,
     "Value": 0,
-    "NumberOfTimes": 151
+    "NumberOfTimes": 147
   },
   {
     "DataType": 3,
