@@ -107,11 +107,7 @@ public partial class Index : ChartablePage
         if (firstRender)
         {
             Locations = (await DataService!.GetLocations(false)).ToList();
-            LocationDictionary = [];
-            foreach (var location in Locations)
-            {
-                LocationDictionary.Add(location.Id, location);
-            }
+            LocationDictionary = Locations.ToDictionary(x => x.Id, x => x);
 
             Regions = (await DataService!.GetRegions()).ToList();
 
