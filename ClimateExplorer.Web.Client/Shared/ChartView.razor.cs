@@ -21,7 +21,6 @@ using ClimateExplorer.WebApiClient.Services;
 public partial class ChartView
 {
     private bool haveCalledResizeAtLeastOnce = false;
-    private bool chartRenderedFirstTime = false;
 
     private Chart<double?>? chart;
     private ChartTrendline<double?>? chartTrendline;
@@ -124,7 +123,6 @@ public partial class ChartView
     /// Gets or sets the chart type selected by the user on the options page.
     /// </summary>
     private ChartType SelectedChartType { get; set; }
-    private List<short>? DatasetYears { get; set; }
     private List<short>? SelectedYears { get; set; }
     private List<short>? StartYears { get; set; }
     private short EndYear { get; set; }
@@ -357,7 +355,6 @@ public partial class ChartView
             haveCalledResizeAtLeastOnce = true;
         }
 
-        chartRenderedFirstTime = true;
         ChartLoadingIndicatorVisible = false;
         StateHasChanged();
 
@@ -415,14 +412,6 @@ public partial class ChartView
 
         SelectedYears = [];
 
-        var datasetYears = new List<short>();
-        for (short i = 1800; i <= (short)DateTime.Now.Year; i++)
-        {
-            datasetYears.Add(i);
-        }
-
-        DatasetYears = datasetYears;
-
         SliderMax = DateTime.Now.Year;
     }
 
@@ -433,19 +422,9 @@ public partial class ChartView
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (chart == null || chartTrendline == null)
-        {
-            return;
-        }
-
         if (IsMobileDevice == null)
         {
             IsMobileDevice = await CurrentDeviceService!.Mobile();
-        }
-
-        if (!chartRenderedFirstTime)
-        {
-            await HandleRedraw();
         }
     }
 

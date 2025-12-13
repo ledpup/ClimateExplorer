@@ -1,4 +1,4 @@
-﻿﻿@using Blazorise
+﻿@using Blazorise
 @using ClimateExplorer.Core.Model;
 @using CurrentDevice;
 @using DPBlazorMapLibrary;
@@ -39,7 +39,6 @@
     bool IsMapExpanded { get; set; } = false;
     bool? IsMobileDevice { get; set; }
 
-    bool mapMarkersCreated = false;
     bool mainTileLayerCreated = false;
 
     int lastExpandedZoom = 8;
@@ -48,6 +47,9 @@
     LatLng? collapsedCentre = null;
 
     Coordinates PreviousSeenLocationCoordinates;
+
+    List<Guid> MarkersAdded = new();
+    List<MarkerOptions> markerOptions = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -70,6 +72,7 @@
         await CreateMapMarkers();
         await CreateMainTileLayer();
 
+
         if (IsMapExpanded)
         {
             await ToggleMapExpansion();
@@ -80,8 +83,13 @@
 
     private async Task AfterMapRender()
     {
+        if (!markerOptions.Any())
+        {
+            markerOptions = await GetMarkerOptions();
+        }
         await CreateMapMarkers();
         await CreateMainTileLayer();
+        await map!.OnMoveEnd(async (moveEvent) => await HandleMoveEnd(moveEvent));
     }
 
     public async Task ScrollToPoint(Coordinates point)
@@ -111,13 +119,72 @@
             return;
         }
 
-        if (mapMarkersCreated)
-        {
-            return;
-        }
-
         Logger!.LogInformation("Creating map markers");
 
+        var bounds = await map.GetBounds();
+
+        int added = 0;
+        foreach (var location in Locations)
+        {
+            if (MarkersAdded.Contains(location.Id))
+            {
+                continue;
+            }
+
+            var lat = location.Coordinates.Latitude;
+            var lng = location.Coordinates.Longitude;
+
+            bool latInRange = IsLatBetween(lat, bounds.SouthWest!.Lat, bounds.NorthEast!.Lat);
+            bool lngInRange = IsLngBetween(lng, bounds.SouthWest!.Lng, bounds.NorthEast!.Lng);
+
+            if (!latInRange || !lngInRange)
+            {
+                continue;
+            }
+
+            var label = location.HeatingScore == null 
+                    ? "null"
+                    : location.HeatingScore.Value < 0
+                        ? "negative" 
+                        : location.HeatingScore.Value.ToString();
+
+            var markerOption = markerOptions.Single(x => x.Alt == label);
+            var marker = await this.LayerFactory.CreateMarkerAndAddToMap(new LatLng(lat, lng, location.Coordinates.Elevation ?? 0), map, markerOption);
+
+            await marker.BindTooltip(location.FullTitle!);
+            await marker.OnClick(async (MouseEvent mouseEvent) => await HandleMapMouseEvent(mouseEvent));
+
+            MarkersAdded.Add(location.Id);
+
+            added++;
+        }
+
+        Logger!.LogInformation($"Created {added} markers.");
+
+        Logger!.LogInformation("Created map markers");
+    }
+
+    static bool IsLatBetween(double value, double a, double b)
+    {
+        var min = Math.Min(a, b);
+        var max = Math.Max(a, b);
+        return value >= min && value <= max;
+    }
+
+    static bool IsLngBetween(double lng, double west, double east)
+    {
+        // Normal case: west <= east
+        if (west <= east)
+        {
+            return lng >= west && lng <= east;
+        }
+
+        // Bounds cross the dateline (e.g. west=170, east=-170)
+        return lng >= west || lng <= east;
+    }
+
+    async Task<List<MarkerOptions>> GetMarkerOptions()
+    {
         var markerOptions = new List<MarkerOptions>();
         for (var i = -1; i < 11; i++)
         {
@@ -139,29 +206,11 @@
                     Alt = label,
                     Opacity = 0.75,
                     Draggable = false,
-                    IconRef = await this.IconFactory.Create(iconOptions),
+                    IconRef = await this.IconFactory!.Create(iconOptions),
                 });
         }
 
-        foreach (var location in Locations)
-        {
-            var label = location.HeatingScore == null 
-                    ? "null"
-                    : location.HeatingScore.Value < 0
-                        ? "negative" 
-                        : location.HeatingScore.Value.ToString();
-
-
-            var markerOption = markerOptions.Single(x => x.Alt == label);
-            var marker = await this.LayerFactory.CreateMarkerAndAddToMap(new LatLng(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation ?? 0), map, markerOption);
-
-            await marker.BindTooltip(location.FullTitle!);
-            await marker.OnClick(async (MouseEvent mouseEvent) => await HandleMapMouseEvent(mouseEvent));
-        }
-
-        mapMarkersCreated = true;
-
-        Logger!.LogInformation("Created map markers");
+        return markerOptions;
     }
 
     public async Task CreateMainTileLayer()
@@ -204,7 +253,7 @@
 
     async Task ToggleMapExpansion()
     {
-        mapMarkersCreated = false;
+        MarkersAdded = new(); // Force re-creation of markers
         mainTileLayerCreated = false;
         mapOptions = null;
 
@@ -240,5 +289,10 @@
                     Dragging = !(bool)IsMobileDevice! || IsMapExpanded
                 };
         }
+    }
+
+    private async Task HandleMoveEnd(MoveEvent moveEvent)
+    {
+        await CreateMapMarkers();
     }
 }
