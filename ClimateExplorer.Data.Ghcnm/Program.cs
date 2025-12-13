@@ -494,8 +494,8 @@ async Task<List<Station>> RemoveDuplicateLocations(List<Station> dataQualityFilt
         }
         else
         {
-            stationMatchedOnName = dataQualityFilteredStations.SingleOrDefault(x => MathF.Round(x.Coordinates!.Value.Latitude, 1) == MathF.Round(preExistingLocation.Coordinates.Latitude, 1)
-                                                                                 && MathF.Round(x.Coordinates.Value.Longitude, 1) == MathF.Round(preExistingLocation.Coordinates.Longitude, 1));
+            stationMatchedOnName = dataQualityFilteredStations.SingleOrDefault(x => Math.Round(x.Coordinates!.Value.Latitude, 1) == Math.Round(preExistingLocation.Coordinates.Latitude, 1)
+                                                                                 && Math.Round(x.Coordinates.Value.Longitude, 1) == Math.Round(preExistingLocation.Coordinates.Longitude, 1));
             if (stationMatchedOnName != null)
             {
                 logger.LogInformation($"Found match of station based on geo-coordinates (their names are '{stationMatchedOnName!.Name}' and '{preExistingLocation.Name}'). Will remove this station from the set");

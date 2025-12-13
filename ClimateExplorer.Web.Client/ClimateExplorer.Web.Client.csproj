@@ -31,7 +31,7 @@
     <PackageReference Include="Blazorise.LoadingIndicator" Version="1.3.3" />
     <PackageReference Include="CurrentDevice" Version="1.0.3" />
     <PackageReference Include="GeoCoordinate.NetStandard1" Version="1.0.1" />
-    <PackageReference Include="LPBlazorMapLibrary" Version="1.2.2" />
+    <PackageReference Include="LPBlazorMapLibrary" Version="1.2.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.1" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">

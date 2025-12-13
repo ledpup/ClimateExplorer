@@ -1,15 +1,15 @@
 ﻿public struct Coordinates
 {
-    public Coordinates(float lat, float lng)
+    public Coordinates(double lat, double lng)
     {
         Latitude = lat;
         Longitude = lng;
         Elevation = 0;
     }
 
-    public float Latitude { get; set; }
-    public float Longitude { get; set; }
-    public float? Elevation { get; set; }
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
+    public double? Elevation { get; set; }
 
     public static bool operator ==(Coordinates lhs, Coordinates rhs) => lhs.Equals(rhs);
     public static bool operator !=(Coordinates lhs, Coordinates rhs) => !(lhs == rhs);
