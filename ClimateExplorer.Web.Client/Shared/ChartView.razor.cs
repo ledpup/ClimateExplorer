@@ -21,7 +21,6 @@ using ClimateExplorer.WebApiClient.Services;
 public partial class ChartView
 {
     private bool haveCalledResizeAtLeastOnce = false;
-    private bool chartRenderedFirstTime = false;
 
     private Chart<double?>? chart;
     private ChartTrendline<double?>? chartTrendline;
@@ -356,7 +355,6 @@ public partial class ChartView
             haveCalledResizeAtLeastOnce = true;
         }
 
-        chartRenderedFirstTime = true;
         ChartLoadingIndicatorVisible = false;
         StateHasChanged();
 
@@ -424,19 +422,9 @@ public partial class ChartView
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (chart == null || chartTrendline == null)
-        {
-            return;
-        }
-
         if (IsMobileDevice == null)
         {
             IsMobileDevice = await CurrentDeviceService!.Mobile();
-        }
-
-        if (!chartRenderedFirstTime)
-        {
-            await HandleRedraw();
         }
     }
 
