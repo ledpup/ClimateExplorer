@@ -124,7 +124,6 @@ public partial class ChartView
     /// Gets or sets the chart type selected by the user on the options page.
     /// </summary>
     private ChartType SelectedChartType { get; set; }
-    private List<short>? DatasetYears { get; set; }
     private List<short>? SelectedYears { get; set; }
     private List<short>? StartYears { get; set; }
     private short EndYear { get; set; }
@@ -414,14 +413,6 @@ public partial class ChartView
         ChartLoadingErrored = false;
 
         SelectedYears = [];
-
-        var datasetYears = new List<short>();
-        for (short i = 1800; i <= (short)DateTime.Now.Year; i++)
-        {
-            datasetYears.Add(i);
-        }
-
-        DatasetYears = datasetYears;
 
         SliderMax = DateTime.Now.Year;
     }
