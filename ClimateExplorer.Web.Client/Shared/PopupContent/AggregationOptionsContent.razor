@@ -1,0 +1,21 @@
+﻿<p>Aggregation options allow you to change the underlying aggregation process. To calculate a single aggregated value for a year, data is bundled together from daily or monthly series.</p>
+  
+<p>As temperature (and other climate data) follows cyclical annual patterns, missing data from a consecutive block is considered to be more untrustworthy than sporadic data missing throughout the year. This approach allows for a number of records to be missing for a year, so long as not too many consecutive days are missing.</p>
+
+<p>By default, the bundles are groups of 14 days (fortnights) and each bundle requires 70% of the records (10 days of the 14) to be present for the year to be considered reliable enough for an average mean to be calculated.</p>
+
+<p>Some presets (specifically, the cryosphere reference data – sea ice extent and melt) have a lower threshold applied to them because the data has been previously curated; it is considered sufficiently trustworthy that more of it can be missing while not corrupting the results.</p>
+
+<p>If you make changes to these settings and apply them, your settings will take precedence and override any preset specific settings.</p>
+
+<h5>Day grouping</h5>
+<p>Select groups from weekly, fortnightly, monthly, and half-yearly, amongst other options.</p>
+
+<h5>Threshold required to form a valid group (% percentage)</h5>
+<p>This is a percentage of how many records is considered sufficient to form a valid bundle of data.</p>
+
+<h5>Apply</h5>
+<p>Save your changes and apply them to the chart. These settings will persist as you change locations and datasets within the application.</p>
+
+<h5>Clear override</h5>
+<p>This will reset the settings back to their default (14 days at 70% threshold). Only appears after applying your settings.</p>

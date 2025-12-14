@@ -13,12 +13,11 @@
             The first half of the records at <strong>@Location?.Name</strong> (the years @CalculatedAnomaly.FirstYearInFirstHalf-@CalculatedAnomaly.LastYearInFirstHalf, @CalculatedAnomaly.CountOfFirstHalf years in total) the average temperature was <strong>@string.Format("{0:0.00}", CalculatedAnomaly.AverageOfFirstHalf)°C</strong>.
         </li>
         <li>
-            The difference is <strong>@WarmingAnomalyAsString</strong> (after rounding to 1 decimal place).
+            The difference is <strong>@AnomalyAsString</strong> (after rounding to 1 decimal place).
         </li>
     </ul>
 }
 
-<p>Over the long-term, with no external influences, we'd expect the warming anomaly to trend towards zero. A non-zero warming anomaly may indicate an effect of climate change. A positive warming anomaly may indicate global warming.</p>
 <p>A minimum of 60 years of data is required to calculate a warming anomaly.</p>
 
 @code
@@ -29,10 +28,10 @@
     [Parameter]
     public CalculatedAnomaly? CalculatedAnomaly { get; set; }
 
-    string? WarmingAnomalyAsString { get; set; }
+    string? AnomalyAsString { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        WarmingAnomalyAsString = CalculatedAnomaly.ValueAsString();
+        AnomalyAsString = CalculatedAnomaly.ValueAsString();
     }
 }

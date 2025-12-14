@@ -37,7 +37,7 @@
             }
             @if (precipitation && PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
             {
-                <OverviewField Label="Precipitation anomaly"><Value>@(PrecipitationAnomalyAsString == null ? "NA" : PrecipitationAnomalyAsString)</Value></OverviewField>
+                <OverviewField Label="Precipitation anomaly" PopupContent="@PrecipitationAnomalyContent"><Value>@(PrecipitationAnomalyAsString == null ? "NA" : PrecipitationAnomalyAsString)</Value></OverviewField>
             }
             <ClimateStripe UnitOfMeasure="UnitOfMeasure.DegreesCelsius" LocationName=@Location?.Name LocationMean=@TemperatureLocationMean DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" ShowInfo="true" />
             <WarmestYears DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" />
@@ -89,6 +89,7 @@
 
     List<YearlyValues>? PrecipitationAnomalyRecords { get; set; }
     double? PrecipitationLocationMean { get; set; }
+    RenderFragment? PrecipitationAnomalyContent;
     string? PrecipitationAnomalyAsString;
 
     Guid? locationIdLastTimeOnParametersSetAsyncWasCalled;
@@ -134,6 +135,7 @@
         PrecipitationLocationMean = null;
         PrecipitationAnomalyRecords = null;
         PrecipitationAnomalyAsString = null;
+        PrecipitationAnomalyContent = null;
 
         TemperatureDataType = null;
         WarmingAnomalyAsString = null;
@@ -304,6 +306,15 @@
             PrecipitationAnomalyAsString = GetPrecipitationAnomalyAsString(precipitationAnomaly.CalculatedAnomaly!);
             PrecipitationLocationMean = precipitationAnomaly.DataSet?.DataRecords.Average(x => x.Value);
             PrecipitationAnomalyRecords = precipitationAnomaly.AnomalyRecords;
+            PrecipitationAnomalyContent = Location == null
+                    ? null
+                    : builder =>
+                    {
+                        builder.OpenComponent(0, typeof(PrecipitationAnomalyContent));
+                        builder.AddAttribute(1, "Location", Location);
+                        builder.AddAttribute(2, "CalculatedAnomaly", precipitationAnomaly.CalculatedAnomaly);
+                        builder.CloseComponent();
+                    };
         }
     }
 }
