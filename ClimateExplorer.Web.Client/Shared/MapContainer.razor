@@ -69,9 +69,6 @@
         PreviousSeenLocationCoordinates = LocationCoordinates;
 
         InitialiseMapOptions();
-        await CreateMapMarkers();
-        await CreateMainTileLayer();
-
 
         if (IsMapExpanded)
         {
@@ -83,12 +80,9 @@
 
     private async Task AfterMapRender()
     {
-        if (!markerOptions.Any())
-        {
-            markerOptions = await GetMarkerOptions();
-        }
-        await CreateMapMarkers();
+        await CreateMarkerOptions();
         await CreateMainTileLayer();
+        await CreateMapMarkers();
         await map!.OnMoveEnd(async (moveEvent) => await HandleMoveEnd(moveEvent));
     }
 
@@ -183,9 +177,14 @@
         return lng >= west || lng <= east;
     }
 
-    async Task<List<MarkerOptions>> GetMarkerOptions()
+    async Task CreateMarkerOptions()
     {
-        var markerOptions = new List<MarkerOptions>();
+        if (markerOptions.Any())
+        {
+            return;
+        }
+
+        markerOptions = new List<MarkerOptions>();
         for (var i = -1; i < 11; i++)
         {
             var label = i == -1 
@@ -209,8 +208,6 @@
                     IconRef = await this.IconFactory!.Create(iconOptions),
                 });
         }
-
-        return markerOptions;
     }
 
     public async Task CreateMainTileLayer()
@@ -277,6 +274,8 @@
 
     void InitialiseMapOptions()
     {
+        Logger!.LogInformation("Initialising map options");
+
         Logger!.LogDebug($"IsMapExpanded = {IsMapExpanded}");
 
         if (mapOptions == null)
@@ -289,6 +288,8 @@
                     Dragging = !(bool)IsMobileDevice! || IsMapExpanded
                 };
         }
+
+        Logger!.LogInformation("Map options initialised");
     }
 
     private async Task HandleMoveEnd(MoveEvent moveEvent)

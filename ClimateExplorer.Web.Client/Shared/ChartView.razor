@@ -3,6 +3,7 @@
 @using Blazorise.Charts.Trendline
 @using Blazorise.LoadingIndicator
 @using ClimateExplorer.Core.DataPreparation;
+@using ClimateExplorer.Web.Client.Shared.PopupContent
 
 <LoadingIndicator @bind-visible="@ChartLoadingIndicatorVisible">
     <div class="chart-collapsible-parent">
@@ -123,32 +124,26 @@
     </ModalContent>
 </Modal>
 
-@if (ChartOptionsText != null)
-{
-    <Modal @ref="chartOptionsModal">
-        <ModalContent Size="ModalSize.Large">
-            <ModalHeader>
-                <ModalTitle>Chart options information</ModalTitle>
-                <CloseButton />
-            </ModalHeader>
-            <ModalBody>
-                @((MarkupString)ChartOptionsText)
-            </ModalBody>
-        </ModalContent>
-    </Modal>
-}
+<Modal @ref="chartOptionsModal">
+    <ModalContent Size="ModalSize.Large">
+        <ModalHeader>
+            <ModalTitle>Chart options information</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <ChartOptionsContent />
+        </ModalBody>
+    </ModalContent>
+</Modal>
 
-@if (AggregationOptionsInfoText != null)
-{
-    <Modal @ref="aggregationOptionsModal">
-        <ModalContent Size="ModalSize.Large">
-            <ModalHeader>
-                <ModalTitle>Aggregation options information</ModalTitle>
-                <CloseButton />
-            </ModalHeader>
-            <ModalBody>
-                @((MarkupString)AggregationOptionsInfoText)
-            </ModalBody>
-        </ModalContent>
-    </Modal>
-}
+<Modal @ref="aggregationOptionsModal">
+    <ModalContent Size="ModalSize.Large">
+        <ModalHeader>
+            <ModalTitle>Aggregation options information</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <AggregationOptionsContent />
+        </ModalBody>
+    </ModalContent>
+</Modal>

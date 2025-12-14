@@ -1,0 +1,24 @@
+﻿<div style="padding-bottom: 24px;">
+    <img style="max-width: 100%;" src="images/ChartOptions.png" alt="Chart Options image" />
+</div>
+
+<h5>Chart all data</h5>
+<p>When checked, all data from all series will be displayed. When unchecked, data will be cropped to a starting point that all datasets share.</p>
+
+<h5>Clear filter</h5>
+<p>The clear filter button is displayed when there is a start or end year filter applied to the chart. Clicking this button will reset the chart back to the default filter and remove the range slider (if it has been turned on).</p>
+
+<h5>Grouping</h5>
+<p>The grouping option allows you to look at the data from another point of view. Options: 
+    <ul>
+        <li><strong>Yearly</strong>: each point on the graph represents a single year in the series. To represent daily data at the yearly level, ClimateExplorer applies rules and aggregations to average (or sum) the data together. This is the default option.</li>
+        <li><strong>Year + Month</strong>: the data will be re-processed, starting with the daily data for the particular year, to present twelve points on the chart per year. This view works best in combination with the range slider.</li>
+        <li><strong>Month</strong>: the data will be sliced, again starting with the lowest level of the data (usually daily), into only twelve points, one point for every month of the year. The value for each point will be an average (or sum) of the data across all years. This will give you a climatic view of the data for the location - not as useful for viewing the change in the climate over time.</li>
+    </ul>
+</p>
+
+<h5>Download data</h5>
+<p>The download data button allows you to download, as a csv file, the data for the chart you are currently looking at. The button is context sensitive; it'll download data that applies to the current view. For example, if you are looking at the data as a "Year + Month" grouping, you will get twelve records for each year.</p>
+
+<h5>Aggregation options</h5>
+<p>The aggregation options allow you to change the underlying grouping parameters for the chart. The default values will group the daily data into 14 day (i.e., fortnightly) sub-bins. If each of those sub-bins has records for 70% of those days (i.e., 10 days of the 14 days will need to have records) then the whole year is considered valid. This means that you can still have substantial data loss, while the data remains valid. E.g., a meteorologist unwilling to come in on some weekends to record the min and max temperatures may not invalidate the data for the year. However, going on a 3-week holiday in the middle of winter would invalidate the year as it would distort the average to make the year seem warmer than it was.</p>
