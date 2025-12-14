@@ -8,10 +8,10 @@
     <p>The heating score is a number between 0 and 9. It is calculated by ordering all warming anomalies across the locations in the dataset into 10 sets of <a href="https://en.wikipedia.org/wiki/Percentile" target=" _blank">percentiles</a>. Each set is a single heating score and it represents 10% of the total number of locations.</p>
     <p>For example, the top ten 10% of warming anomalies are scored as a 9, the bottom 10% are scored as 0.</p>
     <p>Negative warming anomalies are scored differently; they use the warming anomaly, rounded to zero decimal places as the score. This is to highlight any location that has not warmed.</p>
-    <p>Although the heating score compares locations, its not a fully standardised metric. The biggest influences of scores between locations are:</p>
+    <p>Although the heating score compares locations, its not a fully standardised metric. The major factors influencing scores are:</p>
     <ul>
-        <li>The station(s) has been operating for a long time. The effect of global warming is more obvious with many records as temperatures in the past were cooler.</li>
-        <li>The location is inland. The ocean is warming more slowly compared with the land. Coastal locations are therefore likely to have warmed less than inland locations.</li>
+        <li>Stations that have been operating for a long time. The effect of global warming is more obvious when there are many records as temperature records in the past were cooler for most locations.</li>
+        <li>Inland vs coastal locations. The ocean is warming more slowly compared with the land. Therefore, coastal locations are likely to have warmed less than inland locations.</li>
     </ul>
     <p>
         The table below lists each heating score and the range of warming anomalies that bound the score.
@@ -20,7 +20,7 @@
     @if (Location.WarmingAnomaly.HasValue)
     {
         <p>
-            Its warming anomaly for <strong>@Location.Name</strong> is <strong>@(Location.WarmingAnomaly!.Value.ToString("0.00"))°C</strong>. Its heating score is <Strong>@Location.HeatingScore</Strong>, highlighted below.
+            The warming anomaly for <strong>@Location.Name</strong> is <strong>@(Location.WarmingAnomaly!.Value.ToString("0.00"))°C</strong>. Its heating score is <Strong>@Location.HeatingScore</Strong>, highlighted below.
         </p>
     }
     
