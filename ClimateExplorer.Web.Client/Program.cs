@@ -13,7 +13,10 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 builder.Services
-    .AddBlazorise()
+    .AddBlazorise(options =>
+    {
+        options.ProductToken = "D939-63B7-99FE-4E3D-8069-A1B4-B5EE";
+    })
     .AddBootstrap5Providers()
     .AddFontAwesomeIcons()
     .AddMapService()
