@@ -22,13 +22,13 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
-    <PackageReference Include="Blazorise" Version="1.7.1" />
-    <PackageReference Include="Blazorise.Bootstrap5" Version="1.7.1" />
-    <PackageReference Include="Blazorise.Charts" Version="1.7.1" />
-    <PackageReference Include="Blazorise.Charts.Trendline" Version="1.7.1" />
-    <PackageReference Include="Blazorise.Components" Version="1.7.1" />
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.7.1" />
-    <PackageReference Include="Blazorise.LoadingIndicator" Version="1.7.1" />
+    <PackageReference Include="Blazorise" Version="1.8.8" />
+    <PackageReference Include="Blazorise.Bootstrap5" Version="1.8.8" />
+    <PackageReference Include="Blazorise.Charts" Version="1.8.8" />
+    <PackageReference Include="Blazorise.Charts.Trendline" Version="1.8.8" />
+    <PackageReference Include="Blazorise.Components" Version="1.8.8" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.8.8" />
+    <PackageReference Include="Blazorise.LoadingIndicator" Version="1.8.8" />
     <PackageReference Include="CurrentDevice" Version="1.0.3" />
     <PackageReference Include="GeoCoordinate.NetStandard1" Version="1.0.1" />
     <PackageReference Include="LPBlazorMapLibrary" Version="1.2.3" />
