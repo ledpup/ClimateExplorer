@@ -35,7 +35,7 @@ public partial class RegionalAndGlobal : ChartablePage
     {
         await base.OnAfterRenderAsync(firstRender);
 
-        if (firstRender)
+        if (Regions is null)
         {
             Regions = (await DataService!.GetRegions()).ToList();
             GeographicalEntities = Regions;

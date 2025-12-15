@@ -50,6 +50,12 @@ public partial class Index : ChartablePage
         }
     }
 
+    [Inject]
+    private Blazored.LocalStorage.ILocalStorageService? LocalStorage { get; set; }
+
+    [Inject]
+    private ICurrentDeviceService? CurrentDeviceService { get; set; }
+
     private ChangeLocation? ChangeLocationModal { get; set; }
     private MapContainer? MapContainer { get; set; }
 
@@ -58,12 +64,6 @@ public partial class Index : ChartablePage
     private string? BrowserLocationErrorMessage { get; set; }
 
     private Location? InternalLocation { get; set; }
-
-    [Inject]
-    private Blazored.LocalStorage.ILocalStorageService? LocalStorage { get; set; }
-
-    [Inject]
-    private ICurrentDeviceService? CurrentDeviceService { get; set; }
 
     private Location SelectedLocation
     {
@@ -99,12 +99,12 @@ public partial class Index : ChartablePage
     {
         await base.OnAfterRenderAsync(firstRender);
 
-        if (IsMobileDevice == null)
+        if (IsMobileDevice is null)
         {
             IsMobileDevice = await CurrentDeviceService!.Mobile();
         }
 
-        if (firstRender)
+        if (Locations is null)
         {
             Locations = (await DataService!.GetLocations(false)).ToList();
             LocationDictionary = Locations.ToDictionary(x => x.Id, x => x);
@@ -128,10 +128,10 @@ public partial class Index : ChartablePage
             }
         }
 
-        if (LocationId != null)
+        if (!firstRender && !finishedSetup && LocationId is not null)
         {
             var locationId = Guid.Parse(LocationId);
-            if (!firstRender && !finishedSetup && locationId != Guid.Empty)
+            if (locationId != Guid.Empty)
             {
                 if (oldLocationId != locationId)
                 {
