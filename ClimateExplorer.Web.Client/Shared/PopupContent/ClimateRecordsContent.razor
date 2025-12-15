@@ -15,9 +15,9 @@
         <Table Striped>
             <TableHeader>
                 <TableRow>
-                    <TableHeaderCell Width="@Width.Is50" Style="text-align: left;"><Strong>@(daGroup.Key == null ? "Other" : daGroup.Key) records</Strong></TableHeaderCell>
-                    <TableHeaderCell><Strong>Record low</Strong></TableHeaderCell>
-                    <TableHeaderCell><Strong>Record high</Strong></TableHeaderCell>
+                    <TableHeaderCell Width="@Width.Is50" TextAlignment="TextAlignment.Start"><Strong>@(daGroup.Key == null ? "Other" : daGroup.Key) records</Strong></TableHeaderCell>
+                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Record low</Strong></TableHeaderCell>
+                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Record high</Strong></TableHeaderCell>
                 </TableRow>
             </TableHeader>
             <TableBody>
