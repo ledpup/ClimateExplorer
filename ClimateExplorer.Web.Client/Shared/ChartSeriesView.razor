@@ -36,7 +36,7 @@
                         <td>Aggregation</td>
                         <td>
                             <Select TValue="SeriesAggregationOptions" 
-                                    Size="Size.ExtraSmall"
+                                    Size="Size.Small"
                                     SelectedValue="@ChartSeries.Aggregation"
                                     SelectedValueChanged="@OnAggregationChanged"
                                     Disabled="@ShouldDisableAggregationOptions(ChartSeries)">
@@ -59,7 +59,7 @@
                         <td>Secondary calcuation</td>
                         <td>
                             <Select TValue="SecondaryCalculationOptions"
-                                Size="Size.ExtraSmall"
+                                    Size="Size.Small"
                                 SelectedValue="@ChartSeries.SecondaryCalculation"
                                 SelectedValueChanged="@OnSecondaryCalculationChanged">
                                 <SelectItem Value="SecondaryCalculationOptions.None">None</SelectItem>
@@ -71,7 +71,7 @@
                         <td>Smoothing</td>
                         <td>
                             <Select TValue="SeriesSmoothingOptions" 
-                                    Size="Size.ExtraSmall"
+                                    Size="Size.Small"
                                     SelectedValue="@ChartSeries.Smoothing"
                                     SelectedValueChanged="@OnSmoothingChanged">
                                 <SelectItem Value="SeriesSmoothingOptions.None">None</SelectItem>
@@ -83,7 +83,7 @@
                         <td>Smoothing window</td>
                         <td>
                             <Select TValue="int"
-                                    Size="Size.ExtraSmall"
+                                    Size="Size.Small"
                                     SelectedValue="@ChartSeries.SmoothingWindow"
                                     SelectedValueChanged="@OnSmoothingWindowChanged"
                                     Disabled="@ShouldDisableSmoothingWindow(ChartSeries)">
@@ -102,7 +102,7 @@
                         <td>Display</td>
                         <td>
                             <Select TValue="SeriesValueOptions" 
-                                    Size="Size.ExtraSmall"
+                                    Size="Size.Small"
                                     SelectedValue="@ChartSeries.Value"
                                     SelectedValueChanged="@OnValueChanged"
                                     Disabled="@ShouldDisableDisplay(ChartSeries)">
@@ -115,7 +115,7 @@
                         <td>Transformation</td>
                         <td>
                             <Select TValue="SeriesTransformations" 
-                                    Size="Size.ExtraSmall"
+                                    Size="Size.Small"
                                     SelectedValue="@ChartSeries.SeriesTransformation"
                                     SelectedValueChanged="@OnTransformationChanged"
                                     Disabled="@ShouldDisableTransformation(ChartSeries)">
@@ -137,7 +137,7 @@
                         <td>Display style</td>
                         <td>
                             <Select TValue="SeriesDisplayStyle" 
-                                    Size="Size.ExtraSmall"
+                                    Size="Size.Small"
                                     SelectedValue="@ChartSeries.DisplayStyle"
                                     SelectedValueChanged="@OnDisplayStyleChanged">
                                 <SelectItem Value="SeriesDisplayStyle.Line">Line</SelectItem>
@@ -149,14 +149,14 @@
                         <td>Colour</td>
                         <td>
                             <Select TValue="Colours"
-                                Size="Size.ExtraSmall"
-                                SelectedValue="@ChartSeries.RequestedColour"
-                                SelectedValueChanged="@OnColourChanged"
-                                Disabled="@(ChartSeries.DisplayStyle == SeriesDisplayStyle.Bar)">
-                                @foreach (var colour in (Colours[])Enum.GetValues(typeof(Colours)))
-                                {
-                                    <SelectItem Value="@colour">@GetColourName(colour)</SelectItem>
-                                }
+                                    Size="Size.Small"
+                                    SelectedValue="@ChartSeries.RequestedColour"
+                                    SelectedValueChanged="@OnColourChanged"
+                                    Disabled="@(ChartSeries.DisplayStyle == SeriesDisplayStyle.Bar)">
+                                    @foreach (var colour in (Colours[])Enum.GetValues(typeof(Colours)))
+                                    {
+                                        <SelectItem Value="@colour">@GetColourName(colour)</SelectItem>
+                                    }
                             </Select>
                         </td>
                     </tr>
