@@ -19,12 +19,9 @@ This github site is the digital repository for everything used to bring [the web
   - **Core**: code shared between Web, WebApi and other projects
   - **UnitTests**: tests for various sub-systems
 - Additional libraries used
-  - Charting: https://github.com/Megabit/Blazorise
-  - Mapping: https://github.com/ledpup/DPBlazorMap - a fork of https://github.com/DP-projects/DPBlazorMap with a minor compatibility change to support .NET 8 and beyond
+  - Charting: https://blazorise.com/ ([source](https://github.com/Megabit/Blazorise))
+  - Mapping: https://github.com/ledpup/DPBlazorMap
   - Clustering tool: https://www.nuget.org/packages/DBSCAN/ ([source](https://github.com/viceroypenguin/Dbscan))
-  - https://www.nuget.org/packages/Blazored.LocalStorage/ ([source](https://github.com/Blazored/LocalStorage))
-  - https://github.com/AeonLucid/GeoCoordinate.NetStandard1
-  - https://github.com/HugoVG/CurrentDevice
 
 ## How to use
 
