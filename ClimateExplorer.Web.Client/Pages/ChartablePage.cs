@@ -59,16 +59,11 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (DataSetDefinitions is null)
         {
             NavManager!.LocationChanged += HandleNavigationLocationChanged!;
 
-            if (DataService == null)
-            {
-                throw new NullReferenceException(nameof(DataService));
-            }
-
-            DataSetDefinitions = (await DataService.GetDataSetDefinitions()).ToList();
+            DataSetDefinitions = (await DataService!.GetDataSetDefinitions()).ToList();
         }
     }
 
