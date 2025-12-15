@@ -12,7 +12,6 @@ public interface IDataService
     Task<IEnumerable<LocationDistance>> GetNearbyLocations(Guid locationId);
     Task<Location> GetLocationByPath(string path);
     Task<IEnumerable<Region>> GetRegions();
-    Task<DataSet> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short? year = null, short? groupingDays = 14, float? groupingThreshold = .7f);
     Task<DataSet> PostDataSet(
         BinGranularities binGranularity,
         ContainerAggregationFunctions binAggregationFunction,

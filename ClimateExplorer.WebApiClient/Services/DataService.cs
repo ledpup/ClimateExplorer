@@ -24,52 +24,6 @@ public class DataService : IDataService
         jsonSerializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web) { Converters = { new JsonStringEnumConverter() } };
     }
 
-    public async Task<DataSet> GetDataSet(DataType dataType, DataResolution resolution, DataAdjustment? dataAdjustment, AggregationMethod? aggregationMethod, Guid? locationId = null, short? year = null, short? groupingDays = 14, float? groupingThreshold = .7f)
-    {
-        var url = $"dataSet/{dataType}/{resolution}";
-
-        if (dataAdjustment != null)
-        {
-            url = QueryHelpers.AddQueryString(url, "dataAdjustment", dataAdjustment.Value.ToString());
-        }
-
-        if (locationId != null)
-        {
-            url = QueryHelpers.AddQueryString(url, "locationId", locationId.Value.ToString());
-        }
-
-        if (aggregationMethod != null)
-        {
-            url = QueryHelpers.AddQueryString(url, "aggregationMethod", aggregationMethod.Value.ToString());
-        }
-
-        if (year != null)
-        {
-            url = QueryHelpers.AddQueryString(url, "year", year.Value.ToString());
-        }
-
-        if (groupingDays != null)
-        {
-            url = QueryHelpers.AddQueryString(url, "groupingDays", groupingDays.Value.ToString());
-        }
-
-        if (groupingThreshold != null)
-        {
-            url = QueryHelpers.AddQueryString(url, "groupingThreshold", groupingThreshold.Value.ToString());
-        }
-
-        var result = dataServiceCache.Get<DataSet>(url);
-
-        if (result == null)
-        {
-            result = await httpClient.GetFromJsonAsync<DataSet>(url, jsonSerializerOptions);
-
-            dataServiceCache.Put(url, result!);
-        }
-
-        return result!;
-    }
-
     public async Task<DataSet> PostDataSet(
         BinGranularities binGranularity,
         ContainerAggregationFunctions binAggregationFunction,
