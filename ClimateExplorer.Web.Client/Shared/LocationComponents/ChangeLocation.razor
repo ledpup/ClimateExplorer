@@ -135,10 +135,16 @@
 
         if (SelectedLocation is not null && NearbyLocations is null)
         {
-            NearbyLocations = await DataService!.GetNearbyLocations(SelectedLocation.Id);
+            _ = LoadNearbyLocationsAsync(SelectedLocation.Id);
         }
 
         await modal!.Show();
+    }
+
+    private async Task LoadNearbyLocationsAsync(Guid locationId)
+    {
+        NearbyLocations = await DataService!.GetNearbyLocations(locationId);
+        StateHasChanged();
     }
 
     public Task Hide()
