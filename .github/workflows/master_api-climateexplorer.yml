@@ -7,6 +7,11 @@ on:
   push:
     branches:
       - master
+    paths:
+      - ClimateExplorer.SourceData/*
+      - ClimateExplorer.DataPipeline/*
+      - ClimateExplorer.WebApi/*
+
   workflow_dispatch:
 
 jobs:

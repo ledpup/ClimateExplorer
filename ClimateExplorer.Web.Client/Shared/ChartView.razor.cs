@@ -1,7 +1,5 @@
 ﻿namespace ClimateExplorer.Web.Client.Shared;
 
-using System.Dynamic;
-using CurrentDevice;
 using Blazorise;
 using Blazorise.Charts;
 using Blazorise.Charts.Trendline;
@@ -12,11 +10,12 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
+using ClimateExplorer.WebApiClient.Services;
+using CurrentDevice;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using System.Dynamic;
 using static ClimateExplorer.Core.Enums;
-using System;
-using ClimateExplorer.WebApiClient.Services;
 
 public partial class ChartView
 {
@@ -173,6 +172,8 @@ public partial class ChartView
 
         Logger!.LogInformation("RetrieveDataSets: starting enumeration");
 
+        List<Task<DataSet>> tasksToRun = [];
+
         foreach (var csd in chartSeriesList)
         {
             var cupAggregationFunction = MapSeriesAggregationOptionToBinAggregationFunction(csd.Aggregation);
@@ -185,8 +186,8 @@ public partial class ChartView
                 ? ContainerAggregationFunctions.Mean
                 : cupAggregationFunction;
 
-            DataSet dataSet =
-                await DataService!.PostDataSet(
+            var dataSetTask =
+                DataService!.PostDataSet(
                     SelectedBinGranularity,
                     binAggregationFunction,
                     bucketAggregationFunction,
@@ -202,9 +203,17 @@ public partial class ChartView
                     csd.Year,
                     csd.MinimumDataResolution);
 
-            datasetsToReturn.Add(
-                new SeriesWithData() { ChartSeries = csd, SourceDataSet = dataSet });
+            tasksToRun.Add(dataSetTask);
         }
+
+        datasetsToReturn.AddRange(
+                await Task.WhenAll(
+                    chartSeriesList.Select((series, i) =>
+                        tasksToRun[i].ContinueWith(t => new SeriesWithData
+                        {
+                            ChartSeries = series,
+                            SourceDataSet = t.Result,
+                        }))));
 
         Logger!.LogInformation("RetrieveDataSets: completed enumeration");
 
