@@ -34,18 +34,19 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     [Inject]
     protected ILogger<ChartablePage>? Logger { get; set; }
 
-    protected SnackbarStack? Snackbar { get; set; }
-
     protected IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
+
+    protected Dictionary<Guid, Location>? LocationDictionary { get; set; }
+
+    protected IEnumerable<Region>? Regions { get; set; }
+
+    protected IEnumerable<GeographicalEntity>? GeographicalEntities { get; set; }
+
+    protected SnackbarStack? Snackbar { get; set; }
 
     protected ChartView? ChartView { get; set; }
 
     protected string? PageName { get; set; }
-
-    protected IEnumerable<Location>? Locations { get; set; }
-    protected Dictionary<Guid, Location>? LocationDictionary { get; set; }
-    protected IEnumerable<Region>? Regions { get; set; }
-    protected IEnumerable<GeographicalEntity>? GeographicalEntities { get; set; }
 
     protected Modal? AddDataSetModal { get; set; }
     protected virtual string? PageTitle { get; }
@@ -57,12 +58,15 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         NavManager!.LocationChanged -= HandleNavigationLocationChanged!;
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        NavManager!.LocationChanged += HandleNavigationLocationChanged!;
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (DataSetDefinitions is null)
         {
-            NavManager!.LocationChanged += HandleNavigationLocationChanged!;
-
             DataSetDefinitions = (await DataService!.GetDataSetDefinitions()).ToList();
         }
     }
