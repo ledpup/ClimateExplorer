@@ -17,6 +17,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <PublishTrimmed>true</PublishTrimmed>
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
