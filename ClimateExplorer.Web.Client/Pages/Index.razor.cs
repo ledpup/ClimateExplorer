@@ -93,26 +93,31 @@ public partial class Index : ChartablePage
         var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
         var location = await GetLocation(uri, true);
         InternalLocation = location;
+
+        await base.OnInitializedAsync();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await base.OnAfterRenderAsync(firstRender);
-
         if (IsMobileDevice is null)
         {
             IsMobileDevice = await CurrentDeviceService!.Mobile();
         }
 
-        if (Locations is null)
+        if (LocationDictionary is null)
         {
-            Locations = (await DataService!.GetLocations(false)).ToList();
-            LocationDictionary = Locations.ToDictionary(x => x.Id, x => x);
+            var dataSetDefinitionsTask = DataService!.GetDataSetDefinitions();
+            var locationsTask = DataService!.GetLocations(false);
+            var regionsTask = DataService!.GetRegions();
 
-            Regions = (await DataService!.GetRegions()).ToList();
+            await Task.WhenAll(dataSetDefinitionsTask, locationsTask, regionsTask);
+
+            DataSetDefinitions = (await dataSetDefinitionsTask).ToList();
+            LocationDictionary = (await locationsTask).ToDictionary(x => x.Id, x => x);
+            Regions = (await regionsTask).ToList();
 
             var geographicalEntities = new List<GeographicalEntity>();
-            geographicalEntities.AddRange(Locations);
+            geographicalEntities.AddRange(LocationDictionary.Values);
             geographicalEntities.AddRange(Regions);
             GeographicalEntities = geographicalEntities;
 
@@ -142,6 +147,8 @@ public partial class Index : ChartablePage
                 }
             }
         }
+
+        await base.OnAfterRenderAsync(firstRender);
     }
 
     protected override async Task UpdateComponents()
@@ -478,7 +485,7 @@ public partial class Index : ChartablePage
 
         var geoCoord = new GeoCoordinate(getLocationResult.Latitude, getLocationResult.Longitude);
 
-        var distances = Location.GetDistances(geoCoord, Locations!);
+        var distances = Location.GetDistances(geoCoord, LocationDictionary!.Values!);
         var closestLocation = distances.OrderBy(x => x.Distance).First();
 
         return closestLocation.LocationId;

@@ -46,7 +46,7 @@
     <div style="position: relative;">
         <div class="map-space-reserver" id="mapContainerContainer">
             <MapContainer @ref="MapContainer"
-                Locations="@Locations"
+                Locations="@LocationDictionary?.Values"
                 OnLocationChange="@SelectedLocationChanged"
                 LocationCoordinates="@locationCoordinates" />
         </div>
