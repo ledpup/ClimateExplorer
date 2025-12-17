@@ -1,5 +1,6 @@
 ﻿@using Blazorise
 @using Blazorise.Components
+@using Blazorise.LoadingIndicator
 @using ClimateExplorer.Core.Model;
 @using ClimateExplorer.WebApiClient.Services
 @using GeoCoordinatePortable
@@ -48,41 +49,50 @@
                     @bind-SelectedText="@selectedText" />
                 </Field>
 
-                @if (SelectedLocation is not null && NearbyLocations is not null)
-                {
-                    <Field>
-                        <FieldLabel>Select a nearby location</FieldLabel>
-                        <FieldBody>
+                <Field>
+                    <FieldLabel>Select a nearby location</FieldLabel>
+                    <FieldBody>
+                        <LoadingIndicator @bind-visible="@NearbyLocationsLoading">
                             <Table Borderless Narrow Striped>
                                 <TableBody>
-                                    @foreach (var row in NearbyLocations)
+                                    @if (NearbyLocations is not null)
                                     {
-                                        var location = LocationDictionary[row.LocationId];
-                                        <TableRow>
-                                            <TableRowCell>
-                                                <Blazorise.Link Title="@location.FullTitle"
-                                                                To="#"
-                                                                Clicked="@(() => FireOnLocationChange(row.LocationId))">
-                                                    @location.Name
-                                                </Blazorise.Link>
-                                            </TableRowCell>
-                                            <TableRowCell>@location.Country</TableRowCell>
-                                            <TableRowCell>@(row.Distance) km</TableRowCell>
-                                            <TableRowCell>
-                                                <span>
-                                                    @row.CompassRoseDirection
-                                                </span>
-                                            </TableRowCell>
-                                            <TableRowCell>
-                                                <span style="display: inline-block; transform: rotate(@($"{row.BearingDegrees}deg")); transform-origin: center;">↑</span>
-                                            </TableRowCell>
-                                        </TableRow>
+                                        foreach (var row in NearbyLocations)
+                                        {
+                                            var location = LocationDictionary[row.LocationId];
+                                            <TableRow>
+                                                <TableRowCell>
+                                                    <Blazorise.Link Title="@location.FullTitle"
+                                                    To="#"
+                                                    Clicked="@(() => FireOnLocationChange(row.LocationId))">
+                                                        @location.Name
+                                                    </Blazorise.Link>
+                                                </TableRowCell>
+                                                <TableRowCell>@location.Country</TableRowCell>
+                                                <TableRowCell>@(row.Distance) km</TableRowCell>
+                                                <TableRowCell>
+                                                    <span>
+                                                        @row.CompassRoseDirection
+                                                    </span>
+                                                </TableRowCell>
+                                                <TableRowCell>
+                                                    <span style="display: inline-block; transform: rotate(@($"{row.BearingDegrees}deg")); transform-origin: center;">↑</span>
+                                                </TableRowCell>
+                                            </TableRow>
+                                        }
                                     }
-                                </TableBody>
+                                    else
+                                    {
+                                        for (var i =0; i < 10; i++)
+                                        {
+                                            <TableRow><TableRowCell>&nbsp;</TableRowCell></TableRow>
+                                        }
+                                    }
+                            </TableBody>
                             </Table>
-                        </FieldBody>
-                    </Field>
-                }
+                        </LoadingIndicator>
+                    </FieldBody>
+                </Field>
             }
         </ModalBody>
     </ModalContent>
@@ -115,6 +125,8 @@
 
     public IEnumerable<LocationDistance>? NearbyLocations { get; set; }
 
+    bool NearbyLocationsLoading { get; set; } = true;
+
     protected override async Task OnParametersSetAsync()
     {
         if (LocationDictionary is null)
@@ -126,6 +138,7 @@
         {
             InternalLocationId = SelectedLocation.Id;
             NearbyLocations = null;
+            NearbyLocationsLoading = true;
         }
     }
 
@@ -144,6 +157,7 @@
     private async Task LoadNearbyLocationsAsync(Guid locationId)
     {
         NearbyLocations = await DataService!.GetNearbyLocations(locationId);
+        NearbyLocationsLoading = false;
         StateHasChanged();
     }
 
