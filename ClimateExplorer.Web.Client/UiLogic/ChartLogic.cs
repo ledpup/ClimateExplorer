@@ -23,7 +23,7 @@ public static class ChartLogic
         var ids = specs.Select(x => x.LocationId).Distinct().ToArray();
         var names = specs.Select(x => x.LocationName).Distinct().ToArray();
 
-        if (ids.Length == 1)
+        if (ids.Length == 1 && locationDictionary is not null)
         {
             return locationDictionary![ids.Single()].FullTitle;
         }
