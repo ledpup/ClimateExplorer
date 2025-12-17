@@ -152,38 +152,38 @@ static void GenerateMapMarkers()
 {
     var fillColours = new List<string>
     {
-        "#053061", // negative
-        "#2166AC", // zero
+        "#053061", // negative (deep cold blue)
 
-        "#ffffff", // 1
-        "#ffffff",
-        "#ffffd0",
-        "#ffffd0",
-        "#e4bd7d",
-        "#e4bd7d",
-        "#ce7642",
-        "#b2182b",
-        "#67001f", // 9
+        "#c6dbe0", // 0 (light blue)
+        "#deebf7", // 1 (pale blue)
+        "#ffefef", // 2
+        "#fee8c8", // 3 (warm cream)
+        "#fdd49e", // 4 (light orange)
+        "#fdbb84", // 5 (orange)
+        "#fc8d59", // 6 (orange-red)
+        "#ef6548", // 7 (red-orange)
+        "#d7301f", // 8 (strong red)
+        "#67001f", // 9 (deep hot red)
 
-        "#D0D0D0", // ?
+        "#D0D0D0", // ? (neutral/unknown)
     };
 
     var textColours = new List<string>
     {
-        "#ffffff",
-        "#ffffff",
+        "#ffffff", // negative (dark fill → white text)
 
-        "#333333",
-        "#000000",
-        "#666666",
-        "#333333",
-        "#333333",
-        "#ffffff",
-        "#ffffff",
-        "#ffffff",
-        "#ffffff",
+        "#333333", // 0 (light fill → dark text)
+        "#333333", // 1
+        "#333333", // 2
+        "#333333", // 3
+        "#333333", // 4
+        "#333333", // 5
+        "#ffffff", // 6
+        "#ffffff", // 7
+        "#ffffff", // 8
+        "#ffffff", // 9
 
-        "#ffffff",
+        "#333333", // ? (neutral grey → dark text)
     };
 
     for (var i = -1; i < 11; i++)

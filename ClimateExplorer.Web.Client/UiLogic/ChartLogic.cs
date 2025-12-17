@@ -10,24 +10,26 @@ using static ClimateExplorer.Core.Enums;
 
 public static class ChartLogic
 {
-    public static string BuildChartTitle(List<SeriesWithData> chartSeriesWithData)
+    public static string BuildChartTitle(List<SeriesWithData> chartSeriesWithData, Dictionary<Guid, Location>? locationDictionary)
     {
         if (chartSeriesWithData.Count == 1)
         {
             return chartSeriesWithData.Single().ChartSeries!.FriendlyTitle;
         }
 
-        var locationNames =
-            chartSeriesWithData
-            .SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!)
-            .Select(x => x.LocationName)
-            .Where(x => x != null)
-            .Distinct()
-            .ToArray();
+        var specs = chartSeriesWithData
+            .SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!);
 
-        if (locationNames.Length > 0)
+        var ids = specs.Select(x => x.LocationId).Distinct().ToArray();
+        var names = specs.Select(x => x.LocationName).Distinct().ToArray();
+
+        if (ids.Length == 1)
         {
-            return string.Join(", ", locationNames);
+            return locationDictionary![ids.Single()].FullTitle;
+        }
+        else if (ids.Length > 0)
+        {
+            return string.Join(", ", names);
         }
 
         return "Climate data";

@@ -68,6 +68,9 @@ public partial class ChartView
     public EventCallback<DataDownloadPackage> DownloadDataEvent { get; set; }
 
     [Parameter]
+    public Dictionary<Guid, Location>? LocationDictionary { get; set; }
+
+    [Parameter]
     public EventCallback ShowAddDataSetModalEvent { get; set; }
 
     [Inject]
@@ -279,7 +282,7 @@ public partial class ChartView
 
             BuildProcessedDataSets(ChartSeriesWithData, ChartAllData);
 
-            title = ChartLogic.BuildChartTitle(ChartSeriesWithData);
+            title = ChartLogic.BuildChartTitle(ChartSeriesWithData, LocationDictionary);
             subtitle = ChartLogic.BuildChartSubtitle(chartStartBin, chartEndBin, SelectedBinGranularity, IsMobileDevice!.Value, SelectedGroupingDays, GetGroupingThresholdText());
 
             l.LogInformation("Calling AddDataSetsToGraph");
@@ -371,8 +374,7 @@ public partial class ChartView
         ChartSeriesList =
             ChartSeriesList!
             .Concat(
-                new List<ChartSeriesDefinition>()
-                {
+                [
                     new ChartSeriesDefinition()
                     {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
@@ -384,7 +386,7 @@ public partial class ChartView
                         Value = SeriesValueOptions.Value,
                         Year = yearAndDataTypeFilter.Year,
                     },
-                })
+                ])
             .ToList();
 
         await BuildDataSets();
