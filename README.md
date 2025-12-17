@@ -3,8 +3,8 @@
 [ClimateExplorer](https://climateexplorer.net/) is a website to help people understand climate change. It's focussed on trying to provide a simple and approachable interface for people to explore the changes to climate in their region.
 
 ClimateExplorer.net has two main sections;
-    1. [local climate change information](https://climateexplorer.net/) about a specific location
-    1. [regional and global charts](https://climateexplorer.net/regionalandglobal) to show what is happening with greenhouse gases, ice melt, sea-level rise, ocean temperatures, etc.
+ 1. [local climate change information](https://climateexplorer.net/) about a specific location
+ 1. [regional and global charts](https://climateexplorer.net/regionalandglobal) to show what is happening with greenhouse gases, ice melt, sea-level rise, ocean temperatures, etc.
 
 This github site is the digital repository for everything used to bring [the website](https://climateexplorer.net/) together.
 
