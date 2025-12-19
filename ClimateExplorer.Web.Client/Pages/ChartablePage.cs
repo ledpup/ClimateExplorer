@@ -215,7 +215,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         {
             try
             {
-                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions!, LocationDictionary!, Regions!);
+                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions!, LocationDictionary, Regions!);
 
                 if (csdList.Any())
                 {

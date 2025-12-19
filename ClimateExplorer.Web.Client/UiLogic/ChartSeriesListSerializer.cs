@@ -10,7 +10,7 @@ public static class ChartSeriesListSerializer
 {
     private static readonly char[] SeparatorsByLevel = [';', ',', '|', '*'];
 
-    public static List<ChartSeriesDefinition> ParseChartSeriesDefinitionList(ILogger logger, string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IDictionary<Guid, Location> locations, IEnumerable<Region> regions)
+    public static List<ChartSeriesDefinition> ParseChartSeriesDefinitionList(ILogger logger, string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IDictionary<Guid, Location>? locations, IEnumerable<Region> regions)
     {
         logger.LogInformation("ParseChartSeriesDefinitionList: " + s);
 
@@ -81,7 +81,7 @@ public static class ChartSeriesListSerializer
         throw new Exception($"Failed to parse '{s}'");
     }
 
-    private static ChartSeriesDefinition ParseChartSeriesUrlComponent(ILogger logger, string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IDictionary<Guid, Location> locations, IEnumerable<Region> regions)
+    private static ChartSeriesDefinition ParseChartSeriesUrlComponent(ILogger logger, string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IDictionary<Guid, Location>? locations, IEnumerable<Region> regions)
     {
         string[] segments = s.Split(SeparatorsByLevel[1]);
 
@@ -111,7 +111,7 @@ public static class ChartSeriesListSerializer
             };
     }
 
-    private static SourceSeriesSpecification[] ParseSourceSeriesSpecifications(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IDictionary<Guid, Location> locations, IEnumerable<Region> regions, DataResolution? dataResolution)
+    private static SourceSeriesSpecification[] ParseSourceSeriesSpecifications(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IDictionary<Guid, Location>? locations, IEnumerable<Region> regions, DataResolution? dataResolution)
     {
         string[] segments = s.Split(SeparatorsByLevel[2]);
 
@@ -121,7 +121,7 @@ public static class ChartSeriesListSerializer
             .ToArray();
     }
 
-    private static SourceSeriesSpecification ParseSourceSeriesSpecification(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IDictionary<Guid, Location> locations, IEnumerable<Region> regions, DataResolution? dataResolution)
+    private static SourceSeriesSpecification ParseSourceSeriesSpecification(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IDictionary<Guid, Location>? locations, IEnumerable<Region> regions, DataResolution? dataResolution)
     {
         string[] segments = s.Split(SeparatorsByLevel[3]);
 
@@ -165,7 +165,9 @@ public static class ChartSeriesListSerializer
         if (segments[3].Length > 0)
         {
             id = Guid.Parse(segments[3]);
-            geographicalEntity = locations.ContainsKey(id.Value) ? locations[id.Value] : regions.Single(x => x.Id == id.Value);
+            geographicalEntity = locations is not null && locations.ContainsKey(id.Value)
+                                    ? locations[id.Value]
+                                    : regions.Single(x => x.Id == id.Value);
 
             if (geographicalEntity == null)
             {
