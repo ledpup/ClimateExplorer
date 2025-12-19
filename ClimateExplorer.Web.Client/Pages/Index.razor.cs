@@ -8,7 +8,6 @@ using ClimateExplorer.Web.Client.Shared;
 using ClimateExplorer.Web.Client.Shared.LocationComponents;
 using ClimateExplorer.Web.UiModel;
 using CurrentDevice;
-using GeoCoordinatePortable;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
