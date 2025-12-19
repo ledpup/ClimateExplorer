@@ -63,8 +63,12 @@ public partial class Index : ChartablePage
     protected override async Task OnInitializedAsync()
     {
         // Check to see if a named location is being requested. That will look like /location/<location-name>
-        var location = await GetNamedLocation();
-        Location = location;
+        Location = await GetNamedLocation();
+
+        if (Location is not null)
+        {
+            LocationString = Location?.Id.ToString();
+        }
 
         await base.OnInitializedAsync();
     }
@@ -93,9 +97,13 @@ public partial class Index : ChartablePage
             geographicalEntities.AddRange(Regions);
             GeographicalEntities = geographicalEntities;
 
-            // Get location from local storage. If not in local storage, use Hobart as default.
-            // If we have URL that is a csd, override with the location specified in the csd.
-            Location = await GetLocation();
+            // Location may have been set in OnInitializedAsync
+            if (Location is null)
+            {
+                // Get location from local storage. If not in local storage, use Hobart as default.
+                // If we have URL that is a csd, override with the location specified in the csd.
+                Location = await GetLocation();
+            }
 
             // If there is no "csd" query string parameter, set up default charts for the location
             var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
@@ -163,6 +171,7 @@ public partial class Index : ChartablePage
             locationId = Guid.Parse("aed87aa0-1d0c-44aa-8561-cde0fc936395");
         }
 
+        // Override location with the one in csd, if there is a csd
         var csd = QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
         if (csd)
         {
