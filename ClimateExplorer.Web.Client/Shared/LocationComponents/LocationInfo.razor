@@ -118,7 +118,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        if (Location == null)
+        if (Location == null || DataSetDefinitions == null)
         {
             return;
         }
@@ -145,12 +145,6 @@
 
         RecordHighToolTip = null;
         ClimateRecordsContent = null;
-
-        // We can't do anything until we're supplied our tasty, tasty DataSetDefinitions
-        if (DataSetDefinitions == null)
-        {
-            return;
-        }
 
         if (precipitation)
         {

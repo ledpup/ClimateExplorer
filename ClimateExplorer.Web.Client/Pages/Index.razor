@@ -1,6 +1,6 @@
 ﻿@page "/"
 @page "/location/"
-@page "/location/{locationId}"
+@page "/location/{locationString}"
 @implements IDisposable
 
 @using Blazorise
@@ -29,16 +29,16 @@
         {
             if (IsMobileDevice == true)
             {
-                <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@SelectedLocation" OnChartPresetSelected="@OnChartPresetSelected" ExpandUpwards="false" PresetType="PresetTypes.MobileLocation" />
+                <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@Location" OnChartPresetSelected="@OnChartPresetSelected" ExpandUpwards="false" PresetType="PresetTypes.MobileLocation" />
             }
             else
             {
-                <SuggestedChartsMini DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@SelectedLocation" OnChartPresetSelected="@OnChartPresetSelected" OnClickCollapser="@suggestedChartsCollapsible.CollapserOnClick" />
+                <SuggestedChartsMini DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@Location" OnChartPresetSelected="@OnChartPresetSelected" OnClickCollapser="@suggestedChartsCollapsible.CollapserOnClick" />
             }
         }
     </CollapsedContent>
     <Content>
-        <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@SelectedLocation" OnChartPresetSelected="@OnChartPresetSelected" ExpandUpwards="false" PresetType="PresetTypes.Location" />
+        <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@Location" OnChartPresetSelected="@OnChartPresetSelected" ExpandUpwards="false" PresetType="PresetTypes.Location" />
     </Content>
 </Collapsible>
 
@@ -48,12 +48,11 @@
             <MapContainer @ref="MapContainer"
                 Locations="@LocationDictionary?.Values"
                 OnLocationChange="@SelectedLocationChanged"
-                LocationCoordinates="@locationCoordinates" />
+                LocationCoordinates="@Location?.Coordinates" />
         </div>
 
         <div class="location-info-container">
-            <LocationInfo
-                        Location="@SelectedLocation"
+            <LocationInfo Location="@Location"
                         DataSetDefinitions="@DataSetDefinitions"
                         RequestLocationChange="@ShowChangeLocationModal"
                         OnOverviewShowOrHide="@OnOverviewShowHide"
@@ -72,10 +71,9 @@
 
 <ChangeLocation @ref="ChangeLocationModal"
                 LocationDictionary="@LocationDictionary"
-                SelectedLocation="@SelectedLocation"
+                SelectedLocation="@Location"
                 OnLocationChange="@SelectedLocationChanged"
-                SetCurrentLocation=@SetCurrentLocation
-                BrowserLocationErrorMessage=@BrowserLocationErrorMessage />
+                BrowserLocationErrorMessage="@BrowserLocationErrorMessage" />
 
 <Modal @ref="AddDataSetModal">
     <ModalContent>
@@ -84,7 +82,7 @@
             <CloseButton />
         </ModalHeader>
         <ModalBody>
-            <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@SelectedLocation" PreviousLocation="@PreviousLocation"></DataSetBrowser>
+            <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@Location" PreviousLocation="@PreviousLocation"></DataSetBrowser>
         </ModalBody>
     </ModalContent>
 </Modal>

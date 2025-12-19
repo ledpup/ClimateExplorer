@@ -16,10 +16,6 @@ using static ClimateExplorer.Core.Enums;
 
 public partial class Index : ChartablePage
 {
-    private bool finishedSetup;
-    private Guid oldLocationId = Guid.Empty;
-    private Location? selectedLocation;
-    private Coordinates locationCoordinates;
     private Collapsible? suggestedChartsCollapsible;
 
     public Index()
@@ -28,7 +24,7 @@ public partial class Index : ChartablePage
     }
 
     [Parameter]
-    public string? LocationId { get; set; }
+    public string? LocationString { get; set; }
 
     public bool? IsMobileDevice { get; private set; }
 
@@ -36,7 +32,7 @@ public partial class Index : ChartablePage
     {
         get
         {
-            var title = InternalLocation == null ? $"Local long-term climate trends" : $"ClimateExplorer - {InternalLocation.FullTitle}";
+            var title = Location == null ? $"Local long-term climate trends" : $"ClimateExplorer - {Location.FullTitle}";
 
             return title;
         }
@@ -46,7 +42,7 @@ public partial class Index : ChartablePage
     {
         get
         {
-            return InternalLocation == null ? $"https://climateexplorer.net" : $"https://climateexplorer.net/location/{InternalLocation.UrlReadyName()}";
+            return Location == null ? $"https://climateexplorer.net" : $"https://climateexplorer.net/location/{Location.UrlReadyName()}";
         }
     }
 
@@ -58,41 +54,21 @@ public partial class Index : ChartablePage
 
     private ChangeLocation? ChangeLocationModal { get; set; }
     private MapContainer? MapContainer { get; set; }
-
-    private Guid SelectedLocationId { get; set; }
     private Location? PreviousLocation { get; set; }
     private string? BrowserLocationErrorMessage { get; set; }
+    private Location? Location { get; set; }
 
-    private Location? InternalLocation { get; set; }
-
-    private Location SelectedLocation
-    {
-        get
-        {
-            return selectedLocation!;
-        }
-        set
-        {
-            if (value != selectedLocation)
-            {
-                PreviousLocation = SelectedLocation;
-                selectedLocation = value;
-                InternalLocation = value;
-                locationCoordinates = SelectedLocation.Coordinates;
-            }
-        }
-    }
-
-    void IDisposable.Dispose()
-    {
-        Dispose();
-    }
+    private bool LocationChangeEventOccurring { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
-        var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
-        var location = await GetLocation(uri, true);
-        InternalLocation = location;
+        // Check to see if a named location is being requested. That will look like /location/<location-name>
+        Location = await GetNamedLocation();
+
+        if (Location is not null)
+        {
+            LocationString = Location?.Id.ToString();
+        }
 
         await base.OnInitializedAsync();
     }
@@ -121,31 +97,33 @@ public partial class Index : ChartablePage
             geographicalEntities.AddRange(Regions);
             GeographicalEntities = geographicalEntities;
 
-            var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
-            InternalLocation = await GetLocation(uri, false);
-
-            var csd = QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
-            if (!csd && InternalLocation != null)
+            // Location may have been set in OnInitializedAsync
+            if (Location is null)
             {
-                SetUpDefaultCharts(InternalLocation.Id);
-                await SelectedLocationChanged(InternalLocation.Id);
-                StateHasChanged();
+                // Get location from local storage. If not in local storage, use Hobart as default.
+                // If we have URL that is a csd, override with the location specified in the csd.
+                Location = await GetLocation();
             }
+
+            // If there is no "csd" query string parameter, set up default charts for the location
+            var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+            var csd = QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
+            if (!csd && Location != null)
+            {
+                SetUpDefaultCharts(Location.Id);
+                await SelectedLocationChanged(Location.Id);
+            }
+
+            StateHasChanged();
         }
 
-        if (!firstRender && !finishedSetup && LocationId is not null)
+        // Handle location change event (coming from the map or the Change Location modal)
+        if (LocationChangeEventOccurring && LocationString is not null)
         {
-            var locationId = Guid.Parse(LocationId);
-            if (locationId != Guid.Empty)
-            {
-                if (oldLocationId != locationId)
-                {
-                    oldLocationId = locationId;
-                    finishedSetup = true;
-                    await SelectedLocationChangedInternal(locationId);
-                    StateHasChanged();
-                }
-            }
+            LocationChangeEventOccurring = false;
+            var locationId = Guid.Parse(LocationString!);
+            await SelectedLocationChangedInternal(locationId);
+            StateHasChanged();
         }
 
         await base.OnAfterRenderAsync(firstRender);
@@ -153,14 +131,15 @@ public partial class Index : ChartablePage
 
     protected override async Task UpdateComponents()
     {
-        if (SelectedLocation != null && MapContainer != null)
+        if (Location != null && MapContainer != null)
         {
-            await MapContainer.ScrollToPoint(SelectedLocation.Coordinates);
+            await MapContainer.ScrollToPoint(Location.Coordinates);
         }
     }
 
-    private async Task<Location?> GetLocation(Uri uri, bool onlyCheckUri)
+    private async Task<Location?> GetNamedLocation()
     {
+        var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
         Location? location = null;
         if (uri.Segments.Length > 2 && !Guid.TryParse(uri.Segments[2], out Guid locationGuid))
         {
@@ -174,33 +153,35 @@ public partial class Index : ChartablePage
             }
         }
 
-        if (onlyCheckUri)
+        return location;
+    }
+
+    private async Task<Location?> GetLocation()
+    {
+        var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+        var locationString = await LocalStorage!.GetItemAsync<string>("lastLocationId");
+        var validGuid = Guid.TryParse(locationString, out Guid guid);
+        Guid? locationId = null;
+        if (validGuid && guid != Guid.Empty && LocationDictionary!.ContainsKey(guid))
         {
-            return location;
+            locationId = guid;
+        }
+        else
+        {
+            locationId = Guid.Parse("aed87aa0-1d0c-44aa-8561-cde0fc936395");
         }
 
-        LocationId = location?.Id.ToString();
-        if (location == null)
-        {
-            LocationId = await LocalStorage!.GetItemAsync<string>("lastLocationId");
-            var validGuid = Guid.TryParse(LocationId, out Guid guid);
-            if (!validGuid || guid == Guid.Empty || !LocationDictionary!.ContainsKey(guid))
-            {
-                LocationId = "aed87aa0-1d0c-44aa-8561-cde0fc936395";
-            }
-        }
-
+        // Override location with the one in csd, if there is a csd
         var csd = QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
         if (csd)
         {
             await UpdateUiStateBasedOnQueryString();
 
             // Going to assume that the first chart is the primary location
-            LocationId = ChartView!.ChartSeriesList!.First().SourceSeriesSpecifications!.First().LocationId.ToString();
+            locationId = ChartView!.ChartSeriesList!.First().SourceSeriesSpecifications!.First().LocationId;
         }
 
-        var valid = Guid.TryParse(LocationId, out Guid id);
-        location = valid ? LocationDictionary![id] : null;
+        var location = LocationDictionary![locationId!.Value];
 
         return location;
     }
@@ -277,7 +258,8 @@ public partial class Index : ChartablePage
             return;
         }
 
-        finishedSetup = false;
+        LocationChangeEventOccurring = true;
+
         await NavigateTo($"/{PageName}/" + locationId.ToString());
     }
 
@@ -291,10 +273,9 @@ public partial class Index : ChartablePage
             return;
         }
 
-        SelectedLocationId = newValue;
-        SelectedLocation = LocationDictionary[SelectedLocationId];
+        Location = LocationDictionary[newValue];
 
-        await LocalStorage!.SetItemAsync("lastLocationId", SelectedLocationId.ToString());
+        await LocalStorage!.SetItemAsync("lastLocationId", newValue.ToString());
 
         var additionalCsds = new List<ChartSeriesDefinition>();
 
@@ -316,7 +297,7 @@ public partial class Index : ChartablePage
                             && !Regions!.Any(x => x.Id == sss.LocationId))
                     {
                         sss.LocationId = newValue;
-                        sss.LocationName = SelectedLocation.Name;
+                        sss.LocationName = Location.Name;
 
                         var dataMatches = new List<DataSubstitute>
                         {
@@ -344,14 +325,14 @@ public partial class Index : ChartablePage
                         var dsd =
                             DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
                                 DataSetDefinitions!,
-                                SelectedLocationId,
+                                Location.Id,
                                 dataMatches,
                                 throwIfNoMatch: false);
 
                         if (dsd == null)
                         {
                             var dataType = ChartSeriesDefinition.MapDataTypeToFriendlyName(sss.MeasurementDefinition.DataType);
-                            await Snackbar!.PushAsync($"{dataType} data is not available at {SelectedLocation.Name}", SnackbarColor.Warning);
+                            await Snackbar!.PushAsync($"{dataType} data is not available at {Location.Name}", SnackbarColor.Warning);
                             csd.DataAvailable = false;
 
                             break;
@@ -434,7 +415,7 @@ public partial class Index : ChartablePage
                                     {
                                         DataSetDefinition = DataSetDefinitions!.Single(x => x.Id == sss.DataSetDefinition!.Id),
                                         LocationId = newValue,
-                                        LocationName = SelectedLocation.Name,
+                                        LocationName = Location.Name,
                                         MeasurementDefinition = newMd,
                                     }
 
@@ -464,48 +445,5 @@ public partial class Index : ChartablePage
         ChartView.ChartSeriesList = draftList.CreateNewListWithoutDuplicates();
 
         await BuildDataSets();
-    }
-
-    private async Task<Guid?> GetCurrentLocation()
-    {
-        if (JsRuntime == null)
-        {
-            return null;
-        }
-
-        var getLocationResult = await JsRuntime.InvokeAsync<GetLocationResult>("getLocation");
-
-        BrowserLocationErrorMessage = null;
-        if (getLocationResult.ErrorCode > 0)
-        {
-            BrowserLocationErrorMessage = "Unable to determine your location" + (!string.IsNullOrWhiteSpace(getLocationResult.ErrorMessage) ? $" ({getLocationResult.ErrorMessage})" : string.Empty);
-            Logger!.LogError(BrowserLocationErrorMessage);
-            return null;
-        }
-
-        var geoCoord = new GeoCoordinate(getLocationResult.Latitude, getLocationResult.Longitude);
-
-        var distances = Location.GetDistances(geoCoord, LocationDictionary!.Values!);
-        var closestLocation = distances.OrderBy(x => x.Distance).First();
-
-        return closestLocation.LocationId;
-    }
-
-    private async Task SetCurrentLocation()
-    {
-        var locationId = await GetCurrentLocation();
-        if (locationId != null)
-        {
-            await SelectedLocationChanged(locationId.Value);
-        }
-    }
-
-    private class GetLocationResult
-    {
-        public float Latitude { get; set; }
-        public float Longitude { get; set; }
-
-        public float ErrorCode { get; set; }
-        public string? ErrorMessage { get; set; }
     }
 }

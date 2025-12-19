@@ -20,7 +20,7 @@
             }
             
             <Div Class="mt-3">Click the "near me" button to find the station closest to you (the browser will ask to "know your location").</Div>
-            <Div Class="mt-1"><Button Clicked="@UseCurrentLocationClicked" Color="Color.Primary">Near me</Button></Div>
+            <Div Class="mt-1"><Button Clicked="@NearMeClicked" Color="Color.Primary">Near me</Button></Div>
 
                 @if (BrowserLocationErrorMessage != null)
                 {
@@ -104,6 +104,12 @@
     [Inject]
     public IDataService? DataService { get; set; }
 
+    [Inject]
+    protected IJSRuntime? JsRuntime { get; set; }
+
+    [Inject]
+    protected ILogger<ChangeLocation>? Logger { get; set; }
+
     [Parameter]
     public Dictionary<Guid, Location>? LocationDictionary { get; set; }
 
@@ -115,9 +121,6 @@
 
     [Parameter]
     public EventCallback<Guid> OnLocationChange { get; set; }
-
-    [Parameter]
-    public EventCallback SetCurrentLocation { get; set; }
 
     string? selectedText;
 
@@ -166,10 +169,40 @@
         return modal!.Hide();
     }
 
-    async Task UseCurrentLocationClicked()
+    async Task NearMeClicked()
     {
-        await SetCurrentLocation.InvokeAsync();
+        if (JsRuntime == null)
+        {
+            Logger!.LogError("JsRuntime is required.");
+            return;
+        }
+
+        var getLocationResult = await JsRuntime.InvokeAsync<GetLocationResult>("getLocation");
+
+        BrowserLocationErrorMessage = null;
+        if (getLocationResult.ErrorCode > 0)
+        {
+            BrowserLocationErrorMessage = "Unable to determine your location" + (!string.IsNullOrWhiteSpace(getLocationResult.ErrorMessage) ? $" ({getLocationResult.ErrorMessage})" : string.Empty);
+            Logger!.LogError(BrowserLocationErrorMessage);
+            return;
+        }
+
+        var geoCoord = new GeoCoordinate(getLocationResult.Latitude, getLocationResult.Longitude);
+
+        var distances = Location.GetDistances(geoCoord, LocationDictionary!.Values!);
+        var closestLocation = distances.OrderBy(x => x.Distance).First();
+
+        await OnLocationChange.InvokeAsync(closestLocation.LocationId);
         await Hide();
+    }
+
+    private class GetLocationResult
+    {
+        public float Latitude { get; set; }
+        public float Longitude { get; set; }
+
+        public float ErrorCode { get; set; }
+        public string? ErrorMessage { get; set; }
     }
 
     async Task FireOnLocationChange(Guid locationId)

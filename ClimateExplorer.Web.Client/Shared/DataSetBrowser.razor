@@ -96,163 +96,165 @@
     {
         RootFolders = new List<DataSetLibraryFolder>();
 
-        if (CurrentLocation != null)
+        if (DataSetDefinitions is null || CurrentLocation is null)
         {
-            var currentLocationFolder =
-                new DataSetLibraryFolder()
-                    {
-                        Name = CurrentLocation.Name + " observations",
-                        DataSets = new List<DataSetLibraryEntry>()
-                    };
+            return;
+        }
 
-            var measurements = DataSetDefinitionViewModel.GetMeasurementsForLocation(DataSetDefinitions!, CurrentLocation.Id);
-
-            foreach (var measurement in measurements)
-            {
-                var dsd = measurement.Item1;
-                var md = measurement.Item2;
-
-                currentLocationFolder.DataSets.Add(
-                    new DataSetLibraryEntry()
-                        {
-                            SourceSeriesSpecifications =
-                                new DataSetLibraryEntry.SourceSeriesSpecification[]
-                                {
-                                    new DataSetLibraryEntry.SourceSeriesSpecification
-                                    {
-                                        DataType = md.DataType,
-                                        DataAdjustment = md.DataAdjustment,
-                                        SourceDataSetId = dsd.Id,
-                                        LocationId = CurrentLocation.Id,
-                                        LocationName = CurrentLocation.Name
-                                    }
-                                },
-                            SeriesDerivationType = ClimateExplorer.Core.DataPreparation.SeriesDerivationTypes.ReturnSingleSeries,
-                            Name = BuildDataSetName(md, dsd)
-                        });
-            }
-
-            // Daily temperature range
-            var bestAvailableTempMax =
-                   measurements.SingleOrDefault(x => x.Item2.DataType == DataType.TempMax && x.Item2.DataAdjustment == DataAdjustment.Adjusted)
-                ?? measurements.SingleOrDefault(x => x.Item2.DataType == DataType.TempMax && x.Item2.DataAdjustment == null);
-
-            var bestAvailableTempMin =
-                   measurements.SingleOrDefault(x => x.Item2.DataType == DataType.TempMax && x.Item2.DataAdjustment == DataAdjustment.Adjusted)
-                ?? measurements.SingleOrDefault(x => x.Item2.DataType == DataType.TempMax && x.Item2.DataAdjustment == null);
-
-            if (bestAvailableTempMax != null && bestAvailableTempMin != null)
-            {
-                currentLocationFolder.DataSets.Add(
-                    new DataSetLibraryEntry()
-                    {
-                        SourceSeriesSpecifications =
-                            new DataSetLibraryEntry.SourceSeriesSpecification[]
-                            {
-                                new DataSetLibraryEntry.SourceSeriesSpecification
-                                {
-                                    DataType = DataType.TempMax,
-                                    DataAdjustment = bestAvailableTempMax.Item2.DataAdjustment,
-                                    SourceDataSetId = bestAvailableTempMax.Item1.Id,
-                                    LocationId = CurrentLocation.Id,
-                                    LocationName = CurrentLocation.Name
-                                },
-                                new DataSetLibraryEntry.SourceSeriesSpecification
-                                {
-                                    DataType = DataType.TempMin,
-                                    DataAdjustment = bestAvailableTempMin.Item2.DataAdjustment,
-                                    SourceDataSetId = bestAvailableTempMin.Item1.Id,
-                                    LocationId = CurrentLocation.Id,
-                                    LocationName = CurrentLocation.Name
-                                }
-                            },
-                        SeriesDerivationType = ClimateExplorer.Core.DataPreparation.SeriesDerivationTypes.DifferenceBetweenTwoSeries,
-                        Name = "Daily temperature range"
-                    });
-
-                currentLocationFolder.DataSets.Add(
-                    new DataSetLibraryEntry()
-                    {
-                        SourceSeriesSpecifications =
-                            new DataSetLibraryEntry.SourceSeriesSpecification[]
-                            {
-                                new DataSetLibraryEntry.SourceSeriesSpecification
-                                {
-                                    DataType = DataType.TempMax,
-                                    DataAdjustment = bestAvailableTempMax.Item2.DataAdjustment,
-                                    SourceDataSetId = bestAvailableTempMax.Item1.Id,
-                                    LocationId = CurrentLocation.Id,
-                                    LocationName = CurrentLocation.Name
-                                },
-                                new DataSetLibraryEntry.SourceSeriesSpecification
-                                {
-                                    DataType = DataType.TempMin,
-                                    DataAdjustment = bestAvailableTempMin.Item2.DataAdjustment,
-                                    SourceDataSetId = bestAvailableTempMin.Item1.Id,
-                                    LocationId = CurrentLocation.Id,
-                                    LocationName = CurrentLocation.Name
-                                }
-                            },
-                        SeriesDerivationType = ClimateExplorer.Core.DataPreparation.SeriesDerivationTypes.AverageOfMultipleSeries,
-                        Name = "Average of maximum and minimum temperatures"
-                    });
-            }
-
-            RootFolders.Add(currentLocationFolder);
-
-            if (PreviousLocation != null)
-            {
-                var measurementsForPreviousLocation = DataSetDefinitionViewModel.GetMeasurementsForLocation(DataSetDefinitions!, PreviousLocation.Id);
-
-                var comparisonFolder =
-                    new DataSetLibraryFolder()
-                    {
-                        Name = $"{CurrentLocation.Name} relative to {PreviousLocation.Name}",
-                        DataSets = new List<DataSetLibraryEntry>()
-                    };
-
-                foreach (var measurementAtCurrentLocation in measurements)
+        var currentLocationFolder =
+            new DataSetLibraryFolder()
                 {
-                    // Look for a matching measurement at new site
-                    var bestMatchingMeasurementAtPreviousLocation =
-                        measurementsForPreviousLocation
-                        .SingleOrDefault(x => x.Item2.DataType == measurementAtCurrentLocation.Item2.DataType 
-                                     && x.Item2.DataAdjustment == measurementAtCurrentLocation.Item2.DataAdjustment 
-                                     && x.Item2.DataResolution == measurementAtCurrentLocation.Item2.DataResolution);
+                    Name = CurrentLocation.Name + " observations",
+                    DataSets = new List<DataSetLibraryEntry>()
+                };
 
-                    if (bestMatchingMeasurementAtPreviousLocation != null)
+        var measurements = DataSetDefinitionViewModel.GetMeasurementsForLocation(DataSetDefinitions!, CurrentLocation.Id);
+
+        foreach (var measurement in measurements)
+        {
+            var dsd = measurement.Item1;
+            var md = measurement.Item2;
+
+            currentLocationFolder.DataSets.Add(
+                new DataSetLibraryEntry()
                     {
-                        comparisonFolder.DataSets.Add(
-                            new DataSetLibraryEntry()
+                        SourceSeriesSpecifications =
+                            new DataSetLibraryEntry.SourceSeriesSpecification[]
+                            {
+                                new DataSetLibraryEntry.SourceSeriesSpecification
                                 {
-                                    SourceSeriesSpecifications =
-                                        new DataSetLibraryEntry.SourceSeriesSpecification[]
-                                        {
-                                            new DataSetLibraryEntry.SourceSeriesSpecification
-                                            {
-                                                DataType = bestMatchingMeasurementAtPreviousLocation.Item2.DataType,
-                                                DataAdjustment = bestMatchingMeasurementAtPreviousLocation.Item2.DataAdjustment,
-                                                SourceDataSetId = bestMatchingMeasurementAtPreviousLocation.Item1.Id,
-                                                LocationId = PreviousLocation.Id,
-                                                LocationName = PreviousLocation.Name
-                                            },
-                                            new DataSetLibraryEntry.SourceSeriesSpecification
-                                            {
-                                                DataType = measurementAtCurrentLocation.Item2.DataType,
-                                                DataAdjustment = measurementAtCurrentLocation.Item2.DataAdjustment,
-                                                SourceDataSetId = measurementAtCurrentLocation.Item1.Id,
-                                                LocationId = CurrentLocation.Id,
-                                                LocationName = CurrentLocation.Name
-                                            }
-                                        },
-                                    SeriesDerivationType = ClimateExplorer.Core.DataPreparation.SeriesDerivationTypes.DifferenceBetweenTwoSeries,
-                                    Name = BuildDataSetName(measurementAtCurrentLocation.Item2, measurementAtCurrentLocation.Item1)
-                                });
-                    }
-                }
+                                    DataType = md.DataType,
+                                    DataAdjustment = md.DataAdjustment,
+                                    SourceDataSetId = dsd.Id,
+                                    LocationId = CurrentLocation.Id,
+                                    LocationName = CurrentLocation.Name
+                                }
+                            },
+                        SeriesDerivationType = ClimateExplorer.Core.DataPreparation.SeriesDerivationTypes.ReturnSingleSeries,
+                        Name = BuildDataSetName(md, dsd)
+                    });
+        }
 
-                RootFolders.Add(comparisonFolder);
+        // Daily temperature range
+        var bestAvailableTempMax =
+                measurements.SingleOrDefault(x => x.Item2.DataType == DataType.TempMax && x.Item2.DataAdjustment == DataAdjustment.Adjusted)
+            ?? measurements.SingleOrDefault(x => x.Item2.DataType == DataType.TempMax && x.Item2.DataAdjustment == null);
+
+        var bestAvailableTempMin =
+                measurements.SingleOrDefault(x => x.Item2.DataType == DataType.TempMax && x.Item2.DataAdjustment == DataAdjustment.Adjusted)
+            ?? measurements.SingleOrDefault(x => x.Item2.DataType == DataType.TempMax && x.Item2.DataAdjustment == null);
+
+        if (bestAvailableTempMax != null && bestAvailableTempMin != null)
+        {
+            currentLocationFolder.DataSets.Add(
+                new DataSetLibraryEntry()
+                {
+                    SourceSeriesSpecifications =
+                        new DataSetLibraryEntry.SourceSeriesSpecification[]
+                        {
+                            new DataSetLibraryEntry.SourceSeriesSpecification
+                            {
+                                DataType = DataType.TempMax,
+                                DataAdjustment = bestAvailableTempMax.Item2.DataAdjustment,
+                                SourceDataSetId = bestAvailableTempMax.Item1.Id,
+                                LocationId = CurrentLocation.Id,
+                                LocationName = CurrentLocation.Name
+                            },
+                            new DataSetLibraryEntry.SourceSeriesSpecification
+                            {
+                                DataType = DataType.TempMin,
+                                DataAdjustment = bestAvailableTempMin.Item2.DataAdjustment,
+                                SourceDataSetId = bestAvailableTempMin.Item1.Id,
+                                LocationId = CurrentLocation.Id,
+                                LocationName = CurrentLocation.Name
+                            }
+                        },
+                    SeriesDerivationType = ClimateExplorer.Core.DataPreparation.SeriesDerivationTypes.DifferenceBetweenTwoSeries,
+                    Name = "Daily temperature range"
+                });
+
+            currentLocationFolder.DataSets.Add(
+                new DataSetLibraryEntry()
+                {
+                    SourceSeriesSpecifications =
+                        new DataSetLibraryEntry.SourceSeriesSpecification[]
+                        {
+                            new DataSetLibraryEntry.SourceSeriesSpecification
+                            {
+                                DataType = DataType.TempMax,
+                                DataAdjustment = bestAvailableTempMax.Item2.DataAdjustment,
+                                SourceDataSetId = bestAvailableTempMax.Item1.Id,
+                                LocationId = CurrentLocation.Id,
+                                LocationName = CurrentLocation.Name
+                            },
+                            new DataSetLibraryEntry.SourceSeriesSpecification
+                            {
+                                DataType = DataType.TempMin,
+                                DataAdjustment = bestAvailableTempMin.Item2.DataAdjustment,
+                                SourceDataSetId = bestAvailableTempMin.Item1.Id,
+                                LocationId = CurrentLocation.Id,
+                                LocationName = CurrentLocation.Name
+                            }
+                        },
+                    SeriesDerivationType = ClimateExplorer.Core.DataPreparation.SeriesDerivationTypes.AverageOfMultipleSeries,
+                    Name = "Average of maximum and minimum temperatures"
+                });
+        }
+
+        RootFolders.Add(currentLocationFolder);
+
+        if (PreviousLocation != null)
+        {
+            var measurementsForPreviousLocation = DataSetDefinitionViewModel.GetMeasurementsForLocation(DataSetDefinitions!, PreviousLocation.Id);
+
+            var comparisonFolder =
+                new DataSetLibraryFolder()
+                {
+                    Name = $"{CurrentLocation.Name} relative to {PreviousLocation.Name}",
+                    DataSets = new List<DataSetLibraryEntry>()
+                };
+
+            foreach (var measurementAtCurrentLocation in measurements)
+            {
+                // Look for a matching measurement at new site
+                var bestMatchingMeasurementAtPreviousLocation =
+                    measurementsForPreviousLocation
+                    .SingleOrDefault(x => x.Item2.DataType == measurementAtCurrentLocation.Item2.DataType 
+                                    && x.Item2.DataAdjustment == measurementAtCurrentLocation.Item2.DataAdjustment 
+                                    && x.Item2.DataResolution == measurementAtCurrentLocation.Item2.DataResolution);
+
+                if (bestMatchingMeasurementAtPreviousLocation != null)
+                {
+                    comparisonFolder.DataSets.Add(
+                        new DataSetLibraryEntry()
+                            {
+                                SourceSeriesSpecifications =
+                                    new DataSetLibraryEntry.SourceSeriesSpecification[]
+                                    {
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            DataType = bestMatchingMeasurementAtPreviousLocation.Item2.DataType,
+                                            DataAdjustment = bestMatchingMeasurementAtPreviousLocation.Item2.DataAdjustment,
+                                            SourceDataSetId = bestMatchingMeasurementAtPreviousLocation.Item1.Id,
+                                            LocationId = PreviousLocation.Id,
+                                            LocationName = PreviousLocation.Name
+                                        },
+                                        new DataSetLibraryEntry.SourceSeriesSpecification
+                                        {
+                                            DataType = measurementAtCurrentLocation.Item2.DataType,
+                                            DataAdjustment = measurementAtCurrentLocation.Item2.DataAdjustment,
+                                            SourceDataSetId = measurementAtCurrentLocation.Item1.Id,
+                                            LocationId = CurrentLocation.Id,
+                                            LocationName = CurrentLocation.Name
+                                        }
+                                    },
+                                SeriesDerivationType = ClimateExplorer.Core.DataPreparation.SeriesDerivationTypes.DifferenceBetweenTwoSeries,
+                                Name = BuildDataSetName(measurementAtCurrentLocation.Item2, measurementAtCurrentLocation.Item1)
+                            });
+                }
             }
+
+            RootFolders.Add(comparisonFolder);
         }
 
         RootFolders.AddRange(

@@ -26,7 +26,7 @@
 @code {
     [Parameter] public IEnumerable<Location>? Locations { get; set; }
     [Parameter] public EventCallback<Guid> OnLocationChange { get; set; }
-    [Parameter] public Coordinates LocationCoordinates { get; set; }
+    [Parameter] public Coordinates? LocationCoordinates { get; set; }
 
     [Inject] public LayerFactory? LayerFactory { get; init; }
     [Inject] IIconFactory? IconFactory { get; init; }
@@ -46,7 +46,7 @@
     LatLng? expandedCentre = null;
     LatLng? collapsedCentre = null;
 
-    Coordinates PreviousSeenLocationCoordinates;
+    Coordinates? PreviousSeenLocationCoordinates;
 
     List<Guid> MarkersAdded = new();
     List<MarkerOptions> markerOptions = new();
@@ -263,7 +263,7 @@
         else
         {
             lastCollapsedZoom = zoom;
-            collapsedCentre = new LatLng(LocationCoordinates.Latitude, LocationCoordinates.Longitude);
+            collapsedCentre = LocationCoordinates is null ? null : new LatLng(LocationCoordinates.Value.Latitude, LocationCoordinates.Value.Longitude);
         }
 
         await JsRuntime!.InvokeVoidAsync("toggleMapExpansion", null);
@@ -278,9 +278,9 @@
 
         Logger!.LogDebug($"IsMapExpanded = {IsMapExpanded}");
 
-        if (mapOptions == null)
+        if (mapOptions == null && LocationCoordinates is not null)
         {
-            var centre = new LatLng(LocationCoordinates.Latitude, LocationCoordinates.Longitude);
+            var centre = new LatLng(LocationCoordinates.Value.Latitude, LocationCoordinates.Value.Longitude);
             mapOptions = new MapOptions()
                 {
                     Center = IsMapExpanded ? expandedCentre ?? centre : collapsedCentre ?? centre,
