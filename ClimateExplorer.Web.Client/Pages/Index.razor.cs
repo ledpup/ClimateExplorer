@@ -446,47 +446,4 @@ public partial class Index : ChartablePage
 
         await BuildDataSets();
     }
-
-    private async Task<Guid?> GetCurrentLocation()
-    {
-        if (JsRuntime == null)
-        {
-            return null;
-        }
-
-        var getLocationResult = await JsRuntime.InvokeAsync<GetLocationResult>("getLocation");
-
-        BrowserLocationErrorMessage = null;
-        if (getLocationResult.ErrorCode > 0)
-        {
-            BrowserLocationErrorMessage = "Unable to determine your location" + (!string.IsNullOrWhiteSpace(getLocationResult.ErrorMessage) ? $" ({getLocationResult.ErrorMessage})" : string.Empty);
-            Logger!.LogError(BrowserLocationErrorMessage);
-            return null;
-        }
-
-        var geoCoord = new GeoCoordinate(getLocationResult.Latitude, getLocationResult.Longitude);
-
-        var distances = Location.GetDistances(geoCoord, LocationDictionary!.Values!);
-        var closestLocation = distances.OrderBy(x => x.Distance).First();
-
-        return closestLocation.LocationId;
-    }
-
-    private async Task SetCurrentLocation()
-    {
-        var locationId = await GetCurrentLocation();
-        if (locationId != null)
-        {
-            await SelectedLocationChanged(locationId.Value);
-        }
-    }
-
-    private class GetLocationResult
-    {
-        public float Latitude { get; set; }
-        public float Longitude { get; set; }
-
-        public float ErrorCode { get; set; }
-        public string? ErrorMessage { get; set; }
-    }
 }
