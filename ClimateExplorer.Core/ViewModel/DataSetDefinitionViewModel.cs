@@ -14,13 +14,13 @@ public class DataSetDefinitionViewModel
     public string? StationInfoUrl { get; set; }
     public string? LocationInfoUrl { get; set; }
 
-    public List<Guid>? LocationIds { get; set; }
+    public HashSet<Guid>? LocationIds { get; set; }
     public List<MeasurementDefinitionViewModel>? MeasurementDefinitions { get; set; }
 
     public static IEnumerable<Tuple<DataSetDefinitionViewModel, MeasurementDefinitionViewModel>> GetMeasurementsForLocation(IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, Guid locationId)
     {
         var dsds = dataSetDefinitions.Where(x => x.LocationIds != null
-                                        && x.LocationIds.Any(y => y == locationId))
+                                        && x.LocationIds.Contains(locationId))
                                      .ToList();
 
         foreach (var dsd in dsds)
@@ -48,7 +48,7 @@ public class DataSetDefinitionViewModel
             dataType = dataSubstitute.DataType;
             dataAdjustment = dataSubstitute.DataAdjustment;
             dsds = dataSetDefinitions.Where(x => x.LocationIds != null
-                                                && x.LocationIds.Any(y => y == locationId)
+                                                && x.LocationIds.Contains(locationId)
                                                 && x.MeasurementDefinitions!.Any(y => y.DataType == dataType
                                                                                    && y.DataAdjustment == dataAdjustment
                                                                                    && (dataSubstitute.DataResolution == null || y.DataResolution == dataSubstitute.DataResolution)))

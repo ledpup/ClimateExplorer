@@ -1,45 +1,34 @@
 ﻿@using ClimateExplorer.Web.UiModel
 @using static ClimateExplorer.Core.Enums
 
-<OverviewField Label="Warmest years">
-    <Value>
-        @if (DataRecords == null)
-    {
-        <span>NA</span>
-    }
-    else
-    {
-        foreach (var year in WarmestYearsList)
-        {
-            <span @onclick="() => FilterToYear(year)">
+@if (DataRecords is not null)
+{
+    <OverviewField Label="Warmest years">
+        <Value>
+            @foreach (var year in WarmestYearsList)
+            {
+                <span @onclick="() => FilterToYear(year)">
                     <a>@year</a>
                 </span>
-            if (WarmestYearsList.IndexOf(year) < WarmestYearsList.Count - 1)
-            {
-                <span>, </span>
+                if (WarmestYearsList.IndexOf(year) < WarmestYearsList.Count - 1)
+                {
+                    <span>, </span>
+                }
             }
-        }
-    }
-    </Value>
-</OverviewField>
-<OverviewField Label="Coolest years">
-    <Value>
-        @if (DataRecords == null)
-    {
-        <span>NA</span>
-    }
-    else
-    {
-        foreach (var year in CoolestYears)
-        {
-            <span @onclick="() => FilterToYear(year)">
+        </Value>
+    </OverviewField>
+    <OverviewField Label="Coolest years">
+        <Value>
+            @foreach (var year in CoolestYears)
+            {
+                <span @onclick="() => FilterToYear(year)">
                     <a>@year</a>
                 </span>
-            if (CoolestYears.IndexOf(year) < CoolestYears.Count - 1)
-            {
-                <span>, </span>
+                if (CoolestYears.IndexOf(year) < CoolestYears.Count - 1)
+                {
+                    <span>, </span>
+                }
             }
-        }
-    }
-    </Value>
-</OverviewField>
+        </Value>
+    </OverviewField>
+}

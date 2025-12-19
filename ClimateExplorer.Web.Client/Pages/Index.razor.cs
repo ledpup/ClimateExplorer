@@ -91,11 +91,6 @@ public partial class Index : ChartablePage
             LocationDictionary = (await locationsTask).ToDictionary(x => x.Id, x => x);
             Regions = (await regionsTask).ToList();
 
-            var geographicalEntities = new List<GeographicalEntity>();
-            geographicalEntities.AddRange(LocationDictionary.Values);
-            geographicalEntities.AddRange(Regions);
-            GeographicalEntities = geographicalEntities;
-
             // Location may have been set in OnInitializedAsync
             if (Location is null)
             {
