@@ -13,19 +13,25 @@
 @using ClimateExplorer.Web.Client.Shared.PopupContent
 @using static ClimateExplorer.Core.Enums
 
-<LoadingIndicator @bind-Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
-    <Collapsible @ref="LocationCollapsible" Title="@Location?.Title" FullTitle="@Location?.FullTitle" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
-        <CollapsedContent>
+<Collapsible @ref="LocationCollapsible" Title="@Location?.Title" FullTitle="@Location?.FullTitle" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
+    <CollapsedContent>
+        @if (!LocationLoadingIndicatorVisible)
+        {
             <span class="chart-controls">
                 <a class="chart-control" @onclick="() => ChangeLocationClicked(new EventArgs())"><i class="fas fa-map"></i> Change location</a>
                 @if (LocationCollapsible!.ShowContent)
                 {
-                    <a class="chart-control" @onclick="() => TogglePrecipitation()"><i class="@( precipitation ? "fas fa-check-square" : "fas fa-square" )"></i> Precipitation</a>
+                    <a class="chart-control" @onclick="() => TogglePrecipitation()"><i class="@( Precipitation ? "fas fa-check-square" : "fas fa-square" )"></i> Precipitation</a>
                 }
             </span>
-        </CollapsedContent>
-        <Content>
-            <OverviewField Label="Location"><Value><a href="@LocationMapUrl" target="_blank">@GeoLocationAsString</a></Value></OverviewField>
+        }
+    </CollapsedContent>
+    <Content>
+        <LoadingIndicator @bind-Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
+            @if (Location is not null)
+            {
+                <OverviewField Label="Location"><Value><a href="@LocationMapUrl" target="_blank">@GeoLocationAsString</a></Value></OverviewField>
+            }
             @if (WarmingAnomalyAsString != null && WarmingAnomalyAsString != "NA")
             {
                 <OverviewField Label="Warming anomaly" PopupContent="@WarmingAnomalyContent"><Value>@(WarmingAnomalyAsString == null ? "NA" : WarmingAnomalyAsString)</Value></OverviewField>
@@ -35,280 +41,21 @@
             {
                 <OverviewField Label="Record high" PopupTitle="@("Record highs and lows for " + Location?.Name)" PopupContent="@ClimateRecordsContent" ToolTip="@RecordHighToolTip"><Value>@(Location?.RecordHigh == null ? "NA" : Location?.RecordHigh.Year)</Value></OverviewField>
             }
-            @if (precipitation && PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
+            @if (Precipitation && PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
             {
                 <OverviewField Label="Precipitation anomaly" PopupContent="@PrecipitationAnomalyContent"><Value>@(PrecipitationAnomalyAsString == null ? "NA" : PrecipitationAnomalyAsString)</Value></OverviewField>
             }
-            <ClimateStripe UnitOfMeasure="UnitOfMeasure.DegreesCelsius" LocationName=@Location?.Name LocationMean=@TemperatureLocationMean DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" ShowInfo="true" />
-            <WarmestYears DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" />
-            @if (precipitation && PrecipitationLocationMean != null)
-            {
-                <ClimateStripe UnitOfMeasure="UnitOfMeasure.Millimetres" LocationName=@Location?.Name LocationMean=@PrecipitationLocationMean DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange="HandleOnPrecipitationYearFilterChange" ShowInfo="false" />
-                <DriestYears DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange="HandleOnPrecipitationYearFilterChange" />
-            }
-        </Content>
-    </Collapsible>
-</LoadingIndicator>
-
-@code {
-    [Inject]
-    public IDataService? DataService { get; set; }
-
-    [Inject]
-    ILogger<LocationInfo>? Logger { get; set; }
-
-    [Parameter]
-    public Location? Location { get; set; }
-
-    [Parameter]
-    public EventCallback RequestLocationChange { get; set; }
-
-    [Parameter]
-    public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
-
-    [Parameter]
-    public EventCallback<bool> OnOverviewShowOrHide { get; set; }
-
-    [Parameter]
-    public EventCallback<YearAndDataTypeFilter> OnYearFilterChange { get; set; }
-
-    Collapsible? LocationCollapsible;
-
-    Guid instanceId = Guid.NewGuid();
-
-    string LocationMapUrl => Location == null ? "https://maps.google.com/" : $"https://maps.google.com/?q={Location.Coordinates.Latitude},{Location.Coordinates.Longitude}";
-    string GeoLocationAsString => Location == null ? "Nowhere" : Location.Coordinates.ToString();
-
-    public bool LocationLoadingIndicatorVisible { get; set; }
-    bool precipitation { get; set; }
-
-    List<YearlyValues>? TemperatureAnomalyRecords { get; set; }
-    double? TemperatureLocationMean { get; set; }
-    RenderFragment? WarmingAnomalyContent;
-    string? WarmingAnomalyAsString;
-
-    List<YearlyValues>? PrecipitationAnomalyRecords { get; set; }
-    double? PrecipitationLocationMean { get; set; }
-    RenderFragment? PrecipitationAnomalyContent;
-    string? PrecipitationAnomalyAsString;
-
-    Guid? locationIdLastTimeOnParametersSetAsyncWasCalled;
-
-    DataType? TemperatureDataType { get; set; }
-
-    RenderFragment? HeatingScoreContent;
-
-    string? RecordHighToolTip { get; set; }
-    RenderFragment? ClimateRecordsContent;
-
-    public void ChangeLocationClicked(EventArgs args)
-    {
-        RequestLocationChange.InvokeAsync();
-    }
-
-    void OverviewShowOrHideHandler(bool showOrHide)
-    {
-        OnOverviewShowOrHide.InvokeAsync(showOrHide);
-    }
-
-    protected override void OnInitialized()
-    {
-        LocationLoadingIndicatorVisible = true;
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        if (Location == null || DataSetDefinitions == null)
-        {
-            return;
-        }
-
-        // We do manual change detection here because Blazor calls OnParametersSetAsync() repeatedly with the same input values.
-        if (locationIdLastTimeOnParametersSetAsyncWasCalled == Location?.Id)
-        {
-            return;
-        }
-        LocationLoadingIndicatorVisible = true;
-        locationIdLastTimeOnParametersSetAsyncWasCalled = Location?.Id;
-
-        // Clear the previous values so we don't accidentally end-up reporting them
-        PrecipitationLocationMean = null;
-        PrecipitationAnomalyRecords = null;
-        PrecipitationAnomalyAsString = null;
-        PrecipitationAnomalyContent = null;
-
-        TemperatureDataType = null;
-        WarmingAnomalyAsString = null;
-        WarmingAnomalyContent = null;
-        TemperatureLocationMean = null;
-        TemperatureAnomalyRecords = null;
-
-        RecordHighToolTip = null;
-        ClimateRecordsContent = null;
-
-        if (precipitation)
-        {
-            await GeneratePrecipitationView();
-        }
-
-        var temperatureAnomaly = await CalculateAnomaly(DataSubstitute.StandardTemperatureDataMatches(), ContainerAggregationFunctions.Mean);
-        if (temperatureAnomaly != null)
-        {
-            TemperatureDataType = temperatureAnomaly.DataSet?.DataType;
-            WarmingAnomalyAsString = temperatureAnomaly.CalculatedAnomaly!.ValueAsString();
-            WarmingAnomalyContent = Location == null
-                    ? null
-                    : builder =>
-                    {
-                        builder.OpenComponent(0, typeof(WarmingAnomalyContent));
-                        builder.AddAttribute(1, "Location", Location);
-                        builder.AddAttribute(2, "CalculatedAnomaly", temperatureAnomaly.CalculatedAnomaly);
-                        builder.CloseComponent();
-                    };
-            TemperatureLocationMean = temperatureAnomaly?.DataSet?.DataRecords.Average(x => x.Value);
-            TemperatureAnomalyRecords = temperatureAnomaly?.AnomalyRecords;
-        }
-
-        if (Location?.RecordHigh is not null)
-        {
-            RecordHighToolTip = $"{Location.Name} record high of {Location.RecordHigh.Value}°C set {(Location.RecordHigh.Day == null ? string.Empty : Location.RecordHigh.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(Location.RecordHigh.Month)} {Location.RecordHigh.Year}.\r\nClick for more records.";
-        }
-            
-        ClimateRecordsContent = Location == null
-                ? null
-                : builder =>
+        </LoadingIndicator>
+        <div class="climate-stripe">
+            <LoadingIndicator @bind-Visible="@StripeLoadingIndicatorVisible" ZIndex="5">
+                <ClimateStripe UnitOfMeasure="UnitOfMeasure.DegreesCelsius" LocationName=@Location?.Name LocationMean=@TemperatureLocationMean DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" ShowInfo="true" />
+                <WarmestYears DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" />
+                @if (Precipitation && PrecipitationLocationMean != null)
                 {
-                    builder.OpenComponent(0, typeof(ClimateRecordsContent));
-                    builder.AddAttribute(1, "Location", Location);
-                    builder.CloseComponent();
-                };
-
-        HeatingScoreContent = Location == null
-                            ? null
-                            : builder =>
-                            {
-                                builder.OpenComponent(0, typeof(HeatingScoreContent));
-                                builder.AddAttribute(1, "Location", Location);
-                                builder.CloseComponent();
-                            };
-
-        LocationLoadingIndicatorVisible = false;
-
-        await base.OnParametersSetAsync();
-    }
-
-    protected async Task<LocationAnomalySummary?> CalculateAnomaly(List<DataSubstitute> dataSubstitutes, ContainerAggregationFunctions function)
-    {
-        var series = await GetData(dataSubstitutes, function);
-
-        if (series == null || series.DataRecords.Count == 0)
-        {
-            return null;
-        }
-
-        var average = series.DataRecords.Average(x => x.Value)!.Value;
-
-        var anomalyRecords =
-            series.DataRecords
-            .Where(x => x.Value != null)
-            .Select(x => new YearlyValues(((YearBinIdentifier)BinIdentifier.Parse(x.BinId!)).Year, x.Value!.Value - average, x.Value!.Value, x.Value!.Value / average * 100D))
-            .ToList();
-
-        var anomaly = AnomalyCalculator.CalculateAnomaly(series.DataRecords);
-
-        return new LocationAnomalySummary { CalculatedAnomaly = anomaly, DataSet = series, AnomalyRecords = anomalyRecords };
-    }
-
-    protected async Task<DataSet?> GetData(List<DataSubstitute> dataSubstitutes, ContainerAggregationFunctions function)
-    {
-        DataSetAndMeasurementDefinition measurementForLocation =
-            DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
-                DataSetDefinitions!,
-                Location!.Id,
-                dataSubstitutes,
-                throwIfNoMatch: false)!;
-
-
-        if (measurementForLocation == null)
-        {
-            return null;
-        }
-
-        var series =
-            await DataService!.PostDataSet(
-                BinGranularities.ByYear,
-                function,
-                function,
-                function,
-                SeriesValueOptions.Value,
-                new SeriesSpecification[]
-                    {
-                        new SeriesSpecification
-                        {
-                            DataAdjustment = measurementForLocation.MeasurementDefinition!.DataAdjustment,
-                            DataSetDefinitionId = measurementForLocation.DataSetDefinition!.Id,
-                            DataType = measurementForLocation.MeasurementDefinition.DataType,
-                            LocationId = Location.Id
-                        }
-                    },
-                SeriesDerivationTypes.ReturnSingleSeries,
-                1.0f,
-                1.0f,
-                0.7f,
-                14,
-                SeriesTransformations.Identity);
-
-        return series!;
-    }
-
-    public async Task HandleOnYearFilterChange(short year)
-    {
-        var yearAndFilter = new YearAndDataTypeFilter(year) { DataType = TemperatureDataType };
-        await OnYearFilterChange.InvokeAsync(yearAndFilter);
-    }
-
-    public async Task HandleOnPrecipitationYearFilterChange(short year)
-    {
-        var yearAndFilter = new YearAndDataTypeFilter(year) { DataType = DataType.Precipitation };
-        await OnYearFilterChange.InvokeAsync(yearAndFilter);
-    }
-
-    static string GetPrecipitationAnomalyAsString(CalculatedAnomaly anomaly)
-    {
-        if (anomaly == null) return "NA";
-
-        var value = anomaly.AnomalyValue;
-
-        return $"{(value >= 0 ? "+" : "")}{string.Format("{0:0}", value)}mm";
-    }
-
-    async Task TogglePrecipitation()
-    {
-        precipitation = !precipitation;
-
-        if (precipitation && PrecipitationAnomalyAsString == null)
-        {
-            await GeneratePrecipitationView();
-        }
-    }
-
-    async Task GeneratePrecipitationView()
-    {
-        var precipitationAnomaly = await CalculateAnomaly(new List<DataSubstitute> { new DataSubstitute { DataType = DataType.Precipitation } }, ContainerAggregationFunctions.Sum);
-        if (precipitationAnomaly != null)
-        {
-            PrecipitationAnomalyAsString = GetPrecipitationAnomalyAsString(precipitationAnomaly.CalculatedAnomaly!);
-            PrecipitationLocationMean = precipitationAnomaly.DataSet?.DataRecords.Average(x => x.Value);
-            PrecipitationAnomalyRecords = precipitationAnomaly.AnomalyRecords;
-            PrecipitationAnomalyContent = Location == null
-                    ? null
-                    : builder =>
-                    {
-                        builder.OpenComponent(0, typeof(PrecipitationAnomalyContent));
-                        builder.AddAttribute(1, "Location", Location);
-                        builder.AddAttribute(2, "CalculatedAnomaly", precipitationAnomaly.CalculatedAnomaly);
-                        builder.CloseComponent();
-                    };
-        }
-    }
-}
+                    <ClimateStripe UnitOfMeasure="UnitOfMeasure.Millimetres" LocationName=@Location?.Name LocationMean=@PrecipitationLocationMean DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange="HandleOnPrecipitationYearFilterChange" ShowInfo="false" />
+                    <DriestYears DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange="HandleOnPrecipitationYearFilterChange" />
+                }
+            </LoadingIndicator>
+        </div>
+    </Content>
+</Collapsible>
