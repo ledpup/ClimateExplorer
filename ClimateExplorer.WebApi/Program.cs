@@ -138,7 +138,7 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
                 Description = x.Description,
                 Publisher = x.Publisher,
                 PublisherUrl = x.PublisherUrl,
-                LocationIds = x.DataLocationMapping?.LocationIdToDataFileMappings.Keys.ToList(),
+                LocationIds = x.DataLocationMapping?.LocationIdToDataFileMappings.Keys.ToHashSet(),
                 MeasurementDefinitions = x.MeasurementDefinitions.Select(x => x.ToViewModel()).ToList(),
             })
         .ToList();

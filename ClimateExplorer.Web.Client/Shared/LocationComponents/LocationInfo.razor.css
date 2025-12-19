@@ -41,3 +41,7 @@
         background-color: #cfc;
         transition: 0.25s;
     }
+
+.climate-stripe {
+    max-width: 700px !important;
+}

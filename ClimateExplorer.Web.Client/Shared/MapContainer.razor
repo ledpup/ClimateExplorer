@@ -10,7 +10,7 @@
     }
 
     <div class="@(IsMapExpanded ? "mapToggleExpanded" : "mapToggleCollapsed")">
-        <Button Color="Color.Primary" Clicked="@ToggleMapExpansion" Class="map-toggle-button">
+        <Button Clicked="@ToggleMapExpansion" Class="map-toggle-button" Disabled="Locations is null" Visibility="map is null ? Visibility.Invisible : Visibility.Visible">
             @if (IsMapExpanded)
             {
                 <span><i class="fas fa-compress"></i> Collapse</span>

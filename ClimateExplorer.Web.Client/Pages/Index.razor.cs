@@ -8,7 +8,6 @@ using ClimateExplorer.Web.Client.Shared;
 using ClimateExplorer.Web.Client.Shared.LocationComponents;
 using ClimateExplorer.Web.UiModel;
 using CurrentDevice;
-using GeoCoordinatePortable;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
@@ -91,11 +90,6 @@ public partial class Index : ChartablePage
             DataSetDefinitions = (await dataSetDefinitionsTask).ToList();
             LocationDictionary = (await locationsTask).ToDictionary(x => x.Id, x => x);
             Regions = (await regionsTask).ToList();
-
-            var geographicalEntities = new List<GeographicalEntity>();
-            geographicalEntities.AddRange(LocationDictionary.Values);
-            geographicalEntities.AddRange(Regions);
-            GeographicalEntities = geographicalEntities;
 
             // Location may have been set in OnInitializedAsync
             if (Location is null)

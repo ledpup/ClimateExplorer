@@ -40,8 +40,6 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     protected IEnumerable<Region>? Regions { get; set; }
 
-    protected IEnumerable<GeographicalEntity>? GeographicalEntities { get; set; }
-
     protected SnackbarStack? Snackbar { get; set; }
 
     protected ChartView? ChartView { get; set; }
@@ -217,7 +215,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         {
             try
             {
-                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions!, GeographicalEntities!);
+                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions!, LocationDictionary, Regions!);
 
                 if (csdList.Any())
                 {
@@ -268,7 +266,11 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     protected async Task OnDownloadDataClicked(DataDownloadPackage dataDownloadPackage)
     {
-        var fileStream = Exporter!.ExportChartData(Logger!, GeographicalEntities!, dataDownloadPackage, NavManager!.Uri.ToString());
+        var geographicalEntities = new List<GeographicalEntity>();
+        geographicalEntities.AddRange(LocationDictionary!.Values);
+        geographicalEntities.AddRange(Regions!);
+
+        var fileStream = Exporter!.ExportChartData(Logger!, geographicalEntities, dataDownloadPackage, NavManager!.Uri.ToString());
 
         var locationNames = dataDownloadPackage.ChartSeriesWithData!.SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!).Select(x => x.LocationName).Where(x => x != null).Distinct().ToArray();
 
