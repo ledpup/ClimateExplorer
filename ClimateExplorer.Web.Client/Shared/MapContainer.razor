@@ -26,7 +26,7 @@
 @code {
     [Parameter] public IEnumerable<Location>? Locations { get; set; }
     [Parameter] public EventCallback<Guid> OnLocationChange { get; set; }
-    [Parameter] public Coordinates? LocationCoordinates { get; set; }
+    [Parameter] public Location? Location { get; set; }
 
     [Inject] public LayerFactory? LayerFactory { get; init; }
     [Inject] IIconFactory? IconFactory { get; init; }
@@ -46,7 +46,7 @@
     LatLng? expandedCentre = null;
     LatLng? collapsedCentre = null;
 
-    Coordinates? PreviousSeenLocationCoordinates;
+    Location? InternalLocation;
 
     List<Guid> MarkersAdded = new();
     List<MarkerOptions> markerOptions = new();
@@ -61,15 +61,17 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        if (IsMobileDevice == null || PreviousSeenLocationCoordinates == LocationCoordinates)
+        if (IsMobileDevice == null || InternalLocation?.Id == Location?.Id)
         {
             return;
         }
 
-        PreviousSeenLocationCoordinates = LocationCoordinates;
+        InternalLocation = Location;
 
         InitialiseMapOptions();
 
+        await ScrollToPoint(Location!.Coordinates);
+        
         if (IsMapExpanded)
         {
             await ToggleMapExpansion();
@@ -86,7 +88,7 @@
         await map!.OnMoveEnd(async (moveEvent) => await HandleMoveEnd(moveEvent));
     }
 
-    public async Task ScrollToPoint(Coordinates point)
+    private async Task ScrollToPoint(Coordinates point)
     {
         if (map == null)
         {
@@ -263,7 +265,7 @@
         else
         {
             lastCollapsedZoom = zoom;
-            collapsedCentre = LocationCoordinates is null ? null : new LatLng(LocationCoordinates.Value.Latitude, LocationCoordinates.Value.Longitude);
+            collapsedCentre = Location is null ? null : new LatLng(Location.Coordinates.Latitude, Location.Coordinates.Longitude);
         }
 
         await JsRuntime!.InvokeVoidAsync("toggleMapExpansion", null);
@@ -278,9 +280,9 @@
 
         Logger!.LogDebug($"IsMapExpanded = {IsMapExpanded}");
 
-        if (mapOptions == null && LocationCoordinates is not null)
+        if (mapOptions == null && Location is not null)
         {
-            var centre = new LatLng(LocationCoordinates.Value.Latitude, LocationCoordinates.Value.Longitude);
+            var centre = new LatLng(Location.Coordinates.Latitude, Location.Coordinates.Longitude);
             mapOptions = new MapOptions()
                 {
                     Center = IsMapExpanded ? expandedCentre ?? centre : collapsedCentre ?? centre,

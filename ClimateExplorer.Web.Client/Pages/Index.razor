@@ -48,7 +48,7 @@
             <MapContainer @ref="MapContainer"
                 Locations="@LocationDictionary?.Values"
                 OnLocationChange="@SelectedLocationChanged"
-                LocationCoordinates="@Location?.Coordinates" />
+                Location="@Location" />
         </div>
 
         <div class="location-info-container">
@@ -63,7 +63,10 @@
     </div>
 
     <ChartView @ref="ChartView"
-               BuildDataSetsEvent="@BuildDataSets"
+               PageName="@PageName"
+               DataSetDefinitions="@DataSetDefinitions"
+               LocationId="@Location?.Id"
+               LocalCharts="true"
                ShowAddDataSetModalEvent="@ShowAddDataSetModal"
                DownloadDataEvent="@OnDownloadDataClicked"
                LocationDictionary="@LocationDictionary" />
@@ -82,7 +85,7 @@
             <CloseButton />
         </ModalHeader>
         <ModalBody>
-            <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@Location" PreviousLocation="@PreviousLocation"></DataSetBrowser>
+            <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@Location"></DataSetBrowser>
         </ModalBody>
     </ModalContent>
 </Modal>

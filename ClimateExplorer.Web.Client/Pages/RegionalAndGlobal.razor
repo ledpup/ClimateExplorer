@@ -26,9 +26,10 @@
 
 <div class="chart-container">
     <ChartView @ref="ChartView"
-                  BuildDataSetsEvent="@BuildDataSets"
-                  ShowAddDataSetModalEvent="@ShowAddDataSetModal"
-                  DownloadDataEvent="@OnDownloadDataClicked" />
+               PageName="@PageName"
+               LocalCharts="false"
+               ShowAddDataSetModalEvent="@ShowAddDataSetModal"
+               DownloadDataEvent="@OnDownloadDataClicked" />
 </div>
 
 <Modal @ref="AddDataSetModal">

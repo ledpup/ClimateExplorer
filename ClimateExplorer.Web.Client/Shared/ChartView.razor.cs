@@ -3,6 +3,7 @@
 using Blazorise;
 using Blazorise.Charts;
 using Blazorise.Charts.Trendline;
+using Blazorise.Snackbar;
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Infrastructure;
@@ -13,7 +14,9 @@ using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
 using CurrentDevice;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
+using System;
 using System.Dynamic;
 using static ClimateExplorer.Core.Enums;
 
@@ -39,39 +42,32 @@ public partial class ChartView
 
     public List<SeriesWithData>? ChartSeriesWithData { get; set; }
 
+    [Parameter]
+    public string? PageName { get; set; }
+
+    [Parameter]
+    public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
+
+    [Parameter]
+    public Guid? LocationId { get; set; }
+
+    [Parameter]
+    public bool LocalCharts { get; set; }
+
+    [Parameter]
     public bool ChartAllData { get; set; }
-    public string? SelectedStartYear { get; set; }
-    public string? SelectedEndYear { get; set; }
-    public short SelectedGroupingDays { get; set; }
-    public string? GroupingThresholdText
-    {
-        get
-        {
-            return groupingThresholdText;
-        }
-        set
-        {
-            if (!string.IsNullOrWhiteSpace(value))
-            {
-                groupingThresholdText = value;
-                InternalGroupingThreshold = float.Parse(value) / 100;
-            }
-        }
-    }
-
-    public List<ChartSeriesDefinition>? ChartSeriesList { get; set; } = new List<ChartSeriesDefinition>();
-
-    [Parameter]
-    public EventCallback BuildDataSetsEvent { get; set; }
-
-    [Parameter]
-    public EventCallback<DataDownloadPackage> DownloadDataEvent { get; set; }
 
     [Parameter]
     public Dictionary<Guid, Location>? LocationDictionary { get; set; }
 
     [Parameter]
+    public EventCallback<DataDownloadPackage> DownloadDataEvent { get; set; }
+
+    [Parameter]
     public EventCallback ShowAddDataSetModalEvent { get; set; }
+
+    [Parameter]
+    public EventCallback OnUpdateUiStateBasedOnQueryString { get; set; }
 
     [Inject]
     private IDataService? DataService { get; set; }
@@ -87,6 +83,28 @@ public partial class ChartView
 
     [Inject]
     private NavigationManager? NavManager { get; set; }
+
+    private Guid? InternalLocationId { get; set; }
+    private string? SelectedStartYear { get; set; }
+    private string? SelectedEndYear { get; set; }
+    private short SelectedGroupingDays { get; set; }
+    private string? GroupingThresholdText
+    {
+        get
+        {
+            return groupingThresholdText;
+        }
+        set
+        {
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                groupingThresholdText = value;
+                InternalGroupingThreshold = float.Parse(value) / 100;
+            }
+        }
+    }
+
+    private List<ChartSeriesDefinition>? ChartSeriesList { get; set; } = new List<ChartSeriesDefinition>();
 
     private short SelectingGroupingDays { get; set; }
 
@@ -223,7 +241,211 @@ public partial class ChartView
         return datasetsToReturn;
     }
 
-    public async Task HandleRedraw()
+    public async Task<Guid?> UpdateUiStateBasedOnQueryString()
+    {
+        var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+        if (string.IsNullOrWhiteSpace(uri.Query))
+        {
+            return null;
+        }
+
+        var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+        ChartAllData = queryDictionary["chartAllData"] == null ? false : bool.Parse(queryDictionary["chartAllData"] !);
+        SelectedStartYear = queryDictionary["startYear"];
+        SelectedEndYear = queryDictionary["endYear"];
+        SelectedGroupingDays = queryDictionary["groupingDays"] == null ? (short)14 : short.Parse(queryDictionary["groupingDays"] !);
+        GroupingThresholdText = string.IsNullOrWhiteSpace(queryDictionary["groupingThreshold"]) ? "70" : queryDictionary["groupingThreshold"];
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier))
+        {
+            try
+            {
+                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions!, LocationDictionary, []); // TODO: Regions
+
+                if (csdList.Any())
+                {
+                    SelectedBinGranularity = csdList.First().BinGranularity;
+                }
+
+                Logger!.LogInformation("Setting ChartSeriesList to list with " + csdList.Count + " items");
+
+                ChartSeriesList = csdList.ToList();
+
+                try
+                {
+                    await BuildDataSets();
+                }
+                catch (Exception)
+                {
+                    // TODO: fix this error
+                    // await Snackbar!.PushAsync($"Failed to create the chart with the current settings", SnackbarColor.Danger);
+                    ChartLoadingErrored = true;
+                    await HandleRedraw();
+                }
+
+                StateHasChanged();
+
+                return ChartSeriesList!.First().SourceSeriesSpecifications!.First().LocationId;
+            }
+            catch (Exception ex)
+            {
+                Logger!.LogError(ex.ToString());
+            }
+        }
+
+        return null;
+    }
+
+    public async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)
+    {
+        await OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly, false);
+
+        var chartWithData = ChartSeriesWithData!
+            .First(x =>
+            (x.SourceDataSet!.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
+            (x.SourceDataSet.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null));
+
+        var chartSeries = ChartSeriesList!
+            .First(x => x.SourceSeriesSpecifications!.Any(y =>
+               (y.MeasurementDefinition!.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
+               (y.MeasurementDefinition.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null)));
+
+        ChartSeriesList =
+            ChartSeriesList!
+            .Concat(
+                [
+                    new ChartSeriesDefinition()
+                    {
+                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                        SourceSeriesSpecifications = chartWithData.ChartSeries!.SourceSeriesSpecifications,
+                        Aggregation = chartSeries.Aggregation,
+                        BinGranularity = SelectedBinGranularity,
+                        Smoothing = SeriesSmoothingOptions.None,
+                        SmoothingWindow = 20,
+                        Value = SeriesValueOptions.Value,
+                        Year = yearAndDataTypeFilter.Year,
+                    },
+                ])
+            .ToList();
+
+        await BuildDataSets();
+    }
+
+    protected async Task BuildDataSets()
+    {
+        // This method is called whenever anything has occurred that may require the chart to
+        // be re-rendered.
+        //
+        // Examples:
+        //     - User navigates to /locations/{anything}?csd={anythingelse} page for the first time
+        //     - User updates URL manually while already at /locations
+        //     - User chooses a preset or otherwise updates ChartSeriesList
+        //     - User changes another setting that influences chart rendering (e.g. year filtering)
+        //
+        // Some, but not all, of those changes/events are reflected directly in the URL (e.g. location is in the
+        // URL, and CSDs are in the URL).
+        //
+        // Others currently are not, but probably should be (e.g. year filtering).
+        //
+        // Our strategy here is:
+        //
+        // This method has been called because something has happened that may require the chart to be
+        // re-rendered. We calculate the URI reflecting the current UI state. If we're already at that
+        // URI, then we conclude that one of the properties has changed that does NOT impact the URI,
+        // so we just immediately re-render the chart. If we are NOT already at that URI, then we just
+        // trigger navigation to that URI, and DO NOT RE-RENDER THE CHART YET. Instead, as part of that
+        // navigation process, methods will trigger that will re render the chart based on what's in the
+        // updated URI.
+        //
+        // This is all to avoid re-rendering the chart more than once (bad for performance) or, even worse,
+        // re-rendering the chart on two different async call chains at the same time (bad for correctness -
+        // this was leading to the same series being rendered more than once, and the year labels on the
+        // X axis being added more than once).
+        var l = new LogAugmenter(Logger!, "BuildDataSets");
+        l.LogInformation("Starting");
+
+        LoadingChart();
+
+        // Recalculate the URL
+        string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(ChartSeriesList!);
+
+        string url = PageName!;
+
+        if (chartSeriesUrlComponent.Length > 0)
+        {
+            var chartAllData = ChartAllData.ToString() !.ToLower();
+            var startYear = SelectedStartYear;
+            var endYear = SelectedEndYear;
+
+            var queryString = new Uri(NavManager!.Uri).Query;
+            var queryDictionary = System.Web.HttpUtility.ParseQueryString(queryString);
+
+            url += "?chartAllData=" + chartAllData;
+            if (!string.IsNullOrWhiteSpace(startYear))
+            {
+                url += $"&startYear={startYear}";
+            }
+
+            if (!string.IsNullOrWhiteSpace(endYear))
+            {
+                url += $"&endYear={endYear}";
+            }
+
+            var groupingDays = SelectedGroupingDays;
+            if (SelectedGroupingDays > 0)
+            {
+                url += $"&groupingDays={groupingDays}";
+            }
+
+            var groupingThresholdText = GroupingThresholdText;
+            if (!string.IsNullOrWhiteSpace(groupingThresholdText))
+            {
+                url += $"&groupingThreshold={groupingThresholdText}";
+            }
+
+            url += "&csd=" + chartSeriesUrlComponent;
+        }
+        else
+        {
+            ChartSeriesWithData = null;
+            await HandleRedraw();
+        }
+
+        string currentUri = NavManager!.Uri;
+        string newUri = NavManager.ToAbsoluteUri(url).ToString();
+
+        if (currentUri != newUri)
+        {
+            l.LogInformation("Because the URI reflecting current UI state is different to the URI we're currently at, triggering navigation. After navigation occurs, the UI state will update accordingly.");
+
+            bool shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds = currentUri.IndexOf("csd=") == -1;
+
+            // Just let the navigation process trigger the UI updates
+            // await NavigateTo(url, shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds);
+            NavManager!.NavigateTo(url, false, shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds);
+        }
+        else
+        {
+            l.LogInformation("Not calling NavigationManager.NavigateTo().");
+
+            var usableChartSeries = ChartSeriesList!.Where(x => x.DataAvailable);
+
+            // Fetch the data required to render the selected data series
+            ChartSeriesWithData = await RetrieveDataSets(usableChartSeries);
+
+            l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + usableChartSeries.Count() + " entries.");
+
+            // Render the series
+            await HandleRedraw();
+
+            StateHasChanged();
+        }
+
+        l.LogInformation("Leaving");
+    }
+
+    protected async Task HandleRedraw()
     {
         var l = new LogAugmenter(Logger!, "HandleRedraw");
 
@@ -357,42 +579,7 @@ public partial class ChartView
         l.LogInformation("Leaving");
     }
 
-    public async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)
-    {
-        await OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly, false);
-
-        var chartWithData = ChartSeriesWithData!
-            .First(x =>
-            (x.SourceDataSet!.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
-            (x.SourceDataSet.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null));
-
-        var chartSeries = ChartSeriesList!
-            .First(x => x.SourceSeriesSpecifications!.Any(y =>
-               (y.MeasurementDefinition!.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
-               (y.MeasurementDefinition.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null)));
-
-        ChartSeriesList =
-            ChartSeriesList!
-            .Concat(
-                [
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = chartWithData.ChartSeries!.SourceSeriesSpecifications,
-                        Aggregation = chartSeries.Aggregation,
-                        BinGranularity = SelectedBinGranularity,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 20,
-                        Value = SeriesValueOptions.Value,
-                        Year = yearAndDataTypeFilter.Year,
-                    },
-                ])
-            .ToList();
-
-        await BuildDataSets();
-    }
-
-    internal void LoadingChart()
+    protected void LoadingChart()
     {
         ChartLoadingIndicatorVisible = true;
         ChartLoadingErrored = false;
@@ -410,16 +597,210 @@ public partial class ChartView
         SliderMax = DateTime.Now.Year;
     }
 
-    protected override void OnParametersSet()
+    protected async Task ChangedLocation()
     {
-        ChartLoadingErrored = false;
+        var additionalCsds = new List<ChartSeriesDefinition>();
+
+        // Update data series to reflect new location
+        foreach (var csd in ChartSeriesList!.ToArray())
+        {
+            foreach (var sss in csd.SourceSeriesSpecifications!)
+            {
+                if (!csd.IsLocked)
+                {
+                    // If this source series is
+                    // 1) a simple series (only one data source), or
+                    // 2) we're not changing location, or
+                    // 3) this series belongs to the location we were previously on.
+                    // (This check is to ensure that when the user changes location, when we update compound series that are comparing
+                    // across locations, we don't update both source series to the same location, which would be nonsense.)
+                    // Furthermore, we only run location change substition for geographical entities that are locations. If it is a region, we skip this.
+                    // TODO: fix this part && !Regions!.Any(x => x.Id == sss.LocationId))
+                    if (csd.SourceSeriesSpecifications.Length == 1)
+                    {
+                        sss.LocationId = LocationId!.Value;
+                        sss.LocationName = LocationDictionary![LocationId!.Value].Name;
+
+                        var dataMatches = new List<DataSubstitute>
+                        {
+                            new DataSubstitute
+                            {
+                                DataType = sss.MeasurementDefinition!.DataType,
+                                DataAdjustment = sss.MeasurementDefinition.DataAdjustment,
+                            },
+                        };
+
+                        // If the data type is max or mean temperature, pass through an accepted list of near matching data
+                        if (sss.MeasurementDefinition!.DataType == DataType.TempMax || sss.MeasurementDefinition!.DataType == DataType.TempMean)
+                        {
+                            if (sss.MeasurementDefinition!.DataAdjustment == DataAdjustment.Unadjusted)
+                            {
+                                dataMatches = DataSubstitute.UnadjustedTemperatureDataMatches();
+                            }
+                            else
+                            {
+                                dataMatches = DataSubstitute.StandardTemperatureDataMatches();
+                            }
+                        }
+
+                        // But: the new location may not have data of the requested type. Let's see if there is any.
+                        var dsd =
+                            DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
+                                DataSetDefinitions!,
+                                LocationId!.Value,
+                                dataMatches,
+                                throwIfNoMatch: false);
+
+                        if (dsd == null)
+                        {
+                            var dataType = ChartSeriesDefinition.MapDataTypeToFriendlyName(sss.MeasurementDefinition.DataType);
+
+                            // TODO: fix this error
+                            // await Snackbar!.PushAsync($"{dataType} data is not available at {Location.Name}", SnackbarColor.Warning);
+                            csd.DataAvailable = false;
+
+                            break;
+                        }
+                        else
+                        {
+                            // This data IS available at the new location. Now, update the series accordingly.
+                            csd.DataAvailable = true;
+
+                            sss.DataSetDefinition = dsd.DataSetDefinition!;
+
+                            // Next, update the MeasurementDefinition. Look for a match on DataType and DataAdjustment
+                            var oldMd = sss.MeasurementDefinition;
+
+                            var candidateMds =
+                                sss.DataSetDefinition!.MeasurementDefinitions!
+                                .Where(x => x.DataType == oldMd.DataType && x.DataAdjustment == oldMd.DataAdjustment)
+                                .ToArray();
+
+                            switch (candidateMds.Length)
+                            {
+                                case 0:
+                                    // There was no exact match. It's possible that the new location has data of the requested type, but not the specified adjustment type.
+                                    // If so, try defaulting.
+                                    candidateMds = sss.DataSetDefinition.MeasurementDefinitions!.Where(x => x.DataType == oldMd.DataType).ToArray();
+
+                                    if (candidateMds.Length == 1)
+                                    {
+                                        // If only one is available, just use it
+                                        sss.MeasurementDefinition = candidateMds.Single();
+                                    }
+                                    else
+                                    {
+                                        // Otherwise, use "Adjusted" if available
+                                        var adjustedMd = candidateMds.SingleOrDefault(x => x.DataAdjustment == DataAdjustment.Adjusted);
+
+                                        if (adjustedMd != null)
+                                        {
+                                            sss.MeasurementDefinition = adjustedMd;
+                                        }
+                                    }
+
+                                    break;
+
+                                case 1:
+                                    sss.MeasurementDefinition = candidateMds.Single();
+                                    break;
+
+                                default:
+                                    // There were multiple matches. That's unexpected.
+                                    throw new Exception("Unexpected condition: after changing location, while updating ChartSeriesDefinitions, there were multiple compatible MeasurementDefinitions for one CSD.");
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // It's locked, so duplicate it & set the location on the duplicate to the new location
+                    var newDsd = DataSetDefinitions!.Single(x => x.Id == sss.DataSetDefinition!.Id);
+                    var newMd =
+                        newDsd.MeasurementDefinitions!
+                        .SingleOrDefault(x => x.DataType == sss.MeasurementDefinition!.DataType && x.DataAdjustment == sss.MeasurementDefinition.DataAdjustment);
+
+                    if (newMd == null)
+                    {
+                        newMd =
+                            newDsd.MeasurementDefinitions!
+                            .SingleOrDefault(x => x.DataType == sss.MeasurementDefinition!.DataType && x.DataAdjustment == null);
+                    }
+
+                    if (newMd != null)
+                    {
+                        additionalCsds.Add(
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications =
+                                    [
+                                    new SourceSeriesSpecification
+                                    {
+                                        DataSetDefinition = DataSetDefinitions!.Single(x => x.Id == sss.DataSetDefinition!.Id),
+                                        LocationId = LocationId!.Value,
+                                        LocationName = LocationDictionary![LocationId!.Value].Name,
+                                        MeasurementDefinition = newMd,
+                                    }
+
+                                    ],
+                                Aggregation = csd.Aggregation,
+                                BinGranularity = csd.BinGranularity,
+                                DisplayStyle = csd.DisplayStyle,
+                                IsLocked = false,
+                                ShowTrendline = csd.ShowTrendline,
+                                Smoothing = csd.Smoothing,
+                                SmoothingWindow = csd.SmoothingWindow,
+                                Value = csd.Value,
+                                Year = csd.Year,
+                                SeriesTransformation = csd.SeriesTransformation,
+                                GroupingThreshold = csd.GroupingThreshold,
+                                MinimumDataResolution = csd.MinimumDataResolution,
+                            });
+                    }
+                }
+            }
+        }
+
+        Logger!.LogInformation("Adding items to list inside SelectedLocationChangedInternal()");
+
+        var draftList = ChartSeriesList.Concat(additionalCsds).ToList();
+
+        ChartSeriesList = draftList.CreateNewListWithoutDuplicates();
+
+        await BuildDataSets();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        ChartLoadingErrored = false;
+
         if (IsMobileDevice == null)
         {
             IsMobileDevice = await CurrentDeviceService!.Mobile();
+        }
+
+        if (DataSetDefinitions != null)
+        {
+            if (LocationId != null && InternalLocationId == null)
+            {
+                InternalLocationId = LocationId;
+                if (LocalCharts)
+                {
+                    await SetUpLocalDefaultCharts(LocationId);
+                }
+                else if (!LocalCharts)
+                {
+                    await AddDefaultChart();
+                }
+            }
+
+            if (InternalLocationId != LocationId)
+            {
+                InternalLocationId = LocationId;
+
+                await ChangedLocation();
+            }
         }
     }
 
@@ -434,6 +815,85 @@ public partial class ChartView
             SeriesAggregationOptions.Sum => ContainerAggregationFunctions.Sum,
             _ => throw new NotImplementedException($"SeriesAggregationOptions {a}"),
         };
+    }
+
+    private async Task SetUpLocalDefaultCharts(Guid? locationId)
+    {
+        // Use Hobart as the basis for building the default chart. We want temperature and precipitation on the default chart, whether it's the first time the user has arrived
+        // at the website or when they return. Some locations won't have precipitation but we use the DataAvailable field to cope with that situation.
+        // Doing it this way, when the user navigates to another location that *does* have precipitation (without making any other changes to the selected data), we will detect it and put it on the chart.
+        var location = LocationDictionary![Guid.Parse("aed87aa0-1d0c-44aa-8561-cde0fc936395")];
+
+        var tempMaxOrMean = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataSubstitute.StandardTemperatureDataMatches(), throwIfNoMatch: true) !;
+        var precipitation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.Precipitation, null, throwIfNoMatch: true) !;
+
+        if (ChartSeriesList == null)
+        {
+            ChartSeriesList = [];
+        }
+
+        ChartSeriesList.Add(
+            new ChartSeriesDefinition()
+            {
+                // TODO: remove if we're not going to default to average temperature
+                // SeriesDerivationType = SeriesDerivationTypes.AverageOfMultipleSeries,
+                // SourceSeriesSpecifications = new SourceSeriesSpecification[]
+                // {
+                //    SourceSeriesSpecification.BuildArray(location, tempMax)[0],
+                //    SourceSeriesSpecification.BuildArray(location, tempMin)[0],
+                // },
+                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMaxOrMean),
+                Aggregation = SeriesAggregationOptions.Mean,
+                BinGranularity = BinGranularities.ByYear,
+                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                SmoothingWindow = 20,
+                Value = SeriesValueOptions.Value,
+                Year = null,
+            });
+
+        ChartSeriesList.Add(
+            new ChartSeriesDefinition()
+            {
+                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, precipitation),
+                Aggregation = SeriesAggregationOptions.Sum,
+                BinGranularity = BinGranularities.ByYear,
+                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                SmoothingWindow = 20,
+                Value = SeriesValueOptions.Value,
+                Year = null,
+            });
+
+        await BuildDataSets();
+    }
+
+    private async Task AddDefaultChart()
+    {
+        if (ChartSeriesList == null || ChartSeriesList.Any())
+        {
+            return;
+        }
+
+        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, Region.RegionId(Region.Atmosphere), DataType.CO2, null, throwIfNoMatch: true);
+
+        ChartSeriesList!.Add(
+            new ChartSeriesDefinition()
+            {
+                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
+                Aggregation = SeriesAggregationOptions.Maximum,
+                BinGranularity = BinGranularities.ByYear,
+                SecondaryCalculation = SecondaryCalculationOptions.AnnualChange,
+                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                SmoothingWindow = 10,
+                Value = SeriesValueOptions.Value,
+                Year = null,
+                DisplayStyle = SeriesDisplayStyle.Line,
+                RequestedColour = UiLogic.Colours.Brown,
+            });
+
+        await BuildDataSets();
     }
 
     private void LogChartSeriesList()
@@ -1004,11 +1464,6 @@ public partial class ChartView
         EnableRangeSlider = false;
 
         await BuildDataSets();
-    }
-
-    private async Task BuildDataSets()
-    {
-        await BuildDataSetsEvent.InvokeAsync();
     }
 
     private async Task OnDownloadDataClicked()
