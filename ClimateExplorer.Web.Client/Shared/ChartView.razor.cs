@@ -61,6 +61,9 @@ public partial class ChartView
     public Dictionary<Guid, Location>? LocationDictionary { get; set; }
 
     [Parameter]
+    public IEnumerable<Region>? Regions { get; set; }
+
+    [Parameter]
     public EventCallback<DataDownloadPackage> DownloadDataEvent { get; set; }
 
     [Parameter]
@@ -615,8 +618,7 @@ public partial class ChartView
                     // (This check is to ensure that when the user changes location, when we update compound series that are comparing
                     // across locations, we don't update both source series to the same location, which would be nonsense.)
                     // Furthermore, we only run location change substition for geographical entities that are locations. If it is a region, we skip this.
-                    // TODO: fix this part && !Regions!.Any(x => x.Id == sss.LocationId))
-                    if (csd.SourceSeriesSpecifications.Length == 1)
+                    if (csd.SourceSeriesSpecifications.Length == 1 && !Regions!.Any(x => x.Id == sss.LocationId))
                     {
                         sss.LocationId = LocationId!.Value;
                         sss.LocationName = LocationDictionary![LocationId!.Value].Name;
@@ -780,9 +782,9 @@ public partial class ChartView
             IsMobileDevice = await CurrentDeviceService!.Mobile();
         }
 
-        if (DataSetDefinitions != null)
+        if (DataSetDefinitions is not null)
         {
-            if (LocationId != null && InternalLocationId == null)
+            if (LocationId is not null && InternalLocationId is null)
             {
                 InternalLocationId = LocationId;
                 if (LocalCharts)

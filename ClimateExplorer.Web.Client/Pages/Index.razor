@@ -65,11 +65,13 @@
     <ChartView @ref="ChartView"
                PageName="@PageName"
                DataSetDefinitions="@DataSetDefinitions"
+               LocationDictionary="@LocationDictionary"
+               Regions="@Regions"
                LocationId="@Location?.Id"
                LocalCharts="true"
                ShowAddDataSetModalEvent="@ShowAddDataSetModal"
                DownloadDataEvent="@OnDownloadDataClicked"
-               LocationDictionary="@LocationDictionary" />
+               />
 </div>
 
 <ChangeLocation @ref="ChangeLocationModal"

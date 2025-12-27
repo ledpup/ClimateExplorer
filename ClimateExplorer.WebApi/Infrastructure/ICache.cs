@@ -35,7 +35,7 @@ public class FileBackedCache : ICache
             return obj;
         }
 
-        return default(T);
+        return default;
     }
 
     public async Task Put<T>(string key, T obj)

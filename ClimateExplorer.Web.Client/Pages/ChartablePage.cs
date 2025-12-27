@@ -2,17 +2,14 @@
 
 using Blazorise;
 using Blazorise.Snackbar;
-using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Shared;
 using ClimateExplorer.Web.Services;
-using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 
 public abstract partial class ChartablePage : ComponentBase, IDisposable
