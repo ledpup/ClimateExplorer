@@ -148,10 +148,10 @@
     "RecordType": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 2,
-    "Year": 1964,
-    "Month": 1,
-    "Day": 14,
-    "Value": 127.5,
+    "Year": 2025,
+    "Month": 3,
+    "Day": 29,
+    "Value": 157.6,
     "NumberOfTimes": 1
   },
   {
@@ -163,7 +163,7 @@
     "Month": 8,
     "Day": 2,
     "Value": 0,
-    "NumberOfTimes": 42914
+    "NumberOfTimes": 43209
   },
   {
     "DataType": 4,
