@@ -5,10 +5,10 @@
     "DataAdjustment": 1,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 1994,
+    "Year": 2025,
     "Month": 2,
-    "Day": 8,
-    "Value": 37.2,
+    "Day": 12,
+    "Value": 37.5,
     "NumberOfTimes": 1
   },
   {
@@ -163,7 +163,7 @@
     "Month": 9,
     "Day": 1,
     "Value": 0,
-    "NumberOfTimes": 49092
+    "NumberOfTimes": 49441
   },
   {
     "DataType": 4,

@@ -5,11 +5,11 @@
     "DataAdjustment": 1,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 2012,
-    "Month": 12,
-    "Day": 7,
-    "Value": 32.7,
-    "NumberOfTimes": 2
+    "Year": 2025,
+    "Month": 11,
+    "Day": 3,
+    "Value": 32.75,
+    "NumberOfTimes": 1
   },
   {
     "DataType": 2,
@@ -163,7 +163,7 @@
     "Month": 3,
     "Day": 7,
     "Value": 0,
-    "NumberOfTimes": 40208
+    "NumberOfTimes": 40439
   },
   {
     "DataType": 4,

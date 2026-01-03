@@ -325,7 +325,7 @@
       "Longitude": 138.62,
       "Elevation": 48
     },
-    "WarmingAnomaly": 0.8184438372383518,
+    "WarmingAnomaly": 0.8551105039050171,
     "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
@@ -832,8 +832,8 @@
       "Longitude": 117.82,
       "Elevation": 68
     },
-    "WarmingAnomaly": 0.7504920379384199,
-    "HeatingScore": 1,
+    "WarmingAnomaly": 0.8034800955429144,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -883,7 +883,7 @@
       "Elevation": 678
     },
     "WarmingAnomaly": 0.9528240740740719,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -1091,7 +1091,7 @@
       "Longitude": 133.89,
       "Elevation": 546
     },
-    "WarmingAnomaly": 1.3908127630511906,
+    "WarmingAnomaly": 1.447560939686607,
     "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
@@ -1304,7 +1304,7 @@
       "Longitude": 152.71,
       "Elevation": 24
     },
-    "WarmingAnomaly": 0.8734993627572578,
+    "WarmingAnomaly": 0.9279050529574668,
     "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
@@ -3018,7 +3018,7 @@
       "Elevation": 1384
     },
     "WarmingAnomaly": 0.6045643274853791,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -3790,7 +3790,7 @@
       "Elevation": 246
     },
     "WarmingAnomaly": 1.098858422939072,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -5323,7 +5323,7 @@
       "Longitude": 145.95,
       "Elevation": 107
     },
-    "WarmingAnomaly": 0.830404989829308,
+    "WarmingAnomaly": 0.8495732371071512,
     "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
@@ -5487,7 +5487,7 @@
       "Elevation": 314
     },
     "WarmingAnomaly": 0.6036140350877162,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -5686,7 +5686,7 @@
       "Longitude": 153.13,
       "Elevation": 4
     },
-    "WarmingAnomaly": 0.5064850220451049,
+    "WarmingAnomaly": 0.5408000905382515,
     "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
@@ -5861,8 +5861,8 @@
       "Longitude": 122.24,
       "Elevation": 7
     },
-    "WarmingAnomaly": 0.6036004804473301,
-    "HeatingScore": 0,
+    "WarmingAnomaly": 0.6126496550170586,
+    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -6147,7 +6147,7 @@
       "Longitude": 152.32,
       "Elevation": 30
     },
-    "WarmingAnomaly": 1.0049459467423532,
+    "WarmingAnomaly": 1.0193612119587563,
     "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
@@ -6223,7 +6223,7 @@
       "Elevation": 100
     },
     "WarmingAnomaly": 0.9508492063492042,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -6454,8 +6454,8 @@
       "Longitude": 145.75,
       "Elevation": 2
     },
-    "WarmingAnomaly": 0.9341822363619237,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 0.9688991313390964,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -6737,8 +6737,8 @@
       "Longitude": 149.2,
       "Elevation": 577
     },
-    "WarmingAnomaly": 1.4789280393873163,
-    "HeatingScore": 6,
+    "WarmingAnomaly": 1.5367503084424605,
+    "HeatingScore": 7,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -6785,7 +6785,7 @@
       "Longitude": 147.14,
       "Elevation": 60
     },
-    "WarmingAnomaly": 1.0157378499985992,
+    "WarmingAnomaly": 1.0663499669531795,
     "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
@@ -6848,8 +6848,8 @@
       "Longitude": 115.14,
       "Elevation": 13
     },
-    "WarmingAnomaly": 0.9419794046540346,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 0.9706824990806275,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -6898,7 +6898,7 @@
       "Longitude": 153.47,
       "Elevation": 99
     },
-    "WarmingAnomaly": 0.8620941916108436,
+    "WarmingAnomaly": 0.8832759134465853,
     "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
@@ -6948,7 +6948,7 @@
       "Longitude": 143.51,
       "Elevation": 82
     },
-    "WarmingAnomaly": 0.7438003518200489,
+    "WarmingAnomaly": 0.7726559063112184,
     "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
@@ -7098,8 +7098,8 @@
       "Longitude": 113.67,
       "Elevation": 4
     },
-    "WarmingAnomaly": 0.9107034141684132,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 0.9656703508921396,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -7273,7 +7273,7 @@
       "Longitude": 133.7,
       "Elevation": 15
     },
-    "WarmingAnomaly": 1.0659672646196299,
+    "WarmingAnomaly": 1.0957171768079021,
     "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
@@ -7649,7 +7649,7 @@
       "Longitude": 146.26,
       "Elevation": 301
     },
-    "WarmingAnomaly": 1.547467991608979,
+    "WarmingAnomaly": 1.5591663602418677,
     "HeatingScore": 7,
     "RecordHigh": {
       "DataType": 0,
@@ -8605,7 +8605,7 @@
       "Longitude": 145.83,
       "Elevation": 260
     },
-    "WarmingAnomaly": 1.0252927244043342,
+    "WarmingAnomaly": 1.070668913224491,
     "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
@@ -8677,7 +8677,7 @@
       "Longitude": 153.12,
       "Elevation": 3
     },
-    "WarmingAnomaly": 0.8596382869735706,
+    "WarmingAnomaly": 0.9023211109988587,
     "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
@@ -9447,7 +9447,7 @@
       "Longitude": 117.22,
       "Elevation": 216
     },
-    "WarmingAnomaly": 0.9075258733195248,
+    "WarmingAnomaly": 0.9505070656431833,
     "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
@@ -9996,7 +9996,7 @@
       "Longitude": 130.89,
       "Elevation": 30
     },
-    "WarmingAnomaly": 1.0018513426156268,
+    "WarmingAnomaly": 1.0097095815340076,
     "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
@@ -10234,7 +10234,7 @@
       "Longitude": 144.95,
       "Elevation": 94
     },
-    "WarmingAnomaly": 0.8387789121220912,
+    "WarmingAnomaly": 0.8777781217834022,
     "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
@@ -10469,7 +10469,7 @@
       "Elevation": 37
     },
     "WarmingAnomaly": 0.952123015873017,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -10774,8 +10774,8 @@
       "Longitude": 148.58,
       "Elevation": 284
     },
-    "WarmingAnomaly": 1.089004939178956,
-    "HeatingScore": 3,
+    "WarmingAnomaly": 1.1493356999004654,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -11734,7 +11734,7 @@
       "Elevation": 876
     },
     "WarmingAnomaly": 1.1004774305555554,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -12852,8 +12852,8 @@
       "Longitude": 128.11,
       "Elevation": 159
     },
-    "WarmingAnomaly": 0.9415487102371252,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 0.9921767825789836,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -13422,7 +13422,7 @@
       "Longitude": 149.92,
       "Elevation": 15
     },
-    "WarmingAnomaly": 0.5117856475105373,
+    "WarmingAnomaly": 0.5435710356383936,
     "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
@@ -13863,8 +13863,8 @@
       "Longitude": 151.62,
       "Elevation": 110
     },
-    "WarmingAnomaly": 1.0886906241439078,
-    "HeatingScore": 3,
+    "WarmingAnomaly": 1.1230551672073865,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -13913,7 +13913,7 @@
       "Longitude": 143.53,
       "Elevation": 301
     },
-    "WarmingAnomaly": 1.143832234670505,
+    "WarmingAnomaly": 1.14097628237867,
     "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
@@ -13938,7 +13938,7 @@
       "Longitude": 114.7,
       "Elevation": 29
     },
-    "WarmingAnomaly": 1.1515453867362275,
+    "WarmingAnomaly": 1.1803135692807167,
     "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
@@ -13950,7 +13950,7 @@
       "Month": 2,
       "Day": 18,
       "Value": 49.3,
-      "NumberOfTimes": 1
+      "NumberOfTimes": 2
     },
     "Id": "c6ba58ea-6142-4954-afac-256ca81c67bc",
     "Name": "Geraldton"
@@ -14061,8 +14061,8 @@
       "Longitude": 128.3,
       "Elevation": 598
     },
-    "WarmingAnomaly": 0.5874830081698441,
-    "HeatingScore": 0,
+    "WarmingAnomaly": 0.6339019127051841,
+    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -14814,7 +14814,7 @@
       "Longitude": 147.07,
       "Elevation": 65
     },
-    "WarmingAnomaly": 0.37820536893718604,
+    "WarmingAnomaly": 0.37519671269888555,
     "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
@@ -15116,8 +15116,8 @@
       "Longitude": 150.27,
       "Elevation": 307
     },
-    "WarmingAnomaly": 0.7658300536373801,
-    "HeatingScore": 1,
+    "WarmingAnomaly": 0.7948971418003588,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -16381,7 +16381,7 @@
       "Longitude": 147.33,
       "Elevation": 50
     },
-    "WarmingAnomaly": 0.7337106586986781,
+    "WarmingAnomaly": 0.7720745505146258,
     "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
@@ -16891,7 +16891,7 @@
       "Elevation": 1788
     },
     "WarmingAnomaly": 0.7877063492063421,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -17532,7 +17532,7 @@
       "Elevation": 335.9
     },
     "WarmingAnomaly": 0.7883661616161639,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -17806,7 +17806,7 @@
       "Longitude": 151.11,
       "Elevation": 582
     },
-    "WarmingAnomaly": 1.0470630750688983,
+    "WarmingAnomaly": 1.0911719403284472,
     "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
@@ -18783,7 +18783,7 @@
       "Elevation": 2994
     },
     "WarmingAnomaly": 0.6056729390681017,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -19300,7 +19300,7 @@
       "Longitude": 121.45,
       "Elevation": 365
     },
-    "WarmingAnomaly": 0.8558526770063857,
+    "WarmingAnomaly": 0.8711494806593549,
     "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
@@ -19928,7 +19928,7 @@
       "Longitude": 117.61,
       "Elevation": 320
     },
-    "WarmingAnomaly": 1.0322706872589684,
+    "WarmingAnomaly": 1.0741810022103788,
     "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
@@ -20201,6 +20201,8 @@
       "Longitude": 143.92,
       "Elevation": 77
     },
+    "WarmingAnomaly": 0.7936369752088339,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -22150,7 +22152,7 @@
       "Elevation": 16
     },
     "WarmingAnomaly": 1.1010497076023373,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -23216,7 +23218,7 @@
       "Longitude": 147.22,
       "Elevation": 166
     },
-    "WarmingAnomaly": 0.9198506678861715,
+    "WarmingAnomaly": 0.9507285147420799,
     "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
@@ -23241,8 +23243,8 @@
       "Longitude": 144.76,
       "Elevation": 20
     },
-    "WarmingAnomaly": 1.160834289959153,
-    "HeatingScore": 4,
+    "WarmingAnomaly": 1.2348671542248795,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -24573,7 +24575,7 @@
       "Longitude": 146.79,
       "Elevation": 3
     },
-    "WarmingAnomaly": 0.6719680437277802,
+    "WarmingAnomaly": 0.6965437374404608,
     "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
@@ -24966,7 +24968,7 @@
       "Longitude": 149.22,
       "Elevation": 30
     },
-    "WarmingAnomaly": 1.4172435560055128,
+    "WarmingAnomaly": 1.4406494099441396,
     "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
@@ -25729,7 +25731,7 @@
       "Longitude": 119.75,
       "Elevation": 182
     },
-    "WarmingAnomaly": 0.6445797916466667,
+    "WarmingAnomaly": 0.7039409265361947,
     "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
@@ -25962,7 +25964,7 @@
       "Longitude": 138.07,
       "Elevation": 50
     },
-    "WarmingAnomaly": 1.1713887396560914,
+    "WarmingAnomaly": 1.1797217494954957,
     "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
@@ -26208,7 +26210,7 @@
       "Elevation": 587.3
     },
     "WarmingAnomaly": 0.9473798798798794,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -26307,7 +26309,7 @@
       "Longitude": 118.54,
       "Elevation": 517
     },
-    "WarmingAnomaly": 1.0228275567466873,
+    "WarmingAnomaly": 1.0681338188605523,
     "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
@@ -26357,7 +26359,7 @@
       "Longitude": 144.98,
       "Elevation": 7
     },
-    "WarmingAnomaly": 1.1155406785113922,
+    "WarmingAnomaly": 1.1550919303001823,
     "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
@@ -26792,8 +26794,8 @@
       "Longitude": 142.09,
       "Elevation": 50
     },
-    "WarmingAnomaly": 0.5839916811498718,
-    "HeatingScore": 0,
+    "WarmingAnomaly": 0.6213921026461833,
+    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -26817,7 +26819,7 @@
       "Longitude": 150.18,
       "Elevation": 304
     },
-    "WarmingAnomaly": 1.1867571329688822,
+    "WarmingAnomaly": 1.204060610313455,
     "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
@@ -27598,7 +27600,7 @@
       "Longitude": 149.85,
       "Elevation": 213
     },
-    "WarmingAnomaly": 0.8066505726248536,
+    "WarmingAnomaly": 0.8510636390105262,
     "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
@@ -27623,7 +27625,7 @@
       "Longitude": 150.15,
       "Elevation": 17
     },
-    "WarmingAnomaly": 1.0055543063999135,
+    "WarmingAnomaly": 1.036873059488011,
     "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
@@ -27771,7 +27773,7 @@
       "Longitude": 140.77,
       "Elevation": 63
     },
-    "WarmingAnomaly": 0.8505447779544681,
+    "WarmingAnomaly": 0.8848124281125305,
     "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
@@ -29466,7 +29468,7 @@
       "Longitude": 141.65,
       "Elevation": 138
     },
-    "WarmingAnomaly": 0.7694390254865802,
+    "WarmingAnomaly": 0.7551068110309096,
     "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
@@ -29617,7 +29619,7 @@
       "Elevation": 15
     },
     "WarmingAnomaly": 0.7889722222222133,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "Id": "591a2058-7ab4-497a-a738-0900b0b71e06",
     "Name": "Ninoy Aquino Intern"
   },
@@ -29953,7 +29955,7 @@
       "Longitude": 141.07,
       "Elevation": 18
     },
-    "WarmingAnomaly": 0.7437589722499602,
+    "WarmingAnomaly": 0.7410383306389079,
     "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
@@ -30277,8 +30279,8 @@
       "Longitude": 139.01,
       "Elevation": 275
     },
-    "WarmingAnomaly": 0.5967295082083002,
-    "HeatingScore": 0,
+    "WarmingAnomaly": 0.6489691296293731,
+    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -30703,7 +30705,7 @@
       "Elevation": 217
     },
     "WarmingAnomaly": 1.2339444444444503,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -30913,7 +30915,7 @@
       "Longitude": 135.45,
       "Elevation": 116
     },
-    "WarmingAnomaly": 0.9115771980711429,
+    "WarmingAnomaly": 0.9304594415317453,
     "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
@@ -30963,7 +30965,7 @@
       "Longitude": 148.47,
       "Elevation": 62
     },
-    "WarmingAnomaly": 0.4605690316509303,
+    "WarmingAnomaly": 0.46345373266668943,
     "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
@@ -31608,7 +31610,7 @@
       "Elevation": 2125
     },
     "WarmingAnomaly": 1.2335231481481477,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -32286,7 +32288,7 @@
       "Longitude": 115.98,
       "Elevation": 15
     },
-    "WarmingAnomaly": 1.3674688694729618,
+    "WarmingAnomaly": 1.3904052937792457,
     "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
@@ -33352,7 +33354,7 @@
       "Longitude": 118.63,
       "Elevation": 6
     },
-    "WarmingAnomaly": 0.8839633531277862,
+    "WarmingAnomaly": 0.918660831811021,
     "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
@@ -33377,7 +33379,7 @@
       "Longitude": 135.88,
       "Elevation": 8
     },
-    "WarmingAnomaly": 0.8166114262564719,
+    "WarmingAnomaly": 0.8676683309282645,
     "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
@@ -33820,7 +33822,7 @@
       "Elevation": 702
     },
     "WarmingAnomaly": 0.6048782051282044,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -34950,7 +34952,7 @@
       "Longitude": 150.78,
       "Elevation": 19
     },
-    "WarmingAnomaly": 0.742239276600337,
+    "WarmingAnomaly": 0.7744831324400856,
     "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
@@ -35236,7 +35238,7 @@
       "Longitude": 150.48,
       "Elevation": 10
     },
-    "WarmingAnomaly": 1.2217545488860075,
+    "WarmingAnomaly": 1.2320836623408944,
     "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
@@ -35362,7 +35364,7 @@
       "Elevation": 25.9
     },
     "WarmingAnomaly": 0.6075069444444416,
-    "HeatingScore": 1,
+    "HeatingScore": 0,
     "Id": "25b47e8e-158f-48e9-87fb-30300acae826",
     "Name": "Rosario"
   },
@@ -35425,7 +35427,7 @@
       "Elevation": 4
     },
     "WarmingAnomaly": 1.505464646464647,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -35657,7 +35659,7 @@
       "Longitude": 146.51,
       "Elevation": 175
     },
-    "WarmingAnomaly": 1.0369431978464032,
+    "WarmingAnomaly": 1.0756523653911838,
     "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
@@ -35957,7 +35959,7 @@
       "Elevation": 790
     },
     "WarmingAnomaly": 0.9483425925925921,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -36006,7 +36008,7 @@
       "Longitude": 147.13,
       "Elevation": 4
     },
-    "WarmingAnomaly": 0.8836214001135616,
+    "WarmingAnomaly": 0.9237709271313772,
     "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
@@ -38459,8 +38461,8 @@
       "Longitude": 138.22,
       "Elevation": 109
     },
-    "WarmingAnomaly": 1.0905603632724592,
-    "HeatingScore": 3,
+    "WarmingAnomaly": 1.133288169297142,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -39081,8 +39083,8 @@
       "Longitude": 148.59,
       "Elevation": 198
     },
-    "WarmingAnomaly": 1.1991532953006327,
-    "HeatingScore": 4,
+    "WarmingAnomaly": 1.2632226665686304,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -39974,7 +39976,7 @@
       "Longitude": 151.21,
       "Elevation": 39
     },
-    "WarmingAnomaly": 0.7087645241661527,
+    "WarmingAnomaly": 0.7368101862666094,
     "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
@@ -40722,7 +40724,7 @@
       "Longitude": 134.58,
       "Elevation": 123
     },
-    "WarmingAnomaly": 1.2348669670509622,
+    "WarmingAnomaly": 1.2695501322909735,
     "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
@@ -41106,7 +41108,7 @@
       "Longitude": 134.18,
       "Elevation": 375
     },
-    "WarmingAnomaly": 0.7611573881025002,
+    "WarmingAnomaly": 0.7701345570522697,
     "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
@@ -41365,7 +41367,7 @@
       "Longitude": 142.06,
       "Elevation": 176
     },
-    "WarmingAnomaly": 0.869526781845618,
+    "WarmingAnomaly": 0.9340244987405981,
     "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
@@ -41924,7 +41926,7 @@
       "Longitude": 146.77,
       "Elevation": 4
     },
-    "WarmingAnomaly": 0.7434678319509302,
+    "WarmingAnomaly": 0.735738630405038,
     "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
@@ -42609,7 +42611,7 @@
       "Elevation": 37
     },
     "WarmingAnomaly": 0.9497141577060937,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -43521,7 +43523,7 @@
       "Elevation": 78
     },
     "WarmingAnomaly": 1.3671005291005294,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -44976,8 +44978,8 @@
       "Longitude": 147.46,
       "Elevation": 212
     },
-    "WarmingAnomaly": 1.3506860728704897,
-    "HeatingScore": 5,
+    "WarmingAnomaly": 1.3990924655645554,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -45074,7 +45076,7 @@
       "Longitude": 116.67,
       "Elevation": 275
     },
-    "WarmingAnomaly": 0.9561306727225976,
+    "WarmingAnomaly": 0.9888419583927899,
     "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
@@ -45467,8 +45469,8 @@
       "Longitude": 151.84,
       "Elevation": 7
     },
-    "WarmingAnomaly": 0.92926572187082,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 0.9835396944735599,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -45567,7 +45569,7 @@
       "Longitude": 146.42,
       "Elevation": 95
     },
-    "WarmingAnomaly": 0.5372072829090868,
+    "WarmingAnomaly": 0.5429157319942455,
     "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
@@ -45840,8 +45842,8 @@
       "Longitude": 136.81,
       "Elevation": 166
     },
-    "WarmingAnomaly": 0.9330249488714593,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 0.9799223847688978,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "RecordType": 0,
@@ -46385,7 +46387,7 @@
       "Longitude": 153.36,
       "Elevation": 27
     },
-    "WarmingAnomaly": 0.7328907436557657,
+    "WarmingAnomaly": 0.7825080130214808,
     "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
