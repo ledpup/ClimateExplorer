@@ -142,11 +142,16 @@ public partial class Index : ChartablePage
 
     private async Task<Location?> GetLocation()
     {
+        if (LocationDictionary is null)
+        {
+            return null;
+        }
+
         var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
         var locationString = await LocalStorage!.GetItemAsync<string>("lastLocationId");
         var validGuid = Guid.TryParse(locationString, out Guid guid);
         Guid? locationId = null;
-        if (validGuid && guid != Guid.Empty && LocationDictionary!.ContainsKey(guid))
+        if (validGuid && guid != Guid.Empty && LocationDictionary.ContainsKey(guid))
         {
             locationId = guid;
         }
@@ -163,9 +168,14 @@ public partial class Index : ChartablePage
             locationId = await ChartView!.UpdateUiStateBasedOnQueryString();
         }
 
-        var location = LocationDictionary![locationId!.Value];
+        if (locationId is not null)
+        {
+            var location = LocationDictionary[locationId.Value];
 
-        return location;
+            return location;
+        }
+
+        return null;
     }
 
     private async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)

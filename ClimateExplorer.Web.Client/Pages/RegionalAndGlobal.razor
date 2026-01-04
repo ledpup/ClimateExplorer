@@ -27,7 +27,8 @@
 <div class="chart-container">
     <ChartView @ref="ChartView"
                PageName="@PageName"
-               LocalCharts="false"
+               DataSetDefinitions="@DataSetDefinitions"
+               Regions="@Regions"
                ShowAddDataSetModalEvent="@ShowAddDataSetModal"
                DownloadDataEvent="@OnDownloadDataClicked" />
 </div>

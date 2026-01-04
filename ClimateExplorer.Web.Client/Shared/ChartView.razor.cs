@@ -52,9 +52,6 @@ public partial class ChartView
     public Guid? LocationId { get; set; }
 
     [Parameter]
-    public bool LocalCharts { get; set; }
-
-    [Parameter]
     public bool ChartAllData { get; set; }
 
     [Parameter]
@@ -246,6 +243,11 @@ public partial class ChartView
 
     public async Task<Guid?> UpdateUiStateBasedOnQueryString()
     {
+        if (Regions is null)
+        {
+            return null;
+        }
+
         var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
         if (string.IsNullOrWhiteSpace(uri.Query))
         {
@@ -264,7 +266,7 @@ public partial class ChartView
         {
             try
             {
-                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions!, LocationDictionary, []); // TODO: Regions
+                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions!, LocationDictionary, Regions);
 
                 if (csdList.Any())
                 {
@@ -441,8 +443,6 @@ public partial class ChartView
 
             // Render the series
             await HandleRedraw();
-
-            StateHasChanged();
         }
 
         l.LogInformation("Leaving");
@@ -587,7 +587,6 @@ public partial class ChartView
         ChartLoadingIndicatorVisible = true;
         ChartLoadingErrored = false;
         LogChartSeriesList();
-        StateHasChanged();
     }
 
     protected override void OnInitialized()
@@ -598,6 +597,39 @@ public partial class ChartView
         SelectedYears = [];
 
         SliderMax = DateTime.Now.Year;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        ChartLoadingErrored = false;
+
+        if (IsMobileDevice == null)
+        {
+            IsMobileDevice = await CurrentDeviceService!.Mobile();
+        }
+
+        if (DataSetDefinitions is not null && ChartLoadingIndicatorVisible)
+        {
+            if (LocationId is not null)
+            {
+                if (InternalLocationId is null)
+                {
+                    InternalLocationId = LocationId;
+                    await SetUpLocalDefaultCharts(LocationId);
+                }
+            }
+            else
+            {
+                await AddDefaultChart();
+            }
+        }
+
+        if (InternalLocationId != LocationId)
+        {
+            InternalLocationId = LocationId;
+
+            await ChangedLocation();
+        }
     }
 
     protected async Task ChangedLocation()
@@ -771,39 +803,6 @@ public partial class ChartView
         ChartSeriesList = draftList.CreateNewListWithoutDuplicates();
 
         await BuildDataSets();
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        ChartLoadingErrored = false;
-
-        if (IsMobileDevice == null)
-        {
-            IsMobileDevice = await CurrentDeviceService!.Mobile();
-        }
-
-        if (DataSetDefinitions is not null)
-        {
-            if (LocationId is not null && InternalLocationId is null)
-            {
-                InternalLocationId = LocationId;
-                if (LocalCharts)
-                {
-                    await SetUpLocalDefaultCharts(LocationId);
-                }
-                else if (!LocalCharts)
-                {
-                    await AddDefaultChart();
-                }
-            }
-
-            if (InternalLocationId != LocationId)
-            {
-                InternalLocationId = LocationId;
-
-                await ChangedLocation();
-            }
-        }
     }
 
     private static ContainerAggregationFunctions MapSeriesAggregationOptionToBinAggregationFunction(SeriesAggregationOptions a)

@@ -74,10 +74,17 @@ public class FileBackedCache : ICache
 public class FileBackedTwoLayerCache : ICache
 {
     private readonly string cacheFolderName;
+    private readonly JsonSerializerOptions jsonOptions;
 
     public FileBackedTwoLayerCache(string cacheFolderName)
     {
         this.cacheFolderName = cacheFolderName;
+
+        jsonOptions = new ()
+        {
+            WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        };
     }
 
     public async Task<T> Get<T>(string key)
@@ -107,7 +114,7 @@ public class FileBackedTwoLayerCache : ICache
         }
         catch (Exception ex)
         {
-            // TODO: Organised logging for web tier.
+            // TODO: Organise logging for web tier.
             Console.WriteLine(ex.ToString());
         }
 
@@ -137,17 +144,13 @@ public class FileBackedTwoLayerCache : ICache
                 Path.Combine(cacheFolderName, filename),
                 JsonSerializer.Serialize(
                     obj,
-                    new JsonSerializerOptions()
-                    {
-                        WriteIndented = true,
-                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                    }));
+                    jsonOptions));
 
             await WriteKeyToFileMappingForHashcode(keyHash, mapping);
         }
         catch (Exception ex)
         {
-            // TODO: Organised logging for web tier.
+            // TODO: Organise logging for web tier.
             Console.WriteLine(ex.ToString());
         }
     }
@@ -211,7 +214,7 @@ public class FileBackedTwoLayerCache : ICache
             Console.WriteLine(ex.ToString());
         }
 
-        return new Dictionary<string, string>();
+        return [];
     }
 
     private async Task WriteKeyToFileMappingForHashcode(int hashCode, Dictionary<string, string> keyToFileMapping)
@@ -224,11 +227,7 @@ public class FileBackedTwoLayerCache : ICache
                 filename,
                 JsonSerializer.Serialize(
                     keyToFileMapping,
-                    new JsonSerializerOptions()
-                    {
-                        WriteIndented = true,
-                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                    }));
+                    jsonOptions));
         }
         catch (Exception ex)
         {
