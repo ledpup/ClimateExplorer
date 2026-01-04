@@ -12,24 +12,28 @@ public static class ChartLogic
 {
     public static string BuildChartTitle(List<SeriesWithData> chartSeriesWithData, Dictionary<Guid, Location>? locationDictionary)
     {
+        if (locationDictionary is null)
+        {
+            return "No location data";
+        }
+
         if (chartSeriesWithData.Count == 1)
         {
-            return chartSeriesWithData.Single().ChartSeries!.FriendlyTitle;
+            return chartSeriesWithData.Single().ChartSeries!.FriendlyTitle(locationDictionary);
         }
 
         var specs = chartSeriesWithData
             .SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!);
 
         var ids = specs.Select(x => x.LocationId).Distinct().ToArray();
-        var names = specs.Select(x => x.LocationName).Distinct().ToArray();
 
-        if (ids.Length == 1 && locationDictionary is not null)
+        if (ids.Length == 1)
         {
             return locationDictionary![ids.Single()].FullTitle;
         }
         else if (ids.Length > 0)
         {
-            return string.Join(", ", names);
+            return string.Join(", ", ids.Select(x => locationDictionary[x].Name));
         }
 
         return "Climate data";

@@ -189,11 +189,6 @@ public partial class ChartView
 
     public async Task<Guid?> UpdateUiStateBasedOnQueryString()
     {
-        if (Regions is null)
-        {
-            return null;
-        }
-
         var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
         if (string.IsNullOrWhiteSpace(uri.Query))
         {
@@ -212,16 +207,16 @@ public partial class ChartView
         {
             try
             {
-                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions!, LocationDictionary, Regions);
+                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions!);
 
-                if (csdList.Any())
+                if (csdList.Count != 0)
                 {
                     SelectedBinGranularity = csdList.First().BinGranularity;
                 }
 
-                Logger!.LogInformation("Setting ChartSeriesList to list with " + csdList.Count + " items");
+                Logger!.LogInformation($"Setting ChartSeriesList to list with {csdList.Count} items");
 
-                ChartSeriesList = csdList.ToList();
+                ChartSeriesList = [.. csdList];
 
                 try
                 {
@@ -596,7 +591,6 @@ public partial class ChartView
                     if (csd.SourceSeriesSpecifications.Length == 1 && !Regions!.Any(x => x.Id == sss.LocationId))
                     {
                         sss.LocationId = LocationId!.Value;
-                        sss.LocationName = LocationDictionary![LocationId!.Value].Name;
 
                         var dataMatches = new List<DataSubstitute>
                         {
@@ -712,14 +706,12 @@ public partial class ChartView
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                                 SourceSeriesSpecifications =
                                     [
-                                    new SourceSeriesSpecification
-                                    {
-                                        DataSetDefinition = DataSetDefinitions!.Single(x => x.Id == sss.DataSetDefinition!.Id),
-                                        LocationId = LocationId!.Value,
-                                        LocationName = LocationDictionary![LocationId!.Value].Name,
-                                        MeasurementDefinition = newMd,
-                                    }
-
+                                        new SourceSeriesSpecification
+                                        {
+                                            DataSetDefinition = DataSetDefinitions!.Single(x => x.Id == sss.DataSetDefinition!.Id),
+                                            LocationId = LocationId!.Value,
+                                            MeasurementDefinition = newMd,
+                                        },
                                     ],
                                 Aggregation = csd.Aggregation,
                                 BinGranularity = csd.BinGranularity,
@@ -841,7 +833,7 @@ public partial class ChartView
                 //    SourceSeriesSpecification.BuildArray(location, tempMin)[0],
                 // },
                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMaxOrMean),
+                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location.Id, tempMaxOrMean),
                 Aggregation = SeriesAggregationOptions.Mean,
                 BinGranularity = BinGranularities.ByYear,
                 Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -854,7 +846,7 @@ public partial class ChartView
             new ChartSeriesDefinition()
             {
                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, precipitation),
+                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location.Id, precipitation),
                 Aggregation = SeriesAggregationOptions.Sum,
                 BinGranularity = BinGranularities.ByYear,
                 Smoothing = SeriesSmoothingOptions.MovingAverage,
@@ -879,7 +871,7 @@ public partial class ChartView
             new ChartSeriesDefinition()
             {
                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
+                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere).Id, co2!),
                 Aggregation = SeriesAggregationOptions.Maximum,
                 BinGranularity = BinGranularities.ByYear,
                 SecondaryCalculation = SecondaryCalculationOptions.AnnualChange,
@@ -930,7 +922,6 @@ public partial class ChartView
             new SourceSeriesSpecification
             {
                 LocationId = sss.LocationId,
-                LocationName = sss.LocationName!,
                 DataSetDefinition = dsd,
                 MeasurementDefinition = md,
             };

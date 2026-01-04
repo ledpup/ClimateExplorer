@@ -6,6 +6,7 @@ using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using static ClimateExplorer.Core.Enums;
 using ClimateExplorer.Web.UiLogic;
+using ClimateExplorer.Core.Model;
 
 public class ChartSeriesDefinition
 {
@@ -51,85 +52,11 @@ public class ChartSeriesDefinition
     public DataResolution? MinimumDataResolution { get; set; }
 
     [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
-    public string FriendlyTitle
-    {
-        get
-        {
-            var segments = new List<string>();
-
-            if (SourceSeriesSpecifications!.Length == 1)
-            {
-                var sss = SourceSeriesSpecifications.Single();
-
-                if (sss.LocationName != null)
-                {
-                    segments.Add(sss.LocationName);
-                }
-
-                if (Year != null)
-                {
-                    segments.Add(Year.ToString()!);
-                }
-
-                segments.Add(MapDataTypeToFriendlyName(sss.MeasurementDefinition!.DataType));
-
-                if (sss.MeasurementDefinition.DataAdjustment != null)
-                {
-                    segments.Add(sss.MeasurementDefinition.DataAdjustment.ToString()!);
-                }
-            }
-            else
-            {
-                return GetFriendlyTitleShort();
-            }
-
-            if (SeriesTransformation != SeriesTransformations.Identity)
-            {
-                segments.Add("Transformation: " + GetFriendlySeriesTransformationLabel(SeriesTransformation));
-            }
-
-            if (Aggregation != SeriesAggregationOptions.Mean || (Year == null && BinGranularity == BinGranularities.ByMonthOnly))
-            {
-                segments.Add("Aggregation: " + Aggregation);
-            }
-
-            if (SecondaryCalculation == SecondaryCalculationOptions.AnnualChange)
-            {
-                segments.Add("annual change");
-            }
-
-            if (Value != SeriesValueOptions.Value)
-            {
-                segments.Add("Value: " + Value);
-            }
-
-            // Smoothing only happens when the x-axis is linear
-            if (BinGranularity.IsLinear())
-            {
-                switch (Smoothing)
-                {
-                    case SeriesSmoothingOptions.MovingAverage:
-                        segments.Add($"{SmoothingWindow} {(BinGranularity == BinGranularities.ByYear ? "year" : "month")} moving average");
-                        break;
-                    case SeriesSmoothingOptions.Trendline:
-                        segments.Add("Trendline");
-                        break;
-                }
-            }
-
-            return string.Join(" | ", segments);
-        }
-    }
-
-    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
     public static string BuildFriendlyTitleShortForSeries(SourceSeriesSpecification sss, BinGranularities binGranularity, SeriesAggregationOptions aggregation, short? year = null)
     {
         var segments = new List<string>();
 
-        if (sss.LocationName != null)
-        {
-            segments.Add(sss.LocationName);
-        }
+        segments.Add("No location name yet");
 
         if (year != null)
         {
@@ -182,6 +109,71 @@ public class ChartSeriesDefinition
         };
     }
 
+    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
+    public string FriendlyTitle(Dictionary<Guid, Location> locationDictionary)
+    {
+        var segments = new List<string>();
+
+        if (SourceSeriesSpecifications!.Length == 1)
+        {
+            var sss = SourceSeriesSpecifications.Single();
+
+            segments.Add(locationDictionary[sss.LocationId].Name);
+
+            if (Year != null)
+            {
+                segments.Add(Year.ToString()!);
+            }
+
+            segments.Add(MapDataTypeToFriendlyName(sss.MeasurementDefinition!.DataType));
+
+            if (sss.MeasurementDefinition.DataAdjustment != null)
+            {
+                segments.Add(sss.MeasurementDefinition.DataAdjustment.ToString()!);
+            }
+        }
+        else
+        {
+            return GetFriendlyTitleShort();
+        }
+
+        if (SeriesTransformation != SeriesTransformations.Identity)
+        {
+            segments.Add("Transformation: " + GetFriendlySeriesTransformationLabel(SeriesTransformation));
+        }
+
+        if (Aggregation != SeriesAggregationOptions.Mean || (Year == null && BinGranularity == BinGranularities.ByMonthOnly))
+        {
+            segments.Add("Aggregation: " + Aggregation);
+        }
+
+        if (SecondaryCalculation == SecondaryCalculationOptions.AnnualChange)
+        {
+            segments.Add("annual change");
+        }
+
+        if (Value != SeriesValueOptions.Value)
+        {
+            segments.Add("Value: " + Value);
+        }
+
+        // Smoothing only happens when the x-axis is linear
+        if (BinGranularity.IsLinear())
+        {
+            switch (Smoothing)
+            {
+                case SeriesSmoothingOptions.MovingAverage:
+                    segments.Add($"{SmoothingWindow} {(BinGranularity == BinGranularities.ByYear ? "year" : "month")} moving average");
+                    break;
+                case SeriesSmoothingOptions.Trendline:
+                    segments.Add("Trendline");
+                    break;
+            }
+        }
+
+        return string.Join(" | ", segments);
+    }
+
     public override string ToString()
     {
         return $"CSD: {BinGranularity} | {Smoothing} | {Aggregation} | {Value} | {DisplayStyle}";
@@ -189,20 +181,13 @@ public class ChartSeriesDefinition
 
     public string GetFriendlyTitleShort()
     {
-        switch (SeriesDerivationType)
+        return SeriesDerivationType switch
         {
-            case SeriesDerivationTypes.ReturnSingleSeries:
-            case SeriesDerivationTypes.AverageOfAnomaliesInRegion:
-                return BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications!.Single(), BinGranularity, Aggregation, Year);
-
-            case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
-                return $"[{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications![0], BinGranularity, Aggregation, Year)}] minus [{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[1], BinGranularity, Aggregation, Year)}]";
-
-            case SeriesDerivationTypes.AverageOfMultipleSeries:
-                return BuildAverageMultipleSeriesTitle(SourceSeriesSpecifications!);
-
-            default: throw new NotImplementedException($"SeriesDerivationType {SeriesDerivationType}");
-        }
+            SeriesDerivationTypes.ReturnSingleSeries or SeriesDerivationTypes.AverageOfAnomaliesInRegion => BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications!.Single(), BinGranularity, Aggregation, Year),
+            SeriesDerivationTypes.DifferenceBetweenTwoSeries => $"[{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications![0], BinGranularity, Aggregation, Year)}] minus [{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[1], BinGranularity, Aggregation, Year)}]",
+            SeriesDerivationTypes.AverageOfMultipleSeries => BuildAverageMultipleSeriesTitle(SourceSeriesSpecifications!),
+            _ => throw new NotImplementedException($"SeriesDerivationType {SeriesDerivationType}"),
+        };
     }
 
     [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
@@ -284,14 +269,7 @@ public class ChartSeriesDefinition
     {
         var segments = new List<string>();
 
-        if (sss.All(o => o.LocationName == sss[0].LocationName))
-        {
-            segments.Add(sss[0].LocationName!);
-        }
-        else
-        {
-            throw new NotImplementedException();
-        }
+        segments.Add("No location name yet");
 
         if (sss.All(o => o.MeasurementDefinition!.DataType == sss[0].MeasurementDefinition!.DataType))
         {
@@ -314,7 +292,7 @@ public class ChartSeriesDefinition
         return string.Join(" | ", segments);
     }
 
-    private string GetFriendlySeriesTransformationLabel(SeriesTransformations seriesTransformation)
+    private static string GetFriendlySeriesTransformationLabel(SeriesTransformations seriesTransformation)
     {
         return seriesTransformation switch
         {
@@ -406,11 +384,6 @@ public class ChartSeriesDefinition
                 }
 
                 if (sssX.LocationId != sssY.LocationId)
-                {
-                    return false;
-                }
-
-                if (sssX.LocationName != sssY.LocationName)
                 {
                     return false;
                 }

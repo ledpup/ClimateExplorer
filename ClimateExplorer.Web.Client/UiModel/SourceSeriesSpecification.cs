@@ -7,11 +7,10 @@ public class SourceSeriesSpecification
 {
     public Guid SourceDataSetId { get; set; }
     required public Guid LocationId { get; set; }
-    required public string LocationName { get; set; }
     public DataSetDefinitionViewModel? DataSetDefinition { get; set; }
     public MeasurementDefinitionViewModel? MeasurementDefinition { get; set; }
 
-    public static SourceSeriesSpecification[] BuildArray(GeographicalEntity location, DataSetAndMeasurementDefinition dsdmd)
+    public static SourceSeriesSpecification[] BuildArray(Guid locationId, DataSetAndMeasurementDefinition dsdmd)
     {
         if (dsdmd == null)
         {
@@ -22,12 +21,10 @@ public class SourceSeriesSpecification
             [
                 new SourceSeriesSpecification
                 {
-                    LocationId = location.Id,
-                    LocationName = location.Name,
+                    LocationId = locationId,
                     DataSetDefinition = dsdmd.DataSetDefinition!,
                     MeasurementDefinition = dsdmd.MeasurementDefinition!,
-                }
-
+                },
             ];
     }
 }

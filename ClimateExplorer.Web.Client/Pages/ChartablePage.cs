@@ -101,7 +101,8 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
         var fileStream = Exporter!.ExportChartData(Logger!, geographicalEntities, dataDownloadPackage, NavManager!.Uri.ToString());
 
-        var locationNames = dataDownloadPackage.ChartSeriesWithData!.SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!).Select(x => x.LocationName).Where(x => x != null).Distinct().ToArray();
+        var locationIds = dataDownloadPackage.ChartSeriesWithData!.SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!).Select(x => x.LocationId).Distinct().ToArray();
+        var locationNames = LocationDictionary!.Where(x => locationIds.Contains(x.Key)).Select(x => x.Value.Name).ToList();
 
         var fileName = locationNames.Any() ? string.Join("-", locationNames) + "-" : string.Empty;
 

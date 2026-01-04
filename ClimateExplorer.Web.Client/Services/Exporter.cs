@@ -66,29 +66,22 @@ public class Exporter : IExporter
 
         bool includeLocationInColumnHeader = relevantLocations.Length > 1;
 
-        switch (csd.SeriesDerivationType)
+        return csd.SeriesDerivationType switch
         {
-            case SeriesDerivationTypes.ReturnSingleSeries:
-                return s + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications!.Single());
-
-            case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
-                return s + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications!.First()) + " minus " + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications!.Last());
-
-            case SeriesDerivationTypes.AverageOfMultipleSeries:
-                return s + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications!.First()) + " average " + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications!.Last());
-
-            default:
-                throw new NotImplementedException($"SeriesDerivationType {csd.SeriesDerivationType}");
-        }
+            SeriesDerivationTypes.ReturnSingleSeries => s + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications!.Single(), relevantLocations),
+            SeriesDerivationTypes.DifferenceBetweenTwoSeries => s + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications!.First(), relevantLocations) + " minus " + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications!.Last(), relevantLocations),
+            SeriesDerivationTypes.AverageOfMultipleSeries => s + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications!.First(), relevantLocations) + " average " + BuildColumnHeader(includeLocationInColumnHeader, csd.SourceSeriesSpecifications!.Last(), relevantLocations),
+            _ => throw new NotImplementedException($"SeriesDerivationType {csd.SeriesDerivationType}"),
+        };
     }
 
-    private string BuildColumnHeader(bool includeLocationInColumnHeader, SourceSeriesSpecification sss)
+    private string BuildColumnHeader(bool includeLocationInColumnHeader, SourceSeriesSpecification sss, GeographicalEntity[] relevantLocations)
     {
         string s = string.Empty;
 
         if (includeLocationInColumnHeader)
         {
-            s += sss.LocationName + " ";
+            s += relevantLocations.Single(x => x.Id == sss.LocationId).Name + " ";
         }
 
         s += $"{sss.MeasurementDefinition!.DataType} {sss.MeasurementDefinition.DataAdjustment}";
