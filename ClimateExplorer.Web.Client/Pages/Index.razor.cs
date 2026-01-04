@@ -157,7 +157,7 @@ public partial class Index : ChartablePage
         if (csd)
         {
             // Going to assume that the first chart is the primary location
-            locationId = await ChartView!.UpdateUiStateBasedOnQueryString();
+            locationId = await ChartView!.UpdateUiStateBasedOnQueryString(DataSetDefinitions, LocationDictionary, Regions);
         }
 
         if (locationId is not null)

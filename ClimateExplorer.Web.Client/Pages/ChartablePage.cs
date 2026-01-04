@@ -75,7 +75,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     protected async Task UpdateUiStateBasedOnQueryString()
     {
-        await ChartView!.UpdateUiStateBasedOnQueryString();
+        await ChartView!.UpdateUiStateBasedOnQueryString(DataSetDefinitions!, LocationDictionary!, Regions!);
     }
 
     protected Task ShowAddDataSetModal()

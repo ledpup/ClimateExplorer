@@ -10,7 +10,7 @@ public static class ChartSeriesListSerializer
 {
     private static readonly char[] SeparatorsByLevel = [';', ',', '|', '*'];
 
-    public static List<ChartSeriesDefinition> ParseChartSeriesDefinitionList(ILogger logger, string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IDictionary<Guid, Location>? locations, IEnumerable<Region> regions)
+    public static List<ChartSeriesDefinition> ParseChartSeriesDefinitionList(ILogger logger, string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IDictionary<Guid, Location> locations, IEnumerable<Region> regions)
     {
         logger.LogInformation("ParseChartSeriesDefinitionList: " + s);
 

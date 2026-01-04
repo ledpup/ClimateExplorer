@@ -187,11 +187,11 @@ public partial class ChartView
         await BuildDataSets();
     }
 
-    public async Task<Guid?> UpdateUiStateBasedOnQueryString()
+    public async Task<Guid?> UpdateUiStateBasedOnQueryString(IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, Dictionary<Guid, Location> locationDictionary, IEnumerable<Region> regions)
     {
-        if (Regions is null)
+        if (DataSetDefinitions is null || Regions is null)
         {
-            return null;
+            throw new NullReferenceException("DataSetDefinitions or Regions is null in UpdateUiStateBasedOnQueryString");
         }
 
         var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
@@ -212,7 +212,7 @@ public partial class ChartView
         {
             try
             {
-                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions!, LocationDictionary, Regions);
+                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions!, locationDictionary, Regions);
 
                 if (csdList.Any())
                 {
