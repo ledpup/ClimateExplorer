@@ -187,60 +187,6 @@ public partial class ChartView
         await BuildDataSets();
     }
 
-    public async Task<List<SeriesWithData>> RetrieveDataSets(IEnumerable<ChartSeriesDefinition> chartSeriesList)
-    {
-        var datasetsToReturn = new List<SeriesWithData>();
-
-        Logger!.LogInformation("RetrieveDataSets: starting enumeration");
-
-        List<Task<DataSet>> tasksToRun = [];
-
-        foreach (var csd in chartSeriesList)
-        {
-            var cupAggregationFunction = MapSeriesAggregationOptionToBinAggregationFunction(csd.Aggregation);
-            var bucketAggregationFunction = cupAggregationFunction;
-
-            // If we're doing modular binning and the aggregation function is sum, then force mean aggregation at
-            // top level
-            var binAggregationFunction =
-                SelectedBinGranularity.IsModular() && cupAggregationFunction == ContainerAggregationFunctions.Sum
-                ? ContainerAggregationFunctions.Mean
-                : cupAggregationFunction;
-
-            var dataSetTask =
-                DataService!.PostDataSet(
-                    SelectedBinGranularity,
-                    binAggregationFunction,
-                    bucketAggregationFunction,
-                    cupAggregationFunction,
-                    csd.Value,
-                    csd.SourceSeriesSpecifications!.Select(BuildDataPrepSeriesSpecification).ToArray(),
-                    csd.SeriesDerivationType,
-                    GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
-                    GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
-                    GetGroupingThreshold(csd.GroupingThreshold),
-                    SelectedGroupingDays,
-                    csd.SeriesTransformation,
-                    csd.Year,
-                    csd.MinimumDataResolution);
-
-            tasksToRun.Add(dataSetTask);
-        }
-
-        datasetsToReturn.AddRange(
-                await Task.WhenAll(
-                    chartSeriesList.Select((series, i) =>
-                        tasksToRun[i].ContinueWith(t => new SeriesWithData
-                        {
-                            ChartSeries = series,
-                            SourceDataSet = t.Result,
-                        }))));
-
-        Logger!.LogInformation("RetrieveDataSets: completed enumeration");
-
-        return datasetsToReturn;
-    }
-
     public async Task<Guid?> UpdateUiStateBasedOnQueryString()
     {
         if (Regions is null)
@@ -335,6 +281,46 @@ public partial class ChartView
             .ToList();
 
         await BuildDataSets();
+    }
+
+    protected override void OnInitialized()
+    {
+        ChartLoadingIndicatorVisible = true;
+        ChartLoadingErrored = false;
+
+        SelectedYears = [];
+
+        SliderMax = DateTime.Now.Year;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        ChartLoadingErrored = false;
+
+        IsMobileDevice ??= await CurrentDeviceService!.Mobile();
+
+        if (DataSetDefinitions is not null && ChartLoadingIndicatorVisible)
+        {
+            if (LocationId is not null)
+            {
+                if (InternalLocationId is null)
+                {
+                    InternalLocationId = LocationId;
+                    await SetUpLocalDefaultCharts(LocationId);
+                }
+            }
+            else
+            {
+                await AddDefaultChart();
+            }
+        }
+
+        if (InternalLocationId != LocationId)
+        {
+            InternalLocationId = LocationId;
+
+            await ChangedLocation();
+        }
     }
 
     protected async Task BuildDataSets()
@@ -589,49 +575,6 @@ public partial class ChartView
         LogChartSeriesList();
     }
 
-    protected override void OnInitialized()
-    {
-        ChartLoadingIndicatorVisible = true;
-        ChartLoadingErrored = false;
-
-        SelectedYears = [];
-
-        SliderMax = DateTime.Now.Year;
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        ChartLoadingErrored = false;
-
-        if (IsMobileDevice == null)
-        {
-            IsMobileDevice = await CurrentDeviceService!.Mobile();
-        }
-
-        if (DataSetDefinitions is not null && ChartLoadingIndicatorVisible)
-        {
-            if (LocationId is not null)
-            {
-                if (InternalLocationId is null)
-                {
-                    InternalLocationId = LocationId;
-                    await SetUpLocalDefaultCharts(LocationId);
-                }
-            }
-            else
-            {
-                await AddDefaultChart();
-            }
-        }
-
-        if (InternalLocationId != LocationId)
-        {
-            InternalLocationId = LocationId;
-
-            await ChangedLocation();
-        }
-    }
-
     protected async Task ChangedLocation()
     {
         var additionalCsds = new List<ChartSeriesDefinition>();
@@ -818,6 +761,60 @@ public partial class ChartView
         };
     }
 
+    private async Task<List<SeriesWithData>> RetrieveDataSets(IEnumerable<ChartSeriesDefinition> chartSeriesList)
+    {
+        var datasetsToReturn = new List<SeriesWithData>();
+
+        Logger!.LogInformation("RetrieveDataSets: starting enumeration");
+
+        List<Task<DataSet>> tasksToRun = [];
+
+        foreach (var csd in chartSeriesList)
+        {
+            var cupAggregationFunction = MapSeriesAggregationOptionToBinAggregationFunction(csd.Aggregation);
+            var bucketAggregationFunction = cupAggregationFunction;
+
+            // If we're doing modular binning and the aggregation function is sum, then force mean aggregation at
+            // top level
+            var binAggregationFunction =
+                SelectedBinGranularity.IsModular() && cupAggregationFunction == ContainerAggregationFunctions.Sum
+                ? ContainerAggregationFunctions.Mean
+                : cupAggregationFunction;
+
+            var dataSetTask =
+                DataService!.PostDataSet(
+                    SelectedBinGranularity,
+                    binAggregationFunction,
+                    bucketAggregationFunction,
+                    cupAggregationFunction,
+                    csd.Value,
+                    csd.SourceSeriesSpecifications!.Select(BuildDataPrepSeriesSpecification).ToArray(),
+                    csd.SeriesDerivationType,
+                    GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
+                    GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
+                    GetGroupingThreshold(csd.GroupingThreshold),
+                    SelectedGroupingDays,
+                    csd.SeriesTransformation,
+                    csd.Year,
+                    csd.MinimumDataResolution);
+
+            tasksToRun.Add(dataSetTask);
+        }
+
+        datasetsToReturn.AddRange(
+                await Task.WhenAll(
+                    chartSeriesList.Select((series, i) =>
+                        tasksToRun[i].ContinueWith(t => new SeriesWithData
+                        {
+                            ChartSeries = series,
+                            SourceDataSet = t.Result,
+                        }))));
+
+        Logger!.LogInformation("RetrieveDataSets: completed enumeration");
+
+        return datasetsToReturn;
+    }
+
     private async Task SetUpLocalDefaultCharts(Guid? locationId)
     {
         // Use Hobart as the basis for building the default chart. We want temperature and precipitation on the default chart, whether it's the first time the user has arrived
@@ -871,7 +868,7 @@ public partial class ChartView
 
     private async Task AddDefaultChart()
     {
-        if (ChartSeriesList == null || ChartSeriesList.Any())
+        if (ChartSeriesList == null || ChartSeriesList.Count != 0)
         {
             return;
         }

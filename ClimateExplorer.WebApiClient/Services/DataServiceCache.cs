@@ -13,7 +13,7 @@ public interface IDataServiceCache
 public class DataServiceCache : IDataServiceCache
 {
     private const int MaxEntryCount = 20;
-    private readonly Dictionary<string, CacheEntry> entries = new Dictionary<string, CacheEntry>();
+    private readonly Dictionary<string, CacheEntry> entries = [];
     private readonly ILogger<DataServiceCache> logger;
 
     public DataServiceCache(ILogger<DataServiceCache> logger)

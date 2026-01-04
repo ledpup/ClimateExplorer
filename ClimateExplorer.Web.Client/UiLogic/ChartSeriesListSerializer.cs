@@ -126,7 +126,7 @@ public static class ChartSeriesListSerializer
         string[] segments = s.Split(SeparatorsByLevel[3]);
 
         var dsd = dataSetDefinitions.Single(x => x.Id == Guid.Parse(segments[0]));
-        var dt = (Core.Enums.DataType?)ParseNullableEnum<DataType>(segments[1]);
+        var dt = (DataType?)ParseNullableEnum<DataType>(segments[1]);
         var da = (DataAdjustment?)ParseNullableEnum<DataAdjustment>(segments[2]);
         var dr = dataResolution;
 
@@ -134,12 +134,12 @@ public static class ChartSeriesListSerializer
         {
             new ()
             {
-                DataType = (Core.Enums.DataType)dt,
+                DataType = (DataType)dt,
                 DataAdjustment = da,
                 DataResolution = dr,
             },
         };
-        if (dt == Core.Enums.DataType.TempMax || dt == DataType.TempMean)
+        if (dt == DataType.TempMax || dt == DataType.TempMean)
         {
             if (dr == DataResolution.Daily)
             {

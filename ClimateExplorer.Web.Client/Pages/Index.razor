@@ -45,7 +45,7 @@
 <div class="location-and-chart-container">
     <div style="position: relative;">
         <div class="map-space-reserver" id="mapContainerContainer">
-            <MapContainer @ref="MapContainer"
+            <MapContainer
                 Locations="@LocationDictionary?.Values"
                 OnLocationChange="@SelectedLocationChanged"
                 Location="@Location" />
@@ -61,6 +61,7 @@
 
         <div style="clear: both;"></div>
     </div>
+    <p>@DateTime.Now</p>
 
     <ChartView @ref="ChartView"
                PageName="@PageName"

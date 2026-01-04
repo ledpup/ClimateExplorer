@@ -53,10 +53,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (IsMobileDevice == null)
-        {
-            IsMobileDevice = await CurrentDeviceService!.Mobile();
-        }
+        IsMobileDevice ??= await CurrentDeviceService!.Mobile();
     }
 
     protected override async Task OnParametersSetAsync()

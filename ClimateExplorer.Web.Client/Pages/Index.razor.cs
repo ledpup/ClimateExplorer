@@ -52,7 +52,6 @@ public partial class Index : ChartablePage
     private ICurrentDeviceService? CurrentDeviceService { get; set; }
 
     private ChangeLocation? ChangeLocationModal { get; set; }
-    private MapContainer? MapContainer { get; set; }
     private string? BrowserLocationErrorMessage { get; set; }
     private Location? Location { get; set; }
 
@@ -73,12 +72,9 @@ public partial class Index : ChartablePage
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (IsMobileDevice is null)
-        {
-            IsMobileDevice = await CurrentDeviceService!.Mobile();
-        }
+        IsMobileDevice ??= await CurrentDeviceService!.Mobile();
 
-        if (LocationDictionary is null)
+        if (DataSetDefinitions is null)
         {
             var dataSetDefinitionsTask = DataService!.GetDataSetDefinitions();
             var locationsTask = DataService!.GetLocations(false);
@@ -86,17 +82,13 @@ public partial class Index : ChartablePage
 
             await Task.WhenAll(dataSetDefinitionsTask, locationsTask, regionsTask);
 
-            DataSetDefinitions = (await dataSetDefinitionsTask).ToList();
+            DataSetDefinitions = [.. await dataSetDefinitionsTask];
             LocationDictionary = (await locationsTask).ToDictionary(x => x.Id, x => x);
-            Regions = (await regionsTask).ToList();
+            Regions = [.. await regionsTask];
 
             // Location may have been set in OnInitializedAsync
-            if (Location is null)
-            {
-                // Get location from local storage. If not in local storage, use Hobart as default.
-                // If we have URL that is a csd, override with the location specified in the csd.
-                Location = await GetLocation();
-            }
+            // Get location from local storage. If not in local storage, use Hobart as default.
+            Location ??= await GetLocation();
 
             // If there is no "csd" query string parameter, set up default charts for the location
             var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
@@ -150,7 +142,7 @@ public partial class Index : ChartablePage
         var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
         var locationString = await LocalStorage!.GetItemAsync<string>("lastLocationId");
         var validGuid = Guid.TryParse(locationString, out Guid guid);
-        Guid? locationId = null;
+        Guid? locationId;
         if (validGuid && guid != Guid.Empty && LocationDictionary.ContainsKey(guid))
         {
             locationId = guid;
