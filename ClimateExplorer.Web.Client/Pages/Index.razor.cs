@@ -1,17 +1,13 @@
 ﻿namespace ClimateExplorer.Web.Client.Pages;
 
-using Blazorise.Snackbar;
-using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Shared;
 using ClimateExplorer.Web.Client.Shared.LocationComponents;
-using ClimateExplorer.Web.UiModel;
 using CurrentDevice;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
-using static ClimateExplorer.Core.Enums;
 
 public partial class Index : ChartablePage
 {
@@ -157,7 +153,7 @@ public partial class Index : ChartablePage
         if (csd)
         {
             // Going to assume that the first chart is the primary location
-            locationId = await ChartView!.UpdateUiStateBasedOnQueryString(DataSetDefinitions, LocationDictionary, Regions);
+            locationId = GetLocationFromCsd(csdSpecifier);
         }
 
         if (locationId is not null)

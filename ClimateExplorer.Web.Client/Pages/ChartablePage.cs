@@ -6,10 +6,12 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Shared;
 using ClimateExplorer.Web.Services;
+using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
+using Microsoft.Extensions.Primitives;
 using Microsoft.JSInterop;
 
 public abstract partial class ChartablePage : ComponentBase, IDisposable
@@ -73,11 +75,6 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         NavManager!.NavigateTo(uri, false, replace);
     }
 
-    protected async Task UpdateUiStateBasedOnQueryString()
-    {
-        await ChartView!.UpdateUiStateBasedOnQueryString(DataSetDefinitions!, LocationDictionary!, Regions!);
-    }
-
     protected Task ShowAddDataSetModal()
     {
         return AddDataSetModal!.Show();
@@ -112,11 +109,20 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         await JsRuntime!.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 
+    protected Guid GetLocationFromCsd(StringValues csdSpecifier)
+    {
+        if (DataSetDefinitions is null || LocationDictionary is null || Regions is null)
+        {
+            throw new InvalidOperationException("DataSetDefinitions, LocationDictionary, and Regions must be loaded before calling GetLocationFromCsd.");
+        }
+
+        var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions, LocationDictionary, Regions);
+        var chartSeriesList = csdList.ToList();
+        return chartSeriesList!.First().SourceSeriesSpecifications!.First().LocationId;
+    }
+
     private void HandleNavigationLocationChanged(object sender, LocationChangedEventArgs e)
     {
         Logger!.LogInformation("Instance " + componentInstanceId + " HandleLocationChanged: " + NavManager!.Uri);
-
-        // The URL changed. Update UI state to reflect what's in the URL.
-        InvokeAsync(UpdateUiStateBasedOnQueryString);
     }
 }

@@ -66,9 +66,6 @@ public partial class ChartView
     [Parameter]
     public EventCallback ShowAddDataSetModalEvent { get; set; }
 
-    [Parameter]
-    public EventCallback OnUpdateUiStateBasedOnQueryString { get; set; }
-
     [Inject]
     private IDataService? DataService { get; set; }
 
@@ -150,8 +147,7 @@ public partial class ChartView
         ChartSeriesList =
             ChartSeriesList!
             .Concat(
-                new List<ChartSeriesDefinition>()
-                {
+                [
                     new ChartSeriesDefinition()
                     {
                         SeriesDerivationType = dle.SeriesDerivationType,
@@ -163,7 +159,7 @@ public partial class ChartView
                         Value = SeriesValueOptions.Value,
                         Year = null,
                     },
-                })
+                ])
             .ToList();
 
         await BuildDataSets();
@@ -185,67 +181,6 @@ public partial class ChartView
         ChartSeriesList = chartPresetModel.ChartSeriesList;
 
         await BuildDataSets();
-    }
-
-    public async Task<Guid?> UpdateUiStateBasedOnQueryString(IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, Dictionary<Guid, Location> locationDictionary, IEnumerable<Region> regions)
-    {
-        if (DataSetDefinitions is null || Regions is null)
-        {
-            throw new NullReferenceException("DataSetDefinitions or Regions is null in UpdateUiStateBasedOnQueryString");
-        }
-
-        var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
-        if (string.IsNullOrWhiteSpace(uri.Query))
-        {
-            return null;
-        }
-
-        var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
-
-        ChartAllData = queryDictionary["chartAllData"] == null ? false : bool.Parse(queryDictionary["chartAllData"] !);
-        SelectedStartYear = queryDictionary["startYear"];
-        SelectedEndYear = queryDictionary["endYear"];
-        SelectedGroupingDays = queryDictionary["groupingDays"] == null ? (short)14 : short.Parse(queryDictionary["groupingDays"] !);
-        GroupingThresholdText = string.IsNullOrWhiteSpace(queryDictionary["groupingThreshold"]) ? "70" : queryDictionary["groupingThreshold"];
-
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier))
-        {
-            try
-            {
-                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions!, locationDictionary, Regions);
-
-                if (csdList.Any())
-                {
-                    SelectedBinGranularity = csdList.First().BinGranularity;
-                }
-
-                Logger!.LogInformation("Setting ChartSeriesList to list with " + csdList.Count + " items");
-
-                ChartSeriesList = csdList.ToList();
-
-                try
-                {
-                    await BuildDataSets();
-                }
-                catch (Exception)
-                {
-                    // TODO: fix this error
-                    // await Snackbar!.PushAsync($"Failed to create the chart with the current settings", SnackbarColor.Danger);
-                    ChartLoadingErrored = true;
-                    await HandleRedraw();
-                }
-
-                StateHasChanged();
-
-                return ChartSeriesList!.First().SourceSeriesSpecifications!.First().LocationId;
-            }
-            catch (Exception ex)
-            {
-                Logger!.LogError(ex.ToString());
-            }
-        }
-
-        return null;
     }
 
     public async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)
@@ -320,6 +255,7 @@ public partial class ChartView
             InternalLocationId = LocationId;
 
             await ChangedLocation();
+            await UpdateUiStateBasedOnQueryString();
         }
     }
 
@@ -510,38 +446,7 @@ public partial class ChartView
             scales = BuildChartScales();
         }
 
-        object chartOptions = new
-        {
-            Animation = false,
-            Responsive = true,
-            MaintainAspectRatio = false,
-            SpanGaps = false,
-            Plugins = new
-            {
-                Title = new
-                {
-                    Text = title,
-                    Display = true,
-                    Color = "black",
-                },
-                Subtitle = new
-                {
-                    Text = subtitle,
-                    Display = true,
-                    Color = "black",
-                },
-                Tooltip = new
-                {
-                    Mode = IsMobileDevice!.Value ? "point" : "index",
-                    Intersect = false,
-                },
-                Legend = new
-                {
-                    Position = "bottom",
-                },
-            },
-            Scales = scales,
-        };
+        var chartOptions = CreateChartOptions(title, subtitle, scales);
 
         await chart.SetOptionsObject(chartOptions);
 
@@ -759,6 +664,97 @@ public partial class ChartView
             SeriesAggregationOptions.Sum => ContainerAggregationFunctions.Sum,
             _ => throw new NotImplementedException($"SeriesAggregationOptions {a}"),
         };
+    }
+
+    private object CreateChartOptions(string title, string subtitle, dynamic scales)
+    {
+        return new
+        {
+            Animation = false,
+            Responsive = true,
+            MaintainAspectRatio = false,
+            SpanGaps = false,
+            Plugins = new
+            {
+                Title = new
+                {
+                    Text = title,
+                    Display = true,
+                    Color = "black",
+                },
+                Subtitle = new
+                {
+                    Text = subtitle,
+                    Display = true,
+                    Color = "black",
+                },
+                Tooltip = new
+                {
+                    Mode = IsMobileDevice!.Value ? "point" : "index",
+                    Intersect = false,
+                },
+                Legend = new
+                {
+                    Position = "bottom",
+                },
+            },
+            Scales = scales,
+        };
+    }
+
+    private async Task UpdateUiStateBasedOnQueryString()
+    {
+        if (DataSetDefinitions is null || Regions is null)
+        {
+            throw new NullReferenceException("DataSetDefinitions or Regions is null in UpdateUiStateBasedOnQueryString");
+        }
+
+        var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+        if (string.IsNullOrWhiteSpace(uri.Query))
+        {
+            throw new Exception("No query string present in UpdateUiStateBasedOnQueryString");
+        }
+
+        var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+        ChartAllData = queryDictionary["chartAllData"] == null ? false : bool.Parse(queryDictionary["chartAllData"] !);
+        SelectedStartYear = queryDictionary["startYear"];
+        SelectedEndYear = queryDictionary["endYear"];
+        SelectedGroupingDays = queryDictionary["groupingDays"] == null ? (short)14 : short.Parse(queryDictionary["groupingDays"] !);
+        GroupingThresholdText = string.IsNullOrWhiteSpace(queryDictionary["groupingThreshold"]) ? "70" : queryDictionary["groupingThreshold"];
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier))
+        {
+            try
+            {
+                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions!, LocationDictionary!, Regions);
+
+                if (csdList.Any())
+                {
+                    SelectedBinGranularity = csdList.First().BinGranularity;
+                }
+
+                Logger!.LogInformation("Setting ChartSeriesList to list with " + csdList.Count + " items");
+
+                ChartSeriesList = csdList.ToList();
+
+                try
+                {
+                    await BuildDataSets();
+                }
+                catch (Exception)
+                {
+                    // TODO: fix this error
+                    // await Snackbar!.PushAsync($"Failed to create the chart with the current settings", SnackbarColor.Danger);
+                    ChartLoadingErrored = true;
+                    await HandleRedraw();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger!.LogError(ex.ToString());
+            }
+        }
     }
 
     private async Task<List<SeriesWithData>> RetrieveDataSets(IEnumerable<ChartSeriesDefinition> chartSeriesList)
