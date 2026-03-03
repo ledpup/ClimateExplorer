@@ -35,6 +35,8 @@ public partial class ChartView
 
     private string? groupingThresholdText;
 
+    private bool updateUiStateInProcess;
+
     public bool ChartLoadingIndicatorVisible { get; set; }
     public bool ChartLoadingErrored { get; set; }
 
@@ -257,20 +259,11 @@ public partial class ChartView
             InternalLocationId = LocationId;
 
             await ChangedLocation();
-
-            var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
-            if (!string.IsNullOrWhiteSpace(uri.Query) && uri.Query.Contains("csd="))
-            {
-                await UpdateUiStateBasedOnQueryString();
-            }
         }
-        else if (ChartLoadingIndicatorVisible && InternalLocationId is not null)
+
+        if (ChartLoadingIndicatorVisible && InternalLocationId is not null)
         {
-            var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
-            if (!string.IsNullOrWhiteSpace(uri.Query) && uri.Query.Contains("csd="))
-            {
-                await UpdateUiStateBasedOnQueryString();
-            }
+            await UpdateUiStateBasedOnQueryString();
         }
     }
 
@@ -725,10 +718,17 @@ public partial class ChartView
         }
 
         var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
-        if (string.IsNullOrWhiteSpace(uri.Query))
+        if (string.IsNullOrWhiteSpace(uri.Query) || !uri.Query.Contains("csd="))
         {
-            throw new Exception("No query string present in UpdateUiStateBasedOnQueryString");
+            return;
         }
+
+        if (updateUiStateInProcess)
+        {
+            return;
+        }
+
+        updateUiStateInProcess = true;
 
         var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
 
@@ -770,6 +770,8 @@ public partial class ChartView
                 Logger!.LogError(ex.ToString());
             }
         }
+
+        updateUiStateInProcess = false;
     }
 
     private async Task<List<SeriesWithData>> RetrieveDataSets(IEnumerable<ChartSeriesDefinition> chartSeriesList)
