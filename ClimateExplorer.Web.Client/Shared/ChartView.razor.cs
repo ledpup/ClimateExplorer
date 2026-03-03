@@ -242,11 +242,13 @@ public partial class ChartView
                 {
                     InternalLocationId = LocationId;
                     await SetUpLocalDefaultCharts(LocationId);
+                    return;
                 }
             }
             else
             {
                 await AddDefaultChart();
+                return;
             }
         }
 
@@ -255,7 +257,20 @@ public partial class ChartView
             InternalLocationId = LocationId;
 
             await ChangedLocation();
-            await UpdateUiStateBasedOnQueryString();
+
+            var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+            if (!string.IsNullOrWhiteSpace(uri.Query) && uri.Query.Contains("csd="))
+            {
+                await UpdateUiStateBasedOnQueryString();
+            }
+        }
+        else if (ChartLoadingIndicatorVisible && InternalLocationId is not null)
+        {
+            var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+            if (!string.IsNullOrWhiteSpace(uri.Query) && uri.Query.Contains("csd="))
+            {
+                await UpdateUiStateBasedOnQueryString();
+            }
         }
     }
 
@@ -813,10 +828,10 @@ public partial class ChartView
 
     private async Task SetUpLocalDefaultCharts(Guid? locationId)
     {
-        // Use Hobart as the basis for building the default chart. We want temperature and precipitation on the default chart, whether it's the first time the user has arrived
+        // Use the provided location for building the default chart. We want temperature and precipitation on the default chart, whether it's the first time the user has arrived
         // at the website or when they return. Some locations won't have precipitation but we use the DataAvailable field to cope with that situation.
         // Doing it this way, when the user navigates to another location that *does* have precipitation (without making any other changes to the selected data), we will detect it and put it on the chart.
-        var location = LocationDictionary![Guid.Parse("aed87aa0-1d0c-44aa-8561-cde0fc936395")];
+        var location = LocationDictionary![locationId!.Value];
 
         var tempMaxOrMean = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataSubstitute.StandardTemperatureDataMatches(), throwIfNoMatch: true) !;
         var precipitation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.Precipitation, null, throwIfNoMatch: true) !;
