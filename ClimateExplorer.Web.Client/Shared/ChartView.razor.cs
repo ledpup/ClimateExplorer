@@ -37,13 +37,6 @@ public partial class ChartView
 
     private bool updateUiStateInProcess;
 
-    public bool ChartLoadingIndicatorVisible { get; set; }
-    public bool ChartLoadingErrored { get; set; }
-
-    public BinGranularities SelectedBinGranularity { get; set; } = BinGranularities.ByYear;
-
-    public List<SeriesWithData>? ChartSeriesWithData { get; set; }
-
     [Parameter]
     public string? PageName { get; set; }
 
@@ -83,6 +76,10 @@ public partial class ChartView
     [Inject]
     private NavigationManager? NavManager { get; set; }
 
+    private bool ChartLoadingIndicatorVisible { get; set; }
+    private bool ChartLoadingErrored { get; set; }
+    private BinGranularities SelectedBinGranularity { get; set; } = BinGranularities.ByYear;
+    private List<SeriesWithData>? ChartSeriesWithData { get; set; }
     private Guid? InternalLocationId { get; set; }
     private string? SelectedStartYear { get; set; }
     private string? SelectedEndYear { get; set; }
