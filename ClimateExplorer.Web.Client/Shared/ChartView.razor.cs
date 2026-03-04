@@ -221,6 +221,7 @@ public partial class ChartView
     {
         ChartLoadingIndicatorVisible = true;
         ChartLoadingErrored = false;
+        updateUiStateInProcess = false;
 
         SelectedYears = [];
 
@@ -233,34 +234,45 @@ public partial class ChartView
 
         IsMobileDevice ??= await CurrentDeviceService!.Mobile();
 
-        if (DataSetDefinitions is not null && ChartLoadingIndicatorVisible)
+        if (DataSetDefinitions is not null && Regions is not null)
         {
             if (LocationId is not null)
             {
-                if (InternalLocationId is null)
+                if (InternalLocationId is not null && InternalLocationId != LocationId)
                 {
                     InternalLocationId = LocationId;
-                    await SetUpLocalDefaultCharts(LocationId);
-                    return;
+                    await ChangedLocation();
+                }
+
+                if (ChartLoadingIndicatorVisible)
+                {
+                    var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+                    if (uri.Query.Contains("csd="))
+                    {
+                        await UpdateUiStateBasedOnQueryString(uri);
+                    }
+                    else if (InternalLocationId is null)
+                    {
+                        InternalLocationId = LocationId;
+                        await SetUpLocalDefaultCharts(LocationId);
+                    }
                 }
             }
             else
             {
-                await AddDefaultChart();
-                return;
+                if (ChartLoadingIndicatorVisible)
+                {
+                    var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+                    if (uri.Query.Contains("csd="))
+                    {
+                        await UpdateUiStateBasedOnQueryString(uri);
+                    }
+                    else
+                    {
+                        await AddDefaultChart();
+                    }
+                }
             }
-        }
-
-        if (InternalLocationId != LocationId)
-        {
-            InternalLocationId = LocationId;
-
-            await ChangedLocation();
-        }
-
-        if (ChartLoadingIndicatorVisible && InternalLocationId is not null)
-        {
-            await UpdateUiStateBasedOnQueryString();
         }
     }
 
@@ -707,17 +719,11 @@ public partial class ChartView
         };
     }
 
-    private async Task UpdateUiStateBasedOnQueryString()
+    private async Task UpdateUiStateBasedOnQueryString(Uri uri)
     {
         if (DataSetDefinitions is null || Regions is null)
         {
             throw new NullReferenceException("DataSetDefinitions or Regions is null in UpdateUiStateBasedOnQueryString");
-        }
-
-        var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
-        if (string.IsNullOrWhiteSpace(uri.Query) || !uri.Query.Contains("csd="))
-        {
-            return;
         }
 
         if (updateUiStateInProcess)

@@ -30,6 +30,7 @@ public partial class RegionalAndGlobal : ChartablePage
         if (Regions is null)
         {
             Regions = (await DataService!.GetRegions()).ToList();
+            StateHasChanged();
         }
     }
 }
