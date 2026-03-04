@@ -225,6 +225,9 @@ public partial class ChartView
 
         SelectedYears = [];
 
+        SelectedGroupingDays = 14;
+        GroupingThresholdText = "70";
+
         SliderMax = DateTime.Now.Year;
     }
 
@@ -270,6 +273,7 @@ public partial class ChartView
                     else
                     {
                         await AddDefaultChart();
+                        StateHasChanged();
                     }
                 }
             }
