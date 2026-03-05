@@ -2,6 +2,7 @@
 @implements IDisposable
 
 @using Blazorise
+@using Blazorise.Snackbar
 @using ClimateExplorer.Web.Client.Shared
 @using static ClimateExplorer.Web.Client.Shared.Collapsible;
 @using static ClimateExplorer.Web.UiModel.SuggestedPresetLists;
@@ -15,6 +16,8 @@
     <meta property="og:url" content="@PageUrl" />
     <link rel="canonical" href="@PageUrl" />
 </HeadContent>
+
+<SnackbarStack @ref="Snackbar" Location="SnackbarStackLocation.Top" Interval="20000" Multiline="true" />
 
 <div style="flex-grow: 0">
     <Collapsible Title="Suggested charts" InitiallyShown="true" ShowTitleWhenExpanded="false" ContentLayoutType="CollapserContentLayoutTypes.FlexboxRow">
@@ -30,7 +33,8 @@
                DataSetDefinitions="@DataSetDefinitions"
                Regions="@Regions"
                ShowAddDataSetModalEvent="@ShowAddDataSetModal"
-               DownloadDataEvent="@OnDownloadDataClicked" />
+               DownloadDataEvent="@OnDownloadDataClicked"
+               SnackbarMessageEvent="@SnackbarMessageEventHandler" />
 </div>
 
 <Modal @ref="AddDataSetModal">

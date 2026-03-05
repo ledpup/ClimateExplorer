@@ -5,6 +5,7 @@ using Blazorise.Snackbar;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Shared;
+using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.Services;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
@@ -107,6 +108,11 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         using var streamRef = new DotNetStreamReference(stream: fileStream);
 
         await JsRuntime!.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+    }
+
+    protected async Task SnackbarMessageEventHandler(SnackbarMessage snackbarMessage)
+    {
+        await Snackbar!.PushAsync(snackbarMessage.Message, snackbarMessage.Type);
     }
 
     protected Guid GetLocationFromCsd(StringValues csdSpecifier)

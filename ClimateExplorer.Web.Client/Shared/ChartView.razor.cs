@@ -9,6 +9,7 @@ using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
@@ -60,6 +61,9 @@ public partial class ChartView
 
     [Parameter]
     public EventCallback ShowAddDataSetModalEvent { get; set; }
+
+    [Parameter]
+    public EventCallback<SnackbarMessage> SnackbarMessageEvent { get; set; }
 
     [Inject]
     private IDataService? DataService { get; set; }
@@ -257,7 +261,7 @@ public partial class ChartView
                     else if (InternalLocationId is null)
                     {
                         InternalLocationId = LocationId;
-                        await SetUpLocalDefaultCharts(LocationId);
+                        await SetUpLocalDefaultCharts();
                     }
                 }
             }
@@ -526,7 +530,7 @@ public partial class ChartView
 
                         var dataMatches = new List<DataSubstitute>
                         {
-                            new DataSubstitute
+                            new ()
                             {
                                 DataType = sss.MeasurementDefinition!.DataType,
                                 DataAdjustment = sss.MeasurementDefinition.DataAdjustment,
@@ -558,8 +562,7 @@ public partial class ChartView
                         {
                             var dataType = ChartSeriesDefinition.MapDataTypeToFriendlyName(sss.MeasurementDefinition.DataType);
 
-                            // TODO: fix this error
-                            // await Snackbar!.PushAsync($"{dataType} data is not available at {Location.Name}", SnackbarColor.Warning);
+                            await SnackbarMessageEvent.InvokeAsync(new SnackbarMessage { Message = $"{dataType} data is not available at {LocationDictionary[LocationId.Value].FullTitle}", Type = SnackbarColor.Warning });
                             csd.DataAvailable = false;
 
                             break;
@@ -766,8 +769,7 @@ public partial class ChartView
                 }
                 catch (Exception)
                 {
-                    // TODO: fix this error
-                    // await Snackbar!.PushAsync($"Failed to create the chart with the current settings", SnackbarColor.Danger);
+                    await SnackbarMessageEvent.InvokeAsync(new SnackbarMessage { Message = "Failed to create the chart with the current settings", Type = SnackbarColor.Danger });
                     ChartLoadingErrored = true;
                     await HandleRedraw();
                 }
@@ -853,13 +855,6 @@ public partial class ChartView
         ChartSeriesList.Add(
             new ChartSeriesDefinition()
             {
-                // TODO: remove if we're not going to default to average temperature
-                // SeriesDerivationType = SeriesDerivationTypes.AverageOfMultipleSeries,
-                // SourceSeriesSpecifications = new SourceSeriesSpecification[]
-                // {
-                //    SourceSeriesSpecification.BuildArray(location, tempMax)[0],
-                //    SourceSeriesSpecification.BuildArray(location, tempMin)[0],
-                // },
                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                 SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMaxOrMean),
                 Aggregation = SeriesAggregationOptions.Mean,
