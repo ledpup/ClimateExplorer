@@ -54,7 +54,7 @@ public class DataSetDefinitionViewModel
                                                                                    && (dataSubstitute.DataResolution == null || y.DataResolution == dataSubstitute.DataResolution)))
                                         .ToList();
 
-            // If we find a match, break out of the search (we need to order the matches on preference
+            // If we find a match, break out of the search (we need to order the matches on preference)
             if (dsds.Any())
             {
                 break;
@@ -100,7 +100,7 @@ public class DataSetDefinitionViewModel
     {
         var dataMatches = new List<DataSubstitute>
         {
-            new DataSubstitute
+            new ()
             {
                 DataType = dataType,
                 DataAdjustment = dataAdjustment,

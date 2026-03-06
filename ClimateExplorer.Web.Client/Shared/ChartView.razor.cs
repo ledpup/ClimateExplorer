@@ -237,8 +237,6 @@ public partial class ChartView
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        ChartLoadingErrored = false;
-
         IsMobileDevice ??= await CurrentDeviceService!.Mobile();
 
         if (DataSetDefinitions is not null && Regions is not null)
@@ -261,7 +259,7 @@ public partial class ChartView
                     else if (InternalLocationId is null)
                     {
                         InternalLocationId = LocationId;
-                        await SetUpLocalDefaultCharts();
+                        await SetUpLocalDefaultCharts(InternalLocationId.Value);
                     }
                 }
             }
@@ -322,46 +320,18 @@ public partial class ChartView
         // Recalculate the URL
         string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(ChartSeriesList!);
 
-        string url = PageName!;
+        var queryString = new Uri(NavManager!.Uri).Query;
+        var queryDictionary = System.Web.HttpUtility.ParseQueryString(queryString);
+
+        var url = GetGlobalQueryStringSettings();
 
         if (chartSeriesUrlComponent.Length > 0)
         {
-            var chartAllData = ChartAllData.ToString() !.ToLower();
-            var startYear = SelectedStartYear;
-            var endYear = SelectedEndYear;
-
-            var queryString = new Uri(NavManager!.Uri).Query;
-            var queryDictionary = System.Web.HttpUtility.ParseQueryString(queryString);
-
-            url += "?chartAllData=" + chartAllData;
-            if (!string.IsNullOrWhiteSpace(startYear))
-            {
-                url += $"&startYear={startYear}";
-            }
-
-            if (!string.IsNullOrWhiteSpace(endYear))
-            {
-                url += $"&endYear={endYear}";
-            }
-
-            var groupingDays = SelectedGroupingDays;
-            if (SelectedGroupingDays > 0)
-            {
-                url += $"&groupingDays={groupingDays}";
-            }
-
-            var groupingThresholdText = GroupingThresholdText;
-            if (!string.IsNullOrWhiteSpace(groupingThresholdText))
-            {
-                url += $"&groupingThreshold={groupingThresholdText}";
-            }
-
             url += "&csd=" + chartSeriesUrlComponent;
         }
         else
         {
             ChartSeriesWithData = null;
-            await HandleRedraw();
         }
 
         string currentUri = NavManager!.Uri;
@@ -389,28 +359,21 @@ public partial class ChartView
             l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + usableChartSeries.Count() + " entries.");
 
             // Render the series
-            await HandleRedraw();
+            await RenderChart();
         }
 
         l.LogInformation("Leaving");
     }
 
-    protected async Task HandleRedraw()
+    protected async Task RenderChart()
     {
-        var l = new LogAugmenter(Logger!, "HandleRedraw");
+        var l = new LogAugmenter(Logger!, "RenderChart");
 
         l.LogInformation("Entering");
 
-        // This can happen at startup, or if the user switches off all data series
-        if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0 || chart == null || chartTrendline == null)
+        if (chart is null)
         {
-            if (chart != null)
-            {
-                await chart.Clear();
-                await chart.SetOptionsObject(new { });
-            }
-
-            l.LogInformation("Bailing early as no chart data available");
+            l.LogInformation("Bailing early as no chart available");
             return;
         }
 
@@ -423,7 +386,19 @@ public partial class ChartView
 
         if (ChartLoadingErrored)
         {
+            await chart.SetOptionsObject(new { });
+
             l.LogError("We have identified an error. Will not try to render the chart normally");
+        }
+        else if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0 || chartTrendline == null)
+        {
+            await chart.SetOptionsObject(new { });
+
+            ChartLoadingIndicatorVisible = false;
+            StateHasChanged();
+
+            l.LogInformation("Bailing early as no chart data available");
+            return;
         }
         else
         {
@@ -469,15 +444,15 @@ public partial class ChartView
             await chart.AddLabels(labels);
 
             scales = BuildChartScales();
-        }
 
-        var chartOptions = CreateChartOptions(title, subtitle, scales);
+            var chartOptions = CreateChartOptions(title, subtitle, scales);
 
-        await chart.SetOptionsObject(chartOptions);
+            await chart.SetOptionsObject(chartOptions);
 
-        if (trendlines != null && trendlines.Count > 0)
-        {
-            await chartTrendline.AddTrendLineOptions(trendlines);
+            if (trendlines != null && trendlines.Count > 0)
+            {
+                await chartTrendline.AddTrendLineOptions(trendlines);
+            }
         }
 
         await chart.Update();
@@ -486,7 +461,7 @@ public partial class ChartView
         // If you don't call resize, the chart will apply the styling only after you resize the window,
         // but it does not apply the style on the initial load of the page.
         // See https://www.chartjs.org/docs/latest/configuration/responsive.html for more information
-        if (!haveCalledResizeAtLeastOnce)
+        if (!haveCalledResizeAtLeastOnce && !ChartLoadingErrored)
         {
             await chart.Resize();
             haveCalledResizeAtLeastOnce = true;
@@ -726,6 +701,40 @@ public partial class ChartView
         };
     }
 
+    private string GetGlobalQueryStringSettings()
+    {
+        string url = PageName!;
+
+        var chartAllData = ChartAllData.ToString() !.ToLower();
+        var startYear = SelectedStartYear;
+        var endYear = SelectedEndYear;
+
+        url += "?chartAllData=" + chartAllData;
+        if (!string.IsNullOrWhiteSpace(startYear))
+        {
+            url += $"&startYear={startYear}";
+        }
+
+        if (!string.IsNullOrWhiteSpace(endYear))
+        {
+            url += $"&endYear={endYear}";
+        }
+
+        var groupingDays = SelectedGroupingDays;
+        if (SelectedGroupingDays > 0)
+        {
+            url += $"&groupingDays={groupingDays}";
+        }
+
+        var groupingThresholdText = GroupingThresholdText;
+        if (!string.IsNullOrWhiteSpace(groupingThresholdText))
+        {
+            url += $"&groupingThreshold={groupingThresholdText}";
+        }
+
+        return url;
+    }
+
     private async Task UpdateUiStateBasedOnQueryString(Uri uri)
     {
         if (DataSetDefinitions is null || Regions is null)
@@ -766,12 +775,13 @@ public partial class ChartView
                 try
                 {
                     await BuildDataSets();
+                    ChartLoadingErrored = false;
                 }
                 catch (Exception)
                 {
                     await SnackbarMessageEvent.InvokeAsync(new SnackbarMessage { Message = "Failed to create the chart with the current settings", Type = SnackbarColor.Danger });
                     ChartLoadingErrored = true;
-                    await HandleRedraw();
+                    await RenderChart();
                 }
             }
             catch (Exception ex)
@@ -837,20 +847,17 @@ public partial class ChartView
         return datasetsToReturn;
     }
 
-    private async Task SetUpLocalDefaultCharts(Guid? locationId)
+    private async Task SetUpLocalDefaultCharts(Guid locationId)
     {
-        // Use the provided location for building the default chart. We want temperature and precipitation on the default chart, whether it's the first time the user has arrived
-        // at the website or when they return. Some locations won't have precipitation but we use the DataAvailable field to cope with that situation.
-        // Doing it this way, when the user navigates to another location that *does* have precipitation (without making any other changes to the selected data), we will detect it and put it on the chart.
-        var location = LocationDictionary![locationId!.Value];
-
-        var tempMaxOrMean = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataSubstitute.StandardTemperatureDataMatches(), throwIfNoMatch: true) !;
-        var precipitation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.Precipitation, null, throwIfNoMatch: true) !;
+        // Use the provided location for building the default chart. We want temperature and precipitation on the default chart.
+        var location = LocationDictionary![locationId];
 
         if (ChartSeriesList == null)
         {
             ChartSeriesList = [];
         }
+
+        var tempMaxOrMean = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataSubstitute.StandardTemperatureDataMatches(), throwIfNoMatch: true) !;
 
         ChartSeriesList.Add(
             new ChartSeriesDefinition()
@@ -865,18 +872,22 @@ public partial class ChartView
                 Year = null,
             });
 
-        ChartSeriesList.Add(
-            new ChartSeriesDefinition()
-            {
-                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, precipitation),
-                Aggregation = SeriesAggregationOptions.Sum,
-                BinGranularity = BinGranularities.ByYear,
-                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                SmoothingWindow = 20,
-                Value = SeriesValueOptions.Value,
-                Year = null,
-            });
+        var precipitation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.Precipitation, null, throwIfNoMatch: false);
+        if (precipitation is not null)
+        {
+            ChartSeriesList.Add(
+                new ChartSeriesDefinition()
+                {
+                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, precipitation),
+                    Aggregation = SeriesAggregationOptions.Sum,
+                    BinGranularity = BinGranularities.ByYear,
+                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                    SmoothingWindow = 20,
+                    Value = SeriesValueOptions.Value,
+                    Year = null,
+                });
+        }
 
         await BuildDataSets();
     }
@@ -1380,7 +1391,7 @@ public partial class ChartView
     {
         await ChangeStartYear(extentValues.FromValue!, false);
         await ChangeEndYear(extentValues.ToValue!, false);
-        await HandleRedraw();
+        await RenderChart();
     }
 
     private async Task OnStartYearTextChanged(string? text)
@@ -1396,7 +1407,7 @@ public partial class ChartView
             SliderStart = Convert.ToInt32(SelectedStartYear);
             if (redraw)
             {
-                await HandleRedraw();
+                await RenderChart();
             }
         }
     }
@@ -1421,7 +1432,7 @@ public partial class ChartView
 
         if (redraw)
         {
-            await HandleRedraw();
+            await RenderChart();
         }
     }
 
@@ -1432,7 +1443,7 @@ public partial class ChartView
         {
             SliderStart = null;
             SelectedStartYear = null;
-            await HandleRedraw();
+            await RenderChart();
         }
     }
 
