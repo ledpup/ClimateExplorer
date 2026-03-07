@@ -258,8 +258,15 @@ public partial class ChartView
                     }
                     else if (InternalLocationId is null)
                     {
+                        // First time loading a page with a location in the URL. Just add a default chart with temperatute (and probably precipitation) data, so that the user sees something.
                         InternalLocationId = LocationId;
                         await SetUpLocalDefaultCharts(InternalLocationId.Value);
+                    }
+                    else if (uri.Query.Contains("chartAllData="))
+                    {
+                        // We have a chartAllData parameter in the query string, but no chart series definition.
+                        // This means that the user has likely removed all charts series.
+                        await RenderChart();
                     }
                 }
             }
@@ -272,10 +279,18 @@ public partial class ChartView
                     {
                         await UpdateUiStateBasedOnQueryString(uri);
                     }
-                    else
+                    else if (!uri.Query.Contains("chartAllData="))
                     {
+                        // We haven't setup and chart series yet - first time loading a page without a location in the URL.
+                        // Just add a default chart with CO2 data, so that the user sees something, and also so that we have some data to work with when demonstrating the various options on the page.
                         await AddDefaultChart();
                         StateHasChanged();
+                    }
+                    else if (uri.Query.Contains("chartAllData="))
+                    {
+                        // We have a chartAllData parameter in the query string, but no chart series definition.
+                        // This means that the user has likely removed all charts series.
+                        await RenderChart();
                     }
                 }
             }
