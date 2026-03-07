@@ -45,10 +45,10 @@
 <div class="location-and-chart-container">
     <div style="position: relative;">
         <div class="map-space-reserver" id="mapContainerContainer">
-            <MapContainer @ref="MapContainer"
+            <MapContainer
                 Locations="@LocationDictionary?.Values"
                 OnLocationChange="@SelectedLocationChanged"
-                LocationCoordinates="@Location?.Coordinates" />
+                Location="@Location" />
         </div>
 
         <div class="location-info-container">
@@ -63,10 +63,14 @@
     </div>
 
     <ChartView @ref="ChartView"
-               BuildDataSetsEvent="@BuildDataSets"
+               PageName="@PageName"
+               DataSetDefinitions="@DataSetDefinitions"
+               LocationDictionary="@LocationDictionary"
+               Regions="@Regions"
+               LocationId="@Location?.Id"
                ShowAddDataSetModalEvent="@ShowAddDataSetModal"
                DownloadDataEvent="@OnDownloadDataClicked"
-               LocationDictionary="@LocationDictionary" />
+               SnackbarMessageEvent="@SnackbarMessageEventHandler" />
 </div>
 
 <ChangeLocation @ref="ChangeLocationModal"
@@ -82,7 +86,7 @@
             <CloseButton />
         </ModalHeader>
         <ModalBody>
-            <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@Location" PreviousLocation="@PreviousLocation"></DataSetBrowser>
+            <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@Location"></DataSetBrowser>
         </ModalBody>
     </ModalContent>
 </Modal>

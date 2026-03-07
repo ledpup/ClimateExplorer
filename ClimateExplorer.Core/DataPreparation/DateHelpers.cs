@@ -185,10 +185,10 @@ public static class DateHelpers
         // Special case: if the requested segment size is bigger than the span we're dividing up, just return the whole span
         if (completeSegmentsInSpan == 0)
         {
-            return new DateOnlySpan[]
-            {
-                new DateOnlySpan { Start = start, End = end },
-            };
+            return
+            [
+                new () { Start = start, End = end },
+            ];
         }
 
         DateOnlySpan[] result = new DateOnlySpan[completeSegmentsInSpan];
