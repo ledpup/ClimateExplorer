@@ -137,11 +137,11 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 2024,
-    "Month": 7,
-    "Day": 19,
-    "Value": 0.1,
-    "NumberOfTimes": 1
+    "Year": 2025,
+    "Month": 12,
+    "Day": 31,
+    "Value": 0,
+    "NumberOfTimes": 2
   },
   {
     "DataType": 3,
@@ -163,7 +163,7 @@
     "Month": 6,
     "Day": 1,
     "Value": 0,
-    "NumberOfTimes": 42069
+    "NumberOfTimes": 42301
   },
   {
     "DataType": 4,

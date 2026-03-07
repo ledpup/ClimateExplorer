@@ -53,11 +53,11 @@
     "DataAdjustment": 1,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 1959,
-    "Month": 3,
-    "Day": 19,
-    "Value": 30.6,
-    "NumberOfTimes": 2
+    "Year": 2025,
+    "Month": 1,
+    "Day": 29,
+    "Value": 31,
+    "NumberOfTimes": 1
   },
   {
     "DataType": 1,
@@ -163,7 +163,7 @@
     "Month": 3,
     "Day": 1,
     "Value": 0,
-    "NumberOfTimes": 28808
+    "NumberOfTimes": 29092
   },
   {
     "DataType": 4,

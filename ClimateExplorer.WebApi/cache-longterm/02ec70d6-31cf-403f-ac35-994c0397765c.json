@@ -33,7 +33,7 @@
     "Month": 2,
     "Day": 18,
     "Value": 49.3,
-    "NumberOfTimes": 1
+    "NumberOfTimes": 2
   },
   {
     "DataType": 0,
@@ -105,7 +105,7 @@
     "Month": 2,
     "Day": 18,
     "Value": 49.3,
-    "NumberOfTimes": 1
+    "NumberOfTimes": 2
   },
   {
     "DataType": 0,
@@ -163,7 +163,7 @@
     "Month": 1,
     "Day": 1,
     "Value": 0,
-    "NumberOfTimes": 34258
+    "NumberOfTimes": 34537
   },
   {
     "DataType": 4,
