@@ -51,7 +51,7 @@
     List<Guid> MarkersAdded = new();
     List<MarkerOptions> markerOptions = new();
 
-    bool locationIsChanging = false;
+    bool mapRerendering = false;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -60,17 +60,18 @@
             return;
         }
 
-        if (!locationIsChanging)
+        InternalLocation = Location;
+
+        InitialiseMapOptions();
+
+        if (IsMapExpanded)
         {
-            locationIsChanging = true;
-            InternalLocation = Location;
-
-            InitialiseMapOptions();
-
-            if (IsMapExpanded)
-            {
-                await ToggleMapExpansion();
-            }
+            mapRerendering = true;
+            await ToggleMapExpansion();
+        }
+        else
+        {
+            await ScrollToPoint(InternalLocation!.Coordinates);
         }
 
         await base.OnParametersSetAsync();
@@ -85,14 +86,15 @@
     {
         await CreateMarkerOptions();
         await CreateMainTileLayer();
-        await CreateMapMarkers();
-        await map!.OnMoveEnd(async (moveEvent) => await HandleMoveEnd(moveEvent));
 
-        if (locationIsChanging)
+        if (mapRerendering)
         {
             await ScrollToPoint(InternalLocation!.Coordinates);
-            locationIsChanging = false;
+            mapRerendering = false;
         }
+
+        await CreateMapMarkers();
+        await map!.OnMoveEnd(async (moveEvent) => await HandleMoveEnd(moveEvent));
     }
 
     private async Task ScrollToPoint(Coordinates point)
