@@ -36,6 +36,12 @@ public static class SeriesTransformer
                     .Select(x => x.WithValue(x.Value == null ? null : x.Value * -1))
                     .ToArray();
 
+            case SeriesTransformations.IsZero:
+                return
+                    dataRecords
+                    .Select(x => x.WithValue(x.Value == null ? null : (x.Value == 0 ? 1 : 0)))
+                    .ToArray();
+
             // Temperature is measured by standard instruments which are located in a shelter (Stevenson screen) at a height of approximately 1.2 m above the ground.
             // These observations are then used to approximate the conditions at surface level.
             // An observed temperature of 2.2°C at screen level indicates that the temperature at the surface is approaching 0°C.

@@ -1258,6 +1258,7 @@ public partial class ChartView
     {
         return seriesTransformation switch
         {
+            SeriesTransformations.IsZero => "Number of days without rain",
             SeriesTransformations.IsFrosty => "Number of days of frost",
             SeriesTransformations.DayOfYearIfFrost => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "Last day of frost" : "First day of frost",
             SeriesTransformations.EqualOrAbove25 => "Number of days 25°C or above",

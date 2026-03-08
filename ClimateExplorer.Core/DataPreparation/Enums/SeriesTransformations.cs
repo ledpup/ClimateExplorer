@@ -7,6 +7,7 @@ public enum SeriesTransformations
     IsNegative,
     EnsoCategory,
     Negate,
+    IsZero,
     IsFrosty,
     DayOfYearIfFrost,
     EqualOrAbove25,

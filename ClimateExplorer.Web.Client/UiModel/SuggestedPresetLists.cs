@@ -70,8 +70,8 @@ public static class SuggestedPresetLists
                 Variants = [
                     new SuggestedChartPresetModelWithVariants()
                     {
-                        Title = "Days of rain",
-                        Description = "Number of rainy days, ≥ 1mm and ≥ 10mm; 20-year smoothing",
+                        Title = "Dry days and wet",
+                        Description = "Number of days without rain and days with ≥ 10mm; 20-year smoothing",
                         ChartSeriesList =
                         [
                             new ChartSeriesDefinition()
@@ -84,7 +84,7 @@ public static class SuggestedPresetLists
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
                                 DisplayStyle = SeriesDisplayStyle.Line,
-                                SeriesTransformation = SeriesTransformations.EqualOrAbove1,
+                                SeriesTransformation = SeriesTransformations.IsZero,
                                 RequestedColour = UiLogic.Colours.Blue,
                                 MinimumDataResolution = DataResolution.Daily,
                             },
