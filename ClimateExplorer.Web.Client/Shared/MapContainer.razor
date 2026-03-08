@@ -51,11 +51,6 @@
     List<Guid> MarkersAdded = new();
     List<MarkerOptions> markerOptions = new();
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        IsMobileDevice ??= await CurrentDeviceService!.Mobile();
-    }
-
     protected override async Task OnParametersSetAsync()
     {
         if (IsMobileDevice == null || InternalLocation?.Id == Location?.Id)
@@ -63,18 +58,26 @@
             return;
         }
 
-        InternalLocation = Location;
-
         InitialiseMapOptions();
 
-        await ScrollToPoint(Location!.Coordinates);
-        
-        if (IsMapExpanded)
-        {
-            await ToggleMapExpansion();
-        }
-
         await base.OnParametersSetAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        IsMobileDevice ??= await CurrentDeviceService!.Mobile();
+
+        if (InternalLocation != Location)
+        {
+            if (IsMapExpanded)
+            {
+                await ToggleMapExpansion();
+            }
+
+            InternalLocation = Location;
+
+            await ScrollToPoint(Location!.Coordinates);
+        }
     }
 
     private async Task AfterMapRender()
