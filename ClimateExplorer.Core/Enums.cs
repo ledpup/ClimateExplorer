@@ -105,6 +105,7 @@ public static class Enums
     {
         var label = seriesTransformations switch
         {
+            SeriesTransformations.IsZero => "Days without rain",
             SeriesTransformations.IsFrosty => "Days of frost",
             SeriesTransformations.DayOfYearIfFrost => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "Last day of frost" : "First day of frost",
             SeriesTransformations.EqualOrAbove25 => "Days of 25°C or above",

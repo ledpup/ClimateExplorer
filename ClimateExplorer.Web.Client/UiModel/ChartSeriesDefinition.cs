@@ -318,6 +318,7 @@ public class ChartSeriesDefinition
     {
         return seriesTransformation switch
         {
+            SeriesTransformations.IsZero => "Is zero",
             SeriesTransformations.IsFrosty => "Is Frost",
             SeriesTransformations.DayOfYearIfFrost => "Day if frost",
             SeriesTransformations.EqualOrAbove25 => "25°C or above",

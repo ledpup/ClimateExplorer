@@ -291,6 +291,7 @@ public static class ChartLogic
     {
         return seriesTransformations switch
         {
+            SeriesTransformations.IsZero => "daysWithoutRain",
             SeriesTransformations.IsFrosty => "daysOfFrost",
             SeriesTransformations.DayOfYearIfFrost => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "lastDayOfFrost" : "firstDayOfFrost",
             SeriesTransformations.EqualOrAbove25 => "daysEqualOrAbove25",
