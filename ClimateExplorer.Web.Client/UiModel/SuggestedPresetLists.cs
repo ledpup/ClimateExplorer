@@ -68,74 +68,71 @@ public static class SuggestedPresetLists
                     },
                 ],
                 Variants = [
-                    new SuggestedChartPresetModelWithVariants()
+                    new SuggestedChartPresetModel
                     {
-                        Title = "Dry days and wet",
-                        Description = "Number of days without rain and days with ≥ 10mm; 20-year smoothing",
+                        Title = "Temperature anomaly",
+                        Description = "Yearly average temperatures relative to the average of the whole dataset",
                         ChartSeriesList =
                         [
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, dailyPrecipitation!),
-                                Aggregation = SeriesAggregationOptions.Sum,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
+                                Aggregation = SeriesAggregationOptions.Mean,
                                 BinGranularity = BinGranularities.ByYear,
-                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                SmoothingWindow = 20,
-                                Value = SeriesValueOptions.Value,
-                                DisplayStyle = SeriesDisplayStyle.Line,
-                                SeriesTransformation = SeriesTransformations.IsZero,
-                                RequestedColour = UiLogic.Colours.Blue,
-                                MinimumDataResolution = DataResolution.Daily,
+                                Smoothing = SeriesSmoothingOptions.None,
+                                SmoothingWindow = 5,
+                                Value = SeriesValueOptions.Anomaly,
+                                DisplayStyle = SeriesDisplayStyle.Bar,
                             },
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, dailyPrecipitation!),
-                                Aggregation = SeriesAggregationOptions.Sum,
-                                BinGranularity = BinGranularities.ByYear,
-                                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                SmoothingWindow = 20,
-                                Value = SeriesValueOptions.Value,
-                                DisplayStyle = SeriesDisplayStyle.Line,
-                                SeriesTransformation = SeriesTransformations.EqualOrAbove10,
-                                RequestedColour = UiLogic.Colours.Pink,
-                                MinimumDataResolution = DataResolution.Daily,
-                            }
-
                         ],
+                    },
+                    new SuggestedChartPresetModel()
+                    {
+                        Title = "Temperature with trendline",
+                        Description = "Yearly view of average temperature with a straight line fit to the data (the trendline)",
+                        ChartSeriesList =
+                            [
+                                new ChartSeriesDefinition()
+                                {
+                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
+                                    Aggregation = SeriesAggregationOptions.Mean,
+                                    BinGranularity = BinGranularities.ByYear,
+                                    ShowTrendline = true,
+                                    Smoothing = SeriesSmoothingOptions.None,
+                                    SmoothingWindow = 5,
+                                    Value = SeriesValueOptions.Value,
+                                },
+                            ],
                     },
                     new SuggestedChartPresetModelWithVariants()
                     {
-                        Title = "ENSO + rainfall",
-                        Description = "Monthly chart of the Nino 3.4 index and precipitation",
-                        StartYear = 2000,
+                        Title = "Adjusted vs raw temperature",
+                        Description = "Compare temperature values that have been adjusted for abnormalities with raw values",
                         ChartSeriesList =
                         [
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, precipitation!),
-                                Aggregation = SeriesAggregationOptions.Sum,
-                                BinGranularity = BinGranularities.ByYearAndMonth,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempAdjusted!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                ShowTrendline = false,
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                SmoothingWindow = 3,
+                                SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
-                                DisplayStyle = SeriesDisplayStyle.Line,
-                                SeriesTransformation = SeriesTransformations.Identity,
-                                RequestedColour = UiLogic.Colours.Green,
                             },
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Ocean), nino34!),
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempUnadjusted!),
                                 Aggregation = SeriesAggregationOptions.Mean,
-                                BinGranularity = BinGranularities.ByYearAndMonth,
+                                BinGranularity = BinGranularities.ByYear,
+                                ShowTrendline = false,
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
-                                SmoothingWindow = 3,
+                                SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
-                                DisplayStyle = SeriesDisplayStyle.Bar,
-                                SeriesTransformation = SeriesTransformations.Identity,
                             },
                         ],
                     },
@@ -242,70 +239,94 @@ public static class SuggestedPresetLists
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
-                Title = "Temperature anomaly",
-                Description = "Yearly average temperatures relative to the average of the whole dataset",
+                Title = "Dry days",
+                Description = "Number of days without rain; 20-year smoothing",
                 ChartSeriesList =
                 [
                     new ChartSeriesDefinition()
                     {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
-                        Aggregation = SeriesAggregationOptions.Mean,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, dailyPrecipitation!),
+                        Aggregation = SeriesAggregationOptions.Sum,
                         BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 5,
-                        Value = SeriesValueOptions.Anomaly,
-                        DisplayStyle = SeriesDisplayStyle.Bar,
+                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                        SmoothingWindow = 20,
+                        Value = SeriesValueOptions.Value,
+                        DisplayStyle = SeriesDisplayStyle.Line,
+                        SeriesTransformation = SeriesTransformations.IsZero,
+                        RequestedColour = UiLogic.Colours.Blue,
+                        MinimumDataResolution = DataResolution.Daily,
                     },
                 ],
                 Variants =
                 [
-                    new SuggestedChartPresetModel()
+                    new SuggestedChartPresetModel
                     {
-                        Title = "Temperature with trendline",
-                        Description = "Yearly view of average temperature with a straight line fit to the data (the trendline)",
-                        ChartSeriesList =
-                            [
-                                new ChartSeriesDefinition()
-                                {
-                                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
-                                    Aggregation = SeriesAggregationOptions.Mean,
-                                    BinGranularity = BinGranularities.ByYear,
-                                    ShowTrendline = true,
-                                    Smoothing = SeriesSmoothingOptions.None,
-                                    SmoothingWindow = 5,
-                                    Value = SeriesValueOptions.Value,
-                                },
-                            ],
-                    },
-                    new SuggestedChartPresetModelWithVariants()
-                    {
-                        Title = "Adjusted vs raw temperature",
-                        Description = "Compare temperature values that have been adjusted for abnormalities with raw values",
+                        Title = "Days of rain",
+                        Description = "Rainy days ≥ 1mm and ≥ 10mm; 20-year smoothing",
                         ChartSeriesList =
                         [
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempAdjusted!),
-                                Aggregation = SeriesAggregationOptions.Mean,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, dailyPrecipitation!),
+                                Aggregation = SeriesAggregationOptions.Sum,
                                 BinGranularity = BinGranularities.ByYear,
-                                ShowTrendline = false,
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                SeriesTransformation = SeriesTransformations.EqualOrAbove1,
+                                RequestedColour = UiLogic.Colours.Blue,
+                                MinimumDataResolution = DataResolution.Daily,
                             },
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempUnadjusted!),
-                                Aggregation = SeriesAggregationOptions.Mean,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, dailyPrecipitation!),
+                                Aggregation = SeriesAggregationOptions.Sum,
                                 BinGranularity = BinGranularities.ByYear,
-                                ShowTrendline = false,
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                SeriesTransformation = SeriesTransformations.EqualOrAbove10,
+                                RequestedColour = UiLogic.Colours.Pink,
+                                MinimumDataResolution = DataResolution.Daily,
+                            },
+                        ],
+                    },
+                    new SuggestedChartPresetModel()
+                    {
+                        Title = "ENSO + rainfall",
+                        Description = "Monthly chart of the Nino 3.4 index and precipitation",
+                        StartYear = 2000,
+                        ChartSeriesList =
+                        [
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, precipitation!),
+                                Aggregation = SeriesAggregationOptions.Sum,
+                                BinGranularity = BinGranularities.ByYearAndMonth,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 3,
+                                Value = SeriesValueOptions.Value,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                SeriesTransformation = SeriesTransformations.Identity,
+                                RequestedColour = UiLogic.Colours.Green,
+                            },
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Ocean), nino34!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYearAndMonth,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 3,
+                                Value = SeriesValueOptions.Value,
+                                DisplayStyle = SeriesDisplayStyle.Bar,
+                                SeriesTransformation = SeriesTransformations.Identity,
                             },
                         ],
                     },
@@ -422,7 +443,12 @@ public static class SuggestedPresetLists
         var tempAdjusted = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataSubstitute.AdjustedTemperatureDataMatches(), throwIfNoMatch: false);
         var tempUnadjusted = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataSubstitute.UnadjustedTemperatureDataMatches(), throwIfNoMatch: false);
 
+        var dailyTempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataSubstitute.DailyMaxTemperatureDataMatches(), throwIfNoMatch: false);
+        var dailyTempMin = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataSubstitute.DailyMinTemperatureDataMatches(), throwIfNoMatch: false);
+
         var precipitation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataType.Precipitation, null, throwIfNoMatch: false);
+        var ds = new DataSubstitute { DataType = DataType.Precipitation, DataResolution = DataResolution.Daily };
+        var dailyPrecipitation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, new List<DataSubstitute> { ds }, throwIfNoMatch: false);
 
         var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Atmosphere), DataType.CO2, null, throwIfNoMatch: true);
 
@@ -492,20 +518,23 @@ public static class SuggestedPresetLists
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
-                Title = "Temperature anomaly",
-                Description = "Yearly average temperatures relative to the average of the whole dataset",
+                Title = "Dry days",
+                Description = "Number of days without rain; 20-year smoothing",
                 ChartSeriesList =
                 [
                     new ChartSeriesDefinition()
                     {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
-                        Aggregation = SeriesAggregationOptions.Mean,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, dailyPrecipitation!),
+                        Aggregation = SeriesAggregationOptions.Sum,
                         BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 5,
-                        Value = SeriesValueOptions.Anomaly,
-                        DisplayStyle = SeriesDisplayStyle.Bar,
+                        Smoothing = SeriesSmoothingOptions.MovingAverage,
+                        SmoothingWindow = 20,
+                        Value = SeriesValueOptions.Value,
+                        DisplayStyle = SeriesDisplayStyle.Line,
+                        SeriesTransformation = SeriesTransformations.IsZero,
+                        RequestedColour = UiLogic.Colours.Blue,
+                        MinimumDataResolution = DataResolution.Daily,
                     },
                 ],
             });
@@ -513,31 +542,35 @@ public static class SuggestedPresetLists
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
-                Title = "Adjusted vs raw temperature",
-                Description = "Compare temperature values that have been adjusted for abnormalities with raw values",
+                Title = "Days of extremes",
+                Description = "Number of frosty days (≤ 2.2°C) and days 35°C or above",
                 ChartSeriesList =
                 [
                     new ChartSeriesDefinition()
                     {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempAdjusted!),
-                        Aggregation = SeriesAggregationOptions.Mean,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, dailyTempMax!),
+                        Aggregation = SeriesAggregationOptions.Sum,
                         BinGranularity = BinGranularities.ByYear,
-                        ShowTrendline = false,
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
+                        DisplayStyle = SeriesDisplayStyle.Line,
+                        SeriesTransformation = SeriesTransformations.EqualOrAbove35,
+                        MinimumDataResolution = DataResolution.Daily,
                     },
                     new ChartSeriesDefinition()
                     {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempUnadjusted!),
-                        Aggregation = SeriesAggregationOptions.Mean,
+                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, dailyTempMin!),
+                        Aggregation = SeriesAggregationOptions.Sum,
                         BinGranularity = BinGranularities.ByYear,
-                        ShowTrendline = false,
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 20,
                         Value = SeriesValueOptions.Value,
+                        DisplayStyle = SeriesDisplayStyle.Line,
+                        SeriesTransformation = SeriesTransformations.IsFrosty,
+                        MinimumDataResolution = DataResolution.Daily,
                     },
                 ],
             });
@@ -558,7 +591,12 @@ public static class SuggestedPresetLists
         var tempAdjusted = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataSubstitute.AdjustedTemperatureDataMatches(), throwIfNoMatch: false);
         var tempUnadjusted = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataSubstitute.UnadjustedTemperatureDataMatches(), throwIfNoMatch: false);
 
+        var dailyTempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataSubstitute.DailyMaxTemperatureDataMatches(), throwIfNoMatch: false);
+        var dailyTempMin = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataSubstitute.DailyMinTemperatureDataMatches(), throwIfNoMatch: false);
+
         var precipitation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, DataType.Precipitation, null, throwIfNoMatch: false);
+        var ds = new DataSubstitute { DataType = DataType.Precipitation, DataResolution = DataResolution.Daily };
+        var dailyPrecipitation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, location.Id, new List<DataSubstitute> { ds }, throwIfNoMatch: false);
 
         var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Atmosphere), DataType.CO2, null, throwIfNoMatch: true);
 
@@ -625,50 +663,57 @@ public static class SuggestedPresetLists
                     },
                     new ()
                     {
-                        Title = "Temperature anomaly",
-                        Description = "Yearly average temperatures relative to the average of the whole dataset",
+                        Title = "Dry days",
+                        Description = "Number of days without rain; 20-year smoothing",
                         ChartSeriesList =
                         [
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
-                                Aggregation = SeriesAggregationOptions.Mean,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, dailyPrecipitation!),
+                                Aggregation = SeriesAggregationOptions.Sum,
                                 BinGranularity = BinGranularities.ByYear,
-                                Smoothing = SeriesSmoothingOptions.None,
-                                SmoothingWindow = 5,
-                                Value = SeriesValueOptions.Anomaly,
-                                DisplayStyle = SeriesDisplayStyle.Bar,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 20,
+                                Value = SeriesValueOptions.Value,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                SeriesTransformation = SeriesTransformations.IsZero,
+                                RequestedColour = UiLogic.Colours.Blue,
+                                MinimumDataResolution = DataResolution.Daily,
                             },
                         ],
                     },
                     new ()
                     {
-                        Title = "Adjusted vs raw temperature",
-                        Description = "Compare temperature values that have been adjusted for abnormalities with raw values",
+                        Title = "Days of extremes",
+                        Description = "Number of frosty days (≤ 2.2°C) and days 35°C or above",
                         ChartSeriesList =
                         [
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempAdjusted!),
-                                Aggregation = SeriesAggregationOptions.Mean,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, dailyTempMax!),
+                                Aggregation = SeriesAggregationOptions.Sum,
                                 BinGranularity = BinGranularities.ByYear,
-                                ShowTrendline = false,
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                SeriesTransformation = SeriesTransformations.EqualOrAbove35,
+                                MinimumDataResolution = DataResolution.Daily,
                             },
                             new ChartSeriesDefinition()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempUnadjusted!),
-                                Aggregation = SeriesAggregationOptions.Mean,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, dailyTempMin!),
+                                Aggregation = SeriesAggregationOptions.Sum,
                                 BinGranularity = BinGranularities.ByYear,
-                                ShowTrendline = false,
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                SeriesTransformation = SeriesTransformations.IsFrosty,
+                                MinimumDataResolution = DataResolution.Daily,
                             },
                         ],
                     },
