@@ -51,14 +51,27 @@
     List<Guid> MarkersAdded = new();
     List<MarkerOptions> markerOptions = new();
 
+    bool locationIsChanging = false;
+
     protected override async Task OnParametersSetAsync()
     {
-        if (IsMobileDevice == null || InternalLocation?.Id == Location?.Id)
+        if (InternalLocation?.Id == Location?.Id || IsMobileDevice == null || JsRuntime == null)
         {
             return;
         }
 
-        InitialiseMapOptions();
+        if (!locationIsChanging)
+        {
+            locationIsChanging = true;
+            InternalLocation = Location;
+
+            InitialiseMapOptions();
+
+            if (IsMapExpanded)
+            {
+                await ToggleMapExpansion();
+            }
+        }
 
         await base.OnParametersSetAsync();
     }
@@ -66,18 +79,6 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         IsMobileDevice ??= await CurrentDeviceService!.Mobile();
-
-        if (InternalLocation != Location)
-        {
-            if (IsMapExpanded)
-            {
-                await ToggleMapExpansion();
-            }
-
-            InternalLocation = Location;
-
-            await ScrollToPoint(Location!.Coordinates);
-        }
     }
 
     private async Task AfterMapRender()
@@ -86,6 +87,12 @@
         await CreateMainTileLayer();
         await CreateMapMarkers();
         await map!.OnMoveEnd(async (moveEvent) => await HandleMoveEnd(moveEvent));
+
+        if (locationIsChanging)
+        {
+            await ScrollToPoint(InternalLocation!.Coordinates);
+            locationIsChanging = false;
+        }
     }
 
     private async Task ScrollToPoint(Coordinates point)
@@ -95,17 +102,8 @@
             return;
         }
 
-        try
-        {
-            var latlng = new LatLng(point.Latitude, point.Longitude);
-            await map.PanTo(latlng);
-        }
-        catch (Exception ex)
-        {
-            Logger!.LogError(ex, "Error with PanTo on map");
-            await Task.Delay(500);
-            await ScrollToPoint(point);
-        }
+        var latlng = new LatLng(point.Latitude, point.Longitude);
+        await map.PanTo(latlng);
     }
 
     public async Task CreateMapMarkers()
@@ -265,7 +263,7 @@
         else
         {
             lastCollapsedZoom = zoom;
-            collapsedCentre = Location is null ? null : new LatLng(Location.Coordinates.Latitude, Location.Coordinates.Longitude);
+            collapsedCentre = InternalLocation is null ? null : new LatLng(InternalLocation.Coordinates.Latitude, InternalLocation.Coordinates.Longitude);
         }
 
         await JsRuntime!.InvokeVoidAsync("toggleMapExpansion", null);
@@ -280,9 +278,9 @@
 
         Logger!.LogDebug($"IsMapExpanded = {IsMapExpanded}");
 
-        if (mapOptions == null && Location is not null)
+        if (mapOptions == null && InternalLocation is not null)
         {
-            var centre = new LatLng(Location.Coordinates.Latitude, Location.Coordinates.Longitude);
+            var centre = new LatLng(InternalLocation.Coordinates.Latitude, InternalLocation.Coordinates.Longitude);
             mapOptions = new MapOptions()
                 {
                     Center = IsMapExpanded ? expandedCentre ?? centre : collapsedCentre ?? centre,
