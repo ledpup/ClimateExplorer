@@ -11,36 +11,27 @@
             <ModalTitle>Change location</ModalTitle>
             <CloseButton />
         </ModalHeader>
-        <ModalBody>
-            @if (SelectedLocation != null)
-            {
-                <Field>
-                    Current location: <Strong>@SelectedLocation.FullTitle</Strong>
-                </Field>
-            }
-            
-            <Div Class="mt-3">Click the "near me" button to find the station closest to you (the browser will ask to "know your location").</Div>
+        <ModalBody>           
             <Div Class="mt-1"><Button Clicked="@NearMeClicked" Color="Color.Primary">Near me</Button></Div>
 
-                @if (BrowserLocationErrorMessage != null)
-                {
-                    <Div class="error-message">
-                        @BrowserLocationErrorMessage
-                    </Div>
-                }
+            @if (BrowserLocationErrorMessage != null)
+            {
+                <Div class="error-message">
+                    @BrowserLocationErrorMessage
+                </Div>
+            }
             
             <Div Class="mt-1"><Button Clicked="@RandomLocationClicked" Color="Color.Secondary">Random location</Button></Div>
             
             @if (LocationDictionary is not null)
             {
                 <Field Class="mt-3">
-                    <FieldLabel>Free text search for a location</FieldLabel>
                     <Autocomplete TItem="Location"
                     TValue="Guid"
                     Data="@LocationDictionary.Values"
                     TextField="@((item) => item.FullTitle)"
                     ValueField="@((item) => item.Id)"
-                    Placeholder="Search..."
+                    Placeholder="Location search..."
                     Filter="AutocompleteFilter.Contains"
                     FreeTyping
                     MinLength="2"
@@ -50,7 +41,7 @@
                 </Field>
 
                 <Field>
-                    <FieldLabel>Select a nearby location</FieldLabel>
+                    <FieldLabel>Nearby locations</FieldLabel>
                     <FieldBody>
                         <LoadingIndicator @bind-visible="@NearbyLocationsLoading">
                             <Table Borderless Narrow Striped>
