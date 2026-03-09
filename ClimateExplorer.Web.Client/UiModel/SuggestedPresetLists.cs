@@ -133,6 +133,7 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.MovingAverage,
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
+                                RequestedColour = UiLogic.Colours.Green,
                             },
                         ],
                     },
@@ -196,8 +197,8 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.None,
                                 SmoothingWindow = 5,
                                 Value = SeriesValueOptions.Value,
-                                RequestedColour = UiLogic.Colours.Yellow,
                                 GroupingThreshold = 0.1f,
+                                RequestedColour = UiLogic.Colours.Yellow,
                             }
 
                         ],
@@ -227,8 +228,8 @@ public static class SuggestedPresetLists
                                 Smoothing = SeriesSmoothingOptions.None,
                                 SmoothingWindow = 5,
                                 Value = SeriesValueOptions.Value,
-                                RequestedColour = UiLogic.Colours.Yellow,
                                 GroupingThreshold = 0.1f,
+                                RequestedColour = UiLogic.Colours.Yellow,
                             }
 
                         ],
@@ -254,8 +255,8 @@ public static class SuggestedPresetLists
                         Value = SeriesValueOptions.Value,
                         DisplayStyle = SeriesDisplayStyle.Line,
                         SeriesTransformation = SeriesTransformations.IsZero,
-                        RequestedColour = UiLogic.Colours.Blue,
                         MinimumDataResolution = DataResolution.Daily,
+                        RequestedColour = UiLogic.Colours.Brown,
                     },
                 ],
                 Variants =
@@ -277,8 +278,8 @@ public static class SuggestedPresetLists
                                 Value = SeriesValueOptions.Value,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 SeriesTransformation = SeriesTransformations.EqualOrAbove1,
-                                RequestedColour = UiLogic.Colours.Blue,
                                 MinimumDataResolution = DataResolution.Daily,
+                                RequestedColour = UiLogic.Colours.Blue,
                             },
                             new ChartSeriesDefinition()
                             {
@@ -291,8 +292,8 @@ public static class SuggestedPresetLists
                                 Value = SeriesValueOptions.Value,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 SeriesTransformation = SeriesTransformations.EqualOrAbove10,
-                                RequestedColour = UiLogic.Colours.Pink,
                                 MinimumDataResolution = DataResolution.Daily,
+                                RequestedColour = UiLogic.Colours.Pink,
                             },
                         ],
                     },
@@ -365,6 +366,7 @@ public static class SuggestedPresetLists
                         DisplayStyle = SeriesDisplayStyle.Line,
                         SeriesTransformation = SeriesTransformations.IsFrosty,
                         MinimumDataResolution = DataResolution.Daily,
+                        RequestedColour = UiLogic.Colours.Green,
                     },
                 ],
                 Variants =
@@ -387,6 +389,7 @@ public static class SuggestedPresetLists
                                 DisplayStyle = SeriesDisplayStyle.Bar,
                                 SeriesTransformation = SeriesTransformations.EqualOrAbove25,
                                 MinimumDataResolution = DataResolution.Daily,
+                                RequestedColour = UiLogic.Colours.Green,
                             },
                         ],
                     },
@@ -408,6 +411,7 @@ public static class SuggestedPresetLists
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
                                 MinimumDataResolution = DataResolution.Daily,
+                                RequestedColour = UiLogic.Colours.Grey,
                             },
                             new ChartSeriesDefinition()
                             {
@@ -421,6 +425,7 @@ public static class SuggestedPresetLists
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
                                 MinimumDataResolution = DataResolution.Daily,
+                                RequestedColour = UiLogic.Colours.Purple,
                             },
                         ],
                     },
@@ -533,8 +538,8 @@ public static class SuggestedPresetLists
                         Value = SeriesValueOptions.Value,
                         DisplayStyle = SeriesDisplayStyle.Line,
                         SeriesTransformation = SeriesTransformations.IsZero,
-                        RequestedColour = UiLogic.Colours.Blue,
                         MinimumDataResolution = DataResolution.Daily,
+                        RequestedColour = UiLogic.Colours.Brown,
                     },
                 ],
             });
@@ -678,8 +683,8 @@ public static class SuggestedPresetLists
                                 Value = SeriesValueOptions.Value,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 SeriesTransformation = SeriesTransformations.IsZero,
-                                RequestedColour = UiLogic.Colours.Blue,
                                 MinimumDataResolution = DataResolution.Daily,
+                                RequestedColour = UiLogic.Colours.Brown,
                             },
                         ],
                     },
@@ -922,8 +927,8 @@ public static class SuggestedPresetLists
                                 SmoothingWindow = 5,
                                 Value = SeriesValueOptions.Value,
                                 DisplayStyle = SeriesDisplayStyle.Line,
-                                RequestedColour = UiLogic.Colours.Green,
                                 GroupingThreshold = 0.1f,
+                                RequestedColour = UiLogic.Colours.Green,
                             },
                             new ChartSeriesDefinition()
                             {
@@ -935,8 +940,8 @@ public static class SuggestedPresetLists
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
                                 DisplayStyle = SeriesDisplayStyle.Line,
-                                RequestedColour = UiLogic.Colours.Black,
                                 GroupingThreshold = 0.1f,
+                                RequestedColour = UiLogic.Colours.Black,
                             },
                         ],
                     },
@@ -1191,8 +1196,8 @@ public static class SuggestedPresetLists
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
                                 DisplayStyle = SeriesDisplayStyle.Line,
-                                RequestedColour = UiLogic.Colours.Grey,
                                 GroupingThreshold = 0.05f,
+                                RequestedColour = UiLogic.Colours.Grey,
                             },
                         ],
                     },
@@ -1212,8 +1217,8 @@ public static class SuggestedPresetLists
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
                                 DisplayStyle = SeriesDisplayStyle.Line,
-                                RequestedColour = UiLogic.Colours.Blue,
                                 GroupingThreshold = 0.1f,
+                                RequestedColour = UiLogic.Colours.Blue,
                             },
                             new ChartSeriesDefinition()
                             {
@@ -1225,8 +1230,8 @@ public static class SuggestedPresetLists
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
                                 DisplayStyle = SeriesDisplayStyle.Line,
-                                RequestedColour = UiLogic.Colours.Orange,
                                 GroupingThreshold = 0.1f,
+                                RequestedColour = UiLogic.Colours.Orange,
                             },
                         ],
                     },
@@ -1246,8 +1251,8 @@ public static class SuggestedPresetLists
                                 SmoothingWindow = 20,
                                 Value = SeriesValueOptions.Value,
                                 DisplayStyle = SeriesDisplayStyle.Line,
-                                RequestedColour = UiLogic.Colours.Pink,
                                 GroupingThreshold = 0.1f,
+                                RequestedColour = UiLogic.Colours.Pink,
                             },
                         ],
                     },
@@ -1271,8 +1276,8 @@ public static class SuggestedPresetLists
                         SmoothingWindow = 10,
                         Value = SeriesValueOptions.Value,
                         DisplayStyle = SeriesDisplayStyle.Line,
-                        RequestedColour = UiLogic.Colours.Orange,
                         GroupingThreshold = 0.1f,
+                        RequestedColour = UiLogic.Colours.Orange,
                     },
                     new ChartSeriesDefinition()
                     {
@@ -1284,8 +1289,8 @@ public static class SuggestedPresetLists
                         SmoothingWindow = 10,
                         Value = SeriesValueOptions.Value,
                         DisplayStyle = SeriesDisplayStyle.Line,
-                        RequestedColour = UiLogic.Colours.Purple,
                         GroupingThreshold = 0.1f,
+                        RequestedColour = UiLogic.Colours.Purple,
                     },
                 ],
                 Variants =
@@ -1306,8 +1311,8 @@ public static class SuggestedPresetLists
                                 SmoothingWindow = 10,
                                 Value = SeriesValueOptions.Value,
                                 DisplayStyle = SeriesDisplayStyle.Line,
-                                RequestedColour = UiLogic.Colours.Blue,
                                 GroupingThreshold = 0.1f,
+                                RequestedColour = UiLogic.Colours.Blue,
                             },
                         ],
                     },
@@ -1332,8 +1337,8 @@ public static class SuggestedPresetLists
                         SmoothingWindow = 10,
                         Value = SeriesValueOptions.Value,
                         DisplayStyle = SeriesDisplayStyle.Line,
-                        RequestedColour = UiLogic.Colours.Green,
                         GroupingThreshold = 0.1f,
+                        RequestedColour = UiLogic.Colours.Green,
                     },
                     new ChartSeriesDefinition()
                     {
@@ -1345,8 +1350,8 @@ public static class SuggestedPresetLists
                         SmoothingWindow = 10,
                         Value = SeriesValueOptions.Value,
                         DisplayStyle = SeriesDisplayStyle.Line,
-                        RequestedColour = UiLogic.Colours.Orange,
                         GroupingThreshold = 0.1f,
+                        RequestedColour = UiLogic.Colours.Orange,
                     },
                 ],
             });
