@@ -8,6 +8,7 @@ on:
     branches:
       - master
     paths:
+      - ClimateExplorer.Core/*
       - ClimateExplorer.SourceData/*
       - ClimateExplorer.DataPipeline/*
       - ClimateExplorer.WebApi/*
