@@ -37,6 +37,7 @@ public partial class ChartView
     private string? groupingThresholdText;
 
     private bool updateUiStateInProcess;
+    private bool buildDataSetsInProcess;
 
     [Parameter]
     public string? PageName { get; set; }
@@ -330,6 +331,13 @@ public partial class ChartView
         var l = new LogAugmenter(Logger!, "BuildDataSets");
         l.LogInformation("Starting");
 
+        if (buildDataSetsInProcess)
+        {
+            return;
+        }
+
+        buildDataSetsInProcess = true;
+
         LoadingChart();
 
         // Recalculate the URL
@@ -376,6 +384,8 @@ public partial class ChartView
             // Render the series
             await RenderChart();
         }
+
+        buildDataSetsInProcess = false;
 
         l.LogInformation("Leaving");
     }
