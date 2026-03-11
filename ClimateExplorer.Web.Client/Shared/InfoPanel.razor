@@ -1,0 +1,17 @@
+@using ClimateExplorer.Web.Services
+
+@if (isVisible)
+{
+    <div class="info-panel-overlay" @onclick="DismissAsync">
+        <div class="info-panel @(isAnimatingIn ? "slide-in" : "") @(isAnimatingOut ? "slide-out" : "")"
+             @onclick:stopPropagation="true">
+            <div class="info-panel-header">
+                <h2>@Title</h2>
+                <button class="info-panel-close" @onclick="DismissAsync" aria-label="Dismiss">✕</button>
+            </div>
+            <div class="info-panel-body">
+                @ChildContent
+            </div>
+        </div>
+    </div>
+}
