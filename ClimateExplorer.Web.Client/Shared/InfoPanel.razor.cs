@@ -19,7 +19,7 @@ public partial class InfoPanel : ComponentBase
     public string Title { get; set; } = string.Empty;
 
     [Parameter]
-    public string Height { get; set; } = "30%";
+    public string? Height { get; set; }
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }

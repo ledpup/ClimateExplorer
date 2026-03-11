@@ -84,3 +84,22 @@
     height: 21px;
     overflow: hidden;
 }
+
+@media (max-width: 640px) {
+    ::deep .navbar {
+        flex-wrap: nowrap;
+    }
+
+    ::deep .navbar-nav {
+        padding-left: 6px;
+    }
+
+    ::deep .nav-item {
+        margin-right: 4px;
+        font-size: 0.85rem;
+    }
+
+    .info-icon {
+        padding: 0 4px;
+    }
+}

@@ -10,6 +10,7 @@
 
 .info-panel {
     width: 80%;
+    height: 30%;
     min-height: 180px;
     background-color: #fff;
     color: #000;
@@ -85,7 +86,7 @@
 @media only screen and (max-width: 640px) {
     .info-panel {
         width: 95%;
-        height: 40%;
+        height: 60%;
     }
 
     .info-panel-header {
