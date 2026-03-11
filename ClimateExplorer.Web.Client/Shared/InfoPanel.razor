@@ -1,10 +1,10 @@
 @using ClimateExplorer.Web.Services
 
-@if (isVisible)
+@if (isVisible && isMobileDevice != null)
 {
     <div class="info-panel-overlay" @onclick="DismissAsync">
         <div class="info-panel @(isAnimatingIn ? "slide-in" : "") @(isAnimatingOut ? "slide-out" : "")" data-panel-name="@PanelName"
-             style="@(Height != null ? $"height: {Height}" : null)"
+             style="@(Height != null && !isMobileDevice.Value ? $"height: {Height}" : null)"
              @onclick:stopPropagation="true">
             <div class="info-panel-header">
                 <h2>@Title</h2>
