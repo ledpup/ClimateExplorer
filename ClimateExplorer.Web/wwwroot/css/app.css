@@ -133,16 +133,11 @@ th {
     box-shadow: rgb(0 0 0 / 20%) 0px 0px 6px;
 }
 
-.info-panel[data-panel-name="home-overview"] .chart-controls .chart-control {
-    margin: 0px 4px 0px 4px;
-    vertical-align: baseline;
+.chart-controls .chart-control i {
+    margin-right: 8px;
 }
 
-    .chart-controls .chart-control i {
-        margin-right: 8px;
-    }
-
-    .chart-controls .chart-control:hover {
-        background-color: #cfc;
-        transition: 0.25s;
-    }
+.chart-controls .chart-control:hover {
+    background-color: #cfc;
+    transition: 0.25s;
+}

@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Web.Client.Shared;
 
 using ClimateExplorer.Web.Services;
+using CurrentDevice;
 using Microsoft.AspNetCore.Components;
 
 public partial class InfoPanel : ComponentBase
@@ -8,6 +9,7 @@ public partial class InfoPanel : ComponentBase
     private bool isVisible;
     private bool isAnimatingIn;
     private bool isAnimatingOut;
+    private bool? isMobileDevice;
 
     [Parameter]
     public string PanelName { get; set; } = string.Empty;
@@ -27,6 +29,9 @@ public partial class InfoPanel : ComponentBase
     [Inject]
     private IInfoPanelDismissalService DismissalService { get; set; } = default!;
 
+    [Inject]
+    private ICurrentDeviceService? CurrentDeviceService { get; set; }
+
     public async Task ShowAsync()
     {
         isVisible = true;
@@ -40,6 +45,8 @@ public partial class InfoPanel : ComponentBase
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        isMobileDevice ??= await CurrentDeviceService!.Mobile();
+
         if (firstRender && !string.IsNullOrEmpty(PanelName))
         {
             var shouldShow = await DismissalService.ShouldShowAsync(PanelName, Version);

@@ -81,10 +81,13 @@
 
 <InfoPanel @ref="siteOverviewPanel" PanelName="home-overview" Version="1.0" Title="Welcome to ClimateExplorer">
     <p>
-        ClimateExplorer is a website designed to help people understand climate change. It is focused on providing a simple interface for exploring how the climate is changing in their region.
+        ClimateExplorer is a website designed to help people understand climate change. It is focused on providing a simple interface for exploring how the climate is changing in your region.
     </p>
     <p>
-        There are two main sections of the website: this page and the regional &amp; global section. In this section, select a location on the map or click <span class="chart-controls"><a class="chart-control" @onclick="ShowChangeLocationModal"><i class="fas fa-map"></i> Change location</a></span> to see historical temperature, rainfall, and other climate data from around the world as interactive charts. Use the suggested charts to get started quickly, or add your own data sets to build custom views. The chevron (&gt;) expands or collapses parts of the site such as the suggested charts. Click the chevron to <a href="#" @onclick="suggestedChartsCollapsible!.CollapserOnClick">see more chart presets</a>.
+        There are two main sections of the website: this page and the regional &amp; global section. In this section, select a location on the map or click <a href="#" @onclick="ShowChangeLocationModal">change location</a> to see historical temperature, rainfall, and other climate data from around the world as interactive charts.
+    </p>
+    <p>
+        Use the suggested charts to get started quickly, or add your own data sets to build custom views. The chevron (&gt;) expands or collapses parts of the site such as the suggested charts. Click the chevron to <a href="#" @onclick="suggestedChartsCollapsible!.CollapserOnClick">see more chart presets</a>.
     </p>
     <p>
         The <a href="regionalandglobal">regional &amp; global</a> section has charts for global data such as greenhouse gases and the global temperature anomaly. Regional views include charts for the Arctic and Antarctic, the northern and southern hemispheres, and land and ocean.

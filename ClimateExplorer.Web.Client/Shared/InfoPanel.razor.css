@@ -86,7 +86,7 @@
 @media only screen and (max-width: 640px) {
     .info-panel {
         width: 95%;
-        height: 60%;
+        height: 75%;
     }
 
     .info-panel-header {
