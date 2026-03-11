@@ -31,6 +31,7 @@ builder.Services
     .AddSingleton<IDataServiceCache, DataServiceCache>()
     .AddTransient<IExporter, Exporter>()
     .AddScoped<IInfoPanelDismissalService, InfoPanelDismissalService>()
+    .AddScoped<ISiteOverviewService, SiteOverviewService>()
     .AddCurrentDeviceService()
     .AddBlazoredLocalStorage()
     .AddHttpClient<IDataService, DataService>(client =>

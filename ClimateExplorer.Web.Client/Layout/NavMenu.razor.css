@@ -72,3 +72,11 @@
 .logo:hover .tooltip-content {
     display: block;
 }
+
+.info-icon {
+    color: #79c6f4;
+    font-size: larger;
+    cursor: pointer;
+    padding: 0 8px;
+    vertical-align: middle;
+}

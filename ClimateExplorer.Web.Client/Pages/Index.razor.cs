@@ -4,6 +4,7 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Shared;
 using ClimateExplorer.Web.Client.Shared.LocationComponents;
+using ClimateExplorer.Web.Services;
 using CurrentDevice;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
@@ -12,6 +13,7 @@ using Microsoft.JSInterop;
 public partial class Index : ChartablePage
 {
     private Collapsible? suggestedChartsCollapsible;
+    private InfoPanel? siteOverviewPanel;
 
     public Index()
     {
@@ -47,11 +49,20 @@ public partial class Index : ChartablePage
     [Inject]
     private ICurrentDeviceService? CurrentDeviceService { get; set; }
 
+    [Inject]
+    private ISiteOverviewService? SiteOverviewService { get; set; }
+
     private ChangeLocation? ChangeLocationModal { get; set; }
     private string? BrowserLocationErrorMessage { get; set; }
     private Location? Location { get; set; }
 
     private bool LocationChangeEventOccurring { get; set; } = false;
+
+    public override void Dispose()
+    {
+        SiteOverviewService!.ShowRequested -= HandleShowRequested;
+        base.Dispose();
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -69,6 +80,11 @@ public partial class Index : ChartablePage
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         IsMobileDevice ??= await CurrentDeviceService!.Mobile();
+
+        if (firstRender)
+        {
+            SiteOverviewService!.ShowRequested += HandleShowRequested;
+        }
 
         if (DataSetDefinitions is null)
         {
@@ -179,6 +195,14 @@ public partial class Index : ChartablePage
     private Task ShowChangeLocationModal()
     {
         return ChangeLocationModal!.Show();
+    }
+
+    private void HandleShowRequested()
+    {
+        if (siteOverviewPanel is not null)
+        {
+            _ = siteOverviewPanel.ShowAsync();
+        }
     }
 
     private async Task SelectedLocationChanged(Guid locationId)
