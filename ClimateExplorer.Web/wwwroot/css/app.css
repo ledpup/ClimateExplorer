@@ -1,5 +1,14 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+.custom-modal-header {
+    background-color: #425f59;
+    color: white;
+}
+
+.custom-modal-header .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
