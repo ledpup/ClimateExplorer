@@ -124,17 +124,9 @@
     </ModalContent>
 </Modal>
 
-<Modal @ref="chartOptionsModal">
-    <ModalContent Size="ModalSize.Large">
-        <ModalHeader>
-            <ModalTitle>Chart options information</ModalTitle>
-            <CloseButton />
-        </ModalHeader>
-        <ModalBody>
-            <ChartOptionsContent />
-        </ModalBody>
-    </ModalContent>
-</Modal>
+<InfoPanel @ref="chartOptionsInfoPanel" Title="Chart options information" Height="60vh">
+    <ChartOptionsContent />
+</InfoPanel>
 
 <Modal @ref="aggregationOptionsModal">
     <ModalContent Size="ModalSize.Large">

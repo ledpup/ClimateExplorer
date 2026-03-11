@@ -31,8 +31,8 @@ public partial class ChartView
     private BinIdentifier? chartStartBin;
     private BinIdentifier? chartEndBin;
 
-    private Modal? chartOptionsModal;
     private Modal? aggregationOptionsModal;
+    private InfoPanel? chartOptionsInfoPanel;
 
     private string? groupingThresholdText;
 
@@ -963,7 +963,7 @@ public partial class ChartView
 
     private Task ShowChartOptionsInfo()
     {
-        return chartOptionsModal!.Show();
+        return chartOptionsInfoPanel!.ShowAsync();
     }
 
     private Task ShowAggregationOptionsInfo()

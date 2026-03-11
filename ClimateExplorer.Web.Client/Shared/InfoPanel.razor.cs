@@ -19,26 +19,34 @@ public partial class InfoPanel : ComponentBase
     public string Title { get; set; } = string.Empty;
 
     [Parameter]
+    public string Height { get; set; } = "30%";
+
+    [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
     [Inject]
     private IInfoPanelDismissalService DismissalService { get; set; } = default!;
 
+    public async Task ShowAsync()
+    {
+        isVisible = true;
+        isAnimatingIn = true;
+        StateHasChanged();
+
+        await Task.Delay(50);
+        isAnimatingIn = false;
+        StateHasChanged();
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (firstRender && !string.IsNullOrEmpty(PanelName))
         {
             var shouldShow = await DismissalService.ShouldShowAsync(PanelName, Version);
 
             if (shouldShow)
             {
-                isVisible = true;
-                isAnimatingIn = true;
-                StateHasChanged();
-
-                await Task.Delay(50);
-                isAnimatingIn = false;
-                StateHasChanged();
+                await ShowAsync();
             }
         }
     }
@@ -53,7 +61,11 @@ public partial class InfoPanel : ComponentBase
         isVisible = false;
         isAnimatingOut = false;
 
-        await DismissalService.DismissAsync(PanelName, Version);
+        if (!string.IsNullOrEmpty(PanelName))
+        {
+            await DismissalService.DismissAsync(PanelName, Version);
+        }
+
         StateHasChanged();
     }
 }
