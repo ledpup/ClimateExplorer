@@ -21,6 +21,7 @@
     transition: transform 0.4s ease;
     display: flex;
     flex-direction: column;
+    max-width: 1200px;
 }
 
 .info-panel.slide-in {
