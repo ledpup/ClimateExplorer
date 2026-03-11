@@ -50,7 +50,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     protected virtual string? PageTitle { get; }
     protected virtual string? PageUrl { get; }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Logger!.LogInformation("Instance " + componentInstanceId + " disposing");
         NavManager!.LocationChanged -= HandleNavigationLocationChanged!;

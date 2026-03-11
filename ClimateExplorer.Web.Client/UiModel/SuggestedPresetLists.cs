@@ -389,7 +389,6 @@ public static class SuggestedPresetLists
                                 DisplayStyle = SeriesDisplayStyle.Bar,
                                 SeriesTransformation = SeriesTransformations.EqualOrAbove25,
                                 MinimumDataResolution = DataResolution.Daily,
-                                RequestedColour = UiLogic.Colours.Green,
                             },
                         ],
                     },

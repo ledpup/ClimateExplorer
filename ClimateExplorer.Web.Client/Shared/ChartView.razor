@@ -73,7 +73,7 @@
 
 <Modal @ref="OptionsModal">
     <ModalContent>
-        <ModalHeader Background="Background.Light">
+        <ModalHeader Class="custom-modal-header">
             <ModalTitle>Aggregation options</ModalTitle>
             <div class="info-icon">
                 <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowAggregationOptionsInfo></i>
@@ -124,21 +124,13 @@
     </ModalContent>
 </Modal>
 
-<Modal @ref="chartOptionsModal">
-    <ModalContent Size="ModalSize.Large">
-        <ModalHeader>
-            <ModalTitle>Chart options information</ModalTitle>
-            <CloseButton />
-        </ModalHeader>
-        <ModalBody>
-            <ChartOptionsContent />
-        </ModalBody>
-    </ModalContent>
-</Modal>
+<InfoPanel @ref="chartOptionsInfoPanel" Title="Chart options information" Height="60vh">
+    <ChartOptionsContent />
+</InfoPanel>
 
 <Modal @ref="aggregationOptionsModal">
     <ModalContent Size="ModalSize.Large">
-        <ModalHeader>
+        <ModalHeader Class="custom-modal-header">
             <ModalTitle>Aggregation options information</ModalTitle>
             <CloseButton />
         </ModalHeader>

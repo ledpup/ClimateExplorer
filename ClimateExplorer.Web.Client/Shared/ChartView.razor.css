@@ -85,6 +85,7 @@
     margin-bottom: 16px;
     display: inline-block;
     box-shadow: rgb(0 0 0 / 20%) 0px 0px 4px;
+    vertical-align: baseline;
 }
 
     .chart-controls .chart-control i {

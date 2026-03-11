@@ -20,7 +20,7 @@
 {
     <Modal @ref="popup" Closing="@OnModalClosing">
         <ModalContent Size="ModalSize.Large">
-            <ModalHeader>
+            <ModalHeader Class="custom-modal-header">
                 <ModalTitle>
                     @(string.IsNullOrWhiteSpace(PopupTitle) ? Label : PopupTitle)
                 </ModalTitle>
