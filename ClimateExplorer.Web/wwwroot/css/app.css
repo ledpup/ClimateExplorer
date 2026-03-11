@@ -134,6 +134,7 @@ th {
 }
 
 .info-panel[data-panel-name="home-overview"] .chart-controls .chart-control {
+    margin: 0px 4px 0px 4px;
     vertical-align: baseline;
 }
 

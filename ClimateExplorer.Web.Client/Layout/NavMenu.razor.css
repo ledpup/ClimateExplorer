@@ -79,4 +79,8 @@
     cursor: pointer;
     padding: 0 8px;
     vertical-align: middle;
+    display: inline-flex;
+    align-items: center;
+    height: 21px;
+    overflow: hidden;
 }
