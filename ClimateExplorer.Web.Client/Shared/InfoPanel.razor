@@ -3,7 +3,7 @@
 @if (isVisible)
 {
     <div class="info-panel-overlay" @onclick="DismissAsync">
-        <div class="info-panel @(isAnimatingIn ? "slide-in" : "") @(isAnimatingOut ? "slide-out" : "")"
+        <div class="info-panel @(isAnimatingIn ? "slide-in" : "") @(isAnimatingOut ? "slide-out" : "")" data-panel-name="@PanelName"
              style="height: @Height"
              @onclick:stopPropagation="true">
             <div class="info-panel-header">
