@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 2023,
     "Month": 7,
-    "Value": 17.95,
+    "Value": 18.22,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1937,
     "Month": 1,
-    "Value": -11.51,
+    "Value": -11.48,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 1955,
     "Month": 10,
     "Value": 0,
-    "NumberOfTimes": 10
+    "NumberOfTimes": 11
   },
   {
     "DataType": 0,
@@ -97,7 +97,7 @@
     "Month": 8,
     "Day": 8,
     "Value": 14.4,
-    "NumberOfTimes": 1
+    "NumberOfTimes": 2
   },
   {
     "DataType": 1,
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 2,
     "Value": 0,
-    "NumberOfTimes": 18913
+    "NumberOfTimes": 19220
   }
 ]

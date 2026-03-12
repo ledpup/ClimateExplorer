@@ -5,9 +5,9 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 1946,
-    "Month": 8,
-    "Value": 23.66,
+    "Year": 2025,
+    "Month": 7,
+    "Value": 24.86,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1922,
     "Month": 1,
-    "Value": -16.52,
+    "Value": -16.26,
     "NumberOfTimes": 1
   },
   {
@@ -27,9 +27,9 @@
     "DataAdjustment": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 1946,
-    "Month": 8,
-    "Value": 23.65,
+    "Year": 2025,
+    "Month": 7,
+    "Value": 24.86,
     "NumberOfTimes": 1
   },
   {
@@ -69,10 +69,10 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 1976,
+    "Year": 2025,
     "Month": 7,
-    "Day": 26,
-    "Value": 37.4,
+    "Day": 24,
+    "Value": 37.7,
     "NumberOfTimes": 1
   },
   {
@@ -93,10 +93,10 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 1973,
+    "Year": 2025,
     "Month": 7,
-    "Day": 15,
-    "Value": 22.9,
+    "Day": 22,
+    "Value": 24.9,
     "NumberOfTimes": 1
   },
   {

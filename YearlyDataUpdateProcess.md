@@ -21,6 +21,7 @@ ClimateExplorer data is updated yearly, usually from mid-January. All data is so
 1. Clear the Output folder from **ClimateExplorer.Data.Ghcnm** (it has cached files that it'll re-use if you miss this step, so you won't get the latest data). This is only required if you ran ClimateExplorer.Data.Ghcnm for last year
 1. Run **ClimateExplorer.Data.Ghcnm** (this downloads all of GHCNm and then selects the most appriopriate sites using a clustering algorithm)
 1. Run **ClimateExplorer.Data.Ghcnm.Precipitation** (gets precipitation for the sites selected as part of ClimateExplorer.Data.Ghcnm)
+1.  - May need to update Folders.cs property SelectedStationsFile for the current version of .NET before running this step.
 1. Run **ClimateExplorer.Data.Ghcnd** (gets the daily temperature and precipitation for the sites selected as part of ClimateExplorer.Data.Ghcnm)
 1. Build **ClimateExplorer.DataPipeline** (will update Temperature.zip and Precipitation.zip)
 1. Run **ClimateExplorer.DataPipeline** (will create the GCHNd zip files - CachingTool will almost certainly break if you forget this step)

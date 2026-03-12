@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 1944,
     "Month": 7,
-    "Value": 25.7,
+    "Value": 25.62,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1934,
     "Month": 1,
-    "Value": -10.3,
+    "Value": -10.38,
     "NumberOfTimes": 1
   },
   {
@@ -62,6 +62,54 @@
     "Month": 8,
     "Value": 0,
     "NumberOfTimes": 32
+  },
+  {
+    "DataType": 0,
+    "RecordType": 0,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 2025,
+    "Month": 7,
+    "Day": 4,
+    "Value": 38.6,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 0,
+    "RecordType": 1,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 2025,
+    "Month": 1,
+    "Day": 23,
+    "Value": -4.7,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 1,
+    "RecordType": 0,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 2025,
+    "Month": 6,
+    "Day": 18,
+    "Value": 23,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 1,
+    "RecordType": 1,
+    "DataAdjustment": 0,
+    "DataResolution": 3,
+    "UnitOfMeasure": 0,
+    "Year": 2025,
+    "Month": 1,
+    "Day": 23,
+    "Value": -13.4,
+    "NumberOfTimes": 1
   },
   {
     "DataType": 3,

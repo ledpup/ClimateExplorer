@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1955,
     "Month": 1,
-    "Value": -8.93,
+    "Value": -8.88,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 1955,
     "Month": 6,
     "Value": 0,
-    "NumberOfTimes": 132
+    "NumberOfTimes": 133
   },
   {
     "DataType": 0,
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 2,
     "Value": 0,
-    "NumberOfTimes": 23008
+    "NumberOfTimes": 23337
   }
 ]

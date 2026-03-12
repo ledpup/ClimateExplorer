@@ -50,7 +50,7 @@
     "UnitOfMeasure": 2,
     "Year": 2024,
     "Month": 10,
-    "Value": 123,
+    "Value": 122.7,
     "NumberOfTimes": 1
   },
   {
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 30,
     "Value": 0,
-    "NumberOfTimes": 14026
+    "NumberOfTimes": 14140
   }
 ]

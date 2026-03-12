@@ -48,9 +48,9 @@
     "RecordType": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 2,
-    "Year": 1985,
-    "Month": 10,
-    "Value": 308.4,
+    "Year": 2024,
+    "Month": 11,
+    "Value": 324.6,
     "NumberOfTimes": 1
   },
   {
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 1,
     "Value": 0,
-    "NumberOfTimes": 14678
+    "NumberOfTimes": 14793
   }
 ]

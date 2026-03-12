@@ -7,8 +7,8 @@
     "UnitOfMeasure": 0,
     "Year": 1960,
     "Month": 1,
-    "Value": 25.6,
-    "NumberOfTimes": 2
+    "Value": 25.71,
+    "NumberOfTimes": 1
   },
   {
     "DataType": 2,
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1916,
     "Month": 6,
-    "Value": 4.02,
+    "Value": 4.42,
     "NumberOfTimes": 1
   },
   {
@@ -48,9 +48,9 @@
     "RecordType": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 2,
-    "Year": 1914,
-    "Month": 4,
-    "Value": 270,
+    "Year": 2025,
+    "Month": 3,
+    "Value": 386,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 1861,
     "Month": 1,
     "Value": 0,
-    "NumberOfTimes": 60
+    "NumberOfTimes": 59
   },
   {
     "DataType": 0,

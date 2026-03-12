@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 1995,
     "Month": 6,
-    "Value": 37.82,
+    "Value": 37.89,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1905,
     "Month": 2,
-    "Value": 11.27,
+    "Value": 11.42,
     "NumberOfTimes": 1
   },
   {
@@ -93,10 +93,10 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 2014,
+    "Year": 2025,
     "Month": 6,
-    "Day": 9,
-    "Value": 34.7,
+    "Day": 12,
+    "Value": 35.8,
     "NumberOfTimes": 1
   },
   {

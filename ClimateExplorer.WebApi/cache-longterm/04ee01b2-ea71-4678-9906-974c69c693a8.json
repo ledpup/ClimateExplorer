@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 2012,
     "Month": 7,
-    "Value": 24.5,
+    "Value": 24.87,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1896,
     "Month": 1,
-    "Value": -12.91,
+    "Value": -12.38,
     "NumberOfTimes": 1
   },
   {
@@ -81,10 +81,10 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 1963,
-    "Month": 1,
-    "Day": 18,
-    "Value": -18.1,
+    "Year": 2024,
+    "Month": 11,
+    "Day": 29,
+    "Value": -999,
     "NumberOfTimes": 1
   },
   {
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 1,
     "Value": 0,
-    "NumberOfTimes": 14321
+    "NumberOfTimes": 14516
   }
 ]

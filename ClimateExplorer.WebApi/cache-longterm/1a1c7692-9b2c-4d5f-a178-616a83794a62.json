@@ -5,9 +5,9 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 2015,
+    "Year": 2020,
     "Month": 6,
-    "Value": 23.1,
+    "Value": 23.05,
     "NumberOfTimes": 1
   },
   {
@@ -16,9 +16,9 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 1975,
-    "Month": 12,
-    "Value": 6.25,
+    "Year": 1963,
+    "Month": 1,
+    "Value": 6.62,
     "NumberOfTimes": 1
   },
   {

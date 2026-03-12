@@ -5,9 +5,9 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 1921,
+    "Year": 2019,
     "Month": 5,
-    "Value": 35.44,
+    "Value": 35.15,
     "NumberOfTimes": 1
   },
   {
@@ -18,8 +18,8 @@
     "UnitOfMeasure": 0,
     "Year": 1908,
     "Month": 12,
-    "Value": 19.45,
-    "NumberOfTimes": 1
+    "Value": 19.08,
+    "NumberOfTimes": 2
   },
   {
     "DataType": 2,

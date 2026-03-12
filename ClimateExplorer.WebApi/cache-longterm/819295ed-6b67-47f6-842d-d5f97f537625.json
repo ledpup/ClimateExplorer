@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1990,
     "Month": 12,
-    "Value": 4.83,
+    "Value": 4.74,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 1949,
     "Month": 9,
     "Value": 0,
-    "NumberOfTimes": 246
+    "NumberOfTimes": 250
   },
   {
     "DataType": 0,
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 1,
     "Value": 0,
-    "NumberOfTimes": 25817
+    "NumberOfTimes": 26160
   }
 ]

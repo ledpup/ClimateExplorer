@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 2006,
     "Month": 7,
-    "Value": 23.64,
+    "Value": 23.56,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1956,
     "Month": 2,
-    "Value": -8.53,
+    "Value": -8.61,
     "NumberOfTimes": 1
   },
   {
@@ -111,6 +111,6 @@
     "Month": 1,
     "Day": 4,
     "Value": 0,
-    "NumberOfTimes": 13709
+    "NumberOfTimes": 13916
   }
 ]

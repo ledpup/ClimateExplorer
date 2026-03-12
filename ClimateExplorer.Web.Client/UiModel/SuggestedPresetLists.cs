@@ -106,7 +106,7 @@ public static class SuggestedPresetLists
                                 },
                             ],
                     },
-                    new SuggestedChartPresetModelWithVariants()
+                    new SuggestedChartPresetModel()
                     {
                         Title = "Adjusted vs raw temperature",
                         Description = "Compare temperature values that have been adjusted for abnormalities with raw values",
@@ -371,7 +371,7 @@ public static class SuggestedPresetLists
                 ],
                 Variants =
                 [
-                    new SuggestedChartPresetModelWithVariants()
+                    new SuggestedChartPresetModel()
                     {
                         Title = "Hot nights",
                         Description = "Number of days when the minimum temperature is 25°C or above",
@@ -392,7 +392,7 @@ public static class SuggestedPresetLists
                             },
                         ],
                     },
-                    new SuggestedChartPresetModelWithVariants()
+                    new SuggestedChartPresetModel()
                     {
                         Title = "First and last day of frost",
                         Description = "First and last day of the year that has temperature ≤ 2.2°C",
@@ -425,6 +425,25 @@ public static class SuggestedPresetLists
                                 SeriesTransformation = SeriesTransformations.DayOfYearIfFrost,
                                 MinimumDataResolution = DataResolution.Daily,
                                 RequestedColour = UiLogic.Colours.Purple,
+                            },
+                        ],
+                    },
+                    new SuggestedChartPresetModel()
+                    {
+                        Title = "Maximum temperatures",
+                        Description = "Highest maximum daily temperature for each year",
+                        ChartSeriesList =
+                        [
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, dailyTempMax!),
+                                Aggregation = SeriesAggregationOptions.Maximum,
+                                BinGranularity = BinGranularities.ByYear,
+                                ShowTrendline = false,
+                                Smoothing = SeriesSmoothingOptions.None,
+                                SmoothingWindow = 5,
+                                Value = SeriesValueOptions.Value,
                             },
                         ],
                     },

@@ -260,8 +260,8 @@ public class DataSetDefinitionsBuilder
                 Description = @"The Niño 3.4 index is calculated as a 3-month running average of sea surface temperature measurements around the equator in the East Pacific (5 deg N to 5 deg C, 170 deg W to 120 deg W), and then expressed as an anomaly (i.e. difference from the average).
 
                     Niño 3.4 conditions of +0.4 deg C or higher are considered El Niño, and -0.4 deg C or lower are considered La Niña.",
-                MoreInformationUrl = "https://climatedataguide.ucar.edu/climate-data/nino-sst-indices-nino-12-3-34-4-oni-and-tni",
-                DataDownloadUrl = "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/nino34.long.anom.data",
+                MoreInformationUrl = "https://psl.noaa.gov/data/timeseries/month/",
+                DataDownloadUrl = "https://psl.noaa.gov/data/timeseries/month/data/nino34.long.anom.data",
                 MeasurementDefinitions =
                 [
                     new ()
@@ -393,7 +393,7 @@ public class DataSetDefinitionsBuilder
                 ShortName = "Arctic sea ice extent",
                 Description = "The daily Sea Ice Index provides a quick look at Arctic-wide changes in sea ice. It provides consistently processed daily ice extent and concentration images and data since 1979.",
                 MoreInformationUrl = "https://nsidc.org/data/seaice_index/",
-                DataDownloadUrl = "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v3.0.csv",
+                DataDownloadUrl = "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v4.0.csv",
                 MeasurementDefinitions =
                 [
                     new ()
@@ -404,7 +404,7 @@ public class DataSetDefinitionsBuilder
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d+),\s+(?<month>\d+),\s+(?<day>\d+),\s+(?<value>\d+\.\d+).*$",
                         FolderName = @"Ice",
-                        FileNameFormat = "N_seaice_extent_daily_v3.0.csv",
+                        FileNameFormat = "N_seaice_extent_daily_v4.0.csv",
                     },
                 ],
             },
@@ -415,7 +415,7 @@ public class DataSetDefinitionsBuilder
                 ShortName = "Antarctic sea ice extent",
                 Description = "The daily Sea Ice Index provides a quick look at Antarctic-wide changes in sea ice. It provides consistently processed daily ice extent and concentration images and data since 1979.",
                 MoreInformationUrl = "https://nsidc.org/data/seaice_index/",
-                DataDownloadUrl = "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/south/daily/data/S_seaice_extent_daily_v3.0.csv",
+                DataDownloadUrl = "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/south/daily/data/S_seaice_extent_daily_v4.0.csv",
                 MeasurementDefinitions =
                 [
                     new ()
@@ -426,7 +426,7 @@ public class DataSetDefinitionsBuilder
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d+),\s+(?<month>\d+),\s+(?<day>\d+),\s+(?<value>\d+\.\d+).*$",
                         FolderName = @"Ice",
-                        FileNameFormat = "S_seaice_extent_daily_v3.0.csv",
+                        FileNameFormat = "S_seaice_extent_daily_v4.0.csv",
                     },
                 ],
             },
@@ -544,7 +544,7 @@ Our aim is to provide climate science and services to people and organisations, 
                 Description = "The Solar Irradiance Climate Data Record (CDR) includes a composite observational record of total solar irradiance (TSI) constructed from space-based radiometer composite records between 1978 and 2014 and Total Irradiance Monitor (TIM) observations after the launch of the SOlar Radiation and Climate Experiment (SORCE). The SORCE TIM record ended Feb 25, 2020. The TSIS-1 TIM record began Jan 11, 2018.",
                 Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
                 MoreInformationUrl = "https://www.ncei.noaa.gov/products/climate-data-records/total-solar-irradiance",
-                DataDownloadUrl = "https://www.ncei.noaa.gov/data/total-solar-irradiance/access/ancillary-data/tsi-ssi_v03r00_observed-tsi-composite_s19780101_e20240630_c20240920.txt",
+                DataDownloadUrl = "https://www.ncei.noaa.gov/data/total-solar-irradiance/access/ancillary-data/tsi-ssi_v03r00_observed-tsi-composite_s19780101_e20250630_c20250917.txt",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -582,7 +582,7 @@ The reference period used to calculate the anomalies is 1971–2000.",
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d{4})\s+(?<month>\d+)\s+(?<value>-?\d+\.\d+).*$",
                         FolderName = @"Temperature\NOAAGlobalTemp",
-                        FileNameFormat = "aravg.mon.[station].v6.0.0.202412.asc",
+                        FileNameFormat = "aravg.mon.[station].v6.0.0.202512.asc",
                         NullValue = null,
                     },
                 ],
@@ -608,7 +608,7 @@ The reference period used to calculate the anomalies is 1971–2000.",
                         DataAdjustment = null,
                         DataRowRegEx = @"^\""(?<station>\w+)\"",.*,(?<year>\d{4}),(?<value>\d+\.\d+),.*$",
                         FolderName = @"Atmosphere",
-                        FileNameFormat = "GCB2024v18_MtCO2_flat.csv",
+                        FileNameFormat = "GCB2025v15_MtCO2_flat.csv",
                         NullValue = null,
                     },
                 ],

@@ -46,26 +46,6 @@
   {
     "DataType": 3,
     "RecordType": 0,
-    "DataResolution": 1,
-    "UnitOfMeasure": 2,
-    "Year": 1995,
-    "Month": 9,
-    "Value": 299,
-    "NumberOfTimes": 1
-  },
-  {
-    "DataType": 3,
-    "RecordType": 1,
-    "DataResolution": 1,
-    "UnitOfMeasure": 2,
-    "Year": 1966,
-    "Month": 4,
-    "Value": 5.1,
-    "NumberOfTimes": 1
-  },
-  {
-    "DataType": 3,
-    "RecordType": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 2,
     "Year": 2014,

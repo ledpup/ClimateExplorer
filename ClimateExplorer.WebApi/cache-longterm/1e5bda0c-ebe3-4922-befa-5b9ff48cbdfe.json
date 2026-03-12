@@ -5,10 +5,10 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 2021,
+    "Year": 2003,
     "Month": 7,
-    "Value": 22.35,
-    "NumberOfTimes": 2
+    "Value": 22.38,
+    "NumberOfTimes": 1
   },
   {
     "DataType": 2,
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1949,
     "Month": 1,
-    "Value": -14.23,
+    "Value": -14.18,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 1893,
     "Month": 6,
     "Value": 0,
-    "NumberOfTimes": 42
+    "NumberOfTimes": 43
   },
   {
     "DataType": 0,
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 1,
     "Value": 0,
-    "NumberOfTimes": 29448
+    "NumberOfTimes": 29749
   }
 ]

@@ -44,6 +44,26 @@
     "NumberOfTimes": 1
   },
   {
+    "DataType": 3,
+    "RecordType": 0,
+    "DataResolution": 1,
+    "UnitOfMeasure": 2,
+    "Year": 1996,
+    "Month": 12,
+    "Value": 386.2,
+    "NumberOfTimes": 1
+  },
+  {
+    "DataType": 3,
+    "RecordType": 1,
+    "DataResolution": 1,
+    "UnitOfMeasure": 2,
+    "Year": 1903,
+    "Month": 8,
+    "Value": 0,
+    "NumberOfTimes": 252
+  },
+  {
     "DataType": 0,
     "RecordType": 0,
     "DataAdjustment": 0,
@@ -111,6 +131,6 @@
     "Month": 1,
     "Day": 1,
     "Value": 0,
-    "NumberOfTimes": 11334
+    "NumberOfTimes": 11596
   }
 ]

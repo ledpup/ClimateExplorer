@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 1921,
     "Month": 7,
-    "Value": 23.32,
+    "Value": 23.65,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1912,
     "Month": 1,
-    "Value": -17.4,
+    "Value": -17.07,
     "NumberOfTimes": 1
   },
   {
@@ -69,10 +69,10 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 1926,
-    "Month": 10,
-    "Day": 7,
-    "Value": 43.9,
+    "Year": 1936,
+    "Month": 7,
+    "Day": 13,
+    "Value": 39.4,
     "NumberOfTimes": 1
   },
   {
@@ -81,10 +81,10 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 1948,
-    "Month": 5,
-    "Day": 14,
-    "Value": -56.7,
+    "Year": 1899,
+    "Month": 2,
+    "Day": 8,
+    "Value": -24.4,
     "NumberOfTimes": 1
   },
   {
@@ -93,10 +93,10 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 1941,
-    "Month": 10,
-    "Day": 22,
-    "Value": 32.2,
+    "Year": 1938,
+    "Month": 8,
+    "Day": 1,
+    "Value": 23.3,
     "NumberOfTimes": 1
   },
   {
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 1,
     "Value": 0,
-    "NumberOfTimes": 20144
+    "NumberOfTimes": 20363
   }
 ]

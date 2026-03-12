@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 2018,
     "Month": 5,
-    "Value": 31.9,
+    "Value": 31.69,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1923,
     "Month": 2,
-    "Value": 24.76,
+    "Value": 24.81,
     "NumberOfTimes": 1
   },
   {
@@ -81,10 +81,10 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 2008,
-    "Month": 5,
-    "Day": 13,
-    "Value": 24.5,
+    "Year": 2025,
+    "Month": 8,
+    "Day": 24,
+    "Value": 24.4,
     "NumberOfTimes": 1
   },
   {
@@ -93,10 +93,10 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 1998,
+    "Year": 2025,
     "Month": 5,
-    "Day": 8,
-    "Value": 27.9,
+    "Day": 29,
+    "Value": 28.8,
     "NumberOfTimes": 1
   },
   {

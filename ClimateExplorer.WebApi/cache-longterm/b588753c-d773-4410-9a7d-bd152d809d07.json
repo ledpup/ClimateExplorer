@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1956,
     "Month": 2,
-    "Value": 5.21,
+    "Value": 5.33,
     "NumberOfTimes": 1
   },
   {
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 4,
     "Value": 0,
-    "NumberOfTimes": 16695
+    "NumberOfTimes": 16853
   }
 ]

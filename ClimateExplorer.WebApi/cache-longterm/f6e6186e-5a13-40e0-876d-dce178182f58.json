@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 2008,
     "Month": 1,
-    "Value": -6.96,
+    "Value": -6.79,
     "NumberOfTimes": 1
   },
   {
@@ -93,10 +93,10 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 2021,
+    "Year": 2025,
     "Month": 7,
-    "Day": 8,
-    "Value": 30.2,
+    "Day": 19,
+    "Value": 30.8,
     "NumberOfTimes": 1
   },
   {
