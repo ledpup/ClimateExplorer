@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1931,
     "Month": 1,
-    "Value": -25.43,
+    "Value": -25.64,
     "NumberOfTimes": 1
   },
   {
@@ -93,10 +93,10 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 1950,
-    "Month": 8,
-    "Day": 5,
-    "Value": 20.4,
+    "Year": 2025,
+    "Month": 7,
+    "Day": 22,
+    "Value": 20.7,
     "NumberOfTimes": 1
   },
   {
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 1,
     "Value": 0,
-    "NumberOfTimes": 25932
+    "NumberOfTimes": 26125
   }
 ]

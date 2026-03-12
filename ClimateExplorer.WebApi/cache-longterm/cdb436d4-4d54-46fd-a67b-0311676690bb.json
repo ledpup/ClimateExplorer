@@ -16,9 +16,9 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 1881,
-    "Month": 1,
-    "Value": 0.23,
+    "Year": 1947,
+    "Month": 2,
+    "Value": 0.4,
     "NumberOfTimes": 1
   },
   {
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 5,
     "Value": 0,
-    "NumberOfTimes": 11934
+    "NumberOfTimes": 12042
   }
 ]

@@ -16,10 +16,10 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 1971,
+    "Year": 1970,
     "Month": 12,
-    "Value": 15.39,
-    "NumberOfTimes": 2
+    "Value": 15.25,
+    "NumberOfTimes": 1
   },
   {
     "DataType": 2,

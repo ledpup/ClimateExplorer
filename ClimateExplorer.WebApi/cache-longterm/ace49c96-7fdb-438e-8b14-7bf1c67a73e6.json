@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1987,
     "Month": 1,
-    "Value": -21.34,
+    "Value": -21.19,
     "NumberOfTimes": 1
   },
   {
@@ -58,9 +58,9 @@
     "RecordType": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 2,
-    "Year": 1994,
-    "Month": 2,
-    "Value": 2.3,
+    "Year": 2024,
+    "Month": 5,
+    "Value": 0.7,
     "NumberOfTimes": 1
   },
   {
@@ -73,7 +73,7 @@
     "Month": 7,
     "Day": 17,
     "Value": 32.3,
-    "NumberOfTimes": 1
+    "NumberOfTimes": 2
   },
   {
     "DataType": 0,
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 2,
     "Value": 0,
-    "NumberOfTimes": 13898
+    "NumberOfTimes": 14115
   }
 ]

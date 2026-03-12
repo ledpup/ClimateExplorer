@@ -69,10 +69,10 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 2019,
-    "Month": 7,
-    "Day": 23,
-    "Value": 41.2,
+    "Year": 2025,
+    "Month": 8,
+    "Day": 11,
+    "Value": 41.6,
     "NumberOfTimes": 1
   },
   {
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 3,
     "Value": 0,
-    "NumberOfTimes": 23566
+    "NumberOfTimes": 23721
   }
 ]

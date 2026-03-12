@@ -5,9 +5,9 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 2016,
+    "Year": 2022,
     "Month": 8,
-    "Value": 13.35,
+    "Value": 13.5,
     "NumberOfTimes": 1
   },
   {
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 5,
     "Value": 0,
-    "NumberOfTimes": 12923
+    "NumberOfTimes": 13030
   }
 ]

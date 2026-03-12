@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 2023,
     "Month": 3,
-    "Value": 31.15,
+    "Value": 30.3,
     "NumberOfTimes": 1
   },
   {
@@ -61,7 +61,7 @@
     "Year": 1912,
     "Month": 12,
     "Value": 0,
-    "NumberOfTimes": 32
+    "NumberOfTimes": 33
   },
   {
     "DataType": 3,

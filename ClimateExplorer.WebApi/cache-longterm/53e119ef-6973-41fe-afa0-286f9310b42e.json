@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 2004,
     "Month": 8,
-    "Value": 17.05,
+    "Value": 16.97,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1969,
     "Month": 1,
-    "Value": -5.23,
+    "Value": -4.95,
     "NumberOfTimes": 1
   },
   {
@@ -69,11 +69,11 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 1976,
-    "Month": 7,
-    "Day": 30,
-    "Value": 31.1,
-    "NumberOfTimes": 2
+    "Year": 2025,
+    "Month": 2,
+    "Day": 23,
+    "Value": 43.9,
+    "NumberOfTimes": 1
   },
   {
     "DataType": 0,
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 4,
     "Value": 0,
-    "NumberOfTimes": 10181
+    "NumberOfTimes": 10303
   }
 ]

@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 2023,
     "Month": 8,
-    "Value": 30.35,
+    "Value": 30.07,
     "NumberOfTimes": 1
   },
   {
@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1958,
     "Month": 2,
-    "Value": 15.2,
+    "Value": 15.01,
     "NumberOfTimes": 1
   },
   {
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 1,
     "Value": 0,
-    "NumberOfTimes": 17751
+    "NumberOfTimes": 18008
   }
 ]

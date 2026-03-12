@@ -61,7 +61,7 @@
     "Year": 1935,
     "Month": 5,
     "Value": 0,
-    "NumberOfTimes": 84
+    "NumberOfTimes": 85
   },
   {
     "DataType": 0,
@@ -93,10 +93,10 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 1998,
-    "Month": 8,
-    "Day": 4,
-    "Value": 28.2,
+    "Year": 2025,
+    "Month": 7,
+    "Day": 25,
+    "Value": 28.6,
     "NumberOfTimes": 1
   },
   {

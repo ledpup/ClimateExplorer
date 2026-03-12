@@ -18,7 +18,7 @@
     "UnitOfMeasure": 0,
     "Year": 1985,
     "Month": 2,
-    "Value": -18.55,
+    "Value": -18.57,
     "NumberOfTimes": 1
   },
   {
@@ -116,10 +116,10 @@
     "RecordType": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 2,
-    "Year": 1979,
-    "Month": 6,
-    "Day": 22,
-    "Value": 102.4,
+    "Year": 2025,
+    "Month": 5,
+    "Day": 28,
+    "Value": 109.1,
     "NumberOfTimes": 1
   },
   {
@@ -131,6 +131,6 @@
     "Month": 1,
     "Day": 4,
     "Value": 0,
-    "NumberOfTimes": 12399
+    "NumberOfTimes": 12576
   }
 ]

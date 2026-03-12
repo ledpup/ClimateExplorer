@@ -7,7 +7,7 @@
     "UnitOfMeasure": 0,
     "Year": 1954,
     "Month": 2,
-    "Value": 25.91,
+    "Value": 27.62,
     "NumberOfTimes": 1
   },
   {
@@ -16,9 +16,9 @@
     "DataAdjustment": 1,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 1982,
-    "Month": 7,
-    "Value": 16.42,
+    "Year": 2023,
+    "Month": 9,
+    "Value": 17.75,
     "NumberOfTimes": 1
   },
   {
@@ -27,10 +27,10 @@
     "DataAdjustment": 0,
     "DataResolution": 1,
     "UnitOfMeasure": 0,
-    "Year": 2009,
+    "Year": 2025,
     "Month": 2,
-    "Value": 25.9,
-    "NumberOfTimes": 2
+    "Value": 25.92,
+    "NumberOfTimes": 1
   },
   {
     "DataType": 2,

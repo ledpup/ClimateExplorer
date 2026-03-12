@@ -73,11 +73,11 @@
     "DataAdjustment": 0,
     "DataResolution": 3,
     "UnitOfMeasure": 0,
-    "Year": 1986,
+    "Year": 2025,
     "Month": 7,
-    "Day": 25,
-    "Value": 18.2,
-    "NumberOfTimes": 2
+    "Day": 20,
+    "Value": 19.1,
+    "NumberOfTimes": 1
   },
   {
     "DataType": 1,

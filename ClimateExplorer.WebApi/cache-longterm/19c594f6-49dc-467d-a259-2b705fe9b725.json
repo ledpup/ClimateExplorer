@@ -44,26 +44,6 @@
     "NumberOfTimes": 1
   },
   {
-    "DataType": 3,
-    "RecordType": 0,
-    "DataResolution": 1,
-    "UnitOfMeasure": 2,
-    "Year": 1966,
-    "Month": 10,
-    "Value": 249.6,
-    "NumberOfTimes": 1
-  },
-  {
-    "DataType": 3,
-    "RecordType": 1,
-    "DataResolution": 1,
-    "UnitOfMeasure": 2,
-    "Year": 2009,
-    "Month": 6,
-    "Value": 0,
-    "NumberOfTimes": 2
-  },
-  {
     "DataType": 0,
     "RecordType": 0,
     "DataAdjustment": 0,
