@@ -11,8 +11,7 @@ public interface IInfoPanelDismissalService
 public class InfoPanelDismissalService : IInfoPanelDismissalService
 {
     private const string StorageKey = "infoPanelDismissals";
-    private static readonly TimeSpan SameVersionCooldown = TimeSpan.FromDays(365);
-    private static readonly TimeSpan NewVersionCooldown = TimeSpan.FromDays(90);
+    private static readonly TimeSpan Cooldown = TimeSpan.FromDays(365);
 
     private readonly ILocalStorageService localStorage;
 
@@ -35,10 +34,10 @@ public class InfoPanelDismissalService : IInfoPanelDismissalService
 
         if (entry.Version == version)
         {
-            return elapsed >= SameVersionCooldown;
+            return elapsed >= Cooldown;
         }
 
-        return elapsed >= NewVersionCooldown;
+        return true;
     }
 
     public async Task DismissAsync(string panelName, string version)
