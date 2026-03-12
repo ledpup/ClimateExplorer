@@ -37,8 +37,8 @@
                         <td>
                             <Select TValue="SeriesAggregationOptions" 
                                     Size="Size.Small"
-                                    SelectedValue="@ChartSeries.Aggregation"
-                                    SelectedValueChanged="@OnAggregationChanged"
+                                    Value="@ChartSeries.Aggregation"
+                                    ValueChanged="@OnAggregationChanged"
                                     Disabled="@ShouldDisableAggregationOptions(ChartSeries)">
                                 <SelectItem Value="SeriesAggregationOptions.Mean">Mean</SelectItem>
                                 <SelectItem Value="SeriesAggregationOptions.Minimum">Minimum</SelectItem>
@@ -60,8 +60,8 @@
                         <td>
                             <Select TValue="SecondaryCalculationOptions"
                                     Size="Size.Small"
-                                SelectedValue="@ChartSeries.SecondaryCalculation"
-                                SelectedValueChanged="@OnSecondaryCalculationChanged">
+                                    Value="@ChartSeries.SecondaryCalculation"
+                                    ValueChanged="@OnSecondaryCalculationChanged">
                                 <SelectItem Value="SecondaryCalculationOptions.None">None</SelectItem>
                                 <SelectItem Value="SecondaryCalculationOptions.AnnualChange">Annual change</SelectItem>
                             </Select>
@@ -72,8 +72,8 @@
                         <td>
                             <Select TValue="SeriesSmoothingOptions" 
                                     Size="Size.Small"
-                                    SelectedValue="@ChartSeries.Smoothing"
-                                    SelectedValueChanged="@OnSmoothingChanged">
+                                    Value="@ChartSeries.Smoothing"
+                                    ValueChanged="@OnSmoothingChanged">
                                 <SelectItem Value="SeriesSmoothingOptions.None">None</SelectItem>
                                 <SelectItem Value="SeriesSmoothingOptions.MovingAverage">Moving average</SelectItem>
                             </Select>
@@ -84,8 +84,8 @@
                         <td>
                             <Select TValue="int"
                                     Size="Size.Small"
-                                    SelectedValue="@ChartSeries.SmoothingWindow"
-                                    SelectedValueChanged="@OnSmoothingWindowChanged"
+                                    Value="@ChartSeries.SmoothingWindow"
+                                    ValueChanged="@OnSmoothingWindowChanged"
                                     Disabled="@ShouldDisableSmoothingWindow(ChartSeries)">
                                 <SelectItem Value="3">3</SelectItem>
                                 <SelectItem Value="5">5</SelectItem>
@@ -103,8 +103,8 @@
                         <td>
                             <Select TValue="SeriesValueOptions" 
                                     Size="Size.Small"
-                                    SelectedValue="@ChartSeries.Value"
-                                    SelectedValueChanged="@OnValueChanged"
+                                    Value="@ChartSeries.Value"
+                                    ValueChanged="@OnValueChanged"
                                     Disabled="@ShouldDisableDisplay(ChartSeries)">
                                 <SelectItem Value="SeriesValueOptions.Value">Value</SelectItem>
                                 <SelectItem Value="SeriesValueOptions.Anomaly">Anomaly relative to mean</SelectItem>
@@ -116,8 +116,8 @@
                         <td>
                             <Select TValue="SeriesTransformations" 
                                     Size="Size.Small"
-                                    SelectedValue="@ChartSeries.SeriesTransformation"
-                                    SelectedValueChanged="@OnTransformationChanged"
+                                    Value="@ChartSeries.SeriesTransformation"
+                                    ValueChanged="@OnTransformationChanged"
                                     Disabled="@ShouldDisableTransformation(ChartSeries)">
                                 <SelectItem Value="SeriesTransformations.Identity">Identity</SelectItem>
                                 <SelectItem Value="SeriesTransformations.Negate">Negate</SelectItem>
@@ -139,8 +139,8 @@
                         <td>
                             <Select TValue="SeriesDisplayStyle" 
                                     Size="Size.Small"
-                                    SelectedValue="@ChartSeries.DisplayStyle"
-                                    SelectedValueChanged="@OnDisplayStyleChanged">
+                                    Value="@ChartSeries.DisplayStyle"
+                                    ValueChanged="@OnDisplayStyleChanged">
                                 <SelectItem Value="SeriesDisplayStyle.Line">Line</SelectItem>
                                 <SelectItem Value="SeriesDisplayStyle.Bar">Bar</SelectItem>
                             </Select>
@@ -151,8 +151,8 @@
                         <td>
                             <Select TValue="Colours"
                                     Size="Size.Small"
-                                    SelectedValue="@ChartSeries.RequestedColour"
-                                    SelectedValueChanged="@OnColourChanged"
+                                    Value="@ChartSeries.RequestedColour"
+                                    ValueChanged="@OnColourChanged"
                                     Disabled="@(ChartSeries.DisplayStyle == SeriesDisplayStyle.Bar)">
                                     @foreach (var colour in (Colours[])Enum.GetValues(typeof(Colours)))
                                     {
@@ -164,13 +164,13 @@
                     <tr>
                         <td>Show trendline</td>
                         <td>
-                            <Check TValue="bool" Checked="@ChartSeries.ShowTrendline" CheckedChanged="@OnShowTrendlineChanged"></Check>
+                            <Check TValue="bool" Value="@ChartSeries.ShowTrendline" ValueChanged="@OnShowTrendlineChanged"></Check>
                         </td>
                     </tr>
                     <tr>
                         <td>Lock?</td>
                         <td>
-                            <Check TValue="bool" Checked="@ChartSeries.IsLocked" CheckedChanged="@OnIsLockedChanged"></Check>
+                            <Check TValue="bool" Value="@ChartSeries.IsLocked" ValueChanged="@OnIsLockedChanged"></Check>
                         </td>
                     </tr>
                 </table>

@@ -84,7 +84,7 @@
             <Field>
                 <strong>Grouping days</strong>
 
-                <Select TValue="short" SelectedValue="@SelectedGroupingDays" SelectedValueChanged="@OnSelectedGroupingDaysChanged">
+                <Select TValue="short" Value="@SelectedGroupingDays" ValueChanged="@OnSelectedGroupingDaysChanged">
                     <SelectItem Value="5">@GroupingDaysText(5)</SelectItem>
                     <SelectItem Value="7">@GroupingDaysText(7)</SelectItem>
                     <SelectItem Value="13">@GroupingDaysText(13)</SelectItem>
@@ -98,7 +98,7 @@
             </Field>
             <Field>
                 <strong>Threshold required to form a valid group (% percentage)</strong>
-                <TextEdit Text="@GroupingThresholdText" TextChanged="@OnGroupingThresholdTextChanged" MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
+                <TextInput Text="@GroupingThresholdText" ValueChanged="@OnGroupingThresholdTextChanged" MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
             </Field>
             <Field>
                 <Text>
