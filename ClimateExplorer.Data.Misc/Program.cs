@@ -87,7 +87,7 @@ await GreenlandApiClient.GetMeltDataAndSave(httpClient, logger);
  * IMPORTANT: you need to update FileNameFormat property in the measurement definition (in DataSetDefinitionsBuilder.cs) of NoaaGlobalTemp so that it is the same year and month.
  *
  */
-var noaaGlobalTempYear = "2024";
+var noaaGlobalTempYear = "2025";
 var noaaGlobalTempMonth = "12";
 
 var stations = NoaaGlobalTemp.DataFileMapping().LocationIdToDataFileMappings.Values.Select(x => x.Single().Id);
