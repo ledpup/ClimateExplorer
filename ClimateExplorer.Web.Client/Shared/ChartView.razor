@@ -128,14 +128,6 @@
     <ChartOptionsContent />
 </InfoPanel>
 
-<Modal @ref="aggregationOptionsModal">
-    <ModalContent Size="ModalSize.Large">
-        <ModalHeader Class="custom-modal-header">
-            <ModalTitle>Aggregation options information</ModalTitle>
-            <CloseButton />
-        </ModalHeader>
-        <ModalBody>
-            <AggregationOptionsContent />
-        </ModalBody>
-    </ModalContent>
-</Modal>
+<InfoPanel @ref="aggregationOptionsInfoPanel" Title="Aggregation options information" Height="60vh">
+    <AggregationOptionsContent />
+</InfoPanel>
