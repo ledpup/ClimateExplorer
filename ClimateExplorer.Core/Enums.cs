@@ -174,7 +174,7 @@ public static class Enums
             UnitOfMeasure.MegajoulesPerSquareMetre => "Megajoules per square metre (MJ/m²)",
             UnitOfMeasure.MillionSqKm => "Million square kilometres",
             UnitOfMeasure.SqKm => "Square kilometres (km²)",
-            UnitOfMeasure.Sn => "Sunsport number (Sn)",
+            UnitOfMeasure.Sn => "Sunspot number (Sn)",
             UnitOfMeasure.WattsPerSquareMetre => "Watts per square metre (W/m²)",
             UnitOfMeasure.MegaTonnes => "Megatonnes",
             UnitOfMeasure.AtmosphericTransmission => "Atmospheric transmission",
