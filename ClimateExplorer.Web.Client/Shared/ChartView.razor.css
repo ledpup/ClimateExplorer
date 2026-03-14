@@ -51,8 +51,7 @@
 
 ::deep .chart-controls .dropdown {
     text-decoration: none;
-    margin-bottom: 16px;
-    margin-right: 16px;
+    margin: 8px 16px 16px 8px;
     display: inline-block;
     top: -1px;
     border-radius: 8px;
@@ -79,10 +78,10 @@
     background-color: #f8f8f8;
     border-radius: 8px;
     margin-right: 16px;
+    margin-bottom: 16px;
     text-decoration: none;
     color: #425f59;
     cursor: pointer;
-    margin-bottom: 16px;
     display: inline-block;
     box-shadow: rgb(0 0 0 / 20%) 0px 0px 4px;
     vertical-align: baseline;

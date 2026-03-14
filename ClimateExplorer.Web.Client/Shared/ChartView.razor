@@ -39,11 +39,7 @@
                             <DropdownMenu>
                                 <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYear)">Yearly</DropdownItem>
                                 <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYearAndMonth)">Year + Month</DropdownItem>
-                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYearAndWeek)">Year + Week</DropdownItem>
-                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYearAndDay)">Year + Day</DropdownItem>
                                 <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly)">Month (ignoring year)</DropdownItem>
-                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.BySouthernHemisphereTemperateSeasonOnly)">Southern hemisphere temperate season only (ignoring year)</DropdownItem>
-                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.BySouthernHemisphereTropicalSeasonOnly)">Southern hemisphere tropical season only (ignoring year)</DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
 
@@ -128,14 +124,6 @@
     <ChartOptionsContent />
 </InfoPanel>
 
-<Modal @ref="aggregationOptionsModal">
-    <ModalContent Size="ModalSize.Large">
-        <ModalHeader Class="custom-modal-header">
-            <ModalTitle>Aggregation options information</ModalTitle>
-            <CloseButton />
-        </ModalHeader>
-        <ModalBody>
-            <AggregationOptionsContent />
-        </ModalBody>
-    </ModalContent>
-</Modal>
+<InfoPanel @ref="aggregationOptionsInfoPanel" Title="Aggregation options information" Height="60vh">
+    <AggregationOptionsContent />
+</InfoPanel>

@@ -18,8 +18,8 @@
 
 @if (PopupContent != null)
 {
-    <Modal @ref="popup" Closing="@OnModalClosing">
-        <ModalContent Size="ModalSize.Large">
+    <Modal @ref="popup" Closing="@OnModalClosing" Size="ModalSize.Large">
+        <ModalContent>
             <ModalHeader Class="custom-modal-header">
                 <ModalTitle>
                     @(string.IsNullOrWhiteSpace(PopupTitle) ? Label : PopupTitle)

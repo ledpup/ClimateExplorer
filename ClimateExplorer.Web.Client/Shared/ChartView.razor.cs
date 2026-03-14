@@ -31,7 +31,7 @@ public partial class ChartView
     private BinIdentifier? chartStartBin;
     private BinIdentifier? chartEndBin;
 
-    private Modal? aggregationOptionsModal;
+    private InfoPanel? aggregationOptionsInfoPanel;
     private InfoPanel? chartOptionsInfoPanel;
 
     private string? groupingThresholdText;
@@ -968,7 +968,7 @@ public partial class ChartView
 
     private Task ShowAggregationOptionsInfo()
     {
-        return aggregationOptionsModal!.Show();
+        return aggregationOptionsInfoPanel!.ShowAsync();
     }
 
     private SourceSeriesSpecification BuildSourceSeriesSpecification(DataSetLibraryEntry.SourceSeriesSpecification sss, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions)
