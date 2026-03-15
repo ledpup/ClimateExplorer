@@ -9,6 +9,7 @@ public enum BinGranularities
     BySouthernHemisphereTemperateSeasonOnly,
     BySouthernHemisphereTropicalSeasonOnly,
     ByMonthOnly,
+    ByDayOnly,
 }
 
 public static class BinGranularityHelpers
@@ -37,6 +38,7 @@ public static class BinGranularityHelpers
             BinGranularities.BySouthernHemisphereTemperateSeasonOnly => "By season",
             BinGranularities.BySouthernHemisphereTropicalSeasonOnly => "By tropical season",
             BinGranularities.ByMonthOnly => "By month",
+            BinGranularities.ByDayOnly => "By day",
             _ => throw new NotImplementedException($"BinGranularities {b}"),
         };
     }

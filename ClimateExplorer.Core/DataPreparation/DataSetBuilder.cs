@@ -71,6 +71,13 @@ public class DataSetBuilder
             return ConvertDataRecordsToChartableDataPoints(filteredDataRecords);
         }
 
+        // When BinningRule is ByDayOnly with a year filter, no aggregation across years is required.
+        // Return the data for the requested year using DayOnlyBinIdentifier.
+        if (request.BinningRule == BinGranularities.ByDayOnly && request.FilterToYear.HasValue)
+        {
+            return ConvertDataRecordsToDayOnlyChartableDataPoints(filteredDataRecords);
+        }
+
         // Assign to Bins, Buckets and Cups
         var rawBins = Binner.ApplyBinningRules(filteredDataRecords, request.BinningRule, request.CupSize, dataResolution);
 
@@ -122,6 +129,21 @@ public class DataSetBuilder
     {
         return filteredDataRecords
             .Select(x => (new YearAndDayBinIdentifier(x.Year, x.Month!.Value, x.Day!.Value), x.Value))
+            .Select(
+            x =>
+            new ChartableDataPoint
+            {
+                BinId = x.Item1.Id,
+                Label = x.Item1.Label,
+                Value = x.Item2 == null ? null : x.Item2.Value,
+            })
+        .ToArray();
+    }
+
+    private static ChartableDataPoint[] ConvertDataRecordsToDayOnlyChartableDataPoints(DataRecord[] filteredDataRecords)
+    {
+        return filteredDataRecords
+            .Select(x => (new DayOnlyBinIdentifier(x.Month!.Value, x.Day!.Value), x.Value))
             .Select(
             x =>
             new ChartableDataPoint

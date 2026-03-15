@@ -306,9 +306,10 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
                 : null,
         };
 
-    // If the BinningRule is ByYearAndDay then there is little to gain by caching the data
-    // because we haven't done any aggregation. Therefore, return early, before the cache step
-    if (body.BinningRule == BinGranularities.ByYearAndDay)
+    // If the BinningRule is ByYearAndDay (or ByDayOnly filtered to a specific year) then there is little
+    // to gain by caching the data because we haven't done any aggregation. Therefore, return early, before the cache step
+    if (body.BinningRule == BinGranularities.ByYearAndDay ||
+        (body.BinningRule == BinGranularities.ByDayOnly && body.FilterToYear.HasValue))
     {
         return returnDataSet;
     }
