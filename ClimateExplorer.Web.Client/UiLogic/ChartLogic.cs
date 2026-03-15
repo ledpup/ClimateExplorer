@@ -159,6 +159,7 @@ public static class ChartLogic
             BinGranularities.ByYearAndWeek => "Week and year",
             BinGranularities.ByYearAndDay => "Date",
             BinGranularities.ByMonthOnly => "Month of the year",
+            BinGranularities.ByDayOnly => "Day of the year",
             BinGranularities.BySouthernHemisphereTemperateSeasonOnly => "Southern hemisphere temperate season",
             BinGranularities.BySouthernHemisphereTropicalSeasonOnly => "Southern hemisphere tropical season",
             _ => throw new NotImplementedException($"BinGranularity {binGranularity}"),

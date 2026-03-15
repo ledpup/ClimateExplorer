@@ -1207,6 +1207,7 @@ public partial class ChartView
                 break;
 
             case BinGranularities.ByMonthOnly:
+            case BinGranularities.ByDayOnly:
             case BinGranularities.BySouthernHemisphereTemperateSeasonOnly:
             case BinGranularities.BySouthernHemisphereTropicalSeasonOnly:
                 chartStartBin = null;
