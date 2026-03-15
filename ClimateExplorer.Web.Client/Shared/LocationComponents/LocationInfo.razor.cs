@@ -1,5 +1,6 @@
 ﻿namespace ClimateExplorer.Web.Client.Shared.LocationComponents;
 
+using System.Globalization;
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
@@ -9,7 +10,6 @@ using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
-using System.Globalization;
 using static ClimateExplorer.Core.Enums;
 
 public partial class LocationInfo
@@ -196,7 +196,7 @@ public partial class LocationInfo
             return null;
         }
 
-        var average = series.DataRecords.Average(x => x.Value) !.Value;
+        var average = series.DataRecords.Average(x => x.Value)!.Value;
 
         var anomalyRecords =
             series.DataRecords
@@ -216,7 +216,7 @@ public partial class LocationInfo
                 DataSetDefinitions!,
                 Location!.Id,
                 dataSubstitutes,
-                throwIfNoMatch: false) !;
+                throwIfNoMatch: false)!;
 
         if (measurementForLocation == null)
         {

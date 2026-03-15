@@ -1,11 +1,11 @@
 ﻿namespace ClimateExplorer.Web.UiModel;
 
-using ClimateExplorer.Core;
-using ClimateExplorer.Core.DataPreparation;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
-using static ClimateExplorer.Core.Enums;
+using ClimateExplorer.Core;
+using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Web.UiLogic;
+using static ClimateExplorer.Core.Enums;
 
 public class ChartSeriesDefinition
 {

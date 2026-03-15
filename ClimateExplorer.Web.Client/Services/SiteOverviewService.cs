@@ -1,10 +1,4 @@
-namespace ClimateExplorer.Web.Services;
-
-public interface ISiteOverviewService
-{
-    event Action? ShowRequested;
-    void RequestShow();
-}
+namespace ClimateExplorer.Web.Client.Services;
 
 public class SiteOverviewService : ISiteOverviewService
 {

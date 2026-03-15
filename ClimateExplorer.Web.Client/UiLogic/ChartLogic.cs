@@ -1,11 +1,11 @@
 ﻿namespace ClimateExplorer.Web.UiLogic;
 
-using ClimateExplorer.Core;
-using ClimateExplorer.Web.UiModel;
 using Blazorise.Charts;
 using Blazorise.Charts.Trendline;
+using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
+using ClimateExplorer.Web.UiModel;
 using static ClimateExplorer.Core.Enums;
 
 public static class ChartLogic
@@ -302,7 +302,7 @@ public static class ChartLogic
             SeriesTransformations.EqualOrAbove10 => "daysEqualOrAbove10",
             SeriesTransformations.EqualOrAbove10AndLessThan25 => "daysEqualOrAbove10LessThan25",
             SeriesTransformations.EqualOrAbove25mm => "daysEqualOrAbove25mm",
-            _ => unitOfMeasure.ToString().ToLowerFirstChar()
+            _ => unitOfMeasure.ToString().ToLowerFirstChar(),
         };
     }
 

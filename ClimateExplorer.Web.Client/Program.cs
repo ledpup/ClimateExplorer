@@ -29,7 +29,7 @@ builder.Services
     .AddBlazoredLocalStorage()
     .AddHttpClient<IDataService, DataService>(client =>
     {
-        client.BaseAddress = new Uri(builder.Configuration["DataServiceBaseUri"] !);
+        client.BaseAddress = new Uri(builder.Configuration["DataServiceBaseUri"]!);
     });
 
 await builder.Build().RunAsync();
