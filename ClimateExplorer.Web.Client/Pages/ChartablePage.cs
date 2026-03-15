@@ -4,6 +4,7 @@ using Blazorise;
 using Blazorise.Snackbar;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.Shared;
 using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiLogic;

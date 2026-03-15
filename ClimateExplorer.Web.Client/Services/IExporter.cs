@@ -1,4 +1,6 @@
-﻿using ClimateExplorer.Core.Model;
+﻿namespace ClimateExplorer.Web.Client.Services;
+
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.UiModel;
 
 public interface IExporter
