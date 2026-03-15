@@ -12,4 +12,5 @@ public class YearAndDataTypeFilter
     public short Year { get; set; }
     public DataType? DataType { get; set; }
     public DataAdjustment? DataAdjustment { get; set; }
+    public UnitOfMeasure? UnitOfMeasure { get; set; }
 }

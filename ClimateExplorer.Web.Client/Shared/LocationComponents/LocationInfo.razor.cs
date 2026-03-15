@@ -251,13 +251,13 @@ public partial class LocationInfo
 
     protected async Task HandleOnYearFilterChange(short year)
     {
-        var yearAndFilter = new YearAndDataTypeFilter(year) { DataType = TemperatureDataType };
+        var yearAndFilter = new YearAndDataTypeFilter(year) { DataType = TemperatureDataType, UnitOfMeasure = UnitOfMeasure.DegreesCelsius };
         await OnYearFilterChange.InvokeAsync(yearAndFilter);
     }
 
     protected async Task HandleOnPrecipitationYearFilterChange(short year)
     {
-        var yearAndFilter = new YearAndDataTypeFilter(year) { DataType = DataType.Precipitation };
+        var yearAndFilter = new YearAndDataTypeFilter(year) { DataType = DataType.Precipitation, UnitOfMeasure = UnitOfMeasure.Millimetres };
         await OnYearFilterChange.InvokeAsync(yearAndFilter);
     }
 

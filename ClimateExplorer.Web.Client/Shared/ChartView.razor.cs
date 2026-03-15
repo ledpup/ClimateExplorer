@@ -191,6 +191,14 @@ public partial class ChartView
     {
         await OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly, false);
 
+        if (yearAndDataTypeFilter.UnitOfMeasure.HasValue)
+        {
+            ChartSeriesList = ChartSeriesList!
+                .Where(x => x.SourceSeriesSpecifications!.Any(y =>
+                    IsCompatibleUnitOfMeasure(y.MeasurementDefinition!.UnitOfMeasure, yearAndDataTypeFilter.UnitOfMeasure.Value)))
+                .ToList();
+        }
+
         var chartWithData = ChartSeriesWithData!
             .First(x =>
             (x.SourceDataSet!.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
@@ -688,6 +696,17 @@ public partial class ChartView
             SeriesAggregationOptions.Sum => ContainerAggregationFunctions.Sum,
             _ => throw new NotImplementedException($"SeriesAggregationOptions {a}"),
         };
+    }
+
+    private static bool IsCompatibleUnitOfMeasure(UnitOfMeasure seriesUnitOfMeasure, UnitOfMeasure filterUnitOfMeasure)
+    {
+        if (filterUnitOfMeasure == UnitOfMeasure.DegreesCelsius)
+        {
+            return seriesUnitOfMeasure == UnitOfMeasure.DegreesCelsius
+                || seriesUnitOfMeasure == UnitOfMeasure.DegreesCelsiusAnomaly;
+        }
+
+        return seriesUnitOfMeasure == filterUnitOfMeasure;
     }
 
     private object CreateChartOptions(string title, string subtitle, dynamic scales)
