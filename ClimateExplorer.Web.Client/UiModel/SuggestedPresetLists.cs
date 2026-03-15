@@ -654,7 +654,7 @@ public static class SuggestedPresetLists
                 ],
                 Variants =
                 [
-                    new ()
+                    new()
                     {
                         Title = "Temperature + CO₂",
                         Description = "Smoothed yearly average temperature and carbon dioxide",
@@ -684,7 +684,7 @@ public static class SuggestedPresetLists
 
                         ],
                     },
-                    new ()
+                    new()
                     {
                         Title = "Dry days",
                         Description = "Number of days without rain; 20-year smoothing",
@@ -706,7 +706,7 @@ public static class SuggestedPresetLists
                             },
                         ],
                     },
-                    new ()
+                    new()
                     {
                         Title = "Days of extremes",
                         Description = "Number of frosty days (≤ 2.2°C) and days 35°C or above",
@@ -821,7 +821,7 @@ public static class SuggestedPresetLists
                 ],
                 Variants =
                 [
-                    new ()
+                    new()
                     {
                         Title = "Atmospheric CO₂ vs emissions",
                         Description = "Compare the CO₂ measured in the atmosphere with the reported global emissions of CO₂",
@@ -854,14 +854,14 @@ public static class SuggestedPresetLists
                             },
                         ],
                     },
-                    new ()
+                    new()
                     {
                         Title = "CO₂ + ocean acidity",
                         Description = "Carbon dioxide records from the Mauna Loa Observatory and ocean acidity levels from Station ALOHA",
                         ChartAllData = true,
                         ChartSeriesList =
                         [
-                                new ()
+                                new()
                                 {
                                     SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                                     SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
@@ -873,7 +873,7 @@ public static class SuggestedPresetLists
                                     DisplayStyle = SeriesDisplayStyle.Line,
                                     RequestedColour = UiLogic.Colours.Brown,
                                 },
-                                new ()
+                                new()
                                 {
                                     SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                                     SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Ocean), oceanAcidity!),
@@ -887,13 +887,13 @@ public static class SuggestedPresetLists
                                 },
                         ],
                     },
-                    new ()
+                    new()
                     {
                         Title = "Methane (CH\u2084)",
                         Description = "NOAA's Earth System Research Laboratory has measured methane since 1983",
                         ChartSeriesList =
                             [
-                                new ()
+                                new()
                                 {
                                     SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                                     SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), ch4!),
@@ -907,13 +907,13 @@ public static class SuggestedPresetLists
                                 },
                             ],
                     },
-                    new ()
+                    new()
                     {
                         Title = "Nitrous oxide (N\u2082O)",
                         Description = "NOAA's Earth System Research Laboratory has measured nitrous oxide since 2001",
                         ChartSeriesList =
                             [
-                                new ()
+                                new()
                                 {
                                     SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                                     SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), n2o!),
@@ -928,7 +928,7 @@ public static class SuggestedPresetLists
 
                             ],
                     },
-                    new ()
+                    new()
                     {
                         Title = "Ozone Hole + ODGI",
                         Description = "Smoothed yearly average size of the Southern Hemisphere Ozone Hole compared with the Ozone Depleting Gas Index",
@@ -973,7 +973,7 @@ public static class SuggestedPresetLists
                 Description = "Bar chart of the global temperature anomaly for a combined land and ocean temperature. Reference period: 1971-2000",
                 ChartSeriesList =
                 [
-                    new ()
+                    new()
                     {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                         SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Earth), globalTemp!),
@@ -987,13 +987,13 @@ public static class SuggestedPresetLists
                     },
                 ],
                 Variants = [
-                    new ()
+                    new()
                     {
                         Title = "Land vs ocean",
                         Description = "Global temperature anomalies of ocean and land temperatures",
                         ChartSeriesList =
                         [
-                            new ()
+                            new()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                                 SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Land"), globalLandTemp!),
@@ -1005,7 +1005,7 @@ public static class SuggestedPresetLists
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Green,
                             },
-                            new ()
+                            new()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                                 SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Ocean"), globalOceanTemp!),
@@ -1019,7 +1019,7 @@ public static class SuggestedPresetLists
                             },
                         ],
                     },
-                    new ()
+                    new()
                     {
                         Title = "Arctic vs Antarctic",
                         Description = "Combined land and ocean temperatures for the Arctic and Antarctic regions",
@@ -1051,7 +1051,7 @@ public static class SuggestedPresetLists
                                 },
                             ],
                     },
-                    new ()
+                    new()
                     {
                         Title = "North vs south",
                         Description = "Combined land and ocean temperature anomalies for the Northern and Southern Hemisphere",
@@ -1091,7 +1091,7 @@ public static class SuggestedPresetLists
                 Description = "Bar chart of the temperature anomaly of the sea surface temperatures (SSTs) from 60°S to 60°N. Reference period: 1971-2000",
                 ChartSeriesList =
                 [
-                    new ()
+                    new()
                     {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                         SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.R60s60nOcean), r60S60NOceanTemp!),
@@ -1104,13 +1104,13 @@ public static class SuggestedPresetLists
                     },
                 ],
                 Variants = [
-                    new ()
+                    new()
                     {
                         Title = "Land vs ocean",
                         Description = "Global temperature anomalies of ocean and land temperatures",
                         ChartSeriesList =
                         [
-                            new ()
+                            new()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                                 SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Land"), globalLandTemp!),
@@ -1122,7 +1122,7 @@ public static class SuggestedPresetLists
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Green,
                             },
-                            new ()
+                            new()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                                 SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Ocean"), globalOceanTemp!),
@@ -1136,13 +1136,13 @@ public static class SuggestedPresetLists
                             },
                         ],
                     },
-                    new ()
+                    new()
                     {
                         Title = "Arctic vs Antarctic",
                         Description = "Sea surface temperature (SST) anomalies of the Arctic and Antarctic",
                         ChartSeriesList =
                         [
-                            new ()
+                            new()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                                 SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.ArcticOcean), arcticOceanTemp!),
@@ -1154,7 +1154,7 @@ public static class SuggestedPresetLists
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Orange,
                             },
-                            new ()
+                            new()
                             {
                                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                                 SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.AntarcticOcean), antarcticOceanTemp!),
@@ -1168,7 +1168,7 @@ public static class SuggestedPresetLists
                             },
                         ],
                     },
-                    new ()
+                    new()
                     {
                         Title = "North vs south",
                         Description = "Ocean temperature anomalies for the Northern and Southern Hemisphere",
@@ -1198,7 +1198,7 @@ public static class SuggestedPresetLists
                             },
                         ],
                     },
-                    new ()
+                    new()
                     {
                         Title = "Sea level rise",
                         Description = "The measure (in millimetres) of sea level rise from satellite measurements, since 1992",
@@ -1219,7 +1219,7 @@ public static class SuggestedPresetLists
                             },
                         ],
                     },
-                    new ()
+                    new()
                     {
                         Title = "ENSO + IOD",
                         Description = "The El Niño Southern Oscillation (ENSO) and Indian Ocean Dipole (IOD) sea surface temperature anomalies",
@@ -1253,7 +1253,7 @@ public static class SuggestedPresetLists
                             },
                         ],
                     },
-                    new ()
+                    new()
                     {
                         Title = "Atlantic Multidecadal Oscillation (AMO)",
                         Description = "The AMO is identified as a coherent mode of natural variability occurring in the North Atlantic Ocean with an estimated period of 60-80 years",

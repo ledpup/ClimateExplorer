@@ -100,7 +100,7 @@ public class DataSetDefinitionViewModel
     {
         var dataMatches = new List<DataSubstitute>
         {
-            new ()
+            new()
             {
                 DataType = dataType,
                 DataAdjustment = dataAdjustment,

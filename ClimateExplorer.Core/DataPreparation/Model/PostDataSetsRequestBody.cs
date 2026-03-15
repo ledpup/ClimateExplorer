@@ -5,8 +5,6 @@ using static ClimateExplorer.Core.Enums;
 public class PostDataSetsRequestBody
 {
     public SeriesDerivationTypes SeriesDerivationType { get; set; }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
     public SeriesSpecification[]? SeriesSpecifications { get; set; }
     public SeriesTransformations SeriesTransformation { get; set; }
 

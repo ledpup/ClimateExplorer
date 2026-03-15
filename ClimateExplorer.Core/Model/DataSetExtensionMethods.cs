@@ -31,7 +31,6 @@ public static class DataSetExtensionMethods
         return GetYearForDataRecord(GetFirstDataRecordWithValueInDataSet(dataSet));
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
     private static short GetYearForDataRecord(BinnedRecord dr)
     {
         BinIdentifier parsedId = dr.BinIdentifier!;

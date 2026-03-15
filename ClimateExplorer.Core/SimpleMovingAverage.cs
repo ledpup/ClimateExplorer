@@ -1,7 +1,9 @@
-﻿namespace ClimateExplorer.Core;
+﻿#pragma warning disable SA1402 // File may only contain a single type
+namespace ClimateExplorer.Core;
 
 using ClimateExplorer.Core.Model;
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649:File name should match first type name", Justification = "Not important")]
 public interface IMovingAverageCalculator
 {
     public double? AddSample(double? value);
@@ -9,7 +11,7 @@ public interface IMovingAverageCalculator
 
 public class SimpleMovingAverageCalculator : IMovingAverageCalculator
 {
-    private readonly Queue<double?> samples = new Queue<double?>();
+    private readonly Queue<double?> samples = new();
     private readonly int windowSize = 5;
 
     public SimpleMovingAverageCalculator(int windowSize)
@@ -105,10 +107,7 @@ public class DataRecordMovingAverageCalculator
 {
     private readonly IMovingAverageCalculator calculator;
 
-    public DataRecordMovingAverageCalculator(IMovingAverageCalculator calculator)
-    {
-        this.calculator = calculator;
-    }
+    public DataRecordMovingAverageCalculator(IMovingAverageCalculator calculator) => this.calculator = calculator;
 
     public List<BinnedRecord> Calculate(IEnumerable<BinnedRecord> dataRecords)
     {
@@ -129,3 +128,4 @@ public class DataRecordMovingAverageCalculator
         return returnDataRecords;
     }
 }
+#pragma warning restore SA1402 // File may only contain a single type

@@ -1,10 +1,10 @@
 ﻿namespace ClimateExplorer.Core.Model;
 
-using GeoCoordinatePortable;
 using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using GeoCoordinatePortable;
 
 public class Location : GeographicalEntity
 {
@@ -14,9 +14,9 @@ public class Location : GeographicalEntity
     private string? fullTitle;
     private string? shorterTitle;
 
-    required public string CountryCode { get; set; }
+    public required string CountryCode { get; set; }
     public string? Country { get; set; }
-    required public Coordinates Coordinates { get; set; }
+    public required Coordinates Coordinates { get; set; }
     public double? WarmingAnomaly { get; set; }
     public short? HeatingScore { get; set; }
     public ClimateRecord? RecordHigh { get; set; }
@@ -221,10 +221,11 @@ public class Location : GeographicalEntity
     }
 }
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Not important")]
 public class LocationDistance
 {
-    required public Guid LocationId { get; set; }
-    required public double Distance { get; set; }
-    required public double BearingDegrees { get; set; }
-    required public string CompassRoseDirection { get; set; }
+    public required Guid LocationId { get; set; }
+    public required double Distance { get; set; }
+    public required double BearingDegrees { get; set; }
+    public required string CompassRoseDirection { get; set; }
 }

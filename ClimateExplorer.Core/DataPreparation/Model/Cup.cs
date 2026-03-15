@@ -6,8 +6,6 @@ public class Cup
 {
     public DateOnly FirstDayInCup { get; set; }
     public DateOnly LastDayInCup { get; set; }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
     public DataRecord[]? DataRecords { get; set; }
 
     /// <summary>

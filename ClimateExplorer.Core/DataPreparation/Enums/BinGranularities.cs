@@ -9,8 +9,10 @@ public enum BinGranularities
     BySouthernHemisphereTemperateSeasonOnly,
     BySouthernHemisphereTropicalSeasonOnly,
     ByMonthOnly,
+    ByDayOnly,
 }
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649:File name should match first type name", Justification = "Not important")]
 public static class BinGranularityHelpers
 {
     public static bool IsLinear(this BinGranularities b)
@@ -37,6 +39,7 @@ public static class BinGranularityHelpers
             BinGranularities.BySouthernHemisphereTemperateSeasonOnly => "By season",
             BinGranularities.BySouthernHemisphereTropicalSeasonOnly => "By tropical season",
             BinGranularities.ByMonthOnly => "By month",
+            BinGranularities.ByDayOnly => "By day",
             _ => throw new NotImplementedException($"BinGranularities {b}"),
         };
     }

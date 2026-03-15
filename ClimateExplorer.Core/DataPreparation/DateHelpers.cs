@@ -187,7 +187,7 @@ public static class DateHelpers
         {
             return
             [
-                new () { Start = start, End = end },
+                new() { Start = start, End = end },
             ];
         }
 

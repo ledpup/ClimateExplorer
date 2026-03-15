@@ -1,13 +1,8 @@
-﻿namespace ClimateExplorer.Web.Services;
+﻿namespace ClimateExplorer.Web.Client.Services;
 
+using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.UiModel;
-using ClimateExplorer.Core.DataPreparation;
-
-public interface IExporter
-{
-    Stream ExportChartData(ILogger logger, IEnumerable<GeographicalEntity> locations, DataDownloadPackage dataDownloadPackage, string sourceUri);
-}
 
 public class Exporter : IExporter
 {
@@ -30,7 +25,7 @@ public class Exporter : IExporter
             {
                 Location l => $"{l.FullTitle},{l.Coordinates.ToFriendlyString(true)}",
                 Region region => region.Name,
-                _ => throw new NotImplementedException()
+                _ => throw new NotImplementedException(),
             };
             data.Add(text);
         }

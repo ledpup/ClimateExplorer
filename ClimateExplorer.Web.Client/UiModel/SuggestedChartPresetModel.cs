@@ -13,6 +13,7 @@ public class SuggestedChartPresetModel
     public List<ChartSeriesDefinition>? ChartSeriesList { get; set; }
 }
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Not important")]
 public class SuggestedChartPresetModelWithVariants : SuggestedChartPresetModel
 {
     public List<SuggestedChartPresetModel>? Variants { get; set; }

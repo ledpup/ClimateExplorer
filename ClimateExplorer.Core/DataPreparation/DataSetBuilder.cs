@@ -1,8 +1,8 @@
 ﻿namespace ClimateExplorer.Core.DataPreparation;
 
+using System.Diagnostics;
 using ClimateExplorer.Core.DataPreparation.Model;
 using ClimateExplorer.Core.Model;
-using System.Diagnostics;
 using static ClimateExplorer.Core.Enums;
 
 public class DataSetBuilder
@@ -49,7 +49,7 @@ public class DataSetBuilder
 
     public ChartableDataPoint[] BuildDataSetFromDataRecords(DataRecord[] dataRecords, DataResolution dataResolution, PostDataSetsRequestBody request)
     {
-        Stopwatch sw = new ();
+        Stopwatch sw = new();
         sw.Start();
 
         // Apply specified transformation (if any) to each data point in the series
@@ -69,6 +69,20 @@ public class DataSetBuilder
         if (request.BinningRule == BinGranularities.ByYearAndDay)
         {
             return ConvertDataRecordsToChartableDataPoints(filteredDataRecords);
+        }
+
+        // When BinningRule is ByDayOnly with a year filter, no aggregation across years is required.
+        // Return the data for the requested year using DayOnlyBinIdentifier.
+        if (request.BinningRule == BinGranularities.ByDayOnly && request.FilterToYear.HasValue)
+        {
+            // This path assumes the underlying series is daily (non-null Month/Day).
+            // Guard against non-daily resolutions to avoid downstream null Month/Day exceptions.
+            if (dataResolution != DataResolution.Daily)
+            {
+                throw new System.InvalidOperationException("ByDayOnly binning with a year filter is only supported for daily data resolution.");
+            }
+
+            return ConvertDataRecordsToDayOnlyChartableDataPoints(filteredDataRecords);
         }
 
         // Assign to Bins, Buckets and Cups
@@ -128,12 +142,26 @@ public class DataSetBuilder
             {
                 BinId = x.Item1.Id,
                 Label = x.Item1.Label,
-                Value = x.Item2 == null ? null : x.Item2.Value,
+                Value = x.Value == null ? null : x.Value.Value,
             })
         .ToArray();
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
+    private static ChartableDataPoint[] ConvertDataRecordsToDayOnlyChartableDataPoints(DataRecord[] filteredDataRecords)
+    {
+        return filteredDataRecords
+            .Select(x => (new DayOnlyBinIdentifier(x.Month!.Value, x.Day!.Value), x.Value))
+            .Select(
+            x =>
+            new ChartableDataPoint
+            {
+                BinId = x.Item1.Id,
+                Label = x.Item1.Label,
+                Value = x.Value == null ? null : x.Value.Value,
+            })
+        .ToArray();
+    }
+
     public class BuildDataSetResult
     {
         public UnitOfMeasure UnitOfMeasure { get; set; }

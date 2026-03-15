@@ -35,6 +35,16 @@ public static class BinHelpers
             .ToArray();
     }
 
+    public static BinIdentifier[] GetDayBins()
+    {
+        var leapYearStart = new DateOnly(2000, 1, 1);
+        return
+            Enumerable.Range(0, 366)
+            .Select(i => leapYearStart.AddDays(i))
+            .Select(d => (BinIdentifier)new DayOnlyBinIdentifier((short)d.Month, (short)d.Day))
+            .ToArray();
+    }
+
     public static BinIdentifier[] GetSouthernHemisphereTemperateSeasonBins()
     {
         return
@@ -60,6 +70,7 @@ public static class BinHelpers
         return binGranularity switch
         {
             BinGranularities.ByMonthOnly => GetMonthBins(),
+            BinGranularities.ByDayOnly => GetDayBins(),
             BinGranularities.BySouthernHemisphereTemperateSeasonOnly => GetSouthernHemisphereTemperateSeasonBins(),
             BinGranularities.BySouthernHemisphereTropicalSeasonOnly => GetTropicalSeasonBins(),
             _ => throw new NotImplementedException($"binGranularity {binGranularity}"),

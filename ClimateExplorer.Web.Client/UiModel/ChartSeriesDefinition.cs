@@ -1,11 +1,11 @@
 ﻿namespace ClimateExplorer.Web.UiModel;
 
-using ClimateExplorer.Core;
-using ClimateExplorer.Core.DataPreparation;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
-using static ClimateExplorer.Core.Enums;
+using ClimateExplorer.Core;
+using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Web.UiLogic;
+using static ClimateExplorer.Core.Enums;
 
 public class ChartSeriesDefinition
 {
@@ -15,7 +15,6 @@ public class ChartSeriesDefinition
     public Guid Id { get; set; } = Guid.NewGuid();
 
     // Source data fields
-    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
     public SourceSeriesSpecification[]? SourceSeriesSpecifications { get; set; }
     public SeriesDerivationTypes SeriesDerivationType { get; set; }
     public BinGranularities BinGranularity { get; set; }
@@ -50,7 +49,6 @@ public class ChartSeriesDefinition
     public bool DataAvailable { get; internal set; } = true;
     public DataResolution? MinimumDataResolution { get; set; }
 
-    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
     public string FriendlyTitle
     {
         get
@@ -121,7 +119,6 @@ public class ChartSeriesDefinition
         }
     }
 
-    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
     public static string BuildFriendlyTitleShortForSeries(SourceSeriesSpecification sss, BinGranularities binGranularity, SeriesAggregationOptions aggregation, short? year = null)
     {
         var segments = new List<string>();
@@ -205,7 +202,6 @@ public class ChartSeriesDefinition
         }
     }
 
-    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
     public string GetFriendlyDescription()
     {
         var segments = new List<string>();
@@ -279,7 +275,6 @@ public class ChartSeriesDefinition
         return string.Join(" | ", segments);
     }
 
-    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
     private static string BuildAverageMultipleSeriesTitle(SourceSeriesSpecification[] sss)
     {
         var segments = new List<string>();

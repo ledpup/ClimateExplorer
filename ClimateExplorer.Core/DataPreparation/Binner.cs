@@ -1,7 +1,7 @@
 ﻿namespace ClimateExplorer.Core.DataPreparation.Model;
 
-using ClimateExplorer.Core.Model;
 using System.Globalization;
+using ClimateExplorer.Core.Model;
 using static ClimateExplorer.Core.Enums;
 
 public static class Binner
@@ -56,6 +56,9 @@ public static class Binner
 
             case BinGranularities.ByMonthOnly:
                 return BuildBucketsForMonth(bin, cupSize, dataResolution);
+
+            case BinGranularities.ByDayOnly:
+                return BuildBucketsForDay(bin, cupSize, dataResolution);
 
             case BinGranularities.BySouthernHemisphereTemperateSeasonOnly:
                 return BuildBucketsForSouthernHemisphereTemperateSeason(bin, cupSize, dataResolution);
@@ -120,6 +123,48 @@ public static class Binner
                     break;
                 default:
                     throw new Exception($"Cannot convert underlying data at resolution {dataResolution} into bins at monthly level");
+            }
+        }
+
+        return buckets.ToArray();
+    }
+
+    private static Bucket[] BuildBucketsForDay(
+        IGrouping<BinIdentifier, DataRecord> bin,
+        int cupSize,
+        DataResolution dataResolution)
+    {
+        // Bin is day (month+day)
+        // Bucket is year + month + day
+        // Cup is a single data record for that day
+        List<Bucket> buckets = [];
+
+        var dataRecordsByDay = bin.GroupBy(x => new { x.Year, x.Month, x.Day });
+
+        foreach (var group in dataRecordsByDay)
+        {
+            var dayDate = new DateOnly(group.Key.Year, group.Key.Month!.Value, group.Key.Day!.Value);
+
+            switch (dataResolution)
+            {
+                case DataResolution.Daily:
+                    buckets.Add(
+                        new Bucket
+                        {
+                            Cups =
+                                [
+                                    new Cup
+                                    {
+                                        FirstDayInCup = dayDate,
+                                        LastDayInCup = dayDate,
+                                        DataRecords = group.ToArray(),
+                                        ExpectedDataRecordsInCup = 1,
+                                    },
+                                ],
+                        });
+                    break;
+                default:
+                    throw new Exception($"Cannot convert underlying data at resolution {dataResolution} into bins at day-only level");
             }
         }
 
@@ -318,7 +363,7 @@ public static class Binner
 
     private static bool DataRecordFallsInInclusiveRange(DataRecord dr, DateOnly start, DateOnly end)
     {
-        DateOnly d = new (dr.Year, dr.Month ?? 1, dr.Day ?? 1);
+        DateOnly d = new(dr.Year, dr.Month ?? 1, dr.Day ?? 1);
 
         return d >= start && d <= end;
     }
@@ -334,6 +379,7 @@ public static class Binner
             BinGranularities.ByYearAndWeek => new YearAndWeekBinIdentifier(dp.Year, (short)GetIso8601WeekOfYear(new DateTime(dp.Year, dp.Month!.Value, dp.Day!.Value))),
             BinGranularities.ByYearAndDay => new YearAndDayBinIdentifier(dp.Year, dp.Month!.Value, dp.Day!.Value),
             BinGranularities.ByMonthOnly => new MonthOnlyBinIdentifier(dp.Month!.Value),
+            BinGranularities.ByDayOnly => new DayOnlyBinIdentifier(dp.Month!.Value, dp.Day!.Value),
             BinGranularities.BySouthernHemisphereTemperateSeasonOnly => new SouthernHemisphereTemperateSeasonOnlyBinIdentifier(DateHelpers.GetSouthernHemisphereTemperateSeasonForMonth(dp.Month!.Value)),
             BinGranularities.BySouthernHemisphereTropicalSeasonOnly => new SouthernHemisphereTropicalSeasonOnlyBinIdentifier(DateHelpers.GetSouthernHemisphereTropicalSeasonForMonth(dp.Month!.Value)),
             _ => throw new NotImplementedException($"BinningRule {binningRule}"),

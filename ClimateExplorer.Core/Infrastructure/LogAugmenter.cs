@@ -1,7 +1,7 @@
 ﻿namespace ClimateExplorer.Core.Infrastructure;
 
-using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 public class LogAugmenter
 {

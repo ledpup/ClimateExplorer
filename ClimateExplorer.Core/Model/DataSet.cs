@@ -1,8 +1,8 @@
 ﻿namespace ClimateExplorer.Core.Model;
 
+using System.Text.Json.Serialization;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.ViewModel;
-using System.Text.Json.Serialization;
 using static ClimateExplorer.Core.Enums;
 
 public class DataSet
@@ -34,7 +34,6 @@ public class DataSet
 
     public IList<BinnedRecord> DataRecords { get; set; }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
     public DataRecord[]? RawDataRecords { get; set; }
 
     public short? StartYear

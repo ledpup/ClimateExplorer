@@ -6,8 +6,8 @@ public class GeographicalEntity
     {
     }
 
-    required public Guid Id { get; set; }
-    required public string Name { get; set; }
+    public required Guid Id { get; set; }
+    public required string Name { get; set; }
 
     public static async Task<GeographicalEntity> GetGeographicalEntity(Guid id)
     {

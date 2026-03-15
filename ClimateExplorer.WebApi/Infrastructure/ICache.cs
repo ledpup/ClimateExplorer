@@ -71,6 +71,7 @@ public class FileBackedCache : ICache
 ///     /[cacheFolderName]/[guid].json files
 ///         These files contain the actual cached content.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Not important")]
 public class FileBackedTwoLayerCache : ICache
 {
     private readonly string cacheFolderName;
@@ -80,7 +81,7 @@ public class FileBackedTwoLayerCache : ICache
     {
         this.cacheFolderName = cacheFolderName;
 
-        jsonOptions = new ()
+        jsonOptions = new()
         {
             WriteIndented = true,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,

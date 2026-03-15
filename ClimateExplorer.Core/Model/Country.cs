@@ -4,8 +4,8 @@ using System.Text.RegularExpressions;
 
 public class Country
 {
-    required public string Name { get; set; }
-    required public string Code { get; set; }
+    public required string Name { get; set; }
+    public required string Code { get; set; }
 
     public static async Task<Dictionary<string, Country>> GetCountries(string location)
     {

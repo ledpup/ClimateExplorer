@@ -1,8 +1,8 @@
 ﻿namespace ClimateExplorer.Data.Misc.Ozone;
 
+using System.Text.RegularExpressions;
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.Model;
-using System.Text.RegularExpressions;
 
 public class OzoneFileReducer
 {

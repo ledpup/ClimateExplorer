@@ -1,4 +1,5 @@
-﻿namespace ClimateExplorer.Core.DataPreparation;
+﻿#pragma warning disable SA1402 // File may only contain a single type
+namespace ClimateExplorer.Core.DataPreparation;
 
 using System.Globalization;
 
@@ -59,6 +60,14 @@ public abstract class BinIdentifier : IComparable<BinIdentifier>
                 return new MonthOnlyBinIdentifier(month);
             }
 
+            if (id.StartsWith("d"))
+            {
+                short month = (short)int.Parse(id.Substring(1, 2));
+                short day = (short)int.Parse(id.Substring(3, 2));
+
+                return new DayOnlyBinIdentifier(month, day);
+            }
+
             throw new NotImplementedException("Bin identifier id " + id);
         }
         catch (Exception ex)
@@ -101,21 +110,21 @@ public abstract class BinIdentifier : IComparable<BinIdentifier>
             return m1.CompareTo(m2);
         }
 
+        if (this is DayOnlyBinIdentifier d1 &&
+            other is DayOnlyBinIdentifier d2)
+        {
+            return d1.CompareTo(d2);
+        }
+
         throw new NotImplementedException();
     }
 }
 
-public abstract class BinIdentifierForGaplessBin : BinIdentifier, IComparable<BinIdentifierForGaplessBin>
+public abstract class BinIdentifierForGaplessBin(string id, string label, DateOnly firstDayInBin, DateOnly lastDayInBin)
+ : BinIdentifier(id, label), IComparable<BinIdentifierForGaplessBin>
 {
-    public BinIdentifierForGaplessBin(string id, string label, DateOnly firstDayInBin, DateOnly lastDayInBin)
-        : base(id, label)
-    {
-        FirstDayInBin = firstDayInBin;
-        LastDayInBin = lastDayInBin;
-    }
-
-    public DateOnly FirstDayInBin { get; private set; }
-    public DateOnly LastDayInBin { get; private set; }
+    public DateOnly FirstDayInBin { get; private set; } = firstDayInBin;
+    public DateOnly LastDayInBin { get; private set; } = lastDayInBin;
 
     public int CompareTo(BinIdentifierForGaplessBin? other)
     {
@@ -285,10 +294,7 @@ public class MonthOnlyBinIdentifier : BinIdentifier, IComparable<MonthOnlyBinIde
 
     public int CompareTo(MonthOnlyBinIdentifier? other)
     {
-        if (other == null)
-        {
-            throw new ArgumentNullException(nameof(other));
-        }
+        ArgumentNullException.ThrowIfNull(other);
 
         return this.month - other.month;
     }
@@ -301,6 +307,47 @@ public class MonthOnlyBinIdentifier : BinIdentifier, IComparable<MonthOnlyBinIde
     public override int GetHashCode()
     {
         return month.GetHashCode();
+    }
+}
+
+public class DayOnlyBinIdentifier : BinIdentifier, IComparable<DayOnlyBinIdentifier>
+{
+    private readonly short month;
+    private readonly short day;
+
+    public DayOnlyBinIdentifier(short month, short day)
+        : base(
+            $"d{month.ToString().PadLeft(2, '0')}{day.ToString().PadLeft(2, '0')}",
+            $"{day} {DateHelpers.GetShortMonthName(month)}")
+    {
+        this.month = month;
+        this.day = day;
+    }
+
+    public short Month => month;
+    public short Day => day;
+
+    public int CompareTo(DayOnlyBinIdentifier? other)
+    {
+        ArgumentNullException.ThrowIfNull(other);
+        var monthComparison = this.month - other.month;
+        if (monthComparison != 0)
+        {
+            return monthComparison;
+        }
+
+        return this.day - other.day;
+    }
+
+    public override bool Equals(object? other)
+    {
+        var o = other as DayOnlyBinIdentifier;
+        return o != null && this.month == o.month && this.day == o.day;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(month, day);
     }
 }
 
@@ -323,3 +370,5 @@ public class SouthernHemisphereTropicalSeasonOnlyBinIdentifier : BinIdentifier
     {
     }
 }
+
+#pragma warning restore SA1402 // File may only contain a single type

@@ -1,15 +1,14 @@
 ﻿namespace ClimateExplorer.Core.InputOutput;
 
-using ClimateExplorer.Core.Model;
 using System.Diagnostics;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
+using ClimateExplorer.Core.Model;
 using static ClimateExplorer.Core.Enums;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
 public static class DataReaderFunctions
 {
-    private static readonly Dictionary<string, short> MonthNamesToNumeric = new ()
+    private static readonly Dictionary<string, short> MonthNamesToNumeric = new()
     {
         { "jan", 1 },
         { "feb", 2 },
@@ -367,7 +366,7 @@ public static class DataReaderFunctions
             return null;
         }
 
-        using StreamReader sr = new (siteFileEntry.Open());
+        using StreamReader sr = new(siteFileEntry.Open());
 
         // This could probably be optimized
         var lineList = new List<string>();

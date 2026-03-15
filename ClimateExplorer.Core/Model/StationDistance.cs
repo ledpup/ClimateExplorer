@@ -3,7 +3,7 @@
 using GeoCoordinatePortable;
 public class StationDistance
 {
-    required public string Id { get; set; }
+    public required string Id { get; set; }
     public double Distance { get; set; }
 
     public static List<StationDistance>? GetDistances(Station station, List<Station> stations)

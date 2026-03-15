@@ -1,8 +1,8 @@
 ﻿namespace ClimateExplorer.Data.Misc;
 
+using System.Text.Json;
 using ClimateExplorer.Core;
 using Microsoft.Extensions.Logging;
-using System.Text.Json;
 
 public class GreenlandApiClient
 {

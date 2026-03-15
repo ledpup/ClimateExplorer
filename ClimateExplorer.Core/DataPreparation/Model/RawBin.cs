@@ -3,8 +3,6 @@
 public class RawBin
 {
     public BinIdentifier? Identifier { get; set; }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
     public Bucket[]? Buckets { get; set; }
 
     public override string ToString()
@@ -13,6 +11,7 @@ public class RawBin
     }
 }
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Not important")]
 public class RawBinWithDataAdequacyFlag : RawBin
 {
     public bool MeetsDataRequirements { get; set; }

@@ -14,7 +14,7 @@ public static class NoaaGlobalTemp
                 {
                     Region.RegionId(Region.Earth),
                     [
-                        new ()
+                        new()
                         {
                             Id = "land_ocean.90S.90N",
                         },
@@ -23,7 +23,7 @@ public static class NoaaGlobalTemp
                 {
                     Region.RegionId("Land"),
                     [
-                        new ()
+                        new()
                         {
                             Id = "land.90S.90N",
                         },
@@ -32,7 +32,7 @@ public static class NoaaGlobalTemp
                 {
                     Region.RegionId("Ocean"),
                     [
-                        new ()
+                        new()
                         {
                             Id = "ocean.90S.90N",
                         },
@@ -41,7 +41,7 @@ public static class NoaaGlobalTemp
                 {
                     Region.RegionId(Region.NorthernHemi),
                     [
-                        new ()
+                        new()
                         {
                             Id = "land_ocean.00N.90N",
                         },
@@ -50,7 +50,7 @@ public static class NoaaGlobalTemp
                 {
                     Region.RegionId(Region.SouthernHemi),
                     [
-                        new ()
+                        new()
                         {
                             Id = "land_ocean.90S.00N",
                         },
@@ -59,7 +59,7 @@ public static class NoaaGlobalTemp
                 {
                     Region.RegionId(Region.Arctic),
                     [
-                        new ()
+                        new()
                         {
                             Id = "land_ocean.60N.90N",
                         },
@@ -68,7 +68,7 @@ public static class NoaaGlobalTemp
                 {
                     Region.RegionId(Region.Antarctic),
                     [
-                        new ()
+                        new()
                         {
                             Id = "land_ocean.90S.60S",
                         },
@@ -77,7 +77,7 @@ public static class NoaaGlobalTemp
                 {
                     Region.RegionId(Region.R60s60n),
                     [
-                        new ()
+                        new()
                         {
                             Id = "land_ocean.60S.60N",
                         },
@@ -86,7 +86,7 @@ public static class NoaaGlobalTemp
                 {
                     Region.RegionId(Region.R60s60nOcean),
                     [
-                        new ()
+                        new()
                         {
                             Id = "ocean.60S.60N",
                         },
@@ -95,7 +95,7 @@ public static class NoaaGlobalTemp
                 {
                     Region.RegionId(Region.NorthernHemiOcean),
                     [
-                        new ()
+                        new()
                         {
                             Id = "ocean.00N.90N",
                         },
@@ -104,7 +104,7 @@ public static class NoaaGlobalTemp
                 {
                     Region.RegionId(Region.SouthernHemiOcean),
                     [
-                        new ()
+                        new()
                         {
                             Id = "ocean.90S.00N",
                         },
@@ -113,7 +113,7 @@ public static class NoaaGlobalTemp
                 {
                     Region.RegionId(Region.ArcticOcean),
                     [
-                        new ()
+                        new()
                         {
                             Id = "ocean.60N.90N",
                         },
@@ -122,7 +122,7 @@ public static class NoaaGlobalTemp
                 {
                     Region.RegionId(Region.AntarcticOcean),
                     [
-                        new ()
+                        new()
                         {
                             Id = "ocean.90S.60S",
                         },

@@ -1,11 +1,11 @@
 ﻿namespace ClimateExplorer.Web.UiLogic;
 
-using ClimateExplorer.Core;
-using ClimateExplorer.Web.UiModel;
 using Blazorise.Charts;
 using Blazorise.Charts.Trendline;
+using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
+using ClimateExplorer.Web.UiModel;
 using static ClimateExplorer.Core.Enums;
 
 public static class ChartLogic
@@ -159,6 +159,7 @@ public static class ChartLogic
             BinGranularities.ByYearAndWeek => "Week and year",
             BinGranularities.ByYearAndDay => "Date",
             BinGranularities.ByMonthOnly => "Month of the year",
+            BinGranularities.ByDayOnly => "Day of the year",
             BinGranularities.BySouthernHemisphereTemperateSeasonOnly => "Southern hemisphere temperate season",
             BinGranularities.BySouthernHemisphereTropicalSeasonOnly => "Southern hemisphere tropical season",
             _ => throw new NotImplementedException($"BinGranularity {binGranularity}"),
@@ -194,7 +195,6 @@ public static class ChartLogic
         await chart.AddDataSet(chartDataset);
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rules conflict")]
     public static Tuple<BinIdentifier, BinIdentifier> GetBinRangeToPlotForGaplessRange(
         IEnumerable<DataSet> preProcessedDataSets,
         bool chartAllData,
@@ -301,11 +301,10 @@ public static class ChartLogic
             SeriesTransformations.EqualOrAbove10 => "daysEqualOrAbove10",
             SeriesTransformations.EqualOrAbove10AndLessThan25 => "daysEqualOrAbove10LessThan25",
             SeriesTransformations.EqualOrAbove25mm => "daysEqualOrAbove25mm",
-            _ => unitOfMeasure.ToString().ToLowerFirstChar()
+            _ => unitOfMeasure.ToString().ToLowerFirstChar(),
         };
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
     public static List<string> GetBarChartColourSet(List<double?> values, bool redPositive = true)
     {
         var count = values.Count;

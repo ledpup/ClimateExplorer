@@ -12,17 +12,17 @@ public class DataSubstitute
     {
         var dataMatches = new List<DataSubstitute>
         {
-            new ()
+            new()
             {
                 DataType = DataType.TempMean,
                 DataAdjustment = Enums.DataAdjustment.Adjusted,
             },
-            new ()
+            new()
             {
                 DataType = DataType.TempMax,
                 DataAdjustment = Enums.DataAdjustment.Adjusted,
             },
-            new ()
+            new()
             {
                 DataType = DataType.TempMax,
                 DataAdjustment = Enums.DataAdjustment.Unadjusted,
@@ -35,12 +35,12 @@ public class DataSubstitute
     {
         var dataMatches = new List<DataSubstitute>
         {
-            new ()
+            new()
             {
                 DataType = DataType.TempMean,
                 DataAdjustment = Enums.DataAdjustment.Adjusted,
             },
-            new ()
+            new()
             {
                 DataType = DataType.TempMax,
                 DataAdjustment = Enums.DataAdjustment.Adjusted,
@@ -53,12 +53,12 @@ public class DataSubstitute
     {
         var dataMatches = new List<DataSubstitute>
         {
-            new ()
+            new()
             {
                 DataType = DataType.TempMean,
                 DataAdjustment = Enums.DataAdjustment.Unadjusted,
             },
-            new ()
+            new()
             {
                 DataType = DataType.TempMax,
                 DataAdjustment = Enums.DataAdjustment.Unadjusted,
@@ -71,13 +71,13 @@ public class DataSubstitute
     {
         var dataMatches = new List<DataSubstitute>
         {
-            new ()
+            new()
             {
                 DataType = DataType.TempMax,
                 DataAdjustment = Enums.DataAdjustment.Adjusted,
                 DataResolution = Enums.DataResolution.Daily,
             },
-            new ()
+            new()
             {
                 DataType = DataType.TempMax,
                 DataAdjustment = Enums.DataAdjustment.Unadjusted,
@@ -91,13 +91,13 @@ public class DataSubstitute
     {
         var dataMatches = new List<DataSubstitute>
         {
-            new ()
+            new()
             {
                 DataType = DataType.TempMin,
                 DataAdjustment = Enums.DataAdjustment.Adjusted,
                 DataResolution = Enums.DataResolution.Daily,
             },
-            new ()
+            new()
             {
                 DataType = DataType.TempMin,
                 DataAdjustment = Enums.DataAdjustment.Unadjusted,

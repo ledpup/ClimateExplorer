@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 public class Station
 {
-    required public string Id { get; set; }
+    public required string Id { get; set; }
     public string? Name { get; set; }
     public string? CountryCode { get; set; }
     public Coordinates? Coordinates { get; set; }
@@ -46,7 +46,6 @@ public class Station
         return stations;
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
     public static async Task<List<Station>> GetStationsFromFile(string pathAndFileName)
     {
         var text = await File.ReadAllTextAsync(pathAndFileName);
