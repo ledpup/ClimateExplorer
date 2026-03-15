@@ -18,7 +18,7 @@ public static class BomLocationsAndStationsMapper
         var stationToLocationMapping = new Dictionary<string, Guid>();
 
         // Get the friendly location name and the "primary station", as best we can do.
-        var locationRowData = File.ReadAllLines(@"ReferenceMetaData\ACORN-SAT\acorn_sat_v2.3.0_stations.csv");
+        var locationRowData = File.ReadAllLines(@"ReferenceMetaData\ACORN-SAT\acorn_sat_stations.csv");
         foreach (var row in locationRowData.Skip(1))
         {
             var splitRow = row.Split(',');
@@ -150,7 +150,7 @@ public static class BomLocationsAndStationsMapper
         var file = await File.ReadAllTextAsync(unadjustedDataFileMappingPath);
         var unadjustedDataFileMapping = JsonSerializer.Deserialize<DataFileMapping>(file);
         var locationIdToDataFileMappings = unadjustedDataFileMapping!.LocationIdToDataFileMappings;
-        var stations = await File.ReadAllLinesAsync(@"ReferenceMetaData\ACORN-SAT\acorn_sat_v2.3.0_stations.txt");
+        var stations = await File.ReadAllLinesAsync(@"ReferenceMetaData\ACORN-SAT\acorn_sat_stations.txt");
 
         var dataFileMapping = new DataFileMapping() { DataSetDefinitionId = dataSetDefinitionId };
         foreach (var station in stations)

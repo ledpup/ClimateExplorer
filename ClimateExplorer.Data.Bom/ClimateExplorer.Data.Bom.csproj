@@ -27,10 +27,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="ReferenceMetaData\ACORN-SAT\acorn_sat_v2.3.0_stations.csv">
+    <None Update="ReferenceMetaData\ACORN-SAT\acorn_sat_stations.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="ReferenceMetaData\ACORN-SAT\acorn_sat_v2.3.0_stations.txt">
+    <None Update="ReferenceMetaData\ACORN-SAT\acorn_sat_stations.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="ReferenceMetaData\ACORN-SAT\Locations.json">
