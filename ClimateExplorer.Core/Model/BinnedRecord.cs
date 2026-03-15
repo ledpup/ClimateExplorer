@@ -3,7 +3,6 @@
 using System.Text.Json.Serialization;
 using ClimateExplorer.Core.DataPreparation;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1313:Parameter names should begin with lower-case letter", Justification = "Record type")]
 public record BinnedRecord(string BinId, double? Value)
 {
     private BinIdentifier? cachedParsedBinId;

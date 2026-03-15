@@ -195,7 +195,6 @@ public static class ChartLogic
         await chart.AddDataSet(chartDataset);
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rules conflict")]
     public static Tuple<BinIdentifier, BinIdentifier> GetBinRangeToPlotForGaplessRange(
         IEnumerable<DataSet> preProcessedDataSets,
         bool chartAllData,
@@ -306,7 +305,6 @@ public static class ChartLogic
         };
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
     public static List<string> GetBarChartColourSet(List<double?> values, bool redPositive = true)
     {
         var count = values.Count;

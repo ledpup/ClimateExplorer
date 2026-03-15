@@ -45,7 +45,6 @@ public static class AnomalyCalculator
         return $"{(calculatedAnomaly.AnomalyValue >= 0 ? "+" : string.Empty)}{string.Format("{0:0.0}", calculatedAnomaly.AnomalyValue)}{unitofMeasure}";
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
     private static CalculatedAnomaly CalculateAnomaly(YearAndValue[] dataPoints)
     {
         var nonNullDataPoints = dataPoints.Where(x => x.Value.HasValue).ToArray();

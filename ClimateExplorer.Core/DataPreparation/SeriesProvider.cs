@@ -228,7 +228,6 @@ public static class SeriesProvider
 
     public class Series
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
         public DataRecord[]? DataRecords { get; set; }
         public UnitOfMeasure UnitOfMeasure { get; set; }
         public DataResolution DataResolution { get; set; }

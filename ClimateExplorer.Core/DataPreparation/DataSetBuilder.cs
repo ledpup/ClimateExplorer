@@ -135,7 +135,7 @@ public class DataSetBuilder
             {
                 BinId = x.Item1.Id,
                 Label = x.Item1.Label,
-                Value = x.Item2 == null ? null : x.Item2.Value,
+                Value = x.Value == null ? null : x.Value.Value,
             })
         .ToArray();
     }
@@ -150,7 +150,7 @@ public class DataSetBuilder
             {
                 BinId = x.Item1.Id,
                 Label = x.Item1.Label,
-                Value = x.Item2 == null ? null : x.Item2.Value,
+                Value = x.Value == null ? null : x.Value.Value,
             })
         .ToArray();
     }

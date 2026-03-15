@@ -15,7 +15,6 @@ public class ChartSeriesDefinition
     public Guid Id { get; set; } = Guid.NewGuid();
 
     // Source data fields
-    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
     public SourceSeriesSpecification[]? SourceSeriesSpecifications { get; set; }
     public SeriesDerivationTypes SeriesDerivationType { get; set; }
     public BinGranularities BinGranularity { get; set; }

@@ -182,7 +182,7 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null, bo
 
     var definitions = await GetDataSetDefinitions();
 
-    ParallelOptions parallelOptions = new ();
+    ParallelOptions parallelOptions = new();
 
     // For each location, retrieve the TempMean dataset (Adjusted if available, Adjustment null otherwise), and copy its WarmingAnomaly
     // to the location we're about to return.
@@ -216,7 +216,7 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null, bo
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                         SeriesSpecifications =
                             [
-                                new ()
+                                new()
                                 {
                                     DataAdjustment = dsdmd.MeasurementDefinition.DataAdjustment,
                                     DataSetDefinitionId = dsdmd.DataSetDefinition.Id,
