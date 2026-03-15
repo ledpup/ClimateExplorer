@@ -3,7 +3,7 @@ using Blazored.LocalStorage;
 using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
-using ClimateExplorer.Web.Services;
+using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.WebApiClient.Services;
 using CurrentDevice;
 using DPBlazorMapLibrary;

@@ -1,7 +1,7 @@
 ﻿namespace ClimateExplorer.Core.DataPreparation.Model;
 
-using ClimateExplorer.Core.Model;
 using System.Globalization;
+using ClimateExplorer.Core.Model;
 using static ClimateExplorer.Core.Enums;
 
 public static class Binner
@@ -363,7 +363,7 @@ public static class Binner
 
     private static bool DataRecordFallsInInclusiveRange(DataRecord dr, DateOnly start, DateOnly end)
     {
-        DateOnly d = new (dr.Year, dr.Month ?? 1, dr.Day ?? 1);
+        DateOnly d = new(dr.Year, dr.Month ?? 1, dr.Day ?? 1);
 
         return d >= start && d <= end;
     }

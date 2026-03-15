@@ -105,7 +105,7 @@ public partial class ChartView
         }
     }
 
-    private List<ChartSeriesDefinition>? ChartSeriesList { get; set; } = new List<ChartSeriesDefinition>();
+    private List<ChartSeriesDefinition>? ChartSeriesList { get; set; } = [];
 
     private short SelectingGroupingDays { get; set; }
 
@@ -113,7 +113,6 @@ public partial class ChartView
 
     private bool UserOverridePresetAggregationSettings { get; set; }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
     private BinIdentifier[]? ChartBins { get; set; }
 
     private bool? IsMobileDevice { get; set; }
@@ -1148,7 +1147,6 @@ public partial class ChartView
         ChartSeriesList = newCsds;
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
     private void BuildProcessedDataSets(List<SeriesWithData> chartSeriesWithData, bool chartAllData)
     {
         var l = new LogAugmenter(Logger!, "BuildProcessedDataSets");

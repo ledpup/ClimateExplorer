@@ -2,6 +2,12 @@
 
 using static ClimateExplorer.Core.Enums;
 
+public enum RecordType
+{
+    High,
+    Low,
+}
+
 public class ClimateRecord
 {
     public DataType DataType { get; set; }
@@ -14,10 +20,4 @@ public class ClimateRecord
     public int? Day { get; set; }
     public double Value { get; set; }
     public int NumberOfTimes { get; set; }
-}
-
-public enum RecordType
-{
-    High,
-    Low,
 }

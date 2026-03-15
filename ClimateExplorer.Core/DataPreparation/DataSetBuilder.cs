@@ -1,8 +1,8 @@
 ﻿namespace ClimateExplorer.Core.DataPreparation;
 
+using System.Diagnostics;
 using ClimateExplorer.Core.DataPreparation.Model;
 using ClimateExplorer.Core.Model;
-using System.Diagnostics;
 using static ClimateExplorer.Core.Enums;
 
 public class DataSetBuilder
@@ -49,7 +49,7 @@ public class DataSetBuilder
 
     public ChartableDataPoint[] BuildDataSetFromDataRecords(DataRecord[] dataRecords, DataResolution dataResolution, PostDataSetsRequestBody request)
     {
-        Stopwatch sw = new ();
+        Stopwatch sw = new();
         sw.Start();
 
         // Apply specified transformation (if any) to each data point in the series
@@ -155,7 +155,6 @@ public class DataSetBuilder
         .ToArray();
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Rule conflict")]
     public class BuildDataSetResult
     {
         public UnitOfMeasure UnitOfMeasure { get; set; }

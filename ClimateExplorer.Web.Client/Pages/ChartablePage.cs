@@ -6,7 +6,6 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Shared;
 using ClimateExplorer.Web.Client.UiModel;
-using ClimateExplorer.Web.Services;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;

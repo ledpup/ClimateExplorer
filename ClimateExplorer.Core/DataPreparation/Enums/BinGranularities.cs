@@ -12,6 +12,7 @@ public enum BinGranularities
     ByDayOnly,
 }
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649:File name should match first type name", Justification = "Not important")]
 public static class BinGranularityHelpers
 {
     public static bool IsLinear(this BinGranularities b)

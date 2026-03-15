@@ -1,4 +1,5 @@
-﻿namespace ClimateExplorer.Core.DataPreparation;
+﻿#pragma warning disable SA1402 // File may only contain a single type
+namespace ClimateExplorer.Core.DataPreparation;
 
 using System.Globalization;
 
@@ -369,3 +370,5 @@ public class SouthernHemisphereTropicalSeasonOnlyBinIdentifier : BinIdentifier
     {
     }
 }
+
+#pragma warning restore SA1402 // File may only contain a single type

@@ -1,8 +1,8 @@
 ﻿namespace ClimateExplorer.Core.Model;
 
+using System.Text.Json.Serialization;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.ViewModel;
-using System.Text.Json.Serialization;
 using static ClimateExplorer.Core.Enums;
 
 public class DataSet

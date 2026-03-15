@@ -1,7 +1,7 @@
 ﻿namespace ClimateExplorer.Core.InputOutput;
 
-using ClimateExplorer.Core.Model;
 using System.Text.RegularExpressions;
+using ClimateExplorer.Core.Model;
 
 public static class TwelveMonthPerLineDataReader
 {

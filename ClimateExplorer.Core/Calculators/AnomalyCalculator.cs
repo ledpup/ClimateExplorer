@@ -86,6 +86,7 @@ public static class AnomalyCalculator
     }
 }
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Not important")]
 public class CalculatedAnomaly
 {
     public double AnomalyValue { get; set; }

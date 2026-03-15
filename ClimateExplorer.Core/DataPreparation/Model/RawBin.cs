@@ -13,6 +13,7 @@ public class RawBin
     }
 }
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Not important")]
 public class RawBinWithDataAdequacyFlag : RawBin
 {
     public bool MeetsDataRequirements { get; set; }

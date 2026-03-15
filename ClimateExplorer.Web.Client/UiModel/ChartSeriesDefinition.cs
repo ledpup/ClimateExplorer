@@ -50,7 +50,6 @@ public class ChartSeriesDefinition
     public bool DataAvailable { get; internal set; } = true;
     public DataResolution? MinimumDataResolution { get; set; }
 
-    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
     public string FriendlyTitle
     {
         get
@@ -121,7 +120,6 @@ public class ChartSeriesDefinition
         }
     }
 
-    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
     public static string BuildFriendlyTitleShortForSeries(SourceSeriesSpecification sss, BinGranularities binGranularity, SeriesAggregationOptions aggregation, short? year = null)
     {
         var segments = new List<string>();
@@ -205,7 +203,6 @@ public class ChartSeriesDefinition
         }
     }
 
-    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
     public string GetFriendlyDescription()
     {
         var segments = new List<string>();
@@ -279,7 +276,6 @@ public class ChartSeriesDefinition
         return string.Join(" | ", segments);
     }
 
-    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "Rule conflict")]
     private static string BuildAverageMultipleSeriesTitle(SourceSeriesSpecification[] sss)
     {
         var segments = new List<string>();

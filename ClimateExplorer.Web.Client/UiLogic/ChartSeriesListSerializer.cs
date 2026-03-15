@@ -1,9 +1,9 @@
 ﻿namespace ClimateExplorer.Web.UiLogic;
 
+using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.UiModel;
-using ClimateExplorer.Core.DataPreparation;
 using static ClimateExplorer.Core.Enums;
 
 public static class ChartSeriesListSerializer
@@ -132,7 +132,7 @@ public static class ChartSeriesListSerializer
 
         var dataMatches = new List<DataSubstitute>
         {
-            new ()
+            new()
             {
                 DataType = (DataType)dt,
                 DataAdjustment = da,
@@ -188,7 +188,7 @@ public static class ChartSeriesListSerializer
 
                 if (dsds.Any())
                 {
-                    dsd = dsds.SingleOrDefault() !;
+                    dsd = dsds.SingleOrDefault()!;
                     md = dsd.MeasurementDefinitions!.Single(x => x.DataType == match.DataType && x.DataAdjustment == match.DataAdjustment && (match.DataResolution == null || x.DataResolution == match.DataResolution));
 
                     break;

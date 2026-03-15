@@ -1,6 +1,6 @@
 namespace ClimateExplorer.Web.Client.Shared;
 
-using ClimateExplorer.Web.Services;
+using ClimateExplorer.Web.Client.Services;
 using CurrentDevice;
 using Microsoft.AspNetCore.Components;
 

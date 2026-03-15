@@ -1,7 +1,7 @@
 ﻿namespace ClimateExplorer.Core;
 
-using ClimateExplorer.Core.Model;
 using System.Globalization;
+using ClimateExplorer.Core.Model;
 
 public static class Extensions
 {

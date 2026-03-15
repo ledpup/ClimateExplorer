@@ -1,5 +1,20 @@
 ﻿namespace ClimateExplorer.Web.UiLogic;
 
+public enum Colours
+{
+    AutoAssigned,
+    Red,
+    Blue,
+    Green,
+    Purple,
+    Black,
+    Orange,
+    Yellow,
+    Brown,
+    Pink,
+    Grey,
+}
+
 public class ColourServer
 {
     private readonly List<Colours> reservedColours;
@@ -21,8 +36,8 @@ public class ColourServer
 
     public ColourServer()
     {
-        availableColours = new List<Colours>();
-        reservedColours = new List<Colours>();
+        availableColours = [];
+        reservedColours = [];
         SetupAvailableColours();
     }
 
@@ -64,19 +79,4 @@ public class ColourServer
             availableColours.Add(colour);
         }
     }
-}
-
-public enum Colours
-{
-    AutoAssigned,
-    Red,
-    Blue,
-    Green,
-    Purple,
-    Black,
-    Orange,
-    Yellow,
-    Brown,
-    Pink,
-    Grey,
 }
