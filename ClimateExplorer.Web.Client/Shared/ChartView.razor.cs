@@ -1,5 +1,7 @@
 ﻿namespace ClimateExplorer.Web.Client.Shared;
 
+using System;
+using System.Dynamic;
 using Blazorise;
 using Blazorise.Charts;
 using Blazorise.Charts.Trendline;
@@ -17,8 +19,6 @@ using CurrentDevice;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
-using System;
-using System.Dynamic;
 using static ClimateExplorer.Core.Enums;
 
 public partial class ChartView
@@ -204,14 +204,50 @@ public partial class ChartView
         }
 
         var chartWithData = ChartSeriesWithData!
-            .First(x =>
+            .FirstOrDefault(x =>
             (x.SourceDataSet!.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
             (x.SourceDataSet.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null));
 
-        var chartSeries = ChartSeriesList!
-            .First(x => x.SourceSeriesSpecifications!.Any(y =>
-               (y.MeasurementDefinition!.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
-               (y.MeasurementDefinition.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null)));
+        SourceSeriesSpecification[]? sourceSeriesSpecifications;
+        SeriesAggregationOptions aggregation;
+
+        if (chartWithData != null)
+        {
+            sourceSeriesSpecifications = chartWithData.ChartSeries!.SourceSeriesSpecifications;
+
+            var chartSeries = ChartSeriesList!
+                .FirstOrDefault(x => x.SourceSeriesSpecifications!.Any(y =>
+                   (y.MeasurementDefinition!.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
+                   (y.MeasurementDefinition.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null)));
+
+            aggregation = chartSeries?.Aggregation ?? SeriesAggregationOptions.Mean;
+        }
+        else if (LocationId.HasValue && yearAndDataTypeFilter.DataType.HasValue)
+        {
+            var dataMatches = yearAndDataTypeFilter.UnitOfMeasure == UnitOfMeasure.DegreesCelsius
+                ? DataSubstitute.StandardTemperatureDataMatches()
+                : [new DataSubstitute { DataType = yearAndDataTypeFilter.DataType.Value, DataAdjustment = yearAndDataTypeFilter.DataAdjustment }];
+
+            var dsd = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
+                DataSetDefinitions!,
+                LocationId.Value,
+                dataMatches,
+                throwIfNoMatch: false);
+
+            if (dsd == null)
+            {
+                return;
+            }
+
+            sourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(LocationDictionary![LocationId.Value], dsd);
+            aggregation = yearAndDataTypeFilter.DataType == DataType.Precipitation
+                ? SeriesAggregationOptions.Sum
+                : SeriesAggregationOptions.Mean;
+        }
+        else
+        {
+            return;
+        }
 
         ChartSeriesList =
             ChartSeriesList!
@@ -220,8 +256,8 @@ public partial class ChartView
                     new ChartSeriesDefinition()
                     {
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = chartWithData.ChartSeries!.SourceSeriesSpecifications,
-                        Aggregation = chartSeries.Aggregation,
+                        SourceSeriesSpecifications = sourceSeriesSpecifications,
+                        Aggregation = aggregation,
                         BinGranularity = SelectedBinGranularity,
                         Smoothing = SeriesSmoothingOptions.None,
                         SmoothingWindow = 20,
@@ -542,7 +578,7 @@ public partial class ChartView
 
                         var dataMatches = new List<DataSubstitute>
                         {
-                            new ()
+                            new()
                             {
                                 DataType = sss.MeasurementDefinition!.DataType,
                                 DataAdjustment = sss.MeasurementDefinition.DataAdjustment,
@@ -753,7 +789,7 @@ public partial class ChartView
     {
         string url = PageName!;
 
-        var chartAllData = ChartAllData.ToString() !.ToLower();
+        var chartAllData = ChartAllData.ToString()!.ToLower();
         var startYear = SelectedStartYear;
         var endYear = SelectedEndYear;
 
@@ -799,10 +835,10 @@ public partial class ChartView
 
         var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
 
-        ChartAllData = queryDictionary["chartAllData"] == null ? false : bool.Parse(queryDictionary["chartAllData"] !);
+        ChartAllData = queryDictionary["chartAllData"] == null ? false : bool.Parse(queryDictionary["chartAllData"]!);
         SelectedStartYear = queryDictionary["startYear"];
         SelectedEndYear = queryDictionary["endYear"];
-        SelectedGroupingDays = queryDictionary["groupingDays"] == null ? (short)14 : short.Parse(queryDictionary["groupingDays"] !);
+        SelectedGroupingDays = queryDictionary["groupingDays"] == null ? (short)14 : short.Parse(queryDictionary["groupingDays"]!);
         GroupingThresholdText = string.IsNullOrWhiteSpace(queryDictionary["groupingThreshold"]) ? "70" : queryDictionary["groupingThreshold"];
 
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier))
@@ -905,7 +941,7 @@ public partial class ChartView
             ChartSeriesList = [];
         }
 
-        var tempMaxOrMean = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataSubstitute.StandardTemperatureDataMatches(), throwIfNoMatch: true) !;
+        var tempMaxOrMean = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataSubstitute.StandardTemperatureDataMatches(), throwIfNoMatch: true)!;
 
         ChartSeriesList.Add(
             new ChartSeriesDefinition()
