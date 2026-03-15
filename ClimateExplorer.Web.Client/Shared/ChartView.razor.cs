@@ -189,7 +189,11 @@ public partial class ChartView
 
     public async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)
     {
-        await OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly, false);
+        var targetGranularity = SelectedBinGranularity == BinGranularities.ByDayOnly
+            ? BinGranularities.ByDayOnly
+            : BinGranularities.ByMonthOnly;
+
+        await OnSelectedBinGranularityChanged(targetGranularity, false);
 
         if (yearAndDataTypeFilter.UnitOfMeasure.HasValue)
         {
