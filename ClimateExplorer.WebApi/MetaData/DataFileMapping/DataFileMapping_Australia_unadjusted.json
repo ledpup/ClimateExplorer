@@ -1072,6 +1072,12 @@
       {
         "Id": "060139",
         "StartDate": "2000-01-01",
+        "EndDate": "2020-10-16",
+        "ValueAdjustment": null
+      },
+      {
+        "Id": "060168",
+        "StartDate": "2020-10-17",
         "EndDate": null,
         "ValueAdjustment": null
       }
