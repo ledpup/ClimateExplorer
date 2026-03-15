@@ -9,9 +9,9 @@ httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
 
 const string SourceDataFolder = @"..\..\..\..\ClimateExplorer.SourceData";
 
-AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.6.0_daily_tmean", $@"{SourceDataFolder}\Temperature\ACORN-SAT\daily_tmean", new Dictionary<string, string>{ { "tmean.060168.daily.csv", "tmean.060139.daily.csv" } });
-AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.6.0_daily_tmax", $@"{SourceDataFolder}\Temperature\ACORN-SAT\daily_tmax", new Dictionary<string, string> { { "tmax.060168.daily.csv", "tmax.060139.daily.csv" } });
-AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.6.0_daily_tmin", $@"{SourceDataFolder}\Temperature\ACORN-SAT\daily_tmin", new Dictionary<string, string> { { "tmin.060168.daily.csv", "tmin.060139.daily.csv" } });
+AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.6.0_daily_tmean", $@"{SourceDataFolder}\Temperature\ACORN-SAT\daily_tmean");
+AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.6.0_daily_tmax", $@"{SourceDataFolder}\Temperature\ACORN-SAT\daily_tmax");
+AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.6.0_daily_tmin", $@"{SourceDataFolder}\Temperature\ACORN-SAT\daily_tmin");
 
 var outDirectories = new Dictionary<ObsCode, string>
     {

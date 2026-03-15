@@ -1359,6 +1359,15 @@
     "YearsOfMissingData": null
   },
   {
+    "Id": "060168",
+    "Name": null,
+    "CountryCode": "AS",
+    "Coordinates": null,
+    "FirstYear": null,
+    "LastYear": null,
+    "YearsOfMissingData": null
+  },
+  {
     "Id": "061078",
     "Name": null,
     "CountryCode": "AS",

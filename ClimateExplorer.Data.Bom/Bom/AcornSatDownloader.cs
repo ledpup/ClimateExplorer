@@ -10,16 +10,16 @@ using System.Text;
 
 public static class AcornSatDownloader
 {
-    public static void DownloadAndExtractData(string acornSatfileName, string outputFolder, Dictionary<string, string> fileRenames)
+    public static void DownloadAndExtractData(string acornSatfileName, string outputFolder)
     {
         if (!Directory.Exists("source-data")) Directory.CreateDirectory("source-data");
 
         byte[] v2DailyTmaxTarGzBytes = CachingFtpHelper.Download("ftp.bom.gov.au", $"/anon/home/ncc/www/change/ACORN_SAT_daily/{acornSatfileName}.tar.gz");
 
-        ExtractTarGzToFolder(v2DailyTmaxTarGzBytes, outputFolder, fileRenames);
+        ExtractTarGzToFolder(v2DailyTmaxTarGzBytes, outputFolder);
     }
 
-    public static void ExtractTarGzToFolder(byte[] gzTarBytes, string outputFolder, Dictionary<string, string> fileRenames)
+    public static void ExtractTarGzToFolder(byte[] gzTarBytes, string outputFolder)
     {
         if (!Directory.Exists(outputFolder)) Directory.CreateDirectory(outputFolder);
 
@@ -36,9 +36,7 @@ public static class AcornSatDownloader
                     continue;
                 }
 
-                var fileName = fileRenames.ContainsKey(reader.Entry.Key!)
-                    ? fileRenames[reader.Entry.Key!]
-                    : reader.Entry.Key!;
+                var fileName = reader.Entry.Key!;
 
                 Console.WriteLine(fileName);
 

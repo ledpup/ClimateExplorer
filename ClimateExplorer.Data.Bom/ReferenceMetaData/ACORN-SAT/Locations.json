@@ -1321,11 +1321,11 @@
     "DataSetId": "b13afcaf-cdbc-4267-9def-9629c8066321",
     "Name": "Port Macquarie",
     "CountryCode": "AS",
-    "PrimaryStation": "060139",
+    "PrimaryStation": "060168",
     "Sites": [
+      "060168",
       "060139",
-      "060026",
-      "060168"
+      "060026"
     ],
     "Coordinates": {
       "Latitude": -31.43,
