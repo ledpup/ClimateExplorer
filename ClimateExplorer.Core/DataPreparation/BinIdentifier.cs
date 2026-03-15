@@ -285,10 +285,7 @@ public class MonthOnlyBinIdentifier : BinIdentifier, IComparable<MonthOnlyBinIde
 
     public int CompareTo(MonthOnlyBinIdentifier? other)
     {
-        if (other == null)
-        {
-            throw new ArgumentNullException(nameof(other));
-        }
+        ArgumentNullException.ThrowIfNull(other);
 
         return this.month - other.month;
     }
