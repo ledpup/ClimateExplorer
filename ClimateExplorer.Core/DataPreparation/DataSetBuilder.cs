@@ -75,6 +75,13 @@ public class DataSetBuilder
         // Return the data for the requested year using DayOnlyBinIdentifier.
         if (request.BinningRule == BinGranularities.ByDayOnly && request.FilterToYear.HasValue)
         {
+            // This path assumes the underlying series is daily (non-null Month/Day).
+            // Guard against non-daily resolutions to avoid downstream null Month/Day exceptions.
+            if (dataResolution != DataResolution.Daily)
+            {
+                throw new System.InvalidOperationException("ByDayOnly binning with a year filter is only supported for daily data resolution.");
+            }
+
             return ConvertDataRecordsToDayOnlyChartableDataPoints(filteredDataRecords);
         }
 
