@@ -25,6 +25,7 @@ public interface IDataService
         float requiredCupDataProportion,
         int cupSize,
         SeriesTransformations seriesTransformation,
+        string? customTransformation = null,
         short? year = null,
         DataResolution? minimumDataResolution = null);
     Task<Dictionary<string, string>> GetCountries();

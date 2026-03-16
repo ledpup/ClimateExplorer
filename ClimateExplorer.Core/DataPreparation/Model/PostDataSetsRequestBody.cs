@@ -8,6 +8,8 @@ public class PostDataSetsRequestBody
     public SeriesSpecification[]? SeriesSpecifications { get; set; }
     public SeriesTransformations SeriesTransformation { get; set; }
 
+    public string? CustomTransformation { get; set; }
+
     public SouthernHemisphereTemperateSeasons? FilterToSouthernHemisphereTemperateSeason { get; set; }
     public SouthernHemisphereTropicalSeasons? FilterToTropicalSeason { get; set; }
     public int? FilterToYearsAfterAndIncluding { get; set; }

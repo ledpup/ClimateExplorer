@@ -121,19 +121,23 @@
                                     Disabled="@ShouldDisableTransformation(ChartSeries)">
                                 <SelectItem Value="SeriesTransformations.Identity">Identity</SelectItem>
                                 <SelectItem Value="SeriesTransformations.Negate">Negate</SelectItem>
-                                <SelectItem Value="SeriesTransformations.EqualOrAbove25">Days 25°C or above</SelectItem>
-                                <SelectItem Value="SeriesTransformations.EqualOrAbove35">Days 35°C or above</SelectItem>
-                                <SelectItem Value="SeriesTransformations.IsZero">Days without rain</SelectItem>
                                 <SelectItem Value="SeriesTransformations.IsFrosty">Days of frost</SelectItem>
                                 <SelectItem Value="SeriesTransformations.DayOfYearIfFrost">Day of year if frost</SelectItem>
-                                <SelectItem Value="SeriesTransformations.EqualOrAbove1">Days of 1mm of rain or more</SelectItem>
-                                <SelectItem Value="SeriesTransformations.EqualOrAbove1AndLessThan10">Days between 1mm and 10mm of rain</SelectItem>
-                                <SelectItem Value="SeriesTransformations.EqualOrAbove10">Days of 10mm of rain or more</SelectItem>
-                                <SelectItem Value="SeriesTransformations.EqualOrAbove10AndLessThan25">Days between 10mm and 25mm of rain</SelectItem>
-                                <SelectItem Value="SeriesTransformations.EqualOrAbove25mm">Days of 25mm of rain or more</SelectItem>
+                                <SelectItem Value="SeriesTransformations.Custom">Custom</SelectItem>
                             </Select>
                         </td>
                     </tr>
+                    @if (ChartSeries.SeriesTransformation == SeriesTransformations.Custom)
+                    {
+                        <tr>
+                            <td>Custom expression</td>
+                            <td>
+                                <TextInput Value="@ChartSeries.CustomTransformation"
+                                           ValueChanged="@OnCustomTransformationChanged"
+                                           Placeholder="e.g. x > 25 or x >= 1 AND x < 10" />
+                            </td>
+                        </tr>
+                    }
                     <tr>
                         <td>Display style</td>
                         <td>
@@ -368,6 +372,12 @@
             Colours.AutoAssigned => "Automatic",
             _ => colour.ToString(),
         };
+    }
+
+    async Task OnCustomTransformationChanged(string value)
+    {
+        ChartSeries!.CustomTransformation = value;
+        await OnSeriesChanged.InvokeAsync();
     }
 
     void ExpandCollapse()

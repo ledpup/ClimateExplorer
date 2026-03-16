@@ -53,7 +53,7 @@ public class DataSetBuilder
         sw.Start();
 
         // Apply specified transformation (if any) to each data point in the series
-        var transformedDataRecords = SeriesTransformer.ApplySeriesTransformation(dataRecords, request.SeriesTransformation);
+        var transformedDataRecords = SeriesTransformer.ApplySeriesTransformation(dataRecords, request.SeriesTransformation, request.CustomTransformation);
 
         Console.WriteLine("ApplySeriesTransformation completed in " + sw.Elapsed);
         sw.Restart();

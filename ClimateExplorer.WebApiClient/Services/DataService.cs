@@ -37,6 +37,7 @@ public class DataService : IDataService
         float requiredCupDataProportion,
         int cupSize,
         SeriesTransformations seriesTransformation,
+        string? customTransformation,
         short? year,
         DataResolution? minimumDataResolution)
     {
@@ -56,6 +57,7 @@ public class DataService : IDataService
                     SeriesDerivationType = seriesDerivationType,
                     SeriesSpecifications = seriesSpecifications,
                     SeriesTransformation = seriesTransformation,
+                    CustomTransformation = customTransformation,
                     Anomaly = seriesValueOption == SeriesValueOptions.Anomaly,
                     FilterToYear = year,
                     MinimumDataResolution = minimumDataResolution,
