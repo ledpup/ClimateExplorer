@@ -6,7 +6,6 @@ public enum SeriesTransformations
     IsPositive,
     IsNegative,
     Negate,
-    IsFrosty,
     DayOfYearIfFrost,
     Custom,
 }

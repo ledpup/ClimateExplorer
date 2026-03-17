@@ -105,7 +105,6 @@ public static class Enums
     {
         var label = seriesTransformations switch
         {
-            SeriesTransformations.IsFrosty => "Days of frost",
             SeriesTransformations.DayOfYearIfFrost => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "Last day of frost" : "First day of frost",
             SeriesTransformations.Custom => seriesAggregationOptions == SeriesAggregationOptions.Sum ? $"Count of {customTransformation}" : customTransformation!,
             _ => UnitOfMeasureLabel(unitOfMeasure),

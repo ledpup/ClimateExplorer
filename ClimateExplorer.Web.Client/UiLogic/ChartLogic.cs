@@ -100,7 +100,7 @@ public static class ChartLogic
         string? customTransformation,
         SeriesAggregationOptions seriesAggregationOptions)
     {
-        var colour = GetBarChartColourSet(values, seriesTransformations == SeriesTransformations.IsFrosty ? false : redPositive);
+        var colour = GetBarChartColourSet(values, redPositive);
 
         return
             new BarChartDataset<double?>
@@ -294,7 +294,6 @@ public static class ChartLogic
     {
         return seriesTransformations switch
         {
-            SeriesTransformations.IsFrosty => "daysOfFrost",
             SeriesTransformations.DayOfYearIfFrost => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "lastDayOfFrost" : "firstDayOfFrost",
             SeriesTransformations.Custom => ChartSeriesDefinition.GetFriendlyCustomTransformationLabel(customTransformation ?? "Custom").Replace(" ", string.Empty),
             _ => unitOfMeasure.ToString().ToLowerFirstChar(),

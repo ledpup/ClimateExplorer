@@ -1326,7 +1326,6 @@ public partial class ChartView
     {
         return seriesTransformation switch
         {
-            SeriesTransformations.IsFrosty => "Number of days of frost",
             SeriesTransformations.DayOfYearIfFrost => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "Last day of frost" : "First day of frost",
             SeriesTransformations.Custom => ChartSeriesDefinition.GetFriendlyCustomTransformationLabel(customTransformation ?? "Custom transformation"),
             _ => defaultLabel,

@@ -185,6 +185,7 @@ public class ChartSeriesDefinition
         return transformation switch
         {
             "x == 0" => "Value is zero",
+            "x <= 2.2" => "Value is 2.2 or less (frost)",
             "x > 1" => "Value is greater than 1",
             "x >= 1" => "Value is 1 or more",
             "x >= 10" => "Value is 10 or more",
@@ -328,7 +329,6 @@ public class ChartSeriesDefinition
     {
         return seriesTransformation switch
         {
-            SeriesTransformations.IsFrosty => "Is Frost",
             SeriesTransformations.DayOfYearIfFrost => "Day if frost",
             SeriesTransformations.Custom => GetFriendlyCustomTransformationLabel(CustomTransformation ?? "Custom"),
             _ => seriesTransformation.ToString(),
