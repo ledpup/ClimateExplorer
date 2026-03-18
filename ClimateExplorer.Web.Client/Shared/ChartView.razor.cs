@@ -1291,7 +1291,7 @@ public partial class ChartView
                     GeographicalEntity = cs.PreProcessedDataSet.GeographicalEntity,
                     MeasurementDefinition = cs.PreProcessedDataSet.MeasurementDefinition,
                     DataRecords =
-                        chartBins
+                        [.. chartBins
                         .Select(
                             bin =>
 
@@ -1299,8 +1299,7 @@ public partial class ChartView
                             recordsByBinId[bin.Id].SingleOrDefault()
 
                             // Otherwise, create a null record
-                            ?? new BinnedRecord(bin.Id, null))
-                        .ToList(),
+                            ?? new BinnedRecord(bin.Id, null))],
                 };
         }
 
@@ -1313,10 +1312,7 @@ public partial class ChartView
         var binIdsToPlot = new HashSet<string>(ChartBins.Select(x => x.Id));
         foreach (var cswd in ChartSeriesWithData!)
         {
-            cswd.ProcessedDataSet!.DataRecords =
-                cswd.ProcessedDataSet.DataRecords
-                .Where(x => binIdsToPlot.Contains(x.BinId!))
-                .ToList();
+            cswd.ProcessedDataSet!.DataRecords = [.. cswd.ProcessedDataSet.DataRecords.Where(x => binIdsToPlot.Contains(x.BinId!))];
         }
 
         l.LogInformation("leaving");
@@ -1352,6 +1348,39 @@ public partial class ChartView
             },
         };
 
+        // Build a global min/max per axis from the full source datasets, before any display range filtering.
+        // This ensures the y-axis range reflects the complete dataset even when ChartAllData is false.
+        var axisMinMax = new Dictionary<string, (double Min, double Max)>();
+        foreach (var swd in ChartSeriesWithData!)
+        {
+            var cs = swd.ChartSeries!;
+            var uom = cs.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
+            var axisId = ChartLogic.GetYAxisId(cs.SeriesTransformation, cs.CustomTransformation, uom, cs.Aggregation);
+
+            var values = swd.PreProcessedDataSet!.DataRecords!
+                .Select(x => x.Value)
+                .Where(v => v.HasValue)
+                .Select(v => v!.Value)
+                .ToList();
+
+            if (values.Count == 0)
+            {
+                continue;
+            }
+
+            var seriesMin = values.Min();
+            var seriesMax = values.Max();
+
+            if (axisMinMax.TryGetValue(axisId, out var current))
+            {
+                axisMinMax[axisId] = (Math.Min(current.Min, seriesMin), Math.Max(current.Max, seriesMax));
+            }
+            else
+            {
+                axisMinMax[axisId] = (seriesMin, seriesMax);
+            }
+        }
+
         var axes = new List<string>();
         foreach (var s in ChartSeriesList!.Where(x => x.DataAvailable))
         {
@@ -1359,6 +1388,7 @@ public partial class ChartView
             var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation);
             if (!axes.Contains(axisId))
             {
+                axisMinMax.TryGetValue(axisId, out var globalMinMax);
                 ((IDictionary<string, object>)scales).Add(
                     axisId,
                     new
@@ -1373,6 +1403,8 @@ public partial class ChartView
                             Display = true,
                             Color = s.Colour,
                         },
+                        Min = globalMinMax.Min,
+                        Max = globalMinMax.Max,
                     });
                 axes.Add(axisId);
             }
