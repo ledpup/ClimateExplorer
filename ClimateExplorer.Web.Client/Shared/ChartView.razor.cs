@@ -1389,6 +1389,8 @@ public partial class ChartView
             if (!axes.Contains(axisId))
             {
                 axisMinMax.TryGetValue(axisId, out var globalMinMax);
+                var axisRange = globalMinMax.Max - globalMinMax.Min;
+                var axisPadding = axisRange * 0.02;
                 ((IDictionary<string, object>)scales).Add(
                     axisId,
                     new
@@ -1403,8 +1405,8 @@ public partial class ChartView
                             Display = true,
                             Color = s.Colour,
                         },
-                        Min = globalMinMax.Min,
-                        Max = globalMinMax.Max,
+                        Min = globalMinMax.Min == 0 ? globalMinMax.Min : globalMinMax.Min - axisPadding,
+                        Max = globalMinMax.Max == 0 ? globalMinMax.Max : globalMinMax.Max + axisPadding,
                     });
                 axes.Add(axisId);
             }
