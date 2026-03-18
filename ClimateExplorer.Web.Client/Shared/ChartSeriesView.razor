@@ -131,9 +131,16 @@
                         <tr>
                             <td>Custom expression</td>
                             <td>
-                                <TextInput Value="@ChartSeries.CustomTransformation"
-                                           ValueChanged="@OnCustomTransformationChanged"
-                                           Placeholder="e.g. x > 25 or x >= 1 AND x < 10" />
+                                <Validation @ref="validation" Validator="ValidateCustomTransformation">
+                                    <TextInput Value="@ChartSeries.CustomTransformation"
+                                               ValueChanged="@OnCustomTransformationChanged"
+                                               Placeholder="e.g. x == 0 or x >= 1 AND x < 10"
+                                               Immediate="false">
+                                        <Feedback>
+                                            <ValidationError>Expected input like: 'x &gt; 25' or 'x &gt;= 1 AND x &lt; 10'</ValidationError>
+                                        </Feedback>
+                                    </TextInput>
+                                </Validation>
                             </td>
                         </tr>
                     }
@@ -201,6 +208,8 @@
 <AboutData @ref="_aboutData" ChartSeries="@ChartSeries" />
 
 @code {
+    private Validation? validation;
+
     [Parameter]
     public ChartSeriesDefinition? ChartSeries { get; set; }
 
@@ -376,7 +385,32 @@
     async Task OnCustomTransformationChanged(string value)
     {
         ChartSeries!.CustomTransformation = value;
-        await OnSeriesChanged.InvokeAsync();
+        if (validation is not null)
+        {
+            var validationStatus = validation.Validate();
+            if (validationStatus == ValidationStatus.Success)
+            {
+                await OnSeriesChanged.InvokeAsync();
+            }
+        }
+    }
+
+    void ValidateCustomTransformation(ValidatorEventArgs e)
+    {
+        try
+        {
+            if (e.Value is null)
+            {
+                e.Status = ValidationStatus.None;
+                return;
+            }
+            CustomTransformationParser.Parse(Convert.ToString(e.Value)!);
+            e.Status = ValidationStatus.Success;
+        }
+        catch
+        {
+            e.Status = ValidationStatus.Error;
+        }
     }
 
     void ExpandCollapse()

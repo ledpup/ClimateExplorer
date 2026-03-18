@@ -404,7 +404,7 @@ public partial class ChartView
         }
 
         string currentUri = NavManager!.Uri;
-        string newUri = $"{NavManager.BaseUri}{url}";
+        string newUri = NavManager.BaseUri + url;
 
         if (currentUri != newUri)
         {
