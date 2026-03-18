@@ -85,7 +85,7 @@ public static class ChartSeriesListSerializer
     {
         string[] segments = s.Split(SeparatorsByLevel[1]);
 
-        var dr = (DataResolution?)ParseNullableEnum<DataResolution>(segments[17]);
+        var dr = (DataResolution?)ParseNullableEnum<DataResolution>(segments[18]);
 
         return
             new ChartSeriesDefinition()
@@ -105,9 +105,10 @@ public static class ChartSeriesListSerializer
                 Year = ParseNullableShort(segments[12]),
                 IsExpanded = bool.Parse(segments[13]),
                 SeriesTransformation = ParseEnum<SeriesTransformations>(segments[14]),
-                GroupingThreshold = ParseNullableFloat(segments[15]),
-                DataAvailable = bool.Parse(segments[16]),
-                MinimumDataResolution = (DataResolution?)ParseNullableEnum<DataResolution>(segments[17]),
+                CustomTransformation = !string.IsNullOrEmpty(segments[15]) ? Uri.UnescapeDataString(segments[15]) : null,
+                GroupingThreshold = ParseNullableFloat(segments[16]),
+                DataAvailable = bool.Parse(segments[17]),
+                MinimumDataResolution = (DataResolution?)ParseNullableEnum<DataResolution>(segments[18]),
             };
     }
 
@@ -115,10 +116,7 @@ public static class ChartSeriesListSerializer
     {
         string[] segments = s.Split(SeparatorsByLevel[2]);
 
-        return
-            segments
-            .Select(x => ParseSourceSeriesSpecification(x, dataSetDefinitions, locations, regions, dataResolution))
-            .ToArray();
+        return [.. segments.Select(x => ParseSourceSeriesSpecification(x, dataSetDefinitions, locations, regions, dataResolution))];
     }
 
     private static SourceSeriesSpecification ParseSourceSeriesSpecification(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IDictionary<Guid, Location>? locations, IEnumerable<Region> regions, DataResolution? dataResolution)
@@ -255,6 +253,7 @@ public static class ChartSeriesListSerializer
                 csd.Year,
                 csd.IsExpanded,
                 csd.SeriesTransformation,
+                Uri.EscapeDataString(csd.CustomTransformation ?? string.Empty),
                 csd.GroupingThreshold,
                 csd.DataAvailable,
                 csd.MinimumDataResolution);

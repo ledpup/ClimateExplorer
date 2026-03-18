@@ -20,6 +20,7 @@ public class ChartSeriesDefinition
     public BinGranularities BinGranularity { get; set; }
     public short? Year { get; set; }
     public SeriesTransformations SeriesTransformation { get; set; }
+    public string? CustomTransformation { get; set; }
 
     // Data manipulation fields
     public float? GroupingThreshold { get; set; }
@@ -179,6 +180,21 @@ public class ChartSeriesDefinition
         };
     }
 
+    public static string GetFriendlyCustomTransformationLabel(string transformation)
+    {
+        return transformation switch
+        {
+            "x == 0" => "Value is zero",
+            "x <= 2.2" => "Value is 2.2 or less (frost)",
+            "x > 1" => "Value is greater than 1",
+            "x >= 1" => "Value is 1 or more",
+            "x >= 10" => "Value is 10 or more",
+            "x >= 25" => "Value is 25 or more",
+            "x >= 35" => "Value is 35 or more",
+            _ => transformation,
+        };
+    }
+
     public override string ToString()
     {
         return $"CSD: {BinGranularity} | {Smoothing} | {Aggregation} | {Value} | {DisplayStyle}";
@@ -313,16 +329,8 @@ public class ChartSeriesDefinition
     {
         return seriesTransformation switch
         {
-            SeriesTransformations.IsZero => "Is zero",
-            SeriesTransformations.IsFrosty => "Is Frost",
             SeriesTransformations.DayOfYearIfFrost => "Day if frost",
-            SeriesTransformations.EqualOrAbove25 => "25°C or above",
-            SeriesTransformations.EqualOrAbove35 => "35°C or above",
-            SeriesTransformations.EqualOrAbove1 => "1mm or more",
-            SeriesTransformations.EqualOrAbove1AndLessThan10 => "Between 1mm and 10mm",
-            SeriesTransformations.EqualOrAbove10 => "10mm or more",
-            SeriesTransformations.EqualOrAbove10AndLessThan25 => "Between 10mm and 25mm",
-            SeriesTransformations.EqualOrAbove25mm => "25mm or more",
+            SeriesTransformations.Custom => GetFriendlyCustomTransformationLabel(CustomTransformation ?? "Custom"),
             _ => seriesTransformation.ToString(),
         };
     }
@@ -377,6 +385,11 @@ public class ChartSeriesDefinition
             }
 
             if (x.SeriesTransformation != y.SeriesTransformation)
+            {
+                return false;
+            }
+
+            if (x.CustomTransformation != y.CustomTransformation)
             {
                 return false;
             }

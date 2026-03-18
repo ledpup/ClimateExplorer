@@ -387,14 +387,13 @@ public partial class ChartView
 
         LoadingChart();
 
-        // Recalculate the URL
-        string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(ChartSeriesList!);
-
         var queryString = new Uri(NavManager!.Uri).Query;
         var queryDictionary = System.Web.HttpUtility.ParseQueryString(queryString);
 
         var url = GetGlobalQueryStringSettings();
 
+        // Recalculate the URL
+        string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(ChartSeriesList!);
         if (chartSeriesUrlComponent.Length > 0)
         {
             url += "&csd=" + chartSeriesUrlComponent;
@@ -405,7 +404,7 @@ public partial class ChartView
         }
 
         string currentUri = NavManager!.Uri;
-        string newUri = NavManager.ToAbsoluteUri(url).ToString();
+        string newUri = NavManager.BaseUri + url;
 
         if (currentUri != newUri)
         {
@@ -910,6 +909,7 @@ public partial class ChartView
                     GetGroupingThreshold(csd.GroupingThreshold),
                     SelectedGroupingDays,
                     csd.SeriesTransformation,
+                    csd.CustomTransformation,
                     csd.Year,
                     csd.MinimumDataResolution);
 
@@ -1094,7 +1094,7 @@ public partial class ChartView
                 chart!,
                 chartSeries,
                 dataSet,
-                GetChartLabel(chartSeries.ChartSeries.SeriesTransformation, defaultLabel, chartSeries.ChartSeries.Aggregation),
+                GetChartLabel(chartSeries.ChartSeries.SeriesTransformation, chartSeries.ChartSeries.CustomTransformation, defaultLabel, chartSeries.ChartSeries.Aggregation),
                 htmlColourCode,
                 renderSmallPoints: renderSmallPoints);
 
@@ -1291,7 +1291,7 @@ public partial class ChartView
                     GeographicalEntity = cs.PreProcessedDataSet.GeographicalEntity,
                     MeasurementDefinition = cs.PreProcessedDataSet.MeasurementDefinition,
                     DataRecords =
-                        chartBins
+                        [.. chartBins
                         .Select(
                             bin =>
 
@@ -1299,8 +1299,7 @@ public partial class ChartView
                             recordsByBinId[bin.Id].SingleOrDefault()
 
                             // Otherwise, create a null record
-                            ?? new BinnedRecord(bin.Id, null))
-                        .ToList(),
+                            ?? new BinnedRecord(bin.Id, null))],
                 };
         }
 
@@ -1313,29 +1312,18 @@ public partial class ChartView
         var binIdsToPlot = new HashSet<string>(ChartBins.Select(x => x.Id));
         foreach (var cswd in ChartSeriesWithData!)
         {
-            cswd.ProcessedDataSet!.DataRecords =
-                cswd.ProcessedDataSet.DataRecords
-                .Where(x => binIdsToPlot.Contains(x.BinId!))
-                .ToList();
+            cswd.ProcessedDataSet!.DataRecords = [.. cswd.ProcessedDataSet.DataRecords.Where(x => binIdsToPlot.Contains(x.BinId!))];
         }
 
         l.LogInformation("leaving");
     }
 
-    private string GetChartLabel(SeriesTransformations seriesTransformation, string defaultLabel, SeriesAggregationOptions seriesAggregationOptions)
+    private string GetChartLabel(SeriesTransformations seriesTransformation, string? customTransformation, string defaultLabel, SeriesAggregationOptions seriesAggregationOptions)
     {
         return seriesTransformation switch
         {
-            SeriesTransformations.IsZero => "Number of days without rain",
-            SeriesTransformations.IsFrosty => "Number of days of frost",
             SeriesTransformations.DayOfYearIfFrost => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "Last day of frost" : "First day of frost",
-            SeriesTransformations.EqualOrAbove25 => "Number of days 25°C or above",
-            SeriesTransformations.EqualOrAbove35 => "Number of days 35°C or above",
-            SeriesTransformations.EqualOrAbove1 => "Number of days with 1mm of rain or more",
-            SeriesTransformations.EqualOrAbove1AndLessThan10 => "Number of days between 1mm and 10mm of rain",
-            SeriesTransformations.EqualOrAbove10 => "Number of days with 10mm of rain or more",
-            SeriesTransformations.EqualOrAbove10AndLessThan25 => "Number of days between 10mm and 25mm of rain",
-            SeriesTransformations.EqualOrAbove25mm => "Number of days with 25mm of rain or more",
+            SeriesTransformations.Custom => ChartSeriesDefinition.GetFriendlyCustomTransformationLabel(customTransformation ?? "Custom transformation"),
             _ => defaultLabel,
         };
     }
@@ -1360,13 +1348,49 @@ public partial class ChartView
             },
         };
 
+        // Build a global min/max per axis from the full source datasets, before any display range filtering.
+        // This ensures the y-axis range reflects the complete dataset even when ChartAllData is false.
+        var axisMinMax = new Dictionary<string, (double Min, double Max)>();
+        foreach (var swd in ChartSeriesWithData!)
+        {
+            var cs = swd.ChartSeries!;
+            var uom = cs.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
+            var axisId = ChartLogic.GetYAxisId(cs.SeriesTransformation, cs.CustomTransformation, uom, cs.Aggregation);
+
+            var values = swd.PreProcessedDataSet!.DataRecords!
+                .Select(x => x.Value)
+                .Where(v => v.HasValue)
+                .Select(v => v!.Value)
+                .ToList();
+
+            if (values.Count == 0)
+            {
+                continue;
+            }
+
+            var seriesMin = values.Min();
+            var seriesMax = values.Max();
+
+            if (axisMinMax.TryGetValue(axisId, out var current))
+            {
+                axisMinMax[axisId] = (Math.Min(current.Min, seriesMin), Math.Max(current.Max, seriesMax));
+            }
+            else
+            {
+                axisMinMax[axisId] = (seriesMin, seriesMax);
+            }
+        }
+
         var axes = new List<string>();
         foreach (var s in ChartSeriesList!.Where(x => x.DataAvailable))
         {
             var uom = s.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
-            var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, uom, s.Aggregation);
+            var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation);
             if (!axes.Contains(axisId))
             {
+                axisMinMax.TryGetValue(axisId, out var globalMinMax);
+                var axisRange = globalMinMax.Max - globalMinMax.Min;
+                var axisPadding = axisRange * 0.02;
                 ((IDictionary<string, object>)scales).Add(
                     axisId,
                     new
@@ -1377,10 +1401,12 @@ public partial class ChartView
                         Grid = new { DrawOnChartArea = axes.Count == 0 },
                         Title = new
                         {
-                            Text = UnitOfMeasureLabel(s.SeriesTransformation, uom, s.Aggregation, s.Value),
+                            Text = UnitOfMeasureLabel(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation, s.Value),
                             Display = true,
                             Color = s.Colour,
                         },
+                        Min = globalMinMax.Min == 0 ? globalMinMax.Min : globalMinMax.Min - axisPadding,
+                        Max = globalMinMax.Max == 0 ? globalMinMax.Max : globalMinMax.Max + axisPadding,
                     });
                 axes.Add(axisId);
             }

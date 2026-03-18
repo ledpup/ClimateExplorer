@@ -58,6 +58,7 @@ public static class ChartLogic
         ChartColor chartColor,
         UnitOfMeasure unitOfMeasure,
         SeriesTransformations seriesTransformations,
+        string? customTransformation,
         bool renderSmallPoints,
         SeriesAggregationOptions seriesAggregationOptions)
     {
@@ -83,7 +84,7 @@ public static class ChartLogic
                 BorderDash = [],
                 BorderWidth = 5,
 
-                YAxisID = GetYAxisId(seriesTransformations, unitOfMeasure, seriesAggregationOptions),
+                YAxisID = GetYAxisId(seriesTransformations, customTransformation, unitOfMeasure, seriesAggregationOptions),
             };
 
         return lineChartDataset;
@@ -96,9 +97,10 @@ public static class ChartLogic
         bool? absoluteValues,
         bool redPositive,
         SeriesTransformations seriesTransformations,
+        string? customTransformation,
         SeriesAggregationOptions seriesAggregationOptions)
     {
-        var colour = GetBarChartColourSet(values, seriesTransformations == SeriesTransformations.IsFrosty ? false : redPositive);
+        var colour = GetBarChartColourSet(values, redPositive);
 
         return
             new BarChartDataset<double?>
@@ -107,7 +109,7 @@ public static class ChartLogic
                 Data = values.Select(x => absoluteValues.GetValueOrDefault() && x.HasValue ? Math.Abs(x.Value) : x).ToList(),
                 BorderColor = colour,
                 BackgroundColor = colour,
-                YAxisID = GetYAxisId(seriesTransformations, unitOfMeasure, seriesAggregationOptions),
+                YAxisID = GetYAxisId(seriesTransformations, customTransformation, unitOfMeasure, seriesAggregationOptions),
             };
     }
 
@@ -120,6 +122,7 @@ public static class ChartLogic
         bool? absoluteValues = false,
         bool redPositive = true,
         SeriesTransformations seriesTransformations = SeriesTransformations.Identity,
+        string? customTransformation = null,
         SeriesAggregationOptions seriesAggregationOptions = SeriesAggregationOptions.Mean,
         bool renderSmallPoints = false)
     {
@@ -131,9 +134,9 @@ public static class ChartLogic
                     throw new NullReferenceException(nameof(chartColour));
                 }
 
-                return GetLineChartDataset(label, values, chartColour.Value, unitOfMeasure, seriesTransformations, renderSmallPoints, seriesAggregationOptions);
+                return GetLineChartDataset(label, values, chartColour.Value, unitOfMeasure, seriesTransformations, customTransformation, renderSmallPoints, seriesAggregationOptions);
             case ChartType.Bar:
-                return GetBarChartDataset(label, values, unitOfMeasure, absoluteValues, redPositive, seriesTransformations, seriesAggregationOptions);
+                return GetBarChartDataset(label, values, unitOfMeasure, absoluteValues, redPositive, seriesTransformations, customTransformation, seriesAggregationOptions);
         }
 
         throw new NotImplementedException($"ChartType {chartType}");
@@ -190,7 +193,7 @@ public static class ChartLogic
             ? ChartType.Line
             : ChartType.Bar;
 
-        var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition!.UnitOfMeasure, chartType, colour, absoluteValues, redPositive, chartSeries.ChartSeries.SeriesTransformation, chartSeries.ChartSeries.Aggregation, renderSmallPoints);
+        var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition!.UnitOfMeasure, chartType, colour, absoluteValues, redPositive, chartSeries.ChartSeries.SeriesTransformation, chartSeries.ChartSeries.CustomTransformation, chartSeries.ChartSeries.Aggregation, renderSmallPoints);
 
         await chart.AddDataSet(chartDataset);
     }
@@ -287,20 +290,12 @@ public static class ChartLogic
         return new Tuple<BinIdentifier, BinIdentifier>(startBin!, endBin!);
     }
 
-    public static string GetYAxisId(SeriesTransformations seriesTransformations, UnitOfMeasure unitOfMeasure, SeriesAggregationOptions seriesAggregationOptions)
+    public static string GetYAxisId(SeriesTransformations seriesTransformations, string? customTransformation, UnitOfMeasure unitOfMeasure, SeriesAggregationOptions seriesAggregationOptions)
     {
         return seriesTransformations switch
         {
-            SeriesTransformations.IsZero => "daysWithoutRain",
-            SeriesTransformations.IsFrosty => "daysOfFrost",
             SeriesTransformations.DayOfYearIfFrost => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "lastDayOfFrost" : "firstDayOfFrost",
-            SeriesTransformations.EqualOrAbove25 => "daysEqualOrAbove25",
-            SeriesTransformations.EqualOrAbove35 => "daysEqualOrAbove35",
-            SeriesTransformations.EqualOrAbove1 => "daysEqualOrAbove1",
-            SeriesTransformations.EqualOrAbove1AndLessThan10 => "daysEqualOrAbove1LessThan10",
-            SeriesTransformations.EqualOrAbove10 => "daysEqualOrAbove10",
-            SeriesTransformations.EqualOrAbove10AndLessThan25 => "daysEqualOrAbove10LessThan25",
-            SeriesTransformations.EqualOrAbove25mm => "daysEqualOrAbove25mm",
+            SeriesTransformations.Custom => ChartSeriesDefinition.GetFriendlyCustomTransformationLabel(customTransformation ?? "Custom").Replace(" ", string.Empty),
             _ => unitOfMeasure.ToString().ToLowerFirstChar(),
         };
     }

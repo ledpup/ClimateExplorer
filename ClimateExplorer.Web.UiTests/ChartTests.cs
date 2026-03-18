@@ -1,23 +1,48 @@
-﻿using System.Text.RegularExpressions;
+﻿using Microsoft.Playwright;
+using System.Text.RegularExpressions;
 
 namespace ClimateExplorer.Web.UiTests;
 
 [Parallelizable(ParallelScope.Self)]
 [TestFixture]
-public class ChartTests : TestBase
+public partial class ChartTests : TestBase
 {
     [Test]
     public async Task RemoveChart()
     {
-        await page.GotoAsync(_baseSiteUrl);
-        await page.GotoAsync($"{_baseSiteUrl}/location/aed87aa0-1d0c-44aa-8561-cde0fc936395");
-        await page.GotoAsync($"{_baseSiteUrl}/location?chartAllData=false&groupingDays=14&groupingThreshold=70&csd=ReturnSingleSeries,b13afcaf-cdbc-4267-9def-9629c8066321*TempMean*Adjusted*aed87aa0-1d0c-44aa-8561-cde0fc936395,Mean,AutoAssigned,ByYear,Line,False,None,False,MovingAverage,20,Value,,False,Identity,,True,;ReturnSingleSeries,e5eea4d6-5fd5-49ab-bf85-144a8921111e*Precipitation**aed87aa0-1d0c-44aa-8561-cde0fc936395,Sum,AutoAssigned,ByYear,Line,False,None,False,MovingAverage,20,Value,,False,Identity,,True,");
-        await page.Locator("div").Filter(new() { HasTextRegex = new Regex("^Hobart \\| Precipitation$") }).ClickAsync();
+        await LoadMainPage();
+
+        await page.GotoAsync($"{_baseSiteUrl}/location/hobart");
+        await page.Locator("div").Filter(new() { HasTextRegex = HobartPrecipitationRegex() }).ClickAsync();
         await page.GetByTitle("Remove this series").Nth(2).ClickAsync();
         await page.WaitForURLAsync($"{_baseSiteUrl}/location?chartAllData**");
 
-        var count = await page.Locator("div").Filter(new() { HasTextRegex = new Regex("^Hobart \\| Precipitation$") }).CountAsync();
+        var count = await page.Locator("div").Filter(new() { HasTextRegex = HobartPrecipitationRegex() }).CountAsync();
 
-        Assert.That(count, Is.EqualTo(0));
+        Assert.That(count, Is.Zero);
     }
+
+    [Test]
+    public async Task ChangeLocationThenSelectLocationFromList()
+    {
+        await LoadMainPage();
+
+        await page.GotoAsync($"{_baseSiteUrl}/location/hobart");
+        await page.ClickAsync("i.fa-map");
+        await page.GetByTitle("Launceston Airport, Australia").ClickAsync();
+
+        await Assertions.Expect(page.Locator("span.title").GetByText("Launceston Airport")).ToBeAttachedAsync();
+
+    }
+
+    private async Task LoadMainPage()
+    {
+        await page.GotoAsync(_baseSiteUrl);
+        await page.ClickAsync("button.info-panel-close");
+        await page.WaitForURLAsync($"{_baseSiteUrl}/location?chartAllData**");
+        Thread.Sleep(1000);
+    }
+
+    [GeneratedRegex("^Hobart \\| Precipitation$")]
+    private static partial Regex HobartPrecipitationRegex();
 }
