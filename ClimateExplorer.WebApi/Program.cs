@@ -351,10 +351,11 @@ async Task<IEnumerable<ClimateRecord>> GetClimateRecords(
     DataType dataType = DataType.TempMax,
     DataAdjustment? dataAdjustment = null,
     bool ascending = false,
-    int count = 10)
+    int count = 10,
+    int? month = null)
 {
-    string cacheKey = $"ClimateRecord_{locationId}_{dataType}_{dataAdjustment}_{ascending}_{count}";
-    var result = await longtermCache.Get<IEnumerable<ClimateRecord>>(cacheKey);
+    string cacheKey = $"ClimateRecord_{locationId}_{dataType}_{dataAdjustment}_{ascending}_{count}_{month}";
+    var result = await cache.Get<IEnumerable<ClimateRecord>>(cacheKey);
     if (result != null)
     {
         return result;
@@ -409,9 +410,20 @@ async Task<IEnumerable<ClimateRecord>> GetClimateRecords(
             ],
         });
 
+    var records = dataSet.DataRecords.Where(x => x.Value.HasValue);
+    if (month.HasValue)
+    {
+        records = records.Where(x => x.BinIdentifier switch
+        {
+            YearAndDayBinIdentifier d => d.Month == month.Value,
+            YearAndMonthBinIdentifier m => m.Month == month.Value,
+            _ => true,
+        });
+    }
+
     var ordered = ascending
-        ? dataSet.DataRecords.Where(x => x.Value.HasValue).OrderBy(x => x.Value).Take(count)
-        : dataSet.DataRecords.Where(x => x.Value.HasValue).OrderByDescending(x => x.Value).Take(count);
+        ? records.OrderBy(x => x.Value).Take(count)
+        : records.OrderByDescending(x => x.Value).Take(count);
 
     var climateRecords = ordered.Select(record =>
     {
@@ -443,6 +455,6 @@ async Task<IEnumerable<ClimateRecord>> GetClimateRecords(
         return cr;
     }).ToList();
 
-    await longtermCache.Put(cacheKey, climateRecords);
+    await cache.Put(cacheKey, climateRecords);
     return climateRecords;
 }

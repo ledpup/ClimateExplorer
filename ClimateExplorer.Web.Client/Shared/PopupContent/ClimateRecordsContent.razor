@@ -1,4 +1,4 @@
-﻿@using Blazorise
+@using Blazorise
 @using ClimateExplorer.Core
 @using ClimateExplorer.Core.Model
 @using ClimateExplorer.Core.ViewModel
@@ -42,6 +42,22 @@
             </Field>
         }
         <Field>
+            <FieldLabel>Month</FieldLabel>
+            <FieldBody>
+                <Select TValue="int"
+                        Value="@SelectedMonth"
+                        ValueChanged="@OnMonthChanged"
+                        Size="Size.Small">
+                    <SelectItem Value="0">All months</SelectItem>
+                    @for (int m = 1; m <= 12; m++)
+                    {
+                        var monthNum = m;
+                        <SelectItem Value="@monthNum">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNum)</SelectItem>
+                    }
+                </Select>
+            </FieldBody>
+        </Field>
+        <Field>
             <FieldLabel>Order</FieldLabel>
             <FieldBody>
                 <Select TValue="bool"
@@ -53,14 +69,13 @@
                 </Select>
             </FieldBody>
         </Field>
-        <Field>
+        <Field ColumnSize="ColumnSize.IsAuto">
             <FieldLabel>Count</FieldLabel>
             <FieldBody>
                 <Select TValue="int"
                         Value="@Count"
                         ValueChanged="@OnCountChanged"
                         Size="Size.Small">
-                    <SelectItem Value="5">5</SelectItem>
                     <SelectItem Value="10">10</SelectItem>
                     <SelectItem Value="20">20</SelectItem>
                     <SelectItem Value="50">50</SelectItem>
@@ -131,6 +146,7 @@ else if (ClimateRecords is not null)
 
     DataType SelectedDataType { get; set; } = DataType.TempMax;
     DataAdjustment? SelectedDataAdjustment { get; set; } = DataAdjustment.Adjusted;
+    int SelectedMonth { get; set; } = 0;
     bool Ascending { get; set; } = false;
     int Count { get; set; } = 10;
 
@@ -189,7 +205,7 @@ else if (ClimateRecords is not null)
     async Task LoadRecords()
     {
         if (Location is null) return;
-        ClimateRecords = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, Count);
+        ClimateRecords = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, Count, SelectedMonth == 0 ? null : SelectedMonth);
     }
 
     async Task OnDataTypeChanged(DataType value)
@@ -202,6 +218,12 @@ else if (ClimateRecords is not null)
     async Task OnDataAdjustmentStringChanged(string value)
     {
         SelectedDataAdjustment = value == "none" ? null : Enum.Parse<DataAdjustment>(value);
+        await LoadRecords();
+    }
+
+    async Task OnMonthChanged(int value)
+    {
+        SelectedMonth = value;
         await LoadRecords();
     }
 
