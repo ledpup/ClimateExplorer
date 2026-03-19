@@ -1,58 +1,116 @@
 ﻿@using Blazorise
 @using ClimateExplorer.Core
 @using ClimateExplorer.Core.Model
+@using ClimateExplorer.Core.ViewModel
 @using ClimateExplorer.Web.UiModel
 @using System.Globalization
 @using ClimateExplorer.WebApiClient.Services
 @using static ClimateExplorer.Core.Enums
 
-@if (ClimateRecords is not null && ClimateRecords.Count() > 0)
+@if (AvailableDataTypes.Count > 0)
 {
-    var daGroups = ClimateRecords!.GroupBy(x => x.DataAdjustment);
-
-    foreach (var daGroup in daGroups)
-    {        
-        <Table Striped>
-            <TableHeader>
-                <TableRow>
-                    <TableHeaderCell Width="@Width.Is50" TextAlignment="TextAlignment.Start"><Strong>@(daGroup.Key == null ? "Other" : daGroup.Key) records</Strong></TableHeaderCell>
-                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Record low</Strong></TableHeaderCell>
-                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Record high</Strong></TableHeaderCell>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-
-            @{
-                var dtGroups = daGroup.GroupBy(x => x.DataType);
-
-                foreach (var dtGroup in dtGroups)
-                {
-                    var drGroups = dtGroup.GroupBy(x => x.DataResolution);
-
-                    foreach (var drGroup in drGroups)
+    <Fields>
+        <Field>
+            <FieldLabel>Data type</FieldLabel>
+            <FieldBody>
+                <Select TValue="DataType"
+                        Value="@SelectedDataType"
+                        ValueChanged="@OnDataTypeChanged"
+                        Size="Size.Small">
+                    @foreach (var dt in AvailableDataTypes)
                     {
-                        <TableRow>
-                            <TableRowCell>@drGroup.Key @ChartSeriesDefinition.MapDataTypeToFriendlyName(dtGroup.Key).ToLower()</TableRowCell>
-                            @{
-                                var recordHigh = drGroup.Single(x => x.RecordType == RecordType.High);
-                                var recordLow = drGroup.Single(x => x.RecordType == RecordType.Low);
-
-                                <TableRowCell>
-                                <span class="secondary-text">@(recordLow.Day == null ? string.Empty : recordLow.Day) @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(recordLow.Month)</span> @recordLow.Year<div class="secondary-text">@recordLow.Value@Enums.UnitOfMeasureLabelShort(recordLow.UnitOfMeasure)</div>
-                                </TableRowCell>
-                        
-                                <TableRowCell>
-                                <span class="secondary-text">@(recordHigh.Day == null ? string.Empty : recordHigh.Day) @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(recordHigh.Month)</span> @recordHigh.Year<div class="secondary-text">@recordHigh.Value@Enums.UnitOfMeasureLabelShort(recordHigh.UnitOfMeasure)</div>
-                                </TableRowCell>
-                            }
-                        </TableRow>
+                        <SelectItem Value="@dt">@ChartSeriesDefinition.MapDataTypeToFriendlyName(dt)</SelectItem>
                     }
+                </Select>
+            </FieldBody>
+        </Field>
+        @if (AvailableDataAdjustments.Count > 1)
+        {
+            <Field>
+                <FieldLabel>Adjustment</FieldLabel>
+                <FieldBody>
+                    <Select TValue="string"
+                            Value="@DataAdjustmentToString(SelectedDataAdjustment)"
+                            ValueChanged="@OnDataAdjustmentStringChanged"
+                            Size="Size.Small">
+                        @foreach (var da in AvailableDataAdjustments)
+                        {
+                            <SelectItem Value="@DataAdjustmentToString(da)">@(da.HasValue ? da.Value.ToString() : "None")</SelectItem>
+                        }
+                    </Select>
+                </FieldBody>
+            </Field>
+        }
+        <Field>
+            <FieldLabel>Order</FieldLabel>
+            <FieldBody>
+                <Select TValue="bool"
+                        Value="@Ascending"
+                        ValueChanged="@OnAscendingChanged"
+                        Size="Size.Small">
+                    <SelectItem Value="false">Highest first</SelectItem>
+                    <SelectItem Value="true">Lowest first</SelectItem>
+                </Select>
+            </FieldBody>
+        </Field>
+        <Field>
+            <FieldLabel>Count</FieldLabel>
+            <FieldBody>
+                <Select TValue="int"
+                        Value="@Count"
+                        ValueChanged="@OnCountChanged"
+                        Size="Size.Small">
+                    <SelectItem Value="5">5</SelectItem>
+                    <SelectItem Value="10">10</SelectItem>
+                    <SelectItem Value="20">20</SelectItem>
+                    <SelectItem Value="50">50</SelectItem>
+                </Select>
+            </FieldBody>
+        </Field>
+    </Fields>
+}
+
+@if (ClimateRecords is not null && ClimateRecords.Any())
+{
+    <Table Striped>
+        <TableHeader>
+            <TableRow>
+                <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
+                <TableHeaderCell TextAlignment="TextAlignment.Start"><Strong>Date</Strong></TableHeaderCell>
+                <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Value</Strong></TableHeaderCell>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            @{
+                var rank = 1;
+                foreach (var record in ClimateRecords)
+                {
+                    <TableRow>
+                        <TableRowCell TextAlignment="TextAlignment.Center">@rank.ToString()</TableRowCell>
+                        <TableRowCell TextAlignment="TextAlignment.End">
+                            @if (record.Day.HasValue)
+                            {
+                                <span class="secondary-text">@record.Day @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month)</span>
+                            }
+                            else
+                            {
+                                <span class="secondary-text">@CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month)</span>
+                            }
+                            <span>&nbsp;@record.Year</span>
+                        </TableRowCell>
+                        <TableRowCell TextAlignment="TextAlignment.End">@record.Value@Enums.UnitOfMeasureLabelShort(record.UnitOfMeasure)</TableRowCell>
+                    </TableRow>
+                    rank++;
                 }
             }
-            </TableBody>
-        </Table>
-    }
+        </TableBody>
+    </Table>
 }
+else if (ClimateRecords is not null)
+{
+    <p>No records found for the selected filters.</p>
+}
+
 @code {
     [Inject]
     public IDataService? DataService { get; set; }
@@ -62,6 +120,15 @@
 
     [PersistentState]
     public IEnumerable<ClimateRecord>? ClimateRecords { get; set; }
+
+    List<DataType> AvailableDataTypes { get; set; } = [];
+    List<DataAdjustment?> AvailableDataAdjustments { get; set; } = [];
+    List<MeasurementDefinitionViewModel> LocationMeasurements { get; set; } = [];
+
+    DataType SelectedDataType { get; set; } = DataType.TempMax;
+    DataAdjustment? SelectedDataAdjustment { get; set; } = DataAdjustment.Adjusted;
+    bool Ascending { get; set; } = false;
+    int Count { get; set; } = 10;
 
     Guid? InternalLocationId { get; set; }
 
@@ -73,6 +140,78 @@
         }
 
         InternalLocationId = Location.Id;
-        ClimateRecords = await DataService!.GetClimateRecords(Location.Id);
+        await LoadAvailableOptions();
+        await LoadRecords();
     }
+
+    async Task LoadAvailableOptions()
+    {
+        var dataSetDefinitions = await DataService!.GetDataSetDefinitions();
+        LocationMeasurements = dataSetDefinitions
+            .Where(x => x.LocationIds != null && x.LocationIds.Contains(Location!.Id))
+            .SelectMany(x => x.MeasurementDefinitions!)
+            .Where(x => x.DataResolution == DataResolution.Daily || x.DataResolution == DataResolution.Monthly)
+            .ToList();
+
+        AvailableDataTypes = LocationMeasurements
+            .Select(x => x.DataType)
+            .Distinct()
+            .ToList();
+
+        if (AvailableDataTypes.Contains(DataType.TempMax))
+            SelectedDataType = DataType.TempMax;
+        else if (AvailableDataTypes.Any())
+            SelectedDataType = AvailableDataTypes.First();
+
+        UpdateAvailableAdjustments();
+    }
+
+    void UpdateAvailableAdjustments()
+    {
+        AvailableDataAdjustments = LocationMeasurements
+            .Where(x => x.DataType == SelectedDataType)
+            .Select(x => x.DataAdjustment)
+            .Distinct()
+            .ToList();
+
+        if (AvailableDataAdjustments.Contains(DataAdjustment.Adjusted))
+            SelectedDataAdjustment = DataAdjustment.Adjusted;
+        else if (AvailableDataAdjustments.Any())
+            SelectedDataAdjustment = AvailableDataAdjustments.First();
+        else
+            SelectedDataAdjustment = null;
+    }
+
+    async Task LoadRecords()
+    {
+        if (Location is null) return;
+        ClimateRecords = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, Count);
+    }
+
+    async Task OnDataTypeChanged(DataType value)
+    {
+        SelectedDataType = value;
+        UpdateAvailableAdjustments();
+        await LoadRecords();
+    }
+
+    async Task OnDataAdjustmentStringChanged(string value)
+    {
+        SelectedDataAdjustment = value == "none" ? null : Enum.Parse<DataAdjustment>(value);
+        await LoadRecords();
+    }
+
+    async Task OnAscendingChanged(bool value)
+    {
+        Ascending = value;
+        await LoadRecords();
+    }
+
+    async Task OnCountChanged(int value)
+    {
+        Count = value;
+        await LoadRecords();
+    }
+
+    static string DataAdjustmentToString(DataAdjustment? da) => da.HasValue ? da.Value.ToString() : "none";
 }

@@ -89,9 +89,13 @@ app.MapGet(
         "   GET /heating-score-table\n" +
         "       A table that records the range of warming anomalies for each heating score.\n" +
         "   GET /climate-record\n" +
-        "       Returns a list of climate-records at a specific location\n" +
+        "       Returns a ranked list of climate records at a specific location\n" +
         "           Parameters:\n" +
-        "               locationId: location id for the climate-records\n" +
+        "               locationId: location id for the climate records\n" +
+        "               dataType: data type to return records for (default: TempMax)\n" +
+        "               dataAdjustment: data adjustment to filter by (default: Adjusted)\n" +
+        "               ascending: if true returns lowest values first; if false returns highest values first (default: false)\n" +
+        "               count: number of records to return (default: 10)\n" +
         "   POST /dataset\n" +
         "       Returns the specified data set, transformed as requested");
 
@@ -227,16 +231,14 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null, bo
                     });
 
             location.WarmingAnomaly = AnomalyCalculator.CalculateAnomaly(series.DataPoints)?.AnomalyValue;
-            var climateRecords = await GetClimateRecords(location.Id);
-            var max = climateRecords.Where(x => x.DataType == DataType.TempMax && x.RecordType == RecordType.High);
-            if (max.Count() > 0)
+            foreach (var adj in new DataAdjustment?[] { DataAdjustment.Adjusted, DataAdjustment.Unadjusted, null })
             {
-                if (max.Count() > 1)
+                var tempMaxRecords = await GetClimateRecords(location.Id, DataType.TempMax, adj, false, 1);
+                if (tempMaxRecords.Any())
                 {
-                    max = max.Where(x => x.DataAdjustment == DataAdjustment.Adjusted);
+                    location.RecordHigh = tempMaxRecords.First();
+                    break;
                 }
-
-                location.RecordHigh = max.Single();
             }
         }
         catch (Exception ex)
@@ -344,9 +346,14 @@ async Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable()
     return result;
 }
 
-async Task<IEnumerable<ClimateRecord>> GetClimateRecords(Guid locationId)
+async Task<IEnumerable<ClimateRecord>> GetClimateRecords(
+    Guid locationId,
+    DataType dataType = DataType.TempMax,
+    DataAdjustment? dataAdjustment = DataAdjustment.Adjusted,
+    bool ascending = false,
+    int count = 10)
 {
-    string cacheKey = $"ClimateRecord_" + JsonSerializer.Serialize(locationId);
+    string cacheKey = $"ClimateRecord_{locationId}_{dataType}_{dataAdjustment}_{ascending}_{count}";
     var result = await longtermCache.Get<IEnumerable<ClimateRecord>>(cacheKey);
     if (result != null)
     {
@@ -354,86 +361,88 @@ async Task<IEnumerable<ClimateRecord>> GetClimateRecords(Guid locationId)
     }
 
     var dataSetDefinitions = await GetDataSetDefinitions();
-    var locationDsds = dataSetDefinitions.Where(x => x.LocationIds.Contains(locationId));
+    var locationDsds = dataSetDefinitions.Where(x => x.LocationIds!.Contains(locationId)).ToList();
 
-    var climateRecords = new List<ClimateRecord>();
+    MeasurementDefinitionViewModel md = null;
+    DataSetDefinitionViewModel matchingDsd = null;
 
-    foreach (var dataSetDefinition in locationDsds)
+    foreach (var resolution in new[] { DataResolution.Daily, DataResolution.Monthly })
     {
-        foreach (var md in dataSetDefinition.MeasurementDefinitions)
+        foreach (var dsd in locationDsds)
         {
-            if (!(md.DataResolution == DataResolution.Daily || md.DataResolution == DataResolution.Monthly))
+            md = dsd.MeasurementDefinitions?.FirstOrDefault(m =>
+                m.DataType == dataType &&
+                m.DataAdjustment == dataAdjustment &&
+                m.DataResolution == resolution);
+            if (md != null)
             {
-                throw new NotImplementedException();
+                matchingDsd = dsd;
+                break;
             }
+        }
 
-            var dataSets = await PostDataSets(
-                new PostDataSetsRequestBody
-                {
-                    BinningRule = md.DataResolution == DataResolution.Daily ? BinGranularities.ByYearAndDay : BinGranularities.ByYearAndMonth,
-                    SeriesTransformation = SeriesTransformations.Identity,
-                    SeriesSpecifications =
-                    [
-                        new SeriesSpecification
-                        {
-                            DataSetDefinitionId = dataSetDefinition.Id,
-                            DataType = md.DataType,
-                            LocationId = locationId,
-                            DataAdjustment = md.DataAdjustment,
-                        },
-                    ],
-                });
-
-            climateRecords.Add(CreateClimateRecord(md, dataSets, RecordType.High));
-            climateRecords.Add(CreateClimateRecord(md, dataSets, RecordType.Low));
+        if (matchingDsd != null)
+        {
+            break;
         }
     }
 
-    await longtermCache.Put(cacheKey, climateRecords);
-
-    return climateRecords;
-}
-
-static ClimateRecord CreateClimateRecord(MeasurementDefinitionViewModel md, DataSet dataSets, RecordType recordType)
-{
-    double record = (double)(recordType == RecordType.High ? dataSets.DataRecords.Max(x => x.Value)
-                                                           : dataSets.DataRecords.Min(x => x.Value));
-    var records = dataSets.DataRecords.Where(x => x.Value == record).OrderBy(x => x.BinId).ToList();
-    var binId = records.FirstOrDefault().BinIdentifier;
-
-    var cr = new ClimateRecord
+    if (md == null || matchingDsd == null)
     {
-        DataAdjustment = md.DataAdjustment,
-        DataResolution = md.DataResolution,
-        DataType = md.DataType,
-        UnitOfMeasure = md.UnitOfMeasure,
-        RecordType = recordType,
-        Value = record,
-        NumberOfTimes = records.Count,
-    };
-
-    switch (md.DataResolution)
-    {
-        case DataResolution.Daily:
-            {
-                var bin = (YearAndDayBinIdentifier)binId;
-                cr.Year = bin.Year;
-                cr.Month = bin.Month;
-                cr.Day = bin.Day;
-                break;
-            }
-
-        case DataResolution.Monthly:
-            {
-                var bin = (YearAndMonthBinIdentifier)binId;
-                cr.Year = bin.Year;
-                cr.Month = bin.Month;
-                break;
-            }
-
-        default:
-            throw new NotImplementedException();
+        return [];
     }
 
-    return cr;
+    var dataSet = await PostDataSets(
+        new PostDataSetsRequestBody
+        {
+            BinningRule = md.DataResolution == DataResolution.Daily ? BinGranularities.ByYearAndDay : BinGranularities.ByYearAndMonth,
+            SeriesTransformation = SeriesTransformations.Identity,
+            SeriesSpecifications =
+            [
+                new SeriesSpecification
+                {
+                    DataSetDefinitionId = matchingDsd.Id,
+                    DataType = dataType,
+                    LocationId = locationId,
+                    DataAdjustment = dataAdjustment,
+                },
+            ],
+        });
+
+    var ordered = ascending
+        ? dataSet.DataRecords.Where(x => x.Value.HasValue).OrderBy(x => x.Value).Take(count)
+        : dataSet.DataRecords.Where(x => x.Value.HasValue).OrderByDescending(x => x.Value).Take(count);
+
+    var climateRecords = ordered.Select(record =>
+    {
+        var cr = new ClimateRecord
+        {
+            DataAdjustment = dataAdjustment,
+            DataResolution = md.DataResolution,
+            DataType = dataType,
+            UnitOfMeasure = md.UnitOfMeasure,
+            Value = record.Value!.Value,
+        };
+
+        switch (md.DataResolution)
+        {
+            case DataResolution.Daily:
+                var dayBin = (YearAndDayBinIdentifier)record.BinIdentifier!;
+                cr.Year = dayBin.Year;
+                cr.Month = dayBin.Month;
+                cr.Day = dayBin.Day;
+                break;
+
+            case DataResolution.Monthly:
+                var monthBin = (YearAndMonthBinIdentifier)record.BinIdentifier!;
+                cr.Year = monthBin.Year;
+                cr.Month = monthBin.Month;
+                break;
+        }
+
+        return cr;
+    }).ToList();
+
+    await longtermCache.Put(cacheKey, climateRecords);
+    return climateRecords;
 }
