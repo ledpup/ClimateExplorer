@@ -85,9 +85,9 @@
     </Fields>
 }
 
-@if (ClimateRecords is not null && ClimateRecords.Any())
+@if (ClimateRecordsResult?.Records is { Count: > 0 })
 {
-    <Table Striped>
+    <Table>
         <TableHeader>
             <TableRow>
                 <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
@@ -99,12 +99,12 @@
         <TableBody>
             @{
                 var rank = 1;
-                foreach (var record in ClimateRecords)
+                foreach (var (record, rowStyle) in ClimateRecordsResult!.Records.Zip(ComputedRowStyles))
                 {
                     var currentRank = rank;
-                    <TableRow>
-                        <TableRowCell TextAlignment="TextAlignment.Center">@currentRank</TableRowCell>
-                        <TableRowCell>
+                    <tr>
+                        <td class="text-center" style="@rowStyle">@currentRank</td>
+                        <td style="@rowStyle">
                             @if (record.Day.HasValue)
                             {
                                 <span class="secondary-text">@record.Day @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month)</span>
@@ -113,19 +113,17 @@
                             {
                                 <span class="secondary-text">@CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month)</span>
                             }
-                            </TableRowCell>
-                        <TableRowCell>
-                            @record.Year
-                        </TableRowCell>
-                        <TableRowCell TextAlignment="TextAlignment.End">@record.Value@Enums.UnitOfMeasureLabelShort(record.UnitOfMeasure)</TableRowCell>
-                    </TableRow>
+                        </td>
+                        <td style="@rowStyle">@record.Year</td>
+                        <td class="text-end" style="@rowStyle">@record.Value@Enums.UnitOfMeasureLabelShort(record.UnitOfMeasure)</td>
+                    </tr>
                     rank++;
                 }
             }
         </TableBody>
     </Table>
 }
-else if (ClimateRecords is not null)
+else if (ClimateRecordsResult is not null)
 {
     <p>No records found for the selected filters.</p>
 }
@@ -138,10 +136,11 @@ else if (ClimateRecords is not null)
     public Location? Location { get; set; }
 
     [PersistentState]
-    public IEnumerable<ClimateRecord>? ClimateRecords { get; set; }
+    public ClimateRecordsResponse? ClimateRecordsResult { get; set; }
 
     List<DataType> AvailableDataTypes { get; set; } = [];
     List<DataAdjustment?> AvailableDataAdjustments { get; set; } = [];
+    List<string> ComputedRowStyles { get; set; } = [];
     List<MeasurementDefinitionViewModel> LocationMeasurements { get; set; } = [];
 
     DataType SelectedDataType { get; set; } = DataType.TempMax;
@@ -205,7 +204,8 @@ else if (ClimateRecords is not null)
     async Task LoadRecords()
     {
         if (Location is null) return;
-        ClimateRecords = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, Count, SelectedMonth == 0 ? null : SelectedMonth);
+        ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, Count, SelectedMonth == 0 ? null : SelectedMonth);
+        ComputedRowStyles = ComputeRowStyles(ClimateRecordsResult);
     }
 
     async Task OnDataTypeChanged(DataType value)
@@ -237,6 +237,21 @@ else if (ClimateRecords is not null)
     {
         Count = value;
         await LoadRecords();
+    }
+
+    static List<string> ComputeRowStyles(ClimateRecordsResponse? response)
+    {
+        if (response is null) return [];
+        if (response.StartYear is not int start || response.EndYear is not int end || end == start)
+            return response.Records.Select(_ => string.Empty).ToList();
+        return response.Records
+            .Select(r =>
+            {
+                double recentness = Math.Clamp((double)(r.Year - start) / (end - start), 0, 1);
+                double opacity = Math.Pow(recentness, 2) * 0.3;
+                return string.Format(System.Globalization.CultureInfo.InvariantCulture, "background-color: rgba(255, 140, 140, {0:F3})", opacity);
+            })
+            .ToList();
     }
 
     static string DataAdjustmentToString(DataAdjustment? da) => da.HasValue ? da.Value.ToString() : "none";

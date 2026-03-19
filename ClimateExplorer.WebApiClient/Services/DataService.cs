@@ -176,7 +176,7 @@ public class DataService : IDataService
         return result!;
     }
 
-    public async Task<IEnumerable<ClimateRecord>> GetClimateRecords(Guid locationId, DataType dataType = DataType.TempMax, DataAdjustment? dataAdjustment = null, bool ascending = false, int count = 10, int? month = null)
+    public async Task<ClimateRecordsResponse> GetClimateRecords(Guid locationId, DataType dataType = DataType.TempMax, DataAdjustment? dataAdjustment = null, bool ascending = false, int count = 10, int? month = null)
     {
         var url = "/climate-record";
         url = QueryHelpers.AddQueryString(url, "locationId", locationId.ToString());
@@ -193,10 +193,10 @@ public class DataService : IDataService
             url = QueryHelpers.AddQueryString(url, "month", month.Value.ToString());
         }
 
-        var result = dataServiceCache.Get<ClimateRecord[]>(url);
+        var result = dataServiceCache.Get<ClimateRecordsResponse>(url);
         if (result == null)
         {
-            result = await httpClient.GetFromJsonAsync<ClimateRecord[]>(url, jsonSerializerOptions);
+            result = await httpClient.GetFromJsonAsync<ClimateRecordsResponse>(url, jsonSerializerOptions);
 
             dataServiceCache.Put(url, result!);
         }

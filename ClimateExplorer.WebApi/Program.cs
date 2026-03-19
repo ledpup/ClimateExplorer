@@ -233,10 +233,10 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null, bo
             location.WarmingAnomaly = AnomalyCalculator.CalculateAnomaly(series.DataPoints)?.AnomalyValue;
             foreach (var adj in new DataAdjustment?[] { DataAdjustment.Adjusted, DataAdjustment.Unadjusted, null })
             {
-                var tempMaxRecords = await GetClimateRecords(location.Id, DataType.TempMax, adj, false, 1);
-                if (tempMaxRecords.Any())
+                var tempMaxResponse = await GetClimateRecords(location.Id, DataType.TempMax, adj, false, 1);
+                if (tempMaxResponse.Records.Any())
                 {
-                    location.RecordHigh = tempMaxRecords.First();
+                    location.RecordHigh = tempMaxResponse.Records.First();
                     break;
                 }
             }
@@ -346,7 +346,7 @@ async Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable()
     return result;
 }
 
-async Task<IEnumerable<ClimateRecord>> GetClimateRecords(
+async Task<ClimateRecordsResponse> GetClimateRecords(
     Guid locationId,
     DataType dataType = DataType.TempMax,
     DataAdjustment? dataAdjustment = null,
@@ -355,7 +355,7 @@ async Task<IEnumerable<ClimateRecord>> GetClimateRecords(
     int? month = null)
 {
     string cacheKey = $"ClimateRecord_{locationId}_{dataType}_{dataAdjustment}_{ascending}_{count}_{month}";
-    var result = await cache.Get<IEnumerable<ClimateRecord>>(cacheKey);
+    var result = await cache.Get<ClimateRecordsResponse>(cacheKey);
     if (result != null)
     {
         return result;
@@ -390,7 +390,7 @@ async Task<IEnumerable<ClimateRecord>> GetClimateRecords(
 
     if (md == null || matchingDsd == null)
     {
-        return [];
+        return new ClimateRecordsResponse();
     }
 
     var dataSet = await PostDataSets(
@@ -410,7 +410,18 @@ async Task<IEnumerable<ClimateRecord>> GetClimateRecords(
             ],
         });
 
-    var records = dataSet.DataRecords.Where(x => x.Value.HasValue);
+    static int YearOf(BinnedRecord r) => r.BinIdentifier switch
+    {
+        YearAndDayBinIdentifier d => d.Year,
+        YearAndMonthBinIdentifier m => m.Year,
+        _ => 0,
+    };
+
+    var allRecords = dataSet.DataRecords.Where(x => x.Value.HasValue).ToList();
+    int? startYear = allRecords.Count > 0 ? allRecords.Min(YearOf) : null;
+    int? endYear = allRecords.Count > 0 ? allRecords.Max(YearOf) : null;
+
+    var records = allRecords.AsEnumerable();
     if (month.HasValue)
     {
         records = records.Where(x => x.BinIdentifier switch
@@ -455,6 +466,12 @@ async Task<IEnumerable<ClimateRecord>> GetClimateRecords(
         return cr;
     }).ToList();
 
-    await cache.Put(cacheKey, climateRecords);
-    return climateRecords;
+    var response = new ClimateRecordsResponse
+    {
+        Records = climateRecords,
+        StartYear = startYear,
+        EndYear = endYear,
+    };
+    await cache.Put(cacheKey, response);
+    return response;
 }
