@@ -76,7 +76,8 @@
         <TableHeader>
             <TableRow>
                 <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
-                <TableHeaderCell TextAlignment="TextAlignment.Start"><Strong>Date</Strong></TableHeaderCell>
+                <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Day/Month</Strong></TableHeaderCell>
+                <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
                 <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Value</Strong></TableHeaderCell>
             </TableRow>
         </TableHeader>
@@ -85,9 +86,10 @@
                 var rank = 1;
                 foreach (var record in ClimateRecords)
                 {
+                    var currentRank = rank;
                     <TableRow>
-                        <TableRowCell TextAlignment="TextAlignment.Center">@rank.ToString()</TableRowCell>
-                        <TableRowCell TextAlignment="TextAlignment.End">
+                        <TableRowCell TextAlignment="TextAlignment.Center">@currentRank</TableRowCell>
+                        <TableRowCell>
                             @if (record.Day.HasValue)
                             {
                                 <span class="secondary-text">@record.Day @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month)</span>
@@ -96,7 +98,9 @@
                             {
                                 <span class="secondary-text">@CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month)</span>
                             }
-                            <span>&nbsp;@record.Year</span>
+                            </TableRowCell>
+                        <TableRowCell>
+                            @record.Year
                         </TableRowCell>
                         <TableRowCell TextAlignment="TextAlignment.End">@record.Value@Enums.UnitOfMeasureLabelShort(record.UnitOfMeasure)</TableRowCell>
                     </TableRow>

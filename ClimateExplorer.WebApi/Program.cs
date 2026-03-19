@@ -1,4 +1,4 @@
-﻿#pragma warning disable SA1200 // Using directives should be placed correctly
+#pragma warning disable SA1200 // Using directives should be placed correctly
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -93,7 +93,7 @@ app.MapGet(
         "           Parameters:\n" +
         "               locationId: location id for the climate records\n" +
         "               dataType: data type to return records for (default: TempMax)\n" +
-        "               dataAdjustment: data adjustment to filter by (default: Adjusted)\n" +
+        "               dataAdjustment: data adjustment to filter by (optional; omit for data types with no adjustment concept)\n" +
         "               ascending: if true returns lowest values first; if false returns highest values first (default: false)\n" +
         "               count: number of records to return (default: 10)\n" +
         "   POST /dataset\n" +
@@ -349,7 +349,7 @@ async Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable()
 async Task<IEnumerable<ClimateRecord>> GetClimateRecords(
     Guid locationId,
     DataType dataType = DataType.TempMax,
-    DataAdjustment? dataAdjustment = DataAdjustment.Adjusted,
+    DataAdjustment? dataAdjustment = null,
     bool ascending = false,
     int count = 10)
 {
