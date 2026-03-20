@@ -1,4 +1,4 @@
-@using Blazorise
+﻿@using Blazorise
 @using Blazorise.LoadingIndicator
 @using ClimateExplorer.Core
 @using ClimateExplorer.Core.DataPreparation
@@ -344,10 +344,20 @@
             }
             else
             {
-                var month = SelectedMonth != 0 ? (int?)SelectedMonth : null;
-                ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, Count, month, ActiveView == RecordView.Monthly);
-                ComputedRowStyles = ComputeRowStyles(ClimateRecordsResult);
-                YearlyResult = null;
+                var hasDailyData = LocationMeasurements.Any(x => x.DataType == SelectedDataType && x.DataResolution == DataResolution.Daily);
+                if (ActiveView == RecordView.Daily && !hasDailyData)
+                {
+                    ClimateRecordsResult = new ClimateRecordsResponse();
+                    ComputedRowStyles = [];
+                    YearlyResult = null;
+                }
+                else
+                {
+                    var month = SelectedMonth != 0 ? (int?)SelectedMonth : null;
+                    ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, Count, month, ActiveView == RecordView.Monthly);
+                    ComputedRowStyles = ComputeRowStyles(ClimateRecordsResult);
+                    YearlyResult = null;
+                }
             }
         }
         finally
