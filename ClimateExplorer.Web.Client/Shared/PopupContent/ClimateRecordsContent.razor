@@ -10,21 +10,13 @@
 @using ClimateExplorer.WebApiClient.Services
 @using static ClimateExplorer.Core.Enums
 
-<Bar Mode="BarMode.Horizontal" ThemeContrast="ThemeContrast.Light" Background="Background.Light">
-    <BarMenu>
-        <BarStart>
-            <BarItem Active="@(ActiveView == RecordView.Daily)">
-                <BarLink Clicked="@(() => SetView(RecordView.Daily))">Daily</BarLink>
-            </BarItem>
-            <BarItem Active="@(ActiveView == RecordView.Monthly)">
-                <BarLink Clicked="@(() => SetView(RecordView.Monthly))">Monthly</BarLink>
-            </BarItem>
-            <BarItem Active="@(ActiveView == RecordView.Yearly)">
-                <BarLink Clicked="@(() => SetView(RecordView.Yearly))">Yearly</BarLink>
-            </BarItem>
-        </BarStart>
-    </BarMenu>
-</Bar>
+<Tabs SelectedTab="@ActiveView.ToString()" SelectedTabChanged="@OnViewChanged" Class="mb-4">
+    <Items>
+        <Tab Name="Daily">Daily</Tab>
+        <Tab Name="Monthly">Monthly</Tab>
+        <Tab Name="Yearly">Yearly</Tab>
+    </Items>
+</Tabs>
 
 @if (AvailableDataTypes.Count > 0)
 {
@@ -151,7 +143,7 @@ else
             <TableHeader>
                 <TableRow>
                     <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
-                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>@(ActiveView == RecordView.Monthly ? "Month" : "Day/Month")</Strong></TableHeaderCell>
+                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</Strong></TableHeaderCell>
                     <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
                     <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Value</Strong></TableHeaderCell>
                 </TableRow>
@@ -175,7 +167,7 @@ else
                                 }
                             </td>
                             <td style="@rowStyle">@record.Year</td>
-                            <td class="text-end" style="@rowStyle">@FormatValue(@record.Value, record.UnitOfMeasure)</td>
+                            <td class="text-end" style="@rowStyle">@FormatValue(record.Value, record.UnitOfMeasure)</td>
                         </tr>
                         rank++;
                     }
@@ -321,9 +313,9 @@ else
         ClimateRecordsResult = null;
     }
 
-    async Task SetView(RecordView view)
+    async Task OnViewChanged(string name)
     {
-        ActiveView = view;
+        ActiveView = Enum.Parse<RecordView>(name);
         await LoadRecords();
     }
 
