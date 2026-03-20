@@ -117,12 +117,6 @@ public partial class ChartView
 
     private bool? IsMobileDevice { get; set; }
 
-    private bool? EnableRangeSlider { get; set; }
-    private int SliderMin { get; set; }
-    private int SliderMax { get; set; }
-    private int? SliderStart { get; set; }
-    private int? SliderEnd { get; set; }
-
     /// <summary>
     /// Gets or sets the chart type selected by the user on the options page.
     /// </summary>
@@ -279,8 +273,6 @@ public partial class ChartView
 
         SelectedGroupingDays = 14;
         GroupingThresholdText = "70";
-
-        SliderMax = DateTime.Now.Year;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -1394,13 +1386,6 @@ public partial class ChartView
 
         ChartSeriesList = ChartSeriesList.CreateNewListWithoutDuplicates();
 
-        if (SelectedBinGranularity == BinGranularities.ByYearAndMonth
-            || SelectedBinGranularity == BinGranularities.ByYearAndWeek
-            || SelectedBinGranularity == BinGranularities.ByYearAndDay)
-        {
-            await ShowRangeSliderChanged(true);
-        }
-
         if (rebuildDataSets)
         {
             await BuildDataSets();
@@ -1449,22 +1434,6 @@ public partial class ChartView
         await HandleOnYearFilterChange(new YearAndDataTypeFilter(year) { DataType = dataType, DataAdjustment = dataAdjustment });
     }
 
-    private async Task ShowRangeSliderChanged(bool? value)
-    {
-        EnableRangeSlider = value;
-        if (EnableRangeSlider.GetValueOrDefault() && SliderStart == null)
-        {
-            SetStartAndEndYears(ChartSeriesWithData!);
-
-            var proportionToShow = SelectedBinGranularity == BinGranularities.ByYearAndDay ? 0.05f
-                                 : SelectedBinGranularity == BinGranularities.ByYearAndWeek ? 0.1f
-                                 : SelectedBinGranularity == BinGranularities.ByYearAndMonth ? 0.15f
-                                 : .3f;
-            var rangeStart = (int)MathF.Ceiling((EndYear - StartYears!.Max()) * proportionToShow);
-            await OnStartYearTextChanged((EndYear - rangeStart).ToString());
-        }
-    }
-
     private async Task OnSelectedYearsChanged(ExtentValues extentValues)
     {
         await ChangeStartYear(extentValues.FromValue!, false);
@@ -1482,7 +1451,6 @@ public partial class ChartView
         SelectedStartYear = text;
         if (SelectedStartYear != null)
         {
-            SliderStart = Convert.ToInt32(SelectedStartYear);
             if (redraw)
             {
                 await RenderChart();
@@ -1495,18 +1463,9 @@ public partial class ChartView
         await ChangeEndYear(text, true);
     }
 
-    private async Task ChangeEndYear(string text, bool redraw)
+    private async Task ChangeEndYear(string? text, bool redraw)
     {
-        if (string.IsNullOrWhiteSpace(text))
-        {
-            SelectedEndYear = null;
-            SliderEnd = null;
-        }
-        else
-        {
-            SelectedEndYear = text;
-            SliderEnd = Convert.ToInt32(SelectedEndYear);
-        }
+        SelectedEndYear = text;
 
         if (redraw)
         {
@@ -1519,7 +1478,6 @@ public partial class ChartView
         ChartAllData = value.GetValueOrDefault();
         if (value != null)
         {
-            SliderStart = null;
             SelectedStartYear = null;
             await RenderChart();
         }
@@ -1542,28 +1500,13 @@ public partial class ChartView
         var dataSet = binGranularity == BinGranularities.ByYear ? chartSeriesWithData.Select(x => x.PreProcessedDataSet) : chartSeriesWithData.Select(x => x.SourceDataSet);
 
         // build a list of all the years in which data sets start, used by the UI to allow the user to conveniently select from them
-        StartYears = dataSet.Select(x => x!.GetStartYearForDataSet()).Distinct().OrderBy(x => x).ToList();
-        SliderMin = StartYears.Min();
-        if (SliderStart < SliderMin)
-        {
-            SliderStart = SliderMin;
-        }
-
-        var lastYears = dataSet.Select(x => x!.GetEndYearForDataSet()).Distinct().OrderBy(x => x).ToList();
-        SliderMax = EndYear = lastYears.Max();
-        if (SliderEnd > SliderMax)
-        {
-            SliderEnd = SliderMax;
-        }
+        StartYears = [.. dataSet.Select(x => x!.GetStartYearForDataSet()).Distinct().OrderBy(x => x)];
     }
 
     private async Task OnClearFilter()
     {
         SelectedStartYear = null;
         SelectedEndYear = null;
-        SliderStart = null;
-        SliderEnd = null;
-        EnableRangeSlider = false;
 
         await BuildDataSets();
     }
