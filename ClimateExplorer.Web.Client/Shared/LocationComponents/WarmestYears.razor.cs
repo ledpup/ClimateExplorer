@@ -11,8 +11,8 @@ public partial class WarmestYears
     [Parameter]
     public EventCallback<short> OnYearFilterChange { get; set; }
 
-    private List<short> WarmestYearsList => DataRecords!.OrderByDescending(x => x.Absolute).Take(5).Select(x => x.Year).ToList();
-    private List<short> CoolestYears => DataRecords!.OrderBy(x => x.Absolute).Take(5).Select(x => x.Year).ToList();
+    private List<short> WarmestYearsList => [.. DataRecords!.OrderByDescending(x => x.Absolute).Take(5).Select(x => x.Year)];
+    private List<short> CoolestYears => [.. DataRecords!.OrderBy(x => x.Absolute).Take(5).Select(x => x.Year)];
 
     private async Task FilterToYear(short year)
     {

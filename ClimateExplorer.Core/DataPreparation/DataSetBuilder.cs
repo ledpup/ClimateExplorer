@@ -42,7 +42,7 @@ public class DataSetBuilder
             new BuildDataSetResult
             {
                 DataPoints = dataPoints,
-                RawDataRecords = request.IncludeRawDataRecords ? series.DataRecords : null,
+                RawDataRecords = request.IncludeRawDataRecords == true ? series.DataRecords : null,
                 UnitOfMeasure = series.UnitOfMeasure,
             };
     }
@@ -106,7 +106,7 @@ public class DataSetBuilder
         var aggregatedBins = BinAggregator.AggregateBins(filteredRawBins, request.BinAggregationFunction, request.BucketAggregationFunction, request.CupAggregationFunction, request.SeriesTransformation);
 
         // Calculate final value based on bin aggregates
-        var finalBins = FinalBinValueCalculator.CalculateFinalBinValues(aggregatedBins, request.Anomaly);
+        var finalBins = FinalBinValueCalculator.CalculateFinalBinValues(aggregatedBins, request.Anomaly == true);
 
         Console.WriteLine("AggregateBins completed in " + sw.Elapsed);
         sw.Restart();

@@ -42,7 +42,7 @@ public class DataService : IDataService
         DataResolution? minimumDataResolution)
     {
         var response =
-            await httpClient.PostAsJsonAsync<PostDataSetsRequestBody>(
+            await httpClient.PostAsJsonAsync(
                 "dataset",
                 new PostDataSetsRequestBody
                 {
@@ -176,7 +176,7 @@ public class DataService : IDataService
         return result!;
     }
 
-    public async Task<ClimateRecordsResponse> GetClimateRecords(Guid locationId, DataType dataType = DataType.TempMax, DataAdjustment? dataAdjustment = null, bool ascending = false, int count = 10, int? month = null)
+    public async Task<ClimateRecordsResponse> GetClimateRecords(Guid locationId, DataType dataType = DataType.TempMax, DataAdjustment? dataAdjustment = null, bool ascending = false, int count = 10, int? month = null, bool monthly = false)
     {
         var url = "/climate-record";
         url = QueryHelpers.AddQueryString(url, "locationId", locationId.ToString());
@@ -191,6 +191,11 @@ public class DataService : IDataService
         if (month.HasValue)
         {
             url = QueryHelpers.AddQueryString(url, "month", month.Value.ToString());
+        }
+
+        if (monthly)
+        {
+            url = QueryHelpers.AddQueryString(url, "monthly", "true");
         }
 
         var result = dataServiceCache.Get<ClimateRecordsResponse>(url);

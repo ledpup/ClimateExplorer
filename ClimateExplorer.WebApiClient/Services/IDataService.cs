@@ -20,15 +20,15 @@ public interface IDataService
         SeriesValueOptions seriesValueOption,
         SeriesSpecification[] seriesSpecifications,
         SeriesDerivationTypes seriesDerivationType,
-        float requiredBinDataProportion,
-        float requiredBucketDataProportion,
-        float requiredCupDataProportion,
-        int cupSize,
-        SeriesTransformations seriesTransformation,
+        float requiredBinDataProportion = 1,
+        float requiredBucketDataProportion = 1,
+        float requiredCupDataProportion = 0.7f,
+        int cupSize = 14,
+        SeriesTransformations seriesTransformation = SeriesTransformations.Identity,
         string? customTransformation = null,
         short? year = null,
         DataResolution? minimumDataResolution = null);
     Task<Dictionary<string, string>> GetCountries();
     Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable();
-    Task<ClimateRecordsResponse> GetClimateRecords(Guid locationId, DataType dataType = DataType.TempMax, DataAdjustment? dataAdjustment = null, bool ascending = false, int count = 10, int? month = null);
+    Task<ClimateRecordsResponse> GetClimateRecords(Guid locationId, DataType dataType = DataType.TempMax, DataAdjustment? dataAdjustment = null, bool ascending = false, int count = 10, int? month = null, bool monthly = false);
 }

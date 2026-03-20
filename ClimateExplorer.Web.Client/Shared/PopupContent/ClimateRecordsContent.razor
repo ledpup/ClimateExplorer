@@ -1,11 +1,30 @@
-@using Blazorise
+﻿@using Blazorise
 @using ClimateExplorer.Core
+@using ClimateExplorer.Core.DataPreparation
 @using ClimateExplorer.Core.Model
 @using ClimateExplorer.Core.ViewModel
+@using ClimateExplorer.Web.Client.Services
+@using ClimateExplorer.Web.Client.UiModel
 @using ClimateExplorer.Web.UiModel
 @using System.Globalization
 @using ClimateExplorer.WebApiClient.Services
 @using static ClimateExplorer.Core.Enums
+
+<Bar Mode="BarMode.Horizontal" ThemeContrast="ThemeContrast.Light" Background="Background.Light">
+    <BarMenu>
+        <BarStart>
+            <BarItem Active="@(ActiveView == RecordView.Daily)">
+                <BarLink Clicked="@(() => SetView(RecordView.Daily))">Daily</BarLink>
+            </BarItem>
+            <BarItem Active="@(ActiveView == RecordView.Monthly)">
+                <BarLink Clicked="@(() => SetView(RecordView.Monthly))">Monthly</BarLink>
+            </BarItem>
+            <BarItem Active="@(ActiveView == RecordView.Yearly)">
+                <BarLink Clicked="@(() => SetView(RecordView.Yearly))">Yearly</BarLink>
+            </BarItem>
+        </BarStart>
+    </BarMenu>
+</Bar>
 
 @if (AvailableDataTypes.Count > 0)
 {
@@ -36,22 +55,25 @@
                 </Select>
             </FieldBody>
         </Field>
-        <Field ColumnSize="ColumnSize.IsAuto">
-            <FieldLabel>Month</FieldLabel>
-            <FieldBody>
-                <Select TValue="int"
-                        Value="@SelectedMonth"
-                        ValueChanged="@OnMonthChanged"
-                        Size="Size.Small">
-                    <SelectItem Value="0">All months</SelectItem>
-                    @for (int m = 1; m <= 12; m++)
-                    {
-                        var monthNum = m;
-                        <SelectItem Value="@monthNum">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNum)</SelectItem>
-                    }
-                </Select>
-            </FieldBody>
-        </Field>
+        @if (ActiveView == RecordView.Daily || ActiveView == RecordView.Monthly)
+        {
+            <Field ColumnSize="ColumnSize.IsAuto">
+                <FieldLabel>Month</FieldLabel>
+                <FieldBody>
+                    <Select TValue="int"
+                            Value="@SelectedMonth"
+                            ValueChanged="@OnMonthChanged"
+                            Size="Size.Small">
+                        <SelectItem Value="0">All months</SelectItem>
+                        @for (int m = 1; m <= 12; m++)
+                        {
+                            var monthNum = m;
+                            <SelectItem Value="@monthNum">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNum)</SelectItem>
+                        }
+                    </Select>
+                </FieldBody>
+            </Field>
+        }
         @if (AvailableDataAdjustments.Count > 1)
         {
             <Field ColumnSize="ColumnSize.IsAuto">
@@ -85,50 +107,91 @@
     </Fields>
 }
 
-@if (ClimateRecordsResult?.Records is { Count: > 0 })
+@if (ActiveView == RecordView.Yearly)
 {
-    <Table>
-        <TableHeader>
-            <TableRow>
-                <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
-                <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Day/Month</Strong></TableHeaderCell>
-                <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
-                <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Value</Strong></TableHeaderCell>
-            </TableRow>
-        </TableHeader>
-        <TableBody>
-            @{
-                var rank = 1;
-                foreach (var (record, rowStyle) in ClimateRecordsResult!.Records.Zip(ComputedRowStyles))
-                {
-                    var currentRank = rank;
-                    <tr>
-                        <td class="text-center" style="@rowStyle">@currentRank</td>
-                        <td style="@rowStyle">
-                            @if (record.Day.HasValue)
-                            {
-                                <span class="secondary-text">@record.Day @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month)</span>
-                            }
-                            else
-                            {
-                                <span class="secondary-text">@CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month)</span>
-                            }
-                        </td>
-                        <td style="@rowStyle">@record.Year</td>
-                        <td class="text-end" style="@rowStyle">@record.Value@Enums.UnitOfMeasureLabelShort(record.UnitOfMeasure)</td>
-                    </tr>
-                    rank++;
+    @if (YearlyResult is { Count: > 0 })
+    {
+        <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
+                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
+                    <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Anomaly</Strong></TableHeaderCell>
+                    <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Average</Strong></TableHeaderCell>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                @{
+                    var rank = 1;
+                    foreach (var (record, rowStyle) in YearlyResult.Zip(ComputedRowStyles))
+                    {
+                        var currentRank = rank;
+                        <tr>
+                            <td class="text-center" style="@rowStyle">@currentRank</td>
+                            <td style="@rowStyle">@record.Year</td>
+                            <td class="text-end" style="@rowStyle">@FormatAnomaly(record.Relative, SelectedUnitOfMeasure)</td>
+                            <td class="text-end" style="@rowStyle">@FormatValue(record.Absolute, SelectedUnitOfMeasure)</td>
+                        </tr>
+                        rank++;
+                    }
                 }
-            }
-        </TableBody>
-    </Table>
+            </TableBody>
+        </Table>
+    }
+    else if (YearlyResult is not null)
+    {
+        <p>No yearly records found for the selected filters.</p>
+    }
 }
-else if (ClimateRecordsResult is not null)
+else
 {
-    <p>No records found for the selected filters.</p>
+    @if (ClimateRecordsResult?.Records is { Count: > 0 })
+    {
+        <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
+                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>@(ActiveView == RecordView.Monthly ? "Month" : "Day/Month")</Strong></TableHeaderCell>
+                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
+                    <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Value</Strong></TableHeaderCell>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                @{
+                    var rank = 1;
+                    foreach (var (record, rowStyle) in ClimateRecordsResult!.Records.Zip(ComputedRowStyles))
+                    {
+                        var currentRank = rank;
+                        <tr>
+                            <td class="text-center" style="@rowStyle">@currentRank</td>
+                            <td style="@rowStyle">
+                                @if (record.Day.HasValue)
+                                {
+                                    <span class="secondary-text">@record.Day @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month)</span>
+                                }
+                                else
+                                {
+                                    <span class="secondary-text">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(record.Month)</span>
+                                }
+                            </td>
+                            <td style="@rowStyle">@record.Year</td>
+                            <td class="text-end" style="@rowStyle">@FormatValue(@record.Value, record.UnitOfMeasure)</td>
+                        </tr>
+                        rank++;
+                    }
+                }
+            </TableBody>
+        </Table>
+    }
+    else if (ClimateRecordsResult is not null)
+    {
+        <p>No records found for the selected filters.</p>
+    }
 }
 
 @code {
+    enum RecordView { Daily, Monthly, Yearly }
+
     [Inject]
     public IDataService? DataService { get; set; }
 
@@ -142,12 +205,19 @@ else if (ClimateRecordsResult is not null)
     List<DataAdjustment?> AvailableDataAdjustments { get; set; } = [];
     List<string> ComputedRowStyles { get; set; } = [];
     List<MeasurementDefinitionViewModel> LocationMeasurements { get; set; } = [];
+    IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     DataType SelectedDataType { get; set; } = DataType.TempMax;
     DataAdjustment? SelectedDataAdjustment { get; set; } = DataAdjustment.Adjusted;
+    UnitOfMeasure SelectedUnitOfMeasure { get; set; } = UnitOfMeasure.DegreesCelsius;
     int SelectedMonth { get; set; } = 0;
     bool Ascending { get; set; } = false;
     int Count { get; set; } = 10;
+    RecordView ActiveView { get; set; } = RecordView.Daily;
+
+    List<YearlyValues>? YearlyResult { get; set; }
+    int? YearlyStartYear { get; set; }
+    int? YearlyEndYear { get; set; }
 
     Guid? InternalLocationId { get; set; }
 
@@ -165,8 +235,8 @@ else if (ClimateRecordsResult is not null)
 
     async Task LoadAvailableOptions()
     {
-        var dataSetDefinitions = await DataService!.GetDataSetDefinitions();
-        LocationMeasurements = dataSetDefinitions
+        DataSetDefinitions = await DataService!.GetDataSetDefinitions();
+        LocationMeasurements = DataSetDefinitions
             .Where(x => x.LocationIds != null && x.LocationIds.Contains(Location!.Id))
             .SelectMany(x => x.MeasurementDefinitions!)
             .Where(x => x.DataResolution == DataResolution.Daily || x.DataResolution == DataResolution.Monthly)
@@ -199,13 +269,62 @@ else if (ClimateRecordsResult is not null)
             SelectedDataAdjustment = AvailableDataAdjustments.First();
         else
             SelectedDataAdjustment = null;
+
+        var selectedMeasurement = LocationMeasurements.FirstOrDefault(x => x.DataType == SelectedDataType && x.DataAdjustment == SelectedDataAdjustment);
+        SelectedUnitOfMeasure = selectedMeasurement?.UnitOfMeasure ?? UnitOfMeasure.DegreesCelsius;
     }
 
     async Task LoadRecords()
     {
         if (Location is null) return;
-        ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, Count, SelectedMonth == 0 ? null : SelectedMonth);
-        ComputedRowStyles = ComputeRowStyles(ClimateRecordsResult);
+
+        if (ActiveView == RecordView.Yearly)
+        {
+            await LoadYearlyRecords();
+        }
+        else
+        {
+            var month = SelectedMonth != 0 ? (int?)SelectedMonth : null;
+            ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, Count, month, ActiveView == RecordView.Monthly);
+            ComputedRowStyles = ComputeRowStyles(ClimateRecordsResult);
+            YearlyResult = null;
+        }
+    }
+
+    async Task LoadYearlyRecords()
+    {
+        if (DataSetDefinitions is null || Location is null) return;
+
+        var dataSubstitutes = new List<DataSubstitute>
+        {
+            new() { DataType = SelectedDataType, DataAdjustment = SelectedDataAdjustment },
+        };
+
+        var fn = SelectedDataType == DataType.Precipitation ? ContainerAggregationFunctions.Sum : ContainerAggregationFunctions.Mean;
+        var summary = await ClimateDataHelper.CalculateAnomaly(DataService!, DataSetDefinitions, Location, dataSubstitutes, fn);
+
+        if (summary?.AnomalyRecords is not { Count: > 0 })
+        {
+            YearlyResult = summary is not null ? [] : null;
+            ComputedRowStyles = [];
+            ClimateRecordsResult = null;
+            return;
+        }
+
+        YearlyStartYear = (int?)summary.AnomalyRecords.Min(x => (int)x.Year);
+        YearlyEndYear = (int?)summary.AnomalyRecords.Max(x => (int)x.Year);
+        var ordered = Ascending
+            ? summary.AnomalyRecords.OrderBy(x => x.Absolute).Take(Count)
+            : summary.AnomalyRecords.OrderByDescending(x => x.Absolute).Take(Count);
+        YearlyResult = ordered.ToList();
+        ComputedRowStyles = ComputeYearlyRowStyles(YearlyResult, YearlyStartYear, YearlyEndYear);
+        ClimateRecordsResult = null;
+    }
+
+    async Task SetView(RecordView view)
+    {
+        ActiveView = view;
+        await LoadRecords();
     }
 
     async Task OnDataTypeChanged(DataType value)
@@ -251,14 +370,12 @@ else if (ClimateRecordsResult is not null)
                 int red, green, blue;
                 if (recentness >= 0.5)
                 {
-                    // white ? red as recentness goes 0.5 ? 1.0
                     double t = (recentness - 0.5) * 2;
                     red = 255;
                     green = blue = (int)(255 - 180 * t);
                 }
                 else
                 {
-                    // blue ? white as recentness goes 0.0 ? 0.5
                     double t = recentness * 2;
                     blue = 255;
                     red = green = (int)(75 + 180 * t);
@@ -266,6 +383,43 @@ else if (ClimateRecordsResult is not null)
                 return string.Format(System.Globalization.CultureInfo.InvariantCulture, "background-color: rgb({0}, {1}, {2}, .1)", red, green, blue);
             })
             .ToList();
+    }
+
+    static List<string> ComputeYearlyRowStyles(List<YearlyValues> records, int? startYear, int? endYear)
+    {
+        if (startYear is not int start || endYear is not int end || end == start)
+            return records.Select(_ => string.Empty).ToList();
+        return records
+            .Select(record =>
+            {
+                double recentness = Math.Clamp((double)(record.Year - start) / (end - start), 0, 1);
+                int red, green, blue;
+                if (recentness >= 0.5)
+                {
+                    double t = (recentness - 0.5) * 2;
+                    red = 255;
+                    green = blue = (int)(255 - 180 * t);
+                }
+                else
+                {
+                    double t = recentness * 2;
+                    blue = 255;
+                    red = green = (int)(75 + 180 * t);
+                }
+                return string.Format(System.Globalization.CultureInfo.InvariantCulture, "background-color: rgb({0}, {1}, {2}, .1)", red, green, blue);
+            })
+            .ToList();
+    }
+
+    static string FormatAnomaly(double anomaly, UnitOfMeasure unitOfMeasure)
+    {
+        var sign = anomaly >= 0 ? "+" : string.Empty;
+        return $"{sign}{anomaly.ToString("0.0", CultureInfo.InvariantCulture)}{Enums.UnitOfMeasureLabelShort(unitOfMeasure)}";
+    }
+
+    static string FormatValue(double value, UnitOfMeasure unitOfMeasure)
+    {
+        return $"{value.ToString("0.0", CultureInfo.InvariantCulture)}{Enums.UnitOfMeasureLabelShort(unitOfMeasure)}";
     }
 
     static string DataAdjustmentToString(DataAdjustment? da) => da.HasValue ? da.Value.ToString() : "none";

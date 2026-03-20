@@ -303,7 +303,7 @@ async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
                 .Select(x => new BinnedRecord(x.BinId, x.Value.HasValue ? Math.Round(x.Value.Value, 4) : null)) // 4 decimal places should be enough for anyone
                 .ToList(),
             RawDataRecords =
-                body.IncludeRawDataRecords
+                body.IncludeRawDataRecords == true
                 ? series.RawDataRecords
                 : null,
         };
@@ -352,15 +352,9 @@ async Task<ClimateRecordsResponse> GetClimateRecords(
     DataAdjustment? dataAdjustment = null,
     bool ascending = false,
     int count = 10,
-    int? month = null)
+    int? month = null,
+    bool monthly = false)
 {
-    string cacheKey = $"ClimateRecord_{locationId}_{dataType}_{dataAdjustment}_{ascending}_{count}_{month}";
-    var result = await cache.Get<ClimateRecordsResponse>(cacheKey);
-    if (result != null)
-    {
-        return result;
-    }
-
     var dataSetDefinitions = await GetDataSetDefinitions();
     var locationDsds = dataSetDefinitions.Where(x => x.LocationIds!.Contains(locationId)).ToList();
 
@@ -396,7 +390,8 @@ async Task<ClimateRecordsResponse> GetClimateRecords(
     var dataSet = await PostDataSets(
         new PostDataSetsRequestBody
         {
-            BinningRule = md.DataResolution == DataResolution.Daily ? BinGranularities.ByYearAndDay : BinGranularities.ByYearAndMonth,
+            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+            BinningRule = md.DataResolution == DataResolution.Daily && !monthly ? BinGranularities.ByYearAndDay : BinGranularities.ByYearAndMonth,
             SeriesTransformation = SeriesTransformations.Identity,
             SeriesSpecifications =
             [
@@ -408,6 +403,13 @@ async Task<ClimateRecordsResponse> GetClimateRecords(
                     DataAdjustment = dataAdjustment,
                 },
             ],
+            BinAggregationFunction = ContainerAggregationFunctions.Mean,
+            BucketAggregationFunction = ContainerAggregationFunctions.Mean,
+            CupAggregationFunction = ContainerAggregationFunctions.Mean,
+            RequiredBinDataProportion = 1,
+            RequiredBucketDataProportion = 1,
+            RequiredCupDataProportion = 0.7f,
+            CupSize = 14,
         });
 
     static int YearOf(BinnedRecord r) => r.BinIdentifier switch
@@ -447,20 +449,18 @@ async Task<ClimateRecordsResponse> GetClimateRecords(
             Value = record.Value!.Value,
         };
 
-        switch (md.DataResolution)
+        if (md.DataResolution == DataResolution.Daily && !monthly)
         {
-            case DataResolution.Daily:
-                var dayBin = (YearAndDayBinIdentifier)record.BinIdentifier!;
-                cr.Year = dayBin.Year;
-                cr.Month = dayBin.Month;
-                cr.Day = dayBin.Day;
-                break;
-
-            case DataResolution.Monthly:
-                var monthBin = (YearAndMonthBinIdentifier)record.BinIdentifier!;
-                cr.Year = monthBin.Year;
-                cr.Month = monthBin.Month;
-                break;
+            var dayBin = (YearAndDayBinIdentifier)record.BinIdentifier!;
+            cr.Year = dayBin.Year;
+            cr.Month = dayBin.Month;
+            cr.Day = dayBin.Day;
+        }
+        else
+        {
+            var monthBin = (YearAndMonthBinIdentifier)record.BinIdentifier!;
+            cr.Year = monthBin.Year;
+            cr.Month = monthBin.Month;
         }
 
         return cr;
@@ -472,6 +472,5 @@ async Task<ClimateRecordsResponse> GetClimateRecords(
         StartYear = startYear,
         EndYear = endYear,
     };
-    await cache.Put(cacheKey, response);
     return response;
 }

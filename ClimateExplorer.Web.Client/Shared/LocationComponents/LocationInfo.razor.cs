@@ -5,6 +5,7 @@ using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.Shared.PopupContent;
 using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiModel;
@@ -189,64 +190,12 @@ public partial class LocationInfo
 
     protected async Task<LocationAnomalySummary?> CalculateAnomaly(List<DataSubstitute> dataSubstitutes, ContainerAggregationFunctions function)
     {
-        var series = await GetData(dataSubstitutes, function);
-
-        if (series == null || series.DataRecords.Count == 0)
-        {
-            return null;
-        }
-
-        var average = series.DataRecords.Average(x => x.Value)!.Value;
-
-        var anomalyRecords =
-            series.DataRecords
-            .Where(x => x.Value != null)
-            .Select(x => new YearlyValues(((YearBinIdentifier)BinIdentifier.Parse(x.BinId!)).Year, x.Value!.Value - average, x.Value!.Value, x.Value!.Value / average * 100D))
-            .ToList();
-
-        var anomaly = AnomalyCalculator.CalculateAnomaly(series.DataRecords);
-
-        return new LocationAnomalySummary { CalculatedAnomaly = anomaly, DataSet = series, AnomalyRecords = anomalyRecords };
+        return await ClimateDataHelper.CalculateAnomaly(DataService!, DataSetDefinitions!, Location!, dataSubstitutes, function);
     }
 
     protected async Task<DataSet?> GetData(List<DataSubstitute> dataSubstitutes, ContainerAggregationFunctions function)
     {
-        var measurementForLocation =
-            DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
-                DataSetDefinitions!,
-                Location!.Id,
-                dataSubstitutes,
-                throwIfNoMatch: false)!;
-
-        if (measurementForLocation == null)
-        {
-            return null;
-        }
-
-        var spec = new SeriesSpecification
-        {
-            DataAdjustment = measurementForLocation.MeasurementDefinition!.DataAdjustment,
-            DataSetDefinitionId = measurementForLocation.DataSetDefinition!.Id,
-            DataType = measurementForLocation.MeasurementDefinition.DataType,
-            LocationId = Location.Id,
-        };
-
-        var series =
-            await DataService!.PostDataSet(
-                BinGranularities.ByYear,
-                function,
-                function,
-                function,
-                SeriesValueOptions.Value,
-                [spec],
-                SeriesDerivationTypes.ReturnSingleSeries,
-                1.0f,
-                1.0f,
-                0.7f,
-                14,
-                SeriesTransformations.Identity);
-
-        return series!;
+        return await ClimateDataHelper.GetData(DataService!, DataSetDefinitions!, Location!, dataSubstitutes, function);
     }
 
     protected async Task HandleOnYearFilterChange(short year)
