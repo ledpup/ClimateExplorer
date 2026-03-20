@@ -1,4 +1,4 @@
-﻿@using Blazorise
+@using Blazorise
 @using Blazorise.LoadingIndicator
 @using ClimateExplorer.Core
 @using ClimateExplorer.Core.DataPreparation
@@ -8,6 +8,7 @@
 @using ClimateExplorer.Web.Client.UiModel
 @using ClimateExplorer.Web.UiModel
 @using System.Globalization
+@using ClimateExplorer.Web.Client.Shared
 @using ClimateExplorer.WebApiClient.Services
 @using static ClimateExplorer.Core.Enums
 
@@ -131,7 +132,7 @@
                 </TableBody>
             </Table>
         }
-        else if (YearlyResult is null)
+        else if (YearlyResult is null && LoadingIndicatorVisible)
         {
             <Table>
                 <TableHeader>
@@ -195,7 +196,7 @@
                 </TableBody>
             </Table>
         }
-        else if (ClimateRecordsResult is null)
+        else if (ClimateRecordsResult is null && LoadingIndicatorVisible)
         {
             <Table>
                 <TableHeader>
@@ -221,6 +222,23 @@
     }
 </LoadingIndicator>
 
+@if (LoadingIndicatorVisible || ClimateRecordsResult?.Records is { Count: > 0 } || YearlyResult is { Count: > 0 })
+{
+    <div class="mt-2">
+        <a class="subtle-link" @onclick="ShowColourExplainerInfo">Explain these colours<span class="info-icon"><i class="fas fa-circle-info"></i></span></a>
+    </div>
+}
+
+<InfoPanel @ref="colourExplainerInfoPanel" Title="Row colours">
+    <p>The colours in these tables indicate the relative age of each record.</p>
+    <ul>
+        <li><b>Red</b> marks a recent record.</li>
+        <li><b>Pale red, pale blue, or white</b> indicate records from the middle of the dataset.</li>
+        <li><b>Blue</b> highlights an early record.</li>
+    </ul>
+    <p>When a dataset shows no clear trend, most records are typically set early or somewhere in the middle of the time series. Occasionally, a new record may still appear near the end.</p>
+</InfoPanel>
+
 @code {
     enum RecordView { Daily, Monthly, Yearly }
 
@@ -234,6 +252,10 @@
     public ClimateRecordsResponse? ClimateRecordsResult { get; set; }
 
     bool LoadingIndicatorVisible { get; set; }
+
+    InfoPanel? colourExplainerInfoPanel;
+
+    Task ShowColourExplainerInfo() => colourExplainerInfoPanel!.ShowAsync();
 
     List<DataType> AvailableDataTypes { get; set; } = [];
     List<DataAdjustment?> AvailableDataAdjustments { get; set; } = [];

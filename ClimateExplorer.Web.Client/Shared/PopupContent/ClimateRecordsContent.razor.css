@@ -1,0 +1,14 @@
+.subtle-link {
+    color: inherit;
+    text-decoration: none;
+    cursor: default;
+}
+
+    .subtle-link:hover {
+        cursor: pointer;
+    }
+
+.info-icon {
+    margin-left: 8px;
+    color: #79c6f4;
+}
