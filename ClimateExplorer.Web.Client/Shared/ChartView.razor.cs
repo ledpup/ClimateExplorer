@@ -1,4 +1,4 @@
-﻿namespace ClimateExplorer.Web.Client.Shared;
+namespace ClimateExplorer.Web.Client.Shared;
 
 using System;
 using System.Dynamic;
@@ -1423,10 +1423,9 @@ public partial class ChartView
 
         var year = (short)(startYear + e.Index);
 
-        var dataType = ChartSeriesWithData![e.DatasetIndex].SourceDataSet!.DataType;
-        var dataAdjustment = ChartSeriesWithData[e.DatasetIndex].SourceDataSet!.DataAdjustment;
+        var sourceDataSet = ChartSeriesWithData![e.DatasetIndex].SourceDataSet!;
 
-        await HandleOnYearFilterChange(new YearAndDataTypeFilter(year) { DataType = dataType, DataAdjustment = dataAdjustment });
+        await HandleOnYearFilterChange(new YearAndDataTypeFilter(year) { DataType = sourceDataSet.DataType, DataAdjustment = sourceDataSet.DataAdjustment, UnitOfMeasure = sourceDataSet.MeasurementDefinition!.UnitOfMeasure });
     }
 
     private void OnSelectedGroupingDaysChanged(short value)
