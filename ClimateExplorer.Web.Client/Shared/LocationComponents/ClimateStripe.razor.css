@@ -10,12 +10,22 @@
     height: inherit;
     display: inline-block;
     flex-grow: 1;
+    position: relative;
 }
 
     .single-stripe .label {
         display: none;
+        background-color: inherit;
         text-align: center;
-        margin-top: 10px;
+        padding-top: 10px;
+        position: absolute;
+        bottom: calc(100% + 10px);
+        left: 50%;
+        transform: translateX(-50%);
+        min-width: 70px;
+        height: 80px;
+        z-index: 1000;
+        pointer-events: none;
     }
 
         .single-stripe .label .year {
@@ -30,13 +40,6 @@
             font-size: 1rem;
             font-weight: bold;
         }
-
-    .single-stripe:hover {
-        position: relative;
-        top: -15px;
-        height: 90px;
-        min-width: 70px;
-    }
 
     .single-stripe:hover .label {
         display: block;

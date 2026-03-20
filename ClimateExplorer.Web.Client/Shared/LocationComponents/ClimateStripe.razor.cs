@@ -66,7 +66,7 @@ public partial class ClimateStripe
         return popup!.Show();
     }
 
-    private string GetColour(double value)
+    private Colour GetColourObject(double value)
     {
         Colour colour = default;
 
@@ -97,7 +97,19 @@ public partial class ClimateStripe
             }
         }
 
-        return $"rgba({colour.R}, {colour.G}, {colour.B}, 80%)";
+        return colour;
+    }
+
+    private string GetColour(double value)
+    {
+        var c = GetColourObject(value);
+        return $"rgba({c.R}, {c.G}, {c.B}, 80%)";
+    }
+
+    private string GetLabelColour(double value)
+    {
+        var c = GetColourObject(value);
+        return $"rgba({c.R}, {c.G}, {c.B}, 97%)";
     }
 
     private string GetRelativeValue(YearlyValues values) => UnitOfMeasure == Enums.UnitOfMeasure.Millimetres ? $"{Math.Round(values.PercentageOfAverage, 0)}%" : $"{(values.Relative >= 0 ? "+" : string.Empty)}{Math.Round(values.Relative, uomRounding)}{uomString}";
