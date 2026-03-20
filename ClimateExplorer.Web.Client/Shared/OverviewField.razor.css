@@ -20,12 +20,12 @@
     margin-bottom: -6px;
 }
 
-    ::deep .value a {
+    .value ::deep a {
         color: #494949;
         text-decoration: none;
     }
 
-        ::deep .value a:hover {
+        .value ::deep a:hover {
             color: #0a58ca;
             text-decoration: underline;
             cursor: pointer;
