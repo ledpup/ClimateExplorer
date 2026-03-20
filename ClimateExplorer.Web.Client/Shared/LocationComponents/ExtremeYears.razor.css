@@ -1,0 +1,8 @@
+.year-link {
+    cursor: pointer;
+}
+
+    .year-link:hover {
+        text-decoration: underline;
+        color: #0a58ca;
+    }

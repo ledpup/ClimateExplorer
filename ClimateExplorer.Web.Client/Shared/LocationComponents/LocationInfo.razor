@@ -48,11 +48,11 @@
         <div class="climate-stripe">
             <LoadingIndicator @bind-Visible="@StripeLoadingIndicatorVisible" ZIndex="5">
                 <ClimateStripe UnitOfMeasure="UnitOfMeasure.DegreesCelsius" LocationName=@Location?.Name LocationMean=@TemperatureLocationMean DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" ShowInfo="true" />
-                <WarmestYears DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" />
+                <ExtremeYears HighLabel="Warmest years" LowLabel="Coolest years" DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" />
                 @if (Precipitation && PrecipitationLocationMean != null)
                 {
                     <ClimateStripe UnitOfMeasure="UnitOfMeasure.Millimetres" LocationName=@Location?.Name LocationMean=@PrecipitationLocationMean DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange="HandleOnPrecipitationYearFilterChange" ShowInfo="false" />
-                    <DriestYears DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange="HandleOnPrecipitationYearFilterChange" />
+                    <ExtremeYears HighLabel="Wettest years" LowLabel="Driest years" HighFirst="false" DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange="HandleOnPrecipitationYearFilterChange" />
                 }
             </LoadingIndicator>
         </div>
