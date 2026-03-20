@@ -12,7 +12,10 @@
             <CloseButton />
         </ModalHeader>
         <ModalBody>           
-            <Div Class="mt-1"><Button Clicked="@NearMeClicked" Color="Color.Primary">Near me</Button></Div>
+            <Div Class="mt-1 d-flex gap-4">
+                <Button Clicked="@NearMeClicked" Color="Color.Primary">Near me</Button>
+                <Button Clicked="@RandomLocationClicked" Color="Color.Secondary">Random location</Button>
+            </Div>
 
             @if (BrowserLocationErrorMessage != null)
             {
@@ -20,8 +23,6 @@
                     @BrowserLocationErrorMessage
                 </Div>
             }
-            
-            <Div Class="mt-1"><Button Clicked="@RandomLocationClicked" Color="Color.Secondary">Random location</Button></Div>
             
             @if (LocationDictionary is not null)
             {

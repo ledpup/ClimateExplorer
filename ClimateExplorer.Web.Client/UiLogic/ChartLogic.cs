@@ -93,6 +93,7 @@ public static class ChartLogic
     public static BarChartDataset<double?> GetBarChartDataset(
         string label,
         List<double?> values,
+        ChartColor chartColor,
         UnitOfMeasure unitOfMeasure,
         bool? absoluteValues,
         bool redPositive,
@@ -100,7 +101,7 @@ public static class ChartLogic
         string? customTransformation,
         SeriesAggregationOptions seriesAggregationOptions)
     {
-        var colour = GetBarChartColourSet(values, redPositive);
+        var colour = GetBarChartColourSet(values, chartColor, redPositive);
 
         return
             new BarChartDataset<double?>
@@ -126,20 +127,17 @@ public static class ChartLogic
         SeriesAggregationOptions seriesAggregationOptions = SeriesAggregationOptions.Mean,
         bool renderSmallPoints = false)
     {
-        switch (chartType)
+        if (!chartColour.HasValue)
         {
-            case ChartType.Line:
-                if (!chartColour.HasValue)
-                {
-                    throw new NullReferenceException(nameof(chartColour));
-                }
-
-                return GetLineChartDataset(label, values, chartColour.Value, unitOfMeasure, seriesTransformations, customTransformation, renderSmallPoints, seriesAggregationOptions);
-            case ChartType.Bar:
-                return GetBarChartDataset(label, values, unitOfMeasure, absoluteValues, redPositive, seriesTransformations, customTransformation, seriesAggregationOptions);
+            throw new NullReferenceException(nameof(chartColour));
         }
 
-        throw new NotImplementedException($"ChartType {chartType}");
+        return chartType switch
+        {
+            ChartType.Line => GetLineChartDataset(label, values, chartColour.Value, unitOfMeasure, seriesTransformations, customTransformation, renderSmallPoints, seriesAggregationOptions),
+            ChartType.Bar => GetBarChartDataset(label, values, chartColour!.Value, unitOfMeasure, absoluteValues, redPositive, seriesTransformations, customTransformation, seriesAggregationOptions),
+            _ => throw new NotImplementedException($"ChartType {chartType}"),
+        };
     }
 
     public static ChartTrendlineData CreateTrendline(int datasetIndex, ChartColor colour)
@@ -300,30 +298,34 @@ public static class ChartLogic
         };
     }
 
-    public static List<string> GetBarChartColourSet(List<double?> values, bool redPositive = true)
+    public static List<string> GetBarChartColourSet(List<double?> values, ChartColor chartColor, bool redPositive = true)
     {
         var count = values.Count;
 
         var red = ChartColor.FromRgba(255, 63, 63, 1f);
         var blue = ChartColor.FromRgba(63, 63, 255, 1f);
 
+        var hasPositive = values.Any(v => v.HasValue && v.Value > 0);
+        var hasNegative = values.Any(v => v.HasValue && v.Value < 0);
+        var useMixedColours = hasPositive && hasNegative;
+
         var colour = new List<string>();
         for (var i = 0; i < count; i++)
         {
-            ChartColor chartColor;
             if (values[i].HasValue)
             {
-                var value = values![i]!.Value * (redPositive ? 1f : -1f);
-                if (value > 0)
+                ChartColor barColour;
+                if (useMixedColours)
                 {
-                    chartColor = red;
+                    var value = values[i]!.Value * (redPositive ? 1f : -1f);
+                    barColour = value > 0 ? red : blue;
                 }
                 else
                 {
-                    chartColor = blue;
+                    barColour = chartColor;
                 }
 
-                colour.Add(chartColor);
+                colour.Add(barColour);
             }
             else
             {

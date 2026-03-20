@@ -42,7 +42,7 @@ public class DataService : IDataService
         DataResolution? minimumDataResolution)
     {
         var response =
-            await httpClient.PostAsJsonAsync<PostDataSetsRequestBody>(
+            await httpClient.PostAsJsonAsync(
                 "dataset",
                 new PostDataSetsRequestBody
                 {
@@ -176,13 +176,32 @@ public class DataService : IDataService
         return result!;
     }
 
-    public async Task<IEnumerable<ClimateRecord>> GetClimateRecords(Guid locationId)
+    public async Task<ClimateRecordsResponse> GetClimateRecords(Guid locationId, DataType dataType = DataType.TempMax, DataAdjustment? dataAdjustment = null, bool ascending = false, int count = 10, int? month = null, bool monthly = false)
     {
-        var url = $"/climate-record?locationId={locationId}";
-        var result = dataServiceCache.Get<ClimateRecord[]>(url);
+        var url = "/climate-record";
+        url = QueryHelpers.AddQueryString(url, "locationId", locationId.ToString());
+        url = QueryHelpers.AddQueryString(url, "dataType", dataType.ToString());
+        if (dataAdjustment.HasValue)
+        {
+            url = QueryHelpers.AddQueryString(url, "dataAdjustment", dataAdjustment.Value.ToString());
+        }
+
+        url = QueryHelpers.AddQueryString(url, "ascending", ascending.ToString().ToLowerInvariant());
+        url = QueryHelpers.AddQueryString(url, "count", count.ToString());
+        if (month.HasValue)
+        {
+            url = QueryHelpers.AddQueryString(url, "month", month.Value.ToString());
+        }
+
+        if (monthly)
+        {
+            url = QueryHelpers.AddQueryString(url, "monthly", "true");
+        }
+
+        var result = dataServiceCache.Get<ClimateRecordsResponse>(url);
         if (result == null)
         {
-            result = await httpClient.GetFromJsonAsync<ClimateRecord[]>(url);
+            result = await httpClient.GetFromJsonAsync<ClimateRecordsResponse>(url, jsonSerializerOptions);
 
             dataServiceCache.Put(url, result!);
         }

@@ -1,0 +1,30 @@
+@using ClimateExplorer.Web.UiModel
+@using static ClimateExplorer.Core.Enums
+
+@if (DataRecords is not null)
+{
+    <OverviewField Label="@FirstLabel">
+        <Value>
+            @foreach (var year in FirstList)
+            {
+                <span class="year-link" @onclick="() => FilterToYear(year)">@year</span>
+                if (FirstList.IndexOf(year) < FirstList.Count - 1)
+                {
+                    <span>, </span>
+                }
+            }
+        </Value>
+    </OverviewField>
+    <OverviewField Label="@SecondLabel">
+        <Value>
+            @foreach (var year in SecondList)
+            {
+                <span class="year-link" @onclick="() => FilterToYear(year)">@year</span>
+                if (SecondList.IndexOf(year) < SecondList.Count - 1)
+                {
+                    <span>, </span>
+                }
+            }
+        </Value>
+    </OverviewField>
+}

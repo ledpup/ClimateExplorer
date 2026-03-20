@@ -747,6 +747,16 @@ public partial class ChartView
         return seriesUnitOfMeasure == filterUnitOfMeasure;
     }
 
+    private static string GetChartLabel(SeriesTransformations seriesTransformation, string? customTransformation, string defaultLabel, SeriesAggregationOptions seriesAggregationOptions)
+    {
+        return seriesTransformation switch
+        {
+            SeriesTransformations.DayOfYearIfFrost => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "Last day of frost" : "First day of frost",
+            SeriesTransformations.Custom => ChartSeriesDefinition.GetFriendlyCustomTransformationLabel(customTransformation ?? "Custom transformation"),
+            _ => defaultLabel,
+        };
+    }
+
     private object CreateChartOptions(string title, string subtitle, dynamic scales)
     {
         return new
@@ -1109,44 +1119,6 @@ public partial class ChartView
         return trendlines;
     }
 
-    private void RebuildChartSeriesListToReflectSelectedYears()
-    {
-        var years = SelectedYears!.Any() ? SelectedYears!.Select(x => (short?)x).ToList() : new List<short?>() { null };
-
-        List<ChartSeriesDefinition> newCsds = new List<ChartSeriesDefinition>();
-
-        var uniqueChartSeriesList = ChartSeriesList!.Distinct(new ChartSeriesDefinition.ChartSeriesDefinitionComparerWhichIgnoresYearAndIsLocked()).ToArray();
-
-        foreach (var csd in uniqueChartSeriesList)
-        {
-            foreach (var year in years)
-            {
-                newCsds.Add(
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = csd.SourceSeriesSpecifications,
-                        Aggregation = csd.Aggregation,
-                        BinGranularity = year == null ? BinGranularities.ByYear : BinGranularities.ByYearAndMonth,
-                        DisplayStyle = csd.DisplayStyle,
-                        IsLocked = csd.IsLocked,
-                        ShowTrendline = csd.ShowTrendline,
-                        SecondaryCalculation = csd.SecondaryCalculation,
-                        Smoothing = csd.Smoothing,
-                        SmoothingWindow = csd.SmoothingWindow,
-                        Value = csd.Value,
-                        Year = year,
-                        SeriesTransformation = csd.SeriesTransformation,
-                        GroupingThreshold = csd.GroupingThreshold,
-                        MinimumDataResolution = csd.MinimumDataResolution,
-                    });
-            }
-        }
-
-        Logger!.LogInformation("RebuildChartSeriesListToReflectSelectedYears() setting ChartSeriesList");
-        ChartSeriesList = newCsds;
-    }
-
     private void BuildProcessedDataSets(List<SeriesWithData> chartSeriesWithData, bool chartAllData)
     {
         var l = new LogAugmenter(Logger!, "BuildProcessedDataSets");
@@ -1318,16 +1290,6 @@ public partial class ChartView
         l.LogInformation("leaving");
     }
 
-    private string GetChartLabel(SeriesTransformations seriesTransformation, string? customTransformation, string defaultLabel, SeriesAggregationOptions seriesAggregationOptions)
-    {
-        return seriesTransformation switch
-        {
-            SeriesTransformations.DayOfYearIfFrost => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "Last day of frost" : "First day of frost",
-            SeriesTransformations.Custom => ChartSeriesDefinition.GetFriendlyCustomTransformationLabel(customTransformation ?? "Custom transformation"),
-            _ => defaultLabel,
-        };
-    }
-
     private dynamic BuildChartScales()
     {
         dynamic scales = new ExpandoObject();
@@ -1351,11 +1313,17 @@ public partial class ChartView
         // Build a global min/max per axis from the full source datasets, before any display range filtering.
         // This ensures the y-axis range reflects the complete dataset even when ChartAllData is false.
         var axisMinMax = new Dictionary<string, (double Min, double Max)>();
+        var axisHasBarSeries = new HashSet<string>();
         foreach (var swd in ChartSeriesWithData!)
         {
             var cs = swd.ChartSeries!;
             var uom = cs.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
             var axisId = ChartLogic.GetYAxisId(cs.SeriesTransformation, cs.CustomTransformation, uom, cs.Aggregation);
+
+            if (cs.DisplayStyle == SeriesDisplayStyle.Bar)
+            {
+                axisHasBarSeries.Add(axisId);
+            }
 
             var values = swd.PreProcessedDataSet!.DataRecords!
                 .Select(x => x.Value)
@@ -1390,7 +1358,7 @@ public partial class ChartView
             {
                 axisMinMax.TryGetValue(axisId, out var globalMinMax);
                 var axisRange = globalMinMax.Max - globalMinMax.Min;
-                var axisPadding = axisRange * 0.02;
+                var axisPadding = !axisHasBarSeries.Contains(axisId) ? axisRange * 0.02 : 0.0;
                 ((IDictionary<string, object>)scales).Add(
                     axisId,
                     new
