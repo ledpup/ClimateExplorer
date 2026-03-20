@@ -1,4 +1,4 @@
-.climate-stripe {
+﻿.climate-stripe {
     height: 50px;
     margin-top: 16px;
     padding-right: 16px;
@@ -43,6 +43,16 @@
 
     .single-stripe:hover .label {
         display: block;
+    }
+
+    .single-stripe:hover .label::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        height: 10px;
+        background-color: inherit;
     }
 
 .info-icon {
