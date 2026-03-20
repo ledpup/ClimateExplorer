@@ -7,9 +7,7 @@
         <Value>
             @foreach (var year in FirstList)
             {
-                <span class="year-link" @onclick="() => FilterToYear(year)">
-                    <a>@year</a>
-                </span>
+                <span class="year-link" @onclick="() => FilterToYear(year)">@year</span>
                 if (FirstList.IndexOf(year) < FirstList.Count - 1)
                 {
                     <span>, </span>
@@ -21,9 +19,7 @@
         <Value>
             @foreach (var year in SecondList)
             {
-                <span class="year-link" @onclick="() => FilterToYear(year)">
-                    <a>@year</a>
-                </span>
+                <span class="year-link" @onclick="() => FilterToYear(year)">@year</span>
                 if (SecondList.IndexOf(year) < SecondList.Count - 1)
                 {
                     <span>, </span>

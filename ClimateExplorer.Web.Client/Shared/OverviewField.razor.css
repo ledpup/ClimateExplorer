@@ -31,6 +31,10 @@
             cursor: pointer;
         }
 
+    .popup-link {
+        cursor: pointer;
+    }
+
 .additional-info {
     font-size: 0.7rem;
     color: #50c880;
