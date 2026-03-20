@@ -45,14 +45,15 @@
         display: block;
     }
 
-    .single-stripe:hover .label::after {
+    .single-stripe:hover::after {
         content: '';
         position: absolute;
-        top: 100%;
+        bottom: 100%;
         left: 0;
         right: 0;
         height: 10px;
         background-color: inherit;
+        z-index: 999;
     }
 
 .info-icon {
