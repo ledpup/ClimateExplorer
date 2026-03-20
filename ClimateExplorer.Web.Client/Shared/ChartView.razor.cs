@@ -1434,55 +1434,6 @@ public partial class ChartView
         await HandleOnYearFilterChange(new YearAndDataTypeFilter(year) { DataType = dataType, DataAdjustment = dataAdjustment });
     }
 
-    private async Task OnSelectedYearsChanged(ExtentValues extentValues)
-    {
-        await ChangeStartYear(extentValues.FromValue!, false);
-        await ChangeEndYear(extentValues.ToValue!, false);
-        await RenderChart();
-    }
-
-    private async Task OnStartYearTextChanged(string? text)
-    {
-        await ChangeStartYear(text, true);
-    }
-
-    private async Task ChangeStartYear(string? text, bool redraw)
-    {
-        SelectedStartYear = text;
-        if (SelectedStartYear != null)
-        {
-            if (redraw)
-            {
-                await RenderChart();
-            }
-        }
-    }
-
-    private async Task OnEndYearTextChanged(string text)
-    {
-        await ChangeEndYear(text, true);
-    }
-
-    private async Task ChangeEndYear(string? text, bool redraw)
-    {
-        SelectedEndYear = text;
-
-        if (redraw)
-        {
-            await RenderChart();
-        }
-    }
-
-    private async Task OnDynamicStartYearChanged(bool? value)
-    {
-        ChartAllData = value.GetValueOrDefault();
-        if (value != null)
-        {
-            SelectedStartYear = null;
-            await RenderChart();
-        }
-    }
-
     private void OnSelectedGroupingDaysChanged(short value)
     {
         SelectingGroupingDays = value;
