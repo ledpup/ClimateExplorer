@@ -117,13 +117,8 @@ public partial class ChartView
 
     private bool? IsMobileDevice { get; set; }
 
-    /// <summary>
-    /// Gets or sets the chart type selected by the user on the options page.
-    /// </summary>
-    private ChartType SelectedChartType { get; set; }
     private List<short>? SelectedYears { get; set; }
     private List<short>? StartYears { get; set; }
-    private short EndYear { get; set; }
 
     private ColourServer Colours { get; set; } = new ColourServer();
 
