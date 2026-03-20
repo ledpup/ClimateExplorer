@@ -387,6 +387,7 @@ async Task<ClimateRecordsResponse> GetClimateRecords(
         return new ClimateRecordsResponse();
     }
 
+    var fn = dataType == DataType.Precipitation ? ContainerAggregationFunctions.Sum : ContainerAggregationFunctions.Mean;
     var dataSet = await PostDataSets(
         new PostDataSetsRequestBody
         {
@@ -403,9 +404,9 @@ async Task<ClimateRecordsResponse> GetClimateRecords(
                     DataAdjustment = dataAdjustment,
                 },
             ],
-            BinAggregationFunction = ContainerAggregationFunctions.Mean,
-            BucketAggregationFunction = ContainerAggregationFunctions.Mean,
-            CupAggregationFunction = ContainerAggregationFunctions.Mean,
+            BinAggregationFunction = fn,
+            BucketAggregationFunction = fn,
+            CupAggregationFunction = fn,
             RequiredBinDataProportion = 1,
             RequiredBucketDataProportion = 1,
             RequiredCupDataProportion = 0.7f,

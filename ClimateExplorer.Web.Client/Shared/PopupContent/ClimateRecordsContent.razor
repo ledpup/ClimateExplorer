@@ -29,7 +29,7 @@
                         Value="@SelectedDataType"
                         ValueChanged="@OnDataTypeChanged"
                         Size="Size.Small">
-                    @foreach (var dt in AvailableDataTypes)
+                    @foreach (var dt in AvailableDataTypes.OrderBy(x => x))
                     {
                         <SelectItem Value="@dt">@ChartSeriesDefinition.MapDataTypeToFriendlyName(dt)</SelectItem>
                     }
@@ -131,6 +131,25 @@
                 </TableBody>
             </Table>
         }
+        else if (YearlyResult is null)
+        {
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Anomaly</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Average</Strong></TableHeaderCell>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    @for (int i = 0; i < Count; i++)
+                    {
+                        <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                    }
+                </TableBody>
+            </Table>
+        }
         else
         {
             <p>No yearly records found for the selected filters.</p>
@@ -172,6 +191,25 @@
                             </tr>
                             rank++;
                         }
+                    }
+                </TableBody>
+            </Table>
+        }
+        else if (ClimateRecordsResult is null)
+        {
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Value</Strong></TableHeaderCell>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    @for (int i = 0; i < Count; i++)
+                    {
+                        <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                     }
                 </TableBody>
             </Table>
