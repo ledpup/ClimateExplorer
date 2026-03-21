@@ -27,6 +27,7 @@ public partial class ChartView
 
     private Chart<double?>? chart;
     private ChartTrendline<double?>? chartTrendline;
+    private ElementReference chartWrapper;
 
     private BinIdentifier? chartStartBin;
     private BinIdentifier? chartEndBin;
@@ -515,6 +516,8 @@ public partial class ChartView
 
         await chart.Update();
 
+        await JsRuntime!.InvokeVoidAsync("registerChartHoverCursor", chartWrapper);
+
         // The below line is required to get the chart.js component to honour the styling applied on the parent div
         // If you don't call resize, the chart will apply the styling only after you resize the window,
         // but it does not apply the style on the initial load of the page.
@@ -752,6 +755,13 @@ public partial class ChartView
             Responsive = true,
             MaintainAspectRatio = false,
             SpanGaps = false,
+            Elements = new
+            {
+                Point = new
+                {
+                    HitRadius = 20,
+                },
+            },
             Plugins = new
             {
                 Title = new

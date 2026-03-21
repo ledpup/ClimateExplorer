@@ -18,7 +18,7 @@
                         </a>
                     </div>
 
-                    <div class="chart-wrapper">
+                    <div class="chart-wrapper" @ref="chartWrapper">
                         <Chart @ref="chart" TItem="double?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
                             <ChartTrendline @ref="chartTrendline" TItem="double?" />
                         </Chart>
