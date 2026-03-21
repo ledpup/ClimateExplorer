@@ -30,5 +30,5 @@ public interface IDataService
         DataResolution? minimumDataResolution = null);
     Task<Dictionary<string, string>> GetCountries();
     Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable();
-    Task<ClimateRecordsResponse> GetClimateRecords(Guid locationId, DataType dataType = DataType.TempMax, DataAdjustment? dataAdjustment = null, bool ascending = false, int count = 10, int? month = null, bool monthly = false);
+    Task<ClimateRecordsResponse> GetClimateRecords(Guid locationId, DataType dataType = DataType.TempMax, DataAdjustment? dataAdjustment = null, bool ascending = false, int? count = null, int? page = null, int ? month = null, bool monthly = false);
 }

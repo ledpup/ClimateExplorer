@@ -176,7 +176,7 @@ public class DataService : IDataService
         return result!;
     }
 
-    public async Task<ClimateRecordsResponse> GetClimateRecords(Guid locationId, DataType dataType = DataType.TempMax, DataAdjustment? dataAdjustment = null, bool ascending = false, int count = 10, int? month = null, bool monthly = false)
+    public async Task<ClimateRecordsResponse> GetClimateRecords(Guid locationId, DataType dataType = DataType.TempMax, DataAdjustment? dataAdjustment = null, bool ascending = false, int? count = null, int? page = null, int? month = null, bool monthly = false)
     {
         var url = "/climate-record";
         url = QueryHelpers.AddQueryString(url, "locationId", locationId.ToString());
@@ -187,7 +187,11 @@ public class DataService : IDataService
         }
 
         url = QueryHelpers.AddQueryString(url, "ascending", ascending.ToString().ToLowerInvariant());
-        url = QueryHelpers.AddQueryString(url, "count", count.ToString());
+        if (count.HasValue)
+        {
+            url = QueryHelpers.AddQueryString(url, "count", count.Value.ToString());
+        }
+
         if (month.HasValue)
         {
             url = QueryHelpers.AddQueryString(url, "month", month.Value.ToString());
@@ -196,6 +200,11 @@ public class DataService : IDataService
         if (monthly)
         {
             url = QueryHelpers.AddQueryString(url, "monthly", "true");
+        }
+
+        if (page.HasValue)
+        {
+            url = QueryHelpers.AddQueryString(url, "page", page.Value.ToString());
         }
 
         var result = dataServiceCache.Get<ClimateRecordsResponse>(url);

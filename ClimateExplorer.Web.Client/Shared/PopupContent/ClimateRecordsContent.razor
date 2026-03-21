@@ -85,98 +85,45 @@
                 </FieldBody>
             </Field>
         }
-        <Field ColumnSize="ColumnSize.IsAuto">
-            <FieldLabel>Count</FieldLabel>
-            <FieldBody>
-                <Select TValue="int"
-                        Value="@Count"
-                        ValueChanged="@OnCountChanged"
-                        Size="Size.Small">
-                    <SelectItem Value="10">10</SelectItem>
-                    <SelectItem Value="20">20</SelectItem>
-                    <SelectItem Value="50">50</SelectItem>
-                </Select>
-            </FieldBody>
-        </Field>
-    </Fields>
+        </Fields>
 }
 <LoadingIndicator @bind-Visible="@LoadingIndicatorVisible">
-    @if (ActiveView == RecordView.Yearly)
+    @if (ClimateRecordsResult?.Records is { Count: > 0 })
     {
-        @if (YearlyResult is { Count: > 0 })
-        {
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Anomaly</Strong></TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Average</Strong></TableHeaderCell>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    @{
-                        var rank = 1;
-                        foreach (var (record, rowStyle) in YearlyResult.Zip(ComputedRowStyles))
-                        {
-                            var currentRank = rank;
-                            <tr>
-                                <td class="text-center" style="@rowStyle">@currentRank</td>
-                                <td style="@rowStyle">@record.Year</td>
-                                <td class="text-end" style="@rowStyle">@FormatAnomaly(record.Relative, SelectedUnitOfMeasure)</td>
-                                <td class="text-end" style="@rowStyle">@FormatValue(record.Absolute, SelectedUnitOfMeasure)</td>
-                            </tr>
-                            rank++;
-                        }
-                    }
-                </TableBody>
-            </Table>
-        }
-        else if (YearlyResult is null && LoadingIndicatorVisible)
-        {
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Anomaly</Strong></TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Average</Strong></TableHeaderCell>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    @for (int i = 0; i < Count; i++)
+        <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
+                    @if (ActiveView == RecordView.Yearly)
                     {
-                        <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Anomaly</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Average</Strong></TableHeaderCell>
                     }
-                </TableBody>
-            </Table>
-        }
-        else
-        {
-            <p>No yearly records found for the selected filters.</p>
-        }
-    }
-    else
-    {
-        @if (ClimateRecordsResult?.Records is { Count: > 0 })
-        {
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
+                    else
+                    {
                         <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</Strong></TableHeaderCell>
                         <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Value</Strong></TableHeaderCell>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    @{
-                        var rank = 1;
-                        foreach (var (record, rowStyle) in ClimateRecordsResult!.Records.Zip(ComputedRowStyles))
-                        {
-                            var currentRank = rank;
-                            <tr>
-                                <td class="text-center" style="@rowStyle">@currentRank</td>
+                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>@(ActiveView == RecordView.Monthly ? "Average" : "Value")</Strong></TableHeaderCell>
+                    }
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                @{
+                    var rank = ((CurrentPage - 1) * Count) + 1;
+                    foreach (var (record, rowStyle) in ClimateRecordsResult!.Records.Zip(ComputedRowStyles))
+                    {
+                        var currentRank = rank;
+                        <tr>
+                            <td class="text-center" style="@rowStyle">@currentRank</td>
+                            @if (ActiveView == RecordView.Yearly)
+                            {
+                                <td style="@rowStyle">@record.Year</td>
+                                <td class="text-end" style="@rowStyle">@(record.Anomaly.HasValue ? FormatAnomaly(record.Anomaly.Value, record.UnitOfMeasure) : "N/A")</td>
+                                <td class="text-end" style="@rowStyle">@(record.Average.HasValue ? FormatValue(record.Average.Value, record.UnitOfMeasure) : "N/A")</td>
+                            }
+                            else
+                            {
                                 <td style="@rowStyle">
                                     @if (record.Day.HasValue)
                                     {
@@ -189,40 +136,104 @@
                                 </td>
                                 <td style="@rowStyle">@record.Year</td>
                                 <td class="text-end" style="@rowStyle">@FormatValue(record.Value, record.UnitOfMeasure)</td>
-                            </tr>
-                            rank++;
-                        }
+                            }
+                        </tr>
+                        rank++;
                     }
-                </TableBody>
-            </Table>
-        }
-        else if (ClimateRecordsResult is null && LoadingIndicatorVisible)
-        {
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
+                }
+            </TableBody>
+        </Table>
+    }
+    else if (ClimateRecordsResult is null && LoadingIndicatorVisible)
+    {
+        <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
+                    @if (ActiveView == RecordView.Yearly)
+                    {
+                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Anomaly</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Average</Strong></TableHeaderCell>
+                    }
+                    else
+                    {
                         <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</Strong></TableHeaderCell>
                         <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Value</Strong></TableHeaderCell>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    @for (int i = 0; i < Count; i++)
-                    {
-                        <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>@(ActiveView == RecordView.Monthly ? "Average" : "Value")</Strong></TableHeaderCell>
                     }
-                </TableBody>
-            </Table>
-        }
-        else
-        {
-            <p>No records found for the selected filters.</p>
-        }
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                @for (int i = 0; i < Count; i++)
+                {
+                    <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                }
+            </TableBody>
+        </Table>
+    }
+    else
+    {
+        <p>No records found for the selected filters.</p>
     }
 </LoadingIndicator>
 
-@if (LoadingIndicatorVisible || ClimateRecordsResult?.Records is { Count: > 0 } || YearlyResult is { Count: > 0 })
+@if (ClimateRecordsResult?.Records is { Count: > 0 })
+{
+    <div class="d-flex align-items-center justify-content-between mt-3">
+        <div class="d-flex align-items-center gap-2">
+            <Pagination>
+                <PaginationItem Disabled="@(CurrentPage == 1)">
+                    <PaginationLink Clicked="@(() => OnPageChanged(CurrentPage - 1))">
+                        <span aria-hidden="true">«</span>
+                    </PaginationLink>
+                </PaginationItem>
+                @foreach (var pageNum in GetVisiblePages())
+                {
+                    @if (pageNum == -1)
+                    {
+                        <PaginationItem Disabled="true">
+                            <PaginationLink>
+                                <span>...</span>
+                            </PaginationLink>
+                        </PaginationItem>
+                    }
+                    else
+                    {
+                        var pageNumber = pageNum;
+                        <PaginationItem Active="@(CurrentPage == pageNumber)">
+                            <PaginationLink Clicked="@(() => OnPageChanged(pageNumber))">
+                                @pageNumber
+                            </PaginationLink>
+                        </PaginationItem>
+                    }
+                }
+                <PaginationItem Disabled="@(CurrentPage >= TotalPages)">
+                    <PaginationLink Clicked="@(() => OnPageChanged(CurrentPage + 1))">
+                        <span aria-hidden="true">»</span>
+                    </PaginationLink>
+                </PaginationItem>
+            </Pagination>
+            <div class="d-flex align-items-center gap-2">
+                <span style="white-space: nowrap;">Per page:</span>
+                <Select TValue="int"
+                        Value="@Count"
+                        ValueChanged="@OnCountChanged"
+                        Size="Size.Small"
+                        Style="width: 80px;">
+                    <SelectItem Value="10">10</SelectItem>
+                    <SelectItem Value="20">20</SelectItem>
+                    <SelectItem Value="50">50</SelectItem>
+                </Select>
+            </div>
+        </div>
+        <div>
+            <span class="text-muted">Showing @StartRecord-@EndRecord of @(ClimateRecordsResult.TotalCount) records</span>
+        </div>
+    </div>
+}
+
+@if (LoadingIndicatorVisible || ClimateRecordsResult?.Records is { Count: > 0 })
 {
     <div class="mt-2">
         <a class="subtle-link" @onclick="ShowColourExplainerInfo">Explain these colours<span class="info-icon"><i class="fas fa-circle-info"></i></span></a>
@@ -269,11 +280,12 @@
     int SelectedMonth { get; set; } = 0;
     bool Ascending { get; set; } = false;
     int Count { get; set; } = 10;
+    int CurrentPage { get; set; } = 1;
     RecordView ActiveView { get; set; } = RecordView.Daily;
 
-    List<YearlyValues>? YearlyResult { get; set; }
-    int? YearlyStartYear { get; set; }
-    int? YearlyEndYear { get; set; }
+    int TotalPages => ClimateRecordsResult?.TotalCount > 0 && Count > 0 ? (int)Math.Ceiling((double)ClimateRecordsResult.TotalCount / Count) : 1;
+    int StartRecord => ClimateRecordsResult?.Records?.Count > 0 ? ((CurrentPage - 1) * Count) + 1 : 0;
+    int EndRecord => ClimateRecordsResult?.Records?.Count > 0 ? Math.Min(StartRecord + ClimateRecordsResult.Records.Count - 1, ClimateRecordsResult.TotalCount) : 0;
 
     Guid? InternalLocationId { get; set; }
 
@@ -349,14 +361,12 @@
                 {
                     ClimateRecordsResult = new ClimateRecordsResponse();
                     ComputedRowStyles = [];
-                    YearlyResult = null;
                 }
                 else
                 {
                     var month = SelectedMonth != 0 ? (int?)SelectedMonth : null;
-                    ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, Count, month, ActiveView == RecordView.Monthly);
+                    ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, Count, month, ActiveView == RecordView.Monthly, CurrentPage);
                     ComputedRowStyles = ComputeRowStyles(ClimateRecordsResult);
-                    YearlyResult = null;
                 }
             }
         }
@@ -380,25 +390,46 @@
 
         if (summary?.AnomalyRecords is not { Count: > 0 })
         {
-            YearlyResult = summary is not null ? [] : null;
+            ClimateRecordsResult = summary is not null ? new ClimateRecordsResponse() : null;
             ComputedRowStyles = [];
-            ClimateRecordsResult = null;
             return;
         }
 
-        YearlyStartYear = (int?)summary.AnomalyRecords.Min(x => (int)x.Year);
-        YearlyEndYear = (int?)summary.AnomalyRecords.Max(x => (int)x.Year);
+        var startYear = (int?)summary.AnomalyRecords.Min(x => (int)x.Year);
+        var endYear = (int?)summary.AnomalyRecords.Max(x => (int)x.Year);
         var ordered = Ascending
-            ? summary.AnomalyRecords.OrderBy(x => x.Absolute).Take(Count)
-            : summary.AnomalyRecords.OrderByDescending(x => x.Absolute).Take(Count);
-        YearlyResult = ordered.ToList();
-        ComputedRowStyles = ComputeYearlyRowStyles(YearlyResult, YearlyStartYear, YearlyEndYear);
-        ClimateRecordsResult = null;
+            ? summary.AnomalyRecords.OrderBy(x => x.Absolute)
+            : summary.AnomalyRecords.OrderByDescending(x => x.Absolute);
+        var totalCount = ordered.Count();
+        var paginated = ordered.Skip((CurrentPage - 1) * Count).Take(Count);
+
+        var records = paginated.Select(x => new ClimateRecord
+        {
+            Year = x.Year,
+            Month = 1,
+            Value = x.Absolute,
+            Anomaly = x.Relative,
+            Average = x.Absolute,
+            DataType = SelectedDataType,
+            DataAdjustment = SelectedDataAdjustment,
+            DataResolution = DataResolution.Yearly,
+            UnitOfMeasure = SelectedUnitOfMeasure,
+        }).ToList();
+
+        ClimateRecordsResult = new ClimateRecordsResponse
+        {
+            Records = records,
+            StartYear = startYear,
+            EndYear = endYear,
+            TotalCount = totalCount,
+        };
+        ComputedRowStyles = ComputeRowStyles(ClimateRecordsResult);
     }
 
     async Task OnViewChanged(string name)
     {
         ActiveView = Enum.Parse<RecordView>(name);
+        CurrentPage = 1;
         await LoadRecords();
     }
 
@@ -406,31 +437,83 @@
     {
         SelectedDataType = value;
         UpdateAvailableAdjustments();
+        CurrentPage = 1;
         await LoadRecords();
     }
 
     async Task OnDataAdjustmentStringChanged(string value)
     {
         SelectedDataAdjustment = value == "none" ? null : Enum.Parse<DataAdjustment>(value);
+        CurrentPage = 1;
         await LoadRecords();
     }
 
     async Task OnMonthChanged(int value)
     {
         SelectedMonth = value;
+        CurrentPage = 1;
         await LoadRecords();
     }
 
     async Task OnAscendingChanged(bool value)
     {
         Ascending = value;
+        CurrentPage = 1;
         await LoadRecords();
     }
 
     async Task OnCountChanged(int value)
     {
         Count = value;
+        CurrentPage = 1;
         await LoadRecords();
+    }
+
+    async Task OnPageChanged(int page)
+    {
+        if (page < 1 || page > TotalPages) return;
+
+        CurrentPage = page;
+        await LoadRecords();
+    }
+
+    List<int> GetVisiblePages()
+    {
+        const int maxPages = 5;
+        var pages = new List<int>();
+
+        if (TotalPages <= maxPages)
+        {
+            for (int i = 1; i <= TotalPages; i++)
+            {
+                pages.Add(i);
+            }
+        }
+        else
+        {
+            if (CurrentPage <= 3)
+            {
+                for (int i = 1; i <= 4; i++) pages.Add(i);
+                pages.Add(-1);
+                pages.Add(TotalPages);
+            }
+            else if (CurrentPage >= TotalPages - 2)
+            {
+                pages.Add(1);
+                pages.Add(-1);
+                for (int i = TotalPages - 3; i <= TotalPages; i++) pages.Add(i);
+            }
+            else
+            {
+                pages.Add(1);
+                pages.Add(-1);
+                pages.Add(CurrentPage);
+                pages.Add(-1);
+                pages.Add(TotalPages);
+            }
+        }
+
+        return pages;
     }
 
     static List<string> ComputeRowStyles(ClimateRecordsResponse? response)
@@ -439,32 +522,6 @@
         if (response.StartYear is not int start || response.EndYear is not int end || end == start)
             return response.Records.Select(_ => string.Empty).ToList();
         return response.Records
-            .Select(record =>
-            {
-                double recentness = Math.Clamp((double)(record.Year - start) / (end - start), 0, 1);
-                int red, green, blue;
-                if (recentness >= 0.5)
-                {
-                    double t = (recentness - 0.5) * 2;
-                    red = 255;
-                    green = blue = (int)(255 - 180 * t);
-                }
-                else
-                {
-                    double t = recentness * 2;
-                    blue = 255;
-                    red = green = (int)(75 + 180 * t);
-                }
-                return string.Format(System.Globalization.CultureInfo.InvariantCulture, "background-color: rgb({0}, {1}, {2}, .1)", red, green, blue);
-            })
-            .ToList();
-    }
-
-    static List<string> ComputeYearlyRowStyles(List<YearlyValues> records, int? startYear, int? endYear)
-    {
-        if (startYear is not int start || endYear is not int end || end == start)
-            return records.Select(_ => string.Empty).ToList();
-        return records
             .Select(record =>
             {
                 double recentness = Math.Clamp((double)(record.Year - start) / (end - start), 0, 1);

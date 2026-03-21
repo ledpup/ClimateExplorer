@@ -12,4 +12,6 @@ public class ClimateRecord
     public int Month { get; set; }
     public int? Day { get; set; }
     public double Value { get; set; }
+    public double? Anomaly { get; set; }
+    public double? Average { get; set; }
 }
