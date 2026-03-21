@@ -136,17 +136,18 @@ public partial class ClimateStripe
 
     private string GetTextColour(double value, string lightTextColour, string darkTextColour)
     {
-        if (UnitOfMeasure == Enums.UnitOfMeasure.DegreesCelsius)
+        // WCAG 2.1 relative luminance — https://www.w3.org/TR/WCAG21/#dfn-relative-luminance
+        static double ToLinear(double c)
         {
-            return Math.Round(value, uomRounding) <= min / 2 ? lightTextColour : darkTextColour;
-        }
-        else if (UnitOfMeasure == Enums.UnitOfMeasure.Millimetres)
-        {
-            return value > 0 ? Math.Round(value, uomRounding) > max / 1.4 ? lightTextColour : darkTextColour
-                             : Math.Round(value, uomRounding) < min / 1.4 ? lightTextColour : darkTextColour;
+            c /= 255.0;
+            return c <= 0.04045 ? c / 12.92 : Math.Pow((c + 0.055) / 1.055, 2.4);
         }
 
-        throw new NotImplementedException();
+        static double Luminance(double r, double g, double b)
+            => (0.2126 * ToLinear(r)) + (0.7152 * ToLinear(g)) + (0.0722 * ToLinear(b));
+
+        var c = GetColourObject(value);
+        return Luminance(c.R, c.G, c.B) < 0.179 ? lightTextColour : darkTextColour;
     }
 
     private async Task FilterToYear(short year)
