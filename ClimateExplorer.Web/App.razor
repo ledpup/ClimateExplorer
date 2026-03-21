@@ -111,6 +111,30 @@
             anchorElement.remove();
         }
 
+        function registerChartHoverCursor(wrapperElement) {
+            const canvas = wrapperElement.querySelector('canvas');
+            if (!canvas) return;
+
+            if (canvas._chartHoverHandler) {
+                canvas.removeEventListener('mousemove', canvas._chartHoverHandler);
+                canvas.removeEventListener('mouseleave', canvas._chartLeaveHandler);
+            }
+
+            canvas._chartHoverHandler = function (event) {
+                const chartInstance = Chart.getChart(canvas);
+                if (!chartInstance) return;
+                const elements = chartInstance.getElementsAtEventForMode(event, 'nearest', { intersect: true }, false);
+                canvas.style.cursor = elements.length > 0 ? 'pointer' : 'default';
+            };
+
+            canvas._chartLeaveHandler = function () {
+                canvas.style.cursor = 'default';
+            };
+
+            canvas.addEventListener('mousemove', canvas._chartHoverHandler);
+            canvas.addEventListener('mouseleave', canvas._chartLeaveHandler);
+        }
+
         function toggleMapExpansion() {
             var mapElement = document.getElementById("mapContainer");
 
