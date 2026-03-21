@@ -5,6 +5,7 @@
 }
 
     .subtle-link:hover {
+        color: #0a58ca;
         text-decoration: underline;
     }
 

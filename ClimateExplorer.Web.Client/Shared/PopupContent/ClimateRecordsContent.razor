@@ -23,7 +23,7 @@
 @if (AvailableDataTypes.Count > 0)
 {
     <Fields>
-        <Field>
+        <Field ColumnSize="ColumnSize.IsAuto">
             <FieldLabel>Data type</FieldLabel>
             <FieldBody>
                 <Select TValue="DataType"
@@ -34,18 +34,6 @@
                     {
                         <SelectItem Value="@dt">@ChartSeriesDefinition.MapDataTypeToFriendlyName(dt)</SelectItem>
                     }
-                </Select>
-            </FieldBody>
-        </Field>
-        <Field>
-            <FieldLabel>Order</FieldLabel>
-            <FieldBody>
-                <Select TValue="bool"
-                        Value="@Ascending"
-                        ValueChanged="@OnAscendingChanged"
-                        Size="Size.Small">
-                    <SelectItem Value="false">Highest first</SelectItem>
-                    <SelectItem Value="true">Lowest first</SelectItem>
                 </Select>
             </FieldBody>
         </Field>
@@ -98,13 +86,13 @@
                     {
                         <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
                         <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Anomaly</Strong></TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Average</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>Average <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
                     }
                     else
                     {
                         <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</Strong></TableHeaderCell>
                         <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>@(ActiveView == RecordView.Monthly ? "Average" : "Value")</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>@(ActiveView == RecordView.Monthly ? "Average" : "Value") <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
                     }
                 </TableRow>
             </TableHeader>
@@ -154,13 +142,13 @@
                     {
                         <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
                         <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Anomaly</Strong></TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Average</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>Average <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
                     }
                     else
                     {
                         <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</Strong></TableHeaderCell>
                         <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>@(ActiveView == RecordView.Monthly ? "Average" : "Value")</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>@(ActiveView == RecordView.Monthly ? "Average" : "Value") <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
                     }
                 </TableRow>
             </TableHeader>
@@ -284,6 +272,7 @@
     int TotalPages => ClimateRecordsResult?.TotalCount > 0 && Count > 0 ? (int)Math.Ceiling((double)ClimateRecordsResult.TotalCount / Count) : 1;
     int StartRecord => ClimateRecordsResult?.Records?.Count > 0 ? ((CurrentPage - 1) * Count) + 1 : 0;
     int EndRecord => ClimateRecordsResult?.Records?.Count > 0 ? Math.Min(StartRecord + ClimateRecordsResult.Records.Count - 1, ClimateRecordsResult.TotalCount) : 0;
+    string SortIcon => Ascending ? "fa-sort-up" : "fa-sort-down";
 
     Guid? InternalLocationId { get; set; }
 
@@ -453,9 +442,9 @@
         await LoadRecords();
     }
 
-    async Task OnAscendingChanged(bool value)
+    async Task OnSortToggled()
     {
-        Ascending = value;
+        Ascending = !Ascending;
         CurrentPage = 1;
         await LoadRecords();
     }
