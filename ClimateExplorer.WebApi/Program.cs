@@ -233,7 +233,7 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null, bo
             location.WarmingAnomaly = AnomalyCalculator.CalculateAnomaly(series.DataPoints)?.AnomalyValue;
             foreach (var adj in new DataAdjustment?[] { DataAdjustment.Adjusted, DataAdjustment.Unadjusted, null })
             {
-                var tempMaxResponse = await GetClimateRecords(location.Id, DataType.TempMax, adj, false, 1);
+                var tempMaxResponse = await GetClimateRecords(location.Id, DataType.TempMax, adj, count: 1);
                 if (tempMaxResponse.Records.Any())
                 {
                     location.RecordHigh = tempMaxResponse.Records.First();
@@ -351,7 +351,8 @@ async Task<ClimateRecordsResponse> GetClimateRecords(
     DataType dataType = DataType.TempMax,
     DataAdjustment? dataAdjustment = null,
     bool ascending = false,
-    int count = 10,
+    int? count = null,
+    int? page = null,
     int? month = null,
     bool monthly = false)
 {
@@ -436,10 +437,24 @@ async Task<ClimateRecordsResponse> GetClimateRecords(
     }
 
     var ordered = ascending
-        ? records.OrderBy(x => x.Value).Take(count)
-        : records.OrderByDescending(x => x.Value).Take(count);
+        ? records.OrderBy(x => x.Value)
+        : records.OrderByDescending(x => x.Value);
 
-    var climateRecords = ordered.Select(record =>
+    var totalCount = ordered.Count();
+
+    // Apply pagination if count and/or page is specified
+    IEnumerable<BinnedRecord> paginated = ordered;
+    if (count.HasValue)
+    {
+        if (page.HasValue && page.Value > 1)
+        {
+            paginated = paginated.Skip((page.Value - 1) * count.Value);
+        }
+
+        paginated = paginated.Take(count.Value);
+    }
+
+    var climateRecords = paginated.Select(record =>
     {
         var cr = new ClimateRecord
         {
@@ -472,6 +487,7 @@ async Task<ClimateRecordsResponse> GetClimateRecords(
         Records = climateRecords,
         StartYear = startYear,
         EndYear = endYear,
+        TotalCount = totalCount,
     };
     return response;
 }
