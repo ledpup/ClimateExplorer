@@ -277,7 +277,7 @@
     List<MeasurementDefinitionViewModel> LocationMeasurements { get; set; } = [];
     IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
-    DataType SelectedDataType { get; set; } = DataType.TempMean;
+    DataType SelectedDataType { get; set; } = DataType.TempMax;
     DataAdjustment? SelectedDataAdjustment { get; set; } = DataAdjustment.Adjusted;
     UnitOfMeasure SelectedUnitOfMeasure { get; set; } = UnitOfMeasure.DegreesCelsius;
     int SelectedMonth { get; set; } = 0;
@@ -319,8 +319,8 @@
             .Distinct()
             .ToList();
 
-        if (AvailableDataTypes.Contains(DataType.TempMean))
-            SelectedDataType = DataType.TempMean;
+        if (AvailableDataTypes.Contains(DataType.TempMax))
+            SelectedDataType = DataType.TempMax;
         else if (AvailableDataTypes.Any())
             SelectedDataType = AvailableDataTypes.First();
 
