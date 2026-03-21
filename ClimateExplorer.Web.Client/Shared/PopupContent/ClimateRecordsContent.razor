@@ -11,6 +11,7 @@
 @using ClimateExplorer.Web.Client.Shared
 @using ClimateExplorer.WebApiClient.Services
 @using static ClimateExplorer.Core.Enums
+@using Microsoft.Extensions.Logging
 
 <Tabs SelectedTab="@ActiveView.ToString()" SelectedTabChanged="@OnViewChanged" Class="mb-4">
     <Items>
@@ -221,8 +222,12 @@
 
 @if (LoadingIndicatorVisible || ClimateRecordsResult?.Records is { Count: > 0 })
 {
-    <div class="mt-2">
+    <div class="d-flex align-items-center justify-content-between mt-2">
         <a class="subtle-link" @onclick="ShowColourExplainerInfo">Explain these colours<span class="info-icon"><i class="fas fa-circle-info"></i></span></a>
+        @if (ClimateRecordsResult?.Records is { Count: > 0 })
+        {
+            <a class="subtle-link" @onclick="DownloadAllRecords"><i class="fas fa-download"></i> Download</a>
+        }
     </div>
 }
 
@@ -241,6 +246,18 @@
 
     [Inject]
     public IDataService? DataService { get; set; }
+
+    [Inject]
+    public IExporter? Exporter { get; set; }
+
+    [Inject]
+    public IJSRuntime? JsRuntime { get; set; }
+
+    [Inject]
+    public NavigationManager? NavManager { get; set; }
+
+    [Inject]
+    public ILogger<ClimateRecordsContent>? Logger { get; set; }
 
     [Parameter]
     public Location? Location { get; set; }
@@ -542,4 +559,72 @@
     }
 
     static string DataAdjustmentToString(DataAdjustment? da) => da.HasValue ? da.Value.ToString() : "none";
+
+    async Task DownloadAllRecords()
+    {
+        if (Location is null) return;
+
+        ClimateRecord[] records;
+
+        if (ActiveView == RecordView.Yearly)
+        {
+            if (DataSetDefinitions is null) return;
+
+            var dataSubstitutes = new List<DataSubstitute>
+            {
+                new() { DataType = SelectedDataType, DataAdjustment = SelectedDataAdjustment },
+            };
+
+            var fn = SelectedDataType == DataType.Precipitation ? ContainerAggregationFunctions.Sum : ContainerAggregationFunctions.Mean;
+            var summary = await ClimateDataHelper.CalculateAnomaly(DataService!, DataSetDefinitions, Location, dataSubstitutes, fn);
+
+            if (summary?.AnomalyRecords is not { Count: > 0 })
+            {
+                records = [];
+            }
+            else
+            {
+                var ordered = Ascending
+                    ? summary.AnomalyRecords.OrderBy(x => x.Absolute)
+                    : summary.AnomalyRecords.OrderByDescending(x => x.Absolute);
+
+                records = ordered.Select(x => new ClimateRecord
+                {
+                    Year = x.Year,
+                    Month = 1,
+                    Value = x.Absolute,
+                    Anomaly = x.Relative,
+                    Average = x.Absolute,
+                    DataType = SelectedDataType,
+                    DataAdjustment = SelectedDataAdjustment,
+                    DataResolution = DataResolution.Yearly,
+                    UnitOfMeasure = SelectedUnitOfMeasure,
+                }).ToArray();
+            }
+        }
+        else
+        {
+            var hasDailyData = LocationMeasurements.Any(x => x.DataType == SelectedDataType && x.DataResolution == DataResolution.Daily);
+            if (ActiveView == RecordView.Daily && !hasDailyData)
+            {
+                records = [];
+            }
+            else
+            {
+                var monthFilter = SelectedMonth != 0 ? (int?)SelectedMonth : null;
+                var allData = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, null, null, monthFilter, ActiveView == RecordView.Monthly);
+                records = [.. allData.Records];
+            }
+        }
+
+        if (records.Length == 0) return;
+
+        var fileStream = Exporter!.ExportClimateRecords(Logger!, Location, records, NavManager!.Uri);
+        var adj = SelectedDataAdjustment.HasValue ? $"-{SelectedDataAdjustment.Value}" : string.Empty;
+        var monthLabel = SelectedMonth != 0 ? $"-{CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(SelectedMonth)}" : string.Empty;
+        var fileName = $"{Location.Name}-{SelectedDataType}{adj}-{ActiveView.ToString().ToLowerInvariant()}{monthLabel}-records.csv";
+
+        using var streamRef = new DotNetStreamReference(stream: fileStream);
+        await JsRuntime!.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+    }
 }

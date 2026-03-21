@@ -1,8 +1,10 @@
 ﻿namespace ClimateExplorer.Web.Client.Services;
 
+using System.Globalization;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.UiModel;
+using static ClimateExplorer.Core.Enums;
 
 public class Exporter : IExporter
 {
@@ -54,6 +56,51 @@ public class Exporter : IExporter
 
         return fileStream;
     }
+
+    public Stream ExportClimateRecords(ILogger logger, Location location, ClimateRecord[] records, string sourceUri)
+    {
+        logger.LogInformation("ExportClimateRecords for {Location} with {Count} records", location.FullTitle, records.Length);
+
+        var data = new List<string>
+        {
+            $"Exported from, \"{sourceUri}\"",
+            $"{location.FullTitle},{location.Coordinates.ToFriendlyString(true)}",
+            string.Empty,
+        };
+
+        if (records.Length > 0)
+        {
+            var resolution = records[0].DataResolution;
+            var unitLabel = UnitOfMeasureLabelShort(records[0].UnitOfMeasure);
+
+            data.Add(resolution switch
+            {
+                DataResolution.Yearly => $"Rank,Year,Anomaly ({unitLabel}),Average ({unitLabel})",
+                DataResolution.Monthly => $"Rank,Month,Year,Average ({unitLabel})",
+                _ => $"Rank,Day Month,Year,Value ({unitLabel})",
+            });
+
+            int rank = 1;
+            foreach (var record in records)
+            {
+                data.Add(resolution switch
+                {
+                    DataResolution.Yearly =>
+                        $"{rank},{record.Year},{(record.Anomaly.HasValue ? FormatCsvValue(record.Anomaly.Value) : string.Empty)},{(record.Average.HasValue ? FormatCsvValue(record.Average.Value) : string.Empty)}",
+                    DataResolution.Monthly =>
+                        $"{rank},{CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(record.Month)},{record.Year},{FormatCsvValue(record.Value)}",
+                    _ =>
+                        $"{rank},{(record.Day.HasValue ? $"{record.Day} {CultureInfo.InvariantCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month)}" : CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(record.Month))},{record.Year},{FormatCsvValue(record.Value)}",
+                });
+                rank++;
+            }
+        }
+
+        var bytes = new byte[] { 0xEF, 0xBB, 0xBF }.Concat(data.SelectMany(s => System.Text.Encoding.UTF8.GetBytes(s + Environment.NewLine))).ToArray();
+        return new MemoryStream(bytes);
+    }
+
+    private static string FormatCsvValue(double value) => value.ToString("0.0", CultureInfo.InvariantCulture);
 
     private string BuildColumnHeader(GeographicalEntity[] relevantLocations, ChartSeriesDefinition csd)
     {
