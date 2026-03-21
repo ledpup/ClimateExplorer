@@ -759,7 +759,8 @@ public partial class ChartView
             {
                 Point = new
                 {
-                    HitRadius = 20,
+                    HitRadius = 10,
+                    HoverRadius = 6,
                 },
             },
             Plugins = new
