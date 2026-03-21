@@ -1,11 +1,11 @@
 .subtle-link {
     color: inherit;
     text-decoration: none;
-    cursor: default;
+    cursor: pointer;
 }
 
     .subtle-link:hover {
-        cursor: pointer;
+        text-decoration: underline;
     }
 
 .info-icon {

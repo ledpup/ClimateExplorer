@@ -1,4 +1,4 @@
-﻿@using Blazorise
+@using Blazorise
 @using Blazorise.LoadingIndicator
 @using ClimateExplorer.Core
 @using ClimateExplorer.Core.DataPreparation
@@ -182,7 +182,7 @@
 {
     <div class="d-flex align-items-center justify-content-between mt-3">
         <div class="d-flex align-items-center gap-2">
-            <Pagination>
+            <Pagination Class="mb-0">
                 <PaginationItem Disabled="@(CurrentPage == 1)">
                     <PaginationLink Clicked="@(() => OnPageChanged(CurrentPage - 1))">
                         <span aria-hidden="true">«</span>
@@ -214,8 +214,8 @@
                     </PaginationLink>
                 </PaginationItem>
             </Pagination>
-            <div class="d-flex align-items-center gap-2">
-                <span style="white-space: nowrap;">Per page:</span>
+            <div class="d-flex align-items-center gap-1">
+                <span>Per page:</span>
                 <Select TValue="int"
                         Value="@Count"
                         ValueChanged="@OnCountChanged"
@@ -227,9 +227,7 @@
                 </Select>
             </div>
         </div>
-        <div>
-            <span class="text-muted">Showing @StartRecord-@EndRecord of @(ClimateRecordsResult.TotalCount) records</span>
-        </div>
+        <span class="text-muted">Showing @StartRecord-@EndRecord of @(ClimateRecordsResult.TotalCount) records</span>
     </div>
 }
 
