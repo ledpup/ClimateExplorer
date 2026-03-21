@@ -17,15 +17,20 @@
         display: none;
         background-color: inherit;
         text-align: center;
-        padding-top: 10px;
         position: absolute;
-        bottom: calc(100% + 10px);
+        bottom: calc(100% + 14px);
         left: 50%;
         transform: translateX(-50%);
         min-width: 70px;
         height: 80px;
         z-index: 1000;
         pointer-events: none;
+        border-radius: 8px;
+        box-shadow: rgb(0 0 0 / 20%) 0px 0px 6px;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 2px;
     }
 
         .single-stripe .label .year {
@@ -42,7 +47,7 @@
         }
 
     .single-stripe:hover .label {
-        display: block;
+        display: flex;
     }
 
     .single-stripe:hover::after {
@@ -51,7 +56,7 @@
         bottom: 100%;
         left: 0;
         right: 0;
-        height: 10px;
+        height: 14px;
         background-color: inherit;
         z-index: 999;
     }
