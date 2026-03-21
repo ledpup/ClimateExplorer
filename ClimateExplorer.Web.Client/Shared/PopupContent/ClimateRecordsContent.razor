@@ -365,7 +365,7 @@
                 else
                 {
                     var month = SelectedMonth != 0 ? (int?)SelectedMonth : null;
-                    ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, Count, month, ActiveView == RecordView.Monthly, CurrentPage);
+                    ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, Count, CurrentPage, month, ActiveView == RecordView.Monthly);
                     ComputedRowStyles = ComputeRowStyles(ClimateRecordsResult);
                 }
             }
