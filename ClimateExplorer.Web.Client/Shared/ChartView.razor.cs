@@ -759,8 +759,8 @@ public partial class ChartView
             {
                 Point = new
                 {
-                    HitRadius = 10,
-                    HoverRadius = 6,
+                    HitRadius = IsMobileDevice!.Value ? 5 : 10,
+                    HoverRadius = IsMobileDevice!.Value ? 3 : 6,
                 },
             },
             Plugins = new
