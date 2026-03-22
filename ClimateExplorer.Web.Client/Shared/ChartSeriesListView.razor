@@ -11,7 +11,7 @@ else
 {
     @foreach (var cs in ChartSeriesListInternal)
     {
-        <ChartSeriesConfig 
+        <ChartSeriesView 
             @key="@cs.Id"
             ChartSeries="@cs" 
             OnSeriesChanged="@OnSeriesChangedInternal"
