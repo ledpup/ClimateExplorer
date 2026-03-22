@@ -6,7 +6,7 @@
 @using ClimateExplorer.Core.DataPreparation
 @using static ClimateExplorer.Core.Enums;
 
-<div class="chart-series-config">
+<div class="chart-series-config @(ChartSeries!.IsExpanded ? "is-expanded" : "")">
     <div class="title-bar" @onclick="ExpandCollapse" style="@StyleForTitleBar">
         <div class="main">
             <div class="title">@ChartSeries!.GetFriendlyTitleShort()</div>
@@ -16,7 +16,7 @@
             <i class="fas fa-trash fa-lg"></i>
         </div>
         <div class="expander">
-            <span class="oi oi-chevron-bottom" aria-hidden="true"></span>
+            <span class="@(ChartSeries!.IsExpanded ? "oi oi-chevron-top" : "oi oi-chevron-bottom")" aria-hidden="true"></span>
         </div>
     </div>
 
@@ -24,165 +24,166 @@
     {
         <div class="chart-series-config-content" style="@StyleForTitleBar">
             <div class="edit-form">
-                <table>
-                    @if (ChartSeries.Year.HasValue)
-                    {
-                        <tr>
-                            <td>Filter to year</td>
-                            <td>@ChartSeries.Year</td>
-                        </tr>
-                    }
-                    <tr>
-                        <td>Aggregation</td>
-                        <td>
-                            <Select TValue="SeriesAggregationOptions" 
-                                    Size="Size.Small"
-                                    Value="@ChartSeries.Aggregation"
-                                    ValueChanged="@OnAggregationChanged"
-                                    Disabled="@ShouldDisableAggregationOptions(ChartSeries)">
-                                <SelectItem Value="SeriesAggregationOptions.Mean">Mean</SelectItem>
-                                <SelectItem Value="SeriesAggregationOptions.Minimum">Minimum</SelectItem>
-                                <SelectItem Value="SeriesAggregationOptions.Maximum">Maximum</SelectItem>
-                                <SelectItem Value="SeriesAggregationOptions.Median">Median</SelectItem>
-                                <SelectItem Value="SeriesAggregationOptions.Sum">Sum</SelectItem>
-                            </Select>
-                        </td>
-                    </tr>
-
-                    @if (ChartSeries.Smoothing != SeriesSmoothingOptions.None && !ChartSeries.BinGranularity.IsLinear())
-                    {
-                    <tr>
-                        <td colspan="2" class="info-message">Note that smoothing is not currently being applied because the x-axis is not linear.</td>
-                    </tr>
-                    }
-                    <tr>
-                        <td>Secondary calcuation</td>
-                        <td>
-                            <Select TValue="SecondaryCalculationOptions"
-                                    Size="Size.Small"
-                                    Value="@ChartSeries.SecondaryCalculation"
-                                    ValueChanged="@OnSecondaryCalculationChanged">
-                                <SelectItem Value="SecondaryCalculationOptions.None">None</SelectItem>
-                                <SelectItem Value="SecondaryCalculationOptions.AnnualChange">Annual change</SelectItem>
-                            </Select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Smoothing</td>
-                        <td>
-                            <Select TValue="SeriesSmoothingOptions" 
-                                    Size="Size.Small"
-                                    Value="@ChartSeries.Smoothing"
-                                    ValueChanged="@OnSmoothingChanged">
-                                <SelectItem Value="SeriesSmoothingOptions.None">None</SelectItem>
-                                <SelectItem Value="SeriesSmoothingOptions.MovingAverage">Moving average</SelectItem>
-                            </Select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Smoothing window</td>
-                        <td>
-                            <Select TValue="int"
-                                    Size="Size.Small"
-                                    Value="@ChartSeries.SmoothingWindow"
-                                    ValueChanged="@OnSmoothingWindowChanged"
-                                    Disabled="@ShouldDisableSmoothingWindow(ChartSeries)">
-                                <SelectItem Value="3">3</SelectItem>
-                                <SelectItem Value="5">5</SelectItem>
-                                <SelectItem Value="7">7</SelectItem>
-                                <SelectItem Value="10">10</SelectItem>
-                                <SelectItem Value="12">12</SelectItem>
-                                <SelectItem Value="15">15</SelectItem>
-                                <SelectItem Value="20">20</SelectItem>
-                                <SelectItem Value="30">30</SelectItem>
-                            </Select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Display</td>
-                        <td>
-                            <Select TValue="SeriesValueOptions" 
-                                    Size="Size.Small"
-                                    Value="@ChartSeries.Value"
-                                    ValueChanged="@OnValueChanged"
-                                    Disabled="@ShouldDisableDisplay(ChartSeries)">
-                                <SelectItem Value="SeriesValueOptions.Value">Value</SelectItem>
-                                <SelectItem Value="SeriesValueOptions.Anomaly">Anomaly relative to mean</SelectItem>
-                            </Select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Transformation</td>
-                        <td>
-                            <Select TValue="SeriesTransformations" 
-                                    Size="Size.Small"
-                                    Value="@ChartSeries.SeriesTransformation"
-                                    ValueChanged="@OnTransformationChanged"
-                                    Disabled="@ShouldDisableTransformation(ChartSeries)">
-                                <SelectItem Value="SeriesTransformations.Identity">Identity</SelectItem>
-                                <SelectItem Value="SeriesTransformations.Negate">Negate</SelectItem>
-                                <SelectItem Value="SeriesTransformations.DayOfYearIfFrost">Day of year if frost</SelectItem>
-                                <SelectItem Value="SeriesTransformations.Custom">Custom</SelectItem>
-                            </Select>
-                        </td>
-                    </tr>
-                    @if (ChartSeries.SeriesTransformation == SeriesTransformations.Custom)
-                    {
-                        <tr>
-                            <td>Custom expression</td>
-                            <td>
-                                <Validation @ref="validation" Validator="ValidateCustomTransformation">
-                                    <TextInput Value="@ChartSeries.CustomTransformation"
-                                               ValueChanged="@OnCustomTransformationChanged"
-                                               Placeholder="e.g. x == 0 or x >= 1 AND x < 10"
-                                               Immediate="false">
-                                        <Feedback>
-                                            <ValidationError>Expected input like: 'x &gt; 25' or 'x &gt;= 1 AND x &lt; 10'</ValidationError>
-                                        </Feedback>
-                                    </TextInput>
-                                </Validation>
-                            </td>
-                        </tr>
-                    }
-                    <tr>
-                        <td>Display style</td>
-                        <td>
-                            <Select TValue="SeriesDisplayStyle" 
-                                    Size="Size.Small"
-                                    Value="@ChartSeries.DisplayStyle"
-                                    ValueChanged="@OnDisplayStyleChanged">
-                                <SelectItem Value="SeriesDisplayStyle.Line">Line</SelectItem>
-                                <SelectItem Value="SeriesDisplayStyle.Bar">Bar</SelectItem>
-                            </Select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Colour</td>
-                        <td>
-                            <Select TValue="Colours"
-                                    Size="Size.Small"
-                                    Value="@ChartSeries.RequestedColour"
-                                    ValueChanged="@OnColourChanged">
-                                    @foreach (var colour in (Colours[])Enum.GetValues(typeof(Colours)))
-                                    {
-                                        <SelectItem Value="@colour">@GetColourName(colour)</SelectItem>
-                                    }
-                            </Select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Show trendline</td>
-                        <td>
-                            <Check TValue="bool" Value="@ChartSeries.ShowTrendline" ValueChanged="@OnShowTrendlineChanged"></Check>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Lock?</td>
-                        <td>
-                            <Check TValue="bool" Value="@ChartSeries.IsLocked" ValueChanged="@OnIsLockedChanged"></Check>
-                        </td>
-                    </tr>
-                </table>
+                <div class="edit-form-columns">
+                    <div class="edit-col">
+                        @if (ChartSeries.Year.HasValue)
+                        {
+                            <div class="form-row">
+                                <span class="form-label">Filter to year</span>
+                                <span class="form-control-wrap">@ChartSeries.Year</span>
+                            </div>
+                        }
+                        <div class="form-row">
+                            <span class="form-label">Aggregation</span>
+                            <span class="form-control-wrap">
+                                <Select TValue="SeriesAggregationOptions"
+                                        Size="Size.Small"
+                                        Value="@ChartSeries.Aggregation"
+                                        ValueChanged="@OnAggregationChanged"
+                                        Disabled="@ShouldDisableAggregationOptions(ChartSeries)">
+                                    <SelectItem Value="SeriesAggregationOptions.Mean">Mean</SelectItem>
+                                    <SelectItem Value="SeriesAggregationOptions.Minimum">Minimum</SelectItem>
+                                    <SelectItem Value="SeriesAggregationOptions.Maximum">Maximum</SelectItem>
+                                    <SelectItem Value="SeriesAggregationOptions.Median">Median</SelectItem>
+                                    <SelectItem Value="SeriesAggregationOptions.Sum">Sum</SelectItem>
+                                </Select>
+                            </span>
+                        </div>
+                        @if (ChartSeries.Smoothing != SeriesSmoothingOptions.None && !ChartSeries.BinGranularity.IsLinear())
+                        {
+                            <div class="form-row-info info-message">Note that smoothing is not currently being applied because the x-axis is not linear.</div>
+                        }
+                        <div class="form-row">
+                            <span class="form-label">Secondary calculation</span>
+                            <span class="form-control-wrap">
+                                <Select TValue="SecondaryCalculationOptions"
+                                        Size="Size.Small"
+                                        Value="@ChartSeries.SecondaryCalculation"
+                                        ValueChanged="@OnSecondaryCalculationChanged">
+                                    <SelectItem Value="SecondaryCalculationOptions.None">None</SelectItem>
+                                    <SelectItem Value="SecondaryCalculationOptions.AnnualChange">Annual change</SelectItem>
+                                </Select>
+                            </span>
+                        </div>
+                        <div class="form-row">
+                            <span class="form-label">Smoothing</span>
+                            <span class="form-control-wrap">
+                                <Select TValue="SeriesSmoothingOptions"
+                                        Size="Size.Small"
+                                        Value="@ChartSeries.Smoothing"
+                                        ValueChanged="@OnSmoothingChanged">
+                                    <SelectItem Value="SeriesSmoothingOptions.None">None</SelectItem>
+                                    <SelectItem Value="SeriesSmoothingOptions.MovingAverage">Moving average</SelectItem>
+                                </Select>
+                            </span>
+                        </div>
+                        <div class="form-row">
+                            <span class="form-label">Smoothing window</span>
+                            <span class="form-control-wrap">
+                                <Select TValue="int"
+                                        Size="Size.Small"
+                                        Value="@ChartSeries.SmoothingWindow"
+                                        ValueChanged="@OnSmoothingWindowChanged"
+                                        Disabled="@ShouldDisableSmoothingWindow(ChartSeries)">
+                                    <SelectItem Value="3">3</SelectItem>
+                                    <SelectItem Value="5">5</SelectItem>
+                                    <SelectItem Value="7">7</SelectItem>
+                                    <SelectItem Value="10">10</SelectItem>
+                                    <SelectItem Value="12">12</SelectItem>
+                                    <SelectItem Value="15">15</SelectItem>
+                                    <SelectItem Value="20">20</SelectItem>
+                                    <SelectItem Value="30">30</SelectItem>
+                                </Select>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="edit-col">
+                        <div class="form-row">
+                            <span class="form-label">Display</span>
+                            <span class="form-control-wrap">
+                                <Select TValue="SeriesValueOptions"
+                                        Size="Size.Small"
+                                        Value="@ChartSeries.Value"
+                                        ValueChanged="@OnValueChanged"
+                                        Disabled="@ShouldDisableDisplay(ChartSeries)">
+                                    <SelectItem Value="SeriesValueOptions.Value">Value</SelectItem>
+                                    <SelectItem Value="SeriesValueOptions.Anomaly">Anomaly relative to mean</SelectItem>
+                                </Select>
+                            </span>
+                        </div>
+                        <div class="form-row">
+                            <span class="form-label">Transformation</span>
+                            <span class="form-control-wrap">
+                                <Select TValue="SeriesTransformations"
+                                        Size="Size.Small"
+                                        Value="@ChartSeries.SeriesTransformation"
+                                        ValueChanged="@OnTransformationChanged"
+                                        Disabled="@ShouldDisableTransformation(ChartSeries)">
+                                    <SelectItem Value="SeriesTransformations.Identity">Identity</SelectItem>
+                                    <SelectItem Value="SeriesTransformations.Negate">Negate</SelectItem>
+                                    <SelectItem Value="SeriesTransformations.DayOfYearIfFrost">Day of year if frost</SelectItem>
+                                    <SelectItem Value="SeriesTransformations.Custom">Custom</SelectItem>
+                                </Select>
+                            </span>
+                        </div>
+                        @if (ChartSeries.SeriesTransformation == SeriesTransformations.Custom)
+                        {
+                            <div class="form-row">
+                                <span class="form-label">Custom expression</span>
+                                <span class="form-control-wrap">
+                                    <Validation @ref="validation" Validator="ValidateCustomTransformation">
+                                        <TextInput Value="@ChartSeries.CustomTransformation"
+                                                   ValueChanged="@OnCustomTransformationChanged"
+                                                   Placeholder="e.g. x == 0 or x >= 1 AND x < 10"
+                                                   Immediate="false">
+                                            <Feedback>
+                                                <ValidationError>Expected input like: 'x &gt; 25' or 'x &gt;= 1 AND x &lt; 10'</ValidationError>
+                                            </Feedback>
+                                        </TextInput>
+                                    </Validation>
+                                </span>
+                            </div>
+                        }
+                        <div class="form-row">
+                            <span class="form-label">Display style</span>
+                            <span class="form-control-wrap">
+                                <Select TValue="SeriesDisplayStyle"
+                                        Size="Size.Small"
+                                        Value="@ChartSeries.DisplayStyle"
+                                        ValueChanged="@OnDisplayStyleChanged">
+                                    <SelectItem Value="SeriesDisplayStyle.Line">Line</SelectItem>
+                                    <SelectItem Value="SeriesDisplayStyle.Bar">Bar</SelectItem>
+                                </Select>
+                            </span>
+                        </div>
+                        <div class="form-row">
+                            <span class="form-label">Colour</span>
+                            <span class="form-control-wrap">
+                                <Select TValue="Colours"
+                                        Size="Size.Small"
+                                        Value="@ChartSeries.RequestedColour"
+                                        ValueChanged="@OnColourChanged">
+                                        @foreach (var colour in (Colours[])Enum.GetValues(typeof(Colours)))
+                                        {
+                                            <SelectItem Value="@colour">@GetColourName(colour)</SelectItem>
+                                        }
+                                </Select>
+                            </span>
+                        </div>
+                        <div class="form-row">
+                            <span class="form-label">Show trendline</span>
+                            <span class="form-control-wrap">
+                                <Check TValue="bool" Value="@ChartSeries.ShowTrendline" ValueChanged="@OnShowTrendlineChanged"></Check>
+                            </span>
+                        </div>
+                        <div class="form-row">
+                            <span class="form-label">Lock?</span>
+                            <span class="form-control-wrap">
+                                <Check TValue="bool" Value="@ChartSeries.IsLocked" ValueChanged="@OnIsLockedChanged"></Check>
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="series-controls">
