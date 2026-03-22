@@ -133,6 +133,10 @@ public partial class ChartView
     /// </summary>
     private ChartType InternalChartType { get; set; }
 
+    private List<AxisInfo> CurrentAxes { get; set; } = [];
+
+    private Dictionary<string, bool> AxesScaleToZero { get; set; } = [];
+
     public async Task OnAddDataSet(DataSetLibraryEntry dle, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions)
     {
         Logger!.LogInformation("Adding dle " + dle.Name);
@@ -822,6 +826,12 @@ public partial class ChartView
             url += $"&groupingThreshold={groupingThresholdText}";
         }
 
+        var scaledAxes = AxesScaleToZero.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToList();
+        if (scaledAxes.Count > 0)
+        {
+            url += $"&axisScaleToZero={string.Join(",", scaledAxes)}";
+        }
+
         return url;
     }
 
@@ -846,6 +856,19 @@ public partial class ChartView
         SelectedEndYear = queryDictionary["endYear"];
         SelectedGroupingDays = queryDictionary["groupingDays"] == null ? (short)14 : short.Parse(queryDictionary["groupingDays"]!);
         GroupingThresholdText = string.IsNullOrWhiteSpace(queryDictionary["groupingThreshold"]) ? "70" : queryDictionary["groupingThreshold"];
+
+        var axisScaleToZeroParam = queryDictionary["axisScaleToZero"];
+        AxesScaleToZero = [];
+        if (!string.IsNullOrWhiteSpace(axisScaleToZeroParam))
+        {
+            foreach (var axisId in axisScaleToZeroParam.Split(','))
+            {
+                if (!string.IsNullOrWhiteSpace(axisId))
+                {
+                    AxesScaleToZero[axisId.Trim()] = true;
+                }
+            }
+        }
 
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier))
         {
@@ -1308,10 +1331,59 @@ public partial class ChartView
             },
         };
 
+        CreateYAxes(scales);
+
+        return scales;
+    }
+
+    private void CreateYAxes(dynamic scales)
+    {
+        var (axisMinMax, axisHasBarSeries) = CreateAxesMinMax();
+
+        var axes = new List<string>();
+        var newCurrentAxes = new List<AxisInfo>();
+        foreach (var s in ChartSeriesList!.Where(x => x.DataAvailable))
+        {
+            var uom = s.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
+            var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation);
+            if (!axes.Contains(axisId))
+            {
+                axisMinMax.TryGetValue(axisId, out var globalMinMax);
+                var axisRange = globalMinMax.Max - globalMinMax.Min;
+                var axisPadding = !axisHasBarSeries.Contains(axisId) ? axisRange * 0.02 : 0.0;
+                var scaleToZero = AxesScaleToZero.TryGetValue(axisId, out var s2z) && s2z;
+                var label = UnitOfMeasureLabel(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation, s.Value);
+                newCurrentAxes.Add(new AxisInfo(axisId, label));
+                ((IDictionary<string, object>)scales).Add(
+                    axisId,
+                    new
+                    {
+                        Display = true,
+                        Axis = "y",
+                        Position = axes.Count % 2 == 0 ? "left" : "right",
+                        Grid = new { DrawOnChartArea = axes.Count == 0 },
+                        Title = new
+                        {
+                            Text = label,
+                            Display = true,
+                            Color = s.Colour,
+                        },
+                        Min = scaleToZero && globalMinMax.Min > 0 ? 0.0 : globalMinMax.Min == 0 ? globalMinMax.Min : globalMinMax.Min - axisPadding,
+                        Max = globalMinMax.Max == 0 ? globalMinMax.Max : globalMinMax.Max + axisPadding,
+                    });
+                axes.Add(axisId);
+            }
+        }
+
+        CurrentAxes = newCurrentAxes;
+    }
+
+    private (Dictionary<string, (double Min, double Max)> AxisMinMax, HashSet<string> AxisHasBarSeries) CreateAxesMinMax()
+    {
         // Build a global min/max per axis from the full source datasets, before any display range filtering.
         // This ensures the y-axis range reflects the complete dataset even when ChartAllData is false.
-        var axisMinMax = new Dictionary<string, (double Min, double Max)>();
-        var axisHasBarSeries = new HashSet<string>();
+        Dictionary<string, (double Min, double Max)> axisMinMax = [];
+        HashSet<string> axisHasBarSeries = [];
         foreach (var swd in ChartSeriesWithData!)
         {
             var cs = swd.ChartSeries!;
@@ -1347,38 +1419,7 @@ public partial class ChartView
             }
         }
 
-        var axes = new List<string>();
-        foreach (var s in ChartSeriesList!.Where(x => x.DataAvailable))
-        {
-            var uom = s.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
-            var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation);
-            if (!axes.Contains(axisId))
-            {
-                axisMinMax.TryGetValue(axisId, out var globalMinMax);
-                var axisRange = globalMinMax.Max - globalMinMax.Min;
-                var axisPadding = !axisHasBarSeries.Contains(axisId) ? axisRange * 0.02 : 0.0;
-                ((IDictionary<string, object>)scales).Add(
-                    axisId,
-                    new
-                    {
-                        Display = true,
-                        Axis = "y",
-                        Position = axes.Count % 2 == 0 ? "left" : "right",
-                        Grid = new { DrawOnChartArea = axes.Count == 0 },
-                        Title = new
-                        {
-                            Text = UnitOfMeasureLabel(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation, s.Value),
-                            Display = true,
-                            Color = s.Colour,
-                        },
-                        Min = globalMinMax.Min == 0 ? globalMinMax.Min : globalMinMax.Min - axisPadding,
-                        Max = globalMinMax.Max == 0 ? globalMinMax.Max : globalMinMax.Max + axisPadding,
-                    });
-                axes.Add(axisId);
-            }
-        }
-
-        return scales;
+        return (axisMinMax, axisHasBarSeries);
     }
 
     private async Task OnSelectedBinGranularityChanged(BinGranularities value, bool rebuildDataSets = true)

@@ -1,0 +1,52 @@
+@using Blazorise
+@using ClimateExplorer.Web.Client.UiModel
+
+<div class="axes-dropdown-wrapper">
+    <Dropdown>
+        <DropdownToggle>
+            <i class="fas fa-chart-line"></i> Axes
+        </DropdownToggle>
+        <DropdownMenu>
+            @if (Axes != null && Axes.Count > 0)
+            {
+                <div class="axes-menu-content">
+                    <div class="section-label">Scale from 0</div>
+                    @foreach (var axis in Axes)
+                    {
+                        <div class="axis-row">
+                            <Check TValue="bool"
+                                   Value="@GetScaleToZero(axis.Id)"
+                                   ValueChanged="@((bool v) => OnScaleToZeroChanged(axis.Id, v))">
+                                @axis.Label
+                            </Check>
+                        </div>
+                    }
+                </div>
+            }
+        </DropdownMenu>
+    </Dropdown>
+</div>
+
+@code {
+    [Parameter]
+    public List<AxisInfo>? Axes { get; set; }
+
+    [Parameter]
+    public Dictionary<string, bool>? ScaleToZero { get; set; }
+
+    [Parameter]
+    public EventCallback OnChanged { get; set; }
+
+    private bool GetScaleToZero(string axisId) =>
+        ScaleToZero != null && ScaleToZero.TryGetValue(axisId, out var val) && val;
+
+    private async Task OnScaleToZeroChanged(string axisId, bool value)
+    {
+        if (ScaleToZero != null)
+        {
+            ScaleToZero[axisId] = value;
+            await OnChanged.InvokeAsync();
+        }
+    }
+}
+

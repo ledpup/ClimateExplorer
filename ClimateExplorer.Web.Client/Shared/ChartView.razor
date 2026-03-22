@@ -43,6 +43,8 @@
                             </DropdownMenu>
                         </Dropdown>
 
+                        <ChartAxisListView Axes="CurrentAxes" ScaleToZero="AxesScaleToZero" OnChanged="@BuildDataSets" />
+
                         <a class="chart-control" @onclick="ShowOptionsModal"><i class="fas fa-cog"></i> Aggregation options</a>
 
                         <div class="info-icon">
