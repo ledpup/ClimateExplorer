@@ -1,4 +1,4 @@
-﻿@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: 1024px) {
     .chart-wrapper {
         flex-grow: 0;
         flex-shrink: 0;
@@ -46,7 +46,11 @@
     */
     margin-bottom: -16px;
     margin-left: 0px;
+    margin-right: 0px;
     user-select: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
 ::deep .chart-controls .dropdown {
@@ -95,6 +99,11 @@
         background-color: #cfc;
         transition: 0.25s;
     }
+
+.chart-controls .chart-control-download {
+    margin-left: auto;
+    margin-right: 0;
+}
 
     .chart-controls .info-icon {
         margin-left: 0px;
