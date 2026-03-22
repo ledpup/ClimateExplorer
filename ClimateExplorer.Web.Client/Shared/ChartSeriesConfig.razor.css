@@ -220,6 +220,18 @@
         display: flex;
         flex-direction: column;
     }
+
+    .chart-series-config.has-colour-strip {
+        border-left: solid 12px var(--series-colour);
+    }
+
+    .chart-series-config.has-colour-strip .title-bar {
+        border-left: none !important;
+    }
+
+    .chart-series-config.has-colour-strip .chart-series-config-content {
+        border-left: none !important;
+    }
 }
 
 .info-message {

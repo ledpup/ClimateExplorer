@@ -1,4 +1,4 @@
-﻿@using ClimateExplorer.Web.UiLogic
+@using ClimateExplorer.Web.UiLogic
 @using ClimateExplorer.Web.UiModel
 @using Blazorise
 @using Blazorise.Components
@@ -6,7 +6,7 @@
 @using ClimateExplorer.Core.DataPreparation
 @using static ClimateExplorer.Core.Enums;
 
-<div class="chart-series-config @(ChartSeries!.IsExpanded ? "is-expanded" : "")">
+<div class="chart-series-config @(ChartSeries!.IsExpanded ? "is-expanded" : "") @(TitleStyle == ChartSeriesTitleStyle.WholeTitleBarInSeriesColour ? "has-colour-strip" : "")" style="@StyleForOuterDiv">
     <div class="title-bar" @onclick="ExpandCollapse" style="@StyleForTitleBar">
         <div class="main">
             <div class="title">@ChartSeries!.GetFriendlyTitleShort()</div>
@@ -227,6 +227,7 @@
     AboutData? _aboutData;
 
     string? StyleForTitleBar { get; set; }
+    string? StyleForOuterDiv { get; set; }
 
     bool applyStyle;
 
@@ -240,6 +241,7 @@
         if (applyStyle)
         {
             StyleForTitleBar = GenerateStyleForTitleBar();
+            StyleForOuterDiv = GenerateStyleForOuterDiv();
             StateHasChanged();
             applyStyle = false;
         }
@@ -249,6 +251,13 @@
     {
         WholeTitleBarInSeriesColour,
         OnlyIndicatorAndTextInSeriesColour
+    }
+
+    public string GenerateStyleForOuterDiv()
+    {
+        if (TitleStyle == ChartSeriesTitleStyle.WholeTitleBarInSeriesColour)
+            return "--series-colour: " + ChartSeries!.Colour + ";";
+        return "";
     }
 
     public string GenerateStyleForColourIndicator()
