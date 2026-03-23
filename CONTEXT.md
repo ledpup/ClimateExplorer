@@ -290,3 +290,18 @@ All modals use `Class="custom-modal-header"` on `<ModalHeader>`:
 | **Tuple returns over `out` params** | Preferred for methods returning multiple values |
 | **`::deep` always required** | For styling Blazorise child elements from a parent component's `.razor.css` |
 | **`display: contents` isolation wrapper** | Required when a component's root is a Blazorise component — see CSS Isolation section |
+
+---
+
+## Blazorise 2.x Component API Notes
+
+**General rule:** All input components use `Value` / `ValueChanged` as their primary binding properties. Component-specific names from older Blazorise versions no longer exist.
+
+| Component | Correct | ~~Old / wrong~~ |
+|---|---|---|
+| `Check<TValue>` | `Value` / `ValueChanged` | ~~`Checked` / `CheckedChanged`~~ |
+| `TextInput` | `Value` / `ValueChanged` | ~~`Text` / `TextChanged`~~ |
+| `Select<TValue>` | `Value` / `ValueChanged` | ~~`SelectedValue` / `SelectedValueChanged`~~ |
+| `NumericEdit<TValue>` | `Value` / `ValueChanged` | ~~`Number` / `NumberChanged`~~ |
+| `Switch<TValue>` | `Value` / `ValueChanged` | ~~`Checked` / `CheckedChanged`~~ |
+| `DateEdit<TValue>` | `Value` / `ValueChanged` | ~~`Date` / `DateChanged`~~ |

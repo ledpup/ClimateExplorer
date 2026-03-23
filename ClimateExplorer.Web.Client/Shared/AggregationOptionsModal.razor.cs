@@ -9,25 +9,24 @@ public partial class AggregationOptionsModal
     private InfoPanel? aggregationOptionsInfoPanel;
 
     private string? thresholdText;
-    private short selectingGroupingDays;
     private short currentGroupingDays;
-    private bool localUserOverride;
+    private bool overridePresetThreshold;
 
     [Parameter]
     public float? PresetGroupingThreshold { get; set; }
 
     [Parameter]
-    public EventCallback<AggregationSettings> OnApply { get; set; }
+    public EventCallback<AggregationSettings> OnChanged { get; set; }
 
-    [Parameter]
-    public EventCallback OnClearOverride { get; set; }
+    private bool HasThresholdChanged =>
+        overridePresetThreshold ||
+        (PresetGroupingThreshold == null && thresholdText != "70");
 
     public Task Show(float currentThreshold, short groupingDays, bool userOverride)
     {
         thresholdText = MathF.Round(currentThreshold * 100, 0).ToString();
         currentGroupingDays = groupingDays;
-        selectingGroupingDays = 0;
-        localUserOverride = userOverride;
+        overridePresetThreshold = userOverride;
         return modal!.Show();
     }
 
@@ -46,30 +45,40 @@ public partial class AggregationOptionsModal
             _ => throw new NotImplementedException(groupingDays.ToString()),
         };
 
-    private void OnSelectedGroupingDaysChanged(short value)
+    private async Task OnSelectedGroupingDaysChanged(short value)
     {
-        selectingGroupingDays = value;
+        currentGroupingDays = value;
+        await OnChanged.InvokeAsync(new AggregationSettings(currentGroupingDays, thresholdText ?? "70", overridePresetThreshold));
     }
 
-    private void OnThresholdTextChanged(string value)
+    private async Task OnThresholdTextChanged(string value)
     {
         if (!string.IsNullOrWhiteSpace(value))
         {
             thresholdText = value;
+            await OnChanged.InvokeAsync(new AggregationSettings(currentGroupingDays, thresholdText, overridePresetThreshold));
         }
     }
 
-    private async Task ApplySettings()
+    private async Task ResetThreshold()
     {
-        localUserOverride = true;
-        var finalGroupingDays = selectingGroupingDays == 0 ? currentGroupingDays : selectingGroupingDays;
-        await OnApply.InvokeAsync(new AggregationSettings(finalGroupingDays, thresholdText ?? "70"));
+        overridePresetThreshold = false;
+        thresholdText = PresetGroupingThreshold != null
+            ? MathF.Round(PresetGroupingThreshold.Value * 100, 0).ToString()
+            : "70";
+
+        await OnChanged.InvokeAsync(new AggregationSettings(currentGroupingDays, thresholdText, false));
     }
 
-    private async Task ClearOverride()
+    private async Task OnOverrideChanged(bool value)
     {
-        localUserOverride = false;
-        await OnClearOverride.InvokeAsync();
+        overridePresetThreshold = value;
+        if (!overridePresetThreshold && PresetGroupingThreshold != null)
+        {
+            thresholdText = MathF.Round(PresetGroupingThreshold.Value * 100, 0).ToString();
+        }
+
+        await OnChanged.InvokeAsync(new AggregationSettings(currentGroupingDays, thresholdText ?? "70", overridePresetThreshold));
     }
 
     private Task ShowAggregationOptionsInfo()
@@ -86,7 +95,7 @@ public partial class AggregationOptionsModal
 
         var threshold = float.Parse(thresholdText) / 100;
 
-        return localUserOverride
+        return overridePresetThreshold
             ? $"{MathF.Round(threshold * 100, 0)}% (user override)"
             : PresetGroupingThreshold == null
                 ? $"{MathF.Round(threshold * 100, 0)}%"

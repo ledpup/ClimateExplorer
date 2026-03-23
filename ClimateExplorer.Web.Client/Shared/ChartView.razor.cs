@@ -819,6 +819,11 @@ public partial class ChartView
             url += $"&groupingThreshold={groupingThresholdText}";
         }
 
+        if (UserOverridePresetAggregationSettings)
+        {
+            url += "&userOverride=true";
+        }
+
         var scaledAxes = AxesScaleToZero.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToList();
         if (scaledAxes.Count > 0)
         {
@@ -849,6 +854,7 @@ public partial class ChartView
         SelectedEndYear = queryDictionary["endYear"];
         SelectedGroupingDays = queryDictionary["groupingDays"] == null ? (short)14 : short.Parse(queryDictionary["groupingDays"]!);
         GroupingThresholdText = string.IsNullOrWhiteSpace(queryDictionary["groupingThreshold"]) ? "70" : queryDictionary["groupingThreshold"];
+        UserOverridePresetAggregationSettings = queryDictionary["userOverride"] == "true";
 
         var axisScaleToZeroParam = queryDictionary["axisScaleToZero"];
         AxesScaleToZero = [];
@@ -1487,17 +1493,11 @@ public partial class ChartView
         return aggregationOptionsModal!.Show(InternalGroupingThreshold, SelectedGroupingDays, UserOverridePresetAggregationSettings);
     }
 
-    private async Task OnAggregationSettingsApplied(AggregationSettings settings)
+    private async Task OnAggregationSettingsChanged(AggregationSettings settings)
     {
         GroupingThresholdText = settings.ThresholdText;
         SelectedGroupingDays = settings.GroupingDays;
-        UserOverridePresetAggregationSettings = true;
-        await BuildDataSets();
-    }
-
-    private async Task OnAggregationOverrideCleared()
-    {
-        UserOverridePresetAggregationSettings = false;
+        UserOverridePresetAggregationSettings = settings.UserOverride;
         await BuildDataSets();
     }
 }

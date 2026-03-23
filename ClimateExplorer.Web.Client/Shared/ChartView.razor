@@ -61,8 +61,7 @@
 
 <AggregationOptionsModal @ref="aggregationOptionsModal"
     PresetGroupingThreshold="@(ChartSeriesList?.FirstOrDefault()?.GroupingThreshold)"
-    OnApply="@((s) => OnAggregationSettingsApplied(s))"
-    OnClearOverride="@(() => OnAggregationOverrideCleared())" />
+    OnChanged="@((s) => OnAggregationSettingsChanged(s))" />
 
 <InfoPanel @ref="chartOptionsInfoPanel" Title="Chart options information" Height="60vh">
     <ChartOptionsContent />

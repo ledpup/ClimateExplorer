@@ -6,7 +6,7 @@
         <ModalHeader Class="custom-modal-header">
             <ModalTitle>Aggregation options</ModalTitle>
             <div class="info-icon">
-                <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowAggregationOptionsInfo></i>
+                <i class="fas fa-circle-info" @onclick=ShowAggregationOptionsInfo></i>
             </div>
             <CloseButton />
         </ModalHeader>
@@ -22,30 +22,26 @@
                 </Select>
             </Field>
             <Field>
-                <strong>Threshold required to form a valid group (% percentage)</strong>
-                <TextInput Text="@thresholdText" ValueChanged="@OnThresholdTextChanged" MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
+                <strong>Threshold required to form a valid group (%)</strong>
+                <TextInput Value="@thresholdText" ValueChanged="@OnThresholdTextChanged"
+                            Disabled="@(PresetGroupingThreshold != null && !overridePresetThreshold)"
+                            MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
+            </Field>                
+            <Field>
+                <Check TValue="bool" Value="@overridePresetThreshold" ValueChanged="@((bool v) => OnOverrideChanged(v))">Override preset threshold</Check>
             </Field>
             <Field>
                 <Text>
                     Current threshold is @GetCurrentThresholdDescription()
                 </Text>
             </Field>
-            @if (localUserOverride)
+            @if (HasThresholdChanged)
             {
                 <Field>
-                    <Text TextColor="TextColor.Primary">
-                        User aggregation settings will now override preset settings
-                    </Text>
+                    <Button Color="Color.Secondary" Size="Size.Small" Clicked="@ResetThreshold">Reset</Button>
                 </Field>
             }
         </ModalBody>
-        <ModalFooter>
-            @if (localUserOverride)
-            {
-                <Button Color="Color.Secondary" Clicked="@ClearOverride">Clear override</Button>
-            }
-            <Button Color="Color.Primary" Clicked="@ApplySettings">Apply</Button>
-        </ModalFooter>
     </ModalContent>
 </Modal>
 
