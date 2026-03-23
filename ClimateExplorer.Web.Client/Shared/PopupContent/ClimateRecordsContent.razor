@@ -169,8 +169,8 @@
 
 @if (ClimateRecordsResult?.Records is { Count: > 0 })
 {
-    <div class="d-flex align-items-center justify-content-between mt-3">
-        <div class="d-flex align-items-center gap-2">
+    <div class="d-flex flex-column flex-md-row align-items-center justify-content-between mt-3 gap-2">
+        <div class="d-flex flex-wrap align-items-center justify-content-center gap-2">
             <Pagination Class="mb-0">
                 <PaginationItem Disabled="@(CurrentPage == 1)">
                     <PaginationLink Clicked="@(() => OnPageChanged(CurrentPage - 1))">
@@ -216,7 +216,7 @@
                 </Select>
             </div>
         </div>
-        <span class="text-muted">Showing @StartRecord-@EndRecord of @(ClimateRecordsResult.TotalCount) records</span>
+        <span class="text-muted">Showing @StartRecord-@EndRecord of @(ClimateRecordsResult.TotalCount)</span>
     </div>
 }
 
