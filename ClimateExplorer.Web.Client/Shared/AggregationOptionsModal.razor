@@ -1,0 +1,54 @@
+@using Blazorise
+@using ClimateExplorer.Web.Client.Shared.PopupContent
+
+<Modal @ref="modal">
+    <ModalContent>
+        <ModalHeader Class="custom-modal-header">
+            <ModalTitle>Aggregation options</ModalTitle>
+            <div class="info-icon">
+                <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowAggregationOptionsInfo></i>
+            </div>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+                <strong>Grouping days</strong>
+                <Select TValue="short" Value="@currentGroupingDays" ValueChanged="@OnSelectedGroupingDaysChanged">
+                    <SelectItem Value="182">@GroupingDaysText(182)</SelectItem>
+                    <SelectItem Value="91">@GroupingDaysText(91)</SelectItem>
+                    <SelectItem Value="28">@GroupingDaysText(28)</SelectItem>
+                    <SelectItem Value="14">@GroupingDaysText(14)</SelectItem>
+                    <SelectItem Value="7">@GroupingDaysText(7)</SelectItem>
+                </Select>
+            </Field>
+            <Field>
+                <strong>Threshold required to form a valid group (% percentage)</strong>
+                <TextInput Text="@thresholdText" ValueChanged="@OnThresholdTextChanged" MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
+            </Field>
+            <Field>
+                <Text>
+                    Current threshold is @GetCurrentThresholdDescription()
+                </Text>
+            </Field>
+            @if (localUserOverride)
+            {
+                <Field>
+                    <Text TextColor="TextColor.Primary">
+                        User aggregation settings will now override preset settings
+                    </Text>
+                </Field>
+            }
+        </ModalBody>
+        <ModalFooter>
+            @if (localUserOverride)
+            {
+                <Button Color="Color.Secondary" Clicked="@ClearOverride">Clear override</Button>
+            }
+            <Button Color="Color.Primary" Clicked="@ApplySettings">Apply</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+<InfoPanel @ref="aggregationOptionsInfoPanel" Title="Aggregation options information" Height="60vh">
+    <AggregationOptionsContent />
+</InfoPanel>

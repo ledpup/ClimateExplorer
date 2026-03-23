@@ -32,7 +32,7 @@ public partial class ChartView
     private BinIdentifier? chartStartBin;
     private BinIdentifier? chartEndBin;
 
-    private InfoPanel? aggregationOptionsInfoPanel;
+    private AggregationOptionsModal? aggregationOptionsModal;
     private InfoPanel? chartOptionsInfoPanel;
 
     private string? groupingThresholdText;
@@ -77,7 +77,7 @@ public partial class ChartView
     private IJSRuntime? JsRuntime { get; set; }
 
     [Inject]
-    private ILogger<Index>? Logger { get; set; }
+    private ILogger<ChartView>? Logger { get; set; }
 
     [Inject]
     private NavigationManager? NavManager { get; set; }
@@ -92,10 +92,7 @@ public partial class ChartView
     private short SelectedGroupingDays { get; set; }
     private string? GroupingThresholdText
     {
-        get
-        {
-            return groupingThresholdText;
-        }
+        get => groupingThresholdText;
         set
         {
             if (!string.IsNullOrWhiteSpace(value))
@@ -107,8 +104,6 @@ public partial class ChartView
     }
 
     private List<ChartSeriesDefinition>? ChartSeriesList { get; set; } = [];
-
-    private short SelectingGroupingDays { get; set; }
 
     private float InternalGroupingThreshold { get; set; } = .7f;
 
@@ -122,8 +117,6 @@ public partial class ChartView
     private List<short>? StartYears { get; set; }
 
     private ColourServer Colours { get; set; } = new ColourServer();
-
-    private Modal? OptionsModal { get; set; }
 
     /// <summary>
     /// The chart type applied to the chart control. If any series is in "Bar" mode, we switch
@@ -1055,11 +1048,6 @@ public partial class ChartView
         return chartOptionsInfoPanel!.ShowAsync();
     }
 
-    private Task ShowAggregationOptionsInfo()
-    {
-        return aggregationOptionsInfoPanel!.ShowAsync();
-    }
-
     private SourceSeriesSpecification BuildSourceSeriesSpecification(DataSetLibraryEntry.SourceSeriesSpecification sss, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions)
     {
         var dsd = dataSetDefinitions.Single(x => x.Id == sss.SourceDataSetId);
@@ -1439,19 +1427,6 @@ public partial class ChartView
         }
     }
 
-    private void OnGroupingThresholdTextChanged(string value)
-    {
-        GroupingThresholdText = value;
-    }
-
-    private async Task ApplyYearlyAverageParameters()
-    {
-        UserOverridePresetAggregationSettings = true;
-        InternalGroupingThreshold = float.Parse(GroupingThresholdText!) / 100;
-        SelectedGroupingDays = SelectingGroupingDays == 0 ? SelectedGroupingDays : SelectingGroupingDays;
-        await BuildDataSets();
-    }
-
     private string GetGroupingThresholdText()
     {
         var groupingThreshold = ChartSeriesList!.FirstOrDefault() == null ? null : ChartSeriesList!.First().GroupingThreshold;
@@ -1478,17 +1453,6 @@ public partial class ChartView
         var sourceDataSet = ChartSeriesWithData![e.DatasetIndex].SourceDataSet!;
 
         await HandleOnYearFilterChange(new YearAndDataTypeFilter(year) { DataType = sourceDataSet.DataType, DataAdjustment = sourceDataSet.DataAdjustment, UnitOfMeasure = sourceDataSet.MeasurementDefinition!.UnitOfMeasure });
-    }
-
-    private void OnSelectedGroupingDaysChanged(short value)
-    {
-        SelectingGroupingDays = value;
-    }
-
-    private async Task ClearUserAggregationOverride()
-    {
-        UserOverridePresetAggregationSettings = false;
-        await BuildDataSets();
     }
 
     private void SetStartAndEndYears(List<SeriesWithData> chartSeriesWithData)
@@ -1520,24 +1484,20 @@ public partial class ChartView
 
     private Task ShowOptionsModal()
     {
-        GroupingThresholdText = MathF.Round(InternalGroupingThreshold * 100, 0).ToString();
-        return OptionsModal!.Show();
+        return aggregationOptionsModal!.Show(InternalGroupingThreshold, SelectedGroupingDays, UserOverridePresetAggregationSettings);
     }
 
-    private string GroupingDaysText(int groupingDays)
+    private async Task OnAggregationSettingsApplied(AggregationSettings settings)
     {
-        return groupingDays switch
-        {
-            5 => "Groups of 5 days (73 groups)",
-            7 => "Groups of 7 days (52 groups)",
-            13 => "Groups of 13 days (28 groups)",
-            14 => "Groups of 14 days (26 groups)",
-            26 => "Groups of 26 days (14 groups)",
-            28 => "Groups of 28 days (13 groups)",
-            73 => "Groups of 73 days (5 groups)",
-            91 => "Groups of 91 days (4 groups)",
-            182 => "Groups of 182 days (2 groups)",
-            _ => throw new NotImplementedException(groupingDays.ToString()),
-        };
+        GroupingThresholdText = settings.ThresholdText;
+        SelectedGroupingDays = settings.GroupingDays;
+        UserOverridePresetAggregationSettings = true;
+        await BuildDataSets();
+    }
+
+    private async Task OnAggregationOverrideCleared()
+    {
+        UserOverridePresetAggregationSettings = false;
+        await BuildDataSets();
     }
 }

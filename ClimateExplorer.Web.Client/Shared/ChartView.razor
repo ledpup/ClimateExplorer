@@ -45,7 +45,7 @@
 
                         <ChartAxisListView Axes="CurrentAxes" ScaleToZero="AxesScaleToZero" OnChanged="@BuildDataSets" />
 
-                        <a class="chart-control" @onclick="ShowOptionsModal"><i class="fas fa-cog"></i> Aggregation options</a>
+                        <a class="chart-control" @onclick="@(() => ShowOptionsModal())"><i class="fas fa-cog"></i> Aggregation options</a>
 
                         <div class="info-icon">
                             <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowChartOptionsInfo></i>
@@ -59,63 +59,11 @@
     </div>
 </LoadingIndicator>
 
-<Modal @ref="OptionsModal">
-    <ModalContent>
-        <ModalHeader Class="custom-modal-header">
-            <ModalTitle>Aggregation options</ModalTitle>
-            <div class="info-icon">
-                <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowAggregationOptionsInfo></i>
-            </div>
-            <CloseButton />
-        </ModalHeader>
-        <ModalBody>
-            <Field>
-                <strong>Grouping days</strong>
-
-                <Select TValue="short" Value="@SelectedGroupingDays" ValueChanged="@OnSelectedGroupingDaysChanged">
-                    <SelectItem Value="5">@GroupingDaysText(5)</SelectItem>
-                    <SelectItem Value="7">@GroupingDaysText(7)</SelectItem>
-                    <SelectItem Value="13">@GroupingDaysText(13)</SelectItem>
-                    <SelectItem Value="14">@GroupingDaysText(14)</SelectItem>
-                    <SelectItem Value="26">@GroupingDaysText(26)</SelectItem>
-                    <SelectItem Value="28">@GroupingDaysText(28)</SelectItem>
-                    <SelectItem Value="73">@GroupingDaysText(73)</SelectItem>
-                    <SelectItem Value="91">@GroupingDaysText(91)</SelectItem>
-                    <SelectItem Value="182">@GroupingDaysText(182)</SelectItem>
-                </Select>
-            </Field>
-            <Field>
-                <strong>Threshold required to form a valid group (% percentage)</strong>
-                <TextInput Text="@GroupingThresholdText" ValueChanged="@OnGroupingThresholdTextChanged" MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
-            </Field>
-            <Field>
-                <Text>
-                    Current threshold is @GetGroupingThresholdText()
-                </Text>
-            </Field>
-            @if (UserOverridePresetAggregationSettings)
-            {
-                <Field>
-                    <Text TextColor="TextColor.Primary">
-                        User aggregration settings will now override preset settings
-                    </Text>
-                </Field>
-            }
-        </ModalBody>
-        <ModalFooter>
-            @if (UserOverridePresetAggregationSettings)
-            {
-                <Button Color="Color.Secondary" Clicked="@ClearUserAggregationOverride">Clear override</Button>
-            }
-            <Button Color="Color.Primary" Clicked="@ApplyYearlyAverageParameters">Apply</Button>
-        </ModalFooter>
-    </ModalContent>
-</Modal>
+<AggregationOptionsModal @ref="aggregationOptionsModal"
+    PresetGroupingThreshold="@(ChartSeriesList?.FirstOrDefault()?.GroupingThreshold)"
+    OnApply="@((s) => OnAggregationSettingsApplied(s))"
+    OnClearOverride="@(() => OnAggregationOverrideCleared())" />
 
 <InfoPanel @ref="chartOptionsInfoPanel" Title="Chart options information" Height="60vh">
     <ChartOptionsContent />
-</InfoPanel>
-
-<InfoPanel @ref="aggregationOptionsInfoPanel" Title="Aggregation options information" Height="60vh">
-    <AggregationOptionsContent />
 </InfoPanel>
