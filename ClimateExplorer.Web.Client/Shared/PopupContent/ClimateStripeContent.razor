@@ -1,4 +1,4 @@
-﻿@using ClimateExplorer.Web.UiModel
+@using ClimateExplorer.Web.UiModel
 @using static ClimateExplorer.Core.Enums
 
 @if (LocationName is not null && LocationMean is not null && UnitOfMeasure is not null && DataRecords is not null)
@@ -33,46 +33,3 @@
     <p>ClimateExplorer's stripe is interactive. Hover over any year in the series then click. The chart will update with a monthly view of the selected year.</p>
 }
 
-@code {
-    private double min;
-    private double max;
-
-    private string? uomString;
-    private int uomRounding;
-
-    [Parameter]
-    public string? LocationName { get; set; }
-
-    [Parameter]
-    public double? LocationMean { get; set; }
-
-    [Parameter]
-    public UnitOfMeasure? UnitOfMeasure { get; set; }
-
-    [Parameter]
-    public List<YearlyValues>? DataRecords { get; set; }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        if (UnitOfMeasure == null)
-        {
-            return;
-        }
-
-        uomString = UnitOfMeasureLabelShort(UnitOfMeasure.Value);
-        uomRounding = UnitOfMeasureRounding(UnitOfMeasure.Value);
-
-        if (LocationMean == null)
-        {
-            return;
-        }
-
-        if (DataRecords != null)
-        {
-            min = DataRecords.Min(x => x.Relative);
-            max = DataRecords.Max(x => x.Relative);
-        }
-
-        await base.OnParametersSetAsync();
-    }
-}

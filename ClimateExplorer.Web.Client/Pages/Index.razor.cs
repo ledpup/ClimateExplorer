@@ -233,4 +233,9 @@ public partial class Index : ChartablePage
 
         StateHasChanged();
     }
+
+    private void ToggleSuggestedCharts()
+    {
+        suggestedChartsCollapsible?.CollapserOnClick();
+    }
 }

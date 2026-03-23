@@ -56,15 +56,4 @@
     </Modal>
 }
 
-@code {
-[Parameter]
-public ChartSeriesDefinition? ChartSeries { get; set; }
 
-Modal? modal;
-
-public Task Show()
-{
-    return modal!.Show();
-}
-
-}

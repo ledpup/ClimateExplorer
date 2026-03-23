@@ -2,7 +2,7 @@
 
 **Purpose:** New chat session handoff and developer documentation
 **Repo:** https://github.com/ledpup/ClimateExplorer · branch `development`
-**Stack:** Blazor WebAssembly · Blazor Server · .NET 10 · C# 14 · Blazorise (Bootstrap 5) · Font Awesome 6
+**Stack:** Blazor Server · Blazor WebAssembly · .NET 10 · C# 14 · Blazorise (Bootstrap 5) · Font Awesome 6
 
 ---
 
@@ -16,7 +16,7 @@
 | `ClimateExplorer.WebApiClient` | `IDataService` / `DataService` / `DataServiceCache` — typed HTTP client used by the WASM app |
 | `ClimateExplorer.Core` | All shared domain models, enums, data-prep pipeline, math helpers (no UI dependencies) |
 | `ClimateExplorer.SourceData` | Raw data file infrastructure |
-| `ClimateExplorer.DataPipeline` | Orchestrates data ingestion tools — **avoid building frequently**: its build steps create zip files that are slow to create |
+| `ClimateExplorer.DataPipeline` | Orchestrates data ingestion tools — **avoid building frequently**: its build step creates zip files that are slow to create |
 | `ClimateExplorer.Data.*` (6 projects) | Data importers: BOM, GHCND, GHCNM, ISD, CO2/misc |
 | `ClimateExplorer.CachingTool` | CLI tool to pre-warm the API cache |
 | `ClimateExplorer.UnitTests` | xUnit tests for Core maths, bin identifiers, data reading |
