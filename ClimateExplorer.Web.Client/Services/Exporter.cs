@@ -61,9 +61,12 @@ public class Exporter : IExporter
     {
         logger.LogInformation("ExportClimateRecords for {Location} with {Count} records", location.FullTitle, records.Length);
 
+        var baseUri = new Uri(sourceUri);
+        var locationUrl = $"{baseUri.GetLeftPart(UriPartial.Authority)}/location/{location.UrlReadyName()}";
+
         var data = new List<string>
         {
-            $"Exported from, \"{sourceUri}\"",
+            $"Exported from, \"{locationUrl}\"",
             $"{location.FullTitle},{location.Coordinates.ToFriendlyString(true)}",
             string.Empty,
         };

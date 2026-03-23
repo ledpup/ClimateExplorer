@@ -13,13 +13,18 @@
 @using static ClimateExplorer.Core.Enums
 @using Microsoft.Extensions.Logging
 
-<Tabs SelectedTab="@ActiveView.ToString()" SelectedTabChanged="@OnViewChanged" Class="mb-4">
-    <Items>
-        <Tab Name="Daily">Daily</Tab>
-        <Tab Name="Monthly">Monthly</Tab>
-        <Tab Name="Yearly">Yearly</Tab>
-    </Items>
-</Tabs>
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <Tabs SelectedTab="@ActiveView.ToString()" SelectedTabChanged="@OnViewChanged">
+        <Items>
+            <Tab Name="Daily">Daily</Tab>
+            <Tab Name="Monthly">Monthly</Tab>
+            <Tab Name="Yearly">Yearly</Tab>
+        </Items>
+    </Tabs>
+    <div class="info-icon">
+        <i class="fas fa-circle-info" @onclick=ShowColourExplainerInfo></i>
+    </div>
+</div>
 
 @if (AvailableDataTypes.Count > 0)
 {
@@ -216,18 +221,14 @@
                 </Select>
             </div>
         </div>
-        <span class="text-muted">Showing @StartRecord-@EndRecord of @(ClimateRecordsResult.TotalCount)</span>
+        <span class="text-muted">@StartRecord-@EndRecord of @(ClimateRecordsResult.TotalCount)</span>
     </div>
 }
 
-@if (LoadingIndicatorVisible || ClimateRecordsResult?.Records is { Count: > 0 })
+@if (ClimateRecordsResult?.Records is { Count: > 0 })
 {
-    <div class="d-flex align-items-center justify-content-between mt-2">
-        <a class="subtle-link" @onclick="ShowColourExplainerInfo">Explain these colours<span class="info-icon"><i class="fas fa-circle-info"></i></span></a>
-        @if (ClimateRecordsResult?.Records is { Count: > 0 })
-        {
-            <a class="subtle-link" @onclick="DownloadAllRecords"><i class="fas fa-download"></i> Download</a>
-        }
+    <div class="d-flex justify-content-end mt-2">
+        <a class="subtle-link" @onclick="DownloadAllRecords"><i class="fas fa-download"></i> Download</a>
     </div>
 }
 

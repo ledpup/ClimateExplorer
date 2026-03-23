@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Web.Client.Shared;
 
 using Blazorise;
+using ClimateExplorer.Web.Client.UiModel;
 using Microsoft.AspNetCore.Components;
 
 public partial class AggregationOptionsModal

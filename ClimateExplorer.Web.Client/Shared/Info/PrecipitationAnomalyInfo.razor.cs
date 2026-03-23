@@ -4,7 +4,7 @@ using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.Model;
 using Microsoft.AspNetCore.Components;
 
-public partial class WarmingAnomalyContent
+public partial class PrecipitationAnomalyInfo
 {
     [Parameter]
     public Location? Location { get; set; }
@@ -16,6 +16,6 @@ public partial class WarmingAnomalyContent
 
     protected override async Task OnInitializedAsync()
     {
-        AnomalyAsString = CalculatedAnomaly.ValueAsString();
+        AnomalyAsString = CalculatedAnomaly.ValueAsString("mm");
     }
 }

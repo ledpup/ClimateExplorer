@@ -10,6 +10,8 @@
     }
 
 .info-icon {
-    margin-left: 8px;
+    cursor: pointer;
     color: #79c6f4;
+    font-size: larger;
+    margin-left: 8px;
 }

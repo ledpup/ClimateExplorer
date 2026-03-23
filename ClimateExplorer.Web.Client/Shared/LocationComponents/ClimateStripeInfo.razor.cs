@@ -1,10 +1,10 @@
-namespace ClimateExplorer.Web.Client.Shared.PopupContent;
+namespace ClimateExplorer.Web.Client.Shared.LocationComponents;
 
 using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;
 using static ClimateExplorer.Core.Enums;
 
-public partial class ClimateStripeContent
+public partial class ClimateStripeInfo
 {
     private double min;
     private double max;

@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Web.Client.Shared.PopupContent;
+namespace ClimateExplorer.Web.Client.Shared.LocationComponents;
 
 using System.Globalization;
 using ClimateExplorer.Core;
@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
 
-public partial class ClimateRecordsContent
+public partial class ClimateRecords
 {
     private InfoPanel? colourExplainerInfoPanel;
 
@@ -37,7 +37,7 @@ public partial class ClimateRecordsContent
     public NavigationManager? NavManager { get; set; }
 
     [Inject]
-    public ILogger<ClimateRecordsContent>? Logger { get; set; }
+    public ILogger<ClimateRecords>? Logger { get; set; }
 
     [Parameter]
     public Location? Location { get; set; }

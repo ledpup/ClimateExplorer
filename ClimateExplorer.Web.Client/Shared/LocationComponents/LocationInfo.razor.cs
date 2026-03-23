@@ -122,7 +122,7 @@ public partial class LocationInfo
                 ? null
                 : builder =>
                 {
-                    builder.OpenComponent(0, typeof(ClimateRecordsContent));
+                    builder.OpenComponent(0, typeof(ClimateRecords));
                     builder.AddAttribute(1, "Location", Location);
                     builder.CloseComponent();
                 };
@@ -151,7 +151,7 @@ public partial class LocationInfo
                         ? null
                         : builder =>
                         {
-                            builder.OpenComponent(0, typeof(WarmingAnomalyContent));
+                            builder.OpenComponent(0, typeof(WarmingAnomalyInfo));
                             builder.AddAttribute(1, "Location", Location);
                             builder.AddAttribute(2, "CalculatedAnomaly", temperatureAnomaly.CalculatedAnomaly);
                             builder.CloseComponent();
@@ -171,7 +171,7 @@ public partial class LocationInfo
                                 ? null
                                 : builder =>
                                 {
-                                    builder.OpenComponent(0, typeof(HeatingScoreContent));
+                                    builder.OpenComponent(0, typeof(HeatingScoreInfo));
                                     builder.AddAttribute(1, "Location", Location);
                                     builder.CloseComponent();
                                 };
@@ -232,7 +232,7 @@ public partial class LocationInfo
                     ? null
                     : builder =>
                     {
-                        builder.OpenComponent(0, typeof(PrecipitationAnomalyContent));
+                        builder.OpenComponent(0, typeof(PrecipitationAnomalyInfo));
                         builder.AddAttribute(1, "Location", Location);
                         builder.AddAttribute(2, "CalculatedAnomaly", precipitationAnomaly.CalculatedAnomaly);
                         builder.CloseComponent();

@@ -26,8 +26,7 @@
         height: 110px;
         z-index: 1000;
         pointer-events: none;
-        border-radius: 20px;
-        box-shadow: rgb(0 0 0 / 35%) 0px 3px 14px;
+        border-radius: 8px;
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
@@ -61,8 +60,10 @@
         bottom: 100%;
         left: 0;
         right: 0;
-        height: 18px;
-        background-color: inherit;
+        height: 20px;
+        background-color: var(--label-colour);
+        box-shadow: 0 0 0 200px var(--label-colour);
+        clip-path: polygon(0% 100%, 100% 100%, calc(50% + 40px) 0%, calc(50% - 40px) 0%);
         z-index: 999;
     }
 

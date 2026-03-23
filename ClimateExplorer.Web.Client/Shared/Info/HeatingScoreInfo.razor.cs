@@ -4,7 +4,7 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
 
-public partial class HeatingScoreContent
+public partial class HeatingScoreInfo
 {
     [Inject]
     public IDataService? DataService { get; set; }
