@@ -112,8 +112,8 @@ public partial class ClimateStripe
         return $"rgba({c.R}, {c.G}, {c.B}, 97%)";
     }
 
-    private string GetRelativeValue(YearlyValues values) => UnitOfMeasure == Enums.UnitOfMeasure.Millimetres ? $"{Math.Round(values.PercentageOfAverage, 0)}%" : $"{(values.Relative >= 0 ? "+" : string.Empty)}{Math.Round(values.Relative, uomRounding)}{uomString}";
-    private string GetAbsoluteValue(double v) => $"{Math.Round(v, uomRounding)}{uomString}";
+    private string GetRelativeValue(YearlyValues values) => UnitOfMeasure == Enums.UnitOfMeasure.Millimetres ? $"{Math.Round(values.PercentageOfAverage, 0)}%" : $"{(values.Relative >= 0 ? "+" : string.Empty)}{values.Relative.ToString($"F{uomRounding}")}{uomString}";
+    private string GetAbsoluteValue(double v) => $"{v.ToString($"F{uomRounding}")}{uomString}";
 
     private string GetTitle(YearlyValues values)
     {
@@ -121,33 +121,17 @@ public partial class ClimateStripe
         var title = $"Year {values.Year}\r\n";
         if (UnitOfMeasure == Enums.UnitOfMeasure.Millimetres)
         {
-            title += $"Precipitation total of {Math.Round(values.Absolute, uomRounding)}{uomString}\r\n";
-            title += $"{Math.Abs(Math.Round(values.Relative, uomRounding))}{uomString} {aboveOrBelow} average\r\n";
+            title += $"Precipitation total of {values.Absolute.ToString($"F{uomRounding}")}{uomString}\r\n";
+            title += $"{Math.Abs(values.Relative).ToString($"F{uomRounding}")}{uomString} {aboveOrBelow} average\r\n";
             title += $"{Math.Round(values.PercentageOfAverage, 0)}% of the average\r\n";
         }
         else
         {
-            title += $"Mean temperature average of {Math.Round(values.Absolute, uomRounding)}{uomString}\r\n";
-            title += $"{Math.Abs(Math.Round(values.Relative, uomRounding))}{uomString} {aboveOrBelow} average";
+            title += $"Mean temperature average of {values.Absolute.ToString($"F{uomRounding}")}{uomString}\r\n";
+            title += $"{Math.Abs(values.Relative).ToString($"F{uomRounding}")}{uomString} {aboveOrBelow} average";
         }
 
         return title;
-    }
-
-    private string GetTextColour(double value, string lightTextColour, string darkTextColour)
-    {
-        // WCAG 2.1 relative luminance — https://www.w3.org/TR/WCAG21/#dfn-relative-luminance
-        static double ToLinear(double c)
-        {
-            c /= 255.0;
-            return c <= 0.04045 ? c / 12.92 : Math.Pow((c + 0.055) / 1.055, 2.4);
-        }
-
-        static double Luminance(double r, double g, double b)
-            => (0.2126 * ToLinear(r)) + (0.7152 * ToLinear(g)) + (0.0722 * ToLinear(b));
-
-        var c = GetColourObject(value);
-        return Luminance(c.R, c.G, c.B) < 0.179 ? lightTextColour : darkTextColour;
     }
 
     private async Task FilterToYear(short year)

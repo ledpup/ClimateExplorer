@@ -10,10 +10,10 @@
         foreach (var record in DataRecords)
         {
             <div title="@GetTitle(record)" class="single-stripe" style="background-color: @GetColour(record.Relative); cursor: pointer;" @onclick="() => FilterToYear(record.Year)">
-                <div class="label" style="background-color: @GetLabelColour(record.Relative)">
-                    <div class="year" style="color: @GetTextColour(record.Relative, "#fff", "#000")">@record.Year</div>
-                    <div class="rel" style="color: @GetTextColour(record.Relative, "#fff", "#000")">@GetRelativeValue(record)</div>
-                    <div class="abs" style="color: @GetTextColour(record.Relative, "#fff", "#000")">@GetAbsoluteValue(record.Absolute)</div>
+                <div class="label" style="border-color: @GetLabelColour(record.Relative)">
+                    <div class="year">@record.Year</div>
+                    <div class="rel">@GetRelativeValue(record)</div>
+                    <div class="abs">@GetAbsoluteValue(record.Absolute)</div>
                 </div>
             </div>
         }
