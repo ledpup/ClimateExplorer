@@ -17,10 +17,10 @@
         @if (!LocationLoadingIndicatorVisible)
         {
             <span class="chart-controls">
-                <a class="chart-control" @onclick="() => ChangeLocationClicked(new EventArgs())"><i class="fas fa-map"></i> Change location</a>
+                <button class="chart-control" @onclick="() => ChangeLocationClicked(new EventArgs())"><i class="fas fa-map"></i> Change location</button>
                 @if (LocationCollapsible!.ShowContent)
                 {
-                    <a class="chart-control" @onclick="() => TogglePrecipitation()"><i class="@( Precipitation ? "fas fa-check-square" : "fas fa-square" )"></i> Precipitation</a>
+                    <button class="chart-control" @onclick="() => TogglePrecipitation()"><i class="@( Precipitation ? "fas fa-check-square" : "fas fa-square" )"></i> Precipitation</button>
                 }
             </span>
         }

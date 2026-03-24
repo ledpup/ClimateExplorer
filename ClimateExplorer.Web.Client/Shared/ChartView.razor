@@ -13,9 +13,9 @@
                     <div class="chart-series-list-wrapper">
                         <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
 
-                        <a class="add-series-button" @onclick="ShowAddDataSetModal">
+                        <button class="add-series-button" @onclick="ShowAddDataSetModal">
                             <i class="fas fa-plus"></i> Add
-                        </a>
+                        </button>
                     </div>
 
                     <div class="chart-wrapper" @ref="chartWrapper">
@@ -25,11 +25,11 @@
                     </div>
 
                     <div class="chart-controls">
-                        <a class="chart-control" @onclick="ChartAllDataToggle"><i class="@( ChartAllData ? "fas fa-check-square" : "fas fa-square" )"></i> Chart all data</a>
+                        <button class="chart-control" @onclick="ChartAllDataToggle"><i class="@( ChartAllData ? "fas fa-check-square" : "fas fa-square" )"></i> Chart all data</button>
 
                         @if (!string.IsNullOrWhiteSpace(SelectedStartYear) || !string.IsNullOrWhiteSpace(SelectedEndYear))
                         {
-                            <a class="chart-control" @onclick="OnClearFilter"><i class="fa-solid fa-filter-circle-xmark"></i> Clear filter</a>
+                            <button class="chart-control" @onclick="OnClearFilter"><i class="fa-solid fa-filter-circle-xmark"></i> Clear filter</button>
                         }
 
                         <Dropdown>
@@ -45,13 +45,13 @@
 
                         <ChartAxisListView Axes="CurrentAxes" ScaleToZero="AxesScaleToZero" OnChanged="@BuildDataSets" />
 
-                        <a class="chart-control" @onclick="@(() => ShowOptionsModal())"><i class="fas fa-cog"></i> Aggregation options</a>
+                        <button class="chart-control" @onclick="@(() => ShowOptionsModal())"><i class="fas fa-cog"></i> Aggregation options</button>
 
                         <div class="info-icon">
                             <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowChartOptionsInfo></i>
                         </div>
 
-                        <a class="chart-control chart-control-download" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download</a>
+                        <button class="chart-control chart-control-download" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download</button>
                     </div>
                 </div>
             </Content>

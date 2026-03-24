@@ -1,5 +1,9 @@
-a.action-link {
+.action-link {
     color: #0071c1;
     text-decoration: underline;
     cursor: pointer;
+    background: none;
+    border: none;
+    font: inherit;
+    padding: 0;
 }
