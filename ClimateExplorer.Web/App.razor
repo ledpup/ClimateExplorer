@@ -30,6 +30,15 @@
     <meta name="twitter:image" content="/images/ClimateExplorerLogo.png" />
 
     <base href="/" />
+
+    <!-- Warm up connections to OSM tile subdomains so tiles load faster once Leaflet requests them -->
+    <link rel="preconnect" href="https://a.tile.openstreetmap.org">
+    <link rel="preconnect" href="https://b.tile.openstreetmap.org">
+    <link rel="preconnect" href="https://c.tile.openstreetmap.org">
+    <!-- DNS prefetch for CDN origins used by body scripts -->
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+
     <ResourcePreloader />
     
     <link rel="stylesheet" href="@Assets["css/app.css"]" />
@@ -57,14 +66,20 @@
 </head>
 
 <body>
+    <!--
+        defer on all four CDN scripts: the browser downloads them in parallel but only executes them
+        after HTML parsing is complete. <Routes> SSR content and blazor.web.js are therefore no
+        longer blocked, so the SSR text paints sooner. All four libraries are only called by Blazor
+        components after WASM hydration (several seconds later), so they will have long finished
+        executing by the time they are needed. Execution order is preserved by defer.
+    -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-trendline@2.0.5"></script>
-
-    <!--For mapping component -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+            crossorigin="anonymous"
+            defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-trendline@2.0.5" defer></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" defer></script>
 
     <script>
         async function getLocation() {
