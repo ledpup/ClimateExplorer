@@ -7,6 +7,33 @@
     margin-bottom: -10px;
 }
 
+/* CLS fix: render both suggested-chart variants immediately; CSS controls which is visible.
+   This avoids a layout shift when IsMobileDevice resolves from null after first render. */
+.suggested-mobile-only {
+    display: none;
+}
+
+/* CLS fix: reserve space for the mini lozenges (desktop) so the collapsible section
+   does not grow when preset data loads, preventing div.location-and-chart-container
+   from shifting. 44px = ~1 row of mini cards (36px card + 4px bottom margin + 4px buffer). */
+.suggested-mini-only {
+    min-height: 44px;
+}
+
+@media only screen and (max-width: 1024px) {
+    /* CLS fix: reserve space for the single mobile preset card (title ~24px + description
+       ~41px + padding 24px = ~89px); 90px prevents the collapsible from growing after load. */
+    .suggested-mobile-only {
+        display: block;
+        min-height: 90px;
+    }
+
+    .suggested-mini-only {
+        display: none;
+        min-height: 0;
+    }
+}
+
 @media only screen and (max-width: 1024px) {
     .map-space-reserver {
         margin-bottom: 10px;
