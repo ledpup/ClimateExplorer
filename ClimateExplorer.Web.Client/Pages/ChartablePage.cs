@@ -48,6 +48,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     protected Modal? AddDataSetModal { get; set; }
     protected virtual string? PageTitle { get; }
+    protected virtual string? PageDescription { get; }
     protected virtual string? PageUrl { get; }
 
     public virtual void Dispose()

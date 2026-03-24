@@ -30,9 +30,19 @@ public partial class Index : ChartablePage
     {
         get
         {
-            var title = Location == null ? $"Local long-term climate trends" : $"ClimateExplorer - {Location.FullTitle}";
+            var title = Location == null ? $"ClimateExplorer - Local long-term climate trends" : $"ClimateExplorer - {Location.FullTitle}";
 
             return title;
+        }
+    }
+
+    protected override string PageDescription
+    {
+        get
+        {
+            return Location == null
+                ? "ClimateExplorer helps you understand climate change trends where you live. Explore long-term temperature and precipitation data for thousands of locations worldwide."
+                : $"Explore long-term climate trends for {Location.FullTitle}. View temperature records, warming anomaly, heating score, and climate stripes.";
         }
     }
 
