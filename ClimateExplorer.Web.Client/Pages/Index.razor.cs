@@ -14,6 +14,7 @@ public partial class Index : ChartablePage
 {
     private Collapsible? suggestedChartsCollapsible;
     private InfoPanel? siteOverviewPanel;
+    private LocationInfo? locationInfoComponent;
 
     public Index()
     {
@@ -241,4 +242,6 @@ public partial class Index : ChartablePage
     {
         suggestedChartsCollapsible?.CollapserOnClick();
     }
+
+    private Task ShowRecordHighAsync() => locationInfoComponent?.ShowRecordHighAsync() ?? Task.CompletedTask;
 }

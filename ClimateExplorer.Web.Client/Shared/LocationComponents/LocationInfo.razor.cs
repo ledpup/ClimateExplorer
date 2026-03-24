@@ -15,6 +15,8 @@ using static ClimateExplorer.Core.Enums;
 
 public partial class LocationInfo
 {
+    private OverviewField? recordHighField;
+
     [Inject]
     public IDataService? DataService { get; set; }
 
@@ -44,6 +46,7 @@ public partial class LocationInfo
     private bool LocationLoadingIndicatorVisible { get; set; }
     private bool StripeLoadingIndicatorVisible { get; set; }
     private bool LoadStripeData { get; set; }
+
     private bool Precipitation { get; set; }
 
     private List<YearlyValues>? TemperatureAnomalyRecords { get; set; }
@@ -74,6 +77,8 @@ public partial class LocationInfo
     {
         OnOverviewShowOrHide.InvokeAsync(showOrHide);
     }
+
+    public Task ShowRecordHighAsync() => recordHighField?.ShowPopup() ?? Task.CompletedTask;
 
     protected static string GetPrecipitationAnomalyAsString(CalculatedAnomaly anomaly)
     {

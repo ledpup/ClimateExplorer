@@ -38,7 +38,7 @@
             }
             @if (Location?.RecordHigh != null)
             {
-                <OverviewField Label="Record high" PopupTitle="@("Record highs and lows for " + Location?.Name)" PopupContent="@ClimateRecordsContent" ToolTip="@RecordHighToolTip"><Value>@(Location?.RecordHigh == null ? "NA" : Location?.RecordHigh.Year)</Value></OverviewField>
+                <OverviewField @ref="recordHighField" Label="Record high" PopupTitle="@("Record highs and lows for " + Location?.Name)" PopupContent="@ClimateRecordsContent" ToolTip="@RecordHighToolTip"><Value>@(Location?.RecordHigh == null ? "NA" : Location?.RecordHigh.Year)</Value></OverviewField>
             }
             @if (Precipitation && PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
             {

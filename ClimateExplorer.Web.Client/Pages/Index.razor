@@ -1,4 +1,4 @@
-﻿@page "/"
+@page "/"
 @page "/location/"
 @page "/location/{locationString}"
 @implements IDisposable
@@ -9,6 +9,7 @@
 @using static ClimateExplorer.Web.UiModel.SuggestedPresetLists;
 @using static ClimateExplorer.Web.Client.Shared.Collapsible;
 @using ClimateExplorer.Web.Client.Shared
+@using ClimateExplorer.Web.Client.Shared.Info
 @using ClimateExplorer.Web.Client.Shared.LocationComponents;
 
 @inherits ChartablePage
@@ -52,7 +53,7 @@
         </div>
 
         <div class="location-info-container">
-            <LocationInfo Location="@Location"
+            <LocationInfo @ref="locationInfoComponent" Location="@Location"
                         DataSetDefinitions="@DataSetDefinitions"
                         RequestLocationChange="@ShowChangeLocationModal"
                         OnOverviewShowOrHide="@OnOverviewShowHide"
@@ -79,19 +80,10 @@
                 OnLocationChange="@SelectedLocationChanged"
                 BrowserLocationErrorMessage="@BrowserLocationErrorMessage" />
 
-<InfoPanel @ref="siteOverviewPanel" PanelName="home-overview" Version="1.0" Title="Welcome to ClimateExplorer">
-    <p>
-        ClimateExplorer is a website designed to help people understand climate change. It is focused on providing a simple interface for exploring how the climate is changing in your region.
-    </p>
-    <p>
-        There are two main sections of the website: this page and the regional &amp; global section. In this section, select a location on the map or click <a href="#" @onclick="ShowChangeLocationModal">change location</a> to see historical temperature, rainfall, and other climate data from around the world as interactive charts.
-    </p>
-    <p>
-        Use the suggested charts to get started quickly, or <a href="#" @onclick="ShowAddDataSetModal">add data sets</a> to build custom views. The chevron (&gt;) expands or collapses parts of the site such as the suggested charts. Click the chevron to <a href="#" @onclick="suggestedChartsCollapsible!.CollapserOnClick">see more chart presets</a>.
-    </p>
-    <p>
-        The <a href="regionalandglobal">regional &amp; global</a> section has charts for global data such as greenhouse gases and regional charts like the Arctic and Antarctic sea ice.
-    </p>
+<InfoPanel @ref="siteOverviewPanel" PanelName="home-overview" Version="1.1" Title="Welcome to ClimateExplorer">
+    <HomeOverviewInfo OnAddDataSet="ShowAddDataSetModal"
+                      OnToggleSuggestedCharts="ToggleSuggestedCharts"
+                      OnShowRecordHigh="ShowRecordHighAsync" />
 </InfoPanel>
 
 <Modal @ref="AddDataSetModal">

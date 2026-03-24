@@ -44,7 +44,7 @@ public partial class OverviewField
         }
     }
 
-    private async Task ShowPopup()
+    public async Task ShowPopup()
     {
         if (popup is null || PopupContent is null)
         {

@@ -11,12 +11,12 @@
 | Project | Role |
 |---|---|
 | `ClimateExplorer.Web.Client` | **Blazor WASM frontend** — all pages, components, UI logic, CSS |
-| `ClimateExplorer.Web` | ASP.NET Core host for the WASM app; `wwwroot/css/app.css` global styles; blog static content |
+| `ClimateExplorer.Web` | Blazor Server; ASP.NET Core host for the WASM app; `wwwroot/css/app.css` global styles; blog static content |
 | `ClimateExplorer.WebApi` | Minimal API backend; serves dataset, location, region, and climate-record data; file-backed two-layer cache |
 | `ClimateExplorer.WebApiClient` | `IDataService` / `DataService` / `DataServiceCache` — typed HTTP client used by the WASM app |
 | `ClimateExplorer.Core` | All shared domain models, enums, data-prep pipeline, math helpers (no UI dependencies) |
 | `ClimateExplorer.SourceData` | Raw data file infrastructure |
-| `ClimateExplorer.DataPipeline` | Orchestrates data ingestion tools — **avoid building frequently**: its build step creates zip files that are slow to create |
+| `ClimateExplorer.DataPipeline` | Orchestrates data ingestion tools — **avoid building**: its build step creates zip files |
 | `ClimateExplorer.Data.*` (6 projects) | Data importers: BOM, GHCND, GHCNM, ISD, CO2/misc |
 | `ClimateExplorer.CachingTool` | CLI tool to pre-warm the API cache |
 | `ClimateExplorer.UnitTests` | xUnit tests for Core maths, bin identifiers, data reading |
@@ -54,7 +54,8 @@ ChartablePage (Index / RegionalAndGlobal)
 ├── LocationInfo              (Index only)
 │   ├── OverviewField (×n)
 │   ├── ClimateStripe (×2)
-│   └── ExtremeYears (×2)
+│   ├── ExtremeYears (×2)
+│   └── ClimateRecords
 └── ChartView
     ├── Collapsible ("Chart", AllowCollapse=false)
     ├── ChartSeriesListView
