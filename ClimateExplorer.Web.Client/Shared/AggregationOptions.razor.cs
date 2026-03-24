@@ -48,11 +48,11 @@ public partial class AggregationOptions
     private static string GroupingDaysText(int groupingDays) =>
         groupingDays switch
         {
-            7 => "52 groups - 7 days each",
-            14 => "26 groups - 14 days each",
-            28 => "13 groups - 28 days each",
-            91 => "4 groups - 91 days each",
-            182 => "2 groups - 182 days each",
+            7 => "Weekly",
+            14 => "Fortnightly",
+            28 => "Monthly (28 days)",
+            91 => "Quarterly",
+            182 => "Half-yearly",
             _ => throw new NotImplementedException(groupingDays.ToString()),
         };
 

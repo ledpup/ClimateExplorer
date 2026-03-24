@@ -1,21 +1,19 @@
 ﻿@namespace ClimateExplorer.Web.Client.Shared.Info
 
-<p>Aggregation options allow you to change the underlying aggregation process. To calculate a single aggregated value for a year, data is bundled together from daily or monthly series. Climate data follow cyclical annual patterns. Data missing from a consecutive block is considered to be more untrustworthy than sporadic data missing throughout the year. This approach allows for a number of records to be missing for a year, so long as not too many consecutive days are missing.</p>
+<p>Climate data follows cyclical annual patterns. Consecutive missing days are less representative than sporadic gaps. Aggregation options control how daily or monthly data are bundled into averages or sums. Each setting takes effect immediately.</p>
 
-<p>By default, the bundles are groups of 14 days (fortnights) and each bundle requires 70% of the records (10 days of the 14) to be present for the year to be considered reliable enough for an average mean to be calculated.</p>
+<p>The default is 14-day (fortnightly) groups with a 70% threshold — at least 10 of the 14 days in each group must be present for the bundle to be included. A missing bundle will invalidate the set (usually the average for the year).</p>
 
-<p>Some presets (specifically, the cryosphere reference data – sea ice extent and melt) have a lower threshold applied to them because the data has been previously curated; it is considered sufficiently trustworthy that more of it can be missing while not corrupting the results.</p>
+<p>Some presets (such as cryosphere data — sea ice extent and melt) use a lower threshold because the data has been previously curated and can tolerate more missing records without affecting reliability.</p>
 
-<p>If you make changes to these settings and apply them, your settings will take precedence and override any preset specific settings.</p>
+<h5>Grouping days</h5>
+<p>The size of each bundle — weekly, fortnightly, four-weekly, quarterly, or half-yearly.</p>
 
-<h5>Day grouping</h5>
-<p>Select groups from weekly, fortnightly, monthly, and half-yearly, amongst other options.</p>
+<h5>Threshold (%)</h5>
+<p>The minimum percentage of records that must be present in a group for it to count toward the average.</p>
 
-<h5>Threshold required to form a valid group (% percentage)</h5>
-<p>This is a percentage of how many records is considered sufficient to form a valid bundle of data.</p>
+<h5>Override preset threshold</h5>
+<p>When checked, your threshold setting takes precedence over any preset-specific threshold. This persists as you change locations and datasets.</p>
 
-<h5>Apply</h5>
-<p>Save your changes and apply them to the chart. These settings will persist as you change locations and datasets within the application.</p>
-
-<h5>Clear override</h5>
-<p>This will reset the settings back to their default (14 days at 70% threshold). Only appears after applying your settings.</p>
+<h5>Reset</h5>
+<p>Returns all options to their defaults (14 days, 70%). Only enabled when the options have been changed.</p>
