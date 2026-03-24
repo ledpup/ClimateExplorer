@@ -35,7 +35,14 @@
                 <div class="entry">
                     <div class="title">Dataset</div>
                     <div class="value">
-                        <a href="@sss.DataSetDefinition!.MoreInformationUrl" target="_blank">@sss.DataSetDefinition.Name</a>
+                        @if (sss.DataSetDefinition!.MoreInformationUrl != null)
+                        {
+                            <a href="@sss.DataSetDefinition.MoreInformationUrl" target="_blank">@sss.DataSetDefinition.Name</a>
+                        }
+                        else
+                        {
+                            @sss.DataSetDefinition.Name
+                        }
                     
                     @if (sss.DataSetDefinition.Publisher != null)
                     {

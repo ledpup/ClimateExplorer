@@ -34,6 +34,11 @@
     }
 }
 
+/* CLS fix: reserve space for LocationInfo async content */
+.location-info-container {
+    min-height: 410px;
+}
+
 @media only screen and (max-width: 1024px) {
     .map-space-reserver {
         margin-bottom: 10px;
@@ -60,6 +65,8 @@
     .location-info-container {
         /* On larger screens, make room for the map to appear to the right of the location info section */
         margin-top: 0px;
+        /* CLS fix: desktop fields fit in 1 row so total height is less than mobile */
+        min-height: 265px;
     }
 }
 
