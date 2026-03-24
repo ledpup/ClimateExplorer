@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Web.Client.Shared.PopupContent;
+namespace ClimateExplorer.Web.Client.Shared.Info;
 
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.Model;
