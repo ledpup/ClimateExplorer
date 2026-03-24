@@ -45,7 +45,7 @@
 
                         <ChartAxisListView Axes="CurrentAxes" ScaleToZero="AxesScaleToZero" OnChanged="@BuildDataSets" />
 
-                        <button class="chart-control" @onclick="@(() => ShowOptionsModal())"><i class="fas fa-cog"></i> Aggregation options</button>
+                        <AggregationOptions CurrentThreshold="@InternalGroupingThreshold" CurrentGroupingDays="@SelectedGroupingDays" UserOverride="@UserOverridePresetAggregationSettings" OnChanged="@((s) => OnAggregationSettingsChanged(s))" />
 
                         <div class="info-icon">
                             <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowChartOptionsInfo></i>
@@ -58,8 +58,6 @@
         </Collapsible>
     </div>
 </LoadingIndicator>
-
-<AggregationOptions @ref="aggregationOptionsModal" OnChanged="@((s) => OnAggregationSettingsChanged(s))" />
 
 <InfoPanel @ref="chartOptionsInfoPanel" Title="Chart options information" Height="60vh">
     <ChartOptionsInfo />

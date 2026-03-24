@@ -32,7 +32,6 @@ public partial class ChartView
     private BinIdentifier? chartStartBin;
     private BinIdentifier? chartEndBin;
 
-    private AggregationOptions? aggregationOptionsModal;
     private InfoPanel? chartOptionsInfoPanel;
 
     private string? groupingThresholdText;
@@ -1486,11 +1485,6 @@ public partial class ChartView
     private async Task ShowAddDataSetModal()
     {
         await ShowAddDataSetModalEvent.InvokeAsync();
-    }
-
-    private Task ShowOptionsModal()
-    {
-        return aggregationOptionsModal!.Show(InternalGroupingThreshold, SelectedGroupingDays, UserOverridePresetAggregationSettings);
     }
 
     private async Task OnAggregationSettingsChanged(AggregationSettings settings)

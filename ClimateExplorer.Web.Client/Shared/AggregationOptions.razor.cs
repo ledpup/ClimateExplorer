@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Components;
 
 public partial class AggregationOptions
 {
-    private Modal? modal;
     private InfoPanel? aggregationOptionsInfoPanel;
 
     private string? thresholdText;
@@ -14,16 +13,36 @@ public partial class AggregationOptions
     private bool overridePresetThreshold;
 
     [Parameter]
+    public float CurrentThreshold { get; set; }
+
+    [Parameter]
+    public short CurrentGroupingDays { get; set; }
+
+    [Parameter]
+    public bool UserOverride { get; set; }
+
+    [Parameter]
     public EventCallback<AggregationSettings> OnChanged { get; set; }
 
     private bool HaveOptionsChanged => overridePresetThreshold || thresholdText != "70" || currentGroupingDays != 14;
 
-    public Task Show(float currentThreshold, short groupingDays, bool userOverride)
+    protected override void OnParametersSet()
     {
-        thresholdText = MathF.Round(currentThreshold * 100, 0).ToString();
-        currentGroupingDays = groupingDays;
-        overridePresetThreshold = userOverride;
-        return modal!.Show();
+        var newThresholdText = MathF.Round(CurrentThreshold * 100, 0).ToString();
+        if (newThresholdText != thresholdText)
+        {
+            thresholdText = newThresholdText;
+        }
+
+        if (CurrentGroupingDays != currentGroupingDays)
+        {
+            currentGroupingDays = CurrentGroupingDays;
+        }
+
+        if (UserOverride != overridePresetThreshold)
+        {
+            overridePresetThreshold = UserOverride;
+        }
     }
 
     private static string GroupingDaysText(int groupingDays) =>
