@@ -120,6 +120,7 @@ th {
 .chart-controls .chart-control {
     padding: 8px;
     background-color: #f8f8f8;
+    border: none;
     border-radius: 8px;
     margin: 8px;
     text-decoration: none;
@@ -128,6 +129,7 @@ th {
     display: inline-block;
     position: relative;
     user-select: none;
+    font: inherit;
     font-size: 16px;
     vertical-align: text-bottom;
     box-shadow: rgb(0 0 0 / 20%) 0px 0px 6px;

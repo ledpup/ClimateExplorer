@@ -11,7 +11,15 @@ public partial class RegionalAndGlobal : ChartablePage
     {
         get
         {
-            return $"Regional and global long-term climate trends";
+            return $"ClimateExplorer - Regional and global long-term climate trends";
+        }
+    }
+
+    protected override string PageDescription
+    {
+        get
+        {
+            return "Explore regional and global long-term climate trends. View CO₂ levels, sea ice extent, sea level rise, and global temperature anomalies.";
         }
     }
 

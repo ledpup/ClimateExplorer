@@ -2,6 +2,10 @@
     color: inherit;
     text-decoration: none;
     cursor: pointer;
+    background: none;
+    border: none;
+    font: inherit;
+    padding: 0;
 }
 
     .subtle-link:hover {

@@ -21,8 +21,11 @@
     cursor: pointer;
     color: #09C2FC;
     font-weight: bold;
-    cursor: pointer;
     text-decoration: none;
+    background: none;
+    border: none;
+    font: inherit;
+    padding: 0;
 }
 
 .add-dataset:hover {
