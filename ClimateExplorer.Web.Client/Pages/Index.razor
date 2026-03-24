@@ -30,14 +30,12 @@
     <CollapsedContent>
         @if (!suggestedChartsCollapsible!.ShowContent)
         {
-            if (IsMobileDevice == true)
-            {
-                <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@Location" OnChartPresetSelected="@OnChartPresetSelected" ExpandUpwards="false" PresetType="PresetTypes.MobileLocation" />
-            }
-            else
-            {
+            <div class="suggested-mini-only">
                 <SuggestedChartsMini DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@Location" OnChartPresetSelected="@OnChartPresetSelected" OnClickCollapser="@ToggleSuggestedCharts" />
-            }
+            </div>
+            <div class="suggested-mobile-only">
+                <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" SelectedLocation="@Location" OnChartPresetSelected="@OnChartPresetSelected" ExpandUpwards="false" PresetType="PresetTypes.MobileLocation" />
+            </div>
         }
     </CollapsedContent>
     <Content>

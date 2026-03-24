@@ -7,6 +7,22 @@
     margin-bottom: -10px;
 }
 
+/* CLS fix: render both suggested-chart variants immediately; CSS controls which is visible.
+   This avoids a layout shift when IsMobileDevice resolves from null after first render. */
+.suggested-mobile-only {
+    display: none;
+}
+
+@media only screen and (max-width: 1024px) {
+    .suggested-mobile-only {
+        display: block;
+    }
+
+    .suggested-mini-only {
+        display: none;
+    }
+}
+
 @media only screen and (max-width: 1024px) {
     .map-space-reserver {
         margin-bottom: 10px;
