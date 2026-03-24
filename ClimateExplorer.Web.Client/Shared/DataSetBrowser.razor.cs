@@ -68,13 +68,8 @@ public partial class DataSetBrowser
             }
 
             // Daily temperature range
-            var bestAvailableTempMax =
-                    measurements.SingleOrDefault(x => x.Item2.DataType == DataType.TempMax && x.Item2.DataAdjustment == DataAdjustment.Adjusted)
-                ?? measurements.SingleOrDefault(x => x.Item2.DataType == DataType.TempMax && x.Item2.DataAdjustment == null);
-
-            var bestAvailableTempMin =
-                    measurements.SingleOrDefault(x => x.Item2.DataType == DataType.TempMax && x.Item2.DataAdjustment == DataAdjustment.Adjusted)
-                ?? measurements.SingleOrDefault(x => x.Item2.DataType == DataType.TempMax && x.Item2.DataAdjustment == null);
+            var bestAvailableTempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, CurrentLocation.Id, DataSubstitute.DailyMaxTemperatureDataMatches(), throwIfNoMatch: false);
+            var bestAvailableTempMin = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, CurrentLocation.Id, DataSubstitute.DailyMinTemperatureDataMatches(), throwIfNoMatch: false);
 
             if (bestAvailableTempMax != null && bestAvailableTempMin != null)
             {
@@ -86,16 +81,16 @@ public partial class DataSetBrowser
                                 new DataSetLibraryEntry.SourceSeriesSpecification
                                 {
                                     DataType = DataType.TempMax,
-                                    DataAdjustment = bestAvailableTempMax.Item2.DataAdjustment,
-                                    SourceDataSetId = bestAvailableTempMax.Item1.Id,
+                                    DataAdjustment = bestAvailableTempMax.MeasurementDefinition!.DataAdjustment,
+                                    SourceDataSetId = bestAvailableTempMax.DataSetDefinition!.Id,
                                     LocationId = CurrentLocation.Id,
                                     LocationName = CurrentLocation.Name,
                                 },
                                 new DataSetLibraryEntry.SourceSeriesSpecification
                                 {
                                     DataType = DataType.TempMin,
-                                    DataAdjustment = bestAvailableTempMin.Item2.DataAdjustment,
-                                    SourceDataSetId = bestAvailableTempMin.Item1.Id,
+                                    DataAdjustment = bestAvailableTempMin.MeasurementDefinition!.DataAdjustment,
+                                    SourceDataSetId = bestAvailableTempMin.DataSetDefinition!.Id,
                                     LocationId = CurrentLocation.Id,
                                     LocationName = CurrentLocation.Name,
                                 },
@@ -104,24 +99,26 @@ public partial class DataSetBrowser
                             Name = "Daily temperature range",
                         });
 
-                currentLocationFolder.DataSets.Add(
-                    new DataSetLibraryEntry()
+                if (!measurements.Any(x => x.Item2.DataType == DataType.TempMean))
+                {
+                    currentLocationFolder.DataSets.Add(
+                        new DataSetLibraryEntry()
                         {
                             SourceSeriesSpecifications =
                             [
                                 new DataSetLibraryEntry.SourceSeriesSpecification
                                 {
                                     DataType = DataType.TempMax,
-                                    DataAdjustment = bestAvailableTempMax.Item2.DataAdjustment,
-                                    SourceDataSetId = bestAvailableTempMax.Item1.Id,
+                                    DataAdjustment = bestAvailableTempMax.MeasurementDefinition!.DataAdjustment,
+                                    SourceDataSetId = bestAvailableTempMax.DataSetDefinition!.Id,
                                     LocationId = CurrentLocation.Id,
                                     LocationName = CurrentLocation.Name,
                                 },
                                 new DataSetLibraryEntry.SourceSeriesSpecification
                                 {
                                     DataType = DataType.TempMin,
-                                    DataAdjustment = bestAvailableTempMin.Item2.DataAdjustment,
-                                    SourceDataSetId = bestAvailableTempMin.Item1.Id,
+                                    DataAdjustment = bestAvailableTempMin.MeasurementDefinition!.DataAdjustment,
+                                    SourceDataSetId = bestAvailableTempMin.DataSetDefinition!.Id,
                                     LocationId = CurrentLocation.Id,
                                     LocationName = CurrentLocation.Name,
                                 },
@@ -129,11 +126,12 @@ public partial class DataSetBrowser
                             SeriesDerivationType = SeriesDerivationTypes.AverageOfMultipleSeries,
                             Name = "Average of maximum and minimum temperatures",
                         });
+                }
             }
 
             RootFolders.Add(currentLocationFolder);
 
-            if (PreviousLocation != null)
+            if (PreviousLocation != null && PreviousLocation.Id != CurrentLocation.Id)
             {
                 var measurementsForPreviousLocation = DataSetDefinitionViewModel.GetMeasurementsForLocation(DataSetDefinitions!, PreviousLocation.Id);
 
@@ -183,7 +181,10 @@ public partial class DataSetBrowser
                     }
                 }
 
-                RootFolders.Add(comparisonFolder);
+                if (comparisonFolder.DataSets.Count > 0)
+                {
+                    RootFolders.Add(comparisonFolder);
+                }
             }
         }
 
@@ -463,10 +464,12 @@ public partial class DataSetBrowser
 
             case DataType.Precipitation:
                 segments.Add("Precipitation");
+                segments.Add(md.DataResolution.ToString());
                 break;
 
             case DataType.SolarRadiation:
                 segments.Add("Solar radiation");
+                segments.Add(md.DataResolution.ToString());
                 break;
 
             case DataType.SeaIceExtent:

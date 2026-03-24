@@ -56,6 +56,8 @@ public partial class Index : ChartablePage
     private string? BrowserLocationErrorMessage { get; set; }
     private Location? Location { get; set; }
 
+    private Location? PreviousLocation { get; set; }
+
     private bool LocationChangeEventOccurring { get; set; } = false;
 
     public override void Dispose()
@@ -221,13 +223,14 @@ public partial class Index : ChartablePage
     {
         Logger!.LogInformation("SelectedLocationChangedInternal(): " + newValue);
 
-        if (!LocationDictionary!.ContainsKey(newValue))
+        if (!LocationDictionary!.TryGetValue(newValue, out Location? value))
         {
             Logger!.LogError($"{newValue} doesn't exist in the list of locations. Exiting SelectedLocationChangedInternal()");
             return;
         }
 
-        Location = LocationDictionary[newValue];
+        PreviousLocation = Location;
+        Location = value;
 
         await LocalStorage!.SetItemAsync("lastLocationId", newValue.ToString());
 
