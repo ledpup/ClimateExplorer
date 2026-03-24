@@ -1,0 +1,244 @@
+@using Blazorise
+@using Blazorise.LoadingIndicator
+@using ClimateExplorer.Core
+@using ClimateExplorer.Core.DataPreparation
+@using ClimateExplorer.Core.Model
+@using ClimateExplorer.Core.ViewModel
+@using ClimateExplorer.Web.Client.Services
+@using ClimateExplorer.Web.Client.UiModel
+@using ClimateExplorer.Web.UiModel
+@using System.Globalization
+@using ClimateExplorer.Web.Client.Shared
+@using ClimateExplorer.WebApiClient.Services
+@using static ClimateExplorer.Core.Enums
+@using Microsoft.Extensions.Logging
+
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <Tabs SelectedTab="@ActiveView.ToString()" SelectedTabChanged="@OnViewChanged">
+        <Items>
+            <Tab Name="Daily">Daily</Tab>
+            <Tab Name="Monthly">Monthly</Tab>
+            <Tab Name="Yearly">Yearly</Tab>
+        </Items>
+    </Tabs>
+    <div class="info-icon">
+        <i class="fas fa-circle-info" @onclick=ShowColourExplainerInfo></i>
+    </div>
+</div>
+
+@if (AvailableDataTypes.Count > 0)
+{
+    <Fields>
+        <Field ColumnSize="ColumnSize.IsAuto">
+            <FieldLabel>Data type</FieldLabel>
+            <FieldBody>
+                <Select TValue="DataType"
+                        Value="@SelectedDataType"
+                        ValueChanged="@OnDataTypeChanged"
+                        Size="Size.Small">
+                    @foreach (var dt in AvailableDataTypes.OrderBy(x => x))
+                    {
+                        <SelectItem Value="@dt">@ChartSeriesDefinition.MapDataTypeToFriendlyName(dt)</SelectItem>
+                    }
+                </Select>
+            </FieldBody>
+        </Field>
+        @if (ActiveView == RecordView.Daily || ActiveView == RecordView.Monthly)
+        {
+            <Field ColumnSize="ColumnSize.IsAuto">
+                <FieldLabel>Month</FieldLabel>
+                <FieldBody>
+                    <Select TValue="int"
+                            Value="@SelectedMonth"
+                            ValueChanged="@OnMonthChanged"
+                            Size="Size.Small">
+                        <SelectItem Value="0">All months</SelectItem>
+                        @for (int m = 1; m <= 12; m++)
+                        {
+                            var monthNum = m;
+                            <SelectItem Value="@monthNum">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNum)</SelectItem>
+                        }
+                    </Select>
+                </FieldBody>
+            </Field>
+        }
+        @if (AvailableDataAdjustments.Count > 1)
+        {
+            <Field ColumnSize="ColumnSize.IsAuto">
+                <FieldLabel>Adjustment</FieldLabel>
+                <FieldBody>
+                    <Select TValue="string"
+                            Value="@DataAdjustmentToString(SelectedDataAdjustment)"
+                            ValueChanged="@OnDataAdjustmentStringChanged"
+                            Size="Size.Small">
+                        @foreach (var da in AvailableDataAdjustments)
+                        {
+                            <SelectItem Value="@DataAdjustmentToString(da)">@(da.HasValue? da.Value.ToString() : "None")</SelectItem>
+                        }
+                    </Select>
+                </FieldBody>
+            </Field>
+        }
+        </Fields>
+}
+<LoadingIndicator @bind-Visible="@LoadingIndicatorVisible">
+    @if (ClimateRecordsResult?.Records is { Count: > 0 })
+    {
+        <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
+                    @if (ActiveView == RecordView.Yearly)
+                    {
+                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Anomaly</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>Average <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
+                    }
+                    else
+                    {
+                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>@(ActiveView == RecordView.Monthly ? "Average" : "Value") <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
+                    }
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                @{
+                    var rank = ((CurrentPage - 1) * Count) + 1;
+                    foreach (var (record, rowStyle) in ClimateRecordsResult!.Records.Zip(ComputedRowStyles))
+                    {
+                        var currentRank = rank;
+                        <tr>
+                            <td class="text-center" style="@rowStyle">@currentRank</td>
+                            @if (ActiveView == RecordView.Yearly)
+                            {
+                                <td style="@rowStyle">@record.Year</td>
+                                <td class="text-end" style="@rowStyle">@(record.Anomaly.HasValue ? FormatAnomaly(record.Anomaly.Value, record.UnitOfMeasure) : "N/A")</td>
+                                <td class="text-end" style="@rowStyle">@(record.Average.HasValue ? FormatValue(record.Average.Value, record.UnitOfMeasure) : "N/A")</td>
+                            }
+                            else
+                            {
+                                <td style="@rowStyle">
+                                    @if (record.Day.HasValue)
+                                    {
+                                        <span class="secondary-text">@record.Day @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="secondary-text">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(record.Month)</span>
+                                    }
+                                </td>
+                                <td style="@rowStyle">@record.Year</td>
+                                <td class="text-end" style="@rowStyle">@FormatValue(record.Value, record.UnitOfMeasure)</td>
+                            }
+                        </tr>
+                        rank++;
+                    }
+                }
+            </TableBody>
+        </Table>
+    }
+    else if (ClimateRecordsResult is null && LoadingIndicatorVisible)
+    {
+        <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
+                    @if (ActiveView == RecordView.Yearly)
+                    {
+                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Anomaly</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>Average <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
+                    }
+                    else
+                    {
+                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>@(ActiveView == RecordView.Monthly ? "Average" : "Value") <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
+                    }
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                @for (int i = 0; i < Count; i++)
+                {
+                    <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                }
+            </TableBody>
+        </Table>
+    }
+    else
+    {
+        <p>No records found for the selected filters.</p>
+    }
+</LoadingIndicator>
+
+@if (ClimateRecordsResult?.Records is { Count: > 0 })
+{
+    <div class="d-flex flex-column flex-md-row align-items-center justify-content-between mt-3 gap-2">
+        <div class="d-flex flex-wrap align-items-center justify-content-center gap-2">
+            <Pagination Class="mb-0">
+                <PaginationItem Disabled="@(CurrentPage == 1)">
+                    <PaginationLink Clicked="@(() => OnPageChanged(CurrentPage - 1))">
+                        <span aria-hidden="true">«</span>
+                    </PaginationLink>
+                </PaginationItem>
+                @foreach (var pageNum in GetVisiblePages())
+                {
+                    @if (pageNum == -1)
+                    {
+                        <PaginationItem Disabled="true">
+                            <PaginationLink>
+                                <span>...</span>
+                            </PaginationLink>
+                        </PaginationItem>
+                    }
+                    else
+                    {
+                        var pageNumber = pageNum;
+                        <PaginationItem Active="@(CurrentPage == pageNumber)">
+                            <PaginationLink Clicked="@(() => OnPageChanged(pageNumber))">
+                                @pageNumber
+                            </PaginationLink>
+                        </PaginationItem>
+                    }
+                }
+                <PaginationItem Disabled="@(CurrentPage >= TotalPages)">
+                    <PaginationLink Clicked="@(() => OnPageChanged(CurrentPage + 1))">
+                        <span aria-hidden="true">»</span>
+                    </PaginationLink>
+                </PaginationItem>
+            </Pagination>
+            <div class="d-flex align-items-center gap-1">
+                <span>Per page:</span>
+                <Select TValue="int"
+                        Value="@Count"
+                        ValueChanged="@OnCountChanged"
+                        Size="Size.Small"
+                        Style="width: 80px;">
+                    <SelectItem Value="10">10</SelectItem>
+                    <SelectItem Value="20">20</SelectItem>
+                    <SelectItem Value="50">50</SelectItem>
+                </Select>
+            </div>
+        </div>
+        <span class="text-muted">@StartRecord-@EndRecord of @(ClimateRecordsResult.TotalCount)</span>
+    </div>
+}
+
+@if (ClimateRecordsResult?.Records is { Count: > 0 })
+{
+    <div class="d-flex justify-content-end mt-2">
+        <a class="subtle-link" @onclick="DownloadAllRecords"><i class="fas fa-download"></i> Download</a>
+    </div>
+}
+
+<InfoPanel @ref="colourExplainerInfoPanel" Title="Row colours">
+    <p>The colours in these tables indicate the relative age of each record.</p>
+    <ul>
+        <li><b>Red</b> marks a recent record.</li>
+        <li><b>Pale red, pale blue, or white</b> indicate records from the middle of the dataset.</li>
+        <li><b>Blue</b> highlights an early record.</li>
+    </ul>
+    <p>When a dataset shows no clear trend, we expect to see records from anywhere in the time series. If you see records that are predominately blue or red in the table above, that is an indication of climate change.</p>
+</InfoPanel>
+

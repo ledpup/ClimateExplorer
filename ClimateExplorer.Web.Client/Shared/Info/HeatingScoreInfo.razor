@@ -1,4 +1,5 @@
-﻿@using Blazorise
+@namespace ClimateExplorer.Web.Client.Shared.Info
+@using Blazorise
 @using ClimateExplorer.Core.Model
 @using ClimateExplorer.WebApiClient.Services
 @using System
@@ -43,24 +44,3 @@
     </Table>
 }
 
-@code
-{
-    [Inject]
-    public IDataService? DataService { get; set; }
-
-    [Parameter]
-    public Location? Location { get; set; }
-
-    [PersistentState]
-    public IEnumerable<HeatingScoreRow>? HeatingScoreTable { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (HeatingScoreTable is not null)
-        {
-            return;
-        }
-
-        HeatingScoreTable = await DataService!.GetHeatingScoreTable();
-    }
-}

@@ -1,12 +1,12 @@
-﻿@page "/about"
+@page "/about"
 @using ClimateExplorer.Core.Model
 @using ClimateExplorer.WebApiClient.Services
 
 <PageTitle>ClimateExplorer - About</PageTitle>
 
 <HeadContent>
-    <meta property="og:title" content="@ogtitle" />
-    <meta property="og:url" content="@ogurl" />
+    <meta property="og:title" content="@Ogtitle" />
+    <meta property="og:url" content="@Ogurl" />
 </HeadContent>
 
 <div class="text-content centred">
@@ -227,39 +227,14 @@
 
     <h2>Diagnostics</h2>
 
-    @if (_apiMetadata != null)
+    @if (apiMetadata != null)
     {
         <div>
-            API Version: @_apiMetadata.Version
+            API Version: @apiMetadata.Version
         </div>
         <div>
-            API Build Time (UTC): @_apiMetadata.BuildTimeUtc
+            API Build Time (UTC): @apiMetadata.BuildTimeUtc
         </div>
     }
 
 </div>
-
-@code {
-    [Inject]
-    public IDataService? DataService { get; set; }
-
-    ApiMetadataModel? _apiMetadata;
-
-    protected string? ogtitle { get; set; }
-    protected string? ogurl { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        ogtitle = $"About ClimateExplorer";
-        ogurl = $"https://climateexplorer.net/about";
-
-        if (DataService == null)
-        {
-            throw new NullReferenceException(nameof(DataService));
-        }
-
-        _apiMetadata = await DataService.GetAbout();
-
-        await base.OnInitializedAsync();
-    }
-}

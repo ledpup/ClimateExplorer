@@ -6,7 +6,7 @@ using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Services;
-using ClimateExplorer.Web.Client.Shared.PopupContent;
+using ClimateExplorer.Web.Client.Shared.Info;
 using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
@@ -15,6 +15,8 @@ using static ClimateExplorer.Core.Enums;
 
 public partial class LocationInfo
 {
+    private OverviewField? recordHighField;
+
     [Inject]
     public IDataService? DataService { get; set; }
 
@@ -44,6 +46,7 @@ public partial class LocationInfo
     private bool LocationLoadingIndicatorVisible { get; set; }
     private bool StripeLoadingIndicatorVisible { get; set; }
     private bool LoadStripeData { get; set; }
+
     private bool Precipitation { get; set; }
 
     private List<YearlyValues>? TemperatureAnomalyRecords { get; set; }
@@ -74,6 +77,8 @@ public partial class LocationInfo
     {
         OnOverviewShowOrHide.InvokeAsync(showOrHide);
     }
+
+    public Task ShowRecordHighAsync() => recordHighField?.ShowPopup() ?? Task.CompletedTask;
 
     protected static string GetPrecipitationAnomalyAsString(CalculatedAnomaly anomaly)
     {
@@ -122,7 +127,7 @@ public partial class LocationInfo
                 ? null
                 : builder =>
                 {
-                    builder.OpenComponent(0, typeof(ClimateRecordsContent));
+                    builder.OpenComponent(0, typeof(ClimateRecords));
                     builder.AddAttribute(1, "Location", Location);
                     builder.CloseComponent();
                 };
@@ -151,7 +156,7 @@ public partial class LocationInfo
                         ? null
                         : builder =>
                         {
-                            builder.OpenComponent(0, typeof(WarmingAnomalyContent));
+                            builder.OpenComponent(0, typeof(WarmingAnomalyInfo));
                             builder.AddAttribute(1, "Location", Location);
                             builder.AddAttribute(2, "CalculatedAnomaly", temperatureAnomaly.CalculatedAnomaly);
                             builder.CloseComponent();
@@ -171,7 +176,7 @@ public partial class LocationInfo
                                 ? null
                                 : builder =>
                                 {
-                                    builder.OpenComponent(0, typeof(HeatingScoreContent));
+                                    builder.OpenComponent(0, typeof(HeatingScoreInfo));
                                     builder.AddAttribute(1, "Location", Location);
                                     builder.CloseComponent();
                                 };
@@ -232,7 +237,7 @@ public partial class LocationInfo
                     ? null
                     : builder =>
                     {
-                        builder.OpenComponent(0, typeof(PrecipitationAnomalyContent));
+                        builder.OpenComponent(0, typeof(PrecipitationAnomalyInfo));
                         builder.AddAttribute(1, "Location", Location);
                         builder.AddAttribute(2, "CalculatedAnomaly", precipitationAnomaly.CalculatedAnomaly);
                         builder.CloseComponent();

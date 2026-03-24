@@ -9,7 +9,7 @@
 @using ClimateExplorer.Core.DataPreparation
 @using System.Globalization
 @using ClimateExplorer.WebApiClient.Services
-@using ClimateExplorer.Web.Client.Shared.PopupContent
+@using ClimateExplorer.Web.Client.Shared.Info
 @using static ClimateExplorer.Core.Enums
 
 <Collapsible @ref="LocationCollapsible" Title="@Location?.Title" FullTitle="@Location?.FullTitle" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
@@ -38,7 +38,7 @@
             }
             @if (Location?.RecordHigh != null)
             {
-                <OverviewField Label="Record high" PopupTitle="@("Record highs and lows for " + Location?.Name)" PopupContent="@ClimateRecordsContent" ToolTip="@RecordHighToolTip"><Value>@(Location?.RecordHigh == null ? "NA" : Location?.RecordHigh.Year)</Value></OverviewField>
+                <OverviewField @ref="recordHighField" Label="Record high" PopupTitle="@("Record highs and lows for " + Location?.Name)" PopupContent="@ClimateRecordsContent" ToolTip="@RecordHighToolTip"><Value>@(Location?.RecordHigh == null ? "NA" : Location?.RecordHigh.Year)</Value></OverviewField>
             }
             @if (Precipitation && PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
             {

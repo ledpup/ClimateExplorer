@@ -1,4 +1,5 @@
-﻿@using ClimateExplorer.Core.Calculators
+@namespace ClimateExplorer.Web.Client.Shared.Info
+@using ClimateExplorer.Core.Calculators
 @using ClimateExplorer.Core.Model
 
 <p>The precipitation anomaly is the difference between the average of the last 30 years of precipitation compared with the average of the first half of the dataset. 30 years was chosen to fit the convention of the <a href="https://en.wikipedia.org/wiki/Climatological_normal" target="_blank">climatological normal</a>. The first half of the dataset is used as a proxy for a natural baseline.</p>
@@ -20,18 +21,3 @@
 
 <p>A minimum of 60 years of data is required to calculate a precipitation anomaly.</p>
 
-@code
-{
-    [Parameter]
-    public Location? Location { get; set; }
-
-    [Parameter]
-    public CalculatedAnomaly? CalculatedAnomaly { get; set; }
-
-    string? AnomalyAsString { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        AnomalyAsString = CalculatedAnomaly.ValueAsString("mm");
-    }
-}
