@@ -12,7 +12,7 @@
         </ModalHeader>
         <ModalBody>
             <Field>
-                <strong>Grouping days</strong>
+                Grouping days
                 <Select TValue="short" Value="@currentGroupingDays" ValueChanged="@OnSelectedGroupingDaysChanged">
                     <SelectItem Value="182">@GroupingDaysText(182)</SelectItem>
                     <SelectItem Value="91">@GroupingDaysText(91)</SelectItem>
@@ -22,25 +22,16 @@
                 </Select>
             </Field>
             <Field>
-                <strong>Threshold required to form a valid group (%)</strong>
+                Threshold required to form a valid group (%)
                 <TextInput Value="@thresholdText" ValueChanged="@OnThresholdTextChanged"
-                            Disabled="@(PresetGroupingThreshold != null && !overridePresetThreshold)"
-                            MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
+                           MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
             </Field>                
             <Field>
                 <Check TValue="bool" Value="@overridePresetThreshold" ValueChanged="@((bool v) => OnOverrideChanged(v))">Override preset threshold</Check>
             </Field>
             <Field>
-                <Text>
-                    Current threshold is @GetCurrentThresholdDescription()
-                </Text>
+                <Button Color="Color.Primary" Size="Size.Small" Clicked="@ResetThreshold" Disabled="@(!HaveOptionsChanged)">Reset</Button>
             </Field>
-            @if (HasThresholdChanged)
-            {
-                <Field>
-                    <Button Color="Color.Secondary" Size="Size.Small" Clicked="@ResetThreshold">Reset</Button>
-                </Field>
-            }
         </ModalBody>
     </ModalContent>
 </Modal>

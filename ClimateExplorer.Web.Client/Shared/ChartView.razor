@@ -59,9 +59,7 @@
     </div>
 </LoadingIndicator>
 
-<AggregationOptionsModal @ref="aggregationOptionsModal"
-    PresetGroupingThreshold="@(ChartSeriesList?.FirstOrDefault()?.GroupingThreshold)"
-    OnChanged="@((s) => OnAggregationSettingsChanged(s))" />
+<AggregationOptions @ref="aggregationOptionsModal" OnChanged="@((s) => OnAggregationSettingsChanged(s))" />
 
 <InfoPanel @ref="chartOptionsInfoPanel" Title="Chart options information" Height="60vh">
     <ChartOptionsInfo />

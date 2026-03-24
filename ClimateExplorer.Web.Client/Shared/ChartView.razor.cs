@@ -32,7 +32,7 @@ public partial class ChartView
     private BinIdentifier? chartStartBin;
     private BinIdentifier? chartEndBin;
 
-    private AggregationOptionsModal? aggregationOptionsModal;
+    private AggregationOptions? aggregationOptionsModal;
     private InfoPanel? chartOptionsInfoPanel;
 
     private string? groupingThresholdText;
