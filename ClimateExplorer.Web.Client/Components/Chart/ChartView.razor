@@ -1,0 +1,64 @@
+@using Blazorise
+@using Blazorise.Charts
+@using Blazorise.Charts.Trendline
+@using Blazorise.LoadingIndicator
+@using ClimateExplorer.Core.DataPreparation;
+@using ClimateExplorer.Web.Client.Components.Info
+
+<LoadingIndicator @bind-visible="@ChartLoadingIndicatorVisible">
+    <div class="chart-collapsible-parent">
+        <Collapsible Title="Chart" InitiallyShown="true" AllowCollapse="false" ContentLayoutType="Collapsible.CollapserContentLayoutTypes.FlexboxColumns" NoBottomMargin="true">
+            <Content>
+                <div class="chart-and-controls">
+                    <div class="chart-series-list-wrapper">
+                        <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
+
+                        <button class="add-series-button" @onclick="ShowAddDataSetModal">
+                            <i class="fas fa-plus"></i> Add
+                        </button>
+                    </div>
+
+                    <div class="chart-wrapper" @ref="chartWrapper">
+                        <Chart @ref="chart" TItem="double?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
+                            <ChartTrendline @ref="chartTrendline" TItem="double?" />
+                        </Chart>
+                    </div>
+
+                    <div class="chart-controls">
+                        <button class="chart-control" @onclick="ChartAllDataToggle"><i class="@( ChartAllData ? "fas fa-check-square" : "fas fa-square" )"></i> Chart all data</button>
+
+                        @if (!string.IsNullOrWhiteSpace(SelectedStartYear) || !string.IsNullOrWhiteSpace(SelectedEndYear))
+                        {
+                            <button class="chart-control" @onclick="OnClearFilter"><i class="fa-solid fa-filter-circle-xmark"></i> Clear filter</button>
+                        }
+
+                        <Dropdown>
+                            <DropdownToggle>
+                                <i class="fas fa-calendar"></i> Grouping
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYear)">Yearly</DropdownItem>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly)">Monthly</DropdownItem>
+                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByDayOnly)">Daily</DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+
+                        <ChartAxisListView Axes="CurrentAxes" ScaleToZero="AxesScaleToZero" OnChanged="@BuildDataSets" />
+
+                        <AggregationOptions CurrentThreshold="@InternalGroupingThreshold" CurrentGroupingDays="@SelectedGroupingDays" UserOverride="@UserOverridePresetAggregationSettings" OnChanged="@((s) => OnAggregationSettingsChanged(s))" />
+
+                        <div class="info-icon">
+                            <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowChartOptionsInfo></i>
+                        </div>
+
+                        <button class="chart-control chart-control-download" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download</button>
+                    </div>
+                </div>
+            </Content>
+        </Collapsible>
+    </div>
+</LoadingIndicator>
+
+<InfoPanel @ref="chartOptionsInfoPanel" Title="Chart options information" Height="60vh">
+    <ChartOptionsInfo />
+</InfoPanel>

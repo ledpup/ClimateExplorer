@@ -1,0 +1,43 @@
+@using Blazorise
+@using ClimateExplorer.Web.Client.Components.Info
+@using ClimateExplorer.Web.Client.UiModel
+
+<div class="aggregation-options-wrapper">
+    <Dropdown>
+        <DropdownToggle>
+            <i class="fas fa-cog"></i> Aggregation
+        </DropdownToggle>
+        <DropdownMenu>
+            <div class="aggregation-options-content">
+                <div class="info-row">
+                    <i class="fas fa-circle-info info-icon" @onclick="ShowAggregationOptionsInfo"></i>
+                </div>
+                <div class="section-label">Grouping days</div>
+                <div class="option-row">
+                    <Select TValue="short" Value="@currentGroupingDays" ValueChanged="@OnSelectedGroupingDaysChanged">
+                        <SelectItem Value="182">@AggregationSettings.GroupingDaysText(182)</SelectItem>
+                        <SelectItem Value="91">@AggregationSettings.GroupingDaysText(91)</SelectItem>
+                        <SelectItem Value="28">@AggregationSettings.GroupingDaysText(28)</SelectItem>
+                        <SelectItem Value="14">@AggregationSettings.GroupingDaysText(14)</SelectItem>
+                        <SelectItem Value="7">@AggregationSettings.GroupingDaysText(7)</SelectItem>
+                    </Select>
+                </div>
+                <div class="section-label">Threshold (%)</div>
+                <div class="option-row">
+                    <input type="number" class="form-control form-control-sm" min="0" max="100" step="10"
+                           value="@thresholdValue" @onchange="OnThresholdChanged" />
+                </div>
+                <div class="option-row">
+                    <Check TValue="bool" Value="@overridePresetThreshold" ValueChanged="@((bool v) => OnOverrideChanged(v))">Override preset threshold</Check>
+                </div>
+                <div class="option-row">
+                    <Button Color="Color.Primary" Size="Size.Small" Clicked="@ResetThreshold" Disabled="@(!HaveOptionsChanged)">Reset</Button>
+                </div>
+            </div>
+        </DropdownMenu>
+    </Dropdown>
+</div>
+
+<InfoPanel @ref="aggregationOptionsInfoPanel" Title="Aggregation options" Height="60vh">
+    <AggregationOptionsInfo />
+</InfoPanel>

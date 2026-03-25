@@ -1,0 +1,19 @@
+@namespace ClimateExplorer.Web.Client.Components.Info
+
+<p>Climate data follows cyclical annual patterns. Consecutive missing days are less representative than sporadic gaps. Aggregation options control how daily or monthly data are bundled into averages or sums. Each setting takes effect immediately.</p>
+
+<p>The default is 14-day (fortnightly) groups with a 70% threshold — at least 10 of the 14 days in each group must be present for the bundle to be included. A missing bundle will invalidate the set (usually the average for the year).</p>
+
+<p>Some presets (such as cryosphere data — sea ice extent and melt) use a lower threshold because the data has been previously curated and can tolerate more missing records without affecting reliability.</p>
+
+<h5>Grouping days</h5>
+<p>The size of each bundle — weekly, fortnightly, four-weekly, quarterly, or half-yearly.</p>
+
+<h5>Threshold (%)</h5>
+<p>The minimum percentage of records that must be present in a group for it to count toward the average.</p>
+
+<h5>Override preset threshold</h5>
+<p>When checked, your threshold setting takes precedence over any preset-specific threshold. This persists as you change locations and datasets.</p>
+
+<h5>Reset</h5>
+<p>Returns all options to their defaults (14 days, 70%). Only enabled when the options have been changed.</p>

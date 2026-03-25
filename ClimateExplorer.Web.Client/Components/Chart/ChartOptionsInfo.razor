@@ -1,0 +1,21 @@
+@namespace ClimateExplorer.Web.Client.Components.Info
+
+<h5>Chart all data</h5>
+<p>When checked, all data from all series will be displayed. When unchecked, data will be cropped to a starting point that all datasets share.</p>
+
+<h5>Grouping</h5>
+<p>The grouping option changes how data is aggregated on the chart:</p>
+<ul>
+    <li><strong>Yearly</strong>: each point represents a single year. Daily data is averaged or summed to the yearly level. This is the default.</li>
+    <li><strong>Monthly</strong>: data is condensed into twelve points — one per month — averaged across all years. Useful for a climatic overview rather than tracking change over time.</li>
+    <li><strong>Daily</strong>: each daily record is shown as its own point on the chart.</li>
+</ul>
+
+<h5>Axes</h5>
+<p>The Axes dropdown lets you control whether each axis scales from zero. Enabling <strong>Scale from 0</strong> for an axis forces its range to start at zero, which is useful for comparing magnitudes. Disabling it allows the axis to zoom in on the range of the data. Changes take effect immediately.</p>
+
+<h5>Aggregation options</h5>
+<p>The aggregation options let you adjust the quality rules used to determine whether a year's data is valid. Changes take effect immediately. Click the <i class="fas fa-circle-info" style="color: #79c6f4;"></i> icon inside the dropdown for a detailed explanation of each option.</p>
+
+<h5>Download data</h5>
+<p>Downloads the current chart data as a CSV file. The output matches the current view — for example, a Monthly grouping produces twelve records per year.</p>

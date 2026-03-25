@@ -17,8 +17,8 @@ public class DataSetDefinitionsBuilder
                 Publisher = "Australian Bureau of Meteorology",
                 PublisherUrl = "https://www.bom.gov.au/",
                 MoreInformationUrl = "https://www.bom.gov.au/climate/data/acorn-sat/#tabs=ACORN-SAT",
-                StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
-                LocationInfoUrl = "http://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
+                StationInfoUrl = "https://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
+                LocationInfoUrl = "https://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
                 MeasurementDefinitions =
                 [
                     new()
@@ -60,9 +60,9 @@ public class DataSetDefinitionsBuilder
                 Description = null,
                 Publisher = "Australian Bureau of Meteorology",
                 PublisherUrl = "https://www.bom.gov.au/",
-
-                StationInfoUrl = "http://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
-                LocationInfoUrl = "http://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
+                MoreInformationUrl = "https://www.bom.gov.au/",
+                StationInfoUrl = "https://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
+                LocationInfoUrl = "https://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
                 MeasurementDefinitions =
                 [
                     new()

@@ -5,6 +5,7 @@ using Blazorise.Charts.Trendline;
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
+using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiModel;
 using static ClimateExplorer.Core.Enums;
 
@@ -46,7 +47,7 @@ public static class ChartLogic
 
         if (!isMobileDevice)
         {
-            subtitle += $" | Aggregation: {groupingDays} day groups, {groupingThresholdText} threshold";
+            subtitle += $" | Aggregation: {AggregationSettings.GroupingDaysText(groupingDays)} at {groupingThresholdText}";
         }
 
         return subtitle;

@@ -1,10 +1,10 @@
-﻿namespace ClimateExplorer.Web.Client.Pages;
+namespace ClimateExplorer.Web.Client.Pages;
 
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.Web.Client.Components;
+using ClimateExplorer.Web.Client.Components.Location;
 using ClimateExplorer.Web.Client.Services;
-using ClimateExplorer.Web.Client.Shared;
-using ClimateExplorer.Web.Client.Shared.LocationComponents;
 using CurrentDevice;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
@@ -65,9 +65,9 @@ public partial class Index : ChartablePage
 
     private ChangeLocation? ChangeLocationModal { get; set; }
     private string? BrowserLocationErrorMessage { get; set; }
-    private Location? Location { get; set; }
+    private Core.Model.Location? Location { get; set; }
 
-    private Location? PreviousLocation { get; set; }
+    private Core.Model.Location? PreviousLocation { get; set; }
 
     private bool LocationChangeEventOccurring { get; set; } = false;
 
@@ -138,10 +138,10 @@ public partial class Index : ChartablePage
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    private async Task<Location?> GetNamedLocation()
+    private async Task<Core.Model.Location?> GetNamedLocation()
     {
         var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
-        Location? location = null;
+        Core.Model.Location? location = null;
         if (uri.Segments.Length > 2 && !Guid.TryParse(uri.Segments[2], out Guid locationGuid))
         {
             var locationName = uri.Segments[2];
@@ -157,7 +157,7 @@ public partial class Index : ChartablePage
         return location;
     }
 
-    private async Task<Location?> GetLocation()
+    private async Task<Core.Model.Location?> GetLocation()
     {
         if (LocationDictionary is null)
         {
@@ -234,7 +234,7 @@ public partial class Index : ChartablePage
     {
         Logger!.LogInformation("SelectedLocationChangedInternal(): " + newValue);
 
-        if (!LocationDictionary!.TryGetValue(newValue, out Location? value))
+        if (!LocationDictionary!.TryGetValue(newValue, out Core.Model.Location? value))
         {
             Logger!.LogError($"{newValue} doesn't exist in the list of locations. Exiting SelectedLocationChangedInternal()");
             return;
