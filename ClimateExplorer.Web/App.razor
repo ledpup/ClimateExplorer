@@ -35,23 +35,28 @@
     <link rel="preconnect" href="https://a.tile.openstreetmap.org">
     <link rel="preconnect" href="https://b.tile.openstreetmap.org">
     <link rel="preconnect" href="https://c.tile.openstreetmap.org">
-    <!-- DNS prefetch for CDN origins used by body scripts -->
-    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-    <link rel="dns-prefetch" href="https://unpkg.com">
+    <!-- Preconnect to CDN origins (DNS + TCP + TLS in parallel) to reduce latency for blocking CSS and scripts -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://unpkg.com">
 
     <ResourcePreloader />
     
     <link rel="stylesheet" href="@Assets["css/app.css"]" />
     <link rel="stylesheet" href="@Assets["ClimateExplorer.Web.styles.css"]" />
     
+    <!-- Layout-critical CSS: kept blocking to avoid FOUC on SSR-prerendered content -->
     <link rel="stylesheet" href="@Assets["_content/Blazorise/blazorise.css?v=1.8.8.0"]" />
-    <link rel="stylesheet" href="@Assets["_content/Blazorise.Icons.FontAwesome/v6/css/all.min.css"]" >
     <link rel="stylesheet" href="@Assets["_content/Blazorise.Bootstrap5/blazorise.bootstrap5.css?v=1.8.8.0"]" />
     <link rel="stylesheet" href="@Assets["_content/Blazorise.LoadingIndicator/blazorise.loadingindicator.css"]" />
-    <link rel="stylesheet" href="@Assets["_content/Blazorise.Snackbar/blazorise.snackbar.css"]" />
-    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+    <!-- Non-critical CSS: deferred via preload/onload to unblock initial render -->
+    <link rel="preload" href="@Assets["_content/Blazorise.Icons.FontAwesome/v6/css/all.min.css"]" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="@Assets["_content/Blazorise.Icons.FontAwesome/v6/css/all.min.css"]" /></noscript>
+    <link rel="preload" href="@Assets["_content/Blazorise.Snackbar/blazorise.snackbar.css"]" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="@Assets["_content/Blazorise.Snackbar/blazorise.snackbar.css"]" /></noscript>
+    <link rel="preload" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <noscript><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" /></noscript>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -167,6 +172,28 @@
             // Fake a window resize so that the leaflet map control realises it has resized.
             window.dispatchEvent(new Event("resize"));
         }
+
+        // Stamp fetchpriority="high" on the first batch of Leaflet tiles so the browser
+        // fetches the initial-viewport tiles at high priority once Leaflet creates them.
+        // This is the only available mitigation for Lighthouse "fetchpriority=high should
+        // be applied" on LCP tiles — the tiles themselves are JS-injected and cannot be
+        // made discoverable via preload hints.
+        document.addEventListener('DOMContentLoaded', function () {
+            var tileCount = 0;
+            var observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (mutation) {
+                    mutation.addedNodes.forEach(function (node) {
+                        if (node.nodeName === 'IMG' && node.classList.contains('leaflet-tile')) {
+                            node.fetchPriority = 'high';
+                            if (++tileCount >= 20) {
+                                observer.disconnect();
+                            }
+                        }
+                    });
+                });
+            });
+            observer.observe(document.body, { subtree: true, childList: true });
+        });
 
         function showOrHideMap(show) {
             var mapElement = document.getElementById("mapContainerContainer");

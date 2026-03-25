@@ -1,3 +1,8 @@
+/* CLS fix: reserve vertical space for series cards */
+.chart-series-list-wrapper {
+    min-height: 54px;
+}
+
 @media only screen and (max-width: 1024px) {
     .chart-wrapper {
         flex-grow: 0;
