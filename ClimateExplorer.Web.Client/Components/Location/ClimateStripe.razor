@@ -1,0 +1,43 @@
+@using Blazorise
+@using ClimateExplorer.Web.Client.Components.Info
+@using ClimateExplorer.Web.UiModel
+@using ClimateExplorer.Core.DataPreparation
+@using static ClimateExplorer.Core.Enums
+
+<div class="climate-stripe">
+    @if (DataRecords != null)
+    {
+        foreach (var record in DataRecords)
+        {
+            <div title="@GetTitle(record)" class="single-stripe" style="background-color: @GetColour(record.Relative); cursor: pointer; --label-colour: @GetLabelColour(record.Relative);" @onclick="() => FilterToYear(record.Year)">
+                <div class="label" style="border-color: @GetLabelColour(record.Relative)">
+                    <div class="year">@record.Year</div>
+                    <div class="rel">@GetRelativeValue(record)</div>
+                    <div class="abs">@GetAbsoluteValue(record.Absolute)</div>
+                </div>
+            </div>
+        }
+        @if (ShowInfo)
+        {
+            <div class="info-icon">
+                <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowClimateStripeInfo></i>
+            </div>
+        }
+    }
+
+    @if (ShowInfo)
+    {
+        <Modal @ref="popup" Size="ModalSize.Large">
+            <ModalContent>
+                <ModalHeader Class="custom-modal-header">
+                    <ModalTitle>Climate stripe</ModalTitle>
+                    <CloseButton />
+                </ModalHeader>
+                <ModalBody>
+                    <ClimateStripeInfo LocationName="@LocationName" LocationMean="@LocationMean" UnitOfMeasure="@UnitOfMeasure" DataRecords="@DataRecords" />
+                </ModalBody>
+            </ModalContent>
+        </Modal>
+    }
+</div>
+

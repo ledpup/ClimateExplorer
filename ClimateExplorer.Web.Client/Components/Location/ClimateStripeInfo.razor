@@ -1,0 +1,49 @@
+@using Blazorise.Charts
+@using ClimateExplorer.Web.UiModel
+@using static ClimateExplorer.Core.Enums
+
+@if (LocationName is not null && LocationMean is not null && UnitOfMeasure is not null && DataRecords is not null)
+{
+    <p><a href="https://en.wikipedia.org/wiki/Warming_stripes" target="_blank">Climate stripes</a> are a simplified bar chart of average climate measurements, ordered by year, from the earliest year in the record to the most recent. Each coloured stripe represents a single year of data. A blue stripe represents a year where the value is below the series average. A red stripe represents a year where the value is above the series average.</p>
+    <p>Climate stripe colours are calculated by the following algorithm, using temperature as the example.</p>
+    <ol>
+        <li>
+            Calculate the average for the whole series<br />
+        </li>
+        <li>
+            For each year in the series, subtract the average for the <strong>series</strong> from the average for the <strong>year</strong><br />
+            Note:
+            <ul>
+                <li>The value in step 2 is called the anomaly</li>
+                <li>If the anomaly is above 0@(uomString), it is an above average year</li>
+                <li>If the anomaly is below 0@(uomString), it is a below average year</li>
+            </ul>
+        </li>
+        <li>
+            Find the lowest anomaly and assign it the strongest colour of blue<br />
+        </li>
+        <li>
+            Find the highest anomaly and assign it the strongest colour of red<br />
+        </li>
+        <li>All anomalies between the extremes are lighter shades of blue or red</li>
+    </ol>
+
+    <p>For example, <strong>@LocationName</strong>:</p>
+    <ul>
+        <li>
+             Mean is @Math.Round(LocationMean.Value, uomRounding)@uomString for years @DataRecords!.First().Year-@DataRecords!.Last().Year
+        </li>
+        <li>
+            The coldest temperature anomaly is @(Math.Round(min, uomRounding) >= 0 ? "+" : string.Empty)@Math.Round(min, uomRounding)@uomString
+        </li>
+        <li>
+            The warmest temperature anomaly is @(Math.Round(max, uomRounding) >= 0 ? "+" : string.Empty)@Math.Round(max, uomRounding)@uomString
+        </li>
+        <li>
+            If a yearly average were @Math.Round(LocationMean.Value - 1.3, uomRounding)@(uomString), the anomaly would be -1.3@(uomString)<br /> — a below average year, shown as blue on the climate stripe @(-1.3 < min ? "(and set as the new lowest anomaly)" : string.Empty)
+        </li>
+    </ul>
+    
+    <p>ClimateExplorer's stripe is interactive. Hover over a stripe to see its year, then click to update the chart with a monthly view of that year.</p>
+}
+
