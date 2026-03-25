@@ -10,6 +10,11 @@
     padding: 0;
 }
 
+.aggregation-options-wrapper ::deep .info-row {
+    text-align: right;
+    padding: 4px 16px 0;
+}
+
 .aggregation-options-wrapper ::deep .section-header {
     display: flex;
     align-items: center;

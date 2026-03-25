@@ -108,10 +108,12 @@
 }
 
     .chart-controls .info-icon {
-        margin-left: 0px;
+        padding: 8px 0;
+        margin-top: -6px;
         color: #79c6f4;
         font-size: larger;
-        display: inline-block;
+        display: flex;
+        align-items: center;
     }
 
 .add-series-button {

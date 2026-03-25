@@ -1,31 +1,31 @@
 @using Blazorise
 @using ClimateExplorer.Web.Client.Shared.Info
+@using ClimateExplorer.Web.Client.UiModel
 
 <div class="aggregation-options-wrapper">
     <Dropdown>
         <DropdownToggle>
-            <i class="fas fa-cog"></i> Aggregation options
+            <i class="fas fa-cog"></i> Aggregation
         </DropdownToggle>
         <DropdownMenu>
             <div class="aggregation-options-content">
-                <div class="section-header">
-                    <span class="section-title">Options</span>
+                <div class="info-row">
                     <i class="fas fa-circle-info info-icon" @onclick="ShowAggregationOptionsInfo"></i>
                 </div>
                 <div class="section-label">Grouping days</div>
                 <div class="option-row">
                     <Select TValue="short" Value="@currentGroupingDays" ValueChanged="@OnSelectedGroupingDaysChanged">
-                        <SelectItem Value="182">@GroupingDaysText(182)</SelectItem>
-                        <SelectItem Value="91">@GroupingDaysText(91)</SelectItem>
-                        <SelectItem Value="28">@GroupingDaysText(28)</SelectItem>
-                        <SelectItem Value="14">@GroupingDaysText(14)</SelectItem>
-                        <SelectItem Value="7">@GroupingDaysText(7)</SelectItem>
+                        <SelectItem Value="182">@AggregationSettings.GroupingDaysText(182)</SelectItem>
+                        <SelectItem Value="91">@AggregationSettings.GroupingDaysText(91)</SelectItem>
+                        <SelectItem Value="28">@AggregationSettings.GroupingDaysText(28)</SelectItem>
+                        <SelectItem Value="14">@AggregationSettings.GroupingDaysText(14)</SelectItem>
+                        <SelectItem Value="7">@AggregationSettings.GroupingDaysText(7)</SelectItem>
                     </Select>
                 </div>
                 <div class="section-label">Threshold (%)</div>
                 <div class="option-row">
-                    <TextInput Value="@thresholdText" ValueChanged="@OnThresholdTextChanged"
-                               MaskType="MaskType.RegEx" EditMask="^[1-9][0-9]?$|^100$" MaxLength="3" />
+                    <input type="number" class="form-control form-control-sm" min="0" max="100" step="10"
+                           value="@thresholdValue" @onchange="OnThresholdChanged" />
                 </div>
                 <div class="option-row">
                     <Check TValue="bool" Value="@overridePresetThreshold" ValueChanged="@((bool v) => OnOverrideChanged(v))">Override preset threshold</Check>
@@ -38,6 +38,6 @@
     </Dropdown>
 </div>
 
-<InfoPanel @ref="aggregationOptionsInfoPanel" Title="Aggregation options information" Height="60vh">
+<InfoPanel @ref="aggregationOptionsInfoPanel" Title="Aggregation options" Height="60vh">
     <AggregationOptionsInfo />
 </InfoPanel>

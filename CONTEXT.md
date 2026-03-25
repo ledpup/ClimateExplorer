@@ -66,10 +66,9 @@ ChartablePage (Index / RegionalAndGlobal)
     │   ├── "Clear filter" anchor (conditional)
     │   ├── Dropdown ("Grouping")  — Yearly / Monthly / Daily
     │   ├── ChartAxisListView      — per-axis "Scale from 0" toggles
-    │   ├── "Aggregation options" anchor → OptionsModal
+    │   ├── AggregationOptions     — Dropdown: grouping days, threshold %, override, reset
     │   ├── info-icon (fa-circle-info)
     │   └── "Download" anchor     — margin-left:auto, flush right
-    ├── OptionsModal (Blazorise Modal)
     ├── InfoPanel (chartOptionsInfoPanel)
     └── InfoPanel (aggregationOptionsInfoPanel)
 ```
@@ -210,7 +209,7 @@ Flexbox row, `flex-wrap: wrap`, `margin: 20px 0 -16px 0` (negative bottom compen
 - **`<a class="chart-control">`** — `padding: 8px`, `#f8f8f8` bg, `#425f59` text, `8px` radius, `margin-right: 16px`, `margin-bottom: 16px`, light shadow. Icons inside get `margin-right: 8px`.
 - **Blazorise `<Dropdown>`** — styled via `::deep .chart-controls .dropdown` to match `chart-control` exactly: same padding, bg, colour, radius, shadow. Icon inside `.btn` gets `margin-right: 8px`.
 - **Download button** — `chart-control chart-control-download`: `margin-left: auto`, `margin-right: 0` → always flush to right edge. Rule must appear **after** `.chart-control` in the stylesheet to win the cascade.
-- **Info icon** — `color: #79c6f4`, `font-size: larger`, inline, `margin-left: 8px`.
+- **Info icon** — `color: #79c6f4`, `font-size: larger`, `display: flex`, `align-items: center`.
 
 ### Modal Headers
 All modals use `Class="custom-modal-header"` on `<ModalHeader>`:

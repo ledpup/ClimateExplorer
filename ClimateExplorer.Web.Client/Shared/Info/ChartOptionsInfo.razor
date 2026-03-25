@@ -4,16 +4,18 @@
 <p>When checked, all data from all series will be displayed. When unchecked, data will be cropped to a starting point that all datasets share.</p>
 
 <h5>Grouping</h5>
-<p>The grouping option allows you to look at the data from another point of view. Options: 
-    <ul>
-        <li><strong>Yearly</strong>: each point on the graph represents a single year in the series. To represent daily data at the yearly level, ClimateExplorer applies rules and aggregations to average (or sum) the data together. This is the default option.</li>
-        <li><strong>Monthly</strong>: the data will be sliced, starting with the lowest level of the data (usually daily), into only twelve points, one point for every month of the year. The value for each point will be an average (or sum) of the data across all years. This will give you a climatic view of the data for the location - not as useful for viewing the change in the climate over time.</li>
-        <li><strong>Daily</strong>: each daily record will be displayed as a separate point on the chart.</li>
-    </ul>
-</p>
+<p>The grouping option changes how data is aggregated on the chart:</p>
+<ul>
+    <li><strong>Yearly</strong>: each point represents a single year. Daily data is averaged or summed to the yearly level. This is the default.</li>
+    <li><strong>Monthly</strong>: data is condensed into twelve points — one per month — averaged across all years. Useful for a climatic overview rather than tracking change over time.</li>
+    <li><strong>Daily</strong>: each daily record is shown as its own point on the chart.</li>
+</ul>
 
-<h5>Download data</h5>
-<p>The download data button allows you to download, as a csv file, the data for the chart you are currently looking at. The button is context sensitive; it'll download data that applies to the current view. For example, if you are looking at the data as a "Year + Month" grouping, you will get twelve records for each year.</p>
+<h5>Axes</h5>
+<p>The Axes dropdown lets you control whether each axis scales from zero. Enabling <strong>Scale from 0</strong> for an axis forces its range to start at zero, which is useful for comparing magnitudes. Disabling it allows the axis to zoom in on the range of the data. Changes take effect immediately.</p>
 
 <h5>Aggregation options</h5>
-<p>The aggregation options allow you to change the underlying grouping parameters for the chart. The default values will group the daily data into 14 day (i.e., fortnightly) sub-bins. If each of those sub-bins has records for 70% of those days (i.e., 10 days of the 14 days will need to have records) then the whole year is considered valid. This means that you can still have substantial data loss, while the data remains valid. E.g., a meteorologist unwilling to come in on some weekends to record the min and max temperatures may not invalidate the data for the year. However, going on a 3-week holiday in the middle of winter would invalidate the year as it would distort the average to make the year seem warmer than it was.</p>
+<p>The aggregation options let you adjust the quality rules used to determine whether a year's data is valid. Changes take effect immediately. Click the <i class="fas fa-circle-info" style="color: #79c6f4;"></i> icon inside the dropdown for a detailed explanation of each option.</p>
+
+<h5>Download data</h5>
+<p>Downloads the current chart data as a CSV file. The output matches the current view — for example, a Monthly grouping produces twelve records per year.</p>

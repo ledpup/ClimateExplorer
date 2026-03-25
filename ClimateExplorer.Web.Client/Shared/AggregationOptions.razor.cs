@@ -8,7 +8,7 @@ public partial class AggregationOptions
 {
     private InfoPanel? aggregationOptionsInfoPanel;
 
-    private string? thresholdText;
+    private int thresholdValue;
     private short currentGroupingDays;
     private bool overridePresetThreshold;
 
@@ -24,14 +24,14 @@ public partial class AggregationOptions
     [Parameter]
     public EventCallback<AggregationSettings> OnChanged { get; set; }
 
-    private bool HaveOptionsChanged => overridePresetThreshold || thresholdText != "70" || currentGroupingDays != 14;
+    private bool HaveOptionsChanged => overridePresetThreshold || thresholdValue != 70 || currentGroupingDays != 14;
 
     protected override void OnParametersSet()
     {
-        var newThresholdText = MathF.Round(CurrentThreshold * 100, 0).ToString();
-        if (newThresholdText != thresholdText)
+        var newThresholdValue = (int)MathF.Round(CurrentThreshold * 100, 0);
+        if (newThresholdValue != thresholdValue)
         {
-            thresholdText = newThresholdText;
+            thresholdValue = newThresholdValue;
         }
 
         if (CurrentGroupingDays != currentGroupingDays)
@@ -45,46 +45,35 @@ public partial class AggregationOptions
         }
     }
 
-    private static string GroupingDaysText(int groupingDays) =>
-        groupingDays switch
-        {
-            7 => "Weekly",
-            14 => "Fortnightly",
-            28 => "Monthly (28 days)",
-            91 => "Quarterly",
-            182 => "Half-yearly",
-            _ => throw new NotImplementedException(groupingDays.ToString()),
-        };
-
     private async Task OnSelectedGroupingDaysChanged(short value)
     {
         currentGroupingDays = value;
-        await OnChanged.InvokeAsync(new AggregationSettings(currentGroupingDays, thresholdText ?? "70", overridePresetThreshold));
+        await OnChanged.InvokeAsync(new AggregationSettings(currentGroupingDays, thresholdValue.ToString(), overridePresetThreshold));
     }
 
-    private async Task OnThresholdTextChanged(string value)
+    private async Task OnThresholdChanged(ChangeEventArgs e)
     {
-        if (!string.IsNullOrWhiteSpace(value))
+        if (int.TryParse(e.Value?.ToString(), out var value) && value >= 0 && value <= 100)
         {
-            thresholdText = value;
-            await OnChanged.InvokeAsync(new AggregationSettings(currentGroupingDays, thresholdText, overridePresetThreshold));
+            thresholdValue = value;
+            await OnChanged.InvokeAsync(new AggregationSettings(currentGroupingDays, thresholdValue.ToString(), overridePresetThreshold));
         }
     }
 
     private async Task ResetThreshold()
     {
         currentGroupingDays = 14;
-        thresholdText = "70";
+        thresholdValue = 70;
         overridePresetThreshold = false;
 
-        await OnChanged.InvokeAsync(new AggregationSettings(currentGroupingDays, thresholdText, false));
+        await OnChanged.InvokeAsync(new AggregationSettings(currentGroupingDays, "70", false));
     }
 
     private async Task OnOverrideChanged(bool value)
     {
         overridePresetThreshold = value;
 
-        await OnChanged.InvokeAsync(new AggregationSettings(currentGroupingDays, thresholdText ?? "70", overridePresetThreshold));
+        await OnChanged.InvokeAsync(new AggregationSettings(currentGroupingDays, thresholdValue.ToString(), overridePresetThreshold));
     }
 
     private Task ShowAggregationOptionsInfo()
