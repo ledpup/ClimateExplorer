@@ -11,7 +11,7 @@
             <Content>
                 <div class="chart-and-controls">
                     <div class="chart-series-list-wrapper">
-                        <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets"></ChartSeriesListView>
+                        <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets" IsLoading="ChartLoadingIndicatorVisible"></ChartSeriesListView>
 
                         <button class="add-series-button" @onclick="ShowAddDataSetModal">
                             <i class="fas fa-plus"></i> Add

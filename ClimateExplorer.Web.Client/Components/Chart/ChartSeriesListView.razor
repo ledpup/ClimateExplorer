@@ -3,11 +3,7 @@
 @using Blazorise.Components
 @using Blazorise.Charts
 
-@if (ChartSeriesListInternal == null || ChartSeriesListInternal.Count == 0)
-{
-    <div class="no-datasets-active-message">No datasets active. Choose a chart preset or add a dataset.</div>
-}
-else
+@if (ChartSeriesListInternal != null && ChartSeriesListInternal.Count > 0)
 {
     @foreach (var cs in ChartSeriesListInternal)
     {
@@ -19,5 +15,9 @@ else
             OnRemoveSeries="@OnRemoveSeries"
             />
     }
+}
+else if (!IsLoading)
+{
+    <div class="no-datasets-active-message">No datasets active. Choose a chart preset or add a dataset.</div>
 }
 

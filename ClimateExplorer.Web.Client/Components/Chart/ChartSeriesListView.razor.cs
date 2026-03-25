@@ -11,6 +11,9 @@ public partial class ChartSeriesListView
     [Parameter]
     public EventCallback OnSeriesChanged { get; set; }
 
+    [Parameter]
+    public bool IsLoading { get; set; }
+
     private List<ChartSeriesDefinition>? ChartSeriesListInternal { get; set; }
 
     protected override void OnParametersSet()

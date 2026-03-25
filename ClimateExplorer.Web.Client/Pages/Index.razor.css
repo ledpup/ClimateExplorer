@@ -2,10 +2,6 @@
     position: relative;
 }
 
-.chart-series-list-wrapper {
-    /* To compensate for the unwanted 10px vertical gutter after the last row of series lozenges */
-    margin-bottom: -10px;
-}
 
 /* CLS fix: render both suggested-chart variants immediately; CSS controls which is visible.
    This avoids a layout shift when IsMobileDevice resolves from null after first render. */
