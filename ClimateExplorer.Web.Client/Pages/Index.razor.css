@@ -35,6 +35,10 @@
     min-height: 410px;
 }
 
+.location-info-container:has(.collapser.content-hidden) {
+    min-height: 95px;
+}
+
 @media only screen and (max-width: 1024px) {
     .map-space-reserver {
         margin-bottom: 10px;
