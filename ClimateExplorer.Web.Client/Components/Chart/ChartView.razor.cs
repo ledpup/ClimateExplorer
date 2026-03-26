@@ -392,28 +392,27 @@ public partial class ChartView
 
         if (currentUri != newUri)
         {
-            l.LogInformation("Because the URI reflecting current UI state is different to the URI we're currently at, triggering navigation. After navigation occurs, the UI state will update accordingly.");
+            l.LogInformation("Because the URI reflecting current UI state is different to the URI we're currently at, updating the URL bar.");
 
             bool shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds = currentUri.IndexOf("csd=") == -1;
 
-            // Just let the navigation process trigger the UI updates
-            // await NavigateTo(url, shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds);
+            // Update the URL bar. We do NOT rely on this navigation re-triggering OnAfterRenderAsync,
+            // because same-path replace:true navigation is unreliable in deployed Blazor Server/WASM
+            // (the chart on the regional page was stuck on the loading spinner due to this). The chart
+            // is rendered directly below regardless. If navigation does fire OnAfterRenderAsync, the
+            // ChartLoadingIndicatorVisible = false set by RenderChart prevents a redundant second render.
             NavManager!.NavigateTo(url, false, shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds);
         }
-        else
-        {
-            l.LogInformation("Not calling NavigationManager.NavigateTo().");
 
-            var usableChartSeries = ChartSeriesList!.Where(x => x.DataAvailable);
+        var usableChartSeries = ChartSeriesList!.Where(x => x.DataAvailable);
 
-            // Fetch the data required to render the selected data series
-            ChartSeriesWithData = await RetrieveDataSets(usableChartSeries);
+        // Fetch the data required to render the selected data series
+        ChartSeriesWithData = await RetrieveDataSets(usableChartSeries);
 
-            l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + usableChartSeries.Count() + " entries.");
+        l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + usableChartSeries.Count() + " entries.");
 
-            // Render the series
-            await RenderChart();
-        }
+        // Render the series
+        await RenderChart();
 
         buildDataSetsInProcess = false;
 
