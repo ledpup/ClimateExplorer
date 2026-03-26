@@ -318,20 +318,20 @@ public partial class ChartView
                         // Just add a default chart with CO2 data, so that the user sees something, and also so that we have some data to work with when demonstrating the various options on the page.
                         await AddDefaultChart();
 
-                        // AddDefaultChart -> BuildDataSets updates the URL via NavigateTo(replace:true),
-                        // which changes the same route path (e.g. /regionalandglobal -> /regionalandglobal?...&csd=...).
-                        // In deployed Blazor Server, a same-path replace navigation does not reliably
-                        // re-trigger OnAfterRenderAsync, so UpdateUiStateBasedOnQueryString would never
-                        // run and the chart would stay on the loading spinner. Re-read the URI immediately
-                        // after AddDefaultChart returns and drive the update directly here.
-                        var updatedUri = NavManager!.ToAbsoluteUri(NavManager.Uri);
-                        if (updatedUri.Query.Contains("csd="))
+                        // AddDefaultChart → BuildDataSets navigates to update the URL bar but
+                        // intentionally does not render (to avoid double-rendering in normal
+                        // user-interaction flows). For this first-visit case we render directly:
+                        // the LocationChanged round-trip that would normally re-trigger
+                        // OnAfterRenderAsync is unreliable for same-path replace:true navigation
+                        // in deployed Blazor Server, and NavManager.Uri is not guaranteed to be
+                        // synchronously updated after NavigateTo, so any URL-based approach is
+                        // timing-dependent. Instead, drive the render from ChartSeriesList directly.
+                        if (ChartSeriesList is not null && ChartSeriesList.Any())
                         {
-                            await UpdateUiStateBasedOnQueryString(updatedUri);
-                        }
-                        else
-                        {
-                            StateHasChanged();
+                            SelectedBinGranularity = ChartSeriesList.First().BinGranularity;
+                            var usableChartSeries = ChartSeriesList.Where(x => x.DataAvailable);
+                            ChartSeriesWithData = await RetrieveDataSets(usableChartSeries);
+                            await RenderChart();
                         }
                     }
                     else if (uri.Query.Contains("chartAllData="))
