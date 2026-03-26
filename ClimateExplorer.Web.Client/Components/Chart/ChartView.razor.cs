@@ -317,7 +317,22 @@ public partial class ChartView
                         // We haven't setup and chart series yet - first time loading a page without a location in the URL.
                         // Just add a default chart with CO2 data, so that the user sees something, and also so that we have some data to work with when demonstrating the various options on the page.
                         await AddDefaultChart();
-                        StateHasChanged();
+
+                        // AddDefaultChart -> BuildDataSets updates the URL via NavigateTo(replace:true),
+                        // which changes the same route path (e.g. /regionalandglobal -> /regionalandglobal?...&csd=...).
+                        // In deployed Blazor Server, a same-path replace navigation does not reliably
+                        // re-trigger OnAfterRenderAsync, so UpdateUiStateBasedOnQueryString would never
+                        // run and the chart would stay on the loading spinner. Re-read the URI immediately
+                        // after AddDefaultChart returns and drive the update directly here.
+                        var updatedUri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+                        if (updatedUri.Query.Contains("csd="))
+                        {
+                            await UpdateUiStateBasedOnQueryString(updatedUri);
+                        }
+                        else
+                        {
+                            StateHasChanged();
+                        }
                     }
                     else if (uri.Query.Contains("chartAllData="))
                     {
