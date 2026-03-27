@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.globalconfig = .globalconfig
 		CONTEXT.md = CONTEXT.md
+		.github\copilot-instructions.md = .github\copilot-instructions.md
 		.github\workflows\master_api-climateexplorer.yml = .github\workflows\master_api-climateexplorer.yml
 		.github\workflows\master_web-climateexplorer.yml = .github\workflows\master_web-climateexplorer.yml
 		README.md = README.md
