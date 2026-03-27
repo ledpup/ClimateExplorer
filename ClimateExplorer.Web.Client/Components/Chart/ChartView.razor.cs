@@ -1022,7 +1022,7 @@ public partial class ChartView : IAsyncDisposable
         // Issue does not happen in WASM
         if (!OperatingSystem.IsBrowser())
         {
-            await Task.Delay(100);
+            await Task.Delay(250);
         }
 
         await BuildDataSets();
@@ -1058,7 +1058,7 @@ public partial class ChartView : IAsyncDisposable
         // Issue does not happen in WASM
         if (!OperatingSystem.IsBrowser())
         {
-            await Task.Delay(100);
+            await Task.Delay(250);
         }
 
         await BuildDataSets();
