@@ -136,7 +136,13 @@ public partial class ChartView : IAsyncDisposable
         disposed = true;
         if (chart is not null)
         {
-            await chart.Destroy();
+            try
+            {
+                await chart.Destroy();
+            }
+            catch (JSDisconnectedException)
+            {
+            }
         }
     }
 
@@ -674,12 +680,8 @@ public partial class ChartView : IAsyncDisposable
                         newDsd.MeasurementDefinitions!
                         .SingleOrDefault(x => x.DataType == sss.MeasurementDefinition!.DataType && x.DataAdjustment == sss.MeasurementDefinition.DataAdjustment);
 
-                    if (newMd == null)
-                    {
-                        newMd =
-                            newDsd.MeasurementDefinitions!
-                            .SingleOrDefault(x => x.DataType == sss.MeasurementDefinition!.DataType && x.DataAdjustment == null);
-                    }
+                    newMd ??= newDsd.MeasurementDefinitions!
+                                .SingleOrDefault(x => x.DataType == sss.MeasurementDefinition!.DataType && x.DataAdjustment == null);
 
                     if (newMd != null)
                     {
