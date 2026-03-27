@@ -225,16 +225,15 @@
         </ul>
     </div>
 
-    <h2>Diagnostics</h2>
 
-    @if (apiMetadata != null)
-    {
-        <div>
-            API Version: @apiMetadata.Version
-        </div>
-        <div>
-            API Build Time (UTC): @apiMetadata.BuildTimeUtc
-        </div>
-    }
+    </div>
 
-</div>
+    <div class="diagnostics-panel">
+        <h2>Diagnostics</h2>
+        @if (apiMetadata != null)
+        {
+            <div>Blazor mode: @(OperatingSystem.IsBrowser() ? "WebAssembly" : "Server")</div>
+            <div>API Version: @apiMetadata.Version</div>
+            <div>API Build Time (UTC): @apiMetadata.BuildTimeUtc</div>
+        }
+    </div>
