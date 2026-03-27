@@ -1045,12 +1045,14 @@ public partial class ChartView : IAsyncDisposable
                 RequestedColour = UiLogic.Colours.Brown,
             });
 
-        // I think Blazor Server runs too fast for the chart.js component. When changing pages to regional and global (which will go to this method)
-        // if you don't have anything else in URL, ChartView will be disposed and re-created.
+        // Blazor Server runs too fast for the chart.js component. When changing pages to regional and global, ChartView will be disposed and re-created.
         // When this happens, I've noticed that quite often the canvas will be there on the DOM but the chart isn't created.
-        // A 1 second delay seems to resolve this. It gives the browser time to setup the canvas and chartjs component before we try to interact with it.
+        // A delay seems to resolve this. It gives the browser time to setup the chartjs component before we try to interact with it.
         // Issue does not happen in WASM
-        await Task.Delay(1000);
+        if (!OperatingSystem.IsBrowser())
+        {
+            await Task.Delay(250);
+        }
 
         await BuildDataSets();
     }
