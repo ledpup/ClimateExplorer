@@ -15,42 +15,44 @@
 
 .info-icon {
     cursor: pointer;
-    color: #7a9e9a;
+    color: #79c6f4;
     font-size: larger;
     margin-left: 8px;
 }
 
 /* ── Adjusted checkbox ───────────────────────────────────────────────────── */
-::deep .form-check {
+.adjusted-check {
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    padding-left: 0;
-    margin-bottom: 0;
-    min-height: unset;
-}
-
-::deep .form-check-input {
-    margin: 0;
-    flex-shrink: 0;
     cursor: pointer;
-    border-color: #7a9e9a;
-}
-
-::deep .form-check-input:checked {
-    background-color: #425f59;
-    border-color: #425f59;
-}
-
-::deep .form-check-input:focus {
-    border-color: #7a9e9a;
-    box-shadow: 0 0 0 0.2rem rgba(66, 95, 89, 0.25);
-}
-
-::deep .form-check-label {
     font-size: 0.875rem;
     color: #2a3d39;
+    user-select: none;
+    margin: 0;
+}
+
+.adjusted-input {
+    accent-color: #425f59;
+    width: 0.8rem;
+    height: 0.8rem;
     cursor: pointer;
+    flex-shrink: 0;
+    margin: 0;
+}
+
+/* ── Filter row ──────────────────────────────────────────────────────────── */
+.filter-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0.5rem 0.75rem 0rem;
+}
+
+.filter-row ::deep .form-select {
+    width: auto;
 }
 
 /* ── Tabs ────────────────────────────────────────────────────────────────── */
@@ -65,7 +67,8 @@
     margin-bottom: -2px;
     border-radius: 0;
     padding: 0.35rem 0.75rem;
-    font-size: 0.875rem;
+    font-size: 1.1rem;
+    font-weight: bold;
     background: none;
 }
 
@@ -130,13 +133,14 @@
     border-right: 1px solid #eef1f0;
 }
 
+    ::deep table.table thead th.colour-col {
+        border-right: 1px solid #c4d4d1;
+    }
+
 ::deep table.table thead th:last-child {
     border-right: none;
 }
 
-::deep table.table thead th strong {
-    font-weight: normal;
-}
 
 ::deep table.table tbody tr:hover td:not(.colour-col) {
     background-color: #e0edeb;

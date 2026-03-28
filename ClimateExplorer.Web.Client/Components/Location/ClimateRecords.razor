@@ -26,54 +26,43 @@
     </div>
 </div>
 
+<div class="filter-row">
 @if (AvailableDataTypes.Count > 0)
 {
-    <Fields>
-        <Field ColumnSize="ColumnSize.IsAuto">
-            <FieldBody>
-                <Select TValue="DataType"
-                        Value="@SelectedDataType"
-                        ValueChanged="@OnDataTypeChanged"
-                        Size="Size.Small">
-                    @foreach (var dt in AvailableDataTypes.OrderBy(x => x))
-                    {
-                        <SelectItem Value="@dt">@ChartSeriesDefinition.MapDataTypeToFriendlyName(dt)</SelectItem>
-                    }
-                </Select>
-            </FieldBody>
-        </Field>
-        @if (ActiveView == RecordView.Daily || ActiveView == RecordView.Monthly)
+    <Select TValue="DataType"
+            Value="@SelectedDataType"
+            ValueChanged="@OnDataTypeChanged"
+            Size="Size.Small">
+        @foreach (var dt in AvailableDataTypes.OrderBy(x => x))
         {
-            <Field ColumnSize="ColumnSize.IsAuto">
-                <FieldBody>
-                    <Select TValue="int"
-                            Value="@SelectedMonth"
-                            ValueChanged="@OnMonthChanged"
-                            Size="Size.Small">
-                        <SelectItem Value="0">All months</SelectItem>
-                        @for (int m = 1; m <= 12; m++)
-                        {
-                            var monthNum = m;
-                            <SelectItem Value="@monthNum">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNum)</SelectItem>
-                        }
-                    </Select>
-                </FieldBody>
-            </Field>
+            <SelectItem Value="@dt">@ChartSeriesDefinition.MapDataTypeToFriendlyName(dt)</SelectItem>
         }
-        @if (AvailableDataAdjustments.Count > 1)
-        {
-            <Field ColumnSize="ColumnSize.IsAuto">
-                <FieldBody>
-                    <span title="Adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes, giving a more accurate view of climate trends. Uncheck to see raw, unmodified measurements.">
-                        <Check TValue="bool"
-                               Value="@(SelectedDataAdjustment == DataAdjustment.Adjusted)"
-                               ValueChanged="@OnAdjustedChanged">Adjusted</Check>
-                    </span>
-                </FieldBody>
-            </Field>
-        }
-        </Fields>
+    </Select>
+    @if (ActiveView == RecordView.Daily || ActiveView == RecordView.Monthly)
+    {
+        <Select TValue="int"
+                Value="@SelectedMonth"
+                ValueChanged="@OnMonthChanged"
+                Size="Size.Small">
+            <SelectItem Value="0">All months</SelectItem>
+            @for (int m = 1; m <= 12; m++)
+            {
+                var monthNum = m;
+                <SelectItem Value="@monthNum">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNum)</SelectItem>
+            }
+        </Select>
+    }
+    @if (AvailableDataAdjustments.Count > 1)
+    {
+        <label class="adjusted-check" title="By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes. Uncheck to see raw, unmodified measurements.">
+            <input type="checkbox" class="adjusted-input"
+                   checked="@(SelectedDataAdjustment == DataAdjustment.Adjusted)"
+                   @onchange="@(async (ChangeEventArgs e) => await OnAdjustedChanged((bool)e.Value!))" />
+            Adjusted
+        </label>
+    }
 }
+</div>
 <div class="records-card">
 <div class="records-header">
     <span>@RecordsTitle</span>
@@ -146,15 +135,15 @@
                     <TableHeaderCell Class="colour-col"></TableHeaderCell>
                     @if (ActiveView == RecordView.Yearly)
                     {
-                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Anomaly</Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center">Year</TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End">Anomaly</TableHeaderCell>
                         <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>Average <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
                     }
                     else
                     {
-                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</Strong></TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>@(ActiveView == RecordView.Monthly ? "Average" : "Value") <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center">@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center">Year</TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;">@(ActiveView == RecordView.Monthly ? "Average" : "Value") <i class="fas @SortIcon"></i></TableHeaderCell>
                     }
                 </TableRow>
             </TableHeader>
@@ -175,7 +164,7 @@
     {
         <div class="records-footer">
             <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
-                <div class="d-flex flex-wrap align-items-center justify-content-center gap-2">
+                <div class="d-flex flex-wrap align-items-center justify-content-center gap-4">
                     <Pagination Class="mb-0">
                         @foreach (var pageNum in GetVisiblePages())
                         {
