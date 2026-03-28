@@ -26,6 +26,9 @@ public partial class OverviewField
     [Parameter]
     public RenderFragment? PopupContent { get; set; }
 
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
     private string Title
     {
         get
@@ -55,6 +58,17 @@ public partial class OverviewField
         popupContentVisible = true;
         StateHasChanged();
         await popup.Show();
+    }
+
+    private async Task HandleClick()
+    {
+        if (OnClick.HasDelegate)
+        {
+            await OnClick.InvokeAsync();
+            return;
+        }
+
+        await ShowPopup();
     }
 
     private Task OnModalClosing(ModalClosingEventArgs e)

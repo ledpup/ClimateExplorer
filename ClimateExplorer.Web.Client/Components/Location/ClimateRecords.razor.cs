@@ -102,7 +102,7 @@ public partial class ClimateRecords
             return response.Records.Select(_ => string.Empty).ToList();
         }
 
-        return response.Records
+        return [.. response.Records
             .Select(record =>
             {
                 double recentness = Math.Clamp((double)(record.Year - start) / (end - start), 0, 1);
@@ -120,9 +120,8 @@ public partial class ClimateRecords
                     red = green = (int)(75 + (180 * t));
                 }
 
-                return string.Format(CultureInfo.InvariantCulture, "background-color: rgb({0}, {1}, {2}, .1)", red, green, blue);
-            })
-            .ToList();
+                return string.Format(CultureInfo.InvariantCulture, "background-color: rgb({0}, {1}, {2}, 0.85)", red, green, blue);
+            })];
     }
 
     private static string FormatAnomaly(double anomaly, UnitOfMeasure unitOfMeasure)
@@ -292,6 +291,15 @@ public partial class ClimateRecords
     {
         SelectedDataType = value;
         UpdateAvailableAdjustments();
+        CurrentPage = 1;
+        await LoadRecords();
+    }
+
+    private async Task OnAdjustedChanged(bool value)
+    {
+        SelectedDataAdjustment = value
+            ? DataAdjustment.Adjusted
+            : AvailableDataAdjustments.FirstOrDefault(x => x != DataAdjustment.Adjusted);
         CurrentPage = 1;
         await LoadRecords();
     }

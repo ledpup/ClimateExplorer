@@ -20,6 +20,39 @@
     margin-left: 8px;
 }
 
+/* ── Adjusted checkbox ───────────────────────────────────────────────────── */
+::deep .form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding-left: 0;
+    margin-bottom: 0;
+    min-height: unset;
+}
+
+::deep .form-check-input {
+    margin: 0;
+    flex-shrink: 0;
+    cursor: pointer;
+    border-color: #7a9e9a;
+}
+
+::deep .form-check-input:checked {
+    background-color: #425f59;
+    border-color: #425f59;
+}
+
+::deep .form-check-input:focus {
+    border-color: #7a9e9a;
+    box-shadow: 0 0 0 0.2rem rgba(66, 95, 89, 0.25);
+}
+
+::deep .form-check-label {
+    font-size: 0.875rem;
+    color: #2a3d39;
+    cursor: pointer;
+}
+
 /* ── Tabs ────────────────────────────────────────────────────────────────── */
 ::deep .nav-tabs {
     border-bottom: 2px solid #c4d4d1;
@@ -89,6 +122,14 @@
     max-width: 5rem;
 }
 
+::deep table.table .colour-col {
+    width: 75px;
+    min-width: 75px;
+    max-width: 75px;
+    padding: 0;
+    border-right: 1px solid #eef1f0;
+}
+
 ::deep table.table thead th:last-child {
     border-right: none;
 }
@@ -97,8 +138,8 @@
     font-weight: normal;
 }
 
-::deep table.table tbody tr:hover {
-    background-color: #f7fafa;
+::deep table.table tbody tr:hover td:not(.colour-col) {
+    background-color: #e0edeb;
 }
 
 ::deep table.table td {
@@ -127,6 +168,8 @@
 ::deep .page-link {
     color: #425f59;
     border-color: #cdd8d6;
+    padding: 0.1rem 0.45rem;
+    height: 31px;
 }
 
 ::deep .page-link:hover {

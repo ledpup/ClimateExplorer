@@ -64,15 +64,11 @@
         {
             <Field ColumnSize="ColumnSize.IsAuto">
                 <FieldBody>
-                    <Select TValue="string"
-                            Value="@DataAdjustmentToString(SelectedDataAdjustment)"
-                            ValueChanged="@OnDataAdjustmentStringChanged"
-                            Size="Size.Small">
-                        @foreach (var da in AvailableDataAdjustments)
-                        {
-                            <SelectItem Value="@DataAdjustmentToString(da)">@(da.HasValue? da.Value.ToString() : "None")</SelectItem>
-                        }
-                    </Select>
+                    <span title="Adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes, giving a more accurate view of climate trends. Uncheck to see raw, unmodified measurements.">
+                        <Check TValue="bool"
+                               Value="@(SelectedDataAdjustment == DataAdjustment.Adjusted)"
+                               ValueChanged="@OnAdjustedChanged">Adjusted</Check>
+                    </span>
                 </FieldBody>
             </Field>
         }
@@ -85,10 +81,11 @@
 <LoadingIndicator @bind-Visible="@LoadingIndicatorVisible">
     @if (ClimateRecordsResult?.Records is { Count: > 0 })
     {
-        <Table>
+        <Table Striped>
             <TableHeader>
                 <TableRow>
                     <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
+                    <TableHeaderCell Class="colour-col"></TableHeaderCell>
                     @if (ActiveView == RecordView.Yearly)
                     {
                         <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
@@ -110,16 +107,17 @@
                     {
                         var currentRank = rank;
                         <tr>
-                            <td class="text-center" style="@rowStyle">@currentRank</td>
+                            <td class="text-center">@currentRank</td>
+                            <td class="colour-col" style="@rowStyle"></td>
                             @if (ActiveView == RecordView.Yearly)
                             {
-                                <td style="@rowStyle">@record.Year</td>
-                                <td class="text-end" style="@rowStyle">@(record.Anomaly.HasValue ? FormatAnomaly(record.Anomaly.Value, record.UnitOfMeasure) : "N/A")</td>
-                                <td class="text-end" style="@rowStyle">@(record.Average.HasValue ? FormatValue(record.Average.Value, record.UnitOfMeasure) : "N/A")</td>
+                                <td>@record.Year</td>
+                                <td class="text-end">@(record.Anomaly.HasValue ? FormatAnomaly(record.Anomaly.Value, record.UnitOfMeasure) : "N/A")</td>
+                                <td class="text-end">@(record.Average.HasValue ? FormatValue(record.Average.Value, record.UnitOfMeasure) : "N/A")</td>
                             }
                             else
                             {
-                                <td style="@rowStyle">
+                                <td>
                                     @if (record.Day.HasValue)
                                     {
                                         <span class="secondary-text">@record.Day @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month)</span>
@@ -129,8 +127,8 @@
                                         <span class="secondary-text">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(record.Month)</span>
                                     }
                                 </td>
-                                <td style="@rowStyle">@record.Year</td>
-                                <td class="text-end" style="@rowStyle">@FormatValue(record.Value, record.UnitOfMeasure)</td>
+                                <td>@record.Year</td>
+                                <td class="text-end">@FormatValue(record.Value, record.UnitOfMeasure)</td>
                             }
                         </tr>
                         rank++;
@@ -141,10 +139,11 @@
     }
     else if (ClimateRecordsResult is null && LoadingIndicatorVisible)
     {
-        <Table>
+        <Table Striped>
             <TableHeader>
                 <TableRow>
                     <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
+                    <TableHeaderCell Class="colour-col"></TableHeaderCell>
                     @if (ActiveView == RecordView.Yearly)
                     {
                         <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
@@ -162,7 +161,7 @@
             <TableBody>
                 @for (int i = 0; i < Count; i++)
                 {
-                    <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                    <tr><td>&nbsp;</td><td></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                 }
             </TableBody>
         </Table>
