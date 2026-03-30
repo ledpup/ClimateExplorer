@@ -5,7 +5,7 @@ using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
-using ClimateExplorer.Web.Client.Components;
+using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Components.Info;
 using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.UiModel;

@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Web.Client.Components;
+namespace ClimateExplorer.Web.Client.Components.Common;
 
 using Blazorise;
 using Microsoft.AspNetCore.Components;

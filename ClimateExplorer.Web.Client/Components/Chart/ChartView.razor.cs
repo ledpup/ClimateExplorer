@@ -11,7 +11,7 @@ using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
-using ClimateExplorer.Web.Client.Components;
+using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;

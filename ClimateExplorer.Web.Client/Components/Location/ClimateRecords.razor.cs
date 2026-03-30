@@ -5,7 +5,7 @@ using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
-using ClimateExplorer.Web.Client.Components;
+using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
@@ -15,7 +15,7 @@ using static ClimateExplorer.Core.Enums;
 
 public partial class ClimateRecords
 {
-    private InfoPanel? colourExplainerInfoPanel;
+    private InfoPanel? climateRecordsInfoPanel;
 
     private enum RecordView
     {
@@ -137,7 +137,7 @@ public partial class ClimateRecords
 
     private static string DataAdjustmentToString(DataAdjustment? da) => da.HasValue ? da.Value.ToString() : "none";
 
-    private Task ShowColourExplainerInfo() => colourExplainerInfoPanel!.ShowAsync();
+    private Task ShowClimateRecordsInfo() => climateRecordsInfoPanel!.ShowAsync();
 
     private async Task LoadAvailableOptions()
     {
