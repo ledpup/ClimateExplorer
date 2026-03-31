@@ -22,9 +22,10 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
 
-public partial class ChartView
+public partial class ChartView : IAsyncDisposable
 {
     private bool haveCalledResizeAtLeastOnce = false;
+    private bool disposed;
 
     private Chart<double?>? chart;
     private ChartTrendline<double?>? chartTrendline;
@@ -130,27 +131,34 @@ public partial class ChartView
 
     private Dictionary<string, bool> AxesScaleToZero { get; set; } = [];
 
+    public async ValueTask DisposeAsync()
+    {
+        disposed = true;
+        if (chart is not null)
+        {
+            await chart.Destroy();
+        }
+    }
+
     public async Task OnAddDataSet(DataSetLibraryEntry dle, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions)
     {
         Logger!.LogInformation("Adding dle " + dle.Name);
 
         ChartSeriesList =
-            ChartSeriesList!
-            .Concat(
-                [
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = dle.SeriesDerivationType,
-                        SourceSeriesSpecifications = dle.SourceSeriesSpecifications!.Select(x => BuildSourceSeriesSpecification(x, dataSetDefinitions)).ToArray(),
-                        Aggregation = dle.SeriesAggregation,
-                        BinGranularity = SelectedBinGranularity,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 20,
-                        Value = SeriesValueOptions.Value,
-                        Year = null,
-                    },
-                ])
-            .ToList();
+            [
+                .. ChartSeriesList!,
+                new ChartSeriesDefinition()
+                {
+                    SeriesDerivationType = dle.SeriesDerivationType,
+                    SourceSeriesSpecifications = dle.SourceSeriesSpecifications!.Select(x => BuildSourceSeriesSpecification(x, dataSetDefinitions)).ToArray(),
+                    Aggregation = dle.SeriesAggregation,
+                    BinGranularity = SelectedBinGranularity,
+                    Smoothing = SeriesSmoothingOptions.None,
+                    SmoothingWindow = 20,
+                    Value = SeriesValueOptions.Value,
+                    Year = null,
+                },
+            ];
 
         await BuildDataSets();
     }
@@ -236,22 +244,20 @@ public partial class ChartView
         }
 
         ChartSeriesList =
-            ChartSeriesList!
-            .Concat(
-                [
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = sourceSeriesSpecifications,
-                        Aggregation = aggregation,
-                        BinGranularity = SelectedBinGranularity,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 20,
-                        Value = SeriesValueOptions.Value,
-                        Year = yearAndDataTypeFilter.Year,
-                    },
-                ])
-            .ToList();
+            [
+                .. ChartSeriesList!,
+                new ChartSeriesDefinition()
+                {
+                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                    SourceSeriesSpecifications = sourceSeriesSpecifications,
+                    Aggregation = aggregation,
+                    BinGranularity = SelectedBinGranularity,
+                    Smoothing = SeriesSmoothingOptions.None,
+                    SmoothingWindow = 20,
+                    Value = SeriesValueOptions.Value,
+                    Year = yearAndDataTypeFilter.Year,
+                },
+            ];
 
         await BuildDataSets();
     }
@@ -271,6 +277,11 @@ public partial class ChartView
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         IsMobileDevice ??= await CurrentDeviceService!.Mobile();
+
+        if (buildDataSetsInProcess || updateUiStateInProcess)
+        {
+            return;
+        }
 
         if (DataSetDefinitions is not null && Regions is not null)
         {
@@ -404,6 +415,12 @@ public partial class ChartView
             NavManager!.NavigateTo(url, false, shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds);
         }
 
+        if (disposed)
+        {
+            buildDataSetsInProcess = false;
+            return;
+        }
+
         var usableChartSeries = ChartSeriesList!.Where(x => x.DataAvailable);
 
         // Fetch the data required to render the selected data series
@@ -425,9 +442,9 @@ public partial class ChartView
 
         l.LogInformation("Entering");
 
-        if (chart is null)
+        if (disposed || chart is null)
         {
-            l.LogInformation("Bailing early as no chart available");
+            l.LogInformation("Bailing early as chart is unavailable or component is disposed");
             return;
         }
 
