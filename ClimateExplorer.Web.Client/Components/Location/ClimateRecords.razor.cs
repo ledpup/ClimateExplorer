@@ -9,6 +9,7 @@ using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
+using CurrentDevice;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
@@ -24,26 +25,31 @@ public partial class ClimateRecords
         Yearly,
     }
 
-    [Inject]
-    public IDataService? DataService { get; set; }
-
-    [Inject]
-    public IExporter? Exporter { get; set; }
-
-    [Inject]
-    public IJSRuntime? JsRuntime { get; set; }
-
-    [Inject]
-    public NavigationManager? NavManager { get; set; }
-
-    [Inject]
-    public ILogger<ClimateRecords>? Logger { get; set; }
-
     [Parameter]
     public Location? Location { get; set; }
 
     [PersistentState]
     public ClimateRecordsResponse? ClimateRecordsResult { get; set; }
+
+    [Inject]
+    private IDataService? DataService { get; set; }
+
+    [Inject]
+    private IExporter? Exporter { get; set; }
+
+    [Inject]
+    private IJSRuntime? JsRuntime { get; set; }
+
+    [Inject]
+    private NavigationManager? NavManager { get; set; }
+
+    [Inject]
+    private ILogger<ClimateRecords>? Logger { get; set; }
+
+    [Inject]
+    private ICurrentDeviceService? CurrentDeviceService { get; set; }
+
+    private bool? IsMobileDevice { get; set; }
 
     private bool LoadingIndicatorVisible { get; set; }
 
@@ -88,6 +94,8 @@ public partial class ClimateRecords
         InternalLocationId = Location.Id;
         await LoadAvailableOptions();
         await LoadRecords();
+
+        IsMobileDevice ??= await CurrentDeviceService!.Mobile();
     }
 
     private static List<string> ComputeRowStyles(ClimateRecordsResponse? response)
@@ -135,23 +143,19 @@ public partial class ClimateRecords
         return $"{value.ToString("0.0", CultureInfo.InvariantCulture)}{Enums.UnitOfMeasureLabelShort(unitOfMeasure)}";
     }
 
-    private static string DataAdjustmentToString(DataAdjustment? da) => da.HasValue ? da.Value.ToString() : "none";
-
     private Task ShowClimateRecordsInfo() => climateRecordsInfoPanel!.ShowAsync();
 
     private async Task LoadAvailableOptions()
     {
         DataSetDefinitions = await DataService!.GetDataSetDefinitions();
-        LocationMeasurements = DataSetDefinitions
+        LocationMeasurements = [.. DataSetDefinitions
             .Where(x => x.LocationIds != null && x.LocationIds.Contains(Location!.Id))
             .SelectMany(x => x.MeasurementDefinitions!)
-            .Where(x => x.DataResolution == DataResolution.Daily || x.DataResolution == DataResolution.Monthly)
-            .ToList();
+            .Where(x => x.DataResolution == DataResolution.Daily || x.DataResolution == DataResolution.Monthly)];
 
-        AvailableDataTypes = LocationMeasurements
+        AvailableDataTypes = [.. LocationMeasurements
             .Select(x => x.DataType)
-            .Distinct()
-            .ToList();
+            .Distinct()];
 
         if (AvailableDataTypes.Contains(DataType.TempMax))
         {
@@ -167,11 +171,10 @@ public partial class ClimateRecords
 
     private void UpdateAvailableAdjustments()
     {
-        AvailableDataAdjustments = LocationMeasurements
+        AvailableDataAdjustments = [.. LocationMeasurements
             .Where(x => x.DataType == SelectedDataType)
             .Select(x => x.DataAdjustment)
-            .Distinct()
-            .ToList();
+            .Distinct()];
 
         if (AvailableDataAdjustments.Contains(DataAdjustment.Adjusted))
         {
@@ -304,13 +307,6 @@ public partial class ClimateRecords
         await LoadRecords();
     }
 
-    private async Task OnDataAdjustmentStringChanged(string value)
-    {
-        SelectedDataAdjustment = value == "none" ? null : Enum.Parse<DataAdjustment>(value);
-        CurrentPage = 1;
-        await LoadRecords();
-    }
-
     private async Task OnMonthChanged(int value)
     {
         SelectedMonth = value;
@@ -345,7 +341,7 @@ public partial class ClimateRecords
 
     private List<int> GetVisiblePages()
     {
-        const int maxPages = 9;
+        int maxPages = IsMobileDevice == true ? 5 : 9;
 
         if (TotalPages <= maxPages)
         {
@@ -355,7 +351,7 @@ public partial class ClimateRecords
         // Budget: 1 + ... + [window] + ... + N
         // Both ellipses present → window gets maxPages - 4 slots.
         // One ellipsis (near an edge) → window expands to maxPages - 2 slots.
-        const int innerWindow = maxPages - 4;
+        int innerWindow = maxPages - 4;
 
         var wStart = Math.Max(2, CurrentPage - (innerWindow / 2));
         var wEnd = Math.Min(TotalPages - 1, wStart + innerWindow - 1);

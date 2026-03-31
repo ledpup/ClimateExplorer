@@ -197,10 +197,9 @@ public partial class ChartView : IAsyncDisposable
 
         if (yearAndDataTypeFilter.UnitOfMeasure.HasValue)
         {
-            ChartSeriesList = ChartSeriesList!
+            ChartSeriesList = [.. ChartSeriesList!
                 .Where(x => x.SourceSeriesSpecifications!.Any(y =>
-                    IsCompatibleUnitOfMeasure(y.MeasurementDefinition!.UnitOfMeasure, yearAndDataTypeFilter.UnitOfMeasure.Value)))
-                .ToList();
+                    IsCompatibleUnitOfMeasure(y.MeasurementDefinition!.UnitOfMeasure, yearAndDataTypeFilter.UnitOfMeasure.Value)))];
         }
 
         var chartWithData = ChartSeriesWithData!

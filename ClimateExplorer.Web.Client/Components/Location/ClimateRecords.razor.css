@@ -127,7 +127,7 @@
 
 ::deep table.table .colour-col {
     width: 75px;
-    min-width: 75px;
+    min-width: 10px;
     max-width: 75px;
     padding: 0;
     border-right: 1px solid #eef1f0;
