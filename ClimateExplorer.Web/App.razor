@@ -138,7 +138,7 @@
         }
 
         async function waitForChartReady(wrapperElement) {
-            const maxWaitMs = 5000;
+            const maxWaitMs = 10000;
             const intervalMs = 20;
             const start = Date.now();
             while (Date.now() - start < maxWaitMs) {
