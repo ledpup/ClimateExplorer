@@ -3,6 +3,7 @@
 @using ClimateExplorer.Core
 @using ClimateExplorer.Core.Model
 @using ClimateExplorer.Core.ViewModel
+@using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.UiModel
 @using ClimateExplorer.Web.UiModel
 @using ClimateExplorer.Core.Calculators
@@ -10,6 +11,7 @@
 @using System.Globalization
 @using ClimateExplorer.WebApiClient.Services
 @using ClimateExplorer.Web.Client.Components.Info
+@using ClimateExplorer.Web.Client.Components
 @using static ClimateExplorer.Core.Enums
 
 <Collapsible @ref="LocationCollapsible" Title="@Location?.Title" FullTitle="@Location?.FullTitle" OnShowOrHide="OverviewShowOrHideHandler" InitiallyShown="true" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
@@ -38,7 +40,7 @@
             }
             @if (Location?.RecordHigh != null)
             {
-                <OverviewField @ref="recordHighField" Label="Record high" PopupTitle="@("Record highs and lows for " + Location?.Name)" PopupContent="@ClimateRecordsContent" ToolTip="@RecordHighToolTip"><Value>@(Location?.RecordHigh == null ? "NA" : Location?.RecordHigh.Year)</Value></OverviewField>
+                <OverviewField Label="Record high" OnClick="@ShowRecordHighAsync" ToolTip="@RecordHighToolTip"><Value>@(Location?.RecordHigh == null ? "NA" : Location?.RecordHigh.Year)</Value></OverviewField>
             }
             @if (Precipitation && PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
             {
@@ -58,3 +60,7 @@
         </div>
     </Content>
 </Collapsible>
+
+<SidePanel @ref="climateRecordsSidePanel" Title="@("Record highs and lows for " + Location?.Name)">    
+    <ClimateRecords Location="@Location" />
+</SidePanel>

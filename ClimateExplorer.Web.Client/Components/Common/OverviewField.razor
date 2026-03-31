@@ -1,10 +1,10 @@
 @using Blazorise
 @using System.Text.RegularExpressions
 
-<div class="overview-field" title="@(Tooltip == null ? Title : Tooltip)" @onclick="ShowPopup">
+<div class="overview-field" title="@(Tooltip == null ? Title : Tooltip)" @onclick="HandleClick">
     <div class="label">@Label</div>
     <div class="value">
-        @if (PopupContent != null)
+        @if (PopupContent != null || OnClick.HasDelegate)
         {
             <a class="popup-link">@Value</a>
         }

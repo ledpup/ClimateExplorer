@@ -1,0 +1,16 @@
+@if (isVisible)
+{
+    <div class="side-panel-overlay" @onclick="DismissAsync">
+        <div class="side-panel @(isAnimatingIn ? "slide-in" : "") @(isAnimatingOut ? "slide-out" : "")"
+             style="width: @Width"
+             @onclick:stopPropagation="true">
+            <div class="side-panel-header">
+                <h2>@Title</h2>
+                <button class="side-panel-close" @onclick="DismissAsync" aria-label="Close">✕</button>
+            </div>
+            <div class="side-panel-body">
+                @ChildContent
+            </div>
+        </div>
+    </div>
+}

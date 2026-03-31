@@ -5,7 +5,7 @@ using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
-using ClimateExplorer.Web.Client.Components;
+using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
@@ -15,7 +15,7 @@ using static ClimateExplorer.Core.Enums;
 
 public partial class ClimateRecords
 {
-    private InfoPanel? colourExplainerInfoPanel;
+    private InfoPanel? climateRecordsInfoPanel;
 
     private enum RecordView
     {
@@ -65,7 +65,16 @@ public partial class ClimateRecords
     private int TotalPages => ClimateRecordsResult?.TotalCount > 0 && Count > 0 ? (int)Math.Ceiling((double)ClimateRecordsResult.TotalCount / Count) : 1;
     private int StartRecord => ClimateRecordsResult?.Records?.Count > 0 ? ((CurrentPage - 1) * Count) + 1 : 0;
     private int EndRecord => ClimateRecordsResult?.Records?.Count > 0 ? Math.Min(StartRecord + ClimateRecordsResult.Records.Count - 1, ClimateRecordsResult.TotalCount) : 0;
-    private string SortIcon => Ascending ? "fa-sort-up" : "fa-sort-down";
+    private string SortIcon => Ascending ? "fa-up-long" : "fa-down-long";
+
+    private string RecordsTitle
+    {
+        get
+        {
+            var raw = $"{ActiveView} {ChartSeriesDefinition.MapDataTypeToFriendlyName(SelectedDataType)} records";
+            return char.ToUpper(raw[0]) + raw[1..].ToLower();
+        }
+    }
 
     private Guid? InternalLocationId { get; set; }
 
@@ -93,7 +102,7 @@ public partial class ClimateRecords
             return response.Records.Select(_ => string.Empty).ToList();
         }
 
-        return response.Records
+        return [.. response.Records
             .Select(record =>
             {
                 double recentness = Math.Clamp((double)(record.Year - start) / (end - start), 0, 1);
@@ -111,9 +120,8 @@ public partial class ClimateRecords
                     red = green = (int)(75 + (180 * t));
                 }
 
-                return string.Format(CultureInfo.InvariantCulture, "background-color: rgb({0}, {1}, {2}, .1)", red, green, blue);
-            })
-            .ToList();
+                return string.Format(CultureInfo.InvariantCulture, "background-color: rgb({0}, {1}, {2}, 0.85)", red, green, blue);
+            })];
     }
 
     private static string FormatAnomaly(double anomaly, UnitOfMeasure unitOfMeasure)
@@ -129,7 +137,7 @@ public partial class ClimateRecords
 
     private static string DataAdjustmentToString(DataAdjustment? da) => da.HasValue ? da.Value.ToString() : "none";
 
-    private Task ShowColourExplainerInfo() => colourExplainerInfoPanel!.ShowAsync();
+    private Task ShowClimateRecordsInfo() => climateRecordsInfoPanel!.ShowAsync();
 
     private async Task LoadAvailableOptions()
     {
@@ -287,6 +295,15 @@ public partial class ClimateRecords
         await LoadRecords();
     }
 
+    private async Task OnAdjustedChanged(bool value)
+    {
+        SelectedDataAdjustment = value
+            ? DataAdjustment.Adjusted
+            : AvailableDataAdjustments.FirstOrDefault(x => x != DataAdjustment.Adjusted);
+        CurrentPage = 1;
+        await LoadRecords();
+    }
+
     private async Task OnDataAdjustmentStringChanged(string value)
     {
         SelectedDataAdjustment = value == "none" ? null : Enum.Parse<DataAdjustment>(value);
@@ -328,45 +345,52 @@ public partial class ClimateRecords
 
     private List<int> GetVisiblePages()
     {
-        const int maxPages = 5;
-        var pages = new List<int>();
+        const int maxPages = 9;
 
         if (TotalPages <= maxPages)
         {
-            for (int i = 1; i <= TotalPages; i++)
-            {
-                pages.Add(i);
-            }
+            return [.. Enumerable.Range(1, TotalPages)];
         }
-        else
-        {
-            if (CurrentPage <= 3)
-            {
-                for (int i = 1; i <= 4; i++)
-                {
-                    pages.Add(i);
-                }
 
-                pages.Add(-1);
-                pages.Add(TotalPages);
-            }
-            else if (CurrentPage >= TotalPages - 2)
-            {
-                pages.Add(1);
-                pages.Add(-1);
-                for (int i = TotalPages - 3; i <= TotalPages; i++)
-                {
-                    pages.Add(i);
-                }
-            }
-            else
-            {
-                pages.Add(1);
-                pages.Add(-1);
-                pages.Add(CurrentPage);
-                pages.Add(-1);
-                pages.Add(TotalPages);
-            }
+        // Budget: 1 + ... + [window] + ... + N
+        // Both ellipses present → window gets maxPages - 4 slots.
+        // One ellipsis (near an edge) → window expands to maxPages - 2 slots.
+        const int innerWindow = maxPages - 4;
+
+        var wStart = Math.Max(2, CurrentPage - (innerWindow / 2));
+        var wEnd = Math.Min(TotalPages - 1, wStart + innerWindow - 1);
+        wStart = Math.Max(2, wEnd - innerWindow + 1);
+
+        var needLeading = wStart > 2;
+        var needTrailing = wEnd < TotalPages - 1;
+
+        if (!needLeading)
+        {
+            wStart = 1;
+            wEnd = Math.Min(TotalPages - 1, maxPages - 2);
+        }
+        else if (!needTrailing)
+        {
+            wEnd = TotalPages;
+            wStart = Math.Max(2, TotalPages - (maxPages - 3));
+        }
+
+        var pages = new List<int>();
+        if (needLeading)
+        {
+            pages.Add(1);
+            pages.Add(-1);
+        }
+
+        for (var i = wStart; i <= wEnd; i++)
+        {
+            pages.Add(i);
+        }
+
+        if (needTrailing)
+        {
+            pages.Add(-1);
+            pages.Add(TotalPages);
         }
 
         return pages;

@@ -5,6 +5,7 @@ using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Components.Info;
 using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.UiModel;
@@ -15,7 +16,7 @@ using static ClimateExplorer.Core.Enums;
 
 public partial class LocationInfo
 {
-    private OverviewField? recordHighField;
+    private SidePanel? climateRecordsSidePanel;
 
     [Inject]
     public IDataService? DataService { get; set; }
@@ -66,7 +67,6 @@ public partial class LocationInfo
     private RenderFragment? HeatingScoreContent { get; set; }
 
     private string? RecordHighToolTip { get; set; }
-    private RenderFragment? ClimateRecordsContent { get; set; }
 
     public void ChangeLocationClicked(EventArgs args)
     {
@@ -78,7 +78,7 @@ public partial class LocationInfo
         OnOverviewShowOrHide.InvokeAsync(showOrHide);
     }
 
-    public Task ShowRecordHighAsync() => recordHighField?.ShowPopup() ?? Task.CompletedTask;
+    public Task ShowRecordHighAsync() => climateRecordsSidePanel?.ShowAsync() ?? Task.CompletedTask;
 
     protected static string GetPrecipitationAnomalyAsString(CalculatedAnomaly anomaly)
     {
@@ -122,15 +122,6 @@ public partial class LocationInfo
         {
             RecordHighToolTip = $"{Location.Name} record high of {Location.RecordHigh.Value}°C set {(Location.RecordHigh.Day == null ? string.Empty : Location.RecordHigh.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(Location.RecordHigh.Month)} {Location.RecordHigh.Year}.\r\nClick for more records.";
         }
-
-        ClimateRecordsContent = Location == null
-                ? null
-                : builder =>
-                {
-                    builder.OpenComponent(0, typeof(ClimateRecords));
-                    builder.AddAttribute(1, "Location", Location);
-                    builder.CloseComponent();
-                };
 
         await base.OnParametersSetAsync();
     }

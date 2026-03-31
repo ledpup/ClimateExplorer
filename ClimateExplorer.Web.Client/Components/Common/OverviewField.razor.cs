@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Web.Client.Components;
+namespace ClimateExplorer.Web.Client.Components.Common;
 
 using Blazorise;
 using Microsoft.AspNetCore.Components;
@@ -25,6 +25,9 @@ public partial class OverviewField
 
     [Parameter]
     public RenderFragment? PopupContent { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
 
     private string Title
     {
@@ -55,6 +58,17 @@ public partial class OverviewField
         popupContentVisible = true;
         StateHasChanged();
         await popup.Show();
+    }
+
+    private async Task HandleClick()
+    {
+        if (OnClick.HasDelegate)
+        {
+            await OnClick.InvokeAsync();
+            return;
+        }
+
+        await ShowPopup();
     }
 
     private Task OnModalClosing(ModalClosingEventArgs e)

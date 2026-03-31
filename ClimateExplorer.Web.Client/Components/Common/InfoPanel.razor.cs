@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Web.Client.Components;
+namespace ClimateExplorer.Web.Client.Components.Common;
 
 using ClimateExplorer.Web.Client.Services;
 using CurrentDevice;

@@ -2,7 +2,7 @@ namespace ClimateExplorer.Web.Client.Pages;
 
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
-using ClimateExplorer.Web.Client.Components;
+using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Components.Location;
 using ClimateExplorer.Web.Client.Services;
 using CurrentDevice;
