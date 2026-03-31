@@ -144,7 +144,7 @@
             const start = Date.now();
             while (Date.now() - start < maxWaitMs) {
                 const canvas = wrapperElement.querySelector('canvas');
-                if (canvas && Chart.getChart(canvas)) return;
+                if (canvas && typeof Chart !== 'undefined' && Chart.getChart(canvas)) return;
                 await new Promise(r => setTimeout(r, intervalMs));
             }
         }
