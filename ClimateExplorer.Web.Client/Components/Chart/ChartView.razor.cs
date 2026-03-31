@@ -1019,12 +1019,12 @@ public partial class ChartView : IAsyncDisposable
                 });
         }
 
-        // Blazor Server runs too fast for the chart.js component.
-        // A delay gives the browser time to setup the chartjs component before we try to interact with it.
-        // Issue does not happen in WASM
+        // In Blazor Server the parent OnAfterRenderAsync fires before the child Chart<T> component
+        // has completed its JS initialisation. Wait until chart.js has created the canvas instance
+        // rather than using an arbitrary delay.
         if (!OperatingSystem.IsBrowser())
         {
-            await Task.Delay(250);
+            await JsRuntime!.InvokeVoidAsync("waitForChartReady", chartWrapper);
         }
 
         await BuildDataSets();
@@ -1055,12 +1055,9 @@ public partial class ChartView : IAsyncDisposable
                 RequestedColour = UiLogic.Colours.Brown,
             });
 
-        // Blazor Server runs too fast for the chart.js component.
-        // A delay gives the browser time to setup the chartjs component before we try to interact with it.
-        // Issue does not happen in WASM
         if (!OperatingSystem.IsBrowser())
         {
-            await Task.Delay(250);
+            await JsRuntime!.InvokeVoidAsync("waitForChartReady", chartWrapper);
         }
 
         await BuildDataSets();
