@@ -67,7 +67,7 @@
     <meta name="theme-color" content="#ffffff" />
 
     <ImportMap />
-    <HeadOutlet @rendermode="@InteractiveAuto" />
+    <HeadOutlet @rendermode="@InteractiveServer" />
 </head>
 
 <body>
@@ -137,6 +137,17 @@
             anchorElement.download = fileName ?? "";
             anchorElement.click();
             anchorElement.remove();
+        }
+
+        async function waitForChartReady(wrapperElement) {
+            const maxWaitMs = 5000;
+            const intervalMs = 20;
+            const start = Date.now();
+            while (Date.now() - start < maxWaitMs) {
+                const canvas = wrapperElement.querySelector('canvas');
+                if (canvas && Chart.getChart(canvas)) return;
+                await new Promise(r => setTimeout(r, intervalMs));
+            }
         }
 
         function registerChartHoverCursor(wrapperElement) {
@@ -211,7 +222,7 @@
         }
     </script>
 
-    <Routes @rendermode="@InteractiveAuto" />
+    <Routes @rendermode="@InteractiveServer" />
     <script src="@Assets["_framework/blazor.web.js"]"></script>
 </body>
 
