@@ -9,7 +9,6 @@ using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
-using CurrentDevice;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
@@ -45,11 +44,6 @@ public partial class ClimateRecords
 
     [Inject]
     private ILogger<ClimateRecords>? Logger { get; set; }
-
-    [Inject]
-    private ICurrentDeviceService? CurrentDeviceService { get; set; }
-
-    private bool? IsMobileDevice { get; set; }
 
     private bool LoadingIndicatorVisible { get; set; }
 
@@ -94,8 +88,6 @@ public partial class ClimateRecords
         InternalLocationId = Location.Id;
         await LoadAvailableOptions();
         await LoadRecords();
-
-        IsMobileDevice ??= await CurrentDeviceService!.Mobile();
     }
 
     private static List<string> ComputeRowStyles(ClimateRecordsResponse? response)
@@ -339,59 +331,6 @@ public partial class ClimateRecords
         await LoadRecords();
     }
 
-    private List<int> GetVisiblePages()
-    {
-        int maxPages = IsMobileDevice == true ? 5 : 9;
-
-        if (TotalPages <= maxPages)
-        {
-            return [.. Enumerable.Range(1, TotalPages)];
-        }
-
-        // Budget: 1 + ... + [window] + ... + N
-        // Both ellipses present → window gets maxPages - 4 slots.
-        // One ellipsis (near an edge) → window expands to maxPages - 2 slots.
-        int innerWindow = maxPages - 4;
-
-        var wStart = Math.Max(2, CurrentPage - (innerWindow / 2));
-        var wEnd = Math.Min(TotalPages - 1, wStart + innerWindow - 1);
-        wStart = Math.Max(2, wEnd - innerWindow + 1);
-
-        var needLeading = wStart > 2;
-        var needTrailing = wEnd < TotalPages - 1;
-
-        if (!needLeading)
-        {
-            wStart = 1;
-            wEnd = Math.Min(TotalPages - 1, maxPages - 2);
-        }
-        else if (!needTrailing)
-        {
-            wEnd = TotalPages;
-            wStart = Math.Max(2, TotalPages - (maxPages - 3));
-        }
-
-        var pages = new List<int>();
-        if (needLeading)
-        {
-            pages.Add(1);
-            pages.Add(-1);
-        }
-
-        for (var i = wStart; i <= wEnd; i++)
-        {
-            pages.Add(i);
-        }
-
-        if (needTrailing)
-        {
-            pages.Add(-1);
-            pages.Add(TotalPages);
-        }
-
-        return pages;
-    }
-
     private async Task DownloadAllRecords()
     {
         if (Location is null)
@@ -426,7 +365,7 @@ public partial class ClimateRecords
                     ? summary.AnomalyRecords.OrderBy(x => x.Absolute)
                     : summary.AnomalyRecords.OrderByDescending(x => x.Absolute);
 
-                records = ordered.Select(x => new ClimateRecord
+                records = [.. ordered.Select(x => new ClimateRecord
                 {
                     Year = x.Year,
                     Month = 1,
@@ -437,7 +376,7 @@ public partial class ClimateRecords
                     DataAdjustment = SelectedDataAdjustment,
                     DataResolution = DataResolution.Yearly,
                     UnitOfMeasure = SelectedUnitOfMeasure,
-                }).ToArray();
+                })];
             }
         }
         else

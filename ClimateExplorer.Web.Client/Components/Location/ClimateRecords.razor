@@ -167,28 +167,9 @@
         <div class="records-footer">
             <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
                 <div class="d-flex flex-wrap align-items-center justify-content-center gap-4">
-                    <Pagination Class="mb-0">
-                        @foreach (var pageNum in GetVisiblePages())
-                        {
-                            @if (pageNum == -1)
-                            {
-                                <PaginationItem Disabled="true">
-                                    <PaginationLink>
-                                        <span>...</span>
-                                    </PaginationLink>
-                                </PaginationItem>
-                            }
-                            else
-                            {
-                                var pageNumber = pageNum;
-                                <PaginationItem Active="@(CurrentPage == pageNumber)">
-                                    <PaginationLink Clicked="@(() => OnPageChanged(pageNumber))">
-                                        @pageNumber
-                                    </PaginationLink>
-                                </PaginationItem>
-                            }
-                        }
-                    </Pagination>
+                    <PaginationControl TotalPages="@TotalPages"
+                                       CurrentPage="@CurrentPage"
+                                       PageChanged="@OnPageChanged" />
                     <div class="d-flex align-items-center gap-1">
                         <Select TValue="int"
                                 Value="@Count"
