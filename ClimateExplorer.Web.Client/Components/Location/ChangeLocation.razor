@@ -84,6 +84,10 @@
                             </TableBody>
                             </Table>
                         </DelayedLoadingIndicator>
+                        @if (NearbyLocations is not null)
+                        {
+                            <PaginationControl TotalPages="@TotalPages" CurrentPage="@CurrentPage" PageChanged="@OnNearbyLocationsPageChanged" />
+                        }
                     </FieldBody>
                 </Field>
             }
