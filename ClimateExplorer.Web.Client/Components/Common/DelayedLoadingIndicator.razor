@@ -1,6 +1,7 @@
 ﻿@using Blazorise.LoadingIndicator
+@implements IDisposable
 
-<LoadingIndicator @bind-visible="@showIndicator" ZIndex="@ZIndex">@ChildContent</LoadingIndicator>
+<LoadingIndicator @bind-Visible="@showIndicator" ZIndex="@ZIndex">@ChildContent</LoadingIndicator>
 
 @code {
     [Parameter]
@@ -20,6 +21,8 @@
 
     private bool delaying = false;
 
+    private CancellationTokenSource cts = new();
+
     protected override async Task OnParametersSetAsync()
     {
         if (Visible)
@@ -38,7 +41,14 @@
 
     private async Task DelayIndicatorAsync()
     {
-        await Task.Delay(600);
+        try
+        {
+            await Task.Delay(500, cts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
         delaying = false;
         var currentIndicatorState = showIndicator;
         showIndicator = Visible;
@@ -46,5 +56,11 @@
         {
             await InvokeAsync(StateHasChanged);
         }
+    }
+
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
     }
 }
