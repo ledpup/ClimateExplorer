@@ -25,22 +25,26 @@
         </p>
     }
     
-    <Table Narrow Striped>
-        <TableHeader>
-            <TableRow>
-                <TableHeaderCell TextAlignment="TextAlignment.Start"><Strong>Heating score</Strong></TableHeaderCell>
-                <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Warming anomaly range (°C)</Strong></TableHeaderCell>
-            </TableRow>
-        </TableHeader>
-        <TableBody>
-            @foreach (var heatingScoreRow in HeatingScoreTable)
-            {
-                <TableRow Color="@(Location.HeatingScore == heatingScoreRow.Score ? Color.Info : Color.Default)">
-                    <TableRowCell>@heatingScoreRow.Score</TableRowCell>
-                    <TableRowCell>@heatingScoreRow.MinimumWarmingAnomaly.ToString("0.00") - @heatingScoreRow.MaximumWarmingAnomaly.ToString("0.00")</TableRowCell>
+    <div class="table-card">
+        <div class="table-header">
+            <span>Heating score table</span>
+        </div>
+        <Table Narrow Striped>
+            <TableHeader>
+                <TableRow>
+                    <TableHeaderCell TextAlignment="TextAlignment.Start"><Strong>Heating score</Strong></TableHeaderCell>
+                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Warming anomaly range (°C)</Strong></TableHeaderCell>
                 </TableRow>
-            }
-        </TableBody>
-    </Table>
+            </TableHeader>
+            <TableBody>
+                @foreach (var heatingScoreRow in HeatingScoreTable)
+                {
+                    <TableRow Color="@(Location.HeatingScore == heatingScoreRow.Score ? Color.Info : Color.Default)">
+                        <TableRowCell>@heatingScoreRow.Score</TableRowCell>
+                        <TableRowCell>@heatingScoreRow.MinimumWarmingAnomaly.ToString("0.00") - @heatingScoreRow.MaximumWarmingAnomaly.ToString("0.00")</TableRowCell>
+                    </TableRow>
+                }
+            </TableBody>
+        </Table>
+    </div>
 }
-

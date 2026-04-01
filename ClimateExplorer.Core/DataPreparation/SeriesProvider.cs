@@ -182,11 +182,16 @@ public static class SeriesProvider
         var dsd = definitions.Single(x => x.Id == seriesSpecification.DataSetDefinitionId);
 
         var measurementDefinition =
-            dsd.MeasurementDefinitions!
-            .Single(
+            dsd.MeasurementDefinitions?
+            .SingleOrDefault(
                 x =>
                 x.DataType == seriesSpecification.DataType &&
                 x.DataAdjustment == seriesSpecification.DataAdjustment);
+
+        if (measurementDefinition == null)
+        {
+            throw new Exception($"No measurement definition found for DataSetDefinition {dsd.Id} with DataType {seriesSpecification.DataType} and DataAdjustment {seriesSpecification.DataAdjustment}");
+        }
 
         var geoEntity = await GeographicalEntity.GetGeographicalEntity(seriesSpecification.LocationId);
 

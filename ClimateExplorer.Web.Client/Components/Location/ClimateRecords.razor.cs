@@ -24,26 +24,26 @@ public partial class ClimateRecords
         Yearly,
     }
 
-    [Inject]
-    public IDataService? DataService { get; set; }
-
-    [Inject]
-    public IExporter? Exporter { get; set; }
-
-    [Inject]
-    public IJSRuntime? JsRuntime { get; set; }
-
-    [Inject]
-    public NavigationManager? NavManager { get; set; }
-
-    [Inject]
-    public ILogger<ClimateRecords>? Logger { get; set; }
-
     [Parameter]
     public Location? Location { get; set; }
 
     [PersistentState]
     public ClimateRecordsResponse? ClimateRecordsResult { get; set; }
+
+    [Inject]
+    private IDataService? DataService { get; set; }
+
+    [Inject]
+    private IExporter? Exporter { get; set; }
+
+    [Inject]
+    private IJSRuntime? JsRuntime { get; set; }
+
+    [Inject]
+    private NavigationManager? NavManager { get; set; }
+
+    [Inject]
+    private ILogger<ClimateRecords>? Logger { get; set; }
 
     private bool LoadingIndicatorVisible { get; set; }
 
@@ -135,23 +135,19 @@ public partial class ClimateRecords
         return $"{value.ToString("0.0", CultureInfo.InvariantCulture)}{Enums.UnitOfMeasureLabelShort(unitOfMeasure)}";
     }
 
-    private static string DataAdjustmentToString(DataAdjustment? da) => da.HasValue ? da.Value.ToString() : "none";
-
     private Task ShowClimateRecordsInfo() => climateRecordsInfoPanel!.ShowAsync();
 
     private async Task LoadAvailableOptions()
     {
         DataSetDefinitions = await DataService!.GetDataSetDefinitions();
-        LocationMeasurements = DataSetDefinitions
+        LocationMeasurements = [.. DataSetDefinitions
             .Where(x => x.LocationIds != null && x.LocationIds.Contains(Location!.Id))
             .SelectMany(x => x.MeasurementDefinitions!)
-            .Where(x => x.DataResolution == DataResolution.Daily || x.DataResolution == DataResolution.Monthly)
-            .ToList();
+            .Where(x => x.DataResolution == DataResolution.Daily || x.DataResolution == DataResolution.Monthly)];
 
-        AvailableDataTypes = LocationMeasurements
+        AvailableDataTypes = [.. LocationMeasurements
             .Select(x => x.DataType)
-            .Distinct()
-            .ToList();
+            .Distinct()];
 
         if (AvailableDataTypes.Contains(DataType.TempMax))
         {
@@ -167,11 +163,10 @@ public partial class ClimateRecords
 
     private void UpdateAvailableAdjustments()
     {
-        AvailableDataAdjustments = LocationMeasurements
+        AvailableDataAdjustments = [.. LocationMeasurements
             .Where(x => x.DataType == SelectedDataType)
             .Select(x => x.DataAdjustment)
-            .Distinct()
-            .ToList();
+            .Distinct()];
 
         if (AvailableDataAdjustments.Contains(DataAdjustment.Adjusted))
         {
@@ -216,7 +211,7 @@ public partial class ClimateRecords
                 else
                 {
                     var month = SelectedMonth != 0 ? (int?)SelectedMonth : null;
-                    ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, Count, CurrentPage, month, ActiveView == RecordView.Monthly);
+                    ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, take: Count, skip: CurrentPage, month, ActiveView == RecordView.Monthly);
                     ComputedRowStyles = ComputeRowStyles(ClimateRecordsResult);
                 }
             }
@@ -304,13 +299,6 @@ public partial class ClimateRecords
         await LoadRecords();
     }
 
-    private async Task OnDataAdjustmentStringChanged(string value)
-    {
-        SelectedDataAdjustment = value == "none" ? null : Enum.Parse<DataAdjustment>(value);
-        CurrentPage = 1;
-        await LoadRecords();
-    }
-
     private async Task OnMonthChanged(int value)
     {
         SelectedMonth = value;
@@ -341,59 +329,6 @@ public partial class ClimateRecords
 
         CurrentPage = page;
         await LoadRecords();
-    }
-
-    private List<int> GetVisiblePages()
-    {
-        const int maxPages = 9;
-
-        if (TotalPages <= maxPages)
-        {
-            return [.. Enumerable.Range(1, TotalPages)];
-        }
-
-        // Budget: 1 + ... + [window] + ... + N
-        // Both ellipses present → window gets maxPages - 4 slots.
-        // One ellipsis (near an edge) → window expands to maxPages - 2 slots.
-        const int innerWindow = maxPages - 4;
-
-        var wStart = Math.Max(2, CurrentPage - (innerWindow / 2));
-        var wEnd = Math.Min(TotalPages - 1, wStart + innerWindow - 1);
-        wStart = Math.Max(2, wEnd - innerWindow + 1);
-
-        var needLeading = wStart > 2;
-        var needTrailing = wEnd < TotalPages - 1;
-
-        if (!needLeading)
-        {
-            wStart = 1;
-            wEnd = Math.Min(TotalPages - 1, maxPages - 2);
-        }
-        else if (!needTrailing)
-        {
-            wEnd = TotalPages;
-            wStart = Math.Max(2, TotalPages - (maxPages - 3));
-        }
-
-        var pages = new List<int>();
-        if (needLeading)
-        {
-            pages.Add(1);
-            pages.Add(-1);
-        }
-
-        for (var i = wStart; i <= wEnd; i++)
-        {
-            pages.Add(i);
-        }
-
-        if (needTrailing)
-        {
-            pages.Add(-1);
-            pages.Add(TotalPages);
-        }
-
-        return pages;
     }
 
     private async Task DownloadAllRecords()
@@ -430,7 +365,7 @@ public partial class ClimateRecords
                     ? summary.AnomalyRecords.OrderBy(x => x.Absolute)
                     : summary.AnomalyRecords.OrderByDescending(x => x.Absolute);
 
-                records = ordered.Select(x => new ClimateRecord
+                records = [.. ordered.Select(x => new ClimateRecord
                 {
                     Year = x.Year,
                     Month = 1,
@@ -441,7 +376,7 @@ public partial class ClimateRecords
                     DataAdjustment = SelectedDataAdjustment,
                     DataResolution = DataResolution.Yearly,
                     UnitOfMeasure = SelectedUnitOfMeasure,
-                }).ToArray();
+                })];
             }
         }
         else

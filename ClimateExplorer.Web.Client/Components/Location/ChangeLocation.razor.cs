@@ -9,6 +9,8 @@ using Microsoft.JSInterop;
 
 public partial class ChangeLocation
 {
+    private const int PageSize = 10;
+
     private Modal? modal;
     private string? selectedText;
 
@@ -36,6 +38,10 @@ public partial class ChangeLocation
     protected ILogger<ChangeLocation>? Logger { get; set; }
 
     private Guid? InternalLocationId { get; set; }
+
+    private int CurrentPage { get; set; } = 1;
+
+    private int TotalPages => (int)Math.Ceiling((LocationDictionary?.Count ?? 0) / (double)PageSize);
 
     private bool NearbyLocationsLoading { get; set; } = true;
 
@@ -68,15 +74,25 @@ public partial class ChangeLocation
             InternalLocationId = SelectedLocation.Id;
             NearbyLocations = null;
             NearbyLocationsLoading = true;
+            CurrentPage = 1;
         }
     }
 
-    private async Task LoadNearbyLocationsAsync(Guid locationId)
+    private async Task LoadNearbyLocationsAsync(Guid locationId, int page = 1)
     {
-        NearbyLocations = await DataService!.GetNearbyLocations(locationId);
+        NearbyLocationsLoading = true;
+        StateHasChanged();
+
+        var skip = (page - 1) * PageSize;
+        NearbyLocations = await DataService!.GetNearbyLocations(locationId, take: PageSize, skip: skip);
+
+        CurrentPage = page;
+
         NearbyLocationsLoading = false;
         StateHasChanged();
     }
+
+    private Task OnNearbyLocationsPageChanged(int page) => LoadNearbyLocationsAsync(InternalLocationId!.Value, page);
 
     private async Task NearMeClicked()
     {

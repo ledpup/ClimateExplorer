@@ -1,0 +1,24 @@
+@using Blazorise
+
+<Pagination Class="mb-0">
+    @foreach (var pageNum in GetVisiblePages())
+    {
+        @if (pageNum == -1)
+        {
+            <PaginationItem Disabled="true">
+                <PaginationLink>
+                    <span>...</span>
+                </PaginationLink>
+            </PaginationItem>
+        }
+        else
+        {
+            var pageNumber = pageNum;
+            <PaginationItem Active="@(CurrentPage == pageNumber)">
+                <PaginationLink Clicked="@(() => PageChanged.InvokeAsync(pageNumber))">
+                    @pageNumber
+                </PaginationLink>
+            </PaginationItem>
+        }
+    }
+</Pagination>

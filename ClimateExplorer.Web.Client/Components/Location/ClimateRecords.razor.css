@@ -56,6 +56,13 @@
 }
 
 /* ── Tabs ────────────────────────────────────────────────────────────────── */
+::deep table.table thead th:first-child,
+::deep table.table td:first-child {
+    width: 5rem;
+    min-width: 5rem;
+    max-width: 5rem;
+}
+
 ::deep .nav-tabs {
     border-bottom: 2px solid #c4d4d1;
 }
@@ -83,112 +90,4 @@
     border-bottom: 2px solid #425f59;
     background: none;
     font-weight: 600;
-}
-
-/* ── Card wrapper ────────────────────────────────────────────────────────── */
-.records-card {
-    border: 1px solid #c4d4d1;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.records-header {
-    padding: 0.5rem 0.75rem;
-    background-color: #f2f2f2;
-    border-bottom: 1px solid #c4d4d1;
-    font-size: 0.9375rem;
-    font-weight: 600;
-    color: #2a3d39;
-}
-
-/* ── Table ───────────────────────────────────────────────────────────────── */
-::deep table.table {
-    font-size: 0.875rem;
-    margin-bottom: 0;
-}
-
-::deep table.table thead th {
-    background-color: #f2f2f2;
-    color: #2a3d39;
-    border-top: none;
-    border-bottom: 1px solid #c4d4d1;
-    border-right: 1px solid #c4d4d1;
-    font-weight: normal;
-    white-space: nowrap;
-    padding: 0.5rem 0.75rem;
-}
-
-::deep table.table thead th:first-child,
-::deep table.table td:first-child {
-    width: 5rem;
-    min-width: 5rem;
-    max-width: 5rem;
-}
-
-::deep table.table .colour-col {
-    width: 75px;
-    min-width: 75px;
-    max-width: 75px;
-    padding: 0;
-    border-right: 1px solid #eef1f0;
-}
-
-    ::deep table.table thead th.colour-col {
-        border-right: 1px solid #c4d4d1;
-    }
-
-::deep table.table thead th:last-child {
-    border-right: none;
-}
-
-
-::deep table.table tbody tr:hover td:not(.colour-col) {
-    background-color: #e0edeb;
-}
-
-::deep table.table td {
-    vertical-align: middle;
-    padding: 0.4rem 0.75rem;
-    border-bottom: 1px solid #eef1f0;
-    border-right: 1px solid #eef1f0;
-}
-
-::deep table.table td:last-child {
-    border-right: none;
-}
-
-::deep table.table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-/* ── Footer ──────────────────────────────────────────────────────────────── */
-.records-footer {
-    padding: 0.6rem 0.75rem;
-    background-color: #f8faf9;
-    border-top: 1px solid #c4d4d1;
-}
-
-/* ── Pagination ──────────────────────────────────────────────────────────── */
-::deep .page-link {
-    color: #425f59;
-    border-color: #cdd8d6;
-    padding: 0.1rem 0.45rem;
-    height: 31px;
-}
-
-::deep .page-link:hover {
-    color: #2a3d39;
-    background-color: #e8efee;
-    border-color: #b5c9c6;
-}
-
-::deep .page-item.active .page-link {
-    background-color: #425f59;
-    border-color: #425f59;
-    color: #fff;
-}
-
-::deep .page-item.disabled .page-link {
-    color: #adb5bd;
-    border-color: #dee2e0;
 }

@@ -2,6 +2,7 @@
 @using Blazorise.Components
 @using Blazorise.LoadingIndicator
 @using ClimateExplorer.Core.Model;
+@using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.WebApiClient.Services
 @using GeoCoordinatePortable
 
@@ -41,50 +42,65 @@
                     @bind-SelectedText="@selectedText" />
                 </Field>
 
-                <Field>
-                    <FieldLabel>Nearby locations</FieldLabel>
-                    <FieldBody>
-                        <LoadingIndicator @bind-visible="@NearbyLocationsLoading">
-                            <Table Borderless Narrow Striped>
-                                <TableBody>
-                                    @if (NearbyLocations is not null)
+                <div class="table-card">
+                    <div class="table-header">
+                        <span>Nearby locations</span>
+                    </div>
+                    <DelayedLoadingIndicator @bind-visible="@NearbyLocationsLoading">
+                        <Table Striped>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHeaderCell>Location</TableHeaderCell>
+                                    <TableHeaderCell>Country</TableHeaderCell>
+                                    <TableHeaderCell>Distance</TableHeaderCell>
+                                    <TableHeaderCell>Direction</TableHeaderCell>
+                                    <TableHeaderCell></TableHeaderCell>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                @if (NearbyLocations is not null)
+                                {
+                                    foreach (var row in NearbyLocations)
                                     {
-                                        foreach (var row in NearbyLocations)
-                                        {
-                                            var location = LocationDictionary[row.LocationId];
-                                            <TableRow>
-                                                <TableRowCell>
-                                                    <Blazorise.Link Title="@location.FullTitle"
-                                                    To="#"
-                                                    Clicked="@(() => FireOnLocationChange(row.LocationId))">
-                                                        @location.Name
-                                                    </Blazorise.Link>
-                                                </TableRowCell>
-                                                <TableRowCell>@location.Country</TableRowCell>
-                                                <TableRowCell>@(row.Distance) km</TableRowCell>
-                                                <TableRowCell>
-                                                    <span>
-                                                        @row.CompassRoseDirection
-                                                    </span>
-                                                </TableRowCell>
-                                                <TableRowCell>
-                                                    <span style="display: inline-block; transform: rotate(@($"{row.BearingDegrees}deg")); transform-origin: center;">↑</span>
-                                                </TableRowCell>
-                                            </TableRow>
-                                        }
+                                        var location = LocationDictionary[row.LocationId];
+                                        <TableRow>
+                                            <TableRowCell>
+                                                <Blazorise.Link Title="@location.FullTitle"
+                                                To="#"
+                                                Clicked="@(() => FireOnLocationChange(row.LocationId))">
+                                                    @location.Name
+                                                </Blazorise.Link>
+                                            </TableRowCell>
+                                            <TableRowCell>@location.Country</TableRowCell>
+                                            <TableRowCell>@(row.Distance) km</TableRowCell>
+                                            <TableRowCell>
+                                                <span>
+                                                    @row.CompassRoseDirection
+                                                </span>
+                                            </TableRowCell>
+                                            <TableRowCell>
+                                                <span style="display: inline-block; transform: rotate(@($"{row.BearingDegrees}deg")); transform-origin: center;">↑</span>
+                                            </TableRowCell>
+                                        </TableRow>
                                     }
-                                    else
+                                }
+                                else
+                                {
+                                    for (var i = 0; i < 10; i++)
                                     {
-                                        for (var i =0; i < 10; i++)
-                                        {
-                                            <TableRow><TableRowCell>&nbsp;</TableRowCell></TableRow>
-                                        }
+                                        <TableRow><TableRowCell>&nbsp;</TableRowCell><TableRowCell></TableRowCell><TableRowCell></TableRowCell><TableRowCell></TableRowCell><TableRowCell></TableRowCell></TableRow>
                                     }
+                                }
                             </TableBody>
-                            </Table>
-                        </LoadingIndicator>
-                    </FieldBody>
-                </Field>
+                        </Table>
+                    </DelayedLoadingIndicator>
+                    @if (NearbyLocations is not null)
+                    {
+                        <div class="table-footer">
+                            <PaginationControl TotalPages="@TotalPages" CurrentPage="@CurrentPage" PageChanged="@OnNearbyLocationsPageChanged" />
+                        </div>
+                    }
+                </div>
             }
         </ModalBody>
     </ModalContent>

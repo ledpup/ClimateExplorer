@@ -28,7 +28,7 @@
         }
     </CollapsedContent>
     <Content>
-        <LoadingIndicator @bind-Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
+        <DelayedLoadingIndicator @bind-Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
             @if (Location is not null)
             {
                 <OverviewField Label="Location"><Value><a href="@LocationMapUrl" target="_blank">@GeoLocationAsString</a></Value></OverviewField>
@@ -46,9 +46,9 @@
             {
                 <OverviewField Label="Precipitation anomaly" PopupContent="@PrecipitationAnomalyContent"><Value>@(PrecipitationAnomalyAsString == null ? "NA" : PrecipitationAnomalyAsString)</Value></OverviewField>
             }
-        </LoadingIndicator>
+        </DelayedLoadingIndicator>
         <div class="climate-stripe">
-            <LoadingIndicator @bind-Visible="@StripeLoadingIndicatorVisible" ZIndex="5">
+            <DelayedLoadingIndicator @bind-Visible="@StripeLoadingIndicatorVisible" ZIndex="5">
                 <ClimateStripe UnitOfMeasure="UnitOfMeasure.DegreesCelsius" LocationName=@Location?.Name LocationMean=@TemperatureLocationMean DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" ShowInfo="true" />
                 <ExtremeYears HighLabel="Warmest years" LowLabel="Coolest years" DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" />
                 @if (Precipitation && PrecipitationLocationMean != null)
@@ -56,7 +56,7 @@
                     <ClimateStripe UnitOfMeasure="UnitOfMeasure.Millimetres" LocationName=@Location?.Name LocationMean=@PrecipitationLocationMean DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange="HandleOnPrecipitationYearFilterChange" ShowInfo="false" />
                     <ExtremeYears HighLabel="Wettest years" LowLabel="Driest years" HighFirst="false" DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange="HandleOnPrecipitationYearFilterChange" />
                 }
-            </LoadingIndicator>
+            </DelayedLoadingIndicator>
         </div>
     </Content>
 </Collapsible>

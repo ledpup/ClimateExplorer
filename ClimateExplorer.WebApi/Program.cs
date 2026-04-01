@@ -233,7 +233,7 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null, bo
             location.WarmingAnomaly = AnomalyCalculator.CalculateAnomaly(series.DataPoints)?.AnomalyValue;
             foreach (var adj in new DataAdjustment?[] { DataAdjustment.Adjusted, DataAdjustment.Unadjusted, null })
             {
-                var tempMaxResponse = await GetClimateRecords(location.Id, DataType.TempMax, adj, count: 1);
+                var tempMaxResponse = await GetClimateRecords(location.Id, DataType.TempMax, adj, take: 1);
                 if (tempMaxResponse.Records.Any())
                 {
                     location.RecordHigh = tempMaxResponse.Records.First();
@@ -252,18 +252,36 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null, bo
     var heatingScoreTable = Location.SetHeatingScores(locations);
     await longtermCache.Put(HeatingScoreTable, heatingScoreTable.ToArray());
 
-    var nearbyLocations = Location.GenerateNearbyLocations(locations);
-    await longtermCache.Put(NearbyLocations, nearbyLocations);
-
     await longtermCache.Put(cacheKey, locations.ToArray());
 
     return locations;
 }
 
-async Task<List<LocationDistance>> GetNearbyLocations(Guid locationId)
+async Task<List<LocationDistance>> GetNearbyLocations(Guid locationId, int? take = null, int? skip = null)
 {
-    var nearbyLocations = await longtermCache.Get<Dictionary<Guid, List<LocationDistance>>>(NearbyLocations);
-    return nearbyLocations[locationId];
+    var cacheKey = $"{NearbyLocations}_{locationId}";
+    var nearby = await cache.Get<List<LocationDistance>>(cacheKey);
+
+    if (nearby == null)
+    {
+        var locations = await GetCachedLocations();
+        var location = locations.Single(x => x.Id == locationId);
+        nearby = [.. Location.GetDistances(location, locations).OrderBy(x => x.Distance)];
+        await cache.Put(cacheKey, nearby);
+    }
+
+    IEnumerable<LocationDistance> result = nearby;
+    if (skip.HasValue)
+    {
+        result = result.Skip(skip.Value);
+    }
+
+    if (take.HasValue)
+    {
+        result = result.Take(take.Value);
+    }
+
+    return [.. result];
 }
 
 async Task<DataSet> PostDataSets(PostDataSetsRequestBody body)
@@ -351,8 +369,8 @@ async Task<ClimateRecordsResponse> GetClimateRecords(
     DataType dataType = DataType.TempMax,
     DataAdjustment? dataAdjustment = null,
     bool ascending = false,
-    int? count = null,
-    int? page = null,
+    int? take = null,
+    int? skip = null,
     int? month = null,
     bool monthly = false)
 {
@@ -444,14 +462,14 @@ async Task<ClimateRecordsResponse> GetClimateRecords(
 
     // Apply pagination if count and/or page is specified
     IEnumerable<BinnedRecord> paginated = ordered;
-    if (count.HasValue)
+    if (take.HasValue)
     {
-        if (page.HasValue && page.Value > 1)
+        if (skip.HasValue && skip.Value > 1)
         {
-            paginated = paginated.Skip((page.Value - 1) * count.Value);
+            paginated = paginated.Skip((skip.Value - 1) * take.Value);
         }
 
-        paginated = paginated.Take(count.Value);
+        paginated = paginated.Take(take.Value);
     }
 
     var climateRecords = paginated.Select(record =>

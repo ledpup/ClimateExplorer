@@ -9,7 +9,7 @@ public interface IDataService
     Task<ApiMetadataModel> GetAbout();
     Task<IEnumerable<DataSetDefinitionViewModel>> GetDataSetDefinitions();
     Task<IEnumerable<Location>> GetLocations(bool permitCreateCache = true);
-    Task<IEnumerable<LocationDistance>> GetNearbyLocations(Guid locationId);
+    Task<IEnumerable<LocationDistance>> GetNearbyLocations(Guid locationId, int? take = null, int? skip = null);
     Task<Location> GetLocationByPath(string path);
     Task<IEnumerable<Region>> GetRegions();
     Task<DataSet> PostDataSet(
@@ -30,5 +30,5 @@ public interface IDataService
         DataResolution? minimumDataResolution = null);
     Task<Dictionary<string, string>> GetCountries();
     Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable();
-    Task<ClimateRecordsResponse> GetClimateRecords(Guid locationId, DataType dataType = DataType.TempMax, DataAdjustment? dataAdjustment = null, bool ascending = false, int? count = null, int? page = null, int ? month = null, bool monthly = false);
+    Task<ClimateRecordsResponse> GetClimateRecords(Guid locationId, DataType dataType = DataType.TempMax, DataAdjustment? dataAdjustment = null, bool ascending = false, int? take = null, int? skip = null, int ? month = null, bool monthly = false);
 }
