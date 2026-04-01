@@ -73,7 +73,7 @@ public partial class ChangeLocation
 
     private async Task LoadNearbyLocationsAsync(Guid locationId)
     {
-        NearbyLocations = await DataService!.GetNearbyLocations(locationId);
+        NearbyLocations = await DataService!.GetNearbyLocations(locationId, take: 10);
         NearbyLocationsLoading = false;
         StateHasChanged();
     }

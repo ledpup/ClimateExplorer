@@ -113,11 +113,20 @@ public class DataService : IDataService
         return result!;
     }
 
-    public async Task<IEnumerable<LocationDistance>> GetNearbyLocations(Guid locationId)
+    public async Task<IEnumerable<LocationDistance>> GetNearbyLocations(Guid locationId, int? take = null, int? skip = null)
     {
         var url = $"/nearby-locations";
         url = QueryHelpers.AddQueryString(url, "locationId", locationId.ToString());
-        
+
+        if (take.HasValue)
+        {
+            url = QueryHelpers.AddQueryString(url, "take", take.Value.ToString());
+        }
+
+        if (skip.HasValue)
+        {
+            url = QueryHelpers.AddQueryString(url, "skip", skip.Value.ToString());
+        }
 
         var result = dataServiceCache.Get<LocationDistance[]>(url);
         if (result == null)
@@ -176,7 +185,7 @@ public class DataService : IDataService
         return result!;
     }
 
-    public async Task<ClimateRecordsResponse> GetClimateRecords(Guid locationId, DataType dataType = DataType.TempMax, DataAdjustment? dataAdjustment = null, bool ascending = false, int? count = null, int? page = null, int? month = null, bool monthly = false)
+    public async Task<ClimateRecordsResponse> GetClimateRecords(Guid locationId, DataType dataType = DataType.TempMax, DataAdjustment? dataAdjustment = null, bool ascending = false, int? take = null, int? skip = null, int? month = null, bool monthly = false)
     {
         var url = "/climate-record";
         url = QueryHelpers.AddQueryString(url, "locationId", locationId.ToString());
@@ -187,9 +196,15 @@ public class DataService : IDataService
         }
 
         url = QueryHelpers.AddQueryString(url, "ascending", ascending.ToString().ToLowerInvariant());
-        if (count.HasValue)
+
+        if (take.HasValue)
         {
-            url = QueryHelpers.AddQueryString(url, "count", count.Value.ToString());
+            url = QueryHelpers.AddQueryString(url, "take", take.Value.ToString());
+        }
+
+        if (skip.HasValue)
+        {
+            url = QueryHelpers.AddQueryString(url, "skip", skip.Value.ToString());
         }
 
         if (month.HasValue)
@@ -200,11 +215,6 @@ public class DataService : IDataService
         if (monthly)
         {
             url = QueryHelpers.AddQueryString(url, "monthly", "true");
-        }
-
-        if (page.HasValue)
-        {
-            url = QueryHelpers.AddQueryString(url, "page", page.Value.ToString());
         }
 
         var result = dataServiceCache.Get<ClimateRecordsResponse>(url);

@@ -116,20 +116,6 @@ public class Location : GeographicalEntity
         return locations;
     }
 
-    public static Dictionary<Guid, List<LocationDistance>> GenerateNearbyLocations(IEnumerable<Location>? locations)
-    {
-        var nearbyLocations = new ConcurrentDictionary<Guid, List<LocationDistance>>();
-        Parallel.ForEach(locations!, location =>
-        {
-            var distances = GetDistances(location, locations!);
-
-            var nearby = distances.OrderBy(x => x.Distance).Take(10).ToList();
-
-            nearbyLocations.TryAdd(location.Id, nearby);
-        });
-        return nearbyLocations.ToDictionary();
-    }
-
     public static List<LocationDistance> GetDistances(Location location, IEnumerable<Location> locations)
     {
         var originCoord = new GeoCoordinate(location.Coordinates.Latitude, location.Coordinates.Longitude, location.Coordinates.Elevation ?? 0);
