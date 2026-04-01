@@ -3,6 +3,16 @@
     margin-top: 4px;
 }
 
-.table-row {
-    color: #595959;
+::deep table.table thead th:not(:first-child),
+::deep table.table tbody td:not(:first-child) {
+    width: 0;
+    white-space: nowrap;
+}
+
+/* ── Responsive columns ──────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+    ::deep .direction-col,
+    ::deep .bearing-col {
+        display: none;
+    }
 }
