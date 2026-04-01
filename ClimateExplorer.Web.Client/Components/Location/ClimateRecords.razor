@@ -65,8 +65,8 @@
     }
 }
 </div>
-<div class="records-card">
-<div class="records-header">
+<div class="table-card">
+<div class="table-header">
     <span>@RecordsTitle</span>
 </div>
 <DelayedLoadingIndicator @bind-Visible="@LoadingIndicatorVisible">
@@ -164,7 +164,7 @@
 </DelayedLoadingIndicator>
     @if (ClimateRecordsResult?.Records is { Count: > 0 })
     {
-        <div class="records-footer">
+        <div class="table-footer">
             <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
                 <div class="d-flex flex-wrap align-items-center justify-content-center gap-4">
                     <PaginationControl TotalPages="@TotalPages"
