@@ -1,0 +1,50 @@
+﻿@using Blazorise.LoadingIndicator
+
+<LoadingIndicator @bind-visible="@showIndicator" ZIndex="@ZIndex">@ChildContent</LoadingIndicator>
+
+@code {
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> VisibleChanged { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public int ZIndex { get; set; }
+
+
+    private bool showIndicator = false;
+
+    private bool delaying = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Visible)
+        {
+            if (!delaying)
+            {
+                delaying = true;
+                _ = DelayIndicatorAsync();
+            }
+        }
+        else
+        {
+            showIndicator = false;
+        }
+    }
+
+    private async Task DelayIndicatorAsync()
+    {
+        await Task.Delay(400);
+        delaying = false;
+        var currentIndicatorState = showIndicator;
+        showIndicator = Visible;
+        if (currentIndicatorState != showIndicator)
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+}

@@ -69,7 +69,7 @@
 <div class="records-header">
     <span>@RecordsTitle</span>
 </div>
-<LoadingIndicator @bind-Visible="@LoadingIndicatorVisible">
+<DelayedLoadingIndicator @bind-Visible="@LoadingIndicatorVisible">
     @if (ClimateRecordsResult?.Records is { Count: > 0 })
     {
         <Table Striped>
@@ -161,7 +161,7 @@
     {
         <p>No records found for the selected filters.</p>
     }
-</LoadingIndicator>
+</DelayedLoadingIndicator>
     @if (ClimateRecordsResult?.Records is { Count: > 0 })
     {
         <div class="records-footer">

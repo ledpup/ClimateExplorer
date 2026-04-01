@@ -2,6 +2,7 @@
 @using Blazorise.Components
 @using Blazorise.LoadingIndicator
 @using ClimateExplorer.Core.Model;
+@using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.WebApiClient.Services
 @using GeoCoordinatePortable
 
@@ -44,7 +45,7 @@
                 <Field>
                     <FieldLabel>Nearby locations</FieldLabel>
                     <FieldBody>
-                        <LoadingIndicator @bind-visible="@NearbyLocationsLoading">
+                        <DelayedLoadingIndicator @bind-visible="@NearbyLocationsLoading">
                             <Table Borderless Narrow Striped>
                                 <TableBody>
                                     @if (NearbyLocations is not null)
@@ -82,7 +83,7 @@
                                     }
                             </TableBody>
                             </Table>
-                        </LoadingIndicator>
+                        </DelayedLoadingIndicator>
                     </FieldBody>
                 </Field>
             }
