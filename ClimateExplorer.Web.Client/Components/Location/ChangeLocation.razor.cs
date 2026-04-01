@@ -73,7 +73,6 @@ public partial class ChangeLocation
         {
             InternalLocationId = SelectedLocation.Id;
             NearbyLocations = null;
-            NearbyLocationsLoading = true;
             CurrentPage = 1;
         }
     }
