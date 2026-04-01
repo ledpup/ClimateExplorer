@@ -6,103 +6,105 @@
 @using ClimateExplorer.WebApiClient.Services
 @using GeoCoordinatePortable
 
-<Modal @ref="modal" Size="ModalSize.Large">
-    <ModalContent>
-        <ModalHeader Class="custom-modal-header">
-            <ModalTitle>Change location</ModalTitle>
-            <CloseButton />
-        </ModalHeader>
-        <ModalBody>           
-            <Div Class="mt-1 d-flex gap-4">
-                <Button Clicked="@NearMeClicked" Color="Color.Primary">Near me</Button>
-                <Button Clicked="@RandomLocationClicked" Color="Color.Secondary">Random location</Button>
-            </Div>
-
-            @if (BrowserLocationErrorMessage != null)
-            {
-                <Div class="error-message">
-                    @BrowserLocationErrorMessage
+<div style="display: contents">
+    <Modal @ref="modal" Size="ModalSize.Large">
+        <ModalContent>
+            <ModalHeader Class="custom-modal-header">
+                <ModalTitle>Change location</ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+            <ModalBody>           
+                <Div Class="mt-1 d-flex gap-4">
+                    <Button Clicked="@NearMeClicked" Color="Color.Primary">Near me</Button>
+                    <Button Clicked="@RandomLocationClicked" Color="Color.Secondary">Random location</Button>
                 </Div>
-            }
-            
-            @if (LocationDictionary is not null)
-            {
-                <Field Class="mt-3">
-                    <Autocomplete TItem="Location"
-                    TValue="Guid"
-                    Data="@LocationDictionary.Values"
-                    TextField="@((item) => item.FullTitle)"
-                    ValueField="@((item) => item.Id)"
-                    Placeholder="Location search..."
-                    Filter="AutocompleteFilter.Contains"
-                    FreeTyping
-                    MinLength="2"
-                    SelectedValueChanged="@FireOnLocationChange"
-                    MaxMenuHeight="350px"
-                    @bind-SelectedText="@selectedText" />
-                </Field>
 
-                <div class="table-card">
-                    <div class="table-header">
-                        <span>Nearby locations</span>
-                    </div>
-                    <DelayedLoadingIndicator @bind-visible="@NearbyLocationsLoading">
-                        <Table Striped>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHeaderCell>Location</TableHeaderCell>
-                                    <TableHeaderCell>Country</TableHeaderCell>
-                                    <TableHeaderCell>Distance</TableHeaderCell>
-                                    <TableHeaderCell>Direction</TableHeaderCell>
-                                    <TableHeaderCell></TableHeaderCell>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                @if (NearbyLocations is not null)
-                                {
-                                    foreach (var row in NearbyLocations)
-                                    {
-                                        var location = LocationDictionary[row.LocationId];
-                                        <TableRow>
-                                            <TableRowCell>
-                                                <Blazorise.Link Title="@location.FullTitle"
-                                                To="#"
-                                                Clicked="@(() => FireOnLocationChange(row.LocationId))">
-                                                    @location.Name
-                                                </Blazorise.Link>
-                                            </TableRowCell>
-                                            <TableRowCell>@location.Country</TableRowCell>
-                                            <TableRowCell>@(row.Distance) km</TableRowCell>
-                                            <TableRowCell>
-                                                <span>
-                                                    @row.CompassRoseDirection
-                                                </span>
-                                            </TableRowCell>
-                                            <TableRowCell>
-                                                <span style="display: inline-block; transform: rotate(@($"{row.BearingDegrees}deg")); transform-origin: center;">↑</span>
-                                            </TableRowCell>
-                                        </TableRow>
-                                    }
-                                }
-                                else
-                                {
-                                    for (var i = 0; i < 10; i++)
-                                    {
-                                        <TableRow><TableRowCell>&nbsp;</TableRowCell><TableRowCell></TableRowCell><TableRowCell></TableRowCell><TableRowCell></TableRowCell><TableRowCell></TableRowCell></TableRow>
-                                    }
-                                }
-                            </TableBody>
-                        </Table>
-                    </DelayedLoadingIndicator>
-                    @if (NearbyLocations is not null)
-                    {
-                        <div class="table-footer">
-                            <PaginationControl TotalPages="@TotalPages" CurrentPage="@CurrentPage" PageChanged="@OnNearbyLocationsPageChanged" />
+                @if (BrowserLocationErrorMessage != null)
+                {
+                    <Div class="error-message">
+                        @BrowserLocationErrorMessage
+                    </Div>
+                }
+            
+                @if (LocationDictionary is not null)
+                {
+                    <Field Class="mt-3">
+                        <Autocomplete TItem="Location"
+                        TValue="Guid"
+                        Data="@LocationDictionary.Values"
+                        TextField="@((item) => item.FullTitle)"
+                        ValueField="@((item) => item.Id)"
+                        Placeholder="Location search..."
+                        Filter="AutocompleteFilter.Contains"
+                        FreeTyping
+                        MinLength="2"
+                        SelectedValueChanged="@FireOnLocationChange"
+                        MaxMenuHeight="350px"
+                        @bind-SelectedText="@selectedText" />
+                    </Field>
+
+                    <div class="table-card">
+                        <div class="table-header">
+                            <span>Nearby locations</span>
                         </div>
-                    }
-                </div>
-            }
-        </ModalBody>
-    </ModalContent>
-</Modal>
+                        <DelayedLoadingIndicator @bind-visible="@NearbyLocationsLoading">
+                            <Table Striped>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHeaderCell>Location</TableHeaderCell>
+                                        <TableHeaderCell TextAlignment="TextAlignment.Center">Country</TableHeaderCell>
+                                        <TableHeaderCell TextAlignment="TextAlignment.Center">Distance</TableHeaderCell>
+                                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="direction-col">Direction</TableHeaderCell>
+                                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="bearing-col">Bearing</TableHeaderCell>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    @if (NearbyLocations is not null)
+                                    {
+                                        foreach (var row in NearbyLocations)
+                                        {
+                                            var location = LocationDictionary[row.LocationId];
+                                            <TableRow>
+                                                <TableRowCell>
+                                                    <Blazorise.Link Title="@location.FullTitle"
+                                                    To="#"
+                                                    Clicked="@(() => FireOnLocationChange(row.LocationId))">
+                                                        @location.Name
+                                                    </Blazorise.Link>
+                                                </TableRowCell>
+                                                <TableRowCell>@location.Country</TableRowCell>
+                                                <TableRowCell>@(row.Distance) km</TableRowCell>
+                                                <TableRowCell Class="direction-col">
+                                                    <span>
+                                                        @row.CompassRoseDirection
+                                                    </span>
+                                                </TableRowCell>
+                                                <TableRowCell>
+                                                    <span style="display: inline-block; transform: rotate(@($"{row.BearingDegrees}deg")); transform-origin: center;">↑</span>
+                                                </TableRowCell>
+                                            </TableRow>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        for (var i = 0; i < 10; i++)
+                                        {
+                                            <TableRow><TableRowCell>&nbsp;</TableRowCell><TableRowCell></TableRowCell><TableRowCell></TableRowCell><TableRowCell></TableRowCell><TableRowCell></TableRowCell></TableRow>
+                                        }
+                                    }
+                                </TableBody>
+                            </Table>
+                        </DelayedLoadingIndicator>
+                        @if (NearbyLocations is not null)
+                        {
+                            <div class="table-footer">
+                                <PaginationControl TotalPages="@TotalPages" CurrentPage="@CurrentPage" PageChanged="@OnNearbyLocationsPageChanged" />
+                            </div>
+                        }
+                    </div>
+                }
+            </ModalBody>
+        </ModalContent>
+    </Modal>
+</div>
 
