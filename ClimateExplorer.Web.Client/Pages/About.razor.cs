@@ -10,6 +10,7 @@ public partial class About
     private ApiMetadataModel? apiMetadata;
     private ElementReference contentElement;
     private List<TocItem> tocItems = [];
+    private bool pipelineModalVisible = false;
 
     [Inject]
     public IDataService? DataService { get; set; }
@@ -52,7 +53,7 @@ public partial class About
             return;
         }
 
-        var headings = await JsRuntime.InvokeAsync<List<HeadingInfo>>("getH2Headings");
+        var headings = await JsRuntime.InvokeAsync<List<HeadingInfo>>("getMainHeadings");
 
         string? currentParent = null;
         foreach (var heading in headings)
@@ -78,6 +79,11 @@ public partial class About
 
             await JsRuntime.InvokeVoidAsync("addIdToHeading", heading.Index, id);
         }
+    }
+
+    private void ShowPipelineModal()
+    {
+        pipelineModalVisible = true;
     }
 
     private class TocItem

@@ -4,21 +4,12 @@
     font-size: 3em;
 }
 
-    h1:not(:first-child) {
-        margin-top: 1.5em;
-    }
 
 h2 {
     color: #111;
     font-size: 2.5em;
     font-weight: bold;
     margin-top: 2em;
-}
-
-.text-content h2:first-of-type {
-    font-size: 3em;
-    color: #000;
-    margin-top: 0;
 }
 
 h3 {
