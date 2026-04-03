@@ -24,8 +24,6 @@ public partial class Index : ChartablePage
     [Parameter]
     public string? LocationString { get; set; }
 
-    public bool? IsMobileDevice { get; private set; }
-
     protected override string PageTitle
     {
         get
@@ -56,9 +54,6 @@ public partial class Index : ChartablePage
 
     [Inject]
     private Blazored.LocalStorage.ILocalStorageService? LocalStorage { get; set; }
-
-    [Inject]
-    private ICurrentDeviceService? CurrentDeviceService { get; set; }
 
     [Inject]
     private ISiteOverviewService? SiteOverviewService { get; set; }
@@ -92,8 +87,6 @@ public partial class Index : ChartablePage
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        IsMobileDevice ??= await CurrentDeviceService!.Mobile();
-
         if (firstRender)
         {
             SiteOverviewService!.ShowRequested += HandleShowRequested;

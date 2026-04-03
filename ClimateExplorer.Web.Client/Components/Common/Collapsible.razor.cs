@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Components;
 
 public partial class Collapsible
 {
-    private bool showContent = true;
-
     // CollapserSize is what an unfit person does when they try to Exercise
     public enum CollapserSizes
     {
@@ -46,9 +44,6 @@ public partial class Collapsible
     public bool ShadeBackground { get; set; }
 
     [Parameter]
-    public bool InitiallyShown { get; set; }
-
-    [Parameter]
     public EventCallback<bool> OnShowOrHide { get; set; }
 
     [Parameter]
@@ -57,18 +52,17 @@ public partial class Collapsible
     [Parameter]
     public bool ShowTitleWhenExpanded { get; set; }
 
-    public bool ShowContent => showContent;
+    [Parameter]
+    public bool ShowContent { get; set; } = true;
 
     public void CollapserOnClick()
     {
-        showContent = !showContent;
-
-        OnShowOrHide.InvokeAsync(showContent);
+        ShowContent = !ShowContent;
+        OnShowOrHide.InvokeAsync(ShowContent);
     }
 
     protected override void OnInitialized()
     {
-        showContent = InitiallyShown;
         ShowTitleWhenExpanded = true;
 
         base.OnInitialized();
