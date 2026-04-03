@@ -15,6 +15,12 @@ h2 {
     margin-top: 2em;
 }
 
+.text-content h2:first-of-type {
+    font-size: 3em;
+    color: #000;
+    margin-top: 0;
+}
+
 h3 {
     color: #333;
     font-size: 2em;
@@ -53,5 +59,52 @@ h4 {
         border-radius: 6px;
         padding: 0.75rem 1rem;
         font-size: 0.85em;
+    }
+
+    .toc-panel {
+        position: fixed;
+        left: 1.5rem;
+        top: 5rem;
+        max-width: 20em;
+        max-height: calc(100vh - 9rem);
+        overflow-y: auto;
+        background: #f8f8f8;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 1rem;
+        font-size: 0.9em;
+    }
+
+        .toc-panel h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.3em;
+            color: #425f59;
+        }
+
+    .toc-items {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.5rem 0;
+    }
+
+    .toc-link {
+        color: #425f59;
+        text-decoration: none;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        transition: background-color 0.2s, color 0.2s;
+    }
+
+        .toc-link:hover {
+            background-color: #425f59;
+            color: white;
+        }
+}
+
+@media (max-width: 1024px) {
+    .toc-panel {
+        display: none;
     }
 }
