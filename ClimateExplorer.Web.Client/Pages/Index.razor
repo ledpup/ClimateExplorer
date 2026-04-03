@@ -27,7 +27,7 @@
 
 <SnackbarStack @ref="Snackbar" Location="SnackbarStackLocation.Top" Interval="20000" Multiline="true" />
 
-<Collapsible @ref="suggestedChartsCollapsible" ShowContent="false" ShowTitleWhenExpanded="false" ContentLayoutType="CollapserContentLayoutTypes.FlexboxRow">
+<Collapsible @ref="suggestedChartsCollapsible" InitiallyShowContents="false" ShowTitleWhenExpanded="false" ContentLayoutType="CollapserContentLayoutTypes.FlexboxRow">
     <CollapsedContent>
         @if (!suggestedChartsCollapsible!.ShowContent)
         {

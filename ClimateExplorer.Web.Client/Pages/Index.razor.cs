@@ -195,7 +195,10 @@ public partial class Index : ChartablePage
 
     private async Task OnOverviewShowHide(bool isOverviewVisible)
     {
-        await JsRuntime!.InvokeVoidAsync("showOrHideMap", isOverviewVisible);
+        if (JsRuntime is not null)
+        {
+            await JsRuntime.InvokeVoidAsync("showOrHideMap", isOverviewVisible);
+        }
     }
 
     private Task ShowChangeLocationModal()

@@ -1021,9 +1021,9 @@ public partial class ChartView : IAsyncDisposable
         // In Blazor Server the parent OnAfterRenderAsync fires before the child Chart<T> component
         // has completed its JS initialisation. Wait until chart.js has created the canvas instance
         // rather than using an arbitrary delay.
-        if (!OperatingSystem.IsBrowser())
+        if (!OperatingSystem.IsBrowser() && JsRuntime is not null)
         {
-            await JsRuntime!.InvokeVoidAsync("waitForChartReady", chartWrapper);
+            await JsRuntime.InvokeVoidAsync("waitForChartReady", chartWrapper);
         }
 
         await BuildDataSets();
@@ -1054,9 +1054,9 @@ public partial class ChartView : IAsyncDisposable
                 RequestedColour = UiLogic.Colours.Brown,
             });
 
-        if (!OperatingSystem.IsBrowser())
+        if (!OperatingSystem.IsBrowser() && JsRuntime is not null)
         {
-            await JsRuntime!.InvokeVoidAsync("waitForChartReady", chartWrapper);
+            await JsRuntime.InvokeVoidAsync("waitForChartReady", chartWrapper);
         }
 
         await BuildDataSets();
