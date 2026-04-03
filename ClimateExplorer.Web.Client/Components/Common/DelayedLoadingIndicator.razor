@@ -23,6 +23,15 @@
 
     private CancellationTokenSource cts = new();
 
+    private int delayLength = 500;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        delayLength = OperatingSystem.IsBrowser() ? 500 : 1000;
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         if (Visible)
@@ -43,7 +52,7 @@
     {
         try
         {
-            await Task.Delay(400, cts.Token);
+            await Task.Delay(delayLength, cts.Token);
         }
         catch (OperationCanceledException)
         {

@@ -10,6 +10,7 @@ using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
+using CurrentDevice;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.Extensions.Primitives;
@@ -34,6 +35,9 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     [Inject]
     protected ILogger<ChartablePage>? Logger { get; set; }
 
+    [Inject]
+    protected ICurrentDeviceService? CurrentDeviceService { get; set; }
+
     protected IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     protected Dictionary<Guid, Location>? LocationDictionary { get; set; }
@@ -47,6 +51,9 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     protected string? PageName { get; set; }
 
     protected Modal? AddDataSetModal { get; set; }
+
+    protected bool? IsMobileDevice { get; private set; }
+
     protected virtual string? PageTitle { get; }
     protected virtual string? PageDescription { get; }
     protected virtual string? PageUrl { get; }
@@ -64,9 +71,12 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (DataSetDefinitions is null)
+        DataSetDefinitions ??= [.. await DataService!.GetDataSetDefinitions()];
+
+        if (IsMobileDevice is null)
         {
-            DataSetDefinitions = (await DataService!.GetDataSetDefinitions()).ToList();
+            IsMobileDevice ??= await CurrentDeviceService!.Mobile();
+            StateHasChanged();
         }
     }
 
