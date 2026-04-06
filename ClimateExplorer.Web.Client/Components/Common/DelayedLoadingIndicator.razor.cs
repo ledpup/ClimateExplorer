@@ -48,7 +48,8 @@ public partial class DelayedLoadingIndicator : IDisposable
     {
         try
         {
-            await Task.Delay(500, cts.Token);
+            // One second delay before showing the indicator to avoid flickering for fast operations
+            await Task.Delay(1000, cts.Token);
         }
         catch (OperationCanceledException)
         {
