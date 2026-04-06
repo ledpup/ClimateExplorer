@@ -43,7 +43,7 @@ public partial class ChangeLocation
 
     private int TotalPages => (int)Math.Ceiling((LocationDictionary?.Count ?? 0) / (double)PageSize);
 
-    private bool NearbyLocationsLoading { get; set; } = true;
+    private bool NearbyLocationsLoading { get; set; }
 
     public async Task Show()
     {
@@ -73,7 +73,6 @@ public partial class ChangeLocation
         {
             InternalLocationId = SelectedLocation.Id;
             NearbyLocations = null;
-            NearbyLocationsLoading = true;
             CurrentPage = 1;
         }
     }

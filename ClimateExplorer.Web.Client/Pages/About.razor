@@ -1,4 +1,5 @@
 @page "/about"
+@using Blazorise
 @using ClimateExplorer.Core.Model
 @using ClimateExplorer.WebApiClient.Services
 
@@ -9,7 +10,25 @@
     <meta property="og:url" content="@Ogurl" />
 </HeadContent>
 
-<div class="text-content centred">
+<div class="toc-panel">
+    <h3>Contents</h3>
+    @if (tocItems.Any())
+    {
+        <Accordion>
+            @foreach (var group in tocItems.GroupBy(x => x.ParentSection))
+            {
+                <div class="toc-items">
+                    @foreach (var item in group)
+                    {
+                        <a href="about/@item.Href" class="toc-link">@item.Text</a>
+                    }
+                </div>
+            }
+        </Accordion>
+    }
+</div>
+
+<div class="text-content centred" @ref="contentElement">
 
     <h1>About this site</h1>
 
@@ -25,7 +44,7 @@
     
     <p>All data is from instrument-based recordings. There is no proxy data (for example, using tree rings or ice-cores to estimate temperature) nor modelled data on this website. The developers of the website are not sceptical of proxy-data or modelling but wanted to present the most simple and easily understandable climate science.</p>
 
-    <h2>Source code and programming</h2>
+    <h2>Source code</h2>
 
     <p>The source code for this website is at the <a href="https://github.com/ledpup/ClimateExplorer" target="_blank">ClimateExplorer Github</a>. There is an <a href="https://github.com/ledpup/ClimateExplorer/issues" target="_blank">issues</a> area
         where bugs can be raised and suggestions for improvements can be submitted.</p>
@@ -158,82 +177,106 @@
 
 </div>
 
-<h2>Data pipeline</h2>
-
-<div>
-    <img src="/images/pipeline.png" style="width: 100%" />
-</div>
-
 <div class="text-content centred">
 
-    <h2>Notes</h2>
+<h2>Data pipeline</h2>
 
-    <h3>Frost indicator via temperature</h3>
+<div style="cursor: pointer;" @onclick="ShowPipelineModal">
+    <img src="/images/pipeline.png" style="width: 100%" alt="Data Pipeline Diagram" title="Click to enlarge" />
+</div>
 
-    <p>
-        Temperature is measured by standard instruments which are located in a shelter (<a href="https://en.wikipedia.org/wiki/Stevenson_screen" target="_blank">Stevenson screen</a>) at a height of approximately 1.2 m above the ground.
-    </p>
+<Modal @bind-Visible="pipelineModalVisible" Size="ModalSize.ExtraLarge">
+    <ModalHeader Class="custom-modal-header">
+        <ModalTitle>Data Pipeline</ModalTitle>
+        <CloseButton />
+    </ModalHeader>
+    <ModalBody>
+        <img src="/images/pipeline.png" style="width: 100%; height: auto;" alt="Data Pipeline Diagram" />
+    </ModalBody>
+</Modal>
 
-    <p>
-        These observations are then used to approximate the conditions at surface level. An observed temperature of 2.2°C at screen level indicates that the temperature at the surface is approaching 0°C.
-    </p>
+<h2>Notes</h2>
 
-    <p>
-        <a href="https://www.bom.gov.au/climate/map/frost/what-is-frost.shtml#indicator" target="_blank">https://www.bom.gov.au/climate/map/frost/what-is-frost.shtml#indicator</a>
-    </p>
+<h3>Frost indicator via temperature</h3>
 
-    <h2>Glossary</h2>
+<p>
+    Temperature is measured by standard instruments which are located in a shelter (<a href="https://en.wikipedia.org/wiki/Stevenson_screen" target="_blank">Stevenson screen</a>) at a height of approximately 1.2 m above the ground.
+</p>
 
-    <div>
-        <ul>
-            <li>
-                <a href="https://www.aoml.noaa.gov/phod/amo_faq.php" target="_blank">AMO</a>: <strong>Atlantic Multidecadal Oscillation</strong> (AMO) Index is an ongoing series of long-duration changes in the sea surface temperature of the North Atlantic Ocean, with cool and warm phases that may last for 20-40 years at a time.
-            </li>
-            <li>
-                <a href="https://www.bom.gov.au/" target="_blank">BOM</a>: Australia's <strong>Bureau of Meteorology</strong>
-            </li>
-            <li>
-                <a href="https://en.wikipedia.org/wiki/El_Ni%C3%B1o%E2%80%93Southern_Oscillation" target="_blank">ENSO</a>: El Niño–Southern Oscillation
-            </li>
-            <li>
-                <a href="https://en.wikipedia.org/wiki/Greenhouse_gas" target="_blank">GHG</a>: <strong>Greenhouse gases</strong> (GHGs) are the gases in the atmosphere that raise the surface temperature of planets such as the Earth. In order of effect on temperature on Earth, these include water vapour (H₂O), carbon dioxide (CO₂), methane (CH₄), and nitrous oxide (N₂O).
-            </li>
-            <li>
-                <a href="https://www.metoffice.gov.uk/" target="_blank">Met Office</a>: United Kingdom's national weather service
-            </li>
-            <li>
-                <a href="https://www.ncei.noaa.gov/" target="_blank">NCEI</a>: United States of America's <strong>National Centers for Environmental Information</strong> (NCEI), is a U.S. government agency that manages one of the world's largest archives of atmospheric, coastal, geophysical, and oceanic data. It is an office of NOAA, which operates under the U.S. Department of Commerce
-            </li>
-            <li>
-                <a href="https://niwa.co.nz/" target="_blank">NIWA</a>: New Zealand's <strong>National Institute of Water and Atmospheric Research</strong> (maintains the <a href="https://niwa.co.nz/seven-stations" target="_blank">7-station</a> and <a href="https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data" target="_blank">11-station</a> series)
-            </li>
-            <li>
-                <a href="https://www.noaa.gov/" target="_blank">NOAA</a>: United States of America's <strong>National Oceanic and Atmospheric Administration</strong>, a scientific and regulatory agency within the United States Department of Commerce
-            </li>
-            <li>
-                <a href="https://nsidc.org/home" target="_blank">NSIDC</a>: United States of America's <strong>National Snow & Ice Data Center</strong>
-            </li>
-            <li>
-                <a href="https://www.astro.oma.be/en/" target="_blank">ROB</a>: The <strong>Royal Observatory of Belgium</strong> (ROB) is a scientific research institution. The main activities are Reference Systems and Planetology, Seismology and Gravimetry, Astronomy and Astrophysics and Solar Physics and Space Weather.
-            </li>
-            <li>
-                <a href="https://en.wikipedia.org/wiki/Sea_surface_temperature" target="_blank">SST</a>: <strong>Sea surface temperature</strong> (SST) is the temperature of ocean water close to the surface.
-            </li>
-            <li>
-                <a href="https://en.wikipedia.org/wiki/Solar_irradiance" target="_blank">TSI</a>: <strong>Total Solar Irradiance</strong> (TSI) measures the spectrally integrated energy input to the top of the Earth's atmosphere at a base mean distance from the Sun.
-            </li>
-        </ul>
-    </div>
+<p>
+    These observations are then used to approximate the conditions at surface level. An observed temperature of 2.2°C at screen level indicates that the temperature at the surface is approaching 0°C.
+</p>
+
+<p>
+    <a href="https://www.bom.gov.au/climate/map/frost/what-is-frost.shtml#indicator" target="_blank">https://www.bom.gov.au/climate/map/frost/what-is-frost.shtml#indicator</a>
+</p>
+
+<h2>Glossary</h2>
+
+<div>
+    <ul>
+        <li>
+            <a href="https://www.aoml.noaa.gov/phod/amo_faq.php" target="_blank">AMO</a>: <strong>Atlantic Multidecadal Oscillation</strong> (AMO) Index is an ongoing series of long-duration changes in the sea surface temperature of the North Atlantic Ocean, with cool and warm phases that may last for 20-40 years at a time.
+        </li>
+        <li>
+            <a href="https://www.bom.gov.au/" target="_blank">BOM</a>: Australia's <strong>Bureau of Meteorology</strong>
+        </li>
+        <li>
+            <a href="https://en.wikipedia.org/wiki/El_Ni%C3%B1o%E2%80%93Southern_Oscillation" target="_blank">ENSO</a>: El Niño–Southern Oscillation
+        </li>
+        <li>
+            <a href="https://en.wikipedia.org/wiki/Greenhouse_gas" target="_blank">GHG</a>: <strong>Greenhouse gases</strong> (GHGs) are the gases in the atmosphere that raise the surface temperature of planets such as the Earth. In order of effect on temperature on Earth, these include water vapour (H₂O), carbon dioxide (CO₂), methane (CH₄), and nitrous oxide (N₂O).
+        </li>
+        <li>
+            <a href="https://www.metoffice.gov.uk/" target="_blank">Met Office</a>: United Kingdom's national weather service
+        </li>
+        <li>
+            <a href="https://www.ncei.noaa.gov/" target="_blank">NCEI</a>: United States of America's <strong>National Centers for Environmental Information</strong> (NCEI), is a U.S. government agency that manages one of the world's largest archives of atmospheric, coastal, geophysical, and oceanic data. It is an office of NOAA, which operates under the U.S. Department of Commerce
+        </li>
+        <li>
+            <a href="https://niwa.co.nz/" target="_blank">NIWA</a>: New Zealand's <strong>National Institute of Water and Atmospheric Research</strong> (maintains the <a href="https://niwa.co.nz/seven-stations" target="_blank">7-station</a> and <a href="https://niwa.co.nz/our-science/climate/information-and-resources/nz-temp-record/temperature-trends-from-raw-data" target="_blank">11-station</a> series)
+        </li>
+        <li>
+            <a href="https://www.noaa.gov/" target="_blank">NOAA</a>: United States of America's <strong>National Oceanic and Atmospheric Administration</strong>, a scientific and regulatory agency within the United States Department of Commerce
+        </li>
+        <li>
+            <a href="https://nsidc.org/home" target="_blank">NSIDC</a>: United States of America's <strong>National Snow & Ice Data Center</strong>
+        </li>
+        <li>
+            <a href="https://www.astro.oma.be/en/" target="_blank">ROB</a>: The <strong>Royal Observatory of Belgium</strong> (ROB) is a scientific research institution. The main activities are Reference Systems and Planetology, Seismology and Gravimetry, Astronomy and Astrophysics and Solar Physics and Space Weather.
+        </li>
+        <li>
+            <a href="https://en.wikipedia.org/wiki/Sea_surface_temperature" target="_blank">SST</a>: <strong>Sea surface temperature</strong> (SST) is the temperature of ocean water close to the surface.
+        </li>
+        <li>
+            <a href="https://en.wikipedia.org/wiki/Solar_irradiance" target="_blank">TSI</a>: <strong>Total Solar Irradiance</strong> (TSI) measures the spectrally integrated energy input to the top of the Earth's atmosphere at a base mean distance from the Sun.
+        </li>
+    </ul>
+</div>
 
 
-    </div>
+</div>
 
-    <div class="diagnostics-panel">
-        <h2>Diagnostics</h2>
-        @if (apiMetadata != null)
-        {
-            <div>Blazor mode: @(OperatingSystem.IsBrowser() ? "WebAssembly" : "Server")</div>
-            <div>API Version: @apiMetadata.Version</div>
-            <div>API Build Time (UTC): @apiMetadata.BuildTimeUtc</div>
+<div class="diagnostics-panel">
+    <h3>Diagnostics</h3>
+    @if (apiMetadata != null)
+    {
+        <div>Blazor mode: @(OperatingSystem.IsBrowser() ? "WebAssembly" : "Server")</div>
+        <div>API Version: @apiMetadata.Version</div>
+        <div>API Build Time (UTC): @apiMetadata.BuildTimeUtc</div>
+    }
+</div>
+
+<script>
+    window.getMainHeadings = () => {
+        const headings = Array.from(document.querySelectorAll('h1, h2'));
+        return headings.map((h, index) => ({ text: h.textContent, index: index }));
+    };
+
+    window.addIdToHeading = (index, id) => {
+        const headings = document.querySelectorAll('h1, h2');
+        if (headings[index]) {
+            headings[index].id = id;
         }
-    </div>
+    };
+</script>
