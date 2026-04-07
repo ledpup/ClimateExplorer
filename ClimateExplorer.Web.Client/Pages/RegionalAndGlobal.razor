@@ -21,7 +21,7 @@
     <link rel="canonical" href="@PageUrl" />
 </HeadContent>
 
-<SnackbarStack @ref="SnackbarStack" Location="SnackbarStackLocation.Top" DefaultInterval="40_000" TextAlignment="TextAlignment.Center" Class="snackbar-centre" />
+<SnackbarStack @ref="SnackbarStack" Location="SnackbarStackLocation.Top" DefaultInterval="ChartablePage.SnackbarDisplayMs" TextAlignment="TextAlignment.Center" Class="snackbar-centre" />
 
 <div style="flex-grow: 0">
     <Collapsible Title="Suggested charts" InitiallyShowContents="@(IsMobileDevice.HasValue ? !IsMobileDevice : null)" ShowTitleWhenExpanded="false" ContentLayoutType="CollapserContentLayoutTypes.FlexboxRow">
