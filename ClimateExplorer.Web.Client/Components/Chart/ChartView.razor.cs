@@ -1,8 +1,6 @@
 namespace ClimateExplorer.Web.Client.Components.Chart;
 
-using System;
 using System.Dynamic;
-using Blazorise;
 using Blazorise.Charts;
 using Blazorise.Charts.Trendline;
 using Blazorise.Snackbar;
@@ -173,7 +171,8 @@ public partial class ChartView : IAsyncDisposable
     {
         if (chartPresetModel.ChartSeriesList == null || !chartPresetModel.ChartSeriesList.Any())
         {
-            throw new Exception("No chart series definition passed as a parameter when preset was selected");
+            await SnackbarMessageEvent.InvokeAsync(new SnackbarMessage { Message = $"No data available for the preset '{chartPresetModel.Title}'.", Type = SnackbarColor.Danger });
+            return;
         }
 
         ChartAllData = chartPresetModel.ChartAllData;
@@ -503,7 +502,7 @@ public partial class ChartView : IAsyncDisposable
             // records for each missing year. Value is set to null for those records.
             l.LogInformation("Calling BuildProcessedDataSets");
 
-            BuildProcessedDataSets(ChartSeriesWithData, ChartAllData);
+            await BuildProcessedDataSets(ChartSeriesWithData, ChartAllData);
 
             title = ChartLogic.BuildChartTitle(ChartSeriesWithData, LocationDictionary);
             subtitle = ChartLogic.BuildChartSubtitle(chartStartBin, chartEndBin, SelectedBinGranularity, IsMobileDevice!.Value, SelectedGroupingDays, GetGroupingThresholdText());
@@ -613,7 +612,7 @@ public partial class ChartView : IAsyncDisposable
 
                         if (dsd == null)
                         {
-                            var dataType = ChartSeriesDefinition.MapDataTypeToFriendlyName(sss.MeasurementDefinition.DataType);
+                            var dataType = sss.MeasurementDefinition.DataType.ToFriendlyName();
 
                             await SnackbarMessageEvent.InvokeAsync(new SnackbarMessage { Message = $"{dataType} data is not available at {LocationDictionary[LocationId.Value].FullTitle}", Type = SnackbarColor.Warning });
                             csd.DataAvailable = false;
@@ -1163,7 +1162,7 @@ public partial class ChartView : IAsyncDisposable
         return trendlines;
     }
 
-    private void BuildProcessedDataSets(List<SeriesWithData> chartSeriesWithData, bool chartAllData)
+    private async Task BuildProcessedDataSets(List<SeriesWithData> chartSeriesWithData, bool chartAllData)
     {
         var l = new LogAugmenter(Logger!, "BuildProcessedDataSets");
 
@@ -1174,7 +1173,7 @@ public partial class ChartView : IAsyncDisposable
             if (cs.ChartSeries!.SecondaryCalculation == SecondaryCalculationOptions.AnnualChange)
             {
                 var yearlyDifferenceValues =
-                    cs.SourceDataSet!.DataRecords
+                    cs.SourceDataSet.DataRecords
                     .Select(x => x.Value)
                     .CalculateYearlyDifference();
 
@@ -1208,21 +1207,22 @@ public partial class ChartView : IAsyncDisposable
             // We only support moving averages on linear bin granularities (e.g. Year, YearAndMonth) - not modular ones like MonthOnly
             if (SelectedBinGranularity.IsLinear() && cs.ChartSeries!.Smoothing == SeriesSmoothingOptions.MovingAverage)
             {
-                var movingAverageValues =
-                    cs.SourceDataSet!.DataRecords
+                var values =
+                    cs.SourceDataSet.DataRecords
                     .Select(x => x.Value)
                     .CalculateCentredMovingAverage(cs.ChartSeries.SmoothingWindow, 0.75f);
 
-                if (movingAverageValues.All(y => y == null))
+                if (values.Count(y => y != null) < 10)
                 {
-                    l.LogError("Moving average calculation has resulted in no records. Will remove this series from the chart.");
-                    badChartSeries.Add(cs);
-                    continue;
+                    await SnackbarMessageEvent.InvokeAsync(new SnackbarMessage { Message = $"The moving‑average smoothing removed too many {cs.SourceDataSet.DataType.ToFriendlyName().ToLower()} observations for {cs.SourceDataSet.GeographicalEntity?.Name}.<br>We will revert to using the unsmoothed data.", Type = SnackbarColor.Warning });
+                    values = cs.SourceDataSet.DataRecords
+                                            .Where(x => x.Value.HasValue)
+                                            .Select(x => x.Value);
                 }
 
                 // Now, join back to the original DataRecord set
                 var newDataRecords =
-                    movingAverageValues
+                    values
                     .Zip(
                         cs.SourceDataSet.DataRecords,
                         (val, dr) => new BinnedRecord(dr.BinId, val))
