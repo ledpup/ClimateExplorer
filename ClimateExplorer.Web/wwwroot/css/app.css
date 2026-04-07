@@ -167,16 +167,17 @@ th {
 }
 
 .snackbar-body {
+    position: relative !important;
     justify-content: center !important;
+    padding-right: 2rem !important;
 }
 
-.snackbar .btn-close {
-    filter: invert(1) grayscale(100%) brightness(200%);
-    opacity: 0.85;
-    margin-left: 1rem;
-    flex-shrink: 0;
-}
-
-.snackbar .btn-close:hover {
-    opacity: 1;
+.snackbar-action-button {
+    position: absolute !important;
+    right: 0 !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    color: #000 !important;
+    font-weight: bold !important;
+    margin-left: 0 !important;
 }

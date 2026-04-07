@@ -133,7 +133,8 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
         await SnackbarStack!.PushAsync(snackbarMessage.Message, snackbarMessage.Type, options =>
         {
-            options.ShowCloseButton = true;
+            options.ShowActionButton = true;
+            options.ActionButtonText = "✕";
             options.Multiline = true;
         });
 

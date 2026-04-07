@@ -614,7 +614,7 @@ public partial class ChartView : IAsyncDisposable
                         {
                             var dataType = sss.MeasurementDefinition.DataType.ToFriendlyName();
 
-                            await SnackbarMessageEvent.InvokeAsync(new SnackbarMessage { Message = $"{dataType} data is not available at {LocationDictionary[LocationId.Value].FullTitle}", Type = SnackbarColor.Warning });
+                            await SnackbarMessageEvent.InvokeAsync(new SnackbarMessage { Message = $"{dataType} data is not available at {LocationDictionary[LocationId.Value].FullTitle}.", Type = SnackbarColor.Warning });
                             csd.DataAvailable = false;
 
                             break;
@@ -906,7 +906,7 @@ public partial class ChartView : IAsyncDisposable
                 }
                 catch (Exception)
                 {
-                    await SnackbarMessageEvent.InvokeAsync(new SnackbarMessage { Message = "Failed to create the chart with the current settings", Type = SnackbarColor.Danger });
+                    await SnackbarMessageEvent.InvokeAsync(new SnackbarMessage { Message = "Failed to create the chart with the current settings.", Type = SnackbarColor.Danger });
                     ChartLoadingErrored = true;
                     await RenderChart();
                 }
