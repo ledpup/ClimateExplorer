@@ -1,4 +1,4 @@
-﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 @import url('table.css');
 
 .custom-modal-header {
@@ -151,4 +151,32 @@ th {
 .chart-controls .chart-control:hover {
     background-color: #cfc;
     transition: 0.25s;
+}
+
+/* ── Snackbar overrides ──────────────────────────────────────────────────── */
+.snackbar {
+    border-radius: 12px !important;
+}
+
+@media (min-width: 768px) {
+    .snackbar {
+        width: 500px !important;
+        min-width: unset !important;
+        max-width: unset !important;
+    }
+}
+
+.snackbar-body {
+    justify-content: center !important;
+}
+
+.snackbar .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+    opacity: 0.85;
+    margin-left: 1rem;
+    flex-shrink: 0;
+}
+
+.snackbar .btn-close:hover {
+    opacity: 1;
 }
