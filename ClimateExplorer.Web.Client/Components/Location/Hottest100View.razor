@@ -1,0 +1,16 @@
+@namespace ClimateExplorer.Web.Client.Components.Location
+@using ClimateExplorer.Web.Client.UiModel
+
+<div class="hottest100-view mt-3">
+    <div class="hottest100-title">@Title</div>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMid meet" style="width: 100%; height: auto; display: block;">
+        @((MarkupString)Hottest100.GenerateSvg(YearCounts, StartYear, EndYear))
+    </svg>
+</div>
+
+@code {
+    [Parameter] public List<Hottest100.RecordCount> YearCounts { get; set; } = [];
+    [Parameter] public string Title { get; set; } = string.Empty;
+    [Parameter] public int StartYear { get; set; }
+    [Parameter] public int EndYear { get; set; }
+}

@@ -11,18 +11,17 @@
                 .Select(g => new RecordCount { Year = g.Key, Count = g.Count() })];
         }
 
-        public static string GenerateSvg(List<RecordCount> yearCounts, string title, int startYear, int endYear)
+        public static string GenerateSvg(List<RecordCount> yearCounts, int startYear, int endYear)
         {
             const int width = 1200;
-            const int height = 300;
+            const int height = 250;
             const int paddingLeft = 12;
             const int paddingRight = 12;
             const int paddingTop = 20;
-            const int paddingBottom = 20;
+            const int paddingBottom = 30;
             const int chartWidth = width - paddingLeft - paddingRight;
             const int chartHeight = height - paddingTop - paddingBottom;
 
-            // X-axis always spans from 1900 to current year
             int minYear = startYear;
             var maxYear = endYear;
             var yearRange = maxYear - minYear;
@@ -30,12 +29,6 @@
             double ToX(int year) => paddingLeft + ((double)(year - minYear) / yearRange * chartWidth);
 
             var svg = new System.Text.StringBuilder();
-
-            // Background
-            svg.AppendLine($@"  <rect width=""{width}"" height=""{height}"" fill=""#ffffff""/>");
-
-            // Title
-            svg.AppendLine($@"  <text x=""{width / 2}"" y=""32"" text-anchor=""middle"" font-size=""16"" font-weight=""bold"" fill=""#333"">{title}</text>");
 
             // X-axis
             var xAxisY = height - paddingBottom;
@@ -51,7 +44,7 @@
             }
 
             // Vertical bars: all same height, width indicates count of hottest days (clamped to prevent overlap)
-            const double barHeight = chartHeight * 0.75;
+            const double barHeight = chartHeight * 0.95;
 
             // Calculate maximum bar width to prevent overlap between adjacent years
             var pixelsPerYear = (double)chartWidth / yearRange;

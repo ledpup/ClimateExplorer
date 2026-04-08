@@ -49,7 +49,7 @@ public partial class ClimateRecords
 
     private bool LoadingIndicatorVisible { get; set; }
 
-    private string? HottestSvg { get; set; }
+    private Hottest100ViewData? HottestData { get; set; }
 
     private List<DataType> AvailableDataTypes { get; set; } = [];
     private List<DataAdjustment?> AvailableDataAdjustments { get; set; } = [];
@@ -203,7 +203,7 @@ public partial class ClimateRecords
         {
             if (ActiveView == RecordView.Yearly)
             {
-                HottestSvg = null;
+                HottestData = null;
                 await LoadYearlyRecords();
             }
             else
@@ -213,7 +213,7 @@ public partial class ClimateRecords
                 {
                     ClimateRecordsResult = new ClimateRecordsResponse();
                     ComputedRowStyles = [];
-                    HottestSvg = null;
+                    HottestData = null;
                 }
                 else
                 {
@@ -223,20 +223,22 @@ public partial class ClimateRecords
 
                     if (ActiveView == RecordView.Monthly)
                     {
-                        HottestSvg = null;
+                        HottestData = null;
                     }
                     else
                     {
                         var top100 = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, take: 100, skip: 1, month, ActiveView == RecordView.Monthly);
                         if (top100.Records.Count < 100)
                         {
-                            HottestSvg = null;
+                            HottestData = null;
                         }
                         else
                         {
                             var yearCounts = Hottest100.BuildYearCounts(top100.Records);
-                            var svgTitle = $"{Location?.Name} - {SvgTitle(Ascending, SelectedDataType)} 100 {RecordsTitle.ToLower()}{(SelectedMonth == 0 ? string.Empty : " - " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(SelectedMonth))}";
-                            HottestSvg = yearCounts.Count > 0 ? Hottest100.GenerateSvg(yearCounts, svgTitle, top100.StartYear!.Value, top100.EndYear!.Value) : null;
+                            var title = $"{Location?.Name} - {SvgTitle(Ascending, SelectedDataType)} 100 {RecordsTitle.ToLower()}{(SelectedMonth == 0 ? string.Empty : " - " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(SelectedMonth))}";
+                            HottestData = yearCounts.Count > 0
+                                ? new Hottest100ViewData(yearCounts, title, top100.StartYear!.Value, top100.EndYear!.Value)
+                                : null;
                         }
                     }
                 }
@@ -444,4 +446,6 @@ public partial class ClimateRecords
         using var streamRef = new DotNetStreamReference(stream: fileStream);
         await JsRuntime!.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
+
+    private record Hottest100ViewData(List<Hottest100.RecordCount> YearCounts, string Title, int StartYear, int EndYear);
 }

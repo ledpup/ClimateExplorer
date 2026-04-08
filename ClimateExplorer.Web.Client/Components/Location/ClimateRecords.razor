@@ -192,13 +192,12 @@
         </div>
     }
 
-    @if (HottestSvg is not null)
+    @if (HottestData is not null)
     {
-        <div class="hottest100-svg mt-3">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMid meet" style="width: 100%; height: auto;">
-                @((MarkupString)HottestSvg)
-            </svg>
-        </div>
+        <Hottest100View YearCounts="@HottestData.YearCounts"
+                        Title="@HottestData.Title"
+                        StartYear="@HottestData.StartYear"
+                        EndYear="@HottestData.EndYear" />
     }
 </DelayedLoadingIndicator>
 

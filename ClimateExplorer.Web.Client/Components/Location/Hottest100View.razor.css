@@ -1,0 +1,13 @@
+.hottest100-view {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 0.75rem 0.75rem 0.25rem;
+}
+
+.hottest100-title {
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
