@@ -2,7 +2,7 @@
 {
     using ClimateExplorer.Core.Model;
 
-    public static class Hottest100
+    public static class Hottest100Model
     {
         public static List<RecordCount> BuildYearCounts(IEnumerable<ClimateRecord> records)
         {
@@ -11,7 +11,7 @@
                 .Select(g => new RecordCount { Year = g.Key, Count = g.Count() })];
         }
 
-        public static string GenerateSvg(List<RecordCount> yearCounts, int startYear, int endYear)
+        public static string Generate(List<RecordCount> yearCounts, int startYear, int endYear)
         {
             const int width = 1200;
             const int height = 275;

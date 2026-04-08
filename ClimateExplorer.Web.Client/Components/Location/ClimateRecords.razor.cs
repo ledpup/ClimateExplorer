@@ -1,6 +1,5 @@
 namespace ClimateExplorer.Web.Client.Components.Location;
 
-using System.ComponentModel.Design;
 using System.Globalization;
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
@@ -8,7 +7,6 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Services;
-using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
@@ -48,8 +46,6 @@ public partial class ClimateRecords
     private ILogger<ClimateRecords>? Logger { get; set; }
 
     private bool LoadingIndicatorVisible { get; set; }
-
-    private Hottest100ViewData? HottestData { get; set; }
 
     private List<DataType> AvailableDataTypes { get; set; } = [];
     private List<DataAdjustment?> AvailableDataAdjustments { get; set; } = [];
@@ -203,7 +199,6 @@ public partial class ClimateRecords
         {
             if (ActiveView == RecordView.Yearly)
             {
-                HottestData = null;
                 await LoadYearlyRecords();
             }
             else
@@ -213,34 +208,12 @@ public partial class ClimateRecords
                 {
                     ClimateRecordsResult = new ClimateRecordsResponse();
                     ComputedRowStyles = [];
-                    HottestData = null;
                 }
                 else
                 {
                     var month = SelectedMonth != 0 ? (int?)SelectedMonth : null;
                     ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, take: Count, skip: CurrentPage, month, ActiveView == RecordView.Monthly);
                     ComputedRowStyles = ComputeRowStyles(ClimateRecordsResult);
-
-                    if (ActiveView == RecordView.Monthly)
-                    {
-                        HottestData = null;
-                    }
-                    else
-                    {
-                        var top100 = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, take: 100, skip: 1, month, ActiveView == RecordView.Monthly);
-                        if (top100.Records.Count < 100)
-                        {
-                            HottestData = null;
-                        }
-                        else
-                        {
-                            var yearCounts = Hottest100.BuildYearCounts(top100.Records);
-                            var title = $"{Location?.Name} - {SvgTitle(Ascending, SelectedDataType)} 100 {RecordsTitle.ToLower()}{(SelectedMonth == 0 ? string.Empty : " - " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(SelectedMonth))}";
-                            HottestData = yearCounts.Count > 0
-                                ? new Hottest100ViewData(yearCounts, title, top100.StartYear!.Value, top100.EndYear!.Value)
-                                : null;
-                        }
-                    }
                 }
             }
         }
@@ -248,17 +221,6 @@ public partial class ClimateRecords
         {
             LoadingIndicatorVisible = false;
         }
-    }
-
-    private string SvgTitle(bool ascending, DataType dataType)
-    {
-        return dataType switch
-        {
-            DataType.TempMax or DataType.TempMin or DataType.TempMean => ascending ? "Coldest" : "Hottest",
-            DataType.Precipitation => ascending ? "Driest" : "Wettest",
-            DataType.SolarRadiation => ascending ? "Darkest" : "Brightest",
-            _ => throw new NotImplementedException(),
-        };
     }
 
     private async Task LoadYearlyRecords()
@@ -446,6 +408,4 @@ public partial class ClimateRecords
         using var streamRef = new DotNetStreamReference(stream: fileStream);
         await JsRuntime!.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
-
-    private record Hottest100ViewData(List<Hottest100.RecordCount> YearCounts, string Title, int StartYear, int EndYear);
 }

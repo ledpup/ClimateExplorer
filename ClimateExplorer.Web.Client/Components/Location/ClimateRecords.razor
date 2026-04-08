@@ -191,15 +191,16 @@
             <button class="subtle-link" @onclick="DownloadAllRecords"><i class="fas fa-download"></i> Download</button>
         </div>
     }
-
-    @if (HottestData is not null)
-    {
-        <Hottest100View YearCounts="@HottestData.YearCounts"
-                        Title="@HottestData.Title"
-                        StartYear="@HottestData.StartYear"
-                        EndYear="@HottestData.EndYear" />
-    }
 </DelayedLoadingIndicator>
+
+@if (ActiveView == RecordView.Daily)
+{
+    <Hottest100 Location="@Location"
+                DataType="@SelectedDataType"
+                DataAdjustment="@SelectedDataAdjustment"
+                Ascending="@Ascending"
+                SelectedMonth="@SelectedMonth" />
+}
 
 <InfoPanel @ref="climateRecordsInfoPanel" PanelName="climate-records" Version="1.0" Title="Climate records" Height="60vh">
     <ClimateRecordsInfo />
