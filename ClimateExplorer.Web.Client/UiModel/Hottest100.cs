@@ -41,11 +41,12 @@
             var xAxisY = height - paddingBottom;
             svg.AppendLine($@"  <line x1=""{paddingLeft}"" y1=""{xAxisY}"" x2=""{width - paddingRight}"" y2=""{xAxisY}"" stroke=""#333"" stroke-width=""1""/>");
 
-            // X-axis labels (every 10 years)
+            // X-axis labels and tick marks (every 10 years)
             var firstLabelYear = minYear + ((10 - (minYear % 10)) % 10);
             for (int year = firstLabelYear; year <= maxYear; year += 10)
             {
                 var x = ToX(year);
+                svg.AppendLine($@"  <line x1=""{x:F2}"" y1=""{xAxisY}"" x2=""{x:F2}"" y2=""{xAxisY + 7}"" stroke=""#333"" stroke-width=""0.5""/>");
                 svg.AppendLine($@"  <text x=""{x:F2}"" y=""{xAxisY + 18}"" text-anchor=""middle"" font-size=""10"" fill=""#666"">{year}</text>");
             }
 
