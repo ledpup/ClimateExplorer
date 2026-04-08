@@ -65,136 +65,144 @@
     }
 }
 </div>
-<div class="table-card">
-<div class="table-header">
-    <span>@RecordsTitle</span>
-</div>
 <DelayedLoadingIndicator @bind-Visible="@LoadingIndicatorVisible">
-    @if (ClimateRecordsResult?.Records is { Count: > 0 })
-    {
-        <Table Striped>
-            <TableHeader>
-                <TableRow>
-                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
-                    <TableHeaderCell Class="colour-col"></TableHeaderCell>
-                    @if (ActiveView == RecordView.Yearly)
-                    {
-                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Anomaly</Strong></TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>Average <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
+    <div class="table-card">
+        <div class="table-header">
+            <span>@Location?.Name - @RecordsTitle@(SelectedMonth == 0 ? string.Empty : " - " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(SelectedMonth))</span>
+        </div>
+        @if (ClimateRecordsResult?.Records is { Count: > 0 })
+        {
+            <Table Striped>
+                <TableHeader>
+                    <TableRow>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
+                        <TableHeaderCell Class="colour-col"></TableHeaderCell>
+                        @if (ActiveView == RecordView.Yearly)
+                        {
+                            <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
+                            <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Anomaly</Strong></TableHeaderCell>
+                            <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>Average <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
+                        }
+                        else
+                        {
+                            <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</Strong></TableHeaderCell>
+                            <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
+                            <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>@(ActiveView == RecordView.Monthly ? "Average" : "Value") <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
+                        }
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    @{
+                        var rank = ((CurrentPage - 1) * Count) + 1;
+                        foreach (var (record, rowStyle) in ClimateRecordsResult!.Records.Zip(ComputedRowStyles))
+                        {
+                            var currentRank = rank;
+                            <tr>
+                                <td class="text-center">@currentRank</td>
+                                <td class="colour-col" style="@rowStyle"></td>
+                                @if (ActiveView == RecordView.Yearly)
+                                {
+                                    <td>@record.Year</td>
+                                    <td class="text-end">@(record.Anomaly.HasValue ? FormatAnomaly(record.Anomaly.Value, record.UnitOfMeasure) : "N/A")</td>
+                                    <td class="text-end">@(record.Average.HasValue ? FormatValue(record.Average.Value, record.UnitOfMeasure) : "N/A")</td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        @if (record.Day.HasValue)
+                                        {
+                                            <span class="secondary-text">@record.Day @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month)</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="secondary-text">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(record.Month)</span>
+                                        }
+                                    </td>
+                                    <td>@record.Year</td>
+                                    <td class="text-end">@FormatValue(record.Value, record.UnitOfMeasure)</td>
+                                }
+                            </tr>
+                            rank++;
+                        }
                     }
-                    else
+                </TableBody>
+            </Table>
+        }
+        else if (ClimateRecordsResult is null && LoadingIndicatorVisible)
+        {
+            <Table Striped>
+                <TableHeader>
+                    <TableRow>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
+                        <TableHeaderCell Class="colour-col"></TableHeaderCell>
+                        @if (ActiveView == RecordView.Yearly)
+                        {
+                            <TableHeaderCell TextAlignment="TextAlignment.Center">Year</TableHeaderCell>
+                            <TableHeaderCell TextAlignment="TextAlignment.End">Anomaly</TableHeaderCell>
+                            <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>Average <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
+                        }
+                        else
+                        {
+                            <TableHeaderCell TextAlignment="TextAlignment.Center">@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</TableHeaderCell>
+                            <TableHeaderCell TextAlignment="TextAlignment.Center">Year</TableHeaderCell>
+                            <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;">@(ActiveView == RecordView.Monthly ? "Average" : "Value") <i class="fas @SortIcon"></i></TableHeaderCell>
+                        }
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    @for (int i = 0; i < Count; i++)
                     {
-                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</Strong></TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>@(ActiveView == RecordView.Monthly ? "Average" : "Value") <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
+                        <tr><td>&nbsp;</td><td></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                     }
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                @{
-                    var rank = ((CurrentPage - 1) * Count) + 1;
-                    foreach (var (record, rowStyle) in ClimateRecordsResult!.Records.Zip(ComputedRowStyles))
-                    {
-                        var currentRank = rank;
-                        <tr>
-                            <td class="text-center">@currentRank</td>
-                            <td class="colour-col" style="@rowStyle"></td>
-                            @if (ActiveView == RecordView.Yearly)
-                            {
-                                <td>@record.Year</td>
-                                <td class="text-end">@(record.Anomaly.HasValue ? FormatAnomaly(record.Anomaly.Value, record.UnitOfMeasure) : "N/A")</td>
-                                <td class="text-end">@(record.Average.HasValue ? FormatValue(record.Average.Value, record.UnitOfMeasure) : "N/A")</td>
-                            }
-                            else
-                            {
-                                <td>
-                                    @if (record.Day.HasValue)
-                                    {
-                                        <span class="secondary-text">@record.Day @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month)</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="secondary-text">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(record.Month)</span>
-                                    }
-                                </td>
-                                <td>@record.Year</td>
-                                <td class="text-end">@FormatValue(record.Value, record.UnitOfMeasure)</td>
-                            }
-                        </tr>
-                        rank++;
-                    }
-                }
-            </TableBody>
-        </Table>
-    }
-    else if (ClimateRecordsResult is null && LoadingIndicatorVisible)
-    {
-        <Table Striped>
-            <TableHeader>
-                <TableRow>
-                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
-                    <TableHeaderCell Class="colour-col"></TableHeaderCell>
-                    @if (ActiveView == RecordView.Yearly)
-                    {
-                        <TableHeaderCell TextAlignment="TextAlignment.Center">Year</TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End">Anomaly</TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>Average <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
-                    }
-                    else
-                    {
-                        <TableHeaderCell TextAlignment="TextAlignment.Center">@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center">Year</TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;">@(ActiveView == RecordView.Monthly ? "Average" : "Value") <i class="fas @SortIcon"></i></TableHeaderCell>
-                    }
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                @for (int i = 0; i < Count; i++)
-                {
-                    <tr><td>&nbsp;</td><td></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-                }
-            </TableBody>
-        </Table>
-    }
-    else
-    {
-        <p>No records found for the selected filters.</p>
-    }
-</DelayedLoadingIndicator>
-    @if (ClimateRecordsResult?.Records is { Count: > 0 })
-    {
-        <div class="table-footer">
-            <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
-                <div class="d-flex flex-wrap align-items-center justify-content-center gap-4">
-                    <PaginationControl TotalPages="@TotalPages"
-                                       CurrentPage="@CurrentPage"
-                                       PageChanged="@OnPageChanged" />
-                    <div class="d-flex align-items-center gap-1">
-                        <Select TValue="int"
-                                Value="@Count"
-                                ValueChanged="@OnCountChanged"
-                                Size="Size.Small">
-                            <SelectItem Value="10">10</SelectItem>
-                            <SelectItem Value="20">20</SelectItem>
-                            <SelectItem Value="50">50</SelectItem>
-                        </Select>
+                </TableBody>
+            </Table>
+        }
+        else
+        {
+            <p>No records found for the selected filters.</p>
+        }
+        @if (ClimateRecordsResult?.Records is { Count: > 0 })
+        {
+            <div class="table-footer">
+                <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
+                    <div class="d-flex flex-wrap align-items-center justify-content-center gap-4">
+                        <PaginationControl TotalPages="@TotalPages"
+                                            CurrentPage="@CurrentPage"
+                                            PageChanged="@OnPageChanged" />
+                        <div class="d-flex align-items-center gap-1">
+                            <Select TValue="int"
+                                    Value="@Count"
+                                    ValueChanged="@OnCountChanged"
+                                    Size="Size.Small">
+                                <SelectItem Value="10">10</SelectItem>
+                                <SelectItem Value="20">20</SelectItem>
+                                <SelectItem Value="50">50</SelectItem>
+                            </Select>
+                        </div>
                     </div>
+                    <span class="text-muted">@StartRecord-@EndRecord of @(ClimateRecordsResult.TotalCount)</span>
                 </div>
-                <span class="text-muted">@StartRecord-@EndRecord of @(ClimateRecordsResult.TotalCount)</span>
             </div>
+        }
+    </div>
+    @if (ClimateRecordsResult?.Records is { Count: > 0 })
+    {
+        <div class="d-flex justify-content-end mt-2">
+            <button class="subtle-link" @onclick="DownloadAllRecords"><i class="fas fa-download"></i> Download</button>
         </div>
     }
-</div>
 
-@if (ClimateRecordsResult?.Records is { Count: > 0 })
-{
-    <div class="d-flex justify-content-end mt-2">
-        <button class="subtle-link" @onclick="DownloadAllRecords"><i class="fas fa-download"></i> Download</button>
-    </div>
-}
+    @if (HottestSvg is not null)
+    {
+        <div class="hottest100-svg mt-3">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMid meet" style="width: 100%; height: auto;">
+                @((MarkupString)HottestSvg)
+            </svg>
+        </div>
+    }
+</DelayedLoadingIndicator>
 
-<InfoPanel @ref="climateRecordsInfoPanel" Title="Climate records" Height="60vh">
+<InfoPanel @ref="climateRecordsInfoPanel" PanelName="climate-records" Version="1.0" Title="Climate records" Height="60vh">
     <ClimateRecordsInfo />
 </InfoPanel>
 

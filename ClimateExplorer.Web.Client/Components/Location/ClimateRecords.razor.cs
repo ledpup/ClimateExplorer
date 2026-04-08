@@ -1,5 +1,6 @@
 namespace ClimateExplorer.Web.Client.Components.Location;
 
+using System.ComponentModel.Design;
 using System.Globalization;
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
@@ -7,6 +8,7 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Services;
+using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
@@ -47,6 +49,8 @@ public partial class ClimateRecords
 
     private bool LoadingIndicatorVisible { get; set; }
 
+    private string? HottestSvg { get; set; }
+
     private List<DataType> AvailableDataTypes { get; set; } = [];
     private List<DataAdjustment?> AvailableDataAdjustments { get; set; } = [];
     private List<string> ComputedRowStyles { get; set; } = [];
@@ -71,8 +75,9 @@ public partial class ClimateRecords
     {
         get
         {
-            var raw = $"{ActiveView} {ChartSeriesDefinition.MapDataTypeToFriendlyName(SelectedDataType)} records";
-            return char.ToUpper(raw[0]) + raw[1..].ToLower();
+            var raw = $"{ActiveView}{(AvailableDataAdjustments.Count <= 1 || SelectedDataAdjustment == DataAdjustment.Adjusted ? string.Empty : " unadjusted")} {ChartSeriesDefinition.MapDataTypeToFriendlyName(SelectedDataType)} records";
+            var casing = char.ToUpper(raw[0]) + raw[1..].ToLower();
+            return casing;
         }
     }
 
@@ -198,6 +203,7 @@ public partial class ClimateRecords
         {
             if (ActiveView == RecordView.Yearly)
             {
+                HottestSvg = null;
                 await LoadYearlyRecords();
             }
             else
@@ -207,12 +213,32 @@ public partial class ClimateRecords
                 {
                     ClimateRecordsResult = new ClimateRecordsResponse();
                     ComputedRowStyles = [];
+                    HottestSvg = null;
                 }
                 else
                 {
                     var month = SelectedMonth != 0 ? (int?)SelectedMonth : null;
                     ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, take: Count, skip: CurrentPage, month, ActiveView == RecordView.Monthly);
                     ComputedRowStyles = ComputeRowStyles(ClimateRecordsResult);
+
+                    if (ActiveView == RecordView.Monthly)
+                    {
+                        HottestSvg = null;
+                    }
+                    else
+                    {
+                        var top100 = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, take: 100, skip: 1, month, ActiveView == RecordView.Monthly);
+                        if (top100.Records.Count < 100)
+                        {
+                            HottestSvg = null;
+                        }
+                        else
+                        {
+                            var yearCounts = Hottest100.BuildYearCounts(top100.Records);
+                            var svgTitle = $"{Location?.Name} - {SvgTitle(Ascending, SelectedDataType)} 100 {RecordsTitle.ToLower()}{(SelectedMonth == 0 ? string.Empty : " - " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(SelectedMonth))}";
+                            HottestSvg = yearCounts.Count > 0 ? Hottest100.GenerateSvg(yearCounts, svgTitle, top100.StartYear!.Value, top100.EndYear!.Value) : null;
+                        }
+                    }
                 }
             }
         }
@@ -220,6 +246,17 @@ public partial class ClimateRecords
         {
             LoadingIndicatorVisible = false;
         }
+    }
+
+    private string SvgTitle(bool ascending, DataType dataType)
+    {
+        return dataType switch
+        {
+            DataType.TempMax or DataType.TempMin or DataType.TempMean => ascending ? "Coldest" : "Hottest",
+            DataType.Precipitation => ascending ? "Driest" : "Wettest",
+            DataType.SolarRadiation => ascending ? "Darkest" : "Brightest",
+            _ => throw new NotImplementedException(),
+        };
     }
 
     private async Task LoadYearlyRecords()
