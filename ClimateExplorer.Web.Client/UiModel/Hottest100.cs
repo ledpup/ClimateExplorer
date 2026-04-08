@@ -14,11 +14,11 @@
         public static string GenerateSvg(List<RecordCount> yearCounts, int startYear, int endYear)
         {
             const int width = 1200;
-            const int height = 250;
+            const int height = 275;
             const int paddingLeft = 12;
             const int paddingRight = 12;
             const int paddingTop = 20;
-            const int paddingBottom = 30;
+            const int paddingBottom = 20;
             const int chartWidth = width - paddingLeft - paddingRight;
             const int chartHeight = height - paddingTop - paddingBottom;
 
