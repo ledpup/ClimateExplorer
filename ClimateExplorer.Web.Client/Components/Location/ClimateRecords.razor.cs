@@ -22,6 +22,7 @@ public partial class ClimateRecords
         Daily,
         Monthly,
         Yearly,
+        Hottest100,
     }
 
     [Parameter]
@@ -66,6 +67,20 @@ public partial class ClimateRecords
     private int StartRecord => ClimateRecordsResult?.Records?.Count > 0 ? ((CurrentPage - 1) * Count) + 1 : 0;
     private int EndRecord => ClimateRecordsResult?.Records?.Count > 0 ? Math.Min(StartRecord + ClimateRecordsResult.Records.Count - 1, ClimateRecordsResult.TotalCount) : 0;
     private string SortIcon => Ascending ? "fa-up-long" : "fa-down-long";
+
+    private string SortLabel
+    {
+        get
+        {
+            return SelectedDataType switch
+            {
+                DataType.TempMax or DataType.TempMin or DataType.TempMean => Ascending ? "Coldest 100" : "Hottest 100",
+                DataType.Precipitation => Ascending ? "Driest 100" : "Wettest 100",
+                DataType.SolarRadiation => Ascending ? "Darkest 100" : "Brightest 100",
+                _ => Ascending ? "Ascending" : "Descending",
+            };
+        }
+    }
 
     private string RecordsTitle
     {
@@ -197,7 +212,12 @@ public partial class ClimateRecords
 
         try
         {
-            if (ActiveView == RecordView.Yearly)
+            if (ActiveView == RecordView.Hottest100)
+            {
+                ClimateRecordsResult = null;
+                ComputedRowStyles = [];
+            }
+            else if (ActiveView == RecordView.Yearly)
             {
                 await LoadYearlyRecords();
             }
@@ -334,7 +354,7 @@ public partial class ClimateRecords
 
     private async Task DownloadAllRecords()
     {
-        if (Location is null)
+        if (Location is null || ActiveView == RecordView.Hottest100)
         {
             return;
         }
