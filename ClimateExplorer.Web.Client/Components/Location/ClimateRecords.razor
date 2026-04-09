@@ -67,7 +67,7 @@
     @if (ActiveView == RecordView.Hottest100)
     {
         <button class="sort-toggle-btn" @onclick="OnSortToggled" title="Toggle sort order">
-            @SortLabel
+            <i class="fa-solid fa-temperature-arrow-@(Ascending ? "up" : "down")"></i> @SortLabel
         </button>
     }
 }
