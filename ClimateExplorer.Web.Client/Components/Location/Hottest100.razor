@@ -6,14 +6,16 @@
 <DelayedLoadingIndicator @bind-Visible="@IsLoading">
     @if (YearCounts.Count > 0)
     {
-        <div class="hottest100-view mt-3">
-            <svg @ref="svgRef" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 330" preserveAspectRatio="xMidYMid meet" style="width: 100%; height: auto; display: block;">
-                <rect width="1200" height="330" fill="#ffffff"/>
-                <text x="600" y="22" text-anchor="middle" font-size="16" font-weight="bold" fill="#333">@BuildTitle()</text>
-                <g transform="translate(0,30)">
-                    @((MarkupString)Hottest100Model.Generate(YearCounts, StartYear, EndYear))
-                </g>
-            </svg>
+        <div class="mt-3">
+            <div class="hottest100-svg-container">
+                <svg @ref="svgRef" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 330" preserveAspectRatio="xMidYMid meet" class="hottest100-svg">
+                    <rect width="1200" height="330" fill="#ffffff"/>
+                    <text x="600" y="22" text-anchor="middle" font-size="18" font-weight="bold" fill="#333">@BuildTitle()</text>
+                    <g transform="translate(0,30)">
+                        @((MarkupString)Hottest100Model.Generate(YearCounts, StartYear, EndYear))
+                    </g>
+                </svg>
+            </div>
             <div class="hottest100-actions">
                 <button class="hottest100-btn" @onclick="CopyAsImage"><i class="fas fa-copy"></i> Copy</button>
                 <button class="hottest100-btn" @onclick="DownloadImage"><i class="fas fa-download"></i> Download</button>

@@ -40,7 +40,7 @@
             {
                 var x = ToX(year);
                 svg.AppendLine($@"  <line x1=""{x:F2}"" y1=""{xAxisY}"" x2=""{x:F2}"" y2=""{xAxisY + 7}"" stroke=""#333"" stroke-width=""0.5""/>");
-                svg.AppendLine($@"  <text x=""{x:F2}"" y=""{xAxisY + 18}"" text-anchor=""middle"" font-size=""10"" fill=""#666"">{year}</text>");
+                svg.AppendLine($@"  <text x=""{x:F2}"" y=""{xAxisY + 22}"" text-anchor=""middle"" font-size=""14"" fill=""#666"">{year}</text>");
             }
 
             // Vertical bars: all same height, width indicates count of hottest days (clamped to prevent overlap)
