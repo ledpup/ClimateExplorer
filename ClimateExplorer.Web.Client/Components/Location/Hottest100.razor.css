@@ -18,8 +18,8 @@
 
 @media (max-width: 1024px) {
     .hottest100-svg {
-        width: 1024px;
-        min-width: 1024px;
+        width: min(1024px, 125vw);
+        min-width: min(1024px, 125vw);
     }
 
     .hottest100-svg-container {
