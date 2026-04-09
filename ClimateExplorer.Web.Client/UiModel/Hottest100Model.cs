@@ -4,6 +4,9 @@
 
     public static class Hottest100Model
     {
+        public const int ChartWidth = 900;
+        public const int ChartHeight = 300;
+
         public static List<RecordCount> BuildYearCounts(IEnumerable<ClimateRecord> records)
         {
             return [.. records
@@ -13,13 +16,12 @@
 
         public static string Generate(List<RecordCount> yearCounts, int startYear, int endYear)
         {
-            const int width = 1200;
-            const int height = 275;
+            const int height = 250;
             const int paddingLeft = 12;
             const int paddingRight = 12;
             const int paddingTop = 20;
             const int paddingBottom = 20;
-            const int chartWidth = width - paddingLeft - paddingRight;
+            const int chartWidth = ChartWidth - paddingLeft - paddingRight;
             const int chartHeight = height - paddingTop - paddingBottom;
 
             int minYear = startYear;
@@ -32,7 +34,7 @@
 
             // X-axis
             var xAxisY = height - paddingBottom;
-            svg.AppendLine($@"  <line x1=""{paddingLeft}"" y1=""{xAxisY}"" x2=""{width - paddingRight}"" y2=""{xAxisY}"" stroke=""#333"" stroke-width=""1""/>");
+            svg.AppendLine($@"  <line x1=""{paddingLeft}"" y1=""{xAxisY}"" x2=""{ChartWidth - paddingRight}"" y2=""{xAxisY}"" stroke=""#333"" stroke-width=""1""/>");
 
             // X-axis labels and tick marks (every 10 years)
             var firstLabelYear = minYear + ((10 - (minYear % 10)) % 10);
@@ -40,7 +42,7 @@
             {
                 var x = ToX(year);
                 svg.AppendLine($@"  <line x1=""{x:F2}"" y1=""{xAxisY}"" x2=""{x:F2}"" y2=""{xAxisY + 7}"" stroke=""#333"" stroke-width=""0.5""/>");
-                svg.AppendLine($@"  <text x=""{x:F2}"" y=""{xAxisY + 22}"" text-anchor=""middle"" font-size=""14"" fill=""#666"">{year}</text>");
+                svg.AppendLine($@"  <text x=""{x:F2}"" y=""{xAxisY + 22}"" text-anchor=""middle"" font-size=""12"" fill=""#666"">{year}</text>");
             }
 
             // Vertical bars: all same height, width indicates count of hottest days (clamped to prevent overlap)
