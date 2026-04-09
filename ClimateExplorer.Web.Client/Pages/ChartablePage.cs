@@ -18,7 +18,7 @@ using Microsoft.JSInterop;
 
 public abstract partial class ChartablePage : ComponentBase, IDisposable
 {
-    private const int SnackbarDisplayMs = 40_000;
+    public const int SnackbarDisplayMs = 30_000;
 
     private readonly Guid componentInstanceId = Guid.NewGuid();
     private readonly HashSet<string> activeSnackbarMessages = [];
