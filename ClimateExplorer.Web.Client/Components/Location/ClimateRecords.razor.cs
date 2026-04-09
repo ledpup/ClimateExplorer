@@ -22,7 +22,7 @@ public partial class ClimateRecords
         Daily,
         Monthly,
         Yearly,
-        Hottest100,
+        Top100,
     }
 
     [Parameter]
@@ -74,9 +74,9 @@ public partial class ClimateRecords
         {
             return SelectedDataType switch
             {
-                DataType.TempMax or DataType.TempMin or DataType.TempMean => Ascending ? "Coldest 100" : "Hottest 100",
-                DataType.Precipitation => Ascending ? "Driest 100" : "Wettest 100",
-                DataType.SolarRadiation => Ascending ? "Darkest 100" : "Brightest 100",
+                DataType.TempMax or DataType.TempMin or DataType.TempMean => Ascending ? "Coldest" : "Hottest",
+                DataType.Precipitation => Ascending ? "Driest" : "Wettest",
+                DataType.SolarRadiation => Ascending ? "Darkest" : "Brightest",
                 _ => Ascending ? "Ascending" : "Descending",
             };
         }
@@ -96,13 +96,15 @@ public partial class ClimateRecords
 
     protected override async Task OnParametersSetAsync()
     {
+        DataSetDefinitions ??= await DataService!.GetDataSetDefinitions();
+
         if (Location is null || Location.Id == InternalLocationId)
         {
             return;
         }
 
         InternalLocationId = Location.Id;
-        await LoadAvailableOptions();
+        await UpdateAvailableOptions();
         await LoadRecords();
     }
 
@@ -153,13 +155,16 @@ public partial class ClimateRecords
 
     private Task ShowClimateRecordsInfo() => climateRecordsInfoPanel!.ShowAsync();
 
-    private async Task LoadAvailableOptions()
+    private async Task UpdateAvailableOptions()
     {
-        DataSetDefinitions = await DataService!.GetDataSetDefinitions();
-        LocationMeasurements = [.. DataSetDefinitions
+        LocationMeasurements = [.. DataSetDefinitions!
             .Where(x => x.LocationIds != null && x.LocationIds.Contains(Location!.Id))
-            .SelectMany(x => x.MeasurementDefinitions!)
-            .Where(x => x.DataResolution == DataResolution.Daily || x.DataResolution == DataResolution.Monthly)];
+            .SelectMany(x => x.MeasurementDefinitions!)];
+
+        if (ActiveView == RecordView.Daily || ActiveView == RecordView.Top100)
+        {
+            LocationMeasurements = [.. LocationMeasurements.Where(x => x.DataResolution == DataResolution.Daily)];
+        }
 
         AvailableDataTypes = [.. LocationMeasurements
             .Select(x => x.DataType)
@@ -212,7 +217,7 @@ public partial class ClimateRecords
 
         try
         {
-            if (ActiveView == RecordView.Hottest100)
+            if (ActiveView == RecordView.Top100)
             {
                 ClimateRecordsResult = null;
                 ComputedRowStyles = [];
@@ -300,6 +305,7 @@ public partial class ClimateRecords
     {
         ActiveView = Enum.Parse<RecordView>(name);
         CurrentPage = 1;
+        await UpdateAvailableOptions();
         await LoadRecords();
     }
 
@@ -354,7 +360,7 @@ public partial class ClimateRecords
 
     private async Task DownloadAllRecords()
     {
-        if (Location is null || ActiveView == RecordView.Hottest100)
+        if (Location is null || ActiveView == RecordView.Top100)
         {
             return;
         }

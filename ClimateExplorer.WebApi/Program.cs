@@ -380,7 +380,8 @@ async Task<ClimateRecordsResponse> GetClimateRecords(
     MeasurementDefinitionViewModel md = null;
     DataSetDefinitionViewModel matchingDsd = null;
 
-    foreach (var resolution in new[] { DataResolution.Daily, DataResolution.Monthly })
+    var resolutions = monthly ? [DataResolution.Daily, DataResolution.Monthly] : new[] { DataResolution.Daily };
+    foreach (var resolution in resolutions)
     {
         foreach (var dsd in locationDsds)
         {
