@@ -1,0 +1,104 @@
+.hottest100-svg-container {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    background-color: #ffffff;
+}
+
+.hottest100-svg {
+    display: block;
+    height: auto;
+}
+
+@media (min-width: 1025px) {
+    .hottest100-svg {
+        width: 100%;
+    }
+}
+
+@media (max-width: 1024px) {
+    .hottest100-svg {
+        width: min(1024px, 140vw);
+        min-width: min(1024px, 140vw);
+    }
+
+    .hottest100-svg-container {
+        border-radius: 12px;
+        box-shadow: inset -8px 0 8px -8px rgba(0, 0, 0, 0.15);
+    }
+
+    .hottest100-svg-container::after {
+        content: '→';
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 24px;
+        color: rgba(0, 0, 0, 0.3);
+        pointer-events: none;
+        animation: scroll-hint 2s ease-in-out infinite;
+    }
+
+    .hottest100-svg-container::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .hottest100-svg-container::-webkit-scrollbar-track {
+        background: #f8f8f8;
+        border-radius: 8px;
+    }
+
+    .hottest100-svg-container::-webkit-scrollbar-thumb {
+        background: #425f59;
+        border-radius: 8px;
+    }
+
+    .hottest100-svg-container::-webkit-scrollbar-thumb:hover {
+        background: #2a3d39;
+    }
+}
+
+@keyframes scroll-hint {
+    0%, 100% {
+        opacity: 0.3;
+        transform: translateY(-50%) translateX(0);
+    }
+    50% {
+        opacity: 0.6;
+        transform: translateY(-50%) translateX(4px);
+    }
+}
+
+.hottest100-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 0.4rem 0.5rem;
+    background-color: #ffffff;
+}
+
+.hottest100-btn {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font: inherit;
+    padding: 0.5rem;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.hottest100-btn:hover {
+    color: #2a3d39;
+    text-decoration: underline;
+}
+
+@media (max-width: 1024px) {
+    .hottest100-btn {
+        padding: 0.75rem 1rem;
+        font-size: 16px;
+    }
+}

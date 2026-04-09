@@ -16,7 +16,7 @@
 .info-icon {
     cursor: pointer;
     color: #79c6f4;
-    font-size: larger;
+    font-size: 19.2px;
     margin-left: 8px;
 }
 
@@ -55,6 +55,35 @@
     width: auto;
 }
 
+.sort-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #2a3d39;
+    background-color: #f8f8f8;
+    border: 1px solid #c4d4d1;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sort-toggle-btn:hover {
+    background-color: #cfc;
+    border-color: #425f59;
+    color: #2a3d39;
+}
+
+.sort-toggle-btn:active {
+    transform: scale(0.98);
+}
+
+.sort-toggle-btn i {
+    font-size: 0.875rem;
+}
+
 /* ── Tabs ────────────────────────────────────────────────────────────────── */
 ::deep table.table thead th:first-child,
 ::deep table.table td:first-child {
@@ -74,7 +103,7 @@
     margin-bottom: -2px;
     border-radius: 0;
     padding: 0.35rem 0.75rem;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: bold;
     background: none;
 }

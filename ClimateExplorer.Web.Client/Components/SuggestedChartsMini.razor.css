@@ -68,6 +68,6 @@
         z-index: 1500;
     }
 
-    .title:hover .tooltip-content {
+    .suggested-data-set:hover .tooltip-content {
         display: block;
     }

@@ -18,7 +18,10 @@ using Microsoft.JSInterop;
 
 public abstract partial class ChartablePage : ComponentBase, IDisposable
 {
+    public const int SnackbarDisplayMs = 30_000;
+
     private readonly Guid componentInstanceId = Guid.NewGuid();
+    private readonly HashSet<string> activeSnackbarMessages = [];
 
     [Inject]
     protected IDataService? DataService { get; set; }
@@ -44,7 +47,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     protected IEnumerable<Region>? Regions { get; set; }
 
-    protected SnackbarStack? Snackbar { get; set; }
+    protected SnackbarStack? SnackbarStack { get; set; }
 
     protected ChartView? ChartView { get; set; }
 
@@ -123,7 +126,19 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     protected async Task SnackbarMessageEventHandler(SnackbarMessage snackbarMessage)
     {
-        await Snackbar!.PushAsync(snackbarMessage.Message, snackbarMessage.Type);
+        if (!activeSnackbarMessages.Add(snackbarMessage.Message))
+        {
+            return;
+        }
+
+        await SnackbarStack!.PushAsync(snackbarMessage.Message, snackbarMessage.Type, options =>
+        {
+            options.ShowActionButton = true;
+            options.ActionButtonText = "✕";
+            options.Multiline = true;
+        });
+
+        _ = Task.Delay(SnackbarDisplayMs).ContinueWith(_ => activeSnackbarMessages.Remove(snackbarMessage.Message));
     }
 
     protected Guid GetLocationFromCsd(StringValues csdSpecifier)

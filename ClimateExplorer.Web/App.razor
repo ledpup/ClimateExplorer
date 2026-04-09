@@ -138,6 +138,36 @@
             anchorElement.remove();
         }
 
+        async function svgToPngBlob(svgElement) {
+            const svgData = new XMLSerializer().serializeToString(svgElement);
+            const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(svgBlob);
+            try {
+                const img = new Image();
+                img.src = url;
+                await img.decode();
+                const canvas = document.createElement('canvas');
+                canvas.width = svgElement.viewBox.baseVal.width;
+                canvas.height = svgElement.viewBox.baseVal.height;
+                canvas.getContext('2d').drawImage(img, 0, 0);
+                return await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+            } finally {
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        async function svgToImageDownload(svgElement, fileName) {
+            const blob = await svgToPngBlob(svgElement);
+            const url = URL.createObjectURL(blob);
+            triggerFileDownload(fileName, url);
+            URL.revokeObjectURL(url);
+        }
+
+        async function svgToImageCopy(svgElement) {
+            const blob = await svgToPngBlob(svgElement);
+            await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+        }
+
         async function waitForChartReady(wrapperElement) {
             const maxWaitMs = 10000;
             const intervalMs = 20;

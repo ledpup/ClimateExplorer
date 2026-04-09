@@ -1,24 +1,13 @@
 @namespace ClimateExplorer.Web.Client.Components.Info
 
-<p>The climate records table shows ranked extreme measurements for the selected location — the highest or lowest values recorded for the chosen data type.</p>
-
-<h3>Views</h3>
-<p>Use the tabs at the top to switch between three views:</p>
-<ul>
-    <li><b>Daily</b> — individual daily readings, ranked from highest to lowest.</li>
-    <li><b>Monthly</b> — monthly averages, ranked from highest to lowest.</li>
-    <li><b>Yearly</b> — yearly averages, with both the measured value and its anomaly relative to the series mean.</li>
-</ul>
+<p>The climate records table shows ranked extreme measurements for the selected location — the highest or lowest values recorded for the chosen data type. Use the tabs at the top to switch between three views.</p>
 
 <h3>Options</h3>
 <ul>
-    <li><b>Data type</b> — choose the measurement to rank, such as maximum temperature, minimum temperature, or rainfall.</li>
-    <li><b>Month filter</b> — (daily and monthly views) restrict records to a specific calendar month, or view all months together.</li>
-    <li><b>Adjusted</b> — when available, use homogenised data corrected for non-climatic influences such as station relocations and instrument changes. Uncheck to see raw, unmodified measurements.</li>
+    <li><b>Data type</b> - choose the measurement to rank, such as maximum temperature, minimum temperature, or rainfall.</li>
+    <li><b>Month filter</b> - (daily and monthly views) restrict records to a specific calendar month, or view all months together.</li>
+    <li><b>Adjusted</b> - when available, use homogenised data corrected for non-climatic influences such as station relocations and instrument changes. Uncheck to see raw, unmodified measurements.</li>
 </ul>
-
-<h3>Sorting and pagination</h3>
-<p>Click the value column header to toggle between descending and ascending order. Use the page controls and the rows-per-page selector to navigate through all records. Records can also be downloaded using the download button below the table.</p>
 
 <h3>Cell colour</h3>
 <p>The colour of each value cell indicates the relative age of the record within the dataset.</p>
@@ -28,3 +17,11 @@
     <li><b>Blue</b> highlights an early record.</li>
 </ul>
 <p>When a dataset shows no clear trend, we expect to see records from anywhere in the time series. If the table is dominated by blue or red cells, that is an indication of climate change.</p>
+
+<h3>Hottest 100</h3>
+<p>A barcode-like chart that shows how the top 100 records are distributed across years.</p>
+<ul>
+    <li>Each vertical bar represents a year that contributes at least one record to the top 100.</li>
+    <li>A wider bar means more records from that year appear in the top 100.</li>
+</ul>
+<p>In a stable climate, bars would be spread evenly across the full record. Clustering towards recent years is a signal of a warming or wetting trend; clustering towards earlier years suggests cooling or drying.</p>
