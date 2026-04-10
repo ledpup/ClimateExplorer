@@ -24,6 +24,8 @@ ICache longtermCache = new FileBackedTwoLayerCache("cache-longterm");
 
 const string HeatingScoreTable = "HeatingScoreTable";
 const string NearbyLocations = "NearbyLocations";
+const float DefaultCupDataProportion = 0.7f;
+const int DefaultCupSize = 1;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -213,10 +215,10 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null, bo
                         BinningRule = BinGranularities.ByYear,
                         BucketAggregationFunction = ContainerAggregationFunctions.Mean,
                         CupAggregationFunction = ContainerAggregationFunctions.Mean,
-                        CupSize = 14,
+                        CupSize = DefaultCupSize,
                         RequiredBinDataProportion = 1.0f,
                         RequiredBucketDataProportion = 1.0f,
-                        RequiredCupDataProportion = 0.7f,
+                        RequiredCupDataProportion = DefaultCupDataProportion,
                         SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                         SeriesSpecifications =
                             [
@@ -380,8 +382,8 @@ async Task<ClimateRecordsResponse> GetClimateRecords(
     MeasurementDefinitionViewModel md = null;
     DataSetDefinitionViewModel matchingDsd = null;
 
-    var resolutions = monthly ? [DataResolution.Daily, DataResolution.Monthly] : new[] { DataResolution.Daily };
-    foreach (var resolution in resolutions)
+    var suitableResolutions = monthly ? [DataResolution.Daily, DataResolution.Monthly] : new[] { DataResolution.Daily };
+    foreach (var resolution in suitableResolutions)
     {
         foreach (var dsd in locationDsds)
         {
@@ -429,8 +431,8 @@ async Task<ClimateRecordsResponse> GetClimateRecords(
             CupAggregationFunction = fn,
             RequiredBinDataProportion = 1,
             RequiredBucketDataProportion = 1,
-            RequiredCupDataProportion = 0.7f,
-            CupSize = 14,
+            RequiredCupDataProportion = DefaultCupDataProportion,
+            CupSize = DefaultCupSize,
         });
 
     static int YearOf(BinnedRecord r) => r.BinIdentifier switch
