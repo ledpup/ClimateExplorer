@@ -1,0 +1,67 @@
+.text-content {
+    max-width: 50em;
+    margin: 0 auto;
+}
+
+h1 {
+    color: #425f59;
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.post-card {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 1.5rem;
+    background: #f8f8f8;
+}
+
+.post-card h2 {
+    margin: 0.25rem 0 0.5rem;
+    font-size: 1.3rem;
+}
+
+    .post-card h2 a {
+        color: #425f59;
+        text-decoration: none;
+    }
+
+        .post-card h2 a:hover {
+            color: #2a3d39;
+            text-decoration: underline;
+        }
+
+.post-meta {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+}
+
+.post-category {
+    margin-left: 0.75rem;
+    background: #425f59;
+    color: #fff;
+    border-radius: 4px;
+    padding: 0 0.4em;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.post-excerpt {
+    color: #333;
+    margin: 0.5rem 0 0.75rem;
+    line-height: 1.5;
+}
+
+.read-more {
+    font-weight: bold;
+    color: #425f59;
+    text-decoration: none;
+}
+
+    .read-more:hover {
+        color: #2a3d39;
+        text-decoration: underline;
+    }

@@ -1,0 +1,45 @@
+@page "/blog"
+@attribute [ExcludeFromInteractiveRouting]
+@using ClimateExplorer.Web.Blog
+@inject BlogService BlogService
+
+<PageTitle>Blog – ClimateExplorer</PageTitle>
+<HeadContent>
+    <meta name="description" content="The ClimateExplorer blog – updates on features, data sets, and climate concepts." />
+    <link rel="canonical" href="https://climateexplorer.net/blog" />
+    <meta property="og:title" content="Blog – ClimateExplorer" />
+    <meta property="og:url" content="https://climateexplorer.net/blog" />
+    <meta property="og:type" content="website" />
+</HeadContent>
+
+<div class="text-content">
+    <h1>Blog</h1>
+
+    @foreach (var post in _posts)
+    {
+        <article class="post-card">
+            <div class="post-meta">
+                <time datetime="@post.Date.ToString("yyyy-MM-dd")">@post.Date.ToString("d MMMM yyyy")</time>
+                @if (!string.IsNullOrEmpty(post.Category))
+                {
+                    <span class="post-category">@post.Category</span>
+                }
+            </div>
+            <h2><a href="/blog/@post.Slug">@post.Title</a></h2>
+            @if (!string.IsNullOrEmpty(post.Excerpt))
+            {
+                <p class="post-excerpt">@post.Excerpt</p>
+            }
+            <a class="read-more" href="/blog/@post.Slug">Read more →</a>
+        </article>
+    }
+</div>
+
+@code {
+    private IReadOnlyList<BlogPost> _posts = [];
+
+    protected override void OnInitialized()
+    {
+        _posts = BlogService.GetAllPosts();
+    }
+}
