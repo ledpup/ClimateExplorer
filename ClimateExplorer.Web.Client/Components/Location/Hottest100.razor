@@ -3,23 +3,25 @@
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.UiModel
 
-<DelayedLoadingIndicator @bind-Visible="@IsLoading">
-    @if (YearCounts.Count > 0)
-    {
-        <div class="mt-3">
-            <div class="hottest100-svg-container">
-                <svg @ref="svgRef" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 @Hottest100Model.ChartWidth @Hottest100Model.ChartHeight" preserveAspectRatio="xMidYMid meet" class="hottest100-svg">
-                    <rect width="@Hottest100Model.ChartWidth" height="@Hottest100Model.ChartHeight" fill="#ffffff" />
-                    <text x="@(Hottest100Model.ChartWidth / 2)" y="22" text-anchor="middle" font-size="16" font-weight="bold" fill="#000">@BuildTitle()</text>
-                    <g transform="translate(0,30)">
-                        @((MarkupString)Hottest100Model.Generate(YearCounts, StartYear, EndYear))
-                    </g>
-                </svg>
+    <DelayedLoadingIndicator @bind-Visible="@IsLoading">
+        <div class="hottest100-space">
+        @if (YearCounts.Count > 0)
+        {
+            <div class="mt-3">
+                <div class="hottest100-svg-container">
+                    <svg @ref="svgRef" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 @Hottest100Model.ChartWidth @Hottest100Model.ChartHeight" preserveAspectRatio="xMidYMid meet" class="hottest100-svg">
+                        <rect width="@Hottest100Model.ChartWidth" height="@Hottest100Model.ChartHeight" fill="#ffffff" />
+                        <text x="@(Hottest100Model.ChartWidth / 2)" y="22" text-anchor="middle" font-size="12" font-weight="bold" fill="#000">@BuildTitle()</text>
+                        <g transform="translate(0,30)">
+                            @((MarkupString)Hottest100Model.Generate(YearCounts, StartYear, EndYear))
+                        </g>
+                    </svg>
+                </div>
+                <div class="hottest100-actions">
+                    <button class="hottest100-btn" @onclick="CopyAsImage"><i class="fas fa-copy"></i> Copy</button>
+                    <button class="hottest100-btn" @onclick="DownloadImage"><i class="fas fa-download"></i> Download</button>
+                </div>
             </div>
-            <div class="hottest100-actions">
-                <button class="hottest100-btn" @onclick="CopyAsImage"><i class="fas fa-copy"></i> Copy</button>
-                <button class="hottest100-btn" @onclick="DownloadImage"><i class="fas fa-download"></i> Download</button>
-            </div>
+        }
         </div>
-    }
-</DelayedLoadingIndicator>
+    </DelayedLoadingIndicator>

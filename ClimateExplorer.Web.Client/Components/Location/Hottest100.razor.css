@@ -1,3 +1,7 @@
+.hottest100-space {
+    min-height: 260px;
+}
+
 .hottest100-svg-container {
     overflow-x: auto;
     overflow-y: hidden;
