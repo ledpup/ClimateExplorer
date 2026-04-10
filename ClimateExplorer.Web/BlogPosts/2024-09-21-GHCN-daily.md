@@ -23,7 +23,7 @@ The first thing to do would be to transform the GHCNd file into something that [
 "AG000060590","1892-01-09","30.5667","2.8667","397.0","EL GOLEA, AG","    0",",,E",,,,,"   40",",,E",,
 ```
 
-ClimateExplorer will only use max/min temperature and precipitation from GHCNd. However, we found that precipitation and temperature data are not correlated. A site may have records for one and not the other. It makes sense to separate the two types of data into different files. We transformed the file above into a temperature file...
+ClimateExplorer will only use max/min temperature and precipitation from GHCNd. However, we found that precipitation and temperature data are are recorded independently. A site may have records for one and not the other. It makes sense to separate the two types of data into different files. We transformed the file above into a temperature file...
 
 ```
 Date,TMax,TMin

@@ -15,7 +15,7 @@ In 2023 [ClimateExplorer](https://climateexplorer.net/) had temperature records 
 
 ## Initial investigation
 
-The advantage of starting with [ACORN-SAT](http://www.bom.gov.au/climate/data/acorn-sat/) was that these criteria were easy to meet because; 1) ACORN-SAT is an adjusted data-set and the [Bureau of Meteorology](http://www.bom.gov.au/) make the unadjusted data publicly available via their website. 2) ACORN-SAT is a 112 station subset of Australia's stations, already selected for quality and longevity. 3) ACORN-SAT is a daily dataset of maximum and minimum temperatures. 4) It's from known stations. 5) We were able to find the precipitation data from the BoM and link it to the ACORN-SAT temperatures.
+The advantage of starting with [ACORN-SAT](http://www.bom.gov.au/climate/data/acorn-sat/) was that these criteria were easy to meet because: 1) ACORN-SAT is an adjusted data-set and the [Bureau of Meteorology](http://www.bom.gov.au/) make the unadjusted data publicly available via their website. 2) ACORN-SAT is a 112 station subset of Australia's stations, already selected for quality and longevity. 3) ACORN-SAT is a daily dataset of maximum and minimum temperatures. 4) It's from known stations. 5) We were able to find the precipitation data from the BoM and link it to the ACORN-SAT temperatures.
 
 [NCEI](https://www.ncei.noaa.gov/)/[NOAA](https://www.noaa.gov/) have a few products that looked suitable. They are:
 

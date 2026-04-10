@@ -32,7 +32,7 @@ The heating score is a number typically between 0 and 9. It is derived from comp
 
 To calculate the heating score:
 
-- For warming indexes that are greater than zero, divide the warming index by the maximum warming index in the set, multiple by 9 and round to zero decimal places.
+- For warming indexes that are greater than zero, divide the warming index by the maximum warming index in the set, multiply by 9 and round to zero decimal places.
 - For warming indexes that are less than zero, the only operation done is to round the number to zero decimal places.
 
 The score may be higher if:

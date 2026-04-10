@@ -14,7 +14,7 @@ Hey, welcome to the [ClimateExplorer](https://climateexplorer.net/) blog! We pla
 
 <img style="float: right;width: 10rem;" src="/blog/assets/HotTalkColdScience.jpg" alt="Cover of book Hot Talk, Cold Science">
 
-The website was created with climate sceptics in mind. It was created after one of the programmers started a review of [Hot Talk, Cold Science: Global Warming's Unfinished Debate](https://www.goodreads.com/en/book/show/1610224.Hot_Talk_Cold_Science). We intend to contribute the review of this book, over multiple parts, on this blog.
+The website was created with climate sceptics in mind. It was created after one of the programmers started a review of [Hot Talk, Cold Science: Global Warming's Unfinished Debate](https://www.goodreads.com/en/book/show/1610224.Hot_Talk_Cold_Science). We intend to publish the review of this book, over multiple parts, on this blog.
 
 ## Why?
 
