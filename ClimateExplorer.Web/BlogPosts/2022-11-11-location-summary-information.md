@@ -33,7 +33,7 @@ The heating score is a number typically between 0 and 9. It is derived from comp
 To calculate the heating score:
 
 - For warming indexes that are greater than zero, divide the warming index by the maximum warming index in the set, multiple by 9 and round to zero decimal places.
-- For warming indexes that are less than zero, the only operation done is to round the number to zero demical places.
+- For warming indexes that are less than zero, the only operation done is to round the number to zero decimal places.
 
 The score may be higher if:
 
@@ -54,10 +54,10 @@ Climate stripe colours are calculated by the following algorithm.
    - If the anomaly is above 0°C, we consider it a warmer than average year
    - If the anomaly is below 0°C, we consider it a colder than average year
 
-4. Find the coldest anomaly (e.g., Canberra's is -2°C) and assign it the strongest colour of blue
+3. Find the coldest anomaly (e.g., Canberra's is -2°C) and assign it the strongest colour of blue
 
-5. Find the warmest anomaly (e.g., Canberra's is 2.9°C) and assign it the strongest colour of red
+4. Find the warmest anomaly (e.g., Canberra's is 2.9°C) and assign it the strongest colour of red
 
-6. All anomalies between the extremes are lighter shades of blue or red
+5. All anomalies between the extremes are lighter shades of blue or red
 
 [ClimateExplorer](https://climateexplorer.net/)'s stripe is interactive. Hover over any year in the series then click. The chart will update with a monthly view of the selected year.
