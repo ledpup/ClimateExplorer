@@ -24,9 +24,6 @@
             <Tab Name="Yearly">Yearly</Tab>
         </Items>
     </Tabs>
-    <div class="info-icon">
-        <i class="fas fa-circle-info" @onclick=ShowClimateRecordsInfo></i>
-    </div>
 </div>
 
 <div class="filter-row">
@@ -203,13 +200,19 @@
 @if (ActiveView == RecordView.Top100)
 {
     <Hottest100 Location="@Location"
-                DataType="@SelectedDataType"
-                DataAdjustment="@SelectedDataAdjustment"
-                Ascending="@Ascending"
-                SelectedMonth="@SelectedMonth" />
+    DataType="@SelectedDataType"
+    DataAdjustment="@SelectedDataAdjustment"
+    Ascending="@Ascending"
+    SelectedMonth="@SelectedMonth" />
 }
-
-<InfoPanel @ref="climateRecordsInfoPanel" PanelName="climate-records" Version="1.0" Title="Climate records" Height="60vh">
-    <ClimateRecordsInfo />
-</InfoPanel>
-
+else
+{
+    <h3>Cell colour</h3>
+    <p>The colour of each cell indicates the relative age of the record within the dataset.</p>
+    <ul>
+        <li><b>Green</b> marks a recent record.</li>
+        <li><b>Near-white</b> indicates records from the middle of the dataset.</li>
+        <li><b>Grey</b> highlights an early record.</li>
+    </ul>
+    <p>When a dataset shows no clear trend, we expect to see records from anywhere in the time series. If the table is dominated by green cells, that is an indication of a warming trend; a table dominated by grey cells suggests cooling.</p>
+}
