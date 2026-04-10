@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Web.Blog;
+namespace ClimateExplorer.Core.Blog;
 
 public class BlogPost
 {

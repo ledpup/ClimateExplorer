@@ -1,12 +1,19 @@
 namespace ClimateExplorer.Web.Blog;
 
 using System.Text.RegularExpressions;
+using ClimateExplorer.Core.Blog;
 using Markdig;
 using Microsoft.AspNetCore.Hosting;
 
-public partial class BlogService
+public class BlogService : IBlogService
 {
-    private IReadOnlyList<BlogPost>? posts;
+    private static readonly Regex SiteUrlAssetsRegex = new(@"\{\{site\.url\}\}/blog/assets/", RegexOptions.Compiled);
+    private static readonly Regex PlainAssetsRegex = new(@"(?<![{%])/blog/assets/", RegexOptions.Compiled);
+    private static readonly Regex PostUrlRegex = new(@"\{\{site\.baseurl\}\}\{%\s*post_url\s+(?<file>[\w.\-]+)\s*%\}", RegexOptions.Compiled);
+    private static readonly Regex FirstParagraphRegex = new(@"<p>(.*?)</p>", RegexOptions.Compiled | RegexOptions.Singleline);
+    private static readonly Regex StripTagsRegex = new(@"<[^>]+>", RegexOptions.Compiled);
+
+    private readonly IReadOnlyList<BlogPost> posts;
 
     public BlogService(IWebHostEnvironment env)
     {
@@ -39,7 +46,7 @@ public partial class BlogService
             var title = meta.GetValueOrDefault("title", slug).Trim('"', '\'', ' ');
             var category = meta.GetValueOrDefault("categories", string.Empty).Trim();
 
-            var processedBody = PreprocessMarkdown(body, slug);
+            var processedBody = PreprocessMarkdown(body);
             var html = Markdown.ToHtml(processedBody, pipeline);
 
             postList.Add(new BlogPost
@@ -56,10 +63,10 @@ public partial class BlogService
         posts = [.. postList.OrderByDescending(p => p.Date)];
     }
 
-    public IReadOnlyList<BlogPost> GetAllPosts() => posts!;
+    public IReadOnlyList<BlogPost> GetAllPosts() => posts;
 
     public BlogPost? GetPostBySlug(string slug) =>
-        posts!.SingleOrDefault(p => string.Equals(p.Slug, slug, StringComparison.OrdinalIgnoreCase));
+        posts.FirstOrDefault(p => string.Equals(p.Slug, slug, StringComparison.OrdinalIgnoreCase));
 
     private static (string FrontMatter, string Body) SplitFrontMatter(string raw)
     {
@@ -99,14 +106,11 @@ public partial class BlogService
         return dict;
     }
 
-    private static string PreprocessMarkdown(string markdown, string currentSlug)
+    private static string PreprocessMarkdown(string markdown)
     {
-        // Replace {{site.url}}/blog/assets/ and /blog/assets/ with /blog-assets/
-        var result = SiteUrlAssets().Replace(markdown, "/blog-assets/");
-        result = PlainAssets().Replace(result, "/blog-assets/");
-
-        // Replace {{site.baseurl}}{% post_url YYYY-MM-DD-slug %} with /blog/slug
-        result = PostUrl().Replace(result, m =>
+        var result = SiteUrlAssetsRegex.Replace(markdown, "/blog-assets/");
+        result = PlainAssetsRegex.Replace(result, "/blog-assets/");
+        result = PostUrlRegex.Replace(result, m =>
         {
             var fileName = m.Groups["file"].Value;
             var slug = fileName.Length > 11 ? fileName[11..] : fileName;
@@ -118,28 +122,13 @@ public partial class BlogService
 
     private static string ExtractExcerpt(string html)
     {
-        var match = FirstParagraph().Match(html);
+        var match = FirstParagraphRegex.Match(html);
 
         if (!match.Success)
         {
             return string.Empty;
         }
 
-        return StripTags().Replace(match.Groups[1].Value, string.Empty).Trim();
+        return StripTagsRegex.Replace(match.Groups[1].Value, string.Empty).Trim();
     }
-
-    [GeneratedRegex(@"\{\{site\.url\}\}/blog/assets/")]
-    private static partial Regex SiteUrlAssets();
-
-    [GeneratedRegex(@"(?<![{%])/blog/assets/")]
-    private static partial Regex PlainAssets();
-
-    [GeneratedRegex(@"\{\{site\.baseurl\}\}\{%\s*post_url\s+(?<file>[\w.\-]+)\s*%\}")]
-    private static partial Regex PostUrl();
-
-    [GeneratedRegex(@"<p>(.*?)</p>", RegexOptions.Singleline)]
-    private static partial Regex FirstParagraph();
-
-    [GeneratedRegex(@"<[^>]+>")]
-    private static partial Regex StripTags();
 }

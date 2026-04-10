@@ -39,7 +39,7 @@ builder.Services
         client.BaseAddress = new Uri(builder.Configuration["DataServiceBaseUri"]!);
     });
 
-builder.Services.AddSingleton<ClimateExplorer.Web.Blog.BlogService>();
+builder.Services.AddSingleton<ClimateExplorer.Core.Blog.IBlogService, ClimateExplorer.Web.Blog.BlogService>();
 
 var app = builder.Build();
 

@@ -1,7 +1,6 @@
 @page "/blog"
 @attribute [ExcludeFromInteractiveRouting]
-@using ClimateExplorer.Web.Blog
-@inject BlogService BlogService
+@inject IBlogService BlogService
 
 <PageTitle>Blog – ClimateExplorer</PageTitle>
 <HeadContent>
@@ -15,7 +14,7 @@
 <div class="text-content">
     <h1>Blog</h1>
 
-    @foreach (var post in _posts)
+    @foreach (var post in posts)
     {
         <article class="post-card">
             <div class="post-meta">
@@ -36,10 +35,10 @@
 </div>
 
 @code {
-    private IReadOnlyList<BlogPost> _posts = [];
+    private IReadOnlyList<BlogPost> posts = [];
 
     protected override void OnInitialized()
     {
-        _posts = BlogService.GetAllPosts();
+        posts = BlogService.GetAllPosts();
     }
 }
