@@ -10,6 +10,7 @@ public class BlogService : IBlogService
     private static readonly Regex SiteUrlAssetsRegex = new(@"\{\{site\.url\}\}/blog/assets/", RegexOptions.Compiled);
     private static readonly Regex PlainAssetsRegex = new(@"(?<![{%])/blog/assets/", RegexOptions.Compiled);
     private static readonly Regex PostUrlRegex = new(@"\{\{site\.baseurl\}\}\{%\s*post_url\s+(?<file>[\w.\-]+)\s*%\}", RegexOptions.Compiled);
+    private static readonly Regex ExternalLinksRegex = new(@"<a href=""(https?://[^""]+)""", RegexOptions.Compiled);
     private static readonly Regex FirstParagraphRegex = new(@"<p>(.*?)</p>", RegexOptions.Compiled | RegexOptions.Singleline);
     private static readonly Regex StripTagsRegex = new(@"<[^>]+>", RegexOptions.Compiled);
 
@@ -47,7 +48,7 @@ public class BlogService : IBlogService
             var category = meta.GetValueOrDefault("categories", string.Empty).Trim();
 
             var processedBody = PreprocessMarkdown(body);
-            var html = Markdown.ToHtml(processedBody, pipeline);
+            var html = ExternalLinksRegex.Replace(Markdown.ToHtml(processedBody, pipeline), @"<a href=""$1"" target=""_blank"" rel=""noopener noreferrer""");
 
             postList.Add(new BlogPost
             {
