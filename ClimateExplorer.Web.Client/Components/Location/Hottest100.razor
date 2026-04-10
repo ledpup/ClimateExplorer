@@ -10,7 +10,7 @@
             <div class="hottest100-svg-container">
                 <svg @ref="svgRef" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 @Hottest100Model.ChartWidth @Hottest100Model.ChartHeight" preserveAspectRatio="xMidYMid meet" class="hottest100-svg">
                     <rect width="@Hottest100Model.ChartWidth" height="@Hottest100Model.ChartHeight" fill="#ffffff" />
-                    <text x="@(Hottest100Model.ChartWidth / 2)" y="22" text-anchor="middle" font-size="16" font-weight="bold" fill="#000">@BuildTitle()</text>
+                    <text x="@(Hottest100Model.ChartWidth / 2)" y="22" text-anchor="middle" font-size="12" font-weight="bold" fill="#000">@BuildTitle()</text>
                     <g transform="translate(0,30)">
                         @((MarkupString)Hottest100Model.Generate(YearCounts, StartYear, EndYear))
                     </g>

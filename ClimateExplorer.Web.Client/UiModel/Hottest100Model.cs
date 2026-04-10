@@ -5,7 +5,7 @@
     public static class Hottest100Model
     {
         public const int ChartWidth = 900;
-        public const int ChartHeight = 300;
+        public const int ChartHeight = 200;
 
         public static List<RecordCount> BuildYearCounts(IEnumerable<ClimateRecord> records)
         {
@@ -16,7 +16,7 @@
 
         public static string Generate(List<RecordCount> yearCounts, int startYear, int endYear)
         {
-            const int height = 250;
+            const int height = 150;
             const int paddingLeft = 12;
             const int paddingRight = 12;
             const int paddingTop = 20;
@@ -42,7 +42,7 @@
             {
                 var x = ToX(year);
                 svg.AppendLine($@"  <line x1=""{x:F2}"" y1=""{xAxisY}"" x2=""{x:F2}"" y2=""{xAxisY + 7}"" stroke=""#333"" stroke-width=""0.5""/>");
-                svg.AppendLine($@"  <text x=""{x:F2}"" y=""{xAxisY + 22}"" text-anchor=""middle"" font-size=""12"" fill=""#666"">{year}</text>");
+                svg.AppendLine($@"  <text x=""{x:F2}"" y=""{xAxisY + 22}"" text-anchor=""middle"" font-size=""9"" fill=""#666"">{year}</text>");
             }
 
             // Vertical bars: all same height, width indicates count of hottest days (clamped to prevent overlap)

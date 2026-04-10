@@ -19,9 +19,9 @@
     <Tabs SelectedTab="@ActiveView.ToString()" SelectedTabChanged="@OnViewChanged">
         <Items>
             <Tab Name="Daily">Daily</Tab>
+            <Tab Name="Top100">Top 100</Tab>
             <Tab Name="Monthly">Monthly</Tab>
             <Tab Name="Yearly">Yearly</Tab>
-            <Tab Name="Hottest100">Hottest 100</Tab>
         </Items>
     </Tabs>
     <div class="info-icon">
@@ -41,7 +41,7 @@
             <SelectItem Value="@dt">@ChartSeriesDefinition.MapDataTypeToFriendlyName(dt)</SelectItem>
         }
     </Select>
-    @if (ActiveView == RecordView.Daily || ActiveView == RecordView.Monthly || ActiveView == RecordView.Hottest100)
+    @if (ActiveView == RecordView.Daily || ActiveView == RecordView.Monthly || ActiveView == RecordView.Top100)
     {
         <Select TValue="int"
                 Value="@SelectedMonth"
@@ -64,15 +64,12 @@
             Adjusted
         </label>
     }
-    @if (ActiveView == RecordView.Hottest100)
-    {
-        <button class="sort-toggle-btn" @onclick="OnSortToggled" title="Toggle sort order">
-            <i class="fa-solid fa-temperature-arrow-@(Ascending ? "up" : "down")"></i> @SortLabel
-        </button>
-    }
+    <button class="sort-toggle-btn" @onclick="OnSortToggled" title="Toggle sort order">
+        <i class="fa-solid fa-temperature-arrow-@(Ascending ? "up" : "down")"></i> @SortLabel
+    </button>
 }
 </div>
-@if (ActiveView != RecordView.Hottest100)
+@if (ActiveView != RecordView.Top100)
 {
     <DelayedLoadingIndicator @bind-Visible="@LoadingIndicatorVisible">
         <div class="table-card">
@@ -203,7 +200,7 @@
         </DelayedLoadingIndicator>
 }
 
-@if (ActiveView == RecordView.Hottest100)
+@if (ActiveView == RecordView.Top100)
 {
     <Hottest100 Location="@Location"
                 DataType="@SelectedDataType"
