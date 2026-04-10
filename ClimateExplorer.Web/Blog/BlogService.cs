@@ -63,10 +63,22 @@ public class BlogService : IBlogService
         posts = [.. postList.OrderByDescending(p => p.Date)];
     }
 
-    public IReadOnlyList<BlogPost> GetAllPosts() => posts;
+    public Task<IReadOnlyList<BlogPost>> GetAllPostsAsync() => Task.FromResult(posts);
 
-    public BlogPost? GetPostBySlug(string slug) =>
-        posts.FirstOrDefault(p => string.Equals(p.Slug, slug, StringComparison.OrdinalIgnoreCase));
+    public Task<BlogPost?> GetPostBySlugAsync(string slug) =>
+        Task.FromResult(posts.FirstOrDefault(p => string.Equals(p.Slug, slug, StringComparison.OrdinalIgnoreCase)));
+
+    public Task<BlogPost?> GetPreviousPostAsync(string slug)
+    {
+        var currentIndex = posts.ToList().FindIndex(p => string.Equals(p.Slug, slug, StringComparison.OrdinalIgnoreCase));
+        return Task.FromResult(currentIndex > 0 && currentIndex < posts.Count ? posts[currentIndex - 1] : null);
+    }
+
+    public Task<BlogPost?> GetNextPostAsync(string slug)
+    {
+        var currentIndex = posts.ToList().FindIndex(p => string.Equals(p.Slug, slug, StringComparison.OrdinalIgnoreCase));
+        return Task.FromResult(currentIndex >= 0 && currentIndex < posts.Count - 1 ? posts[currentIndex + 1] : null);
+    }
 
     private static (string FrontMatter, string Body) SplitFrontMatter(string raw)
     {

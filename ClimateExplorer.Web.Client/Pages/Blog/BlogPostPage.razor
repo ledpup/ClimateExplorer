@@ -1,5 +1,5 @@
 @page "/blog/{slug}"
-@attribute [ExcludeFromInteractiveRouting]
+@using ClimateExplorer.Core.Blog
 @inject IBlogService BlogService
 
 @if (post is null)
@@ -39,6 +39,24 @@ else
         <article class="post-body">
             @((MarkupString)post.HtmlContent)
         </article>
+        <nav class="post-navigation">
+            @if (previousPost is not null)
+            {
+                <a href="/blog/@previousPost.Slug" class="nav-previous">← @previousPost.Title</a>
+            }
+            else
+            {
+                <span class="nav-spacer"></span>
+            }
+            @if (nextPost is not null)
+            {
+                <a href="/blog/@nextPost.Slug" class="nav-next">@nextPost.Title →</a>
+            }
+            else
+            {
+                <span class="nav-spacer"></span>
+            }
+        </nav>
         <div class="back-link">
             <a href="/blog">← Back to blog</a>
         </div>
@@ -50,9 +68,21 @@ else
     public string? Slug { get; set; }
 
     private BlogPost? post;
+    private BlogPost? previousPost;
+    private BlogPost? nextPost;
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        post = Slug is null ? null : BlogService.GetPostBySlug(Slug);
+        if (Slug is null)
+        {
+            post = null;
+            previousPost = null;
+            nextPost = null;
+            return;
+        }
+
+        post = await BlogService.GetPostBySlugAsync(Slug);
+        previousPost = await BlogService.GetPreviousPostAsync(Slug);
+        nextPost = await BlogService.GetNextPostAsync(Slug);
     }
 }

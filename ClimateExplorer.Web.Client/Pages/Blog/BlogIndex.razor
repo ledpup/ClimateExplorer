@@ -1,5 +1,5 @@
 @page "/blog"
-@attribute [ExcludeFromInteractiveRouting]
+@using ClimateExplorer.Core.Blog
 @inject IBlogService BlogService
 
 <PageTitle>Blog – ClimateExplorer</PageTitle>
@@ -37,8 +37,8 @@
 @code {
     private IReadOnlyList<BlogPost> posts = [];
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        posts = BlogService.GetAllPosts();
+        posts = await BlogService.GetAllPostsAsync();
     }
 }

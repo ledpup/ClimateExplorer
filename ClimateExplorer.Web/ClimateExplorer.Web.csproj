@@ -20,8 +20,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\Blog\**" />
+    <Content Remove="Pages\Blog\**" />
+    <EmbeddedResource Remove="Pages\Blog\**" />
+    <None Remove="Pages\Blog\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ClimateExplorer.Core\ClimateExplorer.Core.csproj" />
     <ProjectReference Include="..\ClimateExplorer.Web.Client\ClimateExplorer.Web.Client.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Pages\" />
   </ItemGroup>
 
   <PropertyGroup>

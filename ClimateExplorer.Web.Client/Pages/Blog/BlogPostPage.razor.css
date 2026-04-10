@@ -80,8 +80,47 @@ h1 {
     line-height: 1.7;
 }
 
-.back-link {
+.post-navigation {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
     margin-top: 2.5rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid #ddd;
+}
+
+.nav-previous,
+.nav-next {
+    flex: 1;
+    padding: 1rem;
+    background: #f8f8f8;
+    border-radius: 8px;
+    color: #425f59;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.nav-previous {
+    text-align: left;
+}
+
+.nav-next {
+    text-align: right;
+}
+
+.nav-previous:hover,
+.nav-next:hover {
+    background: #cfc;
+    text-decoration: none;
+}
+
+.nav-spacer {
+    flex: 1;
+}
+
+.back-link {
+    margin-top: 1rem;
     padding-top: 1rem;
     border-top: 1px solid #ddd;
 }

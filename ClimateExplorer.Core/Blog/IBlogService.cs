@@ -2,7 +2,11 @@ namespace ClimateExplorer.Core.Blog;
 
 public interface IBlogService
 {
-    IReadOnlyList<BlogPost> GetAllPosts();
+    Task<IReadOnlyList<BlogPost>> GetAllPostsAsync();
 
-    BlogPost? GetPostBySlug(string slug);
+    Task<BlogPost?> GetPostBySlugAsync(string slug);
+
+    Task<BlogPost?> GetPreviousPostAsync(string slug);
+
+    Task<BlogPost?> GetNextPostAsync(string slug);
 }
