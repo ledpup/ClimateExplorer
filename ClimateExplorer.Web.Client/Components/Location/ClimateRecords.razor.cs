@@ -52,7 +52,7 @@ public partial class ClimateRecords
     private List<MeasurementDefinitionViewModel> LocationMeasurements { get; set; } = [];
     private IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
-    private DataType SelectedDataType { get; set; } = DataType.TempMax;
+    private DataType? SelectedDataType { get; set; }
     private DataAdjustment? SelectedDataAdjustment { get; set; } = DataAdjustment.Adjusted;
     private UnitOfMeasure SelectedUnitOfMeasure { get; set; } = UnitOfMeasure.DegreesCelsius;
     private int SelectedMonth { get; set; } = 0;
@@ -84,7 +84,12 @@ public partial class ClimateRecords
     {
         get
         {
-            var raw = $"{ActiveView}{(AvailableDataAdjustments.Count <= 1 || SelectedDataAdjustment == DataAdjustment.Adjusted ? string.Empty : " unadjusted")} {ChartSeriesDefinition.MapDataTypeToFriendlyName(SelectedDataType)} records";
+            if (SelectedDataType == null)
+            {
+                return string.Empty;
+            }
+
+            var raw = $"{ActiveView}{(AvailableDataAdjustments.Count <= 1 || SelectedDataAdjustment == DataAdjustment.Adjusted ? string.Empty : " unadjusted")} {ChartSeriesDefinition.MapDataTypeToFriendlyName(SelectedDataType.Value)} records";
             var casing = char.ToUpper(raw[0]) + raw[1..].ToLower();
             return casing;
         }
@@ -168,11 +173,18 @@ public partial class ClimateRecords
             .Select(x => x.DataType)
             .Distinct()];
 
-        if (AvailableDataTypes.Contains(DataType.TempMax))
+        if (SelectedDataType is null)
         {
-            SelectedDataType = DataType.TempMax;
+            if (AvailableDataTypes.Contains(DataType.TempMax))
+            {
+                SelectedDataType = DataType.TempMax;
+            }
+            else
+            {
+                SelectedDataType = AvailableDataTypes.First();
+            }
         }
-        else if (AvailableDataTypes.Any())
+        else if (!AvailableDataTypes.Contains(SelectedDataType.Value))
         {
             SelectedDataType = AvailableDataTypes.First();
         }
@@ -206,7 +218,7 @@ public partial class ClimateRecords
 
     private async Task LoadRecords()
     {
-        if (Location is null)
+        if (Location is null || SelectedDataType is null)
         {
             return;
         }
@@ -235,7 +247,7 @@ public partial class ClimateRecords
                 else
                 {
                     var month = SelectedMonth != 0 ? (int?)SelectedMonth : null;
-                    ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, take: Count, skip: CurrentPage, month, ActiveView == RecordView.Monthly);
+                    ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType.Value, SelectedDataAdjustment, Ascending, take: Count, skip: CurrentPage, month, ActiveView == RecordView.Monthly);
                     ComputedRowStyles = ComputeRowStyles(ClimateRecordsResult);
                 }
             }
@@ -248,14 +260,14 @@ public partial class ClimateRecords
 
     private async Task LoadYearlyRecords()
     {
-        if (DataSetDefinitions is null || Location is null)
+        if (DataSetDefinitions is null || Location is null || SelectedDataType is null)
         {
             return;
         }
 
         var dataSubstitutes = new List<DataSubstitute>
         {
-            new() { DataType = SelectedDataType, DataAdjustment = SelectedDataAdjustment },
+            new() { DataType = SelectedDataType.Value, DataAdjustment = SelectedDataAdjustment },
         };
 
         var fn = SelectedDataType == DataType.Precipitation ? ContainerAggregationFunctions.Sum : ContainerAggregationFunctions.Mean;
@@ -283,7 +295,7 @@ public partial class ClimateRecords
             Value = x.Absolute,
             Anomaly = x.Relative,
             Average = x.Absolute,
-            DataType = SelectedDataType,
+            DataType = SelectedDataType.Value,
             DataAdjustment = SelectedDataAdjustment,
             DataResolution = DataResolution.Yearly,
             UnitOfMeasure = SelectedUnitOfMeasure,
@@ -358,7 +370,7 @@ public partial class ClimateRecords
 
     private async Task DownloadAllRecords()
     {
-        if (Location is null || ActiveView == RecordView.Top100)
+        if (Location is null || ActiveView == RecordView.Top100 || SelectedDataType is null)
         {
             return;
         }
@@ -374,10 +386,10 @@ public partial class ClimateRecords
 
             var dataSubstitutes = new List<DataSubstitute>
             {
-                new() { DataType = SelectedDataType, DataAdjustment = SelectedDataAdjustment },
+                new() { DataType = SelectedDataType.Value, DataAdjustment = SelectedDataAdjustment },
             };
 
-            var fn = SelectedDataType == DataType.Precipitation ? ContainerAggregationFunctions.Sum : ContainerAggregationFunctions.Mean;
+            var fn = SelectedDataType.Value == DataType.Precipitation ? ContainerAggregationFunctions.Sum : ContainerAggregationFunctions.Mean;
             var summary = await ClimateDataHelper.CalculateAnomaly(DataService!, DataSetDefinitions, Location, dataSubstitutes, fn);
 
             if (summary?.AnomalyRecords is not { Count: > 0 })
@@ -397,7 +409,7 @@ public partial class ClimateRecords
                     Value = x.Absolute,
                     Anomaly = x.Relative,
                     Average = x.Absolute,
-                    DataType = SelectedDataType,
+                    DataType = SelectedDataType.Value,
                     DataAdjustment = SelectedDataAdjustment,
                     DataResolution = DataResolution.Yearly,
                     UnitOfMeasure = SelectedUnitOfMeasure,
@@ -414,7 +426,7 @@ public partial class ClimateRecords
             else
             {
                 var monthFilter = SelectedMonth != 0 ? (int?)SelectedMonth : null;
-                var allData = await DataService!.GetClimateRecords(Location.Id, SelectedDataType, SelectedDataAdjustment, Ascending, null, null, monthFilter, ActiveView == RecordView.Monthly);
+                var allData = await DataService!.GetClimateRecords(Location.Id, SelectedDataType.Value, SelectedDataAdjustment, Ascending, null, null, monthFilter, ActiveView == RecordView.Monthly);
                 records = [.. allData.Records];
             }
         }
