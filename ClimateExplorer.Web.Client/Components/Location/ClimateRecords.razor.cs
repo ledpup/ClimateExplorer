@@ -15,8 +15,6 @@ using static ClimateExplorer.Core.Enums;
 
 public partial class ClimateRecords
 {
-    private InfoPanel? climateRecordsInfoPanel;
-
     private enum RecordView
     {
         Daily,
@@ -127,15 +125,17 @@ public partial class ClimateRecords
                 int red, green, blue;
                 if (recentness >= 0.5)
                 {
+                    // Midpoint #F7F7F7 → newest #1E8A3E
                     double t = (recentness - 0.5) * 2;
-                    red = 255;
-                    green = blue = (int)(255 - (180 * t));
+                    red = (int)(247 - (217 * t));
+                    green = (int)(247 - (109 * t));
+                    blue = (int)(247 - (185 * t));
                 }
                 else
                 {
+                    // Oldest #6E6E6E → midpoint #F7F7F7
                     double t = recentness * 2;
-                    blue = 255;
-                    red = green = (int)(75 + (180 * t));
+                    red = green = blue = (int)(110 + (137 * t));
                 }
 
                 return string.Format(CultureInfo.InvariantCulture, "background-color: rgb({0}, {1}, {2}, 0.85)", red, green, blue);
@@ -152,8 +152,6 @@ public partial class ClimateRecords
     {
         return $"{value.ToString("0.0", CultureInfo.InvariantCulture)}{Enums.UnitOfMeasureLabelShort(unitOfMeasure)}";
     }
-
-    private Task ShowClimateRecordsInfo() => climateRecordsInfoPanel!.ShowAsync();
 
     private async Task UpdateAvailableOptions()
     {
