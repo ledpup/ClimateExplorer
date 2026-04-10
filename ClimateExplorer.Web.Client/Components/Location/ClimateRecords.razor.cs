@@ -130,11 +130,11 @@ public partial class ClimateRecords
                 int red, green, blue;
                 if (recentness >= 0.5)
                 {
-                    // Midpoint #F7F7F7 → newest #1E8A3E
+                    // Midpoint #F7F7F7 → newest #5AB732
                     double t = (recentness - 0.5) * 2;
-                    red = (int)(247 - (217 * t));
-                    green = (int)(247 - (109 * t));
-                    blue = (int)(247 - (185 * t));
+                    red = (int)(247 - (157 * t));
+                    green = (int)(247 - (64 * t));
+                    blue = (int)(247 - (197 * t));
                 }
                 else
                 {
