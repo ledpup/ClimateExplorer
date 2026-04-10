@@ -18,7 +18,23 @@ public class BuildStaticContent
         WriteTag(writer, "https://climateexplorer.net/regionalandglobal");
         WriteTag(writer, "https://climateexplorer.net/about");
         WriteTag(writer, "https://climateexplorer.net/blog");
-        WriteTag(writer, "https://climateexplorer.net/blog/about");
+
+        var blogPostsDir = @"..\..\..\..\ClimateExplorer.Web\BlogPosts";
+        foreach (var file in Directory.EnumerateFiles(blogPostsDir, "*.md").OrderBy(f => f))
+        {
+            var fileName = Path.GetFileNameWithoutExtension(file);
+            if (fileName.Length < 11 || fileName[10] != '-')
+            {
+                continue;
+            }
+
+            var dateStr = fileName[..10];
+            var slug = fileName[11..];
+            if (DateOnly.TryParse(dateStr, out var postDate))
+            {
+                WriteTagWithDate(writer, $"https://climateexplorer.net/blog/{slug}", postDate);
+            }
+        }
 
         var distinctLocations = locations.Select(x => x.UrlReadyName()).Distinct();
         foreach (var locationName in distinctLocations)
@@ -37,6 +53,21 @@ public class BuildStaticContent
 
         writer.WriteStartElement("loc");
         writer.WriteValue(navigation);
+        writer.WriteEndElement();
+
+        writer.WriteEndElement();
+    }
+
+    private static void WriteTagWithDate(XmlWriter writer, string navigation, DateOnly lastModified)
+    {
+        writer.WriteStartElement("url");
+
+        writer.WriteStartElement("loc");
+        writer.WriteValue(navigation);
+        writer.WriteEndElement();
+
+        writer.WriteStartElement("lastmod");
+        writer.WriteValue(lastModified.ToString("yyyy-MM-dd"));
         writer.WriteEndElement();
 
         writer.WriteEndElement();
