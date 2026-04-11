@@ -57,3 +57,14 @@
 .record-link:hover {
     color: #2a3d39;
 }
+
+
+/* ── Responsive columns ──────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+    ::deep .data-types-col,
+    ::deep .data-sources-col,
+    ::deep .data-types-cell,
+    ::deep .data-sources-cell {
+        display: none;
+    }
+}

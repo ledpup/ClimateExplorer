@@ -35,6 +35,11 @@
     font-weight: bold;
 }
 
+::deep .nav-item .dropdown {
+    display: inline-block;
+    vertical-align: middle;
+}
+
 ::deep .nav-link {
     display: inline;
     color: white;
@@ -100,11 +105,12 @@
     background: none !important;
     border: none !important;
     color: white !important;
-    padding: 0 !important;
+    padding: 0 6px 0 4px !important;
     font-weight: bold;
-    font-size: 1rem;
+    font-size: 1.15rem;
     box-shadow: none !important;
     line-height: 1;
+    vertical-align: middle;
 }
 
     ::deep .hamburger-toggle:hover {
@@ -117,8 +123,10 @@
 
     ::deep .hamburger-toggle.nav-current {
         color: rgba(255, 255, 255, 0.55) !important;
-        cursor: default;
-        pointer-events: none;
+    }
+
+    ::deep .hamburger-toggle.nav-current:hover {
+        color: #aaa !important;
     }
 
 /* ── Hamburger dropdown menu ─────────────────────────────────────────────── */
@@ -146,6 +154,24 @@
         color: rgba(255, 255, 255, 0.55) !important;
         cursor: default;
         display: block;
+    }
+
+    ::deep .dropdown-menu .hamburger-current:hover {
+        background-color: transparent !important;
+        color: rgba(255, 255, 255, 0.55) !important;
+    }
+
+    ::deep .dropdown-menu .info-menu-item {
+        color: #79c6f4 !important;
+    }
+
+    ::deep .dropdown-menu .info-menu-item:hover {
+        background-color: rgba(255, 255, 255, 0.12) !important;
+        color: #79c6f4 !important;
+    }
+
+    ::deep .dropdown-menu .dropdown-divider {
+        border-color: rgba(255, 255, 255, 0.2);
     }
 
 @media (max-width: 640px) {

@@ -31,7 +31,9 @@ public partial class NavMenu : IDisposable
 
         if (route == string.Empty)
         {
-            return path == "/" || path.StartsWith("/location/");
+            // The "local" page is the root page, but also includes any URL that starts with "/location" (but not "/locations").
+            // Not the best route naming!
+            return path == "/" || IsLocal(path);
         }
 
         return path == $"/{route}" || path.StartsWith($"/{route}/");
@@ -47,6 +49,11 @@ public partial class NavMenu : IDisposable
     protected override void OnInitialized()
     {
         NavigationManager!.LocationChanged += OnLocationChanged;
+    }
+
+    private static bool IsLocal(string path)
+    {
+        return path.StartsWith("/location") && !path.StartsWith("/locations");
     }
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)

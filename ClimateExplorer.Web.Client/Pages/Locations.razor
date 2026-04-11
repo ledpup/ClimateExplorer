@@ -17,8 +17,6 @@
 </HeadContent>
 
 <div class="locations-container">
-    <h1>Locations</h1>
-
     <div class="filter-row">
         <Select TValue="string"
                 Value="@(countryFilter ?? string.Empty)"
@@ -63,16 +61,16 @@
                         <TableHeaderCell @onclick='() => OnSortChanged("country")' Style="cursor: pointer; user-select: none;">
                             <Strong>Country <i class="fas @GetSortIconClass("country")"></i></Strong>
                         </TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End" @onclick='() => OnSortChanged("anomaly")' Style="cursor: pointer; user-select: none;">
+                        <TableHeaderCell TextAlignment="TextAlignment.Center" @onclick='() => OnSortChanged("anomaly")' Style="cursor: pointer; user-select: none; white-space: normal;">
                             <Strong>Warming anomaly <i class="fas @GetSortIconClass("anomaly")"></i></Strong>
                         </TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center" @onclick='() => OnSortChanged("heatingscore")' Style="cursor: pointer; user-select: none;">
+                        <TableHeaderCell TextAlignment="TextAlignment.Center" @onclick='() => OnSortChanged("heatingscore")' Style="cursor: pointer; user-select: none; white-space: normal;">
                             <Strong>Heating score <i class="fas @GetSortIconClass("heatingscore")"></i></Strong>
                         </TableHeaderCell>
-                        <TableHeaderCell>
+                        <TableHeaderCell Class="data-types-col">
                             <Strong>Data types</Strong>
                         </TableHeaderCell>
-                        <TableHeaderCell>
+                        <TableHeaderCell Class="data-sources-col">
                             <Strong>Data sources</Strong>
                         </TableHeaderCell>
                         <TableHeaderCell @onclick='() => OnSortChanged("recordhigh")' Style="cursor: pointer; user-select: none;">
@@ -86,7 +84,7 @@
                         <tr>
                             <td><a href="location/@location.UrlReadyName()">@location.Name</a></td>
                             <td>@(location.Country ?? location.CountryCode)</td>
-                            <td class="text-end">@FormatAnomaly(location.WarmingAnomaly)</td>
+                            <td class="text-center">@FormatAnomaly(location.WarmingAnomaly)</td>
                             <td class="text-center">
                                 @if (location.HeatingScore.HasValue)
                                 {
