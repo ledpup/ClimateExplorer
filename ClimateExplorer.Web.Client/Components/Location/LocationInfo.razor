@@ -62,5 +62,5 @@
 </Collapsible>
 
 <SidePanel @ref="climateRecordsSidePanel" Title="@("Climate records for " + Location?.Name)">    
-    <ClimateRecords Location="@Location" />
+    <ClimateRecords Location="@Location" DataSetDefinitions="@DataSetDefinitions" />
 </SidePanel>
