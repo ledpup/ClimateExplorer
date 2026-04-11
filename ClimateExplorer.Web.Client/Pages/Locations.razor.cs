@@ -22,7 +22,7 @@ public partial class Locations
     private string sortColumn = "name";
     private bool sortAscending = true;
     private int currentPage = 1;
-    private int pageSize = 30;
+    private int pageSize = 25;
     private List<string> availableCountries = [];
     private int filteredCount;
     private int totalPages = 1;

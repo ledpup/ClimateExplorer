@@ -1,27 +1,39 @@
 .locations-container {
-    max-width: 80em;
+    max-width: 90em;
     margin: auto;
     padding: 0 1rem 2rem;
 }
 
-/* ── Filter row ──────────────────────────────────────────────────────────── */
-.filter-row {
+/* ── Table toolbar ───────────────────────────────────────────────────────── */
+.table-header {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin-bottom: 1rem;
-    padding: 0.5rem 0 0.75rem;
 }
 
-.filter-row ::deep .form-select {
+.toolbar-filters {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.toolbar-filters ::deep .form-select {
     width: auto;
 }
 
 .name-filter-wrapper {
     flex: 1;
-    min-width: 14em;
-    max-width: 24em;
+    min-width: 10em;
+    max-width: 18em;
+}
+
+.location-count {
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 /* ── Heating score badge ─────────────────────────────────────────────────── */
