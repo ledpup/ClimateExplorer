@@ -28,6 +28,7 @@ public partial class Locations
     private int totalPages = 1;
     private SidePanel? climateRecordsSidePanel;
     private Location? selectedLocation;
+    private string? nameFilter;
 
     [Inject]
     private IDataService? DataService { get; set; }
@@ -53,6 +54,11 @@ public partial class Locations
             if (heatingScoreFilter != NoHeatingScoreFilter)
             {
                 query = query.Where(l => l.HeatingScore == heatingScoreFilter);
+            }
+
+            if (!string.IsNullOrEmpty(nameFilter))
+            {
+                query = query.Where(l => l.FullTitle.Contains(nameFilter, StringComparison.OrdinalIgnoreCase));
             }
 
             return sortColumn switch
@@ -201,6 +207,13 @@ public partial class Locations
     private void OnHeatingScoreFilterChanged(int value)
     {
         heatingScoreFilter = value;
+        currentPage = 1;
+        UpdateFilteredCount();
+    }
+
+    private void OnNameFilterChanged(string? text)
+    {
+        nameFilter = string.IsNullOrEmpty(text) ? null : text;
         currentPage = 1;
         UpdateFilteredCount();
     }

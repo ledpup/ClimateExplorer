@@ -18,6 +18,12 @@
     width: auto;
 }
 
+.name-filter-wrapper {
+    flex: 1;
+    min-width: 14em;
+    max-width: 24em;
+}
+
 /* ── Heating score badge ─────────────────────────────────────────────────── */
 .heating-badge {
     display: inline-block;

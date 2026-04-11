@@ -30,17 +30,17 @@
                 {
                     <Field Class="mt-3">
                         <Autocomplete TItem="Location"
-                        TValue="Guid"
-                        Data="@LocationDictionary.Values"
-                        TextField="@((item) => item.FullTitle)"
-                        ValueField="@((item) => item.Id)"
-                        Placeholder="Location search..."
-                        Filter="AutocompleteFilter.Contains"
-                        FreeTyping
-                        MinLength="2"
-                        SelectedValueChanged="@FireOnLocationChange"
-                        MaxMenuHeight="350px"
-                        @bind-SelectedText="@selectedText" />
+                            TValue="Guid"
+                            Data="@LocationDictionary.Values"
+                            TextField="@((item) => item.FullTitle)"
+                            ValueField="@((item) => item.Id)"
+                            Placeholder="Location search..."
+                            Filter="AutocompleteFilter.Contains"
+                            FreeTyping
+                            MinSearchLength="2"
+                            SelectedValueChanged="@FireOnLocationChange"
+                            MaxMenuHeight="350px"
+                            @bind-SelectedText="@selectedText" />
                     </Field>
 
                     <div class="table-card">

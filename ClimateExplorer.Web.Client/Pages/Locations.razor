@@ -18,6 +18,13 @@
 
 <div class="locations-container">
     <div class="filter-row">
+        <div class="name-filter-wrapper">
+            <input type="text"
+                   class="form-control form-control-sm"
+                   placeholder="Search locations..."
+                   value="@(nameFilter ?? string.Empty)"
+                   @oninput="@(e => OnNameFilterChanged(e.Value?.ToString()))" />
+        </div>
         <Select TValue="string"
                 Value="@(countryFilter ?? string.Empty)"
                 ValueChanged="@OnCountryFilterChanged"
