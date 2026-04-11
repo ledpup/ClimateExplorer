@@ -95,6 +95,59 @@
     overflow: hidden;
 }
 
+/* ── Hamburger toggle button ─────────────────────────────────────────────── */
+::deep .hamburger-toggle {
+    background: none !important;
+    border: none !important;
+    color: white !important;
+    padding: 0 !important;
+    font-weight: bold;
+    font-size: 1rem;
+    box-shadow: none !important;
+    line-height: 1;
+}
+
+    ::deep .hamburger-toggle:hover {
+        color: #aaa !important;
+    }
+
+    ::deep .hamburger-toggle::after {
+        display: none;
+    }
+
+    ::deep .hamburger-toggle.nav-current {
+        color: rgba(255, 255, 255, 0.55) !important;
+        cursor: default;
+        pointer-events: none;
+    }
+
+/* ── Hamburger dropdown menu ─────────────────────────────────────────────── */
+::deep .dropdown-menu {
+    background-color: #425f59;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    min-width: 8rem;
+    padding: 0.25rem 0;
+}
+
+    ::deep .dropdown-menu .dropdown-item {
+        color: white !important;
+        font-weight: bold;
+        text-decoration: none;
+        padding: 0.4rem 0.75rem;
+    }
+
+    ::deep .dropdown-menu a.dropdown-item:hover {
+        background-color: rgba(255, 255, 255, 0.12) !important;
+        color: #cfc !important;
+    }
+
+    ::deep .dropdown-menu .hamburger-current {
+        color: rgba(255, 255, 255, 0.55) !important;
+        cursor: default;
+        display: block;
+    }
+
 @media (max-width: 640px) {
     ::deep .navbar {
         flex-wrap: nowrap;

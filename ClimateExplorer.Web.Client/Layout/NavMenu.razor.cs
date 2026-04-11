@@ -9,11 +9,15 @@ public partial class NavMenu : IDisposable
     private readonly (string Route, string Text)[] navItems =
                 [
                     (string.Empty, "local"),
-                        ("locations", "locations"),
-                        ("regionalandglobal", "regional & global"),
-                        ("about", "about"),
-                        ("blog", "blog"),
-                    ];
+                    ("regionalandglobal", "regional & global"),
+                ];
+
+    private readonly (string Route, string Text)[] hamburgerItems =
+                [
+                    ("locations", "locations"),
+                    ("blog", "blog"),
+                    ("about", "about"),
+                ];
 
     [Inject]
     public ISiteOverviewService? SiteOverviewService { get; set; }
@@ -32,6 +36,8 @@ public partial class NavMenu : IDisposable
 
         return path == $"/{route}" || path.StartsWith($"/{route}/");
     }
+
+    public bool IsHamburgerCurrentPage() => hamburgerItems.Any(item => IsCurrentPage(item.Route));
 
     public void Dispose()
     {

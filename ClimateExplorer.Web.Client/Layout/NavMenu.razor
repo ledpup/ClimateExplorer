@@ -24,6 +24,26 @@
                         <BarLink To="@item.Route" Class="@(IsCurrentPage(item.Route) ? "nav-current" : string.Empty)">@item.Text</BarLink>
                     </BarItem>
                 }
+                <BarItem>
+                    <Dropdown>
+                        <DropdownToggle Class="@("hamburger-toggle" + (IsHamburgerCurrentPage() ? " nav-current" : string.Empty))">
+                            <i class="fas fa-bars"></i>
+                        </DropdownToggle>
+                        <DropdownMenu>
+                            @foreach (var item in hamburgerItems)
+                            {
+                                @if (IsCurrentPage(item.Route))
+                                {
+                                    <span class="dropdown-item hamburger-current">@item.Text</span>
+                                }
+                                else
+                                {
+                                    <a class="dropdown-item" href="@item.Route">@item.Text</a>
+                                }
+                            }
+                        </DropdownMenu>
+                    </Dropdown>
+                </BarItem>
                 @{
                     var uri = NavigationManager!.ToAbsoluteUri(NavigationManager.Uri);
                     if (NavigationManager.Uri == NavigationManager.BaseUri || uri.LocalPath.StartsWith("/location"))
