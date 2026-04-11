@@ -3,6 +3,7 @@ using Blazored.LocalStorage;
 using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
+using ClimateExplorer.Core.Blog;
 using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.WebApiClient.Services;
 using CurrentDevice;
@@ -26,10 +27,16 @@ builder.Services
     .AddScoped<IInfoPanelDismissalService, InfoPanelDismissalService>()
     .AddScoped<ISiteOverviewService, SiteOverviewService>()
     .AddCurrentDeviceService()
-    .AddBlazoredLocalStorage()
-    .AddHttpClient<IDataService, DataService>(client =>
-    {
-        client.BaseAddress = new Uri(builder.Configuration["DataServiceBaseUri"]!);
-    });
+    .AddBlazoredLocalStorage();
+
+builder.Services.AddHttpClient<IBlogService, ClientBlogService>(client =>
+{
+    client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+});
+
+builder.Services.AddHttpClient<IDataService, DataService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["DataServiceBaseUri"]!);
+});
 
 await builder.Build().RunAsync();

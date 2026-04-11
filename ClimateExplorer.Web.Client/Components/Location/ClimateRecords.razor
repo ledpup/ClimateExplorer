@@ -27,10 +27,10 @@
 </div>
 
 <div class="filter-row">
-@if (AvailableDataTypes.Count > 0)
+@if (AvailableDataTypes.Count > 0 && SelectedDataType is not null)
 {
     <Select TValue="DataType"
-            Value="@SelectedDataType"
+            Value="@SelectedDataType.Value"
             ValueChanged="@OnDataTypeChanged"
             Size="Size.Small">
         @foreach (var dt in AvailableDataTypes.OrderBy(x => x))

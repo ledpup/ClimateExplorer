@@ -3,6 +3,7 @@ using Blazored.LocalStorage;
 using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
+using ClimateExplorer.Core.Blog;
 using ClimateExplorer.Web;
 using ClimateExplorer.Web.Client.Pages;
 using ClimateExplorer.Web.Client.Services;
@@ -39,6 +40,8 @@ builder.Services
         client.BaseAddress = new Uri(builder.Configuration["DataServiceBaseUri"]!);
     });
 
+builder.Services.AddSingleton<ClimateExplorer.Core.Blog.IBlogService, ClimateExplorer.Web.Blog.BlogService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -61,6 +64,8 @@ app.UseDefaultFiles();
 app.UseAntiforgery();
 app.UseStaticFiles();
 app.MapStaticAssets();
+
+app.MapGet("/api/blog/posts", async (IBlogService blog) => await blog.GetAllPostsAsync());
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()

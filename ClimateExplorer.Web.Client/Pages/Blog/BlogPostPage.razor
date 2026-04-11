@@ -1,0 +1,120 @@
+@page "/blog/{slug}"
+@using ClimateExplorer.Core.Blog
+@using System.Text.Json.Nodes
+@inject IBlogService BlogService
+
+@if (post is null)
+{
+    <PageTitle>Post not found – ClimateExplorer</PageTitle>
+    <HeadContent>
+        <meta name="robots" content="noindex" />
+    </HeadContent>
+    <div class="text-content">
+        <h1>Post not found</h1>
+        <p>The blog post you are looking for does not exist.</p>
+        <a href="/blog">← Back to blog</a>
+    </div>
+}
+else
+{
+    <PageTitle>@post.Title – ClimateExplorer</PageTitle>
+    <HeadContent>
+        <meta name="description" content="@post.Excerpt" />
+        <link rel="canonical" href="https://climateexplorer.net/blog/@post.Slug" />
+        <meta property="og:title" content="@post.Title" />
+        <meta property="og:url" content="https://climateexplorer.net/blog/@post.Slug" />
+        <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="ClimateExplorer" />
+        @if (!string.IsNullOrEmpty(post.Excerpt))
+        {
+            <meta property="og:description" content="@post.Excerpt" />
+        }
+        <script type="application/ld+json">@((MarkupString)ArticleStructuredData)</script>
+    </HeadContent>
+
+    <div class="text-content">
+        <div class="post-meta">
+            <time datetime="@post.Date.ToString("yyyy-MM-dd")">@post.Date.ToString("d MMMM yyyy")</time>
+            @if (!string.IsNullOrEmpty(post.Category))
+            {
+                <span class="post-category">@post.Category</span>
+            }
+        </div>
+        <h1>@post.Title</h1>
+        <article class="post-body">
+            @((MarkupString)post.HtmlContent)
+        </article>
+        <nav class="post-navigation">
+            @if (previousPost is not null)
+            {
+                <a href="/blog/@previousPost.Slug" class="nav-previous">← @previousPost.Title</a>
+            }
+            else
+            {
+                <span class="nav-spacer"></span>
+            }
+            @if (nextPost is not null)
+            {
+                <a href="/blog/@nextPost.Slug" class="nav-next">@nextPost.Title →</a>
+            }
+            else
+            {
+                <span class="nav-spacer"></span>
+            }
+        </nav>
+        <div class="back-link">
+            <a href="/blog">← Back to blog</a>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string? Slug { get; set; }
+
+    private BlogPost? post;
+    private BlogPost? previousPost;
+    private BlogPost? nextPost;
+
+    private string ArticleStructuredData
+    {
+        get
+        {
+            var node = new JsonObject
+            {
+                ["@context"] = "https://schema.org",
+                ["@type"] = "BlogPosting",
+                ["headline"] = post!.Title,
+                ["datePublished"] = post.Date.ToString("yyyy-MM-dd"),
+                ["url"] = $"https://climateexplorer.net/blog/{post.Slug}",
+                ["publisher"] = new JsonObject
+                {
+                    ["@type"] = "Organization",
+                    ["name"] = "ClimateExplorer",
+                    ["url"] = "https://climateexplorer.net",
+                },
+            };
+            if (!string.IsNullOrEmpty(post.Excerpt))
+            {
+                node["description"] = post.Excerpt;
+            }
+
+            return node.ToJsonString();
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Slug is null)
+        {
+            post = null;
+            previousPost = null;
+            nextPost = null;
+            return;
+        }
+
+        post = await BlogService.GetPostBySlugAsync(Slug);
+        previousPost = await BlogService.GetPreviousPostAsync(Slug);
+        nextPost = await BlogService.GetNextPostAsync(Slug);
+    }
+}

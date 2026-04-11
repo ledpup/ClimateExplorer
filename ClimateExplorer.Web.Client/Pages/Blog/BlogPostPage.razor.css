@@ -1,0 +1,136 @@
+.text-content {
+    max-width: 50em;
+    margin: 0 auto;
+}
+
+h1 {
+    color: #425f59;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.post-meta {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+.post-category {
+    margin-left: 0.75rem;
+    background: #425f59;
+    color: #fff;
+    border-radius: 4px;
+    padding: 0 0.4em;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.post-body ::deep h2 {
+    color: #2a3d39;
+    font-size: 1.4rem;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.post-body ::deep h3 {
+    color: #333;
+    font-size: 1.15rem;
+    margin-top: 1.5rem;
+}
+
+.post-body ::deep p {
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+.post-body ::deep img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.post-body ::deep a {
+    color: #0071c1;
+}
+
+    .post-body ::deep a:hover {
+        color: #005a9e;
+    }
+
+.post-body ::deep blockquote {
+    border-left: 4px solid #425f59;
+    margin: 1rem 0;
+    padding: 0.5rem 1rem;
+    background: #f0f4f3;
+    border-radius: 0 8px 8px 0;
+    color: #444;
+}
+
+.post-body ::deep pre {
+    background: #f4f4f4;
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto;
+}
+
+.post-body ::deep ol,
+.post-body ::deep ul {
+    padding-left: 1.5rem;
+    line-height: 1.7;
+}
+
+.post-navigation {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid #ddd;
+}
+
+.nav-previous,
+.nav-next {
+    flex: 1;
+    padding: 1rem;
+    background: #f8f8f8;
+    border-radius: 8px;
+    color: #425f59;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.nav-previous {
+    text-align: left;
+}
+
+.nav-next {
+    text-align: right;
+}
+
+.nav-previous:hover,
+.nav-next:hover {
+    background: #cfc;
+    text-decoration: none;
+}
+
+.nav-spacer {
+    flex: 1;
+}
+
+.back-link {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ddd;
+}
+
+    .back-link a {
+        color: #425f59;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
