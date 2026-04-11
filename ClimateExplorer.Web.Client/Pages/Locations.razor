@@ -3,6 +3,7 @@
 @using ClimateExplorer.Core.Model
 @using ClimateExplorer.Core.ViewModel
 @using ClimateExplorer.Web.Client.Components.Common
+@using ClimateExplorer.Web.Client.Components.Location
 @using ClimateExplorer.WebApiClient.Services
 @using System.Globalization
 @using static ClimateExplorer.Core.Enums
@@ -97,7 +98,7 @@
                             <td>
                                 @if (location.RecordHigh != null)
                                 {
-                                    <a href="location/@location.UrlReadyName()">@FormatRecordHigh(location.RecordHigh)</a>
+                                    <button class="record-link" @onclick="@(() => ShowClimateRecordsAsync(location))">@FormatRecordHigh(location.RecordHigh)</button>
                                 }
                                 else
                                 {

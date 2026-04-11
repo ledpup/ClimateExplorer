@@ -41,3 +41,18 @@
 .fa-sort {
     opacity: 0.35;
 }
+
+/* ── Climate record link button ──────────────────────────────────────────── */
+.record-link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #425f59;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: inherit;
+}
+
+.record-link:hover {
+    color: #2a3d39;
+}

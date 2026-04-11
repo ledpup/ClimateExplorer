@@ -4,6 +4,7 @@ using System.Globalization;
 using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
 using static ClimateExplorer.Core.Enums;
@@ -24,6 +25,8 @@ public partial class Locations
     private List<string> availableCountries = [];
     private int filteredCount;
     private int totalPages = 1;
+    private SidePanel? climateRecordsSidePanel;
+    private Location? selectedLocation;
 
     [Inject]
     private IDataService? DataService { get; set; }
@@ -71,6 +74,10 @@ public partial class Locations
 
     private IEnumerable<Location> PagedLocations =>
         FilteredAndSortedLocations.Skip((currentPage - 1) * pageSize).Take(pageSize);
+
+    private Location? Location => selectedLocation;
+
+    private IEnumerable<DataSetDefinitionViewModel> DataSetDefinitions => dataSetDefinitions;
 
     protected override async Task OnInitializedAsync()
     {
@@ -231,5 +238,11 @@ public partial class Locations
         }
 
         return string.Join(", ", types.Select(DataTypeToShortName));
+    }
+
+    private async Task ShowClimateRecordsAsync(Location location)
+    {
+        selectedLocation = location;
+        await (climateRecordsSidePanel?.ShowAsync() ?? Task.CompletedTask);
     }
 }
