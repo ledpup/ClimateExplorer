@@ -9,6 +9,7 @@ public partial class NavMenu : IDisposable
     private readonly (string Route, string Text)[] navItems =
                 [
                     (string.Empty, "local"),
+                        ("locations", "locations"),
                         ("regionalandglobal", "regional & global"),
                         ("about", "about"),
                         ("blog", "blog"),
@@ -26,7 +27,7 @@ public partial class NavMenu : IDisposable
 
         if (route == string.Empty)
         {
-            return path == "/" || path.StartsWith("/location");
+            return path == "/" || path.StartsWith("/location/");
         }
 
         return path == $"/{route}" || path.StartsWith($"/{route}/");

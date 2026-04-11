@@ -1,0 +1,43 @@
+.locations-container {
+    max-width: 80em;
+    margin: auto;
+    padding: 0 1rem 2rem;
+}
+
+/* ── Filter row ──────────────────────────────────────────────────────────── */
+.filter-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0 0.75rem;
+}
+
+.filter-row ::deep .form-select {
+    width: auto;
+}
+
+/* ── Heating score badge ─────────────────────────────────────────────────── */
+.heating-badge {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    min-width: 2rem;
+    text-align: center;
+}
+
+/* ── Data types cell ─────────────────────────────────────────────────────── */
+.data-types-cell {
+    font-size: 0.8rem;
+    color: #555;
+    white-space: normal;
+    max-width: 14em;
+}
+
+/* ── Sort icon muted ─────────────────────────────────────────────────────── */
+.fa-sort {
+    opacity: 0.35;
+}

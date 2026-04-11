@@ -21,9 +21,13 @@ public partial class PaginationControl
     [Inject]
     private ICurrentDeviceService? CurrentDeviceService { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        isMobileDevice = await CurrentDeviceService!.Mobile();
+        if (firstRender)
+        {
+            isMobileDevice ??= await CurrentDeviceService!.Mobile();
+            StateHasChanged();
+        }
     }
 
     private List<int> GetVisiblePages()

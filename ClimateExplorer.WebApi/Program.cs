@@ -105,6 +105,7 @@ app.MapGet("/about", GetAbout);
 app.MapGet("/datasetdefinition", GetDataSetDefinitions);
 app.MapGet("/location", GetLocations);
 app.MapGet("/location-by-path", GetLocationByPath);
+app.MapGet("/location-by-id", GetLocationById);
 app.MapGet("/nearby-locations", GetNearbyLocations);
 app.MapGet("/country", GetCountries);
 app.MapGet("/region", GetRegions);
@@ -357,6 +358,13 @@ async Task<Location> GetLocationByPath(string path)
     // There are some duplicate location names (e.g., Jan Mayen and Uliastai)
     // Use FirstOrDefault rather than SingleOrDefault
     var location = locations.FirstOrDefault(x => x.UrlReadyName() == path);
+    return location;
+}
+
+async Task<Location> GetLocationById(Guid locationId)
+{
+    var locations = await GetCachedLocations();
+    var location = locations.SingleOrDefault(x => x.Id == locationId);
     return location;
 }
 

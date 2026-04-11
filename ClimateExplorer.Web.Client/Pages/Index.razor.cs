@@ -5,7 +5,6 @@ using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Components.Location;
 using ClimateExplorer.Web.Client.Services;
-using CurrentDevice;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
@@ -60,9 +59,9 @@ public partial class Index : ChartablePage
 
     private ChangeLocation? ChangeLocationModal { get; set; }
     private string? BrowserLocationErrorMessage { get; set; }
-    private Core.Model.Location? Location { get; set; }
+    private Location? Location { get; set; }
 
-    private Core.Model.Location? PreviousLocation { get; set; }
+    private Location? PreviousLocation { get; set; }
 
     private bool LocationChangeEventOccurring { get; set; } = false;
 
@@ -75,7 +74,7 @@ public partial class Index : ChartablePage
     protected override async Task OnInitializedAsync()
     {
         // Check to see if a named location is being requested. That will look like /location/<location-name>
-        Location = await GetNamedLocation();
+        Location = await GetLocationFromPath();
 
         if (Location is not null)
         {
@@ -123,34 +122,46 @@ public partial class Index : ChartablePage
         if (LocationChangeEventOccurring && LocationString is not null)
         {
             LocationChangeEventOccurring = false;
-            var locationId = Guid.Parse(LocationString!);
-            await SelectedLocationChangedInternal(locationId);
-            StateHasChanged();
+            var guidParsed = Guid.TryParse(LocationString, out Guid locationGuid);
+            if (guidParsed)
+            {
+                await SelectedLocationChangedInternal(locationGuid);
+                StateHasChanged();
+            }
         }
 
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    private async Task<Core.Model.Location?> GetNamedLocation()
+    private async Task<Location?> GetLocationFromPath()
     {
         var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
-        Core.Model.Location? location = null;
-        if (uri.Segments.Length > 2 && !Guid.TryParse(uri.Segments[2], out Guid locationGuid))
+        Location? location = null;
+        if (uri.Segments.Length > 2)
         {
-            var locationName = uri.Segments[2];
+            var guidParsed = Guid.TryParse(uri.Segments[2], out Guid locationGuid);
 
-            location = await DataService!.GetLocationByPath(locationName.ToLower());
-
-            if (location == null)
+            if (guidParsed)
             {
-                NavManager!.NavigateTo("/error", true);
+                location = await DataService!.GetLocationById(locationGuid);
+            }
+            else
+            {
+                var locationName = uri.Segments[2];
+
+                location = await DataService!.GetLocationByPath(locationName.ToLower());
+
+                if (location == null)
+                {
+                    NavManager!.NavigateTo("/error", true);
+                }
             }
         }
 
         return location;
     }
 
-    private async Task<Core.Model.Location?> GetLocation()
+    private async Task<Location?> GetLocation()
     {
         if (LocationDictionary is null)
         {
@@ -230,7 +241,7 @@ public partial class Index : ChartablePage
     {
         Logger!.LogInformation("SelectedLocationChangedInternal(): " + newValue);
 
-        if (!LocationDictionary!.TryGetValue(newValue, out Core.Model.Location? value))
+        if (!LocationDictionary!.TryGetValue(newValue, out Location? value))
         {
             Logger!.LogError($"{newValue} doesn't exist in the list of locations. Exiting SelectedLocationChangedInternal()");
             return;
