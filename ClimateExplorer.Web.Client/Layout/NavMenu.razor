@@ -21,14 +21,7 @@
                 @foreach (var item in navItems)
                 {
                     <BarItem>
-                        @if (IsCurrentPage(item.Route))
-                        {
-                            <span class="nav-current">@item.Text</span>
-                        }
-                        else
-                        {
-                            <BarLink To="@item.Route">@item.Text</BarLink>
-                        }
+                        <BarLink To="@item.Route" Class="@(IsCurrentPage(item.Route) ? "nav-current" : string.Empty)">@item.Text</BarLink>
                     </BarItem>
                 }
                 @{

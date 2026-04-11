@@ -49,13 +49,15 @@
         color: #aaa !important;
     }
 
-.nav-current {
-    display: inline;
-    padding: 0;
-    line-height: inherit;
-    color: rgba(255, 255, 255, 0.55);
+::deep a.nav-link.nav-current {
+    color: rgba(255, 255, 255, 0.55) !important;
     cursor: default;
+    pointer-events: none;
 }
+
+    ::deep a.nav-link.nav-current:hover {
+        color: rgba(255, 255, 255, 0.55) !important;
+    }
 
 ::deep .bg-dark {
     background-color: #425f59 !important;
