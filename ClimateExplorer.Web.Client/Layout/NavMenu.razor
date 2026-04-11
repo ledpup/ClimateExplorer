@@ -18,18 +18,19 @@
         </BarBrand>
         <BarMenu>
             <BarStart>
-                <BarItem>
-                    <BarLink To="">local</BarLink>
-                </BarItem>
-                <BarItem>
-                    <BarLink To="regionalandglobal">regional &amp; global</BarLink>
-                </BarItem>
-                <BarItem>
-                    <BarLink To="about">about</BarLink>
-                </BarItem>
-                <BarItem>
-                    <BarLink To="blog">blog</BarLink>
-                </BarItem>
+                @foreach (var item in navItems)
+                {
+                    <BarItem>
+                        @if (IsCurrentPage(item.Route))
+                        {
+                            <span class="nav-current">@item.Text</span>
+                        }
+                        else
+                        {
+                            <BarLink To="@item.Route">@item.Text</BarLink>
+                        }
+                    </BarItem>
+                }
                 @{
                     var uri = NavigationManager!.ToAbsoluteUri(NavigationManager.Uri);
                     if (NavigationManager.Uri == NavigationManager.BaseUri || uri.LocalPath.StartsWith("/location"))
