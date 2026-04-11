@@ -33,13 +33,15 @@ h1 {
         }
 
 .post-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: 0.85rem;
     color: #666;
     margin-bottom: 0.25rem;
 }
 
 .post-category {
-    margin-left: 0.75rem;
     background: #425f59;
     color: #fff;
     border-radius: 4px;

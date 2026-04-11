@@ -1,29 +1,12 @@
-﻿h1 {
-    color: #000;
-    font-weight: bold;
-    font-size: 3em;
-}
-
-
-h2 {
-    color: #111;
-    font-size: 2.5em;
-    font-weight: bold;
+﻿h2 {
     margin-top: 2em;
 }
 
-h3 {
-    color: #333;
-    font-size: 2em;
+h3:not(:first-of-type) {
+    margin-top: 3em;
 }
 
-    h3:not(:first-of-type) {
-        margin-top: 3em;
-    }
-
 h4 {
-    color: #444;
-    font-size: 1.5em;
     margin-bottom: .5em;
 }
 
