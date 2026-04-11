@@ -29,8 +29,9 @@
     text-align: center;
 }
 
-/* ── Data types cell ─────────────────────────────────────────────────────── */
-.data-types-cell {
+/* ── Data types / sources cells ──────────────────────────────────────────── */
+.data-types-cell,
+.data-sources-cell {
     font-size: 0.8rem;
     color: #555;
     white-space: normal;

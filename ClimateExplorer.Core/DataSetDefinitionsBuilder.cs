@@ -12,7 +12,8 @@ public class DataSetDefinitionsBuilder
             new()
             {
                 Id = Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"),
-                Name = "ACORN-SAT",
+                Name = "Australian Climate Observations Reference Network - Surface Air Temperature (ACORN-SAT)",
+                ShortName = "ACORN-SAT",
                 Description = "The Australian Climate Observations Reference Network - Surface Air Temperature (ACORN-SAT) data set is a homogenized daily maximum, minimum and mean temperature data set containing data from 112 locations across Australia extending from 1910 to the present.",
                 Publisher = "Australian Bureau of Meteorology",
                 PublisherUrl = "https://www.bom.gov.au/",
@@ -57,6 +58,7 @@ public class DataSetDefinitionsBuilder
             {
                 Id = Guid.Parse("E5EEA4D6-5FD5-49AB-BF85-144A8921111E"),
                 Name = "Bureau of Meteorology",
+                ShortName = "BOM",
                 Description = null,
                 Publisher = "Australian Bureau of Meteorology",
                 PublisherUrl = "https://www.bom.gov.au/",
@@ -456,7 +458,8 @@ public class DataSetDefinitionsBuilder
             new()
             {
                 Id = Guid.Parse("0561CF7E-83F2-4617-AC61-4962A0E95093"),
-                Name = "Hadley Centre",
+                Name = "Met Office Hadley Centre",
+                ShortName = "Hadley Centre",
                 Description = @"The Met Office Hadley Centre is one of the UK's foremost climate change research centres.
 
 Our aim is to provide climate science and services to people and organisations, so they can make better decisions to stay safe and thrive. We do this by working with partners around the globe, carrying out world leading research.",

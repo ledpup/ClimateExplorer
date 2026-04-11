@@ -139,6 +139,7 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
             {
                 Id = x.Id,
                 Name = x.Name,
+                ShortName = x.ShortName,
                 MoreInformationUrl = x.MoreInformationUrl,
                 StationInfoUrl = x.StationInfoUrl,
                 LocationInfoUrl = x.LocationInfoUrl,

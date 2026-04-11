@@ -5,8 +5,9 @@ using static ClimateExplorer.Core.Enums;
 
 public class DataSetDefinitionViewModel
 {
-    public Guid Id { get; set; }
-    public string? Name { get; set; }
+    public required Guid Id { get; set; }
+    public required string Name { get; set; }
+    public required string ShortName { get; init; }
     public string? Description { get; set; }
     public string? Publisher { get; set; }
     public string? PublisherUrl { get; set; }

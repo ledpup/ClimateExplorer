@@ -73,7 +73,10 @@
                             <Strong>Data types</Strong>
                         </TableHeaderCell>
                         <TableHeaderCell>
-                            <Strong>Climate record</Strong>
+                            <Strong>Data sources</Strong>
+                        </TableHeaderCell>
+                        <TableHeaderCell @onclick='() => OnSortChanged("recordhigh")' Style="cursor: pointer; user-select: none;">
+                            <Strong>Record high <i class="fas @GetSortIconClass("recordhigh")"></i></Strong>
                         </TableHeaderCell>
                     </TableRow>
                 </TableHeader>
@@ -95,6 +98,7 @@
                                 }
                             </td>
                             <td class="data-types-cell">@GetDataTypesDisplay(location.Id)</td>
+                            <td class="data-sources-cell">@GetDataSourcesDisplay(location.Id)</td>
                             <td>
                                 @if (location.RecordHigh != null)
                                 {

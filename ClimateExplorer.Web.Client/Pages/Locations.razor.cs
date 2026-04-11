@@ -16,6 +16,7 @@ public partial class Locations
     private List<Location> allLocations = [];
     private IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions = [];
     private Dictionary<Guid, List<DataType>> locationDataTypes = new();
+    private Dictionary<Guid, List<string>> locationDataSources = new();
     private string? countryFilter;
     private int heatingScoreFilter = NoHeatingScoreFilter;
     private string sortColumn = "name";
@@ -65,6 +66,9 @@ public partial class Locations
                 "heatingscore" => sortAscending
                     ? query.OrderBy(l => l.HeatingScore ?? int.MinValue)
                     : query.OrderByDescending(l => l.HeatingScore ?? int.MinValue),
+                "recordhigh" => sortAscending
+                    ? query.OrderBy(l => l.RecordHigh?.Value ?? double.MinValue)
+                    : query.OrderByDescending(l => l.RecordHigh?.Value ?? double.MinValue),
                 _ => sortAscending
                     ? query.OrderBy(l => l.Name)
                     : query.OrderByDescending(l => l.Name),
@@ -108,6 +112,17 @@ public partial class Locations
                     {
                         types.Add(md.DataType);
                     }
+                }
+
+                if (!locationDataSources.TryGetValue(locationId, out var sources))
+                {
+                    sources = [];
+                    locationDataSources[locationId] = sources;
+                }
+
+                if (dsd.ShortName != null && !sources.Contains(dsd.ShortName))
+                {
+                    sources.Add(dsd.ShortName);
                 }
             }
         }
@@ -238,6 +253,16 @@ public partial class Locations
         }
 
         return string.Join(", ", types.Select(DataTypeToShortName));
+    }
+
+    private string GetDataSourcesDisplay(Guid locationId)
+    {
+        if (!locationDataSources.TryGetValue(locationId, out var sources) || sources.Count == 0)
+        {
+            return "—";
+        }
+
+        return string.Join(", ", sources);
     }
 
     private async Task ShowClimateRecordsAsync(Location location)
