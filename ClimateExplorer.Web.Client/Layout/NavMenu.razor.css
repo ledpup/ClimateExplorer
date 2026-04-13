@@ -181,6 +181,11 @@
 @media (max-width: 1024px) {
     ::deep .navbar {
         flex-wrap: nowrap;
+        overflow: visible;
+    }
+
+    ::deep .navbar-collapse {
+        overflow: visible;
     }
 
     ::deep .navbar-nav {
@@ -188,6 +193,7 @@
         align-items: center;
         flex: 1;
         padding-left: 6px;
+        overflow: visible;
     }
 
     ::deep .nav-item {
@@ -200,6 +206,14 @@
     ::deep .nav-item:last-child {
         margin-left: auto;
         margin-right: 16px;
+    }
+
+    /* Escape the header stacking context so the menu overlays page content */
+    ::deep .nav-item:last-child .dropdown-menu {
+        position: fixed;
+        top: 65px;
+        right: 0;
+        left: auto;
     }
 
     .info-icon {

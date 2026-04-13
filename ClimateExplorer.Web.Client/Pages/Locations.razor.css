@@ -79,6 +79,10 @@
 
 /* ── Responsive columns ──────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
+    ::deep .country-col,
+    ::deep .country-cell,
+    ::deep .anomaly-col,
+    ::deep .anomaly-cell,
     ::deep .data-types-col,
     ::deep .data-sources-col,
     ::deep .data-types-cell,
