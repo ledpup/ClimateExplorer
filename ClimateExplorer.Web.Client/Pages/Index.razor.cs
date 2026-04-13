@@ -95,8 +95,8 @@ public partial class Index : ChartablePage
             var newLocation = LocationDictionary.Values.FirstOrDefault(x => x.UrlReadyName() == name);
             if (newLocation is not null && newLocation.Id != Location?.Id)
             {
-                await SelectedLocationChangedInternal(newLocation.Id);
                 await NavigateTo($"/{PageName}/{newLocation.Id}", replace: true);
+                await SelectedLocationChangedInternal(newLocation.Id);
             }
         }
 
@@ -146,8 +146,8 @@ public partial class Index : ChartablePage
             {
                 if (isNamedUrl)
                 {
-                    await SelectedLocationChangedInternal(Location.Id);
                     await NavigateTo($"/{PageName}/{Location.Id}", replace: true);
+                    await SelectedLocationChangedInternal(Location.Id);
                 }
                 else
                 {
