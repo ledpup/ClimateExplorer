@@ -24,7 +24,8 @@
 
 ::deep .navbar-nav {
     flex-direction: row;
-    display: block;
+    display: flex;
+    align-items: center;
     padding-left: 20px;
 }
 
@@ -33,6 +34,10 @@
     margin-right: 8px;
     color: white;
     font-weight: bold;
+}
+
+::deep .nav-item:last-child {
+    margin-left: 2rem;
 }
 
 ::deep .nav-item .dropdown {
