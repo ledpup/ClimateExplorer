@@ -32,14 +32,7 @@
                         <DropdownMenu>
                             @foreach (var item in hamburgerItems)
                             {
-                                @if (IsCurrentPage(item.Route))
-                                {
-                                    <span class="dropdown-item hamburger-current">@item.Text</span>
-                                }
-                                else
-                                {
-                                    <a class="dropdown-item" href="@item.Route">@item.Text</a>
-                                }
+                                <a class="@("dropdown-item" + (IsCurrentPage(item.Route) ? " hamburger-current" : string.Empty))" href="@item.Route">@item.Text</a>
                             }
                             @{
                                 var uri = NavigationManager!.ToAbsoluteUri(NavigationManager.Uri);

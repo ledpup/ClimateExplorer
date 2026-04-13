@@ -145,20 +145,24 @@
         padding: 0.4rem 0.75rem;
     }
 
-    ::deep .dropdown-menu a.dropdown-item:hover {
+    ::deep .dropdown-menu a.dropdown-item:hover,
+    ::deep .dropdown-menu a.dropdown-item:focus {
         background-color: rgba(255, 255, 255, 0.12) !important;
         color: #cfc !important;
+        outline: none;
     }
 
     ::deep .dropdown-menu .hamburger-current {
         color: rgba(255, 255, 255, 0.55) !important;
         cursor: default;
-        display: block;
+        pointer-events: none;
     }
 
-    ::deep .dropdown-menu .hamburger-current:hover {
+    ::deep .dropdown-menu .hamburger-current:hover,
+    ::deep .dropdown-menu .hamburger-current:focus {
         background-color: transparent !important;
         color: rgba(255, 255, 255, 0.55) !important;
+        outline: none;
     }
 
     ::deep .dropdown-menu .info-menu-item {
