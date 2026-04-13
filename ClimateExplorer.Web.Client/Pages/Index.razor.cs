@@ -84,6 +84,25 @@ public partial class Index : ChartablePage
         await base.OnInitializedAsync();
     }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        // Handles named URLs when the Index component is reused across navigations
+        // (OnInitializedAsync does not re-run in that case). LocationDictionary is null
+        // on first load; the OnAfterRenderAsync first-load path covers that scenario.
+        if (LocationDictionary is not null && !string.IsNullOrEmpty(LocationString) && !Guid.TryParse(LocationString, out _))
+        {
+            var name = LocationString.TrimEnd('/').ToLower();
+            var newLocation = LocationDictionary.Values.FirstOrDefault(x => x.UrlReadyName() == name);
+            if (newLocation is not null && newLocation.Id != Location?.Id)
+            {
+                await SelectedLocationChangedInternal(newLocation.Id);
+                await NavigateTo($"/{PageName}/{newLocation.Id}", replace: true);
+            }
+        }
+
+        await base.OnParametersSetAsync();
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -103,23 +122,29 @@ public partial class Index : ChartablePage
             LocationDictionary = (await locationsTask).ToDictionary(x => x.Id, x => x);
             Regions = [.. await regionsTask];
 
-            // Location may have been set in OnInitializedAsync
-            // Get location from local storage. If not in local storage, use Hobart as default.
-            Location ??= await GetLocation();
-
             // If there is no "csd" query string parameter, set up default charts for the location
             var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+            var routeSegment = uri.Segments.Length > 2 ? uri.Segments[2].TrimEnd('/') : null;
+            var isNamedUrl = routeSegment != null && !Guid.TryParse(routeSegment, out _);
+
+            if (isNamedUrl)
+            {
+                // Resolve from the just-loaded LocationDictionary. GetLocationByPath has no
+                // client-side cache so it races with the bulk data load above; using the
+                // dictionary avoids the race and bypasses the LocalStorage fallback entirely.
+                Location = LocationDictionary!.Values.FirstOrDefault(x => x.UrlReadyName() == routeSegment!.ToLower());
+            }
+            else
+            {
+                // Location may have been set in OnInitializedAsync.
+                // Fall back to local storage; use Hobart as the final default.
+                Location ??= await GetLocation();
+            }
+
             var csd = QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
             if (!csd && Location != null)
             {
-                // When the URL contains a human-readable name (e.g. /location/hobart) rather than
-                // a GUID, bypass the LocationChangeEventOccurring flag round-trip.  That flag is
-                // consumed in a later OnAfterRenderAsync call whose timing (relative to Blazor
-                // re-stamping the route parameter) is non-deterministic, causing intermittent
-                // failures.  Instead, initialise the chart directly and replace the history entry
-                // with the canonical GUID URL so the named URL is never seen again.
-                var routeSegment = uri.Segments.Length > 2 ? uri.Segments[2].TrimEnd('/') : null;
-                if (routeSegment != null && !Guid.TryParse(routeSegment, out _))
+                if (isNamedUrl)
                 {
                     await SelectedLocationChangedInternal(Location.Id);
                     await NavigateTo($"/{PageName}/{Location.Id}", replace: true);

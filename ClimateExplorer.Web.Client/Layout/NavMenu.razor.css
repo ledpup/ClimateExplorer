@@ -105,11 +105,11 @@
     background: none !important;
     border: none !important;
     color: white !important;
-    padding: 0 6px 0 4px !important;
+    padding: 0 8px 0 8px !important;
     font-weight: bold;
-    font-size: 1.15rem;
+    font-size: 1.5rem;
     box-shadow: none !important;
-    line-height: 1;
+    line-height: 2;
     vertical-align: middle;
 }
 
