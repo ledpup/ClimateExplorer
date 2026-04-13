@@ -112,7 +112,22 @@ public partial class Index : ChartablePage
             var csd = QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
             if (!csd && Location != null)
             {
-                await SelectedLocationChanged(Location.Id);
+                // When the URL contains a human-readable name (e.g. /location/hobart) rather than
+                // a GUID, bypass the LocationChangeEventOccurring flag round-trip.  That flag is
+                // consumed in a later OnAfterRenderAsync call whose timing (relative to Blazor
+                // re-stamping the route parameter) is non-deterministic, causing intermittent
+                // failures.  Instead, initialise the chart directly and replace the history entry
+                // with the canonical GUID URL so the named URL is never seen again.
+                var routeSegment = uri.Segments.Length > 2 ? uri.Segments[2].TrimEnd('/') : null;
+                if (routeSegment != null && !Guid.TryParse(routeSegment, out _))
+                {
+                    await SelectedLocationChangedInternal(Location.Id);
+                    await NavigateTo($"/{PageName}/{Location.Id}", replace: true);
+                }
+                else
+                {
+                    await SelectedLocationChanged(Location.Id);
+                }
             }
 
             StateHasChanged();

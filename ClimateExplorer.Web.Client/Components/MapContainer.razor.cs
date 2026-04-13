@@ -246,10 +246,9 @@ public partial class MapContainer
 
     private async Task ToggleMapExpansion()
     {
-        markersAdded = new(); // Force re-creation of markers
-        mainTileLayerCreated = false;
-        mapOptions = null;
-
+        // Capture map state before nulling mapOptions — setting mapOptions = null removes the Map
+        // component from the render tree, which Blazor can process during any subsequent await,
+        // disposing the internal jsObjectReference and causing ArgumentNullException on map calls.
         var zoom = await map!.GetZoom();
         if (IsMapExpanded)
         {
@@ -261,6 +260,10 @@ public partial class MapContainer
             lastCollapsedZoom = zoom;
             collapsedCentre = internalLocation is null ? null : new LatLng(internalLocation.Coordinates.Latitude, internalLocation.Coordinates.Longitude);
         }
+
+        markersAdded = []; // Force re-creation of markers
+        mainTileLayerCreated = false;
+        mapOptions = null;
 
         await JsRuntime!.InvokeVoidAsync("toggleMapExpansion", null);
         IsMapExpanded = !IsMapExpanded;
