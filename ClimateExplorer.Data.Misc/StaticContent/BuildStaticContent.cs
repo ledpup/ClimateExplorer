@@ -16,6 +16,7 @@ public class BuildStaticContent
 
         WriteTag(writer, "https://climateexplorer.net/");
         WriteTag(writer, "https://climateexplorer.net/regionalandglobal");
+        WriteTag(writer, "https://climateexplorer.net/locations");
         WriteTag(writer, "https://climateexplorer.net/about");
         WriteTag(writer, "https://climateexplorer.net/blog");
 
