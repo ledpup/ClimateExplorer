@@ -301,8 +301,8 @@
       "Longitude": 138.62,
       "Elevation": 48
     },
-    "WarmingAnomaly": 0.8551105039050171,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 0.7352059629807215,
+    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -724,8 +724,6 @@
       "Longitude": 117.82,
       "Elevation": 68
     },
-    "WarmingAnomaly": 0.8034800955429144,
-    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -963,8 +961,6 @@
       "Longitude": 133.89,
       "Elevation": 546
     },
-    "WarmingAnomaly": 1.447560939686607,
-    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -1079,7 +1075,7 @@
       "Elevation": 737
     },
     "WarmingAnomaly": 1.5245509259259253,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -1170,8 +1166,6 @@
       "Longitude": 152.71,
       "Elevation": 24
     },
-    "WarmingAnomaly": 0.9279050529574668,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -1613,6 +1607,16 @@
     },
     "WarmingAnomaly": 1.5797634408602192,
     "HeatingScore": 7,
+    "RecordHigh": {
+      "DataType": 0,
+      "DataAdjustment": 0,
+      "DataResolution": 3,
+      "UnitOfMeasure": 0,
+      "Year": 2013,
+      "Month": 7,
+      "Day": 25,
+      "Value": 41.6
+    },
     "Id": "60a291b7-cab1-4941-bbd5-62e4259b423a",
     "Name": "Arak"
   },
@@ -1830,7 +1834,7 @@
       "Elevation": 997
     },
     "WarmingAnomaly": 1.5303730158730153,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -1876,7 +1880,7 @@
       "Elevation": 310
     },
     "WarmingAnomaly": 1.53025,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -2196,7 +2200,7 @@
       "Elevation": 137
     },
     "WarmingAnomaly": 1.2777258064516133,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -2288,7 +2292,7 @@
       "Elevation": 547
     },
     "WarmingAnomaly": 1.2635555555555582,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -2311,7 +2315,7 @@
       "Elevation": 98
     },
     "WarmingAnomaly": 1.5255634920634922,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -2462,7 +2466,7 @@
       "Elevation": 1377
     },
     "WarmingAnomaly": 1.3874861111111132,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -2784,7 +2788,7 @@
       "Elevation": 1384
     },
     "WarmingAnomaly": 0.6213143274853787,
-    "HeatingScore": 0,
+    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -3225,7 +3229,7 @@
       "Elevation": 24
     },
     "WarmingAnomaly": 1.3874934640522891,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -3359,7 +3363,7 @@
       "Elevation": 1373.0999755859375
     },
     "WarmingAnomaly": 1.2744202898550778,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -3581,10 +3585,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1982,
+      "Year": 1951,
       "Month": 11,
-      "Day": 22,
-      "Value": 99
+      "Day": 27,
+      "Value": 42.9
     },
     "Id": "8510eac1-d2b4-4c4f-a4e9-0883d9bffff5",
     "Name": "Beira"
@@ -4520,7 +4524,17 @@
       "Elevation": 46
     },
     "WarmingAnomaly": 1.522698830409361,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
+    "RecordHigh": {
+      "DataType": 0,
+      "DataAdjustment": 0,
+      "DataResolution": 3,
+      "UnitOfMeasure": 0,
+      "Year": 1957,
+      "Month": 7,
+      "Day": 1,
+      "Value": 36.1
+    },
     "Id": "7f425bc0-da35-4f7a-b931-61e8bcf7e224",
     "Name": "Boizenburg Aut"
   },
@@ -4533,7 +4547,7 @@
       "Elevation": 55
     },
     "WarmingAnomaly": 1.382058558558561,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -4894,8 +4908,6 @@
       "Longitude": 139.9,
       "Elevation": 161
     },
-    "WarmingAnomaly": 0.8537656303133048,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -4940,8 +4952,6 @@
       "Longitude": 145.95,
       "Elevation": 107
     },
-    "WarmingAnomaly": 0.8495732371071512,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -5229,8 +5239,6 @@
       "Longitude": 116.13,
       "Elevation": 178
     },
-    "WarmingAnomaly": 0.8763422381543329,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -5275,7 +5283,7 @@
       "Longitude": 153.13,
       "Elevation": 4
     },
-    "WarmingAnomaly": 0.5408000905382515,
+    "WarmingAnomaly": 0.5440072360705663,
     "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
@@ -5299,7 +5307,7 @@
       "Elevation": 162
     },
     "WarmingAnomaly": 1.5282942942942936,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -5413,8 +5421,6 @@
       "Longitude": 122.24,
       "Elevation": 7
     },
-    "WarmingAnomaly": 0.6126496550170586,
-    "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -5654,8 +5660,6 @@
       "Longitude": 152.32,
       "Elevation": 30
     },
-    "WarmingAnomaly": 1.0193612119587563,
-    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -5700,8 +5704,6 @@
       "Longitude": 139.54,
       "Elevation": 5
     },
-    "WarmingAnomaly": 1.1064678386089781,
-    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -5947,8 +5949,6 @@
       "Longitude": 145.75,
       "Elevation": 2
     },
-    "WarmingAnomaly": 0.9688991313390964,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -5971,7 +5971,7 @@
       "Elevation": 984
     },
     "WarmingAnomaly": 1.1373194444444445,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -5994,7 +5994,7 @@
       "Elevation": 19
     },
     "WarmingAnomaly": 1.3984254385964885,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -6233,8 +6233,6 @@
       "Longitude": 149.2,
       "Elevation": 577
     },
-    "WarmingAnomaly": 1.5367503084424605,
-    "HeatingScore": 7,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -6277,8 +6275,6 @@
       "Longitude": 147.14,
       "Elevation": 60
     },
-    "WarmingAnomaly": 1.0667842586888412,
-    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -6336,8 +6332,6 @@
       "Longitude": 115.14,
       "Elevation": 13
     },
-    "WarmingAnomaly": 0.9706824990806275,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -6382,8 +6376,6 @@
       "Longitude": 153.47,
       "Elevation": 99
     },
-    "WarmingAnomaly": 0.8832759134465853,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -6428,8 +6420,6 @@
       "Longitude": 143.51,
       "Elevation": 82
     },
-    "WarmingAnomaly": 0.7726559063112184,
-    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -6527,10 +6517,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1972,
-      "Month": 9,
-      "Day": 25,
-      "Value": 999
+      "Year": 1957,
+      "Month": 8,
+      "Day": 12,
+      "Value": 41.9
     },
     "Id": "872cc9e6-7006-471f-92d0-d6fe281e2428",
     "Name": "Capo Bellavista"
@@ -6577,8 +6567,8 @@
       "Longitude": 113.67,
       "Elevation": 4
     },
-    "WarmingAnomaly": 0.9656703508921396,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 0.5781534000174666,
+    "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -6738,8 +6728,6 @@
       "Longitude": 133.7,
       "Elevation": 15
     },
-    "WarmingAnomaly": 1.0957171768079021,
-    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -6762,7 +6750,7 @@
       "Elevation": 271
     },
     "WarmingAnomaly": 1.6589593023255822,
-    "HeatingScore": 8,
+    "HeatingScore": 7,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -6831,7 +6819,7 @@
       "Elevation": 78
     },
     "WarmingAnomaly": 1.3918943533697625,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -6972,7 +6960,7 @@
       "Elevation": 35
     },
     "WarmingAnomaly": 0.9952545045044978,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -7041,7 +7029,7 @@
       "Elevation": 193
     },
     "WarmingAnomaly": 0.9938898809523788,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -7086,8 +7074,6 @@
       "Longitude": 146.26,
       "Elevation": 301
     },
-    "WarmingAnomaly": 1.5591663602418677,
-    "HeatingScore": 7,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -7153,8 +7139,6 @@
       "Longitude": 146.27,
       "Elevation": 289
     },
-    "WarmingAnomaly": 0.9407595802764632,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -7836,10 +7820,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 2007,
-      "Month": 11,
-      "Day": 16,
-      "Value": 1409.9
+      "Year": 1999,
+      "Month": 8,
+      "Day": 4,
+      "Value": 46
     },
     "Id": "40d3516b-10fe-4c08-b4e6-be4d38fa820b",
     "Name": "Cimbaj"
@@ -7968,7 +7952,7 @@
       "Elevation": 410
     },
     "WarmingAnomaly": 1.3962268518518517,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -7990,8 +7974,6 @@
       "Longitude": 145.83,
       "Elevation": 260
     },
-    "WarmingAnomaly": 1.070668913224491,
-    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -8056,8 +8038,6 @@
       "Longitude": 153.12,
       "Elevation": 3
     },
-    "WarmingAnomaly": 0.9023211109988587,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -8338,7 +8318,7 @@
       "Elevation": 505
     },
     "WarmingAnomaly": 1.1399964157706108,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -8502,7 +8482,7 @@
       "Elevation": 776
     },
     "WarmingAnomaly": 1.126373931623931,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -8525,7 +8505,7 @@
       "Elevation": 3.700000047683716
     },
     "WarmingAnomaly": 1.280088541666661,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -8628,7 +8608,7 @@
       "Elevation": 51
     },
     "WarmingAnomaly": 1.1499074074074151,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -8651,7 +8631,7 @@
       "Elevation": 192
     },
     "WarmingAnomaly": 1.2709704861111089,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -8674,16 +8654,16 @@
       "Elevation": 270.70001220703125
     },
     "WarmingAnomaly": 0.9878271604938269,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1934,
-      "Month": 3,
-      "Day": 8,
-      "Value": 71.1
+      "Year": 1936,
+      "Month": 7,
+      "Day": 10,
+      "Value": 40.6
     },
     "Id": "9f82ed57-f362-420e-8309-444121f2d3be",
     "Name": "Crookston Nw Exp Sta"
@@ -8801,8 +8781,6 @@
       "Longitude": 117.22,
       "Elevation": 216
     },
-    "WarmingAnomaly": 0.9505070656431833,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -9022,7 +9000,7 @@
       "Elevation": 97
     },
     "WarmingAnomaly": 1.277979797979798,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -9112,7 +9090,7 @@
       "Elevation": 615.7000122070312
     },
     "WarmingAnomaly": 1.1331675627240152,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -9171,7 +9149,7 @@
       "Elevation": 21.299999237060547
     },
     "WarmingAnomaly": 0.833542929292939,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -9262,8 +9240,6 @@
       "Longitude": 130.89,
       "Elevation": 30
     },
-    "WarmingAnomaly": 1.0097095815340076,
-    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -9482,8 +9458,6 @@
       "Longitude": 144.95,
       "Elevation": 94
     },
-    "WarmingAnomaly": 0.8777781217834022,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -9517,7 +9491,7 @@
       "Elevation": 1611.199951171875
     },
     "WarmingAnomaly": 1.905507824726138,
-    "HeatingScore": 9,
+    "HeatingScore": 8,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -9592,10 +9566,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1958,
-      "Month": 6,
-      "Day": 12,
-      "Value": 90.6
+      "Year": 2008,
+      "Month": 7,
+      "Day": 26,
+      "Value": 50
     },
     "Id": "af2e4931-c2e0-4b71-a631-bf534410aacd",
     "Name": "Dhahran"
@@ -9699,7 +9673,7 @@
       "Elevation": 37
     },
     "WarmingAnomaly": 0.9955793650793616,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -10003,8 +9977,6 @@
       "Longitude": 148.58,
       "Elevation": 284
     },
-    "WarmingAnomaly": 1.1493356999004654,
-    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -10050,7 +10022,7 @@
       "Elevation": 1661.199951171875
     },
     "WarmingAnomaly": 1.1253572351421202,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -10165,7 +10137,7 @@
       "Elevation": 10.100000381469727
     },
     "WarmingAnomaly": 1.1315796903460864,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -10188,7 +10160,7 @@
       "Elevation": 803
     },
     "WarmingAnomaly": 1.1439786324786336,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -10303,7 +10275,7 @@
       "Elevation": 266
     },
     "WarmingAnomaly": 1.3782063492063497,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -10519,7 +10491,7 @@
       "Elevation": 941
     },
     "WarmingAnomaly": 1.3949166666666653,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -10747,7 +10719,7 @@
       "Elevation": 136
     },
     "WarmingAnomaly": 1.9177645107794352,
-    "HeatingScore": 9,
+    "HeatingScore": 8,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -10793,7 +10765,7 @@
       "Elevation": 43
     },
     "WarmingAnomaly": 1.2665391414141416,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -10863,6 +10835,16 @@
     },
     "WarmingAnomaly": 0.8542916666666649,
     "HeatingScore": 2,
+    "RecordHigh": {
+      "DataType": 0,
+      "DataAdjustment": 0,
+      "DataResolution": 3,
+      "UnitOfMeasure": 0,
+      "Year": 1889,
+      "Month": 7,
+      "Day": 28,
+      "Value": 42.2
+    },
     "Id": "263ec021-ca76-4cd7-8757-a833169d9330",
     "Name": "Elko Rgnl Ap"
   },
@@ -10898,7 +10880,7 @@
       "Elevation": 876
     },
     "WarmingAnomaly": 1.144477430555554,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -10980,7 +10962,7 @@
       "Elevation": 78
     },
     "WarmingAnomaly": 1.5299271771771767,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -11185,7 +11167,7 @@
       "Elevation": 1756.5999755859375
     },
     "WarmingAnomaly": 1.3950846253229985,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -11276,8 +11258,6 @@
       "Longitude": 121.89,
       "Elevation": 25
     },
-    "WarmingAnomaly": 1.1517771160750652,
-    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -11392,7 +11372,7 @@
       "Elevation": 581
     },
     "WarmingAnomaly": 1.5284456264775423,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -11570,7 +11550,7 @@
       "Elevation": 6
     },
     "WarmingAnomaly": 1.2684794685990326,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -11800,7 +11780,7 @@
       "Elevation": 1213
     },
     "WarmingAnomaly": 1.5220766998341642,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -11903,7 +11883,7 @@
       "Elevation": 3
     },
     "WarmingAnomaly": 1.5238523391812855,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "Id": "88dafecd-9aed-49d2-a1c0-0b7155a1f873",
     "Name": "Flyvestation Aalborg"
   },
@@ -11951,8 +11931,6 @@
       "Longitude": 128.11,
       "Elevation": 159
     },
-    "WarmingAnomaly": 0.9921767825789836,
-    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -12409,7 +12387,7 @@
       "Elevation": 14
     },
     "WarmingAnomaly": 1.1385123456790218,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -12454,8 +12432,6 @@
       "Longitude": 149.92,
       "Elevation": 15
     },
-    "WarmingAnomaly": 0.5435710356383936,
-    "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -12658,7 +12634,7 @@
       "Elevation": 26.100000381469727
     },
     "WarmingAnomaly": 1.6636565656565647,
-    "HeatingScore": 8,
+    "HeatingScore": 7,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -12828,7 +12804,7 @@
       "Elevation": 54
     },
     "WarmingAnomaly": 1.385205555555551,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -12850,8 +12826,6 @@
       "Longitude": 151.62,
       "Elevation": 110
     },
-    "WarmingAnomaly": 1.1226336708954783,
-    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -12907,8 +12881,6 @@
       "Longitude": 143.53,
       "Elevation": 301
     },
-    "WarmingAnomaly": 1.14097628237867,
-    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -12930,8 +12902,6 @@
       "Longitude": 114.7,
       "Elevation": 29
     },
-    "WarmingAnomaly": 1.1803135692807167,
-    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -13022,8 +12992,6 @@
       "Longitude": 128.3,
       "Elevation": 598
     },
-    "WarmingAnomaly": 0.6339019127051841,
-    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -13375,7 +13343,7 @@
       "Elevation": 238
     },
     "WarmingAnomaly": 1.9056111111111118,
-    "HeatingScore": 9,
+    "HeatingScore": 8,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -13692,8 +13660,6 @@
       "Longitude": 147.07,
       "Elevation": 65
     },
-    "WarmingAnomaly": 0.37519671269888555,
-    "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -13984,8 +13950,6 @@
       "Longitude": 150.27,
       "Elevation": 307
     },
-    "WarmingAnomaly": 0.7948971418003588,
-    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -14100,7 +14064,7 @@
       "Elevation": 88
     },
     "WarmingAnomaly": 1.6744760536398464,
-    "HeatingScore": 8,
+    "HeatingScore": 7,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -14169,7 +14133,7 @@
       "Elevation": 24
     },
     "WarmingAnomaly": 1.1367826086956576,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -14236,7 +14200,7 @@
       "Elevation": 240
     },
     "WarmingAnomaly": 1.3847863247863252,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -14350,8 +14314,6 @@
       "Longitude": 127.67,
       "Elevation": 409
     },
-    "WarmingAnomaly": 0.48043468384147303,
-    "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -14441,7 +14403,7 @@
       "Elevation": 11
     },
     "WarmingAnomaly": 1.9185787037037034,
-    "HeatingScore": 9,
+    "HeatingScore": 8,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -15102,8 +15064,8 @@
       "Longitude": 147.33,
       "Elevation": 50
     },
-    "WarmingAnomaly": 0.7720745505146258,
-    "HeatingScore": 1,
+    "WarmingAnomaly": 0.4687792499438572,
+    "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -15287,7 +15249,7 @@
       "Elevation": 19.5
     },
     "WarmingAnomaly": 0.9857857142857149,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -16083,7 +16045,7 @@
       "Elevation": -19.5
     },
     "WarmingAnomaly": 0.9957094017093944,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -16232,7 +16194,7 @@
       "Elevation": 4
     },
     "WarmingAnomaly": 1.2773055555555557,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -16255,7 +16217,7 @@
       "Elevation": -6.400000095367432
     },
     "WarmingAnomaly": 1.2622222222222241,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -16330,10 +16292,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1974,
-      "Month": 12,
-      "Day": 25,
-      "Value": 99
+      "Year": 1951,
+      "Month": 11,
+      "Day": 27,
+      "Value": 37.2
     },
     "Id": "9f100d5f-36d5-46b8-b1e2-d008640bc631",
     "Name": "Inhambane"
@@ -16461,8 +16423,6 @@
       "Longitude": 151.11,
       "Elevation": 582
     },
-    "WarmingAnomaly": 1.0911719403284472,
-    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -16611,7 +16571,7 @@
       "Elevation": 7
     },
     "WarmingAnomaly": 1.2699027777777778,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -16647,7 +16607,7 @@
       "Elevation": 43
     },
     "WarmingAnomaly": 1.1375505050505073,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -17196,7 +17156,7 @@
       "Elevation": 745
     },
     "WarmingAnomaly": 1.0028986928104633,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -17536,7 +17496,7 @@
       "Elevation": 23
     },
     "WarmingAnomaly": 0.9933198198198152,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -17593,7 +17553,7 @@
       "Elevation": 79.9000015258789
     },
     "WarmingAnomaly": 1.1392638888888929,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "Id": "8ea13c30-1838-443b-94ac-dc74613e34e5",
     "Name": "Junin"
   },
@@ -17698,7 +17658,7 @@
       "Elevation": 139
     },
     "WarmingAnomaly": 1.5189960317460334,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -17813,8 +17773,8 @@
       "Longitude": 121.45,
       "Elevation": 365
     },
-    "WarmingAnomaly": 0.8711494806593549,
-    "HeatingScore": 2,
+    "WarmingAnomaly": 0.599222966244529,
+    "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -17866,10 +17826,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1925,
-      "Month": 7,
-      "Day": 18,
-      "Value": 83.3
+      "Year": 1961,
+      "Month": 8,
+      "Day": 4,
+      "Value": 40.6
     },
     "Id": "1c76b9ce-aba5-40ec-93ce-c211ab97ee9f",
     "Name": "Kalispell Glacier Ap"
@@ -18084,7 +18044,7 @@
       "Elevation": 47
     },
     "WarmingAnomaly": 0.9985751633986929,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -18130,7 +18090,7 @@
       "Elevation": 1204
     },
     "WarmingAnomaly": 1.3864444444444466,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -18153,7 +18113,7 @@
       "Elevation": 218
     },
     "WarmingAnomaly": 0.9988007246376813,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -18391,8 +18351,6 @@
       "Longitude": 117.61,
       "Elevation": 320
     },
-    "WarmingAnomaly": 1.0741810022103788,
-    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -18597,7 +18555,7 @@
       "Elevation": 27.700000762939453
     },
     "WarmingAnomaly": 1.2804196696696688,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -18642,8 +18600,6 @@
       "Longitude": 143.92,
       "Elevation": 77
     },
-    "WarmingAnomaly": 0.7936369752088339,
-    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -18810,10 +18766,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1948,
-      "Month": 6,
-      "Day": 16,
-      "Value": 485.6
+      "Year": 2023,
+      "Month": 7,
+      "Day": 3,
+      "Value": 35.6
     },
     "Id": "4e25085d-6356-4bc9-bbac-e57fc2609996",
     "Name": "Key West Intl Ap"
@@ -18896,7 +18852,7 @@
       "Elevation": 427
     },
     "WarmingAnomaly": 0.6212851153039871,
-    "HeatingScore": 0,
+    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -19374,10 +19330,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1943,
-      "Month": 8,
-      "Day": 5,
-      "Value": 226.5
+      "Year": 1954,
+      "Month": 7,
+      "Day": 10,
+      "Value": 33.4
     },
     "Id": "c85c4baa-f6bf-4719-a0dd-6f1f0c305b7e",
     "Name": "Klaipeda"
@@ -19893,7 +19849,7 @@
       "Elevation": 56
     },
     "WarmingAnomaly": 1.5297415458937207,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -20356,10 +20312,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 2002,
-      "Month": 1,
-      "Day": 13,
-      "Value": 62
+      "Year": 1958,
+      "Month": 7,
+      "Day": 11,
+      "Value": 46
     },
     "Id": "aad7d027-6f9c-4c66-a4b1-a24a89b531de",
     "Name": "Kurgan Tyube"
@@ -20624,8 +20580,6 @@
       "Longitude": 135.55,
       "Elevation": 59
     },
-    "WarmingAnomaly": 0.8925721297605698,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -20763,7 +20717,7 @@
       "Elevation": 6.099999904632568
     },
     "WarmingAnomaly": 0.9865833333333285,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -21092,7 +21046,7 @@
       "Elevation": 242
     },
     "WarmingAnomaly": 0.9903539426523231,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -21252,8 +21206,6 @@
       "Longitude": 148.35,
       "Elevation": 19
     },
-    "WarmingAnomaly": 0.7446956055642318,
-    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -21411,8 +21363,6 @@
       "Longitude": 147.22,
       "Elevation": 166
     },
-    "WarmingAnomaly": 0.9507285147420799,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -21434,8 +21384,6 @@
       "Longitude": 144.76,
       "Elevation": 20
     },
-    "WarmingAnomaly": 1.2348671542248795,
-    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -21686,7 +21634,7 @@
       "Elevation": 2771
     },
     "WarmingAnomaly": 1.146229166666667,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -21984,7 +21932,7 @@
       "Elevation": 7
     },
     "WarmingAnomaly": 1.1400972222222219,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -22053,7 +22001,7 @@
       "Elevation": 1503
     },
     "WarmingAnomaly": 1.1280522875816992,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -22076,7 +22024,7 @@
       "Elevation": 485
     },
     "WarmingAnomaly": 1.2763762626262647,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -22156,7 +22104,7 @@
       "Elevation": 333
     },
     "WarmingAnomaly": 1.2695580808080802,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -22431,8 +22379,6 @@
       "Longitude": 144.28,
       "Elevation": 192
     },
-    "WarmingAnomaly": 1.0982674619537924,
-    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -22641,8 +22587,6 @@
       "Longitude": 146.79,
       "Elevation": 3
     },
-    "WarmingAnomaly": 0.6965437374404608,
-    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -22993,8 +22937,6 @@
       "Longitude": 149.22,
       "Elevation": 30
     },
-    "WarmingAnomaly": 1.4406494099441396,
-    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -23178,7 +23120,7 @@
       "Elevation": 115
     },
     "WarmingAnomaly": 1.1376944444444455,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -23316,7 +23258,7 @@
       "Elevation": 140
     },
     "WarmingAnomaly": 1.657737127371274,
-    "HeatingScore": 8,
+    "HeatingScore": 7,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -23534,7 +23476,7 @@
       "Elevation": 76
     },
     "WarmingAnomaly": 1.2618657407407383,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -23702,8 +23644,6 @@
       "Longitude": 119.75,
       "Elevation": 182
     },
-    "WarmingAnomaly": 0.7039344033789874,
-    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -23776,10 +23716,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1973,
-      "Month": 6,
-      "Day": 18,
-      "Value": 81
+      "Year": 1949,
+      "Month": 10,
+      "Day": 7,
+      "Value": 59.2
     },
     "Id": "3e51bdbc-d70e-4b4c-8860-0adfe52475a0",
     "Name": "Marion Island"
@@ -23906,8 +23846,6 @@
       "Longitude": 138.07,
       "Elevation": 50
     },
-    "WarmingAnomaly": 1.1797217494954957,
-    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -23941,7 +23879,7 @@
       "Elevation": 10.300000190734863
     },
     "WarmingAnomaly": 1.2661923076923074,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -24203,7 +24141,7 @@
       "Elevation": 630.9000244140625
     },
     "WarmingAnomaly": 1.6558657407407416,
-    "HeatingScore": 8,
+    "HeatingScore": 7,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -24225,8 +24163,6 @@
       "Longitude": 118.54,
       "Elevation": 517
     },
-    "WarmingAnomaly": 1.0681338188605523,
-    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -24294,8 +24230,8 @@
       "Longitude": 144.98,
       "Elevation": 7
     },
-    "WarmingAnomaly": 1.1547203110518502,
-    "HeatingScore": 4,
+    "WarmingAnomaly": 1.131024578197172,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -24510,8 +24446,6 @@
       "Longitude": 118.28,
       "Elevation": 315
     },
-    "WarmingAnomaly": 0.6578150423968836,
-    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -24684,8 +24618,6 @@
       "Longitude": 142.09,
       "Elevation": 50
     },
-    "WarmingAnomaly": 0.6213921026461833,
-    "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -24707,8 +24639,6 @@
       "Longitude": 150.18,
       "Elevation": 304
     },
-    "WarmingAnomaly": 1.204060610313455,
-    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -24870,7 +24800,7 @@
       "Elevation": 539.2000122070312
     },
     "WarmingAnomaly": 0.9876500000000017,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -25203,7 +25133,7 @@
       "Elevation": 55
     },
     "WarmingAnomaly": 1.2797499999999964,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "Id": "c0f31795-1ab9-4c4d-8f23-bce3d6089467",
     "Name": "Mombasa"
   },
@@ -25292,10 +25222,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1952,
-      "Month": 2,
-      "Day": 18,
-      "Value": 999
+      "Year": 2000,
+      "Month": 8,
+      "Day": 23,
+      "Value": 38.8
     },
     "Id": "1763a078-9855-4c62-b39e-de6b8c51d737",
     "Name": "Monte S Angelo"
@@ -25366,7 +25296,7 @@
       "Elevation": 1764.5
     },
     "WarmingAnomaly": 0.9895381944444441,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -25478,8 +25408,6 @@
       "Longitude": 149.85,
       "Elevation": 213
     },
-    "WarmingAnomaly": 0.8510636390105262,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -25501,8 +25429,6 @@
       "Longitude": 150.15,
       "Elevation": 17
     },
-    "WarmingAnomaly": 1.036873059488011,
-    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -25637,8 +25563,6 @@
       "Longitude": 140.77,
       "Elevation": 63
     },
-    "WarmingAnomaly": 0.8848124281125305,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -25880,7 +25804,7 @@
       "Elevation": 2311
     },
     "WarmingAnomaly": 1.1337830969267149,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -25937,7 +25861,7 @@
       "Elevation": 254
     },
     "WarmingAnomaly": 1.3944166666666669,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -26668,7 +26592,7 @@
       "Elevation": 27.399999618530273
     },
     "WarmingAnomaly": 1.527314814814817,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -26783,7 +26707,7 @@
       "Elevation": 5
     },
     "WarmingAnomaly": 1.126479166666666,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -26918,7 +26842,7 @@
       "Elevation": 326
     },
     "WarmingAnomaly": 1.657843843843846,
-    "HeatingScore": 8,
+    "HeatingScore": 7,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -26964,7 +26888,7 @@
       "Elevation": 39
     },
     "WarmingAnomaly": 1.2752685185185157,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -27033,7 +26957,7 @@
       "Elevation": 527
     },
     "WarmingAnomaly": 1.3838978494623655,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -27056,7 +26980,7 @@
       "Elevation": 621
     },
     "WarmingAnomaly": 1.9182299741602085,
-    "HeatingScore": 9,
+    "HeatingScore": 8,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -27085,10 +27009,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1964,
-      "Month": 7,
-      "Day": 13,
-      "Value": 97
+      "Year": 1980,
+      "Month": 1,
+      "Day": 21,
+      "Value": 42.3
     },
     "Id": "8fcdce80-d428-4d3f-ad93-4f6dcd3ce1c9",
     "Name": "Neuquen Aero"
@@ -27227,8 +27151,6 @@
       "Longitude": 141.65,
       "Elevation": 138
     },
-    "WarmingAnomaly": 0.7551068110309096,
-    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -27678,8 +27600,6 @@
       "Longitude": 141.07,
       "Elevation": 18
     },
-    "WarmingAnomaly": 0.7410383306389079,
-    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -27899,7 +27819,7 @@
       "Elevation": 84
     },
     "WarmingAnomaly": 1.38624561403509,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -27978,8 +27898,6 @@
       "Longitude": 139.01,
       "Elevation": 275
     },
-    "WarmingAnomaly": 0.6489691296293731,
-    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -28255,7 +28173,7 @@
       "Elevation": 110.30000305175781
     },
     "WarmingAnomaly": 1.263362683438153,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -28564,8 +28482,6 @@
       "Longitude": 135.45,
       "Elevation": 116
     },
-    "WarmingAnomaly": 0.9307400878260914,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -28588,7 +28504,7 @@
       "Elevation": 780
     },
     "WarmingAnomaly": 0.9972413194444423,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -28610,8 +28526,6 @@
       "Longitude": 148.47,
       "Elevation": 62
     },
-    "WarmingAnomaly": 0.46345373266668943,
-    "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -28726,7 +28640,7 @@
       "Elevation": 88.69999694824219
     },
     "WarmingAnomaly": 1.3875069444444428,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -29188,10 +29102,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1951,
-      "Month": 1,
-      "Day": 8,
-      "Value": 999
+      "Year": 1983,
+      "Month": 7,
+      "Day": 26,
+      "Value": 25
     },
     "Id": "88af0047-b65e-4f42-a8a6-dc680978fd76",
     "Name": "Paganella"
@@ -29259,8 +29173,6 @@
       "Longitude": 144.08,
       "Elevation": 203
     },
-    "WarmingAnomaly": 0.7440404189060708,
-    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -29751,8 +29663,8 @@
       "Longitude": 115.98,
       "Elevation": 15
     },
-    "WarmingAnomaly": 1.3904052937792457,
-    "HeatingScore": 6,
+    "WarmingAnomaly": 1.2238305196458974,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -29867,7 +29779,7 @@
       "Elevation": 58
     },
     "WarmingAnomaly": 1.5297004830917875,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -30188,7 +30100,7 @@
       "Elevation": 9
     },
     "WarmingAnomaly": 1.3947859477124191,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -30397,10 +30309,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1955,
-      "Month": 6,
-      "Day": 8,
-      "Value": 87.2
+      "Year": 2009,
+      "Month": 11,
+      "Day": 5,
+      "Value": 36.7
     },
     "Id": "ef395600-50a4-4bb5-b207-3f994a5edc4d",
     "Name": "Pohnpei Wso"
@@ -30653,7 +30565,7 @@
       "Elevation": 7
     },
     "WarmingAnomaly": 1.9061234567901233,
-    "HeatingScore": 9,
+    "HeatingScore": 8,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -30765,8 +30677,6 @@
       "Longitude": 118.63,
       "Elevation": 6
     },
-    "WarmingAnomaly": 0.918660831811021,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -30788,8 +30698,6 @@
       "Longitude": 135.88,
       "Elevation": 8
     },
-    "WarmingAnomaly": 0.8676683309282645,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -30811,8 +30719,6 @@
       "Longitude": 152.87,
       "Elevation": 4
     },
-    "WarmingAnomaly": 1.6877208682803122,
-    "HeatingScore": 8,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -30974,7 +30880,7 @@
       "Elevation": 41
     },
     "WarmingAnomaly": 1.1452976190476196,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -31110,7 +31016,7 @@
       "Elevation": 3
     },
     "WarmingAnomaly": 1.2640165484633599,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -31286,10 +31192,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1962,
-      "Month": 1,
-      "Day": 26,
-      "Value": 64.4
+      "Year": 1975,
+      "Month": 8,
+      "Day": 2,
+      "Value": 40
     },
     "Id": "2a173209-1496-4884-9f2a-e44a7b69e931",
     "Name": "Providence T F Green Ap"
@@ -31326,7 +31232,7 @@
       "Elevation": 43
     },
     "WarmingAnomaly": 1.665473214285715,
-    "HeatingScore": 8,
+    "HeatingScore": 7,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -31550,7 +31456,7 @@
       "Elevation": 34
     },
     "WarmingAnomaly": 1.6607759740259738,
-    "HeatingScore": 8,
+    "HeatingScore": 7,
     "Id": "cf729713-50f7-4be7-b96a-a9687824e5b0",
     "Name": "Putbus"
   },
@@ -31743,7 +31649,7 @@
       "Elevation": 148
     },
     "WarmingAnomaly": 1.381201388888888,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -31766,7 +31672,7 @@
       "Elevation": 794
     },
     "WarmingAnomaly": 1.2790454545454581,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -31789,7 +31695,7 @@
       "Elevation": 71
     },
     "WarmingAnomaly": 0.9990787037037094,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -31841,10 +31747,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1951,
-      "Month": 8,
-      "Day": 1,
-      "Value": 99
+      "Year": 1954,
+      "Month": 10,
+      "Day": 26,
+      "Value": 42.9
     },
     "Id": "98b1aeb7-73aa-43a5-b8c2-4135b6708a9d",
     "Name": "Quelimane"
@@ -31879,7 +31785,7 @@
       "Elevation": 212
     },
     "WarmingAnomaly": 1.3941468253968203,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "Id": "62edc1a3-dd1c-44cd-8456-214702f4536d",
     "Name": "Quixeramobim"
   },
@@ -32157,7 +32063,7 @@
       "Elevation": 578
     },
     "WarmingAnomaly": 1.6615714285714283,
-    "HeatingScore": 8,
+    "HeatingScore": 7,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -32294,8 +32200,6 @@
       "Longitude": 150.78,
       "Elevation": 19
     },
-    "WarmingAnomaly": 0.7744831324400856,
-    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -32317,8 +32221,6 @@
       "Longitude": 143.12,
       "Elevation": 206
     },
-    "WarmingAnomaly": 1.2463721694340961,
-    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -32445,8 +32347,6 @@
       "Longitude": 139.76,
       "Elevation": 3
     },
-    "WarmingAnomaly": 0.45411386413072385,
-    "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -32558,8 +32458,6 @@
       "Longitude": 150.48,
       "Elevation": 10
     },
-    "WarmingAnomaly": 1.2320836623408944,
-    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -32756,7 +32654,7 @@
       "Elevation": 1112.199951171875
     },
     "WarmingAnomaly": 1.2671761006289337,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -32947,8 +32845,6 @@
       "Longitude": 146.51,
       "Elevation": 175
     },
-    "WarmingAnomaly": 1.0756523653911838,
-    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -33017,7 +32913,7 @@
       "Elevation": 320
     },
     "WarmingAnomaly": 1.3851306306306306,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -33069,10 +32965,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1948,
-      "Month": 5,
-      "Day": 31,
-      "Value": 155.6
+      "Year": 2022,
+      "Month": 9,
+      "Day": 6,
+      "Value": 46.7
     },
     "Id": "fb7e97f7-5938-4f39-83e5-a0d52dd39805",
     "Name": "Sacramento 5 Ese"
@@ -33109,7 +33005,7 @@
       "Elevation": 551
     },
     "WarmingAnomaly": 1.1332957516339839,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -33324,8 +33220,6 @@
       "Longitude": 147.13,
       "Elevation": 4
     },
-    "WarmingAnomaly": 0.9232833211300715,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -33739,7 +33633,7 @@
       "Elevation": 251
     },
     "WarmingAnomaly": 1.1367318376068383,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -33762,7 +33656,7 @@
       "Elevation": 13
     },
     "WarmingAnomaly": 0.8302364341085244,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -33875,7 +33769,7 @@
       "Elevation": 1308
     },
     "WarmingAnomaly": 0.8315833333333362,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -34204,7 +34098,7 @@
       "Elevation": 660
     },
     "WarmingAnomaly": 1.2686955128205124,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -34227,7 +34121,7 @@
       "Elevation": 1079
     },
     "WarmingAnomaly": 0.8338978494623639,
-    "HeatingScore": 2,
+    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -34590,7 +34484,7 @@
       "Elevation": 1232
     },
     "WarmingAnomaly": 0.9855357142857155,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -34890,7 +34784,7 @@
       "Elevation": 81
     },
     "WarmingAnomaly": 1.5174419191919188,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -35442,7 +35336,7 @@
       "Elevation": 11
     },
     "WarmingAnomaly": 1.0017369281045756,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -35602,8 +35496,6 @@
       "Longitude": 138.22,
       "Elevation": 109
     },
-    "WarmingAnomaly": 1.133288169297142,
-    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -35626,7 +35518,7 @@
       "Elevation": 25
     },
     "WarmingAnomaly": 1.6536388888888887,
-    "HeatingScore": 8,
+    "HeatingScore": 7,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -35695,7 +35587,7 @@
       "Elevation": 531
     },
     "WarmingAnomaly": 1.1317777777777795,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -35739,7 +35631,7 @@
       "Elevation": 18
     },
     "WarmingAnomaly": 1.2695434027777777,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -36037,7 +35929,7 @@
       "Elevation": 37
     },
     "WarmingAnomaly": 1.5184607046070449,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -36060,7 +35952,7 @@
       "Elevation": 21
     },
     "WarmingAnomaly": 1.5288717494089834,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -36083,7 +35975,7 @@
       "Elevation": 20
     },
     "WarmingAnomaly": 1.3936349206349217,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -36152,7 +36044,7 @@
       "Elevation": 1587
     },
     "WarmingAnomaly": 1.529812500000002,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -36220,8 +36112,6 @@
       "Longitude": 148.59,
       "Elevation": 198
     },
-    "WarmingAnomaly": 1.2632226665686304,
-    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -36244,7 +36134,7 @@
       "Elevation": 436
     },
     "WarmingAnomaly": 1.1400977011494327,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -36345,7 +36235,7 @@
       "Elevation": 442
     },
     "WarmingAnomaly": 1.5298120915032691,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -36414,7 +36304,7 @@
       "Elevation": 10
     },
     "WarmingAnomaly": 1.656066816816816,
-    "HeatingScore": 8,
+    "HeatingScore": 7,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -36964,7 +36854,7 @@
       "Elevation": 99
     },
     "WarmingAnomaly": 1.2802261904761911,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -37032,7 +36922,7 @@
       "Longitude": 151.21,
       "Elevation": 39
     },
-    "WarmingAnomaly": 0.7368101862666094,
+    "WarmingAnomaly": 0.653610768835204,
     "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
@@ -37180,7 +37070,7 @@
       "Elevation": 1361
     },
     "WarmingAnomaly": 1.2671203703703746,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -37422,7 +37312,7 @@
       "Elevation": 106.69999694824219
     },
     "WarmingAnomaly": 1.6733236714975845,
-    "HeatingScore": 8,
+    "HeatingScore": 7,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -37724,7 +37614,7 @@
       "Elevation": 73
     },
     "WarmingAnomaly": 1.916215811965812,
-    "HeatingScore": 9,
+    "HeatingScore": 8,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -37757,8 +37647,6 @@
       "Longitude": 134.58,
       "Elevation": 123
     },
-    "WarmingAnomaly": 1.2695501322909735,
-    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -37919,7 +37807,7 @@
       "Elevation": 448
     },
     "WarmingAnomaly": 1.3901074879227053,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -37942,7 +37830,7 @@
       "Elevation": 186
     },
     "WarmingAnomaly": 1.2673055555555557,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -38088,8 +37976,6 @@
       "Longitude": 134.18,
       "Elevation": 375
     },
-    "WarmingAnomaly": 0.7701345570522697,
-    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -38316,8 +38202,6 @@
       "Longitude": 142.06,
       "Elevation": 176
     },
-    "WarmingAnomaly": 0.9340244987405981,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -38409,7 +38293,7 @@
       "Elevation": 209
     },
     "WarmingAnomaly": 0.6230134408602197,
-    "HeatingScore": 0,
+    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -38533,7 +38417,7 @@
       "Elevation": 849
     },
     "WarmingAnomaly": 1.5228888888888914,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -38671,7 +38555,7 @@
       "Elevation": 1644.4000244140625
     },
     "WarmingAnomaly": 1.2706977124182988,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -38831,8 +38715,6 @@
       "Longitude": 146.77,
       "Elevation": 4
     },
-    "WarmingAnomaly": 0.735738630405038,
-    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -39083,16 +38965,16 @@
       "Elevation": 516.5999755859375
     },
     "WarmingAnomaly": 0.6260092592592663,
-    "HeatingScore": 0,
+    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1939,
-      "Month": 1,
-      "Day": 31,
-      "Value": 1036.1
+      "Year": 2021,
+      "Month": 7,
+      "Day": 11,
+      "Value": 48.3
     },
     "Id": "0c684179-1565-434b-89dd-d777bb50b2b3",
     "Name": "Trona"
@@ -39288,7 +39170,7 @@
       "Elevation": 733
     },
     "WarmingAnomaly": 1.1472663398692826,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -39449,7 +39331,7 @@
       "Elevation": 206
     },
     "WarmingAnomaly": 0.99150637522769,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -39541,7 +39423,7 @@
       "Elevation": 190.5
     },
     "WarmingAnomaly": 1.1377569444444444,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -39587,7 +39469,7 @@
       "Elevation": 127
     },
     "WarmingAnomaly": 0.6230555555555597,
-    "HeatingScore": 0,
+    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -40600,7 +40482,7 @@
       "Elevation": 735
     },
     "WarmingAnomaly": 1.9124718076285223,
-    "HeatingScore": 9,
+    "HeatingScore": 8,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -41313,10 +41195,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1911,
-      "Month": 8,
-      "Day": 27,
-      "Value": 198
+      "Year": 1959,
+      "Month": 7,
+      "Day": 13,
+      "Value": 35.4
     },
     "Id": "0d704fce-5e8a-4bb6-8c17-231c93eb2d59",
     "Name": "Vilnius"
@@ -41353,7 +41235,7 @@
       "Elevation": 298
     },
     "WarmingAnomaly": 1.3822015503875953,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -41377,6 +41259,16 @@
     },
     "WarmingAnomaly": 0.8672355072463782,
     "HeatingScore": 2,
+    "RecordHigh": {
+      "DataType": 0,
+      "DataAdjustment": 0,
+      "DataResolution": 3,
+      "UnitOfMeasure": 0,
+      "Year": 2010,
+      "Month": 7,
+      "Day": 11,
+      "Value": 33.7
+    },
     "Id": "6210c63b-3d43-4605-85fb-ddde7d72b22a",
     "Name": "Visby"
   },
@@ -41528,7 +41420,7 @@
       "Elevation": 125
     },
     "WarmingAnomaly": 1.6576319444444447,
-    "HeatingScore": 8,
+    "HeatingScore": 7,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -41597,7 +41489,7 @@
       "Elevation": 14
     },
     "WarmingAnomaly": 1.51838888888889,
-    "HeatingScore": 7,
+    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -41666,7 +41558,7 @@
       "Elevation": 68
     },
     "WarmingAnomaly": 1.2803742690058506,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -41711,8 +41603,6 @@
       "Longitude": 147.46,
       "Elevation": 212
     },
-    "WarmingAnomaly": 1.3990924655645554,
-    "HeatingScore": 6,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -41778,8 +41668,6 @@
       "Longitude": 148.12,
       "Elevation": 133
     },
-    "WarmingAnomaly": 1.3475810215159463,
-    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -41801,8 +41689,6 @@
       "Longitude": 116.67,
       "Elevation": 275
     },
-    "WarmingAnomaly": 0.9888419583927899,
-    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -42006,7 +41892,7 @@
       "Elevation": 3
     },
     "WarmingAnomaly": 1.383544117647057,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -42141,8 +42027,6 @@
       "Longitude": 143.39,
       "Elevation": 94
     },
-    "WarmingAnomaly": 1.1584442536795443,
-    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -42164,8 +42048,6 @@
       "Longitude": 151.84,
       "Elevation": 7
     },
-    "WarmingAnomaly": 0.9835396944735599,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -42256,8 +42138,6 @@
       "Longitude": 146.42,
       "Elevation": 95
     },
-    "WarmingAnomaly": 0.5429157319942455,
-    "HeatingScore": 0,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -42485,7 +42365,7 @@
       "Elevation": 153
     },
     "WarmingAnomaly": 0.9888405017921142,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -42507,8 +42387,6 @@
       "Longitude": 136.81,
       "Elevation": 166
     },
-    "WarmingAnomaly": 0.9799223847688978,
-    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -42578,6 +42456,16 @@
     },
     "WarmingAnomaly": 1.4269754901960834,
     "HeatingScore": 6,
+    "RecordHigh": {
+      "DataType": 0,
+      "DataAdjustment": 0,
+      "DataResolution": 3,
+      "UnitOfMeasure": 0,
+      "Year": 2003,
+      "Month": 8,
+      "Day": 1,
+      "Value": 39.6
+    },
     "Id": "e5803554-b768-4c5c-b83a-a932a0e9f557",
     "Name": "Wuhan"
   },
@@ -42663,10 +42551,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1965,
-      "Month": 12,
-      "Day": 25,
-      "Value": 99
+      "Year": 1982,
+      "Month": 7,
+      "Day": 1,
+      "Value": 49
     },
     "Id": "ca148c8a-b159-4d1d-9d64-7c98e00f608b",
     "Name": "Xai Xai"
@@ -42686,10 +42574,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 2010,
+      "Year": 2007,
       "Month": 7,
-      "Day": 2,
-      "Value": 3276.6
+      "Day": 26,
+      "Value": 37.8
     },
     "Id": "3beda288-5701-4639-b6c3-cb3a2476300f",
     "Name": "Xi Ujimqin Qi"
@@ -42703,7 +42591,7 @@
       "Elevation": 18
     },
     "WarmingAnomaly": 1.2665238095238038,
-    "HeatingScore": 5,
+    "HeatingScore": 4,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -42795,7 +42683,7 @@
       "Elevation": 1004
     },
     "WarmingAnomaly": 1.670425925925926,
-    "HeatingScore": 8,
+    "HeatingScore": 7,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -42910,7 +42798,7 @@
       "Elevation": 42
     },
     "WarmingAnomaly": 1.1479484126984119,
-    "HeatingScore": 4,
+    "HeatingScore": 3,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -43021,8 +42909,6 @@
       "Longitude": 153.36,
       "Elevation": 27
     },
-    "WarmingAnomaly": 0.7818659336396756,
-    "HeatingScore": 1,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 1,
@@ -43388,7 +43274,7 @@
       "Elevation": 204
     },
     "WarmingAnomaly": 1.0007222222222225,
-    "HeatingScore": 3,
+    "HeatingScore": 2,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -43555,10 +43441,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 2010,
-      "Month": 3,
-      "Day": 31,
-      "Value": 3276.6
+      "Year": 1966,
+      "Month": 6,
+      "Day": 21,
+      "Value": 42.7
     },
     "Id": "9d58f4e6-f151-4f92-9003-92d5e8cda84d",
     "Name": "Yuncheng"
@@ -43731,7 +43617,7 @@
       "Elevation": 1640.4000244140625
     },
     "WarmingAnomaly": 1.3824444444444453,
-    "HeatingScore": 6,
+    "HeatingScore": 5,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,
@@ -43834,7 +43720,7 @@
       "Elevation": 416
     },
     "WarmingAnomaly": 1.6567182539682541,
-    "HeatingScore": 8,
+    "HeatingScore": 7,
     "RecordHigh": {
       "DataType": 0,
       "DataAdjustment": 0,

@@ -25,7 +25,7 @@ ICache longtermCache = new FileBackedTwoLayerCache("cache-longterm");
 const string HeatingScoreTable = "HeatingScoreTable";
 const string NearbyLocations = "NearbyLocations";
 const float DefaultCupDataProportion = 0.7f;
-const int DefaultCupSize = 1;
+const int DefaultCupSize = 14;
 
 var builder = WebApplication.CreateBuilder(args);
 
