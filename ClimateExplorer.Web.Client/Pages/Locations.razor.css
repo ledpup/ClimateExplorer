@@ -1,0 +1,111 @@
+.locations-container {
+    max-width: 90em;
+    margin: auto;
+    padding: 0 1rem 2rem;
+}
+
+/* ── Table toolbar ───────────────────────────────────────────────────────── */
+.table-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.toolbar-filters {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.toolbar-filters ::deep .form-select {
+    width: auto;
+}
+
+.name-filter-wrapper {
+    flex: 1;
+    min-width: 10em;
+    max-width: 18em;
+}
+
+.location-count {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ── Heating score badge ─────────────────────────────────────────────────── */
+.heating-badge {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    min-width: 2rem;
+    text-align: center;
+}
+
+/* ── Data types / sources cells ──────────────────────────────────────────── */
+.data-types-cell,
+.data-sources-cell {
+    font-size: 0.8rem;
+    color: #555;
+    white-space: normal;
+    max-width: 14em;
+}
+
+/* ── Sort icon muted ─────────────────────────────────────────────────────── */
+.fa-sort {
+    opacity: 0.35;
+}
+
+/* ── Climate record link button ──────────────────────────────────────────── */
+.record-link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #425f59;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: inherit;
+}
+
+.record-link:hover {
+    color: #2a3d39;
+}
+
+
+/* ── Responsive columns ──────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+    ::deep .data-types-col,
+    ::deep .data-sources-col,
+    ::deep .data-types-cell,
+    ::deep .data-sources-cell {
+        display: none;
+    }
+
+    .locations-container {
+        padding: 0 0 1rem;
+    }
+}
+
+@media (max-width: 640px) {
+    ::deep .country-col,
+    ::deep .country-cell {
+        display: none;
+    }
+
+    .locations-container {
+        margin-left: -1.5rem;
+        margin-right: -1.5rem;
+    }
+}
+
+@media (max-width: 512px) {
+    ::deep .anomaly-col,
+    ::deep .anomaly-cell {
+        display: none;
+    }
+}

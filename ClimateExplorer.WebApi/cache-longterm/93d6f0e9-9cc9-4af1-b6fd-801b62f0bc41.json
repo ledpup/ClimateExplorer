@@ -1613,6 +1613,16 @@
     },
     "WarmingAnomaly": 1.5797634408602192,
     "HeatingScore": 7,
+    "RecordHigh": {
+      "DataType": 0,
+      "DataAdjustment": 0,
+      "DataResolution": 3,
+      "UnitOfMeasure": 0,
+      "Year": 2013,
+      "Month": 7,
+      "Day": 25,
+      "Value": 41.6
+    },
     "Id": "60a291b7-cab1-4941-bbd5-62e4259b423a",
     "Name": "Arak"
   },
@@ -3581,10 +3591,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1982,
+      "Year": 1951,
       "Month": 11,
-      "Day": 22,
-      "Value": 99
+      "Day": 27,
+      "Value": 42.9
     },
     "Id": "8510eac1-d2b4-4c4f-a4e9-0883d9bffff5",
     "Name": "Beira"
@@ -4521,6 +4531,16 @@
     },
     "WarmingAnomaly": 1.522698830409361,
     "HeatingScore": 7,
+    "RecordHigh": {
+      "DataType": 0,
+      "DataAdjustment": 0,
+      "DataResolution": 3,
+      "UnitOfMeasure": 0,
+      "Year": 1957,
+      "Month": 7,
+      "Day": 1,
+      "Value": 36.1
+    },
     "Id": "7f425bc0-da35-4f7a-b931-61e8bcf7e224",
     "Name": "Boizenburg Aut"
   },
@@ -6527,10 +6547,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1972,
-      "Month": 9,
-      "Day": 25,
-      "Value": 999
+      "Year": 1957,
+      "Month": 8,
+      "Day": 12,
+      "Value": 41.9
     },
     "Id": "872cc9e6-7006-471f-92d0-d6fe281e2428",
     "Name": "Capo Bellavista"
@@ -7836,10 +7856,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 2007,
-      "Month": 11,
-      "Day": 16,
-      "Value": 1409.9
+      "Year": 1999,
+      "Month": 8,
+      "Day": 4,
+      "Value": 46
     },
     "Id": "40d3516b-10fe-4c08-b4e6-be4d38fa820b",
     "Name": "Cimbaj"
@@ -8680,10 +8700,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1934,
-      "Month": 3,
-      "Day": 8,
-      "Value": 71.1
+      "Year": 1936,
+      "Month": 7,
+      "Day": 10,
+      "Value": 40.6
     },
     "Id": "9f82ed57-f362-420e-8309-444121f2d3be",
     "Name": "Crookston Nw Exp Sta"
@@ -9592,10 +9612,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1958,
-      "Month": 6,
-      "Day": 12,
-      "Value": 90.6
+      "Year": 2008,
+      "Month": 7,
+      "Day": 26,
+      "Value": 50
     },
     "Id": "af2e4931-c2e0-4b71-a631-bf534410aacd",
     "Name": "Dhahran"
@@ -10863,6 +10883,16 @@
     },
     "WarmingAnomaly": 0.8542916666666649,
     "HeatingScore": 2,
+    "RecordHigh": {
+      "DataType": 0,
+      "DataAdjustment": 0,
+      "DataResolution": 3,
+      "UnitOfMeasure": 0,
+      "Year": 1889,
+      "Month": 7,
+      "Day": 28,
+      "Value": 42.2
+    },
     "Id": "263ec021-ca76-4cd7-8757-a833169d9330",
     "Name": "Elko Rgnl Ap"
   },
@@ -16330,10 +16360,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1974,
-      "Month": 12,
-      "Day": 25,
-      "Value": 99
+      "Year": 1951,
+      "Month": 11,
+      "Day": 27,
+      "Value": 37.2
     },
     "Id": "9f100d5f-36d5-46b8-b1e2-d008640bc631",
     "Name": "Inhambane"
@@ -17866,10 +17896,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1925,
-      "Month": 7,
-      "Day": 18,
-      "Value": 83.3
+      "Year": 1961,
+      "Month": 8,
+      "Day": 4,
+      "Value": 40.6
     },
     "Id": "1c76b9ce-aba5-40ec-93ce-c211ab97ee9f",
     "Name": "Kalispell Glacier Ap"
@@ -18810,10 +18840,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1948,
-      "Month": 6,
-      "Day": 16,
-      "Value": 485.6
+      "Year": 2023,
+      "Month": 7,
+      "Day": 3,
+      "Value": 35.6
     },
     "Id": "4e25085d-6356-4bc9-bbac-e57fc2609996",
     "Name": "Key West Intl Ap"
@@ -19374,10 +19404,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1943,
-      "Month": 8,
-      "Day": 5,
-      "Value": 226.5
+      "Year": 1954,
+      "Month": 7,
+      "Day": 10,
+      "Value": 33.4
     },
     "Id": "c85c4baa-f6bf-4719-a0dd-6f1f0c305b7e",
     "Name": "Klaipeda"
@@ -20356,10 +20386,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 2002,
-      "Month": 1,
-      "Day": 13,
-      "Value": 62
+      "Year": 1958,
+      "Month": 7,
+      "Day": 11,
+      "Value": 46
     },
     "Id": "aad7d027-6f9c-4c66-a4b1-a24a89b531de",
     "Name": "Kurgan Tyube"
@@ -23776,10 +23806,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1973,
-      "Month": 6,
-      "Day": 18,
-      "Value": 81
+      "Year": 1949,
+      "Month": 10,
+      "Day": 7,
+      "Value": 59.2
     },
     "Id": "3e51bdbc-d70e-4b4c-8860-0adfe52475a0",
     "Name": "Marion Island"
@@ -25292,10 +25322,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1952,
-      "Month": 2,
-      "Day": 18,
-      "Value": 999
+      "Year": 2000,
+      "Month": 8,
+      "Day": 23,
+      "Value": 38.8
     },
     "Id": "1763a078-9855-4c62-b39e-de6b8c51d737",
     "Name": "Monte S Angelo"
@@ -27085,10 +27115,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1964,
-      "Month": 7,
-      "Day": 13,
-      "Value": 97
+      "Year": 1980,
+      "Month": 1,
+      "Day": 21,
+      "Value": 42.3
     },
     "Id": "8fcdce80-d428-4d3f-ad93-4f6dcd3ce1c9",
     "Name": "Neuquen Aero"
@@ -29188,10 +29218,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1951,
-      "Month": 1,
-      "Day": 8,
-      "Value": 999
+      "Year": 1983,
+      "Month": 7,
+      "Day": 26,
+      "Value": 25
     },
     "Id": "88af0047-b65e-4f42-a8a6-dc680978fd76",
     "Name": "Paganella"
@@ -30397,10 +30427,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1955,
-      "Month": 6,
-      "Day": 8,
-      "Value": 87.2
+      "Year": 2009,
+      "Month": 11,
+      "Day": 5,
+      "Value": 36.7
     },
     "Id": "ef395600-50a4-4bb5-b207-3f994a5edc4d",
     "Name": "Pohnpei Wso"
@@ -31286,10 +31316,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1962,
-      "Month": 1,
-      "Day": 26,
-      "Value": 64.4
+      "Year": 1975,
+      "Month": 8,
+      "Day": 2,
+      "Value": 40
     },
     "Id": "2a173209-1496-4884-9f2a-e44a7b69e931",
     "Name": "Providence T F Green Ap"
@@ -31841,10 +31871,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1951,
-      "Month": 8,
-      "Day": 1,
-      "Value": 99
+      "Year": 1954,
+      "Month": 10,
+      "Day": 26,
+      "Value": 42.9
     },
     "Id": "98b1aeb7-73aa-43a5-b8c2-4135b6708a9d",
     "Name": "Quelimane"
@@ -33069,10 +33099,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1948,
-      "Month": 5,
-      "Day": 31,
-      "Value": 155.6
+      "Year": 2022,
+      "Month": 9,
+      "Day": 6,
+      "Value": 46.7
     },
     "Id": "fb7e97f7-5938-4f39-83e5-a0d52dd39805",
     "Name": "Sacramento 5 Ese"
@@ -39089,10 +39119,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1939,
-      "Month": 1,
-      "Day": 31,
-      "Value": 1036.1
+      "Year": 2021,
+      "Month": 7,
+      "Day": 11,
+      "Value": 48.3
     },
     "Id": "0c684179-1565-434b-89dd-d777bb50b2b3",
     "Name": "Trona"
@@ -41313,10 +41343,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1911,
-      "Month": 8,
-      "Day": 27,
-      "Value": 198
+      "Year": 1959,
+      "Month": 7,
+      "Day": 13,
+      "Value": 35.4
     },
     "Id": "0d704fce-5e8a-4bb6-8c17-231c93eb2d59",
     "Name": "Vilnius"
@@ -41377,6 +41407,16 @@
     },
     "WarmingAnomaly": 0.8672355072463782,
     "HeatingScore": 2,
+    "RecordHigh": {
+      "DataType": 0,
+      "DataAdjustment": 0,
+      "DataResolution": 3,
+      "UnitOfMeasure": 0,
+      "Year": 2010,
+      "Month": 7,
+      "Day": 11,
+      "Value": 33.7
+    },
     "Id": "6210c63b-3d43-4605-85fb-ddde7d72b22a",
     "Name": "Visby"
   },
@@ -42578,6 +42618,16 @@
     },
     "WarmingAnomaly": 1.4269754901960834,
     "HeatingScore": 6,
+    "RecordHigh": {
+      "DataType": 0,
+      "DataAdjustment": 0,
+      "DataResolution": 3,
+      "UnitOfMeasure": 0,
+      "Year": 2003,
+      "Month": 8,
+      "Day": 1,
+      "Value": 39.6
+    },
     "Id": "e5803554-b768-4c5c-b83a-a932a0e9f557",
     "Name": "Wuhan"
   },
@@ -42663,10 +42713,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 1965,
-      "Month": 12,
-      "Day": 25,
-      "Value": 99
+      "Year": 1982,
+      "Month": 7,
+      "Day": 1,
+      "Value": 49
     },
     "Id": "ca148c8a-b159-4d1d-9d64-7c98e00f608b",
     "Name": "Xai Xai"
@@ -42686,10 +42736,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 2010,
+      "Year": 2007,
       "Month": 7,
-      "Day": 2,
-      "Value": 3276.6
+      "Day": 26,
+      "Value": 37.8
     },
     "Id": "3beda288-5701-4639-b6c3-cb3a2476300f",
     "Name": "Xi Ujimqin Qi"
@@ -43555,10 +43605,10 @@
       "DataAdjustment": 0,
       "DataResolution": 3,
       "UnitOfMeasure": 0,
-      "Year": 2010,
-      "Month": 3,
-      "Day": 31,
-      "Value": 3276.6
+      "Year": 1966,
+      "Month": 6,
+      "Day": 21,
+      "Value": 42.7
     },
     "Id": "9d58f4e6-f151-4f92-9003-92d5e8cda84d",
     "Name": "Yuncheng"

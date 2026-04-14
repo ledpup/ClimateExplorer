@@ -221,7 +221,7 @@ async Task<List<Station>> GetStationFromData(string version)
     var dataFileName = dir.GetFiles("*.dat").Single().FullName;
 
     var records = File.ReadAllLines(dataFileName);
-    stations = new List<Station>();
+    stations = [];
 
     foreach (var record in records)
     {

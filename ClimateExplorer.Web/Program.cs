@@ -67,6 +67,13 @@ app.MapStaticAssets();
 
 app.MapGet("/api/blog/posts", async (IBlogService blog) => await blog.GetAllPostsAsync());
 
+app.MapGet("/blog/rss.xml", async (IBlogService blog) =>
+{
+    var posts = await blog.GetAllPostsAsync();
+    var xml = ClimateExplorer.Web.Blog.RssFeedGenerator.Build(posts);
+    return Results.Bytes(xml, "application/rss+xml; charset=utf-8");
+});
+
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()

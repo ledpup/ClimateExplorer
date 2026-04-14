@@ -26,7 +26,8 @@ httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
 // Get the stations that were selected in the GHCNm project
 var stations = await Station.GetStationsFromFile(Folders.SelectedStationsFile);
 
-var nullRecord = "9999";
+var nullRecord = 9999;
+var nullRecordString = nullRecord.ToString();
 
 Directory.CreateDirectory("Download");
 
@@ -77,8 +78,7 @@ Parallel.ForEach(stations, station =>
 {
     var dataFileFilterAndAdjustments = new List<DataFileFilterAndAdjustment>
     {
-        new DataFileFilterAndAdjustment
-        {
+        new() {
             Id = station.Id
         }
     };
@@ -101,19 +101,43 @@ Parallel.ForEach(stations, station =>
             using var csv = new CsvReader(reader, config);
             var records = csv.GetRecords<GhcndInputRow>().ToList();
 
+            records.ForEach(x =>
+            {
+                x.Prcp = x.Prcp?.Trim('\"').Trim();
+                x.Tmax = x.Tmax?.Trim('\"').Trim();
+                x.Tmin = x.Tmin?.Trim('\"').Trim();
+            });
+
             if (records.Any())
             {
                 var recordsWithNoNullRows = records
-                                .Where(x => !((string.IsNullOrWhiteSpace(x.Prcp) || x.Prcp == nullRecord)
-                                            && (string.IsNullOrWhiteSpace(x.Tmax) || x.Tmax == nullRecord)
-                                            && (string.IsNullOrWhiteSpace(x.Tmin) || x.Tmin == nullRecord)))
+                                .Where(x => !((string.IsNullOrWhiteSpace(x.Prcp) || x.Prcp == nullRecordString)
+                                            && (string.IsNullOrWhiteSpace(x.Tmax) || x.Tmax == nullRecordString)
+                                            && (string.IsNullOrWhiteSpace(x.Tmin) || x.Tmin == nullRecordString)))
                                 .ToList();
 
                 var temperatureRecords = recordsWithNoNullRows.Select(x => new OutputRowTemperature
                 {
                     Date = x.Date?.Replace("-", string.Empty),
-                    Tmax = string.IsNullOrWhiteSpace(x.Tmax) ? nullRecord : x.Tmax.Trim('\"').Trim(),
-                    Tmin = string.IsNullOrWhiteSpace(x.Tmin) ? nullRecord : x.Tmin.Trim('\"').Trim(),
+                    Tmax = string.IsNullOrWhiteSpace(x?.Tmax) ? nullRecord : int.Parse(x.Tmax),
+                    Tmin = string.IsNullOrWhiteSpace(x?.Tmin) ? nullRecord : int.Parse(x.Tmin),
+                }).ToList();
+
+                // Any temperature value above 60°C (600 in the GHCNd dataset as temperatures are tenths of a degree) or below -100°C (-1000 in the GHCNd dataset) is likely an error and will be set to null.
+                // The highest temperature ever recorded on Earth is 56.7°C.
+                // The lowest natural temperature ever directly recorded at ground level on Earth is −89.2°C.
+                temperatureRecords.ForEach(x =>
+                {
+                    if (x.Tmax != nullRecord && (x.Tmax > 600 || x.Tmax < -1000))
+                    {
+                        logger.LogWarning($"Valid temperature value ({x.Tmax}) exceeded for {station.Id}. Setting Tmax to null.");
+                        x.Tmax = nullRecord;
+                    }
+                    if (x.Tmin != nullRecord && (x.Tmin > 600 || x.Tmin < -1000))
+                    {
+                        logger.LogWarning($"Valid temperature value ({x.Tmin}) exceeded for {station.Id}. Setting Tmin to null.");
+                        x.Tmin = nullRecord;
+                    }
                 });
 
                 var cleanedRecords = SufficientDataTemp(temperatureRecords);
@@ -134,12 +158,21 @@ Parallel.ForEach(stations, station =>
                     stationsWithTempData.Add(station);
                 }
 
-
-
                 var prcpRecords = recordsWithNoNullRows.Select(x => new OutputRowPrecipitation
                 {
                     Date = x.Date?.Replace("-", string.Empty),
-                    Precipitation = string.IsNullOrWhiteSpace(x.Prcp) ? nullRecord : x.Prcp.Trim('\"').Trim(),
+                    Precipitation = string.IsNullOrWhiteSpace(x.Prcp) ? nullRecord : int.Parse(x.Prcp),
+                }).ToList();
+
+                // Any precipitation value above 2000 mm (20000 in the GHCNd dataset as precipitation values are tenths of a mm) is likely an error and will be set to null.
+                // The highest officially recognized 24-hour rainfall in the world is 1,825 mm
+                prcpRecords.ForEach(x =>
+                {
+                    if (x.Precipitation != nullRecord && (x.Precipitation > 20000 || x.Precipitation < 0))
+                    {
+                        logger.LogWarning($"Valid precipitation value ({x.Precipitation}) exceeded for {station.Id}. Setting Precipitation to null.");
+                        x.Precipitation = nullRecord;
+                    }
                 });
 
                 var cleanedRecordsPrcp = SufficientDataPrcp(prcpRecords);
@@ -178,8 +211,8 @@ Parallel.ForEach(stations, station =>
 });
 
 
-await CreateDataFileMapping(stations, stationsWithTempData, "temperature", "87C65C34-C689-4BA1-8061-626E4A63D401");
-await CreateDataFileMapping(stations, stationsWithPrcpData, "precipitation", "5BBEAF4C-B459-410E-9B77-470905CB1E46");
+await CreateDataFileMapping(stations, [.. stationsWithTempData.OrderBy(x => x.Id)], "temperature", "87C65C34-C689-4BA1-8061-626E4A63D401");
+await CreateDataFileMapping(stations, [.. stationsWithPrcpData.OrderBy(x => x.Id)], "precipitation", "5BBEAF4C-B459-410E-9B77-470905CB1E46");
 
 IEnumerable<OutputRowTemperature> SufficientDataTemp(IEnumerable<OutputRowTemperature> records)
 {

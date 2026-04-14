@@ -170,6 +170,15 @@ public class DataService : IDataService
         return location!;
     }
 
+    public async Task<Location?> GetLocationById(Guid locationId)
+    {
+        var url = $"/location-by-id";
+        url = QueryHelpers.AddQueryString(url, "locationId", locationId.ToString());
+
+        var location = await httpClient.GetFromJsonAsync<Location?>(url);
+        return location;
+    }
+
     public async Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable()
     {
         const string heatingScoreTableKey = "HeatingScoreTable";

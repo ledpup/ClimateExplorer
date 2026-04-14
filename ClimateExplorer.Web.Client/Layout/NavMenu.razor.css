@@ -24,7 +24,8 @@
 
 ::deep .navbar-nav {
     flex-direction: row;
-    display: block;
+    display: flex;
+    align-items: center;
     padding-left: 20px;
 }
 
@@ -33,6 +34,15 @@
     margin-right: 8px;
     color: white;
     font-weight: bold;
+}
+
+::deep .nav-item:last-child {
+    margin-left: 2rem;
+}
+
+::deep .nav-item .dropdown {
+    display: inline-block;
+    vertical-align: middle;
 }
 
 ::deep .nav-link {
@@ -47,6 +57,16 @@
 
     ::deep a.nav-link:hover {
         color: #aaa !important;
+    }
+
+::deep a.nav-link.nav-current {
+    color: rgba(255, 255, 255, 0.55) !important;
+    cursor: default;
+    pointer-events: none;
+}
+
+    ::deep a.nav-link.nav-current:hover {
+        color: rgba(255, 255, 255, 0.55) !important;
     }
 
 ::deep .bg-dark {
@@ -85,18 +105,120 @@
     overflow: hidden;
 }
 
-@media (max-width: 640px) {
+/* ── Hamburger toggle button ─────────────────────────────────────────────── */
+::deep .hamburger-toggle {
+    background: none !important;
+    border: none !important;
+    color: white !important;
+    padding: 0 8px 0 8px !important;
+    font-weight: bold;
+    font-size: 1.5rem;
+    box-shadow: none !important;
+    line-height: 2;
+    vertical-align: middle;
+}
+
+    ::deep .hamburger-toggle:hover {
+        color: #aaa !important;
+    }
+
+    ::deep .hamburger-toggle::after {
+        display: none;
+    }
+
+    ::deep .hamburger-toggle.nav-current {
+        color: rgba(255, 255, 255, 0.55) !important;
+    }
+
+    ::deep .hamburger-toggle.nav-current:hover {
+        color: #aaa !important;
+    }
+
+/* ── Hamburger dropdown menu ─────────────────────────────────────────────── */
+::deep .dropdown-menu {
+    background-color: #425f59;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    min-width: 8rem;
+    padding: 0.25rem 0;
+}
+
+    ::deep .dropdown-menu .dropdown-item {
+        color: white !important;
+        font-weight: bold;
+        text-decoration: none;
+        padding: 0.4rem 0.75rem;
+    }
+
+    ::deep .dropdown-menu a.dropdown-item:hover,
+    ::deep .dropdown-menu a.dropdown-item:focus {
+        background-color: rgba(255, 255, 255, 0.12) !important;
+        color: #cfc !important;
+        outline: none;
+    }
+
+    ::deep .dropdown-menu .hamburger-current {
+        color: rgba(255, 255, 255, 0.55) !important;
+        cursor: default;
+        pointer-events: none;
+    }
+
+    ::deep .dropdown-menu .hamburger-current:hover,
+    ::deep .dropdown-menu .hamburger-current:focus {
+        background-color: transparent !important;
+        color: rgba(255, 255, 255, 0.55) !important;
+        outline: none;
+    }
+
+    ::deep .dropdown-menu .info-menu-item {
+        color: #79c6f4 !important;
+    }
+
+    ::deep .dropdown-menu .info-menu-item:hover {
+        background-color: rgba(255, 255, 255, 0.12) !important;
+        color: #79c6f4 !important;
+    }
+
+    ::deep .dropdown-menu .dropdown-divider {
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+@media (max-width: 1024px) {
     ::deep .navbar {
         flex-wrap: nowrap;
+        overflow: visible;
+    }
+
+    ::deep .navbar-collapse {
+        overflow: visible;
     }
 
     ::deep .navbar-nav {
+        display: flex;
+        align-items: center;
+        flex: 1;
         padding-left: 6px;
+        overflow: visible;
     }
 
     ::deep .nav-item {
+        display: flex;
+        align-items: center;
         margin-right: 4px;
         font-size: 0.85rem;
+    }
+
+    ::deep .nav-item:last-child {
+        margin-left: auto;
+        margin-right: 16px;
+    }
+
+    /* Escape the header stacking context so the menu overlays page content */
+    ::deep .nav-item:last-child .dropdown-menu {
+        position: fixed;
+        top: 65px;
+        right: 0;
+        left: auto;
     }
 
     .info-icon {

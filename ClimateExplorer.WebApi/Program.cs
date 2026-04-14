@@ -25,7 +25,7 @@ ICache longtermCache = new FileBackedTwoLayerCache("cache-longterm");
 const string HeatingScoreTable = "HeatingScoreTable";
 const string NearbyLocations = "NearbyLocations";
 const float DefaultCupDataProportion = 0.7f;
-const int DefaultCupSize = 1;
+const int DefaultCupSize = 14;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -105,6 +105,7 @@ app.MapGet("/about", GetAbout);
 app.MapGet("/datasetdefinition", GetDataSetDefinitions);
 app.MapGet("/location", GetLocations);
 app.MapGet("/location-by-path", GetLocationByPath);
+app.MapGet("/location-by-id", GetLocationById);
 app.MapGet("/nearby-locations", GetNearbyLocations);
 app.MapGet("/country", GetCountries);
 app.MapGet("/region", GetRegions);
@@ -138,6 +139,7 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
             {
                 Id = x.Id,
                 Name = x.Name,
+                ShortName = x.ShortName,
                 MoreInformationUrl = x.MoreInformationUrl,
                 StationInfoUrl = x.StationInfoUrl,
                 LocationInfoUrl = x.LocationInfoUrl,
@@ -357,6 +359,13 @@ async Task<Location> GetLocationByPath(string path)
     // There are some duplicate location names (e.g., Jan Mayen and Uliastai)
     // Use FirstOrDefault rather than SingleOrDefault
     var location = locations.FirstOrDefault(x => x.UrlReadyName() == path);
+    return location;
+}
+
+async Task<Location> GetLocationById(Guid locationId)
+{
+    var locations = await GetCachedLocations();
+    var location = locations.SingleOrDefault(x => x.Id == locationId);
     return location;
 }
 

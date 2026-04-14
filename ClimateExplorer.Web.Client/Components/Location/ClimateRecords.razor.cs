@@ -5,7 +5,6 @@ using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
-using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
@@ -24,7 +23,12 @@ public partial class ClimateRecords
     }
 
     [Parameter]
+    [EditorRequired]
     public Location? Location { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     [PersistentState]
     public ClimateRecordsResponse? ClimateRecordsResult { get; set; }
@@ -50,7 +54,6 @@ public partial class ClimateRecords
     private List<DataAdjustment?> AvailableDataAdjustments { get; set; } = [];
     private List<string> ComputedRowStyles { get; set; } = [];
     private List<MeasurementDefinitionViewModel> LocationMeasurements { get; set; } = [];
-    private IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     private DataType? SelectedDataType { get; set; }
     private DataAdjustment? SelectedDataAdjustment { get; set; } = DataAdjustment.Adjusted;
@@ -59,7 +62,7 @@ public partial class ClimateRecords
     private bool Ascending { get; set; } = false;
     private int Count { get; set; } = 10;
     private int CurrentPage { get; set; } = 1;
-    private RecordView ActiveView { get; set; } = RecordView.Daily;
+    private RecordView ActiveView { get; set; } = RecordView.Top100;
 
     private int TotalPages => ClimateRecordsResult?.TotalCount > 0 && Count > 0 ? (int)Math.Ceiling((double)ClimateRecordsResult.TotalCount / Count) : 1;
     private int StartRecord => ClimateRecordsResult?.Records?.Count > 0 ? ((CurrentPage - 1) * Count) + 1 : 0;
@@ -99,9 +102,7 @@ public partial class ClimateRecords
 
     protected override async Task OnParametersSetAsync()
     {
-        DataSetDefinitions ??= await DataService!.GetDataSetDefinitions();
-
-        if (Location is null || Location.Id == InternalLocationId)
+        if (DataSetDefinitions is null || Location is null || Location.Id == InternalLocationId)
         {
             return;
         }

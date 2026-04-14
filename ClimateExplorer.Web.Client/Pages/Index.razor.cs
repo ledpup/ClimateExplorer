@@ -5,7 +5,6 @@ using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Components.Location;
 using ClimateExplorer.Web.Client.Services;
-using CurrentDevice;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
@@ -60,9 +59,9 @@ public partial class Index : ChartablePage
 
     private ChangeLocation? ChangeLocationModal { get; set; }
     private string? BrowserLocationErrorMessage { get; set; }
-    private Core.Model.Location? Location { get; set; }
+    private Location? Location { get; set; }
 
-    private Core.Model.Location? PreviousLocation { get; set; }
+    private Location? PreviousLocation { get; set; }
 
     private bool LocationChangeEventOccurring { get; set; } = false;
 
@@ -75,7 +74,7 @@ public partial class Index : ChartablePage
     protected override async Task OnInitializedAsync()
     {
         // Check to see if a named location is being requested. That will look like /location/<location-name>
-        Location = await GetNamedLocation();
+        Location = await GetLocationFromPath();
 
         if (Location is not null)
         {
@@ -83,6 +82,25 @@ public partial class Index : ChartablePage
         }
 
         await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // Handles named URLs when the Index component is reused across navigations
+        // (OnInitializedAsync does not re-run in that case). LocationDictionary is null
+        // on first load; the OnAfterRenderAsync first-load path covers that scenario.
+        if (LocationDictionary is not null && !string.IsNullOrEmpty(LocationString) && !Guid.TryParse(LocationString, out _))
+        {
+            var name = LocationString.TrimEnd('/').ToLower();
+            var newLocation = LocationDictionary.Values.FirstOrDefault(x => x.UrlReadyName() == name);
+            if (newLocation is not null && newLocation.Id != Location?.Id)
+            {
+                await NavigateTo($"/{PageName}/{newLocation.Id}", replace: true);
+                await SelectedLocationChangedInternal(newLocation.Id);
+            }
+        }
+
+        await base.OnParametersSetAsync();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -104,16 +122,37 @@ public partial class Index : ChartablePage
             LocationDictionary = (await locationsTask).ToDictionary(x => x.Id, x => x);
             Regions = [.. await regionsTask];
 
-            // Location may have been set in OnInitializedAsync
-            // Get location from local storage. If not in local storage, use Hobart as default.
-            Location ??= await GetLocation();
-
             // If there is no "csd" query string parameter, set up default charts for the location
             var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+            var routeSegment = uri.Segments.Length > 2 ? uri.Segments[2].TrimEnd('/') : null;
+            var isNamedUrl = routeSegment != null && !Guid.TryParse(routeSegment, out _);
+
+            if (isNamedUrl)
+            {
+                // Resolve from the just-loaded LocationDictionary. GetLocationByPath has no
+                // client-side cache so it races with the bulk data load above; using the
+                // dictionary avoids the race and bypasses the LocalStorage fallback entirely.
+                Location = LocationDictionary!.Values.FirstOrDefault(x => x.UrlReadyName() == routeSegment!.ToLower());
+            }
+            else
+            {
+                // Location may have been set in OnInitializedAsync.
+                // Fall back to local storage; use Hobart as the final default.
+                Location ??= await GetLocation();
+            }
+
             var csd = QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
             if (!csd && Location != null)
             {
-                await SelectedLocationChanged(Location.Id);
+                if (isNamedUrl)
+                {
+                    await NavigateTo($"/{PageName}/{Location.Id}", replace: true);
+                    await SelectedLocationChangedInternal(Location.Id);
+                }
+                else
+                {
+                    await SelectedLocationChanged(Location.Id);
+                }
             }
 
             StateHasChanged();
@@ -123,34 +162,46 @@ public partial class Index : ChartablePage
         if (LocationChangeEventOccurring && LocationString is not null)
         {
             LocationChangeEventOccurring = false;
-            var locationId = Guid.Parse(LocationString!);
-            await SelectedLocationChangedInternal(locationId);
-            StateHasChanged();
+            var guidParsed = Guid.TryParse(LocationString, out Guid locationGuid);
+            if (guidParsed)
+            {
+                await SelectedLocationChangedInternal(locationGuid);
+                StateHasChanged();
+            }
         }
 
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    private async Task<Core.Model.Location?> GetNamedLocation()
+    private async Task<Location?> GetLocationFromPath()
     {
         var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
-        Core.Model.Location? location = null;
-        if (uri.Segments.Length > 2 && !Guid.TryParse(uri.Segments[2], out Guid locationGuid))
+        Location? location = null;
+        if (uri.Segments.Length > 2)
         {
-            var locationName = uri.Segments[2];
+            var guidParsed = Guid.TryParse(uri.Segments[2], out Guid locationGuid);
 
-            location = await DataService!.GetLocationByPath(locationName.ToLower());
-
-            if (location == null)
+            if (guidParsed)
             {
-                NavManager!.NavigateTo("/error", true);
+                location = await DataService!.GetLocationById(locationGuid);
+            }
+            else
+            {
+                var locationName = uri.Segments[2];
+
+                location = await DataService!.GetLocationByPath(locationName.ToLower());
+
+                if (location == null)
+                {
+                    NavManager!.NavigateTo("/error", true);
+                }
             }
         }
 
         return location;
     }
 
-    private async Task<Core.Model.Location?> GetLocation()
+    private async Task<Location?> GetLocation()
     {
         if (LocationDictionary is null)
         {
@@ -230,7 +281,7 @@ public partial class Index : ChartablePage
     {
         Logger!.LogInformation("SelectedLocationChangedInternal(): " + newValue);
 
-        if (!LocationDictionary!.TryGetValue(newValue, out Core.Model.Location? value))
+        if (!LocationDictionary!.TryGetValue(newValue, out Location? value))
         {
             Logger!.LogError($"{newValue} doesn't exist in the list of locations. Exiting SelectedLocationChangedInternal()");
             return;

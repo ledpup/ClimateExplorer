@@ -18,30 +18,36 @@
         </BarBrand>
         <BarMenu>
             <BarStart>
-                <BarItem>
-                    <BarLink To="">local</BarLink>
-                </BarItem>
-                <BarItem>
-                    <BarLink To="regionalandglobal">regional &amp; global</BarLink>
-                </BarItem>
-                <BarItem>
-                    <BarLink To="about">about</BarLink>
-                </BarItem>
-                <BarItem>
-                    <BarLink To="blog">blog</BarLink>
-                </BarItem>
-                @{
-                    var uri = NavigationManager!.ToAbsoluteUri(NavigationManager.Uri);
-                    if (NavigationManager.Uri == NavigationManager.BaseUri || uri.LocalPath.StartsWith("/location"))
-                    {
-                        <BarItem>
-                            <span class="info-icon">
-                                <i class="fas fa-circle-info" @onclick="() => SiteOverviewService!.RequestShow()"></i>
-                            </span>
-                        </BarItem>
-                    }
+                @foreach (var item in navItems)
+                {
+                    <BarItem>
+                        <BarLink To="@item.Route" Class="@(IsCurrentPage(item.Route) ? "nav-current" : string.Empty)">@item.Text</BarLink>
+                    </BarItem>
                 }
-            </BarStart>
+                <BarItem>
+                    <Dropdown>
+                        <DropdownToggle Class="@("hamburger-toggle" + (IsHamburgerCurrentPage() ? " nav-current" : string.Empty))">
+                            <i class="fas fa-bars"></i>
+                        </DropdownToggle>
+                        <DropdownMenu>
+                            @foreach (var item in hamburgerItems)
+                            {
+                                <a class="@("dropdown-item" + (IsCurrentPage(item.Route) ? " hamburger-current" : string.Empty))" href="@item.Route">@item.Text</a>
+                            }
+                            @{
+                                var uri = NavigationManager!.ToAbsoluteUri(NavigationManager.Uri);
+                                if (NavigationManager.Uri == NavigationManager.BaseUri || IsLocal(uri.LocalPath))
+                                {
+                                    <div class="dropdown-divider"></div>
+                                    <button class="dropdown-item info-menu-item" @onclick="() => SiteOverviewService!.RequestShow()">
+                                        <i class="fas fa-circle-info"></i> site overview
+                                    </button>
+                                }
+                            }
+                        </DropdownMenu>
+                    </Dropdown>
+                </BarItem>
+                </BarStart>
         </BarMenu>
     </Bar>
 </div>

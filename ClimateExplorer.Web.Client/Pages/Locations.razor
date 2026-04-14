@@ -1,0 +1,147 @@
+﻿@page "/locations"
+@using Blazorise
+@using ClimateExplorer.Core.Model
+@using ClimateExplorer.Core.ViewModel
+@using ClimateExplorer.Web.Client.Components.Common
+@using ClimateExplorer.Web.Client.Components.Location
+@using ClimateExplorer.WebApiClient.Services
+@using System.Globalization
+@using static ClimateExplorer.Core.Enums
+
+<PageTitle>ClimateExplorer - Locations</PageTitle>
+
+<HeadContent>
+    <meta name="description" content="Browse all climate observation locations in ClimateExplorer." />
+    <meta property="og:title" content="Locations - ClimateExplorer" />
+    <meta property="og:url" content="https://climateexplorer.net/locations" />
+</HeadContent>
+
+<div class="locations-container">
+    @if (allLocations.Count == 0)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {
+        <div class="table-card">
+            <div class="table-header">
+                <div class="toolbar-filters">
+                    <div class="name-filter-wrapper">
+                        <input type="text"
+                               class="form-control form-control-sm"
+                               placeholder="Search locations..."
+                               value="@(nameFilter ?? string.Empty)"
+                               @oninput="@(e => OnNameFilterChanged(e.Value?.ToString()))" />
+                    </div>
+                    <Select TValue="string"
+                            Value="@(countryFilter ?? string.Empty)"
+                            ValueChanged="@OnCountryFilterChanged"
+                            Size="Size.Small">
+                        <SelectItem Value="@string.Empty">All countries</SelectItem>
+                        @foreach (var country in availableCountries)
+                        {
+                            <SelectItem Value="@country">@(country.Length > 20 ? country[..20] + "…" : country)</SelectItem>
+                        }
+                    </Select>
+                    <Select TValue="string"
+                            Value="@(heatingScoreFilter ?? string.Empty)"
+                            ValueChanged="@OnHeatingScoreFilterChanged"
+                            Size="Size.Small">
+                        <SelectItem Value="@string.Empty">Any heating score</SelectItem>                       
+                        @for (var i = 9; i >= 0; i--)
+                        {
+                            var score = i;
+                            <SelectItem Value="@score.ToString()">@score</SelectItem>
+                        }
+                        <SelectItem Value="@HeatingScoreFilterNegative">Negative (&lt; 0)</SelectItem>
+                        <SelectItem Value="@HeatingScoreFilterNullScore">No heating score</SelectItem>
+                    </Select>
+                </div>
+                <span class="location-count">@filteredCount location@(filteredCount == 1 ? string.Empty : "s")</span>
+            </div>
+            <Table Striped>
+                <TableHeader>
+                    <TableRow>
+                        <TableHeaderCell @onclick='() => OnSortChanged("name")' Style="cursor: pointer; user-select: none;">
+                            <Strong>Name <i class="fas @GetSortIconClass("name")"></i></Strong>
+                        </TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="country-col" @onclick='() => OnSortChanged("country")' Style="cursor: pointer; user-select: none;">
+                            <Strong>Country <i class="fas @GetSortIconClass("country")"></i></Strong>
+                        </TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="anomaly-col" @onclick='() => OnSortChanged("anomaly")' Style="cursor: pointer; user-select: none; white-space: normal; width: 6em;">
+                            <Strong>Warming anomaly <i class="fas @GetSortIconClass("anomaly")"></i></Strong>
+                        </TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center" @onclick='() => OnSortChanged("heatingscore")' Style="cursor: pointer; user-select: none; white-space: normal; width: 5em;">
+                            <Strong>Heating score <i class="fas @GetSortIconClass("heatingscore")"></i></Strong>
+                        </TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="data-types-col">
+                            <Strong>Data types</Strong>
+                        </TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="data-sources-col">
+                            <Strong>Data sources</Strong>
+                        </TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End" @onclick='() => OnSortChanged("recordhigh")' Style="cursor: pointer; user-select: none;">
+                            <Strong>Record high <i class="fas @GetSortIconClass("recordhigh")"></i></Strong>
+                        </TableHeaderCell>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    @foreach (var location in PagedLocations)
+                    {
+                        <tr>
+                            <td><a href="location/@location.UrlReadyName()">@location.Name</a></td>
+                            <td class="country-cell">@(location.Country ?? location.CountryCode)</td>
+                            <td class="anomaly-cell text-center">@FormatAnomaly(location.WarmingAnomaly)</td>
+                            <td class="text-center">
+                                @if (location.HeatingScore.HasValue)
+                                {
+                                    <span class="heating-badge" style="@GetHeatingScoreBadgeStyle(location.HeatingScore.Value)">@location.HeatingScore</span>
+                                }
+                                else
+                                {
+                                    <span>&#x2014;</span>
+                                }
+                            </td>
+                            <td class="data-types-cell">@GetDataTypesDisplay(location.Id)</td>
+                            <td class="data-sources-cell">@GetDataSourcesDisplay(location.Id)</td>
+                            <td class="text-end">
+                                @if (location.RecordHigh != null)
+                                {
+                                    <button class="record-link" @onclick="@(() => ShowClimateRecordsAsync(location))">@FormatRecordHigh(location.RecordHigh)</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </TableBody>
+            </Table>
+            @if (filteredCount > 0)
+            {
+                <div class="table-footer">
+                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
+                        <div class="d-flex flex-wrap align-items-center justify-content-center gap-4">
+                            <PaginationControl TotalPages="@totalPages"
+                                               CurrentPage="@currentPage"
+                                               PageChanged="@OnPageChanged" />
+                            <div class="d-flex align-items-center gap-1">
+                                <Select TValue="int"
+                                        Value="@pageSize"
+                                        ValueChanged="@OnPageSizeChanged"
+                                        Size="Size.Small">
+                                    <SelectItem Value="10">10</SelectItem>
+                                    <SelectItem Value="25">25</SelectItem>
+                                    <SelectItem Value="50">50</SelectItem>
+                                    <SelectItem Value="100">100</SelectItem>
+                                </Select>
+                            </div>
+                        </div>
+                        <span class="text-muted">@StartRecord&#x2013;@EndRecord of @filteredCount</span>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<SidePanel @ref="climateRecordsSidePanel" Title="@("Climate records for " + Location?.Name)">
+    <ClimateRecords Location="@Location" DataSetDefinitions="@DataSetDefinitions" />
+</SidePanel>
