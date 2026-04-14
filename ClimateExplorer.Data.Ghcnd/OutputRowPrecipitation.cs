@@ -8,5 +8,5 @@ public class OutputRowPrecipitation
     public string? Date { get; set; }
 
     [Name("Precipitation")]
-    public string? Precipitation { get; set; }
+    public int? Precipitation { get; set; }
 }

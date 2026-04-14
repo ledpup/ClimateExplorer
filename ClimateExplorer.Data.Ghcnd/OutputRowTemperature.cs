@@ -8,8 +8,8 @@ public class OutputRowTemperature
     public string? Date { get; set; }
 
     [Name("TMax")]
-    public string? Tmax { get; set; }
+    public int? Tmax { get; set; }
 
     [Name("TMin")]
-    public string? Tmin { get; set; }
+    public int? Tmin { get; set; }
 }
