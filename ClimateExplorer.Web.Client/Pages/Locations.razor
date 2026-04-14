@@ -43,16 +43,18 @@
                             <SelectItem Value="@country">@(country.Length > 20 ? country[..20] + "…" : country)</SelectItem>
                         }
                     </Select>
-                    <Select TValue="int"
-                            Value="@heatingScoreFilter"
+                    <Select TValue="string"
+                            Value="@(heatingScoreFilter ?? string.Empty)"
                             ValueChanged="@OnHeatingScoreFilterChanged"
                             Size="Size.Small">
-                        <SelectItem Value="-100">Any heating score</SelectItem>
+                        <SelectItem Value="@string.Empty">Any heating score</SelectItem>                       
                         @for (var i = 9; i >= 0; i--)
                         {
                             var score = i;
-                            <SelectItem Value="@score">@score</SelectItem>
+                            <SelectItem Value="@score.ToString()">@score</SelectItem>
                         }
+                        <SelectItem Value="@HeatingScoreFilterNegative">Negative (&lt; 0)</SelectItem>
+                        <SelectItem Value="@HeatingScoreFilterNullScore">No heating score</SelectItem>
                     </Select>
                 </div>
                 <span class="location-count">@filteredCount location@(filteredCount == 1 ? string.Empty : "s")</span>

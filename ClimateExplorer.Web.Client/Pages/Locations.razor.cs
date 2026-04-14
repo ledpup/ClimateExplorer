@@ -11,14 +11,15 @@ using static ClimateExplorer.Core.Enums;
 
 public partial class Locations
 {
-    private const int NoHeatingScoreFilter = -100;
+    private const string HeatingScoreFilterNullScore = "null-score";
+    private const string HeatingScoreFilterNegative = "negative";
 
     private List<Location> allLocations = [];
     private IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions = [];
     private Dictionary<Guid, List<DataType>> locationDataTypes = new();
     private Dictionary<Guid, List<string>> locationDataSources = new();
     private string? countryFilter;
-    private int heatingScoreFilter = NoHeatingScoreFilter;
+    private string? heatingScoreFilter;
     private string sortColumn = "name";
     private bool sortAscending = true;
     private int currentPage = 1;
@@ -51,9 +52,15 @@ public partial class Locations
                 query = query.Where(l => (l.Country ?? l.CountryCode) == countryFilter);
             }
 
-            if (heatingScoreFilter != NoHeatingScoreFilter)
+            if (!string.IsNullOrEmpty(heatingScoreFilter))
             {
-                query = query.Where(l => l.HeatingScore == heatingScoreFilter);
+                query = heatingScoreFilter switch
+                {
+                    HeatingScoreFilterNullScore => query.Where(l => !l.HeatingScore.HasValue),
+                    HeatingScoreFilterNegative => query.Where(l => l.HeatingScore.HasValue && l.HeatingScore.Value < 0),
+                    _ when int.TryParse(heatingScoreFilter, out var score) => query.Where(l => l.HeatingScore == score),
+                    _ => query,
+                };
             }
 
             if (!string.IsNullOrEmpty(nameFilter))
@@ -204,9 +211,9 @@ public partial class Locations
         UpdateFilteredCount();
     }
 
-    private void OnHeatingScoreFilterChanged(int value)
+    private void OnHeatingScoreFilterChanged(string value)
     {
-        heatingScoreFilter = value;
+        heatingScoreFilter = string.IsNullOrEmpty(value) ? null : value;
         currentPage = 1;
         UpdateFilteredCount();
     }
