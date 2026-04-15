@@ -186,26 +186,28 @@
 @media (max-width: 1024px) {
     ::deep .navbar {
         flex-wrap: nowrap;
+        justify-content: flex-start;
         overflow: visible;
     }
 
     ::deep .navbar-collapse {
+        display: flex !important;
+        flex-basis: auto;
         overflow: visible;
     }
 
     ::deep .navbar-nav {
+        flex-direction: row;
         display: flex;
         align-items: center;
         flex: 1;
-        padding-left: 6px;
+        padding-left: 20px;
         overflow: visible;
     }
 
-    ::deep .nav-item {
-        display: flex;
-        align-items: center;
-        margin-right: 4px;
-        font-size: 0.85rem;
+    ::deep .navbar-nav .nav-link {
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
     }
 
     ::deep .nav-item:last-child {
