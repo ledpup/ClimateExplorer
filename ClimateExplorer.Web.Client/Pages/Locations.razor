@@ -104,10 +104,14 @@
                             </td>
                             <td class="data-types-cell">@GetDataTypesDisplay(location.Id)</td>
                             <td class="data-sources-cell">@GetDataSourcesDisplay(location.Id)</td>
-                            <td class="text-end">
-                                @if (location.RecordHigh != null)
+                            <td class="@(location.RecordHigh is null ? null : "text-end")">
+                                @if (location.RecordHigh is not null)
                                 {
                                     <button class="record-link" @onclick="@(() => ShowClimateRecordsAsync(location))">@FormatRecordHigh(location.RecordHigh)</button>
+                                }
+                                else
+                                {
+                                    <span class="text-center">&#x2014;</span>
                                 }
                             </td>
                         </tr>

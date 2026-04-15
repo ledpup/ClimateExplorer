@@ -56,6 +56,7 @@ All modals: use `Class="custom-modal-header"` on `<ModalHeader>` (dark green bg,
 - Radii: `8px` buttons/controls · `12px` cards · `16px` modals/panels.
 - Responsive breakpoints: mobile ≤ `1024px`, desktop ≥ `1025px`.
 - `chart-control-download` must be declared **after** `.chart-control` in the stylesheet so `margin-left: auto` wins the cascade.
+- **Bootstrap CSS Load Order:** When fighting Bootstrap CSS load-order/specificity issues, note that Bootstrap (`bootstrap@5.3.3`) is loaded AFTER the Blazor component-scoped CSS (`ClimateExplorer.Web.styles.css`), so Bootstrap wins at equal specificity. To override a Bootstrap rule, the scoped `::deep` selector must have strictly higher specificity (add an extra class to the selector, e.g. `::deep .navbar-nav .nav-link` instead of `::deep .nav-link`). Using `!important` is an alternative last resort.
 
 ---
 
