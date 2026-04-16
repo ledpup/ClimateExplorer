@@ -35,29 +35,33 @@
                                value="@(nameFilter ?? string.Empty)"
                                @oninput="@(e => OnNameFilterChanged(e.Value?.ToString()))" />
                     </div>
-                    <Select TValue="string"
-                            Value="@(countryFilter ?? string.Empty)"
-                            ValueChanged="@OnCountryFilterChanged"
-                            Size="Size.Small">
-                        <SelectItem Value="@string.Empty">All countries</SelectItem>
-                        @foreach (var country in availableCountries)
-                        {
-                            <SelectItem Value="@country">@(country.Length > 20 ? country[..20] + "…" : country)</SelectItem>
-                        }
-                    </Select>
-                    <Select TValue="string"
-                            Value="@(heatingScoreFilter ?? string.Empty)"
-                            ValueChanged="@OnHeatingScoreFilterChanged"
-                            Size="Size.Small">
-                        <SelectItem Value="@string.Empty">Any heating score</SelectItem>                       
-                        @for (var i = 9; i >= 0; i--)
-                        {
-                            var score = i;
-                            <SelectItem Value="@score.ToString()">@score</SelectItem>
-                        }
-                        <SelectItem Value="@HeatingScoreFilterNegative">Negative (&lt; 0)</SelectItem>
-                        <SelectItem Value="@HeatingScoreFilterNullScore">No heating score</SelectItem>
-                    </Select>
+                    <Tooltip Text="Filter locations by country">
+                        <Select TValue="string"
+                                Value="@(countryFilter ?? string.Empty)"
+                                ValueChanged="@OnCountryFilterChanged"
+                                Size="Size.Small">
+                            <SelectItem Value="@string.Empty">All countries</SelectItem>
+                            @foreach (var country in availableCountries)
+                            {
+                                <SelectItem Value="@country">@(country.Length > 20 ? country[..20] + "…" : country)</SelectItem>
+                            }
+                        </Select>
+                    </Tooltip>
+                    <Tooltip Text="Filter locations by heating score, a measure of how much a location has warmed relative to all other locations. The score is created by ordering all anomalies and grouping into deciles.">
+                        <Select TValue="string"
+                                Value="@(heatingScoreFilter ?? string.Empty)"
+                                ValueChanged="@OnHeatingScoreFilterChanged"
+                                Size="Size.Small">
+                            <SelectItem Value="@string.Empty">Any heating score</SelectItem>                       
+                            @for (var i = 9; i >= 0; i--)
+                            {
+                                var score = i;
+                                <SelectItem Value="@score.ToString()">@score</SelectItem>
+                            }
+                            <SelectItem Value="@HeatingScoreFilterNegative">Negative (&lt; 0)</SelectItem>
+                            <SelectItem Value="@HeatingScoreFilterNullScore">No heating score</SelectItem>
+                        </Select>
+                    </Tooltip>
                 </div>
                 <span class="location-count">@filteredCount location@(filteredCount == 1 ? string.Empty : "s")</span>
             </div>
