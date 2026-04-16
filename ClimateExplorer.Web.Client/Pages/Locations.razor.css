@@ -109,3 +109,8 @@
         display: none;
     }
 }
+
+/* ── Loading placeholder ─────────────────────────────────────────────────── */
+.loading-placeholder {
+    min-height: 30rem;
+}

@@ -13,9 +13,33 @@ public class GhcndInputRow
     [Name("PRCP")]
     public string? Prcp { get; set; }
 
+    [Name("PRCP_ATTRIBUTES")]
+    public string? PrcpAttributes { get; set; }
+
+    public bool PrcpQflag => HasQflag(PrcpAttributes);
+
     [Name("TMAX")]
     public string? Tmax { get; set; }
 
+    [Name("TMAX_ATTRIBUTES")]
+    public string? TmaxAttributes { get; set; }
+
+    public bool TmaxQflag => HasQflag(TmaxAttributes);
+
     [Name("TMIN")]
     public string? Tmin { get; set; }
+
+    [Name("TMIN_ATTRIBUTES")]
+    public string? TminAttributes { get; set; }
+    public bool TminQflag => HasQflag(TminAttributes);
+
+    private static bool HasQflag(string? attributes)
+    {
+        if (attributes is null)
+            return false;
+        var parts = attributes.Split(',');
+        if (parts.Length < 2)
+            return false;
+        return !string.IsNullOrWhiteSpace(parts[1]);
+    }
 }
