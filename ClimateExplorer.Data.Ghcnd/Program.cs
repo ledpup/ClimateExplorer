@@ -119,8 +119,8 @@ Parallel.ForEach(stations, station =>
                 var temperatureRecords = recordsWithNoNullRows.Select(x => new OutputRowTemperature
                 {
                     Date = x.Date?.Replace("-", string.Empty),
-                    Tmax = string.IsNullOrWhiteSpace(x?.Tmax) ? nullRecord : int.Parse(x.Tmax),
-                    Tmin = string.IsNullOrWhiteSpace(x?.Tmin) ? nullRecord : int.Parse(x.Tmin),
+                    Tmax = x.TmaxQflag || string.IsNullOrWhiteSpace(x.Tmax) ? nullRecord : int.Parse(x.Tmax),
+                    Tmin = x.TminQflag || string.IsNullOrWhiteSpace(x.Tmin) ? nullRecord : int.Parse(x.Tmin),
                 }).ToList();
 
                 // Any temperature value above 60°C (600 in the GHCNd dataset as temperatures are tenths of a degree) or below -100°C (-1000 in the GHCNd dataset) is likely an error and will be set to null.
@@ -130,12 +130,12 @@ Parallel.ForEach(stations, station =>
                 {
                     if (x.Tmax != nullRecord && (x.Tmax > 600 || x.Tmax < -1000))
                     {
-                        logger.LogWarning($"Valid temperature value ({x.Tmax}) exceeded for {station.Id}. Setting Tmax to null.");
+                        logger.LogError($"Valid temperature value ({x.Tmax}) exceeded for {station.Id}. Setting Tmax to null.");
                         x.Tmax = nullRecord;
                     }
                     if (x.Tmin != nullRecord && (x.Tmin > 600 || x.Tmin < -1000))
                     {
-                        logger.LogWarning($"Valid temperature value ({x.Tmin}) exceeded for {station.Id}. Setting Tmin to null.");
+                        logger.LogError($"Valid temperature value ({x.Tmin}) exceeded for {station.Id}. Setting Tmin to null.");
                         x.Tmin = nullRecord;
                     }
                 });
@@ -161,7 +161,7 @@ Parallel.ForEach(stations, station =>
                 var prcpRecords = recordsWithNoNullRows.Select(x => new OutputRowPrecipitation
                 {
                     Date = x.Date?.Replace("-", string.Empty),
-                    Precipitation = string.IsNullOrWhiteSpace(x.Prcp) ? nullRecord : int.Parse(x.Prcp),
+                    Precipitation = x.PrcpQflag || string.IsNullOrWhiteSpace(x.Prcp) ? nullRecord : int.Parse(x.Prcp),
                 }).ToList();
 
                 // Any precipitation value above 2000 mm (20000 in the GHCNd dataset as precipitation values are tenths of a mm) is likely an error and will be set to null.
@@ -170,7 +170,7 @@ Parallel.ForEach(stations, station =>
                 {
                     if (x.Precipitation != nullRecord && (x.Precipitation > 20000 || x.Precipitation < 0))
                     {
-                        logger.LogWarning($"Valid precipitation value ({x.Precipitation}) exceeded for {station.Id}. Setting Precipitation to null.");
+                        logger.LogError($"Valid precipitation value ({x.Precipitation}) exceeded for {station.Id}. Setting Precipitation to null.");
                         x.Precipitation = nullRecord;
                     }
                 });
