@@ -29,41 +29,49 @@
 <div class="filter-row">
 @if (AvailableDataTypes.Count > 0 && SelectedDataType is not null)
 {
-    <Select TValue="DataType"
-            Value="@SelectedDataType.Value"
-            ValueChanged="@OnDataTypeChanged"
-            Size="Size.Small">
-        @foreach (var dt in AvailableDataTypes.OrderBy(x => x))
-        {
-            <SelectItem Value="@dt">@ChartSeriesDefinition.MapDataTypeToFriendlyName(dt)</SelectItem>
-        }
-    </Select>
-    @if (ActiveView == RecordView.Daily || ActiveView == RecordView.Monthly || ActiveView == RecordView.Top100)
-    {
-        <Select TValue="int"
-                Value="@SelectedMonth"
-                ValueChanged="@OnMonthChanged"
+    <Tooltip Text="Select the type of climate data to view records for">
+        <Select TValue="DataType"
+                Value="@SelectedDataType.Value"
+                ValueChanged="@OnDataTypeChanged"
                 Size="Size.Small">
-            <SelectItem Value="0">All months</SelectItem>
-            @for (int m = 1; m <= 12; m++)
+            @foreach (var dt in AvailableDataTypes.OrderBy(x => x))
             {
-                var monthNum = m;
-                <SelectItem Value="@monthNum">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNum)</SelectItem>
+                <SelectItem Value="@dt">@ChartSeriesDefinition.MapDataTypeToFriendlyName(dt)</SelectItem>
             }
         </Select>
+    </Tooltip>
+    @if (ActiveView == RecordView.Daily || ActiveView == RecordView.Monthly || ActiveView == RecordView.Top100)
+    {
+        <Tooltip Text="Filter records to a specific month, or view all months">
+            <Select TValue="int"
+                    Value="@SelectedMonth"
+                    ValueChanged="@OnMonthChanged"
+                    Size="Size.Small">
+                <SelectItem Value="0">All months</SelectItem>
+                @for (int m = 1; m <= 12; m++)
+                {
+                    var monthNum = m;
+                    <SelectItem Value="@monthNum">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNum)</SelectItem>
+                }
+            </Select>
+        </Tooltip>
     }
     @if (AvailableDataAdjustments.Count > 1)
     {
-        <label class="adjusted-check" title="By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes. Uncheck to see raw, unmodified measurements.">
-            <input type="checkbox" class="adjusted-input"
-                   checked="@(SelectedDataAdjustment == DataAdjustment.Adjusted)"
-                   @onchange="@(async (ChangeEventArgs e) => await OnAdjustedChanged((bool)e.Value!))" />
-            Adjusted
-        </label>
+        <Tooltip Text="By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes. Uncheck to see raw, unmodified measurements.">
+            <label class="adjusted-check">
+                <input type="checkbox" class="adjusted-input"
+                       checked="@(SelectedDataAdjustment == DataAdjustment.Adjusted)"
+                       @onchange="@(async (ChangeEventArgs e) => await OnAdjustedChanged((bool)e.Value!))" />
+                Adjusted
+            </label>
+        </Tooltip>
     }
-    <button class="sort-toggle-btn" @onclick="OnSortToggled" title="Toggle sort order">
-        <i class="fa-solid fa-temperature-arrow-@(Ascending ? "up" : "down")"></i> @SortLabel
-    </button>
+    <Tooltip Text="Toggle sort order">
+        <button class="sort-toggle-btn" @onclick="OnSortToggled">
+            <i class="fa-solid fa-temperature-arrow-@(Ascending ? "up" : "down")"></i> @SortLabel
+        </button>
+    </Tooltip>
 }
 </div>
 @if (ActiveView != RecordView.Top100)
@@ -173,14 +181,16 @@
                             CurrentPage="@CurrentPage"
                             PageChanged="@OnPageChanged" />
                             <div class="d-flex align-items-center gap-1">
-                                <Select TValue="int"
-                                Value="@Count"
-                                ValueChanged="@OnCountChanged"
-                                Size="Size.Small">
-                                    <SelectItem Value="10">10</SelectItem>
-                                    <SelectItem Value="20">20</SelectItem>
-                                    <SelectItem Value="50">50</SelectItem>
-                                </Select>
+                                <Tooltip Text="Number of records per page">
+                                    <Select TValue="int"
+                                    Value="@Count"
+                                    ValueChanged="@OnCountChanged"
+                                    Size="Size.Small">
+                                        <SelectItem Value="10">10</SelectItem>
+                                        <SelectItem Value="20">20</SelectItem>
+                                        <SelectItem Value="50">50</SelectItem>
+                                    </Select>
+                                </Tooltip>
                             </div>
                         </div>
                         <span class="text-muted">@StartRecord-@EndRecord of @(ClimateRecordsResult.TotalCount)</span>

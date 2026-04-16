@@ -26,23 +26,29 @@
                     </div>
 
                     <div class="chart-controls">
-                        <button class="chart-control" @onclick="ChartAllDataToggle"><i class="@( ChartAllData ? "fas fa-check-square" : "fas fa-square" )"></i> Chart all data</button>
+                        <Tooltip Text="Toggle between showing all available years and the filtered date range">
+                            <button class="chart-control" @onclick="ChartAllDataToggle"><i class="@( ChartAllData ? "fas fa-check-square" : "fas fa-square" )"></i> Chart all data</button>
+                        </Tooltip>
 
                         @if (!string.IsNullOrWhiteSpace(SelectedStartYear) || !string.IsNullOrWhiteSpace(SelectedEndYear))
                         {
-                            <button class="chart-control" @onclick="OnClearFilter"><i class="fa-solid fa-filter-circle-xmark"></i> Clear filter</button>
+                            <Tooltip Text="Remove the active year filter">
+                                <button class="chart-control" @onclick="OnClearFilter"><i class="fa-solid fa-filter-circle-xmark"></i> Clear filter</button>
+                            </Tooltip>
                         }
 
-                        <Dropdown>
-                            <DropdownToggle>
-                                <i class="fas fa-calendar"></i> Grouping
-                            </DropdownToggle>
-                            <DropdownMenu>
-                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYear)">Yearly</DropdownItem>
-                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly)">Monthly</DropdownItem>
-                                <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByDayOnly)">Daily</DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
+                        <Tooltip Text="Change how data is grouped on the x-axis">
+                            <Dropdown>
+                                <DropdownToggle>
+                                    <i class="fas fa-calendar"></i> Grouping
+                                </DropdownToggle>
+                                <DropdownMenu>
+                                    <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYear)">Yearly</DropdownItem>
+                                    <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly)">Monthly</DropdownItem>
+                                    <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByDayOnly)">Daily</DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+                        </Tooltip>
 
                         <ChartAxisListView Axes="CurrentAxes" ScaleToZero="AxesScaleToZero" OnChanged="@BuildDataSets" />
 
@@ -52,7 +58,7 @@
                             <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowChartOptionsInfo></i>
                         </div>
 
-                        <button class="chart-control chart-control-download" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download</button>
+                        <button class="chart-control chart-control-download" title="Download the chart data as a CSV file" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download</button>
                     </div>
                 </div>
             </Content>

@@ -1,4 +1,4 @@
-@page "/about"
+﻿@page "/about"
 @using Blazorise
 @using ClimateExplorer.Core.Model
 @using ClimateExplorer.WebApiClient.Services
@@ -182,7 +182,7 @@
 <h2>Data pipeline</h2>
 
 <div style="cursor: pointer;" @onclick="ShowPipelineModal">
-    <img src="/images/pipeline.png" style="width: 100%" alt="Data Pipeline Diagram" title="Click to enlarge" />
+    <Tooltip Text="Click to enlarge"><img src="/images/pipeline.png" style="width: 100%" alt="Data Pipeline Diagram" /></Tooltip>
 </div>
 
 <Modal @bind-Visible="pipelineModalVisible" Size="ModalSize.ExtraLarge">

@@ -18,8 +18,12 @@
                 </svg>
             </div>
             <div class="hottest100-actions">
-                <button class="hottest100-btn" @onclick="CopyAsImage"><i class="fas fa-copy"></i> Copy</button>
-                <button class="hottest100-btn" @onclick="DownloadImage"><i class="fas fa-download"></i> Download</button>
+                <Tooltip Text="Copy the chart as an image to the clipboard">
+                    <button class="hottest100-btn" @onclick="CopyAsImage"><i class="fas fa-copy"></i> Copy</button>
+                </Tooltip>
+                <Tooltip Text="Download the chart as a PNG image">
+                    <button class="hottest100-btn" @onclick="DownloadImage"><i class="fas fa-download"></i> Download</button>
+                </Tooltip>
             </div>
         </div>
     }
