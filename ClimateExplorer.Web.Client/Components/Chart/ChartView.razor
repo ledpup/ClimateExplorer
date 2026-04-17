@@ -58,7 +58,9 @@
                             <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowChartOptionsInfo></i>
                         </div>
 
-                        <button class="chart-control chart-control-download" title="Download the chart data as a CSV file" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download</button>
+                        <Tooltip Text="Download the chart data as a CSV file" Style="display: inline-block; margin-left: auto">
+                            <button class="chart-control chart-control-download" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download</button>
+                        </Tooltip>
                     </div>
                 </div>
             </Content>

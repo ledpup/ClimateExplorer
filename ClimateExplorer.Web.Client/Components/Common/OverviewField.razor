@@ -1,20 +1,22 @@
 @using Blazorise
 @using System.Text.RegularExpressions
 
-<div class="overview-field" title="@(Tooltip == null ? Title : Tooltip)" @onclick="HandleClick">
-    <div class="label">@Label</div>
-    <div class="value">
-        @if (PopupContent != null || OnClick.HasDelegate)
-        {
-            <a class="popup-link">@Value</a>
-        }
-        else
-        {
-            @Value
-        }
+<Tooltip Text="@(Tooltip == null ? Title : Tooltip)" Style="display: inline-block" Multiline="true">
+    <div class="overview-field" @onclick="HandleClick">
+        <div class="label">@Label</div>
+        <div class="value">
+            @if (PopupContent != null || OnClick.HasDelegate)
+            {
+                <a class="popup-link">@Value</a>
+            }
+            else
+            {
+                @Value
+            }
+        </div>
+        <div class="additional-info">@AdditionalInfo</div>
     </div>
-    <div class="additional-info">@AdditionalInfo</div>
-</div>
+</Tooltip>
 
 @if (PopupContent != null)
 {

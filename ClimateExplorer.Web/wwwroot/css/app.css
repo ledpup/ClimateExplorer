@@ -186,3 +186,12 @@ th {
     font-weight: bold !important;
     margin-left: 0 !important;
 }
+
+/* Blazorise uses Tippy.js — override via CSS custom properties */
+:root {
+    --b-tooltip-background-color-r: 26;
+    --b-tooltip-background-color-g: 26;
+    --b-tooltip-background-color-b: 26;
+    --b-tooltip-background-opacity: 1;
+    --b-tooltip-color: #fdfdfd;
+}

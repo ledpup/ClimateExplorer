@@ -31,7 +31,7 @@
         <DelayedLoadingIndicator @bind-Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
             @if (Location is not null)
             {
-                <OverviewField Label="Location"><Value><a href="@LocationMapUrl" target="_blank">@GeoLocationAsString</a></Value></OverviewField>
+                <OverviewField Label="Location" Tooltip="Click to locate on Google Maps"><Value><a href="@LocationMapUrl" target="_blank">@GeoLocationAsString</a></Value></OverviewField>
             }
             @if (WarmingAnomalyAsString != null && WarmingAnomalyAsString != "NA")
             {
