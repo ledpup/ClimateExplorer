@@ -12,9 +12,11 @@
             <div class="title">@ChartSeries!.GetFriendlyTitleShort()</div>
             <div class="description">@ChartSeries!.GetFriendlyDescription()</div>
         </div>
-        <div class="trash" title="Remove this series" @onclick="@OnRemoveSeriesClicked">
+        <Tooltip Text="Remove this series">
+        <div class="trash" @onclick="@OnRemoveSeriesClicked">
             <i class="fas fa-trash fa-lg"></i>
         </div>
+        </Tooltip>
         <div class="expander">
             <span class="@(ChartSeries!.IsExpanded ? "oi oi-chevron-top" : "oi oi-chevron-bottom")" aria-hidden="true"></span>
         </div>
@@ -184,18 +186,24 @@
                         </div>
                     </div>
                     <div class="series-controls">
-                        <div class="series-control" title="About this data" @onclick="@OnAboutThisDataClicked">
-                            <i class="fas fa-info"></i>
-                            <div class="label">About</div>
-                        </div>
-                        <div class="series-control" title="Duplicate this series" @onclick="@OnDuplicateSeriesClicked">
-                            <i class="fas fa-clone"></i>
-                            <div class="label">Clone</div>
-                        </div>
-                        <div class="series-control danger" title="Remove this series" @onclick="@OnRemoveSeriesClicked">
-                            <i class="fas fa-trash"></i>
-                            <div class="label">Remove</div>
-                        </div>
+                        <Tooltip Text="About this data" Style="display: inline-block">
+                            <div class="series-control" @onclick="@OnAboutThisDataClicked">
+                                <i class="fas fa-info"></i>
+                                <div class="label">About</div>
+                            </div>
+                        </Tooltip>
+                        <Tooltip Text="Duplicate this series" Style="display: inline-block">
+                            <div class="series-control" @onclick="@OnDuplicateSeriesClicked">
+                                <i class="fas fa-clone"></i>
+                                <div class="label">Clone</div>
+                            </div>
+                        </Tooltip>
+                        <Tooltip Text="Remove this series" Style="display: inline-block">
+                            <div class="series-control danger" @onclick="@OnRemoveSeriesClicked">
+                                <i class="fas fa-trash"></i>
+                                <div class="label">Remove</div>
+                            </div>
+                        </Tooltip>
                     </div>
                 </div>
             </div>

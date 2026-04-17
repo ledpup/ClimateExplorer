@@ -52,22 +52,3 @@
 .title {
     display: inline-block;
 }
-
-    .title .tooltip-content {
-        display: none;
-        position: absolute;
-        width: 250px;
-        box-shadow: rgb(0 0 0 / 15%) 1px 1px 12px;
-        border-radius: 8px;
-        left: 16px;
-        top: 48px;
-        padding: 12px;
-        background-color: #fff;
-        font-size: 0.75rem;
-        color: #425f59;
-        z-index: 1500;
-    }
-
-    .suggested-data-set:hover .tooltip-content {
-        display: block;
-    }

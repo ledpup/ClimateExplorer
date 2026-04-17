@@ -121,13 +121,13 @@ public partial class ClimateStripe
         var title = $"Year {values.Year}\r\n";
         if (UnitOfMeasure == Enums.UnitOfMeasure.Millimetres)
         {
-            title += $"Precipitation total of {values.Absolute.ToString($"F{uomRounding}")}{uomString}\r\n";
-            title += $"{Math.Abs(values.Relative).ToString($"F{uomRounding}")}{uomString} {aboveOrBelow} average\r\n";
-            title += $"{Math.Round(values.PercentageOfAverage, 0)}% of the average\r\n";
+            title += $"Precipitation total of {values.Absolute.ToString($"F{uomRounding}")}{uomString}<br>";
+            title += $"{Math.Abs(values.Relative).ToString($"F{uomRounding}")}{uomString} {aboveOrBelow} average<br>";
+            title += $"{Math.Round(values.PercentageOfAverage, 0)}% of the average<br>";
         }
         else
         {
-            title += $"Mean temperature average of {values.Absolute.ToString($"F{uomRounding}")}{uomString}\r\n";
+            title += $"Mean temperature average of {values.Absolute.ToString($"F{uomRounding}")}{uomString}<br>";
             title += $"{Math.Abs(values.Relative).ToString($"F{uomRounding}")}{uomString} {aboveOrBelow} average";
         }
 
