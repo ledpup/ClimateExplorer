@@ -12,6 +12,7 @@ using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
 
 public partial class LocationInfo
@@ -23,6 +24,9 @@ public partial class LocationInfo
 
     [Inject]
     public ILogger<LocationInfo>? Logger { get; set; }
+
+    [Inject]
+    public IJSRuntime? JS { get; set; }
 
     [Parameter]
     public Location? Location { get; set; }
@@ -79,6 +83,8 @@ public partial class LocationInfo
     }
 
     public Task ShowRecordHighAsync() => climateRecordsSidePanel?.ShowAsync() ?? Task.CompletedTask;
+
+    public async Task OpenLocationMapAsync() => await JS!.InvokeVoidAsync("open", LocationMapUrl, "_blank");
 
     protected static string GetPrecipitationAnomalyAsString(CalculatedAnomaly anomaly)
     {

@@ -2,7 +2,7 @@
 @using System.Text.RegularExpressions
 
 <Tooltip Text="@(Tooltip == null ? Title : Tooltip)" Style="display: inline-block" Multiline="true">
-    <div class="overview-field" @onclick="HandleClick">
+    <div class="overview-field @(PopupContent != null || OnClick.HasDelegate ? "is-clickable" : "")" @onclick="HandleClick">
         <div class="label">@Label</div>
         <div class="value">
             @if (PopupContent != null || OnClick.HasDelegate)
