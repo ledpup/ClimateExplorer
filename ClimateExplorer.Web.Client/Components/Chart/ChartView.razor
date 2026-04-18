@@ -37,7 +37,7 @@
                             </Tooltip>
                         }
 
-                        <Tooltip Text="Change how data is grouped on the x-axis">
+                        <Tooltip Text="Change how data is grouped on the x-axis: yearly, monthly, daily">
                             <Dropdown>
                                 <DropdownToggle>
                                     <i class="fas fa-calendar"></i> Grouping
@@ -50,7 +50,9 @@
                             </Dropdown>
                         </Tooltip>
 
-                        <ChartAxisListView Axes="CurrentAxes" ScaleToZero="AxesScaleToZero" OnChanged="@BuildDataSets" />
+                        <Tooltip Text="Change the scale of the chart axes to scale from zero or the minimum value">
+                            <ChartAxisListView Axes="CurrentAxes" ScaleToZero="AxesScaleToZero" OnChanged="@BuildDataSets" />
+                        </Tooltip>
 
                         <AggregationOptions CurrentThreshold="@InternalGroupingThreshold" CurrentGroupingDays="@SelectedGroupingDays" UserOverride="@UserOverridePresetAggregationSettings" OnChanged="@((s) => OnAggregationSettingsChanged(s))" />
 
