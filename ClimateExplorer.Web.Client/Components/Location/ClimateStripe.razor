@@ -9,7 +9,7 @@
     {
         foreach (var record in DataRecords)
         {
-            <Tooltip Text="@GetTitle(record)" Placement="TooltipPlacement.Bottom" Style="flex: 1; display: block; height: inherit">
+            <Tooltip Text="@GetTooltip(record)" Placement="TooltipPlacement.Bottom" Style="flex: 1; display: block; height: inherit">
                 <div class="single-stripe" style="background-color: @GetColour(record.Relative); cursor: pointer; --label-colour: @GetLabelColour(record.Relative);" @onclick="() => FilterToYear(record.Year)">
                     <div class="label" style="border-color: @GetLabelColour(record.Relative)">
                         <div class="year">@record.Year</div>
