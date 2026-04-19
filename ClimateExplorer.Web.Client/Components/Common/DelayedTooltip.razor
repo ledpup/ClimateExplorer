@@ -1,0 +1,11 @@
+@using Blazorise
+
+<Tooltip ShowDelay="500" HideDelay="500" Text="@Text" Style="@Style" Multiline="@Multiline" Placement="@Placement">@ChildContent</Tooltip>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Text { get; set; }
+    [Parameter] public string? Style { get; set; }
+    [Parameter] public bool Multiline { get; set; }
+    [Parameter] public TooltipPlacement Placement { get; set; } = TooltipPlacement.Top;
+}

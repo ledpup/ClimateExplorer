@@ -1,5 +1,6 @@
 @using ClimateExplorer.Core.Model;
 @using ClimateExplorer.Core.ViewModel
+@using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.UiModel
 @using Blazorise
 @using Blazorise.Components
@@ -14,7 +15,7 @@
         foreach (var s in SuggestedPresets)
         {
             <div class="@CalculateClassForSuggestedDataSetElement(s)">
-                <Tooltip Text="@s.Description" Style="display: block">
+                <DelayedTooltip Text="@s.Description" Style="display: block">
                     <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(s)">
                         <div class="title">@s.Title</div>
                         @if (s.MissingChartSeries)
@@ -22,7 +23,7 @@
                             <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available</div>
                         }
                     </div>
-                </Tooltip>
+                </DelayedTooltip>
             </div>
         }
         <div class="suggested-data-set">

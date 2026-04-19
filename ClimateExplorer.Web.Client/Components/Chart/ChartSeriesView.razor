@@ -1,3 +1,4 @@
+@using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.UiLogic
 @using ClimateExplorer.Web.UiModel
 @using Blazorise
@@ -12,11 +13,11 @@
             <div class="title">@ChartSeries!.GetFriendlyTitleShort()</div>
             <div class="description">@ChartSeries!.GetFriendlyDescription()</div>
         </div>
-        <Tooltip Text="Remove this series">
-        <div class="trash" @onclick="@OnRemoveSeriesClicked">
-            <i class="fas fa-trash fa-lg"></i>
-        </div>
-        </Tooltip>
+        <DelayedTooltip Text="Remove this series">
+            <div class="trash" @onclick="@OnRemoveSeriesClicked">
+                <i class="fas fa-trash fa-lg"></i>
+            </div>
+        </DelayedTooltip>
         <div class="expander">
             <span class="@(ChartSeries!.IsExpanded ? "oi oi-chevron-top" : "oi oi-chevron-bottom")" aria-hidden="true"></span>
         </div>
@@ -35,7 +36,7 @@
                                 <span class="form-control-wrap">@ChartSeries.Year</span>
                             </div>
                         }
-                        <Tooltip Text="How data values within each time period are combined into a single point" Style="display: block">
+                        <DelayedTooltip Text="How data values within each time period are combined into a single point" Style="display: block">
                             <div class="form-row">
                                 <span class="form-label">Aggregation</span>
                                 <span class="form-control-wrap">
@@ -52,12 +53,12 @@
                                     </Select>
                                 </span>
                             </div>
-                        </Tooltip>
+                        </DelayedTooltip>
                         @if (ChartSeries.Smoothing != SeriesSmoothingOptions.None && !ChartSeries.BinGranularity.IsLinear())
                         {
                             <div class="form-row-info info-message">Note that smoothing is not currently being applied because the x-axis is not linear.</div>
                         }
-                        <Tooltip Text="An optional calculation applied on top of the primary aggregation" Style="display: block">
+                        <DelayedTooltip Text="An optional calculation applied on top of the primary aggregation" Style="display: block">
                             <div class="form-row">
                                 <span class="form-label">Secondary calculation</span>
                                 <span class="form-control-wrap">
@@ -70,8 +71,8 @@
                                     </Select>
                                 </span>
                             </div>
-                        </Tooltip>
-                        <Tooltip Text="Reduces noise by averaging values across a rolling window of periods" Style="display: block">
+                        </DelayedTooltip>
+                        <DelayedTooltip Text="Reduces noise by averaging values across a rolling window of periods" Style="display: block">
                             <div class="form-row">
                                 <span class="form-label">Smoothing</span>
                                 <span class="form-control-wrap">
@@ -84,8 +85,8 @@
                                     </Select>
                                 </span>
                             </div>
-                        </Tooltip>
-                        <Tooltip Text="Number of periods to include in the rolling average" Style="display: block">
+                        </DelayedTooltip>
+                        <DelayedTooltip Text="Number of periods to include in the rolling average" Style="display: block">
                             <div class="form-row">
                                 <span class="form-label">Smoothing window</span>
                                 <span class="form-control-wrap">
@@ -105,10 +106,10 @@
                                     </Select>
                                 </span>
                             </div>
-                        </Tooltip>
+                        </DelayedTooltip>
                     </div>
                     <div class="edit-col">
-                        <Tooltip Text="Whether to plot actual values or the departure from the historical mean (anomaly)" Style="display: block">
+                        <DelayedTooltip Text="Whether to plot actual values or the departure from the historical mean (anomaly)" Style="display: block">
                             <div class="form-row">
                                 <span class="form-label">Display</span>
                                 <span class="form-control-wrap">
@@ -122,8 +123,8 @@
                                     </Select>
                                 </span>
                             </div>
-                        </Tooltip>
-                        <Tooltip Text="A mathematical transformation applied to each data value before plotting" Style="display: block">
+                        </DelayedTooltip>
+                        <DelayedTooltip Text="A mathematical transformation applied to each data value before plotting" Style="display: block">
                             <div class="form-row">
                                 <span class="form-label">Transformation</span>
                                 <span class="form-control-wrap">
@@ -139,7 +140,7 @@
                                     </Select>
                                 </span>
                             </div>
-                        </Tooltip>
+                        </DelayedTooltip>
                         @if (ChartSeries.SeriesTransformation == SeriesTransformations.Custom)
                         {
                             <div class="form-row">
@@ -158,7 +159,7 @@
                                 </span>
                             </div>
                         }
-                        <Tooltip Text="Whether to draw this series as a line or a bar chart" Style="display: block">
+                        <DelayedTooltip Text="Whether to draw this series as a line or a bar chart" Style="display: block">
                             <div class="form-row">
                                 <span class="form-label">Display style</span>
                                 <span class="form-control-wrap">
@@ -171,8 +172,8 @@
                                     </Select>
                                 </span>
                             </div>
-                        </Tooltip>
-                        <Tooltip Text="The colour used to draw this series on the chart" Style="display: block">
+                        </DelayedTooltip>
+                        <DelayedTooltip Text="The colour used to draw this series on the chart" Style="display: block">
                             <div class="form-row">
                                 <span class="form-label">Colour</span>
                                 <span class="form-control-wrap">
@@ -187,43 +188,43 @@
                                     </Select>
                                 </span>
                             </div>
-                        </Tooltip>
-                        <Tooltip Text="Overlay a linear trendline on this series" Style="display: block">
+                        </DelayedTooltip>
+                        <DelayedTooltip Text="Overlay a linear trendline on this series" Style="display: block">
                             <div class="form-row">
                                 <span class="form-label">Show trendline</span>
                                 <span class="form-control-wrap">
                                     <Check TValue="bool" Value="@ChartSeries.ShowTrendline" ValueChanged="@OnShowTrendlineChanged"></Check>
                                 </span>
                             </div>
-                        </Tooltip>
-                        <Tooltip Text="Prevent this series from being replaced when a new chart preset is selected" Style="display: block">
+                        </DelayedTooltip>
+                        <DelayedTooltip Text="Prevent this series from being replaced when a new chart preset is selected" Style="display: block">
                             <div class="form-row">
                                 <span class="form-label">Lock?</span>
                                 <span class="form-control-wrap">
                                     <Check TValue="bool" Value="@ChartSeries.IsLocked" ValueChanged="@OnIsLockedChanged"></Check>
                                 </span>
                             </div>
-                        </Tooltip>
+                        </DelayedTooltip>
                     </div>
                     <div class="series-controls">
-                        <Tooltip Text="About this data" Style="display: inline-block">
+                        <DelayedTooltip Text="About this data" Style="display: inline-block">
                             <div class="series-control" @onclick="@OnAboutThisDataClicked">
                                 <i class="fas fa-info"></i>
                                 <div class="label">About</div>
                             </div>
-                        </Tooltip>
-                        <Tooltip Text="Duplicate this series" Style="display: inline-block">
+                        </DelayedTooltip>
+                        <DelayedTooltip Text="Duplicate this series" Style="display: inline-block">
                             <div class="series-control" @onclick="@OnDuplicateSeriesClicked">
                                 <i class="fas fa-clone"></i>
                                 <div class="label">Clone</div>
                             </div>
-                        </Tooltip>
-                        <Tooltip Text="Remove this series" Style="display: inline-block">
+                        </DelayedTooltip>
+                        <DelayedTooltip Text="Remove this series" Style="display: inline-block">
                             <div class="series-control danger" @onclick="@OnRemoveSeriesClicked">
                                 <i class="fas fa-trash"></i>
                                 <div class="label">Remove</div>
                             </div>
-                        </Tooltip>
+                        </DelayedTooltip>
                     </div>
                 </div>
             </div>
