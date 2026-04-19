@@ -8,8 +8,8 @@
 
 .single-stripe {
     height: inherit;
-    display: inline-block;
-    flex-grow: 1;
+    display: block;
+    width: 100%;
     position: relative;
 }
 

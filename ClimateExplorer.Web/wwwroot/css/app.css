@@ -186,3 +186,17 @@ th {
     font-weight: bold !important;
     margin-left: 0 !important;
 }
+
+/* Blazorise uses Tippy.js -- override via CSS custom properties.
+   Colours taken from the original SuggestedChartsMini custom tooltip. */
+:root {
+    --b-tooltip-background-color-r: 255;
+    --b-tooltip-background-color-g: 255;
+    --b-tooltip-background-color-b: 255;
+    --b-tooltip-background-opacity: 1;
+    --b-tooltip-color: #425f59;
+}
+
+.tippy-box[data-theme~=blazorise] {
+    box-shadow: rgb(0 0 0 / 15%) 1px 1px 12px;
+}

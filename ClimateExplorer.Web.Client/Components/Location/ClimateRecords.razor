@@ -58,7 +58,7 @@
     }
     @if (AvailableDataAdjustments.Count > 1)
     {
-        <Tooltip Text="By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes. Uncheck to see raw, unmodified measurements.">
+        <Tooltip Text="By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes.<br>Uncheck to see raw, unmodified measurements." Multiline="true">
             <label class="adjusted-check">
                 <input type="checkbox" class="adjusted-input"
                        checked="@(SelectedDataAdjustment == DataAdjustment.Adjusted)"

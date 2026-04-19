@@ -1,3 +1,4 @@
+@using Blazorise
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.UiModel
 @using static ClimateExplorer.Core.Enums
@@ -8,11 +9,7 @@
         <Value>
             @foreach (var year in FirstList)
             {
-                <span class="year-link" @onclick="() => FilterToYear(year)">@year</span>
-                if (FirstList.IndexOf(year) < FirstList.Count - 1)
-                {
-                    <span>, </span>
-                }
+                <Tooltip Text="@GetTooltip(year)" Multiline="true" Style="display: inline"><span class="year-link" @onclick="() => FilterToYear(year)">@year</span></Tooltip><span>@(FirstList.IndexOf(year) < FirstList.Count - 1 ? ", " : string.Empty)</span>
             }
         </Value>
     </OverviewField>
@@ -20,11 +17,7 @@
         <Value>
             @foreach (var year in SecondList)
             {
-                <span class="year-link" @onclick="() => FilterToYear(year)">@year</span>
-                if (SecondList.IndexOf(year) < SecondList.Count - 1)
-                {
-                    <span>, </span>
-                }
+                <Tooltip Text="@GetTooltip(year)" Multiline="true" Style="display: inline"><span class="year-link" @onclick="() => FilterToYear(year)">@year</span></Tooltip><span>@(SecondList.IndexOf(year) < SecondList.Count - 1 ? ", " : string.Empty)</span>
             }
         </Value>
     </OverviewField>

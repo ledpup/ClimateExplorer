@@ -12,9 +12,11 @@
             <div class="title">@ChartSeries!.GetFriendlyTitleShort()</div>
             <div class="description">@ChartSeries!.GetFriendlyDescription()</div>
         </div>
-        <div class="trash" title="Remove this series" @onclick="@OnRemoveSeriesClicked">
+        <Tooltip Text="Remove this series">
+        <div class="trash" @onclick="@OnRemoveSeriesClicked">
             <i class="fas fa-trash fa-lg"></i>
         </div>
+        </Tooltip>
         <div class="expander">
             <span class="@(ChartSeries!.IsExpanded ? "oi oi-chevron-top" : "oi oi-chevron-bottom")" aria-hidden="true"></span>
         </div>
@@ -33,99 +35,111 @@
                                 <span class="form-control-wrap">@ChartSeries.Year</span>
                             </div>
                         }
-                        <div class="form-row">
-                            <span class="form-label">Aggregation</span>
-                            <span class="form-control-wrap">
-                                <Select TValue="SeriesAggregationOptions"
-                                        Size="Size.Small"
-                                        Value="@ChartSeries.Aggregation"
-                                        ValueChanged="@OnAggregationChanged"
-                                        Disabled="@ShouldDisableAggregationOptions(ChartSeries)">
-                                    <SelectItem Value="SeriesAggregationOptions.Mean">Mean</SelectItem>
-                                    <SelectItem Value="SeriesAggregationOptions.Minimum">Minimum</SelectItem>
-                                    <SelectItem Value="SeriesAggregationOptions.Maximum">Maximum</SelectItem>
-                                    <SelectItem Value="SeriesAggregationOptions.Median">Median</SelectItem>
-                                    <SelectItem Value="SeriesAggregationOptions.Sum">Sum</SelectItem>
-                                </Select>
-                            </span>
-                        </div>
+                        <Tooltip Text="How data values within each time period are combined into a single point" Style="display: block">
+                            <div class="form-row">
+                                <span class="form-label">Aggregation</span>
+                                <span class="form-control-wrap">
+                                    <Select TValue="SeriesAggregationOptions"
+                                            Size="Size.Small"
+                                            Value="@ChartSeries.Aggregation"
+                                            ValueChanged="@OnAggregationChanged"
+                                            Disabled="@ShouldDisableAggregationOptions(ChartSeries)">
+                                        <SelectItem Value="SeriesAggregationOptions.Mean">Mean</SelectItem>
+                                        <SelectItem Value="SeriesAggregationOptions.Minimum">Minimum</SelectItem>
+                                        <SelectItem Value="SeriesAggregationOptions.Maximum">Maximum</SelectItem>
+                                        <SelectItem Value="SeriesAggregationOptions.Median">Median</SelectItem>
+                                        <SelectItem Value="SeriesAggregationOptions.Sum">Sum</SelectItem>
+                                    </Select>
+                                </span>
+                            </div>
+                        </Tooltip>
                         @if (ChartSeries.Smoothing != SeriesSmoothingOptions.None && !ChartSeries.BinGranularity.IsLinear())
                         {
                             <div class="form-row-info info-message">Note that smoothing is not currently being applied because the x-axis is not linear.</div>
                         }
-                        <div class="form-row">
-                            <span class="form-label">Secondary calculation</span>
-                            <span class="form-control-wrap">
-                                <Select TValue="SecondaryCalculationOptions"
-                                        Size="Size.Small"
-                                        Value="@ChartSeries.SecondaryCalculation"
-                                        ValueChanged="@OnSecondaryCalculationChanged">
-                                    <SelectItem Value="SecondaryCalculationOptions.None">None</SelectItem>
-                                    <SelectItem Value="SecondaryCalculationOptions.AnnualChange">Annual change</SelectItem>
-                                </Select>
-                            </span>
-                        </div>
-                        <div class="form-row">
-                            <span class="form-label">Smoothing</span>
-                            <span class="form-control-wrap">
-                                <Select TValue="SeriesSmoothingOptions"
-                                        Size="Size.Small"
-                                        Value="@ChartSeries.Smoothing"
-                                        ValueChanged="@OnSmoothingChanged">
-                                    <SelectItem Value="SeriesSmoothingOptions.None">None</SelectItem>
-                                    <SelectItem Value="SeriesSmoothingOptions.MovingAverage">Moving average</SelectItem>
-                                </Select>
-                            </span>
-                        </div>
-                        <div class="form-row">
-                            <span class="form-label">Smoothing window</span>
-                            <span class="form-control-wrap">
-                                <Select TValue="int"
-                                        Size="Size.Small"
-                                        Value="@ChartSeries.SmoothingWindow"
-                                        ValueChanged="@OnSmoothingWindowChanged"
-                                        Disabled="@ShouldDisableSmoothingWindow(ChartSeries)">
-                                    <SelectItem Value="3">3</SelectItem>
-                                    <SelectItem Value="5">5</SelectItem>
-                                    <SelectItem Value="7">7</SelectItem>
-                                    <SelectItem Value="10">10</SelectItem>
-                                    <SelectItem Value="12">12</SelectItem>
-                                    <SelectItem Value="15">15</SelectItem>
-                                    <SelectItem Value="20">20</SelectItem>
-                                    <SelectItem Value="30">30</SelectItem>
-                                </Select>
-                            </span>
-                        </div>
+                        <Tooltip Text="An optional calculation applied on top of the primary aggregation" Style="display: block">
+                            <div class="form-row">
+                                <span class="form-label">Secondary calculation</span>
+                                <span class="form-control-wrap">
+                                    <Select TValue="SecondaryCalculationOptions"
+                                            Size="Size.Small"
+                                            Value="@ChartSeries.SecondaryCalculation"
+                                            ValueChanged="@OnSecondaryCalculationChanged">
+                                        <SelectItem Value="SecondaryCalculationOptions.None">None</SelectItem>
+                                        <SelectItem Value="SecondaryCalculationOptions.AnnualChange">Annual change</SelectItem>
+                                    </Select>
+                                </span>
+                            </div>
+                        </Tooltip>
+                        <Tooltip Text="Reduces noise by averaging values across a rolling window of periods" Style="display: block">
+                            <div class="form-row">
+                                <span class="form-label">Smoothing</span>
+                                <span class="form-control-wrap">
+                                    <Select TValue="SeriesSmoothingOptions"
+                                            Size="Size.Small"
+                                            Value="@ChartSeries.Smoothing"
+                                            ValueChanged="@OnSmoothingChanged">
+                                        <SelectItem Value="SeriesSmoothingOptions.None">None</SelectItem>
+                                        <SelectItem Value="SeriesSmoothingOptions.MovingAverage">Moving average</SelectItem>
+                                    </Select>
+                                </span>
+                            </div>
+                        </Tooltip>
+                        <Tooltip Text="Number of periods to include in the rolling average" Style="display: block">
+                            <div class="form-row">
+                                <span class="form-label">Smoothing window</span>
+                                <span class="form-control-wrap">
+                                    <Select TValue="int"
+                                            Size="Size.Small"
+                                            Value="@ChartSeries.SmoothingWindow"
+                                            ValueChanged="@OnSmoothingWindowChanged"
+                                            Disabled="@ShouldDisableSmoothingWindow(ChartSeries)">
+                                        <SelectItem Value="3">3</SelectItem>
+                                        <SelectItem Value="5">5</SelectItem>
+                                        <SelectItem Value="7">7</SelectItem>
+                                        <SelectItem Value="10">10</SelectItem>
+                                        <SelectItem Value="12">12</SelectItem>
+                                        <SelectItem Value="15">15</SelectItem>
+                                        <SelectItem Value="20">20</SelectItem>
+                                        <SelectItem Value="30">30</SelectItem>
+                                    </Select>
+                                </span>
+                            </div>
+                        </Tooltip>
                     </div>
                     <div class="edit-col">
-                        <div class="form-row">
-                            <span class="form-label">Display</span>
-                            <span class="form-control-wrap">
-                                <Select TValue="SeriesValueOptions"
-                                        Size="Size.Small"
-                                        Value="@ChartSeries.Value"
-                                        ValueChanged="@OnValueChanged"
-                                        Disabled="@ShouldDisableDisplay(ChartSeries)">
-                                    <SelectItem Value="SeriesValueOptions.Value">Value</SelectItem>
-                                    <SelectItem Value="SeriesValueOptions.Anomaly">Anomaly relative to mean</SelectItem>
-                                </Select>
-                            </span>
-                        </div>
-                        <div class="form-row">
-                            <span class="form-label">Transformation</span>
-                            <span class="form-control-wrap">
-                                <Select TValue="SeriesTransformations"
-                                        Size="Size.Small"
-                                        Value="@ChartSeries.SeriesTransformation"
-                                        ValueChanged="@OnTransformationChanged"
-                                        Disabled="@ShouldDisableTransformation(ChartSeries)">
-                                    <SelectItem Value="SeriesTransformations.Identity">Identity</SelectItem>
-                                    <SelectItem Value="SeriesTransformations.Negate">Negate</SelectItem>
-                                    <SelectItem Value="SeriesTransformations.DayOfYearIfFrost">Day of year if frost</SelectItem>
-                                    <SelectItem Value="SeriesTransformations.Custom">Custom</SelectItem>
-                                </Select>
-                            </span>
-                        </div>
+                        <Tooltip Text="Whether to plot actual values or the departure from the historical mean (anomaly)" Style="display: block">
+                            <div class="form-row">
+                                <span class="form-label">Display</span>
+                                <span class="form-control-wrap">
+                                    <Select TValue="SeriesValueOptions"
+                                            Size="Size.Small"
+                                            Value="@ChartSeries.Value"
+                                            ValueChanged="@OnValueChanged"
+                                            Disabled="@ShouldDisableDisplay(ChartSeries)">
+                                        <SelectItem Value="SeriesValueOptions.Value">Value</SelectItem>
+                                        <SelectItem Value="SeriesValueOptions.Anomaly">Anomaly relative to mean</SelectItem>
+                                    </Select>
+                                </span>
+                            </div>
+                        </Tooltip>
+                        <Tooltip Text="A mathematical transformation applied to each data value before plotting" Style="display: block">
+                            <div class="form-row">
+                                <span class="form-label">Transformation</span>
+                                <span class="form-control-wrap">
+                                    <Select TValue="SeriesTransformations"
+                                            Size="Size.Small"
+                                            Value="@ChartSeries.SeriesTransformation"
+                                            ValueChanged="@OnTransformationChanged"
+                                            Disabled="@ShouldDisableTransformation(ChartSeries)">
+                                        <SelectItem Value="SeriesTransformations.Identity">Identity</SelectItem>
+                                        <SelectItem Value="SeriesTransformations.Negate">Negate</SelectItem>
+                                        <SelectItem Value="SeriesTransformations.DayOfYearIfFrost">Day of year if frost</SelectItem>
+                                        <SelectItem Value="SeriesTransformations.Custom">Custom</SelectItem>
+                                    </Select>
+                                </span>
+                            </div>
+                        </Tooltip>
                         @if (ChartSeries.SeriesTransformation == SeriesTransformations.Custom)
                         {
                             <div class="form-row">
@@ -144,58 +158,72 @@
                                 </span>
                             </div>
                         }
-                        <div class="form-row">
-                            <span class="form-label">Display style</span>
-                            <span class="form-control-wrap">
-                                <Select TValue="SeriesDisplayStyle"
-                                        Size="Size.Small"
-                                        Value="@ChartSeries.DisplayStyle"
-                                        ValueChanged="@OnDisplayStyleChanged">
-                                    <SelectItem Value="SeriesDisplayStyle.Line">Line</SelectItem>
-                                    <SelectItem Value="SeriesDisplayStyle.Bar">Bar</SelectItem>
-                                </Select>
-                            </span>
-                        </div>
-                        <div class="form-row">
-                            <span class="form-label">Colour</span>
-                            <span class="form-control-wrap">
-                                <Select TValue="Colours"
-                                        Size="Size.Small"
-                                        Value="@ChartSeries.RequestedColour"
-                                        ValueChanged="@OnColourChanged">
-                                        @foreach (var colour in (Colours[])Enum.GetValues(typeof(Colours)))
-                                        {
-                                            <SelectItem Value="@colour">@GetColourName(colour)</SelectItem>
-                                        }
-                                </Select>
-                            </span>
-                        </div>
-                        <div class="form-row">
-                            <span class="form-label">Show trendline</span>
-                            <span class="form-control-wrap">
-                                <Check TValue="bool" Value="@ChartSeries.ShowTrendline" ValueChanged="@OnShowTrendlineChanged"></Check>
-                            </span>
-                        </div>
-                        <div class="form-row">
-                            <span class="form-label">Lock?</span>
-                            <span class="form-control-wrap">
-                                <Check TValue="bool" Value="@ChartSeries.IsLocked" ValueChanged="@OnIsLockedChanged"></Check>
-                            </span>
-                        </div>
+                        <Tooltip Text="Whether to draw this series as a line or a bar chart" Style="display: block">
+                            <div class="form-row">
+                                <span class="form-label">Display style</span>
+                                <span class="form-control-wrap">
+                                    <Select TValue="SeriesDisplayStyle"
+                                            Size="Size.Small"
+                                            Value="@ChartSeries.DisplayStyle"
+                                            ValueChanged="@OnDisplayStyleChanged">
+                                        <SelectItem Value="SeriesDisplayStyle.Line">Line</SelectItem>
+                                        <SelectItem Value="SeriesDisplayStyle.Bar">Bar</SelectItem>
+                                    </Select>
+                                </span>
+                            </div>
+                        </Tooltip>
+                        <Tooltip Text="The colour used to draw this series on the chart" Style="display: block">
+                            <div class="form-row">
+                                <span class="form-label">Colour</span>
+                                <span class="form-control-wrap">
+                                    <Select TValue="Colours"
+                                            Size="Size.Small"
+                                            Value="@ChartSeries.RequestedColour"
+                                            ValueChanged="@OnColourChanged">
+                                            @foreach (var colour in (Colours[])Enum.GetValues(typeof(Colours)))
+                                            {
+                                                <SelectItem Value="@colour">@GetColourName(colour)</SelectItem>
+                                            }
+                                    </Select>
+                                </span>
+                            </div>
+                        </Tooltip>
+                        <Tooltip Text="Overlay a linear trendline on this series" Style="display: block">
+                            <div class="form-row">
+                                <span class="form-label">Show trendline</span>
+                                <span class="form-control-wrap">
+                                    <Check TValue="bool" Value="@ChartSeries.ShowTrendline" ValueChanged="@OnShowTrendlineChanged"></Check>
+                                </span>
+                            </div>
+                        </Tooltip>
+                        <Tooltip Text="Prevent this series from being replaced when a new chart preset is selected" Style="display: block">
+                            <div class="form-row">
+                                <span class="form-label">Lock?</span>
+                                <span class="form-control-wrap">
+                                    <Check TValue="bool" Value="@ChartSeries.IsLocked" ValueChanged="@OnIsLockedChanged"></Check>
+                                </span>
+                            </div>
+                        </Tooltip>
                     </div>
                     <div class="series-controls">
-                        <div class="series-control" title="About this data" @onclick="@OnAboutThisDataClicked">
-                            <i class="fas fa-info"></i>
-                            <div class="label">About</div>
-                        </div>
-                        <div class="series-control" title="Duplicate this series" @onclick="@OnDuplicateSeriesClicked">
-                            <i class="fas fa-clone"></i>
-                            <div class="label">Clone</div>
-                        </div>
-                        <div class="series-control danger" title="Remove this series" @onclick="@OnRemoveSeriesClicked">
-                            <i class="fas fa-trash"></i>
-                            <div class="label">Remove</div>
-                        </div>
+                        <Tooltip Text="About this data" Style="display: inline-block">
+                            <div class="series-control" @onclick="@OnAboutThisDataClicked">
+                                <i class="fas fa-info"></i>
+                                <div class="label">About</div>
+                            </div>
+                        </Tooltip>
+                        <Tooltip Text="Duplicate this series" Style="display: inline-block">
+                            <div class="series-control" @onclick="@OnDuplicateSeriesClicked">
+                                <i class="fas fa-clone"></i>
+                                <div class="label">Clone</div>
+                            </div>
+                        </Tooltip>
+                        <Tooltip Text="Remove this series" Style="display: inline-block">
+                            <div class="series-control danger" @onclick="@OnRemoveSeriesClicked">
+                                <i class="fas fa-trash"></i>
+                                <div class="label">Remove</div>
+                            </div>
+                        </Tooltip>
                     </div>
                 </div>
             </div>

@@ -13,6 +13,10 @@
     margin-bottom: -6px;
 }
 
+.is-clickable .label {
+    cursor: pointer;
+}
+
 .value {
     font-size: 1.25rem;
     color: #494949;

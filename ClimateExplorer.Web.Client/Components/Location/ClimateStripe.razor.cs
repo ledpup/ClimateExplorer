@@ -2,6 +2,7 @@ namespace ClimateExplorer.Web.Client.Components.Location;
 
 using Blazorise;
 using ClimateExplorer.Core;
+using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;
 using static ClimateExplorer.Core.Enums;
@@ -115,24 +116,7 @@ public partial class ClimateStripe
     private string GetRelativeValue(YearlyValues values) => UnitOfMeasure == Enums.UnitOfMeasure.Millimetres ? $"{Math.Round(values.PercentageOfAverage, 0)}%" : $"{(values.Relative >= 0 ? "+" : string.Empty)}{values.Relative.ToString($"F{uomRounding}")}{uomString}";
     private string GetAbsoluteValue(double v) => $"{v.ToString($"F{uomRounding}")}{uomString}";
 
-    private string GetTitle(YearlyValues values)
-    {
-        var aboveOrBelow = values.Relative > 0 ? "above" : "below";
-        var title = $"Year {values.Year}\r\n";
-        if (UnitOfMeasure == Enums.UnitOfMeasure.Millimetres)
-        {
-            title += $"Precipitation total of {values.Absolute.ToString($"F{uomRounding}")}{uomString}\r\n";
-            title += $"{Math.Abs(values.Relative).ToString($"F{uomRounding}")}{uomString} {aboveOrBelow} average\r\n";
-            title += $"{Math.Round(values.PercentageOfAverage, 0)}% of the average\r\n";
-        }
-        else
-        {
-            title += $"Mean temperature average of {values.Absolute.ToString($"F{uomRounding}")}{uomString}\r\n";
-            title += $"{Math.Abs(values.Relative).ToString($"F{uomRounding}")}{uomString} {aboveOrBelow} average";
-        }
-
-        return title;
-    }
+    private string GetTooltip(YearlyValues values) => YearlyValuesHelper.GetTooltip(values, UnitOfMeasure!.Value);
 
     private async Task FilterToYear(short year)
     {

@@ -9,13 +9,15 @@
     {
         foreach (var record in DataRecords)
         {
-            <div title="@GetTitle(record)" class="single-stripe" style="background-color: @GetColour(record.Relative); cursor: pointer; --label-colour: @GetLabelColour(record.Relative);" @onclick="() => FilterToYear(record.Year)">
-                <div class="label" style="border-color: @GetLabelColour(record.Relative)">
-                    <div class="year">@record.Year</div>
-                    <div class="rel">@GetRelativeValue(record)</div>
-                    <div class="abs">@GetAbsoluteValue(record.Absolute)</div>
+            <Tooltip Text="@GetTooltip(record)" Placement="TooltipPlacement.Bottom" Style="flex: 1; display: block; height: inherit">
+                <div class="single-stripe" style="background-color: @GetColour(record.Relative); cursor: pointer; --label-colour: @GetLabelColour(record.Relative);" @onclick="() => FilterToYear(record.Year)">
+                    <div class="label" style="border-color: @GetLabelColour(record.Relative)">
+                        <div class="year">@record.Year</div>
+                        <div class="rel">@GetRelativeValue(record)</div>
+                        <div class="abs">@GetAbsoluteValue(record.Absolute)</div>
+                    </div>
                 </div>
-            </div>
+            </Tooltip>
         }
         @if (ShowInfo)
         {

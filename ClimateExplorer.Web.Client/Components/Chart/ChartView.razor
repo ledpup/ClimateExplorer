@@ -37,7 +37,7 @@
                             </Tooltip>
                         }
 
-                        <Tooltip Text="Change how data is grouped on the x-axis">
+                        <Tooltip Text="Change how data is grouped on the x-axis: yearly, monthly, daily">
                             <Dropdown>
                                 <DropdownToggle>
                                     <i class="fas fa-calendar"></i> Grouping
@@ -50,7 +50,9 @@
                             </Dropdown>
                         </Tooltip>
 
-                        <ChartAxisListView Axes="CurrentAxes" ScaleToZero="AxesScaleToZero" OnChanged="@BuildDataSets" />
+                        <Tooltip Text="Change the scale of the chart axes to scale from zero or the minimum value">
+                            <ChartAxisListView Axes="CurrentAxes" ScaleToZero="AxesScaleToZero" OnChanged="@BuildDataSets" />
+                        </Tooltip>
 
                         <AggregationOptions CurrentThreshold="@InternalGroupingThreshold" CurrentGroupingDays="@SelectedGroupingDays" UserOverride="@UserOverridePresetAggregationSettings" OnChanged="@((s) => OnAggregationSettingsChanged(s))" />
 
@@ -58,7 +60,9 @@
                             <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowChartOptionsInfo></i>
                         </div>
 
-                        <button class="chart-control chart-control-download" title="Download the chart data as a CSV file" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download</button>
+                        <Tooltip Text="Download the chart data as a CSV file" Style="display: inline-block; margin-left: auto">
+                            <button class="chart-control chart-control-download" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download</button>
+                        </Tooltip>
                     </div>
                 </div>
             </Content>

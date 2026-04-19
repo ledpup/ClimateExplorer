@@ -32,7 +32,7 @@ public partial class PaginationControl
 
     private List<int> GetVisiblePages()
     {
-        int maxPages = isMobileDevice == true ? 7 : 11;
+        int maxPages = isMobileDevice == true ? 9 : 15;
 
         if (TotalPages <= maxPages)
         {

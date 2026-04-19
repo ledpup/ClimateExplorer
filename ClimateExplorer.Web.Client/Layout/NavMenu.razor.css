@@ -73,26 +73,6 @@
     background-color: #425f59 !important;
 }
 
-.logo .tooltip-content {
-    display: none;
-    position: absolute;
-    text-align: center;
-    box-shadow: rgb(0 0 0 / 15%) 1px 1px 20px;
-    border-radius: 8px;
-    left: 32px;
-    top: 48px;
-    padding: 4px 10px 4px 10px;
-    background-color: #fff;
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: #425f59;
-    z-index: 1500;
-}
-
-.logo:hover .tooltip-content {
-    display: block;
-}
-
 .info-icon {
     color: #79c6f4;
     font-size: larger;
