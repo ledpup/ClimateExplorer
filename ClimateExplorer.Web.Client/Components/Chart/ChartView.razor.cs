@@ -1214,7 +1214,7 @@ public partial class ChartView : IAsyncDisposable
 
                 if (values.Count(y => y != null) < 10)
                 {
-                    await SnackbarMessageEvent.InvokeAsync(new SnackbarMessage { Message = $"The moving‑average smoothing removed too many {cs.SourceDataSet.DataType.ToFriendlyName().ToLower()} observations for {cs.SourceDataSet.GeographicalEntity?.Name}.<br>We will revert to using the unsmoothed data.", Type = SnackbarColor.Warning });
+                    await SnackbarMessageEvent.InvokeAsync(new SnackbarMessage { Message = $"The moving‑average removed too many {cs.SourceDataSet.DataType.ToFriendlyName().ToLower()} observations for {cs.SourceDataSet.GeographicalEntity?.Name}.<br>We will revert to using the unsmoothed data.", Type = SnackbarColor.Warning });
                     values = cs.SourceDataSet.DataRecords
                                             .Where(x => x.Value.HasValue)
                                             .Select(x => x.Value);

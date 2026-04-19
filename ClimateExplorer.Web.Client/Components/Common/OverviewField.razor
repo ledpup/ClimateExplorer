@@ -1,7 +1,8 @@
 @using Blazorise
 @using System.Text.RegularExpressions
+@using ClimateExplorer.Web.Client.Components.Common
 
-<Tooltip Text="@(Tooltip == null ? Title : Tooltip)" Style="display: inline-block" Multiline="true">
+<DelayedTooltip Text="@(Tooltip == null ? Title : Tooltip)" Style="display: inline-block" Multiline="true">
     <div class="overview-field @(PopupContent != null || OnClick.HasDelegate ? "is-clickable" : "")" @onclick="HandleClick">
         <div class="label">@Label</div>
         <div class="value">
@@ -16,7 +17,7 @@
         </div>
         <div class="additional-info">@AdditionalInfo</div>
     </div>
-</Tooltip>
+</DelayedTooltip>
 
 @if (PopupContent != null)
 {

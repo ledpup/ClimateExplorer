@@ -1,4 +1,4 @@
-﻿@using Blazorise
+@using Blazorise
 @using Blazorise.LoadingIndicator
 @using ClimateExplorer.Core
 @using ClimateExplorer.Core.Model
@@ -19,14 +19,14 @@
         @if (!LocationLoadingIndicatorVisible)
         {
             <span class="chart-controls">
-                <Tooltip Multiline="true" Style="display: inline-block" Text="Change the current location. Four ways to choose:<br>• Near me — use browser location<br>• Random — a surprise location<br>• Search — type a location name<br>• Nearby — closest stations">
+                <DelayedTooltip Multiline="true" Style="display: inline-block" Text="Change the current location. Four ways to choose:<br>• Near me — use browser location<br>• Random — a surprise location<br>• Search — type a location name<br>• Nearby — closest stations">
                     <button class="chart-control" @onclick="() => ChangeLocationClicked(new EventArgs())"><i class="fas fa-map"></i> Change location</button>
-                </Tooltip>
+                </DelayedTooltip>
                 @if (LocationCollapsible!.ShowContent)
                 {
-                    <Tooltip Multiline="true" Style="display: inline-block" Text="Toggle precipitation data.&#10;Shows the annual rainfall anomaly stripe&#10;and wettest/driest years">
+                    <DelayedTooltip Multiline="true" Style="display: inline-block" Text="Toggle precipitation data.&#10;Shows the annual rainfall anomaly stripe&#10;and wettest/driest years">
                         <button class="chart-control" @onclick="() => TogglePrecipitation()"><i class="@( Precipitation ? "fas fa-check-square" : "fas fa-square" )"></i> Precipitation</button>
-                    </Tooltip>
+                    </DelayedTooltip>
                 }
             </span>
         }

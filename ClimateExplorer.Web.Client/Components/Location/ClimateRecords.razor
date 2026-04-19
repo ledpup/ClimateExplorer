@@ -29,7 +29,7 @@
 <div class="filter-row">
 @if (AvailableDataTypes.Count > 0 && SelectedDataType is not null)
 {
-    <Tooltip Text="Select the type of climate data to view records for">
+    <DelayedTooltip Text="Select the type of climate data to view records for">
         <Select TValue="DataType"
                 Value="@SelectedDataType.Value"
                 ValueChanged="@OnDataTypeChanged"
@@ -39,10 +39,10 @@
                 <SelectItem Value="@dt">@ChartSeriesDefinition.MapDataTypeToFriendlyName(dt)</SelectItem>
             }
         </Select>
-    </Tooltip>
+    </DelayedTooltip>
     @if (ActiveView == RecordView.Daily || ActiveView == RecordView.Monthly || ActiveView == RecordView.Top100)
     {
-        <Tooltip Text="Filter records to a specific month, or view all months">
+        <DelayedTooltip Text="Filter records to a specific month, or view all months">
             <Select TValue="int"
                     Value="@SelectedMonth"
                     ValueChanged="@OnMonthChanged"
@@ -54,24 +54,24 @@
                     <SelectItem Value="@monthNum">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNum)</SelectItem>
                 }
             </Select>
-        </Tooltip>
+        </DelayedTooltip>
     }
     @if (AvailableDataAdjustments.Count > 1)
     {
-        <Tooltip Text="By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes.<br>Uncheck to see raw, unmodified measurements." Multiline="true">
+        <DelayedTooltip Text="By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes.<br>Uncheck to see raw, unmodified measurements." Multiline="true">
             <label class="adjusted-check">
                 <input type="checkbox" class="adjusted-input"
                        checked="@(SelectedDataAdjustment == DataAdjustment.Adjusted)"
                        @onchange="@(async (ChangeEventArgs e) => await OnAdjustedChanged((bool)e.Value!))" />
                 Adjusted
             </label>
-        </Tooltip>
+        </DelayedTooltip>
     }
-    <Tooltip Text="Toggle sort order">
+    <DelayedTooltip Text="Toggle sort order">
         <button class="sort-toggle-btn" @onclick="OnSortToggled">
             <i class="fa-solid fa-temperature-arrow-@(Ascending ? "up" : "down")"></i> @SortLabel
         </button>
-    </Tooltip>
+    </DelayedTooltip>
 }
 </div>
 @if (ActiveView != RecordView.Top100)
@@ -181,7 +181,7 @@
                             CurrentPage="@CurrentPage"
                             PageChanged="@OnPageChanged" />
                             <div class="d-flex align-items-center gap-1">
-                                <Tooltip Text="Number of records per page">
+                                <DelayedTooltip Text="Number of records per page">
                                     <Select TValue="int"
                                     Value="@Count"
                                     ValueChanged="@OnCountChanged"
@@ -190,7 +190,7 @@
                                         <SelectItem Value="20">20</SelectItem>
                                         <SelectItem Value="50">50</SelectItem>
                                     </Select>
-                                </Tooltip>
+                                </DelayedTooltip>
                             </div>
                         </div>
                         <span class="text-muted">@StartRecord-@EndRecord of @(ClimateRecordsResult.TotalCount)</span>

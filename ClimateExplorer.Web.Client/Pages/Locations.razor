@@ -1,4 +1,4 @@
-﻿@page "/locations"
+@page "/locations"
 @using Blazorise
 @using ClimateExplorer.Core.Model
 @using ClimateExplorer.Core.ViewModel
@@ -35,7 +35,7 @@
                                value="@(nameFilter ?? string.Empty)"
                                @oninput="@(e => OnNameFilterChanged(e.Value?.ToString()))" />
                     </div>
-                    <Tooltip Text="Filter locations by country">
+                    <DelayedTooltip Text="Filter locations by country">
                         <Select TValue="string"
                                 Value="@(countryFilter ?? string.Empty)"
                                 ValueChanged="@OnCountryFilterChanged"
@@ -46,8 +46,8 @@
                                 <SelectItem Value="@country">@(country.Length > 20 ? country[..20] + "…" : country)</SelectItem>
                             }
                         </Select>
-                    </Tooltip>
-                    <Tooltip Text="Filter locations by heating score, a measure of how much a location has warmed relative to all other locations.<br>The score is created by ordering all anomalies and grouping into deciles." Multiline="true">
+                    </DelayedTooltip>
+                    <DelayedTooltip Text="Filter locations by heating score, a measure of how much a location has warmed relative to all other locations.<br>The score is created by ordering all anomalies and grouping into deciles." Multiline="true">
                         <Select TValue="string"
                                 Value="@(heatingScoreFilter ?? string.Empty)"
                                 ValueChanged="@OnHeatingScoreFilterChanged"
@@ -61,7 +61,7 @@
                             <SelectItem Value="@HeatingScoreFilterNegative">Negative (&lt; 0)</SelectItem>
                             <SelectItem Value="@HeatingScoreFilterNullScore">No heating score</SelectItem>
                         </Select>
-                    </Tooltip>
+                    </DelayedTooltip>
                 </div>
                 <span class="location-count">@filteredCount location@(filteredCount == 1 ? string.Empty : "s")</span>
             </div>
