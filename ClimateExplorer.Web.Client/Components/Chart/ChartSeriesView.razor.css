@@ -26,6 +26,12 @@
         border-top-right-radius: 8px;
     }
 
+        .chart-series-config .title-bar .title-bar-actions {
+            margin-left: auto;
+            display: flex;
+            align-items: stretch;
+        }
+
     .chart-series-config:not(.is-expanded) .title-bar {
         border-bottom-left-radius: 8px;
         border-bottom-right-radius: 8px;
@@ -40,13 +46,14 @@
             padding: 8px;
             padding-top: 12px;
             color: #a00000;
-            margin-left: auto;
+            margin-left: 0;
         }
 
         .chart-series-config .title-bar .expander {
             padding: 8px;
             padding-top: 12px;
             color: #595959;
+            margin-left: 0;
         }
 
         .chart-series-config .title-bar:hover .expander {
