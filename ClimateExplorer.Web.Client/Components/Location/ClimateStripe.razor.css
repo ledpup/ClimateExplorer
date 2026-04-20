@@ -67,10 +67,14 @@
         z-index: 999;
     }
 
-.info-icon {
+.info-icon-btn {
     display: flex;
     align-items: center;
     margin-left: 8px;
     color: #79c6f4;
-    font-size: larger;
+    font-size: 1.25rem;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
 }
