@@ -11,7 +11,7 @@
         foreach (var record in DataRecords)
         {
             <Tooltip Text="@GetTooltip(record)" Placement="TooltipPlacement.Bottom" Style="flex: 1; display: block; height: inherit">
-                <div class="single-stripe" style="background-color: @GetColour(record.Relative); cursor: pointer; --label-colour: @GetLabelColour(record.Relative);" @onclick="() => FilterToYear(record.Year)">
+                <div class="single-stripe" role="button" aria-label="@GetTooltip(record)" style="background-color: @GetColour(record.Relative); cursor: pointer; --label-colour: @GetLabelColour(record.Relative);" @onclick="() => FilterToYear(record.Year)">
                     <div class="label" style="border-color: @GetLabelColour(record.Relative)">
                         <div class="year">@record.Year</div>
                         <div class="rel">@GetRelativeValue(record)</div>
@@ -22,9 +22,9 @@
         }
         @if (ShowInfo)
         {
-            <div class="info-icon">
-                <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowClimateStripeInfo></i>
-            </div>
+            <button class="info-icon-btn" aria-label="Show climate stripe information" @onclick=ShowClimateStripeInfo>
+                <i class="fas fa-circle-info" aria-hidden="true"></i>
+            </button>
         }
     }
 

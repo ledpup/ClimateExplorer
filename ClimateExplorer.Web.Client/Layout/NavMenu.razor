@@ -23,8 +23,8 @@
                 }
                 <BarItem>
                     <Dropdown>
-                        <DropdownToggle Class="@("hamburger-toggle" + (IsHamburgerCurrentPage() ? " nav-current" : string.Empty))">
-                            <i class="fas fa-bars"></i>
+                        <DropdownToggle Class="@("hamburger-toggle" + (IsHamburgerCurrentPage() ? " nav-current" : string.Empty))" aria-label="More navigation options">
+                            <i class="fas fa-bars" aria-hidden="true"></i>
                         </DropdownToggle>
                         <DropdownMenu>
                             @foreach (var item in hamburgerItems)
