@@ -13,13 +13,15 @@
             <div class="title">@ChartSeries!.GetFriendlyTitleShort()</div>
             <div class="description">@ChartSeries!.GetFriendlyDescription()</div>
         </div>
-        <DelayedTooltip Text="Remove this series">
-            <div class="trash" @onclick="@OnRemoveSeriesClicked">
-                <i class="fas fa-trash fa-lg"></i>
+        <div class="title-bar-actions">
+            <DelayedTooltip Text="Remove this series">
+                <div class="trash" @onclick="@OnRemoveSeriesClicked">
+                    <i class="fas fa-trash fa-lg"></i>
+                </div>
+            </DelayedTooltip>
+            <div class="expander">
+                <span class="@(ChartSeries!.IsExpanded ? "oi oi-chevron-top" : "oi oi-chevron-bottom")" aria-hidden="true"></span>
             </div>
-        </DelayedTooltip>
-        <div class="expander">
-            <span class="@(ChartSeries!.IsExpanded ? "oi oi-chevron-top" : "oi oi-chevron-bottom")" aria-hidden="true"></span>
         </div>
     </div>
 
