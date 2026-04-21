@@ -172,6 +172,7 @@
 ::deep .chart-external-tooltip-title {
     font-weight: 600;
     margin-bottom: 6px;
+    font-size: small;
 }
 
 ::deep .chart-external-tooltip-row {

@@ -213,7 +213,7 @@
                 const title = (tooltip.title ?? []).map(x => `<div class="chart-external-tooltip-title">${x}</div>`).join("");
                 const rows = (tooltip.dataPoints ?? []).map((point, index) => {
                     const colour = tooltip.labelColors?.[index] ?? { backgroundColor: "#425f59", borderColor: "#425f59" };
-                    return `<div class="chart-external-tooltip-row"><span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span><span class="chart-external-tooltip-label">${point.dataset.label}: ${point.formattedValue}</span></div>`;
+                    return `<div class="chart-external-tooltip-row"><span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span><span class="chart-external-tooltip-label">${point.dataset.label}: <b>${point.formattedValue}</b></span></div>`;
                 }).join("");
 
                 tooltipElement.innerHTML = `${title}${rows}`;
