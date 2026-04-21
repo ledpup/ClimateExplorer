@@ -179,6 +179,50 @@
             }
         }
 
+        function getOrCreateChartTooltip(wrapperElement) {
+            let tooltipElement = wrapperElement.querySelector(".chart-external-tooltip");
+            if (tooltipElement) return tooltipElement;
+
+            tooltipElement = document.createElement("div");
+            tooltipElement.className = "chart-external-tooltip";
+            wrapperElement.appendChild(tooltipElement);
+            return tooltipElement;
+        }
+
+        function configureChartTooltip(wrapperElement) {
+            const canvas = wrapperElement.querySelector("canvas");
+            if (!canvas || typeof Chart === "undefined") return;
+
+            const chartInstance = Chart.getChart(canvas);
+            if (!chartInstance) return;
+
+            const tooltipElement = getOrCreateChartTooltip(wrapperElement);
+            tooltipElement.style.opacity = 0;
+
+            chartInstance.options.plugins ??= {};
+            chartInstance.options.plugins.tooltip ??= {};
+            chartInstance.options.plugins.tooltip.enabled = false;
+            chartInstance.options.plugins.tooltip.external = function (context) {
+                const tooltip = context.tooltip;
+
+                if (!tooltip || tooltip.opacity === 0) {
+                    tooltipElement.style.opacity = 0;
+                    return;
+                }
+
+                const title = (tooltip.title ?? []).map(x => `<div class="chart-external-tooltip-title">${x}</div>`).join("");
+                const rows = (tooltip.dataPoints ?? []).map((point, index) => {
+                    const colour = tooltip.labelColors?.[index] ?? { backgroundColor: "#425f59", borderColor: "#425f59" };
+                    return `<div class="chart-external-tooltip-row"><span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span><span class="chart-external-tooltip-label">${point.dataset.label}: ${point.formattedValue}</span></div>`;
+                }).join("");
+
+                tooltipElement.innerHTML = `${title}${rows}`;
+                tooltipElement.style.opacity = 1;
+                tooltipElement.style.left = `${tooltip.caretX}px`;
+                tooltipElement.style.top = `${tooltip.caretY}px`;
+            };
+        }
+
         function registerChartHoverCursor(wrapperElement) {
             const canvas = wrapperElement.querySelector('canvas');
             if (!canvas) return;
@@ -197,6 +241,10 @@
 
             canvas._chartLeaveHandler = function () {
                 canvas.style.cursor = 'default';
+                const tooltipElement = wrapperElement.querySelector('.chart-external-tooltip');
+                if (tooltipElement) {
+                    tooltipElement.style.opacity = 0;
+                }
             };
 
             canvas.addEventListener('mousemove', canvas._chartHoverHandler);
