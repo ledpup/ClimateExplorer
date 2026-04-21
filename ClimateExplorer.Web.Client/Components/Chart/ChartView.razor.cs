@@ -532,6 +532,7 @@ public partial class ChartView : IAsyncDisposable
 
         await chart.Update();
 
+        await JsRuntime!.InvokeVoidAsync("configureChartTooltip", chartWrapper);
         await JsRuntime!.InvokeVoidAsync("registerChartHoverCursor", chartWrapper);
 
         // The below line is required to get the chart.js component to honour the styling applied on the parent div
@@ -791,8 +792,9 @@ public partial class ChartView : IAsyncDisposable
                 },
                 Tooltip = new
                 {
-                    Mode = IsMobileDevice!.Value ? "point" : "index",
+                    Mode = IsMobileDevice!.Value ? "nearest" : "index",
                     Intersect = false,
+                    BoxPadding = 4,
                 },
                 Legend = new
                 {

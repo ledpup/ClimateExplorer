@@ -152,3 +152,43 @@
     color: #79c6f4;
     font-size: larger;
 }
+
+::deep .chart-external-tooltip {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, calc(-100% - 12px));
+    background: #fff;
+    color: #000;
+    border-radius: 8px;
+    box-shadow: rgb(0 0 0 / 15%) 1px 1px 12px;
+    padding: 8px 12px;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 10;
+    white-space: nowrap;
+}
+
+::deep .chart-external-tooltip-title {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+::deep .chart-external-tooltip-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: small;
+}
+
+::deep .chart-external-tooltip-key {
+    width: 12px;
+    height: 12px;
+    flex: 0 0 12px;
+    border: 1px solid #425f59;
+    border-radius: 2px;
+}
+
+::deep .chart-external-tooltip-label {
+    color: #000;
+}
