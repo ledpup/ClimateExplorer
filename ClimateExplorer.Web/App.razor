@@ -218,7 +218,14 @@
 
                 tooltipElement.innerHTML = `${title}${rows}`;
                 tooltipElement.style.opacity = 1;
-                tooltipElement.style.left = `${tooltip.caretX}px`;
+
+                const horizontalPadding = 8;
+                const tooltipHalfWidth = tooltipElement.offsetWidth / 2;
+                const minLeft = tooltipHalfWidth + horizontalPadding;
+                const maxLeft = wrapperElement.clientWidth - tooltipHalfWidth - horizontalPadding;
+                const clampedLeft = Math.max(minLeft, Math.min(tooltip.caretX, maxLeft));
+
+                tooltipElement.style.left = `${clampedLeft}px`;
                 tooltipElement.style.top = `${tooltip.caretY}px`;
             };
         }
