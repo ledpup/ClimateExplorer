@@ -145,21 +145,23 @@
                         </DelayedTooltip>
                         @if (ChartSeries.SeriesTransformation == SeriesTransformations.Custom)
                         {
-                            <div class="form-row">
-                                <span class="form-label">Custom expression</span>
-                                <span class="form-control-wrap">
-                                    <Validation @ref="validation" Validator="ValidateCustomTransformation">
-                                        <TextInput Value="@ChartSeries.CustomTransformation"
-                                                   ValueChanged="@OnCustomTransformationChanged"
-                                                   Placeholder="e.g. x == 0 or x >= 1 AND x < 10"
-                                                   Immediate="false">
-                                            <Feedback>
-                                                <ValidationError>Expected input like: 'x &gt; 25' or 'x &gt;= 1 AND x &lt; 10'</ValidationError>
-                                            </Feedback>
-                                        </TextInput>
-                                    </Validation>
-                                </span>
-                            </div>
+                            <DelayedTooltip Text="A logical expression applied to each value (use x as the data value)" Style="display: block">
+                                <div class="form-row">
+                                    <span class="form-label">Custom expression</span>
+                                    <span class="form-control-wrap">
+                                        <Validation @ref="validation" Validator="ValidateCustomTransformation">
+                                            <TextInput Value="@ChartSeries.CustomTransformation"
+                                                       ValueChanged="@OnCustomTransformationChanged"
+                                                       Placeholder="e.g. x == 0 or x >= 1 AND x < 10"
+                                                       Immediate="false">
+                                                <Feedback>
+                                                    <ValidationError>Expected input like: 'x &gt; 25' or 'x &gt;= 1 AND x &lt; 10'</ValidationError>
+                                                </Feedback>
+                                            </TextInput>
+                                        </Validation>
+                                    </span>
+                                </div>
+                            </DelayedTooltip>
                         }
                         <DelayedTooltip Text="Whether to draw this series as a line or a bar chart" Style="display: block">
                             <div class="form-row">

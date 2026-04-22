@@ -1,6 +1,8 @@
 @using Blazorise
 
-<Tooltip ShowDelay="500" HideDelay="500" Text="@Text" Style="@Style" Multiline="@Multiline" Placement="@Placement" aria-label="@Text">@ChildContent</Tooltip>
+<div style="display: contents" @onpointerdown="OnPointerDownAsync">
+    <Tooltip ShowDelay="500" HideDelay="500" Text="@EffectiveText" Style="@Style" Multiline="@Multiline" Placement="@Placement" aria-label="@Text">@ChildContent</Tooltip>
+</div>
 
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
@@ -8,4 +10,26 @@
     [Parameter] public string? Style { get; set; }
     [Parameter] public bool Multiline { get; set; }
     [Parameter] public TooltipPlacement Placement { get; set; } = TooltipPlacement.Top;
+
+    private bool SuppressTooltip { get; set; }
+    private int SuppressVersion { get; set; }
+
+    private string? EffectiveText => SuppressTooltip ? null : Text;
+
+    private async Task OnPointerDownAsync()
+    {
+        SuppressTooltip = true;
+        var version = ++SuppressVersion;
+        await InvokeAsync(StateHasChanged);
+
+        await Task.Delay(700);
+
+        if (version != SuppressVersion)
+        {
+            return;
+        }
+
+        SuppressTooltip = false;
+        await InvokeAsync(StateHasChanged);
+    }
 }
