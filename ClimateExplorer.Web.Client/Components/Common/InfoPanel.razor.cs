@@ -24,6 +24,9 @@ public partial class InfoPanel : ComponentBase
     public string? Height { get; set; }
 
     [Parameter]
+    public string? MobileHeight { get; set; }
+
+    [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
     [Inject]
