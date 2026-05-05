@@ -1003,7 +1003,7 @@ public partial class ChartView : IAsyncDisposable
             });
 
         var precipitation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.Precipitation, null, throwIfNoMatch: false);
-        if (precipitation is not null)
+        if (precipitation is not null && IsMobileDevice != true)
         {
             ChartSeriesList.Add(
                 new ChartSeriesDefinition()
