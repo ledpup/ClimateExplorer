@@ -31,7 +31,7 @@
                     <div class="section-label">Threshold (%)</div>
                     <div class="option-row">
                         <input type="number" class="form-control form-control-sm" min="0" max="100" step="10"
-                               value="@thresholdValue" @onchange="OnThresholdChanged" />
+                               value="@thresholdValue" @oninput="OnThresholdChanged" />
                     </div>
                 </DelayedTooltip>
                 <DelayedTooltip Text="When checked, your custom threshold is used instead of the dataset's recommended preset">
