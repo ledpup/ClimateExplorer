@@ -11,16 +11,6 @@
     white-space: nowrap;
 }
 
-.axes-dropdown-wrapper ::deep .section-label {
-    padding: 6px 16px 5px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #6c757d;
-    letter-spacing: 0.04em;
-    border-bottom: 1px solid #e0e0e0;
-    margin-bottom: 2px;
-}
-
 .axes-dropdown-wrapper ::deep .axis-row {
     padding: 4px 16px;
 }
