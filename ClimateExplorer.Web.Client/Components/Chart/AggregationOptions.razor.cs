@@ -12,6 +12,7 @@ public partial class AggregationOptions
     private int thresholdValue;
     private short currentGroupingDays;
     private bool overridePresetThreshold;
+    private bool panelOpen;
 
     [Parameter]
     public float CurrentThreshold { get; set; }
@@ -45,6 +46,10 @@ public partial class AggregationOptions
             overridePresetThreshold = UserOverride;
         }
     }
+
+    private void TogglePanel() => panelOpen = !panelOpen;
+
+    private void ClosePanel() => panelOpen = false;
 
     private async Task OnSelectedGroupingDaysChanged(short value)
     {

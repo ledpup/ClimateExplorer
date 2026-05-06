@@ -1,55 +1,67 @@
-/* display:contents makes the wrapper transparent to layout so the Dropdown
+/* display:contents makes the wrapper transparent to layout so the panel
    continues to sit inline with the other chart controls, while still giving
    Blazor's CSS isolation a plain HTML element to stamp the scope attribute on. */
 .aggregation-options-wrapper {
     display: contents;
 }
 
+.aggregation-options-container {
+    position: relative;
+    display: inline-block;
+}
+
+.aggregation-options-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+}
+
+.aggregation-options-panel {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    z-index: 1000;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    min-width: 280px;
+    margin-bottom: 2px;
+}
+
+
 .aggregation-options-wrapper ::deep .aggregation-options-content {
     min-width: 280px;
-    padding: 0;
+    padding: 8px 14px;
 }
 
-.aggregation-options-wrapper ::deep .info-row {
-    text-align: right;
-    padding: 4px 16px 0;
-}
-
-.aggregation-options-wrapper ::deep .section-header {
+.aggregation-options-wrapper ::deep .form-row {
     display: flex;
-    align-items: center;
+    align-items: baseline;
+    padding: 2px 0;
+    gap: 8px;
+}
+
+.aggregation-options-wrapper ::deep .form-label {
+    width: 110px;
+    flex-shrink: 0;
+    font-size: 0.875rem;
+}
+
+.aggregation-options-wrapper ::deep .form-control-wrap {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.875rem;
+}
+
+.aggregation-options-wrapper ::deep .form-row-actions {
     justify-content: space-between;
-    padding: 6px 16px 5px;
-    border-bottom: 1px solid #e0e0e0;
-    margin-bottom: 2px;
+    align-items: center;
+    margin-top: 4px;
 }
 
-.aggregation-options-wrapper ::deep .section-title {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #6c757d;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-}
-
-.aggregation-options-wrapper ::deep .section-label {
-    padding: 6px 16px 5px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #6c757d;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    border-bottom: 1px solid #e0e0e0;
-    margin-bottom: 2px;
-}
-
-.aggregation-options-wrapper ::deep .option-row {
-    padding: 4px 16px;
-}
-
-.info-icon {
+.aggregation-options-wrapper ::deep .info-icon {
     cursor: pointer;
     color: #79c6f4;
     font-size: larger;
-    margin-left: 8px;
 }
