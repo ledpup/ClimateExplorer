@@ -63,14 +63,14 @@ public static partial class SuggestedPresetLists
             new SuggestedChartPresetModelWithVariants()
             {
                 Title = "Carbon dioxide annual change",
-                Description = "Smoothed difference between current and previous year CO₂ maximums",
+                Description = "Smoothed difference between current and previous year CO₂",
                 ChartSeriesList =
                 [
                         new ChartSeriesDefinition()
                         {
                             SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                             SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
-                            Aggregation = SeriesAggregationOptions.Maximum,
+                            Aggregation = SeriesAggregationOptions.Mean,
                             BinGranularity = BinGranularities.ByYear,
                             SecondaryCalculation = SecondaryCalculationOptions.AnnualChange,
                             Smoothing = SeriesSmoothingOptions.MovingAverage,
