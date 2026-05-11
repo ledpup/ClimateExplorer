@@ -383,7 +383,8 @@ async Task<ClimateRecordsResponse> GetClimateRecords(
     int? take = null,
     int? skip = null,
     int? month = null,
-    bool monthly = false)
+    bool monthly = false,
+    int? day = null)
 {
     var dataSetDefinitions = await GetDataSetDefinitions();
     var locationDsds = dataSetDefinitions.Where(x => x.LocationIds!.Contains(locationId)).ToList();
@@ -462,6 +463,15 @@ async Task<ClimateRecordsResponse> GetClimateRecords(
         {
             YearAndDayBinIdentifier d => d.Month == month.Value,
             YearAndMonthBinIdentifier m => m.Month == month.Value,
+            _ => true,
+        });
+    }
+
+    if (day.HasValue)
+    {
+        records = records.Where(x => x.BinIdentifier switch
+        {
+            YearAndDayBinIdentifier d => d.Day == day.Value,
             _ => true,
         });
     }
