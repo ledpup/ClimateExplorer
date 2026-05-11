@@ -59,6 +59,7 @@ public partial class ClimateRecords
     private DataAdjustment? SelectedDataAdjustment { get; set; } = DataAdjustment.Adjusted;
     private UnitOfMeasure SelectedUnitOfMeasure { get; set; } = UnitOfMeasure.DegreesCelsius;
     private int SelectedMonth { get; set; } = 0;
+    private int SelectedDay { get; set; } = 0;
     private bool Ascending { get; set; } = false;
     private int Count { get; set; } = 10;
     private int CurrentPage { get; set; } = 1;
@@ -67,6 +68,19 @@ public partial class ClimateRecords
     private int TotalPages => ClimateRecordsResult?.TotalCount > 0 && Count > 0 ? (int)Math.Ceiling((double)ClimateRecordsResult.TotalCount / Count) : 1;
     private int StartRecord => ClimateRecordsResult?.Records?.Count > 0 ? ((CurrentPage - 1) * Count) + 1 : 0;
     private int EndRecord => ClimateRecordsResult?.Records?.Count > 0 ? Math.Min(StartRecord + ClimateRecordsResult.Records.Count - 1, ClimateRecordsResult.TotalCount) : 0;
+
+    private bool IsTodaySelected
+    {
+        get
+        {
+            var today = DateTime.Today;
+            return SelectedMonth == today.Month && SelectedDay == today.Day;
+        }
+    }
+
+    private int DaysInSelectedMonth => SelectedMonth > 0
+        ? DateTime.DaysInMonth(DateTime.Today.Year, SelectedMonth)
+        : 31;
     private string SortIcon => Ascending ? "fa-up-long" : "fa-down-long";
 
     private string SortLabel
@@ -248,7 +262,8 @@ public partial class ClimateRecords
                 else
                 {
                     var month = SelectedMonth != 0 ? (int?)SelectedMonth : null;
-                    ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType.Value, SelectedDataAdjustment, Ascending, take: Count, skip: CurrentPage, month, ActiveView == RecordView.Monthly);
+                    var day = ActiveView == RecordView.Daily && SelectedMonth != 0 && SelectedDay != 0 ? (int?)SelectedDay : null;
+                    ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType.Value, SelectedDataAdjustment, Ascending, take: Count, skip: CurrentPage, month, ActiveView == RecordView.Monthly, day);
                     ComputedRowStyles = ComputeRowStyles(ClimateRecordsResult);
                 }
             }
@@ -315,6 +330,7 @@ public partial class ClimateRecords
     private async Task OnViewChanged(string name)
     {
         ActiveView = Enum.Parse<RecordView>(name);
+        SelectedDay = 0;
         CurrentPage = 1;
         await UpdateAvailableOptions();
         await LoadRecords();
@@ -340,6 +356,23 @@ public partial class ClimateRecords
     private async Task OnMonthChanged(int value)
     {
         SelectedMonth = value;
+        SelectedDay = 0;
+        CurrentPage = 1;
+        await LoadRecords();
+    }
+
+    private async Task OnDayChanged(int value)
+    {
+        SelectedDay = value;
+        CurrentPage = 1;
+        await LoadRecords();
+    }
+
+    private async Task OnTodayClicked()
+    {
+        var today = DateTime.Today;
+        SelectedMonth = today.Month;
+        SelectedDay = today.Day;
         CurrentPage = 1;
         await LoadRecords();
     }
@@ -427,7 +460,8 @@ public partial class ClimateRecords
             else
             {
                 var monthFilter = SelectedMonth != 0 ? (int?)SelectedMonth : null;
-                var allData = await DataService!.GetClimateRecords(Location.Id, SelectedDataType.Value, SelectedDataAdjustment, Ascending, null, null, monthFilter, ActiveView == RecordView.Monthly);
+                var dayFilter = ActiveView == RecordView.Daily && SelectedMonth != 0 && SelectedDay != 0 ? (int?)SelectedDay : null;
+                var allData = await DataService!.GetClimateRecords(Location.Id, SelectedDataType.Value, SelectedDataAdjustment, Ascending, null, null, monthFilter, ActiveView == RecordView.Monthly, dayFilter);
                 records = [.. allData.Records];
             }
         }

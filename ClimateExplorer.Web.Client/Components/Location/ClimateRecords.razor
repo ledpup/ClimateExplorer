@@ -42,6 +42,12 @@
     </DelayedTooltip>
     @if (ActiveView == RecordView.Daily || ActiveView == RecordView.Monthly || ActiveView == RecordView.Top100)
     {
+        @if (ActiveView == RecordView.Daily)
+        {
+            <DelayedTooltip Text="Set filter to today's date">
+                <button class="today-btn" disabled="@IsTodaySelected" @onclick="OnTodayClicked">Today</button>
+            </DelayedTooltip>
+        }
         <DelayedTooltip Text="Filter records to a specific month, or view all months">
             <Select TValue="int"
                     Value="@SelectedMonth"
@@ -55,6 +61,22 @@
                 }
             </Select>
         </DelayedTooltip>
+        @if (ActiveView == RecordView.Daily && SelectedMonth != 0)
+        {
+            <DelayedTooltip Text="Filter records to a specific day, or view all days">
+                <Select TValue="int"
+                        Value="@SelectedDay"
+                        ValueChanged="@OnDayChanged"
+                        Size="Size.Small">
+                    <SelectItem Value="0">All days</SelectItem>
+                    @for (int d = 1; d <= DaysInSelectedMonth; d++)
+                    {
+                        var dayNum = d;
+                        <SelectItem Value="@dayNum">@dayNum</SelectItem>
+                    }
+                </Select>
+            </DelayedTooltip>
+        }
     }
     @if (AvailableDataAdjustments.Count > 1)
     {
@@ -79,7 +101,7 @@
     <DelayedLoadingIndicator @bind-Visible="@LoadingIndicatorVisible">
         <div class="table-card">
             <div class="table-header">
-                <span>@Location?.Name - @RecordsTitle@(SelectedMonth == 0 ? string.Empty : " - " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(SelectedMonth))</span>
+                <span>@Location?.Name - @RecordsTitle@(SelectedMonth == 0 ? string.Empty : " - " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(SelectedMonth))@(ActiveView == RecordView.Daily && SelectedDay != 0 ? " " + SelectedDay : string.Empty)</span>
             </div>
             @if (ClimateRecordsResult?.Records is { Count: > 0 })
             {
