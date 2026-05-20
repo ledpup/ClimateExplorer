@@ -1,6 +1,6 @@
 ﻿namespace ClimateExplorer.Web.UiModel;
 
-public class DataSetLibraryFolder
+public sealed record DataSetLibraryFolder
 {
     public string? Name { get; set; }
     public List<DataSetLibraryFolder> SubFolders { get; set; } = new List<DataSetLibraryFolder>();

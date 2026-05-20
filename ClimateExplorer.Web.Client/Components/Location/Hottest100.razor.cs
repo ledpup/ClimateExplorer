@@ -53,7 +53,7 @@ public partial class Hottest100
 
     private async Task LoadData()
     {
-        if (Location is null || DataType is null || DataAdjustment is null)
+        if (Location is null || DataType is null)
         {
             YearCounts = [];
             return;

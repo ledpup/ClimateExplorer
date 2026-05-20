@@ -2,7 +2,7 @@
 
 using ClimateExplorer.Core.DataPreparation;
 
-public class DataDownloadPackage
+public sealed record DataDownloadPackage
 {
     public List<SeriesWithData>? ChartSeriesWithData { get; set; }
     public BinIdentifier[]? Bins { get; set; }

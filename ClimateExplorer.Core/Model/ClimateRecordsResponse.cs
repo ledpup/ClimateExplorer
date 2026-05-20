@@ -1,6 +1,6 @@
 namespace ClimateExplorer.Core.Model;
 
-public class ClimateRecordsResponse
+public sealed record ClimateRecordsResponse
 {
     public List<ClimateRecord> Records { get; set; } = [];
     public int? StartYear { get; set; }
