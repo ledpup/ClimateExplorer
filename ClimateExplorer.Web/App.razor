@@ -139,7 +139,15 @@
         }
 
         async function svgToPngBlob(svgElement) {
-            const svgData = new XMLSerializer().serializeToString(svgElement);
+            const rawWidth = svgElement.viewBox.baseVal.width || svgElement.width.baseVal.value || svgElement.clientWidth;
+            const rawHeight = svgElement.viewBox.baseVal.height || svgElement.height.baseVal.value || svgElement.clientHeight;
+            const exportScale = 2;
+            const width = Math.round(rawWidth * exportScale);
+            const height = Math.round(rawHeight * exportScale);
+            const svgClone = svgElement.cloneNode(true);
+            svgClone.setAttribute('width', width);
+            svgClone.setAttribute('height', height);
+            const svgData = new XMLSerializer().serializeToString(svgClone);
             const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
             const url = URL.createObjectURL(svgBlob);
             try {
@@ -147,9 +155,9 @@
                 img.src = url;
                 await img.decode();
                 const canvas = document.createElement('canvas');
-                canvas.width = svgElement.viewBox.baseVal.width;
-                canvas.height = svgElement.viewBox.baseVal.height;
-                canvas.getContext('2d').drawImage(img, 0, 0);
+                canvas.width = width;
+                canvas.height = height;
+                canvas.getContext('2d').drawImage(img, 0, 0, width, height);
                 return await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
             } finally {
                 URL.revokeObjectURL(url);
@@ -161,6 +169,22 @@
             const url = URL.createObjectURL(blob);
             triggerFileDownload(fileName, url);
             URL.revokeObjectURL(url);
+        }
+
+        async function svgToSvgDownload(svgElement, fileName) {
+            const width = svgElement.viewBox.baseVal.width || svgElement.width.baseVal.value || svgElement.clientWidth;
+            const height = svgElement.viewBox.baseVal.height || svgElement.height.baseVal.value || svgElement.clientHeight;
+            const svgClone = svgElement.cloneNode(true);
+            svgClone.setAttribute('width', width);
+            svgClone.setAttribute('height', height);
+            const svgData = new XMLSerializer().serializeToString(svgClone);
+            const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(svgBlob);
+            try {
+                triggerFileDownload(fileName, url);
+            } finally {
+                URL.revokeObjectURL(url);
+            }
         }
 
         async function svgToImageCopy(svgElement) {

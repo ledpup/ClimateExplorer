@@ -112,4 +112,10 @@ public partial class Hottest100
         var fileName = BuildTitle().Replace(" ", "-").Replace("/", "-").ToLowerInvariant() + ".png";
         await JsRuntime.InvokeVoidAsync("svgToImageDownload", svgRef, fileName);
     }
+
+    private async Task DownloadSvg()
+    {
+        var fileName = BuildTitle().Replace(" ", "-").Replace("/", "-").ToLowerInvariant() + ".svg";
+        await JsRuntime.InvokeVoidAsync("svgToSvgDownload", svgRef, fileName);
+    }
 }
