@@ -2,7 +2,7 @@
 
 using static ClimateExplorer.Core.Enums;
 
-public class YearAndDataTypeFilter
+public sealed record YearAndDataTypeFilter
 {
     public YearAndDataTypeFilter(short year)
     {

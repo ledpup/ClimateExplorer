@@ -3,7 +3,7 @@
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 
-public class SourceSeriesSpecification
+public sealed record SourceSeriesSpecification
 {
     public Guid SourceDataSetId { get; set; }
     public required Guid LocationId { get; set; }

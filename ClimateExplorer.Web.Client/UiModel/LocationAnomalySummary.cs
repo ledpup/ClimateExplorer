@@ -3,7 +3,7 @@
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Web.UiModel;
 
-public class LocationAnomalySummary
+public sealed record LocationAnomalySummary
 {
     public CalculatedAnomaly? CalculatedAnomaly { get; set; }
 

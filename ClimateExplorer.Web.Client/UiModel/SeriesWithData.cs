@@ -2,7 +2,7 @@
 
 using ClimateExplorer.Core.Model;
 
-public class SeriesWithData
+public sealed record SeriesWithData
 {
     public required ChartSeriesDefinition ChartSeries { get; set; }
     public required DataSet SourceDataSet { get; set; }

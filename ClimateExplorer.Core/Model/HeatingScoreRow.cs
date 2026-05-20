@@ -1,6 +1,6 @@
 ﻿namespace ClimateExplorer.Core.Model;
 
-public class HeatingScoreRow
+public sealed record HeatingScoreRow
 {
     public required double MinimumWarmingAnomaly { get; set; }
     public required double MaximumWarmingAnomaly { get; set; }
