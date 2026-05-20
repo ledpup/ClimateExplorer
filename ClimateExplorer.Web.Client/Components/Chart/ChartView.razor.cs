@@ -1044,7 +1044,7 @@ public partial class ChartView : IAsyncDisposable
             {
                 SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
                 SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
-                Aggregation = SeriesAggregationOptions.Maximum,
+                Aggregation = SeriesAggregationOptions.Mean,
                 BinGranularity = BinGranularities.ByYear,
                 SecondaryCalculation = SecondaryCalculationOptions.AnnualChange,
                 Smoothing = SeriesSmoothingOptions.MovingAverage,
