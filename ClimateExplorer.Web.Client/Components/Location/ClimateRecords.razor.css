@@ -121,6 +121,13 @@
     max-width: 5rem;
 }
 
+@media (max-width: 1024px) {
+    .top-percent-col,
+    th.top-percent-col {
+        display: none !important;
+    }
+}
+
 ::deep .nav-tabs {
     border-bottom: 2px solid #c4d4d1;
 }

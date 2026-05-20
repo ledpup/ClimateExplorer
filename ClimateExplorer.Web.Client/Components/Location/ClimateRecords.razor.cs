@@ -53,6 +53,7 @@ public partial class ClimateRecords
     private List<DataType> AvailableDataTypes { get; set; } = [];
     private List<DataAdjustment?> AvailableDataAdjustments { get; set; } = [];
     private List<string> ComputedRowStyles { get; set; } = [];
+    private List<string> ComputedTopPercentages { get; set; } = [];
     private List<MeasurementDefinitionViewModel> LocationMeasurements { get; set; } = [];
 
     private DataType? SelectedDataType { get; set; }
@@ -162,6 +163,37 @@ public partial class ClimateRecords
             })];
     }
 
+    private static List<string> ComputeTopPercentLabels(ClimateRecordsResponse? response, int startRank, int overallTotal)
+    {
+        if (response is null || response.Records is null || response.Records.Count == 0 || overallTotal <= 0)
+        {
+            return [];
+        }
+
+        var n = response.Records.Count;
+        var thresholds = new[] { 1, 5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
+
+        return [.. Enumerable.Range(0, n).Select(i =>
+        {
+            var rank = startRank + i;
+            foreach (var t in thresholds)
+            {
+                var limit = (int)Math.Ceiling(overallTotal * (t / 100.0));
+                if (limit < 1)
+                {
+                    limit = 1;
+                }
+
+                if (rank <= limit)
+                {
+                    return $"{t}%";
+                }
+            }
+
+            return string.Empty;
+        })];
+    }
+
     private static string FormatAnomaly(double anomaly, UnitOfMeasure unitOfMeasure)
     {
         var sign = anomaly >= 0 ? "+" : string.Empty;
@@ -242,10 +274,11 @@ public partial class ClimateRecords
 
         try
         {
-            if (ActiveView == RecordView.Top100)
+                if (ActiveView == RecordView.Top100)
             {
                 ClimateRecordsResult = null;
                 ComputedRowStyles = [];
+                ComputedTopPercentages = [];
             }
             else if (ActiveView == RecordView.Yearly)
             {
@@ -258,6 +291,7 @@ public partial class ClimateRecords
                 {
                     ClimateRecordsResult = new ClimateRecordsResponse();
                     ComputedRowStyles = [];
+                    ComputedTopPercentages = [];
                 }
                 else
                 {
@@ -265,6 +299,8 @@ public partial class ClimateRecords
                     var day = ActiveView == RecordView.Daily && SelectedMonth != 0 && SelectedDay != 0 ? (int?)SelectedDay : null;
                     ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType.Value, SelectedDataAdjustment, Ascending, take: Count, skip: CurrentPage, month, ActiveView == RecordView.Monthly, day);
                     ComputedRowStyles = ComputeRowStyles(ClimateRecordsResult);
+                    var startRank = ((CurrentPage - 1) * Count) + 1;
+                    ComputedTopPercentages = ComputeTopPercentLabels(ClimateRecordsResult, startRank, ClimateRecordsResult.TotalCount);
                 }
             }
         }
@@ -293,6 +329,7 @@ public partial class ClimateRecords
         {
             ClimateRecordsResult = summary is not null ? new ClimateRecordsResponse() : null;
             ComputedRowStyles = [];
+            ComputedTopPercentages = [];
             return;
         }
 
@@ -325,6 +362,8 @@ public partial class ClimateRecords
             TotalCount = totalCount,
         };
         ComputedRowStyles = ComputeRowStyles(ClimateRecordsResult);
+        var startRank = ((CurrentPage - 1) * Count) + 1;
+        ComputedTopPercentages = ComputeTopPercentLabels(ClimateRecordsResult, startRank, ClimateRecordsResult.TotalCount);
     }
 
     private async Task OnViewChanged(string name)

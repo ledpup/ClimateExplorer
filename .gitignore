@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 # Ignore the WebApi cache
 /ClimateExplorer.WebApi/cache/*
+*.lscache
