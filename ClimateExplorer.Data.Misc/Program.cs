@@ -61,7 +61,7 @@ odgi.DataDownloadUrl = odgi.DataDownloadUrl!.Replace("[station]", "table2");
 await DownloadDataSetData(odgi, Folders.SourceDataFolder, "table2");
 
 // HadCET
-var hadOps = dataSetDefinitions.Single(x => x.Name == "Hadley Centre");
+var hadOps = dataSetDefinitions.Single(x => x.Name == "Met Office Hadley Centre");
 hadOps.DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/meantemp_monthly_totals.txt";
 await DownloadDataSetData(hadOps, Folders.SourceDataFolder, measurementDefinition: hadOps.MeasurementDefinitions!.Single(x => x.DataType == Enums.DataType.TempMean));
 
