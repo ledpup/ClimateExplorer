@@ -122,9 +122,9 @@
 }
 
 @media (max-width: 1024px) {
-    .top-percent-col,
-    th.top-percent-col {
-        display: none !important;
+    ::deep .top-percent-col,
+    ::deep .top-percent-cell {
+        display: none;
     }
 }
 
