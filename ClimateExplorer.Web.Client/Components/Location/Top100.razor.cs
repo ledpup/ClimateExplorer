@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
 
-public partial class Hottest100
+public partial class Top100
 {
     private ElementReference svgRef;
 
@@ -35,7 +35,7 @@ public partial class Hottest100
     private IDataService DataService { get; set; } = default!;
 
     private int TopCount { get; set; } = 100;
-    private List<Hottest100Model.RecordCount> YearCounts { get; set; } = [];
+    private List<Top100Model.RecordCount> YearCounts { get; set; } = [];
     private int StartYear { get; set; }
     private int EndYear { get; set; }
     private bool IsLoading { get; set; }
@@ -72,7 +72,7 @@ public partial class Hottest100
             }
             else
             {
-                YearCounts = Hottest100Model.BuildYearCounts(top100.Records);
+                YearCounts = Top100Model.BuildYearCounts(top100.Records);
                 StartYear = top100.StartYear!.Value;
                 EndYear = top100.EndYear!.Value;
             }
