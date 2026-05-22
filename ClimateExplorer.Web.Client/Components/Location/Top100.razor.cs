@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
 
-public partial class Hottest100
+public partial class Top100
 {
     private ElementReference svgRef;
 

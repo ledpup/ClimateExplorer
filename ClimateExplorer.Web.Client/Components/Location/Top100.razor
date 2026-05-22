@@ -21,11 +21,18 @@
                 <DelayedTooltip Text="Copy the chart as an image to the clipboard">
                     <button class="hottest100-btn" @onclick="CopyAsImage"><i class="fas fa-copy"></i> Copy</button>
                 </DelayedTooltip>
-                <DelayedTooltip Text="Download the chart as a PNG image">
-                    <button class="hottest100-btn" @onclick="DownloadImage"><i class="fas fa-download"></i> Download PNG</button>
-                </DelayedTooltip>
-                <DelayedTooltip Text="Download the chart as an SVG file">
-                    <button class="hottest100-btn" @onclick="DownloadSvg"><i class="fas fa-download"></i> Download SVG</button>
+                <DelayedTooltip Text="Download the chart as a PNG or SVG file">
+                    <div class="hottest100-download-dropdown-wrapper">
+                        <Dropdown>
+                            <DropdownToggle>
+                                <button class="hottest100-btn hottest100-download-btn"><i class="fas fa-download"></i> Download</button>
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem Clicked="DownloadImage">PNG</DropdownItem>
+                                <DropdownItem Clicked="DownloadSvg">SVG</DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    </div>
                 </DelayedTooltip>
             </div>
         </div>

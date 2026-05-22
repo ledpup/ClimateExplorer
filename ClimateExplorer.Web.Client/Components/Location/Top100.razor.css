@@ -100,8 +100,53 @@
     text-decoration: underline;
 }
 
+/* Dropdown wrapper: display:contents keeps it inline with other buttons */
+.hottest100-download-dropdown-wrapper {
+    display: contents;
+}
+
+/* Style the dropdown toggle button to match hottest100-btn */
+.hottest100-download-dropdown-wrapper ::deep .dropdown {
+    display: inline-flex;
+}
+
+.hottest100-download-dropdown-wrapper ::deep .btn {
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    font: inherit;
+}
+
+.hottest100-download-btn {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.hottest100-download-dropdown-wrapper ::deep .dropdown-menu {
+    min-width: 100px;
+}
+
+.hottest100-download-dropdown-wrapper ::deep .dropdown-item {
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+}
+
+.hottest100-download-dropdown-wrapper ::deep .dropdown-item:hover {
+    background-color: #f8f8f8;
+}
+
 @media (max-width: 1024px) {
     .hottest100-btn {
+        padding: 0.75rem 1rem;
+        font-size: 16px;
+    }
+
+    .hottest100-download-btn {
         padding: 0.75rem 1rem;
         font-size: 16px;
     }
