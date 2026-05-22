@@ -1,37 +1,37 @@
-.hottest100-space {
+.top100-space {
     min-height: 260px;
 }
 
-.hottest100-svg-container {
+.top100-svg-container {
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     background-color: #ffffff;
 }
 
-.hottest100-svg {
+.top100-svg {
     display: block;
     height: auto;
 }
 
 @media (min-width: 1025px) {
-    .hottest100-svg {
+    .top100-svg {
         width: 100%;
     }
 }
 
 @media (max-width: 1024px) {
-    .hottest100-svg {
+    .top100-svg {
         width: min(1024px, 140vw);
         min-width: min(1024px, 140vw);
     }
 
-    .hottest100-svg-container {
+    .top100-svg-container {
         border-radius: 12px;
         box-shadow: inset -8px 0 8px -8px rgba(0, 0, 0, 0.15);
     }
 
-    .hottest100-svg-container::after {
+    .top100-svg-container::after {
         content: '→';
         position: absolute;
         right: 8px;
@@ -43,21 +43,21 @@
         animation: scroll-hint 2s ease-in-out infinite;
     }
 
-    .hottest100-svg-container::-webkit-scrollbar {
+    .top100-svg-container::-webkit-scrollbar {
         height: 8px;
     }
 
-    .hottest100-svg-container::-webkit-scrollbar-track {
+    .top100-svg-container::-webkit-scrollbar-track {
         background: #f8f8f8;
         border-radius: 8px;
     }
 
-    .hottest100-svg-container::-webkit-scrollbar-thumb {
+    .top100-svg-container::-webkit-scrollbar-thumb {
         background: #425f59;
         border-radius: 8px;
     }
 
-    .hottest100-svg-container::-webkit-scrollbar-thumb:hover {
+    .top100-svg-container::-webkit-scrollbar-thumb:hover {
         background: #2a3d39;
     }
 }
@@ -73,7 +73,7 @@
     }
 }
 
-.hottest100-actions {
+.top100-actions {
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
@@ -81,7 +81,7 @@
     background-color: #ffffff;
 }
 
-.hottest100-btn {
+.top100-btn {
     color: inherit;
     text-decoration: none;
     cursor: pointer;
@@ -95,22 +95,22 @@
     gap: 0.25rem;
 }
 
-.hottest100-btn:hover {
+.top100-btn:hover {
     color: #2a3d39;
     text-decoration: underline;
 }
 
 /* Dropdown wrapper: display:contents keeps it inline with other buttons */
-.hottest100-download-dropdown-wrapper {
+.top100-download-dropdown-wrapper {
     display: contents;
 }
 
-/* Style the dropdown toggle button to match hottest100-btn */
-.hottest100-download-dropdown-wrapper ::deep .dropdown {
+/* Style the dropdown toggle button to match top100-btn */
+.top100-download-dropdown-wrapper ::deep .dropdown {
     display: inline-flex;
 }
 
-.hottest100-download-dropdown-wrapper ::deep .btn {
+.top100-download-dropdown-wrapper ::deep .btn {
     background: none;
     border: none;
     padding: 0;
@@ -120,33 +120,33 @@
     font: inherit;
 }
 
-.hottest100-download-btn {
+.top100-download-btn {
     min-height: 44px;
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
 }
 
-.hottest100-download-dropdown-wrapper ::deep .dropdown-menu {
+.top100-download-dropdown-wrapper ::deep .dropdown-menu {
     min-width: 100px;
 }
 
-.hottest100-download-dropdown-wrapper ::deep .dropdown-item {
+.top100-download-dropdown-wrapper ::deep .dropdown-item {
     cursor: pointer;
     padding: 0.5rem 1rem;
 }
 
-.hottest100-download-dropdown-wrapper ::deep .dropdown-item:hover {
+.top100-download-dropdown-wrapper ::deep .dropdown-item:hover {
     background-color: #f8f8f8;
 }
 
 @media (max-width: 1024px) {
-    .hottest100-btn {
+    .top100-btn {
         padding: 0.75rem 1rem;
         font-size: 16px;
     }
 
-    .hottest100-download-btn {
+    .top100-download-btn {
         padding: 0.75rem 1rem;
         font-size: 16px;
     }

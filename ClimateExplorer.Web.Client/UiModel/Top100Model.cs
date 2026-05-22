@@ -2,7 +2,7 @@
 {
     using ClimateExplorer.Core.Model;
 
-    public static class Hottest100Model
+    public static class Top100Model
     {
         public const int ChartWidth = 900;
         public const int ChartHeight = 200;
