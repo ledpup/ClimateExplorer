@@ -81,25 +81,6 @@
     background-color: #ffffff;
 }
 
-.top100-btn {
-    color: inherit;
-    text-decoration: none;
-    cursor: pointer;
-    background: none;
-    border: none;
-    font: inherit;
-    padding: 0.5rem;
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-}
-
-.top100-btn:hover {
-    color: #2a3d39;
-    text-decoration: underline;
-}
-
 /* Dropdown wrapper: display:contents keeps it inline with other buttons */
 .top100-download-dropdown-wrapper {
     display: contents;
@@ -110,21 +91,33 @@
     display: inline-flex;
 }
 
-.top100-download-dropdown-wrapper ::deep .btn {
-    background: none;
-    border: none;
-    padding: 0;
-    color: inherit;
-    text-decoration: none;
-    cursor: pointer;
-    font: inherit;
+ .top100-download-dropdown-wrapper ::deep button.dropdown-toggle,
+ .top100-download-dropdown-wrapper ::deep .btn.dropdown-toggle,
+ .top100-download-dropdown-wrapper ::deep .dropdown-toggle {
+    padding: 8px !important;
+    background-color: #f8f8f8 !important;
+    border: none !important;
+    border-radius: 8px !important;
+    color: #425f59 !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.25rem !important;
+    font: inherit !important;
+    box-shadow: rgb(0 0 0 / 20%) 0px 0px 4px !important;
+    text-decoration: none !important;
 }
 
-.top100-download-btn {
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
+.top100-download-dropdown-wrapper ::deep .btn i,
+.top100-download-dropdown-wrapper ::deep .dropdown-toggle i {
+    margin-right: 8px;
+}
+
+.top100-download-dropdown-wrapper ::deep button.dropdown-toggle:hover,
+.top100-download-dropdown-wrapper ::deep .btn.dropdown-toggle:hover,
+.top100-download-dropdown-wrapper ::deep .dropdown-toggle:hover {
+    background-color: #cfc !important;
+    transition: 0.25s;
 }
 
 .top100-download-dropdown-wrapper ::deep .dropdown-menu {

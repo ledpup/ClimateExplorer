@@ -131,29 +131,47 @@ th {
     font-weight: normal;
 }
 
-.chart-controls .chart-control {
+.chart-controls .chart-control,
+.add-series-button,
+.top100-btn,
+.top100-download-btn,
+.download-button,
+.today-btn,
+.sort-toggle-btn {
     padding: 8px;
     background-color: #f8f8f8;
     border: none;
     border-radius: 8px;
-    margin: 8px;
     text-decoration: none;
     color: #425f59;
     cursor: pointer;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     position: relative;
     user-select: none;
     font: inherit;
-    font-size: 16px;
     vertical-align: text-bottom;
     box-shadow: rgb(0 0 0 / 20%) 0px 0px 6px;
 }
 
-.chart-controls .chart-control i {
+.chart-controls .chart-control {
+    margin: 8px;
+}
+
+.chart-controls .chart-control i,
+.add-series-button i,
+.top100-btn i,
+.top100-download-btn i,
+.download-button i {
     margin-right: 8px;
 }
 
-.chart-controls .chart-control:hover {
+.chart-controls .chart-control:hover,
+.add-series-button:hover,
+.top100-btn:hover,
+.top100-download-btn:hover,
+.download-button:hover {
     background-color: #cfc;
     transition: 0.25s;
 }

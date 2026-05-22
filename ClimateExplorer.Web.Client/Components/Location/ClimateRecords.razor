@@ -229,7 +229,7 @@
         @if (ClimateRecordsResult?.Records is { Count: > 0 })
         {
             <div class="d-flex justify-content-end mt-2">
-                <button class="subtle-link" @onclick="DownloadAllRecords"><i class="fas fa-download"></i> Download</button>
+                <button class="download-button" @onclick="DownloadAllRecords"><i class="fas fa-download"></i> Download</button>
             </div>
         }
         </DelayedLoadingIndicator>
