@@ -131,13 +131,7 @@ th {
     font-weight: normal;
 }
 
-.chart-controls .chart-control,
-.add-series-button,
-.top100-btn,
-.top100-download-btn,
-.download-button,
-.today-btn,
-.sort-toggle-btn {
+.action-button {
     padding: 8px;
     background-color: #f8f8f8;
     border: none;
@@ -159,19 +153,11 @@ th {
     margin: 8px;
 }
 
-.chart-controls .chart-control i,
-.add-series-button i,
-.top100-btn i,
-.top100-download-btn i,
-.download-button i {
+.action-button i {
     margin-right: 8px;
 }
 
-.chart-controls .chart-control:hover,
-.add-series-button:hover,
-.top100-btn:hover,
-.top100-download-btn:hover,
-.download-button:hover {
+.action-button:hover {
     background-color: #cfc;
     transition: 0.25s;
 }

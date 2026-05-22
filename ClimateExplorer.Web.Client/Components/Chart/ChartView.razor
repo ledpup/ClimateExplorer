@@ -14,7 +14,7 @@
                     <div class="chart-series-list-wrapper">
                         <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets" IsLoading="ChartLoadingIndicatorVisible"></ChartSeriesListView>
 
-                        <button class="add-series-button" @onclick="ShowAddDataSetModal">
+                        <button class="add-series-button action-button" @onclick="ShowAddDataSetModal">
                             <i class="fas fa-plus"></i> Add
                         </button>
                     </div>
@@ -27,13 +27,13 @@
 
                     <div class="chart-controls">
                         <DelayedTooltip Text="Toggle between showing all available years and the filtered date range">
-                            <button class="chart-control" @onclick="ChartAllDataToggle"><i class="@( ChartAllData ? "fas fa-check-square" : "fas fa-square" )"></i> Chart all data</button>
+                            <button class="chart-control action-button" @onclick="ChartAllDataToggle"><i class="@( ChartAllData ? "fas fa-check-square" : "fas fa-square" )"></i> Chart all data</button>
                         </DelayedTooltip>
 
                         @if (!string.IsNullOrWhiteSpace(SelectedStartYear) || !string.IsNullOrWhiteSpace(SelectedEndYear))
                         {
                             <DelayedTooltip Text="Remove the active year filter">
-                                <button class="chart-control" @onclick="OnClearFilter"><i class="fa-solid fa-filter-circle-xmark"></i> Clear filter</button>
+                                <button class="chart-control action-button" @onclick="OnClearFilter"><i class="fa-solid fa-filter-circle-xmark"></i> Clear filter</button>
                             </DelayedTooltip>
                         }
 
@@ -61,7 +61,7 @@
                         </div>
 
                         <DelayedTooltip Text="Download the chart data as a CSV file" Style="display: inline-block; margin-left: auto">
-                            <button class="chart-control chart-control-download" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download</button>
+                            <button class="chart-control chart-control-download action-button" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download</button>
                         </DelayedTooltip>
                     </div>
                 </div>
