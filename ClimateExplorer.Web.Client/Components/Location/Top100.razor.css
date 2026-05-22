@@ -113,9 +113,10 @@
     margin-right: 8px;
 }
 
-.top100-download-dropdown-wrapper ::deep .btn:hover,
+.top100-download-dropdown-wrapper ::deep button.dropdown-toggle:hover,
+.top100-download-dropdown-wrapper ::deep .btn.dropdown-toggle:hover,
 .top100-download-dropdown-wrapper ::deep .dropdown-toggle:hover {
-    background-color: #cfc;
+    background-color: #cfc !important;
     transition: 0.25s;
 }
 
