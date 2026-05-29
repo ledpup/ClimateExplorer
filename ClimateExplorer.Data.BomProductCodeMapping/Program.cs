@@ -36,6 +36,7 @@ async Task RunAsync(string[] args)
 	// parse CLI arguments for single or range
 	int startIndex = 0, endIndex = 9999;
 	string? singleProductCode = null;
+	var logLevel = "progress";
 	if (args != null && args.Length > 0)
 	{
 		foreach (var a in args)
@@ -63,6 +64,10 @@ async Task RunAsync(string[] args)
 			else if (arg.StartsWith("--end=", StringComparison.OrdinalIgnoreCase))
 			{
 				var val = arg.Split('=')[1]; if (int.TryParse(val, out var e)) endIndex = Math.Clamp(e, 0, 9999);
+			}
+			else if (arg.StartsWith("--log-level=", StringComparison.OrdinalIgnoreCase) || arg.StartsWith("log-level=", StringComparison.OrdinalIgnoreCase))
+			{
+				logLevel = arg.Split('=')[1].Trim();
 			}
 			else
 			{
@@ -138,7 +143,13 @@ async Task RunAsync(string[] args)
 	var mappedStations = new Dictionary<string, string>(existingMappings, StringComparer.OrdinalIgnoreCase);
 
 	using var http = new HttpClient();
-	http.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (compatible; BOM-Mapper/1.0)");
+	http.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+	http.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+	http.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.5");
+	http.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate");
+	http.DefaultRequestHeaders.Add("DNT", "1");
+	http.DefaultRequestHeaders.Add("Connection", "keep-alive");
+	http.DefaultRequestHeaders.Add("Upgrade-Insecure-Requests", "1");
 
 	var mappingWriter = new StreamWriter(new FileStream(MappingFile, FileMode.Append, FileAccess.Write, FileShare.Read)) { AutoFlush = true };
 	var validWriter = new StreamWriter(new FileStream(ValidResponsesFile, FileMode.Append, FileAccess.Write, FileShare.Read)) { AutoFlush = true };
@@ -154,6 +165,7 @@ async Task RunAsync(string[] args)
 		return;
 	}
 
+	var progressMode = string.Equals(logLevel, "progress", StringComparison.OrdinalIgnoreCase);
 	if (singleProductCode != null)
 	{
 		Console.WriteLine($"Running single-product dry-run for {singleProductCode}");
@@ -161,6 +173,10 @@ async Task RunAsync(string[] args)
 	}
 
 	Console.WriteLine($"Beginning scan of {startIndex:D4}..{endIndex:D4} (will stop early if all targets mapped)");
+	if (progressMode)
+	{
+		Console.WriteLine("Progress logging enabled: status will print periodically during the scan.");
+	}
 
 	for (int num = startIndex; num <= endIndex; num++)
 	{
@@ -173,67 +189,99 @@ async Task RunAsync(string[] args)
 		var url = $"https://www.bom.gov.au/climate/dwo/{productCode}.latest.shtml";
 		try
 		{
-			using var resp = await http.GetAsync(url);
-			if (!resp.IsSuccessStatusCode)
+			int retries = 0;
+			HttpResponseMessage? resp = null;
+			while (retries < 3)
 			{
-				failedWriter.WriteLine(productCode);
-				failedCodes.Add(productCode);
-				continue;
-			}
-
-			var content = await resp.Content.ReadAsStringAsync();
-
-			// Look for station id and station name around "Source of data" section
-			var stationId = ExtractStationId(content);
-			var stationName = ExtractStationName(content);
-
-			if (stationId is null)
-			{
-				// record this as a valid response but no station found
-				validWriter.WriteLine($"{productCode},, ,{url}");
-				// not a match for our targets
-				failedWriter.WriteLine(productCode);
-				failedCodes.Add(productCode);
-				continue;
-			}
-
-			stationId = NormalizeStationId(stationId);
-
-			// record valid response
-			validWriter.WriteLine($"{productCode},{stationId},{EscapeCsv(stationName)},{url}");
-
-			// check if it's one of our targets
-			if (targetStations.TryGetValue(stationId, out var targetName))
-			{
-				mappedStations[stationId] = productCode;
-				mappingWriter.WriteLine($"{stationId},{productCode}");
-
-				// log match quality
-				if (!string.IsNullOrEmpty(targetName) && !string.IsNullOrEmpty(stationName))
+				resp = await http.GetAsync(url);
+				if (resp.StatusCode != System.Net.HttpStatusCode.Forbidden) break; // 403 Forbidden, retry with backoff
+				retries++;
+				if (retries < 3)
 				{
-					if (NamesRoughlyMatch(targetName, stationName))
-						Console.WriteLine($"Perfect match: {stationId} '{targetName}' ↔ {productCode} ('{stationName}')");
+					var waitMs = 1000 * (int)Math.Pow(2, retries); // 2s, 4s
+					Console.WriteLine($"Got 403 for {productCode}; retrying in {waitMs}ms...");
+					await Task.Delay(waitMs);
+				}
+			}
+			using (resp)
+			{
+				if (resp?.IsSuccessStatusCode == false)
+				{
+					// only add to failed codes if it's not a rate-limit (403)
+					if (resp.StatusCode != System.Net.HttpStatusCode.Forbidden)
+					{
+						failedWriter.WriteLine(productCode);
+						failedCodes.Add(productCode);
+					}
+					else if (progressMode)
+					{
+						if (resp.StatusCode == System.Net.HttpStatusCode.Forbidden)
+						{
+							Console.WriteLine($"Skipped {productCode} (403 after retries)");
+						}
+						else
+						{
+							Console.WriteLine($"{productCode} because of {resp.StatusCode}");
+						}
+					}
+                    continue;
+				}
+
+				var content = await resp.Content.ReadAsStringAsync();
+
+				// Look for station id and station name around "Source of data" section
+				var stationId = ExtractStationId(content);
+				var stationName = ExtractStationName(content);
+
+				if (stationId is null)
+				{
+					// record this as a valid response but no station found
+					validWriter.WriteLine($"{productCode},, ,{url}");
+					// not a match for our targets
+					failedWriter.WriteLine(productCode);
+					failedCodes.Add(productCode);
+					Console.WriteLine($"Failed code: {productCode}");
+					continue;
+				}
+
+				stationId = NormalizeStationId(stationId);
+
+				// record valid response
+				validWriter.WriteLine($"{productCode},{stationId},{EscapeCsv(stationName)},{url}");
+
+				// check if it's one of our targets
+				if (targetStations.TryGetValue(stationId, out var targetName))
+				{
+					mappedStations[stationId] = productCode;
+					mappingWriter.WriteLine($"{stationId},{productCode}");
+
+					// log match quality
+					if (!string.IsNullOrEmpty(targetName) && !string.IsNullOrEmpty(stationName))
+					{
+						if (NamesRoughlyMatch(targetName, stationName))
+							Console.WriteLine($"Perfect match: {stationId} '{targetName}' ↔ {productCode} ('{stationName}')");
+						else
+							Console.WriteLine($"Likely match: {stationId} '{targetName}' ↔ {productCode} ('{stationName}')");
+					}
 					else
-						Console.WriteLine($"Likely match: {stationId} '{targetName}' ↔ {productCode} ('{stationName}')");
+					{
+						Console.WriteLine($"Mapped {stationId} -> {productCode} ('{stationName}')");
+					}
+
+					if (mappedStations.Count >= totalTargets)
+					{
+						Console.WriteLine("All targets mapped; finishing early.");
+						break;
+					}
 				}
 				else
 				{
-					Console.WriteLine($"Mapped {stationId} -> {productCode} ('{stationName}')");
+					// Not a target station; still useful info recorded
+					Console.WriteLine($"Found station outside targets: {stationId} '{stationName}' at {productCode}");
+					// mark as failed for mapping purposes (so we don't re-check)
+					failedWriter.WriteLine(productCode);
+					failedCodes.Add(productCode);
 				}
-
-				if (mappedStations.Count >= totalTargets)
-				{
-					Console.WriteLine("All targets mapped; finishing early.");
-					break;
-				}
-			}
-			else
-			{
-				// Not a target station; still useful info recorded
-				Console.WriteLine($"Found station outside targets: {stationId} '{stationName}' at {productCode}");
-				// mark as failed for mapping purposes (so we don't re-check)
-				failedWriter.WriteLine(productCode);
-				failedCodes.Add(productCode);
 			}
 		}
 		catch (Exception ex)
@@ -242,8 +290,16 @@ async Task RunAsync(string[] args)
 			// don't spam failed file for transient errors; skip with delay
 		}
 
-		// be gentle
-		await Task.Delay(150);
+		if (progressMode && num % 100 == 0)
+		{
+			var total = endIndex - startIndex + 1;
+			var processed = num - startIndex + 1;
+			var percent = total > 0 ? (processed * 100.0 / total) : 0;
+			Console.WriteLine($"Progress: {num:D4} of {endIndex:D4} ({percent:F1}%), mapped={mappedStations.Count}, failed-cached={failedCodes.Count}");
+		}
+
+		// be gentle (BOM may rate-limit)
+		await Task.Delay(2000 + new Random().Next(2000));
 	}
 
 	mappingWriter.Dispose(); validWriter.Dispose(); failedWriter.Dispose();

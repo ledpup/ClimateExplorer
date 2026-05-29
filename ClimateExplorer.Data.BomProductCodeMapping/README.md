@@ -4,10 +4,16 @@ This console app scans BOM product codes (IDCJDW0000..IDCJDW9999) and scrapes th
 
 Usage examples
 
-- Run the full scan (may take a long time):
+- Run the full scan (no args, starts at 0000 and goes through 9999):
 
 ```bash
 dotnet run --project ClimateExplorer.Data.BomProductCodeMapping
+```
+
+- Run the full scan with progress logging:
+
+```bash
+dotnet run --project ClimateExplorer.Data.BomProductCodeMapping -- --log-level=progress
 ```
 
 - Dry-run a single product code (Canberra example `2801`):
@@ -30,6 +36,10 @@ Files produced (created/appended in working directory):
 - `acorn_station_product_mapping.csv` — `stationId,productCode`
 - `valid_responses.csv` — `productCode,stationId,stationName,url`
 - `failed_product_codes.txt` — one product code per line (skipped on subsequent runs)
+
+Log level options:
+- `--log-level=info` (default)
+- `--log-level=progress` (prints periodic progress updates during long scans)
 
 Notes
 - The app expects reference files in `Reference/` relative to the current working directory: `acorn_sat_stations.csv` and/or `acorn_sat_stations.txt`.
