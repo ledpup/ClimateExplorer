@@ -19,7 +19,6 @@ public static partial class BomProductMapper
             var url = $"https://www.bom.gov.au/climate/dwo/{productCode}.latest.shtml";
             try
             {
-#pragma warning disable CS8602
                 int retries = 0;
                 HttpResponseMessage? resp = null;
                 while (retries < 3)
@@ -43,9 +42,17 @@ public static partial class BomProductMapper
                             failedWriter.WriteLine(productCode);
                             failedCodes.Add(productCode);
                         }
-                        else if (progressMode)
+
+                        if (progressMode)
                         {
-                            Console.WriteLine($"Skipped {productCode} (403 after retries)");
+                            if (resp.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                            {
+                                Console.WriteLine($"Skipped {productCode} (403 after retries)");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"{productCode} failed because of {resp.StatusCode}");
+                            }
                         }
                         continue;
                     }
@@ -97,7 +104,6 @@ public static partial class BomProductMapper
                         failedCodes.Add(productCode);
                     }
                 }
-#pragma warning restore CS8602
             }
             catch (Exception ex)
             {
@@ -112,7 +118,7 @@ public static partial class BomProductMapper
                 Console.WriteLine($"Progress: {num:D4} of {endIndex:D4} ({percent:F1}%), mapped={mappedStations.Count}, failed-cached={failedCodes.Count}");
             }
 
-            await System.Threading.Tasks.Task.Delay(2000 + new Random().Next(2000));
+            await Task.Delay(1000 + new Random().Next(2000));
         }
     }
 }
