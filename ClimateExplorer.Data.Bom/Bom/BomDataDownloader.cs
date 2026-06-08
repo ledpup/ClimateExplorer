@@ -37,8 +37,6 @@ public class BomDataDownloader
         DataType dataType,
         DataFileMapping dataFileMapping,
         string outputDirectory,
-        int? startYear = null,
-        string? fileNameSuffix = null,
         bool overwriteExistingZip = false)
     {
         var stationId = GetMostRecentOperatingStationId(locationId, dataFileMapping);
@@ -47,7 +45,7 @@ public class BomDataDownloader
             return null;
         }
 
-        return await DownloadAndExtractDailyBomData(httpClient, stationId, dataType, outputDirectory, startYear, fileNameSuffix, overwriteExistingZip);
+        return await DownloadAndExtractDailyBomData(httpClient, stationId, dataType, outputDirectory, overwriteExistingZip);
     }
 
     public static async Task<string?> DownloadAndExtractDailyBomData(
@@ -55,11 +53,9 @@ public class BomDataDownloader
         string station,
         DataType dataType,
         string outputDirectory,
-        int? startYear = null,
-        string? fileNameSuffix = null,
         bool overwriteExistingZip = false)
     {
-        return await DownloadAndExtractDailyBomData(httpClient, station, dataType.ToObsCode(), outputDirectory, startYear, overwriteExistingZip);
+        return await DownloadAndExtractDailyBomData(httpClient, station, dataType.ToObsCode(), outputDirectory, overwriteExistingZip);
     }
 
     public static async Task<string?> DownloadAndExtractDailyBomData(
@@ -67,7 +63,6 @@ public class BomDataDownloader
         string station,
         ObsCode obsCode,
         string outputDirectory,
-        int? startYear = null,
         bool overwriteExistingZip = false)
     {
         var dataFile = $"{station}_{obsCode.ToString().ToLower()}";
@@ -109,18 +104,9 @@ public class BomDataDownloader
         }
 
         var p_c = match.Groups["p_c"].Value;
-        startYear = startYear ?? int.Parse(match.Groups["startYear"].Value);
-
-        if (startYear is null)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Unable to find a start year so skipping ObsCode {obsCode} for station {station}");
-            Console.ForegroundColor = ConsoleColor.Gray;
-            return null;
-        }
 
         // The response of this request is a zip file that needs to be downloaded, extracted and named in a form that we'll be able to find it again by station number
-        var zipFileUrl = $"http://www.bom.gov.au/jsp/ncc/cdio/weatherData/av?p_display_type=dailyZippedDataFile&p_stn_num={station}&p_nccObsCode={(int)obsCode}&p_c={p_c}&p_startYear={startYear}";
+        var zipFileUrl = $"http://www.bom.gov.au/jsp/ncc/cdio/weatherData/av?p_display_type=dailyZippedDataFile&p_stn_num={station}&p_nccObsCode={(int)obsCode}&p_c={p_c}";
         var zipFileResponse = await httpClient.GetAsync(zipFileUrl);
         using (var fs = new FileStream(zipfileName, FileMode.Create))
         {

@@ -427,7 +427,6 @@ async Task<LatestRecordsResponse> GetLatestRecords(
             dataType,
             bomContext.DataFileMapping,
             outputDirectory,
-            today.Year,
             overwriteExistingZip: true);
 
         if (downloadedFile == null || !File.Exists(downloadedFile))
