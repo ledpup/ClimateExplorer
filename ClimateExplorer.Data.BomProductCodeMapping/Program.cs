@@ -1,1 +1,0 @@
-﻿BomProductMapper.RunAsync(args).GetAwaiter().GetResult();
