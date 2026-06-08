@@ -19,6 +19,14 @@
     <Content Remove="cache\**" />
     <EmbeddedResource Remove="cache\**" />
     <None Remove="cache\**" />
+    <Compile Remove="LatestData\**" />
+    <Content Remove="LatestData\**" />
+    <EmbeddedResource Remove="LatestData\**" />
+    <None Remove="LatestData\**" />
+    <Compile Remove="Output\**" />
+    <Content Remove="Output\**" />
+    <EmbeddedResource Remove="Output\**" />
+    <None Remove="Output\**" />
   </ItemGroup>
   
   <ItemGroup>
@@ -35,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ClimateExplorer.Core\ClimateExplorer.Core.csproj" />
+    <ProjectReference Include="..\ClimateExplorer.Data.Bom\ClimateExplorer.Data.Bom.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="cache-longterm\" />

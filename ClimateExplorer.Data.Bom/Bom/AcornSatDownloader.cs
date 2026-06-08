@@ -1,10 +1,8 @@
 ﻿namespace ClimateExplorer.Data.Bom;
 
 using FluentFTP;
-using SharpCompress.Common;
-using SharpCompress.Readers;
-using SharpCompress.Readers.Zip;
 using System;
+using System.Formats.Tar;
 using System.IO.Compression;
 using System.Text;
 
@@ -25,30 +23,29 @@ public static class AcornSatDownloader
 
         using MemoryStream ms = new(gzTarBytes);
         using GZipStream gZipStream = new(ms, CompressionMode.Decompress);
-        using var reader = ReaderFactory.Open(gZipStream);
+        using TarReader reader = new(gZipStream);
 
-        while (reader.MoveToNextEntry())
+        TarEntry? entry;
+        while ((entry = reader.GetNextEntry()) != null)
         {
-            if (!reader.Entry.IsDirectory)
+            if (entry.EntryType == TarEntryType.Directory || entry.DataStream == null)
             {
-                if (reader.Entry.Key! == "README.txt")
-                {
-                    continue;
-                }
-
-                var fileName = reader.Entry.Key!;
-
-                Console.WriteLine(fileName);
-
-                var destinationPath = Path.Combine(outputFolder, fileName);
-
-                // Ensure directory exists
-                Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
-
-                using var entryStream = reader.OpenEntryStream();
-                using var outStream = File.Create(destinationPath);
-                entryStream.CopyTo(outStream);
+                continue;
             }
+
+            if (entry.Name == "README.txt")
+            {
+                continue;
+            }
+
+            Console.WriteLine(entry.Name);
+
+            var destinationPath = GetDestinationPath(outputFolder, entry.Name);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
+
+            using var outStream = File.Create(destinationPath);
+            entry.DataStream.CopyTo(outStream);
         }
     }
 
@@ -57,26 +54,43 @@ public static class AcornSatDownloader
         if (!Directory.Exists(outputFolder)) Directory.CreateDirectory(outputFolder);
 
         using MemoryStream ms = new (zipBytes);
-        using ZipReader reader = ZipReader.Open(ms);
+        using ZipArchive archive = new(ms, ZipArchiveMode.Read);
 
-        while (reader.MoveToNextEntry())
+        foreach (var entry in archive.Entries)
         {
-            if (!reader.Entry.IsDirectory)
+            if (string.IsNullOrEmpty(entry.Name))
             {
-                if (!File.Exists(Path.Combine(outputFolder, reader.Entry.Key!)))
-                {
-                    Console.WriteLine(reader.Entry.Key);
-
-                    reader.WriteEntryToDirectory(
-                        outputFolder,
-                        new ExtractionOptions()
-                        {
-                            ExtractFullPath = true,
-                            Overwrite = true
-                        });
-                }
+                continue;
             }
+
+            var destinationPath = GetDestinationPath(outputFolder, entry.FullName);
+            if (File.Exists(destinationPath))
+            {
+                continue;
+            }
+
+            Console.WriteLine(entry.FullName);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
+            entry.ExtractToFile(destinationPath, overwrite: true);
         }
+    }
+
+    private static string GetDestinationPath(string outputFolder, string entryName)
+    {
+        var outputRoot = Path.GetFullPath(outputFolder);
+        if (!outputRoot.EndsWith(Path.DirectorySeparatorChar))
+        {
+            outputRoot += Path.DirectorySeparatorChar;
+        }
+
+        var destinationPath = Path.GetFullPath(Path.Combine(outputFolder, entryName));
+        if (!destinationPath.StartsWith(outputRoot, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException($"Archive entry {entryName} resolves outside the output folder.");
+        }
+
+        return destinationPath;
     }
 }
 

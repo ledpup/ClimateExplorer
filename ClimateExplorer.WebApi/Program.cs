@@ -3,14 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.InputOutput;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.Data.Bom;
 using ClimateExplorer.WebApi.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Json;
@@ -21,11 +24,15 @@ using static ClimateExplorer.Core.Enums;
 
 ICache cache = new FileBackedTwoLayerCache("cache");
 ICache longtermCache = new FileBackedTwoLayerCache("cache-longterm");
+HttpClient bomHttpClient = CreateBomHttpClient();
 
 const string HeatingScoreTable = "HeatingScoreTable";
 const string NearbyLocations = "NearbyLocations";
+const string LatestRecordsCacheKeyPrefix = "LatestRecords";
+const string LatestRecordsDataFolder = "LatestData";
 const float DefaultCupDataProportion = 0.7f;
 const int DefaultCupSize = 14;
+Guid bomDataSetDefinitionId = Guid.Parse("E5EEA4D6-5FD5-49AB-BF85-144A8921111E");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -98,6 +105,12 @@ app.MapGet(
         "               dataAdjustment: data adjustment to filter by (optional; omit for data types with no adjustment concept)\n" +
         "               ascending: if true returns lowest values first; if false returns highest values first (default: false)\n" +
         "               count: number of records to return (default: 10)\n" +
+        "   GET /latest-record\n" +
+        "       Returns latest daily records for a supported BOM location\n" +
+        "           Parameters:\n" +
+        "               locationId: location id for the latest records\n" +
+        "               dataType: data type to return records for (default: TempMax)\n" +
+        "               isLocationSupported: if true returns support status without downloading records\n" +
         "   POST /dataset\n" +
         "       Returns the specified data set, transformed as requested");
 
@@ -111,6 +124,7 @@ app.MapGet("/country", GetCountries);
 app.MapGet("/region", GetRegions);
 app.MapGet("/heating-score-table", GetHeatingScoreTable);
 app.MapGet("/climate-record", GetClimateRecords);
+app.MapGet("/latest-record", GetLatestRecords);
 app.MapPost("/dataset", PostDataSets);
 
 app.Run();
@@ -125,6 +139,16 @@ object GetAbout()
             Version = asm.GetName().Version.ToString(),
             BuildTimeUtc = File.GetLastWriteTimeUtc(asm.Location),
         };
+}
+
+HttpClient CreateBomHttpClient()
+{
+    var httpClient = new HttpClient();
+    var userAgent = "Mozilla /5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
+    var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
+    httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
+    httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
+    return httpClient;
 }
 
 async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
@@ -373,6 +397,167 @@ async Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable()
 {
     var result = await longtermCache.Get<List<HeatingScoreRow>>(HeatingScoreTable);
     return result;
+}
+
+async Task<LatestRecordsResponse> GetLatestRecords(
+    Guid locationId,
+    DataType dataType = DataType.TempMax,
+    bool isLocationSupported = false)
+{
+    var today = DateOnly.FromDateTime(DateTime.Today);
+    var bomContext = await GetBomLatestRecordsContext(locationId, dataType, today);
+    if (isLocationSupported || !bomContext.IsSupported)
+    {
+        return new LatestRecordsResponse { IsSupported = bomContext.IsSupported };
+    }
+
+    var cacheKey = $"{LatestRecordsCacheKeyPrefix}_{locationId}_{dataType}";
+    var cachedResponse = await cache.Get<LatestRecordsResponse>(cacheKey);
+    if (HasRecordForDate(cachedResponse, today) || WasDataRetrievedInLastHour(cachedResponse))
+    {
+        return cachedResponse;
+    }
+
+    try
+    {
+        var outputDirectory = Path.Combine(LatestRecordsDataFolder, bomContext.MeasurementDefinition.FolderName);
+        var downloadedFile = await BomDataDownloader.DownloadAndExtractDailyBomData(
+            bomHttpClient,
+            locationId,
+            dataType,
+            bomContext.DataFileMapping,
+            outputDirectory,
+            today.Year,
+            overwriteExistingZip: true);
+
+        if (downloadedFile == null || !File.Exists(downloadedFile))
+        {
+            return cachedResponse ?? new LatestRecordsResponse { IsSupported = true };
+        }
+
+        var records = await ReadLatestBomClimateRecords(
+            bomContext.StationId,
+            bomContext.MeasurementDefinition,
+            outputDirectory,
+            today.Year);
+
+        var response = new LatestRecordsResponse
+        {
+            RetrievedDate = DateTimeOffset.UtcNow,
+            IsSupported = true,
+            Records = records,
+        };
+
+        await cache.Put(cacheKey, response);
+        return response;
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogError(ex, "Unable to retrieve latest BOM records for location {LocationId} and data type {DataType}", locationId, dataType);
+        return cachedResponse ?? new LatestRecordsResponse { IsSupported = true };
+    }
+}
+
+async Task<(bool IsSupported, string StationId, MeasurementDefinition MeasurementDefinition, DataFileMapping DataFileMapping)> GetBomLatestRecordsContext(
+    Guid locationId,
+    DataType dataType,
+    DateOnly asAt)
+{
+    if (!dataType.TryToObsCode(out _))
+    {
+        return (false, null, null, null);
+    }
+
+    var locations = await GetCachedLocations(locationId, permitCreateCache: false);
+    var location = locations.SingleOrDefault(x => x.Id == locationId);
+    if (location == null)
+    {
+        return (false, null, null, null);
+    }
+
+    var dataSetDefinitions = await DataSetDefinition.GetDataSetDefinitions();
+    var bomDataSetDefinition = dataSetDefinitions.SingleOrDefault(x => x.Id == bomDataSetDefinitionId);
+    var dataFileMapping = bomDataSetDefinition?.DataLocationMapping;
+    if (dataFileMapping == null || !dataFileMapping.LocationIdToDataFileMappings.ContainsKey(location.Id))
+    {
+        return (false, null, null, null);
+    }
+
+    var measurementDefinition = bomDataSetDefinition!.MeasurementDefinitions?.SingleOrDefault(x =>
+        x.DataType == dataType &&
+        x.DataResolution == DataResolution.Daily &&
+        x.RowDataType == RowDataType.OneValuePerRow);
+    if (measurementDefinition == null)
+    {
+        return (false, null, null, null);
+    }
+
+    var stationId = BomDataDownloader.GetMostRecentOperatingStationId(location.Id, dataFileMapping, asAt);
+    if (stationId == null)
+    {
+        return (false, null, null, null);
+    }
+
+    return (true, stationId, measurementDefinition, dataFileMapping);
+}
+
+async Task<List<ClimateRecord>> ReadLatestBomClimateRecords(
+    string stationId,
+    MeasurementDefinition measurementDefinition,
+    string outputDirectory,
+    int year)
+{
+    var latestMeasurementDefinition = new MeasurementDefinition
+    {
+        DataAdjustment = measurementDefinition.DataAdjustment,
+        DataResolution = measurementDefinition.DataResolution,
+        DataRowRegEx = measurementDefinition.DataRowRegEx,
+        DataType = measurementDefinition.DataType,
+        FileNameFormat = measurementDefinition.FileNameFormat,
+        FolderName = outputDirectory,
+        NullValue = measurementDefinition.NullValue,
+        RowDataType = measurementDefinition.RowDataType,
+        UnitOfMeasure = measurementDefinition.UnitOfMeasure,
+        ValueAdjustment = measurementDefinition.ValueAdjustment,
+    };
+
+    var dataRecords = await DataReaderFunctions.GetDataRecords(
+        latestMeasurementDefinition,
+        [
+            new DataFileFilterAndAdjustment
+            {
+                Id = stationId,
+                StartDate = new DateOnly(year, 1, 1),
+            },
+        ]);
+
+    return dataRecords
+        .Where(x => x.Value.HasValue && x.Month.HasValue && x.Day.HasValue)
+        .OrderBy(x => x.Year)
+        .ThenBy(x => x.Month)
+        .ThenBy(x => x.Day)
+        .Select(x => new ClimateRecord
+        {
+            DataAdjustment = measurementDefinition.DataAdjustment,
+            DataResolution = measurementDefinition.DataResolution,
+            DataType = measurementDefinition.DataType,
+            Day = x.Day,
+            Month = x.Month!.Value,
+            UnitOfMeasure = measurementDefinition.UnitOfMeasure,
+            Value = x.Value!.Value,
+            Year = x.Year,
+        })
+        .ToList();
+}
+
+bool HasRecordForDate(LatestRecordsResponse response, DateOnly date)
+{
+    return response?.Records.Any(x => x.Year == date.Year && x.Month == date.Month && x.Day == date.Day) == true;
+}
+
+bool WasDataRetrievedInLastHour(LatestRecordsResponse response)
+{
+    return response?.RetrievedDate >= DateTimeOffset.UtcNow.AddHours(-1);
 }
 
 async Task<ClimateRecordsResponse> GetClimateRecords(

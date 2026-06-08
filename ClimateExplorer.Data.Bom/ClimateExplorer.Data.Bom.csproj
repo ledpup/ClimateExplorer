@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <PackageReference Include="FluentFTP" Version="54.1.2" />
-    <PackageReference Include="SharpCompress" Version="0.48.1" />
   </ItemGroup>
 
   <ItemGroup>
