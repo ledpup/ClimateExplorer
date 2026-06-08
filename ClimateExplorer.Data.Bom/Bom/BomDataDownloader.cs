@@ -30,10 +30,19 @@ public class BomDataDownloader
         }
     }
 
-    async static Task DownloadAndExtractDailyBomData(HttpClient httpClient, string station, ObsCode obsCode, string outputDirectory)
+    async static Task DownloadAndExtractDailyBomData(HttpClient httpClient, string station, ObsCode obsCode, string outputDirectory, int? startYear = null, string? fileNameSuffix = null)
     {
         var dataFile = $"{station}_{obsCode.ToString().ToLower()}";
-        var zipfileName = @$"Output\Temp\{dataFile}.zip";
+        if (fileNameSuffix != null)
+        {
+            dataFile += $"_{fileNameSuffix}";
+        }
+        var tempDirectoryInfo = new DirectoryInfo(@"Output\Temp\");
+        if (!tempDirectoryInfo.Exists)
+        {
+            tempDirectoryInfo.Create();
+        }
+        var zipfileName = @$"{tempDirectoryInfo.Name}{dataFile}.zip";
         var csvFilePathAndName = @$"{outputDirectory}\{dataFile}.csv";
 
         // If we've already downloaded the zip, let's not do it again.
@@ -54,9 +63,9 @@ public class BomDataDownloader
         var responseContent = await response.Content.ReadAsStringAsync();
         var match = regEx.Match(responseContent);
         var p_c = match.Groups["p_c"].Value;
-        var startYear = match.Groups["startYear"].Value;
+        startYear = startYear ?? int.Parse(match.Groups["startYear"].Value);
 
-        if (string.IsNullOrWhiteSpace(startYear))
+        if (startYear is null)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"Unable to find a start year so skipping ObsCode {obsCode} for station {station}");
@@ -72,20 +81,20 @@ public class BomDataDownloader
             await zipFileResponse.Content.CopyToAsync(fs);
         }
 
-        var tempDirectory = new DirectoryInfo("temp");
-        DeleteDirectory(tempDirectory);
+        var extractDirectory = new DirectoryInfo("temp");
+        DeleteDirectory(extractDirectory);
         try
         {
             // Extract the zip file with the daily data to a folder called temp
             ZipFile.ExtractToDirectory(zipfileName, "temp");
 
             // Find the csv file with the data and move and rename it, putting it in the output folder (named based on the observation code)
-            var csv = tempDirectory.GetFiles("*.csv").Single();
+            var csv = extractDirectory.GetFiles("*.csv").Single();
             
             csv.MoveTo(csvFilePathAndName, true);
 
             // Remove the temp directory
-            DeleteDirectory(tempDirectory);
+            DeleteDirectory(extractDirectory);
         }
         catch (InvalidDataException ex)
         {
