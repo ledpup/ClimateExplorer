@@ -176,8 +176,8 @@ public partial class Locations
         _ => dt.ToString(),
     };
 
-    private static string FormatRecordHigh(ClimateRecord record) =>
-        $"{record.Value.ToString("0.0", CultureInfo.InvariantCulture)}°C ({record.Year})";
+    private static string FormatRecordHigh(DataRecord record) =>
+        $"{record.Value!.Value.ToString("0.0", CultureInfo.InvariantCulture)}°C ({record.Year})";
 
     private static string GetHeatingScoreBadgeStyle(short score)
     {

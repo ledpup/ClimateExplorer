@@ -445,6 +445,10 @@ async Task<LatestRecordsResponse> GetLatestRecords(
         {
             RetrievedDate = DateTimeOffset.UtcNow,
             IsSupported = true,
+            DataAdjustment = bomContext.MeasurementDefinition.DataAdjustment,
+            DataResolution = bomContext.MeasurementDefinition.DataResolution,
+            DataType = bomContext.MeasurementDefinition.DataType,
+            UnitOfMeasure = bomContext.MeasurementDefinition.UnitOfMeasure,
             Records = records,
         };
 
@@ -501,7 +505,7 @@ async Task<(bool IsSupported, string StationId, MeasurementDefinition Measuremen
     return (true, stationId, measurementDefinition, dataFileMapping);
 }
 
-async Task<List<ClimateRecord>> ReadLatestBomClimateRecords(
+async Task<List<DataRecord>> ReadLatestBomClimateRecords(
     string stationId,
     MeasurementDefinition measurementDefinition,
     string outputDirectory,
@@ -536,17 +540,7 @@ async Task<List<ClimateRecord>> ReadLatestBomClimateRecords(
         .OrderBy(x => x.Year)
         .ThenBy(x => x.Month)
         .ThenBy(x => x.Day)
-        .Select(x => new ClimateRecord
-        {
-            DataAdjustment = measurementDefinition.DataAdjustment,
-            DataResolution = measurementDefinition.DataResolution,
-            DataType = measurementDefinition.DataType,
-            Day = x.Day,
-            Month = x.Month!.Value,
-            UnitOfMeasure = measurementDefinition.UnitOfMeasure,
-            Value = x.Value!.Value,
-            Year = x.Year,
-        })
+        .Select(x => new DataRecord(x.Year, x.Month, x.Day, x.Value))
         .ToList();
 }
 
@@ -601,8 +595,16 @@ async Task<ClimateRecordsResponse> GetClimateRecords(
 
     if (md == null || matchingDsd == null)
     {
-        return new ClimateRecordsResponse();
+        return new ClimateRecordsResponse
+        {
+            DataAdjustment = dataAdjustment,
+            DataType = dataType,
+        };
     }
+
+    var responseDataResolution = md.DataResolution == DataResolution.Daily && monthly
+        ? DataResolution.Monthly
+        : md.DataResolution;
 
     var fn = dataType == DataType.Precipitation ? ContainerAggregationFunctions.Sum : ContainerAggregationFunctions.Mean;
     var dataSet = await PostDataSets(
@@ -681,35 +683,25 @@ async Task<ClimateRecordsResponse> GetClimateRecords(
 
     var climateRecords = paginated.Select(record =>
     {
-        var cr = new ClimateRecord
-        {
-            DataAdjustment = dataAdjustment,
-            DataResolution = md.DataResolution,
-            DataType = dataType,
-            UnitOfMeasure = md.UnitOfMeasure,
-            Value = record.Value!.Value,
-        };
-
         if (md.DataResolution == DataResolution.Daily && !monthly)
         {
             var dayBin = (YearAndDayBinIdentifier)record.BinIdentifier!;
-            cr.Year = dayBin.Year;
-            cr.Month = dayBin.Month;
-            cr.Day = dayBin.Day;
+            return new DataRecord((short)dayBin.Year, (short)dayBin.Month, (short)dayBin.Day, record.Value);
         }
         else
         {
             var monthBin = (YearAndMonthBinIdentifier)record.BinIdentifier!;
-            cr.Year = monthBin.Year;
-            cr.Month = monthBin.Month;
+            return new DataRecord((short)monthBin.Year, (short)monthBin.Month, record.Value);
         }
-
-        return cr;
     }).ToList();
 
     var response = new ClimateRecordsResponse
     {
         Records = climateRecords,
+        DataAdjustment = dataAdjustment,
+        DataResolution = responseDataResolution,
+        DataType = dataType,
+        UnitOfMeasure = md.UnitOfMeasure,
         StartYear = startYear,
         EndYear = endYear,
         TotalCount = totalCount,

@@ -126,7 +126,7 @@ public partial class LocationInfo
 
         if (Location?.RecordHigh is not null)
         {
-            RecordHighToolTip = $"{Location.Name} record high of {Location.RecordHigh.Value}°C set {(Location.RecordHigh.Day == null ? string.Empty : Location.RecordHigh.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(Location.RecordHigh.Month)} {Location.RecordHigh.Year}.<br>Click for more records.";
+            RecordHighToolTip = $"{Location.Name} record high of {Location.RecordHigh.Value}°C set {(Location.RecordHigh.Day == null ? string.Empty : Location.RecordHigh.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(Location.RecordHigh.Month!.Value)} {Location.RecordHigh.Year}.<br>Click for more records.";
         }
 
         await base.OnParametersSetAsync();

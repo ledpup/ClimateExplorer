@@ -7,7 +7,7 @@
         public const int ChartWidth = 900;
         public const int ChartHeight = 200;
 
-        public static List<RecordCount> BuildYearCounts(IEnumerable<ClimateRecord> records)
+        public static List<RecordCount> BuildYearCounts(IEnumerable<DataRecord> records)
         {
             return [.. records
                 .GroupBy(r => r.Year)
