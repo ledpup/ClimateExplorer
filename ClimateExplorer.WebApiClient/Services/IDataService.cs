@@ -7,7 +7,7 @@ using static ClimateExplorer.Core.Enums;
 public interface IDataService
 {
     Task<ApiMetadataModel> GetAbout();
-    Task<IEnumerable<DataSetDefinitionViewModel>> GetDataSetDefinitions();
+    Task<IEnumerable<DataSetDefinitionViewModel>> GetDataSetDefinitions(bool includeLargeLocationIds = false, Guid? locationId = null);
     Task<IEnumerable<Location>> GetLocations(bool permitCreateCache = true);
     Task<IEnumerable<LocationDistance>> GetNearbyLocations(Guid locationId, int? take = null, int? skip = null);
     Task<Location> GetLocationByPath(string path);

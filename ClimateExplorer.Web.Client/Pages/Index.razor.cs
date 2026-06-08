@@ -65,6 +65,10 @@ public partial class Index : ChartablePage
 
     private bool LocationChangeEventOccurring { get; set; } = false;
 
+    private bool LocationDictionaryIncludesAllLocations { get; set; }
+
+    private Task? LocationDictionaryLoadTask { get; set; }
+
     public override void Dispose()
     {
         SiteOverviewService!.ShowRequested -= HandleShowRequested;
@@ -93,8 +97,10 @@ public partial class Index : ChartablePage
         {
             var name = LocationString.TrimEnd('/').ToLower();
             var newLocation = LocationDictionary.Values.FirstOrDefault(x => x.UrlReadyName() == name);
+            newLocation ??= await DataService!.GetLocationByPath(name);
             if (newLocation is not null && newLocation.Id != Location?.Id)
             {
+                AddLocationToDictionary(newLocation);
                 await NavigateTo($"/{PageName}/{newLocation.Id}", replace: true);
                 await SelectedLocationChangedInternal(newLocation.Id);
             }
@@ -112,47 +118,71 @@ public partial class Index : ChartablePage
 
         if (DataSetDefinitions is null)
         {
-            var dataSetDefinitionsTask = DataService!.GetDataSetDefinitions();
-            var locationsTask = DataService!.GetLocations(false);
+            var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+            var csd = QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out _);
+            var dataSetDefinitionsTask = DataService!.GetDataSetDefinitions(includeLargeLocationIds: csd);
             var regionsTask = DataService!.GetRegions();
 
-            await Task.WhenAll(dataSetDefinitionsTask, locationsTask, regionsTask);
+            Task<IEnumerable<Location>>? locationsTask = csd
+                ? DataService!.GetLocations(false)
+                : null;
+
+            if (locationsTask is null)
+            {
+                await Task.WhenAll(dataSetDefinitionsTask, regionsTask);
+            }
+            else
+            {
+                await Task.WhenAll(dataSetDefinitionsTask, locationsTask, regionsTask);
+            }
 
             DataSetDefinitions = [.. await dataSetDefinitionsTask];
-            LocationDictionary = (await locationsTask).ToDictionary(x => x.Id, x => x);
             Regions = [.. await regionsTask];
 
+            if (locationsTask is not null)
+            {
+                LocationDictionary = (await locationsTask).ToDictionary(x => x.Id, x => x);
+                LocationDictionaryIncludesAllLocations = true;
+            }
+
             // If there is no "csd" query string parameter, set up default charts for the location
-            var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
             var routeSegment = uri.Segments.Length > 2 ? uri.Segments[2].TrimEnd('/') : null;
             var isNamedUrl = routeSegment != null && !Guid.TryParse(routeSegment, out _);
 
             if (isNamedUrl)
             {
-                // Resolve from the just-loaded LocationDictionary. GetLocationByPath has no
-                // client-side cache so it races with the bulk data load above; using the
-                // dictionary avoids the race and bypasses the LocalStorage fallback entirely.
-                Location = LocationDictionary!.Values.FirstOrDefault(x => x.UrlReadyName() == routeSegment!.ToLower());
+                Location ??= LocationDictionary?.Values.FirstOrDefault(x => x.UrlReadyName() == routeSegment!.ToLower())
+                    ?? await DataService!.GetLocationByPath(routeSegment!.ToLower());
             }
             else
             {
                 // Location may have been set in OnInitializedAsync.
                 // Fall back to local storage; use Hobart as the final default.
-                Location ??= await GetLocation();
+                Location ??= csd
+                    ? await GetLocation()
+                    : await GetStoredOrDefaultLocation();
             }
 
-            var csd = QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier);
+            if (Location is not null)
+            {
+                AddLocationToDictionary(Location);
+                await EnsureDataSetDefinitionsForLocation(Location.Id);
+            }
+
             if (!csd && Location != null)
             {
+                await LocalStorage!.SetItemAsync("lastLocationId", Location.Id.ToString());
+
                 if (isNamedUrl)
                 {
                     await NavigateTo($"/{PageName}/{Location.Id}", replace: true);
-                    await SelectedLocationChangedInternal(Location.Id);
                 }
-                else
+                else if (!Guid.TryParse(routeSegment, out var routeLocationId) || routeLocationId != Location.Id)
                 {
-                    await SelectedLocationChanged(Location.Id);
+                    await NavigateTo($"/{PageName}/{Location.Id}");
                 }
+
+                _ = LoadFullLocationDictionaryInBackground();
             }
 
             StateHasChanged();
@@ -239,6 +269,80 @@ public partial class Index : ChartablePage
         return null;
     }
 
+    private async Task<Location?> GetStoredOrDefaultLocation()
+    {
+        var locationString = await LocalStorage!.GetItemAsync<string>("lastLocationId");
+        var validGuid = Guid.TryParse(locationString, out Guid guid);
+
+        if (validGuid && guid != Guid.Empty)
+        {
+            var storedLocation = await DataService!.GetLocationById(guid);
+            if (storedLocation is not null)
+            {
+                return storedLocation;
+            }
+        }
+
+        return await DataService!.GetLocationById(Guid.Parse("aed87aa0-1d0c-44aa-8561-cde0fc936395"));
+    }
+
+    private void AddLocationToDictionary(Location location)
+    {
+        LocationDictionary ??= [];
+        LocationDictionary[location.Id] = location;
+    }
+
+    private async Task EnsureFullLocationDictionaryLoaded()
+    {
+        if (LocationDictionaryIncludesAllLocations)
+        {
+            return;
+        }
+
+        try
+        {
+            LocationDictionaryLoadTask ??= LoadFullLocationDictionary();
+            await LocationDictionaryLoadTask;
+        }
+        catch
+        {
+            LocationDictionaryLoadTask = null;
+            throw;
+        }
+    }
+
+    private async Task LoadFullLocationDictionary()
+    {
+        var locations = await DataService!.GetLocations(false);
+        LocationDictionary = locations.ToDictionary(x => x.Id, x => x);
+        LocationDictionaryIncludesAllLocations = true;
+
+        if (Location is not null &&
+            LocationDictionary.TryGetValue(Location.Id, out var hydratedLocation) &&
+            (Location.WarmingAnomaly == null || Location.RecordHigh == null))
+        {
+            Location = hydratedLocation;
+        }
+
+        if (Location is not null)
+        {
+            LocationDictionary[Location.Id] = Location;
+        }
+    }
+
+    private async Task LoadFullLocationDictionaryInBackground()
+    {
+        try
+        {
+            await EnsureFullLocationDictionaryLoaded();
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception ex)
+        {
+            Logger!.LogError(ex, "Unable to load locations in the background.");
+        }
+    }
+
     private async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)
     {
         await ChartView!.HandleOnYearFilterChange(yearAndDataTypeFilter);
@@ -252,9 +356,10 @@ public partial class Index : ChartablePage
         }
     }
 
-    private Task ShowChangeLocationModal()
+    private async Task ShowChangeLocationModal()
     {
-        return ChangeLocationModal!.Show();
+        await EnsureFullLocationDictionaryLoaded();
+        await ChangeLocationModal!.Show();
     }
 
     private void HandleShowRequested()
@@ -281,11 +386,20 @@ public partial class Index : ChartablePage
     {
         Logger!.LogInformation("SelectedLocationChangedInternal(): " + newValue);
 
-        if (!LocationDictionary!.TryGetValue(newValue, out Location? value))
+        LocationDictionary ??= [];
+        if (!LocationDictionary.TryGetValue(newValue, out Location? value))
         {
-            Logger!.LogError($"{newValue} doesn't exist in the list of locations. Exiting SelectedLocationChangedInternal()");
-            return;
+            value = await DataService!.GetLocationById(newValue);
+            if (value is null)
+            {
+                Logger!.LogError($"{newValue} doesn't exist in the list of locations. Exiting SelectedLocationChangedInternal()");
+                return;
+            }
+
+            AddLocationToDictionary(value);
         }
+
+        await EnsureDataSetDefinitionsForLocation(newValue);
 
         PreviousLocation = Location;
         Location = value;

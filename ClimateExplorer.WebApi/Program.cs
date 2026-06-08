@@ -32,6 +32,7 @@ const string LatestRecordsCacheKeyPrefix = "LatestRecords";
 const string LatestRecordsDataFolder = "LatestData";
 const float DefaultCupDataProportion = 0.7f;
 const int DefaultCupSize = 14;
+const int DefaultDataSetDefinitionLocationIdLimit = 20;
 Guid bomDataSetDefinitionId = Guid.Parse("E5EEA4D6-5FD5-49AB-BF85-144A8921111E");
 
 var builder = WebApplication.CreateBuilder(args);
@@ -83,6 +84,9 @@ app.MapGet(
         "       Returns basic API metadata\n" +
         "   GET /datasetdefinition\n" +
         "       Returns a list of dataset definitions. (E.g., ACORN-SAT)\n" +
+        "           Parameters:\n" +
+        "               locationId: filter to definitions available at a particular location\n" +
+        "               includeLargeLocationIds: include large station location-id lists (default: false)\n" +
         "   GET /location\n" +
         "       Returns a list of locations.\n" +
         "           Parameters:\n" +
@@ -151,12 +155,13 @@ HttpClient CreateBomHttpClient()
     return httpClient;
 }
 
-async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
+async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions(bool includeLargeLocationIds = false, Guid? locationId = null)
 {
     var definitions = await DataSetDefinition.GetDataSetDefinitions();
 
     var dtos =
         definitions
+        .Where(x => DataSetDefinitionMatchesLocation(x, locationId))
         .Select(
             x =>
             new DataSetDefinitionViewModel
@@ -170,12 +175,43 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
                 Description = x.Description,
                 Publisher = x.Publisher,
                 PublisherUrl = x.PublisherUrl,
-                LocationIds = x.DataLocationMapping?.LocationIdToDataFileMappings.Keys.ToHashSet(),
+                LocationIds = GetLocationIdsForDataSetDefinitionViewModel(x, includeLargeLocationIds, locationId),
                 MeasurementDefinitions = x.MeasurementDefinitions.Select(x => x.ToViewModel()).ToList(),
             })
         .ToList();
 
     return dtos;
+}
+
+bool DataSetDefinitionMatchesLocation(DataSetDefinition dataSetDefinition, Guid? locationId)
+{
+    if (!locationId.HasValue)
+    {
+        return true;
+    }
+
+    return dataSetDefinition.DataLocationMapping?.LocationIdToDataFileMappings.ContainsKey(locationId.Value) == true;
+}
+
+HashSet<Guid> GetLocationIdsForDataSetDefinitionViewModel(DataSetDefinition dataSetDefinition, bool includeLargeLocationIds, Guid? locationId)
+{
+    var allLocationIds = dataSetDefinition.DataLocationMapping?.LocationIdToDataFileMappings.Keys.ToHashSet();
+    if (allLocationIds == null)
+    {
+        return null;
+    }
+
+    if (locationId.HasValue)
+    {
+        return allLocationIds.Contains(locationId.Value) ? [locationId.Value] : null;
+    }
+
+    if (includeLargeLocationIds || allLocationIds.Count <= DefaultDataSetDefinitionLocationIdLimit)
+    {
+        return allLocationIds;
+    }
+
+    return null;
 }
 
 async Task<IEnumerable<Location>> GetLocations(Guid? locationId = null, bool permitCreateCache = true)
@@ -212,7 +248,7 @@ async Task<IEnumerable<Location>> GetCachedLocations(Guid? locationId = null, bo
         return locations;
     }
 
-    var definitions = await GetDataSetDefinitions();
+    var definitions = await GetDataSetDefinitions(includeLargeLocationIds: true);
 
     ParallelOptions parallelOptions = new();
 
@@ -564,7 +600,7 @@ async Task<ClimateRecordsResponse> GetClimateRecords(
     bool monthly = false,
     int? day = null)
 {
-    var dataSetDefinitions = await GetDataSetDefinitions();
+    var dataSetDefinitions = await GetDataSetDefinitions(includeLargeLocationIds: true);
     var locationDsds = dataSetDefinitions.Where(x => x.LocationIds!.Contains(locationId)).ToList();
 
     MeasurementDefinitionViewModel md = null;

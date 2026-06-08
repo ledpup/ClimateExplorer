@@ -19,6 +19,7 @@ public partial class MapContainer
     private List<Guid> markersAdded = new();
     private List<MarkerOptions> markerOptions = new();
     private bool mapRerendering = false;
+    private int? locationCountLastTimeMarkersChecked;
 
     [Parameter]
     public IEnumerable<Core.Model.Location>? Locations { get; set; }
@@ -50,7 +51,7 @@ public partial class MapContainer
 
     public async Task CreateMapMarkers()
     {
-        if (Locations == null || mapOptions == null || map == null || this.IconFactory == null || this.LayerFactory == null || JsRuntime == null)
+        if (Locations == null || mapOptions == null || map == null || this.IconFactory == null || this.LayerFactory == null || JsRuntime == null || !markerOptions.Any())
         {
             return;
         }
@@ -130,6 +131,13 @@ public partial class MapContainer
 
     protected override async Task OnParametersSetAsync()
     {
+        var locationCount = Locations?.Count();
+        if (locationCount != locationCountLastTimeMarkersChecked)
+        {
+            locationCountLastTimeMarkersChecked = locationCount;
+            await CreateMapMarkers();
+        }
+
         if (internalLocation?.Id == Location?.Id || IsMobileDevice == null || JsRuntime == null)
         {
             return;

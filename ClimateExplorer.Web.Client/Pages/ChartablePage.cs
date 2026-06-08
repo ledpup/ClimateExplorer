@@ -22,6 +22,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     private readonly Guid componentInstanceId = Guid.NewGuid();
     private readonly HashSet<string> activeSnackbarMessages = [];
+    private readonly HashSet<Guid> dataSetDefinitionLocationIdsLoaded = [];
 
     [Inject]
     protected IDataService? DataService { get; set; }
@@ -81,6 +82,23 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
             IsMobileDevice ??= await CurrentDeviceService!.Mobile();
             StateHasChanged();
         }
+    }
+
+    protected async Task EnsureDataSetDefinitionsForLocation(Guid locationId)
+    {
+        if (DataSetDefinitions?.Any(x => x.LocationIds?.Contains(locationId) == true) == true)
+        {
+            dataSetDefinitionLocationIdsLoaded.Add(locationId);
+            return;
+        }
+
+        if (!dataSetDefinitionLocationIdsLoaded.Add(locationId))
+        {
+            return;
+        }
+
+        var definitionsForLocation = await DataService!.GetDataSetDefinitions(locationId: locationId);
+        DataSetDefinitions = MergeDataSetDefinitions(DataSetDefinitions ?? [], definitionsForLocation);
     }
 
     protected async Task NavigateTo(string uri, bool replace = false)
@@ -151,6 +169,35 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions, LocationDictionary, Regions);
         var chartSeriesList = csdList.ToList();
         return chartSeriesList!.First().SourceSeriesSpecifications!.First().LocationId;
+    }
+
+    private static List<DataSetDefinitionViewModel> MergeDataSetDefinitions(
+        IEnumerable<DataSetDefinitionViewModel> currentDefinitions,
+        IEnumerable<DataSetDefinitionViewModel> incomingDefinitions)
+    {
+        var mergedDefinitions = currentDefinitions.ToDictionary(x => x.Id);
+
+        foreach (var incomingDefinition in incomingDefinitions)
+        {
+            if (!mergedDefinitions.TryGetValue(incomingDefinition.Id, out var existingDefinition))
+            {
+                mergedDefinitions[incomingDefinition.Id] = incomingDefinition;
+                continue;
+            }
+
+            if (incomingDefinition.LocationIds == null)
+            {
+                continue;
+            }
+
+            existingDefinition.LocationIds ??= [];
+            foreach (var locationId in incomingDefinition.LocationIds)
+            {
+                existingDefinition.LocationIds.Add(locationId);
+            }
+        }
+
+        return [.. mergedDefinitions.Values];
     }
 
     private void HandleNavigationLocationChanged(object sender, LocationChangedEventArgs e)

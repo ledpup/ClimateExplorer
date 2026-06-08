@@ -79,9 +79,20 @@ public class DataService : IDataService
         return about!;
     }
 
-    public async Task<IEnumerable<DataSetDefinitionViewModel>> GetDataSetDefinitions()
+    public async Task<IEnumerable<DataSetDefinitionViewModel>> GetDataSetDefinitions(bool includeLargeLocationIds = false, Guid? locationId = null)
     {
         var url = "/datasetdefinition";
+
+        if (includeLargeLocationIds)
+        {
+            url = QueryHelpers.AddQueryString(url, "includeLargeLocationIds", includeLargeLocationIds.ToString().ToLowerInvariant());
+        }
+
+        if (locationId.HasValue)
+        {
+            url = QueryHelpers.AddQueryString(url, "locationId", locationId.Value.ToString());
+        }
+
         var result = dataServiceCache.Get<DataSetDefinitionViewModel[]>(url);
         if (result == null)
         {

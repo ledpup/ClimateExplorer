@@ -102,7 +102,7 @@ public partial class Locations
         log.LogInformation("Starting");
 
         allLocations = [.. await DataService!.GetLocations()];
-        dataSetDefinitions = [.. await DataService!.GetDataSetDefinitions()];
+        dataSetDefinitions = [.. await DataService!.GetDataSetDefinitions(includeLargeLocationIds: true)];
 
         foreach (var dsd in dataSetDefinitions)
         {
