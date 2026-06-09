@@ -65,6 +65,19 @@ public partial class Index : ChartablePage
 
     private Location? PreviousLocation { get; set; }
 
+    private IEnumerable<Location>? MapLocations
+    {
+        get
+        {
+            if (LocationDictionary is not null)
+            {
+                return LocationDictionary.Values;
+            }
+
+            return Location is null ? null : [Location];
+        }
+    }
+
     private bool LocationChangeEventOccurring { get; set; } = false;
 
     private CancellationTokenSource? DeferredLocationDictionaryLoadCts { get; set; }

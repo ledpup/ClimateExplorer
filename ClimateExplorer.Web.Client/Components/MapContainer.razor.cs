@@ -8,6 +8,9 @@ using Microsoft.JSInterop;
 
 public partial class MapContainer
 {
+    private static readonly string[] MarkerOptionLabels = ["negative", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "null"];
+
+    private readonly SemaphoreSlim markerOptionsLock = new(1, 1);
     private Map? map;
     private MapOptions? mapOptions;
     private bool mainTileLayerCreated = false;
@@ -17,7 +20,7 @@ public partial class MapContainer
     private LatLng? collapsedCentre = null;
     private Core.Model.Location? internalLocation;
     private List<Guid> markersAdded = new();
-    private List<MarkerOptions> markerOptions = new();
+    private Dictionary<string, MarkerOptions> markerOptions = new();
     private bool mapRerendering = false;
 
     [Parameter]
@@ -57,6 +60,8 @@ public partial class MapContainer
 
         Logger!.LogInformation("Creating map markers");
 
+        await CreateMarkerOptions();
+
         var bounds = await map.GetBounds();
 
         int added = 0;
@@ -70,21 +75,29 @@ public partial class MapContainer
             var lat = location.Coordinates.Latitude;
             var lng = location.Coordinates.Longitude;
 
-            bool latInRange = IsLatBetween(lat, bounds.SouthWest!.Lat, bounds.NorthEast!.Lat);
-            bool lngInRange = IsLngBetween(lng, bounds.SouthWest!.Lng, bounds.NorthEast!.Lng);
-
-            if (!latInRange || !lngInRange)
+            if (bounds is not null)
             {
+                bool latInRange = IsLatBetween(lat, bounds.SouthWest!.Lat, bounds.NorthEast!.Lat);
+                bool lngInRange = IsLngBetween(lng, bounds.SouthWest!.Lng, bounds.NorthEast!.Lng);
+
+                if (!latInRange || !lngInRange)
+                {
+                    continue;
+                }
+            }
+
+            var label = GetMarkerOptionLabel(location);
+
+            if (!markerOptions.TryGetValue(label, out var markerOption))
+            {
+                Logger!.LogWarning(
+                    "No marker option found for label {Label}. Marker option count is {MarkerOptionCount}.",
+                    label,
+                    markerOptions.Count);
+
                 continue;
             }
 
-            var label = location.HeatingScore == null
-                    ? "null"
-                    : location.HeatingScore.Value < 0
-                        ? "negative"
-                        : location.HeatingScore.Value.ToString();
-
-            var markerOption = markerOptions.Single(x => x.Alt == label);
             var marker = await this.LayerFactory.CreateMarkerAndAddToMap(new LatLng(lat, lng, location.Coordinates.Elevation ?? 0), map, markerOption);
 
             await marker.BindTooltip(location.FullTitle!);
@@ -130,24 +143,34 @@ public partial class MapContainer
 
     protected override async Task OnParametersSetAsync()
     {
-        if (internalLocation?.Id == Location?.Id || IsMobileDevice == null || JsRuntime == null)
+        if (IsMobileDevice == null || JsRuntime == null)
         {
             return;
         }
 
-        internalLocation = Location;
+        var locationChanged = internalLocation?.Id != Location?.Id;
 
-        InitialiseMapOptions();
+        if (locationChanged)
+        {
+            internalLocation = Location;
 
-        if (IsMapExpanded)
-        {
-            mapRerendering = true;
-            await ToggleMapExpansion();
+            InitialiseMapOptions();
+
+            if (internalLocation is not null)
+            {
+                if (IsMapExpanded && map is not null)
+                {
+                    mapRerendering = true;
+                    await ToggleMapExpansion();
+                }
+                else
+                {
+                    await ScrollToPoint(internalLocation.Coordinates);
+                }
+            }
         }
-        else
-        {
-            await ScrollToPoint(internalLocation!.Coordinates);
-        }
+
+        await CreateVisibleMapMarkers();
 
         await base.OnParametersSetAsync();
     }
@@ -176,6 +199,18 @@ public partial class MapContainer
         return lng >= west || lng <= east;
     }
 
+    private static string GetMarkerOptionLabel(Core.Model.Location location)
+    {
+        if (location.HeatingScore == null)
+        {
+            return "null";
+        }
+
+        return location.HeatingScore.Value < 0
+            ? "negative"
+            : location.HeatingScore.Value.ToString();
+    }
+
     private async Task AfterMapRender()
     {
         await CreateMarkerOptions();
@@ -188,6 +223,16 @@ public partial class MapContainer
 
         await CreateMapMarkers();
         await map!.OnMoveEnd(async (moveEvent) => await HandleMoveEnd(moveEvent));
+    }
+
+    private async Task CreateVisibleMapMarkers()
+    {
+        if (map is null)
+        {
+            return;
+        }
+
+        await CreateMapMarkers();
     }
 
     private async Task ScrollToPoint(Coordinates point)
@@ -203,34 +248,45 @@ public partial class MapContainer
 
     private async Task CreateMarkerOptions()
     {
-        if (markerOptions.Any())
+        if (markerOptions.Count == MarkerOptionLabels.Length)
         {
             return;
         }
 
-        markerOptions = new List<MarkerOptions>();
-        for (var i = -1; i < 11; i++)
+        await markerOptionsLock.WaitAsync();
+        try
         {
-            var label = i == -1
-                                ? "negative"
-                                : i == 10
-                                    ? "null"
-                                    : i.ToString();
-            var iconOptions = new IconOptions
+            if (markerOptions.Count == MarkerOptionLabels.Length)
+            {
+                return;
+            }
+
+            var options = new Dictionary<string, MarkerOptions>(MarkerOptionLabels.Length);
+            foreach (var label in MarkerOptionLabels)
+            {
+                var iconOptions = new IconOptions
                 {
                     IconUrl = $"/images/map-markers/{label}.png",
                     IconSize = new Point(48, 48),
                     IconAnchor = new Point(23, 47),
                 };
 
-            markerOptions.Add(
-                new MarkerOptions
+                options.Add(
+                    label,
+                    new MarkerOptions
                 {
                     Alt = label,
                     Opacity = 0.75,
                     Draggable = false,
                     IconRef = await this.IconFactory!.Create(iconOptions),
                 });
+            }
+
+            markerOptions = options;
+        }
+        finally
+        {
+            markerOptionsLock.Release();
         }
     }
 
