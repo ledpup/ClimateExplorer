@@ -180,6 +180,11 @@ async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
 
 async Task<IEnumerable<Location>> GetLocations(Guid? locationId = null, bool permitCreateCache = true)
 {
+    if (locationId is null)
+    {
+        Task.Delay(5000).Wait();
+    }
+
     return await GetCachedLocations(locationId, permitCreateCache);
 }
 
