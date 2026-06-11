@@ -452,6 +452,7 @@ async Task<LatestRecordsResponse> GetLatestRecords(
         };
 
         await cache.Put(cacheKey, response);
+        DeleteLatestBomDownloadFiles(downloadedFile);
         return response;
     }
     catch (Exception ex)
@@ -541,6 +542,53 @@ async Task<List<DataRecord>> ReadLatestBomClimateRecords(
         .ThenBy(x => x.Day)
         .Select(x => new DataRecord(x.Year, x.Month, x.Day, x.Value))
         .ToList();
+}
+
+void DeleteLatestBomDownloadFiles(string downloadedFile)
+{
+    DeleteFileIfExists(downloadedFile);
+
+    var zipFilePath = Path.Combine("Output", "Temp", $"{Path.GetFileNameWithoutExtension(downloadedFile)}.zip");
+    DeleteFileIfExists(zipFilePath);
+
+    DeleteDirectoryIfEmpty(Path.GetDirectoryName(downloadedFile));
+}
+
+void DeleteFileIfExists(string filePath)
+{
+    if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
+    {
+        return;
+    }
+
+    try
+    {
+        File.Delete(filePath);
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogWarning(ex, "Unable to delete latest BOM temporary file {FilePath}", filePath);
+    }
+}
+
+void DeleteDirectoryIfEmpty(string directoryPath)
+{
+    if (string.IsNullOrWhiteSpace(directoryPath) || !Directory.Exists(directoryPath))
+    {
+        return;
+    }
+
+    try
+    {
+        if (!Directory.EnumerateFileSystemEntries(directoryPath).Any())
+        {
+            Directory.Delete(directoryPath);
+        }
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogWarning(ex, "Unable to delete latest BOM temporary directory {DirectoryPath}", directoryPath);
+    }
 }
 
 bool HasRecordForDate(LatestRecordsResponse response, DateOnly date)
