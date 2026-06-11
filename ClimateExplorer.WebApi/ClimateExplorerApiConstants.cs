@@ -10,8 +10,6 @@ internal static class ClimateExplorerApiConstants
 
     internal static string LatestRecordsCacheKeyPrefix => "LatestRecords";
 
-    internal static string LatestRecordsDataFolder => "LatestData";
-
     internal static float DefaultCupDataProportion => 0.7f;
 
     internal static int DefaultCupSize => 14;
