@@ -28,9 +28,6 @@
                         <button class="chart-control" @onclick="() => TogglePrecipitation()"><i class="@( Precipitation ? "fas fa-check-square" : "fas fa-square" )"></i> Precipitation</button>
                     </DelayedTooltip>
                 }
-                <DelayedTooltip Multiline="true" Style="display: inline-block" Text="Compare the latest daily observations with historical climate records">
-                    <button class="chart-control" @onclick="ShowLatestRecordsAsync"><i class="fas fa-clock-rotate-left"></i> Latest records</button>
-                </DelayedTooltip>
             </span>
         }
     </CollapsedContent>
@@ -48,6 +45,10 @@
             @if (Location?.RecordHigh != null)
             {
                 <OverviewField Label="Record high" OnClick="@ShowRecordHighAsync" ToolTip="@RecordHighToolTip"><Value>@(Location?.RecordHigh == null ? "NA" : Location?.RecordHigh.Year)</Value></OverviewField>
+            }
+            @if (LatestRecordsSupported)
+            {
+                <OverviewField Label="Latest records" OnClick="@ShowLatestRecordsAsync" ToolTip="Compare the latest daily observations with historical climate records"><Value>@(DateTime.Today.ToString("d MMM"))</Value></OverviewField>
             }
             @if (Precipitation && PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
             {
@@ -72,6 +73,6 @@
     <ClimateRecords Location="@Location" DataSetDefinitions="@DataSetDefinitions" />
 </SidePanel>
 
-<SidePanel @ref="latestRecordsSidePanel" Title="Latest records" Width="36rem">
+<SidePanel @ref="latestRecordsSidePanel" Title="Latest records">
     <LatestRecordsPanel Location="@Location" />
 </SidePanel>

@@ -72,6 +72,7 @@ public partial class LocationInfo
     private RenderFragment? HeatingScoreContent { get; set; }
 
     private string? RecordHighToolTip { get; set; }
+    private bool LatestRecordsSupported { get; set; }
 
     public void ChangeLocationClicked(EventArgs args)
     {
@@ -110,6 +111,7 @@ public partial class LocationInfo
     {
         if (Location == null || DataSetDefinitions == null)
         {
+            LatestRecordsSupported = false;
             return;
         }
 
@@ -121,6 +123,7 @@ public partial class LocationInfo
 
         GeoLocationAsString = Location!.Coordinates.ToString();
         LocationIdLastTimeOnParametersSetAsyncWasCalled = Location?.Id;
+        LatestRecordsSupported = false;
         LocationLoadingIndicatorVisible = false;
         LoadStripeData = true;
         StripeLoadingIndicatorVisible = true;
@@ -185,6 +188,9 @@ public partial class LocationInfo
             {
                 await GeneratePrecipitationView();
             }
+
+            var latestRecordsSupport = await DataService!.GetLatestRecords(Location!.Id, DataType.TempMax, isLocationSupported: true);
+            LatestRecordsSupported = latestRecordsSupport.IsSupported;
 
             StripeLoadingIndicatorVisible = false;
             StateHasChanged();
