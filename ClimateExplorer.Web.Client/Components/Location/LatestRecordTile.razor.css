@@ -1,0 +1,122 @@
+.latest-record-tile {
+    border-radius: 8px;
+    border: 1px solid #d8e2df;
+    border-left: 5px solid #6f8f89;
+    background: #fbfcfb;
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 7%);
+}
+
+.latest-record-tile.temperature-warm {
+    border-left-color: #c85f2f;
+    background: #fff5ef;
+}
+
+.latest-record-tile.temperature-cool {
+    border-left-color: #3978a8;
+    background: #eef6fb;
+}
+
+.latest-record-tile.precipitation-wet {
+    border-left-color: #2d83a8;
+    background: #edf8fb;
+}
+
+.latest-record-tile.precipitation-dry {
+    border-left-color: #b48a2c;
+    background: #fff9e8;
+}
+
+.latest-record-tile.unavailable {
+    border-left-color: #9a9a9a;
+    background: #f7f7f7;
+}
+
+.latest-record-period {
+    color: #596f6a;
+    font-size: 0.82rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+}
+
+.latest-record-tile h3 {
+    color: #253b36;
+    font-size: 1.2rem;
+    line-height: 1.2;
+    margin: 0 0 0.45rem;
+}
+
+.latest-record-percentile {
+    color: #40534f;
+    font-size: 0.95rem;
+    line-height: 1.35;
+    margin: 0 0 0.9rem;
+}
+
+.latest-record-primary {
+    align-items: baseline;
+    border-top: 1px solid rgb(66 95 89 / 18%);
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+    padding-top: 0.75rem;
+}
+
+.latest-record-primary span {
+    color: #596f6a;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.latest-record-primary strong {
+    color: #1f2f2c;
+    font-size: 1.55rem;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.latest-record-stats {
+    display: grid;
+    gap: 0.55rem 0.8rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0.9rem 0 0;
+}
+
+.latest-record-stats div {
+    min-width: 0;
+}
+
+.latest-record-stats dt {
+    color: #697d78;
+    font-size: 0.74rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.latest-record-stats dd {
+    color: #263a35;
+    font-size: 0.92rem;
+    font-weight: 650;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.latest-record-note {
+    color: #5d6d69;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    margin: 0.85rem 0 0;
+}
+
+@media (max-width: 520px) {
+    .latest-record-primary {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.35rem;
+    }
+
+    .latest-record-stats {
+        grid-template-columns: 1fr;
+    }
+}

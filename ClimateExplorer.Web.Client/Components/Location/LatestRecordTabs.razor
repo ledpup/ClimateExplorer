@@ -1,0 +1,28 @@
+@namespace ClimateExplorer.Web.Client.Components.Location
+@using Blazorise
+@using ClimateExplorer.Web.Client.UiModel
+
+<div class="latest-record-tabs">
+    <Tabs SelectedTab="@SelectedTab.ToString()" SelectedTabChanged="@OnSelectedTabChanged">
+        <Items>
+            <Tab Name="@LatestRecordsTab.Temperature.ToString()">Temperature</Tab>
+            <Tab Name="@LatestRecordsTab.Precipitation.ToString()">Precipitation</Tab>
+        </Items>
+    </Tabs>
+</div>
+
+@code {
+    [Parameter]
+    public LatestRecordsTab SelectedTab { get; set; }
+
+    [Parameter]
+    public EventCallback<LatestRecordsTab> SelectedTabChanged { get; set; }
+
+    private async Task OnSelectedTabChanged(string selectedTab)
+    {
+        if (Enum.TryParse<LatestRecordsTab>(selectedTab, out var tab))
+        {
+            await SelectedTabChanged.InvokeAsync(tab);
+        }
+    }
+}

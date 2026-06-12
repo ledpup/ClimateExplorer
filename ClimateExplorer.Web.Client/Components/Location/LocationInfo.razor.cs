@@ -18,6 +18,7 @@ using static ClimateExplorer.Core.Enums;
 public partial class LocationInfo
 {
     private SidePanel? climateRecordsSidePanel;
+    private SidePanel? latestRecordsSidePanel;
 
     [Inject]
     public IDataService? DataService { get; set; }
@@ -83,6 +84,8 @@ public partial class LocationInfo
     }
 
     public Task ShowRecordHighAsync() => climateRecordsSidePanel?.ShowAsync() ?? Task.CompletedTask;
+
+    public Task ShowLatestRecordsAsync() => latestRecordsSidePanel?.ShowAsync() ?? Task.CompletedTask;
 
     public async Task OpenLocationMapAsync() => await JS!.InvokeVoidAsync("open", LocationMapUrl, "_blank");
 

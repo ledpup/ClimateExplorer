@@ -241,4 +241,19 @@ public class DataService : IDataService
 
         return result!;
     }
+
+    public async Task<LatestRecordsResponse> GetLatestRecords(Guid locationId, DataType dataType, bool isLocationSupported = false)
+    {
+        var url = "/latest-record";
+        url = QueryHelpers.AddQueryString(url, "locationId", locationId.ToString());
+        url = QueryHelpers.AddQueryString(url, "dataType", dataType.ToString());
+
+        if (isLocationSupported)
+        {
+            url = QueryHelpers.AddQueryString(url, "isLocationSupported", "true");
+        }
+
+        var result = await httpClient.GetFromJsonAsync<LatestRecordsResponse>(url, jsonSerializerOptions);
+        return result!;
+    }
 }
