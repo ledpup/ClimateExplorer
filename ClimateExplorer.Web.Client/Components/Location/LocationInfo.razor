@@ -28,6 +28,9 @@
                         <button class="chart-control" @onclick="() => TogglePrecipitation()"><i class="@( Precipitation ? "fas fa-check-square" : "fas fa-square" )"></i> Precipitation</button>
                     </DelayedTooltip>
                 }
+                <DelayedTooltip Multiline="true" Style="display: inline-block" Text="Compare the latest daily observations with historical climate records">
+                    <button class="chart-control" @onclick="ShowLatestRecordsAsync"><i class="fas fa-clock-rotate-left"></i> Latest records</button>
+                </DelayedTooltip>
             </span>
         }
     </CollapsedContent>
@@ -67,4 +70,8 @@
 
 <SidePanel @ref="climateRecordsSidePanel" Title="@("Climate records for " + Location?.Name)">    
     <ClimateRecords Location="@Location" DataSetDefinitions="@DataSetDefinitions" />
+</SidePanel>
+
+<SidePanel @ref="latestRecordsSidePanel" Title="Latest records" Width="36rem">
+    <LatestRecordsPanel Location="@Location" />
 </SidePanel>

@@ -1,0 +1,42 @@
+@namespace ClimateExplorer.Web.Client.Components.Location
+@using ClimateExplorer.Web.Client.UiModel
+
+<div class="latest-records-panel">
+    <LatestRecordTabs SelectedTab="@ActiveTab" SelectedTabChanged="@OnTabChanged" />
+
+    <div class="latest-records-body" aria-live="polite">
+        @if (CurrentState.IsLoading)
+        {
+            <div class="latest-records-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Loading latest records...</span>
+            </div>
+        }
+        else if (!string.IsNullOrWhiteSpace(CurrentState.ErrorMessage))
+        {
+            <div class="latest-records-state error">
+                <i class="fas fa-triangle-exclamation"></i>
+                <span>@CurrentState.ErrorMessage</span>
+                <button class="latest-records-retry" @onclick="RetryCurrentTab">
+                    <i class="fas fa-rotate-right"></i> Retry
+                </button>
+            </div>
+        }
+        else if (CurrentTiles.Count > 0)
+        {
+            <div class="latest-record-grid">
+                @foreach (var tile in CurrentTiles)
+                {
+                    <LatestRecordTile Tile="@tile" />
+                }
+            </div>
+        }
+        else
+        {
+            <div class="latest-records-state">
+                <i class="fas fa-circle-info"></i>
+                <span>@CurrentEmptyMessage</span>
+            </div>
+        }
+    </div>
+</div>
