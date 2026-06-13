@@ -73,6 +73,6 @@
     <ClimateRecords Location="@Location" DataSetDefinitions="@DataSetDefinitions" />
 </SidePanel>
 
-<SidePanel @ref="latestRecordsSidePanel" Title="Latest records">
+<SidePanel @ref="latestRecordsSidePanel" Title="@("Latest records for " + Location?.Name)">
     <LatestRecordsPanel Location="@Location" />
 </SidePanel>
