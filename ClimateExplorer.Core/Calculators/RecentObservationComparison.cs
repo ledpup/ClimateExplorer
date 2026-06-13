@@ -1,10 +1,10 @@
 namespace ClimateExplorer.Core.Calculators;
 
-public static class LatestRecordComparison
+public static class RecentObservationComparison
 {
     private const double Tolerance = 0.0000001d;
 
-    public static LatestRecordComparisonResult? Rank(double value, IEnumerable<double?> historicalValues)
+    public static RecentObservationComparisonResult? Rank(double value, IEnumerable<double?> historicalValues)
     {
         var values = historicalValues
             .Where(x => x.HasValue && double.IsFinite(x.Value))
@@ -24,7 +24,7 @@ public static class LatestRecordComparison
         var min = values.Min();
         var average = values.Average();
 
-        return new LatestRecordComparisonResult
+        return new RecentObservationComparisonResult
         {
             Value = value,
             HistoricalCount = values.Count,
@@ -42,7 +42,7 @@ public static class LatestRecordComparison
         };
     }
 
-    public static string BuildTemperatureHeadline(string comparisonLabel, LatestRecordComparisonResult ranking)
+    public static string BuildTemperatureHeadline(string comparisonLabel, RecentObservationComparisonResult ranking)
     {
         if (ranking.IsNewHighRecord)
         {
@@ -64,7 +64,7 @@ public static class LatestRecordComparison
             return $"Equal coolest {comparisonLabel} on record";
         }
 
-        if (ranking.Direction == LatestRecordComparisonDirection.High)
+        if (ranking.Direction == RecentObservationComparisonDirection.High)
         {
             if (ranking.HighRank <= 5 && !ranking.IsTiedHighRecord)
             {
@@ -84,7 +84,7 @@ public static class LatestRecordComparison
             return ranking.HighPercentile >= 75d ? "Warmer than usual" : "Slightly warmer than average";
         }
 
-        if (ranking.Direction == LatestRecordComparisonDirection.Low)
+        if (ranking.Direction == RecentObservationComparisonDirection.Low)
         {
             if (ranking.LowRank <= 5 && !ranking.IsTiedLowRecord)
             {
@@ -107,7 +107,7 @@ public static class LatestRecordComparison
         return "Near average";
     }
 
-    public static string BuildPrecipitationHeadline(string comparisonLabel, LatestRecordComparisonResult ranking)
+    public static string BuildPrecipitationHeadline(string comparisonLabel, RecentObservationComparisonResult ranking)
     {
         if (ranking.IsNewHighRecord)
         {
@@ -119,7 +119,7 @@ public static class LatestRecordComparison
             return $"Driest {comparisonLabel} on record";
         }
 
-        if (ranking.Direction == LatestRecordComparisonDirection.High)
+        if (ranking.Direction == RecentObservationComparisonDirection.High)
         {
             if (ranking.HighRank <= 5 && !ranking.IsTiedHighRecord)
             {
@@ -139,7 +139,7 @@ public static class LatestRecordComparison
             return ranking.HighPercentile >= 70d ? "Wetter than usual" : "Slightly wetter than average";
         }
 
-        if (ranking.Direction == LatestRecordComparisonDirection.Low)
+        if (ranking.Direction == RecentObservationComparisonDirection.Low)
         {
             if (ranking.LowRank <= 5 && !ranking.IsTiedLowRecord)
             {
@@ -162,17 +162,17 @@ public static class LatestRecordComparison
         return "Near average rainfall";
     }
 
-    public static string BuildTemperaturePercentileSentence(string comparisonLabelPlural, int? startYear, LatestRecordComparisonResult ranking)
+    public static string BuildTemperaturePercentileSentence(string comparisonLabelPlural, int? startYear, RecentObservationComparisonResult ranking)
     {
-        var direction = ranking.Direction == LatestRecordComparisonDirection.Low ? "Cooler" : "Warmer";
-        var percentile = ranking.Direction == LatestRecordComparisonDirection.Low ? ranking.LowPercentile : ranking.HighPercentile;
+        var direction = ranking.Direction == RecentObservationComparisonDirection.Low ? "Cooler" : "Warmer";
+        var percentile = ranking.Direction == RecentObservationComparisonDirection.Low ? ranking.LowPercentile : ranking.HighPercentile;
         return $"{direction} than {FormatPercent(percentile)}% of {comparisonLabelPlural}{FormatSince(startYear)}";
     }
 
-    public static string BuildPrecipitationPercentileSentence(int? startYear, LatestRecordComparisonResult ranking)
+    public static string BuildPrecipitationPercentileSentence(int? startYear, RecentObservationComparisonResult ranking)
     {
-        var direction = ranking.Direction == LatestRecordComparisonDirection.Low ? "Drier" : "Wetter";
-        var percentile = ranking.Direction == LatestRecordComparisonDirection.Low ? ranking.LowPercentile : ranking.HighPercentile;
+        var direction = ranking.Direction == RecentObservationComparisonDirection.Low ? "Drier" : "Wetter";
+        var percentile = ranking.Direction == RecentObservationComparisonDirection.Low ? ranking.LowPercentile : ranking.HighPercentile;
         return $"{direction} than {FormatPercent(percentile)}% of comparable periods{FormatSince(startYear)}";
     }
 
@@ -200,19 +200,19 @@ public static class LatestRecordComparison
         return Math.Clamp((int)Math.Round(percentile, MidpointRounding.AwayFromZero), 0, 99);
     }
 
-    private static LatestRecordComparisonDirection GetDirection(double highPercentile, double lowPercentile)
+    private static RecentObservationComparisonDirection GetDirection(double highPercentile, double lowPercentile)
     {
         if (highPercentile >= 60d && highPercentile >= lowPercentile)
         {
-            return LatestRecordComparisonDirection.High;
+            return RecentObservationComparisonDirection.High;
         }
 
         if (lowPercentile >= 60d)
         {
-            return LatestRecordComparisonDirection.Low;
+            return RecentObservationComparisonDirection.Low;
         }
 
-        return LatestRecordComparisonDirection.Neutral;
+        return RecentObservationComparisonDirection.Neutral;
     }
 
     private static string FormatSince(int? startYear)

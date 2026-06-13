@@ -1,6 +1,6 @@
 namespace ClimateExplorer.Core.Calculators;
 
-public enum LatestRecordComparisonDirection
+public enum RecentObservationComparisonDirection
 {
     Neutral,
     High,

@@ -8,22 +8,22 @@ using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.WebApiClient.Services;
 using static ClimateExplorer.Core.Enums;
 
-public sealed class LatestRecordsService : ILatestRecordsService
+public sealed class RecentObservationsService : IRecentObservationsService
 {
     private const int MinimumHistoricalPeriods = 20;
     private const double MinimumHistoricalCoverage = 0.9d;
 
     private readonly IDataService dataService;
 
-    public LatestRecordsService(IDataService dataService)
+    public RecentObservationsService(IDataService dataService)
     {
         this.dataService = dataService;
     }
 
-    public async Task<LatestRecordsTabResult> GetTemperatureRecords(Guid locationId)
+    public async Task<RecentObservationsTabResult> GetTemperatureRecords(Guid locationId)
     {
-        var maxTask = dataService.GetLatestRecords(locationId, DataType.TempMax);
-        var minTask = dataService.GetLatestRecords(locationId, DataType.TempMin);
+        var maxTask = dataService.GetRecentObservations(locationId, DataType.TempMax);
+        var minTask = dataService.GetRecentObservations(locationId, DataType.TempMin);
 
         await Task.WhenAll(maxTask, minTask);
 
@@ -32,19 +32,19 @@ public sealed class LatestRecordsService : ILatestRecordsService
 
         if (!maxResponse.IsSupported || !minResponse.IsSupported)
         {
-            return new LatestRecordsTabResult
+            return new RecentObservationsTabResult
             {
                 IsSupported = false,
-                EmptyMessage = "Latest temperature records are not available for this location.",
+                EmptyMessage = "Recent temperature observations are not available for this location.",
             };
         }
 
         var latestDaily = BuildDailyTemperature(maxResponse.Records, minResponse.Records);
         if (latestDaily.Count == 0)
         {
-            return new LatestRecordsTabResult
+            return new RecentObservationsTabResult
             {
-                EmptyMessage = "No recent temperature records are available yet.",
+                EmptyMessage = "No recent temperature observations are available yet.",
             };
         }
 
@@ -52,15 +52,15 @@ public sealed class LatestRecordsService : ILatestRecordsService
         var periods = BuildTemperaturePeriods(latestDaily, today);
         if (periods.Count == 0)
         {
-            return new LatestRecordsTabResult
+            return new RecentObservationsTabResult
             {
-                EmptyMessage = "No recent temperature periods can be calculated yet.",
+                EmptyMessage = "No recent temperature observation periods can be calculated yet.",
             };
         }
 
         var preferredAdjustment = maxResponse.DataAdjustment ?? minResponse.DataAdjustment ?? DataAdjustment.Unadjusted;
         var dailyHistory = await GetTemperatureHistoricalDailyRecords(locationId, preferredAdjustment);
-        var tiles = new List<LatestRecordTileViewModel>();
+        var tiles = new List<RecentObservationTileViewModel>();
 
         foreach (var period in periods)
         {
@@ -71,32 +71,32 @@ public sealed class LatestRecordsService : ILatestRecordsService
             tiles.Add(BuildTemperatureTile(period, historicalValues));
         }
 
-        return new LatestRecordsTabResult
+        return new RecentObservationsTabResult
         {
-            EmptyMessage = "No latest temperature records are available.",
+            EmptyMessage = "No recent temperature observations are available.",
             Tiles = tiles,
         };
     }
 
-    public async Task<LatestRecordsTabResult> GetPrecipitationRecords(Guid locationId)
+    public async Task<RecentObservationsTabResult> GetPrecipitationRecords(Guid locationId)
     {
-        var latestResponse = await dataService.GetLatestRecords(locationId, DataType.Precipitation);
+        var latestResponse = await dataService.GetRecentObservations(locationId, DataType.Precipitation);
 
         if (!latestResponse.IsSupported)
         {
-            return new LatestRecordsTabResult
+            return new RecentObservationsTabResult
             {
                 IsSupported = false,
-                EmptyMessage = "Latest precipitation records are not available for this location.",
+                EmptyMessage = "Recent precipitation observations are not available for this location.",
             };
         }
 
         var latestDaily = BuildDailyPrecipitation(latestResponse.Records);
         if (latestDaily.Count == 0)
         {
-            return new LatestRecordsTabResult
+            return new RecentObservationsTabResult
             {
-                EmptyMessage = "No recent precipitation records are available yet.",
+                EmptyMessage = "No recent precipitation observations are available yet.",
             };
         }
 
@@ -104,14 +104,14 @@ public sealed class LatestRecordsService : ILatestRecordsService
         var periods = BuildPrecipitationPeriods(latestDaily, today);
         if (periods.Count == 0)
         {
-            return new LatestRecordsTabResult
+            return new RecentObservationsTabResult
             {
-                EmptyMessage = "No recent precipitation periods can be calculated yet.",
+                EmptyMessage = "No recent precipitation observation periods can be calculated yet.",
             };
         }
 
         var dailyHistory = await GetHistoricalRecords(locationId, DataType.Precipitation, null, monthly: false);
-        var tiles = new List<LatestRecordTileViewModel>();
+        var tiles = new List<RecentObservationTileViewModel>();
 
         foreach (var period in periods)
         {
@@ -122,9 +122,9 @@ public sealed class LatestRecordsService : ILatestRecordsService
             tiles.Add(BuildPrecipitationTile(period, historicalValues));
         }
 
-        return new LatestRecordsTabResult
+        return new RecentObservationsTabResult
         {
-            EmptyMessage = "No latest precipitation records are available.",
+            EmptyMessage = "No recent precipitation observations are available.",
             Tiles = tiles,
         };
     }
@@ -347,7 +347,7 @@ public sealed class LatestRecordsService : ILatestRecordsService
     {
         if (!period.CanCompare)
         {
-            return HistoricalValues.Unavailable("Latest daily records are incomplete for this period.");
+            return HistoricalValues.Unavailable("Recent daily observations are incomplete for this period.");
         }
 
         var monthlyHistory = await GetTemperatureHistoricalMonthlyRecords(locationId, preferredAdjustment, period.StartDate.Month);
@@ -368,7 +368,7 @@ public sealed class LatestRecordsService : ILatestRecordsService
     {
         if (!period.CanCompare)
         {
-            return HistoricalValues.Unavailable("Latest daily records are incomplete for this period.");
+            return HistoricalValues.Unavailable("Recent daily observations are incomplete for this period.");
         }
 
         var monthlyHistory = await GetHistoricalRecords(locationId, DataType.Precipitation, null, monthly: true, month: period.StartDate.Month);
@@ -389,7 +389,7 @@ public sealed class LatestRecordsService : ILatestRecordsService
     {
         if (!period.CanCompare)
         {
-            return HistoricalValues.Unavailable("Latest daily records are incomplete for this period.");
+            return HistoricalValues.Unavailable("Recent daily observations are incomplete for this period.");
         }
 
         if (period.ComparisonMode == PeriodComparisonMode.DailyDate)
@@ -404,7 +404,7 @@ public sealed class LatestRecordsService : ILatestRecordsService
     {
         if (!period.CanCompare)
         {
-            return HistoricalValues.Unavailable("Latest daily records are incomplete for this period.");
+            return HistoricalValues.Unavailable("Recent daily observations are incomplete for this period.");
         }
 
         if (period.ComparisonMode == PeriodComparisonMode.DailyDate)
@@ -543,10 +543,10 @@ public sealed class LatestRecordsService : ILatestRecordsService
         };
     }
 
-    private static LatestRecordTileViewModel BuildTemperatureTile(PeriodObservation period, HistoricalValues historicalValues)
+    private static RecentObservationTileViewModel BuildTemperatureTile(PeriodObservation period, HistoricalValues historicalValues)
     {
-        var ranking = LatestRecordComparison.Rank(period.PrimaryValue, historicalValues.Values);
-        var stats = new List<LatestRecordStatViewModel>
+        var ranking = RecentObservationComparison.Rank(period.PrimaryValue, historicalValues.Values);
+        var stats = new List<RecentObservationStatViewModel>
         {
             new() { Label = period.ActualDays == 1 ? "Max temp" : "Average max temp", Value = FormatTemperature(period.SupportingValueOne!.Value) },
             new() { Label = period.ActualDays == 1 ? "Min temp" : "Average min temp", Value = FormatTemperature(period.SupportingValueTwo!.Value) },
@@ -554,17 +554,17 @@ public sealed class LatestRecordsService : ILatestRecordsService
 
         if (ranking is not null)
         {
-            stats.Add(new LatestRecordStatViewModel { Label = "Historical average", Value = FormatTemperature(ranking.HistoricalAverage) });
-            stats.Add(new LatestRecordStatViewModel { Label = "Anomaly", Value = FormatTemperatureAnomaly(ranking.Anomaly) });
+            stats.Add(new RecentObservationStatViewModel { Label = "Historical average", Value = FormatTemperature(ranking.HistoricalAverage) });
+            stats.Add(new RecentObservationStatViewModel { Label = "Anomaly", Value = FormatTemperatureAnomaly(ranking.Anomaly) });
         }
 
-        return new LatestRecordTileViewModel
+        return new RecentObservationTileViewModel
         {
             PeriodTitle = period.Title,
-            Headline = ranking is null ? "Comparison unavailable" : LatestRecordComparison.BuildTemperatureHeadline(period.ComparisonLabel, ranking),
+            Headline = ranking is null ? "Comparison unavailable" : RecentObservationComparison.BuildTemperatureHeadline(period.ComparisonLabel, ranking),
             PercentileSentence = ranking is null
                 ? historicalValues.UnavailableReason ?? "Not enough historical data is available for this comparison."
-                : LatestRecordComparison.BuildTemperaturePercentileSentence(period.ComparisonLabelPlural, historicalValues.StartYear, ranking),
+                : RecentObservationComparison.BuildTemperaturePercentileSentence(period.ComparisonLabelPlural, historicalValues.StartYear, ranking),
             PrimaryLabel = "Mean temperature",
             PrimaryValue = FormatTemperature(period.PrimaryValue),
             HasComparison = ranking is not null,
@@ -574,29 +574,29 @@ public sealed class LatestRecordsService : ILatestRecordsService
         };
     }
 
-    private static LatestRecordTileViewModel BuildPrecipitationTile(PeriodObservation period, HistoricalValues historicalValues)
+    private static RecentObservationTileViewModel BuildPrecipitationTile(PeriodObservation period, HistoricalValues historicalValues)
     {
-        var ranking = LatestRecordComparison.Rank(period.PrimaryValue, historicalValues.Values);
-        var stats = new List<LatestRecordStatViewModel>();
+        var ranking = RecentObservationComparison.Rank(period.PrimaryValue, historicalValues.Values);
+        var stats = new List<RecentObservationStatViewModel>();
 
         if (ranking is not null)
         {
-            stats.Add(new LatestRecordStatViewModel { Label = "Historical average", Value = FormatRainfall(ranking.HistoricalAverage) });
-            stats.Add(new LatestRecordStatViewModel { Label = "Anomaly", Value = FormatRainfallAnomaly(ranking.Anomaly) });
+            stats.Add(new RecentObservationStatViewModel { Label = "Historical average", Value = FormatRainfall(ranking.HistoricalAverage) });
+            stats.Add(new RecentObservationStatViewModel { Label = "Anomaly", Value = FormatRainfallAnomaly(ranking.Anomaly) });
         }
 
         if (period.ActualDays > 1)
         {
-            stats.Add(new LatestRecordStatViewModel { Label = "Days available", Value = $"{period.ActualDays}/{period.ExpectedDays}" });
+            stats.Add(new RecentObservationStatViewModel { Label = "Days available", Value = $"{period.ActualDays}/{period.ExpectedDays}" });
         }
 
-        return new LatestRecordTileViewModel
+        return new RecentObservationTileViewModel
         {
             PeriodTitle = period.Title,
-            Headline = ranking is null ? "Comparison unavailable" : LatestRecordComparison.BuildPrecipitationHeadline(period.ComparisonLabel, ranking),
+            Headline = ranking is null ? "Comparison unavailable" : RecentObservationComparison.BuildPrecipitationHeadline(period.ComparisonLabel, ranking),
             PercentileSentence = ranking is null
                 ? historicalValues.UnavailableReason ?? "Not enough historical data is available for this comparison."
-                : LatestRecordComparison.BuildPrecipitationPercentileSentence(historicalValues.StartYear, ranking),
+                : RecentObservationComparison.BuildPrecipitationPercentileSentence(historicalValues.StartYear, ranking),
             PrimaryLabel = "Rainfall total",
             PrimaryValue = FormatRainfall(period.PrimaryValue),
             HasComparison = ranking is not null,
@@ -606,25 +606,25 @@ public sealed class LatestRecordsService : ILatestRecordsService
         };
     }
 
-    private static LatestRecordTileTone GetTemperatureTone(LatestRecordComparisonResult? ranking)
+    private static RecentObservationTileTone GetTemperatureTone(RecentObservationComparisonResult? ranking)
     {
         return ranking?.Direction switch
         {
-            LatestRecordComparisonDirection.High => LatestRecordTileTone.TemperatureWarm,
-            LatestRecordComparisonDirection.Low => LatestRecordTileTone.TemperatureCool,
-            null => LatestRecordTileTone.Unavailable,
-            _ => LatestRecordTileTone.Neutral,
+            RecentObservationComparisonDirection.High => RecentObservationTileTone.TemperatureWarm,
+            RecentObservationComparisonDirection.Low => RecentObservationTileTone.TemperatureCool,
+            null => RecentObservationTileTone.Unavailable,
+            _ => RecentObservationTileTone.Neutral,
         };
     }
 
-    private static LatestRecordTileTone GetPrecipitationTone(LatestRecordComparisonResult? ranking)
+    private static RecentObservationTileTone GetPrecipitationTone(RecentObservationComparisonResult? ranking)
     {
         return ranking?.Direction switch
         {
-            LatestRecordComparisonDirection.High => LatestRecordTileTone.PrecipitationWet,
-            LatestRecordComparisonDirection.Low => LatestRecordTileTone.PrecipitationDry,
-            null => LatestRecordTileTone.Unavailable,
-            _ => LatestRecordTileTone.Neutral,
+            RecentObservationComparisonDirection.High => RecentObservationTileTone.PrecipitationWet,
+            RecentObservationComparisonDirection.Low => RecentObservationTileTone.PrecipitationDry,
+            null => RecentObservationTileTone.Unavailable,
+            _ => RecentObservationTileTone.Neutral,
         };
     }
 

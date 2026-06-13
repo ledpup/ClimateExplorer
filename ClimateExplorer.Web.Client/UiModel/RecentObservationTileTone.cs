@@ -1,6 +1,6 @@
 namespace ClimateExplorer.Web.Client.UiModel;
 
-public enum LatestRecordTileTone
+public enum RecentObservationTileTone
 {
     Neutral,
     TemperatureWarm,

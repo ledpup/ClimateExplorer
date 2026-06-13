@@ -8,7 +8,7 @@ internal static class ClimateExplorerApiConstants
 
     internal static string NearbyLocations => "NearbyLocations";
 
-    internal static string LatestRecordsCacheKeyPrefix => "LatestRecords";
+    internal static string RecentObservationsCacheKeyPrefix => "RecentObservations";
 
     internal static float DefaultCupDataProportion => 0.7f;
 

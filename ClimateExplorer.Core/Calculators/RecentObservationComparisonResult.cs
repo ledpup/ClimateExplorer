@@ -1,6 +1,6 @@
 namespace ClimateExplorer.Core.Calculators;
 
-public sealed record LatestRecordComparisonResult
+public sealed record RecentObservationComparisonResult
 {
     public double Value { get; init; }
     public int HistoricalCount { get; init; }
@@ -15,5 +15,5 @@ public sealed record LatestRecordComparisonResult
     public bool IsNewLowRecord { get; init; }
     public bool IsTiedHighRecord { get; init; }
     public bool IsTiedLowRecord { get; init; }
-    public LatestRecordComparisonDirection Direction { get; init; }
+    public RecentObservationComparisonDirection Direction { get; init; }
 }

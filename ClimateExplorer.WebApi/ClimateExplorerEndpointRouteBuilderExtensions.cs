@@ -17,7 +17,7 @@ internal static class ClimateExplorerEndpointRouteBuilderExtensions
         app.MapGet("/region", LocationEndpoints.GetRegions);
         app.MapGet("/heating-score-table", MetadataEndpoints.GetHeatingScoreTable);
         app.MapGet("/climate-record", ClimateRecordsEndpoints.GetClimateRecords);
-        app.MapGet("/latest-record", LatestRecordsEndpoints.GetLatestRecords);
+        app.MapGet("/recent-observations", RecentObservationsEndpoints.GetRecentObservations);
         app.MapPost("/dataset", DataSetEndpoints.PostDataSets);
     }
 }

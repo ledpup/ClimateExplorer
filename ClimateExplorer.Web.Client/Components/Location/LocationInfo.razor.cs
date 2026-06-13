@@ -18,7 +18,7 @@ using static ClimateExplorer.Core.Enums;
 public partial class LocationInfo
 {
     private SidePanel? climateRecordsSidePanel;
-    private SidePanel? latestRecordsSidePanel;
+    private SidePanel? recentObservationsSidePanel;
 
     [Inject]
     public IDataService? DataService { get; set; }
@@ -72,7 +72,7 @@ public partial class LocationInfo
     private RenderFragment? HeatingScoreContent { get; set; }
 
     private string? RecordHighToolTip { get; set; }
-    private bool LatestRecordsSupported { get; set; }
+    private bool RecentObservationsSupported { get; set; }
 
     public void ChangeLocationClicked(EventArgs args)
     {
@@ -86,7 +86,7 @@ public partial class LocationInfo
 
     public Task ShowRecordHighAsync() => climateRecordsSidePanel?.ShowAsync() ?? Task.CompletedTask;
 
-    public Task ShowLatestRecordsAsync() => latestRecordsSidePanel?.ShowAsync() ?? Task.CompletedTask;
+    public Task ShowRecentObservationsAsync() => recentObservationsSidePanel?.ShowAsync() ?? Task.CompletedTask;
 
     public async Task OpenLocationMapAsync() => await JS!.InvokeVoidAsync("open", LocationMapUrl, "_blank");
 
@@ -111,7 +111,7 @@ public partial class LocationInfo
     {
         if (Location == null || DataSetDefinitions == null)
         {
-            LatestRecordsSupported = false;
+            RecentObservationsSupported = false;
             return;
         }
 
@@ -123,7 +123,7 @@ public partial class LocationInfo
 
         GeoLocationAsString = Location!.Coordinates.ToString();
         LocationIdLastTimeOnParametersSetAsyncWasCalled = Location?.Id;
-        LatestRecordsSupported = false;
+        RecentObservationsSupported = false;
         LocationLoadingIndicatorVisible = false;
         LoadStripeData = true;
         StripeLoadingIndicatorVisible = true;
@@ -189,8 +189,8 @@ public partial class LocationInfo
                 await GeneratePrecipitationView();
             }
 
-            var latestRecordsSupport = await DataService!.GetLatestRecords(Location!.Id, DataType.TempMax, isLocationSupported: true);
-            LatestRecordsSupported = latestRecordsSupport.IsSupported;
+            var recentObservationsSupport = await DataService!.GetRecentObservations(Location!.Id, DataType.TempMax, isLocationSupported: true);
+            RecentObservationsSupported = recentObservationsSupport.IsSupported;
 
             StripeLoadingIndicatorVisible = false;
             StateHasChanged();

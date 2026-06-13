@@ -1,6 +1,6 @@
 namespace ClimateExplorer.Web.Client.UiModel;
 
-public enum LatestRecordsTab
+public enum RecentObservationsTab
 {
     Temperature,
     Precipitation,

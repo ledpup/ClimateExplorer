@@ -5,25 +5,25 @@ using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.UiModel;
 using Microsoft.AspNetCore.Components;
 
-public partial class LatestRecordsPanel
+public partial class RecentObservationsPanel
 {
-    private readonly LatestRecordsTabState temperatureState = new();
-    private readonly LatestRecordsTabState precipitationState = new();
+    private readonly RecentObservationsTabState temperatureState = new();
+    private readonly RecentObservationsTabState precipitationState = new();
     private Guid? internalLocationId;
 
     [Parameter]
     public Location? Location { get; set; }
 
     [Inject]
-    private ILatestRecordsService LatestRecordsService { get; set; } = default!;
+    private IRecentObservationsService RecentObservationsService { get; set; } = default!;
 
     [Inject]
-    private ILogger<LatestRecordsPanel> Logger { get; set; } = default!;
+    private ILogger<RecentObservationsPanel> Logger { get; set; } = default!;
 
-    private LatestRecordsTab ActiveTab { get; set; } = LatestRecordsTab.Temperature;
-    private LatestRecordsTabState CurrentState => GetState(ActiveTab);
-    private IReadOnlyList<LatestRecordTileViewModel> CurrentTiles => CurrentState.Result?.Tiles ?? [];
-    private string CurrentEmptyMessage => CurrentState.Result?.EmptyMessage ?? "No latest records are available.";
+    private RecentObservationsTab ActiveTab { get; set; } = RecentObservationsTab.Temperature;
+    private RecentObservationsTabState CurrentState => GetState(ActiveTab);
+    private IReadOnlyList<RecentObservationTileViewModel> CurrentTiles => CurrentState.Result?.Tiles ?? [];
+    private string CurrentEmptyMessage => CurrentState.Result?.EmptyMessage ?? "No recent observations are available.";
 
     protected override async Task OnParametersSetAsync()
     {
@@ -40,7 +40,7 @@ public partial class LatestRecordsPanel
         }
     }
 
-    private async Task OnTabChanged(LatestRecordsTab tab)
+    private async Task OnTabChanged(RecentObservationsTab tab)
     {
         ActiveTab = tab;
         await EnsureTabLoaded(tab);
@@ -52,7 +52,7 @@ public partial class LatestRecordsPanel
         await EnsureTabLoaded(ActiveTab);
     }
 
-    private async Task EnsureTabLoaded(LatestRecordsTab tab)
+    private async Task EnsureTabLoaded(RecentObservationsTab tab)
     {
         if (Location is null)
         {
@@ -72,16 +72,16 @@ public partial class LatestRecordsPanel
         {
             state.Result = tab switch
             {
-                LatestRecordsTab.Temperature => await LatestRecordsService.GetTemperatureRecords(Location.Id),
-                LatestRecordsTab.Precipitation => await LatestRecordsService.GetPrecipitationRecords(Location.Id),
+                RecentObservationsTab.Temperature => await RecentObservationsService.GetTemperatureRecords(Location.Id),
+                RecentObservationsTab.Precipitation => await RecentObservationsService.GetPrecipitationRecords(Location.Id),
                 _ => throw new NotImplementedException(),
             };
             state.IsLoaded = true;
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Unable to load latest {Tab} records for location {LocationId}", tab, Location.Id);
-            state.ErrorMessage = $"Unable to load latest {tab.ToString().ToLowerInvariant()} records.";
+            Logger.LogError(ex, "Unable to load recent {Tab} observations for location {LocationId}", tab, Location.Id);
+            state.ErrorMessage = $"Unable to load recent {tab.ToString().ToLowerInvariant()} observations.";
         }
         finally
         {
@@ -89,22 +89,22 @@ public partial class LatestRecordsPanel
         }
     }
 
-    private LatestRecordsTabState GetState(LatestRecordsTab tab)
+    private RecentObservationsTabState GetState(RecentObservationsTab tab)
     {
         return tab switch
         {
-            LatestRecordsTab.Temperature => temperatureState,
-            LatestRecordsTab.Precipitation => precipitationState,
+            RecentObservationsTab.Temperature => temperatureState,
+            RecentObservationsTab.Precipitation => precipitationState,
             _ => throw new NotImplementedException(),
         };
     }
 
-    private sealed class LatestRecordsTabState
+    private sealed class RecentObservationsTabState
     {
         public bool IsLoading { get; set; }
         public bool IsLoaded { get; set; }
         public string? ErrorMessage { get; set; }
-        public LatestRecordsTabResult? Result { get; set; }
+        public RecentObservationsTabResult? Result { get; set; }
 
         public void Reset()
         {

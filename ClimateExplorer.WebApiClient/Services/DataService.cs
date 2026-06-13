@@ -242,9 +242,9 @@ public class DataService : IDataService
         return result!;
     }
 
-    public async Task<LatestRecordsResponse> GetLatestRecords(Guid locationId, DataType dataType, bool isLocationSupported = false)
+    public async Task<RecentObservationsResponse> GetRecentObservations(Guid locationId, DataType dataType, bool isLocationSupported = false)
     {
-        var url = "/latest-record";
+        var url = "/recent-observations";
         url = QueryHelpers.AddQueryString(url, "locationId", locationId.ToString());
         url = QueryHelpers.AddQueryString(url, "dataType", dataType.ToString());
 
@@ -253,7 +253,7 @@ public class DataService : IDataService
             url = QueryHelpers.AddQueryString(url, "isLocationSupported", "true");
         }
 
-        var result = await httpClient.GetFromJsonAsync<LatestRecordsResponse>(url, jsonSerializerOptions);
+        var result = await httpClient.GetFromJsonAsync<RecentObservationsResponse>(url, jsonSerializerOptions);
         return result!;
     }
 }

@@ -1,19 +1,19 @@
-.latest-records-panel {
+.recent-observations-panel {
     min-height: 20rem;
 }
 
-.latest-records-body {
+.recent-observations-body {
     min-height: 16rem;
 }
 
-.latest-record-grid {
+.recent-observation-grid {
     display: grid;
     gap: 0.9rem;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 450px));
     justify-content: start;
 }
 
-.latest-records-state {
+.recent-observations-state {
     align-items: center;
     background: #f5f8f7;
     border: 1px solid #d7e2df;
@@ -25,17 +25,17 @@
     padding: 1rem;
 }
 
-.latest-records-state.error {
+.recent-observations-state.error {
     background: #fff5f2;
     border-color: #edc6ba;
     color: #743a2b;
 }
 
-.latest-records-state i {
+.recent-observations-state i {
     flex-shrink: 0;
 }
 
-.latest-records-retry {
+.recent-observations-retry {
     align-items: center;
     background: #fff;
     border: 1px solid currentColor;
@@ -47,17 +47,17 @@
     padding: 0.35rem 0.55rem;
 }
 
-.latest-records-retry:hover {
+.recent-observations-retry:hover {
     background: rgb(255 255 255 / 70%);
 }
 
 @media (max-width: 520px) {
-    .latest-records-state {
+    .recent-observations-state {
         align-items: flex-start;
         flex-direction: column;
     }
 
-    .latest-records-retry {
+    .recent-observations-retry {
         margin-left: 0;
     }
 }

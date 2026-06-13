@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using static ClimateExplorer.Core.Enums;
 
-internal static partial class LatestRecordsEndpoints
+internal static partial class RecentObservationsEndpoints
 {
     private enum DailyBomObsCode
     {
@@ -24,23 +24,23 @@ internal static partial class LatestRecordsEndpoints
         DailySolarRadiation = 193,
     }
 
-    public static async Task<LatestRecordsResponse> GetLatestRecords(
+    public static async Task<RecentObservationsResponse> GetRecentObservations(
         [FromServices] ClimateExplorerApiServices services,
         [FromServices] ILoggerFactory loggerFactory,
         Guid locationId,
         DataType dataType = DataType.TempMax,
         bool isLocationSupported = false)
     {
-        var logger = loggerFactory.CreateLogger(nameof(LatestRecordsEndpoints));
+        var logger = loggerFactory.CreateLogger(nameof(RecentObservationsEndpoints));
         var today = DateOnly.FromDateTime(DateTime.Today);
-        var bomContext = await GetBomLatestRecordsContext(services, locationId, dataType, today);
+        var bomContext = await GetBomRecentObservationsContext(services, locationId, dataType, today);
         if (isLocationSupported || !bomContext.IsSupported)
         {
-            return new LatestRecordsResponse { IsSupported = bomContext.IsSupported };
+            return new RecentObservationsResponse { IsSupported = bomContext.IsSupported };
         }
 
-        var cacheKey = $"{ClimateExplorerApiConstants.LatestRecordsCacheKeyPrefix}_{locationId}_{dataType}";
-        var cachedResponse = await services.Cache.Get<LatestRecordsResponse>(cacheKey);
+        var cacheKey = $"{ClimateExplorerApiConstants.RecentObservationsCacheKeyPrefix}_{locationId}_{dataType}";
+        var cachedResponse = await services.Cache.Get<RecentObservationsResponse>(cacheKey);
         if (HasRecordForDate(cachedResponse, today) || WasDataRetrievedInLastHour(cachedResponse))
         {
             return cachedResponse;
@@ -58,10 +58,10 @@ internal static partial class LatestRecordsEndpoints
 
             if (records == null)
             {
-                return cachedResponse ?? new LatestRecordsResponse { IsSupported = true };
+                return cachedResponse ?? new RecentObservationsResponse { IsSupported = true };
             }
 
-            var response = new LatestRecordsResponse
+            var response = new RecentObservationsResponse
             {
                 RetrievedDate = DateTimeOffset.UtcNow,
                 IsSupported = true,
@@ -77,12 +77,12 @@ internal static partial class LatestRecordsEndpoints
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Unable to retrieve latest BOM records for location {LocationId} and data type {DataType}", locationId, dataType);
-            return cachedResponse ?? new LatestRecordsResponse { IsSupported = true };
+            logger.LogError(ex, "Unable to retrieve recent BOM observations for location {LocationId} and data type {DataType}", locationId, dataType);
+            return cachedResponse ?? new RecentObservationsResponse { IsSupported = true };
         }
     }
 
-    private static async Task<(bool IsSupported, string StationId, MeasurementDefinition MeasurementDefinition, DataFileMapping DataFileMapping)> GetBomLatestRecordsContext(
+    private static async Task<(bool IsSupported, string StationId, MeasurementDefinition MeasurementDefinition, DataFileMapping DataFileMapping)> GetBomRecentObservationsContext(
         ClimateExplorerApiServices services,
         Guid locationId,
         DataType dataType,
@@ -139,7 +139,7 @@ internal static partial class LatestRecordsEndpoints
             return null;
         }
 
-        var tempDirectory = Path.Combine(Path.GetTempPath(), $"ClimateExplorerLatestRecords_{Guid.NewGuid():N}");
+        var tempDirectory = Path.Combine(Path.GetTempPath(), $"ClimateExplorerRecentObservations_{Guid.NewGuid():N}");
         var zipFilePath = Path.Combine(tempDirectory, $"{stationId}_{obsCode.ToString().ToLowerInvariant()}.zip");
 
         try
@@ -156,7 +156,7 @@ internal static partial class LatestRecordsEndpoints
             using var zipFileResponse = await httpClient.GetAsync(zipFileUrl);
             if (!zipFileResponse.IsSuccessStatusCode)
             {
-                logger.LogWarning("Unable to download latest BOM zip for station {StationId} and ObsCode {ObsCode}. Status code: {StatusCode}", stationId, obsCode, zipFileResponse.StatusCode);
+                logger.LogWarning("Unable to download recent BOM zip for station {StationId} and ObsCode {ObsCode}. Status code: {StatusCode}", stationId, obsCode, zipFileResponse.StatusCode);
                 return null;
             }
 
@@ -171,7 +171,7 @@ internal static partial class LatestRecordsEndpoints
                 return null;
             }
 
-            return ReadLatestBomRecords(stationId, measurementDefinition, lines, year);
+            return ReadRecentObservationsBom(stationId, measurementDefinition, lines, year);
         }
         finally
         {
@@ -190,7 +190,7 @@ internal static partial class LatestRecordsEndpoints
         using var response = await httpClient.GetAsync(availableYearsUrl);
         if (!response.IsSuccessStatusCode)
         {
-            logger.LogWarning("Unable to retrieve latest BOM available years for station {StationId} and ObsCode {ObsCode}. Status code: {StatusCode}", stationId, obsCode, response.StatusCode);
+            logger.LogWarning("Unable to retrieve recent BOM available years for station {StationId} and ObsCode {ObsCode}. Status code: {StatusCode}", stationId, obsCode, response.StatusCode);
             return null;
         }
 
@@ -198,7 +198,7 @@ internal static partial class LatestRecordsEndpoints
         var match = DailyBomAvailableYearsRegex().Match(responseContent);
         if (!match.Success)
         {
-            logger.LogWarning("Unable to find latest BOM p_c value for station {StationId} and ObsCode {ObsCode}", stationId, obsCode);
+            logger.LogWarning("Unable to find recent BOM p_c value for station {StationId} and ObsCode {ObsCode}", stationId, obsCode);
             return null;
         }
 
@@ -217,7 +217,7 @@ internal static partial class LatestRecordsEndpoints
 
             if (csvEntries.Count != 1)
             {
-                logger.LogWarning("Expected one CSV entry in latest BOM zip {ZipFilePath}, found {CsvEntryCount}", zipFilePath, csvEntries.Count);
+                logger.LogWarning("Expected one CSV entry in recent BOM zip {ZipFilePath}, found {CsvEntryCount}", zipFilePath, csvEntries.Count);
                 return null;
             }
 
@@ -232,12 +232,12 @@ internal static partial class LatestRecordsEndpoints
         }
         catch (InvalidDataException ex)
         {
-            logger.LogWarning(ex, "Unable to read latest BOM zip file {ZipFilePath}. File may be corrupt.", zipFilePath);
+            logger.LogWarning(ex, "Unable to read recent BOM zip file {ZipFilePath}. File may be corrupt.", zipFilePath);
             return null;
         }
     }
 
-    private static List<DataRecord> ReadLatestBomRecords(
+    private static List<DataRecord> ReadRecentObservationsBom(
         string stationId,
         MeasurementDefinition measurementDefinition,
         string[] lines,
@@ -322,7 +322,7 @@ internal static partial class LatestRecordsEndpoints
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "Unable to delete latest BOM temporary file {FilePath}", filePath);
+            logger.LogWarning(ex, "Unable to delete recent BOM temporary file {FilePath}", filePath);
         }
     }
 
@@ -342,16 +342,16 @@ internal static partial class LatestRecordsEndpoints
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "Unable to delete latest BOM temporary directory {DirectoryPath}", directoryPath);
+            logger.LogWarning(ex, "Unable to delete recent BOM temporary directory {DirectoryPath}", directoryPath);
         }
     }
 
-    private static bool HasRecordForDate(LatestRecordsResponse response, DateOnly date)
+    private static bool HasRecordForDate(RecentObservationsResponse response, DateOnly date)
     {
         return response?.Records.Any(x => x.Year == date.Year && x.Month == date.Month && x.Day == date.Day) == true;
     }
 
-    private static bool WasDataRetrievedInLastHour(LatestRecordsResponse response)
+    private static bool WasDataRetrievedInLastHour(RecentObservationsResponse response)
     {
         return response?.RetrievedDate >= DateTimeOffset.UtcNow.AddHours(-1);
     }

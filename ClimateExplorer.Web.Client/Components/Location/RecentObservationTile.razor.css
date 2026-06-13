@@ -1,4 +1,4 @@
-.latest-record-tile {
+.recent-observation-tile {
     border-radius: 8px;
     border: 1px solid #d8e2df;
     border-left: 5px solid #6f8f89;
@@ -9,32 +9,32 @@
     width: 100%;
 }
 
-.latest-record-tile.temperature-warm {
+.recent-observation-tile.temperature-warm {
     border-left-color: #c85f2f;
     background: #fff5ef;
 }
 
-.latest-record-tile.temperature-cool {
+.recent-observation-tile.temperature-cool {
     border-left-color: #3978a8;
     background: #eef6fb;
 }
 
-.latest-record-tile.precipitation-wet {
+.recent-observation-tile.precipitation-wet {
     border-left-color: #2d83a8;
     background: #edf8fb;
 }
 
-.latest-record-tile.precipitation-dry {
+.recent-observation-tile.precipitation-dry {
     border-left-color: #b48a2c;
     background: #fff9e8;
 }
 
-.latest-record-tile.unavailable {
+.recent-observation-tile.unavailable {
     border-left-color: #9a9a9a;
     background: #f7f7f7;
 }
 
-.latest-record-period {
+.recent-observation-period {
     color: #596f6a;
     font-size: 0.82rem;
     font-weight: 700;
@@ -42,21 +42,21 @@
     text-transform: uppercase;
 }
 
-.latest-record-tile h3 {
+.recent-observation-tile h3 {
     color: #253b36;
     font-size: 1.2rem;
     line-height: 1.2;
     margin: 0 0 0.45rem;
 }
 
-.latest-record-percentile {
+.recent-observation-percentile {
     color: #40534f;
     font-size: 0.95rem;
     line-height: 1.35;
     margin: 0 0 0.9rem;
 }
 
-.latest-record-primary {
+.recent-observation-primary {
     align-items: baseline;
     border-top: 1px solid rgb(66 95 89 / 18%);
     display: flex;
@@ -65,38 +65,38 @@
     padding-top: 0.75rem;
 }
 
-.latest-record-primary span {
+.recent-observation-primary span {
     color: #596f6a;
     font-size: 0.82rem;
     font-weight: 700;
 }
 
-.latest-record-primary strong {
+.recent-observation-primary strong {
     color: #1f2f2c;
     font-size: 1.55rem;
     line-height: 1;
     white-space: nowrap;
 }
 
-.latest-record-stats {
+.recent-observation-stats {
     display: grid;
     gap: 0.55rem 0.8rem;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     margin: 0.9rem 0 0;
 }
 
-.latest-record-stats div {
+.recent-observation-stats div {
     min-width: 0;
 }
 
-.latest-record-stats dt {
+.recent-observation-stats dt {
     color: #697d78;
     font-size: 0.74rem;
     font-weight: 700;
     margin: 0;
 }
 
-.latest-record-stats dd {
+.recent-observation-stats dd {
     color: #263a35;
     font-size: 0.92rem;
     font-weight: 650;
@@ -104,7 +104,7 @@
     overflow-wrap: anywhere;
 }
 
-.latest-record-note {
+.recent-observation-note {
     color: #5d6d69;
     font-size: 0.78rem;
     line-height: 1.35;
@@ -112,13 +112,13 @@
 }
 
 @media (max-width: 520px) {
-    .latest-record-primary {
+    .recent-observation-primary {
         align-items: flex-start;
         flex-direction: column;
         gap: 0.35rem;
     }
 
-    .latest-record-stats {
+    .recent-observation-stats {
         grid-template-columns: 1fr;
     }
 }
