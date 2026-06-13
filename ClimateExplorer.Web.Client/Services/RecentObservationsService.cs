@@ -172,6 +172,13 @@ public sealed class RecentObservationsService : IRecentObservationsService
         }
 
         var latestDate = daily.Max(x => x.Date);
+        var lastWeekEnd = latestDate;
+        var lastWeekStart = latestDate.AddDays(-6);
+        var lastWeekRecords = daily
+            .Where(x => x.Date >= lastWeekStart && x.Date <= lastWeekEnd)
+            .ToList();
+        AddTemperatureRangePeriod(periods, lastWeekRecords, lastWeekStart, lastWeekEnd, PeriodKind.LastWeek);
+
         if (latestDate.Year == today.Year && latestDate.Month == today.Month)
         {
             var monthRecords = daily
@@ -218,6 +225,13 @@ public sealed class RecentObservationsService : IRecentObservationsService
         }
 
         var latestDate = daily.Max(x => x.Date);
+        var lastWeekEnd = latestDate;
+        var lastWeekStart = latestDate.AddDays(-6);
+        var lastWeekRecords = daily
+            .Where(x => x.Date >= lastWeekStart && x.Date <= lastWeekEnd)
+            .ToList();
+        AddPrecipitationRangePeriod(periods, lastWeekRecords, lastWeekStart, lastWeekEnd, PeriodKind.LastWeek);
+
         if (latestDate.Year == today.Year && latestDate.Month == today.Month)
         {
             var monthRecords = daily
@@ -438,14 +452,19 @@ public sealed class RecentObservationsService : IRecentObservationsService
         var values = response.Records
             .Where(x => x.Date.HasValue &&
                         x.Value.HasValue &&
-                        x.Year != period.StartDate.Year &&
                         IsWithinEquivalentRange(x.Date.Value, period.StartDate, period.EndDate))
-            .GroupBy(x => x.Year)
+            .Select(x => new
+            {
+                Record = x,
+                EquivalentPeriodYear = GetEquivalentPeriodYear(x.Date!.Value, period.StartDate, period.EndDate),
+            })
+            .Where(x => x.EquivalentPeriodYear != period.StartDate.Year)
+            .GroupBy(x => x.EquivalentPeriodYear)
             .Select(group =>
             {
                 var expectedDays = GetEquivalentDayCount(group.Key, period.StartDate, period.EndDate);
                 var values = group
-                    .Select(x => x.Value!.Value)
+                    .Select(x => x.Record.Value!.Value)
                     .ToList();
                 var requiredDays = (int)Math.Ceiling(expectedDays * MinimumHistoricalCoverage);
 
@@ -667,14 +686,38 @@ public sealed class RecentObservationsService : IRecentObservationsService
         var startMonthDay = (templateStart.Month * 100) + templateStart.Day;
         var endMonthDay = (templateEnd.Month * 100) + templateEnd.Day;
 
-        return dateMonthDay >= startMonthDay && dateMonthDay <= endMonthDay;
+        return startMonthDay <= endMonthDay
+            ? dateMonthDay >= startMonthDay && dateMonthDay <= endMonthDay
+            : dateMonthDay >= startMonthDay || dateMonthDay <= endMonthDay;
     }
 
-    private static int GetEquivalentDayCount(short year, DateOnly templateStart, DateOnly templateEnd)
+    private static int GetEquivalentPeriodYear(DateOnly date, DateOnly templateStart, DateOnly templateEnd)
+    {
+        var dateMonthDay = (date.Month * 100) + date.Day;
+        var startMonthDay = (templateStart.Month * 100) + templateStart.Day;
+        var endMonthDay = (templateEnd.Month * 100) + templateEnd.Day;
+
+        if (startMonthDay > endMonthDay && dateMonthDay <= endMonthDay)
+        {
+            return date.Year - 1;
+        }
+
+        return date.Year;
+    }
+
+    private static int GetEquivalentDayCount(int year, DateOnly templateStart, DateOnly templateEnd)
     {
         var startDate = CreateEquivalentDate(year, templateStart.Month, templateStart.Day);
-        var endDate = CreateEquivalentDate(year, templateEnd.Month, templateEnd.Day);
+        var endYear = IsWithinSameCalendarYear(templateStart, templateEnd) ? year : year + 1;
+        var endDate = CreateEquivalentDate(endYear, templateEnd.Month, templateEnd.Day);
         return endDate.DayNumber - startDate.DayNumber + 1;
+    }
+
+    private static bool IsWithinSameCalendarYear(DateOnly startDate, DateOnly endDate)
+    {
+        var startMonthDay = (startDate.Month * 100) + startDate.Day;
+        var endMonthDay = (endDate.Month * 100) + endDate.Day;
+        return startMonthDay <= endMonthDay;
     }
 
     private static DateOnly CreateEquivalentDate(int year, int month, int day)
@@ -701,6 +744,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
     {
         return kind switch
         {
+            PeriodKind.LastWeek => "Last week",
             PeriodKind.CurrentMonth => endDate.Day == DateTime.DaysInMonth(endDate.Year, endDate.Month)
                 ? $"{MonthName(endDate.Month)} {endDate.Year}"
                 : $"{MonthName(endDate.Month)} {endDate.Year} to date",
@@ -741,6 +785,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
     {
         return kind switch
         {
+            PeriodKind.LastWeek => $"7 days ending {FormatShortDayMonth(endDate)}",
             PeriodKind.CurrentMonth => endDate.Day == DateTime.DaysInMonth(endDate.Year, endDate.Month)
                 ? MonthName(endDate.Month)
                 : $"{MonthName(endDate.Month)} to date",
@@ -754,6 +799,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
     {
         return kind switch
         {
+            PeriodKind.LastWeek => $"7-day periods ending {FormatShortDayMonth(endDate)}",
             PeriodKind.CurrentMonth => endDate.Day == DateTime.DaysInMonth(endDate.Year, endDate.Month)
                 ? $"{MonthName(endDate.Month)}s"
                 : $"{MonthName(endDate.Month)}-to-date periods",
@@ -772,6 +818,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
 
         return kind switch
         {
+            PeriodKind.LastWeek => $"Compared with equivalent historical 7-day periods ending {FormatDayMonth(endDate)}.",
             PeriodKind.CurrentMonth => endDate.Day == DateTime.DaysInMonth(endDate.Year, endDate.Month)
                 ? null
                 : $"Compared with equivalent historical month-to-date periods through {FormatDayMonth(endDate)}.",
@@ -865,6 +912,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
 
     private enum PeriodKind
     {
+        LastWeek,
         CurrentMonth,
         LastMonth,
         YearToDate,
