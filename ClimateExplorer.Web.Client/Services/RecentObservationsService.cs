@@ -610,11 +610,6 @@ public sealed class RecentObservationsService : IRecentObservationsService
             stats.Add(new RecentObservationStatViewModel { Label = "Anomaly", Value = FormatRainfallAnomaly(ranking.Anomaly) });
         }
 
-        if (period.ActualDays > 1)
-        {
-            stats.Add(new RecentObservationStatViewModel { Label = "Days available", Value = $"{period.ActualDays}/{period.ExpectedDays}" });
-        }
-
         return new RecentObservationTileViewModel
         {
             PeriodTitle = period.Title,
