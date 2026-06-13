@@ -33,6 +33,8 @@ public static class RecentObservationComparison
             HighPercentile = highPercentile,
             LowPercentile = lowPercentile,
             HistoricalAverage = average,
+            HistoricalMax = max,
+            HistoricalMin = min,
             Anomaly = value - average,
             IsNewHighRecord = value > max + Tolerance,
             IsNewLowRecord = value < min - Tolerance,

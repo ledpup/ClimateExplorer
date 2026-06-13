@@ -10,6 +10,8 @@ public sealed record RecentObservationComparisonResult
     public double HighPercentile { get; init; }
     public double LowPercentile { get; init; }
     public double HistoricalAverage { get; init; }
+    public double HistoricalMax { get; init; }
+    public double HistoricalMin { get; init; }
     public double Anomaly { get; init; }
     public bool IsNewHighRecord { get; init; }
     public bool IsNewLowRecord { get; init; }

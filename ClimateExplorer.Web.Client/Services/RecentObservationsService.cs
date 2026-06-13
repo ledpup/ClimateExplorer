@@ -567,6 +567,10 @@ public sealed class RecentObservationsService : IRecentObservationsService
                 : RecentObservationComparison.BuildTemperaturePercentileSentence(period.ComparisonLabelPlural, historicalValues.StartYear, ranking),
             PrimaryLabel = "Mean temperature",
             PrimaryValue = FormatTemperature(period.PrimaryValue),
+            HistoricalMaxLabel = ranking is null ? null : $"Warmest {CreateHistoricalContextLabel(period)}",
+            HistoricalMaxValue = ranking is null ? null : FormatTemperature(ranking.HistoricalMax),
+            HistoricalMinLabel = ranking is null ? null : $"Coolest {CreateHistoricalContextLabel(period)}",
+            HistoricalMinValue = ranking is null ? null : FormatTemperature(ranking.HistoricalMin),
             HasComparison = ranking is not null,
             Tone = GetTemperatureTone(ranking),
             Note = period.Note,
@@ -599,6 +603,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
                 : RecentObservationComparison.BuildPrecipitationPercentileSentence(historicalValues.StartYear, ranking),
             PrimaryLabel = "Rainfall total",
             PrimaryValue = FormatRainfall(period.PrimaryValue),
+            HistoricalMaxLabel = ranking is null ? null : $"Wettest {CreateHistoricalContextLabel(period)}",
+            HistoricalMaxValue = ranking is null ? null : FormatRainfall(ranking.HistoricalMax),
             HasComparison = ranking is not null,
             Tone = GetPrecipitationTone(ranking),
             Note = period.Note,
@@ -701,6 +707,33 @@ public sealed class RecentObservationsService : IRecentObservationsService
         };
     }
 
+    private static string CreateHistoricalContextLabel(PeriodObservation period)
+    {
+        if (period.ComparisonMode == PeriodComparisonMode.DailyDate)
+        {
+            return FormatShortDayMonth(period.StartDate);
+        }
+
+        if (period.ComparisonMode == PeriodComparisonMode.MonthlySameMonth)
+        {
+            return MonthName(period.StartDate.Month);
+        }
+
+        if (period.StartDate.Month == 1 && period.StartDate.Day == 1)
+        {
+            return "year to date";
+        }
+
+        if (period.StartDate.Day == 1 && period.StartDate.Month == period.EndDate.Month)
+        {
+            return period.EndDate.Day == DateTime.DaysInMonth(period.EndDate.Year, period.EndDate.Month)
+                ? MonthName(period.EndDate.Month)
+                : $"{MonthName(period.EndDate.Month)} to date";
+        }
+
+        return period.ComparisonLabel;
+    }
+
     private static string CreateComparisonLabel(PeriodKind kind, DateOnly endDate)
     {
         return kind switch
@@ -747,6 +780,11 @@ public sealed class RecentObservationsService : IRecentObservationsService
     private static string FormatDayMonth(DateOnly date)
     {
         return $"{date.Day} {MonthName(date.Month)}";
+    }
+
+    private static string FormatShortDayMonth(DateOnly date)
+    {
+        return date.ToString("d MMM", CultureInfo.CurrentCulture);
     }
 
     private static string MonthName(int month)

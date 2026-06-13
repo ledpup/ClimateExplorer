@@ -14,6 +14,8 @@ public class RecentObservationComparisonTests
         Assert.AreEqual(2, result.HighRank);
         Assert.AreEqual(5, result.LowRank);
         Assert.AreEqual(66.67d, result.HighPercentile, 0.01d);
+        Assert.AreEqual(15d, result.HistoricalMax);
+        Assert.AreEqual(10d, result.HistoricalMin);
         Assert.AreEqual(1.8d, result.Anomaly, 0.01d);
         Assert.AreEqual(RecentObservationComparisonDirection.High, result.Direction);
     }

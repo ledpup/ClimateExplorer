@@ -78,6 +78,38 @@
     white-space: nowrap;
 }
 
+.recent-observation-historical-range {
+    border-top: 1px solid rgb(66 95 89 / 12%);
+    display: grid;
+    gap: 0.5rem 0.8rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0.75rem 0 0;
+    padding-top: 0.75rem;
+}
+
+.recent-observation-historical-range div {
+    min-width: 0;
+}
+
+.recent-observation-historical-range div:only-child {
+    grid-column: 1 / -1;
+}
+
+.recent-observation-historical-range dt {
+    color: #5c726d;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.recent-observation-historical-range dd {
+    color: #253b36;
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0.1rem 0 0;
+    overflow-wrap: anywhere;
+}
+
 .recent-observation-stats {
     display: grid;
     gap: 0.55rem 0.8rem;
@@ -119,6 +151,10 @@
     }
 
     .recent-observation-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .recent-observation-historical-range {
         grid-template-columns: 1fr;
     }
 }

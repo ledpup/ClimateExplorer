@@ -25,6 +25,22 @@
     {
         <p class="recent-observation-note">@Tile.Note</p>
     }
+    @if (!string.IsNullOrWhiteSpace(Tile.HistoricalMaxLabel) && !string.IsNullOrWhiteSpace(Tile.HistoricalMaxValue))
+    {
+        <dl class="recent-observation-historical-range">
+            <div>
+                <dt>@Tile.HistoricalMaxLabel</dt>
+                <dd>@Tile.HistoricalMaxValue</dd>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Tile.HistoricalMinLabel) && !string.IsNullOrWhiteSpace(Tile.HistoricalMinValue))
+            {
+                <div>
+                    <dt>@Tile.HistoricalMinLabel</dt>
+                    <dd>@Tile.HistoricalMinValue</dd>
+                </div>
+            }
+        </dl>
+    }
 </article>
 
 @code {
