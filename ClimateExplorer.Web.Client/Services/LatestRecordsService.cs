@@ -558,11 +558,6 @@ public sealed class LatestRecordsService : ILatestRecordsService
             stats.Add(new LatestRecordStatViewModel { Label = "Anomaly", Value = FormatTemperatureAnomaly(ranking.Anomaly) });
         }
 
-        if (period.ActualDays > 1)
-        {
-            stats.Add(new LatestRecordStatViewModel { Label = "Days available", Value = $"{period.ActualDays}/{period.ExpectedDays}" });
-        }
-
         return new LatestRecordTileViewModel
         {
             PeriodTitle = period.Title,
