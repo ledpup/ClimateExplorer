@@ -353,7 +353,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         var monthlyHistory = await GetTemperatureHistoricalMonthlyRecords(locationId, preferredAdjustment, period.StartDate.Month);
         var monthlyValues = monthlyHistory.Records
             .Where(x => x.Value.HasValue && x.Month == period.StartDate.Month && x.Year != period.StartDate.Year)
-            .Select(x => x.Value)
+            .Select(x => new HistoricalPeriodValue(x.Value, x.Year))
             .ToList();
 
         if (monthlyValues.Count >= MinimumHistoricalPeriods)
@@ -374,7 +374,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         var monthlyHistory = await GetHistoricalRecords(locationId, DataType.Precipitation, null, monthly: true, month: period.StartDate.Month);
         var monthlyValues = monthlyHistory.Records
             .Where(x => x.Value.HasValue && x.Month == period.StartDate.Month && x.Year != period.StartDate.Year)
-            .Select(x => x.Value)
+            .Select(x => new HistoricalPeriodValue(x.Value, x.Year))
             .ToList();
 
         if (monthlyValues.Count >= MinimumHistoricalPeriods)
@@ -422,7 +422,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
                         x.Month == period.StartDate.Month &&
                         x.Day == period.StartDate.Day &&
                         x.Year != period.StartDate.Year)
-            .Select(x => x.Value)
+            .Select(x => new HistoricalPeriodValue(x.Value, x.Year))
             .ToList();
 
         return values.Count >= MinimumHistoricalPeriods
@@ -450,11 +450,11 @@ public sealed class RecentObservationsService : IRecentObservationsService
                 var requiredDays = (int)Math.Ceiling(expectedDays * MinimumHistoricalCoverage);
 
                 return values.Count >= requiredDays
-                    ? (Value: (double?)aggregate(values), Count: values.Count)
-                    : (Value: null, Count: values.Count);
+                    ? (Value: (double?)aggregate(values), Year: (short?)group.Key, Count: values.Count)
+                    : (Value: null, Year: (short?)null, Count: values.Count);
             })
             .Where(x => x.Value.HasValue)
-            .Select(x => x.Value)
+            .Select(x => new HistoricalPeriodValue(x.Value, x.Year))
             .ToList();
 
         return values.Count >= MinimumHistoricalPeriods
@@ -569,8 +569,10 @@ public sealed class RecentObservationsService : IRecentObservationsService
             PrimaryValue = FormatTemperature(period.PrimaryValue),
             HistoricalMaxLabel = ranking is null ? null : $"Warmest {CreateHistoricalContextLabel(period)}",
             HistoricalMaxValue = ranking is null ? null : FormatTemperature(ranking.HistoricalMax),
+            HistoricalMaxOccurred = FormatHistoricalOccurrence(historicalValues.MaxValue),
             HistoricalMinLabel = ranking is null ? null : $"Coolest {CreateHistoricalContextLabel(period)}",
             HistoricalMinValue = ranking is null ? null : FormatTemperature(ranking.HistoricalMin),
+            HistoricalMinOccurred = FormatHistoricalOccurrence(historicalValues.MinValue),
             HasComparison = ranking is not null,
             Tone = GetTemperatureTone(ranking),
             Note = period.Note,
@@ -605,6 +607,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             PrimaryValue = FormatRainfall(period.PrimaryValue),
             HistoricalMaxLabel = ranking is null ? null : $"Wettest {CreateHistoricalContextLabel(period)}",
             HistoricalMaxValue = ranking is null ? null : FormatRainfall(ranking.HistoricalMax),
+            HistoricalMaxOccurred = FormatHistoricalOccurrence(historicalValues.MaxValue),
             HasComparison = ranking is not null,
             Tone = GetPrecipitationTone(ranking),
             Note = period.Note,
@@ -812,6 +815,11 @@ public sealed class RecentObservationsService : IRecentObservationsService
         return $"{(value >= 0 ? "+" : string.Empty)}{FormatRainfall(value)}";
     }
 
+    private static string? FormatHistoricalOccurrence(HistoricalPeriodValue? value)
+    {
+        return value?.Year?.ToString(CultureInfo.InvariantCulture);
+    }
+
     private sealed record DailyTemperature(DateOnly Date, double Mean, double Max, double Min);
 
     private sealed record DailyPrecipitation(DateOnly Date, double Rainfall);
@@ -831,13 +839,29 @@ public sealed class RecentObservationsService : IRecentObservationsService
         PeriodComparisonMode ComparisonMode,
         string? Note);
 
-    private sealed record HistoricalValues(List<double?> Values, int? StartYear, string? UnavailableReason)
+    private sealed record HistoricalValues(List<HistoricalPeriodValue> PeriodValues, int? StartYear, string? UnavailableReason)
     {
+        public List<double?> Values => [.. PeriodValues.Select(x => x.Value)];
+
+        public HistoricalPeriodValue? MaxValue => PeriodValues
+            .Where(x => x.Value.HasValue)
+            .OrderByDescending(x => x.Value!.Value)
+            .ThenBy(x => x.Year)
+            .FirstOrDefault();
+
+        public HistoricalPeriodValue? MinValue => PeriodValues
+            .Where(x => x.Value.HasValue)
+            .OrderBy(x => x.Value!.Value)
+            .ThenBy(x => x.Year)
+            .FirstOrDefault();
+
         public static HistoricalValues Unavailable(string reason)
         {
             return new HistoricalValues([], null, reason);
         }
     }
+
+    private sealed record HistoricalPeriodValue(double? Value, short? Year);
 
     private enum PeriodKind
     {

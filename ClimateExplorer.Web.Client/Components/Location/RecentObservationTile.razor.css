@@ -110,6 +110,12 @@
     overflow-wrap: anywhere;
 }
 
+.recent-observation-historical-occurred {
+    color: #596f6a;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
 .recent-observation-stats {
     display: grid;
     gap: 0.55rem 0.8rem;

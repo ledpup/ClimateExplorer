@@ -9,8 +9,10 @@ public sealed record RecentObservationTileViewModel
     public string PrimaryValue { get; init; } = string.Empty;
     public string? HistoricalMaxLabel { get; init; }
     public string? HistoricalMaxValue { get; init; }
+    public string? HistoricalMaxOccurred { get; init; }
     public string? HistoricalMinLabel { get; init; }
     public string? HistoricalMinValue { get; init; }
+    public string? HistoricalMinOccurred { get; init; }
     public RecentObservationTileTone Tone { get; init; }
     public bool HasComparison { get; init; }
     public string? Note { get; init; }
