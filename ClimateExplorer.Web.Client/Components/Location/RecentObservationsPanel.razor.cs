@@ -72,8 +72,8 @@ public partial class RecentObservationsPanel
         {
             state.Result = tab switch
             {
-                RecentObservationsTab.Temperature => await RecentObservationsService.GetTemperatureRecords(Location.Id),
-                RecentObservationsTab.Precipitation => await RecentObservationsService.GetPrecipitationRecords(Location.Id),
+                RecentObservationsTab.Temperature => await RecentObservationsService.GetTemperatureRecords(Location),
+                RecentObservationsTab.Precipitation => await RecentObservationsService.GetPrecipitationRecords(Location),
                 _ => throw new NotImplementedException(),
             };
             state.IsLoaded = true;

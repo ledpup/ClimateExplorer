@@ -1,9 +1,10 @@
 namespace ClimateExplorer.Web.Client.Services;
 
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.UiModel;
 
 public interface IRecentObservationsService
 {
-    Task<RecentObservationsTabResult> GetTemperatureRecords(Guid locationId);
-    Task<RecentObservationsTabResult> GetPrecipitationRecords(Guid locationId);
+    Task<RecentObservationsTabResult> GetTemperatureRecords(Location location);
+    Task<RecentObservationsTabResult> GetPrecipitationRecords(Location location);
 }
