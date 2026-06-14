@@ -9,6 +9,7 @@ public partial class RecentObservationsPanel
 {
     private readonly RecentObservationsTabState temperatureState = new();
     private readonly RecentObservationsTabState precipitationState = new();
+    private readonly RecentObservationPeriodSelection periodSelection = new();
     private Guid? internalLocationId;
 
     [Parameter]
@@ -22,14 +23,22 @@ public partial class RecentObservationsPanel
 
     private RecentObservationsTab ActiveTab { get; set; } = RecentObservationsTab.Temperature;
     private RecentObservationsTabState CurrentState => GetState(ActiveTab);
-    private IReadOnlyList<RecentObservationTileViewModel> CurrentTiles => CurrentState.Result?.Tiles ?? [];
+    private IReadOnlyList<RecentObservationTileViewModel> CurrentTiles => CurrentState.Result?.Tiles.Where(IsVisibleTile).ToList() ?? [];
+    private IEnumerable<RecentObservationTileViewModel> TilesBeforeMonthControls => CurrentTiles.Where(IsBeforeMonthControls);
+    private IEnumerable<RecentObservationTileViewModel> SeasonTiles => CurrentTiles.Where(IsSeasonTile);
+    private IEnumerable<RecentObservationTileViewModel> TilesAfterSeasonControls => CurrentTiles.Where(IsAfterSeasonControls);
     private string CurrentEmptyMessage => CurrentState.Result?.EmptyMessage ?? "No recent observations are available.";
+    private bool IsAddEarlierMonthDisabled => periodSelection.IsAddEarlierMonthDisabled;
+    private bool IsRemoveMonthDisabled => periodSelection.IsRemoveMonthDisabled;
+    private bool IsAddEarlierSeasonDisabled => periodSelection.IsAddEarlierSeasonDisabled;
+    private bool IsRemoveSeasonDisabled => periodSelection.IsRemoveSeasonDisabled;
 
     protected override async Task OnParametersSetAsync()
     {
         if (Location?.Id != internalLocationId)
         {
             internalLocationId = Location?.Id;
+            periodSelection.Reset();
             temperatureState.Reset();
             precipitationState.Reset();
         }
@@ -72,8 +81,14 @@ public partial class RecentObservationsPanel
         {
             state.Result = tab switch
             {
-                RecentObservationsTab.Temperature => await RecentObservationsService.GetTemperatureRecords(Location),
-                RecentObservationsTab.Precipitation => await RecentObservationsService.GetPrecipitationRecords(Location),
+                RecentObservationsTab.Temperature => await RecentObservationsService.GetTemperatureRecords(
+                    Location,
+                    RecentObservationPeriodSelection.MaximumPreviousMonthCount,
+                    RecentObservationPeriodSelection.MaximumPreviousSeasonCount),
+                RecentObservationsTab.Precipitation => await RecentObservationsService.GetPrecipitationRecords(
+                    Location,
+                    RecentObservationPeriodSelection.MaximumPreviousMonthCount,
+                    RecentObservationPeriodSelection.MaximumPreviousSeasonCount),
                 _ => throw new NotImplementedException(),
             };
             state.IsLoaded = true;
@@ -89,6 +104,26 @@ public partial class RecentObservationsPanel
         }
     }
 
+    private void AddEarlierMonth()
+    {
+        periodSelection.AddEarlierMonth();
+    }
+
+    private void RemoveMonth()
+    {
+        periodSelection.RemoveMonth();
+    }
+
+    private void AddEarlierSeason()
+    {
+        periodSelection.AddEarlierSeason();
+    }
+
+    private void RemoveSeason()
+    {
+        periodSelection.RemoveSeason();
+    }
+
     private RecentObservationsTabState GetState(RecentObservationsTab tab)
     {
         return tab switch
@@ -97,6 +132,40 @@ public partial class RecentObservationsPanel
             RecentObservationsTab.Precipitation => precipitationState,
             _ => throw new NotImplementedException(),
         };
+    }
+
+    private bool IsBeforeMonthControls(RecentObservationTileViewModel tile)
+    {
+        return tile.PeriodKind is
+            RecentObservationPeriodKind.Daily or
+            RecentObservationPeriodKind.LastWeek or
+            RecentObservationPeriodKind.CurrentMonth or
+            RecentObservationPeriodKind.PreviousMonth;
+    }
+
+    private bool IsSeasonTile(RecentObservationTileViewModel tile)
+    {
+        return tile.PeriodKind is RecentObservationPeriodKind.CurrentSeason or RecentObservationPeriodKind.PreviousSeason;
+    }
+
+    private bool IsAfterSeasonControls(RecentObservationTileViewModel tile)
+    {
+        return !IsBeforeMonthControls(tile) && !IsSeasonTile(tile);
+    }
+
+    private bool IsVisibleTile(RecentObservationTileViewModel tile)
+    {
+        return tile.PeriodKind switch
+        {
+            RecentObservationPeriodKind.PreviousMonth => tile.PeriodOffset <= periodSelection.PreviousMonthCount,
+            RecentObservationPeriodKind.PreviousSeason => tile.PeriodOffset <= periodSelection.PreviousSeasonCount,
+            _ => true,
+        };
+    }
+
+    private string GetTileKey(RecentObservationTileViewModel tile)
+    {
+        return $"{tile.PeriodKind}:{tile.PeriodTitle}";
     }
 
     private sealed class RecentObservationsTabState
