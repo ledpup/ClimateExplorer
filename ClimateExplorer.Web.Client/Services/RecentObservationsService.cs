@@ -58,14 +58,13 @@ public sealed class RecentObservationsService : IRecentObservationsService
             };
         }
 
-        var preferredAdjustment = maxResponse.DataAdjustment ?? minResponse.DataAdjustment ?? DataAdjustment.Unadjusted;
-        var dailyHistory = await GetTemperatureHistoricalDailyRecords(locationId, preferredAdjustment);
+        var dailyHistory = await GetTemperatureHistoricalDailyRecords(locationId, DataAdjustment.Unadjusted);
         var tiles = new List<RecentObservationTileViewModel>();
 
         foreach (var period in periods)
         {
             var historicalValues = period.ComparisonMode == PeriodComparisonMode.MonthlySameMonth
-                ? await GetTemperatureHistoricalMonthlyValues(locationId, preferredAdjustment, dailyHistory, period)
+                ? await GetTemperatureHistoricalMonthlyValues(locationId, DataAdjustment.Unadjusted, dailyHistory, period)
                 : GetTemperatureHistoricalDailyValues(dailyHistory, period);
 
             tiles.Add(BuildTemperatureTile(period, historicalValues));
@@ -664,15 +663,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             yield return preferredAdjustment.Value;
         }
 
-        if (preferredAdjustment != DataAdjustment.Unadjusted)
-        {
-            yield return DataAdjustment.Unadjusted;
-        }
-
-        if (preferredAdjustment != DataAdjustment.Adjusted)
-        {
-            yield return DataAdjustment.Adjusted;
-        }
+        yield return DataAdjustment.Unadjusted;
     }
 
     private static bool IsWithinEquivalentRange(DateOnly date, DateOnly templateStart, DateOnly templateEnd)
@@ -743,7 +734,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             PeriodKind.CurrentMonth => endDate.Day == DateTime.DaysInMonth(endDate.Year, endDate.Month)
                 ? $"{MonthName(endDate.Month)} {endDate.Year}"
                 : $"{MonthName(endDate.Month)} {endDate.Year} to date",
-            PeriodKind.LastMonth => $"{MonthName(startDate.Month)} {startDate.Year}",
+            PeriodKind.LastMonth => $"Last month - {MonthName(startDate.Month)} {startDate.Year}",
             PeriodKind.YearToDate => $"{endDate.Year} to date",
             _ => string.Empty,
         };
@@ -811,15 +802,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             return $"Only {actualDays} of {expectedDays} days are available, so the historical comparison is not shown.";
         }
 
-        return kind switch
-        {
-            PeriodKind.LastWeek => $"Compared with equivalent historical 7-day periods ending {FormatDayMonth(endDate)}.",
-            PeriodKind.CurrentMonth => endDate.Day == DateTime.DaysInMonth(endDate.Year, endDate.Month)
-                ? null
-                : $"Compared with equivalent historical month-to-date periods through {FormatDayMonth(endDate)}.",
-            PeriodKind.YearToDate => $"Compared with equivalent historical year-to-date periods through {FormatDayMonth(endDate)}.",
-            _ => null,
-        };
+        return null;
     }
 
     private static string FormatDayMonth(DateOnly date)
