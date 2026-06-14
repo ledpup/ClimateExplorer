@@ -39,7 +39,9 @@ internal static partial class RecentObservationsEndpoints
             return new RecentObservationsResponse { IsSupported = bomContext.IsSupported };
         }
 
-        var cacheKey = $"{ClimateExplorerApiConstants.RecentObservationsCacheKeyPrefix}_{locationId}_{dataType}";
+        var recentObservationStartDate = new DateOnly(today.Year - 1, 1, 1);
+        var recentObservationEndDate = new DateOnly(today.Year, 12, 31);
+        var cacheKey = $"{ClimateExplorerApiConstants.RecentObservationsCacheKeyPrefix}_{locationId}_{dataType}_{recentObservationStartDate.Year}_{recentObservationEndDate.Year}";
         var cachedResponse = await services.Cache.Get<RecentObservationsResponse>(cacheKey);
         if (HasRecordForDate(cachedResponse, today) || WasDataRetrievedInLastHour(cachedResponse))
         {
@@ -53,7 +55,8 @@ internal static partial class RecentObservationsEndpoints
                 dataType,
                 bomContext.StationId,
                 bomContext.MeasurementDefinition,
-                today.Year,
+                recentObservationStartDate,
+                recentObservationEndDate,
                 logger);
 
             if (records == null)
@@ -131,7 +134,8 @@ internal static partial class RecentObservationsEndpoints
         DataType dataType,
         string stationId,
         MeasurementDefinition measurementDefinition,
-        int year,
+        DateOnly startDate,
+        DateOnly endDate,
         ILogger logger)
     {
         if (!TryGetDailyBomObsCode(dataType, out var obsCode))
@@ -171,7 +175,7 @@ internal static partial class RecentObservationsEndpoints
                 return null;
             }
 
-            return ReadRecentObservationsBom(stationId, measurementDefinition, lines, year);
+            return ReadRecentObservationsBom(stationId, measurementDefinition, lines, startDate, endDate);
         }
         finally
         {
@@ -241,7 +245,8 @@ internal static partial class RecentObservationsEndpoints
         string stationId,
         MeasurementDefinition measurementDefinition,
         string[] lines,
-        int year)
+        DateOnly startDate,
+        DateOnly endDate)
     {
         var regEx = new Regex(measurementDefinition.DataRowRegEx!);
         var fileRecords = DataReaderFunctions.ProcessDataFile(
@@ -250,8 +255,8 @@ internal static partial class RecentObservationsEndpoints
             measurementDefinition.NullValue!,
             measurementDefinition.DataResolution,
             stationId,
-            new DateOnly(year, 1, 1),
-            new DateOnly(year, 12, 31));
+            startDate,
+            endDate);
 
         var dataRecords = fileRecords.Values.ToList();
 

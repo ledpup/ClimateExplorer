@@ -12,20 +12,20 @@ public sealed class RecentObservationsService : IRecentObservationsService
 {
     private const int MinimumHistoricalPeriods = 20;
     private const double MinimumHistoricalCoverage = 0.9d;
-    private const int MaximumPreviousMonthCount = 11;
-    private const int MaximumPreviousSeasonCount = 3;
 
     private readonly IDataService dataService;
+    private readonly TimeProvider timeProvider;
 
-    public RecentObservationsService(IDataService dataService)
+    public RecentObservationsService(IDataService dataService, TimeProvider? timeProvider = null)
     {
         this.dataService = dataService;
+        this.timeProvider = timeProvider ?? TimeProvider.System;
     }
 
     public async Task<RecentObservationsTabResult> GetTemperatureRecords(Location location, int previousMonthCount, int previousSeasonCount)
     {
-        previousMonthCount = Math.Clamp(previousMonthCount, 0, MaximumPreviousMonthCount);
-        previousSeasonCount = Math.Clamp(previousSeasonCount, 0, MaximumPreviousSeasonCount);
+        previousMonthCount = Math.Clamp(previousMonthCount, 0, RecentObservationPeriodSelection.MaximumPreviousMonthCount);
+        previousSeasonCount = Math.Clamp(previousSeasonCount, 0, RecentObservationPeriodSelection.MaximumPreviousSeasonCount);
 
         var locationId = location.Id;
         var maxTask = dataService.GetRecentObservations(locationId, DataType.TempMax);
@@ -54,7 +54,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             };
         }
 
-        var today = DateOnly.FromDateTime(DateTime.Today);
+        var today = GetToday();
         var periods = BuildTemperaturePeriods(latestDaily, today, location.Coordinates.Latitude, previousMonthCount, previousSeasonCount);
         if (periods.Count == 0)
         {
@@ -88,8 +88,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
 
     public async Task<RecentObservationsTabResult> GetPrecipitationRecords(Location location, int previousMonthCount, int previousSeasonCount)
     {
-        previousMonthCount = Math.Clamp(previousMonthCount, 0, MaximumPreviousMonthCount);
-        previousSeasonCount = Math.Clamp(previousSeasonCount, 0, MaximumPreviousSeasonCount);
+        previousMonthCount = Math.Clamp(previousMonthCount, 0, RecentObservationPeriodSelection.MaximumPreviousMonthCount);
+        previousSeasonCount = Math.Clamp(previousSeasonCount, 0, RecentObservationPeriodSelection.MaximumPreviousSeasonCount);
 
         var locationId = location.Id;
         var latestResponse = await dataService.GetRecentObservations(locationId, DataType.Precipitation);
@@ -112,7 +112,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             };
         }
 
-        var today = DateOnly.FromDateTime(DateTime.Today);
+        var today = GetToday();
         var periods = BuildPrecipitationPeriods(latestDaily, today, location.Coordinates.Latitude, previousMonthCount, previousSeasonCount);
         if (periods.Count == 0)
         {
@@ -662,6 +662,11 @@ public sealed class RecentObservationsService : IRecentObservationsService
             DataAdjustment = preferredAdjustment,
             DataResolution = monthly ? DataResolution.Monthly : DataResolution.Daily,
         };
+    }
+
+    private DateOnly GetToday()
+    {
+        return DateOnly.FromDateTime(timeProvider.GetLocalNow().DateTime);
     }
 
     private static ClimateRecordsResponse CombineTemperatureRecords(

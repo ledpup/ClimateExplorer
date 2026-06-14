@@ -7,18 +7,10 @@ using Microsoft.AspNetCore.Components;
 
 public partial class RecentObservationsPanel
 {
-    private const int DefaultPreviousMonthCount = 0;
-    private const int DefaultPreviousSeasonCount = 0;
-    private const int MaximumPreviousMonthCount = 11;
-    private const int MaximumPreviousSeasonCount = 3;
-    private const string MonthControlsKey = "previous-month-controls";
-    private const string SeasonControlsKey = "previous-season-controls";
-
     private readonly RecentObservationsTabState temperatureState = new();
     private readonly RecentObservationsTabState precipitationState = new();
+    private readonly RecentObservationPeriodSelection periodSelection = new();
     private Guid? internalLocationId;
-    private int previousMonthCount = DefaultPreviousMonthCount;
-    private int previousSeasonCount = DefaultPreviousSeasonCount;
 
     [Parameter]
     public Location? Location { get; set; }
@@ -36,18 +28,17 @@ public partial class RecentObservationsPanel
     private IEnumerable<RecentObservationTileViewModel> SeasonTiles => CurrentTiles.Where(IsSeasonTile);
     private IEnumerable<RecentObservationTileViewModel> TilesAfterSeasonControls => CurrentTiles.Where(IsAfterSeasonControls);
     private string CurrentEmptyMessage => CurrentState.Result?.EmptyMessage ?? "No recent observations are available.";
-    private bool IsAddEarlierMonthDisabled => previousMonthCount >= MaximumPreviousMonthCount;
-    private bool IsRemoveMonthDisabled => previousMonthCount == 0;
-    private bool IsAddEarlierSeasonDisabled => previousSeasonCount >= MaximumPreviousSeasonCount;
-    private bool IsRemoveSeasonDisabled => previousSeasonCount == 0;
+    private bool IsAddEarlierMonthDisabled => periodSelection.IsAddEarlierMonthDisabled;
+    private bool IsRemoveMonthDisabled => periodSelection.IsRemoveMonthDisabled;
+    private bool IsAddEarlierSeasonDisabled => periodSelection.IsAddEarlierSeasonDisabled;
+    private bool IsRemoveSeasonDisabled => periodSelection.IsRemoveSeasonDisabled;
 
     protected override async Task OnParametersSetAsync()
     {
         if (Location?.Id != internalLocationId)
         {
             internalLocationId = Location?.Id;
-            previousMonthCount = DefaultPreviousMonthCount;
-            previousSeasonCount = DefaultPreviousSeasonCount;
+            periodSelection.Reset();
             temperatureState.Reset();
             precipitationState.Reset();
         }
@@ -92,12 +83,12 @@ public partial class RecentObservationsPanel
             {
                 RecentObservationsTab.Temperature => await RecentObservationsService.GetTemperatureRecords(
                     Location,
-                    MaximumPreviousMonthCount,
-                    MaximumPreviousSeasonCount),
+                    RecentObservationPeriodSelection.MaximumPreviousMonthCount,
+                    RecentObservationPeriodSelection.MaximumPreviousSeasonCount),
                 RecentObservationsTab.Precipitation => await RecentObservationsService.GetPrecipitationRecords(
                     Location,
-                    MaximumPreviousMonthCount,
-                    MaximumPreviousSeasonCount),
+                    RecentObservationPeriodSelection.MaximumPreviousMonthCount,
+                    RecentObservationPeriodSelection.MaximumPreviousSeasonCount),
                 _ => throw new NotImplementedException(),
             };
             state.IsLoaded = true;
@@ -115,32 +106,22 @@ public partial class RecentObservationsPanel
 
     private void AddEarlierMonth()
     {
-        SetPreviousMonthCount(previousMonthCount + 1);
+        periodSelection.AddEarlierMonth();
     }
 
     private void RemoveMonth()
     {
-        SetPreviousMonthCount(previousMonthCount - 1);
+        periodSelection.RemoveMonth();
     }
 
     private void AddEarlierSeason()
     {
-        SetPreviousSeasonCount(previousSeasonCount + 1);
+        periodSelection.AddEarlierSeason();
     }
 
     private void RemoveSeason()
     {
-        SetPreviousSeasonCount(previousSeasonCount - 1);
-    }
-
-    private void SetPreviousMonthCount(int count)
-    {
-        previousMonthCount = Math.Clamp(count, 0, MaximumPreviousMonthCount);
-    }
-
-    private void SetPreviousSeasonCount(int count)
-    {
-        previousSeasonCount = Math.Clamp(count, 0, MaximumPreviousSeasonCount);
+        periodSelection.RemoveSeason();
     }
 
     private RecentObservationsTabState GetState(RecentObservationsTab tab)
@@ -176,8 +157,8 @@ public partial class RecentObservationsPanel
     {
         return tile.PeriodKind switch
         {
-            RecentObservationPeriodKind.PreviousMonth => tile.PeriodOffset <= previousMonthCount,
-            RecentObservationPeriodKind.PreviousSeason => tile.PeriodOffset <= previousSeasonCount,
+            RecentObservationPeriodKind.PreviousMonth => tile.PeriodOffset <= periodSelection.PreviousMonthCount,
+            RecentObservationPeriodKind.PreviousSeason => tile.PeriodOffset <= periodSelection.PreviousSeasonCount,
             _ => true,
         };
     }

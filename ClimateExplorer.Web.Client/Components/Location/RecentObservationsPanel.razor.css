@@ -9,7 +9,7 @@
 .recent-observation-grid {
     display: grid;
     gap: 0.9rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 450px));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 475px));
     justify-content: start;
 }
 
