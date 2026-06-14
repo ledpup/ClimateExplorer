@@ -148,19 +148,3 @@
     line-height: 1.35;
     margin: 0.85rem 0 0;
 }
-
-@media (max-width: 520px) {
-    .recent-observation-primary {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 0.35rem;
-    }
-
-    .recent-observation-stats {
-        grid-template-columns: 1fr;
-    }
-
-    .recent-observation-historical-range {
-        grid-template-columns: 1fr;
-    }
-}
