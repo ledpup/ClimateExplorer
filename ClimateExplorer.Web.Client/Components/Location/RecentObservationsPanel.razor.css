@@ -13,6 +13,20 @@
     justify-content: start;
 }
 
+.recent-observation-tile-slot {
+    animation: recent-observation-slot-in 180ms ease-out;
+    transition: opacity 180ms ease-out, transform 180ms ease-out;
+    width: 100%;
+}
+
+.recent-observation-control-row {
+    animation: recent-observation-slot-in 180ms ease-out;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    grid-column: 1 / -1;
+}
+
 .recent-observations-state {
     align-items: center;
     background: #f5f8f7;
@@ -49,6 +63,26 @@
 
 .recent-observations-retry:hover {
     background: rgb(255 255 255 / 70%);
+}
+
+@keyframes recent-observation-slot-in {
+    from {
+        opacity: 0;
+        transform: translateY(0.35rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .recent-observation-tile-slot,
+    .recent-observation-control-row {
+        animation: none;
+        transition: none;
+    }
 }
 
 @media (max-width: 520px) {

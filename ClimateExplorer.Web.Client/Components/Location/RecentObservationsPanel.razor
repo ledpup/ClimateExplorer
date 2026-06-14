@@ -24,10 +24,42 @@
         }
         else if (CurrentTiles.Count > 0)
         {
+            <div class="mb-4">
+                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierMonth" disabled="@IsAddEarlierMonthDisabled">
+                    Add earlier month
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="RemoveMonth" disabled="@IsRemoveMonthDisabled">
+                    Remove month
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierSeason" disabled="@IsAddEarlierSeasonDisabled">
+                    Add earlier season
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="RemoveSeason" disabled="@IsRemoveSeasonDisabled">
+                    Remove season
+                </button>
+            </div>
+
             <div class="recent-observation-grid">
-                @foreach (var tile in CurrentTiles)
+
+                @foreach (var tile in TilesBeforeMonthControls)
                 {
-                    <RecentObservationTile Tile="@tile" />
+                    <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
+                        <RecentObservationTile Tile="@tile" />
+                    </div>
+                }
+
+                @foreach (var tile in SeasonTiles)
+                {
+                    <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
+                        <RecentObservationTile Tile="@tile" />
+                    </div>
+                }
+
+                @foreach (var tile in TilesAfterSeasonControls)
+                {
+                    <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
+                        <RecentObservationTile Tile="@tile" />
+                    </div>
                 }
             </div>
         }

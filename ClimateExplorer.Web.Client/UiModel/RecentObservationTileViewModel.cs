@@ -2,6 +2,8 @@ namespace ClimateExplorer.Web.Client.UiModel;
 
 public sealed record RecentObservationTileViewModel
 {
+    public RecentObservationPeriodKind PeriodKind { get; init; }
+    public int? PeriodOffset { get; init; }
     public string PeriodTitle { get; init; } = string.Empty;
     public string Headline { get; init; } = string.Empty;
     public string PercentileSentence { get; init; } = string.Empty;

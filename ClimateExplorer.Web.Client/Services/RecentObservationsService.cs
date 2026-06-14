@@ -12,8 +12,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
 {
     private const int MinimumHistoricalPeriods = 20;
     private const double MinimumHistoricalCoverage = 0.9d;
-    private const int PreviousMonthCount = 0;
-    private const int PreviousSeasonCount = 0;
+    private const int MaximumPreviousMonthCount = 11;
+    private const int MaximumPreviousSeasonCount = 3;
 
     private readonly IDataService dataService;
 
@@ -22,8 +22,11 @@ public sealed class RecentObservationsService : IRecentObservationsService
         this.dataService = dataService;
     }
 
-    public async Task<RecentObservationsTabResult> GetTemperatureRecords(Location location)
+    public async Task<RecentObservationsTabResult> GetTemperatureRecords(Location location, int previousMonthCount, int previousSeasonCount)
     {
+        previousMonthCount = Math.Clamp(previousMonthCount, 0, MaximumPreviousMonthCount);
+        previousSeasonCount = Math.Clamp(previousSeasonCount, 0, MaximumPreviousSeasonCount);
+
         var locationId = location.Id;
         var maxTask = dataService.GetRecentObservations(locationId, DataType.TempMax);
         var minTask = dataService.GetRecentObservations(locationId, DataType.TempMin);
@@ -52,7 +55,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         }
 
         var today = DateOnly.FromDateTime(DateTime.Today);
-        var periods = BuildTemperaturePeriods(latestDaily, today, location.Coordinates.Latitude);
+        var periods = BuildTemperaturePeriods(latestDaily, today, location.Coordinates.Latitude, previousMonthCount, previousSeasonCount);
         if (periods.Count == 0)
         {
             return new RecentObservationsTabResult
@@ -83,8 +86,11 @@ public sealed class RecentObservationsService : IRecentObservationsService
         };
     }
 
-    public async Task<RecentObservationsTabResult> GetPrecipitationRecords(Location location)
+    public async Task<RecentObservationsTabResult> GetPrecipitationRecords(Location location, int previousMonthCount, int previousSeasonCount)
     {
+        previousMonthCount = Math.Clamp(previousMonthCount, 0, MaximumPreviousMonthCount);
+        previousSeasonCount = Math.Clamp(previousSeasonCount, 0, MaximumPreviousSeasonCount);
+
         var locationId = location.Id;
         var latestResponse = await dataService.GetRecentObservations(locationId, DataType.Precipitation);
 
@@ -107,7 +113,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         }
 
         var today = DateOnly.FromDateTime(DateTime.Today);
-        var periods = BuildPrecipitationPeriods(latestDaily, today, location.Coordinates.Latitude);
+        var periods = BuildPrecipitationPeriods(latestDaily, today, location.Coordinates.Latitude, previousMonthCount, previousSeasonCount);
         if (periods.Count == 0)
         {
             return new RecentObservationsTabResult
@@ -177,7 +183,12 @@ public sealed class RecentObservationsService : IRecentObservationsService
         })];
     }
 
-    private static List<PeriodObservation> BuildTemperaturePeriods(List<DailyTemperature> daily, DateOnly today, double latitude)
+    private static List<PeriodObservation> BuildTemperaturePeriods(
+        List<DailyTemperature> daily,
+        DateOnly today,
+        double latitude,
+        int previousMonthCount,
+        int previousSeasonCount)
     {
         var periods = new List<PeriodObservation>();
         var byDate = daily.ToDictionary(x => x.Date);
@@ -206,7 +217,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             AddTemperatureRangePeriod(periods, monthRecords, monthStart, latestDate, PeriodKind.CurrentMonth);
         }
 
-        foreach (var previousMonth in GetPreviousMonthPeriods(today, PreviousMonthCount))
+        foreach (var previousMonth in GetPreviousMonthPeriods(today, previousMonthCount))
         {
             var previousMonthRecords = GetRecordsInRange(daily, x => x.Date, previousMonth.StartDate, previousMonth.EndDate);
             AddTemperatureRangePeriod(
@@ -233,8 +244,10 @@ public sealed class RecentObservationsService : IRecentObservationsService
                 isSeasonToDate: true);
         }
 
-        foreach (var previousSeason in MeteorologicalSeasonCalculator.GetPreviousSeasons(today, latitude, PreviousSeasonCount))
+        var previousSeasons = MeteorologicalSeasonCalculator.GetPreviousSeasons(today, latitude, previousSeasonCount);
+        for (var index = 0; index < previousSeasons.Count; index++)
         {
+            var previousSeason = previousSeasons[index];
             var previousSeasonRecords = GetRecordsInRange(daily, x => x.Date, previousSeason.StartDate, previousSeason.EndDate);
             AddTemperatureRangePeriod(
                 periods,
@@ -242,7 +255,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
                 previousSeason.StartDate,
                 previousSeason.EndDate,
                 PeriodKind.PreviousSeason,
-                seasonPeriod: previousSeason);
+                seasonPeriod: previousSeason,
+                periodOffset: index + 1);
         }
 
         if (latestDate.Year == today.Year)
@@ -255,7 +269,12 @@ public sealed class RecentObservationsService : IRecentObservationsService
         return periods;
     }
 
-    private static List<PeriodObservation> BuildPrecipitationPeriods(List<DailyPrecipitation> daily, DateOnly today, double latitude)
+    private static List<PeriodObservation> BuildPrecipitationPeriods(
+        List<DailyPrecipitation> daily,
+        DateOnly today,
+        double latitude,
+        int previousMonthCount,
+        int previousSeasonCount)
     {
         var periods = new List<PeriodObservation>();
         var byDate = daily.ToDictionary(x => x.Date);
@@ -284,7 +303,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             AddPrecipitationRangePeriod(periods, monthRecords, monthStart, latestDate, PeriodKind.CurrentMonth);
         }
 
-        foreach (var previousMonth in GetPreviousMonthPeriods(today, PreviousMonthCount))
+        foreach (var previousMonth in GetPreviousMonthPeriods(today, previousMonthCount))
         {
             var previousMonthRecords = GetRecordsInRange(daily, x => x.Date, previousMonth.StartDate, previousMonth.EndDate);
             AddPrecipitationRangePeriod(
@@ -311,8 +330,10 @@ public sealed class RecentObservationsService : IRecentObservationsService
                 isSeasonToDate: true);
         }
 
-        foreach (var previousSeason in MeteorologicalSeasonCalculator.GetPreviousSeasons(today, latitude, PreviousSeasonCount))
+        var previousSeasons = MeteorologicalSeasonCalculator.GetPreviousSeasons(today, latitude, previousSeasonCount);
+        for (var index = 0; index < previousSeasons.Count; index++)
         {
+            var previousSeason = previousSeasons[index];
             var previousSeasonRecords = GetRecordsInRange(daily, x => x.Date, previousSeason.StartDate, previousSeason.EndDate);
             AddPrecipitationRangePeriod(
                 periods,
@@ -320,7 +341,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
                 previousSeason.StartDate,
                 previousSeason.EndDate,
                 PeriodKind.PreviousSeason,
-                seasonPeriod: previousSeason);
+                seasonPeriod: previousSeason,
+                periodOffset: index + 1);
         }
 
         if (latestDate.Year == today.Year)
@@ -349,6 +371,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             true,
             PeriodKind.Daily,
             PeriodComparisonMode.DailyDate,
+            null,
             null);
     }
 
@@ -368,6 +391,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             true,
             PeriodKind.Daily,
             PeriodComparisonMode.DailyDate,
+            null,
             null);
     }
 
@@ -379,7 +403,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
         PeriodKind kind,
         int? previousMonthOffset = null,
         MeteorologicalSeasonPeriod? seasonPeriod = null,
-        bool isSeasonToDate = false)
+        bool isSeasonToDate = false,
+        int? periodOffset = null)
     {
         if (records.Count == 0)
         {
@@ -404,7 +429,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
             expectedDays,
             canCompare,
             kind,
-            kind == PeriodKind.PreviousMonth ? PeriodComparisonMode.MonthlySameMonth : PeriodComparisonMode.DailyRange,
+            PeriodComparisonMode.DailyRange,
+            periodOffset ?? previousMonthOffset,
             note));
     }
 
@@ -416,7 +442,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
         PeriodKind kind,
         int? previousMonthOffset = null,
         MeteorologicalSeasonPeriod? seasonPeriod = null,
-        bool isSeasonToDate = false)
+        bool isSeasonToDate = false,
+        int? periodOffset = null)
     {
         if (records.Count == 0)
         {
@@ -441,7 +468,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
             expectedDays,
             canCompare,
             kind,
-            kind == PeriodKind.PreviousMonth ? PeriodComparisonMode.MonthlySameMonth : PeriodComparisonMode.DailyRange,
+            PeriodComparisonMode.DailyRange,
+            periodOffset ?? previousMonthOffset,
             note));
     }
 
@@ -680,6 +708,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
 
         return new RecentObservationTileViewModel
         {
+            PeriodKind = ToTilePeriodKind(period.Kind),
+            PeriodOffset = period.PeriodOffset,
             PeriodTitle = period.Title,
             Headline = ranking is null ? "Comparison unavailable" : RecentObservationComparison.BuildTemperatureHeadline(period.ComparisonLabel, ranking),
             PercentileSentence = ranking is null
@@ -713,6 +743,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
 
         return new RecentObservationTileViewModel
         {
+            PeriodKind = ToTilePeriodKind(period.Kind),
+            PeriodOffset = period.PeriodOffset,
             PeriodTitle = period.Title,
             Headline = ranking is null ? "Comparison unavailable" : RecentObservationComparison.BuildPrecipitationHeadline(period.ComparisonLabel, ranking),
             PercentileSentence = ranking is null
@@ -738,6 +770,21 @@ public sealed class RecentObservationsService : IRecentObservationsService
             RecentObservationComparisonDirection.Low => RecentObservationTileTone.TemperatureCool,
             null => RecentObservationTileTone.Unavailable,
             _ => RecentObservationTileTone.Neutral,
+        };
+    }
+
+    private static RecentObservationPeriodKind ToTilePeriodKind(PeriodKind periodKind)
+    {
+        return periodKind switch
+        {
+            PeriodKind.Daily => RecentObservationPeriodKind.Daily,
+            PeriodKind.LastWeek => RecentObservationPeriodKind.LastWeek,
+            PeriodKind.CurrentMonth => RecentObservationPeriodKind.CurrentMonth,
+            PeriodKind.PreviousMonth => RecentObservationPeriodKind.PreviousMonth,
+            PeriodKind.CurrentSeason => RecentObservationPeriodKind.CurrentSeason,
+            PeriodKind.PreviousSeason => RecentObservationPeriodKind.PreviousSeason,
+            PeriodKind.YearToDate => RecentObservationPeriodKind.YearToDate,
+            _ => throw new NotImplementedException(),
         };
     }
 
@@ -1018,6 +1065,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         bool CanCompare,
         PeriodKind Kind,
         PeriodComparisonMode ComparisonMode,
+        int? PeriodOffset,
         string? Note);
 
     private sealed record PreviousMonthPeriod(DateOnly StartDate, DateOnly EndDate, int Offset);
