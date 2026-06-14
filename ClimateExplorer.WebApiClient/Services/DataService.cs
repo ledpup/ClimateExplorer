@@ -241,4 +241,19 @@ public class DataService : IDataService
 
         return result!;
     }
+
+    public async Task<RecentObservationsResponse> GetRecentObservations(Guid locationId, DataType dataType, bool isLocationSupported = false)
+    {
+        var url = "/recent-observations";
+        url = QueryHelpers.AddQueryString(url, "locationId", locationId.ToString());
+        url = QueryHelpers.AddQueryString(url, "dataType", dataType.ToString());
+
+        if (isLocationSupported)
+        {
+            url = QueryHelpers.AddQueryString(url, "isLocationSupported", "true");
+        }
+
+        var result = await httpClient.GetFromJsonAsync<RecentObservationsResponse>(url, jsonSerializerOptions);
+        return result!;
+    }
 }

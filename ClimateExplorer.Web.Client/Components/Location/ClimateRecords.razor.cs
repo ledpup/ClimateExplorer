@@ -6,6 +6,7 @@ using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Services;
+using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
@@ -32,6 +33,8 @@ public partial class ClimateRecords
 
     [PersistentState]
     public ClimateRecordsResponse? ClimateRecordsResult { get; set; }
+
+    public List<ClimateRecordViewModel> ClimateRecordRows { get; set; } = [];
 
     [Inject]
     private IDataService? DataService { get; set; }
@@ -67,8 +70,8 @@ public partial class ClimateRecords
     private RecordView ActiveView { get; set; } = RecordView.Top100;
 
     private int TotalPages => ClimateRecordsResult?.TotalCount > 0 && Count > 0 ? (int)Math.Ceiling((double)ClimateRecordsResult.TotalCount / Count) : 1;
-    private int StartRecord => ClimateRecordsResult?.Records?.Count > 0 ? ((CurrentPage - 1) * Count) + 1 : 0;
-    private int EndRecord => ClimateRecordsResult?.Records?.Count > 0 ? Math.Min(StartRecord + ClimateRecordsResult.Records.Count - 1, ClimateRecordsResult.TotalCount) : 0;
+    private int StartRecord => ClimateRecordRows.Count > 0 ? ((CurrentPage - 1) * Count) + 1 : 0;
+    private int EndRecord => ClimateRecordRows.Count > 0 ? Math.Min(StartRecord + ClimateRecordRows.Count - 1, ClimateRecordsResult?.TotalCount ?? 0) : 0;
 
     private bool IsTodaySelected
     {
@@ -205,6 +208,17 @@ public partial class ClimateRecords
         return $"{value.ToString("0.0", CultureInfo.InvariantCulture)}{Enums.UnitOfMeasureLabelShort(unitOfMeasure)}";
     }
 
+    private ClimateRecordsResponse CreateSelectedClimateRecordsResponse(DataResolution? dataResolution = null)
+    {
+        return new ClimateRecordsResponse
+        {
+            DataAdjustment = SelectedDataAdjustment,
+            DataResolution = dataResolution,
+            DataType = SelectedDataType,
+            UnitOfMeasure = SelectedUnitOfMeasure,
+        };
+    }
+
     private async Task UpdateAvailableOptions()
     {
         LocationMeasurements = [.. DataSetDefinitions!
@@ -274,9 +288,10 @@ public partial class ClimateRecords
 
         try
         {
-                if (ActiveView == RecordView.Top100)
+            if (ActiveView == RecordView.Top100)
             {
                 ClimateRecordsResult = null;
+                ClimateRecordRows = [];
                 ComputedRowStyles = [];
                 ComputedTopPercentages = [];
             }
@@ -289,7 +304,8 @@ public partial class ClimateRecords
                 var hasDailyData = LocationMeasurements.Any(x => x.DataType == SelectedDataType && x.DataResolution == DataResolution.Daily);
                 if (ActiveView == RecordView.Daily && !hasDailyData)
                 {
-                    ClimateRecordsResult = new ClimateRecordsResponse();
+                    ClimateRecordsResult = CreateSelectedClimateRecordsResponse(DataResolution.Daily);
+                    ClimateRecordRows = [];
                     ComputedRowStyles = [];
                     ComputedTopPercentages = [];
                 }
@@ -298,6 +314,7 @@ public partial class ClimateRecords
                     var month = SelectedMonth != 0 ? (int?)SelectedMonth : null;
                     var day = ActiveView == RecordView.Daily && SelectedMonth != 0 && SelectedDay != 0 ? (int?)SelectedDay : null;
                     ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType.Value, SelectedDataAdjustment, Ascending, take: Count, skip: CurrentPage, month, ActiveView == RecordView.Monthly, day);
+                    ClimateRecordRows = [.. ClimateRecordsResult.Records.Select(ClimateRecordViewModel.FromDataRecord)];
                     ComputedRowStyles = ComputeRowStyles(ClimateRecordsResult);
                     var startRank = ((CurrentPage - 1) * Count) + 1;
                     ComputedTopPercentages = ComputeTopPercentLabels(ClimateRecordsResult, startRank, ClimateRecordsResult.TotalCount);
@@ -327,7 +344,8 @@ public partial class ClimateRecords
 
         if (summary?.AnomalyRecords is not { Count: > 0 })
         {
-            ClimateRecordsResult = summary is not null ? new ClimateRecordsResponse() : null;
+            ClimateRecordsResult = summary is not null ? CreateSelectedClimateRecordsResponse(DataResolution.Yearly) : null;
+            ClimateRecordRows = [];
             ComputedRowStyles = [];
             ComputedTopPercentages = [];
             return;
@@ -341,22 +359,22 @@ public partial class ClimateRecords
         var totalCount = ordered.Count();
         var paginated = ordered.Skip((CurrentPage - 1) * Count).Take(Count);
 
-        var records = paginated.Select(x => new ClimateRecord
+        ClimateRecordRows = paginated.Select(x => new ClimateRecordViewModel
         {
             Year = x.Year,
             Month = 1,
             Value = x.Absolute,
             Anomaly = x.Relative,
             Average = x.Absolute,
-            DataType = SelectedDataType.Value,
-            DataAdjustment = SelectedDataAdjustment,
-            DataResolution = DataResolution.Yearly,
-            UnitOfMeasure = SelectedUnitOfMeasure,
         }).ToList();
 
         ClimateRecordsResult = new ClimateRecordsResponse
         {
-            Records = records,
+            Records = [.. ClimateRecordRows.Select(x => x.ToDataRecord())],
+            DataAdjustment = SelectedDataAdjustment,
+            DataResolution = DataResolution.Yearly,
+            DataType = SelectedDataType,
+            UnitOfMeasure = SelectedUnitOfMeasure,
             StartYear = startYear,
             EndYear = endYear,
             TotalCount = totalCount,
@@ -448,7 +466,14 @@ public partial class ClimateRecords
             return;
         }
 
-        ClimateRecord[] records;
+        ClimateRecordViewModel[] records;
+        var exportDataResolution = ActiveView switch
+        {
+            RecordView.Yearly => DataResolution.Yearly,
+            RecordView.Monthly => DataResolution.Monthly,
+            _ => DataResolution.Daily,
+        };
+        var exportUnitOfMeasure = SelectedUnitOfMeasure;
 
         if (ActiveView == RecordView.Yearly)
         {
@@ -475,17 +500,13 @@ public partial class ClimateRecords
                     ? summary.AnomalyRecords.OrderBy(x => x.Absolute)
                     : summary.AnomalyRecords.OrderByDescending(x => x.Absolute);
 
-                records = [.. ordered.Select(x => new ClimateRecord
+                records = [.. ordered.Select(x => new ClimateRecordViewModel
                 {
                     Year = x.Year,
                     Month = 1,
                     Value = x.Absolute,
                     Anomaly = x.Relative,
                     Average = x.Absolute,
-                    DataType = SelectedDataType.Value,
-                    DataAdjustment = SelectedDataAdjustment,
-                    DataResolution = DataResolution.Yearly,
-                    UnitOfMeasure = SelectedUnitOfMeasure,
                 })];
             }
         }
@@ -501,7 +522,9 @@ public partial class ClimateRecords
                 var monthFilter = SelectedMonth != 0 ? (int?)SelectedMonth : null;
                 var dayFilter = ActiveView == RecordView.Daily && SelectedMonth != 0 && SelectedDay != 0 ? (int?)SelectedDay : null;
                 var allData = await DataService!.GetClimateRecords(Location.Id, SelectedDataType.Value, SelectedDataAdjustment, Ascending, null, null, monthFilter, ActiveView == RecordView.Monthly, dayFilter);
-                records = [.. allData.Records];
+                records = [.. allData.Records.Select(ClimateRecordViewModel.FromDataRecord)];
+                exportDataResolution = allData.DataResolution ?? exportDataResolution;
+                exportUnitOfMeasure = allData.UnitOfMeasure ?? exportUnitOfMeasure;
             }
         }
 
@@ -510,7 +533,7 @@ public partial class ClimateRecords
             return;
         }
 
-        var fileStream = Exporter!.ExportClimateRecords(Logger!, Location, records, NavManager!.Uri);
+        var fileStream = Exporter!.ExportClimateRecords(Logger!, Location, records, NavManager!.Uri, exportDataResolution, exportUnitOfMeasure);
         var adj = SelectedDataAdjustment.HasValue ? $"-{SelectedDataAdjustment.Value}" : string.Empty;
         var monthLabel = SelectedMonth != 0 ? $"-{CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(SelectedMonth)}" : string.Empty;
         var fileName = $"{Location.Name}-{SelectedDataType}{adj}-{ActiveView.ToString().ToLowerInvariant()}{monthLabel}-records.csv";

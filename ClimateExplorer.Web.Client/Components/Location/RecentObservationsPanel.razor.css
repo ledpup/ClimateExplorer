@@ -1,0 +1,63 @@
+.recent-observations-panel {
+    min-height: 20rem;
+}
+
+.recent-observations-body {
+    min-height: 16rem;
+}
+
+.recent-observation-grid {
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 450px));
+    justify-content: start;
+}
+
+.recent-observations-state {
+    align-items: center;
+    background: #f5f8f7;
+    border: 1px solid #d7e2df;
+    border-radius: 8px;
+    color: #425f59;
+    display: flex;
+    gap: 0.65rem;
+    line-height: 1.35;
+    padding: 1rem;
+}
+
+.recent-observations-state.error {
+    background: #fff5f2;
+    border-color: #edc6ba;
+    color: #743a2b;
+}
+
+.recent-observations-state i {
+    flex-shrink: 0;
+}
+
+.recent-observations-retry {
+    align-items: center;
+    background: #fff;
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    color: inherit;
+    display: inline-flex;
+    gap: 0.4rem;
+    margin-left: auto;
+    padding: 0.35rem 0.55rem;
+}
+
+.recent-observations-retry:hover {
+    background: rgb(255 255 255 / 70%);
+}
+
+@media (max-width: 520px) {
+    .recent-observations-state {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .recent-observations-retry {
+        margin-left: 0;
+    }
+}

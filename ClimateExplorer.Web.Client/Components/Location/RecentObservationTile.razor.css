@@ -1,0 +1,166 @@
+.recent-observation-tile {
+    border-radius: 8px;
+    border: 1px solid #d8e2df;
+    border-left: 5px solid #6f8f89;
+    background: #fbfcfb;
+    max-width: 450px;
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 7%);
+    width: 100%;
+}
+
+.recent-observation-tile.temperature-warm {
+    border-left-color: #c85f2f;
+    background: #fff5ef;
+}
+
+.recent-observation-tile.temperature-cool {
+    border-left-color: #3978a8;
+    background: #eef6fb;
+}
+
+.recent-observation-tile.precipitation-wet {
+    border-left-color: #2d83a8;
+    background: #edf8fb;
+}
+
+.recent-observation-tile.precipitation-dry {
+    border-left-color: #b48a2c;
+    background: #fff9e8;
+}
+
+.recent-observation-tile.unavailable {
+    border-left-color: #9a9a9a;
+    background: #f7f7f7;
+}
+
+.recent-observation-period {
+    color: #596f6a;
+    font-size: 0.82rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+}
+
+.recent-observation-tile h3 {
+    color: #253b36;
+    font-size: 1.2rem;
+    line-height: 1.2;
+    margin: 0 0 0.45rem;
+}
+
+.recent-observation-percentile {
+    color: #40534f;
+    font-size: 0.95rem;
+    line-height: 1.35;
+    margin: 0 0 0.9rem;
+}
+
+.recent-observation-primary {
+    align-items: baseline;
+    border-top: 1px solid rgb(66 95 89 / 18%);
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+    padding-top: 0.75rem;
+}
+
+.recent-observation-primary span {
+    color: #596f6a;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.recent-observation-primary strong {
+    color: #1f2f2c;
+    font-size: 1.55rem;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.recent-observation-historical-range {
+    border-top: 1px solid rgb(66 95 89 / 12%);
+    display: grid;
+    gap: 0.5rem 0.8rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0.75rem 0 0;
+    padding-top: 0.75rem;
+}
+
+.recent-observation-historical-range div {
+    min-width: 0;
+}
+
+.recent-observation-historical-range div:only-child {
+    grid-column: 1 / -1;
+}
+
+.recent-observation-historical-range dt {
+    color: #5c726d;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.recent-observation-historical-range dd {
+    color: #253b36;
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0.1rem 0 0;
+    overflow-wrap: anywhere;
+}
+
+.recent-observation-historical-occurred {
+    color: #596f6a;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.recent-observation-stats {
+    display: grid;
+    gap: 0.55rem 0.8rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0.9rem 0 0;
+}
+
+.recent-observation-stats div {
+    min-width: 0;
+}
+
+.recent-observation-stats dt {
+    color: #697d78;
+    font-size: 0.74rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.recent-observation-stats dd {
+    color: #263a35;
+    font-size: 0.92rem;
+    font-weight: 650;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.recent-observation-note {
+    color: #5d6d69;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    margin: 0.85rem 0 0;
+}
+
+@media (max-width: 520px) {
+    .recent-observation-primary {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.35rem;
+    }
+
+    .recent-observation-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .recent-observation-historical-range {
+        grid-template-columns: 1fr;
+    }
+}

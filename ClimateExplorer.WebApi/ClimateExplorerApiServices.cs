@@ -1,0 +1,23 @@
+namespace ClimateExplorer.WebApi;
+
+using System.Net.Http;
+using ClimateExplorer.WebApi.Infrastructure;
+
+public sealed class ClimateExplorerApiServices
+{
+    public ClimateExplorerApiServices(
+        ICache cache,
+        ICache longtermCache,
+        HttpClient bomHttpClient)
+    {
+        Cache = cache;
+        LongtermCache = longtermCache;
+        BomHttpClient = bomHttpClient;
+    }
+
+    public ICache Cache { get; }
+
+    public ICache LongtermCache { get; }
+
+    public HttpClient BomHttpClient { get; }
+}

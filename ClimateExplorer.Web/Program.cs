@@ -32,6 +32,7 @@ builder.Services
     .AddSingleton<IDataServiceCache, DataServiceCache>()
     .AddTransient<IExporter, Exporter>()
     .AddScoped<IInfoPanelDismissalService, InfoPanelDismissalService>()
+    .AddScoped<IRecentObservationsService, RecentObservationsService>()
     .AddScoped<ISiteOverviewService, SiteOverviewService>()
     .AddCurrentDeviceService()
     .AddBlazoredLocalStorage()
@@ -40,7 +41,7 @@ builder.Services
         client.BaseAddress = new Uri(builder.Configuration["DataServiceBaseUri"]!);
     });
 
-builder.Services.AddSingleton<ClimateExplorer.Core.Blog.IBlogService, ClimateExplorer.Web.Blog.BlogService>();
+builder.Services.AddSingleton<IBlogService, ClimateExplorer.Web.Blog.BlogService>();
 
 var app = builder.Build();
 

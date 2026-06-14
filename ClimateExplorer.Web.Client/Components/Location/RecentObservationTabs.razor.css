@@ -1,0 +1,32 @@
+.recent-observation-tabs {
+    margin-bottom: 1rem;
+}
+
+.recent-observation-tabs ::deep .nav-tabs {
+    border-bottom: 2px solid #c4d4d1;
+}
+
+.recent-observation-tabs ::deep .nav-tabs .nav-link {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    color: #6b8e89;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: -2px;
+    padding: 0.35rem 0.75rem;
+}
+
+.recent-observation-tabs ::deep .nav-tabs .nav-link:hover {
+    background: none;
+    border-bottom-color: #7a9e9a;
+    color: #425f59;
+}
+
+.recent-observation-tabs ::deep .nav-tabs .nav-link.active {
+    background: none;
+    border-bottom: 2px solid #425f59;
+    color: #2a3d39;
+    font-weight: 700;
+}

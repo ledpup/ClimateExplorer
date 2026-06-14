@@ -1,0 +1,46 @@
+@namespace ClimateExplorer.Web.Client.Components.Location
+@using ClimateExplorer.Web.Client.UiModel
+
+<div class="recent-observations-panel">
+    <RecentObservationTabs SelectedTab="@ActiveTab" SelectedTabChanged="@OnTabChanged" />
+
+    <div class="recent-observations-body" aria-live="polite">
+        @if (CurrentState.IsLoading)
+        {
+            <div class="recent-observations-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Loading recent observations...</span>
+            </div>
+        }
+        else if (!string.IsNullOrWhiteSpace(CurrentState.ErrorMessage))
+        {
+            <div class="recent-observations-state error">
+                <i class="fas fa-triangle-exclamation"></i>
+                <span>@CurrentState.ErrorMessage</span>
+                <button class="recent-observations-retry" @onclick="RetryCurrentTab">
+                    <i class="fas fa-rotate-right"></i> Retry
+                </button>
+            </div>
+        }
+        else if (CurrentTiles.Count > 0)
+        {
+            <div class="recent-observation-grid">
+                @foreach (var tile in CurrentTiles)
+                {
+                    <RecentObservationTile Tile="@tile" />
+                }
+            </div>
+        }
+        else
+        {
+            <div class="recent-observations-state">
+                <i class="fas fa-circle-info"></i>
+                <span>@CurrentEmptyMessage</span>
+            </div>
+        }
+    </div>
+
+    <h3 class="mt-4">Notes</h3>
+    <p>Recent observations and historical comparisons are using data that has not been adjusted by scientists to remove artificial, non-climate-related biases.</p>
+    <p>Comparisons such as last week, month-to-date and year-to-date tiles are compared with equivalent historical periods.</p>
+</div>

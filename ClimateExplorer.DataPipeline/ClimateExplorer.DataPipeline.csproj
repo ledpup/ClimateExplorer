@@ -7,16 +7,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-	<Target Name="CompressZipFiles" AfterTargets="Build">
-    <ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Atmosphere" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Atmosphere.zip" Overwrite="true" />
-    <ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Ice" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Ice.zip" Overwrite="true" />
-    <ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Ocean" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Ocean.zip" Overwrite="true" />
-    <ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Precipitation" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Precipitation.zip" Overwrite="true" />
-    <ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Solar" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Solar.zip" Overwrite="true" />
-	  <ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Temperature" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Temperature.zip" Overwrite="true" />
-    <ZipDirectory SourceDirectory="$(SolutionDir)\ClimateExplorer.SourceData\Temperature_BOM" DestinationFile="$(SolutionDir)\ClimateExplorer.WebApi\Datasets\Temperature_BOM.zip" Overwrite="true" />
-	</Target>
-
 	<ItemGroup>
 	  <ProjectReference Include="..\ClimateExplorer.SourceData\ClimateExplorer.SourceData.csproj" />
 	</ItemGroup>

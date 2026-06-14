@@ -46,6 +46,10 @@
             {
                 <OverviewField Label="Record high" OnClick="@ShowRecordHighAsync" ToolTip="@RecordHighToolTip"><Value>@(Location?.RecordHigh == null ? "NA" : Location?.RecordHigh.Year)</Value></OverviewField>
             }
+            @if (RecentObservationsSupported)
+            {
+                <OverviewField Label="Recent observations" OnClick="@ShowRecentObservationsAsync" ToolTip="Compare recent daily observations with historical climate records"><Value>@(DateTime.Today.ToString("d MMM"))</Value></OverviewField>
+            }
             @if (Precipitation && PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
             {
                 <OverviewField Label="Precipitation anomaly" Tooltip="Click for information on anomalies" PopupContent="@PrecipitationAnomalyContent"><Value>@(PrecipitationAnomalyAsString == null ? "NA" : PrecipitationAnomalyAsString)</Value></OverviewField>
@@ -67,4 +71,8 @@
 
 <SidePanel @ref="climateRecordsSidePanel" Title="@("Climate records for " + Location?.Name)">    
     <ClimateRecords Location="@Location" DataSetDefinitions="@DataSetDefinitions" />
+</SidePanel>
+
+<SidePanel @ref="recentObservationsSidePanel" Title="@("Recent observations for " + Location?.Name)">
+    <RecentObservationsPanel Location="@Location" />
 </SidePanel>

@@ -3,6 +3,7 @@
 using System.Globalization;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
+using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiModel;
 using static ClimateExplorer.Core.Enums;
 
@@ -57,7 +58,7 @@ public class Exporter : IExporter
         return fileStream;
     }
 
-    public Stream ExportClimateRecords(ILogger logger, Location location, ClimateRecord[] records, string sourceUri)
+    public Stream ExportClimateRecords(ILogger logger, Location location, ClimateRecordViewModel[] records, string sourceUri, DataResolution dataResolution, UnitOfMeasure unitOfMeasure)
     {
         logger.LogInformation("ExportClimateRecords for {Location} with {Count} records", location.FullTitle, records.Length);
 
@@ -73,10 +74,9 @@ public class Exporter : IExporter
 
         if (records.Length > 0)
         {
-            var resolution = records[0].DataResolution;
-            var unitLabel = UnitOfMeasureLabelShort(records[0].UnitOfMeasure);
+            var unitLabel = UnitOfMeasureLabelShort(unitOfMeasure);
 
-            data.Add(resolution switch
+            data.Add(dataResolution switch
             {
                 DataResolution.Yearly => $"Rank,Year,Anomaly ({unitLabel}),Average ({unitLabel})",
                 DataResolution.Monthly => $"Rank,Month,Year,Average ({unitLabel})",
@@ -86,7 +86,7 @@ public class Exporter : IExporter
             int rank = 1;
             foreach (var record in records)
             {
-                data.Add(resolution switch
+                data.Add(dataResolution switch
                 {
                     DataResolution.Yearly =>
                         $"{rank},{record.Year},{(record.Anomaly.HasValue ? FormatCsvValue(record.Anomaly.Value) : string.Empty)},{(record.Average.HasValue ? FormatCsvValue(record.Average.Value) : string.Empty)}",

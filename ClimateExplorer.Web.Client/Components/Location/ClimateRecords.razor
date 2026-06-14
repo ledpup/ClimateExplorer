@@ -103,7 +103,7 @@
             <div class="table-header">
                 <span>@Location?.Name - @RecordsTitle@(SelectedMonth == 0 ? string.Empty : " - " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(SelectedMonth))@(ActiveView == RecordView.Daily && SelectedDay != 0 ? " " + SelectedDay : string.Empty)</span>
             </div>
-            @if (ClimateRecordsResult?.Records is { Count: > 0 })
+            @if (ClimateRecordRows.Count > 0)
             {
                 <Table Striped>
                     <TableHeader>
@@ -128,9 +128,10 @@
                     <TableBody>
                         @{
                             var rank = ((CurrentPage - 1) * Count) + 1;
-                            for (var i = 0; i < ClimateRecordsResult!.Records.Count; i++)
+                            var unitOfMeasure = ClimateRecordsResult!.UnitOfMeasure ?? SelectedUnitOfMeasure;
+                            for (var i = 0; i < ClimateRecordRows.Count; i++)
                             {
-                                var record = ClimateRecordsResult.Records[i];
+                                var record = ClimateRecordRows[i];
                                 var rowStyle = ComputedRowStyles.ElementAtOrDefault(i) ?? string.Empty;
                                 var topLabel = ComputedTopPercentages.ElementAtOrDefault(i) ?? string.Empty;
                                 var currentRank = rank;
@@ -141,8 +142,8 @@
                                     @if (ActiveView == RecordView.Yearly)
                                     {
                                         <td>@record.Year</td>
-                                        <td class="text-end">@(record.Anomaly.HasValue ? FormatAnomaly(record.Anomaly.Value, record.UnitOfMeasure) : "N/A")</td>
-                                        <td class="text-end">@(record.Average.HasValue ? FormatValue(record.Average.Value, record.UnitOfMeasure) : "N/A")</td>
+                                        <td class="text-end">@(record.Anomaly.HasValue ? FormatAnomaly(record.Anomaly.Value, unitOfMeasure) : "N/A")</td>
+                                        <td class="text-end">@(record.Average.HasValue ? FormatValue(record.Average.Value, unitOfMeasure) : "N/A")</td>
                                     }
                                     else
                                     {
@@ -157,7 +158,7 @@
                                             }
                                         </td>
                                         <td>@record.Year</td>
-                                        <td class="text-end">@FormatValue(record.Value, record.UnitOfMeasure)</td>
+                                        <td class="text-end">@FormatValue(record.Value, unitOfMeasure)</td>
                                     }
                                 </tr>
                                 rank++;
@@ -200,7 +201,7 @@
             {
                 <p>No records found for the selected filters.</p>
             }
-            @if (ClimateRecordsResult?.Records is { Count: > 0 })
+            @if (ClimateRecordRows.Count > 0)
             {
                 <div class="table-footer">
                     <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
@@ -221,12 +222,12 @@
                                 </DelayedTooltip>
                             </div>
                         </div>
-                        <span class="text-muted">@StartRecord-@EndRecord of @(ClimateRecordsResult.TotalCount)</span>
+                        <span class="text-muted">@StartRecord-@EndRecord of @(ClimateRecordsResult!.TotalCount)</span>
                     </div>
                 </div>
             }
         </div>
-        @if (ClimateRecordsResult?.Records is { Count: > 0 })
+        @if (ClimateRecordRows.Count > 0)
         {
             <div class="d-flex justify-content-end mt-2">
                 <button class="download-button" @onclick="DownloadAllRecords"><i class="fas fa-download"></i> Download</button>

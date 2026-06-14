@@ -18,6 +18,7 @@ using static ClimateExplorer.Core.Enums;
 public partial class LocationInfo
 {
     private SidePanel? climateRecordsSidePanel;
+    private SidePanel? recentObservationsSidePanel;
 
     [Inject]
     public IDataService? DataService { get; set; }
@@ -71,6 +72,7 @@ public partial class LocationInfo
     private RenderFragment? HeatingScoreContent { get; set; }
 
     private string? RecordHighToolTip { get; set; }
+    private bool RecentObservationsSupported { get; set; }
 
     public void ChangeLocationClicked(EventArgs args)
     {
@@ -83,6 +85,8 @@ public partial class LocationInfo
     }
 
     public Task ShowRecordHighAsync() => climateRecordsSidePanel?.ShowAsync() ?? Task.CompletedTask;
+
+    public Task ShowRecentObservationsAsync() => recentObservationsSidePanel?.ShowAsync() ?? Task.CompletedTask;
 
     public async Task OpenLocationMapAsync() => await JS!.InvokeVoidAsync("open", LocationMapUrl, "_blank");
 
@@ -107,6 +111,7 @@ public partial class LocationInfo
     {
         if (Location == null || DataSetDefinitions == null)
         {
+            RecentObservationsSupported = false;
             return;
         }
 
@@ -118,6 +123,7 @@ public partial class LocationInfo
 
         GeoLocationAsString = Location!.Coordinates.ToString();
         LocationIdLastTimeOnParametersSetAsyncWasCalled = Location?.Id;
+        RecentObservationsSupported = false;
         LocationLoadingIndicatorVisible = false;
         LoadStripeData = true;
         StripeLoadingIndicatorVisible = true;
@@ -126,7 +132,7 @@ public partial class LocationInfo
 
         if (Location?.RecordHigh is not null)
         {
-            RecordHighToolTip = $"{Location.Name} record high of {Location.RecordHigh.Value}°C set {(Location.RecordHigh.Day == null ? string.Empty : Location.RecordHigh.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(Location.RecordHigh.Month)} {Location.RecordHigh.Year}.<br>Click for more records.";
+            RecordHighToolTip = $"{Location.Name} record high of {Location.RecordHigh.Value}°C set {(Location.RecordHigh.Day == null ? string.Empty : Location.RecordHigh.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(Location.RecordHigh.Month!.Value)} {Location.RecordHigh.Year}.<br>Click for more records.";
         }
 
         await base.OnParametersSetAsync();
@@ -182,6 +188,9 @@ public partial class LocationInfo
             {
                 await GeneratePrecipitationView();
             }
+
+            var recentObservationsSupport = await DataService!.GetRecentObservations(Location!.Id, DataType.TempMax, isLocationSupported: true);
+            RecentObservationsSupported = recentObservationsSupport.IsSupported;
 
             StripeLoadingIndicatorVisible = false;
             StateHasChanged();

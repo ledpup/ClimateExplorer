@@ -1,6 +1,5 @@
 ﻿namespace ClimateExplorer.Core.Model;
 
-using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -19,7 +18,7 @@ public class Location : GeographicalEntity
     public required Coordinates Coordinates { get; set; }
     public double? WarmingAnomaly { get; set; }
     public short? HeatingScore { get; set; }
-    public ClimateRecord? RecordHigh { get; set; }
+    public DataRecord? RecordHigh { get; set; }
 
     [JsonIgnore]
     public string FullTitle

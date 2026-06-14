@@ -2,8 +2,9 @@
 
 using System.Text.Json.Serialization;
 
-public class DataRecord
+public sealed record DataRecord
 {
+    [JsonConstructor]
     public DataRecord(short year, short? month, short? day, double? value)
     {
         Year = year;

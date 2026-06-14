@@ -1,0 +1,72 @@
+@namespace ClimateExplorer.Web.Client.Components.Location
+@using ClimateExplorer.Web.Client.UiModel
+
+<article class="recent-observation-tile @ToneClass">
+    <div class="recent-observation-period">@Tile.PeriodTitle</div>
+    <h3>@Tile.Headline</h3>
+    <p class="recent-observation-percentile">@Tile.PercentileSentence</p>
+    <div class="recent-observation-primary">
+        <span>@Tile.PrimaryLabel</span>
+        <strong>@Tile.PrimaryValue</strong>
+    </div>
+    @if (Tile.Stats.Count > 0)
+    {
+        <dl class="recent-observation-stats">
+            @foreach (var stat in Tile.Stats)
+            {
+                <div>
+                    <dt>@stat.Label</dt>
+                    <dd>@stat.Value</dd>
+                </div>
+            }
+        </dl>
+    }
+    @if (!string.IsNullOrWhiteSpace(Tile.Note))
+    {
+        <p class="recent-observation-note">@Tile.Note</p>
+    }
+    @if (!string.IsNullOrWhiteSpace(Tile.HistoricalMaxLabel) && !string.IsNullOrWhiteSpace(Tile.HistoricalMaxValue))
+    {
+        <dl class="recent-observation-historical-range">
+            <div>
+                <dt>@Tile.HistoricalMaxLabel</dt>
+                <dd>
+                    @Tile.HistoricalMaxValue
+                    @if (!string.IsNullOrWhiteSpace(Tile.HistoricalMaxOccurred))
+                    {
+                        <span class="recent-observation-historical-occurred"> - @Tile.HistoricalMaxOccurred</span>
+                    }
+                </dd>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Tile.HistoricalMinLabel) && !string.IsNullOrWhiteSpace(Tile.HistoricalMinValue))
+            {
+                <div>
+                    <dt>@Tile.HistoricalMinLabel</dt>
+                    <dd>
+                        @Tile.HistoricalMinValue
+                        @if (!string.IsNullOrWhiteSpace(Tile.HistoricalMinOccurred))
+                        {
+                            <span class="recent-observation-historical-occurred"> - @Tile.HistoricalMinOccurred</span>
+                        }
+                    </dd>
+                </div>
+            }
+        </dl>
+    }
+</article>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public RecentObservationTileViewModel Tile { get; set; } = default!;
+
+    private string ToneClass => Tile.Tone switch
+    {
+        RecentObservationTileTone.TemperatureWarm => "temperature-warm",
+        RecentObservationTileTone.TemperatureCool => "temperature-cool",
+        RecentObservationTileTone.PrecipitationWet => "precipitation-wet",
+        RecentObservationTileTone.PrecipitationDry => "precipitation-dry",
+        RecentObservationTileTone.Unavailable => "unavailable",
+        _ => "neutral",
+    };
+}

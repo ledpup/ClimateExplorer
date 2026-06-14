@@ -1,17 +1,39 @@
-﻿using System.IO.Compression;
+using System.IO.Compression;
+
+var solutionRoot = GetSolutionRoot();
+
+var archivesToCreate =
+    new FolderArchive[]
+    {
+        new("Atmosphere"),
+        new("Ice"),
+        new("Ocean"),
+        new("Precipitation"),
+        new("Solar"),
+        new("Temperature"),
+        new("Temperature_BOM"),
+    };
+
+foreach (var archive in archivesToCreate)
+{
+    var sourceDirectory = Path.Combine(solutionRoot, "ClimateExplorer.SourceData", archive.Name);
+    var destinationFile = Path.Combine(solutionRoot, "ClimateExplorer.WebApi", "Datasets", archive.Name + ".zip");
+
+    CreateZipFromDirectory(sourceDirectory, destinationFile);
+}
 
 var foldersToProcess =
     new Folder[]
     {
         new()
         {
-            InputFolder = @"..\..\..\..\ClimateExplorer.SourceData\GHCNd\Temperature",
-            OutputFolder = @"..\..\..\..\ClimateExplorer.WebApi\Datasets\GHCNd\Temperature",
+            InputFolder = Path.Combine(solutionRoot, "ClimateExplorer.SourceData", "GHCNd", "Temperature"),
+            OutputFolder = Path.Combine(solutionRoot, "ClimateExplorer.WebApi", "Datasets", "GHCNd", "Temperature"),
         },
         new()
         {
-            InputFolder = @"..\..\..\..\ClimateExplorer.SourceData\GHCNd\Precipitation",
-            OutputFolder = @"..\..\..\..\ClimateExplorer.WebApi\Datasets\GHCNd\Precipitation",
+            InputFolder = Path.Combine(solutionRoot, "ClimateExplorer.SourceData", "GHCNd", "Precipitation"),
+            OutputFolder = Path.Combine(solutionRoot, "ClimateExplorer.WebApi", "Datasets", "GHCNd", "Precipitation"),
         }
     };
 
@@ -41,6 +63,24 @@ foreach (var folder in foldersToProcess)
     });
 }
 
+static void CreateZipFromDirectory(string sourceDirectory, string destinationFile)
+{
+    if (!Directory.Exists(sourceDirectory))
+    {
+        throw new DirectoryNotFoundException($"Source directory not found: {sourceDirectory}");
+    }
+
+    Directory.CreateDirectory(Path.GetDirectoryName(destinationFile)!);
+
+    if (File.Exists(destinationFile))
+    {
+        File.Delete(destinationFile);
+    }
+
+    Console.WriteLine("Creating " + destinationFile);
+    ZipFile.CreateFromDirectory(sourceDirectory, destinationFile);
+}
+
 static void CompressFile(string file, string outFolder)
 {
     var zipFile = Path.Combine(outFolder, Path.ChangeExtension(Path.GetFileName(file), "zip"));
@@ -57,6 +97,25 @@ static void CompressFile(string file, string outFolder)
 
     s.Write(b, 0, b.Length);
 }
+
+static string GetSolutionRoot()
+{
+    var directory = new DirectoryInfo(AppContext.BaseDirectory);
+
+    while (directory is not null)
+    {
+        if (File.Exists(Path.Combine(directory.FullName, "ClimateExplorer.sln")))
+        {
+            return directory.FullName;
+        }
+
+        directory = directory.Parent;
+    }
+
+    throw new DirectoryNotFoundException("Could not find ClimateExplorer.sln from the application directory.");
+}
+
+public record FolderArchive(string Name);
 
 public class Folder
 {
