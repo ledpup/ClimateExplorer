@@ -12,8 +12,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
 {
     private const int MinimumHistoricalPeriods = 20;
     private const double MinimumHistoricalCoverage = 0.9d;
-    private const int PreviousMonthCount = 1;
-    private const int PreviousSeasonCount = 1;
+    private const int PreviousMonthCount = 0;
+    private const int PreviousSeasonCount = 0;
 
     private readonly IDataService dataService;
 
