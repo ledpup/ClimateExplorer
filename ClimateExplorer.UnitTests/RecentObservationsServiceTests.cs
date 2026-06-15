@@ -227,6 +227,195 @@ public class RecentObservationsServiceTests
     }
 
     [TestMethod]
+    public async Task CompletenessThresholdAllowsComparisonsAtFullCompleteness()
+    {
+        var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14));
+        var service = CreateService(historicalRecords: historicalRecords);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var lastWeek = result
+            .ApplyCompletenessThreshold(RecentObservationCompletenessThreshold.Default)
+            .Tiles
+            .Single(x => x.PeriodKind == RecentObservationPeriodKind.LastWeek);
+
+        Assert.AreEqual(1f, lastWeek.Completeness);
+        Assert.IsTrue(lastWeek.HasComparison);
+        Assert.IsNull(lastWeek.Note);
+        Assert.IsNotNull(lastWeek.HistoricalMaxLabel);
+    }
+
+    [TestMethod]
+    public async Task CompletenessThresholdAllowsComparisonsExactlyAtThreshold()
+    {
+        var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14));
+        var service = CreateService(
+            historicalRecords: historicalRecords,
+            includeRecentRecord: date => date != new DateOnly(2026, 6, 9) && date != new DateOnly(2026, 6, 12));
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var baseLastWeek = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LastWeek);
+        var lastWeek = baseLastWeek.ApplyCompletenessThreshold(baseLastWeek.Completeness);
+
+        Assert.AreEqual(5, lastWeek.AvailableObservationCount);
+        Assert.AreEqual(7, lastWeek.ExpectedObservationCount);
+        Assert.AreEqual(5f / 7f, lastWeek.Completeness);
+        Assert.IsTrue(lastWeek.HasComparison);
+        Assert.IsNull(lastWeek.Note);
+        Assert.IsNotNull(lastWeek.HistoricalMaxLabel);
+    }
+
+    [TestMethod]
+    public async Task CompletenessThresholdSuppressesComparisonsBelowThreshold()
+    {
+        var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14));
+        var service = CreateService(
+            historicalRecords: historicalRecords,
+            includeRecentRecord: date => date != new DateOnly(2026, 6, 9) && date != new DateOnly(2026, 6, 12));
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var lastWeek = result
+            .ApplyCompletenessThreshold(RecentObservationCompletenessThreshold.Default)
+            .Tiles
+            .Single(x => x.PeriodKind == RecentObservationPeriodKind.LastWeek);
+
+        Assert.IsFalse(lastWeek.HasComparison);
+        Assert.AreEqual("Comparison unavailable", lastWeek.Headline);
+        Assert.AreEqual("Only 5 of 7 days are available (only 71% completeness).", lastWeek.Note);
+        Assert.IsNull(lastWeek.HistoricalMaxLabel);
+        CollectionAssert.AreEqual(new[] { "Historical average", "Anomaly" }, lastWeek.Stats.Select(x => x.Label).ToArray());
+    }
+
+    [TestMethod]
+    public async Task CompletenessThresholdUsesMissingMinAndMaxTemperatureObservations()
+    {
+        var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14), valueOffset: 10d);
+        var service = CreateTemperatureService(
+            historicalRecords,
+            includeMaxRecord: date => date != new DateOnly(2026, 6, 9),
+            includeMinRecord: date => date != new DateOnly(2026, 6, 12));
+
+        var result = await service.GetTemperatureRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var lastWeek = result
+            .ApplyCompletenessThreshold(RecentObservationCompletenessThreshold.Default)
+            .Tiles
+            .Single(x => x.PeriodKind == RecentObservationPeriodKind.LastWeek);
+
+        Assert.AreEqual(5, lastWeek.AvailableObservationCount);
+        Assert.AreEqual(7, lastWeek.ExpectedObservationCount);
+        Assert.IsFalse(lastWeek.HasComparison);
+        Assert.AreEqual("Only 5 of 7 days are available (only 71% completeness).", lastWeek.Note);
+        CollectionAssert.AreEqual(
+            new[] { "Average max temp", "Average min temp", "Historical average", "Anomaly" },
+            lastWeek.Stats.Select(x => x.Label).ToArray());
+    }
+
+    [TestMethod]
+    public async Task CompletenessThresholdUsesMissingPrecipitationObservations()
+    {
+        var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14));
+        var service = CreateService(
+            historicalRecords: historicalRecords,
+            includeRecentRecord: date => date != new DateOnly(2026, 6, 9) && date != new DateOnly(2026, 6, 12));
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var lastWeek = result
+            .ApplyCompletenessThreshold(RecentObservationCompletenessThreshold.Default)
+            .Tiles
+            .Single(x => x.PeriodKind == RecentObservationPeriodKind.LastWeek);
+
+        Assert.AreEqual(5, lastWeek.AvailableObservationCount);
+        Assert.AreEqual(7, lastWeek.ExpectedObservationCount);
+        Assert.IsFalse(lastWeek.HasComparison);
+        Assert.AreEqual("Only 5 of 7 days are available (only 71% completeness).", lastWeek.Note);
+    }
+
+    [TestMethod]
+    public void CompletenessThresholdConvertsUiPercentagesToInternalThresholds()
+    {
+        Assert.AreEqual(0.8f, RecentObservationCompletenessThreshold.FromPercentage(80));
+        Assert.AreEqual(80, RecentObservationCompletenessThreshold.ToPercentage(RecentObservationCompletenessThreshold.Default));
+        Assert.AreEqual(0f, RecentObservationCompletenessThreshold.FromPercentage(-10));
+        Assert.AreEqual(1f, RecentObservationCompletenessThreshold.FromPercentage(120));
+    }
+
+    [TestMethod]
+    public async Task CompletenessThresholdVisibilityTogglesWithoutReloadingTiles()
+    {
+        var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14));
+        var service = CreateService(
+            historicalRecords: historicalRecords,
+            includeRecentRecord: date => date != new DateOnly(2026, 6, 9) && date != new DateOnly(2026, 6, 12));
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var baseLastWeek = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LastWeek);
+        var suppressed = baseLastWeek.ApplyCompletenessThreshold(0.80f);
+        var allowed = baseLastWeek.ApplyCompletenessThreshold(0.70f);
+
+        Assert.IsFalse(suppressed.HasComparison);
+        Assert.IsTrue(allowed.HasComparison);
+        Assert.IsNull(allowed.Note);
+        Assert.IsNotNull(allowed.HistoricalMaxLabel);
+    }
+
+    [TestMethod]
+    public async Task CompletenessThresholdAppliesToAllRangeTiles()
+    {
+        var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 1, 1), new DateOnly(2026, 6, 14));
+        var service = CreateService(
+            historicalRecords: historicalRecords,
+            includeRecentRecord: date => date != new DateOnly(2026, 6, 9) && date != new DateOnly(2026, 6, 12));
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var baseRangeTiles = result.Tiles
+            .Where(x => x.PeriodKind is RecentObservationPeriodKind.LastWeek or
+                RecentObservationPeriodKind.CurrentMonth or
+                RecentObservationPeriodKind.CurrentSeason or
+                RecentObservationPeriodKind.YearToDate)
+            .ToList();
+        var thresholdedRangeTiles = result
+            .ApplyCompletenessThreshold(1f)
+            .Tiles
+            .Where(x => x.PeriodKind is RecentObservationPeriodKind.LastWeek or
+                RecentObservationPeriodKind.CurrentMonth or
+                RecentObservationPeriodKind.CurrentSeason or
+                RecentObservationPeriodKind.YearToDate)
+            .ToList();
+
+        Assert.HasCount(4, baseRangeTiles);
+        Assert.IsTrue(baseRangeTiles.All(x => x.HasComparison));
+        Assert.IsTrue(thresholdedRangeTiles.All(x => !x.HasComparison));
+        Assert.IsTrue(thresholdedRangeTiles.All(x => !string.IsNullOrWhiteSpace(x.Note)));
+    }
+
+    [TestMethod]
     public async Task PeriodSelectionCreatesAddButtonLabelsFromGeneratedTiles()
     {
         var service = CreateService();
@@ -550,7 +739,8 @@ public class RecentObservationsServiceTests
     private static RecentObservationsService CreateService(
         DateOnly? recentStartDate = null,
         DateOnly? recentEndDate = null,
-        List<DataRecord>? historicalRecords = null)
+        List<DataRecord>? historicalRecords = null,
+        Func<DateOnly, bool>? includeRecentRecord = null)
     {
         var dataService = new Mock<IDataService>();
         SetupEmptyClimateRecords(dataService);
@@ -562,7 +752,9 @@ public class RecentObservationsServiceTests
                 IsSupported = true,
                 Records = CreateDailyRecords(
                     recentStartDate ?? new DateOnly(2025, 7, 1),
-                    recentEndDate ?? new DateOnly(2026, 6, 14)),
+                    recentEndDate ?? new DateOnly(2026, 6, 14),
+                    _ => 1d,
+                    includeRecentRecord),
             });
 
         if (historicalRecords is not null)
@@ -584,7 +776,10 @@ public class RecentObservationsServiceTests
         return CreateRecentObservationsService(dataService);
     }
 
-    private static RecentObservationsService CreateTemperatureService(List<DataRecord> historicalRecords)
+    private static RecentObservationsService CreateTemperatureService(
+        List<DataRecord> historicalRecords,
+        Func<DateOnly, bool>? includeMaxRecord = null,
+        Func<DateOnly, bool>? includeMinRecord = null)
     {
         var dataService = new Mock<IDataService>();
         SetupEmptyClimateRecords(dataService);
@@ -594,14 +789,14 @@ public class RecentObservationsServiceTests
             .ReturnsAsync(new RecentObservationsResponse
             {
                 IsSupported = true,
-                Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), _ => 20d),
+                Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), _ => 20d, includeMaxRecord),
             });
         dataService
             .Setup(x => x.GetRecentObservations(LocationId, DataType.TempMin, false))
             .ReturnsAsync(new RecentObservationsResponse
             {
                 IsSupported = true,
-                Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), _ => 10d),
+                Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), _ => 10d, includeMinRecord),
             });
         dataService
             .Setup(x => x.GetClimateRecords(
@@ -661,11 +856,20 @@ public class RecentObservationsServiceTests
         return CreateDailyRecords(startDate, endDate, _ => 1d);
     }
 
-    private static List<DataRecord> CreateDailyRecords(DateOnly startDate, DateOnly endDate, Func<DateOnly, double> getValue)
+    private static List<DataRecord> CreateDailyRecords(
+        DateOnly startDate,
+        DateOnly endDate,
+        Func<DateOnly, double> getValue,
+        Func<DateOnly, bool>? includeRecord = null)
     {
         var records = new List<DataRecord>();
         for (var date = startDate; date <= endDate; date = date.AddDays(1))
         {
+            if (includeRecord is not null && !includeRecord(date))
+            {
+                continue;
+            }
+
             records.Add(new DataRecord(date, getValue(date)));
         }
 
@@ -679,6 +883,27 @@ public class RecentObservationsServiceTests
         {
             var date = new DateOnly(year, templateDate.Month, templateDate.Day);
             records.Add(new DataRecord(date, valueOffset + year - startYear + 1));
+        }
+
+        return records;
+    }
+
+    private static List<DataRecord> CreateHistoricalRangeRecords(
+        DateOnly templateStart,
+        DateOnly templateEnd,
+        int startYear = 2000,
+        int endYear = 2025,
+        double valueOffset = 0d)
+    {
+        var records = new List<DataRecord>();
+        for (var year = startYear; year <= endYear; year++)
+        {
+            var startDate = new DateOnly(year, templateStart.Month, templateStart.Day);
+            var endDate = new DateOnly(year, templateEnd.Month, templateEnd.Day);
+            for (var date = startDate; date <= endDate; date = date.AddDays(1))
+            {
+                records.Add(new DataRecord(date, valueOffset + year - startYear + date.Day));
+            }
         }
 
         return records;

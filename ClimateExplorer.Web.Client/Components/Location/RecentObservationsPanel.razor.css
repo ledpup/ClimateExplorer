@@ -27,6 +27,30 @@
     grid-column: 1 / -1;
 }
 
+.recent-observations-threshold {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    max-width: 20rem;
+}
+
+.recent-observations-threshold label {
+    color: #425f59;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.recent-observations-threshold input {
+    width: 5rem;
+}
+
+.recent-observations-threshold span {
+    color: #596f6a;
+    font-weight: 700;
+}
+
 .recent-observations-state {
     align-items: center;
     background: #f5f8f7;
@@ -86,6 +110,11 @@
 }
 
 @media (max-width: 520px) {
+    .recent-observations-threshold {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
     .recent-observations-state {
         align-items: flex-start;
         flex-direction: column;

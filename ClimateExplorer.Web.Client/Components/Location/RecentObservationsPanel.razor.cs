@@ -1,5 +1,6 @@
 namespace ClimateExplorer.Web.Client.Components.Location;
 
+using System.Globalization;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.UiModel;
@@ -10,6 +11,7 @@ public partial class RecentObservationsPanel
     private readonly RecentObservationsTabState temperatureState = new();
     private readonly RecentObservationsTabState precipitationState = new();
     private readonly RecentObservationPeriodSelection periodSelection = new();
+    private float completenessThreshold = RecentObservationCompletenessThreshold.Default;
     private Guid? internalLocationId;
 
     [Parameter]
@@ -23,7 +25,12 @@ public partial class RecentObservationsPanel
 
     private RecentObservationsTab ActiveTab { get; set; } = RecentObservationsTab.Temperature;
     private RecentObservationsTabState CurrentState => GetState(ActiveTab);
-    private IReadOnlyList<RecentObservationTileViewModel> CurrentTiles => CurrentState.Result?.Tiles.Where(IsVisibleTile).ToList() ?? [];
+    private IReadOnlyList<RecentObservationTileViewModel> CurrentTiles => CurrentState.Result?
+        .ApplyCompletenessThreshold(completenessThreshold)
+        .Tiles
+        .Where(IsVisibleTile)
+        .ToList() ?? [];
+    private int CompletenessThresholdPercent => RecentObservationCompletenessThreshold.ToPercentage(completenessThreshold);
     private IEnumerable<RecentObservationTileViewModel> TilesBeforeMonthControls => CurrentTiles.Where(IsBeforeMonthControls);
     private IEnumerable<RecentObservationTileViewModel> SeasonTiles => CurrentTiles.Where(IsSeasonTile);
     private IEnumerable<RecentObservationTileViewModel> TilesAfterSeasonControls => CurrentTiles.Where(IsAfterSeasonControls);
@@ -126,6 +133,16 @@ public partial class RecentObservationsPanel
     private void RemoveTile(RecentObservationTileViewModel tile)
     {
         periodSelection.Remove(tile);
+    }
+
+    private void OnCompletenessThresholdChanged(ChangeEventArgs e)
+    {
+        if (!int.TryParse(e.Value?.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var thresholdPercent))
+        {
+            return;
+        }
+
+        completenessThreshold = RecentObservationCompletenessThreshold.FromPercentage(thresholdPercent);
     }
 
     private RecentObservationsTabState GetState(RecentObservationsTab tab)

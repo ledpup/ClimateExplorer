@@ -356,9 +356,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             record.Mean,
             record.Max,
             record.Min,
-            1,
-            1,
-            true,
+            ObservationCompleteness.CompleteDay,
             PeriodKind.Daily,
             PeriodComparisonMode.DailyDate,
             periodOffset,
@@ -376,9 +374,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             record.Rainfall,
             null,
             null,
-            1,
-            1,
-            true,
+            ObservationCompleteness.CompleteDay,
             PeriodKind.Daily,
             PeriodComparisonMode.DailyDate,
             periodOffset,
@@ -402,9 +398,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
         }
 
         var expectedDays = GetDayCount(startDate, endDate);
-        var actualDays = records.Select(x => x.Date).Distinct().Count();
-        var canCompare = actualDays == expectedDays;
-        var note = CreatePeriodNote(kind, endDate, actualDays, expectedDays, canCompare);
+        var availableDays = records.Select(x => x.Date).Distinct().Count();
+        var completeness = new ObservationCompleteness(availableDays, expectedDays);
 
         periods.Add(new PeriodObservation(
             CreatePeriodTitle(kind, startDate, endDate, previousMonthOffset, seasonPeriod, isSeasonToDate),
@@ -415,13 +410,11 @@ public sealed class RecentObservationsService : IRecentObservationsService
             records.Average(x => x.Mean),
             records.Average(x => x.Max),
             records.Average(x => x.Min),
-            actualDays,
-            expectedDays,
-            canCompare,
+            completeness,
             kind,
             PeriodComparisonMode.DailyRange,
             periodOffset ?? previousMonthOffset,
-            note));
+            null));
     }
 
     private static void AddPrecipitationRangePeriod(
@@ -441,9 +434,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
         }
 
         var expectedDays = GetDayCount(startDate, endDate);
-        var actualDays = records.Select(x => x.Date).Distinct().Count();
-        var canCompare = actualDays == expectedDays;
-        var note = CreatePeriodNote(kind, endDate, actualDays, expectedDays, canCompare);
+        var availableDays = records.Select(x => x.Date).Distinct().Count();
+        var completeness = new ObservationCompleteness(availableDays, expectedDays);
 
         periods.Add(new PeriodObservation(
             CreatePeriodTitle(kind, startDate, endDate, previousMonthOffset, seasonPeriod, isSeasonToDate),
@@ -454,13 +446,11 @@ public sealed class RecentObservationsService : IRecentObservationsService
             records.Sum(x => x.Rainfall),
             null,
             null,
-            actualDays,
-            expectedDays,
-            canCompare,
+            completeness,
             kind,
             PeriodComparisonMode.DailyRange,
             periodOffset ?? previousMonthOffset,
-            note));
+            null));
     }
 
     private async Task<HistoricalValues> GetTemperatureHistoricalMonthlyValues(
@@ -470,11 +460,6 @@ public sealed class RecentObservationsService : IRecentObservationsService
         PeriodObservation period,
         Task<ClimateRecordsResponse>? sharedMonthlyHistoryTask)
     {
-        if (!period.CanCompare)
-        {
-            return HistoricalValues.Unavailable("Recent daily observations are incomplete for this period.");
-        }
-
         var monthlyHistory = sharedMonthlyHistoryTask is null
             ? await GetTemperatureHistoricalMonthlyRecords(locationId, preferredAdjustment, period.StartDate.Month)
             : await sharedMonthlyHistoryTask;
@@ -497,11 +482,6 @@ public sealed class RecentObservationsService : IRecentObservationsService
         PeriodObservation period,
         Task<ClimateRecordsResponse>? sharedMonthlyHistoryTask)
     {
-        if (!period.CanCompare)
-        {
-            return HistoricalValues.Unavailable("Recent daily observations are incomplete for this period.");
-        }
-
         var monthlyHistory = sharedMonthlyHistoryTask is null
             ? await GetHistoricalRecords(locationId, DataType.Precipitation, null, monthly: true, month: period.StartDate.Month)
             : await sharedMonthlyHistoryTask;
@@ -520,11 +500,6 @@ public sealed class RecentObservationsService : IRecentObservationsService
 
     private static HistoricalValues GetTemperatureHistoricalDailyValues(ClimateRecordsResponse response, PeriodObservation period)
     {
-        if (!period.CanCompare)
-        {
-            return HistoricalValues.Unavailable("Recent daily observations are incomplete for this period.");
-        }
-
         if (period.ComparisonMode == PeriodComparisonMode.DailyDate)
         {
             return GetHistoricalDailyDateValues(response, period);
@@ -535,11 +510,6 @@ public sealed class RecentObservationsService : IRecentObservationsService
 
     private static HistoricalValues GetPrecipitationHistoricalDailyValues(ClimateRecordsResponse response, PeriodObservation period)
     {
-        if (!period.CanCompare)
-        {
-            return HistoricalValues.Unavailable("Recent daily observations are incomplete for this period.");
-        }
-
         if (period.ComparisonMode == PeriodComparisonMode.DailyDate)
         {
             return GetHistoricalDailyDateValues(response, period);
@@ -691,8 +661,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
         var ranking = RecentObservationComparison.Rank(period.PrimaryValue, historicalValues.Values);
         var stats = new List<RecentObservationStatViewModel>
         {
-            new() { Label = period.ActualDays == 1 ? "Max temp" : "Average max temp", Value = FormatTemperature(period.SupportingValueOne!.Value) },
-            new() { Label = period.ActualDays == 1 ? "Min temp" : "Average min temp", Value = FormatTemperature(period.SupportingValueTwo!.Value) },
+            new() { Label = period.Completeness.AvailableObservationCount == 1 ? "Max temp" : "Average max temp", Value = FormatTemperature(period.SupportingValueOne!.Value) },
+            new() { Label = period.Completeness.AvailableObservationCount == 1 ? "Min temp" : "Average min temp", Value = FormatTemperature(period.SupportingValueTwo!.Value) },
         };
 
         if (ranking is not null)
@@ -724,6 +694,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
             Tone = GetTemperatureTone(ranking),
             Note = period.Note,
             Stats = stats,
+            AvailableObservationCount = period.Completeness.AvailableObservationCount,
+            ExpectedObservationCount = period.Completeness.ExpectedObservationCount,
         };
     }
 
@@ -758,6 +730,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
             Tone = GetPrecipitationTone(ranking),
             Note = period.Note,
             Stats = stats,
+            AvailableObservationCount = period.Completeness.AvailableObservationCount,
+            ExpectedObservationCount = period.Completeness.ExpectedObservationCount,
         };
     }
 
@@ -894,7 +868,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
 
     private static bool ShouldUseSharedMonthlyHistory(IEnumerable<PeriodObservation> periods)
     {
-        return periods.Count(x => x is { CanCompare: true, ComparisonMode: PeriodComparisonMode.MonthlySameMonth }) > 1;
+        return periods.Count(x => x.ComparisonMode == PeriodComparisonMode.MonthlySameMonth) > 1;
     }
 
     private static int? GetStartYear(IReadOnlyCollection<DataRecord> records)
@@ -1011,16 +985,6 @@ public sealed class RecentObservationsService : IRecentObservationsService
         };
     }
 
-    private static string? CreatePeriodNote(PeriodKind kind, DateOnly endDate, int actualDays, int expectedDays, bool canCompare)
-    {
-        if (!canCompare)
-        {
-            return $"Only {actualDays} of {expectedDays} days are available, so the historical comparison is not shown.";
-        }
-
-        return null;
-    }
-
     private static string CreateDailyPeriodTitle(DateOnly date, DateOnly today)
     {
         if (date == today)
@@ -1089,13 +1053,16 @@ public sealed class RecentObservationsService : IRecentObservationsService
         double PrimaryValue,
         double? SupportingValueOne,
         double? SupportingValueTwo,
-        int ActualDays,
-        int ExpectedDays,
-        bool CanCompare,
+        ObservationCompleteness Completeness,
         PeriodKind Kind,
         PeriodComparisonMode ComparisonMode,
         int? PeriodOffset,
         string? Note);
+
+    private sealed record ObservationCompleteness(int AvailableObservationCount, int ExpectedObservationCount)
+    {
+        public static ObservationCompleteness CompleteDay { get; } = new(1, 1);
+    }
 
     private sealed record PreviousMonthPeriod(DateOnly StartDate, DateOnly EndDate, int Offset);
 
