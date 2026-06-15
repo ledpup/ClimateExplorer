@@ -7,7 +7,7 @@
 @using GeoCoordinatePortable
 
 <div style="display: contents">
-    <Modal @ref="modal" Size="ModalSize.Large">
+    <Modal @ref="modal" Size="ModalSize.Large" Opened="@OnModalOpened" Closed="@OnModalClosed">
         <ModalContent>
             <ModalHeader Class="custom-modal-header">
                 <ModalTitle>Change location</ModalTitle>
@@ -31,6 +31,7 @@
                     <Field Class="mt-3">
                         <Autocomplete TItem="Location"
                             TValue="Guid"
+                            @ref="locationAutocomplete"
                             Data="@LocationDictionary.Values"
                             TextField="@((item) => item.FullTitle)"
                             ValueField="@((item) => item.Id)"
