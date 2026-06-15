@@ -61,7 +61,7 @@
             </div>
 
             <div class="recent-observations-threshold">
-                <label for="recent-observations-completeness-threshold">Completeness threshold</label>
+                <label for="recent-observations-completeness-threshold">Completeness threshold %</label>
                 <input id="recent-observations-completeness-threshold"
                        type="number"
                        class="form-control form-control-sm"
@@ -70,7 +70,6 @@
                        step="1"
                        value="@CompletenessThresholdPercent"
                        @oninput="OnCompletenessThresholdChanged" />
-                <span>%</span>
             </div>
         }
         else
