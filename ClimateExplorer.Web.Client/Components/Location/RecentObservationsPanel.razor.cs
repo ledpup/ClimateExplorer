@@ -28,10 +28,9 @@ public partial class RecentObservationsPanel
     private IEnumerable<RecentObservationTileViewModel> SeasonTiles => CurrentTiles.Where(IsSeasonTile);
     private IEnumerable<RecentObservationTileViewModel> TilesAfterSeasonControls => CurrentTiles.Where(IsAfterSeasonControls);
     private string CurrentEmptyMessage => CurrentState.Result?.EmptyMessage ?? "No recent observations are available.";
-    private bool IsAddEarlierMonthDisabled => periodSelection.IsAddEarlierMonthDisabled;
-    private bool IsRemoveMonthDisabled => periodSelection.IsRemoveMonthDisabled;
-    private bool IsAddEarlierSeasonDisabled => periodSelection.IsAddEarlierSeasonDisabled;
-    private bool IsRemoveSeasonDisabled => periodSelection.IsRemoveSeasonDisabled;
+    private bool IsAddEarlierDayDisabled => !periodSelection.CanAddEarlierDay(GetAvailableOffsets(RecentObservationPeriodKind.Daily));
+    private bool IsAddEarlierMonthDisabled => !periodSelection.CanAddEarlierMonth(GetAvailableOffsets(RecentObservationPeriodKind.PreviousMonth));
+    private bool IsAddEarlierSeasonDisabled => !periodSelection.CanAddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.PreviousSeason));
 
     protected override async Task OnParametersSetAsync()
     {
@@ -83,10 +82,12 @@ public partial class RecentObservationsPanel
             {
                 RecentObservationsTab.Temperature => await RecentObservationsService.GetTemperatureRecords(
                     Location,
+                    RecentObservationPeriodSelection.MaximumPreviousDayCount,
                     RecentObservationPeriodSelection.MaximumPreviousMonthCount,
                     RecentObservationPeriodSelection.MaximumPreviousSeasonCount),
                 RecentObservationsTab.Precipitation => await RecentObservationsService.GetPrecipitationRecords(
                     Location,
+                    RecentObservationPeriodSelection.MaximumPreviousDayCount,
                     RecentObservationPeriodSelection.MaximumPreviousMonthCount,
                     RecentObservationPeriodSelection.MaximumPreviousSeasonCount),
                 _ => throw new NotImplementedException(),
@@ -104,24 +105,24 @@ public partial class RecentObservationsPanel
         }
     }
 
-    private void AddEarlierMonth()
+    private void AddEarlierDay()
     {
-        periodSelection.AddEarlierMonth();
+        periodSelection.AddEarlierDay(GetAvailableOffsets(RecentObservationPeriodKind.Daily));
     }
 
-    private void RemoveMonth()
+    private void AddEarlierMonth()
     {
-        periodSelection.RemoveMonth();
+        periodSelection.AddEarlierMonth(GetAvailableOffsets(RecentObservationPeriodKind.PreviousMonth));
     }
 
     private void AddEarlierSeason()
     {
-        periodSelection.AddEarlierSeason();
+        periodSelection.AddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.PreviousSeason));
     }
 
-    private void RemoveSeason()
+    private void RemoveTile(RecentObservationTileViewModel tile)
     {
-        periodSelection.RemoveSeason();
+        periodSelection.Remove(tile);
     }
 
     private RecentObservationsTabState GetState(RecentObservationsTab tab)
@@ -155,17 +156,35 @@ public partial class RecentObservationsPanel
 
     private bool IsVisibleTile(RecentObservationTileViewModel tile)
     {
-        return tile.PeriodKind switch
-        {
-            RecentObservationPeriodKind.PreviousMonth => tile.PeriodOffset <= periodSelection.PreviousMonthCount,
-            RecentObservationPeriodKind.PreviousSeason => tile.PeriodOffset <= periodSelection.PreviousSeasonCount,
-            _ => true,
-        };
+        return periodSelection.IsVisible(tile);
+    }
+
+    private bool IsRemovableTile(RecentObservationTileViewModel tile)
+    {
+        return periodSelection.IsRemovable(tile);
+    }
+
+    private string CreateRemoveTileLabel(RecentObservationTileViewModel tile)
+    {
+        return $"Remove {tile.PeriodTitle}";
     }
 
     private string GetTileKey(RecentObservationTileViewModel tile)
     {
-        return $"{tile.PeriodKind}:{tile.PeriodTitle}";
+        return $"{tile.PeriodKind}:{tile.PeriodStartDate:yyyy-MM-dd}:{tile.PeriodEndDate:yyyy-MM-dd}:{tile.PeriodTitle}";
+    }
+
+    private IEnumerable<int> GetAvailableOffsets(RecentObservationPeriodKind periodKind)
+    {
+        if (CurrentState.Result is null)
+        {
+            return [];
+        }
+
+        return CurrentState.Result.Tiles
+            .Where(tile => tile.PeriodKind == periodKind && tile.PeriodOffset.HasValue)
+            .Select(tile => tile.PeriodOffset!.Value)
+            .Order();
     }
 
     private sealed class RecentObservationsTabState

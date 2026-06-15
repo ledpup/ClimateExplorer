@@ -25,17 +25,14 @@
         else if (CurrentTiles.Count > 0)
         {
             <div class="mb-4">
-                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierMonth" disabled="@IsAddEarlierMonthDisabled">
-                    Add earlier month
+                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierDay" disabled="@IsAddEarlierDayDisabled">
+                    Add day
                 </button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="RemoveMonth" disabled="@IsRemoveMonthDisabled">
-                    Remove month
+                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierMonth" disabled="@IsAddEarlierMonthDisabled">
+                    Add month
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierSeason" disabled="@IsAddEarlierSeasonDisabled">
-                    Add earlier season
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="RemoveSeason" disabled="@IsRemoveSeasonDisabled">
-                    Remove season
+                    Add season
                 </button>
             </div>
 
@@ -44,21 +41,21 @@
                 @foreach (var tile in TilesBeforeMonthControls)
                 {
                     <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
-                        <RecentObservationTile Tile="@tile" />
+                        <RecentObservationTile Tile="@tile" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" />
                     </div>
                 }
 
                 @foreach (var tile in SeasonTiles)
                 {
                     <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
-                        <RecentObservationTile Tile="@tile" />
+                        <RecentObservationTile Tile="@tile" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" />
                     </div>
                 }
 
                 @foreach (var tile in TilesAfterSeasonControls)
                 {
                     <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
-                        <RecentObservationTile Tile="@tile" />
+                        <RecentObservationTile Tile="@tile" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" />
                     </div>
                 }
             </div>

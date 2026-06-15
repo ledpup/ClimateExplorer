@@ -1,7 +1,11 @@
 @namespace ClimateExplorer.Web.Client.Components.Location
 @using ClimateExplorer.Web.Client.UiModel
 
-<article class="recent-observation-tile @ToneClass">
+<article class="recent-observation-tile @ToneClass @RemovableClass">
+    @if (IsRemovable)
+    {
+        <button type="button" class="btn-close recent-observation-remove" aria-label="@RemoveButtonLabel" @onclick="OnRemove"></button>
+    }
     <div class="recent-observation-period">@Tile.PeriodTitle</div>
     <h3>@Tile.Headline</h3>
     <p class="recent-observation-percentile">@Tile.PercentileSentence</p>
@@ -59,6 +63,17 @@
     [Parameter]
     [EditorRequired]
     public RecentObservationTileViewModel Tile { get; set; } = default!;
+
+    [Parameter]
+    public bool IsRemovable { get; set; }
+
+    [Parameter]
+    public string RemoveButtonLabel { get; set; } = "Remove tile";
+
+    [Parameter]
+    public EventCallback OnRemove { get; set; }
+
+    private string RemovableClass => IsRemovable ? "removable" : string.Empty;
 
     private string ToneClass => Tile.Tone switch
     {
