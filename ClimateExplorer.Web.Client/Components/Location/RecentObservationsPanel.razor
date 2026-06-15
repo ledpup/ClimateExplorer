@@ -26,13 +26,13 @@
         {
             <div class="mb-4">
                 <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierDay" disabled="@IsAddEarlierDayDisabled">
-                    Add day
+                    @AddDayButtonLabel
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierMonth" disabled="@IsAddEarlierMonthDisabled">
-                    Add month
+                    @AddMonthButtonLabel
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierSeason" disabled="@IsAddEarlierSeasonDisabled">
-                    Add season
+                    @AddSeasonButtonLabel
                 </button>
             </div>
 
