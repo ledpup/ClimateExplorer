@@ -25,17 +25,14 @@
         else if (CurrentTiles.Count > 0)
         {
             <div class="mb-4">
-                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierMonth" disabled="@IsAddEarlierMonthDisabled">
-                    Add earlier month
+                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierDay" disabled="@IsAddEarlierDayDisabled">
+                    @AddDayButtonLabel
                 </button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="RemoveMonth" disabled="@IsRemoveMonthDisabled">
-                    Remove month
+                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierMonth" disabled="@IsAddEarlierMonthDisabled">
+                    @AddMonthButtonLabel
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierSeason" disabled="@IsAddEarlierSeasonDisabled">
-                    Add earlier season
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="RemoveSeason" disabled="@IsRemoveSeasonDisabled">
-                    Remove season
+                    @AddSeasonButtonLabel
                 </button>
             </div>
 
@@ -44,23 +41,36 @@
                 @foreach (var tile in TilesBeforeMonthControls)
                 {
                     <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
-                        <RecentObservationTile Tile="@tile" />
+                        <RecentObservationTile Tile="@tile" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" />
                     </div>
                 }
 
                 @foreach (var tile in SeasonTiles)
                 {
                     <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
-                        <RecentObservationTile Tile="@tile" />
+                        <RecentObservationTile Tile="@tile" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" />
                     </div>
                 }
 
                 @foreach (var tile in TilesAfterSeasonControls)
                 {
                     <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
-                        <RecentObservationTile Tile="@tile" />
+                        <RecentObservationTile Tile="@tile" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" />
                     </div>
                 }
+            </div>
+
+            <div class="recent-observations-threshold">
+                <label for="recent-observations-completeness-threshold">Completeness threshold</label>
+                <input id="recent-observations-completeness-threshold"
+                       type="number"
+                       class="form-control form-control-sm"
+                       min="@RecentObservationCompletenessThreshold.MinimumPercentage"
+                       max="@RecentObservationCompletenessThreshold.MaximumPercentage"
+                       step="1"
+                       value="@CompletenessThresholdPercent"
+                       @oninput="OnCompletenessThresholdChanged" />
+                <span>%</span>
             </div>
         }
         else
@@ -72,7 +82,12 @@
         }
     </div>
 
-    <h3 class="mt-4">Notes</h3>
-    <p>Recent observations and historical comparisons are using data that has not been adjusted by scientists to remove artificial, non-climate-related biases.</p>
-    <p>Comparisons such as last week, month-to-date and year-to-date tiles are compared with equivalent historical periods.</p>
+    <h3 class="mt-3">Notes</h3>
+    <div style="max-width: 1280px;">
+        <ul>
+            <li><b>Completeness threshold:</b> historical comparisons are only shown when sufficient data is available. The completeness threshold specifies the minimum percentage of observations required before rankings, percentiles, and record comparisons are calculated.</li>
+            <li>Recent observations and historical comparisons are using data that has not been adjusted by scientists to remove artificial, non-climate-related biases.</li>
+            <li>Comparisons such as last week, month-to-date and year-to-date tiles are compared with equivalent historical periods.</li>
+        </ul>
+    </div>
 </div>

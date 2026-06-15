@@ -1,7 +1,7 @@
 @if (isVisible)
 {
     <div class="side-panel-overlay" @onclick="DismissAsync">
-        <div class="side-panel @(isAnimatingIn ? "slide-in" : "") @(isAnimatingOut ? "slide-out" : "")"
+        <div class="side-panel @(isAnimatingIn ? "slide-in" : string.Empty) @(isAnimatingOut ? "slide-out" : string.Empty)"
              style="width: @Width"
              @onclick:stopPropagation="true">
             <div class="side-panel-header">

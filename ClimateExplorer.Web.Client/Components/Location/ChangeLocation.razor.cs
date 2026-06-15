@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Web.Client.Components.Location;
 
 using Blazorise;
+using Blazorise.Components;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.WebApiClient.Services;
 using GeoCoordinatePortable;
@@ -12,7 +13,10 @@ public partial class ChangeLocation
     private const int PageSize = 10;
 
     private Modal? modal;
+    private Autocomplete<Location, Guid>? locationAutocomplete;
     private string? selectedText;
+    private bool isModalOpen;
+    private bool shouldFocusLocationSearch;
 
     [Inject]
     public IDataService? DataService { get; set; }
@@ -48,6 +52,7 @@ public partial class ChangeLocation
     public async Task Show()
     {
         selectedText = null;
+        shouldFocusLocationSearch = true;
 
         if (SelectedLocation is not null && NearbyLocations is null)
         {
@@ -75,6 +80,42 @@ public partial class ChangeLocation
             NearbyLocations = null;
             CurrentPage = 1;
         }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (isModalOpen && shouldFocusLocationSearch)
+        {
+            await FocusLocationSearch();
+        }
+    }
+
+    private async Task OnModalOpened()
+    {
+        isModalOpen = true;
+
+        // Let the modal finish applying its own focus management before focusing the search input.
+        await Task.Delay(50);
+        await FocusLocationSearch();
+    }
+
+    private Task OnModalClosed()
+    {
+        isModalOpen = false;
+        shouldFocusLocationSearch = false;
+
+        return Task.CompletedTask;
+    }
+
+    private async Task FocusLocationSearch()
+    {
+        if (locationAutocomplete is null)
+        {
+            return;
+        }
+
+        shouldFocusLocationSearch = false;
+        await locationAutocomplete.Focus(scrollToElement: false);
     }
 
     private async Task LoadNearbyLocationsAsync(Guid locationId, int page = 1)

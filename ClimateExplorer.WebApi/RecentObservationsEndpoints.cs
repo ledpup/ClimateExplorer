@@ -33,6 +33,7 @@ internal static partial class RecentObservationsEndpoints
     {
         var logger = loggerFactory.CreateLogger(nameof(RecentObservationsEndpoints));
         var today = DateOnly.FromDateTime(DateTime.Today);
+        var yesterday = today.AddDays(-1);
         var bomContext = await GetBomRecentObservationsContext(services, locationId, dataType, today);
         if (isLocationSupported || !bomContext.IsSupported)
         {
@@ -43,7 +44,7 @@ internal static partial class RecentObservationsEndpoints
         var recentObservationEndDate = new DateOnly(today.Year, 12, 31);
         var cacheKey = $"{ClimateExplorerApiConstants.RecentObservationsCacheKeyPrefix}_{locationId}_{dataType}_{recentObservationStartDate.Year}_{recentObservationEndDate.Year}";
         var cachedResponse = await services.Cache.Get<RecentObservationsResponse>(cacheKey);
-        if (HasRecordForDate(cachedResponse, today) || WasDataRetrievedInLastHour(cachedResponse))
+        if (HasRecordForDate(cachedResponse, today) || HasRecordForDate(cachedResponse, yesterday) || WasDataRetrievedInLastHour(cachedResponse))
         {
             return cachedResponse;
         }

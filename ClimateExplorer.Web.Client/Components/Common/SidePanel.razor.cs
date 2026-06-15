@@ -12,7 +12,7 @@ public partial class SidePanel : ComponentBase
     public string Title { get; set; } = string.Empty;
 
     [Parameter]
-    public string Width { get; set; } = "70%";
+    public string Width { get; set; } = "80%";
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }

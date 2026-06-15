@@ -5,6 +5,6 @@ using ClimateExplorer.Web.Client.UiModel;
 
 public interface IRecentObservationsService
 {
-    Task<RecentObservationsTabResult> GetTemperatureRecords(Location location, int previousMonthCount, int previousSeasonCount);
-    Task<RecentObservationsTabResult> GetPrecipitationRecords(Location location, int previousMonthCount, int previousSeasonCount);
+    Task<RecentObservationsTabResult> GetTemperatureRecords(Location location, int previousDayCount, int previousMonthCount, int previousSeasonCount);
+    Task<RecentObservationsTabResult> GetPrecipitationRecords(Location location, int previousDayCount, int previousMonthCount, int previousSeasonCount);
 }

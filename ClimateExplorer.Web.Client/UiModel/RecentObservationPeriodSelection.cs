@@ -1,52 +1,221 @@
 namespace ClimateExplorer.Web.Client.UiModel;
 
+using System.Globalization;
+
 public sealed class RecentObservationPeriodSelection
 {
+    public const int DefaultPreviousDayCount = 1;
     public const int DefaultPreviousMonthCount = 0;
     public const int DefaultPreviousSeasonCount = 0;
+    public const int MaximumPreviousDayCount = 7;
     public const int MaximumPreviousMonthCount = 11;
     public const int MaximumPreviousSeasonCount = 3;
 
-    public int PreviousMonthCount { get; private set; } = DefaultPreviousMonthCount;
-    public int PreviousSeasonCount { get; private set; } = DefaultPreviousSeasonCount;
-    public bool IsAddEarlierMonthDisabled => PreviousMonthCount >= MaximumPreviousMonthCount;
-    public bool IsRemoveMonthDisabled => PreviousMonthCount == 0;
-    public bool IsAddEarlierSeasonDisabled => PreviousSeasonCount >= MaximumPreviousSeasonCount;
-    public bool IsRemoveSeasonDisabled => PreviousSeasonCount == 0;
+    private readonly SortedSet<int> visiblePreviousDayOffsets = new() { DefaultPreviousDayCount };
+    private readonly SortedSet<int> visiblePreviousMonthOffsets = [];
+    private readonly SortedSet<int> visiblePreviousSeasonOffsets = [];
 
-    public void AddEarlierMonth()
+    public int PreviousDayCount => visiblePreviousDayOffsets.Count;
+    public int PreviousMonthCount => visiblePreviousMonthOffsets.Count;
+    public int PreviousSeasonCount => visiblePreviousSeasonOffsets.Count;
+    public bool IsAddEarlierDayDisabled => !CanAddEarlierDay();
+    public bool IsAddEarlierMonthDisabled => !CanAddEarlierMonth();
+    public bool IsAddEarlierSeasonDisabled => !CanAddEarlierSeason();
+
+    public void AddEarlierDay(IEnumerable<int>? availableOffsets = null)
     {
-        SetPreviousMonthCount(PreviousMonthCount + 1);
+        AddNextVisibleOffset(visiblePreviousDayOffsets, availableOffsets, MaximumPreviousDayCount);
     }
 
-    public void RemoveMonth()
+    public void AddEarlierMonth(IEnumerable<int>? availableOffsets = null)
     {
-        SetPreviousMonthCount(PreviousMonthCount - 1);
+        AddNextVisibleOffset(visiblePreviousMonthOffsets, availableOffsets, MaximumPreviousMonthCount);
     }
 
-    public void AddEarlierSeason()
+    public void AddEarlierSeason(IEnumerable<int>? availableOffsets = null)
     {
-        SetPreviousSeasonCount(PreviousSeasonCount + 1);
+        AddNextVisibleOffset(visiblePreviousSeasonOffsets, availableOffsets, MaximumPreviousSeasonCount);
     }
 
-    public void RemoveSeason()
+    public bool CanAddEarlierDay(IEnumerable<int>? availableOffsets = null)
     {
-        SetPreviousSeasonCount(PreviousSeasonCount - 1);
+        return GetNextVisibleOffset(visiblePreviousDayOffsets, availableOffsets, MaximumPreviousDayCount).HasValue;
+    }
+
+    public bool CanAddEarlierMonth(IEnumerable<int>? availableOffsets = null)
+    {
+        return GetNextVisibleOffset(visiblePreviousMonthOffsets, availableOffsets, MaximumPreviousMonthCount).HasValue;
+    }
+
+    public bool CanAddEarlierSeason(IEnumerable<int>? availableOffsets = null)
+    {
+        return GetNextVisibleOffset(visiblePreviousSeasonOffsets, availableOffsets, MaximumPreviousSeasonCount).HasValue;
+    }
+
+    public string CreateAddButtonLabel(
+        RecentObservationPeriodKind periodKind,
+        IEnumerable<RecentObservationTileViewModel> availableTiles,
+        string fallbackPeriodName)
+    {
+        var tile = GetNextAddTile(periodKind, availableTiles) ?? GetMaximumReachedTile(periodKind, availableTiles);
+        return tile is null
+            ? $"Add {fallbackPeriodName}"
+            : $"Add {CreateAddButtonPeriodLabel(tile)}";
+    }
+
+    public RecentObservationTileViewModel? GetNextAddTile(
+        RecentObservationPeriodKind periodKind,
+        IEnumerable<RecentObservationTileViewModel> availableTiles)
+    {
+        var tiles = GetAddableTiles(periodKind, availableTiles).ToList();
+        var nextOffset = GetNextVisibleOffset(
+            GetVisibleOffsets(periodKind),
+            tiles.Select(tile => tile.PeriodOffset!.Value),
+            GetMaximumOffset(periodKind));
+
+        return nextOffset.HasValue
+            ? tiles.FirstOrDefault(tile => tile.PeriodOffset == nextOffset.Value)
+            : null;
+    }
+
+    public bool IsVisible(RecentObservationTileViewModel tile)
+    {
+        if (!tile.PeriodOffset.HasValue)
+        {
+            return tile.PeriodKind is not RecentObservationPeriodKind.PreviousMonth and not RecentObservationPeriodKind.PreviousSeason;
+        }
+
+        return tile.PeriodKind switch
+        {
+            RecentObservationPeriodKind.Daily => visiblePreviousDayOffsets.Contains(tile.PeriodOffset.Value),
+            RecentObservationPeriodKind.PreviousMonth => visiblePreviousMonthOffsets.Contains(tile.PeriodOffset.Value),
+            RecentObservationPeriodKind.PreviousSeason => visiblePreviousSeasonOffsets.Contains(tile.PeriodOffset.Value),
+            _ => true,
+        };
+    }
+
+    public bool IsRemovable(RecentObservationTileViewModel tile)
+    {
+        if (!tile.PeriodOffset.HasValue || !IsVisible(tile))
+        {
+            return false;
+        }
+
+        return tile.PeriodKind switch
+        {
+            RecentObservationPeriodKind.Daily => tile.PeriodOffset.Value > DefaultPreviousDayCount,
+            RecentObservationPeriodKind.PreviousMonth => true,
+            RecentObservationPeriodKind.PreviousSeason => true,
+            _ => false,
+        };
+    }
+
+    public void Remove(RecentObservationTileViewModel tile)
+    {
+        if (!tile.PeriodOffset.HasValue || !IsRemovable(tile))
+        {
+            return;
+        }
+
+        switch (tile.PeriodKind)
+        {
+            case RecentObservationPeriodKind.Daily:
+                visiblePreviousDayOffsets.Remove(tile.PeriodOffset.Value);
+                break;
+            case RecentObservationPeriodKind.PreviousMonth:
+                visiblePreviousMonthOffsets.Remove(tile.PeriodOffset.Value);
+                break;
+            case RecentObservationPeriodKind.PreviousSeason:
+                visiblePreviousSeasonOffsets.Remove(tile.PeriodOffset.Value);
+                break;
+        }
     }
 
     public void Reset()
     {
-        PreviousMonthCount = DefaultPreviousMonthCount;
-        PreviousSeasonCount = DefaultPreviousSeasonCount;
+        visiblePreviousDayOffsets.Clear();
+        visiblePreviousDayOffsets.Add(DefaultPreviousDayCount);
+        visiblePreviousMonthOffsets.Clear();
+        visiblePreviousSeasonOffsets.Clear();
     }
 
-    private void SetPreviousMonthCount(int count)
+    private RecentObservationTileViewModel? GetMaximumReachedTile(
+        RecentObservationPeriodKind periodKind,
+        IEnumerable<RecentObservationTileViewModel> availableTiles)
     {
-        PreviousMonthCount = Math.Clamp(count, 0, MaximumPreviousMonthCount);
+        var visibleOffsets = GetVisibleOffsets(periodKind);
+        if (visibleOffsets.Count == 0 || visibleOffsets.Max < GetMaximumOffset(periodKind))
+        {
+            return null;
+        }
+
+        return GetAddableTiles(periodKind, availableTiles)
+            .Where(tile => visibleOffsets.Contains(tile.PeriodOffset!.Value))
+            .OrderByDescending(tile => tile.PeriodOffset!.Value)
+            .FirstOrDefault();
     }
 
-    private void SetPreviousSeasonCount(int count)
+    private IEnumerable<RecentObservationTileViewModel> GetAddableTiles(
+        RecentObservationPeriodKind periodKind,
+        IEnumerable<RecentObservationTileViewModel> availableTiles)
     {
-        PreviousSeasonCount = Math.Clamp(count, 0, MaximumPreviousSeasonCount);
+        var maximumOffset = GetMaximumOffset(periodKind);
+
+        return availableTiles
+            .Where(tile => tile.PeriodKind == periodKind &&
+                           tile.PeriodOffset.HasValue &&
+                           tile.PeriodOffset.Value <= maximumOffset)
+            .OrderBy(tile => tile.PeriodOffset!.Value);
+    }
+
+    private string CreateAddButtonPeriodLabel(RecentObservationTileViewModel tile)
+    {
+        return tile.PeriodKind == RecentObservationPeriodKind.PreviousMonth
+            ? tile.PeriodStartDate.ToString("MMMM yyyy", CultureInfo.CurrentCulture)
+            : tile.PeriodTitle;
+    }
+
+    private SortedSet<int> GetVisibleOffsets(RecentObservationPeriodKind periodKind)
+    {
+        return periodKind switch
+        {
+            RecentObservationPeriodKind.Daily => visiblePreviousDayOffsets,
+            RecentObservationPeriodKind.PreviousMonth => visiblePreviousMonthOffsets,
+            RecentObservationPeriodKind.PreviousSeason => visiblePreviousSeasonOffsets,
+            _ => [],
+        };
+    }
+
+    private int GetMaximumOffset(RecentObservationPeriodKind periodKind)
+    {
+        return periodKind switch
+        {
+            RecentObservationPeriodKind.Daily => MaximumPreviousDayCount,
+            RecentObservationPeriodKind.PreviousMonth => MaximumPreviousMonthCount,
+            RecentObservationPeriodKind.PreviousSeason => MaximumPreviousSeasonCount,
+            _ => 0,
+        };
+    }
+
+    private void AddNextVisibleOffset(SortedSet<int> visibleOffsets, IEnumerable<int>? availableOffsets, int maximumOffset)
+    {
+        var nextOffset = GetNextVisibleOffset(visibleOffsets, availableOffsets, maximumOffset);
+        if (nextOffset.HasValue)
+        {
+            visibleOffsets.Add(nextOffset.Value);
+        }
+    }
+
+    private int? GetNextVisibleOffset(SortedSet<int> visibleOffsets, IEnumerable<int>? availableOffsets, int maximumOffset)
+    {
+        var currentMaxOffset = visibleOffsets.Count == 0 ? 0 : visibleOffsets.Max;
+        var offsets = availableOffsets ?? Enumerable.Range(1, maximumOffset);
+
+        return offsets
+            .Where(offset => offset > currentMaxOffset && offset <= maximumOffset)
+            .Order()
+            .FirstOrDefault() is var nextOffset && nextOffset > 0
+                ? nextOffset
+                : null;
     }
 }
