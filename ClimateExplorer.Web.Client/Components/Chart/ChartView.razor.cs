@@ -46,9 +46,6 @@ public partial class ChartView : IAsyncDisposable
     public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     [Parameter]
-    public Guid? LocationId { get; set; }
-
-    [Parameter]
     public bool ChartAllData { get; set; }
 
     [Parameter]
@@ -223,7 +220,7 @@ public partial class ChartView : IAsyncDisposable
 
             aggregation = chartSeries?.Aggregation ?? SeriesAggregationOptions.Mean;
         }
-        else if (LocationId.HasValue && yearAndDataTypeFilter.DataType.HasValue)
+        else if (Location is not null && yearAndDataTypeFilter.DataType.HasValue)
         {
             var dataMatches = yearAndDataTypeFilter.UnitOfMeasure == UnitOfMeasure.DegreesCelsius
                 ? DataSubstitute.StandardTemperatureDataMatches()
@@ -231,7 +228,7 @@ public partial class ChartView : IAsyncDisposable
 
             var dsd = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
                 DataSetDefinitions!,
-                LocationId.Value,
+                Location.Id,
                 dataMatches,
                 throwIfNoMatch: false);
 
@@ -240,7 +237,7 @@ public partial class ChartView : IAsyncDisposable
                 return;
             }
 
-            var location = GetKnownLocation(LocationId.Value);
+            var location = GetKnownLocation(Location.Id);
             if (location is null)
             {
                 return;
@@ -298,11 +295,11 @@ public partial class ChartView : IAsyncDisposable
 
         if (DataSetDefinitions is not null && Regions is not null)
         {
-            if (LocationId is not null)
+            if (Location is not null)
             {
-                if (InternalLocationId is not null && InternalLocationId != LocationId)
+                if (InternalLocationId is not null && InternalLocationId != Location.Id)
                 {
-                    InternalLocationId = LocationId;
+                    InternalLocationId = Location.Id;
                     await ChangedLocation();
                 }
 
@@ -316,7 +313,7 @@ public partial class ChartView : IAsyncDisposable
                     else if (InternalLocationId is null)
                     {
                         // First time loading a page with a location in the URL. Just add a default chart with temperatute (and probably precipitation) data, so that the user sees something.
-                        InternalLocationId = LocationId;
+                        InternalLocationId = Location.Id;
                         await SetUpLocalDefaultCharts(InternalLocationId.Value);
                     }
                     else if (uri.Query.Contains("chartAllData="))
@@ -569,6 +566,12 @@ public partial class ChartView : IAsyncDisposable
 
     protected async Task ChangedLocation()
     {
+        if (Location is null)
+        {
+            return;
+        }
+
+        var location = Location;
         var additionalCsds = new List<ChartSeriesDefinition>();
 
         // Update data series to reflect new location
@@ -587,13 +590,7 @@ public partial class ChartView : IAsyncDisposable
                     // Furthermore, we only run location change substition for geographical entities that are locations. If it is a region, we skip this.
                     if (csd.SourceSeriesSpecifications.Length == 1 && !Regions!.Any(x => x.Id == sss.LocationId))
                     {
-                        var location = GetKnownLocation(LocationId!.Value);
-                        if (location is null)
-                        {
-                            return;
-                        }
-
-                        sss.LocationId = LocationId.Value;
+                        sss.LocationId = location.Id;
                         sss.LocationName = location.Name;
 
                         var dataMatches = new List<DataSubstitute>
@@ -622,7 +619,7 @@ public partial class ChartView : IAsyncDisposable
                         var dsd =
                             DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
                                 DataSetDefinitions!,
-                                LocationId!.Value,
+                                location.Id,
                                 dataMatches,
                                 throwIfNoMatch: false);
 
@@ -708,8 +705,8 @@ public partial class ChartView : IAsyncDisposable
                                     new SourceSeriesSpecification
                                     {
                                         DataSetDefinition = DataSetDefinitions!.Single(x => x.Id == sss.DataSetDefinition!.Id),
-                                        LocationId = LocationId!.Value,
-                                        LocationName = GetKnownLocation(LocationId.Value)?.Name ?? sss.LocationName,
+                                        LocationId = location.Id,
+                                        LocationName = location.Name,
                                         MeasurementDefinition = newMd,
                                     }
 
