@@ -263,7 +263,7 @@ public partial class Index : ChartablePage
     {
         try
         {
-            await Task.Delay(TimeSpan.FromSeconds(3), cancellationToken);
+            await Task.Delay(TimeSpan.FromSeconds(4), cancellationToken);
 
             await InvokeAsync(
                 async () =>
