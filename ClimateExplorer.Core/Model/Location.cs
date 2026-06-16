@@ -1,6 +1,5 @@
 ﻿namespace ClimateExplorer.Core.Model;
 
-using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;

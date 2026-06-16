@@ -2,7 +2,7 @@ namespace ClimateExplorer.Core.Model;
 
 using static ClimateExplorer.Core.Enums;
 
-public sealed record LatestRecordsResponse
+public sealed record RecentObservationsResponse
 {
     public List<DataRecord> Records { get; set; } = [];
     public DataType? DataType { get; set; }

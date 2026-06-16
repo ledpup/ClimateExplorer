@@ -1,0 +1,126 @@
+.recent-observations-panel {
+    min-height: 20rem;
+}
+
+.recent-observations-body {
+    min-height: 16rem;
+}
+
+.recent-observation-grid {
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 475px));
+    justify-content: start;
+}
+
+.recent-observation-tile-slot {
+    animation: recent-observation-slot-in 180ms ease-out;
+    transition: opacity 180ms ease-out, transform 180ms ease-out;
+    width: 100%;
+}
+
+.recent-observation-control-row {
+    animation: recent-observation-slot-in 180ms ease-out;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    grid-column: 1 / -1;
+}
+
+.recent-observations-threshold {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    max-width: 20rem;
+}
+
+.recent-observations-threshold label {
+    color: #425f59;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.recent-observations-threshold input {
+    width: 5rem;
+}
+
+.recent-observations-threshold span {
+    color: #596f6a;
+    font-weight: 700;
+}
+
+.recent-observations-state {
+    align-items: center;
+    background: #f5f8f7;
+    border: 1px solid #d7e2df;
+    border-radius: 8px;
+    color: #425f59;
+    display: flex;
+    gap: 0.65rem;
+    line-height: 1.35;
+    padding: 1rem;
+}
+
+.recent-observations-state.error {
+    background: #fff5f2;
+    border-color: #edc6ba;
+    color: #743a2b;
+}
+
+.recent-observations-state i {
+    flex-shrink: 0;
+}
+
+.recent-observations-retry {
+    align-items: center;
+    background: #fff;
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    color: inherit;
+    display: inline-flex;
+    gap: 0.4rem;
+    margin-left: auto;
+    padding: 0.35rem 0.55rem;
+}
+
+.recent-observations-retry:hover {
+    background: rgb(255 255 255 / 70%);
+}
+
+@keyframes recent-observation-slot-in {
+    from {
+        opacity: 0;
+        transform: translateY(0.35rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .recent-observation-tile-slot,
+    .recent-observation-control-row {
+        animation: none;
+        transition: none;
+    }
+}
+
+@media (max-width: 520px) {
+    .recent-observations-threshold {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .recent-observations-state {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .recent-observations-retry {
+        margin-left: 0;
+    }
+}
