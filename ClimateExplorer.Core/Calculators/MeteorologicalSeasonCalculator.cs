@@ -46,6 +46,11 @@ public static class MeteorologicalSeasonCalculator
         return GetCurrentSeason(date, latitude) with { EndDate = date };
     }
 
+    public static bool IsCurrentSeasonToDateMeaningful(DateOnly date)
+    {
+        return date >= GetCurrentSeasonStartDate(date).AddMonths(1);
+    }
+
     public static IReadOnlyList<MeteorologicalSeasonPeriod> GetPreviousSeasons(DateOnly date, double latitude, int count)
     {
         var periods = new List<MeteorologicalSeasonPeriod>();

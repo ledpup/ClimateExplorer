@@ -225,10 +225,9 @@ public sealed class RecentObservationsService : IRecentObservationsService
                 previousMonth.Offset);
         }
 
-        var currentSeason = MeteorologicalSeasonCalculator.GetCurrentSeason(today, latitude);
-        if (latestDate >= currentSeason.StartDate && latestDate <= currentSeason.EndDate)
+        var currentSeasonToDate = GetCurrentSeasonToDatePeriod(today, latitude, latestDate);
+        if (currentSeasonToDate is not null)
         {
-            var currentSeasonToDate = currentSeason with { EndDate = latestDate };
             var currentSeasonRecords = GetRecordsInRange(daily, x => x.Date, currentSeasonToDate.StartDate, currentSeasonToDate.EndDate);
             AddTemperatureRangePeriod(
                 periods,
@@ -305,10 +304,9 @@ public sealed class RecentObservationsService : IRecentObservationsService
                 previousMonth.Offset);
         }
 
-        var currentSeason = MeteorologicalSeasonCalculator.GetCurrentSeason(today, latitude);
-        if (latestDate >= currentSeason.StartDate && latestDate <= currentSeason.EndDate)
+        var currentSeasonToDate = GetCurrentSeasonToDatePeriod(today, latitude, latestDate);
+        if (currentSeasonToDate is not null)
         {
-            var currentSeasonToDate = currentSeason with { EndDate = latestDate };
             var currentSeasonRecords = GetRecordsInRange(daily, x => x.Date, currentSeasonToDate.StartDate, currentSeasonToDate.EndDate);
             AddPrecipitationRangePeriod(
                 periods,
@@ -343,6 +341,19 @@ public sealed class RecentObservationsService : IRecentObservationsService
         }
 
         return periods;
+    }
+
+    private static MeteorologicalSeasonPeriod? GetCurrentSeasonToDatePeriod(DateOnly today, double latitude, DateOnly latestDate)
+    {
+        if (!MeteorologicalSeasonCalculator.IsCurrentSeasonToDateMeaningful(today))
+        {
+            return null;
+        }
+
+        var currentSeason = MeteorologicalSeasonCalculator.GetCurrentSeason(today, latitude);
+        return latestDate >= currentSeason.StartDate && latestDate <= currentSeason.EndDate
+            ? currentSeason with { EndDate = latestDate }
+            : null;
     }
 
     private static PeriodObservation CreateTemperatureDailyPeriod(string title, DailyTemperature record, int periodOffset)
