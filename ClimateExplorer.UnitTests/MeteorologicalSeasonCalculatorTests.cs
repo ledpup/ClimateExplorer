@@ -56,6 +56,34 @@ public class MeteorologicalSeasonCalculatorTests
     }
 
     [TestMethod]
+    [DataRow(2026, 3, 1)]
+    [DataRow(2026, 3, 31)]
+    [DataRow(2026, 6, 1)]
+    [DataRow(2026, 6, 30)]
+    [DataRow(2026, 9, 1)]
+    [DataRow(2026, 9, 30)]
+    [DataRow(2026, 12, 1)]
+    [DataRow(2026, 12, 31)]
+    public void IsCurrentSeasonToDateMeaningfulReturnsFalseDuringFirstSeasonMonth(int year, int month, int day)
+    {
+        Assert.IsFalse(MeteorologicalSeasonCalculator.IsCurrentSeasonToDateMeaningful(new DateOnly(year, month, day)));
+    }
+
+    [TestMethod]
+    [DataRow(2026, 4, 1)]
+    [DataRow(2026, 5, 31)]
+    [DataRow(2026, 7, 1)]
+    [DataRow(2026, 8, 31)]
+    [DataRow(2026, 10, 1)]
+    [DataRow(2026, 11, 30)]
+    [DataRow(2027, 1, 1)]
+    [DataRow(2027, 2, 28)]
+    public void IsCurrentSeasonToDateMeaningfulReturnsTrueDuringSecondAndThirdSeasonMonths(int year, int month, int day)
+    {
+        Assert.IsTrue(MeteorologicalSeasonCalculator.IsCurrentSeasonToDateMeaningful(new DateOnly(year, month, day)));
+    }
+
+    [TestMethod]
     public void GetPreviousSeasonsReturnsNewestToOldest()
     {
         var seasons = MeteorologicalSeasonCalculator.GetPreviousSeasons(new DateOnly(2026, 6, 14), -35.3d, 3);
