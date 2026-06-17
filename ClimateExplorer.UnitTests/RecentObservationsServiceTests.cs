@@ -532,6 +532,109 @@ public class RecentObservationsServiceTests
     }
 
     [TestMethod]
+    public async Task CalculatePrecipitationRecordsWithDifferentOptionsDoesNotFetchAgain()
+    {
+        var location = CreateSouthernHemisphereLocation();
+        var dataService = new Mock<IDataService>();
+        SetupEmptyClimateRecords(dataService);
+        dataService
+            .Setup(x => x.GetRecentObservations(LocationId, DataType.Precipitation, false))
+            .ReturnsAsync(new RecentObservationsResponse
+            {
+                IsSupported = true,
+                Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14)),
+            });
+        var service = CreateRecentObservationsService(dataService);
+
+        var dataSet = await service.LoadPrecipitationData(location);
+
+        _ = service.Calculate(
+            location,
+            dataSet,
+            new RecentObservationsOptions
+            {
+                ReferenceDate = new DateOnly(2026, 6, 14),
+                ComparisonEndMode = ComparisonEndMode.FullDataset,
+                PreviousDayCount = 1,
+                PreviousMonthCount = 0,
+                PreviousSeasonCount = 0,
+            });
+        var recalculated = service.Calculate(
+            location,
+            dataSet,
+            new RecentObservationsOptions
+            {
+                ReferenceDate = new DateOnly(2026, 6, 7),
+                ComparisonEndMode = ComparisonEndMode.ReferenceDate,
+                PreviousDayCount = 2,
+                PreviousMonthCount = 0,
+                PreviousSeasonCount = 0,
+            });
+
+        Assert.AreEqual(new DateOnly(2026, 6, 7), recalculated.ReferenceDate);
+        dataService.Verify(x => x.GetRecentObservations(LocationId, DataType.Precipitation, false), Times.Once);
+        dataService.Verify(
+            x => x.GetClimateRecords(
+                LocationId,
+                DataType.Precipitation,
+                null,
+                false,
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                false,
+                It.IsAny<int?>()),
+            Times.Once);
+    }
+
+    [TestMethod]
+    public async Task LoadPrecipitationDataCachesByLocation()
+    {
+        var otherLocationId = Guid.Parse("46b814ed-6e56-47e2-92ca-097526b84d4d");
+        var dataService = new Mock<IDataService>();
+        SetupEmptyClimateRecords(dataService);
+        dataService
+            .Setup(x => x.GetRecentObservations(It.IsAny<Guid>(), DataType.Precipitation, false))
+            .ReturnsAsync(new RecentObservationsResponse
+            {
+                IsSupported = true,
+                Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14)),
+            });
+        var service = CreateRecentObservationsService(dataService);
+
+        await service.LoadPrecipitationData(CreateSouthernHemisphereLocation());
+        await service.LoadPrecipitationData(CreateSouthernHemisphereLocation());
+        await service.LoadPrecipitationData(CreateSouthernHemisphereLocation(otherLocationId));
+
+        dataService.Verify(x => x.GetRecentObservations(LocationId, DataType.Precipitation, false), Times.Once);
+        dataService.Verify(x => x.GetRecentObservations(otherLocationId, DataType.Precipitation, false), Times.Once);
+        dataService.Verify(
+            x => x.GetClimateRecords(
+                LocationId,
+                DataType.Precipitation,
+                null,
+                false,
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                false,
+                It.IsAny<int?>()),
+            Times.Once);
+        dataService.Verify(
+            x => x.GetClimateRecords(
+                otherLocationId,
+                DataType.Precipitation,
+                null,
+                false,
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                false,
+                It.IsAny<int?>()),
+            Times.Once);
+    }
+
+    [TestMethod]
     public async Task GetPrecipitationRecordsComparesGeneratedDaysAgainstHistoricalSameCalendarDate()
     {
         var dayLabel = new DateOnly(2026, 6, 13).ToString("d MMM", CultureInfo.CurrentCulture);
@@ -1560,8 +1663,8 @@ public class RecentObservationsServiceTests
         var currentDate = today ?? new DateOnly(2026, 6, 14);
 
         return new RecentObservationsService(
-            dataService.Object,
-            new FixedTimeProvider(new DateTimeOffset(currentDate.Year, currentDate.Month, currentDate.Day, 12, 0, 0, TimeSpan.Zero)));
+            new RecentObservationsDataProvider(dataService.Object),
+            new RecentObservationsCalculator(new FixedTimeProvider(new DateTimeOffset(currentDate.Year, currentDate.Month, currentDate.Day, 12, 0, 0, TimeSpan.Zero))));
     }
 
     private static ClimateRecordsResponse CreateClimateRecordsResponse(DataType dataType, DataAdjustment? dataAdjustment, List<DataRecord> records)
@@ -1662,6 +1765,13 @@ public class RecentObservationsServiceTests
     private static Location CreateSouthernHemisphereLocation()
     {
         return CreateLocation(-35.3d);
+    }
+
+    private static Location CreateSouthernHemisphereLocation(Guid locationId)
+    {
+        var location = CreateLocation(-35.3d);
+        location.Id = locationId;
+        return location;
     }
 
     private static Location CreateLocation(double latitude)

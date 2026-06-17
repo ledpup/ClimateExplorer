@@ -84,8 +84,14 @@ public partial class RecentObservationsPanel
         }
 
         var state = GetState(tab);
-        if (state.IsLoaded || state.IsLoading)
+        if (state.IsLoading)
         {
+            return;
+        }
+
+        if (state.DataSet is not null)
+        {
+            RecalculateTab(tab, updateSelectedReferenceDate: tab == ActiveTab);
             return;
         }
 
@@ -94,30 +100,13 @@ public partial class RecentObservationsPanel
 
         try
         {
-            state.Result = tab switch
+            state.DataSet = tab switch
             {
-                RecentObservationsTab.Temperature => await RecentObservationsService.GetTemperatureRecords(
-                    Location,
-                    RecentObservationPeriodSelection.MaximumPreviousDayCount,
-                    RecentObservationPeriodSelection.MaximumPreviousMonthCount,
-                    RecentObservationPeriodSelection.MaximumPreviousSeasonCount,
-                    selectedReferenceDate,
-                    selectedComparisonEndMode),
-                RecentObservationsTab.Precipitation => await RecentObservationsService.GetPrecipitationRecords(
-                    Location,
-                    RecentObservationPeriodSelection.MaximumPreviousDayCount,
-                    RecentObservationPeriodSelection.MaximumPreviousMonthCount,
-                    RecentObservationPeriodSelection.MaximumPreviousSeasonCount,
-                    selectedReferenceDate,
-                    selectedComparisonEndMode),
+                RecentObservationsTab.Temperature => await RecentObservationsService.LoadTemperatureData(Location),
+                RecentObservationsTab.Precipitation => await RecentObservationsService.LoadPrecipitationData(Location),
                 _ => throw new NotImplementedException(),
             };
-            if (state.Result.ReferenceDate.HasValue)
-            {
-                selectedReferenceDate = state.Result.ReferenceDate;
-            }
-
-            state.IsLoaded = true;
+            RecalculateTab(tab, updateSelectedReferenceDate: tab == ActiveTab);
         }
         catch (Exception ex)
         {
@@ -169,8 +158,7 @@ public partial class RecentObservationsPanel
 
         selectedReferenceDate = referenceDate;
         periodSelection.Reset();
-        temperatureState.Reset();
-        precipitationState.Reset();
+        RecalculateLoadedTabs();
 
         await EnsureTabLoaded(ActiveTab);
     }
@@ -183,10 +171,50 @@ public partial class RecentObservationsPanel
         }
 
         selectedComparisonEndMode = comparisonEndMode;
-        temperatureState.Reset();
-        precipitationState.Reset();
+        RecalculateLoadedTabs();
 
         await EnsureTabLoaded(ActiveTab);
+    }
+
+    private void RecalculateLoadedTabs()
+    {
+        RecalculateTab(RecentObservationsTab.Temperature, updateSelectedReferenceDate: ActiveTab == RecentObservationsTab.Temperature);
+        RecalculateTab(RecentObservationsTab.Precipitation, updateSelectedReferenceDate: ActiveTab == RecentObservationsTab.Precipitation);
+    }
+
+    private void RecalculateTab(RecentObservationsTab tab, bool updateSelectedReferenceDate)
+    {
+        if (Location is null)
+        {
+            return;
+        }
+
+        var state = GetState(tab);
+        if (state.DataSet is null)
+        {
+            return;
+        }
+
+        state.Result = RecentObservationsService.Calculate(Location, state.DataSet, CreateOptions());
+        if (updateSelectedReferenceDate && state.Result.ReferenceDate.HasValue)
+        {
+            selectedReferenceDate = state.Result.ReferenceDate;
+        }
+
+        state.IsLoaded = true;
+    }
+
+    private RecentObservationsOptions CreateOptions()
+    {
+        return new RecentObservationsOptions
+        {
+            ReferenceDate = selectedReferenceDate,
+            ComparisonEndMode = selectedComparisonEndMode,
+            CompletenessThreshold = completenessThreshold,
+            PreviousDayCount = RecentObservationPeriodSelection.MaximumPreviousDayCount,
+            PreviousMonthCount = RecentObservationPeriodSelection.MaximumPreviousMonthCount,
+            PreviousSeasonCount = RecentObservationPeriodSelection.MaximumPreviousSeasonCount,
+        };
     }
 
     private string FormatDateInput(DateOnly? date)
@@ -272,6 +300,7 @@ public partial class RecentObservationsPanel
         public bool IsLoading { get; set; }
         public bool IsLoaded { get; set; }
         public string? ErrorMessage { get; set; }
+        public RecentObservationsDataSet? DataSet { get; set; }
         public RecentObservationsTabResult? Result { get; set; }
 
         public void Reset()
@@ -279,6 +308,7 @@ public partial class RecentObservationsPanel
             IsLoading = false;
             IsLoaded = false;
             ErrorMessage = null;
+            DataSet = null;
             Result = null;
         }
     }
