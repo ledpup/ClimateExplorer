@@ -9,7 +9,6 @@ using ClimateExplorer.Web.Client.UiModel;
 public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 {
     private const int LatestSevenDaysLength = 7;
-    private const int MinimumHistoricalPeriods = 20;
     private const double MinimumHistoricalCoverage = 0.9d;
 
     private readonly TimeProvider timeProvider;
@@ -77,6 +76,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             history,
             options.ReferenceDate,
             options.ComparisonEndMode,
+            options.MinimumRankSampleSize,
             options.PreviousDayCount,
             options.PreviousMonthCount,
             options.PreviousSeasonCount,
@@ -106,6 +106,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             new HistoricalDailySeries(daily, GetStartYear(daily)),
             options.ReferenceDate,
             options.ComparisonEndMode,
+            options.MinimumRankSampleSize,
             options.PreviousDayCount,
             options.PreviousMonthCount,
             options.PreviousSeasonCount,
@@ -120,6 +121,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         HistoricalDailySeries history,
         DateOnly? requestedReferenceDate,
         ComparisonEndMode comparisonEndMode,
+        int minimumRankSampleSize,
         int previousDayCount,
         int previousMonthCount,
         int previousSeasonCount,
@@ -129,6 +131,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         previousDayCount = Math.Clamp(previousDayCount, RecentObservationPeriodSelection.DefaultPreviousDayCount, RecentObservationPeriodSelection.MaximumPreviousDayCount);
         previousMonthCount = Math.Clamp(previousMonthCount, 0, RecentObservationPeriodSelection.MaximumPreviousMonthCount);
         previousSeasonCount = Math.Clamp(previousSeasonCount, 0, RecentObservationPeriodSelection.MaximumPreviousSeasonCount);
+        minimumRankSampleSize = Math.Max(1, minimumRankSampleSize);
 
         var referenceDate = ResolveReferenceDate(daily, requestedReferenceDate);
         if (referenceDate.ReferenceDate is null)
@@ -177,7 +180,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 
         foreach (var period in periods)
         {
-            var distributions = GetHistoricalDistributions(history, period, domain.AllMetrics, comparisonEndMode);
+            var distributions = GetHistoricalDistributions(history, period, domain.AllMetrics, comparisonEndMode, minimumRankSampleSize);
             tiles.Add(BuildTile(period, domain, distributions));
         }
 
@@ -482,18 +485,20 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         HistoricalDailySeries history,
         PeriodObservation period,
         IReadOnlyList<Metric> metrics,
-        ComparisonEndMode comparisonEndMode)
+        ComparisonEndMode comparisonEndMode,
+        int minimumRankSampleSize)
     {
         return period.ComparisonMode == PeriodComparisonMode.DailyDate
-            ? GetHistoricalDailyDateDistributions(history, period, metrics, comparisonEndMode)
-            : GetHistoricalDailyRangeDistributions(history, period, metrics, comparisonEndMode);
+            ? GetHistoricalDailyDateDistributions(history, period, metrics, comparisonEndMode, minimumRankSampleSize)
+            : GetHistoricalDailyRangeDistributions(history, period, metrics, comparisonEndMode, minimumRankSampleSize);
     }
 
     private static IReadOnlyDictionary<string, HistoricalValues> GetHistoricalDailyDateDistributions(
         HistoricalDailySeries history,
         PeriodObservation period,
         IReadOnlyList<Metric> metrics,
-        ComparisonEndMode comparisonEndMode)
+        ComparisonEndMode comparisonEndMode,
+        int minimumRankSampleSize)
     {
         var sameDate = history.Records
             .Where(x => x.Date.Month == period.StartDate.Month &&
@@ -510,9 +515,11 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
                 .Where(x => x.Value.HasValue)
                 .ToList();
 
-            result[metric.Key] = values.Count >= MinimumHistoricalPeriods
-                ? new HistoricalValues(values, history.StartYear, null)
-                : HistoricalValues.Unavailable("Not enough historical daily records are available for this date.");
+            result[metric.Key] = new HistoricalValues(
+                values,
+                history.StartYear,
+                values.Count == 0 ? "No comparable historical records are available for this date." : null,
+                minimumRankSampleSize);
         }
 
         return result;
@@ -522,7 +529,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         HistoricalDailySeries history,
         PeriodObservation period,
         IReadOnlyList<Metric> metrics,
-        ComparisonEndMode comparisonEndMode)
+        ComparisonEndMode comparisonEndMode,
+        int minimumRankSampleSize)
     {
         // Group the equivalent historical years once, then compute every metric's
         // aggregate inside the cached groups (single pass over the history).
@@ -560,9 +568,11 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
                 }
             }
 
-            result[metric.Key] = values.Count >= MinimumHistoricalPeriods
-                ? new HistoricalValues(values, history.StartYear, null)
-                : HistoricalValues.Unavailable("Not enough equivalent historical daily periods are available.");
+            result[metric.Key] = new HistoricalValues(
+                values,
+                history.StartYear,
+                values.Count == 0 ? "No comparable historical periods are available for this date range." : null,
+                minimumRankSampleSize);
         }
 
         return result;
@@ -615,7 +625,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             stats.Add(new RecentObservationStatViewModel { Label = "Anomaly", Value = FormatAnomaly(ranking.Anomaly, domain.Primary) });
         }
 
-        var historicalContext = ranking is null ? null : CreateHistoricalContextLabel(period);
+        var showHistoricalRange = ranking is not null && historicalValues.CanShowHistoricalRange;
+        var historicalContext = showHistoricalRange ? CreateHistoricalContextLabel(period) : null;
         var metricGroupLabel = CreateMetricGroupLabel(period);
         var showMin = domain.ShowHistoricalMin;
 
@@ -627,26 +638,129 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             PeriodEndDate = period.EndDate,
             PeriodTitle = period.Title,
             MetricGroupLabel = metricGroupLabel,
-            Headline = ranking is null ? "Comparison unavailable" : domain.BuildHeadline(period.ComparisonLabel, ranking),
-            PercentileSentence = ranking is null
-                ? historicalValues.UnavailableReason ?? "Not enough historical data is available for this comparison."
-                : domain.BuildPercentileSentence(period.ComparisonLabelPlural, historicalValues.StartYear, ranking),
+            Headline = BuildTileHeadline(period, domain, historicalValues, ranking),
+            PercentileSentence = BuildPercentileSentence(period, domain, historicalValues, ranking),
             PrimaryLabel = domain.PrimaryLabel,
             PrimaryValue = domain.Primary.Format(primaryValue),
-            HistoricalMaxLabel = ranking is null ? null : $"{domain.HistoricalMaxWord} {historicalContext}",
-            HistoricalMaxValue = ranking is null ? null : domain.Primary.Format(ranking.HistoricalMax),
-            HistoricalMaxOccurred = FormatHistoricalOccurrence(historicalValues.MaxValue),
-            HistoricalMinLabel = ranking is null || !showMin ? null : $"{domain.HistoricalMinWord} {historicalContext}",
-            HistoricalMinValue = ranking is null || !showMin ? null : domain.Primary.Format(ranking.HistoricalMin),
-            HistoricalMinOccurred = showMin ? FormatHistoricalOccurrence(historicalValues.MinValue) : null,
+            HistoricalMaxLabel = showHistoricalRange ? $"{domain.HistoricalMaxWord} {historicalContext}" : null,
+            HistoricalMaxValue = showHistoricalRange ? domain.Primary.Format(ranking!.HistoricalMax) : null,
+            HistoricalMaxOccurred = showHistoricalRange ? FormatHistoricalOccurrence(historicalValues.MaxValue) : null,
+            HistoricalMinLabel = showHistoricalRange && showMin ? $"{domain.HistoricalMinWord} {historicalContext}" : null,
+            HistoricalMinValue = showHistoricalRange && showMin ? domain.Primary.Format(ranking!.HistoricalMin) : null,
+            HistoricalMinOccurred = showHistoricalRange && showMin ? FormatHistoricalOccurrence(historicalValues.MinValue) : null,
             HasComparison = ranking is not null,
             Tone = domain.GetTone(ranking),
-            Note = period.Note,
+            Note = CombineNotes(period.Note, BuildLimitedHistoryNote(period, historicalValues, ranking)),
             Stats = stats,
             MetricGroups = BuildMetricGroups(period, domain, distributions, metricGroupLabel),
+            ComparablePeriodCount = historicalValues.ComparablePeriodCount,
+            CanShowHistoricalRecord = historicalValues.CanShowHistoricalRecord,
+            CanShowHistoricalRange = historicalValues.CanShowHistoricalRange,
+            CanShowRank = historicalValues.CanShowRank,
+            CanShowPercentile = historicalValues.CanShowPercentile,
             AvailableObservationCount = period.Completeness.AvailableObservationCount,
             ExpectedObservationCount = period.Completeness.ExpectedObservationCount,
         };
+    }
+
+    private static string BuildTileHeadline(
+        PeriodObservation period,
+        MetricDomain domain,
+        HistoricalValues historicalValues,
+        RecentObservationComparisonResult? ranking)
+    {
+        if (ranking is null)
+        {
+            return "Comparison unavailable";
+        }
+
+        return historicalValues.CanShowRank
+            ? domain.BuildHeadline(period.ComparisonLabel, ranking)
+            : BuildLimitedSampleHeadline(period, domain, ranking);
+    }
+
+    private static string BuildLimitedSampleHeadline(
+        PeriodObservation period,
+        MetricDomain domain,
+        RecentObservationComparisonResult ranking)
+    {
+        var sampleLabel = CreateComparableSampleLabel(period);
+
+        if (ranking.IsNewHighRecord)
+        {
+            return $"{domain.HistoricalMaxWord} of {ranking.ComparableCount} {sampleLabel}";
+        }
+
+        if (ranking.IsNewLowRecord)
+        {
+            return $"{domain.HistoricalMinWord} of {ranking.ComparableCount} {sampleLabel}";
+        }
+
+        if (ranking.IsTiedHighRecord && ranking.HighRank == 1)
+        {
+            return $"Equal {LowerFirst(domain.HistoricalMaxWord)} of {ranking.ComparableCount} {sampleLabel}";
+        }
+
+        if (ranking.IsTiedLowRecord && ranking.LowRank == 1)
+        {
+            return $"Equal {LowerFirst(domain.HistoricalMinWord)} of {ranking.ComparableCount} {sampleLabel}";
+        }
+
+        return "Limited historical comparison";
+    }
+
+    private static string BuildPercentileSentence(
+        PeriodObservation period,
+        MetricDomain domain,
+        HistoricalValues historicalValues,
+        RecentObservationComparisonResult? ranking)
+    {
+        if (ranking is null)
+        {
+            return historicalValues.UnavailableReason ?? "No comparable historical data is available for this comparison.";
+        }
+
+        return historicalValues.CanShowPercentile
+            ? domain.BuildPercentileSentence(period.ComparisonLabelPlural, historicalValues.StartYear, ranking)
+            : $"Ranking unavailable: only {FormatHistoricalSampleCount(historicalValues.ComparablePeriodCount, period)}.";
+    }
+
+    private static string? BuildLimitedHistoryNote(
+        PeriodObservation period,
+        HistoricalValues historicalValues,
+        RecentObservationComparisonResult? ranking)
+    {
+        return ranking is not null && !historicalValues.CanShowRank
+            ? $"Limited history: comparison based on {FormatHistoricalSampleCount(historicalValues.ComparablePeriodCount, period)}."
+            : null;
+    }
+
+    private static string? CombineNotes(string? first, string? second)
+    {
+        if (string.IsNullOrWhiteSpace(first))
+        {
+            return string.IsNullOrWhiteSpace(second) ? null : second;
+        }
+
+        if (string.IsNullOrWhiteSpace(second) || first.Contains(second, StringComparison.Ordinal))
+        {
+            return first;
+        }
+
+        return $"{first} {second}";
+    }
+
+    private static string FormatHistoricalSampleCount(int count, PeriodObservation period)
+    {
+        var noun = period.ComparisonMode == PeriodComparisonMode.DailyDate ? "year" : "period";
+        return $"{count} comparable {Pluralize(noun, count)}";
+    }
+
+    private static string CreateComparableSampleLabel(PeriodObservation period)
+    {
+        return period.ComparisonMode == PeriodComparisonMode.DailyDate
+            ? $"comparable {FormatShortDayMonth(period.StartDate)} observations"
+            : "comparable periods";
     }
 
     private static IReadOnlyList<RecentObservationMetricGroupViewModel> BuildMetricGroups(
@@ -699,6 +813,11 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             {
                 Label = metric.DetailLabel,
                 CurrentValue = metric.Format(currentValue),
+                ComparablePeriodCount = distribution?.ComparablePeriodCount ?? 0,
+                CanShowHistoricalRecord = distribution?.CanShowHistoricalRecord ?? false,
+                CanShowHistoricalRange = distribution?.CanShowHistoricalRange ?? false,
+                CanShowRank = distribution?.CanShowRank ?? false,
+                CanShowPercentile = distribution?.CanShowPercentile ?? false,
             };
         }
 
@@ -712,10 +831,15 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             Label = metric.DetailLabel,
             CurrentValue = metric.Format(currentValue),
             RecordStatus = status,
-            RecordStatusText = FormatRecordStatus(status),
-            RankText = BuildRankText(ranking, status),
-            RecordHigh = BuildRecordReference(metric, "Record high", ranking.HistoricalMax, distribution.MaxValue),
-            RecordLow = BuildRecordReference(metric, "Record low", ranking.HistoricalMin, distribution.MinValue),
+            RecordStatusText = FormatRecordStatus(status, ranking, distribution),
+            RankText = distribution.CanShowRank ? BuildRankText(ranking, status) : null,
+            RecordHigh = distribution.CanShowHistoricalRange ? BuildRecordReference(metric, "Record high", ranking.HistoricalMax, distribution.MaxValue) : null,
+            RecordLow = distribution.CanShowHistoricalRange ? BuildRecordReference(metric, "Record low", ranking.HistoricalMin, distribution.MinValue) : null,
+            ComparablePeriodCount = distribution.ComparablePeriodCount,
+            CanShowHistoricalRecord = distribution.CanShowHistoricalRecord,
+            CanShowHistoricalRange = distribution.CanShowHistoricalRange,
+            CanShowRank = distribution.CanShowRank,
+            CanShowPercentile = distribution.CanShowPercentile,
         };
     }
 
@@ -747,14 +871,43 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         };
     }
 
-    private static string? FormatRecordStatus(RecentObservationRecordStatus status)
+    private static string? FormatRecordStatus(
+        RecentObservationRecordStatus status,
+        RecentObservationComparisonResult ranking,
+        HistoricalValues distribution)
     {
+        if (status == RecentObservationRecordStatus.None)
+        {
+            return null;
+        }
+
+        if (!distribution.CanShowRank)
+        {
+            var direction = GetRecordDirectionWord(ranking);
+            return status switch
+            {
+                RecentObservationRecordStatus.NewRecord => $"New {direction} of {ranking.ComparableCount}",
+                RecentObservationRecordStatus.EqualRecord => $"Equal {direction} of {ranking.ComparableCount}",
+                _ => null,
+            };
+        }
+
         return status switch
         {
             RecentObservationRecordStatus.NewRecord => "New record",
             RecentObservationRecordStatus.EqualRecord => "Equal record",
             _ => null,
         };
+    }
+
+    private static string GetRecordDirectionWord(RecentObservationComparisonResult ranking)
+    {
+        if (ranking.IsNewHighRecord || (ranking.IsTiedHighRecord && ranking.HighRank == 1))
+        {
+            return "high";
+        }
+
+        return "low";
     }
 
     private static RecentObservationTileTone GetTemperatureTone(RecentObservationComparisonResult? ranking)
@@ -1051,6 +1204,18 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         return value?.Year?.ToString(CultureInfo.InvariantCulture);
     }
 
+    private static string Pluralize(string singular, int count)
+    {
+        return count == 1 ? singular : $"{singular}s";
+    }
+
+    private static string LowerFirst(string value)
+    {
+        return string.IsNullOrEmpty(value)
+            ? value
+            : value[..1].ToLower(CultureInfo.InvariantCulture) + value[1..];
+    }
+
     private static readonly Metric MeanTemperatureMetric = new(
         "temp.mean",
         "Mean temp",
@@ -1296,26 +1461,35 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 
     private sealed record PreviousDayPeriod<TRecord>(TRecord Record, string Title, int Offset);
 
-    private sealed record HistoricalValues(List<HistoricalPeriodValue> PeriodValues, int? StartYear, string? UnavailableReason)
+    private sealed record HistoricalValues(
+        List<HistoricalPeriodValue> PeriodValues,
+        int? StartYear,
+        string? UnavailableReason,
+        int MinimumRankSampleSize)
     {
         public List<double?> Values => [.. PeriodValues.Select(x => x.Value)];
 
+        public int ComparablePeriodCount => PeriodValues.Count(x => x.Value.HasValue && double.IsFinite(x.Value.Value));
+
+        public bool CanShowHistoricalRecord => ComparablePeriodCount >= 1;
+
+        public bool CanShowHistoricalRange => ComparablePeriodCount >= 2;
+
+        public bool CanShowRank => ComparablePeriodCount >= MinimumRankSampleSize;
+
+        public bool CanShowPercentile => CanShowRank;
+
         public HistoricalPeriodValue? MaxValue => PeriodValues
-            .Where(x => x.Value.HasValue)
+            .Where(x => x.Value.HasValue && double.IsFinite(x.Value.Value))
             .OrderByDescending(x => x.Value!.Value)
             .ThenBy(x => x.Year)
             .FirstOrDefault();
 
         public HistoricalPeriodValue? MinValue => PeriodValues
-            .Where(x => x.Value.HasValue)
+            .Where(x => x.Value.HasValue && double.IsFinite(x.Value.Value))
             .OrderBy(x => x.Value!.Value)
             .ThenBy(x => x.Year)
             .FirstOrDefault();
-
-        public static HistoricalValues Unavailable(string reason)
-        {
-            return new HistoricalValues([], null, reason);
-        }
     }
 
     private sealed record HistoricalPeriodValue(double? Value, short? Year);

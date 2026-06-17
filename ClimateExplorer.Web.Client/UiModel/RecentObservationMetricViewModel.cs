@@ -26,6 +26,12 @@ public sealed record RecentObservationMetricViewModel
     public RecentObservationMetricRecordViewModel? RecordHigh { get; init; }
     public RecentObservationMetricRecordViewModel? RecordLow { get; init; }
 
+    public int ComparablePeriodCount { get; init; }
+    public bool CanShowHistoricalRecord { get; init; }
+    public bool CanShowHistoricalRange { get; init; }
+    public bool CanShowRank { get; init; }
+    public bool CanShowPercentile { get; init; }
+
     public bool HasRecords => RecordHigh is not null || RecordLow is not null;
 
     /// <summary>The available record ends in display order (high then low).</summary>

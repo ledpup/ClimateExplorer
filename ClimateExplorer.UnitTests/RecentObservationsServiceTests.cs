@@ -391,7 +391,193 @@ public class RecentObservationsServiceTests
         Assert.AreEqual(new DateOnly(2025, 12, 31), result.ReferenceDate);
         Assert.AreEqual("7mm", latestSevenDays.PrimaryValue);
         Assert.IsFalse(latestSevenDays.HasComparison);
-        Assert.AreEqual("Not enough equivalent historical daily periods are available.", latestSevenDays.PercentileSentence);
+        Assert.AreEqual(0, latestSevenDays.ComparablePeriodCount);
+        Assert.IsFalse(latestSevenDays.CanShowHistoricalRecord);
+        Assert.IsFalse(latestSevenDays.CanShowHistoricalRange);
+        Assert.IsFalse(latestSevenDays.CanShowRank);
+        Assert.IsFalse(latestSevenDays.CanShowPercentile);
+        Assert.AreEqual("No comparable historical periods are available for this date range.", latestSevenDays.PercentileSentence);
+    }
+
+    [TestMethod]
+    public async Task DailyPrecipitationTileShowsLimitedComparisonWithOneHistoricalYear()
+    {
+        var day = new DateOnly(2026, 6, 14);
+        var dayLabel = day.ToString("d MMM", CultureInfo.CurrentCulture);
+        var historicalRecords = CreateHistoricalSameDateRecords(day, startYear: 2025, endYear: 2025, valueOffset: 4d);
+        var service = CreateService(historicalRecords: historicalRecords);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var daily = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Daily);
+        var total = daily.MetricGroups.Single().Metrics.Single();
+
+        Assert.AreEqual("1mm", daily.PrimaryValue);
+        Assert.IsTrue(daily.HasComparison);
+        Assert.AreEqual(1, daily.ComparablePeriodCount);
+        Assert.IsTrue(daily.CanShowHistoricalRecord);
+        Assert.IsFalse(daily.CanShowHistoricalRange);
+        Assert.IsFalse(daily.CanShowRank);
+        Assert.IsFalse(daily.CanShowPercentile);
+        Assert.AreEqual($"Driest of 2 comparable {dayLabel} observations", daily.Headline);
+        Assert.AreEqual("Ranking unavailable: only 1 comparable year.", daily.PercentileSentence);
+        Assert.AreEqual("Limited history: comparison based on 1 comparable year.", daily.Note);
+        Assert.IsNull(daily.HistoricalMaxLabel);
+        Assert.AreEqual(RecentObservationRecordStatus.NewRecord, total.RecordStatus);
+        Assert.AreEqual("New low of 2", total.RecordStatusText);
+        Assert.IsFalse(total.HasRecords);
+        Assert.IsFalse(total.CanShowHistoricalRange);
+    }
+
+    [TestMethod]
+    public async Task DailyTemperatureTileShowsHistoricalRangeWithTwoComparableYears()
+    {
+        var day = new DateOnly(2026, 6, 14);
+        var dayLabel = day.ToString("d MMM", CultureInfo.CurrentCulture);
+        var historicalRecords = CreateHistoricalSameDateRecords(day, startYear: 2024, endYear: 2025, valueOffset: 12d);
+        var service = CreateTemperatureService(historicalRecords);
+
+        var result = await service.GetTemperatureRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var daily = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Daily);
+
+        Assert.AreEqual("15.0°C", daily.PrimaryValue);
+        Assert.IsTrue(daily.HasComparison);
+        Assert.AreEqual(2, daily.ComparablePeriodCount);
+        Assert.IsTrue(daily.CanShowHistoricalRecord);
+        Assert.IsTrue(daily.CanShowHistoricalRange);
+        Assert.IsFalse(daily.CanShowRank);
+        Assert.IsFalse(daily.CanShowPercentile);
+        Assert.AreEqual($"Warmest of 3 comparable {dayLabel} observations", daily.Headline);
+        Assert.AreEqual("Ranking unavailable: only 2 comparable years.", daily.PercentileSentence);
+        Assert.AreEqual("Limited history: comparison based on 2 comparable years.", daily.Note);
+        Assert.AreEqual($"Warmest {dayLabel}", daily.HistoricalMaxLabel);
+        Assert.AreEqual("14.0°C", daily.HistoricalMaxValue);
+        Assert.AreEqual($"Coolest {dayLabel}", daily.HistoricalMinLabel);
+        Assert.AreEqual("13.0°C", daily.HistoricalMinValue);
+    }
+
+    [TestMethod]
+    public async Task AggregatePrecipitationTileShowsRangeWithTwoComparablePeriods()
+    {
+        var endLabel = new DateOnly(2026, 6, 14).ToString("d MMM", CultureInfo.CurrentCulture);
+        var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14), startYear: 2024, endYear: 2025);
+        var service = CreateService(historicalRecords: historicalRecords);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
+        var total = latestSevenDays.MetricGroups.Single(x => x.Key == "period").Metrics.Single();
+
+        Assert.AreEqual("7mm", latestSevenDays.PrimaryValue);
+        Assert.IsTrue(latestSevenDays.HasComparison);
+        Assert.AreEqual(2, latestSevenDays.ComparablePeriodCount);
+        Assert.IsTrue(latestSevenDays.CanShowHistoricalRecord);
+        Assert.IsTrue(latestSevenDays.CanShowHistoricalRange);
+        Assert.IsFalse(latestSevenDays.CanShowRank);
+        Assert.IsFalse(latestSevenDays.CanShowPercentile);
+        Assert.AreEqual("Driest of 3 comparable periods", latestSevenDays.Headline);
+        Assert.AreEqual("Ranking unavailable: only 2 comparable periods.", latestSevenDays.PercentileSentence);
+        Assert.AreEqual("Limited history: comparison based on 2 comparable periods.", latestSevenDays.Note);
+        Assert.AreEqual($"Wettest 7 days ending {endLabel}", latestSevenDays.HistoricalMaxLabel);
+        Assert.AreEqual("84mm", latestSevenDays.HistoricalMaxValue);
+        Assert.AreEqual(RecentObservationRecordStatus.NewRecord, total.RecordStatus);
+        Assert.AreEqual("New low of 3", total.RecordStatusText);
+        Assert.AreEqual("84mm", total.RecordHigh!.Value);
+        Assert.AreEqual("2025", total.RecordHigh.Year);
+        Assert.AreEqual("77mm", total.RecordLow!.Value);
+        Assert.AreEqual("2024", total.RecordLow.Year);
+    }
+
+    [TestMethod]
+    public async Task AggregatePrecipitationTileSuppressesRankBelowMinimumRankSampleSize()
+    {
+        var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14), startYear: 2017, endYear: 2025);
+        var service = CreateService(historicalRecords: historicalRecords, recentValue: _ => 15d);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
+        var total = latestSevenDays.MetricGroups.Single(x => x.Key == "period").Metrics.Single();
+
+        Assert.AreEqual("105mm", latestSevenDays.PrimaryValue);
+        Assert.IsTrue(latestSevenDays.HasComparison);
+        Assert.AreEqual(9, latestSevenDays.ComparablePeriodCount);
+        Assert.IsTrue(latestSevenDays.CanShowHistoricalRecord);
+        Assert.IsTrue(latestSevenDays.CanShowHistoricalRange);
+        Assert.IsFalse(latestSevenDays.CanShowRank);
+        Assert.IsFalse(latestSevenDays.CanShowPercentile);
+        Assert.AreEqual("Limited historical comparison", latestSevenDays.Headline);
+        Assert.AreEqual("Ranking unavailable: only 9 comparable periods.", latestSevenDays.PercentileSentence);
+        Assert.IsNull(total.RankText);
+        Assert.AreEqual(RecentObservationRecordStatus.None, total.RecordStatus);
+        Assert.IsTrue(total.HasRecords);
+    }
+
+    [TestMethod]
+    public async Task AggregatePrecipitationTileShowsRankAtMinimumRankSampleSize()
+    {
+        var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14), startYear: 2016, endYear: 2025);
+        var service = CreateService(historicalRecords: historicalRecords, recentValue: _ => 15d);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
+        var total = latestSevenDays.MetricGroups.Single(x => x.Key == "period").Metrics.Single();
+
+        Assert.AreEqual("105mm", latestSevenDays.PrimaryValue);
+        Assert.IsTrue(latestSevenDays.HasComparison);
+        Assert.AreEqual(10, latestSevenDays.ComparablePeriodCount);
+        Assert.IsTrue(latestSevenDays.CanShowHistoricalRecord);
+        Assert.IsTrue(latestSevenDays.CanShowHistoricalRange);
+        Assert.IsTrue(latestSevenDays.CanShowRank);
+        Assert.IsTrue(latestSevenDays.CanShowPercentile);
+        Assert.AreEqual("Near average rainfall", latestSevenDays.Headline);
+        Assert.AreEqual("Wetter than 36% of comparable periods since 2016", latestSevenDays.PercentileSentence);
+        Assert.AreEqual("5th lowest of 11", total.RankText);
+    }
+
+    [TestMethod]
+    public async Task UpToViewDateModeShowsLimitedHistoryComparison()
+    {
+        var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14), startYear: 2023, endYear: 2025);
+        var service = CreateService(historicalRecords: historicalRecords);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0,
+            referenceDate: new DateOnly(2026, 6, 14),
+            comparisonEndMode: ComparisonEndMode.ReferenceDate);
+        var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
+
+        Assert.AreEqual(ComparisonEndMode.ReferenceDate, result.ComparisonEndMode);
+        Assert.AreEqual("7mm", latestSevenDays.PrimaryValue);
+        Assert.IsTrue(latestSevenDays.HasComparison);
+        Assert.AreEqual(3, latestSevenDays.ComparablePeriodCount);
+        Assert.IsTrue(latestSevenDays.CanShowHistoricalRecord);
+        Assert.IsTrue(latestSevenDays.CanShowHistoricalRange);
+        Assert.IsFalse(latestSevenDays.CanShowRank);
+        Assert.IsFalse(latestSevenDays.CanShowPercentile);
+        Assert.AreEqual("Driest of 4 comparable periods", latestSevenDays.Headline);
+        Assert.AreEqual("Ranking unavailable: only 3 comparable periods.", latestSevenDays.PercentileSentence);
+        Assert.AreEqual("Limited history: comparison based on 3 comparable periods.", latestSevenDays.Note);
     }
 
     [TestMethod]
