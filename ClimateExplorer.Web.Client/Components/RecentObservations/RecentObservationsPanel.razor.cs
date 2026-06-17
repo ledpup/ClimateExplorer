@@ -159,7 +159,7 @@ public partial class RecentObservationsPanel
     {
         return tile.PeriodKind is
             RecentObservationPeriodKind.Daily or
-            RecentObservationPeriodKind.LastWeek or
+            RecentObservationPeriodKind.LatestSevenDays or
             RecentObservationPeriodKind.CurrentMonth or
             RecentObservationPeriodKind.PreviousMonth;
     }

@@ -10,6 +10,8 @@ using static ClimateExplorer.Core.Enums;
 
 public sealed class RecentObservationsService : IRecentObservationsService
 {
+    private const int LatestSevenDaysLength = 7;
+    private const int RecentObservationStaleThresholdDays = 7;
     private const int MinimumHistoricalPeriods = 20;
     private const double MinimumHistoricalCoverage = 0.9d;
 
@@ -190,8 +192,15 @@ public sealed class RecentObservationsService : IRecentObservationsService
         }
 
         var latestDate = daily.Max(x => x.Date);
-        var lastWeekStart = latestDate.AddDays(-6);
-        AddRangePeriod(periods, GetRecordsInRange(daily, lastWeekStart, latestDate), lastWeekStart, latestDate, PeriodKind.LastWeek, domain);
+        var latestSevenDaysStart = latestDate.AddDays(-(LatestSevenDaysLength - 1));
+        AddRangePeriod(
+            periods,
+            GetRecordsInRange(daily, latestSevenDaysStart, latestDate),
+            latestSevenDaysStart,
+            latestDate,
+            PeriodKind.LatestSevenDays,
+            domain,
+            note: CreateLatestAvailableDataNote(latestDate, today));
 
         if (latestDate.Year == today.Year && latestDate.Month == today.Month)
         {
@@ -288,7 +297,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
         int? previousMonthOffset = null,
         MeteorologicalSeasonPeriod? seasonPeriod = null,
         bool isSeasonToDate = false,
-        int? periodOffset = null)
+        int? periodOffset = null,
+        string? note = null)
     {
         if (records.Count == 0)
         {
@@ -309,7 +319,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             kind,
             PeriodComparisonMode.DailyRange,
             periodOffset ?? previousMonthOffset,
-            null,
+            note,
             ComputeMetrics(records, domain)));
     }
 
@@ -582,7 +592,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
 
         // A daily tile is a single day's observation — max/min/mean, not aggregates
         // across days — so it uses its own single group (which also hides the
-        // Period / Daily Extremes toggle, since only one group is present).
+        // Period / Daily extremes toggle, since only one group is present).
         var groupDefinitions = period.Kind == PeriodKind.Daily ? domain.DailyGroups : domain.Groups;
 
         foreach (var group in groupDefinitions)
@@ -696,7 +706,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         return periodKind switch
         {
             PeriodKind.Daily => RecentObservationPeriodKind.Daily,
-            PeriodKind.LastWeek => RecentObservationPeriodKind.LastWeek,
+            PeriodKind.LatestSevenDays => RecentObservationPeriodKind.LatestSevenDays,
             PeriodKind.CurrentMonth => RecentObservationPeriodKind.CurrentMonth,
             PeriodKind.PreviousMonth => RecentObservationPeriodKind.PreviousMonth,
             PeriodKind.CurrentSeason => RecentObservationPeriodKind.CurrentSeason,
@@ -831,7 +841,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
 
         return kind switch
         {
-            PeriodKind.LastWeek => "Last week",
+            PeriodKind.LatestSevenDays => "Latest 7 days",
             PeriodKind.CurrentMonth => endDate.Day == DateTime.DaysInMonth(endDate.Year, endDate.Month)
                 ? $"{MonthName(endDate.Month)} {endDate.Year}"
                 : $"{MonthName(endDate.Month)} {endDate.Year} to date",
@@ -882,7 +892,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
 
         return kind switch
         {
-            PeriodKind.LastWeek => $"7 days ending {FormatShortDayMonth(endDate)}",
+            PeriodKind.LatestSevenDays => $"7 days ending {FormatShortDayMonth(endDate)}",
             PeriodKind.CurrentMonth => endDate.Day == DateTime.DaysInMonth(endDate.Year, endDate.Month)
                 ? MonthName(endDate.Month)
                 : $"{MonthName(endDate.Month)} to date",
@@ -905,7 +915,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
 
         return kind switch
         {
-            PeriodKind.LastWeek => $"7-day periods ending {FormatShortDayMonth(endDate)}",
+            PeriodKind.LatestSevenDays => $"7-day periods ending {FormatShortDayMonth(endDate)}",
             PeriodKind.CurrentMonth => endDate.Day == DateTime.DaysInMonth(endDate.Year, endDate.Month)
                 ? $"{MonthName(endDate.Month)}s"
                 : $"{MonthName(endDate.Month)}-to-date periods",
@@ -919,15 +929,22 @@ public sealed class RecentObservationsService : IRecentObservationsService
     {
         if (date == today)
         {
-            return "Today";
+            return "Today - " + FormatDayMonth(date);
         }
 
         if (date == today.AddDays(-1))
         {
-            return "Yesterday";
+            return "Yesterday - " + FormatDayMonth(date);
         }
 
         return FormatDayMonth(date);
+    }
+
+    private static string? CreateLatestAvailableDataNote(DateOnly latestDate, DateOnly today)
+    {
+        return latestDate < today.AddDays(-RecentObservationStaleThresholdDays)
+            ? $"Latest available data ends {FormatDayMonthYear(latestDate)}"
+            : null;
     }
 
     private static string FormatDayMonth(DateOnly date)
@@ -938,6 +955,11 @@ public sealed class RecentObservationsService : IRecentObservationsService
     private static string FormatShortDayMonth(DateOnly date)
     {
         return date.ToString("d MMM", CultureInfo.CurrentCulture);
+    }
+
+    private static string FormatDayMonthYear(DateOnly date)
+    {
+        return date.ToString("d MMM yyyy", CultureInfo.InvariantCulture);
     }
 
     private static string MonthName(int month)
@@ -1091,7 +1113,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         [AverageMaxTemperatureMetric, AverageMinTemperatureMetric],
         [
             new MetricGroup("period", "Period", [AverageMaxTemperatureMetric, AverageMinTemperatureMetric, MeanTemperatureMetric]),
-            new MetricGroup("daily-extremes", "Daily Extremes", [HighestDailyMaxTemperatureMetric, LowestDailyMaxTemperatureMetric, HighestDailyMinTemperatureMetric, LowestDailyMinTemperatureMetric]),
+            new MetricGroup("daily-extremes", "Daily extremes", [HighestDailyMaxTemperatureMetric, LowestDailyMaxTemperatureMetric, HighestDailyMinTemperatureMetric, LowestDailyMinTemperatureMetric]),
         ],
         [
             new MetricGroup("day", "Day", [DailyMaxTemperatureMetric, DailyMinTemperatureMetric, DailyMeanTemperatureMetric]),
@@ -1109,7 +1131,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         [],
         [
             new MetricGroup("period", "Period", [PrecipitationMetric]),
-            new MetricGroup("daily-extremes", "Daily Extremes", [HighestDailyPrecipitationMetric]),
+            new MetricGroup("daily-extremes", "Daily extremes", [HighestDailyPrecipitationMetric]),
         ],
         [
             new MetricGroup("day", "Day", [DailyPrecipitationMetric]),
@@ -1232,7 +1254,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
     private enum PeriodKind
     {
         Daily,
-        LastWeek,
+        LatestSevenDays,
         CurrentMonth,
         PreviousMonth,
         CurrentSeason,

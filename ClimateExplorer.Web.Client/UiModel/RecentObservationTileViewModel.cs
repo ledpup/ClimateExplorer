@@ -37,7 +37,7 @@ public sealed record RecentObservationTileViewModel
             return this;
         }
 
-        var note = CreateCompletenessNote();
+        var note = CreateThresholdNote();
         if (!HasComparison)
         {
             return this with { Note = note };
@@ -87,5 +87,16 @@ public sealed record RecentObservationTileViewModel
     {
         var percentage = RecentObservationCompletenessThreshold.ToPercentage(Completeness);
         return $"Only {AvailableObservationCount} of {ExpectedObservationCount} days are available (only {percentage}% completeness).";
+    }
+
+    private string CreateThresholdNote()
+    {
+        var completenessNote = CreateCompletenessNote();
+        if (string.IsNullOrWhiteSpace(Note) || Note.Contains(completenessNote, StringComparison.Ordinal))
+        {
+            return string.IsNullOrWhiteSpace(Note) ? completenessNote : Note;
+        }
+
+        return $"{Note} {completenessNote}";
     }
 }
