@@ -27,26 +27,49 @@
             if (CurrentState.Result?.ReferenceDate is not null)
             {
                 <div class="recent-observations-reference-date">
-                    <label for="@ReferenceDateInputId">View as of</label>
-                    <input id="@ReferenceDateInputId"
-                           type="date"
-                           class="form-control form-control-sm"
-                           min="@FormatDateInput(CurrentState.Result.MinimumReferenceDate)"
-                           max="@FormatDateInput(CurrentState.Result.MaximumReferenceDate)"
-                           value="@FormatDateInput(CurrentState.Result.ReferenceDate)"
-                           @onchange="OnReferenceDateChanged" />
+                    <div class="recent-observations-reference-date-field">
+                        <div class="recent-observations-reference-date-control">
+                            <label for="@ReferenceDateInputId">View as of</label>
+                            <input id="@ReferenceDateInputId"
+                                   type="text"
+                                   class="form-control form-control-sm @ReferenceDateInputValidationClass"
+                                   placeholder="YYYY-MM-DD"
+                                   value="@referenceDateInputValue"
+                                   aria-describedby="@ReferenceDateHelpId"
+                                   aria-invalid="@(!string.IsNullOrWhiteSpace(referenceDateValidationMessage))"
+                                   @oninput="OnReferenceDateInput"
+                                   @onchange="OnReferenceDateChanged" />
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-secondary recent-observations-reference-date-reset"
+                                    title="Reset to latest reference date"
+                                    aria-label="Reset to latest reference date"
+                                    disabled="@IsResetReferenceDateDisabled"
+                                    @onclick="ResetReferenceDate">
+                                <i class="fas fa-rotate-left" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div id="@ReferenceDateHelpId" class="form-text">
+                            Valid range: @FormatDateInput(CurrentState.Result.MinimumReferenceDate) to @FormatDateInput(CurrentState.Result.MaximumReferenceDate)
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(referenceDateValidationMessage))
+                        {
+                            <div class="invalid-feedback d-block">@referenceDateValidationMessage</div>
+                        }
+                    </div>
                     @if (!string.IsNullOrWhiteSpace(CurrentState.Result.ReferenceDateNote))
                     {
                         <span>@CurrentState.Result.ReferenceDateNote</span>
                     }
-                    <label for="@ComparisonRangeInputId">Comparison range</label>
-                    <select id="@ComparisonRangeInputId"
-                            class="form-control form-control-sm"
-                            value="@selectedComparisonEndMode.ToString()"
-                            @onchange="OnComparisonEndModeChanged">
-                        <option value="@ComparisonEndMode.FullDataset.ToString()">Entire dataset</option>
-                        <option value="@ComparisonEndMode.ReferenceDate.ToString()">Up to view date</option>
-                    </select>
+                    <div class="recent-observations-reference-date-control">
+                        <label for="@ComparisonRangeInputId">Comparison range</label>
+                        <select id="@ComparisonRangeInputId"
+                                class="form-control form-control-sm"
+                                value="@selectedComparisonEndMode.ToString()"
+                                @onchange="OnComparisonEndModeChanged">
+                            <option value="@ComparisonEndMode.FullDataset.ToString()">Entire dataset</option>
+                            <option value="@ComparisonEndMode.ReferenceDate.ToString()">Up to view date</option>
+                        </select>
+                    </div>
                 </div>
             }
             

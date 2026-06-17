@@ -14,6 +14,8 @@ public partial class RecentObservationsPanel
     private float completenessThreshold = RecentObservationCompletenessThreshold.Default;
     private Guid? internalLocationId;
     private DateOnly? selectedReferenceDate;
+    private string referenceDateInputValue = string.Empty;
+    private string? referenceDateValidationMessage;
     private ComparisonEndMode selectedComparisonEndMode = ComparisonEndMode.FullDataset;
 
     [Parameter]
@@ -41,7 +43,10 @@ public partial class RecentObservationsPanel
     private string AddMonthButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousMonth, "month");
     private string AddSeasonButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousSeason, "season");
     private string ReferenceDateInputId => $"recent-observations-reference-date-{ActiveTab.ToString().ToLowerInvariant()}";
+    private string ReferenceDateHelpId => $"{ReferenceDateInputId}-help";
+    private string ReferenceDateInputValidationClass => string.IsNullOrWhiteSpace(referenceDateValidationMessage) ? string.Empty : "is-invalid";
     private string ComparisonRangeInputId => $"recent-observations-comparison-range-{ActiveTab.ToString().ToLowerInvariant()}";
+    private bool IsResetReferenceDateDisabled => CurrentState.Result?.ReferenceDate == CurrentState.Result?.MaximumReferenceDate;
     private bool IsAddEarlierDayDisabled => !periodSelection.CanAddEarlierDay(GetAvailableOffsets(RecentObservationPeriodKind.Daily));
     private bool IsAddEarlierMonthDisabled => !periodSelection.CanAddEarlierMonth(GetAvailableOffsets(RecentObservationPeriodKind.PreviousMonth));
     private bool IsAddEarlierSeasonDisabled => !periodSelection.CanAddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.PreviousSeason));
@@ -53,6 +58,8 @@ public partial class RecentObservationsPanel
             internalLocationId = Location?.Id;
             periodSelection.Reset();
             selectedReferenceDate = null;
+            referenceDateInputValue = string.Empty;
+            referenceDateValidationMessage = null;
             selectedComparisonEndMode = ComparisonEndMode.FullDataset;
             temperatureState.Reset();
             precipitationState.Reset();
@@ -149,9 +156,17 @@ public partial class RecentObservationsPanel
         completenessThreshold = RecentObservationCompletenessThreshold.FromPercentage(thresholdPercent);
     }
 
+    private void OnReferenceDateInput(ChangeEventArgs e)
+    {
+        referenceDateInputValue = e.Value?.ToString() ?? string.Empty;
+        referenceDateValidationMessage = null;
+    }
+
     private async Task OnReferenceDateChanged(ChangeEventArgs e)
     {
-        if (!DateOnly.TryParseExact(e.Value?.ToString(), "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var referenceDate))
+        referenceDateInputValue = e.Value?.ToString() ?? string.Empty;
+
+        if (!TryValidateReferenceDateInput(referenceDateInputValue, out var referenceDate))
         {
             return;
         }
@@ -161,6 +176,41 @@ public partial class RecentObservationsPanel
         RecalculateLoadedTabs();
 
         await EnsureTabLoaded(ActiveTab);
+    }
+
+    private async Task ResetReferenceDate()
+    {
+        selectedReferenceDate = null;
+        referenceDateValidationMessage = null;
+        periodSelection.Reset();
+        RecalculateLoadedTabs();
+
+        await EnsureTabLoaded(ActiveTab);
+    }
+
+    private bool TryValidateReferenceDateInput(string input, out DateOnly referenceDate)
+    {
+        if (!DateOnly.TryParseExact(input, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out referenceDate))
+        {
+            referenceDateValidationMessage = "Enter a date in YYYY-MM-DD format.";
+            return false;
+        }
+
+        var result = CurrentState.Result;
+        if (result?.MinimumReferenceDate is { } minimumReferenceDate && referenceDate < minimumReferenceDate)
+        {
+            referenceDateValidationMessage = $"Enter a date on or after {FormatDateInput(minimumReferenceDate)}.";
+            return false;
+        }
+
+        if (result?.MaximumReferenceDate is { } maximumReferenceDate && referenceDate > maximumReferenceDate)
+        {
+            referenceDateValidationMessage = $"Enter a date on or before {FormatDateInput(maximumReferenceDate)}.";
+            return false;
+        }
+
+        referenceDateValidationMessage = null;
+        return true;
     }
 
     private async Task OnComparisonEndModeChanged(ChangeEventArgs e)
@@ -199,6 +249,8 @@ public partial class RecentObservationsPanel
         if (updateSelectedReferenceDate && state.Result.ReferenceDate.HasValue)
         {
             selectedReferenceDate = state.Result.ReferenceDate;
+            referenceDateInputValue = FormatDateInput(state.Result.ReferenceDate);
+            referenceDateValidationMessage = null;
         }
 
         state.IsLoaded = true;
