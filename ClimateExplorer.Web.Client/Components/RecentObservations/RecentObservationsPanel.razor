@@ -39,6 +39,14 @@
                     {
                         <span>@CurrentState.Result.ReferenceDateNote</span>
                     }
+                    <label for="@ComparisonRangeInputId">Comparison range</label>
+                    <select id="@ComparisonRangeInputId"
+                            class="form-control form-control-sm"
+                            value="@selectedComparisonEndMode.ToString()"
+                            @onchange="OnComparisonEndModeChanged">
+                        <option value="@ComparisonEndMode.FullDataset.ToString()">Entire dataset</option>
+                        <option value="@ComparisonEndMode.ReferenceDate.ToString()">Up to view date</option>
+                    </select>
                 </div>
             }
             

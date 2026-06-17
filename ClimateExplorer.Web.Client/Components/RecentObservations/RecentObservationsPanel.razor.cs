@@ -14,6 +14,7 @@ public partial class RecentObservationsPanel
     private float completenessThreshold = RecentObservationCompletenessThreshold.Default;
     private Guid? internalLocationId;
     private DateOnly? selectedReferenceDate;
+    private ComparisonEndMode selectedComparisonEndMode = ComparisonEndMode.FullDataset;
 
     [Parameter]
     public Location? Location { get; set; }
@@ -40,6 +41,7 @@ public partial class RecentObservationsPanel
     private string AddMonthButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousMonth, "month");
     private string AddSeasonButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousSeason, "season");
     private string ReferenceDateInputId => $"recent-observations-reference-date-{ActiveTab.ToString().ToLowerInvariant()}";
+    private string ComparisonRangeInputId => $"recent-observations-comparison-range-{ActiveTab.ToString().ToLowerInvariant()}";
     private bool IsAddEarlierDayDisabled => !periodSelection.CanAddEarlierDay(GetAvailableOffsets(RecentObservationPeriodKind.Daily));
     private bool IsAddEarlierMonthDisabled => !periodSelection.CanAddEarlierMonth(GetAvailableOffsets(RecentObservationPeriodKind.PreviousMonth));
     private bool IsAddEarlierSeasonDisabled => !periodSelection.CanAddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.PreviousSeason));
@@ -51,6 +53,7 @@ public partial class RecentObservationsPanel
             internalLocationId = Location?.Id;
             periodSelection.Reset();
             selectedReferenceDate = null;
+            selectedComparisonEndMode = ComparisonEndMode.FullDataset;
             temperatureState.Reset();
             precipitationState.Reset();
         }
@@ -98,13 +101,15 @@ public partial class RecentObservationsPanel
                     RecentObservationPeriodSelection.MaximumPreviousDayCount,
                     RecentObservationPeriodSelection.MaximumPreviousMonthCount,
                     RecentObservationPeriodSelection.MaximumPreviousSeasonCount,
-                    selectedReferenceDate),
+                    selectedReferenceDate,
+                    selectedComparisonEndMode),
                 RecentObservationsTab.Precipitation => await RecentObservationsService.GetPrecipitationRecords(
                     Location,
                     RecentObservationPeriodSelection.MaximumPreviousDayCount,
                     RecentObservationPeriodSelection.MaximumPreviousMonthCount,
                     RecentObservationPeriodSelection.MaximumPreviousSeasonCount,
-                    selectedReferenceDate),
+                    selectedReferenceDate,
+                    selectedComparisonEndMode),
                 _ => throw new NotImplementedException(),
             };
             if (state.Result.ReferenceDate.HasValue)
@@ -164,6 +169,20 @@ public partial class RecentObservationsPanel
 
         selectedReferenceDate = referenceDate;
         periodSelection.Reset();
+        temperatureState.Reset();
+        precipitationState.Reset();
+
+        await EnsureTabLoaded(ActiveTab);
+    }
+
+    private async Task OnComparisonEndModeChanged(ChangeEventArgs e)
+    {
+        if (!Enum.TryParse<ComparisonEndMode>(e.Value?.ToString(), out var comparisonEndMode))
+        {
+            return;
+        }
+
+        selectedComparisonEndMode = comparisonEndMode;
         temperatureState.Reset();
         precipitationState.Reset();
 

@@ -28,7 +28,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
         int previousDayCount,
         int previousMonthCount,
         int previousSeasonCount,
-        DateOnly? referenceDate = null)
+        DateOnly? referenceDate = null,
+        ComparisonEndMode comparisonEndMode = ComparisonEndMode.FullDataset)
     {
         var locationId = location.Id;
         var recentMaxTask = dataService.GetRecentObservations(locationId, DataType.TempMax);
@@ -59,6 +60,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             {
                 IsSupported = false,
                 EmptyMessage = "Recent temperature observations are not available for this location.",
+                ComparisonEndMode = comparisonEndMode,
             };
         }
 
@@ -76,6 +78,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             return new RecentObservationsTabResult
             {
                 EmptyMessage = "No recent temperature observations are available yet.",
+                ComparisonEndMode = comparisonEndMode,
             };
         }
 
@@ -85,6 +88,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             TemperatureDomain,
             history,
             referenceDate,
+            comparisonEndMode,
             previousDayCount,
             previousMonthCount,
             previousSeasonCount,
@@ -97,7 +101,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
         int previousDayCount,
         int previousMonthCount,
         int previousSeasonCount,
-        DateOnly? referenceDate = null)
+        DateOnly? referenceDate = null,
+        ComparisonEndMode comparisonEndMode = ComparisonEndMode.FullDataset)
     {
         var locationId = location.Id;
         var recentTask = dataService.GetRecentObservations(locationId, DataType.Precipitation);
@@ -113,6 +118,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             {
                 IsSupported = false,
                 EmptyMessage = "Recent precipitation observations are not available for this location.",
+                ComparisonEndMode = comparisonEndMode,
             };
         }
 
@@ -123,6 +129,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             return new RecentObservationsTabResult
             {
                 EmptyMessage = "No recent precipitation observations are available yet.",
+                ComparisonEndMode = comparisonEndMode,
             };
         }
 
@@ -132,6 +139,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             PrecipitationDomain,
             new HistoricalDailySeries(daily, GetStartYear(daily)),
             referenceDate,
+            comparisonEndMode,
             previousDayCount,
             previousMonthCount,
             previousSeasonCount,
@@ -145,6 +153,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         MetricDomain domain,
         HistoricalDailySeries history,
         DateOnly? requestedReferenceDate,
+        ComparisonEndMode comparisonEndMode,
         int previousDayCount,
         int previousMonthCount,
         int previousSeasonCount,
@@ -166,6 +175,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
                 RequestedReferenceDate = requestedReferenceDate,
                 MinimumReferenceDate = referenceDate.MinimumReferenceDate,
                 MaximumReferenceDate = referenceDate.MaximumReferenceDate,
+                ComparisonEndMode = comparisonEndMode,
             };
         }
 
@@ -193,6 +203,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
                 MinimumReferenceDate = referenceDate.MinimumReferenceDate,
                 MaximumReferenceDate = referenceDate.MaximumReferenceDate,
                 ReferenceDateNote = CreateReferenceDateNote(requestedReferenceDate, referenceDate.ReferenceDate.Value),
+                ComparisonEndMode = comparisonEndMode,
             };
         }
 
@@ -200,7 +211,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
 
         foreach (var period in periods)
         {
-            var distributions = GetHistoricalDistributions(history, period, domain.AllMetrics);
+            var distributions = GetHistoricalDistributions(history, period, domain.AllMetrics, comparisonEndMode);
             tiles.Add(BuildTile(period, domain, distributions));
         }
 
@@ -212,6 +223,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             MinimumReferenceDate = referenceDate.MinimumReferenceDate,
             MaximumReferenceDate = referenceDate.MaximumReferenceDate,
             ReferenceDateNote = CreateReferenceDateNote(requestedReferenceDate, referenceDate.ReferenceDate.Value),
+            ComparisonEndMode = comparisonEndMode,
             Tiles = tiles,
         };
     }
@@ -522,22 +534,24 @@ public sealed class RecentObservationsService : IRecentObservationsService
     private static IReadOnlyDictionary<string, HistoricalValues> GetHistoricalDistributions(
         HistoricalDailySeries history,
         PeriodObservation period,
-        IReadOnlyList<Metric> metrics)
+        IReadOnlyList<Metric> metrics,
+        ComparisonEndMode comparisonEndMode)
     {
         return period.ComparisonMode == PeriodComparisonMode.DailyDate
-            ? GetHistoricalDailyDateDistributions(history, period, metrics)
-            : GetHistoricalDailyRangeDistributions(history, period, metrics);
+            ? GetHistoricalDailyDateDistributions(history, period, metrics, comparisonEndMode)
+            : GetHistoricalDailyRangeDistributions(history, period, metrics, comparisonEndMode);
     }
 
     private static IReadOnlyDictionary<string, HistoricalValues> GetHistoricalDailyDateDistributions(
         HistoricalDailySeries history,
         PeriodObservation period,
-        IReadOnlyList<Metric> metrics)
+        IReadOnlyList<Metric> metrics,
+        ComparisonEndMode comparisonEndMode)
     {
         var sameDate = history.Records
             .Where(x => x.Date.Month == period.StartDate.Month &&
                         x.Date.Day == period.StartDate.Day &&
-                        x.Date.Year < period.StartDate.Year)
+                        IsEquivalentComparisonYearAllowed(x.Date.Year, period.StartDate.Year, comparisonEndMode))
             .ToList();
 
         var result = new Dictionary<string, HistoricalValues>();
@@ -560,7 +574,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
     private static IReadOnlyDictionary<string, HistoricalValues> GetHistoricalDailyRangeDistributions(
         HistoricalDailySeries history,
         PeriodObservation period,
-        IReadOnlyList<Metric> metrics)
+        IReadOnlyList<Metric> metrics,
+        ComparisonEndMode comparisonEndMode)
     {
         // Group the equivalent historical years once, then compute every metric's
         // aggregate inside the cached groups (single pass over the history).
@@ -571,7 +586,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
                 Record = x,
                 EquivalentPeriodYear = GetEquivalentPeriodYear(x.Date, period.StartDate, period.EndDate),
             })
-            .Where(x => x.EquivalentPeriodYear < period.StartDate.Year)
+            .Where(x => IsEquivalentComparisonYearAllowed(x.EquivalentPeriodYear, period.StartDate.Year, comparisonEndMode))
             .GroupBy(x => x.EquivalentPeriodYear)
             .Select(group => new EquivalentPeriodGroup(
                 group.Key,
@@ -604,6 +619,19 @@ public sealed class RecentObservationsService : IRecentObservationsService
         }
 
         return result;
+    }
+
+    private static bool IsEquivalentComparisonYearAllowed(
+        int equivalentPeriodYear,
+        int observedPeriodYear,
+        ComparisonEndMode comparisonEndMode)
+    {
+        return comparisonEndMode switch
+        {
+            ComparisonEndMode.ReferenceDate => equivalentPeriodYear < observedPeriodYear,
+            ComparisonEndMode.FullDataset => equivalentPeriodYear != observedPeriodYear,
+            _ => throw new NotImplementedException(),
+        };
     }
 
     private async Task<ClimateRecordsResponse> GetHistoricalRecords(

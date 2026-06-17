@@ -42,7 +42,8 @@
     margin: 0;
 }
 
-.recent-observations-reference-date input {
+.recent-observations-reference-date input,
+.recent-observations-reference-date select {
     width: 10.25rem;
 }
 
