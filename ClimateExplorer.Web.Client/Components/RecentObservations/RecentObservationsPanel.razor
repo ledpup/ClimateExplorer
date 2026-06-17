@@ -22,62 +22,83 @@
                 </button>
             </div>
         }
-        else if (CurrentTiles.Count > 0)
-        {
-            <div class="mb-4">
-                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierDay" disabled="@IsAddEarlierDayDisabled">
-                    @AddDayButtonLabel
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierMonth" disabled="@IsAddEarlierMonthDisabled">
-                    @AddMonthButtonLabel
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierSeason" disabled="@IsAddEarlierSeasonDisabled">
-                    @AddSeasonButtonLabel
-                </button>
-            </div>
-
-            <div class="recent-observation-grid">
-
-                @foreach (var tile in TilesBeforeMonthControls)
-                {
-                    <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
-                        <RecentObservationTile Tile="@tile" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" />
-                    </div>
-                }
-
-                @foreach (var tile in SeasonTiles)
-                {
-                    <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
-                        <RecentObservationTile Tile="@tile" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" />
-                    </div>
-                }
-
-                @foreach (var tile in TilesAfterSeasonControls)
-                {
-                    <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
-                        <RecentObservationTile Tile="@tile" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" />
-                    </div>
-                }
-            </div>
-
-            <div class="recent-observations-threshold">
-                <label for="recent-observations-completeness-threshold">Completeness threshold %</label>
-                <input id="recent-observations-completeness-threshold"
-                       type="number"
-                       class="form-control form-control-sm"
-                       min="@RecentObservationCompletenessThreshold.MinimumPercentage"
-                       max="@RecentObservationCompletenessThreshold.MaximumPercentage"
-                       step="1"
-                       value="@CompletenessThresholdPercent"
-                       @oninput="OnCompletenessThresholdChanged" />
-            </div>
-        }
         else
         {
-            <div class="recent-observations-state">
-                <i class="fas fa-circle-info"></i>
-                <span>@CurrentEmptyMessage</span>
-            </div>
+            if (CurrentState.Result?.ReferenceDate is not null)
+            {
+                <div class="recent-observations-reference-date">
+                    <label for="@ReferenceDateInputId">View as of</label>
+                    <input id="@ReferenceDateInputId"
+                           type="date"
+                           class="form-control form-control-sm"
+                           min="@FormatDateInput(CurrentState.Result.MinimumReferenceDate)"
+                           max="@FormatDateInput(CurrentState.Result.MaximumReferenceDate)"
+                           value="@FormatDateInput(CurrentState.Result.ReferenceDate)"
+                           @onchange="OnReferenceDateChanged" />
+                    @if (!string.IsNullOrWhiteSpace(CurrentState.Result.ReferenceDateNote))
+                    {
+                        <span>@CurrentState.Result.ReferenceDateNote</span>
+                    }
+                </div>
+            }
+            
+            if (CurrentTiles.Count > 0)
+            {
+                <div class="mb-4">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierDay" disabled="@IsAddEarlierDayDisabled">
+                        @AddDayButtonLabel
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierMonth" disabled="@IsAddEarlierMonthDisabled">
+                        @AddMonthButtonLabel
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierSeason" disabled="@IsAddEarlierSeasonDisabled">
+                        @AddSeasonButtonLabel
+                    </button>
+                </div>
+
+                <div class="recent-observation-grid">
+
+                    @foreach (var tile in TilesBeforeMonthControls)
+                    {
+                        <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
+                            <RecentObservationTile Tile="@tile" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" />
+                        </div>
+                    }
+
+                    @foreach (var tile in SeasonTiles)
+                    {
+                        <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
+                            <RecentObservationTile Tile="@tile" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" />
+                        </div>
+                    }
+
+                    @foreach (var tile in TilesAfterSeasonControls)
+                    {
+                        <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
+                            <RecentObservationTile Tile="@tile" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" />
+                        </div>
+                    }
+                </div>
+
+                <div class="recent-observations-threshold">
+                    <label for="recent-observations-completeness-threshold">Completeness threshold %</label>
+                    <input id="recent-observations-completeness-threshold"
+                    type="number"
+                    class="form-control form-control-sm"
+                    min="@RecentObservationCompletenessThreshold.MinimumPercentage"
+                    max="@RecentObservationCompletenessThreshold.MaximumPercentage"
+                    step="1"
+                    value="@CompletenessThresholdPercent"
+                    @oninput="OnCompletenessThresholdChanged" />
+                </div>
+            }
+            else
+            {
+                <div class="recent-observations-state">
+                    <i class="fas fa-circle-info"></i>
+                    <span>@CurrentEmptyMessage</span>
+                </div>
+            }
         }
     </div>
 

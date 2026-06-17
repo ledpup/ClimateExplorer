@@ -13,6 +13,7 @@ public partial class RecentObservationsPanel
     private readonly RecentObservationPeriodSelection periodSelection = new();
     private float completenessThreshold = RecentObservationCompletenessThreshold.Default;
     private Guid? internalLocationId;
+    private DateOnly? selectedReferenceDate;
 
     [Parameter]
     public Location? Location { get; set; }
@@ -38,6 +39,7 @@ public partial class RecentObservationsPanel
     private string AddDayButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.Daily, "day");
     private string AddMonthButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousMonth, "month");
     private string AddSeasonButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousSeason, "season");
+    private string ReferenceDateInputId => $"recent-observations-reference-date-{ActiveTab.ToString().ToLowerInvariant()}";
     private bool IsAddEarlierDayDisabled => !periodSelection.CanAddEarlierDay(GetAvailableOffsets(RecentObservationPeriodKind.Daily));
     private bool IsAddEarlierMonthDisabled => !periodSelection.CanAddEarlierMonth(GetAvailableOffsets(RecentObservationPeriodKind.PreviousMonth));
     private bool IsAddEarlierSeasonDisabled => !periodSelection.CanAddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.PreviousSeason));
@@ -48,6 +50,7 @@ public partial class RecentObservationsPanel
         {
             internalLocationId = Location?.Id;
             periodSelection.Reset();
+            selectedReferenceDate = null;
             temperatureState.Reset();
             precipitationState.Reset();
         }
@@ -94,14 +97,21 @@ public partial class RecentObservationsPanel
                     Location,
                     RecentObservationPeriodSelection.MaximumPreviousDayCount,
                     RecentObservationPeriodSelection.MaximumPreviousMonthCount,
-                    RecentObservationPeriodSelection.MaximumPreviousSeasonCount),
+                    RecentObservationPeriodSelection.MaximumPreviousSeasonCount,
+                    selectedReferenceDate),
                 RecentObservationsTab.Precipitation => await RecentObservationsService.GetPrecipitationRecords(
                     Location,
                     RecentObservationPeriodSelection.MaximumPreviousDayCount,
                     RecentObservationPeriodSelection.MaximumPreviousMonthCount,
-                    RecentObservationPeriodSelection.MaximumPreviousSeasonCount),
+                    RecentObservationPeriodSelection.MaximumPreviousSeasonCount,
+                    selectedReferenceDate),
                 _ => throw new NotImplementedException(),
             };
+            if (state.Result.ReferenceDate.HasValue)
+            {
+                selectedReferenceDate = state.Result.ReferenceDate;
+            }
+
             state.IsLoaded = true;
         }
         catch (Exception ex)
@@ -143,6 +153,26 @@ public partial class RecentObservationsPanel
         }
 
         completenessThreshold = RecentObservationCompletenessThreshold.FromPercentage(thresholdPercent);
+    }
+
+    private async Task OnReferenceDateChanged(ChangeEventArgs e)
+    {
+        if (!DateOnly.TryParseExact(e.Value?.ToString(), "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var referenceDate))
+        {
+            return;
+        }
+
+        selectedReferenceDate = referenceDate;
+        periodSelection.Reset();
+        temperatureState.Reset();
+        precipitationState.Reset();
+
+        await EnsureTabLoaded(ActiveTab);
+    }
+
+    private string FormatDateInput(DateOnly? date)
+    {
+        return date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? string.Empty;
     }
 
     private RecentObservationsTabState GetState(RecentObservationsTab tab)

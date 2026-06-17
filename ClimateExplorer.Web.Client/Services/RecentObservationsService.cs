@@ -11,7 +11,6 @@ using static ClimateExplorer.Core.Enums;
 public sealed class RecentObservationsService : IRecentObservationsService
 {
     private const int LatestSevenDaysLength = 7;
-    private const int RecentObservationStaleThresholdDays = 7;
     private const int MinimumHistoricalPeriods = 20;
     private const double MinimumHistoricalCoverage = 0.9d;
 
@@ -24,18 +23,37 @@ public sealed class RecentObservationsService : IRecentObservationsService
         this.timeProvider = timeProvider ?? TimeProvider.System;
     }
 
-    public async Task<RecentObservationsTabResult> GetTemperatureRecords(Location location, int previousDayCount, int previousMonthCount, int previousSeasonCount)
+    public async Task<RecentObservationsTabResult> GetTemperatureRecords(
+        Location location,
+        int previousDayCount,
+        int previousMonthCount,
+        int previousSeasonCount,
+        DateOnly? referenceDate = null)
     {
         var locationId = location.Id;
-        var maxTask = dataService.GetRecentObservations(locationId, DataType.TempMax);
-        var minTask = dataService.GetRecentObservations(locationId, DataType.TempMin);
+        var recentMaxTask = dataService.GetRecentObservations(locationId, DataType.TempMax);
+        var recentMinTask = dataService.GetRecentObservations(locationId, DataType.TempMin);
+        var historicalMaxTask = GetHistoricalRecords(locationId, DataType.TempMax, DataAdjustment.Unadjusted);
+        var historicalMinTask = GetHistoricalRecords(locationId, DataType.TempMin, DataAdjustment.Unadjusted);
 
-        await Task.WhenAll(maxTask, minTask);
+        await Task.WhenAll(recentMaxTask, recentMinTask, historicalMaxTask, historicalMinTask);
 
-        var maxResponse = await maxTask;
-        var minResponse = await minTask;
+        var recentMaxResponse = await recentMaxTask;
+        var recentMinResponse = await recentMinTask;
+        var historicalMaxResponse = await historicalMaxTask;
+        var historicalMinResponse = await historicalMinTask;
 
-        if (!maxResponse.IsSupported || !minResponse.IsSupported)
+        var maxRecords = MergeDailyDataRecords(historicalMaxResponse.Records, recentMaxResponse.Records);
+        var minRecords = MergeDailyDataRecords(historicalMinResponse.Records, recentMinResponse.Records);
+        var daily = BuildDailyTemperature(maxRecords, minRecords);
+        var hasHistoricalMaxMin = historicalMaxResponse.Records.Count > 0 && historicalMinResponse.Records.Count > 0;
+        var meanHistory = hasHistoricalMaxMin
+            ? new HistoricalDailySeries([], null)
+            : await GetTemperatureMeanHistoricalDaily(locationId, DataAdjustment.Unadjusted);
+
+        if ((!recentMaxResponse.IsSupported || !recentMinResponse.IsSupported) &&
+            !hasHistoricalMaxMin &&
+            meanHistory.Records.Count == 0)
         {
             return new RecentObservationsTabResult
             {
@@ -44,8 +62,16 @@ public sealed class RecentObservationsService : IRecentObservationsService
             };
         }
 
-        var latestDaily = BuildDailyTemperature(maxResponse.Records, minResponse.Records);
-        if (latestDaily.Count == 0)
+        var history = hasHistoricalMaxMin && daily.Count > 0
+            ? new HistoricalDailySeries(daily, GetStartYear(daily))
+            : meanHistory;
+
+        if (!hasHistoricalMaxMin && history.Records.Count > 0)
+        {
+            daily = MergeDailyObservations(history.Records, daily);
+        }
+
+        if (daily.Count == 0)
         {
             return new RecentObservationsTabResult
             {
@@ -53,11 +79,12 @@ public sealed class RecentObservationsService : IRecentObservationsService
             };
         }
 
-        return await BuildTiles(
+        return BuildTiles(
             location,
-            latestDaily,
+            daily,
             TemperatureDomain,
-            () => GetTemperatureHistoricalDaily(locationId, DataAdjustment.Unadjusted),
+            history,
+            referenceDate,
             previousDayCount,
             previousMonthCount,
             previousSeasonCount,
@@ -65,12 +92,22 @@ public sealed class RecentObservationsService : IRecentObservationsService
             emptyMessage: "No recent temperature observations are available.");
     }
 
-    public async Task<RecentObservationsTabResult> GetPrecipitationRecords(Location location, int previousDayCount, int previousMonthCount, int previousSeasonCount)
+    public async Task<RecentObservationsTabResult> GetPrecipitationRecords(
+        Location location,
+        int previousDayCount,
+        int previousMonthCount,
+        int previousSeasonCount,
+        DateOnly? referenceDate = null)
     {
         var locationId = location.Id;
-        var latestResponse = await dataService.GetRecentObservations(locationId, DataType.Precipitation);
+        var recentTask = dataService.GetRecentObservations(locationId, DataType.Precipitation);
+        var historicalTask = GetHistoricalRecords(locationId, DataType.Precipitation, null);
+        await Task.WhenAll(recentTask, historicalTask);
 
-        if (!latestResponse.IsSupported)
+        var recentResponse = await recentTask;
+        var historicalResponse = await historicalTask;
+
+        if (!recentResponse.IsSupported && historicalResponse.Records.Count == 0)
         {
             return new RecentObservationsTabResult
             {
@@ -79,8 +116,9 @@ public sealed class RecentObservationsService : IRecentObservationsService
             };
         }
 
-        var latestDaily = BuildDailyPrecipitation(latestResponse.Records);
-        if (latestDaily.Count == 0)
+        var records = MergeDailyDataRecords(historicalResponse.Records, recentResponse.Records);
+        var daily = BuildDailyPrecipitation(records);
+        if (daily.Count == 0)
         {
             return new RecentObservationsTabResult
             {
@@ -88,11 +126,12 @@ public sealed class RecentObservationsService : IRecentObservationsService
             };
         }
 
-        return await BuildTiles(
+        return BuildTiles(
             location,
-            latestDaily,
+            daily,
             PrecipitationDomain,
-            () => GetPrecipitationHistoricalDaily(locationId),
+            new HistoricalDailySeries(daily, GetStartYear(daily)),
+            referenceDate,
             previousDayCount,
             previousMonthCount,
             previousSeasonCount,
@@ -100,11 +139,12 @@ public sealed class RecentObservationsService : IRecentObservationsService
             emptyMessage: "No recent precipitation observations are available.");
     }
 
-    private async Task<RecentObservationsTabResult> BuildTiles(
+    private RecentObservationsTabResult BuildTiles(
         Location location,
-        List<DailyObservation> latestDaily,
+        List<DailyObservation> daily,
         MetricDomain domain,
-        Func<Task<HistoricalDailySeries>> historyFactory,
+        HistoricalDailySeries history,
+        DateOnly? requestedReferenceDate,
         int previousDayCount,
         int previousMonthCount,
         int previousSeasonCount,
@@ -115,17 +155,47 @@ public sealed class RecentObservationsService : IRecentObservationsService
         previousMonthCount = Math.Clamp(previousMonthCount, 0, RecentObservationPeriodSelection.MaximumPreviousMonthCount);
         previousSeasonCount = Math.Clamp(previousSeasonCount, 0, RecentObservationPeriodSelection.MaximumPreviousSeasonCount);
 
+        var referenceDate = ResolveReferenceDate(daily, requestedReferenceDate);
+        if (referenceDate.ReferenceDate is null)
+        {
+            return new RecentObservationsTabResult
+            {
+                EmptyMessage = requestedReferenceDate.HasValue
+                    ? $"No observations are available on or before {FormatDayMonthYear(requestedReferenceDate.Value)}."
+                    : emptyMessage,
+                RequestedReferenceDate = requestedReferenceDate,
+                MinimumReferenceDate = referenceDate.MinimumReferenceDate,
+                MaximumReferenceDate = referenceDate.MaximumReferenceDate,
+            };
+        }
+
         var today = GetToday();
-        var periods = BuildPeriods(latestDaily, today, location.Coordinates.Latitude, domain, previousDayCount, previousMonthCount, previousSeasonCount);
+        var observationsAsOfReferenceDate = daily
+            .Where(x => x.Date <= referenceDate.ReferenceDate.Value)
+            .OrderBy(x => x.Date)
+            .ToList();
+        var periods = BuildPeriods(
+            observationsAsOfReferenceDate,
+            referenceDate.ReferenceDate.Value,
+            today,
+            location.Coordinates.Latitude,
+            domain,
+            previousDayCount,
+            previousMonthCount,
+            previousSeasonCount);
         if (periods.Count == 0)
         {
             return new RecentObservationsTabResult
             {
                 EmptyMessage = noPeriodsMessage,
+                RequestedReferenceDate = requestedReferenceDate,
+                ReferenceDate = referenceDate.ReferenceDate,
+                MinimumReferenceDate = referenceDate.MinimumReferenceDate,
+                MaximumReferenceDate = referenceDate.MaximumReferenceDate,
+                ReferenceDateNote = CreateReferenceDateNote(requestedReferenceDate, referenceDate.ReferenceDate.Value),
             };
         }
 
-        var history = await historyFactory();
         var tiles = new List<RecentObservationTileViewModel>();
 
         foreach (var period in periods)
@@ -137,8 +207,46 @@ public sealed class RecentObservationsService : IRecentObservationsService
         return new RecentObservationsTabResult
         {
             EmptyMessage = emptyMessage,
+            RequestedReferenceDate = requestedReferenceDate,
+            ReferenceDate = referenceDate.ReferenceDate,
+            MinimumReferenceDate = referenceDate.MinimumReferenceDate,
+            MaximumReferenceDate = referenceDate.MaximumReferenceDate,
+            ReferenceDateNote = CreateReferenceDateNote(requestedReferenceDate, referenceDate.ReferenceDate.Value),
             Tiles = tiles,
         };
+    }
+
+    private static ReferenceDateResolution ResolveReferenceDate(
+        IReadOnlyCollection<DailyObservation> daily,
+        DateOnly? requestedReferenceDate)
+    {
+        if (daily.Count == 0)
+        {
+            return new ReferenceDateResolution(null, null, null);
+        }
+
+        var dates = daily
+            .Select(x => x.Date)
+            .Distinct()
+            .Order()
+            .ToList();
+        var minimumReferenceDate = dates[0];
+        var maximumReferenceDate = dates[^1];
+        var referenceDate = requestedReferenceDate.HasValue
+            ? dates.LastOrDefault(x => x <= requestedReferenceDate.Value)
+            : maximumReferenceDate;
+
+        return new ReferenceDateResolution(
+            referenceDate == default ? null : referenceDate,
+            minimumReferenceDate,
+            maximumReferenceDate);
+    }
+
+    private static string? CreateReferenceDateNote(DateOnly? requestedReferenceDate, DateOnly referenceDate)
+    {
+        return requestedReferenceDate.HasValue && requestedReferenceDate.Value != referenceDate
+            ? $"No observation is available for {FormatDayMonthYear(requestedReferenceDate.Value)}; showing {FormatDayMonthYear(referenceDate)} instead."
+            : null;
     }
 
     private static List<DailyObservation> BuildDailyTemperature(IEnumerable<DataRecord> maxRecords, IEnumerable<DataRecord> minRecords)
@@ -167,6 +275,52 @@ public sealed class RecentObservationsService : IRecentObservationsService
             .OrderBy(x => x.Date)];
     }
 
+    private static List<DailyObservation> BuildDailyTemperatureMean(IEnumerable<DataRecord> records)
+    {
+        return [.. records
+            .Where(x => x.Date.HasValue && x.Value.HasValue)
+            .Select(x => new DailyObservation(x.Date!.Value, null, null, x.Value!.Value, null))
+            .OrderBy(x => x.Date)];
+    }
+
+    private static List<DataRecord> MergeDailyDataRecords(
+        IEnumerable<DataRecord> historicalRecords,
+        IEnumerable<DataRecord> recentRecords)
+    {
+        var recordsByDate = new SortedDictionary<DateOnly, DataRecord>();
+
+        foreach (var record in historicalRecords.Where(x => x.Date.HasValue && x.Value.HasValue))
+        {
+            recordsByDate[record.Date!.Value] = record;
+        }
+
+        foreach (var record in recentRecords.Where(x => x.Date.HasValue && x.Value.HasValue))
+        {
+            recordsByDate[record.Date!.Value] = record;
+        }
+
+        return [.. recordsByDate.Values];
+    }
+
+    private static List<DailyObservation> MergeDailyObservations(
+        IEnumerable<DailyObservation> historicalRecords,
+        IEnumerable<DailyObservation> recentRecords)
+    {
+        var recordsByDate = new SortedDictionary<DateOnly, DailyObservation>();
+
+        foreach (var record in historicalRecords)
+        {
+            recordsByDate[record.Date] = record;
+        }
+
+        foreach (var record in recentRecords)
+        {
+            recordsByDate[record.Date] = record;
+        }
+
+        return [.. recordsByDate.Values];
+    }
+
     private static List<DailyObservation> GetRecordsInRange(
         IEnumerable<DailyObservation> records,
         DateOnly startDate,
@@ -177,6 +331,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
 
     private static List<PeriodObservation> BuildPeriods(
         List<DailyObservation> daily,
+        DateOnly referenceDate,
         DateOnly today,
         double latitude,
         MetricDomain domain,
@@ -186,29 +341,24 @@ public sealed class RecentObservationsService : IRecentObservationsService
     {
         var periods = new List<PeriodObservation>();
 
-        foreach (var previousDay in GetPreviousDayPeriods(daily, x => x.Date, today, previousDayCount))
+        foreach (var previousDay in GetPreviousDayPeriods(daily, x => x.Date, referenceDate, today, previousDayCount))
         {
             periods.Add(CreateDailyPeriod(previousDay.Title, previousDay.Record, domain, previousDay.Offset));
         }
 
-        var latestDate = daily.Max(x => x.Date);
-        var latestSevenDaysStart = latestDate.AddDays(-(LatestSevenDaysLength - 1));
+        var latestSevenDaysStart = referenceDate.AddDays(-(LatestSevenDaysLength - 1));
         AddRangePeriod(
             periods,
-            GetRecordsInRange(daily, latestSevenDaysStart, latestDate),
+            GetRecordsInRange(daily, latestSevenDaysStart, referenceDate),
             latestSevenDaysStart,
-            latestDate,
+            referenceDate,
             PeriodKind.LatestSevenDays,
-            domain,
-            note: CreateLatestAvailableDataNote(latestDate, today));
+            domain);
 
-        if (latestDate.Year == today.Year && latestDate.Month == today.Month)
-        {
-            var monthStart = new DateOnly(latestDate.Year, latestDate.Month, 1);
-            AddRangePeriod(periods, GetRecordsInRange(daily, monthStart, latestDate), monthStart, latestDate, PeriodKind.CurrentMonth, domain);
-        }
+        var monthStart = new DateOnly(referenceDate.Year, referenceDate.Month, 1);
+        AddRangePeriod(periods, GetRecordsInRange(daily, monthStart, referenceDate), monthStart, referenceDate, PeriodKind.CurrentMonth, domain);
 
-        foreach (var previousMonth in GetPreviousMonthPeriods(today, previousMonthCount))
+        foreach (var previousMonth in GetPreviousMonthPeriods(referenceDate, previousMonthCount))
         {
             AddRangePeriod(
                 periods,
@@ -220,7 +370,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
                 previousMonthOffset: previousMonth.Offset);
         }
 
-        var currentSeasonToDate = GetCurrentSeasonToDatePeriod(today, latitude, latestDate);
+        var currentSeasonToDate = GetCurrentSeasonToDatePeriod(referenceDate, latitude);
         if (currentSeasonToDate is not null)
         {
             AddRangePeriod(
@@ -234,7 +384,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
                 isSeasonToDate: true);
         }
 
-        var previousSeasons = MeteorologicalSeasonCalculator.GetPreviousSeasons(today, latitude, previousSeasonCount);
+        var previousSeasons = MeteorologicalSeasonCalculator.GetPreviousSeasons(referenceDate, latitude, previousSeasonCount);
         for (var index = 0; index < previousSeasons.Count; index++)
         {
             var previousSeason = previousSeasons[index];
@@ -249,26 +399,20 @@ public sealed class RecentObservationsService : IRecentObservationsService
                 periodOffset: index + 1);
         }
 
-        if (latestDate.Year == today.Year)
-        {
-            var ytdStart = new DateOnly(latestDate.Year, 1, 1);
-            AddRangePeriod(periods, GetRecordsInRange(daily, ytdStart, latestDate), ytdStart, latestDate, PeriodKind.YearToDate, domain);
-        }
+        var ytdStart = new DateOnly(referenceDate.Year, 1, 1);
+        AddRangePeriod(periods, GetRecordsInRange(daily, ytdStart, referenceDate), ytdStart, referenceDate, PeriodKind.YearToDate, domain);
 
         return periods;
     }
 
-    private static MeteorologicalSeasonPeriod? GetCurrentSeasonToDatePeriod(DateOnly today, double latitude, DateOnly latestDate)
+    private static MeteorologicalSeasonPeriod? GetCurrentSeasonToDatePeriod(DateOnly referenceDate, double latitude)
     {
-        if (!MeteorologicalSeasonCalculator.IsCurrentSeasonToDateMeaningful(today))
+        if (!MeteorologicalSeasonCalculator.IsCurrentSeasonToDateMeaningful(referenceDate))
         {
             return null;
         }
 
-        var currentSeason = MeteorologicalSeasonCalculator.GetCurrentSeason(today, latitude);
-        return latestDate >= currentSeason.StartDate && latestDate <= currentSeason.EndDate
-            ? currentSeason with { EndDate = latestDate }
-            : null;
+        return MeteorologicalSeasonCalculator.GetCurrentSeason(referenceDate, latitude) with { EndDate = referenceDate };
     }
 
     private static PeriodObservation CreateDailyPeriod(string title, DailyObservation record, MetricDomain domain, int periodOffset)
@@ -356,43 +500,10 @@ public sealed class RecentObservationsService : IRecentObservationsService
         };
     }
 
-    private async Task<HistoricalDailySeries> GetTemperatureHistoricalDaily(Guid locationId, DataAdjustment? preferredAdjustment)
+    private async Task<HistoricalDailySeries> GetTemperatureMeanHistoricalDaily(Guid locationId, DataAdjustment? preferredAdjustment)
     {
-        // Prefer TMax + TMin so daily max/min extremes have history; derive mean
-        // as (max + min) / 2, consistent with how the recent daily mean is built.
-        var maxTask = GetHistoricalRecords(locationId, DataType.TempMax, preferredAdjustment);
-        var minTask = GetHistoricalRecords(locationId, DataType.TempMin, preferredAdjustment);
-        await Task.WhenAll(maxTask, minTask);
-
-        var maxResponse = await maxTask;
-        var minResponse = await minTask;
-
-        if (maxResponse.Records.Count > 0 && minResponse.Records.Count > 0)
-        {
-            var minByDate = minResponse.Records
-                .Where(x => x.Date.HasValue && x.Value.HasValue)
-                .ToDictionary(x => x.Date!.Value, x => x.Value!.Value);
-
-            var combined = maxResponse.Records
-                .Where(x => x.Date.HasValue && x.Value.HasValue && minByDate.ContainsKey(x.Date!.Value))
-                .Select(x =>
-                {
-                    var date = x.Date!.Value;
-                    var max = x.Value!.Value;
-                    var min = minByDate[date];
-                    return new DailyObservation(date, max, min, (max + min) / 2d, null);
-                })
-                .ToList();
-
-            return new HistoricalDailySeries(combined, GetStartYear(combined));
-        }
-
-        // Fall back to a pre-computed mean series (no daily max/min history available).
         var mean = await GetHistoricalRecords(locationId, DataType.TempMean, preferredAdjustment);
-        var meanRecords = mean.Records
-            .Where(x => x.Date.HasValue && x.Value.HasValue)
-            .Select(x => new DailyObservation(x.Date!.Value, null, null, x.Value!.Value, null))
-            .ToList();
+        var meanRecords = BuildDailyTemperatureMean(mean.Records);
 
         return new HistoricalDailySeries(meanRecords, GetStartYear(meanRecords));
     }
@@ -426,7 +537,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         var sameDate = history.Records
             .Where(x => x.Date.Month == period.StartDate.Month &&
                         x.Date.Day == period.StartDate.Day &&
-                        x.Date.Year != period.StartDate.Year)
+                        x.Date.Year < period.StartDate.Year)
             .ToList();
 
         var result = new Dictionary<string, HistoricalValues>();
@@ -460,7 +571,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
                 Record = x,
                 EquivalentPeriodYear = GetEquivalentPeriodYear(x.Date, period.StartDate, period.EndDate),
             })
-            .Where(x => x.EquivalentPeriodYear != period.StartDate.Year)
+            .Where(x => x.EquivalentPeriodYear < period.StartDate.Year)
             .GroupBy(x => x.EquivalentPeriodYear)
             .Select(group => new EquivalentPeriodGroup(
                 group.Key,
@@ -799,6 +910,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
     private static IEnumerable<PreviousDayPeriod<TRecord>> GetPreviousDayPeriods<TRecord>(
         IEnumerable<TRecord> daily,
         Func<TRecord, DateOnly> getDate,
+        DateOnly referenceDate,
         DateOnly today,
         int previousDayCount)
     {
@@ -807,7 +919,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             .Take(previousDayCount)
             .Select((record, index) => new PreviousDayPeriod<TRecord>(
                 record,
-                CreateDailyPeriodTitle(getDate(record), today),
+                CreateDailyPeriodTitle(getDate(record), referenceDate, today),
                 index + 1));
     }
 
@@ -940,26 +1052,26 @@ public sealed class RecentObservationsService : IRecentObservationsService
         };
     }
 
-    private static string CreateDailyPeriodTitle(DateOnly date, DateOnly today)
+    private static string CreateDailyPeriodTitle(DateOnly date, DateOnly referenceDate, DateOnly today)
     {
-        if (date == today)
+        if (date == referenceDate && referenceDate == today)
         {
-            return "Today - " + FormatDayMonth(date);
+            return "Today";
         }
 
-        if (date == today.AddDays(-1))
+        if (date == referenceDate && referenceDate == today.AddDays(-1))
         {
-            return "Yesterday - " + FormatDayMonth(date);
+            return "Yesterday";
         }
 
-        return FormatDayMonth(date);
-    }
+        if (date == referenceDate.AddDays(-1) && referenceDate == today)
+        {
+            return "Yesterday";
+        }
 
-    private static string? CreateLatestAvailableDataNote(DateOnly latestDate, DateOnly today)
-    {
-        return latestDate < today.AddDays(-RecentObservationStaleThresholdDays)
-            ? $"Latest available data ends {FormatDayMonthYear(latestDate)}"
-            : null;
+        return date.Year == today.Year
+            ? FormatDayMonth(date)
+            : FormatDayMonthYear(date);
     }
 
     private static string FormatDayMonth(DateOnly date)
@@ -1160,6 +1272,11 @@ public sealed class RecentObservationsService : IRecentObservationsService
         GetPrecipitationTone);
 
     private sealed record DailyObservation(DateOnly Date, double? Max, double? Min, double? Mean, double? Precipitation);
+
+    private sealed record ReferenceDateResolution(
+        DateOnly? ReferenceDate,
+        DateOnly? MinimumReferenceDate,
+        DateOnly? MaximumReferenceDate);
 
     private enum MetricAggregation
     {

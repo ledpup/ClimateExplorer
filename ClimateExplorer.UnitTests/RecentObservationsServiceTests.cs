@@ -263,7 +263,7 @@ public class RecentObservationsServiceTests
     }
 
     [TestMethod]
-    public async Task GetPrecipitationRecordsLabelsDelayedLatestSevenDaysWithActualDateRangeAndStaleNote()
+    public async Task GetPrecipitationRecordsLabelsDelayedLatestSevenDaysWithActualDateRange()
     {
         var latestDate = new DateOnly(2026, 6, 2);
         var latestSevenDaysStart = new DateOnly(2026, 5, 27);
@@ -286,9 +286,196 @@ public class RecentObservationsServiceTests
         Assert.AreEqual(latestSevenDaysStart, latestSevenDays.PeriodStartDate);
         Assert.AreEqual(latestDate, latestSevenDays.PeriodEndDate);
         Assert.AreEqual("7mm", latestSevenDays.PrimaryValue);
-        Assert.AreEqual("Latest available data ends 2 Jun 2026", latestSevenDays.Note);
+        Assert.IsNull(latestSevenDays.Note);
         Assert.IsTrue(latestSevenDays.HasComparison);
         Assert.AreEqual($"Wettest 7 days ending {endLabel}", latestSevenDays.HistoricalMaxLabel);
+    }
+
+    [TestMethod]
+    public async Task GetPrecipitationRecordsDefaultsReferenceDateToLatestAvailableObservation()
+    {
+        var today = new DateOnly(2026, 6, 14);
+        var latestDate = today.AddDays(-1);
+        var service = CreateService(
+            recentStartDate: new DateOnly(2026, 6, 1),
+            recentEndDate: latestDate,
+            today: today);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var dailyTile = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Daily);
+        var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
+
+        Assert.AreEqual(latestDate, result.ReferenceDate);
+        Assert.AreEqual(new DateOnly(2026, 6, 1), result.MinimumReferenceDate);
+        Assert.AreEqual(latestDate, result.MaximumReferenceDate);
+        Assert.AreEqual("Yesterday", dailyTile.PeriodTitle);
+        Assert.AreEqual(latestDate, latestSevenDays.PeriodEndDate);
+    }
+
+    [TestMethod]
+    public async Task GetPrecipitationRecordsUsesReferenceDateWhenLatestDataIsTwoWeeksOld()
+    {
+        var today = new DateOnly(2026, 6, 14);
+        var latestDate = today.AddDays(-14);
+        var service = CreateService(
+            recentStartDate: new DateOnly(2026, 5, 1),
+            recentEndDate: latestDate,
+            today: today);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
+        var currentMonth = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.CurrentMonth);
+        var yearToDate = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.YearToDate);
+
+        Assert.AreEqual(latestDate, result.ReferenceDate);
+        Assert.AreEqual(new DateOnly(2026, 5, 25), latestSevenDays.PeriodStartDate);
+        Assert.AreEqual(latestDate, latestSevenDays.PeriodEndDate);
+        Assert.AreEqual("May 2026", currentMonth.PeriodTitle);
+        Assert.AreEqual(new DateOnly(2026, 5, 1), currentMonth.PeriodStartDate);
+        Assert.AreEqual(latestDate, currentMonth.PeriodEndDate);
+        Assert.AreEqual(new DateOnly(2026, 1, 1), yearToDate.PeriodStartDate);
+        Assert.AreEqual(latestDate, yearToDate.PeriodEndDate);
+    }
+
+    [TestMethod]
+    public async Task GetPrecipitationRecordsUsesClimateRecordsWhenLatestAvailableDataIsInPreviousYear()
+    {
+        var latestDate = new DateOnly(2024, 8, 15);
+        var historicalRecords = CreateDailyRecords(new DateOnly(2024, 1, 1), latestDate);
+        var service = CreateService(
+            recentStartDate: new DateOnly(2026, 1, 1),
+            recentEndDate: new DateOnly(2025, 12, 31),
+            historicalRecords: historicalRecords,
+            today: new DateOnly(2026, 6, 14));
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 1,
+            previousSeasonCount: 1);
+        var dailyTile = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Daily);
+        var currentMonth = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.CurrentMonth);
+        var previousMonth = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.PreviousMonth);
+
+        Assert.AreEqual(latestDate, result.ReferenceDate);
+        Assert.AreEqual("15 Aug 2024", dailyTile.PeriodTitle);
+        Assert.AreEqual("August 2024 to date", currentMonth.PeriodTitle);
+        Assert.AreEqual(new DateOnly(2024, 8, 1), currentMonth.PeriodStartDate);
+        Assert.AreEqual(latestDate, currentMonth.PeriodEndDate);
+        Assert.AreEqual("Last month - July 2024", previousMonth.PeriodTitle);
+    }
+
+    [TestMethod]
+    public async Task GetPrecipitationRecordsShowsObservedValuesWithoutComparisonForOneYearOfData()
+    {
+        var service = CreateService(
+            recentStartDate: new DateOnly(2025, 1, 1),
+            recentEndDate: new DateOnly(2025, 12, 31),
+            today: new DateOnly(2026, 6, 14));
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
+
+        Assert.AreEqual(new DateOnly(2025, 12, 31), result.ReferenceDate);
+        Assert.AreEqual("7mm", latestSevenDays.PrimaryValue);
+        Assert.IsFalse(latestSevenDays.HasComparison);
+        Assert.AreEqual("Not enough equivalent historical daily periods are available.", latestSevenDays.PercentileSentence);
+    }
+
+    [TestMethod]
+    public async Task GetPrecipitationRecordsGeneratesMeaningfulTilesForSixMonthsOfData()
+    {
+        var service = CreateService(
+            recentStartDate: new DateOnly(2024, 1, 1),
+            recentEndDate: new DateOnly(2024, 6, 30),
+            today: new DateOnly(2026, 6, 14));
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: RecentObservationPeriodSelection.MaximumPreviousDayCount,
+            previousMonthCount: 11,
+            previousSeasonCount: 3);
+        var previousMonths = result.Tiles
+            .Where(x => x.PeriodKind == RecentObservationPeriodKind.PreviousMonth)
+            .Select(x => x.PeriodTitle)
+            .ToArray();
+
+        Assert.AreEqual(new DateOnly(2024, 6, 30), result.ReferenceDate);
+        CollectionAssert.AreEqual(
+            new[] { "Last month - May 2024", "April 2024", "March 2024", "February 2024", "January 2024" },
+            previousMonths);
+        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.YearToDate));
+    }
+
+    [TestMethod]
+    public async Task GetPrecipitationRecordsSnapsRequestedReferenceDateToLatestAvailableObservationOnOrBeforeSelection()
+    {
+        var requestedReferenceDate = new DateOnly(2026, 4, 17);
+        var resolvedReferenceDate = new DateOnly(2026, 4, 15);
+        var service = CreateService(
+            recentStartDate: new DateOnly(2026, 1, 1),
+            recentEndDate: new DateOnly(2026, 6, 14),
+            includeRecentRecord: date => date != new DateOnly(2026, 4, 16) && date != requestedReferenceDate);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 2,
+            previousMonthCount: 0,
+            previousSeasonCount: 0,
+            referenceDate: requestedReferenceDate);
+        var dailyTiles = result.Tiles
+            .Where(x => x.PeriodKind == RecentObservationPeriodKind.Daily)
+            .ToList();
+        var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
+        var currentMonth = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.CurrentMonth);
+        var yearToDate = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.YearToDate);
+
+        Assert.AreEqual(requestedReferenceDate, result.RequestedReferenceDate);
+        Assert.AreEqual(resolvedReferenceDate, result.ReferenceDate);
+        Assert.AreEqual("No observation is available for 17 Apr 2026; showing 15 Apr 2026 instead.", result.ReferenceDateNote);
+        CollectionAssert.AreEqual(
+            new[] { resolvedReferenceDate, new DateOnly(2026, 4, 14) },
+            dailyTiles.Select(x => x.PeriodStartDate).ToArray());
+        Assert.AreEqual(new DateOnly(2026, 4, 9), latestSevenDays.PeriodStartDate);
+        Assert.AreEqual(resolvedReferenceDate, latestSevenDays.PeriodEndDate);
+        Assert.AreEqual(new DateOnly(2026, 4, 1), currentMonth.PeriodStartDate);
+        Assert.AreEqual(resolvedReferenceDate, currentMonth.PeriodEndDate);
+        Assert.AreEqual(new DateOnly(2026, 1, 1), yearToDate.PeriodStartDate);
+        Assert.AreEqual(resolvedReferenceDate, yearToDate.PeriodEndDate);
+    }
+
+    [TestMethod]
+    public async Task GetPrecipitationRecordsDeduplicatesOverlappingRecentAndClimateRecordsByDate()
+    {
+        var historicalRecords = CreateDailyRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14), _ => 1d);
+        var service = CreateService(
+            recentStartDate: new DateOnly(2026, 6, 10),
+            recentEndDate: new DateOnly(2026, 6, 14),
+            historicalRecords: historicalRecords,
+            recentValue: _ => 10d);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
+
+        Assert.AreEqual("52mm", latestSevenDays.PrimaryValue);
+        Assert.AreEqual(7, latestSevenDays.AvailableObservationCount);
+        Assert.AreEqual(7, latestSevenDays.ExpectedObservationCount);
     }
 
     [TestMethod]
@@ -1224,7 +1411,8 @@ public class RecentObservationsServiceTests
         DateOnly? recentEndDate = null,
         List<DataRecord>? historicalRecords = null,
         Func<DateOnly, bool>? includeRecentRecord = null,
-        DateOnly? today = null)
+        DateOnly? today = null,
+        Func<DateOnly, double>? recentValue = null)
     {
         var dataService = new Mock<IDataService>();
         SetupEmptyClimateRecords(dataService);
@@ -1237,7 +1425,7 @@ public class RecentObservationsServiceTests
                 Records = CreateDailyRecords(
                     recentStartDate ?? new DateOnly(2025, 7, 1),
                     recentEndDate ?? new DateOnly(2026, 6, 14),
-                    _ => 1d,
+                    recentValue ?? (_ => 1d),
                     includeRecentRecord),
             });
 

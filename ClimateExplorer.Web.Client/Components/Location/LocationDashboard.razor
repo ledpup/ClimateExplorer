@@ -49,7 +49,7 @@
             }
             @if (RecentObservationsSupported)
             {
-                <OverviewField Label="Recent observations" OnClick="@ShowRecentObservationsAsync" ToolTip="Compare recent daily observations with historical climate records"><Value>@(DateTime.Today.ToString("d MMM"))</Value></OverviewField>
+                <OverviewField Label="Recent observations" OnClick="@ShowRecentObservationsAsync" ToolTip="Compare daily observations with historical climate records"><Value>View</Value></OverviewField>
             }
             @if (Precipitation && PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
             {

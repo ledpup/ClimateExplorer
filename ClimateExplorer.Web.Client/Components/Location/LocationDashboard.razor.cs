@@ -190,7 +190,7 @@ public partial class LocationDashboard
             }
 
             var recentObservationsSupport = await DataService!.GetRecentObservations(Location!.Id, DataType.TempMax, isLocationSupported: true);
-            RecentObservationsSupported = recentObservationsSupport.IsSupported;
+            RecentObservationsSupported = recentObservationsSupport.IsSupported || HasDailyClimateRecordsForRecentObservations();
 
             StripeLoadingIndicatorVisible = false;
             StateHasChanged();
@@ -256,5 +256,24 @@ public partial class LocationDashboard
             PrecipitationAnomalyRecords = null;
             PrecipitationAnomalyContent = null;
         }
+    }
+
+    private bool HasDailyClimateRecordsForRecentObservations()
+    {
+        if (Location is null || DataSetDefinitions is null)
+        {
+            return false;
+        }
+
+        var dailyDataTypes = DataSetDefinitionViewModel
+            .GetMeasurementsForLocation(DataSetDefinitions, Location.Id)
+            .Select(x => x.Item2)
+            .Where(x => x.DataResolution == DataResolution.Daily)
+            .Select(x => x.DataType)
+            .ToHashSet();
+
+        return dailyDataTypes.Contains(DataType.TempMean) ||
+               (dailyDataTypes.Contains(DataType.TempMax) && dailyDataTypes.Contains(DataType.TempMin)) ||
+               dailyDataTypes.Contains(DataType.Precipitation);
     }
 }

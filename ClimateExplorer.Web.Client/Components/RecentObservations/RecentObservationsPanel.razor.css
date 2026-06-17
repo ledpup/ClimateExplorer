@@ -27,6 +27,30 @@
     grid-column: 1 / -1;
 }
 
+.recent-observations-reference-date {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.recent-observations-reference-date label {
+    color: #425f59;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.recent-observations-reference-date input {
+    width: 10.25rem;
+}
+
+.recent-observations-reference-date span {
+    color: #596f6a;
+    font-size: 0.85rem;
+}
+
 .recent-observations-threshold {
     align-items: center;
     display: flex;
@@ -110,6 +134,11 @@
 }
 
 @media (max-width: 520px) {
+    .recent-observations-reference-date {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
     .recent-observations-threshold {
         align-items: flex-start;
         flex-direction: column;
