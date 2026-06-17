@@ -13,7 +13,7 @@ public partial class Index : ChartablePage
 {
     private Collapsible? suggestedChartsCollapsible;
     private InfoPanel? siteOverviewPanel;
-    private LocationInfo? locationInfoComponent;
+    private LocationDashboard? locationInfoComponent;
 
     public Index()
     {

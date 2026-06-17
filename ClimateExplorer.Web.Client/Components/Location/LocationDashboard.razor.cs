@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
 
-public partial class LocationInfo
+public partial class LocationDashboard
 {
     private SidePanel? climateRecordsSidePanel;
     private SidePanel? recentObservationsSidePanel;
@@ -24,7 +24,7 @@ public partial class LocationInfo
     public IDataService? DataService { get; set; }
 
     [Inject]
-    public ILogger<LocationInfo>? Logger { get; set; }
+    public ILogger<LocationDashboard>? Logger { get; set; }
 
     [Inject]
     public IJSRuntime? JS { get; set; }
