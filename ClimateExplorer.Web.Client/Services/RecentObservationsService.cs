@@ -950,7 +950,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         return $"{value.ToString("0.0", CultureInfo.InvariantCulture)}°C";
     }
 
-    private static string FormatRainfall(double value)
+    private static string FormatPrecipitation(double value)
     {
         return $"{value.ToString("0.#", CultureInfo.InvariantCulture)}mm";
     }
@@ -1059,32 +1059,32 @@ public sealed class RecentObservationsService : IRecentObservationsService
         FormatTemperature,
         "Mean");
 
-    private static readonly Metric RainfallMetric = new(
+    private static readonly Metric PrecipitationMetric = new(
         "precip.total",
-        "Rainfall total",
-        "Rainfall total",
-        x => x.Rainfall,
+        "Precipitation total",
+        "Precipitation total",
+        x => x.Precipitation,
         MetricAggregation.Sum,
-        FormatRainfall,
+        FormatPrecipitation,
         "Total precipitation");
 
-    private static readonly Metric HighestDailyRainfallMetric = new(
+    private static readonly Metric HighestDailyPrecipitationMetric = new(
         "precip.daily-high",
-        "Highest daily rainfall",
-        "Highest daily rainfall",
-        x => x.Rainfall,
+        "Highest daily precipitation",
+        "Highest daily precipitation",
+        x => x.Precipitation,
         MetricAggregation.Max,
-        FormatRainfall,
-        "Highest daily rainfall");
+        FormatPrecipitation,
+        "Highest daily precipitation");
 
-    private static readonly Metric DailyRainfallMetric = new(
+    private static readonly Metric DailyPrecipitationMetric = new(
         "precip.total",
-        "Rainfall",
-        "Rainfall",
-        x => x.Rainfall,
+        "Precipitation",
+        "Precipitation",
+        x => x.Precipitation,
         MetricAggregation.Sum,
-        FormatRainfall,
-        "Rainfall");
+        FormatPrecipitation,
+        "Precipitation");
 
     private static readonly MetricDomain TemperatureDomain = new(
         MeanTemperatureMetric,
@@ -1105,16 +1105,16 @@ public sealed class RecentObservationsService : IRecentObservationsService
         GetTemperatureTone);
 
     private static readonly MetricDomain PrecipitationDomain = new(
-        RainfallMetric,
+        PrecipitationMetric,
         [],
         [
-            new MetricGroup("period", "Period", [RainfallMetric]),
-            new MetricGroup("daily-extremes", "Daily Extremes", [HighestDailyRainfallMetric]),
+            new MetricGroup("period", "Period", [PrecipitationMetric]),
+            new MetricGroup("daily-extremes", "Daily Extremes", [HighestDailyPrecipitationMetric]),
         ],
         [
-            new MetricGroup("day", "Day", [DailyRainfallMetric]),
+            new MetricGroup("day", "Day", [DailyPrecipitationMetric]),
         ],
-        "Rainfall total",
+        "Precipitation total",
         ShowHistoricalMin: false,
         "Wettest",
         "Driest",
@@ -1122,7 +1122,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         (_, startYear, ranking) => RecentObservationComparison.BuildPrecipitationPercentileSentence(startYear, ranking),
         GetPrecipitationTone);
 
-    private sealed record DailyObservation(DateOnly Date, double? Max, double? Min, double? Mean, double? Rainfall);
+    private sealed record DailyObservation(DateOnly Date, double? Max, double? Min, double? Mean, double? Precipitation);
 
     private enum MetricAggregation
     {
