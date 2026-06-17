@@ -295,7 +295,7 @@ public static partial class SuggestedPresetLists
                     },
                     new SuggestedChartPresetModel()
                     {
-                        Title = "ENSO + rainfall",
+                        Title = "ENSO + precipitation",
                         Description = "Monthly chart of the Nino 3.4 index and precipitation",
                         StartYear = 2000,
                         ChartSeriesList =

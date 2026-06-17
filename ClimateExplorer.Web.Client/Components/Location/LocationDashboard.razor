@@ -3,6 +3,7 @@
 @using ClimateExplorer.Core
 @using ClimateExplorer.Core.Model
 @using ClimateExplorer.Core.ViewModel
+@using ClimateExplorer.Web.Client.Components.ClimateRecords
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.UiModel
 @using ClimateExplorer.Web.UiModel
@@ -24,7 +25,7 @@
                 </DelayedTooltip>
                 @if (LocationCollapsible!.ShowContent)
                 {
-                    <DelayedTooltip Multiline="true" Style="display: inline-block" Text="Toggle precipitation data.&#10;Shows the annual rainfall anomaly stripe&#10;and wettest/driest years">
+                    <DelayedTooltip Multiline="true" Style="display: inline-block" Text="Toggle precipitation data.&#10;Shows the annual precipitation anomaly stripe&#10;and wettest/driest years">
                         <button class="chart-control" @onclick="() => TogglePrecipitation()"><i class="@( Precipitation ? "fas fa-check-square" : "fas fa-square" )"></i> Precipitation</button>
                     </DelayedTooltip>
                 }
