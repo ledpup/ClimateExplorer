@@ -773,7 +773,7 @@ public class RecentObservationsServiceTests
         Assert.AreEqual("7mm", period.Metrics[0].CurrentValue);
 
         var dailyExtremes = lastWeek.MetricGroups.Single(x => x.Key == "daily-extremes");
-        CollectionAssert.AreEqual(new[] { "Highest daily rainfall" }, dailyExtremes.Metrics.Select(x => x.Label).ToArray());
+        CollectionAssert.AreEqual(new[] { "Highest daily precipitation" }, dailyExtremes.Metrics.Select(x => x.Label).ToArray());
         Assert.AreEqual("1mm", dailyExtremes.Metrics[0].CurrentValue);
     }
 
@@ -792,7 +792,7 @@ public class RecentObservationsServiceTests
         Assert.AreEqual("day", dayGroup.Key);
         var total = dayGroup.Metrics.Single();
 
-        Assert.AreEqual("Rainfall", total.Label);
+        Assert.AreEqual("Precipitation", total.Label);
         Assert.AreEqual("1mm", total.CurrentValue);
         Assert.IsFalse(total.HasRecords);
         Assert.IsNull(total.RecordHigh);
