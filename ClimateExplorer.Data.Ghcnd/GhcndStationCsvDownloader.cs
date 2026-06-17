@@ -12,7 +12,15 @@ public static class GhcndStationCsvDownloader
     public static async Task<string> DownloadCsvAsync(HttpClient httpClient, string stationId)
     {
         var url = GetDownloadUrl(stationId);
-        var response = await httpClient.GetAsync(url);
-        return await response.Content.ReadAsStringAsync();
+        try
+        {
+            using var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"An error occurred while downloading the CSV for station {stationId} from {url}.", ex);
+        }
     }
 }
