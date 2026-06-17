@@ -1,5 +1,6 @@
 #pragma warning disable SA1200 // Using directives should be placed correctly
 using System.Text.Json.Serialization;
+using ClimateExplorer.Data.Ghcnd;
 using ClimateExplorer.WebApi;
 using ClimateExplorer.WebApi.Infrastructure;
 using Microsoft.AspNetCore.Builder;
@@ -49,7 +50,8 @@ builder.Services.AddSingleton(
     new ClimateExplorerApiServices(
         new FileBackedTwoLayerCache("cache"),
         new FileBackedTwoLayerCache("cache-longterm"),
-        BomHttpClientFactory.CreateBomHttpClient()));
+        BomHttpClientFactory.CreateBomHttpClient(),
+        GhcndHttpClientFactory.CreateHttpClient()));
 
 var app = builder.Build();
 app.UseCors();

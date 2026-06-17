@@ -3,7 +3,7 @@ namespace ClimateExplorer.Web.Client.UiModel;
 public enum RecentObservationPeriodKind
 {
     Daily,
-    LastWeek,
+    LatestSevenDays,
     CurrentMonth,
     PreviousMonth,
     CurrentSeason,

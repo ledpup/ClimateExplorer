@@ -178,6 +178,27 @@ public static class RecentObservationComparison
         return $"{direction} than {FormatPercent(percentile)}% of comparable periods{FormatSince(startYear)}";
     }
 
+    /// <summary>
+    /// Record status considering both ends of the historical range: a value at the
+    /// top (highest ever) or bottom (lowest ever) of the range is a record. Values in
+    /// between return <see cref="RecentObservationRecordStatus.None"/> and should be
+    /// shown as a rank toward whichever end they are nearer.
+    /// </summary>
+    public static RecentObservationRecordStatus DetermineRecordStatus(RecentObservationComparisonResult ranking)
+    {
+        if (ranking.IsNewHighRecord || ranking.IsNewLowRecord)
+        {
+            return RecentObservationRecordStatus.NewRecord;
+        }
+
+        var equalsHighest = ranking.IsTiedHighRecord && ranking.HighRank == 1;
+        var equalsLowest = ranking.IsTiedLowRecord && ranking.LowRank == 1;
+
+        return equalsHighest || equalsLowest
+            ? RecentObservationRecordStatus.EqualRecord
+            : RecentObservationRecordStatus.None;
+    }
+
     public static string FormatOrdinal(int value)
     {
         var abs = Math.Abs(value);
