@@ -644,7 +644,6 @@ public sealed class RecentObservationsService : IRecentObservationsService
         {
             RecentObservationRecordStatus.NewRecord => "New record",
             RecentObservationRecordStatus.EqualRecord => "Equal record",
-            RecentObservationRecordStatus.BelowRecord => "Below record",
             _ => null,
         };
     }

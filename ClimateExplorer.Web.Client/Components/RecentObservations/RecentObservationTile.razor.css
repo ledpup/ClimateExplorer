@@ -298,11 +298,6 @@
     color: #3a5b73;
 }
 
-.recent-observation-detail-status.status-below {
-    background: #eef0ef;
-    color: #5d6d69;
-}
-
 @media (min-width: 641px) {
     .recent-observation-detail-metrics {
         grid-template-columns: repeat(2, minmax(0, 1fr));

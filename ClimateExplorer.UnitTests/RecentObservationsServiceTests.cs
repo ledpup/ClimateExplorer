@@ -814,7 +814,7 @@ public class RecentObservationsServiceTests
         Assert.AreEqual("252mm", total.RecordValue);
         Assert.AreEqual("2025", total.RecordYear);
         Assert.AreEqual(RecentObservationRecordStatus.BelowRecord, total.RecordStatus);
-        Assert.AreEqual("Below record", total.RecordStatusText);
+        Assert.IsNull(total.RecordStatusText);
 
         var highestDaily = lastWeek.MetricGroups.Single(x => x.Key == "daily-extremes").Metrics.Single();
         Assert.AreEqual("1mm", highestDaily.CurrentValue);

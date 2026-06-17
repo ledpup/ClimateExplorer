@@ -115,7 +115,7 @@ public sealed record RecentObservationMetricViewModel
     public string? RecordValue { get; init; }       // historical record (formatted)
     public string? RecordYear { get; init; }
     public RecentObservationRecordStatus RecordStatus { get; init; }
-    public string? RecordStatusText { get; init; }   // "New record" / "Equal record" / "Below record"
+    public string? RecordStatusText { get; init; }   // "New record" / "Equal record" (not below; not notable)
     public string? RankText { get; init; }           // e.g. "3rd highest of 27" (when available)
 }
 
