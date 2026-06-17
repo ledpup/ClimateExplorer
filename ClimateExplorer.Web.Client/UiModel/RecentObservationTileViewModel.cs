@@ -21,6 +21,7 @@ public sealed record RecentObservationTileViewModel
     public bool HasComparison { get; init; }
     public string? Note { get; init; }
     public List<RecentObservationStatViewModel> Stats { get; init; } = [];
+    public IReadOnlyList<RecentObservationMetricGroupViewModel> MetricGroups { get; init; } = [];
     public int AvailableObservationCount { get; init; } = 1;
     public int ExpectedObservationCount { get; init; } = 1;
 
@@ -55,7 +56,24 @@ public sealed record RecentObservationTileViewModel
             HasComparison = false,
             Tone = RecentObservationTileTone.Unavailable,
             Note = note,
+            MetricGroups = StripComparisons(MetricGroups),
         };
+    }
+
+    private static IReadOnlyList<RecentObservationMetricGroupViewModel> StripComparisons(
+        IReadOnlyList<RecentObservationMetricGroupViewModel> groups)
+    {
+        return [.. groups.Select(group => group with
+        {
+            Metrics = [.. group.Metrics.Select(metric => metric with
+            {
+                RankText = null,
+                RecordStatus = Core.Calculators.RecentObservationRecordStatus.None,
+                RecordStatusText = null,
+                RecordHigh = null,
+                RecordLow = null,
+            })],
+        })];
     }
 
     private bool IsBelowCompletenessThreshold(float threshold)
