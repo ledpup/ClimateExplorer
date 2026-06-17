@@ -85,20 +85,23 @@
                             <div class="recent-observation-detail-metric">
                                 <dt>@metric.Label</dt>
                                 <dd>
-                                    <span class="recent-observation-detail-current">@metric.CurrentValue</span>
-                                    @if (metric.HasRecord)
-                                    {
-                                        <span class="recent-observation-detail-record">
-                                            Record: @metric.RecordValue@(metric.RecordYear is not null ? $" – {metric.RecordYear}" : string.Empty)
-                                        </span>
+                                    <div class="recent-observation-detail-headline">
+                                        <span class="recent-observation-detail-current">@metric.CurrentValue</span>
                                         @if (!string.IsNullOrWhiteSpace(metric.RecordStatusText))
                                         {
                                             <span class="recent-observation-detail-status status-@StatusClass(metric.RecordStatus)">@metric.RecordStatusText</span>
                                         }
-                                        @if (!string.IsNullOrWhiteSpace(metric.RankText))
+                                        else if (!string.IsNullOrWhiteSpace(metric.RankText))
                                         {
                                             <span class="recent-observation-detail-rank">@metric.RankText</span>
                                         }
+                                    </div>
+                                    @foreach (var record in metric.Records)
+                                    {
+                                        <span class="recent-observation-detail-record">
+                                            <span class="recent-observation-detail-record-label">@record.Label:</span>
+                                            @record.Value@(record.Year is not null ? $" ({record.Year})" : string.Empty)
+                                        </span>
                                     }
                                 </dd>
                             </div>

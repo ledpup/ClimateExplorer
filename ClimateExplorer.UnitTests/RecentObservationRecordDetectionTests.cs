@@ -7,49 +7,33 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 public class RecentObservationRecordDetectionTests
 {
     [TestMethod]
-    public void HighDirectionDetectsNewRecord()
+    public void DetectsNewRecordAtEitherExtreme()
     {
-        var ranking = new RecentObservationComparisonResult { IsNewHighRecord = true, HighRank = 1 };
+        var newHigh = new RecentObservationComparisonResult { IsNewHighRecord = true, HighRank = 1 };
+        var newLow = new RecentObservationComparisonResult { IsNewLowRecord = true, LowRank = 1 };
 
-        Assert.AreEqual(
-            RecentObservationRecordStatus.NewRecord,
-            RecentObservationComparison.DetermineRecordStatus(ranking, RecentObservationRecordDirection.High));
+        Assert.AreEqual(RecentObservationRecordStatus.NewRecord, RecentObservationComparison.DetermineRecordStatus(newHigh));
+        Assert.AreEqual(RecentObservationRecordStatus.NewRecord, RecentObservationComparison.DetermineRecordStatus(newLow));
     }
 
     [TestMethod]
-    public void HighDirectionDetectsEqualRecordOnlyAtRankOne()
+    public void DetectsEqualRecordOnlyWhenTiedAtAnExtreme()
     {
         var tiedTop = new RecentObservationComparisonResult { IsTiedHighRecord = true, HighRank = 1 };
-        var tiedLower = new RecentObservationComparisonResult { IsTiedHighRecord = true, HighRank = 3 };
+        var tiedBottom = new RecentObservationComparisonResult { IsTiedLowRecord = true, LowRank = 1 };
+        var tiedMidway = new RecentObservationComparisonResult { IsTiedHighRecord = true, HighRank = 3 };
 
-        Assert.AreEqual(
-            RecentObservationRecordStatus.EqualRecord,
-            RecentObservationComparison.DetermineRecordStatus(tiedTop, RecentObservationRecordDirection.High));
-        Assert.AreEqual(
-            RecentObservationRecordStatus.BelowRecord,
-            RecentObservationComparison.DetermineRecordStatus(tiedLower, RecentObservationRecordDirection.High));
+        Assert.AreEqual(RecentObservationRecordStatus.EqualRecord, RecentObservationComparison.DetermineRecordStatus(tiedTop));
+        Assert.AreEqual(RecentObservationRecordStatus.EqualRecord, RecentObservationComparison.DetermineRecordStatus(tiedBottom));
+        Assert.AreEqual(RecentObservationRecordStatus.None, RecentObservationComparison.DetermineRecordStatus(tiedMidway));
     }
 
     [TestMethod]
-    public void HighDirectionDetectsBelowRecord()
+    public void ValuesBetweenExtremesAreNotRecords()
     {
-        var ranking = new RecentObservationComparisonResult { HighRank = 4 };
+        var inBetween = new RecentObservationComparisonResult { HighRank = 4, LowRank = 7 };
 
-        Assert.AreEqual(
-            RecentObservationRecordStatus.BelowRecord,
-            RecentObservationComparison.DetermineRecordStatus(ranking, RecentObservationRecordDirection.High));
-    }
-
-    [TestMethod]
-    public void LowDirectionDetectsNewAndEqualRecords()
-    {
-        var newLow = new RecentObservationComparisonResult { IsNewLowRecord = true, LowRank = 1 };
-        var equalLow = new RecentObservationComparisonResult { IsTiedLowRecord = true, LowRank = 1 };
-        var belowLow = new RecentObservationComparisonResult { LowRank = 6 };
-
-        Assert.AreEqual(RecentObservationRecordStatus.NewRecord, RecentObservationComparison.DetermineRecordStatus(newLow, RecentObservationRecordDirection.Low));
-        Assert.AreEqual(RecentObservationRecordStatus.EqualRecord, RecentObservationComparison.DetermineRecordStatus(equalLow, RecentObservationRecordDirection.Low));
-        Assert.AreEqual(RecentObservationRecordStatus.BelowRecord, RecentObservationComparison.DetermineRecordStatus(belowLow, RecentObservationRecordDirection.Low));
+        Assert.AreEqual(RecentObservationRecordStatus.None, RecentObservationComparison.DetermineRecordStatus(inBetween));
     }
 
     [TestMethod]
@@ -58,9 +42,7 @@ public class RecentObservationRecordDetectionTests
         var ranking = RecentObservationComparison.Rank(100d, [1d, 2d, 3d, 4d, 5d]);
 
         Assert.IsNotNull(ranking);
-        Assert.AreEqual(
-            RecentObservationRecordStatus.NewRecord,
-            RecentObservationComparison.DetermineRecordStatus(ranking, RecentObservationRecordDirection.High));
+        Assert.AreEqual(RecentObservationRecordStatus.NewRecord, RecentObservationComparison.DetermineRecordStatus(ranking));
     }
 
     [TestMethod]
@@ -69,8 +51,15 @@ public class RecentObservationRecordDetectionTests
         var ranking = RecentObservationComparison.Rank(-5d, [1d, 2d, 3d, 4d, 5d]);
 
         Assert.IsNotNull(ranking);
-        Assert.AreEqual(
-            RecentObservationRecordStatus.NewRecord,
-            RecentObservationComparison.DetermineRecordStatus(ranking, RecentObservationRecordDirection.Low));
+        Assert.AreEqual(RecentObservationRecordStatus.NewRecord, RecentObservationComparison.DetermineRecordStatus(ranking));
+    }
+
+    [TestMethod]
+    public void IntegratesWithRankForAnInBetweenValue()
+    {
+        var ranking = RecentObservationComparison.Rank(3d, [1d, 2d, 3d, 4d, 5d]);
+
+        Assert.IsNotNull(ranking);
+        Assert.AreEqual(RecentObservationRecordStatus.None, RecentObservationComparison.DetermineRecordStatus(ranking));
     }
 }

@@ -255,17 +255,29 @@
 }
 
 .recent-observation-detail-metric dd {
-    align-items: baseline;
     color: #263a35;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    margin: 0.1rem 0 0;
+}
+
+.recent-observation-detail-headline {
+    align-items: baseline;
     column-gap: 0.5rem;
     display: flex;
     flex-wrap: wrap;
-    margin: 0.1rem 0 0;
 }
 
 .recent-observation-detail-current {
     font-size: 1.05rem;
     font-weight: 700;
+}
+
+.recent-observation-detail-rank {
+    color: #697d78;
+    font-size: 0.78rem;
+    font-weight: 600;
 }
 
 .recent-observation-detail-record {
@@ -274,10 +286,8 @@
     font-weight: 600;
 }
 
-.recent-observation-detail-rank {
+.recent-observation-detail-record-label {
     color: #697d78;
-    font-size: 0.75rem;
-    font-weight: 600;
 }
 
 .recent-observation-detail-status {

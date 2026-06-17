@@ -67,11 +67,11 @@ public sealed record RecentObservationTileViewModel
         {
             Metrics = [.. group.Metrics.Select(metric => metric with
             {
-                RecordValue = null,
-                RecordYear = null,
+                RankText = null,
                 RecordStatus = Core.Calculators.RecentObservationRecordStatus.None,
                 RecordStatusText = null,
-                RankText = null,
+                RecordHigh = null,
+                RecordLow = null,
             })],
         })];
     }

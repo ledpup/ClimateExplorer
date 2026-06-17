@@ -43,8 +43,8 @@ private sealed record Metric(
     Func<DailyObservation, double?> Select,
     MetricAggregation Aggregation,   // Mean | Sum | Max | Min
     Func<double, string> Format,
-    string DetailLabel,                          // expanded-view label
-    RecentObservationRecordDirection RecordDirection);  // High | Low
+    string DetailLabel);                         // expanded-view label
+    // (RecordDirection was later removed — ranking is now direction-free; see addenda.)
 ```
 
 Domains declare groups:
@@ -83,25 +83,23 @@ unchanged).
 
 Added to `ClimateExplorer.Core.Calculators`:
 
-```csharp
-public enum RecentObservationRecordDirection { High, Low }
-public enum RecentObservationRecordStatus { None, NewRecord, EqualRecord, BelowRecord }
+> **Superseded — see the "single rank, both record ends" addendum.** Record
+> detection is now direction-free: a value at *either* extreme is a record, and the
+> observed value gets one rank toward whichever end it is nearer.
+> `RecentObservationRecordDirection` and `RecordStatus.BelowRecord` were removed.
 
+```csharp
+public enum RecentObservationRecordStatus { None, NewRecord, EqualRecord }
+
+// Either-end detection: NewRecord if at the high OR low extreme, EqualRecord if
+// tied at an extreme, otherwise None (the value is shown as a rank instead).
 public static RecentObservationRecordStatus RecentObservationComparison.DetermineRecordStatus(
-    RecentObservationComparisonResult ranking, RecentObservationRecordDirection direction);
+    RecentObservationComparisonResult ranking);
 ```
 
-`High`: `NewRecord` if `IsNewHighRecord`; `EqualRecord` if tied at rank 1; else
-`BelowRecord`. `Low`: symmetric on the low flags. The existing `Rank` already
-produces all flags, ranks, percentiles, and `HistoricalMax/Min`; detection is a
-pure mapping over it, fully testable without the service.
-
-Per-metric record direction:
-- Daily Extremes: `Highest *` → `High`; `Lowest *` → `Low`.
-- Period temperature + precipitation: `High` (record = highest on record). Rank /
-  comparison text is direction-aware, so cold/dry anomalies are still conveyed.
-  **Product assumption** — average-minimum's "record" is treated as the warmest
-  average minimum; flip one `RecordDirection` field if the coldest is wanted.
+The existing `Rank` already produces all flags, ranks, percentiles, and
+`HistoricalMax/Min`; detection is a pure mapping over it, fully testable without
+the service.
 
 ## View models (UiModel)
 
@@ -112,17 +110,27 @@ public sealed record RecentObservationMetricViewModel
 {
     public string Label { get; init; }
     public string CurrentValue { get; init; }
-    public string? RecordValue { get; init; }       // historical record (formatted)
-    public string? RecordYear { get; init; }
+    // The observed value's single rank ("2nd highest of 102" / "3rd lowest of 102"),
+    // null at an extreme (a record) or when no history is available.
+    public string? RankText { get; init; }
     public RecentObservationRecordStatus RecordStatus { get; init; }
-    public string? RecordStatusText { get; init; }   // "New record" / "Equal record" (not below; not notable)
-    public string? RankText { get; init; }           // e.g. "3rd highest of 27" (when available)
+    public string? RecordStatusText { get; init; } // "New record" | "Equal record"
+    // Both ends of the historical range as plain reference context (no rank of their own).
+    public RecentObservationMetricRecordViewModel? RecordHigh { get; init; }
+    public RecentObservationMetricRecordViewModel? RecordLow { get; init; }
+}
+
+public sealed record RecentObservationMetricRecordViewModel
+{
+    public string Label { get; init; } // "Record high" | "Record low"
+    public string Value { get; init; } // historical record (formatted)
+    public string? Year { get; init; }
 }
 
 public sealed record RecentObservationMetricGroupViewModel
 {
-    public string Key { get; init; }     // "period" | "daily-extremes"
-    public string Title { get; init; }   // "Period" | "Daily Extremes"
+    public string Key { get; init; }     // "period" | "daily-extremes" | "day"
+    public string Title { get; init; }   // "Period" | "Daily Extremes" | "Day"
     public IReadOnlyList<RecentObservationMetricViewModel> Metrics { get; init; } = [];
 }
 ```
@@ -228,5 +236,48 @@ As-built specifics and decisions:
 
 - Playwright `Web.UiTests` coverage for the actual expand/collapse rendering,
   chevron rotation, and mobile/desktop layout (needs a running app + browser).
-- Revisit per-metric `RecordDirection` for period averages if product wants
-  cold-side records surfaced explicitly rather than via rank text.
+
+## Addendum — both record ends + single-day group (2026-06-17)
+
+Two refinements after the initial implementation:
+
+- **Daily tiles use a single-day group.** A daily tile describes one day
+  (a maximum, a minimum, a mean — not aggregates), so domains gained a separate
+  `DailyGroups` (`day` group: Maximum / Minimum / Mean for temperature, Rainfall
+  for precipitation). `BuildMetricGroups` routes `PeriodKind.Daily` to `DailyGroups`.
+  Because the group count is then 1, the Period / Daily Extremes toggle is hidden
+  automatically (the component only renders it for >1 group). The daily group metrics
+  reuse the period-metric keys, so their by-date historical distributions are computed
+  once in the existing single pass.
+- **Every stat reports both record ends.** `RecordDirection` (the single per-metric
+  direction) is removed; each stat shows a record high and a record low from the one
+  `ranking` + distribution. *(The "each record end carries its own rank/status"
+  detail here is superseded by the next addendum — the rank now lives on the observed
+  value, not on the record ends.)*
+
+## Addendum — single rank, both record ends as references (2026-06-17)
+
+Showing a rank on *both* record ends produced two ranks that were the same position
+from opposite ends (e.g. "2nd highest of 102" and "101st lowest of 102") — redundant.
+Resolved by separating the two concepts:
+
+- **One rank for the observed value.** `RecentObservationMetricViewModel` gains
+  `RankText` + `RecordStatus`/`RecordStatusText`. The rank is shown once, toward
+  whichever end the value is **nearer** (`HighRank <= LowRank` → "Nth highest",
+  else "Nth lowest"). Because reaching either extreme is a record, the ordinal
+  branch only runs for rank ≥ 2, so "1st highest"/"last lowest" never appear.
+- **Either extreme is a record.** `DetermineRecordStatus` is now direction-free:
+  `NewRecord` if the value beats the high *or* low extreme, `EqualRecord` if tied at
+  an extreme, else `None`. At an extreme the value shows a "New record"/"Equal record"
+  badge instead of an ordinal. `RecordStatus.BelowRecord` and the
+  `RecentObservationRecordDirection` enum are removed. This fixes the reported
+  "warmest-ever lowest-daily-maximum reads 102nd lowest of 102" — it now reads
+  "New record".
+- **Record ends are plain references.** `RecentObservationMetricRecordViewModel` is
+  trimmed to `Label` / `Value` / `Year` (no rank, no status). The tile renders the
+  current value + single rank/badge on one line, then "Record high: V (year)" and
+  "Record low: V (year)" beneath.
+- **Nearer-end framing is position-based, not name-based.** A stat is framed by where
+  its value actually falls, so a mild "Minimum" can read "Nth highest" and a cold
+  "Maximum" can read "Nth lowest". This is intentional (chosen over fixed per-stat
+  direction) to avoid large, confusing ordinals at the opposite extreme.

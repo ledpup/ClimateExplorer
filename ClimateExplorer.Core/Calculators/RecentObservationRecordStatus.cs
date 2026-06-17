@@ -1,20 +1,18 @@
 namespace ClimateExplorer.Core.Calculators;
 
 /// <summary>
-/// How a current-period value compares to the historical record in the metric's
-/// record direction.
+/// Whether a current-period value sits at an extreme of its historical range. A
+/// value in between (or with no comparison available) is <see cref="None"/> and is
+/// shown as a rank instead.
 /// </summary>
 public enum RecentObservationRecordStatus
 {
-    /// <summary>No historical comparison was available.</summary>
+    /// <summary>No record: the value is between the extremes, or no comparison was available.</summary>
     None,
 
-    /// <summary>The current value sets a new record.</summary>
+    /// <summary>The current value sets a new record at the high or low extreme.</summary>
     NewRecord,
 
-    /// <summary>The current value equals the existing record.</summary>
+    /// <summary>The current value equals the existing record (at either extreme).</summary>
     EqualRecord,
-
-    /// <summary>The current value has not reached the record.</summary>
-    BelowRecord,
 }

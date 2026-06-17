@@ -580,7 +580,12 @@ public sealed class RecentObservationsService : IRecentObservationsService
     {
         var groups = new List<RecentObservationMetricGroupViewModel>();
 
-        foreach (var group in domain.Groups)
+        // A daily tile is a single day's observation — max/min/mean, not aggregates
+        // across days — so it uses its own single group (which also hides the
+        // Period / Daily Extremes toggle, since only one group is present).
+        var groupDefinitions = period.Kind == PeriodKind.Daily ? domain.DailyGroups : domain.Groups;
+
+        foreach (var group in groupDefinitions)
         {
             var metrics = new List<RecentObservationMetricViewModel>();
             foreach (var metric in group.Metrics)
@@ -620,21 +625,48 @@ public sealed class RecentObservationsService : IRecentObservationsService
             };
         }
 
-        var high = metric.RecordDirection == RecentObservationRecordDirection.High;
-        var recordValue = high ? ranking.HistoricalMax : ranking.HistoricalMin;
-        var recordOccurrence = high ? distribution.MaxValue : distribution.MinValue;
-        var status = RecentObservationComparison.DetermineRecordStatus(ranking, metric.RecordDirection);
-        var rank = high ? ranking.HighRank : ranking.LowRank;
+        // One rank for the observed value (toward whichever end it is nearer, or a
+        // New/Equal record badge at an extreme), plus the record high and record low
+        // for the comparison date as plain reference context (no rank of their own).
+        var status = RecentObservationComparison.DetermineRecordStatus(ranking);
 
         return new RecentObservationMetricViewModel
         {
             Label = metric.DetailLabel,
             CurrentValue = metric.Format(currentValue),
-            RecordValue = metric.Format(recordValue),
-            RecordYear = recordOccurrence?.Year?.ToString(CultureInfo.InvariantCulture),
             RecordStatus = status,
             RecordStatusText = FormatRecordStatus(status),
-            RankText = $"{RecentObservationComparison.FormatOrdinal(rank)} {(high ? "highest" : "lowest")} of {ranking.ComparableCount}",
+            RankText = BuildRankText(ranking, status),
+            RecordHigh = BuildRecordReference(metric, "Record high", ranking.HistoricalMax, distribution.MaxValue),
+            RecordLow = BuildRecordReference(metric, "Record low", ranking.HistoricalMin, distribution.MinValue),
+        };
+    }
+
+    private static string? BuildRankText(RecentObservationComparisonResult ranking, RecentObservationRecordStatus status)
+    {
+        // At an extreme the value is shown as a "New record" / "Equal record" badge.
+        if (status != RecentObservationRecordStatus.None)
+        {
+            return null;
+        }
+
+        // Otherwise rank toward whichever end the value is nearer (the smaller rank).
+        var high = ranking.HighRank <= ranking.LowRank;
+        var rank = high ? ranking.HighRank : ranking.LowRank;
+        return $"{RecentObservationComparison.FormatOrdinal(rank)} {(high ? "highest" : "lowest")} of {ranking.ComparableCount}";
+    }
+
+    private static RecentObservationMetricRecordViewModel BuildRecordReference(
+        Metric metric,
+        string label,
+        double value,
+        HistoricalPeriodValue? occurrence)
+    {
+        return new RecentObservationMetricRecordViewModel
+        {
+            Label = label,
+            Value = metric.Format(value),
+            Year = FormatHistoricalOccurrence(occurrence),
         };
     }
 
@@ -940,8 +972,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         x => x.Mean,
         MetricAggregation.Mean,
         FormatTemperature,
-        "Mean temperature",
-        RecentObservationRecordDirection.High);
+        "Mean temperature");
 
     private static readonly Metric AverageMaxTemperatureMetric = new(
         "temp.max",
@@ -950,8 +981,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         x => x.Max,
         MetricAggregation.Mean,
         FormatTemperature,
-        "Average maximum temperature",
-        RecentObservationRecordDirection.High);
+        "Average maximum temperature");
 
     private static readonly Metric AverageMinTemperatureMetric = new(
         "temp.min",
@@ -960,8 +990,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         x => x.Min,
         MetricAggregation.Mean,
         FormatTemperature,
-        "Average minimum temperature",
-        RecentObservationRecordDirection.High);
+        "Average minimum temperature");
 
     private static readonly Metric HighestDailyMaxTemperatureMetric = new(
         "temp.daily-max-high",
@@ -970,8 +999,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         x => x.Max,
         MetricAggregation.Max,
         FormatTemperature,
-        "Highest daily maximum",
-        RecentObservationRecordDirection.High);
+        "Highest daily maximum");
 
     private static readonly Metric LowestDailyMaxTemperatureMetric = new(
         "temp.daily-max-low",
@@ -980,8 +1008,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         x => x.Max,
         MetricAggregation.Min,
         FormatTemperature,
-        "Lowest daily maximum",
-        RecentObservationRecordDirection.Low);
+        "Lowest daily maximum");
 
     private static readonly Metric HighestDailyMinTemperatureMetric = new(
         "temp.daily-min-high",
@@ -990,8 +1017,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         x => x.Min,
         MetricAggregation.Max,
         FormatTemperature,
-        "Highest daily minimum",
-        RecentObservationRecordDirection.High);
+        "Highest daily minimum");
 
     private static readonly Metric LowestDailyMinTemperatureMetric = new(
         "temp.daily-min-low",
@@ -1000,8 +1026,38 @@ public sealed class RecentObservationsService : IRecentObservationsService
         x => x.Min,
         MetricAggregation.Min,
         FormatTemperature,
-        "Lowest daily minimum",
-        RecentObservationRecordDirection.Low);
+        "Lowest daily minimum");
+
+    // Daily tiles describe a single day, which has a maximum, a minimum and a mean
+    // — not aggregates across days. These reuse the period-metric keys (so their
+    // historical distributions are computed once, by calendar date) but carry
+    // single-day labels for the expanded view.
+    private static readonly Metric DailyMaxTemperatureMetric = new(
+        "temp.daily-max-high",
+        "Maximum",
+        "Maximum",
+        x => x.Max,
+        MetricAggregation.Max,
+        FormatTemperature,
+        "Maximum");
+
+    private static readonly Metric DailyMinTemperatureMetric = new(
+        "temp.daily-min-low",
+        "Minimum",
+        "Minimum",
+        x => x.Min,
+        MetricAggregation.Min,
+        FormatTemperature,
+        "Minimum");
+
+    private static readonly Metric DailyMeanTemperatureMetric = new(
+        "temp.mean",
+        "Mean",
+        "Mean",
+        x => x.Mean,
+        MetricAggregation.Mean,
+        FormatTemperature,
+        "Mean");
 
     private static readonly Metric RainfallMetric = new(
         "precip.total",
@@ -1010,8 +1066,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         x => x.Rainfall,
         MetricAggregation.Sum,
         FormatRainfall,
-        "Total precipitation",
-        RecentObservationRecordDirection.High);
+        "Total precipitation");
 
     private static readonly Metric HighestDailyRainfallMetric = new(
         "precip.daily-high",
@@ -1020,8 +1075,16 @@ public sealed class RecentObservationsService : IRecentObservationsService
         x => x.Rainfall,
         MetricAggregation.Max,
         FormatRainfall,
-        "Highest daily rainfall",
-        RecentObservationRecordDirection.High);
+        "Highest daily rainfall");
+
+    private static readonly Metric DailyRainfallMetric = new(
+        "precip.total",
+        "Rainfall",
+        "Rainfall",
+        x => x.Rainfall,
+        MetricAggregation.Sum,
+        FormatRainfall,
+        "Rainfall");
 
     private static readonly MetricDomain TemperatureDomain = new(
         MeanTemperatureMetric,
@@ -1029,6 +1092,9 @@ public sealed class RecentObservationsService : IRecentObservationsService
         [
             new MetricGroup("period", "Period", [AverageMaxTemperatureMetric, AverageMinTemperatureMetric, MeanTemperatureMetric]),
             new MetricGroup("daily-extremes", "Daily Extremes", [HighestDailyMaxTemperatureMetric, LowestDailyMaxTemperatureMetric, HighestDailyMinTemperatureMetric, LowestDailyMinTemperatureMetric]),
+        ],
+        [
+            new MetricGroup("day", "Day", [DailyMaxTemperatureMetric, DailyMinTemperatureMetric, DailyMeanTemperatureMetric]),
         ],
         "Mean temperature",
         ShowHistoricalMin: true,
@@ -1044,6 +1110,9 @@ public sealed class RecentObservationsService : IRecentObservationsService
         [
             new MetricGroup("period", "Period", [RainfallMetric]),
             new MetricGroup("daily-extremes", "Daily Extremes", [HighestDailyRainfallMetric]),
+        ],
+        [
+            new MetricGroup("day", "Day", [DailyRainfallMetric]),
         ],
         "Rainfall total",
         ShowHistoricalMin: false,
@@ -1070,8 +1139,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         Func<DailyObservation, double?> Select,
         MetricAggregation Aggregation,
         Func<double, string> Format,
-        string DetailLabel,
-        RecentObservationRecordDirection RecordDirection);
+        string DetailLabel);
 
     private sealed record MetricGroup(string Key, string Title, IReadOnlyList<Metric> Metrics);
 
@@ -1079,6 +1147,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         Metric Primary,
         IReadOnlyList<Metric> Supporting,
         IReadOnlyList<MetricGroup> Groups,
+        IReadOnlyList<MetricGroup> DailyGroups,
         string PrimaryLabel,
         bool ShowHistoricalMin,
         string HistoricalMaxWord,
@@ -1093,7 +1162,11 @@ public sealed class RecentObservationsService : IRecentObservationsService
             {
                 var seen = new HashSet<string>();
                 var result = new List<Metric>();
-                foreach (var metric in new[] { Primary }.Concat(Supporting).Concat(Groups.SelectMany(x => x.Metrics)))
+                var all = new[] { Primary }
+                    .Concat(Supporting)
+                    .Concat(Groups.SelectMany(x => x.Metrics))
+                    .Concat(DailyGroups.SelectMany(x => x.Metrics));
+                foreach (var metric in all)
                 {
                     if (seen.Add(metric.Key))
                     {
