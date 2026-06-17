@@ -552,6 +552,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
         }
 
         var historicalContext = ranking is null ? null : CreateHistoricalContextLabel(period);
+        var metricGroupLabel = CreateMetricGroupLabel(period);
         var showMin = domain.ShowHistoricalMin;
 
         return new RecentObservationTileViewModel
@@ -561,6 +562,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             PeriodStartDate = period.StartDate,
             PeriodEndDate = period.EndDate,
             PeriodTitle = period.Title,
+            MetricGroupLabel = metricGroupLabel,
             Headline = ranking is null ? "Comparison unavailable" : domain.BuildHeadline(period.ComparisonLabel, ranking),
             PercentileSentence = ranking is null
                 ? historicalValues.UnavailableReason ?? "Not enough historical data is available for this comparison."
@@ -577,7 +579,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             Tone = domain.GetTone(ranking),
             Note = period.Note,
             Stats = stats,
-            MetricGroups = BuildMetricGroups(period, domain, distributions),
+            MetricGroups = BuildMetricGroups(period, domain, distributions, metricGroupLabel),
             AvailableObservationCount = period.Completeness.AvailableObservationCount,
             ExpectedObservationCount = period.Completeness.ExpectedObservationCount,
         };
@@ -586,13 +588,14 @@ public sealed class RecentObservationsService : IRecentObservationsService
     private static IReadOnlyList<RecentObservationMetricGroupViewModel> BuildMetricGroups(
         PeriodObservation period,
         MetricDomain domain,
-        IReadOnlyDictionary<string, HistoricalValues> distributions)
+        IReadOnlyDictionary<string, HistoricalValues> distributions,
+        string metricGroupLabel)
     {
         var groups = new List<RecentObservationMetricGroupViewModel>();
 
-        // A daily tile is a single day's observation — max/min/mean, not aggregates
-        // across days — so it uses its own single group (which also hides the
-        // Period / Daily extremes toggle, since only one group is present).
+        // A daily tile is a single day's observation - max/min/mean, not aggregates
+        // across days, so it uses its own single group (which also hides the
+        // period/daily-extremes toggle, since only one group is present).
         var groupDefinitions = period.Kind == PeriodKind.Daily ? domain.DailyGroups : domain.Groups;
 
         foreach (var group in groupDefinitions)
@@ -611,7 +614,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
                 groups.Add(new RecentObservationMetricGroupViewModel
                 {
                     Key = group.Key,
-                    Title = group.Title,
+                    Title = group.Key == "period" ? metricGroupLabel : group.Title,
                     Metrics = metrics,
                 });
             }
@@ -877,6 +880,18 @@ public sealed class RecentObservationsService : IRecentObservationsService
         }
 
         return period.ComparisonLabel;
+    }
+
+    private static string CreateMetricGroupLabel(PeriodObservation period)
+    {
+        return period.Kind switch
+        {
+            PeriodKind.LatestSevenDays => "7 Days",
+            PeriodKind.CurrentMonth or PeriodKind.PreviousMonth => MonthName(period.EndDate.Month),
+            PeriodKind.CurrentSeason or PeriodKind.PreviousSeason => period.Title,
+            PeriodKind.YearToDate => period.EndDate.Year.ToString(CultureInfo.InvariantCulture),
+            _ => period.Title,
+        };
     }
 
     private static string CreateComparisonLabel(

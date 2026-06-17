@@ -818,7 +818,7 @@ public class RecentObservationsServiceTests
         var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
 
         CollectionAssert.AreEqual(new[] { "period", "daily-extremes" }, latestSevenDays.MetricGroups.Select(x => x.Key).ToArray());
-        CollectionAssert.AreEqual(new[] { "Period", "Daily extremes" }, latestSevenDays.MetricGroups.Select(x => x.Title).ToArray());
+        CollectionAssert.AreEqual(new[] { "7 Days", "Daily extremes" }, latestSevenDays.MetricGroups.Select(x => x.Title).ToArray());
 
         var period = latestSevenDays.MetricGroups.Single(x => x.Key == "period");
         CollectionAssert.AreEqual(new[] { "Total precipitation" }, period.Metrics.Select(x => x.Label).ToArray());
@@ -827,6 +827,45 @@ public class RecentObservationsServiceTests
         var dailyExtremes = latestSevenDays.MetricGroups.Single(x => x.Key == "daily-extremes");
         CollectionAssert.AreEqual(new[] { "Highest daily precipitation" }, dailyExtremes.Metrics.Select(x => x.Label).ToArray());
         Assert.AreEqual("1mm", dailyExtremes.Metrics[0].CurrentValue);
+    }
+
+    [TestMethod]
+    public async Task ExpandedTilesUseConcisePeriodMetricGroupLabels()
+    {
+        var service = CreateService();
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 6,
+            previousSeasonCount: 2);
+
+        AssertMetricGroupLabel(result, RecentObservationPeriodKind.LatestSevenDays, null, "7 Days");
+        AssertMetricGroupLabel(result, RecentObservationPeriodKind.CurrentMonth, null, "June");
+        AssertMetricGroupLabel(result, RecentObservationPeriodKind.PreviousMonth, 1, "May");
+        AssertMetricGroupLabel(result, RecentObservationPeriodKind.PreviousMonth, 6, "December");
+        AssertMetricGroupLabel(result, RecentObservationPeriodKind.PreviousSeason, 1, "Autumn 2026");
+        AssertMetricGroupLabel(result, RecentObservationPeriodKind.PreviousSeason, 2, "Summer 2025-26");
+        AssertMetricGroupLabel(result, RecentObservationPeriodKind.YearToDate, null, "2026");
+    }
+
+    [TestMethod]
+    public async Task DailyTilesKeepSingleMetricGroupSoExpandedToggleIsHidden()
+    {
+        var service = CreateService();
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 3,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var dailyTiles = result.Tiles
+            .Where(x => x.PeriodKind == RecentObservationPeriodKind.Daily)
+            .ToList();
+
+        Assert.HasCount(3, dailyTiles);
+        Assert.IsTrue(dailyTiles.All(x => x.MetricGroups.Count == 1));
+        Assert.IsTrue(dailyTiles.All(x => x.MetricGroups[0].Key == "day"));
     }
 
     [TestMethod]
@@ -1112,6 +1151,19 @@ public class RecentObservationsServiceTests
             previousSeasonCount: RecentObservationPeriodSelection.MaximumPreviousSeasonCount);
 
         return result.Tiles;
+    }
+
+    private static void AssertMetricGroupLabel(
+        RecentObservationsTabResult result,
+        RecentObservationPeriodKind periodKind,
+        int? periodOffset,
+        string expectedLabel)
+    {
+        var tile = result.Tiles.Single(x => x.PeriodKind == periodKind && (!periodOffset.HasValue || x.PeriodOffset == periodOffset));
+        var periodGroup = tile.MetricGroups.Single(x => x.Key == "period");
+
+        Assert.AreEqual(expectedLabel, tile.MetricGroupLabel, $"Unexpected tile metric group label for {tile.PeriodTitle}.");
+        Assert.AreEqual(expectedLabel, periodGroup.Title, $"Unexpected period metric group title for {tile.PeriodTitle}.");
     }
 
     private static IEnumerable<int> GetAvailableOffsets(
