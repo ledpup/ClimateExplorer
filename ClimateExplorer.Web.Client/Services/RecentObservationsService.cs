@@ -128,8 +128,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
 
         foreach (var period in periods)
         {
-            var distribution = GetHistoricalDistribution(history, period, domain);
-            tiles.Add(BuildTile(period, domain, distribution));
+            var distributions = GetHistoricalDistributions(history, period, domain.AllMetrics);
+            tiles.Add(BuildTile(period, domain, distributions));
         }
 
         return new RecentObservationsTabResult
@@ -348,16 +348,8 @@ public sealed class RecentObservationsService : IRecentObservationsService
 
     private async Task<HistoricalDailySeries> GetTemperatureHistoricalDaily(Guid locationId, DataAdjustment? preferredAdjustment)
     {
-        var mean = await GetHistoricalRecords(locationId, DataType.TempMean, preferredAdjustment);
-        if (mean.Records.Count > 0)
-        {
-            var records = mean.Records
-                .Where(x => x.Date.HasValue && x.Value.HasValue)
-                .Select(x => new DailyObservation(x.Date!.Value, null, null, x.Value!.Value, null))
-                .ToList();
-            return new HistoricalDailySeries(records, GetStartYear(records));
-        }
-
+        // Prefer TMax + TMin so daily max/min extremes have history; derive mean
+        // as (max + min) / 2, consistent with how the recent daily mean is built.
         var maxTask = GetHistoricalRecords(locationId, DataType.TempMax, preferredAdjustment);
         var minTask = GetHistoricalRecords(locationId, DataType.TempMin, preferredAdjustment);
         await Task.WhenAll(maxTask, minTask);
@@ -365,22 +357,34 @@ public sealed class RecentObservationsService : IRecentObservationsService
         var maxResponse = await maxTask;
         var minResponse = await minTask;
 
-        var minByDate = minResponse.Records
-            .Where(x => x.Date.HasValue && x.Value.HasValue)
-            .ToDictionary(x => x.Date!.Value, x => x.Value!.Value);
+        if (maxResponse.Records.Count > 0 && minResponse.Records.Count > 0)
+        {
+            var minByDate = minResponse.Records
+                .Where(x => x.Date.HasValue && x.Value.HasValue)
+                .ToDictionary(x => x.Date!.Value, x => x.Value!.Value);
 
-        var combined = maxResponse.Records
-            .Where(x => x.Date.HasValue && x.Value.HasValue && minByDate.ContainsKey(x.Date!.Value))
-            .Select(x =>
-            {
-                var date = x.Date!.Value;
-                var max = x.Value!.Value;
-                var min = minByDate[date];
-                return new DailyObservation(date, max, min, (max + min) / 2d, null);
-            })
+            var combined = maxResponse.Records
+                .Where(x => x.Date.HasValue && x.Value.HasValue && minByDate.ContainsKey(x.Date!.Value))
+                .Select(x =>
+                {
+                    var date = x.Date!.Value;
+                    var max = x.Value!.Value;
+                    var min = minByDate[date];
+                    return new DailyObservation(date, max, min, (max + min) / 2d, null);
+                })
+                .ToList();
+
+            return new HistoricalDailySeries(combined, GetStartYear(combined));
+        }
+
+        // Fall back to a pre-computed mean series (no daily max/min history available).
+        var mean = await GetHistoricalRecords(locationId, DataType.TempMean, preferredAdjustment);
+        var meanRecords = mean.Records
+            .Where(x => x.Date.HasValue && x.Value.HasValue)
+            .Select(x => new DailyObservation(x.Date!.Value, null, null, x.Value!.Value, null))
             .ToList();
 
-        return new HistoricalDailySeries(combined, GetStartYear(combined));
+        return new HistoricalDailySeries(meanRecords, GetStartYear(meanRecords));
     }
 
     private async Task<HistoricalDailySeries> GetPrecipitationHistoricalDaily(Guid locationId)
@@ -394,58 +398,91 @@ public sealed class RecentObservationsService : IRecentObservationsService
         return new HistoricalDailySeries(records, GetStartYear(records));
     }
 
-    private static HistoricalValues GetHistoricalDistribution(HistoricalDailySeries history, PeriodObservation period, MetricDomain domain)
+    private static IReadOnlyDictionary<string, HistoricalValues> GetHistoricalDistributions(
+        HistoricalDailySeries history,
+        PeriodObservation period,
+        IReadOnlyList<Metric> metrics)
     {
         return period.ComparisonMode == PeriodComparisonMode.DailyDate
-            ? GetHistoricalDailyDateValues(history, period, domain)
-            : GetHistoricalDailyRangeValues(history, period, domain);
+            ? GetHistoricalDailyDateDistributions(history, period, metrics)
+            : GetHistoricalDailyRangeDistributions(history, period, metrics);
     }
 
-    private static HistoricalValues GetHistoricalDailyDateValues(HistoricalDailySeries history, PeriodObservation period, MetricDomain domain)
+    private static IReadOnlyDictionary<string, HistoricalValues> GetHistoricalDailyDateDistributions(
+        HistoricalDailySeries history,
+        PeriodObservation period,
+        IReadOnlyList<Metric> metrics)
     {
-        var values = history.Records
+        var sameDate = history.Records
             .Where(x => x.Date.Month == period.StartDate.Month &&
                         x.Date.Day == period.StartDate.Day &&
                         x.Date.Year != period.StartDate.Year)
-            .Select(x => new HistoricalPeriodValue(domain.Primary.Select(x), (short)x.Date.Year))
-            .Where(x => x.Value.HasValue)
             .ToList();
 
-        return values.Count >= MinimumHistoricalPeriods
-            ? new HistoricalValues(values, history.StartYear, null)
-            : HistoricalValues.Unavailable("Not enough historical daily records are available for this date.");
+        var result = new Dictionary<string, HistoricalValues>();
+
+        foreach (var metric in metrics)
+        {
+            var values = sameDate
+                .Select(x => new HistoricalPeriodValue(metric.Select(x), (short)x.Date.Year))
+                .Where(x => x.Value.HasValue)
+                .ToList();
+
+            result[metric.Key] = values.Count >= MinimumHistoricalPeriods
+                ? new HistoricalValues(values, history.StartYear, null)
+                : HistoricalValues.Unavailable("Not enough historical daily records are available for this date.");
+        }
+
+        return result;
     }
 
-    private static HistoricalValues GetHistoricalDailyRangeValues(HistoricalDailySeries history, PeriodObservation period, MetricDomain domain)
+    private static IReadOnlyDictionary<string, HistoricalValues> GetHistoricalDailyRangeDistributions(
+        HistoricalDailySeries history,
+        PeriodObservation period,
+        IReadOnlyList<Metric> metrics)
     {
-        var values = history.Records
-            .Where(x => domain.Primary.Select(x).HasValue &&
-                        IsWithinEquivalentRange(x.Date, period.StartDate, period.EndDate))
+        // Group the equivalent historical years once, then compute every metric's
+        // aggregate inside the cached groups (single pass over the history).
+        var groups = history.Records
+            .Where(x => IsWithinEquivalentRange(x.Date, period.StartDate, period.EndDate))
             .Select(x => new
             {
-                x.Date,
-                Value = domain.Primary.Select(x)!.Value,
+                Record = x,
                 EquivalentPeriodYear = GetEquivalentPeriodYear(x.Date, period.StartDate, period.EndDate),
             })
             .Where(x => x.EquivalentPeriodYear != period.StartDate.Year)
             .GroupBy(x => x.EquivalentPeriodYear)
-            .Select(group =>
-            {
-                var expectedDays = GetEquivalentDayCount(group.Key, period.StartDate, period.EndDate);
-                var groupValues = group.Select(x => x.Value).ToList();
-                var requiredDays = (int)Math.Ceiling(expectedDays * MinimumHistoricalCoverage);
-
-                return groupValues.Count >= requiredDays
-                    ? (Value: (double?)Aggregate(groupValues, domain.Primary.Aggregation), Year: (short?)group.Key)
-                    : (Value: null, Year: (short?)null);
-            })
-            .Where(x => x.Value.HasValue)
-            .Select(x => new HistoricalPeriodValue(x.Value, x.Year))
+            .Select(group => new EquivalentPeriodGroup(
+                group.Key,
+                (int)Math.Ceiling(GetEquivalentDayCount(group.Key, period.StartDate, period.EndDate) * MinimumHistoricalCoverage),
+                [.. group.Select(x => x.Record)]))
             .ToList();
 
-        return values.Count >= MinimumHistoricalPeriods
-            ? new HistoricalValues(values, history.StartYear, null)
-            : HistoricalValues.Unavailable("Not enough equivalent historical daily periods are available.");
+        var result = new Dictionary<string, HistoricalValues>();
+
+        foreach (var metric in metrics)
+        {
+            var values = new List<HistoricalPeriodValue>();
+            foreach (var group in groups)
+            {
+                var groupValues = group.Records
+                    .Select(metric.Select)
+                    .Where(x => x.HasValue)
+                    .Select(x => x!.Value)
+                    .ToList();
+
+                if (groupValues.Count >= group.RequiredDays)
+                {
+                    values.Add(new HistoricalPeriodValue(Aggregate(groupValues, metric.Aggregation), (short)group.Year));
+                }
+            }
+
+            result[metric.Key] = values.Count >= MinimumHistoricalPeriods
+                ? new HistoricalValues(values, history.StartYear, null)
+                : HistoricalValues.Unavailable("Not enough equivalent historical daily periods are available.");
+        }
+
+        return result;
     }
 
     private async Task<ClimateRecordsResponse> GetHistoricalRecords(
@@ -475,8 +512,12 @@ public sealed class RecentObservationsService : IRecentObservationsService
         return DateOnly.FromDateTime(timeProvider.GetLocalNow().DateTime);
     }
 
-    private static RecentObservationTileViewModel BuildTile(PeriodObservation period, MetricDomain domain, HistoricalValues historicalValues)
+    private static RecentObservationTileViewModel BuildTile(
+        PeriodObservation period,
+        MetricDomain domain,
+        IReadOnlyDictionary<string, HistoricalValues> distributions)
     {
+        var historicalValues = distributions[domain.Primary.Key];
         var primaryValue = period.MetricValues[domain.Primary.Key];
         var ranking = RecentObservationComparison.Rank(primaryValue, historicalValues.Values);
         var singular = period.Completeness.AvailableObservationCount == 1;
@@ -526,8 +567,85 @@ public sealed class RecentObservationsService : IRecentObservationsService
             Tone = domain.GetTone(ranking),
             Note = period.Note,
             Stats = stats,
+            MetricGroups = BuildMetricGroups(period, domain, distributions),
             AvailableObservationCount = period.Completeness.AvailableObservationCount,
             ExpectedObservationCount = period.Completeness.ExpectedObservationCount,
+        };
+    }
+
+    private static IReadOnlyList<RecentObservationMetricGroupViewModel> BuildMetricGroups(
+        PeriodObservation period,
+        MetricDomain domain,
+        IReadOnlyDictionary<string, HistoricalValues> distributions)
+    {
+        var groups = new List<RecentObservationMetricGroupViewModel>();
+
+        foreach (var group in domain.Groups)
+        {
+            var metrics = new List<RecentObservationMetricViewModel>();
+            foreach (var metric in group.Metrics)
+            {
+                if (period.MetricValues.TryGetValue(metric.Key, out var value))
+                {
+                    metrics.Add(BuildMetric(metric, value, distributions.GetValueOrDefault(metric.Key)));
+                }
+            }
+
+            if (metrics.Count > 0)
+            {
+                groups.Add(new RecentObservationMetricGroupViewModel
+                {
+                    Key = group.Key,
+                    Title = group.Title,
+                    Metrics = metrics,
+                });
+            }
+        }
+
+        return groups;
+    }
+
+    private static RecentObservationMetricViewModel BuildMetric(Metric metric, double currentValue, HistoricalValues? distribution)
+    {
+        var ranking = distribution is null
+            ? null
+            : RecentObservationComparison.Rank(currentValue, distribution.Values);
+
+        if (ranking is null || distribution is null)
+        {
+            return new RecentObservationMetricViewModel
+            {
+                Label = metric.DetailLabel,
+                CurrentValue = metric.Format(currentValue),
+            };
+        }
+
+        var high = metric.RecordDirection == RecentObservationRecordDirection.High;
+        var recordValue = high ? ranking.HistoricalMax : ranking.HistoricalMin;
+        var recordOccurrence = high ? distribution.MaxValue : distribution.MinValue;
+        var status = RecentObservationComparison.DetermineRecordStatus(ranking, metric.RecordDirection);
+        var rank = high ? ranking.HighRank : ranking.LowRank;
+
+        return new RecentObservationMetricViewModel
+        {
+            Label = metric.DetailLabel,
+            CurrentValue = metric.Format(currentValue),
+            RecordValue = metric.Format(recordValue),
+            RecordYear = recordOccurrence?.Year?.ToString(CultureInfo.InvariantCulture),
+            RecordStatus = status,
+            RecordStatusText = FormatRecordStatus(status),
+            RankText = $"{RecentObservationComparison.FormatOrdinal(rank)} {(high ? "highest" : "lowest")} of {ranking.ComparableCount}",
+        };
+    }
+
+    private static string? FormatRecordStatus(RecentObservationRecordStatus status)
+    {
+        return status switch
+        {
+            RecentObservationRecordStatus.NewRecord => "New record",
+            RecentObservationRecordStatus.EqualRecord => "Equal record",
+            RecentObservationRecordStatus.BelowRecord => "Below record",
+            _ => null,
         };
     }
 
@@ -822,7 +940,9 @@ public sealed class RecentObservationsService : IRecentObservationsService
         "Mean temp",
         x => x.Mean,
         MetricAggregation.Mean,
-        FormatTemperature);
+        FormatTemperature,
+        "Mean temperature",
+        RecentObservationRecordDirection.High);
 
     private static readonly Metric AverageMaxTemperatureMetric = new(
         "temp.max",
@@ -830,7 +950,9 @@ public sealed class RecentObservationsService : IRecentObservationsService
         "Average max temp",
         x => x.Max,
         MetricAggregation.Mean,
-        FormatTemperature);
+        FormatTemperature,
+        "Average maximum temperature",
+        RecentObservationRecordDirection.High);
 
     private static readonly Metric AverageMinTemperatureMetric = new(
         "temp.min",
@@ -838,7 +960,49 @@ public sealed class RecentObservationsService : IRecentObservationsService
         "Average min temp",
         x => x.Min,
         MetricAggregation.Mean,
-        FormatTemperature);
+        FormatTemperature,
+        "Average minimum temperature",
+        RecentObservationRecordDirection.High);
+
+    private static readonly Metric HighestDailyMaxTemperatureMetric = new(
+        "temp.daily-max-high",
+        "Highest daily max",
+        "Highest daily max",
+        x => x.Max,
+        MetricAggregation.Max,
+        FormatTemperature,
+        "Highest daily maximum",
+        RecentObservationRecordDirection.High);
+
+    private static readonly Metric LowestDailyMaxTemperatureMetric = new(
+        "temp.daily-max-low",
+        "Lowest daily max",
+        "Lowest daily max",
+        x => x.Max,
+        MetricAggregation.Min,
+        FormatTemperature,
+        "Lowest daily maximum",
+        RecentObservationRecordDirection.Low);
+
+    private static readonly Metric HighestDailyMinTemperatureMetric = new(
+        "temp.daily-min-high",
+        "Highest daily min",
+        "Highest daily min",
+        x => x.Min,
+        MetricAggregation.Max,
+        FormatTemperature,
+        "Highest daily minimum",
+        RecentObservationRecordDirection.High);
+
+    private static readonly Metric LowestDailyMinTemperatureMetric = new(
+        "temp.daily-min-low",
+        "Lowest daily min",
+        "Lowest daily min",
+        x => x.Min,
+        MetricAggregation.Min,
+        FormatTemperature,
+        "Lowest daily minimum",
+        RecentObservationRecordDirection.Low);
 
     private static readonly Metric RainfallMetric = new(
         "precip.total",
@@ -846,11 +1010,27 @@ public sealed class RecentObservationsService : IRecentObservationsService
         "Rainfall total",
         x => x.Rainfall,
         MetricAggregation.Sum,
-        FormatRainfall);
+        FormatRainfall,
+        "Total precipitation",
+        RecentObservationRecordDirection.High);
+
+    private static readonly Metric HighestDailyRainfallMetric = new(
+        "precip.daily-high",
+        "Highest daily rainfall",
+        "Highest daily rainfall",
+        x => x.Rainfall,
+        MetricAggregation.Max,
+        FormatRainfall,
+        "Highest daily rainfall",
+        RecentObservationRecordDirection.High);
 
     private static readonly MetricDomain TemperatureDomain = new(
         MeanTemperatureMetric,
         [AverageMaxTemperatureMetric, AverageMinTemperatureMetric],
+        [
+            new MetricGroup("period", "Period", [AverageMaxTemperatureMetric, AverageMinTemperatureMetric, MeanTemperatureMetric]),
+            new MetricGroup("daily-extremes", "Daily Extremes", [HighestDailyMaxTemperatureMetric, LowestDailyMaxTemperatureMetric, HighestDailyMinTemperatureMetric, LowestDailyMinTemperatureMetric]),
+        ],
         "Mean temperature",
         ShowHistoricalMin: true,
         "Warmest",
@@ -862,6 +1042,10 @@ public sealed class RecentObservationsService : IRecentObservationsService
     private static readonly MetricDomain PrecipitationDomain = new(
         RainfallMetric,
         [],
+        [
+            new MetricGroup("period", "Period", [RainfallMetric]),
+            new MetricGroup("daily-extremes", "Daily Extremes", [HighestDailyRainfallMetric]),
+        ],
         "Rainfall total",
         ShowHistoricalMin: false,
         "Wettest",
@@ -886,11 +1070,16 @@ public sealed class RecentObservationsService : IRecentObservationsService
         string PluralLabel,
         Func<DailyObservation, double?> Select,
         MetricAggregation Aggregation,
-        Func<double, string> Format);
+        Func<double, string> Format,
+        string DetailLabel,
+        RecentObservationRecordDirection RecordDirection);
+
+    private sealed record MetricGroup(string Key, string Title, IReadOnlyList<Metric> Metrics);
 
     private sealed record MetricDomain(
         Metric Primary,
         IReadOnlyList<Metric> Supporting,
+        IReadOnlyList<MetricGroup> Groups,
         string PrimaryLabel,
         bool ShowHistoricalMin,
         string HistoricalMaxWord,
@@ -899,10 +1088,28 @@ public sealed class RecentObservationsService : IRecentObservationsService
         Func<string, int?, RecentObservationComparisonResult, string> BuildPercentileSentence,
         Func<RecentObservationComparisonResult?, RecentObservationTileTone> GetTone)
     {
-        public IEnumerable<Metric> AllMetrics => [Primary, .. Supporting];
+        public IReadOnlyList<Metric> AllMetrics
+        {
+            get
+            {
+                var seen = new HashSet<string>();
+                var result = new List<Metric>();
+                foreach (var metric in new[] { Primary }.Concat(Supporting).Concat(Groups.SelectMany(x => x.Metrics)))
+                {
+                    if (seen.Add(metric.Key))
+                    {
+                        result.Add(metric);
+                    }
+                }
+
+                return result;
+            }
+        }
     }
 
     private sealed record HistoricalDailySeries(List<DailyObservation> Records, int? StartYear);
+
+    private sealed record EquivalentPeriodGroup(int Year, int RequiredDays, IReadOnlyList<DailyObservation> Records);
 
     private sealed record PeriodObservation(
         string Title,

@@ -167,3 +167,144 @@
     line-height: 1.35;
     margin: 0.85rem 0 0;
 }
+
+/* Expansion: reserve space at the bottom-right for the chevron. */
+.recent-observation-tile.expandable {
+    padding-bottom: 2.4rem;
+}
+
+.recent-observation-expand {
+    background: none;
+    border: none;
+    color: #595959;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0.3rem;
+    position: absolute;
+    right: 0.55rem;
+    bottom: 0.45rem;
+    user-select: none;
+}
+
+.recent-observation-expand:hover,
+.recent-observation-expand:focus {
+    color: #0071c1;
+}
+
+.recent-observation-chevron.oi {
+    display: inline-block;
+    font-size: 1.2rem;
+    transform: rotate(0deg);
+    transform-origin: center;
+    transition: transform 0.15s ease-in-out;
+}
+
+.recent-observation-chevron.oi.expanded {
+    transform: rotate(90deg);
+}
+
+.recent-observation-detail {
+    border-top: 1px solid rgb(66 95 89 / 18%);
+    margin-top: 0.9rem;
+    padding-top: 0.75rem;
+}
+
+.recent-observation-detail-toggle {
+    display: inline-flex;
+    border: 1px solid #cdddd8;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 0.8rem;
+}
+
+.recent-observation-detail-toggle-option {
+    background: #f4f8f6;
+    border: none;
+    color: #45605a;
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.32rem 0.7rem;
+}
+
+.recent-observation-detail-toggle-option + .recent-observation-detail-toggle-option {
+    border-left: 1px solid #cdddd8;
+}
+
+.recent-observation-detail-toggle-option.selected {
+    background: #425f59;
+    color: #fff;
+}
+
+.recent-observation-detail-metrics {
+    display: grid;
+    gap: 0.6rem 0.8rem;
+    grid-template-columns: 1fr;
+    margin: 0;
+}
+
+.recent-observation-detail-metric {
+    min-width: 0;
+}
+
+.recent-observation-detail-metric dt {
+    color: #697d78;
+    font-size: 0.74rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.recent-observation-detail-metric dd {
+    align-items: baseline;
+    color: #263a35;
+    column-gap: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0.1rem 0 0;
+}
+
+.recent-observation-detail-current {
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.recent-observation-detail-record {
+    color: #5c726d;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.recent-observation-detail-rank {
+    color: #697d78;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.recent-observation-detail-status {
+    border-radius: 4px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.08rem 0.4rem;
+    text-transform: uppercase;
+}
+
+.recent-observation-detail-status.status-new {
+    background: #d8efe0;
+    color: #1f6b41;
+}
+
+.recent-observation-detail-status.status-equal {
+    background: #e7eef0;
+    color: #3a5b73;
+}
+
+.recent-observation-detail-status.status-below {
+    background: #eef0ef;
+    color: #5d6d69;
+}
+
+@media (min-width: 641px) {
+    .recent-observation-detail-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

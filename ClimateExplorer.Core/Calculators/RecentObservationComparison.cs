@@ -178,6 +178,30 @@ public static class RecentObservationComparison
         return $"{direction} than {FormatPercent(percentile)}% of comparable periods{FormatSince(startYear)}";
     }
 
+    public static RecentObservationRecordStatus DetermineRecordStatus(RecentObservationComparisonResult ranking, RecentObservationRecordDirection direction)
+    {
+        if (direction == RecentObservationRecordDirection.High)
+        {
+            if (ranking.IsNewHighRecord)
+            {
+                return RecentObservationRecordStatus.NewRecord;
+            }
+
+            return ranking.IsTiedHighRecord && ranking.HighRank == 1
+                ? RecentObservationRecordStatus.EqualRecord
+                : RecentObservationRecordStatus.BelowRecord;
+        }
+
+        if (ranking.IsNewLowRecord)
+        {
+            return RecentObservationRecordStatus.NewRecord;
+        }
+
+        return ranking.IsTiedLowRecord && ranking.LowRank == 1
+            ? RecentObservationRecordStatus.EqualRecord
+            : RecentObservationRecordStatus.BelowRecord;
+    }
+
     public static string FormatOrdinal(int value)
     {
         var abs = Math.Abs(value);
