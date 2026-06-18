@@ -227,13 +227,8 @@ public partial class RecentObservationsPanel
         return true;
     }
 
-    private async Task OnComparisonEndModeChanged(ChangeEventArgs e)
+    private async Task OnComparisonEndModeChanged(ComparisonEndMode comparisonEndMode)
     {
-        if (!Enum.TryParse<ComparisonEndMode>(e.Value?.ToString(), out var comparisonEndMode))
-        {
-            return;
-        }
-
         selectedComparisonEndMode = comparisonEndMode;
         RecalculateLoadedTabs();
 
