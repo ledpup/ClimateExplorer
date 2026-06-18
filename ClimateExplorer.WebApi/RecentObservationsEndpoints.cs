@@ -52,7 +52,7 @@ internal static partial class RecentObservationsEndpoints
         var recentObservationEndDate = new DateOnly(today.Year, 12, 31);
         var cacheKey = $"{ClimateExplorerApiConstants.RecentObservationsCacheKeyPrefix}_{locationId}_{dataType}_{recentObservationStartDate.Year}_{recentObservationEndDate.Year}";
         var cachedResponse = await services.Cache.Get<RecentObservationsResponse>(cacheKey);
-        if (HasRecordForDate(cachedResponse, today) || HasRecordForDate(cachedResponse, yesterday) || WasDataRetrievedInLastHours(cachedResponse, 12))
+        if (HasRecordForDate(cachedResponse, today) || HasRecordForDate(cachedResponse, yesterday) || WasDataRetrievedInLastHours(cachedResponse, 6))
         {
             return cachedResponse;
         }
