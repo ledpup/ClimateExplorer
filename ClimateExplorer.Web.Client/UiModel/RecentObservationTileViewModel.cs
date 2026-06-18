@@ -23,6 +23,11 @@ public sealed record RecentObservationTileViewModel
     public string? Note { get; init; }
     public List<RecentObservationStatViewModel> Stats { get; init; } = [];
     public IReadOnlyList<RecentObservationMetricGroupViewModel> MetricGroups { get; init; } = [];
+    public int ComparablePeriodCount { get; init; }
+    public bool CanShowHistoricalRecord { get; init; }
+    public bool CanShowHistoricalRange { get; init; }
+    public bool CanShowRank { get; init; }
+    public bool CanShowPercentile { get; init; }
     public int AvailableObservationCount { get; init; } = 1;
     public int ExpectedObservationCount { get; init; } = 1;
 
@@ -55,6 +60,10 @@ public sealed record RecentObservationTileViewModel
             HistoricalMinValue = null,
             HistoricalMinOccurred = null,
             HasComparison = false,
+            CanShowHistoricalRecord = false,
+            CanShowHistoricalRange = false,
+            CanShowRank = false,
+            CanShowPercentile = false,
             Tone = RecentObservationTileTone.Unavailable,
             Note = note,
             MetricGroups = StripComparisons(MetricGroups),
@@ -73,6 +82,10 @@ public sealed record RecentObservationTileViewModel
                 RecordStatusText = null,
                 RecordHigh = null,
                 RecordLow = null,
+                CanShowHistoricalRecord = false,
+                CanShowHistoricalRange = false,
+                CanShowRank = false,
+                CanShowPercentile = false,
             })],
         })];
     }

@@ -48,7 +48,7 @@
     <div style="position: relative;">
         <div class="map-space-reserver" id="mapContainerContainer">
             <MapContainer
-                Locations="@LocationDictionary?.Values"
+                Locations="@MapLocations"
                 OnLocationChange="@SelectedLocationChanged"
                 Location="@Location" />
         </div>
@@ -67,9 +67,9 @@
     <ChartView @ref="ChartView"
                PageName="@PageName"
                DataSetDefinitions="@DataSetDefinitions"
+               Location="@Location"
                LocationDictionary="@LocationDictionary"
                Regions="@Regions"
-               LocationId="@Location?.Id"
                ShowAddDataSetModalEvent="@ShowAddDataSetModal"
                DownloadDataEvent="@OnDownloadDataClicked"
                SnackbarMessageEvent="@SnackbarMessageEventHandler" />

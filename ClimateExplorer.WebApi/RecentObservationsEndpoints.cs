@@ -52,7 +52,7 @@ internal static partial class RecentObservationsEndpoints
         var recentObservationEndDate = new DateOnly(today.Year, 12, 31);
         var cacheKey = $"{ClimateExplorerApiConstants.RecentObservationsCacheKeyPrefix}_{locationId}_{dataType}_{recentObservationStartDate.Year}_{recentObservationEndDate.Year}";
         var cachedResponse = await services.Cache.Get<RecentObservationsResponse>(cacheKey);
-        if (HasRecordForDate(cachedResponse, today) || HasRecordForDate(cachedResponse, yesterday) || WasDataRetrievedInLastHour(cachedResponse))
+        if (HasRecordForDate(cachedResponse, today) || HasRecordForDate(cachedResponse, yesterday) || WasDataRetrievedInLastHours(cachedResponse, 6))
         {
             return cachedResponse;
         }
@@ -612,9 +612,9 @@ internal static partial class RecentObservationsEndpoints
         return response?.Records.Any(x => x.Year == date.Year && x.Month == date.Month && x.Day == date.Day) == true;
     }
 
-    private static bool WasDataRetrievedInLastHour(RecentObservationsResponse response)
+    private static bool WasDataRetrievedInLastHours(RecentObservationsResponse response, int hours = 24)
     {
-        return response?.RetrievedDate >= DateTimeOffset.UtcNow.AddHours(-1);
+        return response?.RetrievedDate >= DateTimeOffset.UtcNow.AddHours(-1 * hours);
     }
 
     [GeneratedRegex(@"\d{6}\|\|,(?<startYear>\d{4}):(?<p_c>-?\d+),")]

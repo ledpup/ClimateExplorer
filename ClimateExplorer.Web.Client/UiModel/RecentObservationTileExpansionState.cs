@@ -1,15 +1,18 @@
 namespace ClimateExplorer.Web.Client.UiModel;
 
 /// <summary>
-/// UI-only expansion state for a single Recent Observation tile. Held by the tile
-/// component instance so it survives view-model re-creation (e.g. completeness
-/// threshold changes) without reloading data. Collapsed by default.
+/// UI-only expansion state for a single Recent Observation tile. Collapsed by default.
 /// </summary>
 public sealed class RecentObservationTileExpansionState
 {
     public bool IsExpanded { get; private set; }
 
     public string? SelectedGroupKey { get; private set; }
+
+    public void Expand()
+    {
+        IsExpanded = true;
+    }
 
     public void Toggle()
     {

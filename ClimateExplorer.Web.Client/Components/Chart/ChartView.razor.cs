@@ -46,10 +46,10 @@ public partial class ChartView : IAsyncDisposable
     public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     [Parameter]
-    public Guid? LocationId { get; set; }
+    public bool ChartAllData { get; set; }
 
     [Parameter]
-    public bool ChartAllData { get; set; }
+    public Location? Location { get; set; }
 
     [Parameter]
     public Dictionary<Guid, Location>? LocationDictionary { get; set; }
@@ -220,7 +220,7 @@ public partial class ChartView : IAsyncDisposable
 
             aggregation = chartSeries?.Aggregation ?? SeriesAggregationOptions.Mean;
         }
-        else if (LocationId.HasValue && yearAndDataTypeFilter.DataType.HasValue)
+        else if (Location is not null && yearAndDataTypeFilter.DataType.HasValue)
         {
             var dataMatches = yearAndDataTypeFilter.UnitOfMeasure == UnitOfMeasure.DegreesCelsius
                 ? DataSubstitute.StandardTemperatureDataMatches()
@@ -228,7 +228,7 @@ public partial class ChartView : IAsyncDisposable
 
             var dsd = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
                 DataSetDefinitions!,
-                LocationId.Value,
+                Location.Id,
                 dataMatches,
                 throwIfNoMatch: false);
 
@@ -237,7 +237,13 @@ public partial class ChartView : IAsyncDisposable
                 return;
             }
 
-            sourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(LocationDictionary![LocationId.Value], dsd);
+            var location = GetKnownLocation(Location.Id);
+            if (location is null)
+            {
+                return;
+            }
+
+            sourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, dsd);
             aggregation = yearAndDataTypeFilter.DataType == DataType.Precipitation
                 ? SeriesAggregationOptions.Sum
                 : SeriesAggregationOptions.Mean;
@@ -289,11 +295,11 @@ public partial class ChartView : IAsyncDisposable
 
         if (DataSetDefinitions is not null && Regions is not null)
         {
-            if (LocationId is not null)
+            if (Location is not null)
             {
-                if (InternalLocationId is not null && InternalLocationId != LocationId)
+                if (InternalLocationId is not null && InternalLocationId != Location.Id)
                 {
-                    InternalLocationId = LocationId;
+                    InternalLocationId = Location.Id;
                     await ChangedLocation();
                 }
 
@@ -307,7 +313,7 @@ public partial class ChartView : IAsyncDisposable
                     else if (InternalLocationId is null)
                     {
                         // First time loading a page with a location in the URL. Just add a default chart with temperatute (and probably precipitation) data, so that the user sees something.
-                        InternalLocationId = LocationId;
+                        InternalLocationId = Location.Id;
                         await SetUpLocalDefaultCharts(InternalLocationId.Value);
                     }
                     else if (uri.Query.Contains("chartAllData="))
@@ -504,7 +510,7 @@ public partial class ChartView : IAsyncDisposable
 
             await BuildProcessedDataSets(ChartSeriesWithData, ChartAllData);
 
-            title = ChartLogic.BuildChartTitle(ChartSeriesWithData, LocationDictionary);
+            title = ChartLogic.BuildChartTitle(ChartSeriesWithData, GetKnownLocationDictionary());
             subtitle = ChartLogic.BuildChartSubtitle(chartStartBin, chartEndBin, SelectedBinGranularity, IsMobileDevice!.Value, SelectedGroupingDays, GetGroupingThresholdText());
 
             l.LogInformation("Calling AddDataSetsToGraph");
@@ -560,6 +566,12 @@ public partial class ChartView : IAsyncDisposable
 
     protected async Task ChangedLocation()
     {
+        if (Location is null)
+        {
+            return;
+        }
+
+        var location = Location;
         var additionalCsds = new List<ChartSeriesDefinition>();
 
         // Update data series to reflect new location
@@ -578,8 +590,8 @@ public partial class ChartView : IAsyncDisposable
                     // Furthermore, we only run location change substition for geographical entities that are locations. If it is a region, we skip this.
                     if (csd.SourceSeriesSpecifications.Length == 1 && !Regions!.Any(x => x.Id == sss.LocationId))
                     {
-                        sss.LocationId = LocationId!.Value;
-                        sss.LocationName = LocationDictionary![LocationId!.Value].Name;
+                        sss.LocationId = location.Id;
+                        sss.LocationName = location.Name;
 
                         var dataMatches = new List<DataSubstitute>
                         {
@@ -607,7 +619,7 @@ public partial class ChartView : IAsyncDisposable
                         var dsd =
                             DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
                                 DataSetDefinitions!,
-                                LocationId!.Value,
+                                location.Id,
                                 dataMatches,
                                 throwIfNoMatch: false);
 
@@ -615,7 +627,7 @@ public partial class ChartView : IAsyncDisposable
                         {
                             var dataType = sss.MeasurementDefinition.DataType.ToFriendlyName();
 
-                            await SnackbarMessageEvent.InvokeAsync(new SnackbarMessage { Message = $"{dataType} data is not available at {LocationDictionary[LocationId.Value].FullTitle}.", Type = SnackbarColor.Warning });
+                            await SnackbarMessageEvent.InvokeAsync(new SnackbarMessage { Message = $"{dataType} data is not available at {location.FullTitle}.", Type = SnackbarColor.Warning });
                             csd.DataAvailable = false;
 
                             break;
@@ -693,8 +705,8 @@ public partial class ChartView : IAsyncDisposable
                                     new SourceSeriesSpecification
                                     {
                                         DataSetDefinition = DataSetDefinitions!.Single(x => x.Id == sss.DataSetDefinition!.Id),
-                                        LocationId = LocationId!.Value,
-                                        LocationName = LocationDictionary![LocationId!.Value].Name,
+                                        LocationId = location.Id,
+                                        LocationName = location.Name,
                                         MeasurementDefinition = newMd,
                                     }
 
@@ -890,7 +902,7 @@ public partial class ChartView : IAsyncDisposable
         {
             try
             {
-                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions!, LocationDictionary!, Regions);
+                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions!, GetKnownLocationDictionary(), Regions);
 
                 if (csdList.Any())
                 {
@@ -980,7 +992,11 @@ public partial class ChartView : IAsyncDisposable
     private async Task SetUpLocalDefaultCharts(Guid locationId)
     {
         // Use the provided location for building the default chart. We want temperature and precipitation on the default chart.
-        var location = LocationDictionary![locationId];
+        var location = GetKnownLocation(locationId);
+        if (location is null)
+        {
+            throw new InvalidOperationException($"Location {locationId} must be available before setting up local default charts.");
+        }
 
         if (ChartSeriesList == null)
         {
@@ -1061,6 +1077,30 @@ public partial class ChartView : IAsyncDisposable
         }
 
         await BuildDataSets();
+    }
+
+    private Location? GetKnownLocation(Guid locationId)
+    {
+        if (Location?.Id == locationId)
+        {
+            return Location;
+        }
+
+        return LocationDictionary is not null && LocationDictionary.TryGetValue(locationId, out var location)
+            ? location
+            : null;
+    }
+
+    private Dictionary<Guid, Location>? GetKnownLocationDictionary()
+    {
+        if (LocationDictionary is not null)
+        {
+            return LocationDictionary;
+        }
+
+        return Location is null
+            ? null
+            : new Dictionary<Guid, Location> { [Location.Id] = Location };
     }
 
     private void LogChartSeriesList()

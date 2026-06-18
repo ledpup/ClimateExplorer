@@ -19,12 +19,93 @@
     width: 100%;
 }
 
+.recent-observations-period-controls {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.recent-observations-period-controls .recent-observations-toggle-all {
+    margin: 0 0 0 0.35rem;
+}
+
+.recent-observations-toggle-all-chevron.oi {
+    color: inherit;
+    display: inline-block;
+    font-size: 1rem;
+    margin-right: 8px;
+    transform: rotate(0deg);
+    transform-origin: center;
+    transition: transform 0.15s ease-in-out;
+}
+
+.recent-observations-toggle-all-chevron.oi.expanded {
+    transform: rotate(90deg);
+}
+
 .recent-observation-control-row {
     animation: recent-observation-slot-in 180ms ease-out;
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     grid-column: 1 / -1;
+}
+
+.recent-observations-reference-date {
+    align-items: flex-start;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.recent-observations-reference-date label {
+    color: #425f59;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.recent-observations-reference-date input,
+.recent-observations-reference-date select {
+    width: 10.25rem;
+}
+
+.recent-observations-reference-date-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.recent-observations-reference-date-control {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+}
+
+.recent-observations-reference-date-control input {
+    flex: 0 0 auto;
+}
+
+.recent-observations-reference-date-reset {
+    align-items: center;
+    display: inline-flex;
+    height: 1.9375rem;
+    justify-content: center;
+    padding: 0;
+    width: 1.9375rem;
+}
+
+.recent-observations-reference-date-field .form-text,
+.recent-observations-reference-date-field .invalid-feedback {
+    font-size: 0.8rem;
+    line-height: 1.25;
+}
+
+.recent-observations-reference-date span {
+    color: #596f6a;
+    font-size: 0.85rem;
 }
 
 .recent-observations-threshold {
@@ -110,6 +191,11 @@
 }
 
 @media (max-width: 520px) {
+    .recent-observations-reference-date {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
     .recent-observations-threshold {
         align-items: flex-start;
         flex-direction: column;
