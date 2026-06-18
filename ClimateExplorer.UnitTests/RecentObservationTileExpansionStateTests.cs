@@ -93,4 +93,123 @@ public class RecentObservationTileExpansionStateTests
         Assert.IsTrue(state.IsExpanded);
         Assert.IsTrue(state.IsGroupSelected("daily-extremes"));
     }
+
+    [TestMethod]
+    public void ExpandAllExpandsOnlyExpandableTiles()
+    {
+        var states = new RecentObservationTileExpansionStateCollection();
+        var nonExpandableState = states.GetOrAdd("summary");
+
+        states.ExpandAll(
+        [
+            new RecentObservationTileExpansionTarget("latest-day", true),
+            new RecentObservationTileExpansionTarget("summary", false),
+            new RecentObservationTileExpansionTarget("month-to-date", true),
+        ]);
+
+        Assert.IsTrue(states.GetOrAdd("latest-day").IsExpanded);
+        Assert.IsTrue(states.GetOrAdd("month-to-date").IsExpanded);
+        Assert.IsFalse(nonExpandableState.IsExpanded);
+    }
+
+    [TestMethod]
+    public void CollapseAllCollapsesOnlyExpandableTiles()
+    {
+        var states = new RecentObservationTileExpansionStateCollection();
+        states.GetOrAdd("latest-day").Expand();
+        states.GetOrAdd("summary").Expand();
+        states.GetOrAdd("month-to-date").Expand();
+
+        states.CollapseAll(
+        [
+            new RecentObservationTileExpansionTarget("latest-day", true),
+            new RecentObservationTileExpansionTarget("summary", false),
+            new RecentObservationTileExpansionTarget("month-to-date", true),
+        ]);
+
+        Assert.IsFalse(states.GetOrAdd("latest-day").IsExpanded);
+        Assert.IsFalse(states.GetOrAdd("month-to-date").IsExpanded);
+        Assert.IsTrue(states.GetOrAdd("summary").IsExpanded);
+    }
+
+    [TestMethod]
+    public void ToggleAllLabelIsExpandAllWhenAnyExpandableTileIsCollapsed()
+    {
+        var states = new RecentObservationTileExpansionStateCollection();
+        var tiles = new[]
+        {
+            new RecentObservationTileExpansionTarget("latest-day", true),
+            new RecentObservationTileExpansionTarget("month-to-date", true),
+        };
+
+        states.GetOrAdd("latest-day").Expand();
+
+        Assert.AreEqual("Expand all", states.CreateToggleAllLabel(tiles));
+    }
+
+    [TestMethod]
+    public void ToggleAllLabelIsCollapseAllWhenAllExpandableTilesAreExpanded()
+    {
+        var states = new RecentObservationTileExpansionStateCollection();
+        var tiles = new[]
+        {
+            new RecentObservationTileExpansionTarget("latest-day", true),
+            new RecentObservationTileExpansionTarget("summary", false),
+            new RecentObservationTileExpansionTarget("month-to-date", true),
+        };
+
+        states.ExpandAll(tiles);
+
+        Assert.AreEqual("Collapse all", states.CreateToggleAllLabel(tiles));
+    }
+
+    [TestMethod]
+    public void IndividualToggleChangesToggleAllLabel()
+    {
+        var states = new RecentObservationTileExpansionStateCollection();
+        var tiles = new[]
+        {
+            new RecentObservationTileExpansionTarget("latest-day", true),
+            new RecentObservationTileExpansionTarget("month-to-date", true),
+        };
+        states.ExpandAll(tiles);
+
+        states.GetOrAdd("month-to-date").Toggle();
+
+        Assert.AreEqual("Expand all", states.CreateToggleAllLabel(tiles));
+    }
+
+    [TestMethod]
+    public void ToggleAllExpandsWhenAnyExpandableTileIsCollapsed()
+    {
+        var states = new RecentObservationTileExpansionStateCollection();
+        var tiles = new[]
+        {
+            new RecentObservationTileExpansionTarget("latest-day", true),
+            new RecentObservationTileExpansionTarget("month-to-date", true),
+        };
+        states.GetOrAdd("latest-day").Expand();
+
+        states.ToggleAll(tiles);
+
+        Assert.IsTrue(states.GetOrAdd("latest-day").IsExpanded);
+        Assert.IsTrue(states.GetOrAdd("month-to-date").IsExpanded);
+    }
+
+    [TestMethod]
+    public void ToggleAllCollapsesWhenAllExpandableTilesAreExpanded()
+    {
+        var states = new RecentObservationTileExpansionStateCollection();
+        var tiles = new[]
+        {
+            new RecentObservationTileExpansionTarget("latest-day", true),
+            new RecentObservationTileExpansionTarget("month-to-date", true),
+        };
+        states.ExpandAll(tiles);
+
+        states.ToggleAll(tiles);
+
+        Assert.IsFalse(states.GetOrAdd("latest-day").IsExpanded);
+        Assert.IsFalse(states.GetOrAdd("month-to-date").IsExpanded);
+    }
 }

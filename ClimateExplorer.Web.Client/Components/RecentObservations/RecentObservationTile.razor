@@ -121,11 +121,13 @@
 </article>
 
 @code {
-    private readonly RecentObservationTileExpansionState Expansion = new();
-
     [Parameter]
     [EditorRequired]
     public RecentObservationTileViewModel Tile { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public RecentObservationTileExpansionState Expansion { get; set; } = default!;
 
     [Parameter]
     public bool IsRemovable { get; set; }
@@ -135,6 +137,9 @@
 
     [Parameter]
     public EventCallback OnRemove { get; set; }
+
+    [Parameter]
+    public EventCallback OnExpansionChanged { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -147,9 +152,10 @@
 
     private string ExpandLabel => Expansion.IsExpanded ? "Hide statistics" : "Show statistics";
 
-    private void ToggleExpanded()
+    private async Task ToggleExpanded()
     {
         Expansion.Toggle();
+        await OnExpansionChanged.InvokeAsync();
     }
 
     private string RemovableClass => IsRemovable ? "removable" : string.Empty;

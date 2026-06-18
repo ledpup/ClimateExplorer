@@ -19,6 +19,31 @@
     width: 100%;
 }
 
+.recent-observations-period-controls {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.recent-observations-period-controls .recent-observations-toggle-all {
+    margin: 0 0 0 0.35rem;
+}
+
+.recent-observations-toggle-all-chevron.oi {
+    color: inherit;
+    display: inline-block;
+    font-size: 1rem;
+    margin-right: 8px;
+    transform: rotate(0deg);
+    transform-origin: center;
+    transition: transform 0.15s ease-in-out;
+}
+
+.recent-observations-toggle-all-chevron.oi.expanded {
+    transform: rotate(90deg);
+}
+
 .recent-observation-control-row {
     animation: recent-observation-slot-in 180ms ease-out;
     display: flex;

@@ -42,6 +42,11 @@ public partial class RecentObservationsPanel
     private string AddDayButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.Daily, "day");
     private string AddMonthButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousMonth, "month");
     private string AddSeasonButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousSeason, "season");
+    private string ExpandCollapseAllLabel => CurrentState.ExpansionStates.CreateToggleAllLabel(CurrentExpansionTargets);
+    private bool HasExpandableCurrentTiles => CurrentState.ExpansionStates.HasExpandableTile(CurrentExpansionTargets);
+    private bool AreAllExpandableCurrentTilesExpanded => CurrentState.ExpansionStates.AreAllExpandableTilesExpanded(CurrentExpansionTargets);
+    private IEnumerable<RecentObservationTileExpansionTarget> CurrentExpansionTargets =>
+        CurrentTiles.Select(tile => new RecentObservationTileExpansionTarget(GetTileKey(tile), IsExpandableTile(tile)));
     private string ReferenceDateInputId => $"recent-observations-reference-date-{ActiveTab.ToString().ToLowerInvariant()}";
     private string ReferenceDateHelpId => $"{ReferenceDateInputId}-help";
     private string ReferenceDateInputValidationClass => string.IsNullOrWhiteSpace(referenceDateValidationMessage) ? string.Empty : "is-invalid";
@@ -144,6 +149,15 @@ public partial class RecentObservationsPanel
     private void RemoveTile(RecentObservationTileViewModel tile)
     {
         periodSelection.Remove(tile);
+    }
+
+    private void ToggleAllTileExpansion()
+    {
+        CurrentState.ExpansionStates.ToggleAll(CurrentExpansionTargets);
+    }
+
+    private void OnTileExpansionChanged()
+    {
     }
 
     private void OnCompletenessThresholdChanged(ChangeEventArgs e)
@@ -328,6 +342,16 @@ public partial class RecentObservationsPanel
         return $"{tile.PeriodKind}:{tile.PeriodStartDate:yyyy-MM-dd}:{tile.PeriodEndDate:yyyy-MM-dd}:{tile.PeriodTitle}";
     }
 
+    private RecentObservationTileExpansionState GetTileExpansionState(RecentObservationTileViewModel tile)
+    {
+        return CurrentState.ExpansionStates.GetOrAdd(GetTileKey(tile));
+    }
+
+    private bool IsExpandableTile(RecentObservationTileViewModel tile)
+    {
+        return tile.MetricGroups.Count > 0;
+    }
+
     private IEnumerable<int> GetAvailableOffsets(RecentObservationPeriodKind periodKind)
     {
         return GetAvailableTiles(periodKind)
@@ -354,6 +378,7 @@ public partial class RecentObservationsPanel
         public string? ErrorMessage { get; set; }
         public RecentObservationsDataSet? DataSet { get; set; }
         public RecentObservationsTabResult? Result { get; set; }
+        public RecentObservationTileExpansionStateCollection ExpansionStates { get; private set; } = new();
 
         public void Reset()
         {
@@ -362,6 +387,7 @@ public partial class RecentObservationsPanel
             ErrorMessage = null;
             DataSet = null;
             Result = null;
+            ExpansionStates = new RecentObservationTileExpansionStateCollection();
         }
     }
 }
