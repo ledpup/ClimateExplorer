@@ -7,6 +7,7 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Components.Info;
+using ClimateExplorer.Web.Client.Infrastructure;
 using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiModel;
@@ -109,6 +110,7 @@ public partial class LocationDashboard
 
     protected override async Task OnParametersSetAsync()
     {
+        using var perf = PerformanceLogScope.Start(Logger!, "LocationDashboard.OnParametersSetAsync", ("locationId", Location?.Id), ("locationName", Location?.Name));
         if (Location == null || DataSetDefinitions == null)
         {
             RecentObservationsSupported = false;
@@ -140,6 +142,7 @@ public partial class LocationDashboard
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        using var perf = PerformanceLogScope.Start(Logger!, "LocationDashboard.OnAfterRenderAsync", ("firstRender", firstRender), ("locationId", Location?.Id), ("loadStripeData", LoadStripeData));
         if (Location == null || DataSetDefinitions == null)
         {
             return;
@@ -150,6 +153,8 @@ public partial class LocationDashboard
             LoadStripeData = false;
 
             Logger!.LogInformation("Loading data");
+
+            await JS!.InvokeVoidAsync("climateExplorerPerformance.mark", "location-dashboard-data-start", new { locationId = Location?.Id, locationName = Location?.Name });
 
             var temperatureAnomaly = await CalculateAnomaly(DataSubstitute.StandardTemperatureDataMatches(), ContainerAggregationFunctions.Mean);
             if (temperatureAnomaly != null)
@@ -191,6 +196,9 @@ public partial class LocationDashboard
 
             var recentObservationsSupport = await DataService!.GetRecentObservations(Location!.Id, DataType.TempMax, isLocationSupported: true);
             RecentObservationsSupported = recentObservationsSupport.IsSupported;
+
+            await JS!.InvokeVoidAsync("climateExplorerPerformance.mark", "location-dashboard-data-loaded", new { locationId = Location?.Id, hasTemperatureAnomaly = temperatureAnomaly != null, recentObservationsSupported = RecentObservationsSupported });
+            await JS!.InvokeVoidAsync("climateExplorerPerformance.measure", "location-dashboard-data", "location-dashboard-data-start", "location-dashboard-data-loaded", new { locationId = Location?.Id });
 
             StripeLoadingIndicatorVisible = false;
             StateHasChanged();

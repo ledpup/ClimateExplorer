@@ -7,20 +7,24 @@ using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
 using static ClimateExplorer.Core.Enums;
 
 public class DataService : IDataService
 {
     private readonly HttpClient httpClient;
     private readonly IDataServiceCache dataServiceCache;
-    private readonly JsonSerializerOptions jsonSerializerOptions;    
+    private readonly JsonSerializerOptions jsonSerializerOptions;
+    private readonly ILogger<DataService> logger;
 
     public DataService(
         HttpClient httpClient,
-        IDataServiceCache dataServiceCache)
+        IDataServiceCache dataServiceCache,
+        ILogger<DataService> logger)
     {
         this.httpClient = httpClient;
         this.dataServiceCache = dataServiceCache;
+        this.logger = logger;
         jsonSerializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web) { Converters = { new JsonStringEnumConverter() } };
     }
 
@@ -41,9 +45,11 @@ public class DataService : IDataService
         short? year,
         DataResolution? minimumDataResolution)
     {
+        var endpoint = "dataset";
+        var started = System.Diagnostics.Stopwatch.GetTimestamp();
         var response =
             await httpClient.PostAsJsonAsync(
-                "dataset",
+                endpoint,
                 new PostDataSetsRequestBody
                 {
                     BinAggregationFunction = binAggregationFunction,
@@ -69,6 +75,8 @@ public class DataService : IDataService
         }
 
         var result = await response.Content.ReadFromJsonAsync<DataSet>();
+        var elapsed = System.Diagnostics.Stopwatch.GetElapsedTime(started).TotalMilliseconds;
+        logger.LogInformation("PerfApiClient endpoint={Endpoint} method=POST cached=false elapsedMs={ElapsedMilliseconds:0.0} recordCount={RecordCount} seriesCount={SeriesCount} binGranularity={BinGranularity}", endpoint, elapsed, result?.DataRecords?.Count, seriesSpecifications.Length, binGranularity);
 
         return result!;
     }
@@ -82,13 +90,7 @@ public class DataService : IDataService
     public async Task<IEnumerable<DataSetDefinitionViewModel>> GetDataSetDefinitions()
     {
         var url = "/datasetdefinition";
-        var result = dataServiceCache.Get<DataSetDefinitionViewModel[]>(url);
-        if (result == null)
-        {
-            result = await httpClient.GetFromJsonAsync<DataSetDefinitionViewModel[]>(url, jsonSerializerOptions);
-
-            dataServiceCache.Put(url, result!);
-        }
+        var result = await GetFromJsonWithTiming<DataSetDefinitionViewModel[]>(url, jsonSerializerOptions, cacheable: true);
         
         return result!;
     }
@@ -102,13 +104,7 @@ public class DataService : IDataService
             url = QueryHelpers.AddQueryString(url, "permitCreateCache", permitCreateCache.ToString().ToLowerInvariant());
         }
 
-        var result = dataServiceCache.Get<Location[]>(url);
-        if (result == null)
-        {
-            result = await httpClient.GetFromJsonAsync<Location[]>(url);
-
-            dataServiceCache.Put(url, result!);
-        }
+        var result = await GetFromJsonWithTiming<Location[]>(url, cacheable: true);
 
         return result!;
     }
@@ -128,13 +124,7 @@ public class DataService : IDataService
             url = QueryHelpers.AddQueryString(url, "skip", skip.Value.ToString());
         }
 
-        var result = dataServiceCache.Get<LocationDistance[]>(url);
-        if (result == null)
-        {
-            result = await httpClient.GetFromJsonAsync<LocationDistance[]>(url);
-
-            dataServiceCache.Put(url, result!);
-        }
+        var result = await GetFromJsonWithTiming<LocationDistance[]>(url, cacheable: true);
 
         return result!;
     }
@@ -149,13 +139,7 @@ public class DataService : IDataService
     public async Task<IEnumerable<Region>> GetRegions()
     {
         var url = $"/region";
-        var result = dataServiceCache.Get<Region[]>(url);
-        if (result == null)
-        {
-            result = await httpClient.GetFromJsonAsync<Region[]>(url);
-
-            dataServiceCache.Put(url, result!);
-        }
+        var result = await GetFromJsonWithTiming<Region[]>(url, cacheable: true);
         return result!;
     }
 
@@ -186,9 +170,7 @@ public class DataService : IDataService
         if (result == null)
         {
             var url = $"/heating-score-table";
-            result = await httpClient.GetFromJsonAsync<HeatingScoreRow[]>(url);
-
-            dataServiceCache.Put(heatingScoreTableKey, result!);
+            result = await GetFromJsonWithTiming<HeatingScoreRow[]>(url, cacheable: true);
         }
         
         return result!;
@@ -231,13 +213,7 @@ public class DataService : IDataService
             url = QueryHelpers.AddQueryString(url, "monthly", "true");
         }
 
-        var result = dataServiceCache.Get<ClimateRecordsResponse>(url);
-        if (result == null)
-        {
-            result = await httpClient.GetFromJsonAsync<ClimateRecordsResponse>(url, jsonSerializerOptions);
-
-            dataServiceCache.Put(url, result!);
-        }
+        var result = await GetFromJsonWithTiming<ClimateRecordsResponse>(url, jsonSerializerOptions, cacheable: true);
 
         return result!;
     }
@@ -253,7 +229,42 @@ public class DataService : IDataService
             url = QueryHelpers.AddQueryString(url, "isLocationSupported", "true");
         }
 
-        var result = await httpClient.GetFromJsonAsync<RecentObservationsResponse>(url, jsonSerializerOptions);
+        var result = await GetFromJsonWithTiming<RecentObservationsResponse>(url, jsonSerializerOptions);
         return result!;
     }
+
+
+    private async Task<T> GetFromJsonWithTiming<T>(string url, JsonSerializerOptions? options = null, bool cacheable = false)
+    {
+        var cached = cacheable ? dataServiceCache.Get<T>(url) : default;
+        if (cached is not null)
+        {
+            logger.LogInformation("PerfApiClient endpoint={Endpoint} cached=true elapsedMs={ElapsedMilliseconds:0.0} recordCount={RecordCount}", url, 0, GetRecordCount(cached));
+            return cached;
+        }
+
+        var started = System.Diagnostics.Stopwatch.GetTimestamp();
+        var result = await httpClient.GetFromJsonAsync<T>(url, options);
+        var elapsed = System.Diagnostics.Stopwatch.GetElapsedTime(started).TotalMilliseconds;
+        logger.LogInformation("PerfApiClient endpoint={Endpoint} cached=false elapsedMs={ElapsedMilliseconds:0.0} recordCount={RecordCount} responseType={ResponseType}", url, elapsed, GetRecordCount(result), typeof(T).Name);
+
+        if (cacheable)
+        {
+            dataServiceCache.Put(url, result!);
+        }
+
+        return result!;
+    }
+
+    private static int? GetRecordCount<T>(T? result)
+    {
+        return result switch
+        {
+            System.Collections.ICollection collection => collection.Count,
+            ClimateRecordsResponse response => response.Records?.Count(),
+            RecentObservationsResponse response => response.Records?.Count(),
+            _ => null,
+        };
+    }
+
 }
