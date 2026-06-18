@@ -1,0 +1,181 @@
+@namespace ClimateExplorer.Web.Client.Components.Location
+@using ClimateExplorer.Core.Calculators
+@using ClimateExplorer.Web.Client.UiModel
+
+<article class="recent-observation-tile @ToneClass @RemovableClass @ExpandableClass">
+    @if (IsRemovable)
+    {
+        <button type="button" class="btn-close recent-observation-remove" aria-label="@RemoveButtonLabel" @onclick="OnRemove"></button>
+    }
+    <div class="recent-observation-period">@Tile.PeriodTitle</div>
+    <h3>@Tile.Headline</h3>
+    <p class="recent-observation-percentile">@Tile.PercentileSentence</p>
+    <div class="recent-observation-primary">
+        <span>@Tile.PrimaryLabel</span>
+        <strong>@Tile.PrimaryValue</strong>
+    </div>
+    @if (Tile.Stats.Count > 0)
+    {
+        <dl class="recent-observation-stats">
+            @foreach (var stat in Tile.Stats)
+            {
+                <div>
+                    <dt>@stat.Label</dt>
+                    <dd>@stat.Value</dd>
+                </div>
+            }
+        </dl>
+    }
+    @if (!string.IsNullOrWhiteSpace(Tile.Note))
+    {
+        <p class="recent-observation-note">@Tile.Note</p>
+    }
+    @if (!string.IsNullOrWhiteSpace(Tile.HistoricalMaxLabel) && !string.IsNullOrWhiteSpace(Tile.HistoricalMaxValue))
+    {
+        <dl class="recent-observation-historical-range">
+            <div>
+                <dt>@Tile.HistoricalMaxLabel</dt>
+                <dd>
+                    @Tile.HistoricalMaxValue
+                    @if (!string.IsNullOrWhiteSpace(Tile.HistoricalMaxOccurred))
+                    {
+                        <span class="recent-observation-historical-occurred"> - @Tile.HistoricalMaxOccurred</span>
+                    }
+                </dd>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Tile.HistoricalMinLabel) && !string.IsNullOrWhiteSpace(Tile.HistoricalMinValue))
+            {
+                <div>
+                    <dt>@Tile.HistoricalMinLabel</dt>
+                    <dd>
+                        @Tile.HistoricalMinValue
+                        @if (!string.IsNullOrWhiteSpace(Tile.HistoricalMinOccurred))
+                        {
+                            <span class="recent-observation-historical-occurred"> - @Tile.HistoricalMinOccurred</span>
+                        }
+                    </dd>
+                </div>
+            }
+        </dl>
+    }
+    @if (Tile.MetricGroups.Count > 0)
+    {
+        @if (Expansion.IsExpanded)
+        {
+            <div class="recent-observation-detail">
+                @if (Tile.MetricGroups.Count > 1)
+                {
+                    <div class="recent-observation-detail-toggle" role="group" aria-label="Statistics view">
+                        @foreach (var group in Tile.MetricGroups)
+                        {
+                            <button type="button"
+                                    class="recent-observation-detail-toggle-option @(Expansion.IsGroupSelected(group.Key) ? "selected" : string.Empty)"
+                                    aria-pressed="@(Expansion.IsGroupSelected(group.Key) ? "true" : "false")"
+                                    @onclick="@(() => Expansion.SelectGroup(group.Key))">
+                                @group.Title
+                            </button>
+                        }
+                    </div>
+                }
+                @if (SelectedGroup is not null)
+                {
+                    <dl class="recent-observation-detail-metrics">
+                        @foreach (var metric in SelectedGroup.Metrics)
+                        {
+                            <div class="recent-observation-detail-metric">
+                                <dt>@metric.Label</dt>
+                                <dd>
+                                    <div class="recent-observation-detail-headline">
+                                        <span class="recent-observation-detail-current">@metric.CurrentValue</span>
+                                        @if (!string.IsNullOrWhiteSpace(metric.RecordStatusText))
+                                        {
+                                            <span class="recent-observation-detail-status status-@StatusClass(metric.RecordStatus)">@metric.RecordStatusText</span>
+                                        }
+                                        else if (!string.IsNullOrWhiteSpace(metric.RankText))
+                                        {
+                                            <span class="recent-observation-detail-rank">@metric.RankText</span>
+                                        }
+                                    </div>
+                                    @foreach (var record in metric.Records)
+                                    {
+                                        <span class="recent-observation-detail-record">
+                                            <span class="recent-observation-detail-record-label">@record.Label:</span>
+                                            @record.Value@(record.Year is not null ? $" ({record.Year})" : string.Empty)
+                                        </span>
+                                    }
+                                </dd>
+                            </div>
+                        }
+                    </dl>
+                }
+            </div>
+        }
+        <button type="button"
+                class="recent-observation-expand"
+                aria-expanded="@(Expansion.IsExpanded ? "true" : "false")"
+                aria-label="@ExpandLabel"
+                @onclick="ToggleExpanded">
+            <span class="oi oi-chevron-right recent-observation-chevron @(Expansion.IsExpanded ? "expanded" : string.Empty)" aria-hidden="true"></span>
+        </button>
+    }
+</article>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public RecentObservationTileViewModel Tile { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public RecentObservationTileExpansionState Expansion { get; set; } = default!;
+
+    [Parameter]
+    public bool IsRemovable { get; set; }
+
+    [Parameter]
+    public string RemoveButtonLabel { get; set; } = "Remove tile";
+
+    [Parameter]
+    public EventCallback OnRemove { get; set; }
+
+    [Parameter]
+    public EventCallback OnExpansionChanged { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Expansion.EnsureSelection(Tile.MetricGroups);
+    }
+
+    private RecentObservationMetricGroupViewModel? SelectedGroup =>
+        Tile.MetricGroups.FirstOrDefault(group => Expansion.IsGroupSelected(group.Key))
+        ?? (Tile.MetricGroups.Count > 0 ? Tile.MetricGroups[0] : null);
+
+    private string ExpandLabel => Expansion.IsExpanded ? "Hide statistics" : "Show statistics";
+
+    private async Task ToggleExpanded()
+    {
+        Expansion.Toggle();
+        await OnExpansionChanged.InvokeAsync();
+    }
+
+    private string RemovableClass => IsRemovable ? "removable" : string.Empty;
+
+    private string ExpandableClass => Tile.MetricGroups.Count > 0 ? "expandable" : string.Empty;
+
+    private static string StatusClass(RecentObservationRecordStatus status) => status switch
+    {
+        RecentObservationRecordStatus.NewRecord => "new",
+        RecentObservationRecordStatus.EqualRecord => "equal",
+        _ => "none",
+    };
+
+    private string ToneClass => Tile.Tone switch
+    {
+        RecentObservationTileTone.TemperatureWarm => "temperature-warm",
+        RecentObservationTileTone.TemperatureCool => "temperature-cool",
+        RecentObservationTileTone.PrecipitationWet => "precipitation-wet",
+        RecentObservationTileTone.PrecipitationDry => "precipitation-dry",
+        RecentObservationTileTone.Unavailable => "unavailable",
+        _ => "neutral",
+    };
+}

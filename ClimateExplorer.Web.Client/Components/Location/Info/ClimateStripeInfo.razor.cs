@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Web.Client.Components.Location;
+namespace ClimateExplorer.Web.Client.Components.Location.Info;
 
 using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;

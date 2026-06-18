@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Web.Client.Components.Location;
+namespace ClimateExplorer.Web.Client.Components.ClimateRecords;
 
 using System.Globalization;
 using ClimateExplorer.Core;

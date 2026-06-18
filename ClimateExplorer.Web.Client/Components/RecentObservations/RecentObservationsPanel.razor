@@ -1,0 +1,156 @@
+@namespace ClimateExplorer.Web.Client.Components.Location
+@using ClimateExplorer.Web.Client.UiModel
+
+<div class="recent-observations-panel">
+    <RecentObservationTabs SelectedTab="@ActiveTab" SelectedTabChanged="@OnTabChanged" />
+
+    <div class="recent-observations-body" aria-live="polite">
+        @if (CurrentState.IsLoading)
+        {
+            <div class="recent-observations-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Loading recent observations...</span>
+            </div>
+        }
+        else if (!string.IsNullOrWhiteSpace(CurrentState.ErrorMessage))
+        {
+            <div class="recent-observations-state error">
+                <i class="fas fa-triangle-exclamation"></i>
+                <span>@CurrentState.ErrorMessage</span>
+                <button class="recent-observations-retry" @onclick="RetryCurrentTab">
+                    <i class="fas fa-rotate-right"></i> Retry
+                </button>
+            </div>
+        }
+        else
+        {
+            if (CurrentTiles.Count > 0)
+            {
+                <div class="chart-controls recent-observations-period-controls mb-4">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierDay" disabled="@IsAddEarlierDayDisabled">
+                        @AddDayButtonLabel
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierMonth" disabled="@IsAddEarlierMonthDisabled">
+                        @AddMonthButtonLabel
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierSeason" disabled="@IsAddEarlierSeasonDisabled">
+                        @AddSeasonButtonLabel
+                    </button>
+
+                    @if (HasExpandableCurrentTiles)
+                    {
+                        <button type="button"
+                                class="chart-control recent-observations-toggle-all"
+                                title="@ExpandCollapseAllLabel"
+                                aria-label="@ExpandCollapseAllLabel"
+                                @onclick="ToggleAllTileExpansion">
+                            <span class="oi oi-chevron-right recent-observations-toggle-all-chevron @(AreAllExpandableCurrentTilesExpanded ? "expanded" : string.Empty)" aria-hidden="true"></span>
+                            @ExpandCollapseAllLabel
+                        </button>
+                    }
+                </div>
+
+                <div class="recent-observation-grid">
+
+                    @foreach (var tile in TilesBeforeMonthControls)
+                    {
+                        <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
+                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" />
+                        </div>
+                    }
+
+                    @foreach (var tile in SeasonTiles)
+                    {
+                        <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
+                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" />
+                        </div>
+                    }
+
+                    @foreach (var tile in TilesAfterSeasonControls)
+                    {
+                        <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
+                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" />
+                        </div>
+                    }
+                </div>
+
+                <div class="recent-observations-threshold mb-3">
+                    <label for="recent-observations-completeness-threshold">Completeness threshold %</label>
+                    <input id="recent-observations-completeness-threshold"
+                    type="number"
+                    class="form-control form-control-sm"
+                    min="@RecentObservationCompletenessThreshold.MinimumPercentage"
+                    max="@RecentObservationCompletenessThreshold.MaximumPercentage"
+                    step="1"
+                    value="@CompletenessThresholdPercent"
+                    @oninput="OnCompletenessThresholdChanged" />
+                </div>
+
+                @if (CurrentState.Result?.ReferenceDate is not null)
+                {
+                    <div class="recent-observations-reference-date">
+                        <div class="recent-observations-reference-date-field">
+                            <div class="recent-observations-reference-date-control">
+                                <label for="@ReferenceDateInputId">View as of</label>
+                                <input id="@ReferenceDateInputId"
+                                       type="text"
+                                       class="form-control form-control-sm @ReferenceDateInputValidationClass"
+                                       placeholder="YYYY-MM-DD"
+                                       value="@referenceDateInputValue"
+                                       aria-describedby="@ReferenceDateHelpId"
+                                       aria-invalid="@(!string.IsNullOrWhiteSpace(referenceDateValidationMessage))"
+                                       @oninput="OnReferenceDateInput"
+                                       @onchange="OnReferenceDateChanged" />
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-secondary recent-observations-reference-date-reset"
+                                        title="Reset to latest reference date"
+                                        aria-label="Reset to latest reference date"
+                                        disabled="@IsResetReferenceDateDisabled"
+                                        @onclick="ResetReferenceDate">
+                                    <i class="fas fa-rotate-left" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div id="@ReferenceDateHelpId" class="form-text">
+                                Valid range: @FormatDateInput(CurrentState.Result.MinimumReferenceDate) to @FormatDateInput(CurrentState.Result.MaximumReferenceDate)
+                            </div>
+                            @if (!string.IsNullOrWhiteSpace(referenceDateValidationMessage))
+                            {
+                                <div class="invalid-feedback d-block">@referenceDateValidationMessage</div>
+                            }
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(CurrentState.Result.ReferenceDateNote))
+                        {
+                            <span>@CurrentState.Result.ReferenceDateNote</span>
+                        }
+                        <div class="recent-observations-reference-date-control">
+                            <label for="@ComparisonRangeInputId">Comparison range</label>
+                            <select id="@ComparisonRangeInputId"
+                                    class="form-control form-control-sm"
+                                    value="@selectedComparisonEndMode.ToString()"
+                                    @onchange="OnComparisonEndModeChanged">
+                                <option value="@ComparisonEndMode.FullDataset.ToString()">Entire dataset</option>
+                                <option value="@ComparisonEndMode.ReferenceDate.ToString()">Up to view date</option>
+                            </select>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="recent-observations-state">
+                    <i class="fas fa-circle-info"></i>
+                    <span>@CurrentEmptyMessage</span>
+                </div>
+            }
+        }
+    </div>
+
+    <h3 class="mt-3">Notes</h3>
+    <div style="max-width: 1280px;">
+        <ul>
+            <li><b>Completeness threshold:</b> historical comparisons are only shown when sufficient data is available. The completeness threshold specifies the minimum percentage of observations required before rankings, percentiles, and record comparisons are calculated.</li>
+            <li>Recent observations and historical comparisons are using data that has not been adjusted by scientists to remove artificial, non-climate-related biases.</li>
+            <li>Comparisons such as latest 7 days, month-to-date and year-to-date tiles are compared with equivalent historical periods.</li>
+        </ul>
+    </div>
+</div>

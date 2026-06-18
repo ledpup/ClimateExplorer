@@ -25,6 +25,8 @@ builder.Services
     .AddSingleton<IDataServiceCache, DataServiceCache>()
     .AddTransient<IExporter, Exporter>()
     .AddScoped<IInfoPanelDismissalService, InfoPanelDismissalService>()
+    .AddScoped<IRecentObservationsDataProvider, RecentObservationsDataProvider>()
+    .AddScoped<IRecentObservationsCalculator, RecentObservationsCalculator>()
     .AddScoped<IRecentObservationsService, RecentObservationsService>()
     .AddScoped<ISiteOverviewService, SiteOverviewService>()
     .AddCurrentDeviceService()

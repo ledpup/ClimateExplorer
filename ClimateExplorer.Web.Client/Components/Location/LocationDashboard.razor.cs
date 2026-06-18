@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
 
-public partial class LocationInfo
+public partial class LocationDashboard
 {
     private SidePanel? climateRecordsSidePanel;
     private SidePanel? recentObservationsSidePanel;
@@ -24,7 +24,7 @@ public partial class LocationInfo
     public IDataService? DataService { get; set; }
 
     [Inject]
-    public ILogger<LocationInfo>? Logger { get; set; }
+    public ILogger<LocationDashboard>? Logger { get; set; }
 
     [Inject]
     public IJSRuntime? JS { get; set; }
@@ -190,7 +190,7 @@ public partial class LocationInfo
             }
 
             var recentObservationsSupport = await DataService!.GetRecentObservations(Location!.Id, DataType.TempMax, isLocationSupported: true);
-            RecentObservationsSupported = recentObservationsSupport.IsSupported;
+            RecentObservationsSupported = recentObservationsSupport.IsSupported || HasDailyClimateRecordsForRecentObservations();
 
             StripeLoadingIndicatorVisible = false;
             StateHasChanged();
@@ -256,5 +256,24 @@ public partial class LocationInfo
             PrecipitationAnomalyRecords = null;
             PrecipitationAnomalyContent = null;
         }
+    }
+
+    private bool HasDailyClimateRecordsForRecentObservations()
+    {
+        if (Location is null || DataSetDefinitions is null)
+        {
+            return false;
+        }
+
+        var dailyDataTypes = DataSetDefinitionViewModel
+            .GetMeasurementsForLocation(DataSetDefinitions, Location.Id)
+            .Select(x => x.Item2)
+            .Where(x => x.DataResolution == DataResolution.Daily)
+            .Select(x => x.DataType)
+            .ToHashSet();
+
+        return dailyDataTypes.Contains(DataType.TempMean) ||
+               (dailyDataTypes.Contains(DataType.TempMax) && dailyDataTypes.Contains(DataType.TempMin)) ||
+               dailyDataTypes.Contains(DataType.Precipitation);
     }
 }
