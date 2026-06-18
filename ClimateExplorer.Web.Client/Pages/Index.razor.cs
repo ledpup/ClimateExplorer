@@ -87,6 +87,8 @@ public partial class Index : ChartablePage
     public override void Dispose()
     {
         SiteOverviewService!.ShowRequested -= HandleShowRequested;
+        DeferredLocationDictionaryLoadCts?.Cancel();
+        DeferredLocationDictionaryLoadCts?.Dispose();
         base.Dispose();
     }
 
