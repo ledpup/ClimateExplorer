@@ -1,4 +1,6 @@
 @namespace ClimateExplorer.Web.Client.Components.Location
+@using Blazorise
+@using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.UiModel
 
 <div class="recent-observations-panel">
@@ -50,8 +52,7 @@
                     }
                 </div>
 
-                <div class="recent-observation-grid">
-
+                <div class="recent-observation-grid mb-4">
                     @foreach (var tile in TilesBeforeMonthControls)
                     {
                         <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
@@ -74,66 +75,71 @@
                     }
                 </div>
 
-                <div class="recent-observations-threshold mb-3">
-                    <label for="recent-observations-completeness-threshold">Completeness threshold %</label>
-                    <input id="recent-observations-completeness-threshold"
-                    type="number"
-                    class="form-control form-control-sm"
-                    min="@RecentObservationCompletenessThreshold.MinimumPercentage"
-                    max="@RecentObservationCompletenessThreshold.MaximumPercentage"
-                    step="1"
-                    value="@CompletenessThresholdPercent"
-                    @oninput="OnCompletenessThresholdChanged" />
-                </div>
+                <div style="max-width: 1280px;">
+                    <Collapsible Title="Config" InitiallyShowContents="false">
+                        <Content>
+                            <div class="recent-observations-threshold mb-3">
+                                <label for="recent-observations-completeness-threshold">Completeness threshold %</label>
+                                <input id="recent-observations-completeness-threshold"
+                                       type="number"
+                                       class="form-control form-control-sm"
+                                       min="@RecentObservationCompletenessThreshold.MinimumPercentage"
+                                       max="@RecentObservationCompletenessThreshold.MaximumPercentage"
+                                       step="1"
+                                       value="@CompletenessThresholdPercent"
+                                       @oninput="OnCompletenessThresholdChanged" />
+                            </div>
 
-                @if (CurrentState.Result?.ReferenceDate is not null)
-                {
-                    <div class="recent-observations-reference-date">
-                        <div class="recent-observations-reference-date-field">
-                            <div class="recent-observations-reference-date-control">
-                                <label for="@ReferenceDateInputId">View as of</label>
-                                <input id="@ReferenceDateInputId"
-                                       type="text"
-                                       class="form-control form-control-sm @ReferenceDateInputValidationClass"
-                                       placeholder="YYYY-MM-DD"
-                                       value="@referenceDateInputValue"
-                                       aria-describedby="@ReferenceDateHelpId"
-                                       aria-invalid="@(!string.IsNullOrWhiteSpace(referenceDateValidationMessage))"
-                                       @oninput="OnReferenceDateInput"
-                                       @onchange="OnReferenceDateChanged" />
-                                <button type="button"
-                                        class="btn btn-sm btn-outline-secondary recent-observations-reference-date-reset"
-                                        title="Reset to latest reference date"
-                                        aria-label="Reset to latest reference date"
-                                        disabled="@IsResetReferenceDateDisabled"
-                                        @onclick="ResetReferenceDate">
-                                    <i class="fas fa-rotate-left" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                            <div id="@ReferenceDateHelpId" class="form-text">
-                                Valid range: @FormatDateInput(CurrentState.Result.MinimumReferenceDate) to @FormatDateInput(CurrentState.Result.MaximumReferenceDate)
-                            </div>
-                            @if (!string.IsNullOrWhiteSpace(referenceDateValidationMessage))
+                            @if (CurrentState.Result?.ReferenceDate is not null)
                             {
-                                <div class="invalid-feedback d-block">@referenceDateValidationMessage</div>
+                                <div class="mb-3">Dates range from <b>@FormatDateInput(CurrentState.Result.MinimumReferenceDate)</b> to <b>@FormatDateInput(CurrentState.Result.MaximumReferenceDate)</b></div>
+                                <div class="recent-observations-reference-date">
+                                    <div class="recent-observations-reference-date-field">
+                                        <div class="recent-observations-reference-date-control">
+                                            <label for="@ReferenceDateInputId">View as of</label>
+                                            <input id="@ReferenceDateInputId"
+                                                   type="text"
+                                                   class="form-control form-control-sm @ReferenceDateInputValidationClass"
+                                                   placeholder="YYYY-MM-DD"
+                                                   value="@referenceDateInputValue"
+                                                   aria-describedby="@ReferenceDateHelpId"
+                                                   aria-invalid="@(!string.IsNullOrWhiteSpace(referenceDateValidationMessage))"
+                                                   @oninput="OnReferenceDateInput"
+                                                   @onchange="OnReferenceDateChanged" />
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary recent-observations-reference-date-reset"
+                                                    title="Reset to latest reference date"
+                                                    aria-label="Reset to latest reference date"
+                                                    disabled="@IsResetReferenceDateDisabled"
+                                                    @onclick="ResetReferenceDate">
+                                                <i class="fas fa-rotate-left" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                        @if (!string.IsNullOrWhiteSpace(referenceDateValidationMessage))
+                                        {
+                                            <div class="invalid-feedback d-block">@referenceDateValidationMessage</div>
+                                        }
+                                    </div>
+                                    @if (!string.IsNullOrWhiteSpace(CurrentState.Result.ReferenceDateNote))
+                                    {
+                                        <span>@CurrentState.Result.ReferenceDateNote</span>
+                                    }
+                                    <div class="recent-observations-reference-date-control">
+                                        <label for="@ComparisonRangeInputId">Comparison range</label>
+                                        <Select TValue="ComparisonEndMode"
+                                                ElementId="@ComparisonRangeInputId"
+                                                Value="@selectedComparisonEndMode"
+                                                ValueChanged="@OnComparisonEndModeChanged"
+                                                Size="Size.Small">
+                                            <SelectItem Value="@ComparisonEndMode.FullDataset">Entire dataset</SelectItem>
+                                            <SelectItem Value="@ComparisonEndMode.ReferenceDate">Up to view date</SelectItem>
+                                        </Select>
+                                    </div>
+                                </div>
                             }
-                        </div>
-                        @if (!string.IsNullOrWhiteSpace(CurrentState.Result.ReferenceDateNote))
-                        {
-                            <span>@CurrentState.Result.ReferenceDateNote</span>
-                        }
-                        <div class="recent-observations-reference-date-control">
-                            <label for="@ComparisonRangeInputId">Comparison range</label>
-                            <select id="@ComparisonRangeInputId"
-                                    class="form-control form-control-sm"
-                                    value="@selectedComparisonEndMode.ToString()"
-                                    @onchange="OnComparisonEndModeChanged">
-                                <option value="@ComparisonEndMode.FullDataset.ToString()">Entire dataset</option>
-                                <option value="@ComparisonEndMode.ReferenceDate.ToString()">Up to view date</option>
-                            </select>
-                        </div>
-                    </div>
-                }
+                        </Content>
+                    </Collapsible>
+                </div>
             }
             else
             {
