@@ -4,6 +4,7 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Components.Location;
+using ClimateExplorer.Web.Client.Infrastructure;
 using ClimateExplorer.Web.Client.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
@@ -73,6 +74,8 @@ public partial class Index : ChartablePage
 
     protected override async Task OnInitializedAsync()
     {
+        using var perf = PerformanceLogScope.Start(Logger!, "Index.OnInitializedAsync", ("locationString", LocationString));
+        await JsRuntime!.InvokeVoidAsync("climateExplorerPerformance.mark", "index-initialized-start", new { locationString = LocationString });
         // Check to see if a named location is being requested. That will look like /location/<location-name>
         Location = await GetLocationFromPath();
 
@@ -105,6 +108,8 @@ public partial class Index : ChartablePage
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        using var perf = PerformanceLogScope.Start(Logger!, "Index.OnAfterRenderAsync", ("firstRender", firstRender), ("hasDataSetDefinitions", DataSetDefinitions is not null), ("locationId", Location?.Id));
+        await JsRuntime!.InvokeVoidAsync("climateExplorerPerformance.mark", firstRender ? "index-first-render-start" : "index-render-start", new { locationId = Location?.Id, hasDataSetDefinitions = DataSetDefinitions is not null });
         if (firstRender)
         {
             SiteOverviewService!.ShowRequested += HandleShowRequested;
@@ -116,7 +121,10 @@ public partial class Index : ChartablePage
             var locationsTask = DataService!.GetLocations(false);
             var regionsTask = DataService!.GetRegions();
 
-            await Task.WhenAll(dataSetDefinitionsTask, locationsTask, regionsTask);
+            using (PerformanceLogScope.Start(Logger!, "Index.LoadReferenceData"))
+            {
+                await Task.WhenAll(dataSetDefinitionsTask, locationsTask, regionsTask);
+            }
 
             DataSetDefinitions = [.. await dataSetDefinitionsTask];
             LocationDictionary = (await locationsTask).ToDictionary(x => x.Id, x => x);
@@ -154,6 +162,9 @@ public partial class Index : ChartablePage
                     await SelectedLocationChanged(Location.Id);
                 }
             }
+
+            await JsRuntime!.InvokeVoidAsync("climateExplorerPerformance.mark", "index-reference-data-loaded", new { locationCount = LocationDictionary?.Count, dataSetDefinitionCount = DataSetDefinitions?.Count(), regionCount = Regions?.Count() });
+            await JsRuntime!.InvokeVoidAsync("climateExplorerPerformance.measure", "index-reference-data", "index-first-render-start", "index-reference-data-loaded", new { locationId = Location?.Id });
 
             StateHasChanged();
         }

@@ -10,6 +10,7 @@ using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Common;
+using ClimateExplorer.Web.Client.Infrastructure;
 using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
@@ -346,6 +347,8 @@ public partial class ChartView : IAsyncDisposable
 
     protected async Task BuildDataSets()
     {
+        using var perf = PerformanceLogScope.Start(Logger!, "ChartView.BuildDataSets", ("pageName", PageName), ("locationId", LocationId), ("seriesCount", ChartSeriesList?.Count ?? 0));
+        await JsRuntime!.InvokeVoidAsync("climateExplorerPerformance.mark", "chart-build-start", new { pageName = PageName, locationId = LocationId, seriesCount = ChartSeriesList?.Count ?? 0 });
         // This method is called whenever anything has occurred that may require the chart to
         // be re-rendered.
         //
@@ -432,16 +435,23 @@ public partial class ChartView : IAsyncDisposable
 
         l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + usableChartSeries.Count() + " entries.");
 
+        await JsRuntime!.InvokeVoidAsync("climateExplorerPerformance.mark", "chart-data-loaded", new { pageName = PageName, locationId = LocationId, seriesCount = ChartSeriesWithData?.Count ?? 0, recordCount = ChartSeriesWithData?.Sum(x => x.SourceDataSet?.DataRecords?.Count ?? 0) ?? 0 });
+
         // Render the series
         await RenderChart();
 
         buildDataSetsInProcess = false;
+
+        await JsRuntime!.InvokeVoidAsync("climateExplorerPerformance.mark", "chart-render-complete", new { pageName = PageName, locationId = LocationId, seriesCount = ChartSeriesWithData?.Count ?? 0 });
+        await JsRuntime!.InvokeVoidAsync("climateExplorerPerformance.measure", "chart-data-load", "chart-build-start", "chart-data-loaded", new { pageName = PageName, locationId = LocationId });
+        await JsRuntime!.InvokeVoidAsync("climateExplorerPerformance.measure", "chart-build-to-render", "chart-build-start", "chart-render-complete", new { pageName = PageName, locationId = LocationId });
 
         l.LogInformation("Leaving");
     }
 
     protected async Task RenderChart()
     {
+        using var perf = PerformanceLogScope.Start(Logger!, "ChartView.RenderChart", ("pageName", PageName), ("locationId", LocationId), ("seriesCount", ChartSeriesWithData?.Count ?? 0));
         var l = new LogAugmenter(Logger!, "RenderChart");
 
         l.LogInformation("Entering");
