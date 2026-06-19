@@ -283,6 +283,11 @@ public partial class RecentObservationsPanel
         return date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? string.Empty;
     }
 
+    private string FormatDateLong(DateOnly? date)
+    {
+        return date?.ToString("yyyy MMMM dd", CultureInfo.InvariantCulture) ?? string.Empty;
+    }
+
     private RecentObservationsTabState GetState(RecentObservationsTab tab)
     {
         return tab switch

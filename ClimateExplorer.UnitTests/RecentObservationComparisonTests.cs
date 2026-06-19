@@ -47,7 +47,7 @@ public class RecentObservationComparisonTests
 
         var sentence = RecentObservationComparison.BuildPrecipitationPercentileSentence(1910, result);
 
-        Assert.AreEqual("Drier than 70% of comparable periods since 1910", sentence);
+        Assert.AreEqual("Drier than 70% of comparable periods", sentence);
     }
 
     [TestMethod]

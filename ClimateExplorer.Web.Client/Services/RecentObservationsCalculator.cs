@@ -606,12 +606,13 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         var ranking = RecentObservationComparison.Rank(primaryValue, historicalValues.Values);
         var singular = period.Completeness.AvailableObservationCount == 1;
         var stats = new List<RecentObservationStatViewModel>();
+        var supportingStats = new List<RecentObservationStatViewModel>();
 
         foreach (var metric in domain.Supporting)
         {
             if (period.MetricValues.TryGetValue(metric.Key, out var value))
             {
-                stats.Add(new RecentObservationStatViewModel
+                supportingStats.Add(new RecentObservationStatViewModel
                 {
                     Label = singular ? metric.SingularLabel : metric.PluralLabel,
                     Value = metric.Format(value),
@@ -652,6 +653,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             Tone = domain.GetTone(ranking),
             Note = CombineNotes(period.Note, BuildLimitedHistoryNote(period, historicalValues, ranking)),
             Stats = stats,
+            SupportingStats = supportingStats,
             MetricGroups = BuildMetricGroups(period, domain, distributions, metricGroupLabel),
             ComparablePeriodCount = historicalValues.ComparablePeriodCount,
             CanShowHistoricalRecord = historicalValues.CanShowHistoricalRecord,
@@ -1366,7 +1368,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             new MetricGroup("day", "Day", [DailyPrecipitationMetric]),
         ],
         "Precipitation total",
-        ShowHistoricalMin: false,
+        ShowHistoricalMin: true,
         "Wettest",
         "Driest",
         RecentObservationComparison.BuildPrecipitationHeadline,

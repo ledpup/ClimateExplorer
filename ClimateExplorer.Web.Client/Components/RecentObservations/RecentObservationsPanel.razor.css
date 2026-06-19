@@ -52,76 +52,69 @@
     grid-column: 1 / -1;
 }
 
-.recent-observations-reference-date {
-    align-items: flex-start;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 0.75rem;
+.recent-observations-config-grid {
+    display: grid;
+    gap: 0.75rem 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, max-content));
+    justify-content: start;
     margin-bottom: 1rem;
 }
 
-.recent-observations-reference-date label {
+.recent-observations-config-field {
+    min-width: 0;
+}
+
+.recent-observations-config-control {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.75rem;
+}
+
+.recent-observations-config-control label {
     color: #425f59;
+    flex: 0 0 auto;
     font-size: 0.9rem;
     font-weight: 700;
     margin: 0;
     white-space: nowrap;
 }
 
-.recent-observations-reference-date input,
-.recent-observations-reference-date select {
-    width: 10.25rem;
-}
-
-.recent-observations-reference-date-field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-}
-
-.recent-observations-reference-date-control {
-    align-items: center;
-    display: flex;
-    gap: 0.75rem;
-}
-
-.recent-observations-reference-date-control input {
+.recent-observations-config-control input,
+.recent-observations-config-control select {
     flex: 0 0 auto;
+}
+
+.recent-observations-reference-date-control input,
+.recent-observations-config-control select {
+    width: 10.25rem;
 }
 
 .recent-observations-reference-date-reset {
     align-items: center;
     display: inline-flex;
+    flex: 0 0 auto;
     height: 1.9375rem;
     justify-content: center;
     padding: 0;
     width: 1.9375rem;
 }
 
-.recent-observations-reference-date-field .form-text,
-.recent-observations-reference-date-field .invalid-feedback {
+.recent-observations-config-field .form-text,
+.recent-observations-config-field .invalid-feedback {
     font-size: 0.8rem;
     line-height: 1.25;
 }
 
-.recent-observations-reference-date span {
+.recent-observations-reference-date-note {
     color: #596f6a;
+    display: block;
     font-size: 0.85rem;
+    margin-top: 0.15rem;
 }
 
 .recent-observations-threshold {
-    align-items: center;
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 1rem;
-    max-width: 20rem;
-}
-
-.recent-observations-threshold label {
-    color: #425f59;
-    font-size: 0.9rem;
-    font-weight: 700;
-    margin: 0;
+    max-width: none;
 }
 
 .recent-observations-threshold input {
@@ -191,15 +184,17 @@
     }
 }
 
-@media (max-width: 520px) {
-    .recent-observations-reference-date {
-        align-items: flex-start;
-        flex-direction: column;
+@media (max-width: 700px) {
+    .recent-observations-config-grid {
+        grid-template-columns: 1fr;
     }
+}
 
-    .recent-observations-threshold {
+@media (max-width: 520px) {
+    .recent-observations-config-control {
         align-items: flex-start;
         flex-direction: column;
+        gap: 0.35rem;
     }
 
     .recent-observations-state {

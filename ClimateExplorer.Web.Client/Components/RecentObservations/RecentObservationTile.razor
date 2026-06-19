@@ -58,6 +58,18 @@
             }
         </dl>
     }
+    @if (Tile.SupportingStats.Count > 0)
+    {
+        <dl class="recent-observation-stats recent-observation-supporting-stats">
+            @foreach (var stat in Tile.SupportingStats)
+            {
+                <div>
+                    <dt>@stat.Label</dt>
+                    <dd>@stat.Value</dd>
+                </div>
+            }
+        </dl>
+    }
     @if (Tile.MetricGroups.Count > 0)
     {
         @if (Expansion.IsExpanded)

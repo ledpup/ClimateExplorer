@@ -6,7 +6,11 @@
 
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public string? Text { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public string? Text { get; set; }
+
     [Parameter] public string? Style { get; set; }
     [Parameter] public bool Multiline { get; set; }
     [Parameter] public TooltipPlacement Placement { get; set; } = TooltipPlacement.Top;
