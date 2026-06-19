@@ -168,14 +168,14 @@ public static class RecentObservationComparison
     {
         var direction = ranking.Direction == RecentObservationComparisonDirection.Low ? "Cooler" : "Warmer";
         var percentile = ranking.Direction == RecentObservationComparisonDirection.Low ? ranking.LowPercentile : ranking.HighPercentile;
-        return $"{direction} than {FormatPercent(percentile)}% of {comparisonLabelPlural}{FormatSince(startYear)}";
+        return $"{direction} than {FormatPercent(percentile)}% of {comparisonLabelPlural}";
     }
 
     public static string BuildPrecipitationPercentileSentence(int? startYear, RecentObservationComparisonResult ranking)
     {
         var direction = ranking.Direction == RecentObservationComparisonDirection.Low ? "Drier" : "Wetter";
         var percentile = ranking.Direction == RecentObservationComparisonDirection.Low ? ranking.LowPercentile : ranking.HighPercentile;
-        return $"{direction} than {FormatPercent(percentile)}% of comparable periods{FormatSince(startYear)}";
+        return $"{direction} than {FormatPercent(percentile)}% of comparable periods";
     }
 
     /// <summary>
@@ -236,10 +236,5 @@ public static class RecentObservationComparison
         }
 
         return RecentObservationComparisonDirection.Neutral;
-    }
-
-    private static string FormatSince(int? startYear)
-    {
-        return startYear.HasValue ? $" since {startYear.Value}" : string.Empty;
     }
 }

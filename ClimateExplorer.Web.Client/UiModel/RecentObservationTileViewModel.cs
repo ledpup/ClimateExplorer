@@ -52,7 +52,7 @@ public sealed record RecentObservationTileViewModel
         return this with
         {
             Headline = "Comparison unavailable",
-            PercentileSentence = "Recent observations are below the Completeness Threshold for this period.",
+            PercentileSentence = "Recent observations are below the completeness threshold.",
             HistoricalMaxLabel = null,
             HistoricalMaxValue = null,
             HistoricalMaxOccurred = null,
