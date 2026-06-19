@@ -121,6 +121,14 @@
         align-items: center;
     }
 
+/* Keep the chart canvas mounted (so its @ref stays valid for recovery) but
+   hide it while the empty state is shown, so no blank chart renders underneath. */
+.chart-wrapper.chart-no-data ::deep canvas {
+    /* Chart.js sets an inline `display: block` on the canvas, so !important is
+       required to override it. */
+    display: none !important;
+}
+
 .chart-empty-state {
     align-items: center;
     background: #f8f8f8;

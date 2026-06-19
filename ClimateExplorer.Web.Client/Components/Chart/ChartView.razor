@@ -19,7 +19,7 @@
                         </button>
                     </div>
 
-                    <div class="chart-wrapper" @ref="chartWrapper">
+                    <div class="chart-wrapper @(NoChartDataAvailable ? "chart-no-data" : "")" @ref="chartWrapper">
                         @if (NoChartDataAvailable)
                         {
                             <div class="chart-empty-state" role="status">

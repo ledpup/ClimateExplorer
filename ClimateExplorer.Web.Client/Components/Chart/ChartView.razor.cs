@@ -615,33 +615,6 @@ public partial class ChartView : IAsyncDisposable
         LogChartSeriesList();
     }
 
-    private bool HasRenderableChartData()
-    {
-        if (ChartBins == null || ChartBins.Length == 0)
-        {
-            Logger!.LogWarning("No chart bins were produced while preparing chart data.");
-            return false;
-        }
-
-        if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0)
-        {
-            Logger!.LogWarning("No chart series with data were produced while preparing chart data.");
-            return false;
-        }
-
-        var renderablePointCount = ChartSeriesWithData
-            .SelectMany(x => x.ProcessedDataSet?.DataRecords ?? Array.Empty<BinnedRecord>())
-            .Count(x => x.Value.HasValue && !double.IsNaN(x.Value.Value) && !double.IsInfinity(x.Value.Value));
-
-        if (renderablePointCount == 0)
-        {
-            Logger!.LogWarning("Processed chart datasets contain no finite non-null values.");
-            return false;
-        }
-
-        return true;
-    }
-
     protected async Task ChangedLocation()
     {
         if (Location is null)
@@ -848,6 +821,33 @@ public partial class ChartView : IAsyncDisposable
             SeriesTransformations.Custom => ChartSeriesDefinition.GetFriendlyCustomTransformationLabel(customTransformation ?? "Custom transformation"),
             _ => defaultLabel,
         };
+    }
+
+    private bool HasRenderableChartData()
+    {
+        if (ChartBins == null || ChartBins.Length == 0)
+        {
+            Logger!.LogWarning("No chart bins were produced while preparing chart data.");
+            return false;
+        }
+
+        if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0)
+        {
+            Logger!.LogWarning("No chart series with data were produced while preparing chart data.");
+            return false;
+        }
+
+        var renderablePointCount = ChartSeriesWithData
+            .SelectMany(x => x.ProcessedDataSet?.DataRecords ?? Array.Empty<BinnedRecord>())
+            .Count(x => x.Value.HasValue && !double.IsNaN(x.Value.Value) && !double.IsInfinity(x.Value.Value));
+
+        if (renderablePointCount == 0)
+        {
+            Logger!.LogWarning("Processed chart datasets contain no finite non-null values.");
+            return false;
+        }
+
+        return true;
     }
 
     private object CreateChartOptions(string title, string subtitle, dynamic scales)
