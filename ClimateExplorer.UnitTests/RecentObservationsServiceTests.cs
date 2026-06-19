@@ -490,12 +490,44 @@ public class RecentObservationsServiceTests
         Assert.AreEqual("Limited history: comparison based on 2 comparable periods.", latestSevenDays.Note);
         Assert.AreEqual($"Wettest 7 days ending {endLabel}", latestSevenDays.HistoricalMaxLabel);
         Assert.AreEqual("84mm", latestSevenDays.HistoricalMaxValue);
+        Assert.AreEqual($"Driest 7 days ending {endLabel}", latestSevenDays.HistoricalMinLabel);
+        Assert.AreEqual("77mm", latestSevenDays.HistoricalMinValue);
         Assert.AreEqual(RecentObservationRecordStatus.NewRecord, total.RecordStatus);
         Assert.AreEqual("New low of 3", total.RecordStatusText);
         Assert.AreEqual("84mm", total.RecordHigh!.Value);
         Assert.AreEqual("2025", total.RecordHigh.Year);
         Assert.AreEqual("77mm", total.RecordLow!.Value);
         Assert.AreEqual("2024", total.RecordLow.Year);
+    }
+
+    [TestMethod]
+    public async Task PrecipitationTilesShowWettestAndDriestHistoricalRangesForEveryPeriodKind()
+    {
+        var today = new DateOnly(2026, 7, 14);
+        var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 1, 1), today, startYear: 2024, endYear: 2025);
+        var service = CreateService(
+            recentEndDate: today,
+            historicalRecords: historicalRecords,
+            today: today);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var tiles = new[]
+        {
+            result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Daily),
+            result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays),
+            result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.CurrentMonth),
+            result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.CurrentSeason),
+            result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.YearToDate),
+        };
+
+        foreach (var tile in tiles)
+        {
+            AssertPrecipitationHistoricalRange(tile);
+        }
     }
 
     [TestMethod]
@@ -839,7 +871,8 @@ public class RecentObservationsServiceTests
         Assert.IsTrue(generatedDay.HasComparison);
         Assert.AreEqual($"Wettest {dayLabel}", generatedDay.HistoricalMaxLabel);
         Assert.AreEqual("26mm", generatedDay.HistoricalMaxValue);
-        Assert.IsNull(generatedDay.HistoricalMinLabel);
+        Assert.AreEqual($"Driest {dayLabel}", generatedDay.HistoricalMinLabel);
+        Assert.AreEqual("1mm", generatedDay.HistoricalMinValue);
     }
 
     [TestMethod]
@@ -1693,6 +1726,20 @@ public class RecentObservationsServiceTests
 
         Assert.AreEqual(expectedLabel, tile.MetricGroupLabel, $"Unexpected tile metric group label for {tile.PeriodTitle}.");
         Assert.AreEqual(expectedLabel, periodGroup.Title, $"Unexpected period metric group title for {tile.PeriodTitle}.");
+    }
+
+    private static void AssertPrecipitationHistoricalRange(RecentObservationTileViewModel tile)
+    {
+        Assert.IsFalse(string.IsNullOrWhiteSpace(tile.HistoricalMaxLabel), $"Expected wettest label for {tile.PeriodTitle}.");
+        Assert.IsFalse(string.IsNullOrWhiteSpace(tile.HistoricalMaxValue), $"Expected wettest value for {tile.PeriodTitle}.");
+        Assert.IsFalse(string.IsNullOrWhiteSpace(tile.HistoricalMinLabel), $"Expected driest label for {tile.PeriodTitle}.");
+        Assert.IsFalse(string.IsNullOrWhiteSpace(tile.HistoricalMinValue), $"Expected driest value for {tile.PeriodTitle}.");
+        StringAssert.StartsWith(tile.HistoricalMaxLabel!, "Wettest ");
+        StringAssert.StartsWith(tile.HistoricalMinLabel!, "Driest ");
+        Assert.AreEqual(
+            tile.HistoricalMaxLabel!["Wettest ".Length..],
+            tile.HistoricalMinLabel!["Driest ".Length..],
+            $"Wettest and driest labels should use the same comparable period text for {tile.PeriodTitle}.");
     }
 
     private static IEnumerable<int> GetAvailableOffsets(

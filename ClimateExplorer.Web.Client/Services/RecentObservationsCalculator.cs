@@ -1366,7 +1366,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             new MetricGroup("day", "Day", [DailyPrecipitationMetric]),
         ],
         "Precipitation total",
-        ShowHistoricalMin: false,
+        ShowHistoricalMin: true,
         "Wettest",
         "Driest",
         RecentObservationComparison.BuildPrecipitationHeadline,
