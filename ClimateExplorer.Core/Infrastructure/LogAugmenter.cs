@@ -23,6 +23,11 @@ public class LogAugmenter
         logger.LogInformation($"{name} {g} {s} ({sw.Elapsed})", name, g, s, sw.Elapsed);
     }
 
+    public void LogWarning(string s)
+    {
+        logger.LogWarning($"{name} {g} {s} ({sw.Elapsed})", name, g, s, sw.Elapsed);
+    }
+
     public void LogError(string s)
     {
         logger.LogError($"{name} {g} {s} ({sw.Elapsed})", name, g, s, sw.Elapsed);
