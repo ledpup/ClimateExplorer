@@ -85,35 +85,45 @@
 }
 
 .recent-observation-primary-label {
-    align-items: center;
     color: #596f6a;
-    display: inline-flex;
-    flex-wrap: wrap;
+    flex: 1 1 auto;
     font-size: 0.82rem;
     font-weight: 700;
+    min-width: 0;
+}
+
+.recent-observation-primary-value {
+    align-items: baseline;
+    display: inline-flex;
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
     gap: 0.35rem;
+    justify-content: flex-end;
+    margin-left: auto;
+    text-align: right;
+    white-space: nowrap;
 }
 
 .recent-observation-status {
     border-radius: 999px;
     display: inline-block;
-    font-size: 0.62rem;
-    font-weight: 800;
+    font-size: 0.68rem;
+    font-weight: 700;
     letter-spacing: 0.035em;
     line-height: 1;
-    padding: 0.18rem 0.4rem;
+    padding: 0.08rem 0.4rem;
     text-transform: uppercase;
     white-space: nowrap;
 }
 
 .recent-observation-status.status-new {
-    background: #7a3f1e;
-    color: #fff7ef;
+    background: #d8efe0;
+    color: #1f6b41;
 }
 
 .recent-observation-status.status-equal {
-    background: #4d5f73;
-    color: #f3f7fb;
+    background: #e7eef0;
+    color: #3a5b73;
 }
 
 .recent-observation-primary strong {
@@ -183,19 +193,23 @@
 }
 
 .recent-observation-stats dd {
+    align-items: baseline;
     color: #263a35;
+    display: flex;
+    flex-wrap: wrap;
     font-size: 0.92rem;
     font-weight: 650;
+    gap: 0.35rem;
     margin: 0;
     overflow-wrap: anywhere;
 }
 
 .recent-observation-stat-value {
-    display: block;
+    display: inline-block;
 }
 
 .recent-observation-stat-status {
-    margin-top: 0.22rem;
+    margin-top: 0;
 }
 
 .recent-observation-note {
@@ -325,24 +339,6 @@
 
 .recent-observation-detail-record-label {
     color: #697d78;
-}
-
-.recent-observation-detail-status {
-    border-radius: 4px;
-    font-size: 0.68rem;
-    font-weight: 700;
-    padding: 0.08rem 0.4rem;
-    text-transform: uppercase;
-}
-
-.recent-observation-detail-status.status-new {
-    background: #d8efe0;
-    color: #1f6b41;
-}
-
-.recent-observation-detail-status.status-equal {
-    background: #e7eef0;
-    color: #3a5b73;
 }
 
 @media (min-width: 641px) {
