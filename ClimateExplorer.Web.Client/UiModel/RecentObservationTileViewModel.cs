@@ -22,6 +22,7 @@ public sealed record RecentObservationTileViewModel
     public bool HasComparison { get; init; }
     public string? Note { get; init; }
     public List<RecentObservationStatViewModel> Stats { get; init; } = [];
+    public List<RecentObservationStatViewModel> SupportingStats { get; init; } = [];
     public IReadOnlyList<RecentObservationMetricGroupViewModel> MetricGroups { get; init; } = [];
     public int ComparablePeriodCount { get; init; }
     public bool CanShowHistoricalRecord { get; init; }

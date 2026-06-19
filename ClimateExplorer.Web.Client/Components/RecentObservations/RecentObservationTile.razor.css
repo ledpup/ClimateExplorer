@@ -98,12 +98,10 @@
 }
 
 .recent-observation-historical-range {
-    border-top: 1px solid rgb(66 95 89 / 12%);
     display: grid;
     gap: 0.5rem 0.8rem;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     margin: 0.75rem 0 0;
-    padding-top: 0.75rem;
 }
 
 .recent-observation-historical-range div {
@@ -140,6 +138,11 @@
     gap: 0.55rem 0.8rem;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     margin: 0.9rem 0 0;
+}
+
+.recent-observation-supporting-stats {
+    border-top: 1px solid rgb(66 95 89 / 12%);
+    padding-top: 0.75rem;
 }
 
 .recent-observation-stats div {
