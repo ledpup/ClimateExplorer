@@ -121,6 +121,28 @@
         align-items: center;
     }
 
+.chart-empty-state {
+    align-items: center;
+    background: #f8f8f8;
+    border: 1px dashed #9ab7b1;
+    border-radius: 8px;
+    color: #425f59;
+    display: flex;
+    flex-direction: column;
+    font-size: 1.1rem;
+    gap: 12px;
+    height: 100%;
+    justify-content: center;
+    min-height: 220px;
+    padding: 24px;
+    text-align: center;
+}
+
+    .chart-empty-state i {
+        color: #79c6f4;
+        font-size: 2rem;
+    }
+
 .add-series-button {
     box-shadow: rgb(0 0 0 / 20%) 0px 0px 6px;
     display: inline-block;
