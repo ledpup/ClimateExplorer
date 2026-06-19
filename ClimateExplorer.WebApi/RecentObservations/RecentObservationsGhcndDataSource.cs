@@ -94,7 +94,7 @@ internal static class RecentObservationsGhcndDataSource
 
         return records == null
             ? null
-            : new RecentObservationsDownloadResult(records, sourceUrl);
+            : new RecentObservationsDownloadResult(records, sourceUrl, CreateSourceUrlLabel(context.StationId));
     }
 
     private static List<DataRecord> ReadRecords<TRecord>(
@@ -148,5 +148,10 @@ internal static class RecentObservationsGhcndDataSource
                 dataSetDefinitionId = default;
                 return false;
         }
+    }
+
+    private static string CreateSourceUrlLabel(string stationId)
+    {
+        return $"Station {stationId}, CSV";
     }
 }

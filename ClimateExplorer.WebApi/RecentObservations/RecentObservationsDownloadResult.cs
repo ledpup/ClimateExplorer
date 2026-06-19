@@ -5,4 +5,5 @@ using ClimateExplorer.Core.Model;
 
 internal sealed record RecentObservationsDownloadResult(
     List<DataRecord> Records,
-    string SourceUrl);
+    string SourceUrl,
+    string SourceUrlLabel);

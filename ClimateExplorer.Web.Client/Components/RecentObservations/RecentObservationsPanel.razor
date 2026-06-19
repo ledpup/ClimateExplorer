@@ -166,7 +166,7 @@
                                                 {
                                                     var retrievalMetadata = CurrentRetrievalMetadata[index];
                                                     <li>
-                                                        <a class="recent-observations-source-link" href="@retrievalMetadata.SourceUrl" target="_blank" rel="noopener noreferrer">@retrievalMetadata.SourceUrl</a>
+                                                        <a class="recent-observations-source-link" href="@retrievalMetadata.SourceUrl" target="_blank" rel="noopener noreferrer">@FormatSourceUrlLabel(retrievalMetadata)</a>
                                                         on @FormatUtcTimestamp(retrievalMetadata.RetrievedAtUtc) UTC@(index == CurrentRetrievalMetadata.Count - 1 ? "." : ";")
                                                     </li>
                                                 }

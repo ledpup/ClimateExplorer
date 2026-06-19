@@ -60,7 +60,8 @@ public sealed class RecentObservationsEndpointTests
             "BOM",
             "Australian Bureau of Meteorology",
             "086338",
-            bomHandler.Requests[1].RequestUri!.ToString());
+            bomHandler.Requests[1].RequestUri!.ToString(),
+            "TempMax station 086338, obs code 122, ZIP");
     }
 
     [TestMethod]
@@ -93,7 +94,8 @@ public sealed class RecentObservationsEndpointTests
             "GHCNd",
             "Global Historical Climatology Network Daily",
             "AE000041196",
-            "https://www.ncei.noaa.gov/data/global-historical-climatology-network-daily/access/AE000041196.csv");
+            "https://www.ncei.noaa.gov/data/global-historical-climatology-network-daily/access/AE000041196.csv",
+            "Station AE000041196, CSV");
     }
 
     [TestMethod]
@@ -126,7 +128,8 @@ public sealed class RecentObservationsEndpointTests
             "GHCNd",
             "Global Historical Climatology Network Daily",
             "AE000041196",
-            "https://www.ncei.noaa.gov/data/global-historical-climatology-network-daily/access/AE000041196.csv");
+            "https://www.ncei.noaa.gov/data/global-historical-climatology-network-daily/access/AE000041196.csv",
+            "Station AE000041196, CSV");
     }
 
     private static void AssertSourceMetadata(
@@ -134,13 +137,15 @@ public sealed class RecentObservationsEndpointTests
         string expectedSourceCode,
         string expectedSourceName,
         string expectedStationId,
-        string expectedSourceUrl)
+        string expectedSourceUrl,
+        string expectedSourceUrlLabel)
     {
         Assert.IsNotNull(response.SourceMetadata);
         Assert.AreEqual(expectedSourceCode, response.SourceMetadata.SourceCode);
         Assert.AreEqual(expectedSourceName, response.SourceMetadata.SourceName);
         Assert.AreEqual(expectedStationId, response.SourceMetadata.StationId);
         Assert.AreEqual(expectedSourceUrl, response.SourceMetadata.SourceUrl);
+        Assert.AreEqual(expectedSourceUrlLabel, response.SourceMetadata.SourceUrlLabel);
         Assert.IsNotNull(response.SourceMetadata.RetrievedAtUtc);
         Assert.AreEqual(TimeSpan.Zero, response.SourceMetadata.RetrievedAtUtc.Value.Offset);
         Assert.AreEqual(response.RetrievedDate, response.SourceMetadata.RetrievedAtUtc);

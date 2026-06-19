@@ -90,7 +90,8 @@ internal static partial class RecentObservationsBomDataSource
 
             return new RecentObservationsDownloadResult(
                 ReadRecords(context.StationId, context.MeasurementDefinition, lines, startDate, endDate),
-                zipFileUrl);
+                zipFileUrl,
+                CreateSourceUrlLabel(dataType, context.StationId, obsCode));
         }
         finally
         {
@@ -204,6 +205,11 @@ internal static partial class RecentObservationsBomDataSource
                 obsCode = default;
                 return false;
         }
+    }
+
+    private static string CreateSourceUrlLabel(DataType dataType, string stationId, DailyBomObsCode obsCode)
+    {
+        return $"{dataType} station {stationId}, obs code {(int)obsCode}, ZIP";
     }
 
     [GeneratedRegex(@"\d{6}\|\|,(?<startYear>\d{4}):(?<p_c>-?\d+),")]

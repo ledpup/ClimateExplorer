@@ -63,7 +63,7 @@ internal static class RecentObservationsEndpoints
                 DataType = context.MeasurementDefinition.DataType,
                 UnitOfMeasure = context.MeasurementDefinition.UnitOfMeasure,
                 Records = downloadResult.Records,
-                SourceMetadata = CreateSourceMetadata(context, downloadResult.SourceUrl, retrievedAtUtc),
+                SourceMetadata = CreateSourceMetadata(context, downloadResult, retrievedAtUtc),
             };
 
             await services.Cache.Put(cacheKey, response);
@@ -124,7 +124,7 @@ internal static class RecentObservationsEndpoints
 
     private static RecentObservationSourceMetadata CreateSourceMetadata(
         RecentObservationsContext context,
-        string sourceUrl,
+        RecentObservationsDownloadResult downloadResult,
         DateTimeOffset retrievedAtUtc)
     {
         return new RecentObservationSourceMetadata
@@ -132,7 +132,8 @@ internal static class RecentObservationsEndpoints
             SourceCode = GetSourceCode(context.Source),
             SourceName = GetSourceName(context.Source),
             StationId = context.StationId,
-            SourceUrl = sourceUrl,
+            SourceUrl = downloadResult.SourceUrl,
+            SourceUrlLabel = downloadResult.SourceUrlLabel,
             RetrievedAtUtc = retrievedAtUtc.ToUniversalTime(),
         };
     }
@@ -170,6 +171,7 @@ internal static class RecentObservationsEndpoints
             SourceName: not null,
             StationId: not null,
             SourceUrl: not null,
+            SourceUrlLabel: not null,
             RetrievedAtUtc: not null,
         };
     }

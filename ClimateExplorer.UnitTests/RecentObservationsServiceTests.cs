@@ -814,6 +814,7 @@ public class RecentObservationsServiceTests
             SourceName = "Global Historical Climatology Network Daily",
             StationId = "ASN00070014",
             SourceUrl = "https://www.ncei.noaa.gov/data/global-historical-climatology-network-daily/access/ASN00070014.csv",
+            SourceUrlLabel = "Precipitation station ASN00070014, CSV",
             RetrievedAtUtc = new DateTimeOffset(2026, 6, 19, 3, 42, 0, TimeSpan.Zero),
         };
         var location = CreateSouthernHemisphereLocation();
