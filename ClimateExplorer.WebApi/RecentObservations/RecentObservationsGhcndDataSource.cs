@@ -32,7 +32,7 @@ internal static class RecentObservationsGhcndDataSource
             RecentObservationStationSource.Ghcnd);
     }
 
-    public static async Task<List<DataRecord>> DownloadAndReadData(
+    public static async Task<RecentObservationsDownloadResult> DownloadAndReadData(
         HttpClient httpClient,
         DataType dataType,
         RecentObservationsContext context,
@@ -45,6 +45,7 @@ internal static class RecentObservationsGhcndDataSource
             return null;
         }
 
+        var sourceUrl = GhcndStationCsvDownloader.GetDownloadUrl(context.StationId);
         var csvContent = await GhcndStationCsvDownloader.DownloadCsvAsync(httpClient, context.StationId);
         if (string.IsNullOrWhiteSpace(csvContent))
         {
@@ -53,7 +54,7 @@ internal static class RecentObservationsGhcndDataSource
         }
 
         var rows = GhcndCsvReader.RemoveRowsWithNoData(GhcndCsvReader.ReadRows(csvContent));
-        return dataType switch
+        var records = dataType switch
         {
             DataType.TempMax => ReadRecords(
                 context.StationId,
@@ -90,6 +91,10 @@ internal static class RecentObservationsGhcndDataSource
                 logger),
             _ => null,
         };
+
+        return records == null
+            ? null
+            : new RecentObservationsDownloadResult(records, sourceUrl);
     }
 
     private static List<DataRecord> ReadRecords<TRecord>(

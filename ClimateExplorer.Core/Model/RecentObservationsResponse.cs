@@ -11,4 +11,5 @@ public sealed record RecentObservationsResponse
     public UnitOfMeasure? UnitOfMeasure { get; set; }
     public bool IsSupported { get; set; }
     public DateTimeOffset? RetrievedDate { get; set; }
+    public RecentObservationSourceMetadata? SourceMetadata { get; set; }
 }

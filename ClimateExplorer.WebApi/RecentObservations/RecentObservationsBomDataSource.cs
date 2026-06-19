@@ -43,7 +43,7 @@ internal static partial class RecentObservationsBomDataSource
             RecentObservationStationSource.Bom);
     }
 
-    public static async Task<List<DataRecord>> DownloadAndReadData(
+    public static async Task<RecentObservationsDownloadResult> DownloadAndReadData(
         HttpClient httpClient,
         DataType dataType,
         RecentObservationsContext context,
@@ -88,7 +88,9 @@ internal static partial class RecentObservationsBomDataSource
                 return null;
             }
 
-            return ReadRecords(context.StationId, context.MeasurementDefinition, lines, startDate, endDate);
+            return new RecentObservationsDownloadResult(
+                ReadRecords(context.StationId, context.MeasurementDefinition, lines, startDate, endDate),
+                zipFileUrl);
         }
         finally
         {

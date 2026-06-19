@@ -94,7 +94,8 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
             MergeDailyDataRecords(historicalMaxResponse.Records, recentMaxResponse.Records),
             MergeDailyDataRecords(historicalMinResponse.Records, recentMinResponse.Records),
             MergeDailyDataRecords(meanRecords, Array.Empty<DataRecord>()),
-            hasHistoricalMaxMin);
+            hasHistoricalMaxMin,
+            CreateSourceMetadata(recentMaxResponse.SourceMetadata, recentMinResponse.SourceMetadata));
     }
 
     private async Task<RecentObservationsDataSet> FetchPrecipitationData(Guid locationId)
@@ -111,7 +112,9 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
             return RecentObservationsDataSet.UnsupportedPrecipitation();
         }
 
-        return RecentObservationsDataSet.Precipitation(MergeDailyDataRecords(historicalResponse.Records, recentResponse.Records));
+        return RecentObservationsDataSet.Precipitation(
+            MergeDailyDataRecords(historicalResponse.Records, recentResponse.Records),
+            CreateSourceMetadata(recentResponse.SourceMetadata));
     }
 
     private async Task<ClimateRecordsResponse> GetHistoricalRecords(
@@ -169,6 +172,11 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
         }
 
         yield return DataAdjustment.Unadjusted;
+    }
+
+    private static IReadOnlyList<RecentObservationSourceMetadata> CreateSourceMetadata(params RecentObservationSourceMetadata?[] sourceMetadata)
+    {
+        return [.. sourceMetadata.Where(x => x is not null).Select(x => x!)];
     }
 
     private readonly record struct RecentObservationsDataCacheKey(Guid LocationId, RecentObservationsTab Tab);

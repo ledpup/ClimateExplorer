@@ -806,6 +806,64 @@ public class RecentObservationsServiceTests
     }
 
     [TestMethod]
+    public async Task CalculatePrecipitationRecordsPreservesSourceMetadataAcrossDifferentOptions()
+    {
+        var sourceMetadata = new RecentObservationSourceMetadata
+        {
+            SourceCode = "GHCNd",
+            SourceName = "Global Historical Climatology Network Daily",
+            StationId = "ASN00070014",
+            SourceUrl = "https://www.ncei.noaa.gov/data/global-historical-climatology-network-daily/access/ASN00070014.csv",
+            RetrievedAtUtc = new DateTimeOffset(2026, 6, 19, 3, 42, 0, TimeSpan.Zero),
+        };
+        var location = CreateSouthernHemisphereLocation();
+        var dataService = new Mock<IDataService>();
+        SetupEmptyClimateRecords(dataService);
+        dataService
+            .Setup(x => x.GetRecentObservations(LocationId, DataType.Precipitation, false))
+            .ReturnsAsync(new RecentObservationsResponse
+            {
+                IsSupported = true,
+                Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14)),
+                SourceMetadata = sourceMetadata,
+            });
+        var service = CreateRecentObservationsService(dataService);
+
+        var dataSet = await service.LoadPrecipitationData(location);
+        var result = service.Calculate(
+            location,
+            dataSet,
+            new RecentObservationsOptions
+            {
+                ReferenceDate = new DateOnly(2026, 6, 14),
+                ComparisonEndMode = ComparisonEndMode.FullDataset,
+                PreviousDayCount = 1,
+                PreviousMonthCount = 0,
+                PreviousSeasonCount = 0,
+            });
+        var recalculated = service.Calculate(
+            location,
+            dataSet,
+            new RecentObservationsOptions
+            {
+                ReferenceDate = new DateOnly(2026, 6, 7),
+                ComparisonEndMode = ComparisonEndMode.ReferenceDate,
+                PreviousDayCount = 2,
+                PreviousMonthCount = 0,
+                PreviousSeasonCount = 0,
+            });
+        var thresholded = recalculated.ApplyCompletenessThreshold(RecentObservationCompletenessThreshold.Default);
+
+        Assert.AreEqual(sourceMetadata, result.SourceMetadata.Single());
+        Assert.AreEqual(sourceMetadata, recalculated.SourceMetadata.Single());
+        Assert.AreEqual(sourceMetadata, thresholded.SourceMetadata.Single());
+        Assert.AreEqual(new DateOnly(2026, 6, 14), result.ReferenceDate);
+        Assert.AreEqual(ComparisonEndMode.FullDataset, result.ComparisonEndMode);
+        Assert.AreEqual(new DateOnly(2026, 6, 7), recalculated.ReferenceDate);
+        Assert.AreEqual(ComparisonEndMode.ReferenceDate, recalculated.ComparisonEndMode);
+    }
+
+    [TestMethod]
     public async Task LoadPrecipitationDataCachesByLocation()
     {
         var otherLocationId = Guid.Parse("46b814ed-6e56-47e2-92ca-097526b84d4d");
