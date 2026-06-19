@@ -83,6 +83,7 @@ public partial class ChartView : IAsyncDisposable
 
     private bool ChartLoadingIndicatorVisible { get; set; }
     private bool ChartLoadingErrored { get; set; }
+    private bool NoChartDataAvailable { get; set; }
     private BinGranularities SelectedBinGranularity { get; set; } = BinGranularities.ByYear;
     private List<SeriesWithData>? ChartSeriesWithData { get; set; }
     private Guid? InternalLocationId { get; set; }
@@ -390,60 +391,73 @@ public partial class ChartView : IAsyncDisposable
 
         buildDataSetsInProcess = true;
 
-        LoadingChart();
-
-        var queryString = new Uri(NavManager!.Uri).Query;
-        var queryDictionary = System.Web.HttpUtility.ParseQueryString(queryString);
-
-        var url = GetGlobalQueryStringSettings();
-
-        // Recalculate the URL
-        string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(ChartSeriesList!);
-        if (chartSeriesUrlComponent.Length > 0)
+        try
         {
-            url += "&csd=" + chartSeriesUrlComponent;
+            LoadingChart();
+
+            var queryString = new Uri(NavManager!.Uri).Query;
+            var queryDictionary = System.Web.HttpUtility.ParseQueryString(queryString);
+
+            var url = GetGlobalQueryStringSettings();
+
+            // Recalculate the URL
+            string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(ChartSeriesList!);
+            if (chartSeriesUrlComponent.Length > 0)
+            {
+                url += "&csd=" + chartSeriesUrlComponent;
+            }
+            else
+            {
+                ChartSeriesWithData = null;
+            }
+
+            string currentUri = NavManager!.Uri;
+            string newUri = NavManager.BaseUri + url;
+
+            if (currentUri != newUri)
+            {
+                l.LogInformation("Because the URI reflecting current UI state is different to the URI we're currently at, updating the URL bar.");
+
+                bool shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds = currentUri.IndexOf("csd=") == -1;
+
+                // Update the URL bar. We do NOT rely on this navigation re-triggering OnAfterRenderAsync,
+                // because same-path replace:true navigation is unreliable in deployed Blazor Server/WASM
+                // (the chart on the regional page was stuck on the loading spinner due to this). The chart
+                // is rendered directly below regardless. If navigation does fire OnAfterRenderAsync, the
+                // ChartLoadingIndicatorVisible = false set by RenderChart prevents a redundant second render.
+                NavManager!.NavigateTo(url, false, shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds);
+            }
+
+            if (disposed)
+            {
+                return;
+            }
+
+            var usableChartSeries = ChartSeriesList!.Where(x => x.DataAvailable).ToArray();
+
+            // Fetch the data required to render the selected data series
+            ChartSeriesWithData = await RetrieveDataSets(usableChartSeries);
+
+            l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + usableChartSeries.Length + " entries.");
+
+            // Render the series
+            await RenderChart();
+
+            l.LogInformation("Leaving");
         }
-        else
+        catch (Exception ex)
         {
-            ChartSeriesWithData = null;
+            Logger!.LogError(ex, "Failed to build chart datasets.");
+            ChartLoadingErrored = true;
+            NoChartDataAvailable = true;
+            await SnackbarMessageEvent.InvokeAsync(new SnackbarMessage { Message = "Failed to create the chart with the current settings.", Type = SnackbarColor.Danger });
         }
-
-        string currentUri = NavManager!.Uri;
-        string newUri = NavManager.BaseUri + url;
-
-        if (currentUri != newUri)
-        {
-            l.LogInformation("Because the URI reflecting current UI state is different to the URI we're currently at, updating the URL bar.");
-
-            bool shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds = currentUri.IndexOf("csd=") == -1;
-
-            // Update the URL bar. We do NOT rely on this navigation re-triggering OnAfterRenderAsync,
-            // because same-path replace:true navigation is unreliable in deployed Blazor Server/WASM
-            // (the chart on the regional page was stuck on the loading spinner due to this). The chart
-            // is rendered directly below regardless. If navigation does fire OnAfterRenderAsync, the
-            // ChartLoadingIndicatorVisible = false set by RenderChart prevents a redundant second render.
-            NavManager!.NavigateTo(url, false, shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds);
-        }
-
-        if (disposed)
+        finally
         {
             buildDataSetsInProcess = false;
-            return;
+            ChartLoadingIndicatorVisible = false;
+            StateHasChanged();
         }
-
-        var usableChartSeries = ChartSeriesList!.Where(x => x.DataAvailable);
-
-        // Fetch the data required to render the selected data series
-        ChartSeriesWithData = await RetrieveDataSets(usableChartSeries);
-
-        l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + usableChartSeries.Count() + " entries.");
-
-        // Render the series
-        await RenderChart();
-
-        buildDataSetsInProcess = false;
-
-        l.LogInformation("Leaving");
     }
 
     protected async Task RenderChart()
@@ -452,13 +466,34 @@ public partial class ChartView : IAsyncDisposable
 
         l.LogInformation("Entering");
 
-        if (disposed || chart is null)
+        if (disposed)
         {
-            l.LogInformation("Bailing early as chart is unavailable or component is disposed");
+            l.LogInformation("Bailing early as component is disposed");
+            ChartLoadingIndicatorVisible = false;
             return;
         }
 
-        await chart.Clear();
+        if (chart is null)
+        {
+            l.LogInformation("Bailing early as chart is unavailable");
+            NoChartDataAvailable = true;
+            ChartLoadingIndicatorVisible = false;
+            StateHasChanged();
+            return;
+        }
+
+        try
+        {
+            await chart.Clear();
+        }
+        catch (Exception ex)
+        {
+            Logger!.LogError(ex, "Failed to clear the chart before rendering.");
+            NoChartDataAvailable = true;
+            ChartLoadingIndicatorVisible = false;
+            StateHasChanged();
+            return;
+        }
 
         var title = string.Empty;
         var subtitle = string.Empty;
@@ -468,6 +503,7 @@ public partial class ChartView : IAsyncDisposable
         if (ChartLoadingErrored)
         {
             await chart.SetOptionsObject(new { });
+            NoChartDataAvailable = true;
 
             l.LogError("We have identified an error. Will not try to render the chart normally");
         }
@@ -475,6 +511,7 @@ public partial class ChartView : IAsyncDisposable
         {
             await chart.SetOptionsObject(new { });
 
+            NoChartDataAvailable = true;
             ChartLoadingIndicatorVisible = false;
             StateHasChanged();
 
@@ -509,6 +546,19 @@ public partial class ChartView : IAsyncDisposable
             l.LogInformation("Calling BuildProcessedDataSets");
 
             await BuildProcessedDataSets(ChartSeriesWithData, ChartAllData);
+
+            if (!HasRenderableChartData())
+            {
+                await chart.SetOptionsObject(new { });
+                NoChartDataAvailable = true;
+                ChartLoadingIndicatorVisible = false;
+                StateHasChanged();
+
+                l.LogWarning("Bailing early because processed chart datasets contain no renderable values.");
+                return;
+            }
+
+            NoChartDataAvailable = false;
 
             title = ChartLogic.BuildChartTitle(ChartSeriesWithData, GetKnownLocationDictionary());
             subtitle = ChartLogic.BuildChartSubtitle(chartStartBin, chartEndBin, SelectedBinGranularity, IsMobileDevice!.Value, SelectedGroupingDays, GetGroupingThresholdText());
@@ -561,6 +611,7 @@ public partial class ChartView : IAsyncDisposable
     {
         ChartLoadingIndicatorVisible = true;
         ChartLoadingErrored = false;
+        NoChartDataAvailable = false;
         LogChartSeriesList();
     }
 
@@ -770,6 +821,33 @@ public partial class ChartView : IAsyncDisposable
             SeriesTransformations.Custom => ChartSeriesDefinition.GetFriendlyCustomTransformationLabel(customTransformation ?? "Custom transformation"),
             _ => defaultLabel,
         };
+    }
+
+    private bool HasRenderableChartData()
+    {
+        if (ChartBins == null || ChartBins.Length == 0)
+        {
+            Logger!.LogWarning("No chart bins were produced while preparing chart data.");
+            return false;
+        }
+
+        if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0)
+        {
+            Logger!.LogWarning("No chart series with data were produced while preparing chart data.");
+            return false;
+        }
+
+        var renderablePointCount = ChartSeriesWithData
+            .SelectMany(x => x.ProcessedDataSet?.DataRecords ?? Array.Empty<BinnedRecord>())
+            .Count(x => x.Value.HasValue && !double.IsNaN(x.Value.Value) && !double.IsInfinity(x.Value.Value));
+
+        if (renderablePointCount == 0)
+        {
+            Logger!.LogWarning("Processed chart datasets contain no finite non-null values.");
+            return false;
+        }
+
+        return true;
     }
 
     private object CreateChartOptions(string title, string subtitle, dynamic scales)

@@ -19,7 +19,14 @@
                         </button>
                     </div>
 
-                    <div class="chart-wrapper" @ref="chartWrapper">
+                    <div class="chart-wrapper @(NoChartDataAvailable ? "chart-no-data" : "")" @ref="chartWrapper">
+                        @if (NoChartDataAvailable)
+                        {
+                            <div class="chart-empty-state" role="status">
+                                <i class="fa-solid fa-chart-line"></i>
+                                <div>No chart data is available for the selected location and series.</div>
+                            </div>
+                        }
                         <Chart @ref="chart" TItem="double?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
                             <ChartTrendline @ref="chartTrendline" TItem="double?" />
                         </Chart>
