@@ -79,10 +79,6 @@
                     <Collapsible Title="Configuration and notes" InitiallyShowContents="false">
                         <Content>
                             <h3 class="mt-4 mb-3">Configuration</h3>
-                            @if (CurrentState.Result?.ReferenceDate is not null)
-                            {
-                                <div class="mb-3">Observations range from <b>@FormatDateLong(CurrentState.Result.MinimumReferenceDate)</b> to <b>@FormatDateLong(CurrentState.Result.MaximumReferenceDate)</b></div>
-                            }
                             <div class="recent-observations-config-grid mb-3">
                                 @if (CurrentState.Result?.ReferenceDate is not null)
                                 {
@@ -150,10 +146,13 @@
                                     </DelayedTooltip>
                                 </div>
                             </div>
-
                             <h3 class="mt-4">Notes</h3>
                             <div>
                                 <ul>
+                                    @if (CurrentState.Result?.ReferenceDate is not null)
+                                    {
+                                        <li>Observations range from <b>@FormatDateLong(CurrentState.Result.MinimumReferenceDate)</b> to <b>@FormatDateLong(CurrentState.Result.MaximumReferenceDate)</b></li>
+                                    }
                                     <li>Raw/unadjusted data: recent observations and historical comparisons are using data that has not been adjusted by scientists to remove artificial, non-climate-related biases. Other areas of ClimateExplorer provides adjusted and raw data options.</li>
                                     <li>Comparisons such as latest 7 days, month-to-date and year-to-date tiles are compared with equivalent historical periods.</li>
                                 </ul>
