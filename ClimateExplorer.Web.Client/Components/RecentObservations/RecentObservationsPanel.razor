@@ -76,7 +76,7 @@
                 </div>
 
                 <div style="max-width: 1024px;">
-                    <Collapsible Title="Configuration and notes" InitiallyShowContents="false">
+                    <Collapsible Title="Configuration and source" InitiallyShowContents="false">
                         <Content>
                             <h3 class="mt-4 mb-3">Configuration</h3>
                             <div class="recent-observations-config-grid mb-3">
@@ -146,8 +146,9 @@
                                     </DelayedTooltip>
                                 </div>
                             </div>
-                            <h3 class="mt-4">Notes</h3>
+                            
                             <div>
+                                <h3 class="mt-4">Observations source</h3>
                                 <ul class="recent-observations-notes">
                                     @if (CurrentState.Result?.ReferenceDate is not null)
                                     {
@@ -173,6 +174,9 @@
                                             </ul>
                                         </li>
                                     }
+                                </ul>
+                                <h3 class="mt-4">Notes</h3>
+                                <ul>
                                     <li>Raw/unadjusted data: recent observations and historical comparisons are using data that has not been adjusted by scientists to remove artificial, non-climate-related biases. Other areas of ClimateExplorer provides adjusted and raw data options.</li>
                                     <li>Comparisons such as latest 7 days, month-to-date and year-to-date tiles are compared with equivalent historical periods.</li>
                                 </ul>
