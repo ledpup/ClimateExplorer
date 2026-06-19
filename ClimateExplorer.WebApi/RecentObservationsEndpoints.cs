@@ -8,7 +8,6 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.WebApi.RecentObservations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using static ClimateExplorer.Core.Enums;
 
 internal static class RecentObservationsEndpoints
 {
@@ -16,21 +15,20 @@ internal static class RecentObservationsEndpoints
         [FromServices] ClimateExplorerApiServices services,
         [FromServices] ILoggerFactory loggerFactory,
         Guid locationId,
-        DataType dataType = DataType.TempMax,
         bool isLocationSupported = false)
     {
         var logger = loggerFactory.CreateLogger(nameof(RecentObservationsEndpoints));
         var today = DateOnly.FromDateTime(DateTime.Today);
         var yesterday = today.AddDays(-1);
-        var context = await GetRecentObservationsContext(services, locationId, dataType, today);
+        var context = await GetRecentObservationsContext(services, locationId, today);
         if (isLocationSupported || context == null)
         {
-            return new RecentObservationsResponse { IsSupported = context != null };
+            return new RecentObservationsResponse { IsSupported = context?.IsTemperatureSupported ?? false };
         }
 
         var recentObservationStartDate = new DateOnly(today.Year - 1, 1, 1);
         var recentObservationEndDate = new DateOnly(today.Year, 12, 31);
-        var cacheKey = $"{ClimateExplorerApiConstants.RecentObservationsCacheKeyPrefix}_{locationId}_{dataType}_{recentObservationStartDate.Year}_{recentObservationEndDate.Year}";
+        var cacheKey = $"{ClimateExplorerApiConstants.RecentObservationsCacheKeyPrefix}_{locationId}_{recentObservationStartDate.Year}_{recentObservationEndDate.Year}";
         var cachedResponse = await services.Cache.Get<RecentObservationsResponse>(cacheKey);
         if (HasSourceMetadata(cachedResponse)
             && (HasRecordForDate(cachedResponse, today) || HasRecordForDate(cachedResponse, yesterday) || WasDataRetrievedInLastHours(cachedResponse, 6)))
@@ -42,7 +40,6 @@ internal static class RecentObservationsEndpoints
         {
             var downloadResult = await DownloadAndReadRecentObservationsData(
                 services,
-                dataType,
                 context,
                 recentObservationStartDate,
                 recentObservationEndDate,
@@ -50,20 +47,17 @@ internal static class RecentObservationsEndpoints
 
             if (downloadResult == null)
             {
-                return cachedResponse ?? new RecentObservationsResponse { IsSupported = true };
+                return cachedResponse ?? new RecentObservationsResponse { IsSupported = context.IsTemperatureSupported };
             }
 
             var retrievedAtUtc = DateTimeOffset.UtcNow;
             var response = new RecentObservationsResponse
             {
                 RetrievedDate = retrievedAtUtc,
-                IsSupported = true,
-                DataAdjustment = context.MeasurementDefinition.DataAdjustment,
-                DataResolution = context.MeasurementDefinition.DataResolution,
-                DataType = context.MeasurementDefinition.DataType,
-                UnitOfMeasure = context.MeasurementDefinition.UnitOfMeasure,
-                Records = downloadResult.Records,
-                SourceMetadata = CreateSourceMetadata(context, downloadResult, retrievedAtUtc),
+                IsSupported = context.IsTemperatureSupported,
+                TempMax = CreateSeries(context.Source, downloadResult.TempMax, retrievedAtUtc),
+                TempMin = CreateSeries(context.Source, downloadResult.TempMin, retrievedAtUtc),
+                Precipitation = CreateSeries(context.Source, downloadResult.Precipitation, retrievedAtUtc),
             };
 
             await services.Cache.Put(cacheKey, response);
@@ -71,15 +65,14 @@ internal static class RecentObservationsEndpoints
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Unable to retrieve recent {Source} observations for location {LocationId} and data type {DataType}", context.Source, locationId, dataType);
-            return cachedResponse ?? new RecentObservationsResponse { IsSupported = true };
+            logger.LogError(ex, "Unable to retrieve recent {Source} observations for location {LocationId}", context.Source, locationId);
+            return cachedResponse ?? new RecentObservationsResponse { IsSupported = context.IsTemperatureSupported };
         }
     }
 
     private static async Task<RecentObservationsContext> GetRecentObservationsContext(
         ClimateExplorerApiServices services,
         Guid locationId,
-        DataType dataType,
         DateOnly asAt)
     {
         var locations = await LocationEndpoints.GetCachedLocations(services, locationId, permitCreateCache: false);
@@ -90,13 +83,12 @@ internal static class RecentObservationsEndpoints
         }
 
         var dataSetDefinitions = await DataSetDefinition.GetDataSetDefinitions();
-        return RecentObservationsBomDataSource.GetContext(location, dataType, asAt, dataSetDefinitions)
-            ?? RecentObservationsGhcndDataSource.GetContext(location, dataType, asAt, dataSetDefinitions);
+        return RecentObservationsBomDataSource.GetContext(location, asAt, dataSetDefinitions)
+            ?? RecentObservationsGhcndDataSource.GetContext(location, asAt, dataSetDefinitions);
     }
 
     private static async Task<RecentObservationsDownloadResult> DownloadAndReadRecentObservationsData(
         ClimateExplorerApiServices services,
-        DataType dataType,
         RecentObservationsContext context,
         DateOnly startDate,
         DateOnly endDate,
@@ -106,14 +98,12 @@ internal static class RecentObservationsEndpoints
         {
             RecentObservationStationSource.Bom => await RecentObservationsBomDataSource.DownloadAndReadData(
                 services.BomHttpClient,
-                dataType,
                 context,
                 startDate,
                 endDate,
                 logger),
             RecentObservationStationSource.Ghcnd => await RecentObservationsGhcndDataSource.DownloadAndReadData(
                 services.GhcndHttpClient,
-                dataType,
                 context,
                 startDate,
                 endDate,
@@ -122,19 +112,31 @@ internal static class RecentObservationsEndpoints
         };
     }
 
-    private static RecentObservationSourceMetadata CreateSourceMetadata(
-        RecentObservationsContext context,
-        RecentObservationsDownloadResult downloadResult,
+    private static RecentObservationSeries CreateSeries(
+        RecentObservationStationSource source,
+        RecentObservationSeriesDownload download,
         DateTimeOffset retrievedAtUtc)
     {
-        return new RecentObservationSourceMetadata
+        if (download == null)
         {
-            SourceCode = GetSourceCode(context.Source),
-            SourceName = GetSourceName(context.Source),
-            StationId = context.StationId,
-            SourceUrl = downloadResult.SourceUrl,
-            SourceUrlLabel = downloadResult.SourceUrlLabel,
-            RetrievedAtUtc = retrievedAtUtc.ToUniversalTime(),
+            return null;
+        }
+
+        return new RecentObservationSeries
+        {
+            Records = download.Records,
+            DataAdjustment = download.MeasurementDefinition.DataAdjustment,
+            DataResolution = download.MeasurementDefinition.DataResolution,
+            UnitOfMeasure = download.MeasurementDefinition.UnitOfMeasure,
+            SourceMetadata = new RecentObservationSourceMetadata
+            {
+                SourceCode = GetSourceCode(source),
+                SourceName = GetSourceName(source),
+                StationId = download.StationId,
+                SourceUrl = download.SourceUrl,
+                SourceUrlLabel = download.SourceUrlLabel,
+                RetrievedAtUtc = retrievedAtUtc.ToUniversalTime(),
+            },
         };
     }
 
@@ -160,12 +162,13 @@ internal static class RecentObservationsEndpoints
 
     private static bool HasRecordForDate(RecentObservationsResponse response, DateOnly date)
     {
-        return response?.Records.Any(x => x.Year == date.Year && x.Month == date.Month && x.Day == date.Day) == true;
+        return AllSeries(response).Any(series =>
+            series.Records.Any(x => x.Year == date.Year && x.Month == date.Month && x.Day == date.Day));
     }
 
     private static bool HasSourceMetadata(RecentObservationsResponse response)
     {
-        return response?.SourceMetadata is
+        return AllSeries(response).Any(series => series.SourceMetadata is
         {
             SourceCode: not null,
             SourceName: not null,
@@ -173,7 +176,30 @@ internal static class RecentObservationsEndpoints
             SourceUrl: not null,
             SourceUrlLabel: not null,
             RetrievedAtUtc: not null,
-        };
+        });
+    }
+
+    private static IEnumerable<RecentObservationSeries> AllSeries(RecentObservationsResponse response)
+    {
+        if (response == null)
+        {
+            yield break;
+        }
+
+        if (response.TempMax != null)
+        {
+            yield return response.TempMax;
+        }
+
+        if (response.TempMin != null)
+        {
+            yield return response.TempMin;
+        }
+
+        if (response.Precipitation != null)
+        {
+            yield return response.Precipitation;
+        }
     }
 
     private static bool WasDataRetrievedInLastHours(RecentObservationsResponse response, int hours = 24)

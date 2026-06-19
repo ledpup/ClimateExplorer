@@ -14,87 +14,141 @@ internal static class RecentObservationsGhcndDataSource
 {
     public static RecentObservationsContext GetContext(
         Location location,
-        DataType dataType,
         DateOnly asAt,
         IEnumerable<DataSetDefinition> dataSetDefinitions)
     {
-        if (!TryGetDataSetDefinitionId(dataType, out var dataSetDefinitionId))
-        {
-            return null;
-        }
+        var temperatureDsd = dataSetDefinitions.SingleOrDefault(x => x.Id == ClimateExplorerApiConstants.GhcndTemperatureDataSetDefinitionId);
+        var precipitationDsd = dataSetDefinitions.SingleOrDefault(x => x.Id == ClimateExplorerApiConstants.GhcndPrecipitationDataSetDefinitionId);
 
-        return RecentObservationsDataSourceHelpers.GetContext(
-            location,
-            dataType,
-            asAt,
-            dataSetDefinitions,
-            dataSetDefinitionId,
-            RecentObservationStationSource.Ghcnd);
+        var temperatureStationId = temperatureDsd == null ? null : RecentObservationsDataSourceHelpers.GetStationId(temperatureDsd, location, asAt);
+        var precipitationStationId = precipitationDsd == null ? null : RecentObservationsDataSourceHelpers.GetStationId(precipitationDsd, location, asAt);
+
+        var context = new RecentObservationsContext(
+            RecentObservationStationSource.Ghcnd,
+            RecentObservationsDataSourceHelpers.CreateSeriesContext(temperatureDsd, DataType.TempMax, temperatureStationId),
+            RecentObservationsDataSourceHelpers.CreateSeriesContext(temperatureDsd, DataType.TempMin, temperatureStationId),
+            RecentObservationsDataSourceHelpers.CreateSeriesContext(precipitationDsd, DataType.Precipitation, precipitationStationId));
+
+        return context.HasAnySeries ? context : null;
     }
 
     public static async Task<RecentObservationsDownloadResult> DownloadAndReadData(
         HttpClient httpClient,
-        DataType dataType,
         RecentObservationsContext context,
         DateOnly startDate,
         DateOnly endDate,
         ILogger logger)
     {
-        if (!TryGetDataSetDefinitionId(dataType, out _))
+        // Cache parsed rows by station so a station file shared across series (the
+        // common case where max, min and precipitation come from one station) is
+        // downloaded and parsed only once.
+        var parsedRowsByStation = new Dictionary<string, List<GhcndInputRow>>(StringComparer.OrdinalIgnoreCase);
+
+        async Task<List<GhcndInputRow>> GetRows(string stationId)
+        {
+            if (parsedRowsByStation.TryGetValue(stationId, out var cached))
+            {
+                return cached;
+            }
+
+            var csvContent = await GhcndStationCsvDownloader.DownloadCsvAsync(httpClient, stationId);
+            if (string.IsNullOrWhiteSpace(csvContent))
+            {
+                logger.LogWarning("Unable to download recent GHCNd CSV for station {StationId}. Response was empty.", stationId);
+                parsedRowsByStation[stationId] = null;
+                return null;
+            }
+
+            var rows = GhcndCsvReader.RemoveRowsWithNoData(GhcndCsvReader.ReadRows(csvContent));
+            parsedRowsByStation[stationId] = rows;
+            return rows;
+        }
+
+        var tempMax = await ReadTemperatureSeries(context.TempMax, GetRows, record => record.Tmax, startDate, endDate, logger);
+        var tempMin = await ReadTemperatureSeries(context.TempMin, GetRows, record => record.Tmin, startDate, endDate, logger);
+        var precipitation = await ReadPrecipitationSeries(context.Precipitation, GetRows, startDate, endDate, logger);
+
+        var result = new RecentObservationsDownloadResult(tempMax, tempMin, precipitation);
+        return result.HasAnySeries ? result : null;
+    }
+
+    private static async Task<RecentObservationSeriesDownload> ReadTemperatureSeries(
+        RecentObservationSeriesContext seriesContext,
+        Func<string, Task<List<GhcndInputRow>>> getRows,
+        Func<OutputRowTemperature, int?> getValue,
+        DateOnly startDate,
+        DateOnly endDate,
+        ILogger logger)
+    {
+        if (seriesContext == null)
         {
             return null;
         }
 
-        var sourceUrl = GhcndStationCsvDownloader.GetDownloadUrl(context.StationId);
-        var csvContent = await GhcndStationCsvDownloader.DownloadCsvAsync(httpClient, context.StationId);
-        if (string.IsNullOrWhiteSpace(csvContent))
+        var rows = await getRows(seriesContext.StationId);
+        if (rows == null)
         {
-            logger.LogWarning("Unable to download recent GHCNd CSV for station {StationId}. Response was empty.", context.StationId);
             return null;
         }
 
-        var rows = GhcndCsvReader.RemoveRowsWithNoData(GhcndCsvReader.ReadRows(csvContent));
-        var records = dataType switch
-        {
-            DataType.TempMax => ReadRecords(
-                context.StationId,
-                context.MeasurementDefinition,
-                rows,
-                GhcndTemperatureProcessor.CreateRecords,
-                GhcndTemperatureProcessor.ValidateRecords,
-                record => record.Date,
-                record => record.Tmax,
-                startDate,
-                endDate,
-                logger),
-            DataType.TempMin => ReadRecords(
-                context.StationId,
-                context.MeasurementDefinition,
-                rows,
-                GhcndTemperatureProcessor.CreateRecords,
-                GhcndTemperatureProcessor.ValidateRecords,
-                record => record.Date,
-                record => record.Tmin,
-                startDate,
-                endDate,
-                logger),
-            DataType.Precipitation => ReadRecords(
-                context.StationId,
-                context.MeasurementDefinition,
-                rows,
-                GhcndPrecipitationProcessor.CreateRecords,
-                GhcndPrecipitationProcessor.ValidateRecords,
-                record => record.Date,
-                record => record.Precipitation,
-                startDate,
-                endDate,
-                logger),
-            _ => null,
-        };
+        var records = ReadRecords(
+            seriesContext.StationId,
+            seriesContext.MeasurementDefinition,
+            rows,
+            GhcndTemperatureProcessor.CreateRecords,
+            GhcndTemperatureProcessor.ValidateRecords,
+            record => record.Date,
+            getValue,
+            startDate,
+            endDate,
+            logger);
 
-        return records == null
-            ? null
-            : new RecentObservationsDownloadResult(records, sourceUrl, CreateSourceUrlLabel(context.StationId));
+        return CreateDownload(seriesContext, records);
+    }
+
+    private static async Task<RecentObservationSeriesDownload> ReadPrecipitationSeries(
+        RecentObservationSeriesContext seriesContext,
+        Func<string, Task<List<GhcndInputRow>>> getRows,
+        DateOnly startDate,
+        DateOnly endDate,
+        ILogger logger)
+    {
+        if (seriesContext == null)
+        {
+            return null;
+        }
+
+        var rows = await getRows(seriesContext.StationId);
+        if (rows == null)
+        {
+            return null;
+        }
+
+        var records = ReadRecords(
+            seriesContext.StationId,
+            seriesContext.MeasurementDefinition,
+            rows,
+            GhcndPrecipitationProcessor.CreateRecords,
+            GhcndPrecipitationProcessor.ValidateRecords,
+            record => record.Date,
+            record => record.Precipitation,
+            startDate,
+            endDate,
+            logger);
+
+        return CreateDownload(seriesContext, records);
+    }
+
+    private static RecentObservationSeriesDownload CreateDownload(
+        RecentObservationSeriesContext seriesContext,
+        List<DataRecord> records)
+    {
+        return new RecentObservationSeriesDownload(
+            records,
+            seriesContext.MeasurementDefinition,
+            seriesContext.StationId,
+            GhcndStationCsvDownloader.GetDownloadUrl(seriesContext.StationId),
+            CreateSourceUrlLabel(seriesContext.StationId));
     }
 
     private static List<DataRecord> ReadRecords<TRecord>(
@@ -129,25 +183,6 @@ internal static class RecentObservationsGhcndDataSource
         }
 
         return RecentObservationsDataSourceHelpers.OrderDailyRecords(dataRecords);
-    }
-
-    private static bool TryGetDataSetDefinitionId(DataType dataType, out Guid dataSetDefinitionId)
-    {
-        switch (dataType)
-        {
-            case DataType.TempMax:
-            case DataType.TempMin:
-                dataSetDefinitionId = ClimateExplorerApiConstants.GhcndTemperatureDataSetDefinitionId;
-                return true;
-
-            case DataType.Precipitation:
-                dataSetDefinitionId = ClimateExplorerApiConstants.GhcndPrecipitationDataSetDefinitionId;
-                return true;
-
-            default:
-                dataSetDefinitionId = default;
-                return false;
-        }
     }
 
     private static string CreateSourceUrlLabel(string stationId)

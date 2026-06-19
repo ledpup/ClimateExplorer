@@ -242,11 +242,10 @@ public class DataService : IDataService
         return result!;
     }
 
-    public async Task<RecentObservationsResponse> GetRecentObservations(Guid locationId, DataType dataType, bool isLocationSupported = false)
+    public async Task<RecentObservationsResponse> GetRecentObservations(Guid locationId, bool isLocationSupported = false)
     {
         var url = "/recent-observations";
         url = QueryHelpers.AddQueryString(url, "locationId", locationId.ToString());
-        url = QueryHelpers.AddQueryString(url, "dataType", dataType.ToString());
 
         if (isLocationSupported)
         {

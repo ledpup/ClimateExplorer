@@ -25,43 +25,65 @@ internal static partial class RecentObservationsBomDataSource
 
     public static RecentObservationsContext GetContext(
         Location location,
-        DataType dataType,
         DateOnly asAt,
         IEnumerable<DataSetDefinition> dataSetDefinitions)
     {
-        if (!TryGetDailyBomObsCode(dataType, out _))
+        var dataSetDefinition = dataSetDefinitions.SingleOrDefault(x => x.Id == ClimateExplorerApiConstants.BomDataSetDefinitionId);
+        if (dataSetDefinition == null)
         {
             return null;
         }
 
-        return RecentObservationsDataSourceHelpers.GetContext(
-            location,
-            dataType,
-            asAt,
-            dataSetDefinitions,
-            ClimateExplorerApiConstants.BomDataSetDefinitionId,
-            RecentObservationStationSource.Bom);
+        var stationId = RecentObservationsDataSourceHelpers.GetStationId(dataSetDefinition, location, asAt);
+        if (stationId == null)
+        {
+            return null;
+        }
+
+        var context = new RecentObservationsContext(
+            RecentObservationStationSource.Bom,
+            RecentObservationsDataSourceHelpers.CreateSeriesContext(dataSetDefinition, DataType.TempMax, stationId),
+            RecentObservationsDataSourceHelpers.CreateSeriesContext(dataSetDefinition, DataType.TempMin, stationId),
+            RecentObservationsDataSourceHelpers.CreateSeriesContext(dataSetDefinition, DataType.Precipitation, stationId));
+
+        return context.HasAnySeries ? context : null;
     }
 
     public static async Task<RecentObservationsDownloadResult> DownloadAndReadData(
         HttpClient httpClient,
-        DataType dataType,
         RecentObservationsContext context,
         DateOnly startDate,
         DateOnly endDate,
         ILogger logger)
     {
-        if (!TryGetDailyBomObsCode(dataType, out var obsCode))
+        var tempMax = await DownloadSeries(httpClient, context.TempMax, DataType.TempMax, startDate, endDate, logger);
+        var tempMin = await DownloadSeries(httpClient, context.TempMin, DataType.TempMin, startDate, endDate, logger);
+        var precipitation = await DownloadSeries(httpClient, context.Precipitation, DataType.Precipitation, startDate, endDate, logger);
+
+        var result = new RecentObservationsDownloadResult(tempMax, tempMin, precipitation);
+        return result.HasAnySeries ? result : null;
+    }
+
+    private static async Task<RecentObservationSeriesDownload> DownloadSeries(
+        HttpClient httpClient,
+        RecentObservationSeriesContext seriesContext,
+        DataType dataType,
+        DateOnly startDate,
+        DateOnly endDate,
+        ILogger logger)
+    {
+        if (seriesContext == null || !TryGetDailyBomObsCode(dataType, out var obsCode))
         {
             return null;
         }
 
+        var stationId = seriesContext.StationId;
         var tempDirectory = Path.Combine(Path.GetTempPath(), $"ClimateExplorerRecentObservations_{Guid.NewGuid():N}");
-        var zipFilePath = Path.Combine(tempDirectory, $"{context.StationId}_{obsCode.ToString().ToLowerInvariant()}.zip");
+        var zipFilePath = Path.Combine(tempDirectory, $"{stationId}_{obsCode.ToString().ToLowerInvariant()}.zip");
 
         try
         {
-            var pC = await GetDailyBomPC(httpClient, context.StationId, obsCode, logger);
+            var pC = await GetDailyBomPC(httpClient, stationId, obsCode, logger);
             if (pC == null)
             {
                 return null;
@@ -69,11 +91,11 @@ internal static partial class RecentObservationsBomDataSource
 
             Directory.CreateDirectory(tempDirectory);
 
-            var zipFileUrl = $"http://www.bom.gov.au/jsp/ncc/cdio/weatherData/av?p_display_type=dailyZippedDataFile&p_stn_num={context.StationId}&p_nccObsCode={(int)obsCode}&p_c={pC}";
+            var zipFileUrl = $"http://www.bom.gov.au/jsp/ncc/cdio/weatherData/av?p_display_type=dailyZippedDataFile&p_stn_num={stationId}&p_nccObsCode={(int)obsCode}&p_c={pC}";
             using var zipFileResponse = await httpClient.GetAsync(zipFileUrl);
             if (!zipFileResponse.IsSuccessStatusCode)
             {
-                logger.LogWarning("Unable to download recent BOM zip for station {StationId} and ObsCode {ObsCode}. Status code: {StatusCode}", context.StationId, obsCode, zipFileResponse.StatusCode);
+                logger.LogWarning("Unable to download recent BOM zip for station {StationId} and ObsCode {ObsCode}. Status code: {StatusCode}", stationId, obsCode, zipFileResponse.StatusCode);
                 return null;
             }
 
@@ -88,10 +110,12 @@ internal static partial class RecentObservationsBomDataSource
                 return null;
             }
 
-            return new RecentObservationsDownloadResult(
-                ReadRecords(context.StationId, context.MeasurementDefinition, lines, startDate, endDate),
+            return new RecentObservationSeriesDownload(
+                ReadRecords(stationId, seriesContext.MeasurementDefinition, lines, startDate, endDate),
+                seriesContext.MeasurementDefinition,
+                stationId,
                 zipFileUrl,
-                CreateSourceUrlLabel(dataType, context.StationId, obsCode));
+                CreateSourceUrlLabel(dataType, stationId, obsCode));
         }
         finally
         {

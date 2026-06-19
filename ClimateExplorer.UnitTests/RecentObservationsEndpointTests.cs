@@ -42,26 +42,32 @@ public sealed class RecentObservationsEndpointTests
             () => RecentObservationsEndpoints.GetRecentObservations(
                 services,
                 LoggerFactory.Create(_ => { }),
-                BomLocationId,
-                DataType.TempMax));
+                BomLocationId));
 
         Assert.IsTrue(response.IsSupported);
-        Assert.AreEqual(DataType.TempMax, response.DataType);
-        Assert.AreEqual(DataAdjustment.Unadjusted, response.DataAdjustment);
-        Assert.AreEqual(DataResolution.Daily, response.DataResolution);
-        Assert.AreEqual(UnitOfMeasure.DegreesCelsius, response.UnitOfMeasure);
-        Assert.HasCount(2, response.Records);
-        Assert.AreEqual(new DateOnly(DateTime.Today.Year - 1, 1, 1), response.Records[0].Date);
-        Assert.AreEqual(30.5d, response.Records[0].Value);
-        Assert.AreEqual(new DateOnly(DateTime.Today.Year, 6, 16), response.Records[1].Date);
-        Assert.AreEqual(41.1d, response.Records[1].Value);
+        Assert.IsNotNull(response.TempMax);
+        Assert.AreEqual(DataAdjustment.Unadjusted, response.TempMax.DataAdjustment);
+        Assert.AreEqual(DataResolution.Daily, response.TempMax.DataResolution);
+        Assert.AreEqual(UnitOfMeasure.DegreesCelsius, response.TempMax.UnitOfMeasure);
+        Assert.HasCount(2, response.TempMax.Records);
+        Assert.AreEqual(new DateOnly(DateTime.Today.Year - 1, 1, 1), response.TempMax.Records[0].Date);
+        Assert.AreEqual(30.5d, response.TempMax.Records[0].Value);
+        Assert.AreEqual(new DateOnly(DateTime.Today.Year, 6, 16), response.TempMax.Records[1].Date);
+        Assert.AreEqual(41.1d, response.TempMax.Records[1].Value);
+
+        // TempMax and TempMin come from distinct BOM obs-code files, so each series keeps
+        // its own provenance (the panel relies on this to list both source URLs).
         AssertSourceMetadata(
             response,
+            response.TempMax,
             "BOM",
             "Australian Bureau of Meteorology",
             "086338",
             bomHandler.Requests[1].RequestUri!.ToString(),
             "TempMax station 086338, obs code 122, ZIP");
+        Assert.IsNotNull(response.TempMin);
+        Assert.AreEqual("TempMin station 086338, obs code 123, ZIP", response.TempMin.SourceMetadata!.SourceUrlLabel);
+        Assert.AreNotEqual(response.TempMax.SourceMetadata!.SourceUrl, response.TempMin.SourceMetadata.SourceUrl);
     }
 
     [TestMethod]
@@ -75,22 +81,30 @@ public sealed class RecentObservationsEndpointTests
             () => RecentObservationsEndpoints.GetRecentObservations(
                 services,
                 LoggerFactory.Create(_ => { }),
-                GhcndLocationId,
-                DataType.TempMax));
+                GhcndLocationId));
 
         Assert.IsTrue(response.IsSupported);
-        Assert.AreEqual(DataType.TempMax, response.DataType);
-        Assert.AreEqual(DataAdjustment.Unadjusted, response.DataAdjustment);
-        Assert.AreEqual(DataResolution.Daily, response.DataResolution);
-        Assert.AreEqual(UnitOfMeasure.DegreesCelsius, response.UnitOfMeasure);
-        Assert.HasCount(2, response.Records);
-        Assert.AreEqual(new DateOnly(DateTime.Today.Year - 1, 1, 1), response.Records[0].Date);
-        Assert.AreEqual(30.5d, response.Records[0].Value);
-        Assert.AreEqual(new DateOnly(DateTime.Today.Year, 6, 16), response.Records[1].Date);
-        Assert.AreEqual(41.1d, response.Records[1].Value);
+        Assert.IsNotNull(response.TempMax);
+        Assert.AreEqual(DataAdjustment.Unadjusted, response.TempMax.DataAdjustment);
+        Assert.AreEqual(DataResolution.Daily, response.TempMax.DataResolution);
+        Assert.AreEqual(UnitOfMeasure.DegreesCelsius, response.TempMax.UnitOfMeasure);
+        Assert.HasCount(2, response.TempMax.Records);
+        Assert.AreEqual(new DateOnly(DateTime.Today.Year - 1, 1, 1), response.TempMax.Records[0].Date);
+        Assert.AreEqual(30.5d, response.TempMax.Records[0].Value);
+        Assert.AreEqual(new DateOnly(DateTime.Today.Year, 6, 16), response.TempMax.Records[1].Date);
+        Assert.AreEqual(41.1d, response.TempMax.Records[1].Value);
+
+        Assert.IsNotNull(response.TempMin);
+        Assert.AreEqual(20.2d, response.TempMin.Records[0].Value);
+
+        // The single station CSV backs every series, so it is downloaded exactly once and
+        // the temperature series share one source URL (the panel collapses them to one note).
+        Assert.HasCount(1, ghcndHandler.Requests);
         StringAssert.Contains(ghcndHandler.Requests[0].RequestUri!.ToString(), "AE000041196.csv");
+        Assert.AreEqual(response.TempMax.SourceMetadata!.SourceUrl, response.TempMin.SourceMetadata!.SourceUrl);
         AssertSourceMetadata(
             response,
+            response.TempMax,
             "GHCNd",
             "Global Historical Climatology Network Daily",
             "AE000041196",
@@ -109,22 +123,22 @@ public sealed class RecentObservationsEndpointTests
             () => RecentObservationsEndpoints.GetRecentObservations(
                 services,
                 LoggerFactory.Create(_ => { }),
-                GhcndLocationId,
-                DataType.Precipitation));
+                GhcndLocationId));
 
-        Assert.IsTrue(response.IsSupported);
-        Assert.AreEqual(DataType.Precipitation, response.DataType);
-        Assert.IsNull(response.DataAdjustment);
-        Assert.AreEqual(DataResolution.Daily, response.DataResolution);
-        Assert.AreEqual(UnitOfMeasure.Millimetres, response.UnitOfMeasure);
-        Assert.HasCount(2, response.Records);
-        Assert.AreEqual(new DateOnly(DateTime.Today.Year - 1, 1, 1), response.Records[0].Date);
-        Assert.AreEqual(1.2d, response.Records[0].Value);
-        Assert.AreEqual(new DateOnly(DateTime.Today.Year, 6, 16), response.Records[1].Date);
-        Assert.AreEqual(0d, response.Records[1].Value);
+        Assert.IsNotNull(response.Precipitation);
+        Assert.IsNull(response.Precipitation.DataAdjustment);
+        Assert.AreEqual(DataResolution.Daily, response.Precipitation.DataResolution);
+        Assert.AreEqual(UnitOfMeasure.Millimetres, response.Precipitation.UnitOfMeasure);
+        Assert.HasCount(2, response.Precipitation.Records);
+        Assert.AreEqual(new DateOnly(DateTime.Today.Year - 1, 1, 1), response.Precipitation.Records[0].Date);
+        Assert.AreEqual(1.2d, response.Precipitation.Records[0].Value);
+        Assert.AreEqual(new DateOnly(DateTime.Today.Year, 6, 16), response.Precipitation.Records[1].Date);
+        Assert.AreEqual(0d, response.Precipitation.Records[1].Value);
+        Assert.HasCount(1, ghcndHandler.Requests);
         StringAssert.Contains(ghcndHandler.Requests[0].RequestUri!.ToString(), "AE000041196.csv");
         AssertSourceMetadata(
             response,
+            response.Precipitation,
             "GHCNd",
             "Global Historical Climatology Network Daily",
             "AE000041196",
@@ -134,21 +148,22 @@ public sealed class RecentObservationsEndpointTests
 
     private static void AssertSourceMetadata(
         RecentObservationsResponse response,
+        RecentObservationSeries series,
         string expectedSourceCode,
         string expectedSourceName,
         string expectedStationId,
         string expectedSourceUrl,
         string expectedSourceUrlLabel)
     {
-        Assert.IsNotNull(response.SourceMetadata);
-        Assert.AreEqual(expectedSourceCode, response.SourceMetadata.SourceCode);
-        Assert.AreEqual(expectedSourceName, response.SourceMetadata.SourceName);
-        Assert.AreEqual(expectedStationId, response.SourceMetadata.StationId);
-        Assert.AreEqual(expectedSourceUrl, response.SourceMetadata.SourceUrl);
-        Assert.AreEqual(expectedSourceUrlLabel, response.SourceMetadata.SourceUrlLabel);
-        Assert.IsNotNull(response.SourceMetadata.RetrievedAtUtc);
-        Assert.AreEqual(TimeSpan.Zero, response.SourceMetadata.RetrievedAtUtc.Value.Offset);
-        Assert.AreEqual(response.RetrievedDate, response.SourceMetadata.RetrievedAtUtc);
+        Assert.IsNotNull(series.SourceMetadata);
+        Assert.AreEqual(expectedSourceCode, series.SourceMetadata.SourceCode);
+        Assert.AreEqual(expectedSourceName, series.SourceMetadata.SourceName);
+        Assert.AreEqual(expectedStationId, series.SourceMetadata.StationId);
+        Assert.AreEqual(expectedSourceUrl, series.SourceMetadata.SourceUrl);
+        Assert.AreEqual(expectedSourceUrlLabel, series.SourceMetadata.SourceUrlLabel);
+        Assert.IsNotNull(series.SourceMetadata.RetrievedAtUtc);
+        Assert.AreEqual(TimeSpan.Zero, series.SourceMetadata.RetrievedAtUtc.Value.Offset);
+        Assert.AreEqual(response.RetrievedDate, series.SourceMetadata.RetrievedAtUtc);
     }
 
     private static MemoryCache CreateCacheWithLocation(params Location[] locations)

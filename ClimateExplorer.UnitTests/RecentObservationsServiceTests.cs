@@ -756,11 +756,14 @@ public class RecentObservationsServiceTests
         var dataService = new Mock<IDataService>();
         SetupEmptyClimateRecords(dataService);
         dataService
-            .Setup(x => x.GetRecentObservations(LocationId, DataType.Precipitation, false))
+            .Setup(x => x.GetRecentObservations(LocationId, false))
             .ReturnsAsync(new RecentObservationsResponse
             {
                 IsSupported = true,
-                Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14)),
+                Precipitation = new RecentObservationSeries
+                {
+                    Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14)),
+                },
             });
         var service = CreateRecentObservationsService(dataService);
 
@@ -790,7 +793,7 @@ public class RecentObservationsServiceTests
             });
 
         Assert.AreEqual(new DateOnly(2026, 6, 7), recalculated.ReferenceDate);
-        dataService.Verify(x => x.GetRecentObservations(LocationId, DataType.Precipitation, false), Times.Once);
+        dataService.Verify(x => x.GetRecentObservations(LocationId, false), Times.Once);
         dataService.Verify(
             x => x.GetClimateRecords(
                 LocationId,
@@ -821,12 +824,15 @@ public class RecentObservationsServiceTests
         var dataService = new Mock<IDataService>();
         SetupEmptyClimateRecords(dataService);
         dataService
-            .Setup(x => x.GetRecentObservations(LocationId, DataType.Precipitation, false))
+            .Setup(x => x.GetRecentObservations(LocationId, false))
             .ReturnsAsync(new RecentObservationsResponse
             {
                 IsSupported = true,
-                Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14)),
-                SourceMetadata = sourceMetadata,
+                Precipitation = new RecentObservationSeries
+                {
+                    Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14)),
+                    SourceMetadata = sourceMetadata,
+                },
             });
         var service = CreateRecentObservationsService(dataService);
 
@@ -871,11 +877,14 @@ public class RecentObservationsServiceTests
         var dataService = new Mock<IDataService>();
         SetupEmptyClimateRecords(dataService);
         dataService
-            .Setup(x => x.GetRecentObservations(It.IsAny<Guid>(), DataType.Precipitation, false))
+            .Setup(x => x.GetRecentObservations(It.IsAny<Guid>(), false))
             .ReturnsAsync(new RecentObservationsResponse
             {
                 IsSupported = true,
-                Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14)),
+                Precipitation = new RecentObservationSeries
+                {
+                    Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14)),
+                },
             });
         var service = CreateRecentObservationsService(dataService);
 
@@ -883,8 +892,8 @@ public class RecentObservationsServiceTests
         await service.LoadPrecipitationData(CreateSouthernHemisphereLocation());
         await service.LoadPrecipitationData(CreateSouthernHemisphereLocation(otherLocationId));
 
-        dataService.Verify(x => x.GetRecentObservations(LocationId, DataType.Precipitation, false), Times.Once);
-        dataService.Verify(x => x.GetRecentObservations(otherLocationId, DataType.Precipitation, false), Times.Once);
+        dataService.Verify(x => x.GetRecentObservations(LocationId, false), Times.Once);
+        dataService.Verify(x => x.GetRecentObservations(otherLocationId, false), Times.Once);
         dataService.Verify(
             x => x.GetClimateRecords(
                 LocationId,
@@ -1706,18 +1715,18 @@ public class RecentObservationsServiceTests
         SetupEmptyClimateRecords(dataService);
 
         dataService
-            .Setup(x => x.GetRecentObservations(LocationId, DataType.TempMax, false))
+            .Setup(x => x.GetRecentObservations(LocationId, false))
             .ReturnsAsync(new RecentObservationsResponse
             {
                 IsSupported = true,
-                Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), recentMax),
-            });
-        dataService
-            .Setup(x => x.GetRecentObservations(LocationId, DataType.TempMin, false))
-            .ReturnsAsync(new RecentObservationsResponse
-            {
-                IsSupported = true,
-                Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), recentMin),
+                TempMax = new RecentObservationSeries
+                {
+                    Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), recentMax),
+                },
+                TempMin = new RecentObservationSeries
+                {
+                    Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), recentMin),
+                },
             });
         dataService
             .Setup(x => x.GetClimateRecords(
@@ -1870,15 +1879,18 @@ public class RecentObservationsServiceTests
         SetupEmptyClimateRecords(dataService);
 
         dataService
-            .Setup(x => x.GetRecentObservations(LocationId, DataType.Precipitation, false))
+            .Setup(x => x.GetRecentObservations(LocationId, false))
             .ReturnsAsync(new RecentObservationsResponse
             {
                 IsSupported = true,
-                Records = CreateDailyRecords(
-                    recentStartDate ?? new DateOnly(2025, 7, 1),
-                    recentEndDate ?? new DateOnly(2026, 6, 14),
-                    recentValue ?? (_ => 1d),
-                    includeRecentRecord),
+                Precipitation = new RecentObservationSeries
+                {
+                    Records = CreateDailyRecords(
+                        recentStartDate ?? new DateOnly(2025, 7, 1),
+                        recentEndDate ?? new DateOnly(2026, 6, 14),
+                        recentValue ?? (_ => 1d),
+                        includeRecentRecord),
+                },
             });
 
         if (historicalRecords is not null)
@@ -1909,18 +1921,18 @@ public class RecentObservationsServiceTests
         SetupEmptyClimateRecords(dataService);
 
         dataService
-            .Setup(x => x.GetRecentObservations(LocationId, DataType.TempMax, false))
+            .Setup(x => x.GetRecentObservations(LocationId, false))
             .ReturnsAsync(new RecentObservationsResponse
             {
                 IsSupported = true,
-                Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), _ => 20d, includeMaxRecord),
-            });
-        dataService
-            .Setup(x => x.GetRecentObservations(LocationId, DataType.TempMin, false))
-            .ReturnsAsync(new RecentObservationsResponse
-            {
-                IsSupported = true,
-                Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), _ => 10d, includeMinRecord),
+                TempMax = new RecentObservationSeries
+                {
+                    Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), _ => 20d, includeMaxRecord),
+                },
+                TempMin = new RecentObservationSeries
+                {
+                    Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), _ => 10d, includeMinRecord),
+                },
             });
         dataService
             .Setup(x => x.GetClimateRecords(

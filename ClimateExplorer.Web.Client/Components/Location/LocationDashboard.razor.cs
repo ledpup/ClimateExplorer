@@ -189,7 +189,7 @@ public partial class LocationDashboard
                 await GeneratePrecipitationView();
             }
 
-            var recentObservationsSupport = await DataService!.GetRecentObservations(Location!.Id, DataType.TempMax, isLocationSupported: true);
+            var recentObservationsSupport = await DataService!.GetRecentObservations(Location!.Id, isLocationSupported: true);
             RecentObservationsSupported = recentObservationsSupport.IsSupported || HasDailyClimateRecordsForRecentObservations();
 
             StripeLoadingIndicatorVisible = false;

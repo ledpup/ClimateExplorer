@@ -11,37 +11,47 @@ using static ClimateExplorer.Core.Enums;
 
 internal static class RecentObservationsDataSourceHelpers
 {
-    public static RecentObservationsContext GetContext(
+    /// <summary>
+    /// Resolves the most recent operating station id for a location within a data
+    /// set definition, or <c>null</c> when the location is not mapped to that data
+    /// set or no station is operating as at <paramref name="asAt"/>.
+    /// </summary>
+    public static string GetStationId(
+        DataSetDefinition dataSetDefinition,
         Location location,
-        DataType dataType,
-        DateOnly asAt,
-        IEnumerable<DataSetDefinition> dataSetDefinitions,
-        Guid dataSetDefinitionId,
-        RecentObservationStationSource source)
+        DateOnly asAt)
     {
-        var dataSetDefinition = dataSetDefinitions.SingleOrDefault(x => x.Id == dataSetDefinitionId);
         var dataFileMapping = dataSetDefinition?.DataLocationMapping;
         if (dataFileMapping == null || !dataFileMapping.LocationIdToDataFileMappings.ContainsKey(location.Id))
         {
             return null;
         }
 
-        var measurementDefinition = dataSetDefinition!.MeasurementDefinitions?.SingleOrDefault(x =>
-            x.DataType == dataType &&
-            x.DataResolution == DataResolution.Daily &&
-            x.RowDataType == RowDataType.OneValuePerRow);
-        if (measurementDefinition == null)
-        {
-            return null;
-        }
+        return GetMostRecentOperatingStationId(location.Id, dataFileMapping, asAt);
+    }
 
-        var stationId = GetMostRecentOperatingStationId(location.Id, dataFileMapping, asAt);
+    /// <summary>
+    /// Builds a series context for a data type from a resolved station, or
+    /// <c>null</c> when the data set has no matching daily measurement definition.
+    /// </summary>
+    public static RecentObservationSeriesContext CreateSeriesContext(
+        DataSetDefinition dataSetDefinition,
+        DataType dataType,
+        string stationId)
+    {
         if (stationId == null)
         {
             return null;
         }
 
-        return new RecentObservationsContext(source, stationId, measurementDefinition);
+        var measurementDefinition = dataSetDefinition?.MeasurementDefinitions?.SingleOrDefault(x =>
+            x.DataType == dataType &&
+            x.DataResolution == DataResolution.Daily &&
+            x.RowDataType == RowDataType.OneValuePerRow);
+
+        return measurementDefinition == null
+            ? null
+            : new RecentObservationSeriesContext(stationId, measurementDefinition);
     }
 
     public static bool TryCreateAdjustedDailyRecord(

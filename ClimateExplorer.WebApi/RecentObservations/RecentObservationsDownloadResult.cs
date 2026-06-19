@@ -1,9 +1,10 @@
 namespace ClimateExplorer.WebApi.RecentObservations;
 
-using System.Collections.Generic;
-using ClimateExplorer.Core.Model;
-
+/// <summary>The downloaded records for all available series from a single source.</summary>
 internal sealed record RecentObservationsDownloadResult(
-    List<DataRecord> Records,
-    string SourceUrl,
-    string SourceUrlLabel);
+    RecentObservationSeriesDownload TempMax,
+    RecentObservationSeriesDownload TempMin,
+    RecentObservationSeriesDownload Precipitation)
+{
+    public bool HasAnySeries => TempMax is not null || TempMin is not null || Precipitation is not null;
+}
