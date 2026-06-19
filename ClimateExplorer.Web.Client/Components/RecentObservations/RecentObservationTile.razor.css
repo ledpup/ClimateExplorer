@@ -92,15 +92,17 @@
     min-width: 0;
 }
 
-.recent-observation-primary-value {
+.recent-observation-primary-value,
+.recent-observation-stats dd {
     align-items: baseline;
-    display: inline-flex;
+    display: flex;
+    gap: 0.35rem;
+}
+
+.recent-observation-primary-value {
     flex: 0 0 auto;
     flex-wrap: nowrap;
-    gap: 0.35rem;
     justify-content: flex-end;
-    margin-left: auto;
-    text-align: right;
     white-space: nowrap;
 }
 
@@ -193,23 +195,16 @@
 }
 
 .recent-observation-stats dd {
-    align-items: baseline;
     color: #263a35;
-    display: flex;
     flex-wrap: wrap;
     font-size: 0.92rem;
     font-weight: 650;
-    gap: 0.35rem;
     margin: 0;
     overflow-wrap: anywhere;
 }
 
 .recent-observation-stat-value {
     display: inline-block;
-}
-
-.recent-observation-stat-status {
-    margin-top: 0;
 }
 
 .recent-observation-note {
