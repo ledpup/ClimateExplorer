@@ -11,7 +11,13 @@
     <h3>@Tile.Headline</h3>
     <p class="recent-observation-percentile">@Tile.PercentileSentence</p>
     <div class="recent-observation-primary">
-        <span>@Tile.PrimaryLabel</span>
+        <span class="recent-observation-primary-label">
+            @Tile.PrimaryLabel
+            @if (!string.IsNullOrWhiteSpace(Tile.PrimaryRecordStatusText))
+            {
+                <span class="recent-observation-status status-@StatusClass(Tile.PrimaryRecordStatus)">@Tile.PrimaryRecordStatusText</span>
+            }
+        </span>
         <strong>@Tile.PrimaryValue</strong>
     </div>
     @if (Tile.Stats.Count > 0)
@@ -21,7 +27,13 @@
             {
                 <div>
                     <dt>@stat.Label</dt>
-                    <dd>@stat.Value</dd>
+                    <dd>
+                        <span class="recent-observation-stat-value">@stat.Value</span>
+                        @if (!string.IsNullOrWhiteSpace(stat.RecordStatusText))
+                        {
+                            <span class="recent-observation-status recent-observation-stat-status status-@StatusClass(stat.RecordStatus)">@stat.RecordStatusText</span>
+                        }
+                    </dd>
                 </div>
             }
         </dl>
@@ -65,7 +77,13 @@
             {
                 <div>
                     <dt>@stat.Label</dt>
-                    <dd>@stat.Value</dd>
+                    <dd>
+                        <span class="recent-observation-stat-value">@stat.Value</span>
+                        @if (!string.IsNullOrWhiteSpace(stat.RecordStatusText))
+                        {
+                            <span class="recent-observation-status recent-observation-stat-status status-@StatusClass(stat.RecordStatus)">@stat.RecordStatusText</span>
+                        }
+                    </dd>
                 </div>
             }
         </dl>

@@ -612,13 +612,20 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         {
             if (period.MetricValues.TryGetValue(metric.Key, out var value))
             {
+                var status = GetRecordStatus(value, distributions.GetValueOrDefault(metric.Key));
                 supportingStats.Add(new RecentObservationStatViewModel
                 {
                     Label = singular ? metric.SingularLabel : metric.PluralLabel,
                     Value = metric.Format(value),
+                    RecordStatus = status,
+                    RecordStatusText = FormatCollapsedRecordStatus(status),
                 });
             }
         }
+
+        var primaryStatus = ranking is null
+            ? RecentObservationRecordStatus.None
+            : RecentObservationComparison.DetermineRecordStatus(ranking);
 
         if (ranking is not null)
         {
@@ -643,6 +650,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             PercentileSentence = BuildPercentileSentence(period, domain, historicalValues, ranking),
             PrimaryLabel = domain.PrimaryLabel,
             PrimaryValue = domain.Primary.Format(primaryValue),
+            PrimaryRecordStatus = primaryStatus,
+            PrimaryRecordStatusText = FormatCollapsedRecordStatus(primaryStatus),
             HistoricalMaxLabel = showHistoricalRange ? $"{domain.HistoricalMaxWord} {historicalContext}" : null,
             HistoricalMaxValue = showHistoricalRange ? domain.Primary.Format(ranking!.HistoricalMax) : null,
             HistoricalMaxOccurred = showHistoricalRange ? FormatHistoricalOccurrence(historicalValues.MaxValue) : null,
@@ -662,6 +671,27 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             CanShowPercentile = historicalValues.CanShowPercentile,
             AvailableObservationCount = period.Completeness.AvailableObservationCount,
             ExpectedObservationCount = period.Completeness.ExpectedObservationCount,
+        };
+    }
+
+    private static RecentObservationRecordStatus GetRecordStatus(double currentValue, HistoricalValues? distribution)
+    {
+        var ranking = distribution is null
+            ? null
+            : RecentObservationComparison.Rank(currentValue, distribution.Values);
+
+        return ranking is null
+            ? RecentObservationRecordStatus.None
+            : RecentObservationComparison.DetermineRecordStatus(ranking);
+    }
+
+    private static string? FormatCollapsedRecordStatus(RecentObservationRecordStatus status)
+    {
+        return status switch
+        {
+            RecentObservationRecordStatus.NewRecord => "NEW RECORD",
+            RecentObservationRecordStatus.EqualRecord => "EQUAL RECORD",
+            _ => null,
         };
     }
 

@@ -1,5 +1,7 @@
 namespace ClimateExplorer.Web.Client.UiModel;
 
+using ClimateExplorer.Core.Calculators;
+
 public sealed record RecentObservationTileViewModel
 {
     public RecentObservationPeriodKind PeriodKind { get; init; }
@@ -12,6 +14,8 @@ public sealed record RecentObservationTileViewModel
     public string PercentileSentence { get; init; } = string.Empty;
     public string PrimaryLabel { get; init; } = string.Empty;
     public string PrimaryValue { get; init; } = string.Empty;
+    public RecentObservationRecordStatus PrimaryRecordStatus { get; init; }
+    public string? PrimaryRecordStatusText { get; init; }
     public string? HistoricalMaxLabel { get; init; }
     public string? HistoricalMaxValue { get; init; }
     public string? HistoricalMaxOccurred { get; init; }
@@ -65,6 +69,8 @@ public sealed record RecentObservationTileViewModel
             CanShowHistoricalRange = false,
             CanShowRank = false,
             CanShowPercentile = false,
+            PrimaryRecordStatus = RecentObservationRecordStatus.None,
+            PrimaryRecordStatusText = null,
             Tone = RecentObservationTileTone.Unavailable,
             Note = note,
             MetricGroups = StripComparisons(MetricGroups),

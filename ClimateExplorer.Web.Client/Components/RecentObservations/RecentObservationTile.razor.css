@@ -84,10 +84,36 @@
     padding-top: 0.75rem;
 }
 
-.recent-observation-primary span {
+.recent-observation-primary-label {
+    align-items: center;
     color: #596f6a;
+    display: inline-flex;
+    flex-wrap: wrap;
     font-size: 0.82rem;
     font-weight: 700;
+    gap: 0.35rem;
+}
+
+.recent-observation-status {
+    border-radius: 999px;
+    display: inline-block;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.035em;
+    line-height: 1;
+    padding: 0.18rem 0.4rem;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.recent-observation-status.status-new {
+    background: #7a3f1e;
+    color: #fff7ef;
+}
+
+.recent-observation-status.status-equal {
+    background: #4d5f73;
+    color: #f3f7fb;
 }
 
 .recent-observation-primary strong {
@@ -162,6 +188,14 @@
     font-weight: 650;
     margin: 0;
     overflow-wrap: anywhere;
+}
+
+.recent-observation-stat-value {
+    display: block;
+}
+
+.recent-observation-stat-status {
+    margin-top: 0.22rem;
 }
 
 .recent-observation-note {
