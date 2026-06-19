@@ -13,6 +13,12 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
     private readonly ILogger<RecentObservationsDataProvider>? logger;
     private readonly Dictionary<RecentObservationsDataCacheKey, Task<RecentObservationsDataSet>> cache = [];
 
+    // The recent-observations endpoint returns all series (max, min, precipitation)
+    // for a location in one call, so share that fetch across both tabs rather than
+    // requesting per data type. This avoids re-downloading the GHCNd station CSV
+    // (and re-fetching the BOM obs files) once per metric.
+    private readonly Dictionary<Guid, Task<RecentObservationsResponse>> recentResponseCache = [];
+
     public RecentObservationsDataProvider(
         IDataService dataService,
         ILogger<RecentObservationsDataProvider>? logger = null)
@@ -66,24 +72,25 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
 
     private async Task<RecentObservationsDataSet> FetchTemperatureData(Guid locationId)
     {
-        var recentMaxTask = dataService.GetRecentObservations(locationId, DataType.TempMax);
-        var recentMinTask = dataService.GetRecentObservations(locationId, DataType.TempMin);
+        var recentTask = GetRecentObservations(locationId);
         var historicalMaxTask = GetHistoricalRecords(locationId, DataType.TempMax, DataAdjustment.Unadjusted);
         var historicalMinTask = GetHistoricalRecords(locationId, DataType.TempMin, DataAdjustment.Unadjusted);
 
-        await Task.WhenAll(recentMaxTask, recentMinTask, historicalMaxTask, historicalMinTask);
+        await Task.WhenAll(recentTask, historicalMaxTask, historicalMinTask);
 
-        var recentMaxResponse = await recentMaxTask;
-        var recentMinResponse = await recentMinTask;
+        var recentResponse = await recentTask;
         var historicalMaxResponse = await historicalMaxTask;
         var historicalMinResponse = await historicalMinTask;
+
+        var recentMaxRecords = recentResponse.TempMax?.Records ?? [];
+        var recentMinRecords = recentResponse.TempMin?.Records ?? [];
 
         var hasHistoricalMaxMin = historicalMaxResponse.Records.Count > 0 && historicalMinResponse.Records.Count > 0;
         var meanRecords = hasHistoricalMaxMin
             ? new List<DataRecord>()
             : (await GetHistoricalRecords(locationId, DataType.TempMean, DataAdjustment.Unadjusted)).Records;
 
-        if ((!recentMaxResponse.IsSupported || !recentMinResponse.IsSupported) &&
+        if (!recentResponse.IsSupported &&
             !hasHistoricalMaxMin &&
             meanRecords.Count == 0)
         {
@@ -91,27 +98,62 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
         }
 
         return RecentObservationsDataSet.Temperature(
-            MergeDailyDataRecords(historicalMaxResponse.Records, recentMaxResponse.Records),
-            MergeDailyDataRecords(historicalMinResponse.Records, recentMinResponse.Records),
+            MergeDailyDataRecords(historicalMaxResponse.Records, recentMaxRecords),
+            MergeDailyDataRecords(historicalMinResponse.Records, recentMinRecords),
             MergeDailyDataRecords(meanRecords, Array.Empty<DataRecord>()),
-            hasHistoricalMaxMin);
+            hasHistoricalMaxMin,
+            CreateSourceMetadata(recentResponse.TempMax?.SourceMetadata, recentResponse.TempMin?.SourceMetadata));
     }
 
     private async Task<RecentObservationsDataSet> FetchPrecipitationData(Guid locationId)
     {
-        var recentTask = dataService.GetRecentObservations(locationId, DataType.Precipitation);
+        var recentTask = GetRecentObservations(locationId);
         var historicalTask = GetHistoricalRecords(locationId, DataType.Precipitation, null);
         await Task.WhenAll(recentTask, historicalTask);
 
         var recentResponse = await recentTask;
         var historicalResponse = await historicalTask;
 
-        if (!recentResponse.IsSupported && historicalResponse.Records.Count == 0)
+        var recentPrecipitation = recentResponse.Precipitation;
+
+        if (recentPrecipitation is null && historicalResponse.Records.Count == 0)
         {
             return RecentObservationsDataSet.UnsupportedPrecipitation();
         }
 
-        return RecentObservationsDataSet.Precipitation(MergeDailyDataRecords(historicalResponse.Records, recentResponse.Records));
+        return RecentObservationsDataSet.Precipitation(
+            MergeDailyDataRecords(historicalResponse.Records, recentPrecipitation?.Records ?? []),
+            CreateSourceMetadata(recentPrecipitation?.SourceMetadata));
+    }
+
+    private Task<RecentObservationsResponse> GetRecentObservations(Guid locationId)
+    {
+        if (recentResponseCache.TryGetValue(locationId, out var cached))
+        {
+            logger?.LogDebug("Using cached recent observations response for location {LocationId}", locationId);
+            return cached;
+        }
+
+        var task = dataService.GetRecentObservations(locationId);
+        recentResponseCache[locationId] = task;
+        return AwaitAndEvictOnFailure(locationId, task);
+    }
+
+    private async Task<RecentObservationsResponse> AwaitAndEvictOnFailure(Guid locationId, Task<RecentObservationsResponse> task)
+    {
+        try
+        {
+            return await task;
+        }
+        catch
+        {
+            if (recentResponseCache.TryGetValue(locationId, out var cachedTask) && ReferenceEquals(cachedTask, task))
+            {
+                recentResponseCache.Remove(locationId);
+            }
+
+            throw;
+        }
     }
 
     private async Task<ClimateRecordsResponse> GetHistoricalRecords(
@@ -169,6 +211,11 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
         }
 
         yield return DataAdjustment.Unadjusted;
+    }
+
+    private static IReadOnlyList<RecentObservationSourceMetadata> CreateSourceMetadata(params RecentObservationSourceMetadata?[] sourceMetadata)
+    {
+        return [.. sourceMetadata.Where(x => x is not null).Select(x => x!)];
     }
 
     private readonly record struct RecentObservationsDataCacheKey(Guid LocationId, RecentObservationsTab Tab);

@@ -1,5 +1,7 @@
 namespace ClimateExplorer.Web.Client.UiModel;
 
+using ClimateExplorer.Core.Model;
+
 public sealed record RecentObservationsTabResult
 {
     public bool IsSupported { get; init; } = true;
@@ -9,6 +11,7 @@ public sealed record RecentObservationsTabResult
     public DateOnly? MinimumReferenceDate { get; init; }
     public DateOnly? MaximumReferenceDate { get; init; }
     public string? ReferenceDateNote { get; init; }
+    public IReadOnlyList<RecentObservationSourceMetadata> SourceMetadata { get; init; } = [];
     public ComparisonEndMode ComparisonEndMode { get; init; } = ComparisonEndMode.FullDataset;
     public List<RecentObservationTileViewModel> Tiles { get; init; } = [];
 

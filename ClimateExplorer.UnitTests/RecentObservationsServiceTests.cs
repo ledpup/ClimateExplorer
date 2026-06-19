@@ -756,11 +756,14 @@ public class RecentObservationsServiceTests
         var dataService = new Mock<IDataService>();
         SetupEmptyClimateRecords(dataService);
         dataService
-            .Setup(x => x.GetRecentObservations(LocationId, DataType.Precipitation, false))
+            .Setup(x => x.GetRecentObservations(LocationId, false))
             .ReturnsAsync(new RecentObservationsResponse
             {
                 IsSupported = true,
-                Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14)),
+                Precipitation = new RecentObservationSeries
+                {
+                    Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14)),
+                },
             });
         var service = CreateRecentObservationsService(dataService);
 
@@ -790,7 +793,7 @@ public class RecentObservationsServiceTests
             });
 
         Assert.AreEqual(new DateOnly(2026, 6, 7), recalculated.ReferenceDate);
-        dataService.Verify(x => x.GetRecentObservations(LocationId, DataType.Precipitation, false), Times.Once);
+        dataService.Verify(x => x.GetRecentObservations(LocationId, false), Times.Once);
         dataService.Verify(
             x => x.GetClimateRecords(
                 LocationId,
@@ -806,17 +809,82 @@ public class RecentObservationsServiceTests
     }
 
     [TestMethod]
+    public async Task CalculatePrecipitationRecordsPreservesSourceMetadataAcrossDifferentOptions()
+    {
+        var sourceMetadata = new RecentObservationSourceMetadata
+        {
+            SourceCode = "GHCNd",
+            SourceName = "Global Historical Climatology Network Daily",
+            StationId = "ASN00070014",
+            SourceUrl = "https://www.ncei.noaa.gov/data/global-historical-climatology-network-daily/access/ASN00070014.csv",
+            SourceUrlLabel = "Precipitation station ASN00070014, CSV",
+            RetrievedAtUtc = new DateTimeOffset(2026, 6, 19, 3, 42, 0, TimeSpan.Zero),
+        };
+        var location = CreateSouthernHemisphereLocation();
+        var dataService = new Mock<IDataService>();
+        SetupEmptyClimateRecords(dataService);
+        dataService
+            .Setup(x => x.GetRecentObservations(LocationId, false))
+            .ReturnsAsync(new RecentObservationsResponse
+            {
+                IsSupported = true,
+                Precipitation = new RecentObservationSeries
+                {
+                    Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14)),
+                    SourceMetadata = sourceMetadata,
+                },
+            });
+        var service = CreateRecentObservationsService(dataService);
+
+        var dataSet = await service.LoadPrecipitationData(location);
+        var result = service.Calculate(
+            location,
+            dataSet,
+            new RecentObservationsOptions
+            {
+                ReferenceDate = new DateOnly(2026, 6, 14),
+                ComparisonEndMode = ComparisonEndMode.FullDataset,
+                PreviousDayCount = 1,
+                PreviousMonthCount = 0,
+                PreviousSeasonCount = 0,
+            });
+        var recalculated = service.Calculate(
+            location,
+            dataSet,
+            new RecentObservationsOptions
+            {
+                ReferenceDate = new DateOnly(2026, 6, 7),
+                ComparisonEndMode = ComparisonEndMode.ReferenceDate,
+                PreviousDayCount = 2,
+                PreviousMonthCount = 0,
+                PreviousSeasonCount = 0,
+            });
+        var thresholded = recalculated.ApplyCompletenessThreshold(RecentObservationCompletenessThreshold.Default);
+
+        Assert.AreEqual(sourceMetadata, result.SourceMetadata.Single());
+        Assert.AreEqual(sourceMetadata, recalculated.SourceMetadata.Single());
+        Assert.AreEqual(sourceMetadata, thresholded.SourceMetadata.Single());
+        Assert.AreEqual(new DateOnly(2026, 6, 14), result.ReferenceDate);
+        Assert.AreEqual(ComparisonEndMode.FullDataset, result.ComparisonEndMode);
+        Assert.AreEqual(new DateOnly(2026, 6, 7), recalculated.ReferenceDate);
+        Assert.AreEqual(ComparisonEndMode.ReferenceDate, recalculated.ComparisonEndMode);
+    }
+
+    [TestMethod]
     public async Task LoadPrecipitationDataCachesByLocation()
     {
         var otherLocationId = Guid.Parse("46b814ed-6e56-47e2-92ca-097526b84d4d");
         var dataService = new Mock<IDataService>();
         SetupEmptyClimateRecords(dataService);
         dataService
-            .Setup(x => x.GetRecentObservations(It.IsAny<Guid>(), DataType.Precipitation, false))
+            .Setup(x => x.GetRecentObservations(It.IsAny<Guid>(), false))
             .ReturnsAsync(new RecentObservationsResponse
             {
                 IsSupported = true,
-                Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14)),
+                Precipitation = new RecentObservationSeries
+                {
+                    Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14)),
+                },
             });
         var service = CreateRecentObservationsService(dataService);
 
@@ -824,8 +892,8 @@ public class RecentObservationsServiceTests
         await service.LoadPrecipitationData(CreateSouthernHemisphereLocation());
         await service.LoadPrecipitationData(CreateSouthernHemisphereLocation(otherLocationId));
 
-        dataService.Verify(x => x.GetRecentObservations(LocationId, DataType.Precipitation, false), Times.Once);
-        dataService.Verify(x => x.GetRecentObservations(otherLocationId, DataType.Precipitation, false), Times.Once);
+        dataService.Verify(x => x.GetRecentObservations(LocationId, false), Times.Once);
+        dataService.Verify(x => x.GetRecentObservations(otherLocationId, false), Times.Once);
         dataService.Verify(
             x => x.GetClimateRecords(
                 LocationId,
@@ -1001,6 +1069,200 @@ public class RecentObservationsServiceTests
         CollectionAssert.AreEqual(
             new[] { "Average max temp", "Average min temp" },
             latestSevenDays.SupportingStats.Select(x => x.Label).ToArray());
+    }
+
+    [TestMethod]
+    public async Task CompletenessThresholdSuppressesSupportingStatRecordsBelowThreshold()
+    {
+        // Max/min temp are individually new records on the days that are present, but
+        // completeness for the period is below threshold (5 of 7 days), so the tile
+        // must not claim a new record for any metric, including the supporting stats.
+        var historicalMean = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14), valueOffset: 10d);
+        var historicalMax = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14));
+        var historicalMin = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14));
+        var service = CreateTemperatureService(
+            historicalMean,
+            includeMaxRecord: date => date != new DateOnly(2026, 6, 9),
+            includeMinRecord: date => date != new DateOnly(2026, 6, 12),
+            historicalMaxRecords: historicalMax,
+            historicalMinRecords: historicalMin,
+            recentMax: _ => 100d,
+            recentMin: _ => -50d);
+
+        var result = await service.GetTemperatureRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var baseLatestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
+
+        // Sanity check: without completeness suppression, max and min would both show
+        // as new records (this is the bug as originally reported).
+        Assert.IsTrue(baseLatestSevenDays.HasComparison);
+        Assert.IsNotEmpty(baseLatestSevenDays.SupportingStats);
+        Assert.IsTrue(baseLatestSevenDays.SupportingStats.All(x => x.RecordStatus == RecentObservationRecordStatus.NewRecord));
+
+        var suppressed = baseLatestSevenDays.ApplyCompletenessThreshold(RecentObservationCompletenessThreshold.Default);
+
+        Assert.IsFalse(suppressed.HasComparison);
+        Assert.IsTrue(suppressed.SupportingStats.All(x => x.RecordStatus == RecentObservationRecordStatus.None));
+        Assert.IsTrue(suppressed.SupportingStats.All(x => x.RecordStatusText is null));
+        Assert.IsTrue(suppressed.MetricGroups
+            .SelectMany(group => group.Metrics)
+            .All(metric => metric.RecordStatus == RecentObservationRecordStatus.None && metric.RecordStatusText is null));
+    }
+
+    [TestMethod]
+    public async Task CompletenessThresholdPreservesSupportingStatRecordsAboveThreshold()
+    {
+        // Same record-breaking max/min values as the suppression test above, but with
+        // full completeness, so the new-record lozenges must still show correctly.
+        var historicalMean = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14), valueOffset: 10d);
+        var historicalMax = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14));
+        var historicalMin = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14));
+        var service = CreateTemperatureService(
+            historicalMean,
+            historicalMaxRecords: historicalMax,
+            historicalMinRecords: historicalMin,
+            recentMax: _ => 100d,
+            recentMin: _ => -50d);
+
+        var result = await service.GetTemperatureRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var latestSevenDays = result
+            .ApplyCompletenessThreshold(RecentObservationCompletenessThreshold.Default)
+            .Tiles
+            .Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
+
+        Assert.AreEqual(1f, latestSevenDays.Completeness);
+        Assert.IsTrue(latestSevenDays.HasComparison);
+        Assert.IsNotEmpty(latestSevenDays.SupportingStats);
+        Assert.IsTrue(latestSevenDays.SupportingStats.All(x => x.RecordStatus == RecentObservationRecordStatus.NewRecord));
+        Assert.IsTrue(latestSevenDays.SupportingStats.All(x => x.RecordStatusText == "NEW RECORD"));
+        Assert.IsTrue(latestSevenDays.MetricGroups
+            .Single(group => group.Key == "period")
+            .Metrics
+            .Where(metric => metric.Label != "Mean temperature")
+            .All(metric => metric.RecordStatus == RecentObservationRecordStatus.NewRecord));
+    }
+
+    [TestMethod]
+    public void ApplyCompletenessThresholdSuppressesRecordStatusOnEveryMetricBelowThreshold()
+    {
+        var tile = CreateTileWithRecordStatuses(availableObservationCount: 5, expectedObservationCount: 7);
+
+        var suppressed = tile.ApplyCompletenessThreshold(RecentObservationCompletenessThreshold.Default);
+
+        Assert.IsFalse(suppressed.HasComparison);
+        Assert.AreEqual(RecentObservationRecordStatus.None, suppressed.PrimaryRecordStatus);
+        Assert.IsNull(suppressed.PrimaryRecordStatusText);
+        Assert.IsTrue(suppressed.Stats.All(x => x.RecordStatus == RecentObservationRecordStatus.None && x.RecordStatusText is null));
+        Assert.IsTrue(suppressed.SupportingStats.All(x => x.RecordStatus == RecentObservationRecordStatus.None && x.RecordStatusText is null));
+        Assert.IsTrue(suppressed.MetricGroups
+            .SelectMany(group => group.Metrics)
+            .All(metric =>
+                metric.RecordStatus == RecentObservationRecordStatus.None &&
+                metric.RecordStatusText is null &&
+                metric.RankText is null &&
+                metric.RecordHigh is null &&
+                metric.RecordLow is null));
+    }
+
+    [TestMethod]
+    public void ApplyCompletenessThresholdPreservesRecordStatusOnEveryMetricAboveThreshold()
+    {
+        var tile = CreateTileWithRecordStatuses(availableObservationCount: 7, expectedObservationCount: 7);
+
+        var allowed = tile.ApplyCompletenessThreshold(RecentObservationCompletenessThreshold.Default);
+
+        Assert.IsTrue(allowed.HasComparison);
+        Assert.AreEqual(RecentObservationRecordStatus.NewRecord, allowed.PrimaryRecordStatus);
+        Assert.AreEqual("New record", allowed.PrimaryRecordStatusText);
+        Assert.IsTrue(allowed.Stats.All(x => x.RecordStatus == RecentObservationRecordStatus.NewRecord));
+        Assert.IsTrue(allowed.SupportingStats.All(x => x.RecordStatus is RecentObservationRecordStatus.NewRecord or RecentObservationRecordStatus.EqualRecord));
+        Assert.IsTrue(allowed.MetricGroups
+            .SelectMany(group => group.Metrics)
+            .All(metric => metric.RecordStatus is RecentObservationRecordStatus.NewRecord or RecentObservationRecordStatus.EqualRecord));
+    }
+
+    private static RecentObservationTileViewModel CreateTileWithRecordStatuses(int availableObservationCount, int expectedObservationCount)
+    {
+        return new RecentObservationTileViewModel
+        {
+            PeriodKind = RecentObservationPeriodKind.LatestSevenDays,
+            PeriodTitle = "Last 7 days",
+            HasComparison = true,
+            PrimaryLabel = "Mean temperature",
+            PrimaryValue = "20.0°C",
+            PrimaryRecordStatus = RecentObservationRecordStatus.NewRecord,
+            PrimaryRecordStatusText = "New record",
+            Stats =
+            [
+                new RecentObservationStatViewModel
+                {
+                    Label = "Historical average",
+                    Value = "15.0°C",
+                    RecordStatus = RecentObservationRecordStatus.NewRecord,
+                    RecordStatusText = "New record",
+                },
+            ],
+            SupportingStats =
+            [
+                new RecentObservationStatViewModel
+                {
+                    Label = "Max temp",
+                    Value = "30.0°C",
+                    RecordStatus = RecentObservationRecordStatus.NewRecord,
+                    RecordStatusText = "New record",
+                },
+                new RecentObservationStatViewModel
+                {
+                    Label = "Min temp",
+                    Value = "5.0°C",
+                    RecordStatus = RecentObservationRecordStatus.EqualRecord,
+                    RecordStatusText = "Equal record",
+                },
+            ],
+            MetricGroups =
+            [
+                new RecentObservationMetricGroupViewModel
+                {
+                    Key = "period",
+                    Title = "Period",
+                    Metrics =
+                    [
+                        new RecentObservationMetricViewModel
+                        {
+                            Label = "Average maximum temperature",
+                            CurrentValue = "30.0°C",
+                            RecordStatus = RecentObservationRecordStatus.NewRecord,
+                            RecordStatusText = "New record",
+                            RecordHigh = new RecentObservationMetricRecordViewModel { Label = "Record high", Value = "25.0°C", Year = "2025" },
+                        },
+                    ],
+                },
+                new RecentObservationMetricGroupViewModel
+                {
+                    Key = "daily-extremes",
+                    Title = "Daily extremes",
+                    Metrics =
+                    [
+                        new RecentObservationMetricViewModel
+                        {
+                            Label = "Highest daily maximum",
+                            CurrentValue = "35.0°C",
+                            RecordStatus = RecentObservationRecordStatus.EqualRecord,
+                            RecordStatusText = "Equal record",
+                        },
+                    ],
+                },
+            ],
+            AvailableObservationCount = availableObservationCount,
+            ExpectedObservationCount = expectedObservationCount,
+        };
     }
 
     [TestMethod]
@@ -1647,18 +1909,18 @@ public class RecentObservationsServiceTests
         SetupEmptyClimateRecords(dataService);
 
         dataService
-            .Setup(x => x.GetRecentObservations(LocationId, DataType.TempMax, false))
+            .Setup(x => x.GetRecentObservations(LocationId, false))
             .ReturnsAsync(new RecentObservationsResponse
             {
                 IsSupported = true,
-                Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), recentMax),
-            });
-        dataService
-            .Setup(x => x.GetRecentObservations(LocationId, DataType.TempMin, false))
-            .ReturnsAsync(new RecentObservationsResponse
-            {
-                IsSupported = true,
-                Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), recentMin),
+                TempMax = new RecentObservationSeries
+                {
+                    Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), recentMax),
+                },
+                TempMin = new RecentObservationSeries
+                {
+                    Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), recentMin),
+                },
             });
         dataService
             .Setup(x => x.GetClimateRecords(
@@ -1811,15 +2073,18 @@ public class RecentObservationsServiceTests
         SetupEmptyClimateRecords(dataService);
 
         dataService
-            .Setup(x => x.GetRecentObservations(LocationId, DataType.Precipitation, false))
+            .Setup(x => x.GetRecentObservations(LocationId, false))
             .ReturnsAsync(new RecentObservationsResponse
             {
                 IsSupported = true,
-                Records = CreateDailyRecords(
-                    recentStartDate ?? new DateOnly(2025, 7, 1),
-                    recentEndDate ?? new DateOnly(2026, 6, 14),
-                    recentValue ?? (_ => 1d),
-                    includeRecentRecord),
+                Precipitation = new RecentObservationSeries
+                {
+                    Records = CreateDailyRecords(
+                        recentStartDate ?? new DateOnly(2025, 7, 1),
+                        recentEndDate ?? new DateOnly(2026, 6, 14),
+                        recentValue ?? (_ => 1d),
+                        includeRecentRecord),
+                },
             });
 
         if (historicalRecords is not null)
@@ -1844,24 +2109,28 @@ public class RecentObservationsServiceTests
     private static RecentObservationsService CreateTemperatureService(
         List<DataRecord> historicalRecords,
         Func<DateOnly, bool>? includeMaxRecord = null,
-        Func<DateOnly, bool>? includeMinRecord = null)
+        Func<DateOnly, bool>? includeMinRecord = null,
+        List<DataRecord>? historicalMaxRecords = null,
+        List<DataRecord>? historicalMinRecords = null,
+        Func<DateOnly, double>? recentMax = null,
+        Func<DateOnly, double>? recentMin = null)
     {
         var dataService = new Mock<IDataService>();
         SetupEmptyClimateRecords(dataService);
 
         dataService
-            .Setup(x => x.GetRecentObservations(LocationId, DataType.TempMax, false))
+            .Setup(x => x.GetRecentObservations(LocationId, false))
             .ReturnsAsync(new RecentObservationsResponse
             {
                 IsSupported = true,
-                Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), _ => 20d, includeMaxRecord),
-            });
-        dataService
-            .Setup(x => x.GetRecentObservations(LocationId, DataType.TempMin, false))
-            .ReturnsAsync(new RecentObservationsResponse
-            {
-                IsSupported = true,
-                Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), _ => 10d, includeMinRecord),
+                TempMax = new RecentObservationSeries
+                {
+                    Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), recentMax ?? (_ => 20d), includeMaxRecord),
+                },
+                TempMin = new RecentObservationSeries
+                {
+                    Records = CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), recentMin ?? (_ => 10d), includeMinRecord),
+                },
             });
         dataService
             .Setup(x => x.GetClimateRecords(
@@ -1875,6 +2144,38 @@ public class RecentObservationsServiceTests
                 false,
                 It.IsAny<int?>()))
             .ReturnsAsync(CreateClimateRecordsResponse(DataType.TempMean, DataAdjustment.Unadjusted, historicalRecords));
+
+        if (historicalMaxRecords is not null)
+        {
+            dataService
+                .Setup(x => x.GetClimateRecords(
+                    LocationId,
+                    DataType.TempMax,
+                    DataAdjustment.Unadjusted,
+                    It.IsAny<bool>(),
+                    It.IsAny<int?>(),
+                    It.IsAny<int?>(),
+                    It.IsAny<int?>(),
+                    false,
+                    It.IsAny<int?>()))
+                .ReturnsAsync(CreateClimateRecordsResponse(DataType.TempMax, DataAdjustment.Unadjusted, historicalMaxRecords));
+        }
+
+        if (historicalMinRecords is not null)
+        {
+            dataService
+                .Setup(x => x.GetClimateRecords(
+                    LocationId,
+                    DataType.TempMin,
+                    DataAdjustment.Unadjusted,
+                    It.IsAny<bool>(),
+                    It.IsAny<int?>(),
+                    It.IsAny<int?>(),
+                    It.IsAny<int?>(),
+                    false,
+                    It.IsAny<int?>()))
+                .ReturnsAsync(CreateClimateRecordsResponse(DataType.TempMin, DataAdjustment.Unadjusted, historicalMinRecords));
+        }
 
         return CreateRecentObservationsService(dataService);
     }

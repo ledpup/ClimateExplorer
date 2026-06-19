@@ -126,6 +126,19 @@
     font-weight: 700;
 }
 
+.recent-observations-notes {
+    overflow-wrap: anywhere;
+}
+
+.recent-observations-source-link {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.recent-observations-retrieval-entry {
+    display: inline;
+}
+
 .recent-observations-state {
     align-items: center;
     background: #f5f8f7;
@@ -200,6 +213,11 @@
     .recent-observations-state {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .recent-observations-retrieval-entry {
+        display: block;
+        margin-top: 0.25rem;
     }
 
     .recent-observations-retry {

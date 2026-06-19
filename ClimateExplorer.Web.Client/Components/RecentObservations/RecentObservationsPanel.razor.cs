@@ -55,6 +55,11 @@ public partial class RecentObservationsPanel
     private bool IsAddEarlierDayDisabled => !periodSelection.CanAddEarlierDay(GetAvailableOffsets(RecentObservationPeriodKind.Daily));
     private bool IsAddEarlierMonthDisabled => !periodSelection.CanAddEarlierMonth(GetAvailableOffsets(RecentObservationPeriodKind.PreviousMonth));
     private bool IsAddEarlierSeasonDisabled => !periodSelection.CanAddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.PreviousSeason));
+    private IReadOnlyList<RecentObservationSourceMetadata> CurrentSourceMetadata => CurrentState.Result?.SourceMetadata ?? [];
+    private RecentObservationSourceMetadata? ObservationSourceMetadata => CurrentSourceMetadata
+        .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.SourceName) && !string.IsNullOrWhiteSpace(x.StationId));
+    private IReadOnlyList<RecentObservationSourceMetadata> CurrentRetrievalMetadata =>
+        RecentObservationRetrievalMetadataSelector.Select(CurrentSourceMetadata);
 
     protected override async Task OnParametersSetAsync()
     {
@@ -286,6 +291,18 @@ public partial class RecentObservationsPanel
     private string FormatDateLong(DateOnly? date)
     {
         return date?.ToString("yyyy MMMM dd", CultureInfo.InvariantCulture) ?? string.Empty;
+    }
+
+    private string FormatUtcTimestamp(DateTimeOffset? timestamp)
+    {
+        return timestamp?.ToUniversalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) ?? string.Empty;
+    }
+
+    private string FormatSourceUrlLabel(RecentObservationSourceMetadata metadata)
+    {
+        return string.IsNullOrWhiteSpace(metadata.SourceUrlLabel)
+            ? metadata.SourceUrl ?? string.Empty
+            : metadata.SourceUrlLabel;
     }
 
     private RecentObservationsTabState GetState(RecentObservationsTab tab)

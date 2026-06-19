@@ -15,6 +15,7 @@ public sealed class RecentObservationsDataSet
         IReadOnlyList<DataRecord>? temperatureMinRecords = null,
         IReadOnlyList<DataRecord>? temperatureMeanRecords = null,
         IReadOnlyList<DataRecord>? precipitationRecords = null,
+        IReadOnlyList<RecentObservationSourceMetadata>? sourceMetadata = null,
         bool hasHistoricalTemperatureMaxMin = false)
     {
         Tab = tab;
@@ -26,6 +27,7 @@ public sealed class RecentObservationsDataSet
         TemperatureMinRecords = temperatureMinRecords ?? [];
         TemperatureMeanRecords = temperatureMeanRecords ?? [];
         PrecipitationRecords = precipitationRecords ?? [];
+        SourceMetadata = sourceMetadata ?? [];
         HasHistoricalTemperatureMaxMin = hasHistoricalTemperatureMaxMin;
     }
 
@@ -39,13 +41,15 @@ public sealed class RecentObservationsDataSet
     internal IReadOnlyList<DataRecord> TemperatureMinRecords { get; }
     internal IReadOnlyList<DataRecord> TemperatureMeanRecords { get; }
     internal IReadOnlyList<DataRecord> PrecipitationRecords { get; }
+    internal IReadOnlyList<RecentObservationSourceMetadata> SourceMetadata { get; }
     internal bool HasHistoricalTemperatureMaxMin { get; }
 
     internal static RecentObservationsDataSet Temperature(
         IReadOnlyList<DataRecord> maxRecords,
         IReadOnlyList<DataRecord> minRecords,
         IReadOnlyList<DataRecord> meanRecords,
-        bool hasHistoricalMaxMin)
+        bool hasHistoricalMaxMin,
+        IReadOnlyList<RecentObservationSourceMetadata>? sourceMetadata = null)
     {
         return new RecentObservationsDataSet(
             RecentObservationsTab.Temperature,
@@ -56,6 +60,7 @@ public sealed class RecentObservationsDataSet
             temperatureMaxRecords: maxRecords,
             temperatureMinRecords: minRecords,
             temperatureMeanRecords: meanRecords,
+            sourceMetadata: sourceMetadata,
             hasHistoricalTemperatureMaxMin: hasHistoricalMaxMin);
     }
 
@@ -69,7 +74,9 @@ public sealed class RecentObservationsDataSet
             noPeriodsMessage: "No recent temperature observation periods can be calculated yet.");
     }
 
-    internal static RecentObservationsDataSet Precipitation(IReadOnlyList<DataRecord> records)
+    internal static RecentObservationsDataSet Precipitation(
+        IReadOnlyList<DataRecord> records,
+        IReadOnlyList<RecentObservationSourceMetadata>? sourceMetadata = null)
     {
         return new RecentObservationsDataSet(
             RecentObservationsTab.Precipitation,
@@ -77,7 +84,8 @@ public sealed class RecentObservationsDataSet
             unsupportedMessage: "Recent precipitation observations are not available for this location.",
             emptyMessage: "No recent precipitation observations are available yet.",
             noPeriodsMessage: "No recent precipitation observation periods can be calculated yet.",
-            precipitationRecords: records);
+            precipitationRecords: records,
+            sourceMetadata: sourceMetadata);
     }
 
     internal static RecentObservationsDataSet UnsupportedPrecipitation()

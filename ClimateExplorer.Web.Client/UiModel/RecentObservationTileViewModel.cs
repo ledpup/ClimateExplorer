@@ -73,8 +73,20 @@ public sealed record RecentObservationTileViewModel
             PrimaryRecordStatusText = null,
             Tone = RecentObservationTileTone.Unavailable,
             Note = note,
+            Stats = StripRecordStatus(Stats),
+            SupportingStats = StripRecordStatus(SupportingStats),
             MetricGroups = StripComparisons(MetricGroups),
         };
+    }
+
+    private static List<RecentObservationStatViewModel> StripRecordStatus(
+        IReadOnlyList<RecentObservationStatViewModel> stats)
+    {
+        return [.. stats.Select(stat => stat with
+        {
+            RecordStatus = RecentObservationRecordStatus.None,
+            RecordStatusText = null,
+        })];
     }
 
     private static IReadOnlyList<RecentObservationMetricGroupViewModel> StripComparisons(

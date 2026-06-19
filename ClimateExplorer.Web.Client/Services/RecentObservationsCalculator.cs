@@ -29,6 +29,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             {
                 IsSupported = false,
                 EmptyMessage = dataSet.UnsupportedMessage,
+                SourceMetadata = dataSet.SourceMetadata,
                 ComparisonEndMode = options.ComparisonEndMode,
             };
         }
@@ -65,6 +66,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             return new RecentObservationsTabResult
             {
                 EmptyMessage = dataSet.EmptyMessage,
+                SourceMetadata = dataSet.SourceMetadata,
                 ComparisonEndMode = options.ComparisonEndMode,
             };
         }
@@ -81,7 +83,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             options.PreviousMonthCount,
             options.PreviousSeasonCount,
             dataSet.NoPeriodsMessage,
-            dataSet.EmptyMessage);
+            dataSet.EmptyMessage,
+            dataSet.SourceMetadata);
     }
 
     private RecentObservationsTabResult CalculatePrecipitation(
@@ -95,6 +98,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             return new RecentObservationsTabResult
             {
                 EmptyMessage = dataSet.EmptyMessage,
+                SourceMetadata = dataSet.SourceMetadata,
                 ComparisonEndMode = options.ComparisonEndMode,
             };
         }
@@ -111,7 +115,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             options.PreviousMonthCount,
             options.PreviousSeasonCount,
             dataSet.NoPeriodsMessage,
-            dataSet.EmptyMessage);
+            dataSet.EmptyMessage,
+            dataSet.SourceMetadata);
     }
 
     private RecentObservationsTabResult BuildTiles(
@@ -126,7 +131,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         int previousMonthCount,
         int previousSeasonCount,
         string noPeriodsMessage,
-        string emptyMessage)
+        string emptyMessage,
+        IReadOnlyList<RecentObservationSourceMetadata> sourceMetadata)
     {
         previousDayCount = Math.Clamp(previousDayCount, RecentObservationPeriodSelection.DefaultPreviousDayCount, RecentObservationPeriodSelection.MaximumPreviousDayCount);
         previousMonthCount = Math.Clamp(previousMonthCount, 0, RecentObservationPeriodSelection.MaximumPreviousMonthCount);
@@ -144,6 +150,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
                 RequestedReferenceDate = requestedReferenceDate,
                 MinimumReferenceDate = referenceDate.MinimumReferenceDate,
                 MaximumReferenceDate = referenceDate.MaximumReferenceDate,
+                SourceMetadata = sourceMetadata,
                 ComparisonEndMode = comparisonEndMode,
             };
         }
@@ -172,6 +179,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
                 MinimumReferenceDate = referenceDate.MinimumReferenceDate,
                 MaximumReferenceDate = referenceDate.MaximumReferenceDate,
                 ReferenceDateNote = CreateReferenceDateNote(requestedReferenceDate, referenceDate.ReferenceDate.Value),
+                SourceMetadata = sourceMetadata,
                 ComparisonEndMode = comparisonEndMode,
             };
         }
@@ -192,6 +200,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             MinimumReferenceDate = referenceDate.MinimumReferenceDate,
             MaximumReferenceDate = referenceDate.MaximumReferenceDate,
             ReferenceDateNote = CreateReferenceDateNote(requestedReferenceDate, referenceDate.ReferenceDate.Value),
+            SourceMetadata = sourceMetadata,
             ComparisonEndMode = comparisonEndMode,
             Tiles = tiles,
         };
