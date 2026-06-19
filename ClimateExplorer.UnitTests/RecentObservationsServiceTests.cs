@@ -548,7 +548,7 @@ public class RecentObservationsServiceTests
         Assert.IsTrue(latestSevenDays.CanShowRank);
         Assert.IsTrue(latestSevenDays.CanShowPercentile);
         Assert.AreEqual("Near average rainfall", latestSevenDays.Headline);
-        Assert.AreEqual("Wetter than 36% of comparable periods since 2016", latestSevenDays.PercentileSentence);
+        Assert.AreEqual("Wetter than 36% of comparable periods", latestSevenDays.PercentileSentence);
         Assert.AreEqual("5th lowest of 11", total.RankText);
     }
 
