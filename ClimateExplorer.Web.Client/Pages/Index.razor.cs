@@ -60,6 +60,9 @@ public partial class Index : ChartablePage
     [Inject]
     private ISiteOverviewService? SiteOverviewService { get; set; }
 
+    [Inject]
+    private ILocationDefaultChartProvider? LocationDefaultChartProvider { get; set; }
+
     private ChangeLocation? ChangeLocationModal { get; set; }
     private string? BrowserLocationErrorMessage { get; set; }
     private Location? Location { get; set; }
@@ -171,7 +174,10 @@ public partial class Index : ChartablePage
                 }
             }
 
-            await EnsureInitialChartStateAsync(ChartPageKind.Location, Location);
+            if (Location is not null)
+            {
+                await EnsureInitialChartStateAsync(Location, CreateDefaultLocationChartState);
+            }
 
             StateHasChanged();
         }
@@ -382,4 +388,20 @@ public partial class Index : ChartablePage
     }
 
     private Task ShowRecordHighAsync() => locationInfoComponent?.ShowRecordHighAsync() ?? Task.CompletedTask;
+
+    private ChartState CreateDefaultLocationChartState()
+    {
+        if (Location is null)
+        {
+            throw new InvalidOperationException("A location is required before creating the default location chart.");
+        }
+
+        return LocationDefaultChartProvider!.CreateDefault(
+            new LocationDefaultChartContext
+            {
+                Location = Location,
+                DataSetDefinitions = DataSetDefinitions!.ToList(),
+                IsMobileDevice = IsMobileDevice ?? false,
+            });
+    }
 }

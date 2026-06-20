@@ -46,9 +46,6 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     [Inject]
     protected IChartStateUrlService? ChartStateUrlService { get; set; }
 
-    [Inject]
-    protected IDefaultChartProvider? DefaultChartProvider { get; set; }
-
     protected IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     protected Dictionary<Guid, Location>? LocationDictionary { get; set; }
@@ -151,16 +148,11 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         _ = Task.Delay(SnackbarDisplayMs).ContinueWith(_ => activeSnackbarMessages.Remove(snackbarMessage.Message));
     }
 
-    protected async Task EnsureInitialChartStateAsync(ChartPageKind pageKind, Location? location)
+    protected async Task<bool> EnsureInitialChartStateAsync(Location? location, Func<ChartState> createDefaultState)
     {
         if (initialChartStateResolved || DataSetDefinitions is null || Regions is null)
         {
-            return;
-        }
-
-        if (pageKind == ChartPageKind.Location && location is null)
-        {
-            return;
+            return false;
         }
 
         if (IsMobileDevice is null)
@@ -168,13 +160,13 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
             IsMobileDevice = await CurrentDeviceService!.Mobile();
         }
 
-        var context = CreateChartPageContext(pageKind, location);
+        var context = CreateChartUrlStateContext(location);
         var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
         var result = ChartStateUrlService!.Parse(uri, context);
 
         InitialChartState = result.Kind switch
         {
-            ChartUrlStateKind.Missing => DefaultChartProvider!.CreateDefault(context),
+            ChartUrlStateKind.Missing => createDefaultState(),
             ChartUrlStateKind.Valid => result.State,
             ChartUrlStateKind.ExplicitEmpty => result.State,
             ChartUrlStateKind.Invalid => null,
@@ -187,6 +179,8 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         {
             Logger!.LogError("Failed to initialize chart state from URL: {ErrorMessage}", result.ErrorMessage);
         }
+
+        return InitialChartState is not null;
     }
 
     protected Guid GetLocationFromCsd(StringValues csdSpecifier)
@@ -201,16 +195,13 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         return chartSeriesList!.First().SourceSeriesSpecifications!.First().LocationId;
     }
 
-    private ChartPageContext CreateChartPageContext(ChartPageKind pageKind, Location? location)
+    private ChartUrlStateContext CreateChartUrlStateContext(Location? location)
     {
-        return new ChartPageContext
+        return new ChartUrlStateContext
         {
-            PageKind = pageKind,
-            Location = location,
             Locations = GetKnownLocationDictionary(location),
             Regions = Regions!.ToList(),
             DataSetDefinitions = DataSetDefinitions!.ToList(),
-            IsMobileDevice = IsMobileDevice ?? false,
         };
     }
 

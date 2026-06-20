@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Web.Client.Pages;
 
 using ClimateExplorer.Web.Client.Services.Chart;
+using Microsoft.AspNetCore.Components;
 
 public partial class RegionalAndGlobal : ChartablePage
 {
@@ -33,6 +34,9 @@ public partial class RegionalAndGlobal : ChartablePage
         }
     }
 
+    [Inject]
+    private IRegionalAndGlobalDefaultChartProvider? RegionalAndGlobalDefaultChartProvider { get; set; }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -43,6 +47,18 @@ public partial class RegionalAndGlobal : ChartablePage
             StateHasChanged();
         }
 
-        await EnsureInitialChartStateAsync(ChartPageKind.RegionalAndGlobal, location: null);
+        if (await EnsureInitialChartStateAsync(location: null, CreateDefaultRegionalAndGlobalChartState))
+        {
+            StateHasChanged();
+        }
+    }
+
+    private ChartState CreateDefaultRegionalAndGlobalChartState()
+    {
+        return RegionalAndGlobalDefaultChartProvider!.CreateDefault(
+            new RegionalAndGlobalDefaultChartContext
+            {
+                DataSetDefinitions = DataSetDefinitions!.ToList(),
+            });
     }
 }

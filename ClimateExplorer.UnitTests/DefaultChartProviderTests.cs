@@ -21,7 +21,7 @@ public class DefaultChartProviderTests
     [TestMethod]
     public void LocationDefaultAddsTemperatureAndPrecipitationForDesktop()
     {
-        var provider = new DefaultChartProvider();
+        var provider = new LocationDefaultChartProvider();
         var state = provider.CreateDefault(CreateLocationContext(isMobileDevice: false));
 
         Assert.HasCount(2, state.Series);
@@ -36,7 +36,7 @@ public class DefaultChartProviderTests
     [TestMethod]
     public void LocationDefaultOmitsPrecipitationForMobile()
     {
-        var provider = new DefaultChartProvider();
+        var provider = new LocationDefaultChartProvider();
         var state = provider.CreateDefault(CreateLocationContext(isMobileDevice: true));
 
         Assert.HasCount(1, state.Series);
@@ -46,7 +46,7 @@ public class DefaultChartProviderTests
     [TestMethod]
     public void LocationDefaultOmitsPrecipitationWhenUnavailable()
     {
-        var provider = new DefaultChartProvider();
+        var provider = new LocationDefaultChartProvider();
         var state = provider.CreateDefault(CreateLocationContext(isMobileDevice: false, includePrecipitation: false));
 
         Assert.HasCount(1, state.Series);
@@ -56,8 +56,8 @@ public class DefaultChartProviderTests
     [TestMethod]
     public void RegionalAndGlobalDefaultAddsCo2AnnualChange()
     {
-        var provider = new DefaultChartProvider();
-        var state = provider.CreateDefault(CreateRegionalContext(location: CreateLocation()));
+        var provider = new RegionalAndGlobalDefaultChartProvider();
+        var state = provider.CreateDefault(CreateRegionalContext());
 
         Assert.HasCount(1, state.Series);
         var series = state.Series.Single();
@@ -69,40 +69,23 @@ public class DefaultChartProviderTests
         Assert.AreEqual(Colours.Brown, series.RequestedColour);
     }
 
-    [TestMethod]
-    public void LocationDefaultRequiresLocationContext()
-    {
-        var provider = new DefaultChartProvider();
-        var context = CreateLocationContext(isMobileDevice: false) with { Location = null };
-
-        Assert.ThrowsExactly<InvalidOperationException>(() => provider.CreateDefault(context));
-    }
-
-    private static ChartPageContext CreateLocationContext(bool isMobileDevice, bool includePrecipitation = true)
+    private static LocationDefaultChartContext CreateLocationContext(bool isMobileDevice, bool includePrecipitation = true)
     {
         var location = CreateLocation();
 
-        return new ChartPageContext
+        return new LocationDefaultChartContext
         {
-            PageKind = ChartPageKind.Location,
             Location = location,
-            Locations = new Dictionary<Guid, Location> { [location.Id] = location },
-            Regions = Region.GetRegions(),
             DataSetDefinitions = CreateDataSetDefinitions(includePrecipitation),
             IsMobileDevice = isMobileDevice,
         };
     }
 
-    private static ChartPageContext CreateRegionalContext(Location? location = null)
+    private static RegionalAndGlobalDefaultChartContext CreateRegionalContext()
     {
-        return new ChartPageContext
+        return new RegionalAndGlobalDefaultChartContext
         {
-            PageKind = ChartPageKind.RegionalAndGlobal,
-            Location = location,
-            Locations = null,
-            Regions = Region.GetRegions(),
             DataSetDefinitions = CreateDataSetDefinitions(includePrecipitation: true),
-            IsMobileDevice = false,
         };
     }
 

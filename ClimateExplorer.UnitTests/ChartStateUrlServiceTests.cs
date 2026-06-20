@@ -60,7 +60,7 @@ public class ChartStateUrlServiceTests
                 GroupingThresholdText = "85",
                 UserOverrideAggregationSettings = true,
                 AxesScaleToZero = new Dictionary<string, bool> { ["temperature"] = true },
-                Series = [CreateChartSeries(context.DataSetDefinitions.Single(), context.Location!)],
+                Series = [CreateChartSeries(context.DataSetDefinitions.Single(), context.Locations![LocationId])],
             });
 
         var result = service.Parse(new Uri("https://example.test/" + url), context);
@@ -103,7 +103,7 @@ public class ChartStateUrlServiceTests
         return new ChartStateUrlService(NullLogger<ChartStateUrlService>.Instance);
     }
 
-    private static ChartPageContext CreateContext()
+    private static ChartUrlStateContext CreateContext()
     {
         var location = new Location
         {
@@ -113,14 +113,11 @@ public class ChartStateUrlServiceTests
             Coordinates = new Coordinates(1, 2),
         };
 
-        return new ChartPageContext
+        return new ChartUrlStateContext
         {
-            PageKind = ChartPageKind.Location,
-            Location = location,
             Locations = new Dictionary<Guid, Location> { [location.Id] = location },
             Regions = Region.GetRegions(),
             DataSetDefinitions = [CreateDataSetDefinition()],
-            IsMobileDevice = false,
         };
     }
 

@@ -124,7 +124,7 @@ Desired flow:
 ```text
 Parent page:
   load data definitions, regions, and any required locations
-  create explicit ChartPageContext
+  create URL/default chart contexts
   parse chart URL state
   if URL state is valid:
     use it
@@ -169,8 +169,8 @@ Line numbers refer to `ClimateExplorer.Web.Client/Components/Chart/ChartView.raz
 | `GetGlobalQueryStringSettings` (898) | URL serialization | `PageName`, `ChartAllData`, selected years, grouping, `AxesScaleToZero`, override flag | Builds URL string | Move to `ChartStateUrlService`; remove `PageName` from `ChartView`. |
 | `UpdateUiStateBasedOnQueryString` (943) | URL parsing, validation, page lookup, render orchestration | `DataSetDefinitions`, `Regions`, `LocationDictionary`/`Location`, `Logger`, query params | Mutates chart settings and `ChartSeriesList`; calls `BuildDataSets` or `RenderChart`; raises snackbar | Move to `ChartStateUrlService` plus parent coordinator. |
 | `RetrieveDataSets` (1015) | Data retrieval | `DataService`, selected granularity/grouping, chart series | Calls API; returns `SeriesWithData` | Move to chart data builder/service. |
-| `SetUpLocalDefaultCharts` (1070) | Location-page default setup | `DataSetDefinitions`, `LocationDictionary`/`Location`, `IsMobileDevice`, `JsRuntime` | Adds temperature and maybe precipitation series; waits for chart readiness; calls `BuildDataSets` | Move default series creation to `DefaultChartProvider`; keep chart readiness in view if still needed. |
-| `AddDefaultChart` (1127) | Regional/global default setup | `DataSetDefinitions`, `JsRuntime` | Adds CO2 annual-change series; waits for chart readiness; calls `BuildDataSets` | Move to `DefaultChartProvider` using explicit page kind. |
+| `SetUpLocalDefaultCharts` (1070) | Location-page default setup | `DataSetDefinitions`, `LocationDictionary`/`Location`, `IsMobileDevice`, `JsRuntime` | Adds temperature and maybe precipitation series; waits for chart readiness; calls `BuildDataSets` | Move default series creation to location-page default logic/provider; keep chart readiness in view if still needed. |
+| `AddDefaultChart` (1127) | Regional/global default setup | `DataSetDefinitions`, `JsRuntime` | Adds CO2 annual-change series; waits for chart readiness; calls `BuildDataSets` | Move to regional/global default logic/provider. |
 | `GetKnownLocation` (1160) | Location lookup | `Location`, `LocationDictionary` | None | Move upstream or into URL/default validation service. |
 | `GetKnownLocationDictionary` (1172) | Location lookup | `Location`, `LocationDictionary` | Allocates one-item dictionary when needed | Move upstream. Chart title should use resolved entity display data. |
 | `LogChartSeriesList` (1184) | Diagnostics | `ChartSeriesList`, `SelectedBinGranularity`, `Logger` | Logs | Keep while useful; make null-safe if retained. |
@@ -227,11 +227,10 @@ Line numbers refer to `ClimateExplorer.Web.Client/Components/Chart/ChartView.raz
 
 Parent pages should:
 
-- declare explicit page kind (`Location` or `RegionalAndGlobal`);
 - load `DataSetDefinitions`, `Regions`, and required location data;
 - decide whether a full `LocationDictionary` is required for URL state;
 - parse URL state through a chart URL service;
-- select default chart state through a default chart provider;
+- select default chart state through page-specific default logic/provider;
 - preserve empty chart state when `chartAllData` exists without `csd`;
 - pass chart state/options into `ChartView`;
 - update navigation when chart state changes;
@@ -251,14 +250,14 @@ Responsibilities:
   - invalid chart state;
 - serialize chart state back to the same query-string shape.
 
-### Default chart provider
+### Default chart providers
 
 Responsibilities:
 
-- take explicit `ChartPageContext`;
-- produce location defaults: temperature plus precipitation on non-mobile when available;
-- produce regional/global defaults: CO2 annual change;
-- never infer page kind from `Location is null`.
+- keep default chart decisions page-specific rather than behind a central page-kind enum;
+- location page default provider produces temperature plus precipitation on non-mobile when available;
+- regional/global page default provider produces CO2 annual change;
+- new pages add their own default provider or page-local default method without modifying a shared enum/switch.
 
 ### Chart data builder
 
@@ -302,20 +301,23 @@ Responsibilities:
 Introduce only what is needed for the next extraction. The likely end state is:
 
 ```csharp
-public enum ChartPageKind
+public sealed record ChartUrlStateContext
 {
-    Location,
-    RegionalAndGlobal,
-}
-
-public sealed record ChartPageContext
-{
-    public required ChartPageKind PageKind { get; init; }
-    public Location? Location { get; init; }
     public IReadOnlyDictionary<Guid, Location>? Locations { get; init; }
     public required IReadOnlyList<Region> Regions { get; init; }
     public required IReadOnlyList<DataSetDefinitionViewModel> DataSetDefinitions { get; init; }
+}
+
+public sealed record LocationDefaultChartContext
+{
+    public required Location Location { get; init; }
+    public required IReadOnlyList<DataSetDefinitionViewModel> DataSetDefinitions { get; init; }
     public bool IsMobileDevice { get; init; }
+}
+
+public sealed record RegionalAndGlobalDefaultChartContext
+{
+    public required IReadOnlyList<DataSetDefinitionViewModel> DataSetDefinitions { get; init; }
 }
 
 public sealed record ChartState
@@ -349,13 +351,18 @@ Service shapes:
 ```csharp
 public interface IChartStateUrlService
 {
-    ChartUrlStateResult Parse(Uri uri, ChartPageContext context);
+    ChartUrlStateResult Parse(Uri uri, ChartUrlStateContext context);
     string BuildRelativeUrl(string pagePath, ChartState state);
 }
 
-public interface IDefaultChartProvider
+public interface ILocationDefaultChartProvider
 {
-    ChartState CreateDefault(ChartPageContext context);
+    ChartState CreateDefault(LocationDefaultChartContext context);
+}
+
+public interface IRegionalAndGlobalDefaultChartProvider
+{
+    ChartState CreateDefault(RegionalAndGlobalDefaultChartContext context);
 }
 
 public interface IChartDataBuilder
@@ -382,21 +389,22 @@ Names are illustrative. The first implementation can be internal classes in the 
 
 ### Phase 2: Extract default chart creation
 
-- Move the series-construction logic from `SetUpLocalDefaultCharts` and `AddDefaultChart` into `DefaultChartProvider`.
+- Move the series-construction logic from `SetUpLocalDefaultCharts` and `AddDefaultChart` into page-specific default providers.
 - Add unit tests for:
   - location default adds temperature;
   - location default adds precipitation only when available and not mobile;
   - regional/global default is CO2 annual change with existing smoothing/color/display settings.
-- Keep `ChartView` invoking the provider initially, but require an explicit `ChartPageKind` from parent so `Location is null` is no longer the default selector.
+- Keep `ChartView` invoking the provider initially through parent-provided state, then move invocation fully into parent pages.
+- Do not introduce a central `ChartPageKind`; adding a page should not require updating a shared enum/switch.
 
 ### Phase 3: Move chart state orchestration to parent pages
 
 - Add a coordinator on `ChartablePage` or separate `ChartPageStateCoordinator`.
 - Parent flow:
   - load page dependencies;
-  - create `ChartPageContext`;
+  - create `ChartUrlStateContext` for URL parsing;
   - parse URL state;
-  - choose valid, explicit-empty, or default state;
+  - choose valid, explicit-empty, or page-specific default state;
   - pass state to `ChartView`.
 - `ChartView` raises `ChartStateChanged` whenever controls alter chart state.
 - Parent serializes state to URL and chooses `replace` semantics.
@@ -522,17 +530,17 @@ Phase 1 is complete for the transitional service boundary.
 
 Phase 2 is complete for the transitional provider extraction.
 
-- Added a `DefaultChartProvider` using explicit `ChartPageKind`.
+- Added page-specific default providers instead of a central page-kind switch.
 - Moved location and regional/global default-series construction out of `ChartView`.
 - Kept chart readiness waiting and `BuildDataSets` in `ChartView` for this transitional phase.
-- Added explicit `PageKind` parameters from the location and regional/global parent pages.
-- Added unit coverage for location temperature defaults, desktop precipitation defaults, mobile precipitation omission, unavailable precipitation omission, regional/global CO2 annual-change defaults, and required location context.
+- Added unit coverage for location temperature defaults, desktop precipitation defaults, mobile precipitation omission, unavailable precipitation omission, and regional/global CO2 annual-change defaults.
 
 Phase 3 has started by moving initial URL/default state orchestration to parent pages.
 
 - Added `InitialChartState` on `ChartablePage`.
-- Parent pages now create explicit `ChartPageContext`, parse URL chart state, preserve explicit-empty state, or request defaults from `DefaultChartProvider`.
+- Parent pages now create `ChartUrlStateContext`, parse URL chart state, preserve explicit-empty state, or request defaults from page-specific default providers.
 - `ChartView` now accepts `InitialChartState` and applies it after render/chart readiness.
-- Removed `PageKind` from `ChartView`; it remains only in parent/page-context orchestration.
+- Removed `PageKind` from `ChartView`; no `ChartPageKind` enum remains in code.
 - Removed URL parsing and default-chart selection methods from `ChartView`.
+- Fixed the regional/global initial state path so resolving `InitialChartState` requests a rerender before the child chart applies it.
 - `ChartView` still owns `BuildDataSets`, URL serialization/navigation, data fetching, rendering, location-change substitution, and page-level event callbacks. These are the remaining Phase 3/4/5 responsibilities.

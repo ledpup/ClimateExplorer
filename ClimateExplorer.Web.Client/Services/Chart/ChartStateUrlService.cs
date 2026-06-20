@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 public sealed class ChartStateUrlService(ILogger<ChartStateUrlService> logger) : IChartStateUrlService
 {
-    public ChartUrlStateResult Parse(Uri uri, ChartPageContext context)
+    public ChartUrlStateResult Parse(Uri uri, ChartUrlStateContext context)
     {
         try
         {
