@@ -5,6 +5,7 @@ using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Components.Location;
 using ClimateExplorer.Web.Client.Services;
+using ClimateExplorer.Web.Client.Services.Chart;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
@@ -169,6 +170,8 @@ public partial class Index : ChartablePage
                     await NavigateTo($"/{PageName}/{Location.Id}");
                 }
             }
+
+            await EnsureInitialChartStateAsync(ChartPageKind.Location, Location);
 
             StateHasChanged();
         }

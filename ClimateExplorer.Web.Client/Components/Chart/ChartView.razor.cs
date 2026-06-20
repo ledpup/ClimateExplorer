@@ -36,17 +36,17 @@ public partial class ChartView : IAsyncDisposable
 
     private string? groupingThresholdText;
 
-    private bool updateUiStateInProcess;
     private bool buildDataSetsInProcess;
+    private ChartState? appliedInitialChartState;
 
     [Parameter]
     public string? PageName { get; set; }
 
     [Parameter]
-    public ChartPageKind PageKind { get; set; }
+    public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     [Parameter]
-    public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
+    public ChartState? InitialChartState { get; set; }
 
     [Parameter]
     public bool ChartAllData { get; set; }
@@ -86,9 +86,6 @@ public partial class ChartView : IAsyncDisposable
 
     [Inject]
     private IChartStateUrlService? ChartStateUrlService { get; set; }
-
-    [Inject]
-    private IDefaultChartProvider? DefaultChartProvider { get; set; }
 
     private bool ChartLoadingIndicatorVisible { get; set; }
     private bool ChartLoadingErrored { get; set; }
@@ -286,7 +283,6 @@ public partial class ChartView : IAsyncDisposable
     {
         ChartLoadingIndicatorVisible = true;
         ChartLoadingErrored = false;
-        updateUiStateInProcess = false;
 
         SelectedYears = [];
 
@@ -298,73 +294,30 @@ public partial class ChartView : IAsyncDisposable
     {
         IsMobileDevice ??= await CurrentDeviceService!.Mobile();
 
-        if (buildDataSetsInProcess || updateUiStateInProcess)
+        if (buildDataSetsInProcess)
         {
             return;
         }
 
         if (DataSetDefinitions is not null && Regions is not null)
         {
-            if (PageKind == ChartPageKind.Location)
+            if (Location is not null)
             {
-                if (Location is null)
-                {
-                    return;
-                }
-
                 if (InternalLocationId is not null && InternalLocationId != Location.Id)
                 {
                     InternalLocationId = Location.Id;
                     await ChangedLocation();
                 }
+                else if (InternalLocationId is null)
+                {
+                    InternalLocationId = Location.Id;
+                }
+            }
 
-                if (ChartLoadingIndicatorVisible)
-                {
-                    var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
-                    if (uri.Query.Contains("csd="))
-                    {
-                        await UpdateUiStateBasedOnQueryString(uri);
-                    }
-                    else if (InternalLocationId is null)
-                    {
-                        // First time loading a page with a location in the URL. Just add a default chart with temperatute (and probably precipitation) data, so that the user sees something.
-                        InternalLocationId = Location.Id;
-                        await SetUpLocalDefaultCharts(InternalLocationId.Value);
-                    }
-                    else if (uri.Query.Contains("chartAllData="))
-                    {
-                        // We have a chartAllData parameter in the query string, but no chart series definition.
-                        // This means that the user has likely removed all charts series.
-                        await RenderChart();
-                    }
-                }
-            }
-            else if (PageKind == ChartPageKind.RegionalAndGlobal)
+            if (InitialChartState is not null && !ReferenceEquals(InitialChartState, appliedInitialChartState))
             {
-                if (ChartLoadingIndicatorVisible)
-                {
-                    var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
-                    if (uri.Query.Contains("csd="))
-                    {
-                        await UpdateUiStateBasedOnQueryString(uri);
-                    }
-                    else if (!uri.Query.Contains("chartAllData="))
-                    {
-                        // We haven't setup any chart series yet - first time loading a page without a location in the URL.
-                        // Just add a default chart with CO2 data, so that the user sees something, and also so that we have some data to work with when demonstrating the various options on the page.
-                        await AddDefaultChart();
-                    }
-                    else if (uri.Query.Contains("chartAllData="))
-                    {
-                        // We have a chartAllData parameter in the query string, but no chart series definition.
-                        // This means that the user has likely removed all charts series.
-                        await RenderChart();
-                    }
-                }
-            }
-            else
-            {
-                throw new NotImplementedException($"Chart page kind {PageKind}");
+                appliedInitialChartState = InitialChartState;
+                await ApplyInitialChartState(InitialChartState);
             }
         }
     }
@@ -569,7 +522,7 @@ public partial class ChartView : IAsyncDisposable
 
             NoChartDataAvailable = false;
 
-            title = ChartLogic.BuildChartTitle(ChartSeriesWithData, GetKnownLocationDictionary());
+            title = ChartLogic.BuildChartTitle(ChartSeriesWithData, GetChartTitleLocations());
             subtitle = ChartLogic.BuildChartSubtitle(chartStartBin, chartEndBin, SelectedBinGranularity, IsMobileDevice!.Value, SelectedGroupingDays, GetGroupingThresholdText());
 
             l.LogInformation("Calling AddDataSetsToGraph");
@@ -919,19 +872,6 @@ public partial class ChartView : IAsyncDisposable
         };
     }
 
-    private ChartPageContext CreateChartPageContext(Location? locationOverride = null, ChartPageKind? pageKindOverride = null)
-    {
-        return new ChartPageContext
-        {
-            PageKind = pageKindOverride ?? PageKind,
-            Location = locationOverride ?? Location,
-            Locations = GetKnownLocationDictionary(),
-            Regions = Regions!.ToList(),
-            DataSetDefinitions = DataSetDefinitions!.ToList(),
-            IsMobileDevice = IsMobileDevice ?? false,
-        };
-    }
-
     private void ApplyChartState(ChartState state)
     {
         ChartAllData = state.ChartAllData;
@@ -952,60 +892,25 @@ public partial class ChartView : IAsyncDisposable
         ChartSeriesList = state.Series.ToList();
     }
 
-    private async Task UpdateUiStateBasedOnQueryString(Uri uri)
+    private async Task ApplyInitialChartState(ChartState state)
     {
-        if (DataSetDefinitions is null || Regions is null)
+        ApplyChartState(state);
+
+        // In Blazor Server the parent can provide state before the child Chart<T> component
+        // has completed its JS initialisation. Wait until chart.js has created the canvas instance
+        // rather than using an arbitrary delay.
+        if (!OperatingSystem.IsBrowser() && JsRuntime is not null)
         {
-            throw new NullReferenceException("DataSetDefinitions or Regions is null in UpdateUiStateBasedOnQueryString");
+            await JsRuntime.InvokeVoidAsync("waitForChartReady", chartWrapper);
         }
 
-        if (updateUiStateInProcess)
+        if (state.Series.Count == 0)
         {
+            await RenderChart();
             return;
         }
 
-        updateUiStateInProcess = true;
-
-        try
-        {
-            var result = ChartStateUrlService!.Parse(uri, CreateChartPageContext());
-
-            if (result.Kind == ChartUrlStateKind.Invalid)
-            {
-                Logger!.LogError(result.ErrorMessage);
-                return;
-            }
-
-            if (result.State is null)
-            {
-                return;
-            }
-
-            ApplyChartState(result.State);
-
-            if (result.Kind == ChartUrlStateKind.Valid)
-            {
-                try
-                {
-                    await BuildDataSets();
-                    ChartLoadingErrored = false;
-                }
-                catch (Exception)
-                {
-                    await SnackbarMessageEvent.InvokeAsync(new SnackbarMessage { Message = "Failed to create the chart with the current settings.", Type = SnackbarColor.Danger });
-                    ChartLoadingErrored = true;
-                    await RenderChart();
-                }
-            }
-            else if (result.Kind == ChartUrlStateKind.ExplicitEmpty)
-            {
-                await RenderChart();
-            }
-        }
-        finally
-        {
-            updateUiStateInProcess = false;
-        }
+        await BuildDataSets();
     }
 
     private async Task<List<SeriesWithData>> RetrieveDataSets(IEnumerable<ChartSeriesDefinition> chartSeriesList)
@@ -1063,52 +968,6 @@ public partial class ChartView : IAsyncDisposable
         return datasetsToReturn;
     }
 
-    private async Task SetUpLocalDefaultCharts(Guid locationId)
-    {
-        // Use the provided location for building the default chart. We want temperature and precipitation on the default chart.
-        var location = GetKnownLocation(locationId);
-        if (location is null)
-        {
-            throw new InvalidOperationException($"Location {locationId} must be available before setting up local default charts.");
-        }
-
-        if (ChartSeriesList == null)
-        {
-            ChartSeriesList = [];
-        }
-
-        var defaultState = DefaultChartProvider!.CreateDefault(CreateChartPageContext(location, ChartPageKind.Location));
-        ChartSeriesList.AddRange(defaultState.Series);
-
-        // In Blazor Server the parent OnAfterRenderAsync fires before the child Chart<T> component
-        // has completed its JS initialisation. Wait until chart.js has created the canvas instance
-        // rather than using an arbitrary delay.
-        if (!OperatingSystem.IsBrowser() && JsRuntime is not null)
-        {
-            await JsRuntime.InvokeVoidAsync("waitForChartReady", chartWrapper);
-        }
-
-        await BuildDataSets();
-    }
-
-    private async Task AddDefaultChart()
-    {
-        if (ChartSeriesList == null || ChartSeriesList.Count != 0)
-        {
-            return;
-        }
-
-        var defaultState = DefaultChartProvider!.CreateDefault(CreateChartPageContext(pageKindOverride: ChartPageKind.RegionalAndGlobal));
-        ChartSeriesList!.AddRange(defaultState.Series);
-
-        if (!OperatingSystem.IsBrowser() && JsRuntime is not null)
-        {
-            await JsRuntime.InvokeVoidAsync("waitForChartReady", chartWrapper);
-        }
-
-        await BuildDataSets();
-    }
-
     private Location? GetKnownLocation(Guid locationId)
     {
         if (Location?.Id == locationId)
@@ -1121,7 +980,7 @@ public partial class ChartView : IAsyncDisposable
             : null;
     }
 
-    private Dictionary<Guid, Location>? GetKnownLocationDictionary()
+    private Dictionary<Guid, Location>? GetChartTitleLocations()
     {
         if (LocationDictionary is not null)
         {

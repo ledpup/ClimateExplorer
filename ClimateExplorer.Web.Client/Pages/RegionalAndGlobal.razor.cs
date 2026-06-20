@@ -1,5 +1,7 @@
 namespace ClimateExplorer.Web.Client.Pages;
 
+using ClimateExplorer.Web.Client.Services.Chart;
+
 public partial class RegionalAndGlobal : ChartablePage
 {
     public RegionalAndGlobal()
@@ -40,5 +42,7 @@ public partial class RegionalAndGlobal : ChartablePage
             Regions = (await DataService!.GetRegions()).ToList();
             StateHasChanged();
         }
+
+        await EnsureInitialChartStateAsync(ChartPageKind.RegionalAndGlobal, location: null);
     }
 }

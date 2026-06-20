@@ -527,3 +527,12 @@ Phase 2 is complete for the transitional provider extraction.
 - Kept chart readiness waiting and `BuildDataSets` in `ChartView` for this transitional phase.
 - Added explicit `PageKind` parameters from the location and regional/global parent pages.
 - Added unit coverage for location temperature defaults, desktop precipitation defaults, mobile precipitation omission, unavailable precipitation omission, regional/global CO2 annual-change defaults, and required location context.
+
+Phase 3 has started by moving initial URL/default state orchestration to parent pages.
+
+- Added `InitialChartState` on `ChartablePage`.
+- Parent pages now create explicit `ChartPageContext`, parse URL chart state, preserve explicit-empty state, or request defaults from `DefaultChartProvider`.
+- `ChartView` now accepts `InitialChartState` and applies it after render/chart readiness.
+- Removed `PageKind` from `ChartView`; it remains only in parent/page-context orchestration.
+- Removed URL parsing and default-chart selection methods from `ChartView`.
+- `ChartView` still owns `BuildDataSets`, URL serialization/navigation, data fetching, rendering, location-change substitution, and page-level event callbacks. These are the remaining Phase 3/4/5 responsibilities.

@@ -6,6 +6,7 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Chart;
 using ClimateExplorer.Web.Client.Services;
+using ClimateExplorer.Web.Client.Services.Chart;
 using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
@@ -22,6 +23,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     private readonly Guid componentInstanceId = Guid.NewGuid();
     private readonly HashSet<string> activeSnackbarMessages = [];
+    private bool initialChartStateResolved;
 
     [Inject]
     protected IDataService? DataService { get; set; }
@@ -41,6 +43,12 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     [Inject]
     protected ICurrentDeviceService? CurrentDeviceService { get; set; }
 
+    [Inject]
+    protected IChartStateUrlService? ChartStateUrlService { get; set; }
+
+    [Inject]
+    protected IDefaultChartProvider? DefaultChartProvider { get; set; }
+
     protected IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     protected Dictionary<Guid, Location>? LocationDictionary { get; set; }
@@ -50,6 +58,8 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     protected SnackbarStack? SnackbarStack { get; set; }
 
     protected ChartView? ChartView { get; set; }
+
+    protected ChartState? InitialChartState { get; set; }
 
     protected string? PageName { get; set; }
 
@@ -141,6 +151,44 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         _ = Task.Delay(SnackbarDisplayMs).ContinueWith(_ => activeSnackbarMessages.Remove(snackbarMessage.Message));
     }
 
+    protected async Task EnsureInitialChartStateAsync(ChartPageKind pageKind, Location? location)
+    {
+        if (initialChartStateResolved || DataSetDefinitions is null || Regions is null)
+        {
+            return;
+        }
+
+        if (pageKind == ChartPageKind.Location && location is null)
+        {
+            return;
+        }
+
+        if (IsMobileDevice is null)
+        {
+            IsMobileDevice = await CurrentDeviceService!.Mobile();
+        }
+
+        var context = CreateChartPageContext(pageKind, location);
+        var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+        var result = ChartStateUrlService!.Parse(uri, context);
+
+        InitialChartState = result.Kind switch
+        {
+            ChartUrlStateKind.Missing => DefaultChartProvider!.CreateDefault(context),
+            ChartUrlStateKind.Valid => result.State,
+            ChartUrlStateKind.ExplicitEmpty => result.State,
+            ChartUrlStateKind.Invalid => null,
+            _ => throw new NotImplementedException($"Chart URL state kind {result.Kind}"),
+        };
+
+        initialChartStateResolved = true;
+
+        if (result.Kind == ChartUrlStateKind.Invalid)
+        {
+            Logger!.LogError("Failed to initialize chart state from URL: {ErrorMessage}", result.ErrorMessage);
+        }
+    }
+
     protected Guid GetLocationFromCsd(StringValues csdSpecifier)
     {
         if (DataSetDefinitions is null || LocationDictionary is null || Regions is null)
@@ -151,6 +199,31 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions, LocationDictionary, Regions);
         var chartSeriesList = csdList.ToList();
         return chartSeriesList!.First().SourceSeriesSpecifications!.First().LocationId;
+    }
+
+    private ChartPageContext CreateChartPageContext(ChartPageKind pageKind, Location? location)
+    {
+        return new ChartPageContext
+        {
+            PageKind = pageKind,
+            Location = location,
+            Locations = GetKnownLocationDictionary(location),
+            Regions = Regions!.ToList(),
+            DataSetDefinitions = DataSetDefinitions!.ToList(),
+            IsMobileDevice = IsMobileDevice ?? false,
+        };
+    }
+
+    private Dictionary<Guid, Location>? GetKnownLocationDictionary(Location? location)
+    {
+        if (LocationDictionary is not null)
+        {
+            return LocationDictionary;
+        }
+
+        return location is null
+            ? null
+            : new Dictionary<Guid, Location> { [location.Id] = location };
     }
 
     private void HandleNavigationLocationChanged(object sender, LocationChangedEventArgs e)
