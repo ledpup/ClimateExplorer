@@ -12,6 +12,7 @@
 @using ClimateExplorer.Web.Client.Components.Chart
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.Components.Location
+@using ClimateExplorer.Web.Client.Services.Chart
 
 @inherits ChartablePage
 
@@ -66,6 +67,7 @@
 
     <ChartView @ref="ChartView"
                PageName="@PageName"
+               PageKind="ChartPageKind.Location"
                DataSetDefinitions="@DataSetDefinitions"
                Location="@Location"
                LocationDictionary="@LocationDictionary"

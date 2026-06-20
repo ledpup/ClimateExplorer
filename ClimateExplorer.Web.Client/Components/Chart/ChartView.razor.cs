@@ -43,6 +43,9 @@ public partial class ChartView : IAsyncDisposable
     public string? PageName { get; set; }
 
     [Parameter]
+    public ChartPageKind PageKind { get; set; }
+
+    [Parameter]
     public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     [Parameter]
@@ -83,6 +86,9 @@ public partial class ChartView : IAsyncDisposable
 
     [Inject]
     private IChartStateUrlService? ChartStateUrlService { get; set; }
+
+    [Inject]
+    private IDefaultChartProvider? DefaultChartProvider { get; set; }
 
     private bool ChartLoadingIndicatorVisible { get; set; }
     private bool ChartLoadingErrored { get; set; }
@@ -299,8 +305,13 @@ public partial class ChartView : IAsyncDisposable
 
         if (DataSetDefinitions is not null && Regions is not null)
         {
-            if (Location is not null)
+            if (PageKind == ChartPageKind.Location)
             {
+                if (Location is null)
+                {
+                    return;
+                }
+
                 if (InternalLocationId is not null && InternalLocationId != Location.Id)
                 {
                     InternalLocationId = Location.Id;
@@ -328,7 +339,7 @@ public partial class ChartView : IAsyncDisposable
                     }
                 }
             }
-            else
+            else if (PageKind == ChartPageKind.RegionalAndGlobal)
             {
                 if (ChartLoadingIndicatorVisible)
                 {
@@ -350,6 +361,10 @@ public partial class ChartView : IAsyncDisposable
                         await RenderChart();
                     }
                 }
+            }
+            else
+            {
+                throw new NotImplementedException($"Chart page kind {PageKind}");
             }
         }
     }
@@ -904,12 +919,12 @@ public partial class ChartView : IAsyncDisposable
         };
     }
 
-    private ChartPageContext CreateChartPageContext()
+    private ChartPageContext CreateChartPageContext(Location? locationOverride = null, ChartPageKind? pageKindOverride = null)
     {
         return new ChartPageContext
         {
-            PageKind = Location is null ? ChartPageKind.RegionalAndGlobal : ChartPageKind.Location,
-            Location = Location,
+            PageKind = pageKindOverride ?? PageKind,
+            Location = locationOverride ?? Location,
             Locations = GetKnownLocationDictionary(),
             Regions = Regions!.ToList(),
             DataSetDefinitions = DataSetDefinitions!.ToList(),
@@ -1062,37 +1077,8 @@ public partial class ChartView : IAsyncDisposable
             ChartSeriesList = [];
         }
 
-        var tempMaxOrMean = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataSubstitute.StandardTemperatureDataMatches(), throwIfNoMatch: true)!;
-
-        ChartSeriesList.Add(
-            new ChartSeriesDefinition()
-            {
-                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, tempMaxOrMean),
-                Aggregation = SeriesAggregationOptions.Mean,
-                BinGranularity = BinGranularities.ByYear,
-                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                SmoothingWindow = 20,
-                Value = SeriesValueOptions.Value,
-                Year = null,
-            });
-
-        var precipitation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, location.Id, DataType.Precipitation, null, throwIfNoMatch: false);
-        if (precipitation is not null && IsMobileDevice != true)
-        {
-            ChartSeriesList.Add(
-                new ChartSeriesDefinition()
-                {
-                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, precipitation),
-                    Aggregation = SeriesAggregationOptions.Sum,
-                    BinGranularity = BinGranularities.ByYear,
-                    Smoothing = SeriesSmoothingOptions.MovingAverage,
-                    SmoothingWindow = 20,
-                    Value = SeriesValueOptions.Value,
-                    Year = null,
-                });
-        }
+        var defaultState = DefaultChartProvider!.CreateDefault(CreateChartPageContext(location, ChartPageKind.Location));
+        ChartSeriesList.AddRange(defaultState.Series);
 
         // In Blazor Server the parent OnAfterRenderAsync fires before the child Chart<T> component
         // has completed its JS initialisation. Wait until chart.js has created the canvas instance
@@ -1112,23 +1098,8 @@ public partial class ChartView : IAsyncDisposable
             return;
         }
 
-        var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(DataSetDefinitions!, Region.RegionId(Region.Atmosphere), DataType.CO2, null, throwIfNoMatch: true);
-
-        ChartSeriesList!.Add(
-            new ChartSeriesDefinition()
-            {
-                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
-                Aggregation = SeriesAggregationOptions.Mean,
-                BinGranularity = BinGranularities.ByYear,
-                SecondaryCalculation = SecondaryCalculationOptions.AnnualChange,
-                Smoothing = SeriesSmoothingOptions.MovingAverage,
-                SmoothingWindow = 10,
-                Value = SeriesValueOptions.Value,
-                Year = null,
-                DisplayStyle = SeriesDisplayStyle.Line,
-                RequestedColour = UiLogic.Colours.Brown,
-            });
+        var defaultState = DefaultChartProvider!.CreateDefault(CreateChartPageContext(pageKindOverride: ChartPageKind.RegionalAndGlobal));
+        ChartSeriesList!.AddRange(defaultState.Series);
 
         if (!OperatingSystem.IsBrowser() && JsRuntime is not null)
         {

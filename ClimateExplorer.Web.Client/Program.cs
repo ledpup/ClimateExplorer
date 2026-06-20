@@ -28,6 +28,7 @@ builder.Services
     .AddTransient<IExporter, Exporter>()
     .AddScoped<IInfoPanelDismissalService, InfoPanelDismissalService>()
     .AddScoped<IChartStateUrlService, ChartStateUrlService>()
+    .AddScoped<IDefaultChartProvider, DefaultChartProvider>()
     .AddScoped<IRecentObservationsDataProvider, RecentObservationsDataProvider>()
     .AddScoped<IRecentObservationsCalculator, RecentObservationsCalculator>()
     .AddScoped<IRecentObservationsService, RecentObservationsService>()

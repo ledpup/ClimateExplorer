@@ -512,10 +512,18 @@ Existing `ClimateExplorer.Web.UiTests/ChartTests.cs` already covers part of the 
 
 ## Progress
 
-Phase 1 has started.
+Phase 1 is complete for the transitional service boundary.
 
 - Added a `ChartStateUrlService` around the current query parameters and `ChartSeriesListSerializer`.
 - Added small chart URL/state result records while preserving the existing mutable `ChartSeriesDefinition` list.
 - Replaced `GetGlobalQueryStringSettings` and query parsing in `ChartView` with calls to the service.
 - Left rendering, data fetching, default creation, and parent-page orchestration untouched.
 - Added unit coverage for missing chart state, explicit-empty state, valid serialized series parsing, and empty-series URL building.
+
+Phase 2 is complete for the transitional provider extraction.
+
+- Added a `DefaultChartProvider` using explicit `ChartPageKind`.
+- Moved location and regional/global default-series construction out of `ChartView`.
+- Kept chart readiness waiting and `BuildDataSets` in `ChartView` for this transitional phase.
+- Added explicit `PageKind` parameters from the location and regional/global parent pages.
+- Added unit coverage for location temperature defaults, desktop precipitation defaults, mobile precipitation omission, unavailable precipitation omission, regional/global CO2 annual-change defaults, and required location context.
