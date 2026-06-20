@@ -8,6 +8,7 @@ using ClimateExplorer.Web;
 using ClimateExplorer.Web.Client.Pages;
 using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.Services.Chart;
+using ClimateExplorer.Web.Client.Services.InfoPanelDismissal;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
 using ClimateExplorer.WebApiClient.Services;
 using CurrentDevice;
