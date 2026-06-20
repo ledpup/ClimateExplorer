@@ -14,7 +14,6 @@ using ClimateExplorer.Web.Client.Services.Chart;
 using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
-using ClimateExplorer.WebApiClient.Services;
 using CurrentDevice;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -37,6 +36,7 @@ public partial class ChartView : IAsyncDisposable
     private string? groupingThresholdText;
 
     private bool buildDataSetsInProcess;
+    private bool hasRenderableChartData;
     private ChartState? appliedInitialChartState;
 
     [Parameter]
@@ -61,9 +61,6 @@ public partial class ChartView : IAsyncDisposable
     public EventCallback<SnackbarMessage> SnackbarMessageEvent { get; set; }
 
     [Inject]
-    private IDataService? DataService { get; set; }
-
-    [Inject]
     private ICurrentDeviceService? CurrentDeviceService { get; set; }
 
     [Inject]
@@ -77,6 +74,9 @@ public partial class ChartView : IAsyncDisposable
 
     [Inject]
     private IChartStateUrlService? ChartStateUrlService { get; set; }
+
+    [Inject]
+    private IChartDataBuilder? ChartDataBuilder { get; set; }
 
     private bool ChartLoadingIndicatorVisible { get; set; }
     private bool ChartLoadingErrored { get; set; }
@@ -360,11 +360,6 @@ public partial class ChartView : IAsyncDisposable
         {
             LoadingChart();
 
-            if (ChartSeriesList is null || ChartSeriesList.Count == 0)
-            {
-                ChartSeriesWithData = null;
-            }
-
             var url = ChartStateUrlService!.BuildRelativeUrl(PageName!, CreateCurrentChartState());
 
             string currentUri = NavManager!.Uri;
@@ -389,12 +384,22 @@ public partial class ChartView : IAsyncDisposable
                 return;
             }
 
-            var usableChartSeries = ChartSeriesList!.Where(x => x.DataAvailable).ToArray();
+            // Fetch and prepare the data required to render the selected data series.
+            var buildResult = await ChartDataBuilder!.BuildAsync(CreateCurrentChartState());
 
-            // Fetch the data required to render the selected data series
-            ChartSeriesWithData = await RetrieveDataSets(usableChartSeries);
+            ChartSeriesWithData = [.. buildResult.SeriesWithData];
+            ChartBins = buildResult.ChartBins;
+            chartStartBin = buildResult.ChartStartBin;
+            chartEndBin = buildResult.ChartEndBin;
+            StartYears = [.. buildResult.StartYears];
+            hasRenderableChartData = buildResult.HasRenderableData;
 
-            l.LogInformation("Set ChartSeriesWithData after call to RetrieveDataSets(). ChartSeriesWithData now has " + usableChartSeries.Length + " entries.");
+            l.LogInformation("Set ChartSeriesWithData after call to ChartDataBuilder. ChartSeriesWithData now has " + ChartSeriesWithData.Count + " entries.");
+
+            foreach (var message in buildResult.Messages)
+            {
+                await SnackbarMessageEvent.InvokeAsync(message);
+            }
 
             // Render the series
             await RenderChart();
@@ -493,17 +498,9 @@ public partial class ChartView : IAsyncDisposable
 
             Colours = new ColourServer();
 
-            // Data sets sometimes have internal gaps in data (i.e. years which have no data even though earlier
-            // and later years have data). Additionally, they may have external gaps in data if the overall period
-            // to be charted goes beyond the range of the available data in one particular data set.
-            //
-            // To ensure these gaps are handled correctly in the plotted chart, we build a new dataset that includes
-            // records for each missing year. Value is set to null for those records.
-            l.LogInformation("Calling BuildProcessedDataSets");
-
-            await BuildProcessedDataSets(ChartSeriesWithData, ChartAllData);
-
-            if (!HasRenderableChartData())
+            // The data has already been fetched and prepared by ChartDataBuilder (gap filling, smoothing,
+            // secondary calculations, bin selection). RenderChart consumes that prepared state directly.
+            if (!hasRenderableChartData)
             {
                 await chart.SetOptionsObject(new { });
                 NoChartDataAvailable = true;
@@ -571,19 +568,6 @@ public partial class ChartView : IAsyncDisposable
         LogChartSeriesList();
     }
 
-    private static ContainerAggregationFunctions MapSeriesAggregationOptionToBinAggregationFunction(SeriesAggregationOptions a)
-    {
-        return a switch
-        {
-            SeriesAggregationOptions.Mean => ContainerAggregationFunctions.Mean,
-            SeriesAggregationOptions.Minimum => ContainerAggregationFunctions.Min,
-            SeriesAggregationOptions.Maximum => ContainerAggregationFunctions.Max,
-            SeriesAggregationOptions.Median => ContainerAggregationFunctions.Median,
-            SeriesAggregationOptions.Sum => ContainerAggregationFunctions.Sum,
-            _ => throw new NotImplementedException($"SeriesAggregationOptions {a}"),
-        };
-    }
-
     private static bool IsCompatibleUnitOfMeasure(UnitOfMeasure seriesUnitOfMeasure, UnitOfMeasure filterUnitOfMeasure)
     {
         if (filterUnitOfMeasure == UnitOfMeasure.DegreesCelsius)
@@ -603,33 +587,6 @@ public partial class ChartView : IAsyncDisposable
             SeriesTransformations.Custom => ChartSeriesDefinition.GetFriendlyCustomTransformationLabel(customTransformation ?? "Custom transformation"),
             _ => defaultLabel,
         };
-    }
-
-    private bool HasRenderableChartData()
-    {
-        if (ChartBins == null || ChartBins.Length == 0)
-        {
-            Logger!.LogWarning("No chart bins were produced while preparing chart data.");
-            return false;
-        }
-
-        if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0)
-        {
-            Logger!.LogWarning("No chart series with data were produced while preparing chart data.");
-            return false;
-        }
-
-        var renderablePointCount = ChartSeriesWithData
-            .SelectMany(x => x.ProcessedDataSet?.DataRecords ?? Array.Empty<BinnedRecord>())
-            .Count(x => x.Value.HasValue && !double.IsNaN(x.Value.Value) && !double.IsInfinity(x.Value.Value));
-
-        if (renderablePointCount == 0)
-        {
-            Logger!.LogWarning("Processed chart datasets contain no finite non-null values.");
-            return false;
-        }
-
-        return true;
     }
 
     private object CreateChartOptions(string title, string subtitle, dynamic scales)
@@ -717,61 +674,6 @@ public partial class ChartView : IAsyncDisposable
         await ApplyChartStateAsync(state);
     }
 
-    private async Task<List<SeriesWithData>> RetrieveDataSets(IEnumerable<ChartSeriesDefinition> chartSeriesList)
-    {
-        var datasetsToReturn = new List<SeriesWithData>();
-
-        Logger!.LogInformation("RetrieveDataSets: starting enumeration");
-
-        List<Task<DataSet>> tasksToRun = [];
-
-        foreach (var csd in chartSeriesList)
-        {
-            var cupAggregationFunction = MapSeriesAggregationOptionToBinAggregationFunction(csd.Aggregation);
-            var bucketAggregationFunction = cupAggregationFunction;
-
-            // If we're doing modular binning and the aggregation function is sum, then force mean aggregation at
-            // top level
-            var binAggregationFunction =
-                SelectedBinGranularity.IsModular() && cupAggregationFunction == ContainerAggregationFunctions.Sum
-                ? ContainerAggregationFunctions.Mean
-                : cupAggregationFunction;
-
-            var dataSetTask =
-                DataService!.PostDataSet(
-                    SelectedBinGranularity,
-                    binAggregationFunction,
-                    bucketAggregationFunction,
-                    cupAggregationFunction,
-                    csd.Value,
-                    csd.SourceSeriesSpecifications!.Select(BuildDataPrepSeriesSpecification).ToArray(),
-                    csd.SeriesDerivationType,
-                    GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
-                    GetGroupingThreshold(csd.GroupingThreshold, csd.BinGranularity.IsLinear()),
-                    GetGroupingThreshold(csd.GroupingThreshold),
-                    SelectedGroupingDays,
-                    csd.SeriesTransformation,
-                    csd.CustomTransformation,
-                    csd.Year,
-                    csd.MinimumDataResolution);
-
-            tasksToRun.Add(dataSetTask);
-        }
-
-        datasetsToReturn.AddRange(
-                await Task.WhenAll(
-                    chartSeriesList.Select((series, i) =>
-                        tasksToRun[i].ContinueWith(t => new SeriesWithData
-                        {
-                            ChartSeries = series,
-                            SourceDataSet = t.Result,
-                        }))));
-
-        Logger!.LogInformation("RetrieveDataSets: completed enumeration");
-
-        return datasetsToReturn;
-    }
-
     private Dictionary<Guid, Location>? GetChartTitleLocations()
     {
         var locations = ChartSeriesWithData?
@@ -822,29 +724,6 @@ public partial class ChartView : IAsyncDisposable
             };
     }
 
-    private SeriesSpecification BuildDataPrepSeriesSpecification(SourceSeriesSpecification sss)
-    {
-        return
-            new SeriesSpecification
-            {
-                DataSetDefinitionId = sss.DataSetDefinition!.Id,
-                DataType = sss.MeasurementDefinition!.DataType,
-                DataAdjustment = sss.MeasurementDefinition.DataAdjustment,
-                LocationId = sss.LocationId,
-            };
-    }
-
-    private float GetGroupingThreshold(float? groupingThreshold, bool binGranularityIsLinear = false)
-    {
-        // If we're in linear time, all buckets in a bin must have passed the data completeness test.
-        // Otherwise, we apply GroupingThreshold from either user input or ChartSeriesDefinition
-        return binGranularityIsLinear
-            ? 1.0f
-            : (UserOverridePresetAggregationSettings || groupingThreshold == null)
-                ? InternalGroupingThreshold
-                : groupingThreshold.Value;
-    }
-
     private async Task<List<ChartTrendlineData>> AddDataSetsToChart()
     {
         var dataSetIndex = 0;
@@ -884,178 +763,6 @@ public partial class ChartView : IAsyncDisposable
         }
 
         return trendlines;
-    }
-
-    private async Task BuildProcessedDataSets(List<SeriesWithData> chartSeriesWithData, bool chartAllData)
-    {
-        var l = new LogAugmenter(Logger!, "BuildProcessedDataSets");
-
-        l.LogInformation("entering");
-
-        foreach (var cs in chartSeriesWithData)
-        {
-            if (cs.ChartSeries!.SecondaryCalculation == SecondaryCalculationOptions.AnnualChange)
-            {
-                var yearlyDifferenceValues =
-                    cs.SourceDataSet.DataRecords
-                    .Select(x => x.Value)
-                    .CalculateYearlyDifference();
-
-                // Now, join back to the original DataRecord set
-                var newDataRecords =
-                    yearlyDifferenceValues
-                    .Zip(
-                        cs.SourceDataSet.DataRecords,
-                        (val, dr) => new BinnedRecord(dr.BinId, val))
-                    .ToList();
-
-                cs.SourceDataSet =
-                    new DataSet
-                    {
-                        GeographicalEntity = cs.SourceDataSet.GeographicalEntity,
-                        MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
-                        DataRecords = newDataRecords,
-                    };
-            }
-        }
-
-        var badChartSeries = new List<SeriesWithData>();
-
-        // If we're doing smoothing via the moving average, precalculate these data and add them to PreProcessedDataSets.
-        // We do this because the SimpleMovingAverage calculate function will remove some years from the start of the data set.
-        // It removes these years because it doesn't have a good enough average to present it to the user.
-        // Therefore, we need to calculate the smoothing before we calculate the start year - the basis for labelling the chart
-        // If we're not calculating a moving average, PreProcessedDataSets = SourceDataSets
-        foreach (var cs in chartSeriesWithData)
-        {
-            // We only support moving averages on linear bin granularities (e.g. Year, YearAndMonth) - not modular ones like MonthOnly
-            if (SelectedBinGranularity.IsLinear() && cs.ChartSeries!.Smoothing == SeriesSmoothingOptions.MovingAverage)
-            {
-                var values =
-                    cs.SourceDataSet.DataRecords
-                    .Select(x => x.Value)
-                    .CalculateCentredMovingAverage(cs.ChartSeries.SmoothingWindow, 0.75f);
-
-                if (values.Count(y => y != null) < 10)
-                {
-                    await SnackbarMessageEvent.InvokeAsync(new SnackbarMessage { Message = $"The moving‑average removed too many {cs.SourceDataSet.DataType.ToFriendlyName().ToLower()} observations for {cs.SourceDataSet.GeographicalEntity?.Name}.<br>We will revert to using the unsmoothed data.", Type = SnackbarColor.Warning });
-                    values = cs.SourceDataSet.DataRecords
-                                            .Where(x => x.Value.HasValue)
-                                            .Select(x => x.Value);
-                }
-
-                // Now, join back to the original DataRecord set
-                var newDataRecords =
-                    values
-                    .Zip(
-                        cs.SourceDataSet.DataRecords,
-                        (val, dr) => new BinnedRecord(dr.BinId, val))
-                    .ToList();
-
-                cs.PreProcessedDataSet =
-                    new DataSet
-                    {
-                        GeographicalEntity = cs.SourceDataSet.GeographicalEntity,
-                        MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
-                        DataRecords = newDataRecords,
-                    };
-            }
-            else
-            {
-                cs.PreProcessedDataSet = cs.SourceDataSet;
-            }
-        }
-
-        badChartSeries.ForEach(x => chartSeriesWithData.Remove(x));
-
-        l.LogInformation("done with moving average calculation");
-
-        // There must be exactly one bin granularity or else something odd's going on.
-        var binGranularity = chartSeriesWithData.Select(x => x.ChartSeries!.BinGranularity).Distinct().Single();
-
-        if (binGranularity != SelectedBinGranularity)
-        {
-            throw new Exception($"BinGranularity selected for series ({binGranularity}) doesn't match overall selected granularity {SelectedBinGranularity}");
-        }
-
-        BinIdentifier[]? chartBins = null;
-
-        switch (binGranularity)
-        {
-            case BinGranularities.ByYear:
-            case BinGranularities.ByYearAndMonth:
-            case BinGranularities.ByYearAndWeek:
-            case BinGranularities.ByYearAndDay:
-                // Calculate first and last year which we have a data record for, across all data sets underpinning all chart series
-                var preProcessedDataSets = chartSeriesWithData.Select(x => x.PreProcessedDataSet);
-                var allDataRecords = preProcessedDataSets.SelectMany(x => x!.DataRecords);
-
-                (chartStartBin, chartEndBin) =
-                    ChartLogic.GetBinRangeToPlotForGaplessRange(
-                        preProcessedDataSets!, // Pass in the data available for plotting
-                        chartAllData, // and the user's preferences about what x axis range they'd like plotted
-                        SelectedStartYear!,
-                        SelectedEndYear!);
-
-                chartBins = BinHelpers.EnumerateBinsInRange(chartStartBin, chartEndBin).ToArray();
-
-                SetStartAndEndYears(chartSeriesWithData);
-
-                break;
-
-            case BinGranularities.ByMonthOnly:
-            case BinGranularities.ByDayOnly:
-            case BinGranularities.BySouthernHemisphereTemperateSeasonOnly:
-            case BinGranularities.BySouthernHemisphereTropicalSeasonOnly:
-                chartStartBin = null;
-                chartEndBin = null;
-                chartBins = BinHelpers.GetBinsForModularGranularity(binGranularity);
-                break;
-
-            default:
-                throw new NotImplementedException($"binGranularity {binGranularity}");
-        }
-
-        foreach (var cs in chartSeriesWithData)
-        {
-            l.LogInformation("constructing ProcessedDataSet");
-
-            var recordsByBinId = cs.PreProcessedDataSet!.DataRecords.ToLookup(x => x.BinId);
-
-            l.LogInformation("First chart bin: " + chartBins.First() + ", last chart: " + chartBins.Last());
-
-            // Create new datasets, same as the source, but with any gaps filled with null records
-            cs.ProcessedDataSet =
-                new DataSet
-                {
-                    GeographicalEntity = cs.PreProcessedDataSet.GeographicalEntity,
-                    MeasurementDefinition = cs.PreProcessedDataSet.MeasurementDefinition,
-                    DataRecords =
-                        [.. chartBins
-                        .Select(
-                            bin =>
-
-                            // If there's a record in the source dataset, use it
-                            recordsByBinId[bin.Id].SingleOrDefault()
-
-                            // Otherwise, create a null record
-                            ?? new BinnedRecord(bin.Id, null))],
-                };
-        }
-
-        ChartBins = chartBins;
-
-        // Now, we cut down the processed datasets to just the bins that we intend to display on the chart.
-        // This should only affect linear (gapless) BinGranularities, but executes either way, in case we
-        // later allow users to say "just give me month-ignoring-year, but only for months after 4 and before 7",
-        // for example.
-        var binIdsToPlot = new HashSet<string>(ChartBins.Select(x => x.Id));
-        foreach (var cswd in ChartSeriesWithData!)
-        {
-            cswd.ProcessedDataSet!.DataRecords = [.. cswd.ProcessedDataSet.DataRecords.Where(x => binIdsToPlot.Contains(x.BinId!))];
-        }
-
-        l.LogInformation("leaving");
     }
 
     private dynamic BuildChartScales()
@@ -1212,15 +919,6 @@ public partial class ChartView : IAsyncDisposable
         var sourceDataSet = ChartSeriesWithData![e.DatasetIndex].SourceDataSet!;
 
         await HandleOnYearFilterChange(new YearAndDataTypeFilter(year) { DataType = sourceDataSet.DataType, DataAdjustment = sourceDataSet.DataAdjustment, UnitOfMeasure = sourceDataSet.MeasurementDefinition!.UnitOfMeasure });
-    }
-
-    private void SetStartAndEndYears(List<SeriesWithData> chartSeriesWithData)
-    {
-        var binGranularity = chartSeriesWithData.Select(x => x.ChartSeries!.BinGranularity).Distinct().Single();
-        var dataSet = binGranularity == BinGranularities.ByYear ? chartSeriesWithData.Select(x => x.PreProcessedDataSet) : chartSeriesWithData.Select(x => x.SourceDataSet);
-
-        // build a list of all the years in which data sets start, used by the UI to allow the user to conveniently select from them
-        StartYears = [.. dataSet.Select(x => x!.GetStartYearForDataSet()).Distinct().OrderBy(x => x)];
     }
 
     private async Task OnClearFilter()

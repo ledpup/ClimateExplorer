@@ -554,3 +554,15 @@ Phase 4 is complete for the transitional location-substitution boundary.
 - Removed `Location`, `LocationDictionary`, and `Regions` parameters from `ChartView`.
 - Added transitional `CaptureCurrentChartState` and `ApplyChartStateAsync` methods so the parent can own location substitution while chart controls still mutate internal state.
 - `ChartView` still owns `BuildDataSets`, URL serialization/navigation, data fetching, rendering, and page-level event callbacks. These are the remaining Phase 3/5 responsibilities.
+
+Phase 5 is complete for the chart-data-building extraction.
+
+- Added `IChartDataBuilder`/`ChartDataBuilder` plus a `ChartDataBuildResult` record carrying processed `SeriesWithData`, `ChartBins`, start/end bins, start years, warning messages, and a `HasRenderableData` flag.
+- Moved `RetrieveDataSets`, `BuildDataPrepSeriesSpecification`, `GetGroupingThreshold`, `MapSeriesAggregationOptionToBinAggregationFunction`, `BuildProcessedDataSets`, `SetStartAndEndYears`, and `HasRenderableChartData` out of `ChartView` and into the builder. The builder derives bin granularity and grouping threshold from the supplied `ChartState`, so it takes no other page context.
+- `ChartView.BuildDataSets` now calls `ChartDataBuilder.BuildAsync(CreateCurrentChartState())`, assigns the result into its render fields, and raises the returned warning messages via `SnackbarMessageEvent`. `RenderChart` consumes the already-prepared data and uses the result's renderability flag instead of preparing data itself.
+- The moving-average fallback warning is now returned in the result rather than raised inside data preparation; the view still presents it during this transitional phase.
+- Removed the `IDataService` injection from `ChartView`; data fetching now lives entirely in the builder.
+- Registered `IChartDataBuilder` in both the client and server DI containers.
+- Left `CreateAxesMinMax`/`CreateYAxes` in `ChartView` for now; they operate on the build result's series (which still carry `PreProcessedDataSet`) and belong with the chart-options/rendering work targeted by Phase 6.
+- Added unit coverage for the empty/non-renderable result (no data-service call), the annual-change secondary calculation, `ChartAllData` vs `StartYear` range selection with start-year metadata, modular (month-only) bin production, and the moving-average fallback warning.
+- At the end of Phase 5, `ChartView` still owns `BuildDataSets` orchestration, URL serialization/navigation, rendering, and page-level event callbacks. These are the remaining Phase 3/6 responsibilities.
