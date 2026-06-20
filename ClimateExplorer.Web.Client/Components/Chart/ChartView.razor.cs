@@ -1,6 +1,5 @@
 namespace ClimateExplorer.Web.Client.Components.Chart;
 
-using System.Dynamic;
 using Blazorise.Charts;
 using Blazorise.Charts.Trendline;
 using Blazorise.Snackbar;
@@ -46,9 +45,6 @@ public partial class ChartView : IAsyncDisposable
     public ChartState? InitialChartState { get; set; }
 
     [Parameter]
-    public bool ChartAllData { get; set; }
-
-    [Parameter]
     public EventCallback<ChartState> ChartStateChanged { get; set; }
 
     [Parameter]
@@ -75,6 +71,11 @@ public partial class ChartView : IAsyncDisposable
     private bool ChartLoadingIndicatorVisible { get; set; }
     private bool ChartLoadingErrored { get; set; }
     private bool NoChartDataAvailable { get; set; }
+
+    // Internal view state: whether the chart plots all available years or the filtered range. Surfaced
+    // and updated via ChartState (CreateCurrentChartState/SetChartState) rather than as a parameter.
+    private bool ChartAllData { get; set; }
+
     private BinGranularities SelectedBinGranularity { get; set; } = BinGranularities.ByYear;
     private List<SeriesWithData>? ChartSeriesWithData { get; set; }
     private string? SelectedStartYear { get; set; }
@@ -435,7 +436,6 @@ public partial class ChartView : IAsyncDisposable
         var title = string.Empty;
         var subtitle = string.Empty;
         List<ChartTrendlineData>? trendlines = null;
-        dynamic scales = new ExpandoObject();
 
         if (ChartLoadingErrored)
         {
@@ -503,11 +503,20 @@ public partial class ChartView : IAsyncDisposable
             var labels = ChartBins!.Select(x => x.Label).ToArray();
             await chart.AddLabels(labels);
 
-            scales = BuildChartScales();
+            var optionsResult = ChartOptionsFactory.Build(new ChartOptionsRequest
+            {
+                Title = title,
+                Subtitle = subtitle,
+                BinGranularity = SelectedBinGranularity,
+                IsMobileDevice = IsMobileDevice!.Value,
+                SeriesWithData = ChartSeriesWithData,
+                Series = ChartSeriesList!,
+                AxesScaleToZero = AxesScaleToZero,
+            });
 
-            var chartOptions = CreateChartOptions(title, subtitle, scales);
+            CurrentAxes = [.. optionsResult.Axes];
 
-            await chart.SetOptionsObject(chartOptions);
+            await chart.SetOptionsObject(optionsResult.Options);
 
             if (trendlines != null && trendlines.Count > 0)
             {
@@ -562,51 +571,6 @@ public partial class ChartView : IAsyncDisposable
             SeriesTransformations.DayOfYearIfFrost => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "Last day of frost" : "First day of frost",
             SeriesTransformations.Custom => ChartSeriesDefinition.GetFriendlyCustomTransformationLabel(customTransformation ?? "Custom transformation"),
             _ => defaultLabel,
-        };
-    }
-
-    private object CreateChartOptions(string title, string subtitle, dynamic scales)
-    {
-        return new
-        {
-            Animation = false,
-            Responsive = true,
-            MaintainAspectRatio = false,
-            SpanGaps = false,
-            Elements = new
-            {
-                Point = new
-                {
-                    HitRadius = IsMobileDevice!.Value ? 5 : 10,
-                    HoverRadius = IsMobileDevice!.Value ? 3 : 6,
-                },
-            },
-            Plugins = new
-            {
-                Title = new
-                {
-                    Text = title,
-                    Display = true,
-                    Color = "black",
-                },
-                Subtitle = new
-                {
-                    Text = subtitle,
-                    Display = true,
-                    Color = "black",
-                },
-                Tooltip = new
-                {
-                    Mode = IsMobileDevice!.Value ? "nearest" : "index",
-                    Intersect = false,
-                    BoxPadding = 4,
-                },
-                Legend = new
-                {
-                    Position = "bottom",
-                },
-            },
-            Scales = scales,
         };
     }
 
@@ -739,117 +703,6 @@ public partial class ChartView : IAsyncDisposable
         }
 
         return trendlines;
-    }
-
-    private dynamic BuildChartScales()
-    {
-        dynamic scales = new ExpandoObject();
-
-        var xLabel = ChartLogic.GetXAxisLabel(SelectedBinGranularity);
-
-        // The casing on the names of the scales is case-sensitive.
-        // The x axis needs to be x (not X) or the chart will not register the scale correctly.
-        // This will at least break the trendlines component
-        scales.x = new
-        {
-            Grid = new { DrawOnChartArea = false },
-            Title = new
-            {
-                Text = xLabel,
-                Display = true,
-                Color = "black",
-            },
-        };
-
-        CreateYAxes(scales);
-
-        return scales;
-    }
-
-    private void CreateYAxes(dynamic scales)
-    {
-        var (axisMinMax, axisHasBarSeries) = CreateAxesMinMax();
-
-        var axes = new List<string>();
-        var newCurrentAxes = new List<AxisInfo>();
-        foreach (var s in ChartSeriesList!.Where(x => x.DataAvailable))
-        {
-            var uom = s.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
-            var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation);
-            if (!axes.Contains(axisId))
-            {
-                axisMinMax.TryGetValue(axisId, out var globalMinMax);
-                var axisRange = globalMinMax.Max - globalMinMax.Min;
-                var axisPadding = !axisHasBarSeries.Contains(axisId) ? axisRange * 0.02 : 0.0;
-                var scaleToZero = AxesScaleToZero.TryGetValue(axisId, out var s2z) && s2z;
-                var label = UnitOfMeasureLabel(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation, s.Value);
-                newCurrentAxes.Add(new AxisInfo(axisId, label));
-                ((IDictionary<string, object>)scales).Add(
-                    axisId,
-                    new
-                    {
-                        Display = true,
-                        Axis = "y",
-                        Position = axes.Count % 2 == 0 ? "left" : "right",
-                        Grid = new { DrawOnChartArea = axes.Count == 0 },
-                        Title = new
-                        {
-                            Text = label,
-                            Display = true,
-                            Color = s.Colour,
-                        },
-                        Min = scaleToZero && globalMinMax.Min > 0 ? 0.0 : globalMinMax.Min == 0 ? globalMinMax.Min : globalMinMax.Min - axisPadding,
-                        Max = globalMinMax.Max == 0 ? globalMinMax.Max : globalMinMax.Max + axisPadding,
-                    });
-                axes.Add(axisId);
-            }
-        }
-
-        CurrentAxes = newCurrentAxes;
-    }
-
-    private (Dictionary<string, (double Min, double Max)> AxisMinMax, HashSet<string> AxisHasBarSeries) CreateAxesMinMax()
-    {
-        // Build a global min/max per axis from the full source datasets, before any display range filtering.
-        // This ensures the y-axis range reflects the complete dataset even when ChartAllData is false.
-        Dictionary<string, (double Min, double Max)> axisMinMax = [];
-        HashSet<string> axisHasBarSeries = [];
-        foreach (var swd in ChartSeriesWithData!)
-        {
-            var cs = swd.ChartSeries!;
-            var uom = cs.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
-            var axisId = ChartLogic.GetYAxisId(cs.SeriesTransformation, cs.CustomTransformation, uom, cs.Aggregation);
-
-            if (cs.DisplayStyle == SeriesDisplayStyle.Bar)
-            {
-                axisHasBarSeries.Add(axisId);
-            }
-
-            var values = swd.PreProcessedDataSet!.DataRecords!
-                .Select(x => x.Value)
-                .Where(v => v.HasValue)
-                .Select(v => v!.Value)
-                .ToList();
-
-            if (values.Count == 0)
-            {
-                continue;
-            }
-
-            var seriesMin = values.Min();
-            var seriesMax = values.Max();
-
-            if (axisMinMax.TryGetValue(axisId, out var current))
-            {
-                axisMinMax[axisId] = (Math.Min(current.Min, seriesMin), Math.Max(current.Max, seriesMax));
-            }
-            else
-            {
-                axisMinMax[axisId] = (seriesMin, seriesMax);
-            }
-        }
-
-        return (axisMinMax, axisHasBarSeries);
     }
 
     private async Task OnSelectedBinGranularityChanged(BinGranularities value, bool rebuildDataSets = true)
