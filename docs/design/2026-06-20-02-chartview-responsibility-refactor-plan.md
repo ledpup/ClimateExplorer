@@ -543,4 +543,14 @@ Phase 3 has started by moving initial URL/default state orchestration to parent 
 - Removed `PageKind` from `ChartView`; no `ChartPageKind` enum remains in code.
 - Removed URL parsing and default-chart selection methods from `ChartView`.
 - Fixed the regional/global initial state path so resolving `InitialChartState` requests a rerender before the child chart applies it.
-- `ChartView` still owns `BuildDataSets`, URL serialization/navigation, data fetching, rendering, location-change substitution, and page-level event callbacks. These are the remaining Phase 3/4/5 responsibilities.
+- At the end of Phase 3, `ChartView` still owned `BuildDataSets`, URL serialization/navigation, data fetching, rendering, location-change substitution, and page-level event callbacks.
+
+Phase 4 is complete for the transitional location-substitution boundary.
+
+- Added `ChartSeriesLocationSubstitutionService` with a location-page context/result contract.
+- Moved the old `ChangedLocation` series-rewrite behavior out of `ChartView` and into the location page flow.
+- Preserved unlocked single-location rewrites, region source-spec skipping, locked-series duplication, duplicate removal, and unavailable-data warning messages.
+- Added unit coverage for the Phase 4 substitution rules.
+- Removed `Location`, `LocationDictionary`, and `Regions` parameters from `ChartView`.
+- Added transitional `CaptureCurrentChartState` and `ApplyChartStateAsync` methods so the parent can own location substitution while chart controls still mutate internal state.
+- `ChartView` still owns `BuildDataSets`, URL serialization/navigation, data fetching, rendering, and page-level event callbacks. These are the remaining Phase 3/5 responsibilities.

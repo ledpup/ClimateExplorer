@@ -63,6 +63,9 @@ public partial class Index : ChartablePage
     [Inject]
     private ILocationDefaultChartProvider? LocationDefaultChartProvider { get; set; }
 
+    [Inject]
+    private IChartSeriesLocationSubstitutionService? ChartSeriesLocationSubstitutionService { get; set; }
+
     private ChangeLocation? ChangeLocationModal { get; set; }
     private string? BrowserLocationErrorMessage { get; set; }
     private Location? Location { get; set; }
@@ -313,7 +316,7 @@ public partial class Index : ChartablePage
 
     private async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)
     {
-        await ChartView!.HandleOnYearFilterChange(yearAndDataTypeFilter);
+        await ChartView!.HandleOnYearFilterChange(yearAndDataTypeFilter, Location);
     }
 
     private async Task OnOverviewShowHide(bool isOverviewVisible)
@@ -378,8 +381,35 @@ public partial class Index : ChartablePage
         Location = value;
 
         await LocalStorage!.SetItemAsync("lastLocationId", newValue.ToString());
+        await ApplyLocationChangeToChartState();
 
         StateHasChanged();
+    }
+
+    private async Task ApplyLocationChangeToChartState()
+    {
+        if (PreviousLocation is null || Location is null || PreviousLocation.Id == Location.Id || ChartView is null || DataSetDefinitions is null || Regions is null)
+        {
+            return;
+        }
+
+        var result = ChartSeriesLocationSubstitutionService!.Substitute(
+            new ChartLocationSubstitutionContext
+            {
+                State = ChartView.CaptureCurrentChartState(),
+                Location = Location,
+                Regions = Regions.ToList(),
+                DataSetDefinitions = DataSetDefinitions.ToList(),
+            });
+
+        InitialChartState = result.State;
+
+        foreach (var message in result.Messages)
+        {
+            await SnackbarMessageEventHandler(message);
+        }
+
+        await ChartView.ApplyChartStateAsync(result.State);
     }
 
     private void ToggleSuggestedCharts()

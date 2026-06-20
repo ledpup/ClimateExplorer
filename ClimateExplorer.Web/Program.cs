@@ -37,6 +37,7 @@ builder.Services
     .AddScoped<IChartStateUrlService, ChartStateUrlService>()
     .AddScoped<ILocationDefaultChartProvider, LocationDefaultChartProvider>()
     .AddScoped<IRegionalAndGlobalDefaultChartProvider, RegionalAndGlobalDefaultChartProvider>()
+    .AddScoped<IChartSeriesLocationSubstitutionService, ChartSeriesLocationSubstitutionService>()
     .AddScoped<IRecentObservationsDataProvider, RecentObservationsDataProvider>()
     .AddScoped<IRecentObservationsCalculator, RecentObservationsCalculator>()
     .AddScoped<IRecentObservationsService, RecentObservationsService>()

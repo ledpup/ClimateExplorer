@@ -52,15 +52,6 @@ public partial class ChartView : IAsyncDisposable
     public bool ChartAllData { get; set; }
 
     [Parameter]
-    public Location? Location { get; set; }
-
-    [Parameter]
-    public Dictionary<Guid, Location>? LocationDictionary { get; set; }
-
-    [Parameter]
-    public IEnumerable<Region>? Regions { get; set; }
-
-    [Parameter]
     public EventCallback<DataDownloadPackage> DownloadDataEvent { get; set; }
 
     [Parameter]
@@ -92,7 +83,6 @@ public partial class ChartView : IAsyncDisposable
     private bool NoChartDataAvailable { get; set; }
     private BinGranularities SelectedBinGranularity { get; set; } = BinGranularities.ByYear;
     private List<SeriesWithData>? ChartSeriesWithData { get; set; }
-    private Guid? InternalLocationId { get; set; }
     private string? SelectedStartYear { get; set; }
     private string? SelectedEndYear { get; set; }
     private short SelectedGroupingDays { get; set; }
@@ -151,6 +141,33 @@ public partial class ChartView : IAsyncDisposable
         }
     }
 
+    public ChartState CaptureCurrentChartState()
+    {
+        return CreateCurrentChartState();
+    }
+
+    public async Task ApplyChartStateAsync(ChartState state)
+    {
+        appliedInitialChartState = state;
+        SetChartState(state);
+
+        // In Blazor Server the parent can provide state before the child Chart<T> component
+        // has completed its JS initialisation. Wait until chart.js has created the canvas instance
+        // rather than using an arbitrary delay.
+        if (!OperatingSystem.IsBrowser() && JsRuntime is not null)
+        {
+            await JsRuntime.InvokeVoidAsync("waitForChartReady", chartWrapper);
+        }
+
+        if (state.Series.Count == 0)
+        {
+            await RenderChart();
+            return;
+        }
+
+        await BuildDataSets();
+    }
+
     public async Task OnAddDataSet(DataSetLibraryEntry dle, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions)
     {
         Logger!.LogInformation("Adding dle " + dle.Name);
@@ -193,7 +210,7 @@ public partial class ChartView : IAsyncDisposable
         await BuildDataSets();
     }
 
-    public async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)
+    public async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter, Location? location = null)
     {
         var targetGranularity = SelectedBinGranularity == BinGranularities.ByDayOnly
             ? BinGranularities.ByDayOnly
@@ -227,7 +244,7 @@ public partial class ChartView : IAsyncDisposable
 
             aggregation = chartSeries?.Aggregation ?? SeriesAggregationOptions.Mean;
         }
-        else if (Location is not null && yearAndDataTypeFilter.DataType.HasValue)
+        else if (location is not null && yearAndDataTypeFilter.DataType.HasValue)
         {
             var dataMatches = yearAndDataTypeFilter.UnitOfMeasure == UnitOfMeasure.DegreesCelsius
                 ? DataSubstitute.StandardTemperatureDataMatches()
@@ -235,17 +252,11 @@ public partial class ChartView : IAsyncDisposable
 
             var dsd = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
                 DataSetDefinitions!,
-                Location.Id,
+                location.Id,
                 dataMatches,
                 throwIfNoMatch: false);
 
             if (dsd == null)
-            {
-                return;
-            }
-
-            var location = GetKnownLocation(Location.Id);
-            if (location is null)
             {
                 return;
             }
@@ -299,26 +310,9 @@ public partial class ChartView : IAsyncDisposable
             return;
         }
 
-        if (DataSetDefinitions is not null && Regions is not null)
+        if (InitialChartState is not null && !ReferenceEquals(InitialChartState, appliedInitialChartState))
         {
-            if (Location is not null)
-            {
-                if (InternalLocationId is not null && InternalLocationId != Location.Id)
-                {
-                    InternalLocationId = Location.Id;
-                    await ChangedLocation();
-                }
-                else if (InternalLocationId is null)
-                {
-                    InternalLocationId = Location.Id;
-                }
-            }
-
-            if (InitialChartState is not null && !ReferenceEquals(InitialChartState, appliedInitialChartState))
-            {
-                appliedInitialChartState = InitialChartState;
-                await ApplyInitialChartState(InitialChartState);
-            }
+            await ApplyInitialChartState(InitialChartState);
         }
     }
 
@@ -577,180 +571,6 @@ public partial class ChartView : IAsyncDisposable
         LogChartSeriesList();
     }
 
-    protected async Task ChangedLocation()
-    {
-        if (Location is null)
-        {
-            return;
-        }
-
-        var location = Location;
-        var additionalCsds = new List<ChartSeriesDefinition>();
-
-        // Update data series to reflect new location
-        foreach (var csd in ChartSeriesList!.ToArray())
-        {
-            foreach (var sss in csd.SourceSeriesSpecifications!)
-            {
-                if (!csd.IsLocked)
-                {
-                    // If this source series is
-                    // 1) a simple series (only one data source), or
-                    // 2) we're not changing location, or
-                    // 3) this series belongs to the location we were previously on.
-                    // (This check is to ensure that when the user changes location, when we update compound series that are comparing
-                    // across locations, we don't update both source series to the same location, which would be nonsense.)
-                    // Furthermore, we only run location change substition for geographical entities that are locations. If it is a region, we skip this.
-                    if (csd.SourceSeriesSpecifications.Length == 1 && !Regions!.Any(x => x.Id == sss.LocationId))
-                    {
-                        sss.LocationId = location.Id;
-                        sss.LocationName = location.Name;
-
-                        var dataMatches = new List<DataSubstitute>
-                        {
-                            new()
-                            {
-                                DataType = sss.MeasurementDefinition!.DataType,
-                                DataAdjustment = sss.MeasurementDefinition.DataAdjustment,
-                            },
-                        };
-
-                        // If the data type is max or mean temperature, pass through an accepted list of near matching data
-                        if (sss.MeasurementDefinition!.DataType == DataType.TempMax || sss.MeasurementDefinition!.DataType == DataType.TempMean)
-                        {
-                            if (sss.MeasurementDefinition!.DataAdjustment == DataAdjustment.Unadjusted)
-                            {
-                                dataMatches = DataSubstitute.UnadjustedTemperatureDataMatches();
-                            }
-                            else
-                            {
-                                dataMatches = DataSubstitute.StandardTemperatureDataMatches();
-                            }
-                        }
-
-                        // But: the new location may not have data of the requested type. Let's see if there is any.
-                        var dsd =
-                            DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
-                                DataSetDefinitions!,
-                                location.Id,
-                                dataMatches,
-                                throwIfNoMatch: false);
-
-                        if (dsd == null)
-                        {
-                            var dataType = sss.MeasurementDefinition.DataType.ToFriendlyName();
-
-                            await SnackbarMessageEvent.InvokeAsync(new SnackbarMessage { Message = $"{dataType} data is not available at {location.FullTitle}.", Type = SnackbarColor.Warning });
-                            csd.DataAvailable = false;
-
-                            break;
-                        }
-                        else
-                        {
-                            // This data IS available at the new location. Now, update the series accordingly.
-                            csd.DataAvailable = true;
-
-                            sss.DataSetDefinition = dsd.DataSetDefinition!;
-
-                            // Next, update the MeasurementDefinition. Look for a match on DataType and DataAdjustment
-                            var oldMd = sss.MeasurementDefinition;
-
-                            var candidateMds =
-                                sss.DataSetDefinition!.MeasurementDefinitions!
-                                .Where(x => x.DataType == oldMd.DataType && x.DataAdjustment == oldMd.DataAdjustment)
-                                .ToArray();
-
-                            switch (candidateMds.Length)
-                            {
-                                case 0:
-                                    // There was no exact match. It's possible that the new location has data of the requested type, but not the specified adjustment type.
-                                    // If so, try defaulting.
-                                    candidateMds = sss.DataSetDefinition.MeasurementDefinitions!.Where(x => x.DataType == oldMd.DataType).ToArray();
-
-                                    if (candidateMds.Length == 1)
-                                    {
-                                        // If only one is available, just use it
-                                        sss.MeasurementDefinition = candidateMds.Single();
-                                    }
-                                    else
-                                    {
-                                        // Otherwise, use "Adjusted" if available
-                                        var adjustedMd = candidateMds.SingleOrDefault(x => x.DataAdjustment == DataAdjustment.Adjusted);
-
-                                        if (adjustedMd != null)
-                                        {
-                                            sss.MeasurementDefinition = adjustedMd;
-                                        }
-                                    }
-
-                                    break;
-
-                                case 1:
-                                    sss.MeasurementDefinition = candidateMds.Single();
-                                    break;
-
-                                default:
-                                    // There were multiple matches. That's unexpected.
-                                    throw new Exception("Unexpected condition: after changing location, while updating ChartSeriesDefinitions, there were multiple compatible MeasurementDefinitions for one CSD.");
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    // It's locked, so duplicate it & set the location on the duplicate to the new location
-                    var newDsd = DataSetDefinitions!.Single(x => x.Id == sss.DataSetDefinition!.Id);
-                    var newMd =
-                        newDsd.MeasurementDefinitions!
-                        .SingleOrDefault(x => x.DataType == sss.MeasurementDefinition!.DataType && x.DataAdjustment == sss.MeasurementDefinition.DataAdjustment);
-
-                    newMd ??= newDsd.MeasurementDefinitions!
-                                .SingleOrDefault(x => x.DataType == sss.MeasurementDefinition!.DataType && x.DataAdjustment == null);
-
-                    if (newMd != null)
-                    {
-                        additionalCsds.Add(
-                            new ChartSeriesDefinition()
-                            {
-                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                                SourceSeriesSpecifications =
-                                    [
-                                    new SourceSeriesSpecification
-                                    {
-                                        DataSetDefinition = DataSetDefinitions!.Single(x => x.Id == sss.DataSetDefinition!.Id),
-                                        LocationId = location.Id,
-                                        LocationName = location.Name,
-                                        MeasurementDefinition = newMd,
-                                    }
-
-                                    ],
-                                Aggregation = csd.Aggregation,
-                                BinGranularity = csd.BinGranularity,
-                                DisplayStyle = csd.DisplayStyle,
-                                IsLocked = false,
-                                ShowTrendline = csd.ShowTrendline,
-                                Smoothing = csd.Smoothing,
-                                SmoothingWindow = csd.SmoothingWindow,
-                                Value = csd.Value,
-                                Year = csd.Year,
-                                SeriesTransformation = csd.SeriesTransformation,
-                                GroupingThreshold = csd.GroupingThreshold,
-                                MinimumDataResolution = csd.MinimumDataResolution,
-                            });
-                    }
-                }
-            }
-        }
-
-        Logger!.LogInformation("Adding items to list inside SelectedLocationChangedInternal()");
-
-        var draftList = ChartSeriesList.Concat(additionalCsds).ToList();
-
-        ChartSeriesList = draftList.CreateNewListWithoutDuplicates();
-
-        await BuildDataSets();
-    }
-
     private static ContainerAggregationFunctions MapSeriesAggregationOptionToBinAggregationFunction(SeriesAggregationOptions a)
     {
         return a switch
@@ -872,7 +692,7 @@ public partial class ChartView : IAsyncDisposable
         };
     }
 
-    private void ApplyChartState(ChartState state)
+    private void SetChartState(ChartState state)
     {
         ChartAllData = state.ChartAllData;
         SelectedStartYear = state.StartYear;
@@ -894,23 +714,7 @@ public partial class ChartView : IAsyncDisposable
 
     private async Task ApplyInitialChartState(ChartState state)
     {
-        ApplyChartState(state);
-
-        // In Blazor Server the parent can provide state before the child Chart<T> component
-        // has completed its JS initialisation. Wait until chart.js has created the canvas instance
-        // rather than using an arbitrary delay.
-        if (!OperatingSystem.IsBrowser() && JsRuntime is not null)
-        {
-            await JsRuntime.InvokeVoidAsync("waitForChartReady", chartWrapper);
-        }
-
-        if (state.Series.Count == 0)
-        {
-            await RenderChart();
-            return;
-        }
-
-        await BuildDataSets();
+        await ApplyChartStateAsync(state);
     }
 
     private async Task<List<SeriesWithData>> RetrieveDataSets(IEnumerable<ChartSeriesDefinition> chartSeriesList)
@@ -968,28 +772,17 @@ public partial class ChartView : IAsyncDisposable
         return datasetsToReturn;
     }
 
-    private Location? GetKnownLocation(Guid locationId)
-    {
-        if (Location?.Id == locationId)
-        {
-            return Location;
-        }
-
-        return LocationDictionary is not null && LocationDictionary.TryGetValue(locationId, out var location)
-            ? location
-            : null;
-    }
-
     private Dictionary<Guid, Location>? GetChartTitleLocations()
     {
-        if (LocationDictionary is not null)
-        {
-            return LocationDictionary;
-        }
+        var locations = ChartSeriesWithData?
+            .Select(x => x.SourceDataSet?.GeographicalEntity)
+            .OfType<Location>()
+            .GroupBy(x => x.Id)
+            .ToDictionary(x => x.Key, x => x.First());
 
-        return Location is null
-            ? null
-            : new Dictionary<Guid, Location> { [Location.Id] = Location };
+        return locations is { Count: > 0 }
+            ? locations
+            : null;
     }
 
     private void LogChartSeriesList()
