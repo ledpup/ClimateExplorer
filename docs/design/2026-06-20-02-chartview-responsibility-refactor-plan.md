@@ -566,3 +566,11 @@ Phase 5 is complete for the chart-data-building extraction.
 - Left `CreateAxesMinMax`/`CreateYAxes` in `ChartView` for now; they operate on the build result's series (which still carry `PreProcessedDataSet`) and belong with the chart-options/rendering work targeted by Phase 6.
 - Added unit coverage for the empty/non-renderable result (no data-service call), the annual-change secondary calculation, `ChartAllData` vs `StartYear` range selection with start-year metadata, modular (month-only) bin production, and the moving-average fallback warning.
 - At the end of Phase 5, `ChartView` still owns `BuildDataSets` orchestration, URL serialization/navigation, rendering, and page-level event callbacks. These are the remaining Phase 3/6 responsibilities.
+
+The remaining Phase 3 URL-serialization/navigation ownership has now moved to the parent pages.
+
+- Added a `ChartStateChanged` event callback on `ChartView`. `BuildDataSets` now raises it (passing the current `ChartState`) instead of building the URL and calling `NavigateTo` itself, then continues to fetch and render directly as before.
+- Added `ChartablePage.OnChartStateChanged`, which serializes chart state to the URL via `ChartStateUrlService.BuildRelativeUrl` and performs the same same-path/`replace` navigation logic (replace when no `csd=` is present). Both parent pages wire `ChartStateChanged="@OnChartStateChanged"`.
+- Removed the `PageName` parameter and the `NavigationManager` and `IChartStateUrlService` injections from `ChartView`; URL/route knowledge now lives only in the parent/page layer. `PageName` remains on `ChartablePage` for its own route navigation.
+- `ChartView` no longer inspects `NavigationManager.Uri`, calls `NavigateTo`, or knows the current route — satisfying those items from the "`ChartView` should not" list.
+- Remaining for Phase 6: replace the mutable `ChartAllData` parameter and the imperative `BuildDataSets`/`CaptureCurrentChartState`/`ApplyChartStateAsync` surface with a chart-state-based API, and split out rendering helpers (`CreateChartOptions`/`BuildChartScales`/`CreateYAxes`/`CreateAxesMinMax`).

@@ -34,9 +34,9 @@
 
 <div class="chart-container">
     <ChartView @ref="ChartView"
-               PageName="@PageName"
                InitialChartState="@InitialChartState"
                DataSetDefinitions="@DataSetDefinitions"
+               ChartStateChanged="@OnChartStateChanged"
                ShowAddDataSetModalEvent="@ShowAddDataSetModal"
                DownloadDataEvent="@OnDownloadDataClicked"
                SnackbarMessageEvent="@SnackbarMessageEventHandler" />

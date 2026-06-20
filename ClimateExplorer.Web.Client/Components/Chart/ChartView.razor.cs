@@ -40,9 +40,6 @@ public partial class ChartView : IAsyncDisposable
     private ChartState? appliedInitialChartState;
 
     [Parameter]
-    public string? PageName { get; set; }
-
-    [Parameter]
     public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     [Parameter]
@@ -50,6 +47,9 @@ public partial class ChartView : IAsyncDisposable
 
     [Parameter]
     public bool ChartAllData { get; set; }
+
+    [Parameter]
+    public EventCallback<ChartState> ChartStateChanged { get; set; }
 
     [Parameter]
     public EventCallback<DataDownloadPackage> DownloadDataEvent { get; set; }
@@ -68,12 +68,6 @@ public partial class ChartView : IAsyncDisposable
 
     [Inject]
     private ILogger<ChartView>? Logger { get; set; }
-
-    [Inject]
-    private NavigationManager? NavManager { get; set; }
-
-    [Inject]
-    private IChartStateUrlService? ChartStateUrlService { get; set; }
 
     [Inject]
     private IChartDataBuilder? ChartDataBuilder { get; set; }
@@ -335,12 +329,11 @@ public partial class ChartView : IAsyncDisposable
         // Our strategy here is:
         //
         // This method has been called because something has happened that may require the chart to be
-        // re-rendered. We calculate the URI reflecting the current UI state. If we're already at that
-        // URI, then we conclude that one of the properties has changed that does NOT impact the URI,
-        // so we just immediately re-render the chart. If we are NOT already at that URI, then we just
-        // trigger navigation to that URI, and DO NOT RE-RENDER THE CHART YET. Instead, as part of that
-        // navigation process, methods will trigger that will re render the chart based on what's in the
-        // updated URI.
+        // re-rendered. We raise ChartStateChanged so the parent page can update the URL bar to reflect the
+        // current chart state. We do NOT rely on any resulting navigation re-triggering a render, because
+        // same-path replace:true navigation is unreliable in deployed Blazor Server/WASM (the chart on the
+        // regional page was stuck on the loading spinner due to this). The chart is rendered directly below
+        // regardless.
         //
         // This is all to avoid re-rendering the chart more than once (bad for performance) or, even worse,
         // re-rendering the chart on two different async call chains at the same time (bad for correctness -
@@ -360,24 +353,7 @@ public partial class ChartView : IAsyncDisposable
         {
             LoadingChart();
 
-            var url = ChartStateUrlService!.BuildRelativeUrl(PageName!, CreateCurrentChartState());
-
-            string currentUri = NavManager!.Uri;
-            string newUri = NavManager.BaseUri + url;
-
-            if (currentUri != newUri)
-            {
-                l.LogInformation("Because the URI reflecting current UI state is different to the URI we're currently at, updating the URL bar.");
-
-                bool shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds = currentUri.IndexOf("csd=") == -1;
-
-                // Update the URL bar. We do NOT rely on this navigation re-triggering OnAfterRenderAsync,
-                // because same-path replace:true navigation is unreliable in deployed Blazor Server/WASM
-                // (the chart on the regional page was stuck on the loading spinner due to this). The chart
-                // is rendered directly below regardless. If navigation does fire OnAfterRenderAsync, the
-                // ChartLoadingIndicatorVisible = false set by RenderChart prevents a redundant second render.
-                NavManager!.NavigateTo(url, false, shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds);
-            }
+            await ChartStateChanged.InvokeAsync(CreateCurrentChartState());
 
             if (disposed)
             {

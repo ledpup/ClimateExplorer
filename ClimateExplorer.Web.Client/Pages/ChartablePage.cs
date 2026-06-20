@@ -102,6 +102,28 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         return AddDataSetModal!.Show();
     }
 
+    protected void OnChartStateChanged(ChartState state)
+    {
+        // The chart raised a state change. Reflect the current chart state in the URL bar so the chart is
+        // shareable/bookmarkable. We do NOT rely on this navigation re-triggering a render; ChartView renders
+        // directly. Same-path replace:true navigation is unreliable in deployed Blazor Server/WASM.
+        var url = ChartStateUrlService!.BuildRelativeUrl(PageName!, state);
+
+        var currentUri = NavManager!.Uri;
+        var newUri = NavManager.BaseUri + url;
+
+        if (currentUri == newUri)
+        {
+            return;
+        }
+
+        Logger!.LogInformation("Because the URI reflecting current UI state is different to the URI we're currently at, updating the URL bar.");
+
+        var shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds = currentUri.IndexOf("csd=") == -1;
+
+        NavManager.NavigateTo(url, false, shouldJustReplaceCurrentUrlBecauseWeAreAddingInQueryStringParametersForCsds);
+    }
+
     protected async Task OnAddDataSet(DataSetLibraryEntry dle)
     {
         await ChartView!.OnAddDataSet(dle, DataSetDefinitions!);
