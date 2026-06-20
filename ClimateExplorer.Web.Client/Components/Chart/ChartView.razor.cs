@@ -10,13 +10,13 @@ using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Common;
+using ClimateExplorer.Web.Client.Services.Chart;
 using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
 using CurrentDevice;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
 
@@ -80,6 +80,9 @@ public partial class ChartView : IAsyncDisposable
 
     [Inject]
     private NavigationManager? NavManager { get; set; }
+
+    [Inject]
+    private IChartStateUrlService? ChartStateUrlService { get; set; }
 
     private bool ChartLoadingIndicatorVisible { get; set; }
     private bool ChartLoadingErrored { get; set; }
@@ -395,21 +398,12 @@ public partial class ChartView : IAsyncDisposable
         {
             LoadingChart();
 
-            var queryString = new Uri(NavManager!.Uri).Query;
-            var queryDictionary = System.Web.HttpUtility.ParseQueryString(queryString);
-
-            var url = GetGlobalQueryStringSettings();
-
-            // Recalculate the URL
-            string chartSeriesUrlComponent = ChartSeriesListSerializer.BuildChartSeriesListUrlComponent(ChartSeriesList!);
-            if (chartSeriesUrlComponent.Length > 0)
-            {
-                url += "&csd=" + chartSeriesUrlComponent;
-            }
-            else
+            if (ChartSeriesList is null || ChartSeriesList.Count == 0)
             {
                 ChartSeriesWithData = null;
             }
+
+            var url = ChartStateUrlService!.BuildRelativeUrl(PageName!, CreateCurrentChartState());
 
             string currentUri = NavManager!.Uri;
             string newUri = NavManager.BaseUri + url;
@@ -895,49 +889,52 @@ public partial class ChartView : IAsyncDisposable
         };
     }
 
-    private string GetGlobalQueryStringSettings()
+    private ChartState CreateCurrentChartState()
     {
-        string url = PageName!;
-
-        var chartAllData = ChartAllData.ToString()!.ToLower();
-        var startYear = SelectedStartYear;
-        var endYear = SelectedEndYear;
-
-        url += "?chartAllData=" + chartAllData;
-        if (!string.IsNullOrWhiteSpace(startYear))
+        return new ChartState
         {
-            url += $"&startYear={startYear}";
+            ChartAllData = ChartAllData,
+            StartYear = SelectedStartYear,
+            EndYear = SelectedEndYear,
+            GroupingDays = SelectedGroupingDays,
+            GroupingThresholdText = GroupingThresholdText ?? string.Empty,
+            UserOverrideAggregationSettings = UserOverridePresetAggregationSettings,
+            AxesScaleToZero = AxesScaleToZero,
+            Series = ChartSeriesList ?? [],
+        };
+    }
+
+    private ChartPageContext CreateChartPageContext()
+    {
+        return new ChartPageContext
+        {
+            PageKind = Location is null ? ChartPageKind.RegionalAndGlobal : ChartPageKind.Location,
+            Location = Location,
+            Locations = GetKnownLocationDictionary(),
+            Regions = Regions!.ToList(),
+            DataSetDefinitions = DataSetDefinitions!.ToList(),
+            IsMobileDevice = IsMobileDevice ?? false,
+        };
+    }
+
+    private void ApplyChartState(ChartState state)
+    {
+        ChartAllData = state.ChartAllData;
+        SelectedStartYear = state.StartYear;
+        SelectedEndYear = state.EndYear;
+        SelectedGroupingDays = state.GroupingDays;
+        GroupingThresholdText = state.GroupingThresholdText;
+        UserOverridePresetAggregationSettings = state.UserOverrideAggregationSettings;
+        AxesScaleToZero = state.AxesScaleToZero;
+
+        if (state.Series.Any())
+        {
+            SelectedBinGranularity = state.Series.First().BinGranularity;
         }
 
-        if (!string.IsNullOrWhiteSpace(endYear))
-        {
-            url += $"&endYear={endYear}";
-        }
+        Logger!.LogInformation("Setting ChartSeriesList to list with " + state.Series.Count + " items");
 
-        var groupingDays = SelectedGroupingDays;
-        if (SelectedGroupingDays > 0)
-        {
-            url += $"&groupingDays={groupingDays}";
-        }
-
-        var groupingThresholdText = GroupingThresholdText;
-        if (!string.IsNullOrWhiteSpace(groupingThresholdText))
-        {
-            url += $"&groupingThreshold={groupingThresholdText}";
-        }
-
-        if (UserOverridePresetAggregationSettings)
-        {
-            url += "&userOverride=true";
-        }
-
-        var scaledAxes = AxesScaleToZero.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToList();
-        if (scaledAxes.Count > 0)
-        {
-            url += $"&axisScaleToZero={string.Join(",", scaledAxes)}";
-        }
-
-        return url;
+        ChartSeriesList = state.Series.ToList();
     }
 
     private async Task UpdateUiStateBasedOnQueryString(Uri uri)
@@ -954,43 +951,25 @@ public partial class ChartView : IAsyncDisposable
 
         updateUiStateInProcess = true;
 
-        var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
-
-        ChartAllData = queryDictionary["chartAllData"] == null ? false : bool.Parse(queryDictionary["chartAllData"]!);
-        SelectedStartYear = queryDictionary["startYear"];
-        SelectedEndYear = queryDictionary["endYear"];
-        SelectedGroupingDays = queryDictionary["groupingDays"] == null ? (short)14 : short.Parse(queryDictionary["groupingDays"]!);
-        GroupingThresholdText = string.IsNullOrWhiteSpace(queryDictionary["groupingThreshold"]) ? "70" : queryDictionary["groupingThreshold"];
-        UserOverridePresetAggregationSettings = queryDictionary["userOverride"] == "true";
-
-        var axisScaleToZeroParam = queryDictionary["axisScaleToZero"];
-        AxesScaleToZero = [];
-        if (!string.IsNullOrWhiteSpace(axisScaleToZeroParam))
+        try
         {
-            foreach (var axisId in axisScaleToZeroParam.Split(','))
+            var result = ChartStateUrlService!.Parse(uri, CreateChartPageContext());
+
+            if (result.Kind == ChartUrlStateKind.Invalid)
             {
-                if (!string.IsNullOrWhiteSpace(axisId))
-                {
-                    AxesScaleToZero[axisId.Trim()] = true;
-                }
+                Logger!.LogError(result.ErrorMessage);
+                return;
             }
-        }
 
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier))
-        {
-            try
+            if (result.State is null)
             {
-                var csdList = ChartSeriesListSerializer.ParseChartSeriesDefinitionList(Logger!, csdSpecifier!, DataSetDefinitions!, GetKnownLocationDictionary(), Regions);
+                return;
+            }
 
-                if (csdList.Any())
-                {
-                    SelectedBinGranularity = csdList.First().BinGranularity;
-                }
+            ApplyChartState(result.State);
 
-                Logger!.LogInformation("Setting ChartSeriesList to list with " + csdList.Count + " items");
-
-                ChartSeriesList = csdList.ToList();
-
+            if (result.Kind == ChartUrlStateKind.Valid)
+            {
                 try
                 {
                     await BuildDataSets();
@@ -1003,13 +982,15 @@ public partial class ChartView : IAsyncDisposable
                     await RenderChart();
                 }
             }
-            catch (Exception ex)
+            else if (result.Kind == ChartUrlStateKind.ExplicitEmpty)
             {
-                Logger!.LogError(ex.ToString());
+                await RenderChart();
             }
         }
-
-        updateUiStateInProcess = false;
+        finally
+        {
+            updateUiStateInProcess = false;
+        }
     }
 
     private async Task<List<SeriesWithData>> RetrieveDataSets(IEnumerable<ChartSeriesDefinition> chartSeriesList)

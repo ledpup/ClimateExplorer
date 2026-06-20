@@ -5,6 +5,8 @@ using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
 using ClimateExplorer.Core.Blog;
 using ClimateExplorer.Web.Client.Services;
+using ClimateExplorer.Web.Client.Services.Chart;
+using ClimateExplorer.Web.Client.Services.RecentObservations;
 using ClimateExplorer.WebApiClient.Services;
 using CurrentDevice;
 using DPBlazorMapLibrary;
@@ -25,6 +27,7 @@ builder.Services
     .AddSingleton<IDataServiceCache, DataServiceCache>()
     .AddTransient<IExporter, Exporter>()
     .AddScoped<IInfoPanelDismissalService, InfoPanelDismissalService>()
+    .AddScoped<IChartStateUrlService, ChartStateUrlService>()
     .AddScoped<IRecentObservationsDataProvider, RecentObservationsDataProvider>()
     .AddScoped<IRecentObservationsCalculator, RecentObservationsCalculator>()
     .AddScoped<IRecentObservationsService, RecentObservationsService>()

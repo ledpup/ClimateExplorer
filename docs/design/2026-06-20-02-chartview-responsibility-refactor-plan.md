@@ -1,7 +1,7 @@
 # `ChartView` responsibility refactor plan
 
 - **Date:** 2026-06-20
-- **Status:** Proposed
+- **Status:** In progress
 - **Author:** Patrick Lea (with Codex)
 - **Scope:** `ChartView`, `ChartablePage`, location and regional/global chart pages, chart URL state, default chart selection, chart data preparation, chart rendering, and chart UI event flow.
 - **Builds on:** [Investigation and refactor plan: `ChartView.razor`](2026-06-20-01-investigation-and-refactor-plan-ChartView.md)
@@ -502,14 +502,20 @@ Existing `ClimateExplorer.Web.UiTests/ChartTests.cs` already covers part of the 
 - Should `ChartView` continue to fetch data after URL/default extraction, or should parent pages pass fully built `ChartDataBuildResult`?
   - Answer: No, it should not fetch data. Create a `ChartDataBuilder` service and have parent pages call it after URL parsing and default selection. This keeps all orchestration out of `ChartView` and allows for better testing of data preparation logic.
 - Should chart state be immutable records from the start, or should phase 1 wrap existing mutable `ChartSeriesDefinition` lists to limit churn?
-  -  Answer: I don't understand the ramifications. 
+  - Answer: Phase 1 should wrap the existing mutable `ChartSeriesDefinition` list to limit churn. Fully immutable state would make ownership cleaner later, but it would force a broader rewrite of the current chart controls, duplicate-removal helpers, default-series setup, and location-substitution code before the URL boundary is even extracted. For now, use small record types as service contracts while preserving the existing mutable series model inside them.
 - Should snackbar messages from chart data preparation become structured warning codes so parent pages can choose presentation?
   - Answer: no, this is not important.
 - Should `ChartSeriesListSerializer` remain the long-term URL format, or should a versioned serializer be introduced before more chart state is added?
-  - Answer: I don't understand the ramifications.
+  - Answer: Keep `ChartSeriesListSerializer` and the current URL shape for phase 1. A versioned serializer would make future migrations safer, but introducing it now risks breaking existing shared/bookmarked chart URLs before the responsibilities are separated. Put the serializer behind `ChartStateUrlService` first so a versioned format can be added later without touching `ChartView` again.
 - Should the location page keep using `ChartablePage.GetLocationFromCsd`, or should initial-location selection use the same `ChartStateUrlService.Parse` result as chart setup?
   - Answer: the trick is that the csd can acually have more than one location in it. There is a mismatch where only one LocationDashboard is shown, but multiple locations can appear in the chart. This might need more investigation. Maybe we should be able to slide through the locations from the csd, displaying the different LocationDashboards as we do. That means we don't have a Location object but a Locations list. The map would have to change as the user cycles through the locations. This is a bigger change.
 
-## Immediate Next Step
+## Progress
 
-Start with Phase 1. Add a `ChartStateUrlService` around the current query parameters and serializer, with tests for current behavior. Then replace only `GetGlobalQueryStringSettings` and query parsing in `ChartView` with calls to that service, leaving rendering and default creation untouched until behavior is locked.
+Phase 1 has started.
+
+- Added a `ChartStateUrlService` around the current query parameters and `ChartSeriesListSerializer`.
+- Added small chart URL/state result records while preserving the existing mutable `ChartSeriesDefinition` list.
+- Replaced `GetGlobalQueryStringSettings` and query parsing in `ChartView` with calls to the service.
+- Left rendering, data fetching, default creation, and parent-page orchestration untouched.
+- Added unit coverage for missing chart state, explicit-empty state, valid serialized series parsing, and empty-series URL building.
