@@ -780,7 +780,7 @@ public partial class ChartView : IAsyncDisposable
             }
         }
 
-        Logger!.LogInformation("Adding items to list inside SelectedLocationChangedInternal()");
+        Logger!.LogInformation("Adding items to list inside ChangedLocation()");
 
         var draftList = ChartSeriesList.Concat(additionalCsds).ToList();
 

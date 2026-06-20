@@ -35,6 +35,43 @@ public partial class ChartTests : TestBase
 
     }
 
+    [Test]
+    public async Task DirectLoadByLocationNameResolvesCorrectly()
+    {
+        await page.GotoAsync($"{_baseSiteUrl}/location/hobart");
+
+        await Assertions.Expect(page.Locator("span.title").GetByText("Hobart")).ToBeAttachedAsync();
+    }
+
+    [Test]
+    public async Task RefreshOnLocationNameUrlStillResolves()
+    {
+        await page.GotoAsync($"{_baseSiteUrl}/location/hobart");
+        await Assertions.Expect(page.Locator("span.title").GetByText("Hobart")).ToBeAttachedAsync();
+
+        await page.ReloadAsync();
+
+        await Assertions.Expect(page.Locator("span.title").GetByText("Hobart")).ToBeAttachedAsync();
+    }
+
+    [Test]
+    public async Task NavigatingBetweenLocationNameUrlsShowsTheNewLocation()
+    {
+        await page.GotoAsync($"{_baseSiteUrl}/location/hobart");
+        await Assertions.Expect(page.Locator("span.title").GetByText("Hobart")).ToBeAttachedAsync();
+
+        await page.GotoAsync($"{_baseSiteUrl}/location/launceston-airport");
+        await Assertions.Expect(page.Locator("span.title").GetByText("Launceston Airport")).ToBeAttachedAsync();
+    }
+
+    [Test]
+    public async Task InvalidLocationNameShowsNotFound()
+    {
+        await page.GotoAsync($"{_baseSiteUrl}/location/this-location-does-not-exist");
+
+        await page.WaitForURLAsync($"{_baseSiteUrl}/error");
+    }
+
     private async Task LoadMainPage()
     {
         await page.GotoAsync(_baseSiteUrl);
