@@ -50,13 +50,13 @@ public partial class RegionalAndGlobal : ChartablePage
             StateHasChanged();
         }
 
-        if (await EnsureInitialChartStateAsync(location: null, CreateDefaultRegionalAndGlobalChartState))
+        if (await EnsureInitialChartStateAsync(location: null, CreateDefaultChartState))
         {
             StateHasChanged();
         }
     }
 
-    private ChartState CreateDefaultRegionalAndGlobalChartState()
+    private ChartState CreateDefaultChartState()
     {
         ArgumentNullException.ThrowIfNull(DataSetDefinitions, nameof(DataSetDefinitions));
 
