@@ -117,6 +117,8 @@ public partial class Index : ChartablePage
             SiteOverviewService!.ShowRequested += HandleShowRequested;
         }
 
+        var shouldRenderAgain = false;
+
         if (DataSetDefinitions is null)
         {
             var dataSetDefinitionsTask = DataService!.GetDataSetDefinitions();
@@ -155,21 +157,27 @@ public partial class Index : ChartablePage
                 }
             }
 
-            if (Location is not null)
-            {
-                await EnsureInitialChartStateAsync(Location, CreateDefaultLocationChartState);
-            }
-
-            // DataSetDefinitions and Location are both settled now, so this is the first render
-            // at which location-dependent children (e.g. SuggestedCharts) have what they need.
-            StateHasChanged();
+            // DataSetDefinitions and Regions are settled now. Location may arrive from an
+            // async route lookup on a later render, so chart initialization is retried below.
+            shouldRenderAgain = true;
         }
-        else if (LocationDictionary is null && Location is not null)
+
+        if (Location is not null && await EnsureInitialChartStateAsync(Location, CreateDefaultLocationChartState))
+        {
+            shouldRenderAgain = true;
+        }
+
+        if (LocationDictionary is null && Location is not null)
         {
             StartDeferredLocationDictionaryLoad();
         }
 
         await base.OnAfterRenderAsync(firstRender);
+
+        if (shouldRenderAgain)
+        {
+            StateHasChanged();
+        }
     }
 
     // Single entry point for turning the current route into the displayed Location. Idempotent:

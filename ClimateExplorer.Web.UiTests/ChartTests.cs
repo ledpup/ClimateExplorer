@@ -76,6 +76,27 @@ public partial class ChartTests : TestBase
     }
 
     [Test]
+    public async Task LocationTableClickResolvesToCanonicalChartStateUrlAndRendersChart()
+    {
+        await page.GotoAsync($"{_baseSiteUrl}/locations");
+
+        await page.GetByPlaceholder("Search locations...").FillAsync("Hobart");
+        await page.GetByRole(AriaRole.Link, new() { Name = "Hobart" }).ClickAsync();
+
+        await Assertions.Expect(page.Locator("span.title").GetByText("Hobart")).ToBeAttachedAsync();
+        await page.WaitForURLAsync($"{_baseSiteUrl}/location?chartAllData**csd=**");
+        await WaitForChartDatasetCountAsync(2);
+
+        var currentUrl = page.Url;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(currentUrl, Does.StartWith($"{_baseSiteUrl}/location?"));
+            Assert.That(currentUrl, Does.Contain("csd="));
+        });
+    }
+
+    [Test]
     public async Task RefreshOnLocationNameUrlStillResolves()
     {
         await page.GotoAsync($"{_baseSiteUrl}/location/hobart");
