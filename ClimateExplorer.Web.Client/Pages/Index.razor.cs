@@ -1,13 +1,17 @@
 namespace ClimateExplorer.Web.Client.Pages;
 
+using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Components.Location;
 using ClimateExplorer.Web.Client.Services;
+using ClimateExplorer.Web.Client.Services.Chart;
+using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
+using static ClimateExplorer.Core.Enums;
 
 public partial class Index : ChartablePage
 {
@@ -58,6 +62,9 @@ public partial class Index : ChartablePage
 
     [Inject]
     private ISiteOverviewService? SiteOverviewService { get; set; }
+
+    [Inject]
+    private IChartSeriesLocationSubstitutionService? ChartSeriesLocationSubstitutionService { get; set; }
 
     private ChangeLocation? ChangeLocationModal { get; set; }
     private string? BrowserLocationErrorMessage { get; set; }
@@ -146,6 +153,11 @@ public partial class Index : ChartablePage
                         await NavigateTo($"/{PageName}/{Location.Id}");
                     }
                 }
+            }
+
+            if (Location is not null)
+            {
+                await EnsureInitialChartStateAsync(Location, CreateDefaultLocationChartState);
             }
 
             // DataSetDefinitions and Location are both settled now, so this is the first render
@@ -358,7 +370,95 @@ public partial class Index : ChartablePage
 
     private async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)
     {
-        await ChartView!.HandleOnYearFilterChange(yearAndDataTypeFilter);
+        if (CurrentChartState is null)
+        {
+            return;
+        }
+
+        var targetGranularity = GetSelectedBinGranularity(CurrentChartState) == BinGranularities.ByDayOnly
+            ? BinGranularities.ByDayOnly
+            : BinGranularities.ByMonthOnly;
+
+        var seriesList = CurrentChartState.Series.ToList();
+        foreach (var csd in seriesList)
+        {
+            csd.BinGranularity = targetGranularity;
+        }
+
+        seriesList = seriesList.CreateNewListWithoutDuplicates();
+
+        if (yearAndDataTypeFilter.UnitOfMeasure.HasValue)
+        {
+            seriesList =
+                [
+                    .. seriesList.Where(x => x.SourceSeriesSpecifications!.Any(y =>
+                        IsCompatibleUnitOfMeasure(y.MeasurementDefinition!.UnitOfMeasure, yearAndDataTypeFilter.UnitOfMeasure.Value))),
+                ];
+        }
+
+        var chartWithData = CurrentChartData?.SeriesWithData
+            .FirstOrDefault(x =>
+                (x.SourceDataSet!.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
+                (x.SourceDataSet.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null));
+
+        SourceSeriesSpecification[]? sourceSeriesSpecifications;
+        SeriesAggregationOptions aggregation;
+
+        if (chartWithData != null)
+        {
+            sourceSeriesSpecifications = chartWithData.ChartSeries!.SourceSeriesSpecifications;
+
+            var chartSeries = seriesList
+                .FirstOrDefault(x => x.SourceSeriesSpecifications!.Any(y =>
+                   (y.MeasurementDefinition!.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
+                   (y.MeasurementDefinition.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null)));
+
+            aggregation = chartSeries?.Aggregation ?? SeriesAggregationOptions.Mean;
+        }
+        else if (Location is not null && yearAndDataTypeFilter.DataType.HasValue)
+        {
+            var dataMatches = yearAndDataTypeFilter.UnitOfMeasure == UnitOfMeasure.DegreesCelsius
+                ? DataSubstitute.StandardTemperatureDataMatches()
+                : [new DataSubstitute { DataType = yearAndDataTypeFilter.DataType.Value, DataAdjustment = yearAndDataTypeFilter.DataAdjustment }];
+
+            var dsd = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
+                DataSetDefinitions!,
+                Location.Id,
+                dataMatches,
+                throwIfNoMatch: false);
+
+            if (dsd == null)
+            {
+                return;
+            }
+
+            sourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Location, dsd);
+            aggregation = yearAndDataTypeFilter.DataType == DataType.Precipitation
+                ? SeriesAggregationOptions.Sum
+                : SeriesAggregationOptions.Mean;
+        }
+        else
+        {
+            return;
+        }
+
+        seriesList =
+            [
+                .. seriesList,
+                new ChartSeriesDefinition
+                {
+                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                    SourceSeriesSpecifications = sourceSeriesSpecifications,
+                    Aggregation = aggregation,
+                    BinGranularity = targetGranularity,
+                    Smoothing = SeriesSmoothingOptions.None,
+                    SmoothingWindow = 20,
+                    Value = SeriesValueOptions.Value,
+                    Year = yearAndDataTypeFilter.Year,
+                },
+            ];
+
+        await ApplyChartStateAsync(CurrentChartState with { Series = seriesList });
     }
 
     private async Task OnOverviewShowHide(bool isOverviewVisible)
@@ -390,10 +490,43 @@ public partial class Index : ChartablePage
             return;
         }
 
+        //PreviousLocation = Location;
+        //Location = value;
+
+        //await LocalStorage!.SetItemAsync("lastLocationId", newValue.ToString());
+        //await ApplyLocationChangeToChartState();
+
+        //StateHasChanged();
+
+
         // Map / Change-Location modal selections just navigate to the GUID URL; the resulting
         // OnParametersSetAsync -> ResolveLocationAsync applies the change (one code path for all
         // location switches, whether driven by the URL or by the UI).
         await NavigateTo($"/{PageName}/{locationId}");
+    }
+
+    private async Task ApplyLocationChangeToChartState()
+    {
+        if (PreviousLocation is null || Location is null || PreviousLocation.Id == Location.Id || CurrentChartState is null || DataSetDefinitions is null || Regions is null)
+        {
+            return;
+        }
+
+        var result = ChartSeriesLocationSubstitutionService!.Substitute(
+            new ChartLocationSubstitutionContext
+            {
+                State = CurrentChartState,
+                Location = Location,
+                Regions = Regions.ToList(),
+                DataSetDefinitions = DataSetDefinitions.ToList(),
+            });
+
+        foreach (var message in result.Messages)
+        {
+            await SnackbarMessageEventHandler(message);
+        }
+
+        await ApplyChartStateAsync(result.State);
     }
 
     private void ToggleSuggestedCharts()
@@ -402,4 +535,82 @@ public partial class Index : ChartablePage
     }
 
     private Task ShowRecordHighAsync() => locationInfoComponent?.ShowRecordHighAsync() ?? Task.CompletedTask;
+
+    private ChartState CreateDefaultLocationChartState()
+    {
+        if (Location is null)
+        {
+            throw new InvalidOperationException("A location is required before creating the default location chart.");
+        }
+
+        return CreateDefaultChartState();
+    }
+
+    private ChartState CreateDefaultChartState()
+    {
+        ArgumentNullException.ThrowIfNull(DataSetDefinitions);
+        ArgumentNullException.ThrowIfNull(Location);
+        ArgumentNullException.ThrowIfNull(IsMobileDevice);
+
+        var series = new List<ChartSeriesDefinition>();
+        var temperature = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
+            DataSetDefinitions.ToList(),
+            Location.Id,
+            DataSubstitute.StandardTemperatureDataMatches(),
+            throwIfNoMatch: true)!;
+
+        series.Add(
+            new ChartSeriesDefinition
+            {
+                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Location, temperature),
+                Aggregation = SeriesAggregationOptions.Mean,
+                BinGranularity = BinGranularities.ByYear,
+                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                SmoothingWindow = 20,
+                Value = SeriesValueOptions.Value,
+                Year = null,
+            });
+
+        var precipitation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
+            DataSetDefinitions,
+            Location.Id,
+            DataType.Precipitation,
+            null,
+            throwIfNoMatch: false);
+
+        if (precipitation is not null && !IsMobileDevice.Value)
+        {
+            series.Add(
+                new ChartSeriesDefinition
+                {
+                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Location, precipitation),
+                    Aggregation = SeriesAggregationOptions.Sum,
+                    BinGranularity = BinGranularities.ByYear,
+                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                    SmoothingWindow = 20,
+                    Value = SeriesValueOptions.Value,
+                    Year = null,
+                });
+        }
+
+        return new ChartState { Series = series };
+    }
+
+    private BinGranularities GetSelectedBinGranularity(ChartState state)
+    {
+        return state.Series.FirstOrDefault()?.BinGranularity ?? BinGranularities.ByYear;
+    }
+
+    private bool IsCompatibleUnitOfMeasure(UnitOfMeasure seriesUnitOfMeasure, UnitOfMeasure filterUnitOfMeasure)
+    {
+        if (filterUnitOfMeasure == UnitOfMeasure.DegreesCelsius)
+        {
+            return seriesUnitOfMeasure == UnitOfMeasure.DegreesCelsius
+                || seriesUnitOfMeasure == UnitOfMeasure.DegreesCelsiusAnomaly;
+        }
+
+        return seriesUnitOfMeasure == filterUnitOfMeasure;
+    }
 }

@@ -1,6 +1,6 @@
 namespace ClimateExplorer.Web.Client.Components.Common;
 
-using ClimateExplorer.Web.Client.Services;
+using ClimateExplorer.Web.Client.Services.InfoPanelDismissal;
 using CurrentDevice;
 using Microsoft.AspNetCore.Components;
 

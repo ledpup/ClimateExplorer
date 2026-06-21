@@ -4,6 +4,7 @@ namespace ClimateExplorer.Web.Client.Services;
 using System.Globalization;
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.Model;
+using ClimateExplorer.Web.Client.Services.RecentObservations;
 using ClimateExplorer.Web.Client.UiModel;
 
 public sealed class RecentObservationsCalculator : IRecentObservationsCalculator

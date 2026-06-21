@@ -6,6 +6,7 @@
 @using ClimateExplorer.Web.Client.Components
 @using ClimateExplorer.Web.Client.Components.Chart
 @using ClimateExplorer.Web.Client.Components.Common
+@using ClimateExplorer.Web.Client.Services.Chart
 @using static ClimateExplorer.Web.Client.Components.Common.Collapsible;
 @using static ClimateExplorer.Web.UiModel.SuggestedPresetLists;
 
@@ -32,13 +33,13 @@
 </div>
 
 <div class="chart-container">
-    <ChartView @ref="ChartView"
-               PageName="@PageName"
-               DataSetDefinitions="@DataSetDefinitions"
-               Regions="@Regions"
-               ShowAddDataSetModalEvent="@ShowAddDataSetModal"
-               DownloadDataEvent="@OnDownloadDataClicked"
-               SnackbarMessageEvent="@SnackbarMessageEventHandler" />
+    <ChartView State="@CurrentChartState"
+               Data="@CurrentChartData"
+               IsLoading="@ChartDataLoading"
+               LoadingErrored="@ChartDataLoadingErrored"
+               ChartStateChanged="@OnChartStateChanged"
+               AddDataSetRequested="@ShowAddDataSetModal"
+               DownloadRequested="@OnDownloadDataClicked" />
 </div>
 
 <Modal @ref="AddDataSetModal">
