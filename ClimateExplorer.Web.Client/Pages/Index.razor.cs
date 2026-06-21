@@ -1,13 +1,17 @@
 namespace ClimateExplorer.Web.Client.Pages;
 
+using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Components.Location;
 using ClimateExplorer.Web.Client.Services;
+using ClimateExplorer.Web.Client.Services.Chart;
+using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
+using static ClimateExplorer.Core.Enums;
 
 public partial class Index : ChartablePage
 {
@@ -59,11 +63,17 @@ public partial class Index : ChartablePage
     [Inject]
     private ISiteOverviewService? SiteOverviewService { get; set; }
 
+    [Inject]
+    private IChartSeriesLocationSubstitutionService? ChartSeriesLocationSubstitutionService { get; set; }
+
     private ChangeLocation? ChangeLocationModal { get; set; }
     private string? BrowserLocationErrorMessage { get; set; }
     private Location? Location { get; set; }
+    private bool ChangeLocationModalLoading { get; set; }
+    private bool ShowChangeLocationModalAfterRender { get; set; }
 
     private Location? PreviousLocation { get; set; }
+    private Guid? ChartStateLocationChangeAppliedForLocationId { get; set; }
 
     private IEnumerable<Location>? MapLocations
     {
@@ -78,8 +88,6 @@ public partial class Index : ChartablePage
         }
     }
 
-    private bool LocationChangeEventOccurring { get; set; } = false;
-
     private CancellationTokenSource? DeferredLocationDictionaryLoadCts { get; set; }
 
     private Task? LocationDictionaryLoadTask { get; set; }
@@ -92,33 +100,15 @@ public partial class Index : ChartablePage
         base.Dispose();
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        // Check to see if a named location is being requested. That will look like /location/<location-name>
-        Location = await GetLocationFromPath();
-
-        if (Location is not null)
-        {
-            LocationString = Location.Id.ToString();
-        }
-
-        await base.OnInitializedAsync();
-    }
-
     protected override async Task OnParametersSetAsync()
     {
-        // Handles named URLs when the Index component is reused across navigations
-        // (OnInitializedAsync does not re-run in that case).
-        if (LocationDictionary is not null && !string.IsNullOrEmpty(LocationString) && !Guid.TryParse(LocationString, out _))
-        {
-            var name = LocationString.TrimEnd('/').ToLower();
-            var newLocation = LocationDictionary.Values.FirstOrDefault(x => x.UrlReadyName() == name);
-            if (newLocation is not null && newLocation.Id != Location?.Id)
-            {
-                await NavigateTo($"/{PageName}/{newLocation.Id}", replace: true);
-                await SelectedLocationChangedInternal(newLocation.Id);
-            }
-        }
+        // Resolving the route's location lives here (not OnInitializedAsync) so it runs both on
+        // first load AND whenever the router reuses this component across navigations -
+        // OnInitializedAsync only runs once per instance, which is why named-URL navigation
+        // used to silently fail to update. OnParametersSetAsync is awaited during prerendering,
+        // so a location-bearing route is resolved before the prerendered HTML (and therefore
+        // the SEO-relevant title/meta/canonical) is produced.
+        await ResolveLocationAsync();
 
         await base.OnParametersSetAsync();
     }
@@ -130,6 +120,8 @@ public partial class Index : ChartablePage
             SiteOverviewService!.ShowRequested += HandleShowRequested;
         }
 
+        var shouldRenderAgain = false;
+
         if (DataSetDefinitions is null)
         {
             var dataSetDefinitionsTask = DataService!.GetDataSetDefinitions();
@@ -140,89 +132,186 @@ public partial class Index : ChartablePage
             DataSetDefinitions = [.. await dataSetDefinitionsTask];
             Regions = [.. await regionsTask];
 
-            var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
-            var csd = QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out _);
-
-            if (csd)
+            // Resolve the location only when the route itself names none (the home page, or a
+            // "?csd=..." deep link). This path needs JS (LocalStorage) and/or the dictionary,
+            // neither available while prerendering - and OnAfterRenderAsync never runs during
+            // prerendering. That's fine: the home page's canonical URL is location-independent.
+            //
+            // The LocationString guard is essential. When the route DOES name a location,
+            // OnParametersSetAsync owns the resolution and may still be in flight (Location
+            // transiently null while GetLocationByPath awaits). Falling back here on "Location is
+            // null" alone would race that resolution and load the stale last-viewed location -
+            // that's the flip-to-previous-location bug.
+            if (Location is null && string.IsNullOrEmpty(LocationString?.TrimEnd('/')))
             {
-                await EnsureLocationDictionaryLoadedAsync();
-            }
+                Location = await GetLocation();
 
-            Location ??= await GetLocation();
-            if (Location is not null)
-            {
-                LocationString = Location.Id.ToString();
-                await LocalStorage!.SetItemAsync("lastLocationId", Location.Id.ToString());
-            }
-
-            if (!csd && Location != null)
-            {
-                var routeSegment = uri.Segments.Length > 2 ? uri.Segments[2].TrimEnd('/') : null;
-                var isNamedUrl = routeSegment != null && !Guid.TryParse(routeSegment, out _);
-
-                if (isNamedUrl)
+                if (Location is not null)
                 {
-                    await NavigateTo($"/{PageName}/{Location.Id}", replace: true);
-                }
-                else if (routeSegment is null)
-                {
-                    await NavigateTo($"/{PageName}/{Location.Id}");
+                    LocationString = Location.Id.ToString();
+                    await PersistLastLocationAsync(Location.Id);
+
+                    var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+                    var csd = QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out _);
+                    if (!csd)
+                    {
+                        await NavigateTo($"/{PageName}/{Location.Id}");
+                    }
                 }
             }
 
-            StateHasChanged();
+            // DataSetDefinitions and Regions are settled now. Location may arrive from an
+            // async route lookup on a later render, so chart initialization is retried below.
+            shouldRenderAgain = true;
         }
-        else if (LocationDictionary is null && Location is not null)
+
+        if (Location is not null && await EnsureInitialChartStateAsync(Location, CreateDefaultLocationChartState))
+        {
+            shouldRenderAgain = true;
+        }
+
+        if (await ApplyLocationChangeToChartState())
+        {
+            shouldRenderAgain = true;
+        }
+
+        if (LocationDictionary is null && Location is not null)
         {
             StartDeferredLocationDictionaryLoad();
         }
 
-        // Handle location change event (coming from the map or the Change Location modal)
-        if (LocationChangeEventOccurring && LocationString is not null)
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (ShowChangeLocationModalAfterRender && LocationDictionary is not null && ChangeLocationModal is not null)
         {
-            LocationChangeEventOccurring = false;
-            var guidParsed = Guid.TryParse(LocationString, out Guid locationGuid);
-            if (guidParsed)
-            {
-                await SelectedLocationChangedInternal(locationGuid);
-                StateHasChanged();
-            }
+            ShowChangeLocationModalAfterRender = false;
+            await ChangeLocationModal.Show();
         }
 
-        await base.OnAfterRenderAsync(firstRender);
+        if (shouldRenderAgain)
+        {
+            StateHasChanged();
+        }
     }
 
-    private async Task<Location?> GetLocationFromPath()
+    // Single entry point for turning the current route into the displayed Location. Idempotent:
+    // it no-ops when the route already matches the current Location, so the re-runs caused by the
+    // prerender->interactive handoff and by the canonical-URL redirect are harmless.
+    private async Task ResolveLocationAsync()
     {
-        var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
-        Location? location = null;
-        if (uri.Segments.Length <= 2)
+        var segment = LocationString?.TrimEnd('/');
+
+        // No location in the route (home page or "?csd=..."). That case depends on JS / the
+        // dictionary, so it's handled after the first interactive render in OnAfterRenderAsync.
+        if (string.IsNullOrEmpty(segment))
         {
-            return location;
+            return;
         }
 
-        var routeSegment = uri.Segments[2].TrimEnd('/');
-        if (Guid.TryParse(routeSegment, out Guid locationGuid))
+        if (Guid.TryParse(segment, out var locationGuid))
         {
-            location = await DataService!.GetLocationById(locationGuid);
+            if (Location?.Id == locationGuid)
+            {
+                return;
+            }
+
+            var location = LocationDictionary is not null && LocationDictionary.TryGetValue(locationGuid, out var known)
+                ? known
+                : await DataService!.GetLocationById(locationGuid);
+
+            // Navigation may have moved on while the lookup was in flight; discard stale results.
+            if (LocationString?.TrimEnd('/') != segment)
+            {
+                return;
+            }
+
+            await ApplyResolvedLocationAsync(location);
         }
         else
         {
-            location = await DataService!.GetLocationByPath(routeSegment.ToLower());
-        }
+            var name = segment.ToLower();
 
+            if (Location is not null && Location.UrlReadyName() == name)
+            {
+                return;
+            }
+
+            // Prefer the in-memory dictionary when it's loaded (free); otherwise use the
+            // dedicated name-lookup endpoint rather than forcing the deferred bulk load.
+            var location = LocationDictionary?.Values.FirstOrDefault(x => x.UrlReadyName() == name)
+                ?? await DataService!.GetLocationByPath(name);
+
+            if (LocationString?.TrimEnd('/').ToLower() != name)
+            {
+                return;
+            }
+
+            await ApplyResolvedLocationAsync(location);
+        }
+    }
+
+    private async Task ApplyResolvedLocationAsync(Location? location)
+    {
         if (location is null)
         {
-            NavManager!.NavigateTo("/error", true);
+            // Genuine not-found. Only redirect once interactive; during prerendering we leave
+            // Location null and let the interactive pass make the call, rather than emitting a
+            // redirect into the prerendered response.
+            if (RendererInfo.IsInteractive)
+            {
+                NavManager!.NavigateTo("/error", true);
+            }
+
+            return;
         }
 
-        return location;
+        if (location.Id != Location?.Id)
+        {
+            PreviousLocation = Location;
+            Location = location;
+            ChartStateLocationChangeAppliedForLocationId = null;
+        }
+
+        // Deliberately NOT rewriting a name URL to its GUID form. The name URL is the canonical
+        // one (see PageUrl / <link rel="canonical">), so leaving it in place is correct for SEO -
+        // and, crucially, redirecting here would be a re-entrant navigation while OnParametersSet
+        // is still resolving, which caused the URL to thrash and Location to be lost on SPA
+        // navigations (e.g. clicking a location on the /locations page).
+        if (RendererInfo.IsInteractive)
+        {
+            await PersistLastLocationAsync(location.Id);
+        }
+    }
+
+    private async Task PersistLastLocationAsync(Guid locationId)
+    {
+        try
+        {
+            await LocalStorage!.SetItemAsync("lastLocationId", locationId.ToString());
+        }
+        catch (JSDisconnectedException)
+        {
+            // The circuit was torn down (e.g. InteractiveAuto handing the component off from
+            // Server to WebAssembly). Persisting the last location is best-effort, so ignore it.
+        }
+    }
+
+    private async Task<string?> ReadLastLocationAsync()
+    {
+        try
+        {
+            return await LocalStorage!.GetItemAsync<string>("lastLocationId");
+        }
+        catch (JSDisconnectedException)
+        {
+            return null;
+        }
     }
 
     private async Task<Location?> GetLocation()
     {
         var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
-        var locationString = await LocalStorage!.GetItemAsync<string>("lastLocationId");
+        var locationString = await ReadLastLocationAsync();
         var validGuid = Guid.TryParse(locationString, out Guid guid);
         Guid? locationId = null;
 
@@ -304,7 +393,95 @@ public partial class Index : ChartablePage
 
     private async Task HandleOnYearFilterChange(YearAndDataTypeFilter yearAndDataTypeFilter)
     {
-        await ChartView!.HandleOnYearFilterChange(yearAndDataTypeFilter);
+        if (CurrentChartState is null)
+        {
+            return;
+        }
+
+        var targetGranularity = GetSelectedBinGranularity(CurrentChartState) == BinGranularities.ByDayOnly
+            ? BinGranularities.ByDayOnly
+            : BinGranularities.ByMonthOnly;
+
+        var seriesList = CurrentChartState.Series.ToList();
+        foreach (var csd in seriesList)
+        {
+            csd.BinGranularity = targetGranularity;
+        }
+
+        seriesList = seriesList.CreateNewListWithoutDuplicates();
+
+        if (yearAndDataTypeFilter.UnitOfMeasure.HasValue)
+        {
+            seriesList =
+                [
+                    .. seriesList.Where(x => x.SourceSeriesSpecifications!.Any(y =>
+                        IsCompatibleUnitOfMeasure(y.MeasurementDefinition!.UnitOfMeasure, yearAndDataTypeFilter.UnitOfMeasure.Value))),
+                ];
+        }
+
+        var chartWithData = CurrentChartData?.SeriesWithData
+            .FirstOrDefault(x =>
+                (x.SourceDataSet!.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
+                (x.SourceDataSet.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null));
+
+        SourceSeriesSpecification[]? sourceSeriesSpecifications;
+        SeriesAggregationOptions aggregation;
+
+        if (chartWithData != null)
+        {
+            sourceSeriesSpecifications = chartWithData.ChartSeries!.SourceSeriesSpecifications;
+
+            var chartSeries = seriesList
+                .FirstOrDefault(x => x.SourceSeriesSpecifications!.Any(y =>
+                   (y.MeasurementDefinition!.DataType == yearAndDataTypeFilter.DataType || yearAndDataTypeFilter.DataType == null) &&
+                   (y.MeasurementDefinition.DataAdjustment == yearAndDataTypeFilter.DataAdjustment || yearAndDataTypeFilter.DataAdjustment == null)));
+
+            aggregation = chartSeries?.Aggregation ?? SeriesAggregationOptions.Mean;
+        }
+        else if (Location is not null && yearAndDataTypeFilter.DataType.HasValue)
+        {
+            var dataMatches = yearAndDataTypeFilter.UnitOfMeasure == UnitOfMeasure.DegreesCelsius
+                ? DataSubstitute.StandardTemperatureDataMatches()
+                : [new DataSubstitute { DataType = yearAndDataTypeFilter.DataType.Value, DataAdjustment = yearAndDataTypeFilter.DataAdjustment }];
+
+            var dsd = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
+                DataSetDefinitions!,
+                Location.Id,
+                dataMatches,
+                throwIfNoMatch: false);
+
+            if (dsd == null)
+            {
+                return;
+            }
+
+            sourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Location, dsd);
+            aggregation = yearAndDataTypeFilter.DataType == DataType.Precipitation
+                ? SeriesAggregationOptions.Sum
+                : SeriesAggregationOptions.Mean;
+        }
+        else
+        {
+            return;
+        }
+
+        seriesList =
+            [
+                .. seriesList,
+                new ChartSeriesDefinition
+                {
+                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                    SourceSeriesSpecifications = sourceSeriesSpecifications,
+                    Aggregation = aggregation,
+                    BinGranularity = targetGranularity,
+                    Smoothing = SeriesSmoothingOptions.None,
+                    SmoothingWindow = 20,
+                    Value = SeriesValueOptions.Value,
+                    Year = yearAndDataTypeFilter.Year,
+                },
+            ];
+
+        await ApplyChartStateAsync(CurrentChartState with { Series = seriesList });
     }
 
     private async Task OnOverviewShowHide(bool isOverviewVisible)
@@ -317,6 +494,30 @@ public partial class Index : ChartablePage
 
     private async Task ShowChangeLocationModal()
     {
+        if (ChangeLocationModalLoading)
+        {
+            return;
+        }
+
+        if (LocationDictionary is null)
+        {
+            ChangeLocationModalLoading = true;
+            StateHasChanged();
+
+            try
+            {
+                await EnsureLocationDictionaryLoadedAsync();
+                ShowChangeLocationModalAfterRender = LocationDictionary is not null;
+            }
+            finally
+            {
+                ChangeLocationModalLoading = false;
+            }
+
+            StateHasChanged();
+            return;
+        }
+
         await EnsureLocationDictionaryLoadedAsync();
         await ChangeLocationModal!.Show();
     }
@@ -336,41 +537,43 @@ public partial class Index : ChartablePage
             return;
         }
 
-        LocationChangeEventOccurring = true;
-
-        await NavigateTo($"/{PageName}/" + locationId.ToString());
+        // Map / Change-Location modal selections just navigate to the GUID URL; the resulting
+        // OnParametersSetAsync -> ResolveLocationAsync applies the change (one code path for all
+        // location switches, whether driven by the URL or by the UI).
+        await NavigateTo($"/{PageName}/{locationId}");
     }
 
-    private async Task SelectedLocationChangedInternal(Guid newValue)
+    private async Task<bool> ApplyLocationChangeToChartState()
     {
-        Logger!.LogInformation("SelectedLocationChangedInternal(): " + newValue);
-
-        Location? value = null;
-        if (LocationDictionary?.TryGetValue(newValue, out var dictionaryLocation) == true)
+        if (PreviousLocation is null ||
+            Location is null ||
+            PreviousLocation.Id == Location.Id ||
+            CurrentChartState is null ||
+            DataSetDefinitions is null ||
+            Regions is null ||
+            ChartStateLocationChangeAppliedForLocationId == Location.Id)
         {
-            value = dictionaryLocation;
-        }
-        else if (Location?.Id == newValue)
-        {
-            value = Location;
-        }
-        else
-        {
-            value = await DataService!.GetLocationById(newValue);
+            return false;
         }
 
-        if (value is null)
+        var result = ChartSeriesLocationSubstitutionService!.Substitute(
+            new ChartLocationSubstitutionContext
+            {
+                State = CurrentChartState,
+                Location = Location,
+                Regions = Regions.ToList(),
+                DataSetDefinitions = DataSetDefinitions.ToList(),
+            });
+
+        foreach (var message in result.Messages)
         {
-            Logger!.LogError($"{newValue} doesn't exist in the list of locations. Exiting SelectedLocationChangedInternal()");
-            return;
+            await SnackbarMessageEventHandler(message);
         }
 
-        PreviousLocation = Location;
-        Location = value;
+        ChartStateLocationChangeAppliedForLocationId = Location.Id;
+        await ApplyChartStateAsync(result.State);
 
-        await LocalStorage!.SetItemAsync("lastLocationId", newValue.ToString());
-
-        StateHasChanged();
+        return true;
     }
 
     private void ToggleSuggestedCharts()
@@ -379,4 +582,82 @@ public partial class Index : ChartablePage
     }
 
     private Task ShowRecordHighAsync() => locationInfoComponent?.ShowRecordHighAsync() ?? Task.CompletedTask;
+
+    private ChartState CreateDefaultLocationChartState()
+    {
+        if (Location is null)
+        {
+            throw new InvalidOperationException("A location is required before creating the default location chart.");
+        }
+
+        return CreateDefaultChartState();
+    }
+
+    private ChartState CreateDefaultChartState()
+    {
+        ArgumentNullException.ThrowIfNull(DataSetDefinitions);
+        ArgumentNullException.ThrowIfNull(Location);
+        ArgumentNullException.ThrowIfNull(IsMobileDevice);
+
+        var series = new List<ChartSeriesDefinition>();
+        var temperature = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
+            DataSetDefinitions.ToList(),
+            Location.Id,
+            DataSubstitute.StandardTemperatureDataMatches(),
+            throwIfNoMatch: true)!;
+
+        series.Add(
+            new ChartSeriesDefinition
+            {
+                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Location, temperature),
+                Aggregation = SeriesAggregationOptions.Mean,
+                BinGranularity = BinGranularities.ByYear,
+                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                SmoothingWindow = 20,
+                Value = SeriesValueOptions.Value,
+                Year = null,
+            });
+
+        var precipitation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
+            DataSetDefinitions,
+            Location.Id,
+            DataType.Precipitation,
+            null,
+            throwIfNoMatch: false);
+
+        if (precipitation is not null && !IsMobileDevice.Value)
+        {
+            series.Add(
+                new ChartSeriesDefinition
+                {
+                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Location, precipitation),
+                    Aggregation = SeriesAggregationOptions.Sum,
+                    BinGranularity = BinGranularities.ByYear,
+                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                    SmoothingWindow = 20,
+                    Value = SeriesValueOptions.Value,
+                    Year = null,
+                });
+        }
+
+        return new ChartState { Series = series };
+    }
+
+    private BinGranularities GetSelectedBinGranularity(ChartState state)
+    {
+        return state.Series.FirstOrDefault()?.BinGranularity ?? BinGranularities.ByYear;
+    }
+
+    private bool IsCompatibleUnitOfMeasure(UnitOfMeasure seriesUnitOfMeasure, UnitOfMeasure filterUnitOfMeasure)
+    {
+        if (filterUnitOfMeasure == UnitOfMeasure.DegreesCelsius)
+        {
+            return seriesUnitOfMeasure == UnitOfMeasure.DegreesCelsius
+                || seriesUnitOfMeasure == UnitOfMeasure.DegreesCelsiusAnomaly;
+        }
+
+        return seriesUnitOfMeasure == filterUnitOfMeasure;
+    }
 }

@@ -11,7 +11,6 @@ public partial class ChartSeriesView
 {
     private Validation? validation;
     private AboutData? aboutData;
-    private bool applyStyle;
 
     public enum ChartSeriesTitleStyle
     {
@@ -34,9 +33,9 @@ public partial class ChartSeriesView
     [Parameter]
     public ChartSeriesTitleStyle TitleStyle { get; set; }
 
-    private string? StyleForTitleBar { get; set; }
+    private string StyleForTitleBar => GenerateStyleForTitleBar();
 
-    private string? StyleForOuterDiv { get; set; }
+    private string StyleForOuterDiv => GenerateStyleForOuterDiv();
 
     public string GenerateStyleForOuterDiv()
     {
@@ -63,22 +62,6 @@ public partial class ChartSeriesView
                 return "color: " + ChartSeries!.Colour;
             default:
                 throw new NotImplementedException($"TitleStyle {TitleStyle}");
-        }
-    }
-
-    protected override void OnParametersSet()
-    {
-        applyStyle = true;
-    }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (applyStyle)
-        {
-            StyleForTitleBar = GenerateStyleForTitleBar();
-            StyleForOuterDiv = GenerateStyleForOuterDiv();
-            StateHasChanged();
-            applyStyle = false;
         }
     }
 

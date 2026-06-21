@@ -36,6 +36,9 @@ public partial class LocationDashboard
     public EventCallback RequestLocationChange { get; set; }
 
     [Parameter]
+    public bool ChangeLocationLoading { get; set; }
+
+    [Parameter]
     public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     [Parameter]
