@@ -1,14 +1,17 @@
 namespace ClimateExplorer.Web.Client.Pages;
 
+using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Components.Location;
 using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.Services.Chart;
+using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
+using static ClimateExplorer.Core.Enums;
 
 public partial class Index : ChartablePage
 {
@@ -59,9 +62,6 @@ public partial class Index : ChartablePage
 
     [Inject]
     private ISiteOverviewService? SiteOverviewService { get; set; }
-
-    [Inject]
-    private ILocationDefaultChartProvider? LocationDefaultChartProvider { get; set; }
 
     [Inject]
     private IChartSeriesLocationSubstitutionService? ChartSeriesLocationSubstitutionService { get; set; }
@@ -426,12 +426,58 @@ public partial class Index : ChartablePage
             throw new InvalidOperationException("A location is required before creating the default location chart.");
         }
 
-        return LocationDefaultChartProvider!.CreateDefault(
-            new LocationDefaultChartContext
+        return CreateDefaultChartState();
+    }
+
+    private ChartState CreateDefaultChartState()
+    {
+        ArgumentNullException.ThrowIfNull(DataSetDefinitions);
+        ArgumentNullException.ThrowIfNull(Location);
+        ArgumentNullException.ThrowIfNull(IsMobileDevice);
+
+        var series = new List<ChartSeriesDefinition>();
+        var temperature = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
+            DataSetDefinitions.ToList(),
+            Location.Id,
+            DataSubstitute.StandardTemperatureDataMatches(),
+            throwIfNoMatch: true)!;
+
+        series.Add(
+            new ChartSeriesDefinition
             {
-                Location = Location,
-                DataSetDefinitions = DataSetDefinitions!.ToList(),
-                IsMobileDevice = IsMobileDevice ?? false,
+                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Location, temperature),
+                Aggregation = SeriesAggregationOptions.Mean,
+                BinGranularity = BinGranularities.ByYear,
+                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                SmoothingWindow = 20,
+                Value = SeriesValueOptions.Value,
+                Year = null,
             });
+
+        var precipitation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(
+            DataSetDefinitions,
+            Location.Id,
+            DataType.Precipitation,
+            null,
+            throwIfNoMatch: false);
+
+        if (precipitation is not null && !IsMobileDevice.Value)
+        {
+            series.Add(
+                new ChartSeriesDefinition
+                {
+                    SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                    SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Location, precipitation),
+                    Aggregation = SeriesAggregationOptions.Sum,
+                    BinGranularity = BinGranularities.ByYear,
+                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                    SmoothingWindow = 20,
+                    Value = SeriesValueOptions.Value,
+                    Year = null,
+                });
+        }
+
+        return new ChartState { Series = series };
     }
 }

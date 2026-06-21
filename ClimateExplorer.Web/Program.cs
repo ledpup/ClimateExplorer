@@ -36,8 +36,6 @@ builder.Services
     .AddTransient<IExporter, Exporter>()
     .AddScoped<IInfoPanelDismissalService, InfoPanelDismissalService>()
     .AddScoped<IChartStateUrlService, ChartStateUrlService>()
-    .AddScoped<ILocationDefaultChartProvider, LocationDefaultChartProvider>()
-    .AddScoped<IRegionalAndGlobalDefaultChartProvider, RegionalAndGlobalDefaultChartProvider>()
     .AddScoped<IChartSeriesLocationSubstitutionService, ChartSeriesLocationSubstitutionService>()
     .AddScoped<IChartDataBuilder, ChartDataBuilder>()
     .AddScoped<IRecentObservationsDataProvider, RecentObservationsDataProvider>()
