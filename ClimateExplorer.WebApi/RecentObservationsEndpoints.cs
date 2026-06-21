@@ -28,7 +28,7 @@ internal static class RecentObservationsEndpoints
 
         var recentObservationStartDate = new DateOnly(today.Year - 1, 1, 1);
         var recentObservationEndDate = new DateOnly(today.Year, 12, 31);
-        var cacheKey = $"{ClimateExplorerApiConstants.RecentObservationsCacheKeyPrefix}_{locationId}_{recentObservationStartDate.Year}_{recentObservationEndDate.Year}";
+        var cacheKey = $"{ClimateExplorerApiConstants.RecentObservationsCacheKeyPrefix}_{locationId}";
         var cachedResponse = await services.Cache.Get<RecentObservationsResponse>(cacheKey);
         if (HasSourceMetadata(cachedResponse)
             && (HasRecordForDate(cachedResponse, today) || HasRecordForDate(cachedResponse, yesterday) || WasDataRetrievedInLastHours(cachedResponse, 6)))

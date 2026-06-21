@@ -57,14 +57,76 @@ public partial class ChartTests : TestBase
     [Test]
     public async Task ChangeLocationThenSelectLocationFromList()
     {
-        await LoadMainPage();
+        await LoadHobartCanonicalChartAsync();
 
-        await page.GotoAsync($"{_baseSiteUrl}/location/hobart");
-        await page.ClickAsync("i.fa-map");
+        await OpenChangeLocationModalAsync();
         await page.GetByTitle("Launceston Airport, Australia").ClickAsync();
 
         await Assertions.Expect(page.Locator("span.title").GetByText("Launceston Airport")).ToBeAttachedAsync();
+        await AssertCanonicalChartUrlAsync();
+        await AssertChartSeriesShowsLocationAsync("Launceston Airport");
+    }
 
+    [Test]
+    public async Task MapLocationChangeUpdatesCanonicalUrlAndChart()
+    {
+        await LoadHobartCanonicalChartAsync();
+
+        var markers = page.Locator(".leaflet-marker-icon");
+        await page.WaitForFunctionAsync(
+            "() => document.querySelectorAll('.leaflet-marker-icon').length > 1",
+            new PageWaitForFunctionOptions { Timeout = 10_000 });
+
+        await markers.Nth(1).ClickAsync();
+
+        await Assertions.Expect(page.Locator("span.title")).Not.ToContainTextAsync("Hobart");
+        var locationName = await GetDashboardLocationNameAsync();
+
+        await AssertCanonicalChartUrlAsync();
+        await AssertChartSeriesShowsLocationAsync(locationName);
+    }
+
+    [Test]
+    public async Task NearMeLocationChangeUpdatesCanonicalUrlAndChart()
+    {
+        await page.Context.SetGeolocationAsync(new Geolocation { Latitude = -41.545F, Longitude = 147.214F });
+        await page.Context.GrantPermissionsAsync(["geolocation"], new() { Origin = _baseSiteUrl });
+
+        await LoadHobartCanonicalChartAsync();
+
+        await OpenChangeLocationModalAsync();
+        await page.GetByRole(AriaRole.Button, new() { Name = "Near me" }).ClickAsync();
+
+        await Assertions.Expect(page.Locator("span.title").GetByText("Launceston Airport")).ToBeAttachedAsync();
+        await AssertCanonicalChartUrlAsync();
+        await AssertChartSeriesShowsLocationAsync("Launceston Airport");
+    }
+
+    [Test]
+    public async Task RandomLocationChangeUpdatesCanonicalUrlAndChart()
+    {
+        await LoadHobartCanonicalChartAsync();
+
+        var locationName = await ChangeToRandomNonHobartLocationAsync();
+        await Assertions.Expect(page.Locator("span.title")).Not.ToContainTextAsync("Hobart");
+
+        await AssertCanonicalChartUrlAsync();
+        await AssertChartSeriesShowsLocationAsync(locationName);
+    }
+
+    [Test]
+    public async Task NearbyLocationChangeUpdatesCanonicalUrlAndChart()
+    {
+        await LoadHobartCanonicalChartAsync();
+
+        await OpenChangeLocationModalAsync();
+        await page.Locator(".modal-body .table-card a").First.ClickAsync();
+
+        await Assertions.Expect(page.Locator("span.title")).Not.ToContainTextAsync("Hobart");
+        var locationName = await GetDashboardLocationNameAsync();
+
+        await AssertCanonicalChartUrlAsync();
+        await AssertChartSeriesShowsLocationAsync(locationName);
     }
 
     [Test]
@@ -86,6 +148,7 @@ public partial class ChartTests : TestBase
         await Assertions.Expect(page.Locator("span.title").GetByText("Hobart")).ToBeAttachedAsync();
         await page.WaitForURLAsync($"{_baseSiteUrl}/location?chartAllData**csd=**");
         await WaitForChartDatasetCountAsync(2);
+        await AssertChartSeriesShowsLocationAsync("Hobart");
 
         var currentUrl = page.Url;
 
@@ -133,6 +196,69 @@ public partial class ChartTests : TestBase
         Thread.Sleep(1000);
     }
 
+    private async Task LoadHobartCanonicalChartAsync()
+    {
+        await page.GotoAsync($"{_baseSiteUrl}/location/hobart");
+
+        await Assertions.Expect(page.Locator("span.title").GetByText("Hobart")).ToBeAttachedAsync();
+        await AssertCanonicalChartUrlAsync();
+        await WaitForChartDatasetCountAsync(2);
+        await AssertChartSeriesShowsLocationAsync("Hobart");
+    }
+
+    private async Task OpenChangeLocationModalAsync()
+    {
+        await page.GetByRole(AriaRole.Button, new() { NameRegex = ChangeLocationButtonRegex() }).ClickAsync();
+        await Assertions.Expect(page.GetByRole(AriaRole.Dialog).GetByText("Change location")).ToBeVisibleAsync();
+    }
+
+    private async Task<string> ChangeToRandomNonHobartLocationAsync()
+    {
+        for (var attempt = 0; attempt < 5; attempt++)
+        {
+            await OpenChangeLocationModalAsync();
+            await page.GetByRole(AriaRole.Button, new() { Name = "Random location" }).ClickAsync();
+
+            try
+            {
+                await page.WaitForFunctionAsync(
+                    "() => document.querySelector('span.title')?.textContent?.trim() !== 'Hobart'",
+                    new PageWaitForFunctionOptions { Timeout = 3_000 });
+
+                return await GetDashboardLocationNameAsync();
+            }
+            catch (PlaywrightException)
+            {
+            }
+        }
+
+        return await GetDashboardLocationNameAsync();
+    }
+
+    private async Task AssertCanonicalChartUrlAsync()
+    {
+        await page.WaitForURLAsync($"{_baseSiteUrl}/location?chartAllData**csd=**");
+
+        var currentUrl = page.Url;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(currentUrl, Does.StartWith($"{_baseSiteUrl}/location?"));
+            Assert.That(currentUrl, Does.Contain("csd="));
+        });
+    }
+
+    private async Task AssertChartSeriesShowsLocationAsync(string locationName)
+    {
+        await Assertions.Expect(page.Locator(".chart-series-config .title").First).ToContainTextAsync(locationName);
+        await WaitForChartDatasetCountAtLeastAsync(1);
+    }
+
+    private async Task<string> GetDashboardLocationNameAsync()
+    {
+        return (await page.Locator("span.title").First.InnerTextAsync()).Trim();
+    }
+
     private async Task WaitForChartDatasetCountAsync(int expectedCount)
     {
         await page.WaitForFunctionAsync(
@@ -158,6 +284,19 @@ public partial class ChartTests : TestBase
             }");
     }
 
+    private async Task WaitForChartDatasetCountAtLeastAsync(int expectedCount)
+    {
+        await page.WaitForFunctionAsync(
+            @"expectedCount => {
+                const canvas = document.querySelector('.chart-wrapper canvas');
+                const chart = window.Chart?.getChart?.(canvas)
+                    ?? Object.values(window.Chart?.instances ?? {}).find(candidate => candidate.canvas === canvas);
+
+                return (chart?.data?.datasets?.length ?? 0) >= expectedCount;
+            }",
+            expectedCount);
+    }
+
     private static async Task<string> GetBorderLeftColourAsync(ILocator locator)
     {
         return await locator.EvaluateAsync<string>("element => getComputedStyle(element).borderLeftColor");
@@ -165,4 +304,7 @@ public partial class ChartTests : TestBase
 
     [GeneratedRegex("^Hobart \\| Precipitation$")]
     private static partial Regex HobartPrecipitationRegex();
+
+    [GeneratedRegex("^(Change location|Loading locations\\.\\.\\.)$")]
+    private static partial Regex ChangeLocationButtonRegex();
 }

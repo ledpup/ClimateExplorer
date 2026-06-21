@@ -73,6 +73,7 @@ public partial class Index : ChartablePage
     private bool ShowChangeLocationModalAfterRender { get; set; }
 
     private Location? PreviousLocation { get; set; }
+    private Guid? ChartStateLocationChangeAppliedForLocationId { get; set; }
 
     private IEnumerable<Location>? MapLocations
     {
@@ -165,6 +166,11 @@ public partial class Index : ChartablePage
         }
 
         if (Location is not null && await EnsureInitialChartStateAsync(Location, CreateDefaultLocationChartState))
+        {
+            shouldRenderAgain = true;
+        }
+
+        if (await ApplyLocationChangeToChartState())
         {
             shouldRenderAgain = true;
         }
@@ -263,6 +269,7 @@ public partial class Index : ChartablePage
         {
             PreviousLocation = Location;
             Location = location;
+            ChartStateLocationChangeAppliedForLocationId = null;
         }
 
         // Deliberately NOT rewriting a name URL to its GUID form. The name URL is the canonical
@@ -530,24 +537,23 @@ public partial class Index : ChartablePage
             return;
         }
 
-        // TODO: remove this stale code
-        // PreviousLocation = Location;
-        // Location = value;
-        // await LocalStorage!.SetItemAsync("lastLocationId", newValue.ToString());
-        // await ApplyLocationChangeToChartState();
-        // StateHasChanged();
-
         // Map / Change-Location modal selections just navigate to the GUID URL; the resulting
         // OnParametersSetAsync -> ResolveLocationAsync applies the change (one code path for all
         // location switches, whether driven by the URL or by the UI).
         await NavigateTo($"/{PageName}/{locationId}");
     }
 
-    private async Task ApplyLocationChangeToChartState()
+    private async Task<bool> ApplyLocationChangeToChartState()
     {
-        if (PreviousLocation is null || Location is null || PreviousLocation.Id == Location.Id || CurrentChartState is null || DataSetDefinitions is null || Regions is null)
+        if (PreviousLocation is null ||
+            Location is null ||
+            PreviousLocation.Id == Location.Id ||
+            CurrentChartState is null ||
+            DataSetDefinitions is null ||
+            Regions is null ||
+            ChartStateLocationChangeAppliedForLocationId == Location.Id)
         {
-            return;
+            return false;
         }
 
         var result = ChartSeriesLocationSubstitutionService!.Substitute(
@@ -564,7 +570,10 @@ public partial class Index : ChartablePage
             await SnackbarMessageEventHandler(message);
         }
 
+        ChartStateLocationChangeAppliedForLocationId = Location.Id;
         await ApplyChartStateAsync(result.State);
+
+        return true;
     }
 
     private void ToggleSuggestedCharts()
