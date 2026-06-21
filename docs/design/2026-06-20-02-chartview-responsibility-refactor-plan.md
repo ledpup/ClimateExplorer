@@ -1,7 +1,7 @@
 # `ChartView` responsibility refactor plan
 
 - **Date:** 2026-06-20
-- **Status:** Staged phases 1-6 complete (transitional)
+- **Status:** Staged phases 1-6 complete
 - **Author:** Patrick Lea (with Codex)
 - **Scope:** `ChartView`, `ChartablePage`, location and regional/global chart pages, chart URL state, default chart selection, chart data preparation, chart rendering, and chart UI event flow.
 - **Builds on:** [Investigation and refactor plan: `ChartView.razor`](2026-06-20-01-investigation-and-refactor-plan-ChartView.md)
@@ -574,9 +574,13 @@ The remaining Phase 3 URL-serialization/navigation ownership has now moved to th
 - Removed the `PageName` parameter and the `NavigationManager` and `IChartStateUrlService` injections from `ChartView`; URL/route knowledge now lives only in the parent/page layer. `PageName` remains on `ChartablePage` for its own route navigation.
 - `ChartView` no longer inspects `NavigationManager.Uri`, calls `NavigateTo`, or knows the current route — satisfying those items from the "`ChartView` should not" list.
 
-Phase 6 has tightened the `ChartView` surface and extracted the chart-option rendering helpers.
+Phase 6 has tightened the `ChartView` surface, extracted the chart-option rendering helpers, and moved the remaining chart-state/data orchestration to parent pages.
 
 - Demoted the mutable `[Parameter] ChartAllData` to private view state. No parent binds it; it is surfaced and updated through `ChartState` (`CreateCurrentChartState`/`SetChartState`), so `ChartView` no longer exposes a mutated parameter.
 - Added `ChartOptionsFactory` (plus `ChartOptionsRequest`/`ChartOptionsBuildResult`) in `UiLogic`, and moved `CreateChartOptions`, `BuildChartScales`, `CreateYAxes`, and `CreateAxesMinMax` out of `ChartView`. `RenderChart` now calls the factory and assigns the returned `CurrentAxes`.
 - Exposed the global per-axis min/max calculation as `ChartOptionsFactory.CalculateAxisMinMax` and added unit coverage (axis merging for shared units, separate axes per unit, bar-series flagging, and ignoring value-less series).
-- Deferred (intentionally, to avoid a larger rewrite that the plan flags as optional): `ChartView` still fetches its own data via `IChartDataBuilder` rather than receiving a `ChartDataBuildResult` parameter, and still exposes the imperative `BuildDataSets`/`CaptureCurrentChartState`/`ApplyChartStateAsync` surface plus `DownloadDataEvent`/`ShowAddDataSetModalEvent`/`SnackbarMessageEvent` callbacks. The fully state-driven, presentation-only `ChartView` from the Phase 6 "target public surface" remains a future step; the current state achieves the phase's concrete goals (no page-context parameters, no URL/navigation/data-prep/option-building responsibilities in the component).
+- `ChartView` now receives `State`, `Data`, `IsLoading`, and `LoadingErrored` from the parent and renders the supplied `ChartDataBuildResult`; it no longer injects or calls `IChartDataBuilder`.
+- `ChartablePage` now owns chart-state application, URL reflection, data building, build-error handling, and build-result messages. Suggested-chart selection and add-dataset selection update `ChartState` in the parent instead of calling imperative methods on `ChartView`.
+- Removed the imperative `BuildDataSets`/`CaptureCurrentChartState`/`ApplyChartStateAsync`/`OnAddDataSet`/`OnChartPresetSelected`/`HandleOnYearFilterChange` surface from `ChartView`, and removed parent `@ref` use for chart orchestration.
+- Replaced page-level callback names with typed user-intent events: `DownloadRequested`, `AddDataSetRequested`, and `YearFilterRequested`. Parent pages continue to own snackbar presentation and downloads.
+- Moved location-dashboard and chart-click year-filter orchestration to the location page, including data-definition fallback, unit filtering, granularity switching, and source-series creation.

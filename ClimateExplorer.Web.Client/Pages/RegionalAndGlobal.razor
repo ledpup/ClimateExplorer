@@ -33,13 +33,13 @@
 </div>
 
 <div class="chart-container">
-    <ChartView @ref="ChartView"
-               InitialChartState="@InitialChartState"
-               DataSetDefinitions="@DataSetDefinitions"
+    <ChartView State="@CurrentChartState"
+               Data="@CurrentChartData"
+               IsLoading="@ChartDataLoading"
+               LoadingErrored="@ChartDataLoadingErrored"
                ChartStateChanged="@OnChartStateChanged"
-               ShowAddDataSetModalEvent="@ShowAddDataSetModal"
-               DownloadDataEvent="@OnDownloadDataClicked"
-               SnackbarMessageEvent="@SnackbarMessageEventHandler" />
+               AddDataSetRequested="@ShowAddDataSetModal"
+               DownloadRequested="@OnDownloadDataClicked" />
 </div>
 
 <Modal @ref="AddDataSetModal">

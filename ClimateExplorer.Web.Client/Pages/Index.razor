@@ -63,13 +63,14 @@
         <div style="clear: both;"></div>
     </div>
 
-    <ChartView @ref="ChartView"
-               InitialChartState="@InitialChartState"
-               DataSetDefinitions="@DataSetDefinitions"
+    <ChartView State="@CurrentChartState"
+               Data="@CurrentChartData"
+               IsLoading="@ChartDataLoading"
+               LoadingErrored="@ChartDataLoadingErrored"
                ChartStateChanged="@OnChartStateChanged"
-               ShowAddDataSetModalEvent="@ShowAddDataSetModal"
-               DownloadDataEvent="@OnDownloadDataClicked"
-               SnackbarMessageEvent="@SnackbarMessageEventHandler" />
+               AddDataSetRequested="@ShowAddDataSetModal"
+               DownloadRequested="@OnDownloadDataClicked"
+               YearFilterRequested="@HandleOnYearFilterChange" />
 </div>
 
 <ChangeLocation @ref="ChangeLocationModal"

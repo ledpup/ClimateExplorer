@@ -12,7 +12,7 @@
             <Content>
                 <div class="chart-and-controls">
                     <div class="chart-series-list-wrapper">
-                        <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@BuildDataSets" IsLoading="ChartLoadingIndicatorVisible"></ChartSeriesListView>
+                        <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@RaiseChartStateChanged" IsLoading="ChartLoadingIndicatorVisible"></ChartSeriesListView>
 
                         <button class="add-series-button" @onclick="ShowAddDataSetModal">
                             <i class="fas fa-plus"></i> Add
@@ -58,7 +58,7 @@
                         </DelayedTooltip>
 
                         <DelayedTooltip Text="Change the scale of the chart axes to scale from zero or the minimum value">
-                            <ChartAxisListView Axes="CurrentAxes" ScaleToZero="AxesScaleToZero" OnChanged="@BuildDataSets" />
+                            <ChartAxisListView Axes="CurrentAxes" ScaleToZero="AxesScaleToZero" OnChanged="@RaiseChartStateChanged" />
                         </DelayedTooltip>
 
                         <AggregationOptions CurrentThreshold="@InternalGroupingThreshold" CurrentGroupingDays="@SelectedGroupingDays" UserOverride="@UserOverridePresetAggregationSettings" OnChanged="@((s) => OnAggregationSettingsChanged(s))" />
