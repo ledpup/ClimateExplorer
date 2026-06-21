@@ -69,6 +69,8 @@ public partial class Index : ChartablePage
     private ChangeLocation? ChangeLocationModal { get; set; }
     private string? BrowserLocationErrorMessage { get; set; }
     private Location? Location { get; set; }
+    private bool ChangeLocationModalLoading { get; set; }
+    private bool ShowChangeLocationModalAfterRender { get; set; }
 
     private Location? PreviousLocation { get; set; }
 
@@ -173,6 +175,12 @@ public partial class Index : ChartablePage
         }
 
         await base.OnAfterRenderAsync(firstRender);
+
+        if (ShowChangeLocationModalAfterRender && LocationDictionary is not null && ChangeLocationModal is not null)
+        {
+            ShowChangeLocationModalAfterRender = false;
+            await ChangeLocationModal.Show();
+        }
 
         if (shouldRenderAgain)
         {
@@ -479,6 +487,30 @@ public partial class Index : ChartablePage
 
     private async Task ShowChangeLocationModal()
     {
+        if (ChangeLocationModalLoading)
+        {
+            return;
+        }
+
+        if (LocationDictionary is null)
+        {
+            ChangeLocationModalLoading = true;
+            StateHasChanged();
+
+            try
+            {
+                await EnsureLocationDictionaryLoadedAsync();
+                ShowChangeLocationModalAfterRender = LocationDictionary is not null;
+            }
+            finally
+            {
+                ChangeLocationModalLoading = false;
+            }
+
+            StateHasChanged();
+            return;
+        }
+
         await EnsureLocationDictionaryLoadedAsync();
         await ChangeLocationModal!.Show();
     }

@@ -51,6 +51,11 @@ public partial class ChangeLocation
 
     public async Task Show()
     {
+        if (LocationDictionary is null)
+        {
+            return;
+        }
+
         selectedText = null;
         shouldFocusLocationSearch = true;
 

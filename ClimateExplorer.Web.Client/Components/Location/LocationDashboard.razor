@@ -21,7 +21,7 @@
         {
             <span class="chart-controls">
                 <DelayedTooltip Multiline="true" Style="display: inline-block" Text="Change the current location. Four ways to choose:<br>• Near me — use browser location<br>• Random — a surprise location<br>• Search — type a location name<br>• Nearby — closest stations">
-                    <button class="chart-control" @onclick="() => ChangeLocationClicked(new EventArgs())"><i class="fas fa-map"></i> Change location</button>
+                    <button class="chart-control" @onclick="() => ChangeLocationClicked(new EventArgs())" disabled="@ChangeLocationLoading"><i class="fas fa-map"></i> @(ChangeLocationLoading ? "Loading locations..." : "Change location")</button>
                 </DelayedTooltip>
                 @if (LocationCollapsible!.ShowContent)
                 {
