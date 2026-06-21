@@ -37,6 +37,7 @@ public partial class ChartView : IAsyncDisposable
     private ChartState? appliedState;
     private ChartDataBuildResult? renderedData;
     private bool renderedLoadingErrored;
+    private bool renderChartInProcess;
 
     [Parameter]
     public ChartState? State { get; set; }
@@ -181,19 +182,33 @@ public partial class ChartView : IAsyncDisposable
             return;
         }
 
-        if (Data is not null && (!ReferenceEquals(Data, renderedData) || LoadingErrored != renderedLoadingErrored))
+        if (Data is not null && !renderChartInProcess && (!ReferenceEquals(Data, renderedData) || LoadingErrored != renderedLoadingErrored))
         {
-            // In Blazor Server the parent can provide data before the child Chart<T> component
-            // has completed its JS initialisation. Wait until chart.js has created the canvas instance.
-            if (!OperatingSystem.IsBrowser() && JsRuntime is not null)
-            {
-                await JsRuntime.InvokeVoidAsync("waitForChartReady", chartWrapper);
-            }
-
-            ApplyChartData(Data);
-            await RenderChart();
             renderedData = Data;
             renderedLoadingErrored = LoadingErrored;
+            renderChartInProcess = true;
+
+            // In Blazor Server the parent can provide data before the child Chart<T> component
+            // has completed its JS initialisation. Wait until chart.js has created the canvas instance.
+            try
+            {
+                if (!OperatingSystem.IsBrowser() && JsRuntime is not null)
+                {
+                    await JsRuntime.InvokeVoidAsync("waitForChartReady", chartWrapper);
+                }
+
+                ApplyChartData(Data);
+                await RenderChart();
+            }
+            catch
+            {
+                renderedData = null;
+                throw;
+            }
+            finally
+            {
+                renderChartInProcess = false;
+            }
         }
     }
 
