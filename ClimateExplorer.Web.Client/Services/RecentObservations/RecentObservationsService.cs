@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Web.Client.Services;
 
 using ClimateExplorer.Core.Model;
+using ClimateExplorer.Web.Client.Services.RecentObservations;
 using ClimateExplorer.Web.Client.UiModel;
 
 public sealed class RecentObservationsService : IRecentObservationsService

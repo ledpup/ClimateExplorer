@@ -3,6 +3,7 @@ namespace ClimateExplorer.Web.Client.Components.Location;
 using System.Globalization;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.Services;
+using ClimateExplorer.Web.Client.Services.RecentObservations;
 using ClimateExplorer.Web.Client.UiModel;
 using Microsoft.AspNetCore.Components;
 

@@ -1,4 +1,4 @@
-﻿namespace ClimateExplorer.Web.Client.Services;
+﻿namespace ClimateExplorer.Web.Client.Services.InfoPanelDismissal;
 
 public interface IInfoPanelDismissalService
 {

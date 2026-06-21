@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Web.Client.Services;
+namespace ClimateExplorer.Web.Client.Services.RecentObservations;
 
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.UiModel;
