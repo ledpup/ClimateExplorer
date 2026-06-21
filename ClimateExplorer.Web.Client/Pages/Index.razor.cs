@@ -490,14 +490,12 @@ public partial class Index : ChartablePage
             return;
         }
 
-        //PreviousLocation = Location;
-        //Location = value;
-
-        //await LocalStorage!.SetItemAsync("lastLocationId", newValue.ToString());
-        //await ApplyLocationChangeToChartState();
-
-        //StateHasChanged();
-
+        // TODO: remove this stale code
+        // PreviousLocation = Location;
+        // Location = value;
+        // await LocalStorage!.SetItemAsync("lastLocationId", newValue.ToString());
+        // await ApplyLocationChangeToChartState();
+        // StateHasChanged();
 
         // Map / Change-Location modal selections just navigate to the GUID URL; the resulting
         // OnParametersSetAsync -> ResolveLocationAsync applies the change (one code path for all
