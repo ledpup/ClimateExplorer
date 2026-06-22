@@ -106,6 +106,23 @@ public sealed class ChartDataBuilder : IChartDataBuilder
         return [.. dataSet.Select(x => x!.GetStartYearForDataSet()).Distinct().OrderBy(x => x)];
     }
 
+    private static SnackbarMessage CreateCompletenessFilteringMessage(DataSet dataSet)
+    {
+        var dataType = dataSet.DataType.ToFriendlyName().ToLowerInvariant();
+        var locationName = dataSet.GeographicalEntity?.ToString() ?? "the selected location";
+
+        return new SnackbarMessage
+        {
+            Message = $"The completeness threshold removed all {dataType} observations for {locationName}.<br>There is not enough complete {dataType} data to chart this series.",
+            Type = SnackbarColor.Warning,
+        };
+    }
+
+    private static bool HasFiniteValue(DataSet? dataSet)
+    {
+        return dataSet?.DataRecords.Any(x => x.Value.HasValue && !double.IsNaN(x.Value.Value) && !double.IsInfinity(x.Value.Value)) == true;
+    }
+
     private async Task<List<SeriesWithData>> RetrieveDataSets(
         IReadOnlyList<ChartSeriesDefinition> chartSeriesList,
         BinGranularities binGranularity,
@@ -202,8 +219,6 @@ public sealed class ChartDataBuilder : IChartDataBuilder
             }
         }
 
-        var badChartSeries = new List<SeriesWithData>();
-
         // If we're doing smoothing via the moving average, precalculate these data and add them to PreProcessedDataSets.
         // We do this because the SimpleMovingAverage calculate function will remove some years from the start of the data set.
         // It removes these years because it doesn't have a good enough average to present it to the user.
@@ -211,6 +226,14 @@ public sealed class ChartDataBuilder : IChartDataBuilder
         // If we're not calculating a moving average, PreProcessedDataSets = SourceDataSets
         foreach (var cs in chartSeriesWithData)
         {
+            if (!HasFiniteValue(cs.SourceDataSet))
+            {
+                cs.DataStatus = ChartSeriesDataStatus.NoChartableDataAfterCompletenessFiltering;
+                cs.PreProcessedDataSet = cs.SourceDataSet;
+                messages.Add(CreateCompletenessFilteringMessage(cs.SourceDataSet));
+                continue;
+            }
+
             // We only support moving averages on linear bin granularities (e.g. Year, YearAndMonth) - not modular ones like MonthOnly
             if (selectedBinGranularity.IsLinear() && cs.ChartSeries!.Smoothing == SeriesSmoothingOptions.MovingAverage)
             {
@@ -222,6 +245,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                 if (values.Count(y => y != null) < 10)
                 {
                     messages.Add(new SnackbarMessage { Message = $"The moving‑average removed too many {cs.SourceDataSet.DataType.ToFriendlyName().ToLower()} observations for {cs.SourceDataSet.GeographicalEntity?.Name}.<br>We will revert to using the unsmoothed data.", Type = SnackbarColor.Warning });
+                    cs.DataStatus = ChartSeriesDataStatus.FallbackToUnsmoothedData;
                     values = cs.SourceDataSet.DataRecords
                                             .Where(x => x.Value.HasValue)
                                             .Select(x => x.Value);
@@ -249,12 +273,26 @@ public sealed class ChartDataBuilder : IChartDataBuilder
             }
         }
 
-        badChartSeries.ForEach(x => chartSeriesWithData.Remove(x));
+        var renderableChartSeries = chartSeriesWithData
+            .Where(x => HasFiniteValue(x.PreProcessedDataSet))
+            .ToList();
+
+        if (renderableChartSeries.Count == 0)
+        {
+            l.LogWarning("No requested chart series produced finite values after preprocessing.");
+
+            return new ChartDataBuildResult
+            {
+                SeriesWithData = [],
+                NonRenderedSeriesWithData = chartSeriesWithData,
+                StartYears = [],
+            };
+        }
 
         l.LogInformation("done with moving average calculation");
 
         // There must be exactly one bin granularity or else something odd's going on.
-        var binGranularity = chartSeriesWithData.Select(x => x.ChartSeries!.BinGranularity).Distinct().Single();
+        var binGranularity = renderableChartSeries.Select(x => x.ChartSeries!.BinGranularity).Distinct().Single();
 
         if (binGranularity != selectedBinGranularity)
         {
@@ -273,7 +311,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
             case BinGranularities.ByYearAndWeek:
             case BinGranularities.ByYearAndDay:
                 // Calculate first and last year which we have a data record for, across all data sets underpinning all chart series
-                var preProcessedDataSets = chartSeriesWithData.Select(x => x.PreProcessedDataSet);
+                var preProcessedDataSets = renderableChartSeries.Select(x => x.PreProcessedDataSet);
 
                 (chartStartBin, chartEndBin) =
                     ChartLogic.GetBinRangeToPlotForGaplessRange(
@@ -284,7 +322,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
 
                 chartBins = BinHelpers.EnumerateBinsInRange(chartStartBin, chartEndBin).ToArray();
 
-                startYears = GetStartYears(chartSeriesWithData);
+                startYears = GetStartYears(renderableChartSeries);
 
                 break;
 
@@ -301,7 +339,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                 throw new NotImplementedException($"binGranularity {binGranularity}");
         }
 
-        foreach (var cs in chartSeriesWithData)
+        foreach (var cs in renderableChartSeries)
         {
             l.LogInformation("constructing ProcessedDataSet");
 
@@ -333,7 +371,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
         // later allow users to say "just give me month-ignoring-year, but only for months after 4 and before 7",
         // for example.
         var binIdsToPlot = new HashSet<string>(chartBins.Select(x => x.Id));
-        foreach (var cswd in chartSeriesWithData)
+        foreach (var cswd in renderableChartSeries)
         {
             cswd.ProcessedDataSet!.DataRecords = [.. cswd.ProcessedDataSet.DataRecords.Where(x => binIdsToPlot.Contains(x.BinId!))];
         }
@@ -342,7 +380,8 @@ public sealed class ChartDataBuilder : IChartDataBuilder
 
         return new ChartDataBuildResult
         {
-            SeriesWithData = chartSeriesWithData,
+            SeriesWithData = renderableChartSeries,
+            NonRenderedSeriesWithData = [.. chartSeriesWithData.Except(renderableChartSeries)],
             ChartBins = chartBins,
             ChartStartBin = chartStartBin,
             ChartEndBin = chartEndBin,

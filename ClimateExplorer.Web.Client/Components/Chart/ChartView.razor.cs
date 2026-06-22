@@ -2,7 +2,6 @@ namespace ClimateExplorer.Web.Client.Components.Chart;
 
 using Blazorise.Charts;
 using Blazorise.Charts.Trendline;
-using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.Model;
@@ -108,7 +107,6 @@ public partial class ChartView : IAsyncDisposable
 
     private bool? IsMobileDevice { get; set; }
 
-    private List<short>? SelectedYears { get; set; }
     private List<short>? StartYears { get; set; }
 
     private ColourServer Colours { get; set; } = new ColourServer();
@@ -144,8 +142,6 @@ public partial class ChartView : IAsyncDisposable
     {
         ChartLoadingIndicatorVisible = true;
         ChartLoadingErrored = false;
-
-        SelectedYears = [];
 
         SelectedGroupingDays = 14;
         GroupingThresholdText = "70";

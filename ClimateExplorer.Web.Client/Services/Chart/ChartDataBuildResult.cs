@@ -14,6 +14,8 @@ public sealed record ChartDataBuildResult
 {
     public IReadOnlyList<SeriesWithData> SeriesWithData { get; init; } = [];
 
+    public IReadOnlyList<SeriesWithData> NonRenderedSeriesWithData { get; init; } = [];
+
     public BinIdentifier[]? ChartBins { get; init; }
 
     public BinIdentifier? ChartStartBin { get; init; }

@@ -140,9 +140,102 @@ public class ChartDataBuilderTests
         Assert.IsTrue(result.HasRenderableData);
         Assert.HasCount(1, result.Messages);
         StringAssert.Contains(result.Messages.Single().Message, "moving");
+        Assert.AreEqual(ChartSeriesDataStatus.FallbackToUnsmoothedData, result.SeriesWithData.Single().DataStatus);
 
         var processedValues = result.SeriesWithData.Single().ProcessedDataSet!.DataRecords.Select(x => x.Value).ToArray();
         CollectionAssert.AreEqual(new double?[] { 1, 2, 3, 4, 5 }, processedValues);
+    }
+
+    [TestMethod]
+    public async Task BuildRendersAvailableSeriesWhenAnotherSeriesHasNoChartableDataAfterCompletenessFiltering()
+    {
+        var temperatureDataSet = CreateYearDataSet([(2000, 10), (2001, 11), (2002, 12)]);
+        var precipitationDataSet = CreateYearDataSet(
+            [],
+            DataType.Precipitation,
+            UnitOfMeasure.Millimetres,
+            rawDataRecords: [new DataRecord(2000, 1, 1, 1)]);
+        var dataService = CreateSequentialDataService(temperatureDataSet, precipitationDataSet);
+
+        var temperatureSeries = CreateSeries();
+        var precipitationSeries = CreateSeries(
+            dataType: DataType.Precipitation,
+            unitOfMeasure: UnitOfMeasure.Millimetres,
+            aggregation: SeriesAggregationOptions.Sum);
+        var state = new ChartState { ChartAllData = true, Series = [temperatureSeries, precipitationSeries] };
+
+        var result = await CreateBuilder(dataService).BuildAsync(state);
+
+        Assert.IsTrue(result.HasRenderableData);
+        Assert.HasCount(1, result.SeriesWithData);
+        Assert.AreSame(temperatureSeries, result.SeriesWithData.Single().ChartSeries);
+        Assert.HasCount(1, result.NonRenderedSeriesWithData);
+        Assert.AreSame(precipitationSeries, result.NonRenderedSeriesWithData.Single().ChartSeries);
+        Assert.AreEqual(ChartSeriesDataStatus.NoChartableDataAfterCompletenessFiltering, result.NonRenderedSeriesWithData.Single().DataStatus);
+        Assert.HasCount(1, result.Messages);
+        StringAssert.Contains(result.Messages.Single().Message, "completeness threshold removed all precipitation observations");
+        Assert.HasCount(2, state.Series);
+
+        var processedValues = result.SeriesWithData.Single().ProcessedDataSet!.DataRecords.Select(x => x.Value).ToArray();
+        CollectionAssert.AreEqual(new double?[] { 10, 11, 12 }, processedValues);
+    }
+
+    [TestMethod]
+    public async Task BuildReturnsFullNoDataResultOnlyWhenNoRequestedSeriesHasChartableData()
+    {
+        var solarDataSet = CreateYearDataSet(
+            [],
+            DataType.SolarRadiation,
+            UnitOfMeasure.MegajoulesPerSquareMetre,
+            rawDataRecords: [new DataRecord(2000, 1, 1, 20)]);
+        var dataService = CreateDataService(solarDataSet);
+
+        var series = CreateSeries(
+            dataType: DataType.SolarRadiation,
+            unitOfMeasure: UnitOfMeasure.MegajoulesPerSquareMetre);
+        var state = new ChartState { ChartAllData = true, Series = [series] };
+
+        var result = await CreateBuilder(dataService).BuildAsync(state);
+
+        Assert.IsFalse(result.HasRenderableData);
+        Assert.IsEmpty(result.SeriesWithData);
+        Assert.HasCount(1, result.NonRenderedSeriesWithData);
+        Assert.AreEqual(ChartSeriesDataStatus.NoChartableDataAfterCompletenessFiltering, result.NonRenderedSeriesWithData.Single().DataStatus);
+        Assert.HasCount(1, result.Messages);
+        StringAssert.Contains(result.Messages.Single().Message, "completeness threshold removed all solar radiation observations");
+    }
+
+    [TestMethod]
+    public async Task BuildRendersPreviouslySkippedSeriesWhenNextResultHasChartableData()
+    {
+        var emptyPrecipitationDataSet = CreateYearDataSet(
+            [],
+            DataType.Precipitation,
+            UnitOfMeasure.Millimetres,
+            rawDataRecords: [new DataRecord(2000, 1, 1, 1)]);
+        var validPrecipitationDataSet = CreateYearDataSet(
+            [(2000, 100), (2001, 110)],
+            DataType.Precipitation,
+            UnitOfMeasure.Millimetres);
+        var dataService = CreateSequentialDataService(emptyPrecipitationDataSet, validPrecipitationDataSet);
+
+        var series = CreateSeries(
+            dataType: DataType.Precipitation,
+            unitOfMeasure: UnitOfMeasure.Millimetres,
+            aggregation: SeriesAggregationOptions.Sum);
+        var state = new ChartState { ChartAllData = true, Series = [series] };
+        var builder = CreateBuilder(dataService);
+
+        var firstResult = await builder.BuildAsync(state);
+        var secondResult = await builder.BuildAsync(state);
+
+        Assert.IsFalse(firstResult.HasRenderableData);
+        Assert.HasCount(1, firstResult.NonRenderedSeriesWithData);
+        Assert.IsTrue(secondResult.HasRenderableData);
+        Assert.HasCount(1, secondResult.SeriesWithData);
+        Assert.IsEmpty(secondResult.NonRenderedSeriesWithData);
+        Assert.AreEqual(ChartSeriesDataStatus.Rendered, secondResult.SeriesWithData.Single().DataStatus);
+        Assert.HasCount(1, state.Series);
     }
 
     private static ChartDataBuilder CreateBuilder(Mock<IDataService> dataService)
@@ -174,13 +267,43 @@ public class ChartDataBuilderTests
         return dataService;
     }
 
-    private static DataSet CreateYearDataSet(IEnumerable<(int Year, double? Value)> records)
+    private static Mock<IDataService> CreateSequentialDataService(params DataSet[] dataSets)
+    {
+        var queue = new Queue<DataSet>(dataSets);
+        var dataService = new Mock<IDataService>();
+        dataService
+            .Setup(x => x.PostDataSet(
+                It.IsAny<BinGranularities>(),
+                It.IsAny<ContainerAggregationFunctions>(),
+                It.IsAny<ContainerAggregationFunctions>(),
+                It.IsAny<ContainerAggregationFunctions>(),
+                It.IsAny<SeriesValueOptions>(),
+                It.IsAny<SeriesSpecification[]>(),
+                It.IsAny<SeriesDerivationTypes>(),
+                It.IsAny<float>(),
+                It.IsAny<float>(),
+                It.IsAny<float>(),
+                It.IsAny<int>(),
+                It.IsAny<SeriesTransformations>(),
+                It.IsAny<string?>(),
+                It.IsAny<short?>(),
+                It.IsAny<DataResolution?>()))
+            .ReturnsAsync(() => queue.Dequeue());
+        return dataService;
+    }
+
+    private static DataSet CreateYearDataSet(
+        IEnumerable<(int Year, double? Value)> records,
+        DataType dataType = DataType.TempMean,
+        UnitOfMeasure unitOfMeasure = UnitOfMeasure.DegreesCelsius,
+        DataRecord[]? rawDataRecords = null)
     {
         return new DataSet
         {
             GeographicalEntity = CreateLocation(),
-            MeasurementDefinition = CreateMeasurementDefinition(),
+            MeasurementDefinition = CreateMeasurementDefinition(dataType, unitOfMeasure),
             DataRecords = [.. records.Select(r => new BinnedRecord(new YearBinIdentifier((short)r.Year).Id, r.Value))],
+            RawDataRecords = rawDataRecords,
         };
     }
 
@@ -196,18 +319,22 @@ public class ChartDataBuilderTests
         };
     }
 
-    private static MeasurementDefinitionViewModel CreateMeasurementDefinition()
+    private static MeasurementDefinitionViewModel CreateMeasurementDefinition(
+        DataType dataType = DataType.TempMean,
+        UnitOfMeasure unitOfMeasure = UnitOfMeasure.DegreesCelsius)
     {
         return new MeasurementDefinitionViewModel
         {
-            DataType = DataType.TempMean,
+            DataType = dataType,
             DataAdjustment = DataAdjustment.Adjusted,
             DataResolution = DataResolution.Monthly,
-            UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+            UnitOfMeasure = unitOfMeasure,
         };
     }
 
-    private static DataSetDefinitionViewModel CreateDataSetDefinition()
+    private static DataSetDefinitionViewModel CreateDataSetDefinition(
+        DataType dataType = DataType.TempMean,
+        UnitOfMeasure unitOfMeasure = UnitOfMeasure.DegreesCelsius)
     {
         return new DataSetDefinitionViewModel
         {
@@ -215,7 +342,7 @@ public class ChartDataBuilderTests
             Name = "Test data set",
             ShortName = "Test",
             LocationIds = [LocationId],
-            MeasurementDefinitions = [CreateMeasurementDefinition()],
+            MeasurementDefinitions = [CreateMeasurementDefinition(dataType, unitOfMeasure)],
         };
     }
 
@@ -223,9 +350,12 @@ public class ChartDataBuilderTests
         BinGranularities binGranularity = BinGranularities.ByYear,
         SecondaryCalculationOptions secondaryCalculation = SecondaryCalculationOptions.None,
         SeriesSmoothingOptions smoothing = SeriesSmoothingOptions.None,
-        int smoothingWindow = 20)
+        int smoothingWindow = 20,
+        DataType dataType = DataType.TempMean,
+        UnitOfMeasure unitOfMeasure = UnitOfMeasure.DegreesCelsius,
+        SeriesAggregationOptions aggregation = SeriesAggregationOptions.Mean)
     {
-        var dataSetDefinition = CreateDataSetDefinition();
+        var dataSetDefinition = CreateDataSetDefinition(dataType, unitOfMeasure);
 
         return new ChartSeriesDefinition
         {
@@ -240,7 +370,7 @@ public class ChartDataBuilderTests
                     MeasurementDefinition = dataSetDefinition.MeasurementDefinitions!.Single(),
                 },
             ],
-            Aggregation = SeriesAggregationOptions.Mean,
+            Aggregation = aggregation,
             BinGranularity = binGranularity,
             DisplayStyle = SeriesDisplayStyle.Line,
             SecondaryCalculation = secondaryCalculation,
