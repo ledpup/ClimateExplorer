@@ -7,6 +7,7 @@ using GeoCoordinatePortable;
 
 public class Location : GeographicalEntity
 {
+    private const short TitleMaximumLength = 30;
     public required string CountryCode { get; set; }
     public string? Country { get; set; }
     public required Coordinates Coordinates { get; set; }
@@ -27,10 +28,22 @@ public class Location : GeographicalEntity
             : $"{Name}, {CountryCode}";
 
     [JsonIgnore]
-    public string CountryShortTitle =>
-        string.IsNullOrWhiteSpace(CountryWithoutOwner)
-            ? Name
-            : $"{Name}, {CountryWithoutOwner}";
+    public string DisplayTitle
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(CountryWithoutOwner))
+            {
+                return Name;
+            }
+
+            var proposedTitle = $"{Name}, {CountryWithoutOwner}";
+
+            var country = proposedTitle?.Length > TitleMaximumLength ? CountryCode : CountryWithoutOwner;
+
+            return $"{Name}, {country}";
+        }
+    }
 
     private string CountryWithoutOwner
     {

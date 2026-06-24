@@ -4,7 +4,7 @@
 @using ClimateExplorer.Web.Client.Components.Common
 @using static ClimateExplorer.Core.Enums
 
-<Collapsible @ref="LocationCollapsible" Title="@Location?.FullTitle" CompactTitle="@Location?.CodeTitle" MinimalTitle="@Location?.Name" OnShowOrHide="OverviewShowOrHideHandler" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
+<Collapsible @ref="LocationCollapsible" Title="@Location?.DisplayTitle" CompactTitle="@Location?.CodeTitle" MinimalTitle="@Location?.Name" OnShowOrHide="OverviewShowOrHideHandler" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
     <CollapsedContent>
         @if (!LocationLoadingIndicatorVisible)
         {

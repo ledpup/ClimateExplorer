@@ -7,9 +7,18 @@
     padding: 8px;
 }
 
+.collapser-clickable {
+    display: inline-flex;
+    align-items: baseline;
+    min-width: 0;
+    max-width: 100%;
+}
+
 .collapsible-title {
     display: block;
+    flex: 1 1 auto;
     min-width: 0;
+    overflow: hidden;
     white-space: nowrap;
 }
 
@@ -17,7 +26,9 @@
         text-decoration: underline;
     }
 
-    .collapsible-title > span {
+    .collapsible-title-full,
+    .collapsible-title-compact,
+    .collapsible-title-minimal {
         display: none;
         max-width: 100%;
         overflow: hidden;
@@ -103,6 +114,7 @@
     }
 
     .collapser .oi {
+        flex-shrink: 0;
         margin-right: 0.6em;
         font-size: 1.2rem;
         top: -4px;
