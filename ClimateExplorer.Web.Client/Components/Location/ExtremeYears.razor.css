@@ -8,3 +8,14 @@
         color: #0a58ca;
         text-decoration: underline;
     }
+
+.warm-cool-years {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 640px) {
+    .warm-cool-years {
+        display: block;
+    }
+}

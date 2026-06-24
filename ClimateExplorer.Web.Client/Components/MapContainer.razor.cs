@@ -1,6 +1,5 @@
 namespace ClimateExplorer.Web.Client.Components;
 
-using ClimateExplorer.Core.Model;
 using CurrentDevice;
 using DPBlazorMapLibrary;
 using Microsoft.AspNetCore.Components;

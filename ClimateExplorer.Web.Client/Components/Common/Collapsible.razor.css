@@ -7,36 +7,71 @@
     padding: 8px;
 }
 
-.title {
-    display: inline-block;
+.collapsible-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.collapsible-collapsed-content {
+    flex: 0 0 auto;
+}
+
+.collapser-clickable {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.collapsible-title {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    min-width: 0;
     overflow: hidden;
-    text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-    .title .tooltip-content {
-        display: none;
-        position: absolute;
-        box-shadow: rgb(0 0 0 / 15%) 1px 1px 12px;
-        border-radius: 12px;
-        top: 48px;
-        left: 48px;
-        padding: 12px 16px 12px 16px;
-        background-color: #fff;
-        width: max-content;
-        max-width: 600px;
-        font-size: 1.2rem;
-        color: #425f59;
-        z-index: 1500;
-    }
-
-    .title:hover {
+    .collapsible-title:hover {
         text-decoration: underline;
     }
 
-    .title:hover .tooltip-content {
-        display: block;
+    .collapsible-title-full,
+    .collapsible-title-compact,
+    .collapsible-title-minimal {
+        display: none;
+        max-width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
+
+.collapsible-title-full {
+    display: inline-block;
+}
+
+@media (max-width: 768px) {
+    .collapsible-title-full {
+        display: none;
+    }
+
+    .collapsible-title-compact {
+        display: inline-block;
+    }
+}
+
+@media (max-width: 480px) {
+    .collapsible-title-compact {
+        display: none;
+    }
+
+    .collapsible-title-minimal {
+        display: inline-block;
+    }
+}
+
 
 @media (min-width: 641px) {
     .collapsible-panel {
@@ -61,7 +96,9 @@
     font-weight: bold;
     cursor: pointer;
     user-select: none;
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
 }
 
     .collapser.content-shown {
@@ -72,18 +109,8 @@
         font-size: 1.5em;
     }
 
-    .collapser.titled {
-        top: 5px;
-    }
-
     .collapser.extralarge {
         font-size: 2em;
-        min-width: 360px;
-        top: 0px;
-    }
-
-    .collapser.untitled {
-        top: 12px;
     }
 
     .collapser:hover {
@@ -91,14 +118,13 @@
     }
 
     .collapser .oi {
+        flex-shrink: 0;
         margin-right: 0.6em;
         font-size: 1.2rem;
-        top: -4px;
         width: 16px;
     }
 
         .collapser .oi.extralarge {
-            top: -14px;
             width: 16px;
         }
 
