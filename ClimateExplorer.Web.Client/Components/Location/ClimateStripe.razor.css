@@ -1,9 +1,8 @@
 ﻿.climate-stripe {
     height: 50px;
     margin-top: 16px;
-    padding-right: 16px;
     display: flex;
-    max-width: 700px;
+    max-width: 770px;
 }
 
 .single-stripe {

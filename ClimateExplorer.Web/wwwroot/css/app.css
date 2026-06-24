@@ -147,11 +147,11 @@ th {
     cursor: pointer;
     display: inline-flex;
     align-items: center;
+    vertical-align: text-bottom;
     gap: 0.5rem;
     position: relative;
     user-select: none;
     font: inherit;
-    vertical-align: text-bottom;
     box-shadow: rgb(0 0 0 / 20%) 0px 0px 6px;
 }
 

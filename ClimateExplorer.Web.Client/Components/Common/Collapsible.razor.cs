@@ -32,6 +32,12 @@ public partial class Collapsible
     public string? Title { get; set; }
 
     [Parameter]
+    public string? CompactTitle { get; set; }
+
+    [Parameter]
+    public string? MinimalTitle { get; set; }
+
+    [Parameter]
     public string? FullTitle { get; set; }
 
     [Parameter]
@@ -59,6 +65,10 @@ public partial class Collapsible
     public bool? InitiallyShowContents { get; set; }
 
     public bool ShowContent => showContent;
+
+    private string? EffectiveCompactTitle => CompactTitle ?? Title;
+
+    private string? EffectiveMinimalTitle => MinimalTitle ?? EffectiveCompactTitle ?? Title;
 
     public void CollapserOnClick()
     {

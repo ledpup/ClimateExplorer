@@ -7,36 +7,48 @@
     padding: 8px;
 }
 
-.title {
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.collapsible-title {
+    display: block;
+    min-width: 0;
     white-space: nowrap;
 }
 
-    .title .tooltip-content {
-        display: none;
-        position: absolute;
-        box-shadow: rgb(0 0 0 / 15%) 1px 1px 12px;
-        border-radius: 12px;
-        top: 48px;
-        left: 48px;
-        padding: 12px 16px 12px 16px;
-        background-color: #fff;
-        width: max-content;
-        max-width: 600px;
-        font-size: 1.2rem;
-        color: #425f59;
-        z-index: 1500;
-    }
-
-    .title:hover {
+    .collapsible-title:hover {
         text-decoration: underline;
     }
 
-    .title:hover .tooltip-content {
-        display: block;
+    .collapsible-title > span {
+        display: none;
+        max-width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
+
+.collapsible-title-full {
+    display: inline-block;
+}
+
+@media (max-width: 768px) {
+    .collapsible-title-full {
+        display: none;
+    }
+
+    .collapsible-title-compact {
+        display: inline-block;
+    }
+}
+
+@media (max-width: 480px) {
+    .collapsible-title-compact {
+        display: none;
+    }
+
+    .collapsible-title-minimal {
+        display: inline-block;
+    }
+}
+
 
 @media (min-width: 641px) {
     .collapsible-panel {
@@ -78,7 +90,7 @@
 
     .collapser.extralarge {
         font-size: 2em;
-        min-width: 360px;
+        width: min(540px, 100%);
         top: 0px;
     }
 

@@ -7,12 +7,6 @@ using GeoCoordinatePortable;
 
 public class Location : GeographicalEntity
 {
-    public const int TitleMaximumLength = 18;
-
-    private string? title;
-    private string? fullTitle;
-    private string? shorterTitle;
-
     public required string CountryCode { get; set; }
     public string? Country { get; set; }
     public required Coordinates Coordinates { get; set; }
@@ -21,73 +15,36 @@ public class Location : GeographicalEntity
     public DataRecord? RecordHigh { get; set; }
 
     [JsonIgnore]
-    public string FullTitle
-    {
-        get
-        {
-            if (fullTitle != null)
-            {
-                return fullTitle;
-            }
-
-            fullTitle = Country == null ? Name : $"{Name}, {Country}";
-
-            return fullTitle;
-        }
-    }
+    public string FullTitle =>
+        string.IsNullOrWhiteSpace(Country)
+            ? Name
+            : $"{Name}, {Country}";
 
     [JsonIgnore]
-    public string ShorterTitle
-    {
-        get
-        {
-            if (shorterTitle != null)
-            {
-                return shorterTitle;
-            }
-
-            shorterTitle = $"{Name}, {Country}";
-
-            var regex = new Regex(@"(?<country>.*)\s(?<owner>\[.*\])");
-            var match = regex.Match(Country!);
-            if (match.Success)
-            {
-                var country = match.Groups["country"];
-                shorterTitle = $"{Name}, {country}";
-            }
-
-            return shorterTitle;
-        }
-    }
+    public string CodeTitle =>
+        string.IsNullOrWhiteSpace(CountryCode)
+            ? Name
+            : $"{Name}, {CountryCode}";
 
     [JsonIgnore]
-    public string Title
+    public string CountryShortTitle =>
+        string.IsNullOrWhiteSpace(CountryWithoutOwner)
+            ? Name
+            : $"{Name}, {CountryWithoutOwner}";
+
+    private string CountryWithoutOwner
     {
         get
         {
-            if (title != null)
+            if (string.IsNullOrWhiteSpace(Country))
             {
-                return title;
+                return string.Empty;
             }
 
-            if (FullTitle.Length <= TitleMaximumLength)
-            {
-                title = FullTitle;
-            }
-            else if (ShorterTitle.Length <= TitleMaximumLength)
-            {
-                title = ShorterTitle;
-            }
-            else if (Name.Length > TitleMaximumLength)
-            {
-                title = Name.Substring(0, TitleMaximumLength - 3) + "...";
-            }
-            else
-            {
-                title = Name;
-            }
-
-            return title;
+            var match = Regex.Match(Country, @"^(?<country>.*?)\s*\[.*\]$");
+            return match.Success
+                ? match.Groups["country"].Value.Trim()
+                : Country;
         }
     }
 

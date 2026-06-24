@@ -1,6 +1,3 @@
-@using Blazorise
-@using ClimateExplorer.Core.Model
-
 <div class="@("collapsible-panel " + (ContentLayoutType == CollapserContentLayoutTypes.Block 
                                                                 ? "block-layout" 
                                                                 : (ContentLayoutType == CollapserContentLayoutTypes.FlexboxColumns 
@@ -21,14 +18,10 @@
 
                 @if (ShowTitleWhenExpanded || !ShowContent)
                 {
-                    <span class="title">
-                        @Title
-                        @if (FullTitle != null && Title != FullTitle)
-                        {
-                            <span class="tooltip-content">
-                                @FullTitle
-                            </span>
-                        }
+                    <span class="collapsible-title">
+                        <span class="collapsible-title-full">@Title</span>
+                        <span class="collapsible-title-compact">@EffectiveCompactTitle</span>
+                        <span class="collapsible-title-minimal">@EffectiveMinimalTitle</span>
                     </span>
                 }
             </span>
