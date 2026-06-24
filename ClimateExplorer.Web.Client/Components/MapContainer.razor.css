@@ -77,7 +77,10 @@
         top: 16px;
         right: 8px;
         left: 0px;
-        bottom: 0px;
+        /* .location-info-container is a flex item, so its content's trailing margin-bottom (24px, from .collapsible-panel)
+           is trapped inside its box rather than collapsing through. Match it here so the map ends flush with the
+           visible bottom edge of the collapsible card instead of overrunning it. */
+        bottom: 24px;
         z-index: 20;
     }
 

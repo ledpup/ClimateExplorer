@@ -5,33 +5,35 @@
                                                                     : "flexbox-row-layout")) + (NoBottomMargin ? " no-bottom-margin" : ""))">
     @if (AllowCollapse)
     {
-        <span class="collapser @(CollapserSize.ToString().ToLower()) @(ShowContent ? "content-shown" : "content-hidden") @(Title != null ? "titled" : "untitled")">
-            <span class="collapser-clickable" @onclick="CollapserOnClick">
-                @if (ShowContent)
-                {
-                    <span class="oi oi-chevron-bottom @(CollapserSize.ToString().ToLower())" aria-hidden="true"></span>
-                }
-                else
-                {
-                    <span class="oi oi-chevron-right @(CollapserSize.ToString().ToLower())" aria-hidden="true"></span>
-                }
+        <div class="collapsible-header">
+            <span class="collapser @(CollapserSize.ToString().ToLower()) @(ShowContent ? "content-shown" : "content-hidden") @(Title != null ? "titled" : "untitled")">
+                <span class="collapser-clickable" @onclick="CollapserOnClick">
+                    @if (ShowContent)
+                    {
+                        <span class="oi oi-chevron-bottom @(CollapserSize.ToString().ToLower())" aria-hidden="true"></span>
+                    }
+                    else
+                    {
+                        <span class="oi oi-chevron-right @(CollapserSize.ToString().ToLower())" aria-hidden="true"></span>
+                    }
 
-                @if (ShowTitleWhenExpanded || !ShowContent)
-                {
-                    <span class="collapsible-title">
-                        <span class="collapsible-title-full">@Title</span>
-                        <span class="collapsible-title-compact">@EffectiveCompactTitle</span>
-                        <span class="collapsible-title-minimal">@EffectiveMinimalTitle</span>
-                    </span>
-                }
+                    @if (ShowTitleWhenExpanded || !ShowContent)
+                    {
+                        <span class="collapsible-title">
+                            <span class="collapsible-title-full">@Title</span>
+                            <span class="collapsible-title-compact">@EffectiveCompactTitle</span>
+                            <span class="collapsible-title-minimal">@EffectiveMinimalTitle</span>
+                        </span>
+                    }
+                </span>
             </span>
-        </span>
-        if (CollapsedContent != null)
-        {
-            <span>
-                @CollapsedContent
-            </span>
-        }
+            @if (CollapsedContent != null)
+            {
+                <span class="collapsible-collapsed-content">
+                    @CollapsedContent
+                </span>
+            }
+        </div>
     }
 
     @if (ShowContent)

@@ -44,7 +44,7 @@
 </Collapsible>
 
 <div class="location-and-chart-container">
-    <div style="position: relative;">
+    <div class="location-map-row">
         <div class="map-space-reserver" id="mapContainerContainer">
             <MapContainer
                 Locations="@MapLocations"
@@ -60,8 +60,6 @@
                         OnOverviewShowOrHide="@OnOverviewShowHide"
                         OnYearFilterChange="@HandleOnYearFilterChange" />
         </div>
-
-        <div style="clear: both;"></div>
     </div>
 
     <ChartView State="@CurrentChartState"

@@ -17,10 +17,6 @@
         color: #0a58ca;
     }
 
-.content-block {
-    max-width: 780px;
-}
-
 /* display:contents makes the wrapper transparent to layout so the Dropdown
    continues to sit inline with the other chart controls, while still giving
    Blazor's CSS isolation a plain HTML element to stamp the scope attribute on. */
