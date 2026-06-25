@@ -10,17 +10,20 @@ public partial class MapContainer
     private static readonly string[] MarkerOptionLabels = ["negative", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "null"];
 
     private readonly SemaphoreSlim markerOptionsLock = new(1, 1);
+    private readonly SemaphoreSlim mapLifecycleLock = new(1, 1);
     private Map? map;
     private MapOptions? mapOptions;
     private bool mainTileLayerCreated = false;
-    private int lastExpandedZoom = 8;
-    private int lastCollapsedZoom = 8;
-    private LatLng? expandedCentre = null;
-    private LatLng? collapsedCentre = null;
+    private int? lastExpandedZoom;
+    private int? lastCollapsedZoom;
+    private LatLng? lastExpandedCentre = null;
+    private LatLng? lastCollapsedCentre = null;
     private Core.Model.Location? internalLocation;
     private List<Guid> markersAdded = new();
     private Dictionary<string, MarkerOptions> markerOptions = new();
     private bool mapRerendering = false;
+    private bool mapTransitionInProgress = false;
+    private int mapRenderVersion = 0;
 
     [Parameter]
     public IEnumerable<Core.Model.Location>? Locations { get; set; }
@@ -52,64 +55,101 @@ public partial class MapContainer
 
     public async Task CreateMapMarkers()
     {
-        if (Locations == null || mapOptions == null || map == null || this.IconFactory == null || this.LayerFactory == null || JsRuntime == null)
+        if (mapTransitionInProgress || Locations == null || mapOptions == null || map == null || this.IconFactory == null || this.LayerFactory == null || JsRuntime == null)
         {
             return;
         }
 
-        Logger!.LogInformation("Creating map markers");
-
-        await CreateMarkerOptions();
-
-        var bounds = await map.GetBounds();
-
-        int added = 0;
-        foreach (var location in Locations)
+        await mapLifecycleLock.WaitAsync();
+        try
         {
-            if (markersAdded.Contains(location.Id))
+            if (mapTransitionInProgress || Locations == null || mapOptions == null || map == null || this.IconFactory == null || this.LayerFactory == null || JsRuntime == null)
             {
-                continue;
+                return;
             }
 
-            var lat = location.Coordinates.Latitude;
-            var lng = location.Coordinates.Longitude;
+            var markerMap = map;
+            var markerMapOptions = mapOptions;
+            var markerMapVersion = mapRenderVersion;
 
-            if (bounds is not null)
+            Logger!.LogInformation("Creating map markers");
+
+            await CreateMarkerOptions();
+
+            if (IsStaleMapMarkerCreation(markerMap, markerMapOptions, markerMapVersion))
             {
-                bool latInRange = IsLatBetween(lat, bounds.SouthWest!.Lat, bounds.NorthEast!.Lat);
-                bool lngInRange = IsLngBetween(lng, bounds.SouthWest!.Lng, bounds.NorthEast!.Lng);
+                return;
+            }
 
-                if (!latInRange || !lngInRange)
+            var bounds = await markerMap.GetBounds();
+
+            if (bounds is null || IsStaleMapMarkerCreation(markerMap, markerMapOptions, markerMapVersion))
+            {
+                return;
+            }
+
+            int added = 0;
+            foreach (var location in Locations)
+            {
+                if (markersAdded.Contains(location.Id))
                 {
                     continue;
                 }
+
+                var lat = location.Coordinates.Latitude;
+                var lng = location.Coordinates.Longitude;
+
+                if (bounds is not null)
+                {
+                    bool latInRange = IsLatBetween(lat, bounds.SouthWest!.Lat, bounds.NorthEast!.Lat);
+                    bool lngInRange = IsLngBetween(lng, bounds.SouthWest!.Lng, bounds.NorthEast!.Lng);
+
+                    if (!latInRange || !lngInRange)
+                    {
+                        continue;
+                    }
+                }
+
+                var label = GetMarkerOptionLabel(location);
+
+                if (!markerOptions.TryGetValue(label, out var markerOption))
+                {
+                    Logger!.LogWarning(
+                        "No marker option found for label {Label}. Marker option count is {MarkerOptionCount}.",
+                        label,
+                        markerOptions.Count);
+
+                    continue;
+                }
+
+                if (IsStaleMapMarkerCreation(markerMap, markerMapOptions, markerMapVersion))
+                {
+                    return;
+                }
+
+                var marker = await this.LayerFactory.CreateMarkerAndAddToMap(new LatLng(lat, lng, location.Coordinates.Elevation ?? 0), markerMap, markerOption);
+
+                if (IsStaleMapMarkerCreation(markerMap, markerMapOptions, markerMapVersion))
+                {
+                    return;
+                }
+
+                await marker.BindTooltip(location.FullTitle!);
+                await marker.OnClick(async (MouseEvent mouseEvent) => await HandleMapMouseEvent(mouseEvent));
+
+                markersAdded.Add(location.Id);
+
+                added++;
             }
 
-            var label = GetMarkerOptionLabel(location);
+            Logger!.LogInformation($"Created {added} markers.");
 
-            if (!markerOptions.TryGetValue(label, out var markerOption))
-            {
-                Logger!.LogWarning(
-                    "No marker option found for label {Label}. Marker option count is {MarkerOptionCount}.",
-                    label,
-                    markerOptions.Count);
-
-                continue;
-            }
-
-            var marker = await this.LayerFactory.CreateMarkerAndAddToMap(new LatLng(lat, lng, location.Coordinates.Elevation ?? 0), map, markerOption);
-
-            await marker.BindTooltip(location.FullTitle!);
-            await marker.OnClick(async (MouseEvent mouseEvent) => await HandleMapMouseEvent(mouseEvent));
-
-            markersAdded.Add(location.Id);
-
-            added++;
+            Logger!.LogInformation("Created map markers");
         }
-
-        Logger!.LogInformation($"Created {added} markers.");
-
-        Logger!.LogInformation("Created map markers");
+        finally
+        {
+            mapLifecycleLock.Release();
+        }
     }
 
     public async Task CreateMainTileLayer()
@@ -160,7 +200,8 @@ public partial class MapContainer
                 if (IsMapExpanded && map is not null)
                 {
                     mapRerendering = true;
-                    await ToggleMapExpansion();
+                    var selectedLocationCentre = new LatLng(internalLocation.Coordinates.Latitude, internalLocation.Coordinates.Longitude);
+                    await CollapseMap(selectedLocationCentre);
                 }
                 else
                 {
@@ -208,6 +249,14 @@ public partial class MapContainer
         return location.HeatingScore.Value < 0
             ? "negative"
             : location.HeatingScore.Value.ToString();
+    }
+
+    private bool IsStaleMapMarkerCreation(Map markerMap, MapOptions markerMapOptions, int markerMapVersion)
+    {
+        return mapTransitionInProgress ||
+            map != markerMap ||
+            mapOptions != markerMapOptions ||
+            mapRenderVersion != markerMapVersion;
     }
 
     private async Task AfterMapRender()
@@ -296,37 +345,85 @@ public partial class MapContainer
         var lat = Math.Round(mouseEvent.LatLng!.Lat, 1);
         var lng = Math.Round(mouseEvent.LatLng.Lng, 1);
         var newLocation = Locations!.Single(x => Math.Round(x.Coordinates.Latitude, 1) == lat && Math.Round(x.Coordinates.Longitude, 1) == lng);
+        lastExpandedCentre = new LatLng(newLocation.Coordinates.Latitude, newLocation.Coordinates.Longitude);
         await OnLocationChange.InvokeAsync(newLocation.Id);
     }
 
-    private async Task ToggleMapExpansion()
+    private async Task ExpandMap()
     {
-        // Capture map state before nulling mapOptions — setting mapOptions = null removes the Map
-        // component from the render tree, which Blazor can process during any subsequent await,
-        // disposing the internal jsObjectReference and causing ArgumentNullException on map calls.
-        var zoom = await map!.GetZoom();
         if (IsMapExpanded)
         {
-            lastExpandedZoom = zoom;
-            expandedCentre = await map!.GetCenter();
-        }
-        else
-        {
-            lastCollapsedZoom = zoom;
-            collapsedCentre = internalLocation is null ? null : new LatLng(internalLocation.Coordinates.Latitude, internalLocation.Coordinates.Longitude);
+            return;
         }
 
-        markersAdded = []; // Force re-creation of markers
-        mainTileLayerCreated = false;
-        mapOptions = null;
+        // Capture the current viewport before removing the map from the render tree.
+        var currentZoom = await map!.GetZoom();
+        var currentCentre = await map.GetCenter();
 
-        await JsRuntime!.InvokeVoidAsync("toggleMapExpansion", null);
-        IsMapExpanded = !IsMapExpanded;
+        lastCollapsedZoom = currentZoom;
+        lastCollapsedCentre = currentCentre;
 
-        InitialiseMapOptions();
+        await SetMapExpansion(true, currentZoom, currentCentre);
     }
 
-    private void InitialiseMapOptions()
+    private Task CollapseMap()
+    {
+        return CollapseMap(null);
+    }
+
+    private async Task CollapseMap(LatLng? targetCollapsedCentre)
+    {
+        if (!IsMapExpanded)
+        {
+            return;
+        }
+
+        // Capture the current viewport before removing the map from the render tree.
+        var currentZoom = await map!.GetZoom();
+        var currentCentre = await map.GetCenter();
+
+        lastExpandedZoom = currentZoom;
+        lastExpandedCentre = targetCollapsedCentre ?? currentCentre;
+
+        await SetMapExpansion(false, currentZoom, currentCentre, targetCollapsedCentre);
+    }
+
+    private async Task SetMapExpansion(bool expanded, int currentZoom, LatLng currentCentre, LatLng? targetCentreOverride = null)
+    {
+        // Null mapOptions only after all map calls are complete. Setting mapOptions = null removes the Map
+        // component from the render tree, which Blazor can process during any subsequent await,
+        // disposing the internal jsObjectReference and causing ArgumentNullException on map calls.
+        await mapLifecycleLock.WaitAsync();
+        try
+        {
+            mapTransitionInProgress = true;
+            mapRenderVersion++;
+            markersAdded = []; // Force re-creation of markers
+            mainTileLayerCreated = false;
+            mapOptions = null;
+            map = null;
+
+            await InvokeAsync(StateHasChanged);
+            await Task.Yield();
+
+            await JsRuntime!.InvokeVoidAsync("setMapExpansion", expanded);
+            IsMapExpanded = expanded;
+
+            InitialiseMapOptions(currentZoom, currentCentre, targetCentreOverride);
+            mapTransitionInProgress = false;
+        }
+        finally
+        {
+            if (mapTransitionInProgress)
+            {
+                mapTransitionInProgress = false;
+            }
+
+            mapLifecycleLock.Release();
+        }
+    }
+
+    private void InitialiseMapOptions(int? currentZoom = null, LatLng? currentCentre = null, LatLng? targetCentreOverride = null)
     {
         Logger!.LogInformation("Initialising map options");
 
@@ -335,10 +432,14 @@ public partial class MapContainer
         if (mapOptions == null && internalLocation is not null)
         {
             var centre = new LatLng(internalLocation.Coordinates.Latitude, internalLocation.Coordinates.Longitude);
+            var restoredZoom = IsMapExpanded ? lastExpandedZoom : lastCollapsedZoom;
+            var restoredCentre = IsMapExpanded ? lastExpandedCentre : lastCollapsedCentre;
             mapOptions = new MapOptions()
                 {
-                    Center = IsMapExpanded ? expandedCentre ?? centre : collapsedCentre ?? centre,
-                    Zoom = IsMapExpanded ? lastExpandedZoom : lastCollapsedZoom,
+                    Center = targetCentreOverride
+                        ?? (restoredZoom.HasValue && restoredCentre is not null ? restoredCentre : currentCentre)
+                        ?? centre,
+                    Zoom = restoredZoom ?? currentZoom ?? 8,
                     Dragging = !(bool)IsMobileDevice! || IsMapExpanded,
                 };
         }

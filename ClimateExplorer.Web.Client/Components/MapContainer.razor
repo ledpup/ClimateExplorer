@@ -10,15 +10,17 @@
     }
 
     <div class="@(IsMapExpanded ? "mapToggleExpanded" : "mapToggleCollapsed")">
-        <Button Clicked="@ToggleMapExpansion" Class="map-toggle-button" Disabled="Locations is null" Visibility="map is null ? Visibility.Invisible : Visibility.Visible">
-            @if (IsMapExpanded)
-            {
+        @if (IsMapExpanded)
+        {
+            <Button Clicked="@CollapseMap" Class="map-toggle-button" Disabled="Locations is null" Visibility="map is null ? Visibility.Invisible : Visibility.Visible">
                 <span><i class="fas fa-compress"></i> Collapse</span>
-            }
-            else
-            {
+            </Button>
+        }
+        else
+        {
+            <Button Clicked="@ExpandMap" Class="map-toggle-button" Disabled="Locations is null" Visibility="map is null ? Visibility.Invisible : Visibility.Visible">
                 <span><i class="fas fa-expand"></i> Expand</span>
-            }
-        </Button>
+            </Button>
+        }
     </div>
 </div>
