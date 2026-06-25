@@ -282,18 +282,20 @@
             canvas.addEventListener('mouseleave', canvas._chartLeaveHandler);
         }
 
-        function toggleMapExpansion() {
+        function setMapExpansion(isExpanded) {
             var mapElement = document.getElementById("mapContainer");
 
-            var isMapCurrentlyExpanded =
-                mapElement.className == "mapContainer expanded";
+            mapElement.className = isExpanded
+                ? "mapContainer expanded"
+                : "mapContainer collapsed";
 
-            mapElement.className = isMapCurrentlyExpanded
-                ? "mapContainer collapsed"
-                : "mapContainer expanded";
-
-            // Fake a window resize so that the leaflet map control realises it has resized.
-            window.dispatchEvent(new Event("resize"));
+            return new Promise(resolve => {
+                requestAnimationFrame(() => {
+                    // Fake a window resize so that the leaflet map control realises it has resized.
+                    window.dispatchEvent(new Event("resize"));
+                    resolve();
+                });
+            });
         }
 
         // Stamp fetchpriority="high" on the first batch of Leaflet tiles so the browser
