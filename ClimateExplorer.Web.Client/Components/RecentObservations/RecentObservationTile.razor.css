@@ -336,7 +336,7 @@
     color: #697d78;
 }
 
-@media (min-width: 641px) {
+@media (min-width: 768px) {
     .recent-observation-detail-metrics {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }

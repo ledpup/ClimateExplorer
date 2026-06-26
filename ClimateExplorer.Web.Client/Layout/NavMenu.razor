@@ -15,30 +15,44 @@
         </BarBrand>
         <BarMenu>
             <BarStart>
-                @foreach (var item in navItems)
+                @foreach (var item in primaryItems)
                 {
                     <BarItem>
                         <BarLink To="@item.Route" Class="@(IsCurrentPage(item.Route) ? "nav-current" : string.Empty)">@item.Text</BarLink>
                     </BarItem>
                 }
-                <BarItem>
+                @foreach (var item in VisibleSecondaryItems)
+                {
+                    <BarItem Class="desktop-secondary-nav-item">
+                        @if (item.OpensSiteOverview)
+                        {
+                            <button class="nav-link nav-button info-nav-link" @onclick="() => SiteOverviewService!.RequestShow()">
+                                <i class="fas fa-circle-info"></i>
+                            </button>
+                        }
+                        else
+                        {
+                            <BarLink To="@item.Route" Class="@(IsCurrentPage(item.Route!) ? "nav-current" : string.Empty)">@item.Text</BarLink>
+                        }
+                    </BarItem>
+                }
+                <BarItem Class="mobile-menu-nav-item">
                     <Dropdown>
                         <DropdownToggle Class="@("hamburger-toggle" + (IsHamburgerCurrentPage() ? " nav-current" : string.Empty))" aria-label="More navigation options">
                             <i class="fas fa-bars" aria-hidden="true"></i>
                         </DropdownToggle>
                         <DropdownMenu>
-                            @foreach (var item in hamburgerItems)
+                            @foreach (var item in VisibleSecondaryItems)
                             {
-                                <a class="@("dropdown-item" + (IsCurrentPage(item.Route) ? " hamburger-current" : string.Empty))" href="@item.Route">@item.Text</a>
-                            }
-                            @{
-                                var uri = NavigationManager!.ToAbsoluteUri(NavigationManager.Uri);
-                                if (NavigationManager.Uri == NavigationManager.BaseUri || IsLocal(uri.LocalPath))
+                                if (item.OpensSiteOverview)
                                 {
-                                    <div class="dropdown-divider"></div>
                                     <button class="dropdown-item info-menu-item" @onclick="() => SiteOverviewService!.RequestShow()">
-                                        <i class="fas fa-circle-info"></i> site overview
+                                        <i class="fas fa-circle-info"></i> @item.Text
                                     </button>
+                                }
+                                else
+                                {
+                                    <a class="@("dropdown-item" + (IsCurrentPage(item.Route!) ? " hamburger-current" : string.Empty))" href="@item.Route">@item.Text</a>
                                 }
                             }
                         </DropdownMenu>
