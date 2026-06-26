@@ -1,0 +1,93 @@
+.notification-bell {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.notification-bell:hover:not(:disabled),
+.notification-bell:focus-visible:not(:disabled) {
+    color: #cfc;
+    outline: none;
+}
+
+.notification-bell:focus-visible:not(:disabled) {
+    box-shadow: 0 0 0 3px rgba(204, 255, 204, 0.45);
+}
+
+.notification-bell:disabled {
+    color: rgba(255, 255, 255, 0.45);
+    cursor: default;
+}
+
+.notification-bell.has-unread {
+    color: #ffd166;
+}
+
+.notification-bell i {
+    font-size: 1.15rem;
+}
+
+.notification-badge {
+    position: absolute;
+    top: 0.1rem;
+    right: 0;
+    min-width: 1rem;
+    height: 1rem;
+    padding: 0 0.25rem;
+    border-radius: 999px;
+    background: #b32121;
+    color: #fff;
+    border: 1px solid #425f59;
+    font-size: 0.65rem;
+    font-weight: 700;
+    line-height: 0.95rem;
+    text-align: center;
+}
+
+.ring-once i {
+    animation: notification-ring 0.7s ease-in-out both;
+    transform-origin: 50% 0;
+}
+
+@keyframes notification-ring {
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    15% {
+        transform: rotate(18deg);
+    }
+
+    30% {
+        transform: rotate(-16deg);
+    }
+
+    45% {
+        transform: rotate(12deg);
+    }
+
+    60% {
+        transform: rotate(-8deg);
+    }
+
+    75% {
+        transform: rotate(4deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ring-once i {
+        animation: none;
+    }
+}

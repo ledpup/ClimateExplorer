@@ -1,0 +1,108 @@
+@implements IDisposable
+
+@using ClimateExplorer.Web.Client.Services.Notifications
+@inject IUserNotificationService NotificationService
+
+<button class="@BellClass"
+        disabled="@(!HasNotifications)"
+        aria-label="@AriaLabel"
+        title="@AriaLabel"
+        @onclick="OpenNotifications">
+    <i class="fas fa-bell" aria-hidden="true"></i>
+    @if (UnreadCount > 0)
+    {
+        <span class="notification-badge" aria-hidden="true">@BadgeText</span>
+        <span class="visually-hidden">@UnreadLabel</span>
+    }
+</button>
+
+@code {
+    private const int AnimationDurationMs = 700;
+    private bool shouldAnimate;
+    private CancellationTokenSource? animationCancellationTokenSource;
+
+    private int UnreadCount => NotificationService.UnreadCount;
+    private bool HasNotifications => NotificationService.TotalCount > 0;
+    private string BadgeText => UnreadCount > 99 ? "99+" : UnreadCount.ToString();
+    private string UnreadLabel => UnreadCount == 1 ? "1 unread notification" : $"{UnreadCount} unread notifications";
+    private string AriaLabel => HasNotifications
+        ? UnreadCount > 0
+            ? $"Open notifications, {UnreadLabel}"
+            : "Open notifications"
+        : "No notifications";
+
+    private string BellClass
+    {
+        get
+        {
+            var className = "notification-bell";
+
+            if (UnreadCount > 0)
+            {
+                className += " has-unread";
+            }
+
+            if (shouldAnimate)
+            {
+                className += " ring-once";
+            }
+
+            return className;
+        }
+    }
+
+    public void Dispose()
+    {
+        NotificationService.Changed -= OnNotificationsChanged;
+        NotificationService.FirstUnreadNotificationReceived -= OnFirstUnreadNotificationReceived;
+        animationCancellationTokenSource?.Cancel();
+        animationCancellationTokenSource?.Dispose();
+    }
+
+    protected override void OnInitialized()
+    {
+        NotificationService.Changed += OnNotificationsChanged;
+        NotificationService.FirstUnreadNotificationReceived += OnFirstUnreadNotificationReceived;
+    }
+
+    private void OpenNotifications()
+    {
+        if (HasNotifications)
+        {
+            NotificationService.RequestOpenPanel();
+        }
+    }
+
+    private void OnNotificationsChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private void OnFirstUnreadNotificationReceived()
+    {
+        _ = PlayAnimationAsync();
+    }
+
+    private async Task PlayAnimationAsync()
+    {
+        animationCancellationTokenSource?.Cancel();
+        animationCancellationTokenSource?.Dispose();
+        animationCancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = animationCancellationTokenSource.Token;
+
+        shouldAnimate = true;
+        await InvokeAsync(StateHasChanged);
+
+        try
+        {
+            await Task.Delay(AnimationDurationMs, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
+
+        shouldAnimate = false;
+        await InvokeAsync(StateHasChanged);
+    }
+}

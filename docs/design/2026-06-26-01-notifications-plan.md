@@ -1,7 +1,7 @@
 # Notifications plan
 
 - **Date:** 2026-06-26
-- **Status:** Proposed
+- **Status:** Stage 1 implemented 2026-06-26; Stages 2-3 proposed
 - **Author:** Patrick Lea (with Codex)
 - **Scope:** `NavMenu`, `MainLayout`, notification UI components, chart/user-facing message models, chart page message handling, snackbar replacement, and session-scoped client notification state.
 - **Branch context:** `development`
@@ -293,3 +293,28 @@ The existing `SidePanel` has animation timing in C# and CSS. Reduced-motion supp
   - Answer: only on `0 -> 1`, matching the requested behavior and reducing noise.
 - Should recent-observations inline failures also become global notifications?
   - Answer: not in the first migration unless the failure affects page-level understanding outside the panel.
+
+## Addendum - implementation notes
+
+Stage 1 was implemented on 2026-06-26.
+
+What shipped:
+
+- Added session-scoped notification models and `IUserNotificationService`/`NotificationService`.
+- Added grouped notification behavior with unread counts based on grouped occurrences.
+- Added a first-unread transition event for the `0 -> 1` unread-count case.
+- Added a plain `NotificationBell` component with badge, disabled state, unread colour, one-shot ring animation, and reduced-motion CSS.
+- Added a plain `NotificationHost` component that shows a bottom-right "New notifications" toast for the first-unread transition.
+- Wired the bell into `NavMenu` after desktop secondary items and immediately before the mobile hamburger item.
+- Wired the toast host into `MainLayout`.
+- Registered the notification service in client DI.
+- Added unit tests for first-unread events, grouping, read-state clearing, action URL grouping, and open-panel requests.
+
+Intentional Stage 1 boundary:
+
+- The bell and toast request the notifications panel through the service, but the side panel itself remains Stage 2 work.
+- Existing snackbar producers were not migrated; that remains Stage 3 work.
+
+Implementation note:
+
+- The service interface is named `IUserNotificationService` to avoid colliding with Blazorise's own `INotificationService`.

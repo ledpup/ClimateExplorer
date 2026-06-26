@@ -1,4 +1,5 @@
-﻿@using Blazorise
+@using Blazorise
+@using ClimateExplorer.Web.Client.Components.Notifications
 @inherits LayoutComponentBase
 
 <Layout>
@@ -7,7 +8,8 @@
     </LayoutHeader>
     <LayoutContent>
         <article class="content px-4">
-            @Body    
+            @Body
         </article>
+        <NotificationHost />
     </LayoutContent>
 </Layout>

@@ -111,6 +111,11 @@
     display: none;
 }
 
+::deep .notification-nav-item {
+    display: inline-flex;
+    align-items: center;
+}
+
 /* ── Hamburger toggle button ─────────────────────────────────────────────── */
 ::deep .hamburger-toggle {
     background: none !important;
@@ -211,6 +216,15 @@
     ::deep .nav-item:last-child {
         margin-left: auto;
         margin-right: 16px;
+    }
+
+    ::deep .notification-nav-item {
+        margin-left: auto;
+        margin-right: 4px;
+    }
+
+    ::deep .notification-nav-item + .mobile-menu-nav-item {
+        margin-left: 0;
     }
 
     /* Escape the header stacking context so the menu overlays page content */
