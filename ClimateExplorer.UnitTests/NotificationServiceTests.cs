@@ -1,5 +1,6 @@
 namespace ClimateExplorer.UnitTests;
 
+using System;
 using System.Linq;
 using ClimateExplorer.Web.Client.Services.Notifications;
 using ClimateExplorer.Web.Client.UiModel;
@@ -9,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 public class NotificationServiceTests
 {
     [TestMethod]
-    public void AddFirstUnreadNotificationRaisesFirstUnreadEvent()
+    public void Add_NoUnreadNotifications_RaisesFirstUnreadEvent()
     {
         var service = new NotificationService();
         var firstUnreadEvents = 0;
@@ -23,7 +24,7 @@ public class NotificationServiceTests
     }
 
     [TestMethod]
-    public void AddUnreadNotificationWhileUnreadDoesNotRaiseFirstUnreadEventAgain()
+    public void Add_UnreadNotificationsExist_DoesNotRaiseFirstUnreadEventAgain()
     {
         var service = new NotificationService();
         var firstUnreadEvents = 0;
@@ -37,7 +38,7 @@ public class NotificationServiceTests
     }
 
     [TestMethod]
-    public void IdenticalNotificationsAreGrouped()
+    public void Add_IdenticalNotifications_GroupsNotifications()
     {
         var service = new NotificationService();
 
@@ -51,7 +52,7 @@ public class NotificationServiceTests
     }
 
     [TestMethod]
-    public void GroupedNotificationBecomesUnreadWhenRepeated()
+    public void Add_GroupedNotificationWasRead_MarksGroupedNotificationUnread()
     {
         var service = new NotificationService();
         var notification = service.Add(new UserNotification { Message = "Data unavailable", Type = NotificationType.Warning });
@@ -66,7 +67,7 @@ public class NotificationServiceTests
     }
 
     [TestMethod]
-    public void MarkAllReadClearsUnreadCountButLeavesNotifications()
+    public void MarkAllRead_UnreadNotificationsExist_ClearsUnreadCountButLeavesNotifications()
     {
         var service = new NotificationService();
         service.Add(new UserNotification { Message = "First warning", Type = NotificationType.Warning });
@@ -80,18 +81,58 @@ public class NotificationServiceTests
     }
 
     [TestMethod]
-    public void GroupingKeyPreservesActionUrl()
+    public void SetRead_UnreadNotification_MarksNotificationReadAndClearsUnreadCount()
+    {
+        var service = new NotificationService();
+        var notification = service.Add(new UserNotification { Message = "First warning", Type = NotificationType.Warning });
+
+        service.SetRead(notification.Id, true);
+
+        Assert.IsTrue(notification.IsRead);
+        Assert.AreEqual(0, service.UnreadCount);
+        Assert.AreEqual(1, service.TotalCount);
+    }
+
+    [TestMethod]
+    public void SetRead_ReadGroupedNotification_MarksGroupedNotificationUnread()
+    {
+        var service = new NotificationService();
+        var notification = service.Add(new UserNotification { Message = "First warning", Type = NotificationType.Warning });
+        service.Add(new UserNotification { Message = "First warning", Type = NotificationType.Warning });
+        service.MarkAllRead();
+
+        service.SetRead(notification.Id, false);
+
+        Assert.IsFalse(notification.IsRead);
+        Assert.AreEqual(2, service.UnreadCount);
+        Assert.AreEqual(2, service.TotalCount);
+    }
+
+    [TestMethod]
+    public void SetRead_NotificationDoesNotExist_DoesNothing()
+    {
+        var service = new NotificationService();
+        service.Add(new UserNotification { Message = "First warning", Type = NotificationType.Warning });
+
+        service.SetRead(Guid.NewGuid(), true);
+
+        Assert.AreEqual(1, service.UnreadCount);
+        Assert.AreEqual(1, service.TotalCount);
+    }
+
+    [TestMethod]
+    public void Add_SameMessageWithDifferentActionUrls_DoesNotGroupNotifications()
     {
         var service = new NotificationService();
 
         service.Add(new UserNotification { Message = "View location", ActionText = "View location", ActionUrl = "/location/one" });
         service.Add(new UserNotification { Message = "View location", ActionText = "View location", ActionUrl = "/location/two" });
 
-        Assert.AreEqual(2, service.Notifications.Count);
+        Assert.HasCount(2, service.Notifications);
     }
 
     [TestMethod]
-    public void RequestOpenPanelRaisesOpenPanelEvent()
+    public void RequestOpenPanel_WhenCalled_RaisesOpenPanelEvent()
     {
         var service = new NotificationService();
         var openPanelEvents = 0;

@@ -66,6 +66,19 @@ public sealed class NotificationService : IUserNotificationService
         Changed?.Invoke();
     }
 
+    public void SetRead(Guid notificationId, bool isRead)
+    {
+        var notification = notifications.FirstOrDefault(candidate => candidate.Id == notificationId);
+
+        if (notification is null || notification.IsRead == isRead)
+        {
+            return;
+        }
+
+        notification.IsRead = isRead;
+        Changed?.Invoke();
+    }
+
     public void RequestOpenPanel()
     {
         OpenPanelRequested?.Invoke();

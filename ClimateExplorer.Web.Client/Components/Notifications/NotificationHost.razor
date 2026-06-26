@@ -1,70 +1,65 @@
-@implements IDisposable
-
-@using ClimateExplorer.Web.Client.Services.Notifications
-@inject IUserNotificationService NotificationService
+@using ClimateExplorer.Web.Client.Components.Common
+@using Microsoft.AspNetCore.Components
 
 @if (toastVisible)
 {
-    <button class="notification-toast" @onclick="OpenNotifications">
+    <button class="notification-toast" @onclick="OpenNotificationsPanelAsync">
         <i class="fas fa-bell" aria-hidden="true"></i>
         <span>New notifications</span>
     </button>
 }
 
-@code {
-    private static readonly TimeSpan ToastDuration = TimeSpan.FromSeconds(5);
-    private bool toastVisible;
-    private CancellationTokenSource? toastCancellationTokenSource;
-
-    public void Dispose()
+<SidePanel @ref="notificationsSidePanel" Title="Notifications" Width="72%">
+    @if (Notifications.Count == 0)
     {
-        NotificationService.FirstUnreadNotificationReceived -= OnFirstUnreadNotificationReceived;
-        toastCancellationTokenSource?.Cancel();
-        toastCancellationTokenSource?.Dispose();
+        <p class="notifications-empty">No notifications.</p>
     }
-
-    protected override void OnInitialized()
+    else
     {
-        NotificationService.FirstUnreadNotificationReceived += OnFirstUnreadNotificationReceived;
+        <div class="table-card notifications-table-card">
+            <div class="table-header">Session notifications</div>
+            <div class="notifications-table-scroll">
+                <table class="table notifications-table">
+                    <thead>
+                        <tr>
+                            <th>Message</th>
+                            <th>Location</th>
+                            <th>Severity/type</th>
+                            <th class="read-column">Read</th>
+                            <th>Time of message</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var notification in Notifications)
+                        {
+                            <tr class="@(notification.IsRead ? "notification-read" : "notification-unread")">
+                                <td class="notification-message-cell">
+                                    <span>@((MarkupString)notification.Message)</span>
+                                    @if (notification.Count > 1)
+                                    {
+                                        <span class="notification-count">x@notification.Count</span>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(notification.ActionUrl) && !string.IsNullOrWhiteSpace(notification.ActionText))
+                                    {
+                                        <a class="notification-action" href="@notification.ActionUrl">@notification.ActionText</a>
+                                    }
+                                </td>
+                                <td>@FormatLocation(notification)</td>
+                                <td>
+                                    <span class="@GetTypeClass(notification.Type)">@notification.Type</span>
+                                </td>
+                                <td class="read-column">
+                                    <input type="checkbox"
+                                           checked="@notification.IsRead"
+                                           aria-label="@CreateReadLabel(notification)"
+                                           @onchange="args => OnReadChanged(notification.Id, args)" />
+                                </td>
+                                <td>@FormatTime(notification.UpdatedAt)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     }
-
-    private void OnFirstUnreadNotificationReceived()
-    {
-        _ = ShowToastAsync();
-    }
-
-    private void OpenNotifications()
-    {
-        HideToast();
-        NotificationService.RequestOpenPanel();
-    }
-
-    private async Task ShowToastAsync()
-    {
-        toastCancellationTokenSource?.Cancel();
-        toastCancellationTokenSource?.Dispose();
-        toastCancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = toastCancellationTokenSource.Token;
-
-        toastVisible = true;
-        await InvokeAsync(StateHasChanged);
-
-        try
-        {
-            await Task.Delay(ToastDuration, cancellationToken);
-        }
-        catch (OperationCanceledException)
-        {
-            return;
-        }
-
-        toastVisible = false;
-        await InvokeAsync(StateHasChanged);
-    }
-
-    private void HideToast()
-    {
-        toastCancellationTokenSource?.Cancel();
-        toastVisible = false;
-    }
-}
+</SidePanel>

@@ -1,7 +1,7 @@
 # Notifications plan
 
 - **Date:** 2026-06-26
-- **Status:** Stage 1 implemented 2026-06-26; Stages 2-3 proposed
+- **Status:** Stages 1-2 implemented 2026-06-26; Stage 3 proposed
 - **Author:** Patrick Lea (with Codex)
 - **Scope:** `NavMenu`, `MainLayout`, notification UI components, chart/user-facing message models, chart page message handling, snackbar replacement, and session-scoped client notification state.
 - **Branch context:** `development`
@@ -318,3 +318,22 @@ Intentional Stage 1 boundary:
 Implementation note:
 
 - The service interface is named `IUserNotificationService` to avoid colliding with Blazorise's own `INotificationService`.
+
+Stage 2 was implemented on 2026-06-26.
+
+What shipped:
+
+- Added the notifications `SidePanel` to `NotificationHost`.
+- Bell and toast clicks now open the side panel through the notification service's open-panel request event.
+- Opening the side panel marks all notifications read, clearing the unread count and returning the bell to its default colour while keeping it enabled.
+- Added a notifications table with message, location, severity/type, read checkbox, and message time columns.
+- Grouped notifications show an `xN` count in the message column.
+- Optional notification actions render as links when `ActionText` and `ActionUrl` are present.
+- Added editable read checkboxes backed by `NotificationService.SetRead`.
+- Added an empty state for sessions with no notifications.
+- Added reduced-motion CSS for the existing side panel transition.
+- Added unit tests for per-notification read state updates.
+
+Intentional Stage 2 boundary:
+
+- Existing snackbar producers still have not been migrated into notifications; that remains Stage 3 work.

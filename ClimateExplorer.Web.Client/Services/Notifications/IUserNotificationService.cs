@@ -20,5 +20,7 @@ public interface IUserNotificationService
 
     void MarkAllRead();
 
+    void SetRead(Guid notificationId, bool isRead);
+
     void RequestOpenPanel();
 }
