@@ -215,7 +215,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     {
         if (chartPresetModel.ChartSeriesList == null || !chartPresetModel.ChartSeriesList.Any())
         {
-            AddNotification(new UserNotification { Message = $"No data available for the preset '{chartPresetModel.Title}'.", Type = UserNotificationType.Warning });
+            AddNotification(new UserNotification { Message = $"No data available for the preset '<b>{chartPresetModel.Title}</b>'.", Type = UserNotificationType.Warning });
             return;
         }
 

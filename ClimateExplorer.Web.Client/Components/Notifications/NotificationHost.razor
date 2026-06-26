@@ -37,7 +37,7 @@
                                     <span>@((MarkupString)notification.Message)</span>
                                     @if (notification.Count > 1)
                                     {
-                                        <span class="notification-count">x@notification.Count</span>
+                                        <span class="notification-count">@notification.Count</span>
                                     }
                                     @if (!string.IsNullOrWhiteSpace(notification.ActionUrl) && !string.IsNullOrWhiteSpace(notification.ActionText))
                                     {
