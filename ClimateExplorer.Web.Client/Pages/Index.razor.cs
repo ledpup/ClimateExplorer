@@ -567,7 +567,7 @@ public partial class Index : ChartablePage
 
         foreach (var message in result.Messages)
         {
-            await SnackbarMessageEventHandler(message);
+            AddNotification(message);
         }
 
         ChartStateLocationChangeAppliedForLocationId = Location.Id;

@@ -24,7 +24,7 @@ public sealed record ChartDataBuildResult
 
     public IReadOnlyList<short> StartYears { get; init; } = [];
 
-    public IReadOnlyList<SnackbarMessage> Messages { get; init; } = [];
+    public IReadOnlyList<UserNotification> Messages { get; init; } = [];
 
     public bool HasRenderableData { get; init; }
 }

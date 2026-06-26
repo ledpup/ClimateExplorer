@@ -1,7 +1,7 @@
 # Notifications plan
 
 - **Date:** 2026-06-26
-- **Status:** Stages 1-2 implemented 2026-06-26; Stage 3 proposed
+- **Status:** Implemented 2026-06-27 (see addendum)
 - **Author:** Patrick Lea (with Codex)
 - **Scope:** `NavMenu`, `MainLayout`, notification UI components, chart/user-facing message models, chart page message handling, snackbar replacement, and session-scoped client notification state.
 - **Branch context:** `development`
@@ -337,3 +337,24 @@ What shipped:
 Intentional Stage 2 boundary:
 
 - Existing snackbar producers still have not been migrated into notifications; that remains Stage 3 work.
+
+Stage 3 was implemented on 2026-06-27.
+
+What shipped:
+
+- Replaced `SnackbarMessage` result plumbing with `UserNotification`.
+- Chart data warnings now return `UserNotification` instances with `Warning` type and location context where available.
+- Location-substitution warnings now return `UserNotification` instances with location context and a "View location" action link.
+- Chart build failure now creates an `Error` notification.
+- Empty chart preset selection now creates a `Warning` notification.
+- `ChartablePage` now publishes notifications through `IUserNotificationService`.
+- Removed page-level `SnackbarStack` usage from the location and regional/global chart pages.
+- Removed `Blazorise.Snackbar` usings from migrated files.
+- Removed the deferred snackbar CSS asset from `App.razor`.
+- Removed snackbar CSS overrides from `app.css`.
+- Deleted `SnackbarMessage.cs`.
+
+Verification:
+
+- A source scan found no snackbar references remaining in app/test code.
+- Existing chart-data and location-substitution tests continue to cover the migrated message paths by asserting returned notification message text.

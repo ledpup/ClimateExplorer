@@ -176,35 +176,6 @@ th {
     transition: 0.25s;
 }
 
-/* ── Snackbar overrides ──────────────────────────────────────────────────── */
-.snackbar {
-    border-radius: 12px !important;
-}
-
-@media (min-width: 768px) {
-    .snackbar {
-        width: 500px !important;
-        min-width: unset !important;
-        max-width: unset !important;
-    }
-}
-
-.snackbar-body {
-    position: relative !important;
-    justify-content: center !important;
-    padding-right: 2rem !important;
-}
-
-.snackbar-action-button {
-    position: absolute !important;
-    right: 0 !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    color: #000 !important;
-    font-weight: bold !important;
-    margin-left: 0 !important;
-}
-
 /* Blazorise uses Tippy.js -- override via CSS custom properties.
    Colours taken from the original SuggestedChartsMini custom tooltip. */
 :root {

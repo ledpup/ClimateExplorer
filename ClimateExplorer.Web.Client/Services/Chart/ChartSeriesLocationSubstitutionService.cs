@@ -1,6 +1,5 @@
 namespace ClimateExplorer.Web.Client.Services.Chart;
 
-using Blazorise.Snackbar;
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
@@ -14,7 +13,7 @@ public sealed class ChartSeriesLocationSubstitutionService : IChartSeriesLocatio
     public ChartLocationSubstitutionResult Substitute(ChartLocationSubstitutionContext context)
     {
         var location = context.Location;
-        var messages = new List<SnackbarMessage>();
+        var messages = new List<UserNotification>();
         var additionalCsds = new List<ChartSeriesDefinition>();
         var chartSeriesList = context.State.Series.ToList();
 
@@ -46,7 +45,7 @@ public sealed class ChartSeriesLocationSubstitutionService : IChartSeriesLocatio
         ChartSeriesDefinition csd,
         SourceSeriesSpecification sss,
         Location location,
-        List<SnackbarMessage> messages)
+        List<UserNotification> messages)
     {
         if (csd.SourceSeriesSpecifications!.Length != 1 || context.Regions.Any(x => x.Id == sss.LocationId))
         {
@@ -81,7 +80,15 @@ public sealed class ChartSeriesLocationSubstitutionService : IChartSeriesLocatio
         if (dsd is null)
         {
             var dataType = sss.MeasurementDefinition.DataType.ToFriendlyName();
-            messages.Add(new SnackbarMessage { Message = $"{dataType} data is not available at {location.FullTitle}.", Type = SnackbarColor.Warning });
+            messages.Add(new UserNotification
+            {
+                Message = $"{dataType} data is not available at {location.FullTitle}.",
+                Type = NotificationType.Warning,
+                LocationId = location.Id,
+                LocationName = location.FullTitle,
+                ActionText = "View location",
+                ActionUrl = $"/location/{location.UrlReadyName()}",
+            });
             csd.DataAvailable = false;
             return;
         }
