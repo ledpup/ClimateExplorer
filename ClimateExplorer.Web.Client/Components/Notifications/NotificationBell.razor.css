@@ -25,8 +25,8 @@
 }
 
 .notification-bell:disabled {
-    color: rgba(255, 255, 255, 0.45);
     cursor: default;
+    visibility: hidden;
 }
 
 .notification-bell.has-unread {
