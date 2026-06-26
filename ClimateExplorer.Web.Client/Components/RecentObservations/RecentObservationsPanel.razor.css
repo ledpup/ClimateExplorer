@@ -197,13 +197,11 @@
     }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 767px) {
     .recent-observations-config-grid {
         grid-template-columns: 1fr;
     }
-}
 
-@media (max-width: 520px) {
     .recent-observations-config-control {
         align-items: flex-start;
         flex-direction: column;

@@ -91,22 +91,17 @@
     }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 767px) {
     ::deep .country-col,
-    ::deep .country-cell {
+    ::deep .country-cell,
+    ::deep .anomaly-col,
+    ::deep .anomaly-cell {
         display: none;
     }
 
     .locations-container {
         margin-left: -1.25rem;
         margin-right: -1.25rem;
-    }
-}
-
-@media (max-width: 512px) {
-    ::deep .anomaly-col,
-    ::deep .anomaly-cell {
-        display: none;
     }
 }
 
