@@ -6,17 +6,18 @@ using Microsoft.AspNetCore.Components.Routing;
 
 public partial class NavMenu : IDisposable
 {
-    private readonly (string Route, string Text)[] navItems =
+    private readonly (string Route, string Text)[] primaryItems =
                 [
                     (string.Empty, "local"),
                     ("regionalandglobal", "regional & global"),
                 ];
 
-    private readonly (string Route, string Text)[] hamburgerItems =
+    private readonly SecondaryNavItem[] secondaryItems =
                 [
-                    ("locations", "locations"),
-                    ("blog", "blog"),
-                    ("about", "about"),
+                    SecondaryNavItem.Link("locations", "locations"),
+                    SecondaryNavItem.Link("blog", "blog"),
+                    SecondaryNavItem.Link("about", "about"),
+                    SecondaryNavItem.SiteOverview("site overview"),
                 ];
 
     [Inject]
@@ -24,6 +25,8 @@ public partial class NavMenu : IDisposable
 
     [Inject]
     public NavigationManager? NavigationManager { get; set; }
+
+    private IEnumerable<SecondaryNavItem> VisibleSecondaryItems => secondaryItems.Where(item => !item.LocalOnly || IsLocalPage());
 
     public bool IsCurrentPage(string route)
     {
@@ -39,7 +42,7 @@ public partial class NavMenu : IDisposable
         return path == $"/{route}" || path.StartsWith($"/{route}/");
     }
 
-    public bool IsHamburgerCurrentPage() => hamburgerItems.Any(item => IsCurrentPage(item.Route));
+    public bool IsHamburgerCurrentPage() => VisibleSecondaryItems.Any(item => item.Route is not null && IsCurrentPage(item.Route));
 
     public void Dispose()
     {
@@ -56,8 +59,28 @@ public partial class NavMenu : IDisposable
         return path.StartsWith("/location") && !path.StartsWith("/locations");
     }
 
+    private bool IsLocalPage()
+    {
+        var path = NavigationManager!.ToAbsoluteUri(NavigationManager.Uri).LocalPath;
+
+        return path == "/" || IsLocal(path);
+    }
+
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
         StateHasChanged();
+    }
+
+    private sealed record SecondaryNavItem(string? Route, string Text, bool LocalOnly, bool OpensSiteOverview)
+    {
+        public static SecondaryNavItem Link(string route, string text)
+        {
+            return new(route, text, LocalOnly: false, OpensSiteOverview: false);
+        }
+
+        public static SecondaryNavItem SiteOverview(string text)
+        {
+            return new(Route: null, text, LocalOnly: true, OpensSiteOverview: true);
+        }
     }
 }

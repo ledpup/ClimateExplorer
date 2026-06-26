@@ -51,11 +51,25 @@
     padding: 0px;
 }
 
+::deep .nav-button {
+    background: none;
+    border: 0;
+    font-weight: bold;
+}
+
 ::deep a.nav-link {
     color: white !important;
 }
 
+::deep button.nav-link {
+    color: white !important;
+}
+
     ::deep a.nav-link:hover {
+        color: #aaa !important;
+    }
+
+    ::deep button.nav-link:hover {
         color: #aaa !important;
     }
 
@@ -73,7 +87,7 @@
     background-color: #425f59 !important;
 }
 
-.info-icon {
+.fa-circle-info {
     color: #79c6f4;
     font-size: larger;
     cursor: pointer;
@@ -83,6 +97,18 @@
     align-items: center;
     height: 21px;
     overflow: hidden;
+}
+
+::deep .info-nav-link {
+    color: #79c6f4 !important;
+}
+
+    ::deep .info-nav-link:hover {
+        color: #9bd6f7 !important;
+    }
+
+::deep .mobile-menu-nav-item {
+    display: none;
 }
 
 /* ── Hamburger toggle button ─────────────────────────────────────────────── */
@@ -104,14 +130,6 @@
 
     ::deep .hamburger-toggle::after {
         display: none;
-    }
-
-    ::deep .hamburger-toggle.nav-current {
-        color: rgba(255, 255, 255, 0.55) !important;
-    }
-
-    ::deep .hamburger-toggle.nav-current:hover {
-        color: #aaa !important;
     }
 
 /* ── Hamburger dropdown menu ─────────────────────────────────────────────── */
@@ -205,5 +223,23 @@
 
     .info-icon {
         padding: 0 4px;
+    }
+}
+
+@media (max-width: 767px) {
+    ::deep .desktop-secondary-nav-item {
+        display: none;
+    }
+
+    ::deep .mobile-menu-nav-item {
+        display: inline;
+    }
+
+    ::deep .hamburger-toggle.nav-current {
+        color: rgba(255, 255, 255, 0.55) !important;
+    }
+
+    ::deep .hamburger-toggle.nav-current:hover {
+        color: #aaa !important;
     }
 }
